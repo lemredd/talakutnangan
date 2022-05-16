@@ -1,0 +1,9 @@
+{
+	"private": true,
+	"scripts": {
+		"changelog:generate": "npx changelogen"
+	},
+	"dependencies": {
+		"changelogen": "^0.0.6"
+	}
+}
