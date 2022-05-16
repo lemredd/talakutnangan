@@ -5,4 +5,6 @@
 node_modules
 package-lock.json
 
+.nuxt
+.output
 *hidden*

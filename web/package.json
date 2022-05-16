@@ -1,21 +1,20 @@
 {
-	"name": "web_template",
-	"description": "A simple web template for general reuse.",
+	"name": "talakutnangan",
+	"description": "A capstone project aim to create a consultation platform through chat for MCC",
 	"version": "0.1.0-dev",
-	"homepage": "https://github.com/KennethTrecy/web_template",
+	"homepage": "https://github.com/KennethTrecy/talakutnangan",
 	"keywords": [
 		"front-end",
 		"web",
-		"template-repository"
+		"chat"
 	],
-	"license": "MIT",
-	"main": "src/index.js",
+	"type": "module",
 	"private": true,
 	"scripts": {
 		"dev": "npm run development",
-		"development": "npx vite",
+		"development": "npx nuxt dev",
 		"prod": "npm run production",
-		"production": "npx vite build",
+		"production": "npx nuxt build",
 		"test:unit": "npx jest",
 		"test:watch_unit": "npx jest --watch"
 	},
