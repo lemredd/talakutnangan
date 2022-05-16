@@ -10,6 +10,9 @@ export default defineNuxtConfig({
 	},
 	ssr: true,
 	runtimeConfig: {
+		database: {
+			URI: process.env.DATABASE_URI
+		},
 		app: {
 			cert: process.env.NITRO_SSL_CERT,
 			key: process.env.NITRO_SSL_KEY,
