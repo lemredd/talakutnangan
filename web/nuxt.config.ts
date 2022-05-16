@@ -11,15 +11,5 @@ export default defineNuxtConfig({
 			{ name: "viewport", content: "width=device-width, initial-scale=1" }
 		]
 	},
-	ssr: true,
-	vite: {
-		server: {
-			host: true,
-			port: 8000,
-			open: false,
-			watch: {
-				usePolling: true
-			}
-		}
-	}
+	ssr: true
 })
