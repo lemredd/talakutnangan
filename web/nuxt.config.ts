@@ -1,7 +1,4 @@
-import destr from "destr"
 import { defineNuxtConfig } from "nuxt"
-import createWebSocket from "./custom/create_ws_server"
-import registerWSEvents from "./custom/register_ws_events"
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -11,5 +8,26 @@ export default defineNuxtConfig({
 			{ name: "viewport", content: "width=device-width, initial-scale=1" }
 		]
 	},
-	ssr: true
+	ssr: true,
+	runtimeConfig: {
+		app: {
+			cert: process.env.NITRO_SSL_CERT,
+			key: process.env.NITRO_SSL_KEY,
+			port: (process.env.PORT || 3000) as number,
+			baseURL: "/",
+
+			get isSecure() {
+				return this.cert && this.key
+			},
+
+			get origin() {
+				const HTTPVersion = process.env.PROTOCOL || (this.isSecure ? "https" : "http")
+				return `${HTTPVersion}://${this.host}:${this.port}`
+			},
+
+			get baseURI() {
+				return `${this.origin}${this.baseURL}`
+			}
+		}
+	}
 })
