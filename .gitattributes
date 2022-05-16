@@ -1,0 +1,9 @@
+*.md					text eol=lf
+.git*					text eol=lf
+*.json				text eol=lf
+LICENSE*				text eol=lf
+.editorconfig		text eol=lf
+*.code-snippets	text eol=lf
+*.js					text eol=lf
+*.css					text eol=lf
+*.html				text eol=lf

@@ -1,0 +1,11 @@
+{
+	"Common Structure": {
+		"scope": "markdown",
+		"prefix": "cs",
+		"body": [
+			"hello $0",
+			"${1:placeholder}!"
+		],
+		"description": ""
+	}
+}
