@@ -1,0 +1,54 @@
+version: "3"
+
+networks:
+  web_template:
+    external: false
+
+services:
+  ui_server:
+    build:
+      context: .
+      target: dev
+    image: web_template:dev
+    deploy:
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 100M
+    restart: on-failure
+    networks:
+      - web_template
+    volumes:
+      - ./web:/var/www/html/app/web
+      - ui_server_root:/var/www/html/app/web/node_modules
+    ports:
+      - "12000:8000"
+    command: npx vite serve --host
+
+  ui_server_test:
+    build:
+      context: .
+      target: test
+    image: web_template:test
+    deploy:
+      restart_policy:
+        delay: 5s
+        window: 30s
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 50M
+    volumes:
+      - type: bind
+        source: "./.git"
+        target: "/var/www/html/.git"
+      - type: bind
+        source: "./web"
+        target: "/var/www/html/app/web"
+      - ui_server_root:/var/www/html/app/web/node_modules
+    tty: true
+    stdin_open: false
+    command: npx jest
+
+volumes:
+  ui_server_root:
