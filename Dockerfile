@@ -5,9 +5,17 @@ RUN mkdir /var/www/html
 RUN mkdir /var/www/html/app
 RUN mkdir /var/www/html/app/pages
 RUN mkdir /var/www/html/app/.nuxt
+RUN mkdir /var/www/html/app/server
+RUN mkdir /var/www/html/app/plugins
+RUN mkdir /var/www/html/app/components
+RUN mkdir /var/www/html/app/composables
 
 VOLUME [ "/var/www/html/app/pages" ]
 VOLUME [ "/var/www/html/app/.nuxt" ]
+VOLUME [ "/var/www/html/app/server" ]
+VOLUME [ "/var/www/html/app/plugins" ]
+VOLUME [ "/var/www/html/app/components" ]
+VOLUME [ "/var/www/html/app/composables" ]
 
 ENV CHOKIDAR_USEPOLLING=true
 
