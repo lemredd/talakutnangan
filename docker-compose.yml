@@ -56,5 +56,18 @@ services:
     stdin_open: false
     command: npx jest
 
+  database:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=talakutnangan_test
+    networks:
+      - talakutnangan
+    ports:
+      - ${DATABASE_PORT}:3306
+    volumes:
+      - ./database:/var/lib/mysql
+
 volumes:
   web_root:
