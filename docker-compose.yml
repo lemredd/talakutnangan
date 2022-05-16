@@ -19,13 +19,13 @@ services:
     networks:
       - talakutnangan
     volumes:
-      - web_root:/var/www/html/app/web
+      - root:/var/www/html/app
       - type: bind
-        source: "./web/pages"
-        target: "/var/www/html/app/web/pages"
+        source: "./pages"
+        target: "/var/www/html/app/pages"
       - type: bind
-        source: "./web/.nuxt"
-        target: "/var/www/html/app/web/.nuxt"
+        source: "./.nuxt"
+        target: "/var/www/html/app/.nuxt"
     ports:
       - "16000:8000"
     command: npx nuxt dev --port 8000
@@ -46,12 +46,12 @@ services:
         source: "./.git"
         target: "/var/www/html/.git"
       - type: bind
-        source: "./web/pages"
-        target: "/var/www/html/app/web/pages"
+        source: "./pages"
+        target: "/var/www/html/app/pages"
       - type: bind
-        source: "./web/.nuxt"
-        target: "/var/www/html/app/web/.nuxt"
-      - web_root:/var/www/html/app/web
+        source: "./.nuxt"
+        target: "/var/www/html/app/.nuxt"
+      - root:/var/www/html/app
     tty: true
     stdin_open: false
     command: npx jest
@@ -70,4 +70,4 @@ services:
       - ./database:/var/lib/mysql
 
 volumes:
-  web_root:
+  root:
