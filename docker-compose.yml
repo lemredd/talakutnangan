@@ -1,54 +1,60 @@
 version: "3"
 
 networks:
-  web_template:
+  talakutnangan:
     external: false
 
 services:
-  ui_server:
+  web:
     build:
       context: .
       target: dev
-    image: web_template:dev
-    deploy:
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 100M
+    image: talakutnangan:dev
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "0.40"
+    #       memory: 100M
     restart: on-failure
     networks:
-      - web_template
+      - talakutnangan
     volumes:
-      - ./web:/var/www/html/app/web
-      - ui_server_root:/var/www/html/app/web/node_modules
+      - web_root:/var/www/html/app/web
+      - type: bind
+        source: "./web/pages"
+        target: "/var/www/html/app/web/pages"
+      - type: bind
+        source: "./web/.nuxt"
+        target: "/var/www/html/app/web/.nuxt"
     ports:
-      - "12000:8000"
-    command: npx vite serve --host
+      - "16000:8000"
+    command: npx nuxt dev --port 8000
 
-  ui_server_test:
+  web_test:
     build:
       context: .
       target: test
-    image: web_template:test
+    image: talakutnangan:test
     deploy:
-      restart_policy:
-        delay: 5s
-        window: 30s
       resources:
         limits:
           cpus: "0.50"
           memory: 50M
+    restart: on-failure
     volumes:
       - type: bind
         source: "./.git"
         target: "/var/www/html/.git"
       - type: bind
-        source: "./web"
-        target: "/var/www/html/app/web"
-      - ui_server_root:/var/www/html/app/web/node_modules
+        source: "./web/pages"
+        target: "/var/www/html/app/web/pages"
+      - type: bind
+        source: "./web/.nuxt"
+        target: "/var/www/html/app/web/.nuxt"
+      - web_root:/var/www/html/app/web
     tty: true
     stdin_open: false
     command: npx jest
 
 volumes:
-  ui_server_root:
+  web_root:

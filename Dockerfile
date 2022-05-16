@@ -4,19 +4,19 @@ RUN mkdir /var/www
 RUN mkdir /var/www/html
 RUN mkdir /var/www/html/app
 RUN mkdir /var/www/html/app/web
-RUN mkdir /var/www/html/app/web/node_modules
+RUN mkdir /var/www/html/app/web/pages
+RUN mkdir /var/www/html/app/web/.nuxt
 
-VOLUME [ "/var/www/html/app/web" ]
-VOLUME [ "/var/www/html/app/web/node_modules" ]
+VOLUME [ "/var/www/html/app/web/pages" ]
+VOLUME [ "/var/www/html/app/web/.nuxt" ]
 
 ENV CHOKIDAR_USEPOLLING=true
 
 WORKDIR /var/www/html/app/web
 
 COPY ./web/package.json ./package.json
-COPY ./web/index.html ./index.html
 COPY ./web/tsconfig.json ./tsconfig.json
-COPY ./web/vite.config.ts ./vite.config.ts
+COPY ./web/nuxt.config.ts ./nuxt.config.ts
 
 RUN npm install
 
