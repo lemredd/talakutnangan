@@ -42,6 +42,8 @@ services:
         target: "/var/www/html/app/components"
     ports:
       - "16000:8000"
+    depends_on:
+      - database
     command: npx nuxt dev --port 8000
 
   web_test:
