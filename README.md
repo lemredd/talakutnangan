@@ -15,9 +15,9 @@ The `origin` section may be used to indicate where the project (that is using th
 from or based from.
 
 ## Origin
-Some parts of the repository was based from [`t_e2e`] branch of [Web Template].
+Some parts of the repository was based from [`web_contained_vite`] branch of [Web Template].
 
-The template is specialize for end-to-end testing.
+The template is specialize for front-end development.
 
 -->
 
@@ -46,7 +46,7 @@ The repository is licensed under [MIT]. Since this is a template repository, you
 license file if you want to use other license or you will use the template repository for a private
 template/project. You can follow the steps below:
 1. Run `git revert 86a573af` to remove the license completely.
-2. Remove license field in `t/package.json`.
+2. Run `git revert 1331676b` to remove license field in `package.json`.
 
 ## Notes
 It is optional to attribute this repository in other template/projects.
@@ -54,15 +54,16 @@ It is optional to attribute this repository in other template/projects.
 ### Branch
 This branch can be used to other branches, templates, or projects.
 
-[`testcafe` package] was already installed as default tool to do end-to-end testing.
+[`vite` package], [`jest` package], and other necessary packages were already installed in this
+branch.
 
 ### Author
 Coded by Kenneth Trecy Tobias.
 
 <!--
 
-[`t_e2e`]: https://github.com/KennethTrecy/web_template/tree/t_e2e
-[Web Template]: http://github.com/KennethTrecy/web_template
+[`web_contained_vite`]: https://github.com/KennethTrecy/web_template/tree/web_contained_vite
+[Web Template]: https://github.com/KennethTrecy/web_template/
 
 -->
 
@@ -71,5 +72,4 @@ Coded by Kenneth Trecy Tobias.
 [`vue` package]: https://www.npmjs.com/package/vue
 [`rollup` package]: https://www.npmjs.com/package/rollup
 [`jest` package]: https://www.npmjs.com/package/jest
-[`testcafe` package]: https://www.npmjs.com/package/testcafe
 [MIT]: https://github.com/KennethTrecy/web_template/blob/master/LICENSE
