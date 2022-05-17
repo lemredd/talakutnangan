@@ -1,4 +1,18 @@
 {
-	// https://v3.nuxtjs.org/concepts/typescript
-	"extends": "./.nuxt/tsconfig.json"
+	"compilerOptions": {
+		"strict": true,
+		"module": "ES2020",
+		"moduleResolution": "Node",
+		"target": "ES2017",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"types": ["vite/client"],
+		"skipLibCheck": true,
+		"esModuleInterop": true
+	},
+	"ts-node": {
+		"transpileOnly": true,
+		"compilerOptions": {
+			"module": "CommonJS"
+		}
+	}
 }
