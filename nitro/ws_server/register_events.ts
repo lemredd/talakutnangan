@@ -32,7 +32,7 @@ export default function(wsServer) {
 
 		socket.on("send_message", function (message) {
 			messages.push(message)
-			io.socket.in(connectionInfo.roomID).emit("receive_message", message)
+			wsServer.sockets.in(connectionInfo.roomID).emit("receive_message", message)
 		})
 	})
 }
