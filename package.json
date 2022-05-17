@@ -35,8 +35,10 @@
 		"nuxt": "^3.0.0-rc.3",
 		"pg": "^8.7.3",
 		"pg-hstore": "^2.3.4",
+		"reflect-metadata": "^0.1.13",
 		"sequelize": "^6.19.0",
 		"sqlite3": "^5.0.8",
+		"typeorm": "^0.3.6",
 		"uuid": "^8.3.2",
 		"vue": "^3.2.33"
 	}

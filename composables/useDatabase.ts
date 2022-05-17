@@ -1,21 +1,28 @@
-import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize"
+import "reflect-metadata"
+import { DataSource } from "typeorm"
+import User from "~/server/model/user"
 
-export default function() {
-	console.info(process.env.DATABASE_URI)
+const dataSource = new DataSource({
+	type: "mysql",
+	host: process.env.DATABASE_HOST,
+	port: process.env.DATABASE_PORT as unknown as number,
+	database: process.env.DATABASE_NAME,
+	username: process.env.DATABASE_USER,
+	password: process.env.DATABASE_PASS,
+	entities: [
+		User
+	],
+	synchronize: true,
+	logging: true
+})
 
-	const database = new Sequelize(process.env.DATABASE_URI)
+await dataSource.initialize()
 
-	class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-		declare email: string
-	}
-
-	User.init({
-		email: DataTypes.STRING
-	}, { sequelize: database })
-	User.sync()
+export default async function() {
+	const manager = dataSource.manager
 
 	return {
-		database,
+		manager,
 		User
 	}
 }
