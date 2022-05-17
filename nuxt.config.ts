@@ -1,4 +1,6 @@
 import { defineNuxtConfig } from "nuxt"
+import createWebSocket from "./nitro/ws_server/create"
+import registerWSEvents from "./nitro/ws_server/register_events"
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -28,6 +30,17 @@ export default defineNuxtConfig({
 			get baseURI() {
 				return `${this.origin}${this.baseURL}`
 			}
+		}
+	},
+	nitro: {
+		plugins: [
+			"~/nitro/plugin/ws_server"
+		]
+	},
+	hooks: {
+		listen(HTTPServer) {
+			const wsServer = createWebSocket(HTTPServer)
+			registerWSEvents(wsServer)
 		}
 	}
 })
