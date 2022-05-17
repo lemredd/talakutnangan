@@ -1,16 +1,17 @@
-import { Sequelize, DataTypes } from "sequelize"
+import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize"
 
 export default function() {
-	const configuration = useRuntimeConfig()
+	console.info(process.env.DATABASE_URI)
 
-	console.info(configuration.database.URI)
+	const database = new Sequelize(process.env.DATABASE_URI)
 
-	const database = new Sequelize(configuration.database.URI)
+	class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+		declare email: string
+	}
 
-	const User = database.define("User", {
+	User.init({
 		email: DataTypes.STRING
-	})
-
+	}, { sequelize: database })
 	User.sync()
 
 	return {
