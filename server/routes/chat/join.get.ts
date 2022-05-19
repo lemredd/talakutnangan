@@ -1,14 +1,10 @@
 import { v4 } from "uuid"
+import { Request, Response } from "express"
 
-export default defineEventHandler(event => {
-	const configuration = useRuntimeConfig()
-	const url = new URL(event.req.url, configuration.app.origin)
+export default function(_request: Request, response: Response) {
+	response.writeHead(302, {
+		Location: `/chat/room/${v4()}`
+	})
 
-	if(url.pathname === "/chat/join") {
-		event.res.writeHead(302, {
-			Location: `/chat/${v4()}`
-		})
-	}
-
-	event.res.end()
-})
+	response.end()
+}
