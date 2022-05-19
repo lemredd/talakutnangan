@@ -10,7 +10,8 @@
 		"esModuleInterop": true,
 		"jsx": "preserve",
 		"paths": {
-			"!/*": [ "./server/*" ]
+			"!/*": [ "./server/*" ],
+			"#/*": [ "./renderer/*" ]
 		}
 	},
 	"ts-node": {
