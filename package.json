@@ -48,6 +48,7 @@
 		"uuid": "^8.3.2",
 		"vite": "^2.8.4",
 		"vite-plugin-ssr": "^0.3.64",
+		"vite-tsconfig-paths": "^3.4.1",
 		"vue": "^3.2.33"
 	}
 }
