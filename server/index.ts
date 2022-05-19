@@ -5,6 +5,7 @@ import { createPageRenderer } from "vite-plugin-ssr"
 import render from "!/render"
 import createWSServer from "!/ws_server/create"
 import registerWSEvents from "!/ws_server/register_events"
+import manageRoutes from "!/routes/manage_routes"
 
 const isProduction = process.env.NODE_ENV === "production"
 const root = `${__dirname}/..`
@@ -29,6 +30,7 @@ async function startServer() {
 	}
 
 	const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
+	app.use(manageRoutes())
 	app.get("*", (request, response, next) => render(renderPage, request, response, next))
 
 	const port = process.env.PORT || 3000
