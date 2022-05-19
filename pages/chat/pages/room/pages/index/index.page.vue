@@ -20,13 +20,16 @@
 </template>
 
 <style lang="scss">
-@import "../index";
+
 </style>
 
 <script setup lang="ts">
-const { $webSocketClient } = useNuxtApp()
-const route = useRoute()
+import { ref, computed } from "vue"
+import makeClient from "socket.io-client"
+import { usePageContext } from "#/usePageContext"
 
+const clientWebSocket = makeClient()
+const pageContext = usePageContext()
 const emailField = ref(null)
 const email = ref("")
 const hasEmail = computed(() => email.value !== "")
@@ -34,9 +37,7 @@ const hasEmail = computed(() => email.value !== "")
 const chatBox = ref(null)
 const messages = ref([])
 
-const wsConnection = $webSocketClient()
-
-wsConnection.on("receive_message", message => {
+clientWebSocket.on("receive_message", message => {
 	messages.value.push(message)
 })
 
@@ -44,7 +45,7 @@ function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
-	wsConnection.emit("join_room", route.params.uuid, rawEmail)
+	clientWebSocket.emit("join_room", pageContext.uuid, rawEmail)
 	email.value = rawEmail
 }
 
@@ -52,7 +53,7 @@ function sendMessage(event) {
 	const input = chatBox.value as HTMLInputElement
 	const message = input.value
 
-	wsConnection.emit("send_message", {
+	clientWebSocket.emit("send_message", {
 		time: (new Date()).toLocaleTimeString(),
 		email: email.value,
 		content: message
