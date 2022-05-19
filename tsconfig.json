@@ -11,7 +11,8 @@
 		"jsx": "preserve",
 		"paths": {
 			"!/*": [ "./server/*" ],
-			"#/*": [ "./renderer/*" ]
+			"#/*": [ "./renderer/*" ],
+			"@/*": [ "./pages/*" ]
 		}
 	},
 	"ts-node": {
