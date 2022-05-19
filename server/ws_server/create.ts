@@ -1,9 +1,8 @@
+import { Server } from "http"
 import { Server as WebSocketServer } from "socket.io"
 
-export default function(httpServer) {
+export default function(httpServer: Server) {
 	const wsServer = new WebSocketServer(httpServer)
-
-	global.wsServer = wsServer
 
 	console.log("Initialized web socket server")
 

@@ -1,5 +1,7 @@
-export default function(wsServer) {
-	const messages = []
+import { Server } from "socket.io"
+
+export default function(wsServer: Server) {
+	const messages: string[] = []
 
 	wsServer.on("connection", (socket) => {
 		const connectionInfo = {
