@@ -24,5 +24,5 @@ export default function(manager: EntityManager) {
 			// saveSession()
 			response.end()
 		}
-
-})
+	}
+}
