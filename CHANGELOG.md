@@ -1,5 +1,57 @@
 # Changelog
 
+## v0.1.1
+
+### 🚀 Enhancements
+
+#### Chat
+- b5c8a86 Create web socket server and listen for WS events
+- e4c893a Link web socket server to HTTPS server
+- abb6b6d Add simple route to create a room
+- 6d13988 Implement simple chat completely
+- a6997fa Integrate web socket server for chat
+- 0439bd0 Intgrate chat routers to main file
+
+### 🩹 Fixes
+
+#### Chat
+- 23eb8be Ensure to distribute the message in the room
+
+### 🏡 Chore
+
+#### General
+- 410b740 Separate the renderer from the function
+- c157185 Remove unused files from previous set ups
+
+#### Configuration
+- 955a751 Bind other environment variables and directories
+- a084aaa Set path for server subdirectory
+- cf8b590 Change the path to server subdirectory
+- bce8579 Preserve the JSX
+- 2fb6d9f Improve configuration for generation of change log
+- 4f72784 Register other paths
+- 2834f2f Add plugin to read paths from configuration
+- ab872d4 Relax strict type checking
+- 96be969 Organize the dependencies
+
+#### Migration
+- 69e6758 Move plugins to dedicated server folder
+
+### 🕊️ Migrations
+
+#### General
+- 0407f4a Move all generated files from boilerplate
+- 87ee88d Delete remaining plugin from previous HTTP package
+- 0166c43 Rewrite the route for room creation
+- ce2e9e9 Rewrite the script  o make chat work in new set up
+
+#### Configuration
+- 5d7e324 Merge configurations from renewal
+
+### ❤️  Contributors
+- Kenneth Trecy Tobias
+
+
 ## v0.1.0
 
 ### 📖 Documentation

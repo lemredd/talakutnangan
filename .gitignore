@@ -5,6 +5,9 @@
 node_modules
 package-lock.json
 
+dist/
+*hidden*
+
+# Remove the globs below after complete migration
 .nuxt
 .output
-*hidden*

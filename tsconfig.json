@@ -1,6 +1,29 @@
 {
-	// https://v3.nuxtjs.org/concepts/typescript
-	"extends": "./.nuxt/tsconfig.json",
-	"emitDecoratorMetadata": true,
-	"experimentalDecorators": true
+	"compilerOptions": {
+		"strict": false,
+		"module": "ES2020",
+		"moduleResolution": "Node",
+		"target": "ES2017",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"types": ["vite/client"],
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"jsx": "preserve",
+		"paths": {
+			"!/*": [ "./server/*" ],
+			"#/*": [ "./renderer/*" ],
+			"@/*": [ "./pages/*" ]
+		},
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true
+	},
+	"ts-node": {
+		"transpileOnly": true,
+		"compilerOptions": {
+			"module": "CommonJS"
+		},
+		"require": [
+			"tsconfig-paths/register"
+		]
+	}
 }
