@@ -55,7 +55,7 @@ async function startServer() {
 	app.use(manageRoutes(manager))
 	app.get("*", (request, response, next) => render(renderPage, request, response, next))
 
-	const port = process.env.PORT || 3000
+	const port = process.env.WEB_PORT || 3000
 	const httpServer = new HTTPServer(app)
 	const wsServer = createWSServer(httpServer)
 
