@@ -33,6 +33,7 @@
 		"@vue/server-renderer": "^3.2.31",
 		"compression": "^1.7.4",
 		"cross-env": "^7.0.3",
+		"dotenv": "^16.0.1",
 		"express": "^4.17.3",
 		"mysql2": "^2.3.3",
 		"pg": "^8.7.3",
