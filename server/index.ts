@@ -52,7 +52,7 @@ async function startServer() {
 	const manager = dataSource.manager
 
 	const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
-	app.use(manageRoutes())
+	app.use(manageRoutes(manager))
 	app.get("*", (request, response, next) => render(renderPage, request, response, next))
 
 	const port = process.env.PORT || 3000
