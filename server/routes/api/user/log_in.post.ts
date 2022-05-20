@@ -1,6 +1,6 @@
 import { EntityManager } from "typeorm"
 import { Request, Response } from "express"
-import User from "!/model/user"
+import User from "!/models/user"
 // import useSession from "~/server/auth/useSession"
 
 export default function(manager: EntityManager) {

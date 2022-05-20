@@ -9,7 +9,7 @@ import render from "!/render"
 import createWSServer from "!/ws_server/create"
 import registerWSEvents from "!/ws_server/register_events"
 import manageRoutes from "!/routes/manage_routes"
-import User from "!/model/user"
+import User from "!/models/user"
 
 const isProduction = process.env.NODE_ENV === "production"
 const root = `${__dirname}/..`
