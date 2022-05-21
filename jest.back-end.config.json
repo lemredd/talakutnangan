@@ -1,0 +1,26 @@
+{
+	"preset": "ts-jest",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts"
+	],
+
+	"moduleNameMapper": {
+		"!/(.*)": "<rootDir>/server/$1",
+		"~/(.*)": "<rootDir>/t/unit/$1",
+		"#/(.*)": "<rootDir>/renderer/$1"
+	},
+
+	"setupFilesAfterEnv": [
+		"./t/unit/set_up.ts"
+	],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"server/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "node"
+}

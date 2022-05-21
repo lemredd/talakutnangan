@@ -16,8 +16,8 @@
 		"server": "ts-node ./server",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
-		"test:unit": "npx jest",
-		"test:watch_unit": "npx jest --watch"
+		"test:unit:front-end": "npx jest -c jest.front-end.config.json",
+		"test:unit:back-end": "npx jest -c jest.back-end.config.json"
 	},
 	"devDependencies": {
 		"@jest-mock/express": "^1.4.5",

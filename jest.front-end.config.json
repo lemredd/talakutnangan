@@ -8,15 +8,10 @@
 	],
 
 	"moduleNameMapper": {
-		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/unit/$1",
 		"#/(.*)": "<rootDir>/renderer/$1",
 		"@/(.*)": "<rootDir>/pages/$1"
 	},
-
-	"setupFilesAfterEnv": [
-		"./t/unit/set_up.ts"
-	],
 
 	"transform": {
 		"^.+\\.vue": "vue-jest"
@@ -25,8 +20,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"pages/.*\\.spec\\.ts",
-		"server/.*\\.spec\\.ts"
+		"pages/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "jsdom"
