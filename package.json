@@ -20,6 +20,7 @@
 		"test:watch_unit": "npx jest --watch"
 	},
 	"devDependencies": {
+		"@jest-mock/express": "^1.4.5",
 		"@types/jest": "^27.5.1",
 		"changelogen": "^0.0.6",
 		"jest": "^28.1.0",
