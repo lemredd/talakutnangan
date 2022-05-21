@@ -44,7 +44,6 @@
 		"pg": "^8.7.3",
 		"pg-hstore": "^2.3.4",
 		"reflect-metadata": "^0.1.13",
-		"sequelize": "^6.19.0",
 		"socket.io": "^4.5.0",
 		"socket.io-client": "^4.5.0",
 		"ts-node": "^10.5.0",
