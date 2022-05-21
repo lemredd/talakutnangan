@@ -13,6 +13,10 @@
 		"@/(.*)": "<rootDir>/pages/$1"
 	},
 
+	"setupFilesAfterEnv": [
+		"./t/unit/set_up.ts"
+	],
+
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
