@@ -1,17 +1,14 @@
 import "reflect-metadata"
-import DatabaseHelper from "./database_helper"
+import Database from "./database"
 
 beforeAll(async () => {
-	const helper = new DatabaseHelper();
-	await helper.create()
+	await Database.create()
 });
 
 afterAll(async () => {
-	const helper = new DatabaseHelper();
-	await helper.destroy()
+	await Database.destroy()
 });
 
 afterEach(async () => {
-	const helper = new DatabaseHelper();
-	await helper.clear()
+	await Database.clear()
 });
