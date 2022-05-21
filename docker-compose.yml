@@ -88,8 +88,13 @@ services:
     image: mysql:8
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=talakutnangan_test
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASS}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 450M
     networks:
       - talakutnangan
     ports:
