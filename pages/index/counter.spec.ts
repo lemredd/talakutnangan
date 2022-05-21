@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils"
-import Counter from "./counter.vue"
+import Counter from "./Counter.vue"
 
 describe("Component: Counter", () => {
 	it("can increase", async () => {
