@@ -3,7 +3,10 @@
 
 .env
 node_modules
+
+# Lockfiles
 package-lock.json
+pnpm-lock.yaml
 
 dist/
 *hidden*

@@ -11,5 +11,5 @@ export default async function(configuration: DataSourceOptions): Promise<DataSou
 
 	await dataSource.initialize()
 
-	return
+	return dataSource
 }
