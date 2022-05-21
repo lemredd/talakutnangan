@@ -8,12 +8,28 @@ A capstone project aim to create a consultation chat platform for MCC.
 - [Docker]
 
 ### General Development Instruction
-1. Copy *.env.example* file as *.env*. Default are enough but you may customize the values according
-   to your liking.
-2. Run `docker-compose up -d --build`
-   - It will run too long for the first build only. Subsequent builds will be fast. This will create
-     the database server.
-3. Run `npm install`
+1. Run `npm install`
+2. Copy *.env.example* file as *.env* to *root*. Values may change according to your chosen
+   database.
+3. Choose the database to be used:
+   - SQLite (using memory) [fastest to set]
+     - Change the `DATABASE_TYPE` variable in your *.env* to `memoried_sqlite`
+   - SQLite (using SQL file)
+     - Change the `DATABASE_TYPE` variable in your *.env* to `filed_sqlite`
+     - Create an empty file named *sqlite.sql* in *database*
+     - Change the `DATABASE_PATH` variable in your *.env* to `database/sqlite.sql`
+   - MySQL (container)
+     - Change the `DATABASE_TYPE` variable in your *.env* to `mysql`
+     - Run `docker-compose up -d --build`
+       - It will run too long for the first build only. Subsequent builds will be fast. This will
+         create the database server.
+     - **Note**: Re-run `docker-compose up -d --build` every time you change one of the following variables in your *.env*:
+       - `DATABASE_PASSWORD`
+       - `DATABASE_PORT`
+       - `DATABASE_NAME`
+   - PostgreSQL (deployment) [slowest to set]
+     - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
+     - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
 4. Run `npm run dev`
 5. Visit http://localhost:16000
 
