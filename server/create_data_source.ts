@@ -25,21 +25,21 @@ export default async function(type: SourceType): Promise<DataSource> {
 		}
 		case "memoried_sqlite": {
 			dataSourceOptions.type = "sqlite"
-			dataSourceOptions.path = ":memory:"
+			dataSourceOptions.database = ":memory:"
 			dataSourceOptions.synchronize = true
 			dataSourceOptions.logging = true
 			break
 		}
 		case "filed_sqlite": {
 			dataSourceOptions.type = "sqlite"
-			dataSourceOptions.path = process.env.DATABASE_PATH
+			dataSourceOptions.database = process.env.DATABASE_PATH
 			dataSourceOptions.synchronize = true
 			dataSourceOptions.logging = true
 			break
 		}
 		case "test": {
 			dataSourceOptions.type = "sqlite"
-			dataSourceOptions.path = ":memory:"
+			dataSourceOptions.database = ":memory:"
 			dataSourceOptions.synchronize = true
 			break
 		}
