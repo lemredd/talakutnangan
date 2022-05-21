@@ -33,8 +33,10 @@ A capstone project aim to create a consultation chat platform for MCC.
 4. Run `npm run dev`
 5. Visit http://localhost:16000
 
-### Author
-Coded by Kenneth Trecy Tobias.
+### Contributors
+- Angelo Magtoto
+- Jarlem Red De Peralta
+- Kenneth Trecy Tobias
 
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/

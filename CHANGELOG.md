@@ -1,5 +1,116 @@
 # Changelog
 
+## v0.1.2
+
+### 🚀 Enhancements
+
+#### Database
+- 8bbc2d7 Allow configuration of databases for different purposes
+- c0d4ce8 Ensure email is unique to be compatible with SQLite
+
+#### Authentication
+- e0d1504 Create composable function to connect to database
+- 64003f4 Create sample user upon visiting '/api/user/create'
+- 9d43f38 Integrate API handlers to root
+
+### 🩹 Fixes
+
+#### General
+- 910b093 Terminate the function properly
+- eca108c Correct the path to log in route
+- d4c81cf Ensure data source will be returned
+- c32243f Ensure imports matches casing of filenames
+
+#### Database
+- c25a580 Correct the property to use intended database
+
+#### Configuration
+- a473474 Ensure communication inside containers
+
+### 💅 Refactors
+
+#### General
+- 2d7ac67 Separate initialization of database from entry
+- 82066a3 Restructure the test of sample route
+
+### 📖 Documentation
+
+#### Installation
+- d9ea546 Fix the instructions
+- 71177ae Add new instruction for other database types
+
+### 🏡 Chore
+
+#### Configuration
+- 5c485e2 Add new configuration key to get database URI
+- 5f449d0 Bind other environment variables and directories
+- 797a5ae Disable other services temporarily
+- cd67e1f Install package to read the environment
+- 5f64cd9 Add new environment variables for database and web
+- 5e0c830 Ignore pnpm lockfile
+- f7d7933 Allow JS path replacement
+- 88a968f Improve configuration files for testing
+- 815162a Register set up file
+- e069dc0 Limit the resources for MySQL database
+- 27617a1 Configure testing for Vue SFC
+- a576a4e Separate the test configurations
+- 7d454db Add plug-in to insert the CSS framework
+
+#### General
+- efaaf8f Formalize the model
+- d3890e6 Update the environment variable to use as web port
+- 2b8e34b Rename the path for models
+
+### 📦 Build
+
+#### General
+- 88f8599 Specify engine version necessary on deployment
+
+### ✅ Tests
+
+#### General
+- 07c7284 Add set up file
+- 0fb023b Create types for mocking requests and responses
+- ab916c9 Test the sample route
+- e5aef45 Try sample counter component
+
+#### Database
+- f57d09e Simplify the creation of test database
+
+#### Unit
+- 68ecc69 Create sample unit test
+
+#### Helper
+- 057e7b9 Create database helper
+
+### 🌊 Types
+
+#### General
+- 4235f61 Remove unused types
+
+### 🎨 Styles
+
+#### General
+- 7e0201c Import virtual stylesheet
+- 6eea13a Try some utility classes
+
+### 🤖 CI
+
+#### General
+- 939f5e5 Specialize the CI configuration for the front-end tests
+- 65499f6 Generalize CI configuration for unit tests
+- e8382fb Separate the configuration for front-end and back-end tests
+
+### 🕊️ Migrations
+
+#### General
+- 18804fe Rewrite most previous authentication APIs to new environment
+
+### ❤️  Contributors
+- Angelo Magtoto
+- Jarlem Red De Peralta
+- Kenneth Trecy Tobias
+
 ## v0.1.1
 
 ### 🚀 Enhancements

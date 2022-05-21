@@ -1,8 +1,8 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.1.2-dev",
-	"homepage": "https://github.com/KennethTrecy/talakutnangan",
+	"version": "0.1.2",
+	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
 		"web",
@@ -62,5 +62,19 @@
 	},
 	"engines": {
 		"node": "16.x"
-	}
+	},
+	"contributors": [
+		{
+			"name": "Angelo Magtoto",
+			"email": "19201.magtoto.angelo.l@gmail.com"
+		},
+		{
+			"name": "Jarlem Red De Peralta",
+			"email": "lmoa.jhdp@gmail.com"
+		},
+		{
+			"name": "Kenneth Trecy Tobias",
+			"email": "19201.tobias.kennethtrecy.c@gmail.com"
+		}
+	]
 }
