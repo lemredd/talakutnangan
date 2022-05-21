@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<form @submit.prevent="joinRoom" v-if="!hasEmail">
-			<label>
-				E-mail: <input type="email" ref="emailField"/>
+		<form @submit.prevent="joinRoom" v-if="!hasEmail" class="flex flex-row flex-nowrap">
+			<label class="flex-1 flex-grow flex-shrink-0">
+				E-mail: <input type="email" ref="emailField" class="bg-gray-500"/>
 			</label>
 		</form>
 		<form @submit.prevent="sendMessage" v-if="hasEmail">
-			<label>
+			<label class="flex-1 flex-grow flex-shrink-0">
 				Message:
 				<input type="text" ref="chatBox"/>
 			</label>
