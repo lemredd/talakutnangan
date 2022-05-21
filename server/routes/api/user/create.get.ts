@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm"
-import { Request, Response } from "!/types"
+import { Request, Response } from "express"
 import User from "!/models/user"
 
 export default function(manager: EntityManager) {
