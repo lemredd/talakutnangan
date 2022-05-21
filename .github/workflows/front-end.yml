@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Web Front-end Tests
 
 on:
   push: []
@@ -11,7 +11,6 @@ on:
     branches:
       - master
     paths:
-      - 'server/**'
       - 'pages/**'
 
 jobs:
@@ -24,4 +23,4 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm run test:unit
+    - run: npm run test:unit:front-end
