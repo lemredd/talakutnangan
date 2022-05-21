@@ -1,11 +1,18 @@
 import makeGetCreateRoute from "./create.get"
-import DatabaseHelper from "~/database_helper"
+import { Request, Response } from "~/mock_types"
+import Database from "~/database"
+import User from "!/models/user"
 
 describe("GET /api/user/create", () => {
 	it("can create user", async () => {
-		const databaseHelper = new DatabaseHelper()
-		const manager = databaseHelper.manager
+		const manager = Database.manager
+		const getCreateRoute = makeGetCreateRoute(manager)
 
-		expect(true).toBeTruthy()
+		const request = new Request()
+		const response = new Response()
+		await getCreateRoute(request, response)
+
+		const users = await manager.find(User)
+		expect(users).toHaveLength(1)
 	})
 })
