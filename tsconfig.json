@@ -1,19 +1,21 @@
 {
 	"compilerOptions": {
 		"strict": false,
+		"strictPropertyInitialization": false,
 		"module": "ES2020",
 		"moduleResolution": "Node",
 		"allowJs": true,
 		"target": "ES2017",
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
-		"types": ["vite/client"],
+		"types": ["vite/client", "jest"],
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"jsx": "preserve",
 		"paths": {
-			"!/*": ["./server/*"],
-			"#/*": ["./renderer/*"],
-			"@/*": ["./pages/*"]
+			"!/*": [ "./server/*" ],
+			"~/*": [ "./t/unit/*" ],
+			"#/*": [ "./renderer/*" ],
+			"@/*": [ "./pages/*" ]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true
@@ -21,8 +23,12 @@
 	"ts-node": {
 		"transpileOnly": true,
 		"compilerOptions": {
+			"emitDecoratorMetadata": true,
+			"experimentalDecorators": true,
 			"module": "CommonJS"
 		},
-		"require": ["tsconfig-paths/register"]
+		"require": [
+			"tsconfig-paths/register"
+		]
 	}
 }
