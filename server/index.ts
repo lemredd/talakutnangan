@@ -4,6 +4,7 @@ import { Server as HTTPServer } from "http"
 import express from "express"
 import compression from "compression"
 import { createPageRenderer } from "vite-plugin-ssr"
+import type { SourceType } from "!/types"
 import createDataSource from "!/create_data_source"
 import render from "!/render"
 import createWSServer from "!/ws_server/create"
@@ -32,16 +33,7 @@ async function startServer() {
 		app.use(viteDevServer.middlewares)
 	}
 
-	const dataSource = await createDataSource({
-		type: "mysql",
-		host: process.env.DATABASE_HOST,
-		port: process.env.DATABASE_PORT as unknown as number,
-		database: process.env.DATABASE_NAME,
-		username: process.env.DATABASE_USER,
-		password: process.env.DATABASE_PASS,
-		synchronize: true,
-		logging: true
-	})
+	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 
 	const manager = dataSource.manager
 

@@ -19,10 +19,7 @@ export default class DatabaseHelper {
 
 	async create() {
 		this.#database = new Database(":memory:")
-		this.#dataSource = await createDataSource({
-			type: "sqlite",
-			database: ":memory:"
-		})
+		this.#dataSource = await createDataSource("test")
 	}
 
 	async clear() {
