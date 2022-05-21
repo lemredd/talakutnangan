@@ -3,7 +3,8 @@
 
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"vue"
 	],
 
 	"moduleNameMapper": {
@@ -17,11 +18,16 @@
 		"./t/unit/set_up.ts"
 	],
 
+	"transform": {
+		"^.+\\.vue": "vue-jest"
+	},
+
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
+		"pages/.*\\.spec\\.ts",
 		"server/.*\\.spec\\.ts"
 	],
 
-	"testEnvironment": "node"
+	"testEnvironment": "jsdom"
 }
