@@ -7,8 +7,7 @@ import { createPageRenderer } from "vite-plugin-ssr"
 import type { SourceType } from "!/types"
 import createDataSource from "!/create_data_source"
 import render from "!/render"
-import createWSServer from "!/ws_server/create"
-import registerWSEvents from "!/ws_server/register_events"
+import createWSServer from "!/ws/create_server"
 import manageRoutes from "!/routes/manage_routes"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -45,7 +44,6 @@ async function startServer() {
 	const httpServer = new HTTPServer(app)
 	const wsServer = createWSServer(httpServer)
 
-	registerWSEvents(wsServer)
 	httpServer.listen(port)
 	console.log(`Server running at http://localhost:${port}`)
 }
