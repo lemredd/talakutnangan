@@ -3,8 +3,14 @@
 
 .env
 node_modules
-package-lock.json
 
+# Lockfiles
+package-lock.json
+pnpm-lock.yaml
+
+dist/
+*hidden*
+
+# Remove the globs below after complete migration
 .nuxt
 .output
-*hidden*

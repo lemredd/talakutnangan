@@ -1,0 +1,27 @@
+{
+	"preset": "ts-jest",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts",
+		"vue"
+	],
+
+	"moduleNameMapper": {
+		"~/(.*)": "<rootDir>/t/unit/$1",
+		"#/(.*)": "<rootDir>/renderer/$1",
+		"@/(.*)": "<rootDir>/pages/$1"
+	},
+
+	"transform": {
+		"^.+\\.vue": "vue-jest"
+	},
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"pages/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "jsdom"
+}
