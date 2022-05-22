@@ -22,12 +22,12 @@
 		"test:unit:back-end:watch": "npm run test:unit:back-end -- --watch"
 	},
 	"devDependencies": {
-		"@babel/core": "7",
+		"@babel/core": "^7",
 		"@faker-js/faker": "^6.3.1",
 		"@jest-mock/express": "^1.4.5",
 		"@types/jest": "^27.5.1",
 		"@vue/test-utils": "^2.0.0-rc.18",
-		"babel-jest": "26",
+		"babel-jest": "^26",
 		"changelogen": "^0.0.6",
 		"jest": "^26.6.3",
 		"sass": "^1.50.1",
