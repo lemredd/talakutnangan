@@ -3,11 +3,10 @@ import "dotenv/config"
 import { Server as HTTPServer } from "http"
 import express from "express"
 import compression from "compression"
-import { createPageRenderer } from "vite-plugin-ssr"
 import type { SourceType } from "!/types"
 import createDataSource from "!/create_data_source"
-import render from "!/render"
 import createWSServer from "!/ws/create_server"
+import createViteDevServer from "!/vite_dev/create_server"
 import manageRoutes from "!/routes/manage_routes"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -20,29 +19,20 @@ async function startServer() {
 
 	app.use(compression())
 
-	let viteDevServer
-	if (isProduction) {
-		app.use(express.static(`${root}/dist/client`))
-	} else {
-		const vite = require("vite")
-		viteDevServer = await vite.createServer({
-			root,
-			server: { middlewareMode: "ssr" },
-		})
-		app.use(viteDevServer.middlewares)
-	}
+	const port = process.env.WEB_PORT || 3000
+	const httpServer = new HTTPServer(app)
+	const {
+		viteDevServer: _viteDevServer,
+		registerUIRoutes
+	} = await createViteDevServer(app, isProduction, root)
+	const _wsServer = createWSServer(httpServer)
 
 	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 
 	const manager = dataSource.manager
 
-	const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
 	app.use(manageRoutes(manager))
-	app.get("*", (request, response, next) => render(renderPage, request, response, next))
-
-	const port = process.env.WEB_PORT || 3000
-	const httpServer = new HTTPServer(app)
-	const wsServer = createWSServer(httpServer)
+	registerUIRoutes()
 
 	httpServer.listen(port)
 	console.log(`Server running at http://localhost:${port}`)
