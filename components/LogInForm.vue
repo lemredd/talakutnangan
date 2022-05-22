@@ -9,15 +9,14 @@
 	<button v-if="email && !token" @click="logIn">
 		Log in
 	</button>
-
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import TextualField from "@/fields/textual.vue"
 
-const email = ref("")
-const password = ref("")
+const email = ref("sample@example.com")
+const password = ref("12345678")
 const token = ref("")
 
 const status = computed(() => email.value === ""? "not logged in": "logged in")
