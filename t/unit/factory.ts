@@ -1,17 +1,18 @@
-import { EntityTarget, DeepPartial } from "typeorm"
+import { EntityManager, EntityTarget } from "typeorm"
 import Database from "~/database"
 
 export default abstract class Factory<T> {
+	#manager: EntityManager = Database.manager
 	#model: EntityTarget<T>
-	#modelData: DeepPartial<T>[] = []
+	#modelData: object[] = []
 
 	constructor(entity: EntityTarget<T>) {
 		this.#model = entity
 	}
 
-	abstract generate(): DeepPartial<T>
+	abstract generate(): object
 
-	createOne() {
-		Database.manager.create(this.#model, this.#modelData[0] || {} as DeepPartial<T>)
+	async insertOne() {
+		return this.#manager.insert(this.#model, this.#modelData[0] || this.generate())
 	}
 }
