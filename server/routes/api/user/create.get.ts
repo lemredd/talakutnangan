@@ -6,7 +6,8 @@ export default function(manager: EntityManager) {
 	return async function(_request: Request, response: Response) {
 		await manager.upsert(User, [
 			{
-				email: "sample@gmail.com"
+				email: "sample@gmail.com",
+				password: "12345678"
 			}
 		], [ "email" ])
 		response.statusCode = 201
