@@ -1,13 +1,27 @@
 import { EntityManager } from "typeorm"
-import { Request, Response } from "express"
-import User from "!/models/user"
+import { Request, Response, NextFunction } from "express"
+import passport from "passport"
+import { v4 } from "uuid"
+import type { WithSession }  from "!/types"
 
 export default function(manager: EntityManager) {
-	return async function(request: Request, response: Response) {
-		response.writeHead(302, {
-			Location: `/`
-		})
+	return async function(request: Request & WithSession, response: Response, next: NextFunction) {
+		passport.authenticate("local", function(error, user, info, status) {
+			if (error) { return next(error) }
+			if (!user) {
+				return response.status(401).json({
+					email: [
+						"User cannot be found"
+					]
+				})
+			}
 
-		response.end()
+			const token = v4()
+			request.session.token = token
+
+			return response.status(200).json({
+				token
+			})
+		})(request, response, next)
 	}
 }

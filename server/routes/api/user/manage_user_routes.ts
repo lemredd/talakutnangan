@@ -1,4 +1,3 @@
-import passport from "passport"
 import { EntityManager } from "typeorm"
 import { Router as createRouter } from "express"
 import makeGetCreateRoute from "!/routes/api/user/create.get"
@@ -13,7 +12,6 @@ export default function(manager: EntityManager) {
 	router.use(createJSONBodyParser())
 	router.post(
 		`${prefix}/log_in`,
-		passport.authenticate("local", { failureRedirect: "/log_in" }),
 		makePostLoginRoute(manager)
 	);
 
