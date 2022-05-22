@@ -7,7 +7,9 @@ import { UserConfig } from "vite"
 const config: UserConfig = {
 	plugins: [
 		tsconfig(),
-		vue(),
+		vue({
+			reactivityTransform: true
+		}),
 		ssr(),
 		windicss()
 	],
