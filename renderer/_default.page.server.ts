@@ -13,6 +13,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 	const app = createApp(pageContext)
 	const appHtml = await renderToString(app)
 
+	console.log(pageContext.server.getUser())
+
 	// See https://vite-plugin-ssr.com/head
 	const { documentProps } = pageContext
 	const title = (documentProps && documentProps.title) || 'Vite SSR app'

@@ -7,5 +7,6 @@ export type PageContext = {
 		title?: string
 		description?: string
 	}
-	urlPathname?: string
+	urlPathname?: string,
+	server: object
 }
