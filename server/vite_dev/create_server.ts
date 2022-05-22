@@ -24,11 +24,6 @@ export default async function(app: ExpressApp, isProduction: boolean, root: stri
 				const url = request.originalUrl
 				const pageContextInit = {
 					url,
-					server: {
-						getUser() {
-							return "hello"
-						}
-					}
 				}
 				const pageContext = await renderPage(pageContextInit)
 				const { httpResponse } = pageContext
