@@ -26,7 +26,7 @@ const token = ref("")
 const status = computed(() => email.value === ""? "not logged in": "logged in")
 
 function logIn() {
-	fetch("api/user/log_in", {
+	fetch("/api/user/log_in", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
