@@ -15,7 +15,7 @@
 			"!/*": [ "./server/*" ],
 			"~/*": [ "./t/unit/*" ],
 			"#/*": [ "./renderer/*" ],
-			"@/*": [ "./components/*" ]
+			"@/*": [ "./components/*.vue" ]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true
