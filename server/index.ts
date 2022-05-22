@@ -9,6 +9,7 @@ import createWSServer from "!/ws/create_server"
 import manageRoutes from "!/routes/manage_routes"
 import createDataSource from "!/create_data_source"
 import createViteDevServer from "!/vite_dev/create_server"
+import manageAuthentication from "!/auth/manage_authentication"
 import registerGlobalMiddlewares from "!/middlewares/register_global_middlewares"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -29,7 +30,8 @@ async function startServer() {
 	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 	const manager = dataSource.manager
 
-	registerGlobalMiddlewares(app)
+	await registerGlobalMiddlewares(app)
+	await manageAuthentication(manager)
 	app.use(manageRoutes(manager))
 	registerUIRoutes()
 

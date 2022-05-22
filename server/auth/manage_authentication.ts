@@ -1,24 +1,31 @@
-import { use, serializeUser, deserializeUser } from "passport"
-import { Strategy } from "passport-local"
+import passport from "passport"
+import LocalStrategy from "passport-local"
+import { EntityManager } from "typeorm"
 import User from "!/models/user"
+import searchUserByCredentials from "./search_user_by_credentials"
 
-export default async function() {
-	use(new Strategy(
+export default async function(manager: EntityManager) {
+	passport.use(new LocalStrategy(
 		{
 			usernameField: "email",
 			passwordField: "password"
 		},
-		(username: string, password: string, done: Function) => {
-			// TODO: Search the database
-			done(null, false)
+		(email: string, password: string, done: Function) => {
+			searchUserByCredentials(manager, email, password).then(foundUser => {
+				if (foundUser === null) {
+					done(null, false, "User not found")
+				} else {
+					done(null, foundUser)
+				}
+			})
 		}
 	))
 
-	serializeUser((user: User, done: Function) => {
+	passport.serializeUser((user: User, done: Function) => {
 		done(null, user.id)
 	})
 
-	deserializeUser((userID, done: Function) => {
-		// TODO: Search the database
+	passport.deserializeUser((id, done: Function) => {
+		manager.findOneBy(User, { id })
 	})
 }
