@@ -20,15 +20,15 @@ startServer()
 async function startServer() {
 	const app = express()
 
+	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+	const manager = dataSource.manager
+
 	const httpServer = new HTTPServer(app)
 	const {
 		viteDevServer: _viteDevServer,
 		registerUIRoutes
 	} = await createViteDevServer(app, isProduction, root)
 	const _wsServer = createWSServer(httpServer)
-
-	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
-	const manager = dataSource.manager
 
 	await registerGlobalMiddlewares(app)
 	await manageAuthentication(manager)
