@@ -1,9 +1,10 @@
 <template>
 	<div class="flex flex-row flex-nowrap">
-		<label class="flex-1 flex-grow flex-shrink-0">
+		<label class="flex-1">
 			{{ label }}
 		</label>
 		<input
+			class="flex-1"
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
