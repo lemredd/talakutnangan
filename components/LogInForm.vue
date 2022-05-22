@@ -1,11 +1,7 @@
 <template>
 	<form>
-		<label>
-			E-mail: <input type="email" name="email" v-model="email"/>
-		</label>
-		<label>
-			Password: <input type="password" name="password" v-model="password"/>
-		</label>
+		<TextualField label="E-mail" type="email" v-model="email"/>
+		<TextualField label="Password" type="password" v-model="password"/>
 		<output>
 			Status: {{ status }}
 		</output>
@@ -18,6 +14,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import TextualField from "@/fields/textual.vue"
 
 const email = ref("")
 const password = ref("")
