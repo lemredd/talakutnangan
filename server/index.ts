@@ -1,13 +1,15 @@
 import "reflect-metadata"
 import "dotenv/config"
-import { Server as HTTPServer } from "http"
+
 import express from "express"
-import compression from "compression"
+import { Server as HTTPServer } from "http"
+
 import type { SourceType } from "!/types"
-import createDataSource from "!/create_data_source"
 import createWSServer from "!/ws/create_server"
-import createViteDevServer from "!/vite_dev/create_server"
 import manageRoutes from "!/routes/manage_routes"
+import createDataSource from "!/create_data_source"
+import createViteDevServer from "!/vite_dev/create_server"
+import registerGlobalMiddlewares from "!/middlewares/register_global_middlewares"
 
 const isProduction = process.env.NODE_ENV === "production"
 const root = `${__dirname}/..`
@@ -17,7 +19,7 @@ startServer()
 async function startServer() {
 	const app = express()
 
-	app.use(compression())
+	registerGlobalMiddlewares(app)
 
 	const port = process.env.WEB_PORT || 3000
 	const httpServer = new HTTPServer(app)
