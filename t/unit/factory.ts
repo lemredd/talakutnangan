@@ -1,4 +1,4 @@
-import { EntityManager, EntityTarget, FindOptionsWhere } from "typeorm"
+import { EntityManager, EntityTarget, FindOptionsWhere, DeepPartial } from "typeorm"
 import Database from "~/database"
 
 export default abstract class Factory<T> {
@@ -11,6 +11,13 @@ export default abstract class Factory<T> {
 	}
 
 	abstract generate(): object
+
+	async makeOne(): Promise<T> {
+		return await this.#manager.create(
+			this.#model,
+			(this.#modelData[0] || this.generate()) as DeepPartial<T>
+		)
+	}
 
 	async insertOne(): Promise<T> {
 		const result = await this.#manager.insert(this.#model, this.#modelData[0] || this.generate())

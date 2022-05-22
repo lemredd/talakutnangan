@@ -13,4 +13,14 @@ describe("Authentication: Search user by credentials", () => {
 
 		expect(foundUser).toStrictEqual(user)
 	})
+
+	it("cannot search user", async () => {
+		const manager = Database.manager
+		const user = await (new UserFactory()).makeOne()
+		const { email, password } = user
+
+		const foundUser = await searchUserByCredentials(manager, email, password)
+
+		expect(foundUser).toBeNull()
+	})
 })
