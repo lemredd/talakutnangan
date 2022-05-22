@@ -4,13 +4,13 @@
 			E-mail: <input type="email" name="email" v-model="email"/>
 		</label>
 		<label>
-			Password: <input type="password" name="password"/>
+			Password: <input type="password" name="password" v-model="password"/>
 		</label>
 		<output>
 			Status: {{ status }}
 		</output>
 	</form>
-	<button v-if="!hasUser" @click="logIn">
+	<button v-if="email && !token" @click="logIn">
 		Log in
 	</button>
 
@@ -18,23 +18,26 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-// const sessionID = useCookie("session")
 
-// console.log("email: "+JSON.stringify(sessionID))
 const email = ref("")
+const password = ref("")
 const token = ref("")
 
 const status = computed(() => email.value === ""? "not logged in": "logged in")
-const hasUser = computed(() => email.value)
 
 function logIn() {
-	console.info("checking availability...")
-	useFetch("api/log_in", {
+	fetch("api/user/log_in", {
 		method: "POST",
-		body: {
-			email: email.value
-		}
-	}).then(({ data: rawToken }) => {
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			email: email.value,
+			password: password.value
+		})
+	})
+	.then(response => response.json())
+	.then(({ rawToken }) => {
 		console.info("checked availability..."+rawToken)
 
 		token.value = rawToken
