@@ -19,9 +19,6 @@ startServer()
 async function startServer() {
 	const app = express()
 
-	registerGlobalMiddlewares(app)
-
-	const port = process.env.WEB_PORT || 3000
 	const httpServer = new HTTPServer(app)
 	const {
 		viteDevServer: _viteDevServer,
@@ -30,12 +27,13 @@ async function startServer() {
 	const _wsServer = createWSServer(httpServer)
 
 	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
-
 	const manager = dataSource.manager
 
+	registerGlobalMiddlewares(app)
 	app.use(manageRoutes(manager))
 	registerUIRoutes()
 
+	const port = process.env.WEB_PORT || 3000
 	httpServer.listen(port)
 	console.log(`Server running at http://localhost:${port}`)
 }
