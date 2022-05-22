@@ -6,6 +6,8 @@ export default async function(
 	email: string,
 	password: string
 ): Promise<User> {
+	// TODO: Encrypt the password
+
 	return await manager.findOne(User, {
 		where: {
 			email,
