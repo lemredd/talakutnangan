@@ -10,7 +10,7 @@
 	],
 	"private": true,
 	"scripts": {
-		"dev": "npm run server",
+		"dev": "nodemon --watch server --ext ts --ignore \"*.spec.ts\" --exec \"npm run server\"",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
 		"server": "ts-node ./server",
