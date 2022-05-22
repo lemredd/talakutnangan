@@ -1,4 +1,4 @@
-import { EntityManager, EntityTarget } from "typeorm"
+import { EntityManager, EntityTarget, FindOptionsWhere } from "typeorm"
 import Database from "~/database"
 
 export default abstract class Factory<T> {
@@ -12,7 +12,10 @@ export default abstract class Factory<T> {
 
 	abstract generate(): object
 
-	async insertOne() {
-		return this.#manager.insert(this.#model, this.#modelData[0] || this.generate())
+	async insertOne(): Promise<T> {
+		const result = await this.#manager.insert(this.#model, this.#modelData[0] || this.generate())
+		return await this.#manager.findOne(this.#model, {
+			where: result.identifiers[0] as FindOptionsWhere<T>
+		})
 	}
 }
