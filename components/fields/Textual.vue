@@ -19,7 +19,7 @@ const { label, type, modelValue, required = true } = defineProps<{
 	label: string,
 	type: Textual,
 	modelValue: string,
-	required: boolean
+	required?: boolean
 }>()
 
 const emit = defineEmits<{
