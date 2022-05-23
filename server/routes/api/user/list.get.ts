@@ -1,4 +1,5 @@
 import { EntityManager } from "typeorm"
+import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 import User from "!/models/user"
 
@@ -36,6 +37,6 @@ export default function(manager: EntityManager) {
 		const users = await query.getMany()
 
 		// TODO: Hide the signatures of users
-		response.status(200).json(users)
+		response.status(StatusCodes.OK).json(users)
 	}
 }

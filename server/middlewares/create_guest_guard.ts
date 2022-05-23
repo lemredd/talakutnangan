@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes"
 import type { RequestHandler, Request, Response, NextFunction } from "express"
 import type { WithPossibleUser, UserKind } from "!/types"
 
@@ -12,7 +13,7 @@ export default function(): RequestHandler {
 			return next()
 		}
 
-		return response.status(402).json({
+		return response.status(StatusCodes.UNAUTHORIZED).json({
 			errors: [
 				"You are not allowed to go to that page."
 			]

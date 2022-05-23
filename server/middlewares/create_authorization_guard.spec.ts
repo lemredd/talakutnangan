@@ -1,9 +1,10 @@
-import UserFactory from "~/factories/user"
-import createAuthorizationGuard from "./create_authorization_guard"
+import { StatusCodes } from "http-status-codes"
+import type { Request, Response, Send } from "express"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
+import UserFactory from "~/factories/user"
+import createAuthorizationGuard from "./create_authorization_guard"
 import { WithPossibleUser, UserKind } from "!/types"
-import type { Request, Response, Send } from "express"
 
 describe("Middleware: Authorization guard", () => {
 	type RequestWithPossibleUser = Request & WithPossibleUser
@@ -66,7 +67,7 @@ describe("Middleware: Authorization guard", () => {
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status).toHaveBeenCalled()
-		expect(status.mock.calls[0]).toEqual([ 402 ])
+		expect(status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
 		expect(response.json).toHaveBeenCalled()
 	})
 })

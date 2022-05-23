@@ -1,7 +1,8 @@
+import { ParsedQs } from "qs"
 import { EntityManager } from "typeorm"
 import { Request, Response } from "express"
+import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
-import { ParsedQs } from "qs"
 
 import User from "!/models/user"
 import type { WithUser } from "!/types"
@@ -31,12 +32,14 @@ export default function(manager: EntityManager) {
 			// TODO: Check if within the department
 			const user = await manager.findOneBy(User, { id: +id })
 
-			if (user === null || user.admitted_at !== null) return response.status(304)
+			if (user === null || user.admitted_at !== null) {
+				return response.status(StatusCodes.NOT_MODIFIED)
+			}
 
 			user.admitted_at = new Date()
 			await manager.save(user)
 
-			return response.status(202)
+			return response.status(StatusCodes.ACCEPTED )
 
 			// ?: This code does not work for some reason. This is why manual checking is needed
 			// await manager.update(
@@ -46,7 +49,7 @@ export default function(manager: EntityManager) {
 			// )
 		} else {
 			// TODO: Update user details
-			return response.status(500)
+			return response.status(StatusCodes.INTERNAL_SERVER_ERROR)
 		}
 	}
 }

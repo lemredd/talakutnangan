@@ -1,5 +1,5 @@
-import { Not } from "typeorm"
 import { Request, Response } from "express"
+import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import User from "!/models/user"
@@ -8,7 +8,6 @@ import Database from "~/database"
 import UserFactory from "~/factories/user"
 
 import makePatchUpdateRoute, { WithUpdate } from "./update.patch"
-import { read } from "fs"
 
 describe("PATCH /api/user/update/:id", () => {
 	type RequestWithUpdate = Request & WithUpdate
@@ -25,7 +24,7 @@ describe("PATCH /api/user/update/:id", () => {
 		await patchUpdateRoute(request, response)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status.mock.calls[0]).toEqual([ 202 ])
+		expect(status.mock.calls[0]).toEqual([ StatusCodes.ACCEPTED ])
 
 		const users = await manager.find(User)
 		expect(users).toHaveLength(1)
@@ -48,7 +47,7 @@ describe("PATCH /api/user/update/:id", () => {
 		const readmittedUser = await manager.findOneBy(User, { id: user.id })
 
 		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status.mock.calls[0]).toEqual([ 304 ])
+		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])
 		expect(readmittedUser.admitted_at).toEqual(updatedUser.admitted_at)
 	})
 
@@ -63,19 +62,6 @@ describe("PATCH /api/user/update/:id", () => {
 		await patchUpdateRoute(request, response)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status.mock.calls[0]).toEqual([ 304 ])
-	})
-	it("cannot admit missing user", async () => {
-		const manager = Database.manager
-		const patchUpdateRoute = makePatchUpdateRoute(manager)
-		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, } = makeResponse()
-		request.params.id = "1"
-		request.query.confirm = "1"
-
-		await patchUpdateRoute(request, response)
-
-		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status.mock.calls[0]).toEqual([ 304 ])
+		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])
 	})
 })

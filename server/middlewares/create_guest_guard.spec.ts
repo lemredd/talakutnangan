@@ -1,9 +1,11 @@
+import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
+import { StatusCodes } from "http-status-codes"
+import type { Request, Response, Send } from "express"
+
 import UserFactory from "~/factories/user"
 import createGuestGuard from "./create_guest_guard"
-import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { WithPossibleUser } from "!/types"
-import type { Request, Response, Send } from "express"
 
 describe("Middleware: Guest guard", () => {
 	type RequestWithPossibleUser = Request & WithPossibleUser
@@ -30,7 +32,7 @@ describe("Middleware: Guest guard", () => {
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status).toHaveBeenCalled()
-		expect(status.mock.calls[0]).toEqual([ 402 ])
+		expect(status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
 		expect(response.json).toHaveBeenCalled()
 	})
 })

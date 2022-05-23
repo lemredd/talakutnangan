@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes"
 import type { RequestHandler, Request, Response, NextFunction } from "express"
 import type { WithPossibleUser, UserKind } from "!/types"
 
@@ -10,7 +11,7 @@ export default function(kind: UserKind|null): RequestHandler {
 	return (request: Request & WithPossibleUser, response: Response, next: NextFunction) => {
 		// TODO: Add user kind in the model
 		if (request.user === null || (kind !== null && true /** Replace true to kind property **/)) {
-			return response.status(402).json({
+			return response.status(StatusCodes.UNAUTHORIZED).json({
 				errors: [
 					"You are not allowed to go to that page."
 				]
