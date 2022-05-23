@@ -13,7 +13,7 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set_up.ts"
+		"./t/helpers/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
