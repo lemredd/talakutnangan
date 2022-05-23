@@ -8,7 +8,10 @@ import getEnvironment from "!/helpers/get_environment"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
-	const isProduction = getEnvironment() === Environment.Production
+	const isProduction = (
+		getEnvironment() === Environment.Production
+		|| getEnvironment() === Environment.Test
+	)
 
 	let viteDevServer
 
