@@ -8,18 +8,16 @@ import createGuestGuard from "!/middlewares/create_guest_guard"
 import createJSONBodyParser from "!/middlewares/create_json_body_parser"
 
 export default function(manager: EntityManager): Routers {
-	const router = createRouter()
+	const main = createRouter()
 
 	const prefix = "/user"
-	router.get(`${prefix}/create`, makeGetCreateRoute(manager));
-	router.use(createGuestGuard())
-	router.use(createJSONBodyParser())
-	router.post(
+	main.get(`${prefix}/create`, makeGetCreateRoute(manager));
+	main.use(createGuestGuard())
+	main.use(createJSONBodyParser())
+	main.post(
 		`${prefix}/log_in`,
 		makePostLoginRoute(manager)
 	);
 
-	return {
-		prefixables: [ router ]
-	}
+	return { main }
 }

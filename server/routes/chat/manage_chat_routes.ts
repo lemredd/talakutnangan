@@ -4,12 +4,10 @@ import { Routers } from "!/types"
 import getJoinRoute from "!/routes/chat/join.get"
 
 export default function(): Routers {
-	const router = createRouter()
+	const main = createRouter()
 
 	const prefix = "/chat"
-	router.get(`${prefix}/join`, getJoinRoute);
+	main.get(`${prefix}/join`, getJoinRoute);
 
-	return {
-		prefixables: [ router ]
-	}
+	return { main }
 }
