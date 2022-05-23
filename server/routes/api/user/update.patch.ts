@@ -1,16 +1,22 @@
 import { EntityManager } from "typeorm"
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
+import { ParamsDictionary } from "express-serve-static-core"
+import { ParsedQs } from "qs"
 
 import User from "!/models/user"
 import type { WithUser } from "!/types"
 
-interface WithUpdate extends WithUser {
-	params: {
-		id: string
-	},
-	query: {
-		confirm: boolean
-	}
+interface ExpectedParameters extends ParamsDictionary {
+	id: string
+}
+
+interface ExpectedQuery extends ParsedQs {
+	confirm: string
+}
+
+export interface WithUpdate extends WithUser {
+	params: ExpectedParameters,
+	query: ExpectedQuery
 }
 
 export default function(manager: EntityManager) {
