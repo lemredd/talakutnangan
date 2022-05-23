@@ -1,23 +1,33 @@
 import { EntityManager } from "typeorm"
-import { Router as createRouter, Router } from "express"
+import { Router as createRouter } from "express"
 
 import { Routers } from "!/types"
 import makeGetCreateRoute from "!/routes/api/user/create.get"
-import makePostLoginRoute from "!/routes/api/user/log_in.post"
+import makePostLogInRoute from "!/routes/api/user/log_in.post"
+import makePostLogOutRoute from "!/routes/api/user/log_out.post"
 import createGuestGuard from "!/middlewares/create_guest_guard"
 import createJSONBodyParser from "!/middlewares/create_json_body_parser"
+import createAuthorizationGuard from "!/middlewares/create_authorization_guard"
 
 export default function(manager: EntityManager): Routers {
-	const main = createRouter()
-
 	const prefix = "/user"
+	const main = createRouter()
+	const authenticatedRouter = createRouter()
+	const guestRouter = createRouter()
+
 	main.get(`${prefix}/create`, makeGetCreateRoute(manager));
-	main.use(createGuestGuard())
-	main.use(createJSONBodyParser())
-	main.post(
+
+	guestRouter.use(createGuestGuard())
+	guestRouter.use(createJSONBodyParser())
+	guestRouter.post(
 		`${prefix}/log_in`,
-		makePostLoginRoute(manager)
+		makePostLogInRoute(manager)
 	);
 
+	authenticatedRouter.use(createAuthorizationGuard(null))
+	authenticatedRouter.post(`${prefix}/log_out`, makePostLogOutRoute());
+
+	main.use(guestRouter)
+	main.use(authenticatedRouter)
 	return { main }
 }
