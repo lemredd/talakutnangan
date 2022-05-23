@@ -23,6 +23,14 @@ export interface WithPossibleUser extends WithSession {
 }
 
 /**
+ * Type to combine with `Request` type to get the authenticated user
+ */
+export interface WithUser extends WithSession {
+	user: User,
+	logout: () => void
+}
+
+/**
  * Type returned by the route managers
  */
 export interface Routers {
