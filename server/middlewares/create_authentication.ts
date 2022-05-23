@@ -5,7 +5,8 @@ export default function(): RequestHandler[] {
 	return [
 		passport.initialize(),
 
-		// Disable middleware below if not using persistent log in.
+		// Disable middleware below if application is not using persistent log in.
+		// See README in https://github.com/jaredhanson/passport
 		passport.session()
 	]
 }
