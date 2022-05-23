@@ -1,4 +1,5 @@
 import User from "!/models/user"
+import { Router } from "express"
 
 /**
  * Type of databases this application can handle
@@ -19,6 +20,23 @@ export interface WithSession {
  */
 export interface WithPossibleUser extends WithSession {
 	user: User|null
+}
+
+/**
+ * Type returned by the route managers
+ */
+export interface Routers {
+	/**
+	 * Routers that can be prefixed by the parent route manager.
+	 */
+	prefixables: Router[],
+
+	/**
+	 * Routers that cannot be prefixed by the parent route manager. They will be based in root route.
+	 *
+	 * Use the key to indicate the route of the associated router.
+	 */
+	specials: { [key: string]: Router }
 }
 
 /**
