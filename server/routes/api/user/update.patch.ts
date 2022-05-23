@@ -22,21 +22,31 @@ export interface WithUpdate extends WithUser {
 export default function(manager: EntityManager) {
 	return async function(request: Request & WithUpdate, response: Response) {
 		const { id } = request.params
-		const { confirm = false } = request.query
+		const { confirm = "0" } = request.query
+
+		// TODO: Make parameter validation
 
 		// TODO: Check if the user can admit
 		if (confirm) {
-			await manager.update(
-				User,
-				// TODO: Check if within the department
-				{ id, admitted_at: null },
-				{ admitted_at: new Date() }
-			)
+			// TODO: Check if within the department
+			const user = await manager.findOneBy(User, { id: +id })
 
-			response.status(200)
+			if (user === null || user.admitted_at !== null) return response.status(304)
+
+			user.admitted_at = new Date()
+			await manager.save(user)
+
+			return response.status(202)
+
+			// ?: This code does not work for some reason. This is why manual checking is needed
+			// await manager.update(
+			// 	User,
+			// 	{ id: +id, admitted_at: null },
+			// 	{ admitted_at: (new Date()).toISOString() }
+			// )
 		} else {
 			// TODO: Update user details
-			response.status(500)
+			return response.status(500)
 		}
 	}
 }
