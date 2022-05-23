@@ -27,16 +27,15 @@ export interface WithPossibleUser extends WithSession {
  */
 export interface Routers {
 	/**
-	 * Routers that can be prefixed by the parent route manager.
+	 * Router that can be prefixed by the parent route manager.
 	 */
-	prefixables: Router[],
+	main: Router,
 
 	/**
-	 * Routers that cannot be prefixed by the parent route manager. They will be based in root route.
-	 *
-	 * Use the key to indicate the route of the associated router.
+	 * Router that cannot be prefixed by the parent route manager. It will be based possibly in in
+	 * root route.
 	 */
-	specials?: { [key: string]: Router }
+	special?: Router
 }
 
 /**
