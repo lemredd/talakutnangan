@@ -18,8 +18,10 @@
 		"changelog:generate": "npx changelogen",
 		"test:unit:front-end": "npx jest -c jest.front-end.config.json",
 		"test:unit:back-end": "npx jest -c jest.back-end.config.json",
+		"test:integration:back-end": "npx jest -c jest.back-end.integration.config.json",
 		"test:unit:front-end:watch": "npm run test:unit:front-end -- --watch",
-		"test:unit:back-end:watch": "npm run test:unit:back-end -- --watch"
+		"test:unit:back-end:watch": "npm run test:unit:back-end -- --watch",
+		"test:integration:back-end:watch": "npm run test:integration:back-end -- --watch"
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
