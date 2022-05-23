@@ -10,6 +10,7 @@ import makeGetListRoute from "!/routes/api/user/list.get"
 import makeGetCreateRoute from "!/routes/api/user/create.get"
 import makePostLogInRoute from "!/routes/api/user/log_in.post"
 import makePostLogOutRoute from "!/routes/api/user/log_out.post"
+import makePatchUpdateRoute from "!/routes/api/user/update.patch"
 import makePostRegisterRoute from "!/routes/api/user/register.post"
 
 export default function(manager: EntityManager): Routers {
@@ -34,6 +35,7 @@ export default function(manager: EntityManager): Routers {
 	authenticatedRouter.use(createAuthorizationGuard(null))
 	authenticatedRouter.post(`${prefix}/log_out`, makePostLogOutRoute())
 	authenticatedRouter.get(`${prefix}/list`, makeGetListRoute(manager))
+	authenticatedRouter.get(`${prefix}/update/:id`, makePatchUpdateRoute(manager))
 
 	main.use(guestRouter)
 	main.use(authenticatedRouter)
