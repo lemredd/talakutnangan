@@ -36,7 +36,7 @@ export interface Routers {
 	 *
 	 * Use the key to indicate the route of the associated router.
 	 */
-	specials: { [key: string]: Router }
+	specials?: { [key: string]: Router }
 }
 
 /**
