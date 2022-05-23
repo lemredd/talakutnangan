@@ -8,12 +8,12 @@
 
 	"moduleNameMapper": {
 		"!/(.*)": "<rootDir>/server/$1",
-		"~/(.*)": "<rootDir>/t/unit/$1",
+		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"#/(.*)": "<rootDir>/renderer/$1"
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/unit/set_up.ts"
+		"./t/helpers/set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
