@@ -31,6 +31,17 @@ export interface WithUser extends WithSession {
 }
 
 /**
+ * Type to combine with `Request` type to do registration
+ */
+export interface WithRegistration extends WithSession {
+	body: {
+		email: string,
+		password: string,
+		kind: "unreachable employee" | "reachable employee" | "student"
+	}
+}
+
+/**
  * Type returned by the route managers
  */
 export interface Routers {
