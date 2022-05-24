@@ -7,7 +7,8 @@ import { Router } from "express"
 export enum Environment {
 	Production,
 	Development,
-	Test
+	UnitTest,
+	IntegrationTest
 }
 
 /**
