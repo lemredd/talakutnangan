@@ -16,10 +16,10 @@ export default class User {
 	@Column({
 		nullable: true
 	})
-	admitted_at: Date|null
+	admittedAt: Date|null
 
 	@Column({
 		nullable: true
 	})
-	email_verified_at: Date|null
+	emailVerifiedAt: Date|null
 }
