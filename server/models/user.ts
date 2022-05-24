@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
-import getDateType from "!/data_source/get_date_type"
 
 @Entity()
 export default class User {
