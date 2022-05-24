@@ -5,7 +5,8 @@ export default function(): Environment {
 
 	switch(environment) {
 		case "production": return Environment.Production
-		case "test": return Environment.Test
+		case "intg_test": return Environment.IntegrationTest
+		case "unit_test": return Environment.UnitTest
 		case "dev": default: return Environment.Development
 	}
 }
