@@ -1,5 +1,6 @@
 import { DataSource, DataSourceOptions } from "typeorm"
 import User from "!/models/user"
+import getRoot from "!/helpers/get_root"
 import type { SourceType } from "!/types"
 
 export default function(
@@ -48,10 +49,14 @@ export default function(
 		}
 	}
 
+	const root = getRoot()
 	const dataSource = new DataSource({
 		...dataSourceOptions as unknown as DataSourceOptions,
 		entities: [
 			User
+		],
+		migrations: [
+			`${root}/database/migration/*-*.ts`
 		]
 	})
 
