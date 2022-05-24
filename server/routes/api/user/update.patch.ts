@@ -32,11 +32,11 @@ export default function(manager: EntityManager) {
 			// TODO: Check if within the department
 			const user = await manager.findOneBy(User, { id: +id })
 
-			if (user === null || user.admitted_at !== null) {
+			if (user === null || user.admittedAt !== null) {
 				return response.status(StatusCodes.NOT_MODIFIED)
 			}
 
-			user.admitted_at = new Date()
+			user.admittedAt = new Date()
 			await manager.save(user)
 
 			return response.status(StatusCodes.ACCEPTED )
@@ -44,8 +44,8 @@ export default function(manager: EntityManager) {
 			// ?: This code does not work for some reason. This is why manual checking is needed
 			// await manager.update(
 			// 	User,
-			// 	{ id: +id, admitted_at: null },
-			// 	{ admitted_at: (new Date()).toISOString() }
+			// 	{ id: +id, admittedAt: null },
+			// 	{ admittedAt: (new Date()).toISOString() }
 			// )
 		} else {
 			// TODO: Update user details

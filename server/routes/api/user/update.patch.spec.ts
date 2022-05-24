@@ -28,7 +28,7 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const users = await manager.find(User)
 		expect(users).toHaveLength(1)
-		expect(users[0].admitted_at).not.toBeNull()
+		expect(users[0].admittedAt).not.toBeNull()
 	})
 
 	it("cannot readmit user", async () => {
@@ -48,7 +48,7 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])
-		expect(readmittedUser.admitted_at).toEqual(updatedUser.admitted_at)
+		expect(readmittedUser.admittedAt).toEqual(updatedUser.admittedAt)
 	})
 
 	it("cannot admit missing user", async () => {
