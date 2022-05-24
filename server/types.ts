@@ -14,7 +14,7 @@ export enum Environment {
 /**
  * Type of databases this application can handle
  */
-export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "test"
+export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit test"
 
 /**
  * Type to combine with `Request` type to get the session

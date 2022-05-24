@@ -37,7 +37,7 @@ export default async function(type: SourceType): Promise<DataSource> {
 			dataSourceOptions.logging = true
 			break
 		}
-		case "test": {
+		case "unit test": {
 			dataSourceOptions.type = "sqlite"
 			dataSourceOptions.database = ":memory:"
 			dataSourceOptions.synchronize = true
