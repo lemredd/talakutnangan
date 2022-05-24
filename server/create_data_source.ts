@@ -13,7 +13,7 @@ export default function(
 		case "pgsql": {
 			dataSourceOptions.type = "pgsql"
 			dataSourceOptions.url = process.env.DATABASE_URL
-			dataSourceOptions.synchronize = true
+			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
 		}
 		case "mysql": {
@@ -23,7 +23,7 @@ export default function(
 			dataSourceOptions.database = process.env.DATABASE_NAME
 			dataSourceOptions.username = process.env.DATABASE_USER
 			dataSourceOptions.password = process.env.DATABASE_PASS
-			dataSourceOptions.synchronize = true
+			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
 			break
 		}
@@ -37,7 +37,7 @@ export default function(
 		case "filed_sqlite": {
 			dataSourceOptions.type = "sqlite"
 			dataSourceOptions.database = process.env.DATABASE_PATH
-			dataSourceOptions.synchronize = true
+			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
 			break
 		}
