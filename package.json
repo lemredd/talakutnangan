@@ -19,10 +19,10 @@
 
 		"changelog:generate": "npx changelogen",
 
-		"test:unit:front": "npx jest -c jest.front.config.json",
-		"test:unit:back": "npx jest -c jest.back.config.json",
+		"test:unit:front": "NODE_ENV=unit_test jest -c jest.front.config.json",
+		"test:unit:back": "NODE_ENV=unit_test jest -c jest.back.config.json",
 		"test:intg:back": "vite build && npm run test:intg:back:raw",
-		"test:intg:back:raw": "npx jest -c jest.back.intg.config.json",
+		"test:intg:back:raw": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json",
 
 		"test:unit:front:w": "npm run test:unit:front -- --watch",
 		"test:unit:back:w": "npm run test:unit:back -- --watch",
