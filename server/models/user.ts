@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import getDateType from "!/data_source/get_date_type"
 
 @Entity()
 export default class User {
@@ -14,13 +15,11 @@ export default class User {
 	password: string
 
 	@Column({
-		type: "timestamp",
 		nullable: true
 	})
 	admittedAt: Date|null
 
 	@Column({
-		type: "timestamp",
 		nullable: true
 	})
 	emailVerifiedAt: Date|null

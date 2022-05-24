@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import getDateType from "!/data_source/get_date_type"
 
 export class user1653363604581 implements MigrationInterface {
 	name = 'user1653363604581'
@@ -28,13 +29,13 @@ export class user1653363604581 implements MigrationInterface {
 					},
 					{
 						name: "admittedAt",
-						type: "timestamp",
+						type: getDateType(queryRunner.connection),
 						isNullable: true,
 						default: null
 					},
 					{
 						name: "emailVerifiedAt",
-						type: "timestamp",
+						type: getDateType(queryRunner.connection),
 						isNullable: true,
 						default: null
 					}
