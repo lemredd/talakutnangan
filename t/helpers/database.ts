@@ -1,12 +1,18 @@
 import { DataSource } from "typeorm"
-import createDataSource from "!/create_data_source"
 import User from "!/models/user"
+import { Environment, SourceType } from "!/types"
+import createDataSource from "!/create_data_source"
+import getEnvironment from "!/helpers/get_environment"
 
 export default class {
 	static #dataSource: DataSource
 
 	static async create() {
-		this.#dataSource = await createDataSource("test")
+		if (getEnvironment() === Environment.UnitTest) {
+			this.#dataSource = await createDataSource("unit test")
+		} else {
+			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+		}
 	}
 
 	static async clear() {
