@@ -2,9 +2,19 @@ import User from "!/models/user"
 import { Router } from "express"
 
 /**
+ * Determines the type of current environment where the script is running
+ */
+export enum Environment {
+	Production,
+	Development,
+	UnitTest,
+	IntegrationTest
+}
+
+/**
  * Type of databases this application can handle
  */
-export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "test"
+export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit test"
 
 /**
  * Type to combine with `Request` type to get the session

@@ -13,19 +13,28 @@
 		"dev": "nodemon --watch server --ext ts --ignore \"*.spec.ts\" --exec \"npm run server\"",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
+
 		"server": "ts-node ./server",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
+
 		"changelog:generate": "npx changelogen",
-		"test:unit:front-end": "npx jest -c jest.front-end.config.json",
-		"test:unit:back-end": "npx jest -c jest.back-end.config.json",
-		"test:unit:front-end:watch": "npm run test:unit:front-end -- --watch",
-		"test:unit:back-end:watch": "npm run test:unit:back-end -- --watch"
+		"typeorm": "typeorm-ts-node-commonjs -d ./database/migration/data_source.ts",
+
+		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
+		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
+		"test:intg:back": "vite build && npm run test:intg:back:raw",
+		"test:intg:back:raw": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json",
+
+		"test:unit:front:w": "npm run test:unit:front -- --watch",
+		"test:unit:back:w": "npm run test:unit:back -- --watch",
+		"test:intg:back:w": "nodemon --watch server --exec \"npm run test:intg:back -- -- --watch\""
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
 		"@faker-js/faker": "^6.3.1",
 		"@jest-mock/express": "^1.4.5",
 		"@types/jest": "^27.5.1",
+		"@types/supertest": "^2.0.12",
 		"@vue/test-utils": "^2.0.0-rc.18",
 		"babel-jest": "^26",
 		"changelogen": "^0.0.6",
@@ -33,6 +42,7 @@
 		"nodemon": "^2.0.16",
 		"sass": "^1.50.1",
 		"sqlite3": "^5.0.8",
+		"supertest": "^6.2.3",
 		"ts-jest": "^26.5.6",
 		"vue-jest": "^5.0.0-alpha.10"
 	},

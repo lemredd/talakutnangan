@@ -23,7 +23,7 @@ export default function(manager: EntityManager) {
 				// TODO: Add constraints to other fields to consider it is a complete profile
 				query = query
 					.where("user.email_verified_at != null")
-					.andWhere("user.admitted_at == null")
+					.andWhere("user.admittedAt == null")
 
 				break
 			}

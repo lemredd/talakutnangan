@@ -1,8 +1,18 @@
-import { static as serveStaticFiles } from "express"
 import { createPageRenderer } from "vite-plugin-ssr"
+import { static as serveStaticFiles } from "express"
 import type { Express as ExpressApp, Request, Response, NextFunction } from "express"
 
-export default async function(app: ExpressApp, isProduction: boolean, root: string) {
+import { Environment } from "!/types"
+import getRoot from "!/helpers/get_root"
+import getEnvironment from "!/helpers/get_environment"
+
+export default async function(app: ExpressApp) {
+	const root = getRoot()
+	const isProduction = (
+		getEnvironment() === Environment.Production
+		|| getEnvironment() === Environment.IntegrationTest
+	)
+
 	let viteDevServer
 
 	if (isProduction) {

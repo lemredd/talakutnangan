@@ -1,0 +1,37 @@
+name: Web Back-end Integration Tests
+
+on:
+  push: []
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - review_requested
+    branches:
+      - master
+    paths:
+      - 'server/**'
+      - 't/integration/**'
+
+jobs:
+  integration_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    # See https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#postgresql
+    - name: Start database server
+      run: sudo systemctl start postgresql.service
+    - name: Create root database user
+      run: sudo -u postgres psql -c "CREATE USER root WITH PASSWORD 'root';"
+    - name: Create database
+      run: |
+        sudo -u postgres psql -c "CREATE DATABASE talakutnangan_test WITH OWNER = root;"
+    - name: Use .env.ci as the environment file for back-end
+      run: mv .env.ci .env
+    - run: npm install
+    - run: npm run test:intg:back

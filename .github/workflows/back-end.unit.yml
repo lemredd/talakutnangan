@@ -1,4 +1,4 @@
-name: Web Back-end Tests
+name: Web Back-end Unit Tests
 
 on:
   push: []
@@ -23,4 +23,4 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm run test:unit:back-end
+    - run: npm run test:unit:back
