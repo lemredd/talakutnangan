@@ -22,12 +22,21 @@ export class user1653363604581 implements MigrationInterface {
 						isUnique: true
 					},
 					{
+						name: "password",
+						type: "varchar",
+						isNullable: false
+					},
+					{
 						name: "admittedAt",
-						type: "datetime"
+						type: "datetime",
+						isNullable: true,
+						default: null
 					},
 					{
 						name: "emailVerifiedAt",
-						type: "datetime"
+						type: "datetime",
+						isNullable: true,
+						default: null
 					}
 				]
 			}),
