@@ -1,4 +1,4 @@
-name: Web Back-end Tests
+name: Web Back-end Integration Tests
 
 on:
   push: []
@@ -15,17 +15,6 @@ on:
       - 't/integration/**'
 
 jobs:
-  unit_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - run: npm install
-    - run: npm run test:unit:back
-
   integration_tests:
     runs-on: ubuntu-latest
     steps:
