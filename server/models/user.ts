@@ -14,11 +14,13 @@ export default class User {
 	password: string
 
 	@Column({
+		type: "timestamp",
 		nullable: true
 	})
 	admittedAt: Date|null
 
 	@Column({
+		type: "timestamp",
 		nullable: true
 	})
 	emailVerifiedAt: Date|null

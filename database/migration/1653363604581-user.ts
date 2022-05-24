@@ -28,13 +28,13 @@ export class user1653363604581 implements MigrationInterface {
 					},
 					{
 						name: "admittedAt",
-						type: "datetime",
+						type: "timestamp",
 						isNullable: true,
 						default: null
 					},
 					{
 						name: "emailVerifiedAt",
-						type: "datetime",
+						type: "timestamp",
 						isNullable: true,
 						default: null
 					}
