@@ -2,7 +2,10 @@ import { DataSource, DataSourceOptions } from "typeorm"
 import User from "!/models/user"
 import type { SourceType } from "!/types"
 
-export default async function(type: SourceType): Promise<DataSource> {
+export default function(
+	type: SourceType,
+	mustInitialize: boolean = true
+): DataSource|Promise<DataSource> {
 	const dataSourceOptions: { [key: string]: string|number|boolean } = {}
 
 	switch(type) {
@@ -52,7 +55,9 @@ export default async function(type: SourceType): Promise<DataSource> {
 		]
 	})
 
-	await dataSource.initialize()
-
-	return dataSource
+	if (mustInitialize) {
+		return dataSource.initialize().then(() => dataSource)
+	} else {
+		return dataSource
+	}
 }
