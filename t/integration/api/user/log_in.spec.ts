@@ -14,7 +14,8 @@ describe("POST /api/user/log_in", () => {
 				password: user.password
 			})
 
-		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+		expect(response.statusCode).toBe(StatusCodes.OK)
+		expect(response.body).toHaveProperty("token")
 	})
 
 	it("can be accessed by guest and request with non-existing credentials", async () => {
@@ -26,5 +27,6 @@ describe("POST /api/user/log_in", () => {
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+		expect(response.body).toHaveProperty("email")
 	})
 })
