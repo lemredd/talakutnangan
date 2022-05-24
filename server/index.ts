@@ -5,7 +5,7 @@ import { Server as HTTPServer } from "http"
 
 import type { SourceType } from "!/types"
 import createWSServer from "!/ws/create_server"
-import createDataSource from "!/create_data_source"
+import createDataSource from "!/data_source/create_source"
 import createAppHandler from "!/app/create_handler"
 
 startServer()
