@@ -15,6 +15,7 @@ export default function(
 			dataSourceOptions.url = process.env.DATABASE_URL
 			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
+			break
 		}
 		case "mysql": {
 			dataSourceOptions.type = "mysql"
