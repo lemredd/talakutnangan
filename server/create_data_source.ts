@@ -11,7 +11,7 @@ export default function(
 
 	switch(type) {
 		case "pgsql": {
-			dataSourceOptions.type = "pgsql"
+			dataSourceOptions.type = "postgres"
 			dataSourceOptions.url = process.env.DATABASE_URL
 			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
