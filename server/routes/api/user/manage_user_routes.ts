@@ -1,3 +1,4 @@
+import passport from "passport"
 import { EntityManager } from "typeorm"
 import { Router as createRouter } from "express"
 
@@ -12,6 +13,7 @@ import makePostLogInRoute from "!/routes/api/user/log_in.post"
 import makePostLogOutRoute from "!/routes/api/user/log_out.post"
 import makePatchUpdateRoute from "!/routes/api/user/update.patch"
 import makePostRegisterRoute from "!/routes/api/user/register.post"
+import makeGetLogInFailureRoute from "!/routes/api/user/log_in_failure.get"
 
 export default function(manager: EntityManager): Routers {
 	const prefix = "/user"
@@ -25,8 +27,10 @@ export default function(manager: EntityManager): Routers {
 	guestRouter.use(createJSONBodyParser())
 	guestRouter.post(
 		`${prefix}/log_in`,
+		passport.authenticate("local", { failureRedirect: "/log_in_failure" }),
 		makePostLogInRoute(manager)
 	);
+	guestRouter.get(`${prefix}/log_in_failure`, makeGetLogInFailureRoute());
 	guestRouter.post(
 		`${prefix}/register`,
 		makePostRegisterRoute(manager)
