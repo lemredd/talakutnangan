@@ -17,8 +17,6 @@
 		"./t/helpers/app.set_up.ts"
 	],
 
-	"testTimeout": 15000,
-
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
