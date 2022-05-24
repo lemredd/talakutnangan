@@ -11,6 +11,7 @@ on:
     branches:
       - master
     paths:
+      - 'components/**'
       - 'pages/**'
 
 jobs:
@@ -23,4 +24,4 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm run test:unit:front-end
+    - run: npm run test:unit:front

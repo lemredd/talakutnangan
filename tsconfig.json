@@ -13,9 +13,9 @@
 		"jsx": "preserve",
 		"paths": {
 			"!/*": [ "./server/*" ],
-			"~/*": [ "./t/unit/*" ],
+			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],
-			"@/*": [ "./pages/*" ]
+			"@/*": [ "./components/*" ]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true

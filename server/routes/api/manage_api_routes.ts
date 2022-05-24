@@ -1,12 +1,14 @@
 import { EntityManager } from "typeorm"
 import { Router as createRouter } from "express"
+
+import { Routers } from "!/types"
 import manageUserRoutes from "!/routes/api/user/manage_user_routes"
 
-export default function(manager: EntityManager) {
-	const router = createRouter()
-
+export default function(manager: EntityManager): Routers {
 	const prefix = "/api"
-	router.use(prefix, manageUserRoutes(manager));
+	const main = createRouter()
 
-	return router
+	main.use(prefix, manageUserRoutes(manager).main)
+
+	return { main }
 }
