@@ -18,6 +18,7 @@
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 
 		"changelog:generate": "npx changelogen",
+		"typeorm": "typeorm-ts-node-commonjs -d ./database/migration/data_source.ts",
 
 		"test:unit:front": "NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "NODE_ENV=unit_test jest -c jest.back.config.json",
