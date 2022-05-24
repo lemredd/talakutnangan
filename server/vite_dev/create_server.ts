@@ -10,7 +10,7 @@ export default async function(app: ExpressApp) {
 	const root = getRoot()
 	const isProduction = (
 		getEnvironment() === Environment.Production
-		|| getEnvironment() === Environment.Test
+		|| getEnvironment() === Environment.IntegrationTest
 	)
 
 	let viteDevServer
