@@ -80,9 +80,15 @@ export enum UserKind {
 }
 
 /**
+ * List of methods that is supported by `express` package
+ */
+export type Method = "get" | "post" | "patch" | "delete"
+
+/**
  * Used to information about a certain route and its handlers.
  */
 export interface Route {
+	method: Method,
 	URL: string,
 	handlers: RequestHandler[]
 }
