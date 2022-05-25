@@ -100,4 +100,25 @@ describe("Back-end: Base Controller", () => {
 		handlers[1](request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
+
+	it("can retain context upon passing", () => {
+		const targetMessage = "Hello world"
+		const handleFunction = jest.fn()
+
+		class ControllerF extends Controller {
+			const message = targetMessage
+
+			private handle(request: Request, response: Response): void {
+				handleFunction(this.message)
+			}
+		}
+		const targetURL = "/"
+		const { URL, handlers } = (new ControllerF(targetURL)).generateRoute()
+		const request  = makeRequest()
+		const { res: response, next, } = makeResponse()
+
+		handlers[0](request, response, next)
+
+		expect(handleFunction.mock.calls[0]).toEqual([ targetMessage ])
+	})
 })

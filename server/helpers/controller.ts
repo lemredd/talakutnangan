@@ -57,10 +57,9 @@ export default abstract class extends Middleware {
 		const handlers = this.flattenHandlers(this.premiddlewares)
 
 		if (this.postmiddlewares.length === 0) {
-			handlers.push(this.handle)
-
+			handlers.push(this.handle.bind(this))
 		} else {
-			handlers.push(this.intermediate)
+			handlers.push(this.intermediate.bind(this))
 
 			for (const postHandler of (this.flattenHandlers(this.postmiddlewares))) {
 				handlers.push(postHandler)
