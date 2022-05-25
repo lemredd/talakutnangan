@@ -6,12 +6,16 @@ import createAppHandler from "!/app/create_handler"
 
 export default class {
 	static #app: Express
+	static #request
 
 	static async create() {
-		this.#app = await createAppHandler(Database.manager)
+		if (!this.#app) {
+			this.#app = await createAppHandler(Database.manager)
+			this.#request = supertest(this.#app)
+		}
 	}
 
 	static get request() {
-		return supertest(this.#app)
+		return this.#request
 	}
 }
