@@ -1,18 +1,21 @@
 import { Request, Response, NextFunction,  } from "express"
 
-import { Route } from "!/types"
+import { Method, Route } from "!/types"
 import Middleware from "!/helpers/middleware"
 import RequestEnvironment from "!/helpers/request_environment"
 
 export default abstract class extends Middleware {
 	private const premiddlewares: Middleware[] = []
 	private const postmiddlewares: Middleware[] = []
-	private const overridesPrefix: boolean
-	private const URL: string
 
-	constructor(URL: string, overridesPrefix: boolean = false) {
+	private const method: Method
+	private const URL: string
+	private const overridesPrefix: boolean
+
+	constructor(method: Method, URL: string, overridesPrefix: boolean = false) {
 		super()
 
+		this.method = method
 		this.URL = URL
 		this.overridesPrefix = overridesPrefix
 	}
@@ -67,6 +70,7 @@ export default abstract class extends Middleware {
 		}
 
 		return {
+			method: this.method
 			URL,
 			handlers
 		}

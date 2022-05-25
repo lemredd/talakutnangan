@@ -13,7 +13,7 @@ describe("Back-end: Base Controller", () => {
 		}
 		const targetURL = "/"
 
-		const { URL, handlers } = (new ControllerA(targetURL)).generateRoute()
+		const { URL, handlers } = (new ControllerA("get", targetURL)).generateRoute()
 
 		expect(URL).toBe(targetURL)
 		expect(handlers).toHaveLength(1)
@@ -25,7 +25,7 @@ describe("Back-end: Base Controller", () => {
 		}
 		const targetURL = "/a/b"
 
-		const { URL, handlers } = (new ControllerB(targetURL, true)).generateRoute("/c")
+		const { URL, handlers } = (new ControllerB("get", targetURL, true)).generateRoute("/c")
 
 		expect(URL).toBe(targetURL)
 	})
@@ -36,7 +36,7 @@ describe("Back-end: Base Controller", () => {
 		}
 		const targetURL = "/c/d"
 
-		const { URL, handlers } = (new ControllerC(targetURL, false)).generateRoute("/a/b")
+		const { URL, handlers } = (new ControllerC("get", targetURL, false)).generateRoute("/a/b")
 
 		expect(URL).toBe(`/a/b/${targetURL}`)
 	})
@@ -51,8 +51,8 @@ describe("Back-end: Base Controller", () => {
 		}
 
 		class ControllerD extends Controller {
-			constructor(URL: string, overridesPrefix: boolean = false) {
-				super(URL, overridesPrefix)
+			constructor(method: Method, URL: string, overridesPrefix: boolean = false) {
+				super(method, URL, overridesPrefix)
 
 				this.prependMiddleware(new MiddlewareA())
 			}
@@ -61,7 +61,7 @@ describe("Back-end: Base Controller", () => {
 		}
 		const targetURL = "/"
 
-		const { URL, handlers } = (new ControllerD(targetURL)).generateRoute()
+		const { URL, handlers } = (new ControllerD("get", targetURL)).generateRoute()
 
 		expect(handlers).toHaveLength(2)
 
@@ -81,17 +81,18 @@ describe("Back-end: Base Controller", () => {
 		}
 
 		class ControllerE extends Controller {
-			constructor(URL: string, overridesPrefix: boolean = false) {
-				super(URL, overridesPrefix)
+			constructor(method: Method, URL: string, overridesPrefix: boolean = false) {
+				super(method, URL, overridesPrefix)
 
 				this.appendMiddleware(new MiddlewareB())
 			}
 
 			private handle(request: Request, response: Response): void {}
 		}
+
 		const targetURL = "/"
 
-		const { URL, handlers } = (new ControllerE(targetURL)).generateRoute()
+		const { URL, handlers } = (new ControllerE("get", targetURL)).generateRoute()
 
 		expect(handlers).toHaveLength(2)
 
@@ -113,7 +114,7 @@ describe("Back-end: Base Controller", () => {
 			}
 		}
 		const targetURL = "/"
-		const { URL, handlers } = (new ControllerF(targetURL)).generateRoute()
+		const { URL, handlers } = (new ControllerF("get", targetURL)).generateRoute()
 		const request  = makeRequest()
 		const { res: response, next, } = makeResponse()
 
