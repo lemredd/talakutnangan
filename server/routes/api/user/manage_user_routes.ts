@@ -27,16 +27,17 @@ export default function(manager: EntityManager): Routers {
 		createJSONBodyParser(),
 		passport.authenticate("local", { failureRedirect: "/api/user/log_in_failure" }),
 		makePostLogInRoute(manager)
-	);
-	main.get(
-		`${prefix}/log_in_failure`,
-		makeGetLogInFailureRoute()
-	);
-	main.post(
+		);
+		main.get(
+			`${prefix}/log_in_failure`,
+			makeGetLogInFailureRoute()
+			);
+			main.post(
 		`${prefix}/register`,
 		createGuestGuard(),
 		createJSONBodyParser(),
-		makePostRegisterRoute(manager)
+		makePostRegisterRoute(manager),
+		makePostLogInRoute(manager)
 	);
 
 	main.post(
