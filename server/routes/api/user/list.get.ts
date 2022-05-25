@@ -1,4 +1,4 @@
-import { EntityManager } from "typeorm"
+import { EntityManager, IsNull, Not } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 import User from "!/models/user"
@@ -12,7 +12,7 @@ interface WithQuery {
 export default function(manager: EntityManager) {
 	return async function(request: Request & WithQuery, response: Response, next: NextFunction) {
 		const { criteria = null } = request.query
-		let query = manager.createQueryBuilder().select().from(User, "user")
+		let query = manager.createQueryBuilder(User, "User")
 
 		switch(criteria) {
 			case "admitted": { // Complete profile and admitted
@@ -22,9 +22,10 @@ export default function(manager: EntityManager) {
 			case "unadmitted": { // Complete profile but not admitted
 				// TODO: Add constraints to other fields to consider it is a complete profile
 				query = query
-					.where("user.email_verified_at != null")
-					.andWhere("user.admittedAt == null")
-
+					.where({
+						emailVerifiedAt: Not(IsNull()),
+						admittedAt: IsNull()
+					})
 				break
 			}
 			case "incomplete": { // Incomplete profile
