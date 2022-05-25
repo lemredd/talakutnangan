@@ -1,5 +1,7 @@
+import { Router, RequestHandler } from "express"
+
 import User from "!/models/user"
-import { Router } from "express"
+import Middleware from "./helpers/middleware"
 
 /**
  * Determines the type of current environment where the script is running
@@ -75,4 +77,12 @@ export enum UserKind {
 	UnreachableEmployee,
 	ReachableEmployee,
 	Student
+}
+
+/**
+ * Used to information about a certain route and its handlers.
+ */
+export interface Route {
+	URL: string,
+	handlers: RequestHandler[]
 }
