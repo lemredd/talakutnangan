@@ -23,8 +23,7 @@
 		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
 		"test:intg:back": "vite build && npm run test:intg:back:raw",
-		"test:intg:back:raw": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json",
-
+		"test:intg:back:raw": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
 		"test:unit:front:w": "npm run test:unit:front -- --watch",
 		"test:unit:back:w": "npm run test:unit:back -- --watch",
 		"test:intg:back:w": "nodemon --watch server --exec \"npm run test:intg:back -- -- --watch\""
