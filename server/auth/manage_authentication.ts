@@ -22,10 +22,12 @@ export default async function(manager: EntityManager) {
 	))
 
 	passport.serializeUser((user: User, done: Function) => {
-		done(null, user.id)
+		return done(null, user.id)
 	})
 
-	passport.deserializeUser((id, done: Function) => {
-		manager.findOneBy(User, { id })
+	passport.deserializeUser(async (id, done: Function) => {
+		const user = await manager.findOneBy(User, { id })
+		// TODO: encrypt user password
+		return done(null, user)
 	})
 }
