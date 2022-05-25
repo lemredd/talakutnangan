@@ -31,17 +31,10 @@ describe("POST /api/user/register", () => {
 	it.todo("can insert invalid credentials")
 
 	it("cannot be accessed by authenticated users", async () => {
-		const user = await (new UserFactory()).insertOne()
-
-		const preresponse = await App.request
-			.post("/api/user/log_in")
-			.send({
-				email: user.email,
-				password: user.password
-			})
+		const { user, cookie } = await App.makeAuthenticatedCookie()
 		const response = await App.request
 			.post("/api/user/register")
-			.set("Cookie", preresponse.headers["set-cookie"])
+			.set("Cookie", cookie)
 			.send({
 				email: user.email,
 				password: user.password
