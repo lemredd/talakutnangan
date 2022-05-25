@@ -25,6 +25,28 @@ export default abstract class extends Middleware {
 		next()
 	}
 
+	/**
+	 * Adds middleware before the handler will be executed.
+	 *
+	 * Other middlewares previously prepended will be executed first before the new prepended
+	 * middleware.
+	 */
+	protected prependMiddleware(middleware: Middleware): void {
+		this.premiddlewares.push(middleware)
+	}
+
+	/**
+	 * Adds middleware after the handler executed.
+	 *
+	 * Other middlewares previously appended will be executed first before the new appended
+	 * middleware.
+	 *
+	 * Make sure the last middleware appended is a controller.
+	 */
+	protected appendMiddleware(middleware: Middleware): void {
+		this.postmiddlewares.push(middleware)
+	}
+
 	generateRoute(prefix: string|null = null): Route {
 		const URL = (
 			this.overridesPrefix || prefix === "/" || prefix === null
