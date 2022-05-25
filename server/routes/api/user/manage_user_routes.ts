@@ -50,7 +50,7 @@ export default function(manager: EntityManager): Routers {
 		createAuthorizationGuard(null),
 		makeGetListRoute(manager)
 	)
-	main.get(
+	main.patch(
 		`${prefix}/update/:id`,
 		createAuthorizationGuard(null),
 		makePatchUpdateRoute(manager)
