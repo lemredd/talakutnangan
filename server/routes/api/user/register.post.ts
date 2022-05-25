@@ -22,7 +22,7 @@ export default function(manager: EntityManager) {
 			password
 		})
 
-		manager.save(user)
+		await manager.save(user)
 
 		request.user = user
 		return next()
