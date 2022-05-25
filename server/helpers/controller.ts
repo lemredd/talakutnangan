@@ -55,7 +55,7 @@ export default abstract class extends Middleware {
 		const handlers = []
 
 		for (const middleware of middlewares) {
-			const subhandlers = middleware.generateMiddlewareInformation()
+			const subhandlers = middleware.generateHandlers()
 
 			for(const subhandler of subhandlers) {
 				handlers.push(subhandler)

@@ -10,7 +10,7 @@ export default abstract class {
 
 	abstract private intermediate(request: Request, response: Response, next: NextFunction): void
 
-	generateHandler(): RequestHandler[] { return [ this.intermediate ] }
+	generateHandlers(): RequestHandler[] { return [ this.intermediate ] }
 
 	generateRoute(URL: string): Route {
 		const handlers = this.generateHandler()
