@@ -16,4 +16,26 @@ describe("Back-end: Base Controller", () => {
 		expect(URL).toBe(targetURL)
 		expect(handlers).toHaveLength(1)
 	})
+
+	it("can override route", () => {
+		class ControllerB extends Controller {
+			private handle(request: Request, response: Response): void {}
+		}
+		const targetURL = "/a/b"
+
+		const { URL, handlers } = (new ControllerB(targetURL, true)).generateRoute("/c")
+
+		expect(URL).toBe(targetURL)
+	})
+
+	it("can prefix route", () => {
+		class ControllerC extends Controller {
+			private handle(request: Request, response: Response): void {}
+		}
+		const targetURL = "/c/d"
+
+		const { URL, handlers } = (new ControllerC(targetURL, false)).generateRoute("/a/b")
+
+		expect(URL).toBe(`/a/b/${targetURL}`)
+	})
 })
