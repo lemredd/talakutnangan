@@ -10,7 +10,6 @@ import type { WithPossibleUser, UserKind } from "!/types"
 export default function(): RequestHandler {
 	return (request: Request & WithPossibleUser, response: Response, next: NextFunction) => {
 		if (request.isAuthenticated()) {
-			console.log("already logged in", request.user)
 			response.status(StatusCodes.UNAUTHORIZED)
 
 			return response.json({
