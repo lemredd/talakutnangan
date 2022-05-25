@@ -14,7 +14,8 @@
 
 	"setupFilesAfterEnv": [
 		"./t/helpers/database.set_up.ts",
-		"./t/helpers/app.set_up.ts"
+		"./t/helpers/app.set_up.ts",
+		"./t/helpers/request_environment.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
