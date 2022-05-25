@@ -6,11 +6,11 @@ import type { Route } from "!/types"
  * Base middleware that is being used to organize the routing information of routes
  */
 export default abstract class {
-	const environment: RequestEnvironment = RequestEnvironment.current
+	private const environment: RequestEnvironment = RequestEnvironment.current
 
-	abstract #intermediate(request: Request, response: Response, next: NextFunction): void
+	abstract private intermediate(request: Request, response: Response, next: NextFunction): void
 
-	generateHandler(): RequestHandler[] { return [ this.#intermediate ] }
+	generateHandler(): RequestHandler[] { return [ this.intermediate ] }
 
 	generateRoute(URL: string): Route {
 		const handlers = this.generateHandler()
