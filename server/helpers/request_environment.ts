@@ -35,5 +35,5 @@ export default class RequestEnvironment {
 
 	get manager(): EntityManager { return this.#manager }
 
-	get environment(): Environemnt { return getEnvironment() }
+	get environment(): Environment { return getEnvironment() }
 }
