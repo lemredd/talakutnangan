@@ -4,7 +4,7 @@ import express from "express"
 import { EntityManager } from "typeorm"
 
 import manageRoutes from "!/routes/manage_routes"
-import createViteDevServer from "!/vite_dev/create_server"
+import createViteDevServer from "!/app/vite_dev/create_server"
 import manageAuthentication from "!/app/auth/manage_authentication"
 import registerGlobalMiddlewares from "!/middlewares/register_global_middlewares"
 
