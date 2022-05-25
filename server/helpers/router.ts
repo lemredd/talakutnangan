@@ -14,12 +14,12 @@ export default abstract class Router {
 	}
 
 	use(controller: Controller) {
-		const { URL, handlers } = controller.generateRoute(this.prefix)
+		const { method, URL, handlers } = controller.generateRoute(this.prefix)
 
 		if (URL.startsWith(this.prefix)) {
-			this.prefixedRouter.use(URL, ...handlers)
+			this.prefixedRouter[method](URL, ...handlers)
 		} else {
-			this.overridenRouter.use(URL, ...handlers)
+			this.overridenRouter[method](URL, ...handlers)
 		}
 	}
 
