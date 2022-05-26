@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import createIDColumn from "!/data_source/create_id_column"
 import getDateType from "!/data_source/get_date_type"
 
 export class user1653363604581 implements MigrationInterface {
@@ -9,13 +10,7 @@ export class user1653363604581 implements MigrationInterface {
 			new Table({
 				name: "user",
 				columns: [
-					{
-						name: "id",
-						type: "int",
-						isPrimary: true,
-						isGenerated: true,
-						generationStrategy: "increment"
-					},
+					createIDColumn(queryRunner.connection),
 					{
 						name: "email",
 						type: "varchar",
