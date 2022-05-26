@@ -3,7 +3,7 @@ import type { Request, Response } from "express"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { WithPossibleUser } from "!/types"
-import GuestPageGuard from "./authenticated_guard"
+import GuestPageGuard from "./guest_page_guard"
 
 describe("Middleware: Authenticated Guard", () => {
 	type RequestWithPossibleUser = Request & WithPossibleUser
