@@ -1,7 +1,7 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import Database from "~/database"
+import type { Method } from "!/types"
 import Middleware from "!/helpers/middleware"
 
 import Controller from "./controller"
@@ -9,7 +9,7 @@ import Controller from "./controller"
 describe("Back-end: Base Controller", () => {
 	it("can create simple route", () => {
 		class ControllerA extends Controller {
-			private handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): void {}
 		}
 		const targetURL = "/"
 
@@ -21,7 +21,7 @@ describe("Back-end: Base Controller", () => {
 
 	it("can override route", () => {
 		class ControllerB extends Controller {
-			private handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): void {}
 		}
 		const targetURL = "/a/b"
 
@@ -32,7 +32,7 @@ describe("Back-end: Base Controller", () => {
 
 	it("can prefix route", () => {
 		class ControllerC extends Controller {
-			private handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): void {}
 		}
 		const targetURL = "/c/d"
 
@@ -45,7 +45,7 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
-			private intermediate(request: Request, response: Response, next: NextFunction): void {
+			protected intermediate(request: Request, response: Response, next: NextFunction): void {
 				middlewareFunction()
 			}
 		}
@@ -57,7 +57,7 @@ describe("Back-end: Base Controller", () => {
 				this.prependMiddleware(new MiddlewareA())
 			}
 
-			private handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): void {}
 		}
 		const targetURL = "/"
 
@@ -75,7 +75,7 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareB extends Middleware {
-			private intermediate(request: Request, response: Response, next: NextFunction): void {
+			protected intermediate(request: Request, response: Response, next: NextFunction): void {
 				middlewareFunction()
 			}
 		}
@@ -87,7 +87,7 @@ describe("Back-end: Base Controller", () => {
 				this.appendMiddleware(new MiddlewareB())
 			}
 
-			private handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): void {}
 		}
 
 		const targetURL = "/"
@@ -107,9 +107,9 @@ describe("Back-end: Base Controller", () => {
 		const handleFunction = jest.fn()
 
 		class ControllerF extends Controller {
-			const message = targetMessage
+			private message = targetMessage
 
-			private handle(request: Request, response: Response): void {
+			protected handle(request: Request, response: Response): void {
 				handleFunction(this.message)
 			}
 		}
