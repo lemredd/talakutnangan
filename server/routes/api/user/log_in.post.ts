@@ -1,16 +1,23 @@
 import { v4 } from "uuid"
-import { EntityManager } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 
 import type { WithUser }  from "!/types"
+import GuestFormController from "!/routes/helpers/guest_form_controller"
+import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
-export default function(manager: EntityManager) {
-	return async function(request: Request & WithUser, response: Response, next: NextFunction) {
+export default class extends GuestFormController {
+	constructor() {
+		super("log_in")
+
+		this.prependMiddleware(new LocalLogInMiddleware())
+	}
+
+	async handle(request: Request & WithUser, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token
-		return response.status(StatusCodes.OK).json({
+		response.status(StatusCodes.OK).json({
 			email: user.email,
 			token
 		})

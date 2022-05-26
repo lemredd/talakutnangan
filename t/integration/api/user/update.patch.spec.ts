@@ -4,8 +4,13 @@ import User from "!/models/user"
 import App from "~/app"
 import Database from "~/database"
 import UserFactory from "~/factories/user"
+import Route from "!/routes/api/user/update.patch"
 
 describe("PATCH /api/user/update/:id", () => {
+	beforeAll(async () => {
+		await App.create("/api/user", new Route())
+	})
+
 	it("can be accessed by permitted user and admit other user", async () => {
 		const manager = Database.manager
 		// const admin = await (new UserFactory()).verified().insertOne()
