@@ -5,6 +5,11 @@ import type { Express as ExpressApp, Request, Response, NextFunction } from "exp
 import { Environment } from "!/types"
 import getRoot from "!/helpers/get_root"
 import getEnvironment from "!/helpers/get_environment"
+import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
+
+type PageRenderer = typeof renderPage
+
+let pageRenderer: PageRenderer|null = null
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
@@ -26,7 +31,11 @@ export default async function(app: ExpressApp) {
 		app.use(viteDevServer.middlewares)
 	}
 
-	const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
+	if (pageRenderer === null) {
+		pageRenderer = createPageRenderer({ viteDevServer, isProduction, root })
+	}
+
+	const renderPage = pageRenderer
 
 	return {
 		viteDevServer, registerUIRoutes() {
