@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { UserKind } from "!/types"
 
 @Entity()
 export default class User {
@@ -17,6 +18,12 @@ export default class User {
 		nullable: true
 	})
 	admittedAt: Date|null
+
+	@Column({
+		type: "enum",
+		enum: UserKind
+	})
+	kind: UserKind
 
 	@Column({
 		nullable: true
