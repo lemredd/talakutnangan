@@ -5,8 +5,7 @@ import Database from "~/database"
 import UserFactory from "~/factories/user"
 import manageRoutes from "!/routes/manage_routes"
 import createAppHandler from "!/app/create_handler"
-import RequestEnvironment from "!/helpers/request_environment"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import initializeSingletons from "!/helpers/initialize_singletons"
 
 export default class {
 	static #app: Express
@@ -14,8 +13,7 @@ export default class {
 
 	static async create() {
 		if (!this.#app) {
-			RequestEnvironment.intialize(Database.manager)
-			new CommonMiddlewareList()
+			initializeSingletons(Database.manager)
 			this.#app = await createAppHandler(Database.manager, manageRoutes(Database.manager))
 			this.#request = supertest(this.#app)
 		}
