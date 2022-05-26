@@ -1,8 +1,9 @@
 import Database from "~/database"
 import RequestEnvironment from "!/helpers/request_environment"
+import initializeSingletons from "!/helpers/initialize_singletons"
 
 beforeEach(() => {
-	RequestEnvironment.intialize(Database.manager)
+	initializeSingletons(Database.manager)
 });
 
 afterEach(() => {
