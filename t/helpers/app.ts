@@ -2,8 +2,9 @@ import supertest from "supertest"
 import type { Express } from "express"
 
 import Database from "~/database"
+import Router from "!/helpers/router"
 import UserFactory from "~/factories/user"
-import manageRoutes from "!/routes/manage_routes"
+import Controller from "!/helpers/controller"
 import createAppHandler from "!/app/create_handler"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
@@ -11,12 +12,13 @@ export default class {
 	static #app: Express
 	static #request
 
-	static async create() {
-		if (!this.#app) {
-			initializeSingletons(Database.manager)
-			this.#app = await createAppHandler(Database.manager, manageRoutes(Database.manager))
-			this.#request = supertest(this.#app)
-		}
+	static async create(prefix: string, controller: Controller) {
+		const router = new Router(prefix)
+		router.useController(controller)
+
+		initializeSingletons(Database.manager)
+		this.#app = await createAppHandler(Database.manager, router.combinedRouter)
+		this.#request = supertest(this.#app)
 	}
 
 	static get request() {
