@@ -4,12 +4,11 @@ import { EntityManager } from "typeorm"
 import { Request, Response, NextFunction } from "express"
 
 import User from "!/models/user"
-import type { WithRegistration }  from "!/types"
-import makeAutoLogInHandler from "!/routes/api/user/log_in.post"
+import type { WithRegistration, WithPossibleUser }  from "!/types"
 
 export default function(manager: EntityManager) {
 	return async function(
-		request: Request & WithRegistration,
+		request: Request & WithRegistration & WithPossibleUser,
 		response: Response,
 		next: NextFunction
 	) {
@@ -18,12 +17,14 @@ export default function(manager: EntityManager) {
 		const { email, password } = request.body
 
 		// TODO: Handle duplicated emails
-		await manager.insert(User, {
+		const user = manager.create(User, {
 			email,
 			password
 		})
 
-		const handleAutoLogIn = makeAutoLogInHandler(manager)
-		return await handleAutoLogIn(request, response, next)
+		await manager.save(user)
+
+		request.user = user
+		return next()
 	}
 }

@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm"
 import User from "!/models/user"
 import { Environment, SourceType } from "!/types"
-import createDataSource from "!/create_data_source"
+import createDataSource from "!/data_source/create_source"
 import getEnvironment from "!/helpers/get_environment"
 
 export default class {
@@ -20,7 +20,7 @@ export default class {
 	}
 
 	static async destroy() {
-		await this.#dataSource?.destroy()
+		await this.#dataSource.destroy()
 	}
 
 	static get manager() {

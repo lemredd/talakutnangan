@@ -63,7 +63,7 @@ export default function(
 
 	if (mustInitialize) {
 		return dataSource.initialize()
-			.then(() => dataSource.runMigrations())
+			.then(() => type === "unit test"? null: dataSource.runMigrations())
 			.then(() => dataSource)
 	} else {
 		return dataSource

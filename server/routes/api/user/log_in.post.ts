@@ -1,29 +1,18 @@
 import { v4 } from "uuid"
-import passport from "passport"
 import { EntityManager } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 
-import type { WithSession }  from "!/types"
+import type { WithUser }  from "!/types"
 
 export default function(manager: EntityManager) {
-	return async function(request: Request & WithSession, response: Response, next: NextFunction) {
-		passport.authenticate("local", function(error, user, info, status) {
-			if (error) { return next(error) }
-			if (!user) {
-				return response.status(StatusCodes.UNAUTHORIZED).json({
-					email: [
-						"User cannot be found"
-					]
-				})
-			}
-
-			const token = v4()
-			request.session.token = token
-
-			return response.status(StatusCodes.OK).json({
-				token
-			})
-		})(request, response, next)
+	return async function(request: Request & WithUser, response: Response, next: NextFunction) {
+		const user = request.user
+		const token = v4()
+		request.session.token = token
+		return response.status(StatusCodes.OK).json({
+			email: user.email,
+			token
+		})
 	}
 }

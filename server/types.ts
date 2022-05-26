@@ -29,7 +29,8 @@ export interface WithSession {
  * Type to combine with `Request` type to get the possible user
  */
 export interface WithPossibleUser extends WithSession {
-	user: User|null
+	user: User|null,
+	isAuthenticated: () => boolean
 }
 
 /**

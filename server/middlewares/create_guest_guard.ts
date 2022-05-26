@@ -9,14 +9,16 @@ import type { WithPossibleUser, UserKind } from "!/types"
  */
 export default function(): RequestHandler {
 	return (request: Request & WithPossibleUser, response: Response, next: NextFunction) => {
-		if (request.user === null) {
-			return next()
+		if (request.isAuthenticated()) {
+			response.status(StatusCodes.UNAUTHORIZED)
+
+			return response.json({
+				errors: [
+					"You are not allowed to go to that page."
+				]
+			})
 		}
 
-		return response.status(StatusCodes.UNAUTHORIZED).json({
-			errors: [
-				"You are not allowed to go to that page."
-			]
-		})
+		return next()
 	}
 }

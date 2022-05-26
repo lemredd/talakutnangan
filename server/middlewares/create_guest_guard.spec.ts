@@ -14,7 +14,7 @@ describe("Middleware: Guest guard", () => {
 		const runGuestGuard = createGuestGuard()
 		const request  = makeRequest<RequestWithPossibleUser>()
 		const { res: response, next, } = makeResponse()
-		request.user = null
+		request.isAuthenticated = jest.fn().mockReturnValue(false)
 
 		await runGuestGuard(request, response, next)
 
@@ -26,7 +26,7 @@ describe("Middleware: Guest guard", () => {
 		const runGuestGuard = createGuestGuard()
 		const request  = makeRequest<RequestWithPossibleUser>()
 		const { res: response, next, } = makeResponse()
-		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await runGuestGuard(request, response, next)
 

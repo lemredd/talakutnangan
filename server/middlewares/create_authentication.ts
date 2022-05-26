@@ -1,5 +1,5 @@
 import passport from "passport"
-import type { RequestHandler, Request, Response, NextFunction } from "express"
+import type { RequestHandler } from "express"
 
 export default function(): RequestHandler[] {
 	return [

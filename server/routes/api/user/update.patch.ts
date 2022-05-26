@@ -1,6 +1,6 @@
 import { ParsedQs } from "qs"
-import { EntityManager } from "typeorm"
 import { Request, Response } from "express"
+import { EntityManager, IsNull } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
 
@@ -30,16 +30,14 @@ export default function(manager: EntityManager) {
 		// TODO: Check if the user can admit
 		if (confirm) {
 			// TODO: Check if within the department
-			const user = await manager.findOneBy(User, { id: +id })
+			const { affected } = await manager.update(User, {
+				id,
+				admittedAt: IsNull()
+			}, {
+				admittedAt: new Date()
+			})
 
-			if (user === null || user.admittedAt !== null) {
-				return response.status(StatusCodes.NOT_MODIFIED)
-			}
-
-			user.admittedAt = new Date()
-			await manager.save(user)
-
-			return response.status(StatusCodes.ACCEPTED )
+			response.status(affected > 0 ? StatusCodes.ACCEPTED : StatusCodes.NOT_MODIFIED).end()
 
 			// ?: This code does not work for some reason. This is why manual checking is needed
 			// await manager.update(

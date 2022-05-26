@@ -1,3 +1,4 @@
+import passport from "passport"
 import { EntityManager } from "typeorm"
 import { Router as createRouter } from "express"
 
@@ -12,32 +13,48 @@ import makePostLogInRoute from "!/routes/api/user/log_in.post"
 import makePostLogOutRoute from "!/routes/api/user/log_out.post"
 import makePatchUpdateRoute from "!/routes/api/user/update.patch"
 import makePostRegisterRoute from "!/routes/api/user/register.post"
+import makeGetLogInFailureRoute from "!/routes/api/user/log_in_failure.get"
 
 export default function(manager: EntityManager): Routers {
 	const prefix = "/user"
 	const main = createRouter()
-	const authenticatedRouter = createRouter()
-	const guestRouter = createRouter()
 
 	main.get(`${prefix}/create`, makeGetCreateRoute(manager))
 
-	guestRouter.use(createGuestGuard())
-	guestRouter.use(createJSONBodyParser())
-	guestRouter.post(
+	main.post(
 		`${prefix}/log_in`,
+		createGuestGuard(),
+		createJSONBodyParser(),
+		passport.authenticate("local", { failureRedirect: "/api/user/log_in_failure" }),
+		makePostLogInRoute(manager)
+		);
+		main.get(
+			`${prefix}/log_in_failure`,
+			makeGetLogInFailureRoute()
+			);
+			main.post(
+		`${prefix}/register`,
+		createGuestGuard(),
+		createJSONBodyParser(),
+		makePostRegisterRoute(manager),
 		makePostLogInRoute(manager)
 	);
-	guestRouter.post(
-		`${prefix}/register`,
-		makePostRegisterRoute(manager)
-	);
 
-	authenticatedRouter.use(createAuthorizationGuard(null))
-	authenticatedRouter.post(`${prefix}/log_out`, makePostLogOutRoute())
-	authenticatedRouter.get(`${prefix}/list`, makeGetListRoute(manager))
-	authenticatedRouter.get(`${prefix}/update/:id`, makePatchUpdateRoute(manager))
+	main.post(
+		`${prefix}/log_out`,
+		createAuthorizationGuard(null),
+		makePostLogOutRoute()
+	)
+	main.get(
+		`${prefix}/list`,
+		createAuthorizationGuard(null),
+		makeGetListRoute(manager)
+	)
+	main.patch(
+		`${prefix}/update/:id`,
+		createAuthorizationGuard(null),
+		makePatchUpdateRoute(manager)
+	)
 
-	main.use(guestRouter)
-	main.use(authenticatedRouter)
 	return { main }
 }
