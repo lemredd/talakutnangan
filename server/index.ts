@@ -5,11 +5,10 @@ import { Server as HTTPServer } from "http"
 
 import type { SourceType } from "!/types"
 import createWSServer from "!/ws/create_server"
-import manageRoutes from "!/routes/manage_routes"
+import RouterManager from "!/routes/router_manager"
 import createAppHandler from "!/app/create_handler"
 import createDataSource from "!/data_source/create_source"
 import initializeSingletons from "!/helpers/initialize_singletons"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 startServer()
 
@@ -18,7 +17,8 @@ async function startServer() {
 	const manager = dataSource.manager
 
 	initializeSingletons(manager)
-	const customRoutes = manageRoutes(manager)
+	const customRouteManager = new RouterManager()
+	const customRoutes = customRouteManager.combinedRouter
 
 	const app = await createAppHandler(manager, customRoutes)
 	const httpServer = new HTTPServer(app)
