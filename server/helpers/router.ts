@@ -27,15 +27,15 @@ export default abstract class Router {
 		this.overridenRouter.use(overridenURL, ...handlers)
 	}
 
-	get routers() {
-		return {
-			prefixedRouter: this.prefixedRouter,
-			overridenRouter: this.overridenRouter
-		}
+	get routers(): createRouter[] {
+		return [
+			this.prefixedRouter,
+			this.overridenRouter
+		]
 	}
 
 	useRouter(router: Router): void {
-		const { prefixedRouter, overridenRouter } = (router.routers)
+		const [ prefixedRouter, overridenRouter ] = (router.routers)
 		this.prefixedRouter.use(prefixedRouter)
 		this.overridenRouter.use(overridenRouter)
 	}
