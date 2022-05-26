@@ -7,5 +7,8 @@ export type PageContext = {
 		title?: string
 		description?: string
 	}
-	urlPathname?: string
+	urlPathname?: string,
+	routeParams?: {
+		[key:string]: string
+	}
 }
