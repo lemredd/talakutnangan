@@ -34,6 +34,13 @@ export default class Router {
 		]
 	}
 
+	get combinedRouter(): createRouter {
+		const main = createRouter()
+		main.use(this.prefixedRouter)
+		main.use(this.overridenRouter)
+		return main
+	}
+
 	useRouter(router: Router): void {
 		const [ prefixedRouter, overridenRouter ] = (router.routers)
 		this.prefixedRouter.use(prefixedRouter)
