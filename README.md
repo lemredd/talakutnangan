@@ -40,3 +40,32 @@ A capstone project aim to create a consultation chat platform for MCC.
 
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/
+
+## Conventional Commits
+
+The purpose of this documentation is to guide collaborators of this project on commiting according to the type of change.
+
+### Primary types
+* feat:
+- This commit focuses on the project's enhancement by implementing a new feature
+
+* fix:
+- This focuses on debugging and solving problems in features.
+
+* test:
+- This focuses on any kinds of test scripts.
+
+* config:
+- This focuses on changes in the configuration files of the project.
+
+* docs:
+- this focuses on additions or changes in any of the documentation files.
+
+* chore:
+- Any other commits that are still uncategorized falls into this commit.
+
+### Scoped types
+If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a "Test" commit can be classified as either unit or integration. To further specify the type of commit, one can use "fix(unit):" or "fix(integration):"
+
+### Guidelines
+When specifying scopes, complete spelling of the type is a must.
