@@ -74,9 +74,9 @@ export interface Routers {
  * Possible kinds of user that the system can handle
  */
 export enum UserKind {
-	UnreachableEmployee,
-	ReachableEmployee,
-	Student
+	UnreachableEmployee = "unreachable_employee",
+	ReachableEmployee = "reachable_employee",
+	Student = "student"
 }
 
 /**
