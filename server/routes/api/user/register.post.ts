@@ -1,30 +1,35 @@
 import { v4 } from "uuid"
-import passport from "passport"
 import { EntityManager } from "typeorm"
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
 
 import User from "!/models/user"
 import type { WithRegistration, WithPossibleUser }  from "!/types"
+import GuestFormController from "!/routes/helpers/guest_form_controller"
+import LogInController from "!/routes/api/user/log_in.post"
 
-export default function(manager: EntityManager) {
-	return async function(
+export default class extends GuestFormController {
+	constructor() {
+		super("register")
+
+		this.appendMiddleware(new LogInController())
+	}
+
+	protected async handle(
 		request: Request & WithRegistration & WithPossibleUser,
-		response: Response,
-		next: NextFunction
-	) {
+		response: Response
+	): Promise<void> {
 		// TODO: Add validation
 
 		const { email, password } = request.body
 
 		// TODO: Handle duplicated emails
-		const user = manager.create(User, {
+		const user = this.environment.manager.create(User, {
 			email,
 			password
 		})
 
-		await manager.save(user)
+		await this.environment.manager.save(user)
 
 		request.user = user
-		return next()
 	}
 }

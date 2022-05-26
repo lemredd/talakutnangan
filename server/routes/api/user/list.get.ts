@@ -1,7 +1,9 @@
 import { EntityManager, IsNull, Not, FindOptionsWhere } from "typeorm"
 import { StatusCodes } from "http-status-codes"
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
+
 import User from "!/models/user"
+import Controller from "!/helpers/controller"
 
 interface WithQuery {
 	query: {
@@ -9,8 +11,12 @@ interface WithQuery {
 	}
 }
 
-export default function(manager: EntityManager) {
-	return async function(request: Request & WithQuery, response: Response, next: NextFunction) {
+export default class extends Controller {
+	constructor() {
+		super("get", "list")
+	}
+
+	protected async handle(request: Request & WithQuery, response: Response): Promise<void> {
 		const { criteria = null } = request.query
 		const findOptionsWhere: FindOptionsWhere<User> = {}
 
@@ -33,7 +39,7 @@ export default function(manager: EntityManager) {
 			default: // All users
 		}
 
-		const users = await manager.findBy(User, findOptionsWhere)
+		const users = await this.environment.manager.findBy(User, findOptionsWhere)
 
 		// TODO: Hide the signatures of users
 		response.status(StatusCodes.OK).json(users)

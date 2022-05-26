@@ -1,9 +1,15 @@
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
 
-export default function() {
-	return async function(request: Request, response: Response) {
-		return response.status(StatusCodes.UNAUTHORIZED).json({
+import Controller from "!/helpers/controller"
+
+export default class extends Controller {
+	constructor() {
+		super("get", "log_in_failure")
+	}
+
+	protected async handle(request: Request, response: Response): Promise<void> {
+		response.status(StatusCodes.UNAUTHORIZED).json({
 			email: [
 				"User cannot be found"
 			]

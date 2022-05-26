@@ -1,8 +1,14 @@
-import { Request, Response, NextFunction } from "express"
-import type { WithUser }  from "!/types"
+import { Request, Response } from "express"
 
-export default function() {
-	return async function(request: Request & WithUser, response: Response, next: NextFunction) {
+import type { WithUser }  from "!/types"
+import Controller from "!/helpers/controller"
+
+export default class extends Controller {
+	constructor() {
+		super("post", "log_out")
+	}
+
+	protected async handle(request: Request & WithUser, response: Response): Promise<void> {
 		request.logout()
 
 		// TODO: regenerate XSRF-Token or session
