@@ -6,7 +6,6 @@ import Router from "!/helpers/router"
 import UserFactory from "~/factories/user"
 import Controller from "!/helpers/controller"
 import createAppHandler from "!/app/create_handler"
-import initializeSingletons from "!/helpers/initialize_singletons"
 
 export default class {
 	static #app: Express
@@ -16,7 +15,6 @@ export default class {
 		const router = new Router(prefix)
 		router.useController(controller)
 
-		initializeSingletons(Database.manager)
 		this.#app = await createAppHandler(Database.manager, router.combinedRouter)
 		this.#request = supertest(this.#app)
 	}
