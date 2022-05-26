@@ -1,11 +1,13 @@
 import { ParsedQs } from "qs"
 import { Request, Response } from "express"
-import { EntityManager, IsNull } from "typeorm"
+import { IsNull } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
 
 import User from "!/models/user"
 import type { WithUser } from "!/types"
+import Controller from "!/helpers/controller"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 interface ExpectedParameters extends ParamsDictionary {
 	id: string
@@ -20,8 +22,14 @@ export interface WithUpdate extends WithUser {
 	query: ExpectedQuery
 }
 
-export default function(manager: EntityManager) {
-	return async function(request: Request & WithUpdate, response: Response) {
+export default class extends Controller {
+	constructor() {
+		super("patch", "update/:id")
+
+		this.prependMiddleware(CommonMiddlewareList.basicAuthenticatedPageGuard)
+	}
+
+	protected async handle(request: Request, response: Response): Promise<void> {
 		const { id } = request.params
 		const { confirm = "0" } = request.query
 
@@ -30,7 +38,7 @@ export default function(manager: EntityManager) {
 		// TODO: Check if the user can admit
 		if (confirm) {
 			// TODO: Check if within the department
-			const { affected } = await manager.update(User, {
+			const { affected } = await this.environment.manager.update(User, {
 				id,
 				admittedAt: IsNull()
 			}, {
@@ -47,7 +55,7 @@ export default function(manager: EntityManager) {
 			// )
 		} else {
 			// TODO: Update user details
-			return response.status(StatusCodes.INTERNAL_SERVER_ERROR)
+			response.status(StatusCodes.INTERNAL_SERVER_ERROR)
 		}
 	}
 }

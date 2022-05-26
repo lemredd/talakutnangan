@@ -7,7 +7,7 @@ import User from "!/models/user"
 import Database from "~/database"
 import UserFactory from "~/factories/user"
 
-import makePatchUpdateRoute, { WithUpdate } from "./update.patch"
+import PatchUpdateRoute, { WithUpdate } from "./update.patch"
 
 describe("PATCH /api/user/update/:id", () => {
 	type RequestWithUpdate = Request & WithUpdate
@@ -15,13 +15,13 @@ describe("PATCH /api/user/update/:id", () => {
 	it("can admit user", async () => {
 		const manager = Database.manager
 		const user = await (new UserFactory()).insertOne()
-		const patchUpdateRoute = makePatchUpdateRoute(manager)
+		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, } = makeResponse()
+		const { res: response, next } = makeResponse()
 		request.params.id = String(user.id)
 		request.query.confirm = "1"
 
-		await patchUpdateRoute(request, response)
+		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.ACCEPTED ])
@@ -34,16 +34,16 @@ describe("PATCH /api/user/update/:id", () => {
 	it("cannot readmit user", async () => {
 		const manager = Database.manager
 		const user = await (new UserFactory()).insertOne()
-		const patchUpdateRoute = makePatchUpdateRoute(manager)
+		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, clearMockRes } = makeResponse()
+		const { res: response, next, clearMockRes } = makeResponse()
 		request.params.id = String(user.id)
 		request.query.confirm = "1"
 
-		await patchUpdateRoute(request, response)
+		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
 		const updatedUser = await manager.findOneBy(User, { id: user.id })
 		clearMockRes()
-		await patchUpdateRoute(request, response)
+		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
 		const readmittedUser = await manager.findOneBy(User, { id: user.id })
 
 		const status = response.status as jest.MockedFn<(number) => Response>
@@ -52,14 +52,13 @@ describe("PATCH /api/user/update/:id", () => {
 	})
 
 	it("cannot admit missing user", async () => {
-		const manager = Database.manager
-		const patchUpdateRoute = makePatchUpdateRoute(manager)
+		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, } = makeResponse()
+		const { res: response, next } = makeResponse()
 		request.params.id = "1"
 		request.query.confirm = "1"
 
-		await patchUpdateRoute(request, response)
+		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])
