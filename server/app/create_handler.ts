@@ -16,15 +16,12 @@ export default async function(manager: EntityManager): Promise<express.Express> 
 	RequestEnvironment.intialize(manager)
 	new CommonMiddlewareList()
 
-	const {
-		viteDevServer: _viteDevServer,
-		registerUIRoutes
-	} = await createViteDevServer(app)
+	const viteDevRouter = await createViteDevServer(app)
 
 	await registerGlobalMiddlewares(app)
 	await manageAuthentication(manager)
 	app.use(manageRoutes(manager))
-	registerUIRoutes()
+	app.use(viteDevRouter)
 
 	return app
 }

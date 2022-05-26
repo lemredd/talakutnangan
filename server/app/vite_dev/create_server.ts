@@ -1,5 +1,5 @@
 import { createPageRenderer } from "vite-plugin-ssr"
-import { static as serveStaticFiles } from "express"
+import { static as serveStaticFiles, Router as createRouter } from "express"
 import type { Express as ExpressApp, Request, Response, NextFunction } from "express"
 
 import { Environment } from "!/types"
@@ -37,19 +37,18 @@ export default async function(app: ExpressApp) {
 
 	const renderPage = pageRenderer
 
-	return {
-		viteDevServer, registerUIRoutes() {
-			app.get("*", async (request: Request, response: Response, next: NextFunction) => {
-				const url = request.originalUrl
-				const pageContextInit = {
-					url,
-				}
-				const pageContext = await renderPage(pageContextInit)
-				const { httpResponse } = pageContext
-				if (!httpResponse) return next()
-				const { body, statusCode, contentType } = httpResponse
-				response.status(statusCode).type(contentType).send(body)
-			})
+	const router = createRouter()
+	router.get("*", async (request: Request, response: Response, next: NextFunction) => {
+		const url = request.originalUrl
+		const pageContextInit = {
+			url,
 		}
-	}
+		const pageContext = await renderPage(pageContextInit)
+		const { httpResponse } = pageContext
+		if (!httpResponse) return next()
+		const { body, statusCode, contentType } = httpResponse
+		response.status(statusCode).type(contentType).send(body)
+	})
+
+	return router
 }
