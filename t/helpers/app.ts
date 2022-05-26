@@ -2,18 +2,24 @@ import supertest from "supertest"
 import type { Express } from "express"
 
 import Database from "~/database"
+import Router from "!/helpers/router"
 import UserFactory from "~/factories/user"
+import Controller from "!/helpers/controller"
+import LogInController from "!/routes/api/user/log_in.post"
 import createAppHandler from "!/app/create_handler"
 
 export default class {
 	static #app: Express
 	static #request
+	static #router
+	static #hasLogInRoute = false
 
-	static async create() {
-		if (!this.#app) {
-			this.#app = await createAppHandler(Database.manager)
-			this.#request = supertest(this.#app)
-		}
+	static async create(prefix: string, controller: Controller) {
+		const router = new Router(prefix)
+		router.useController(controller)
+		this.#router = router
+		this.#app = await createAppHandler(Database.manager, router.combinedRouter)
+		this.#request = supertest(this.#app)
 	}
 
 	static get request() {
@@ -21,6 +27,11 @@ export default class {
 	}
 
 	static async makeAuthenticatedCookie() {
+		if (!this.#hasLogInRoute) {
+			this.#router.useController(new LogInController())
+			this.#hasLogInRoute = true
+		}
+
 		const user = await (new UserFactory()).insertOne()
 
 		const response = await this.#request

@@ -1,17 +1,19 @@
 import { StatusCodes } from "http-status-codes"
-import User from "!/models/user"
 
 import App from "~/app"
-import Database from "~/database"
 import UserFactory from "~/factories/user"
+import Route from "!/routes/api/user/log_in.post"
 
-describe("POST /api/user/register", () => {
-	it("can be accessed by guest and request with non-existing credentials", async () => {
-		const manager = Database.manager
-		const user = await (new UserFactory()).makeOne()
+describe("POST /api/user/log_in", () => {
+	beforeAll(async () => {
+		await App.create("/api/user", new Route())
+	})
+
+	it("can be accessed by guest and request with existing credentials", async () => {
+		const user = await (new UserFactory()).insertOne()
 
 		const response = await App.request
-			.post("/api/user/register")
+			.post("/api/user/log_in")
 			.send({
 				email: user.email,
 				password: user.password
@@ -19,21 +21,23 @@ describe("POST /api/user/register", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
 		expect(response.body).toHaveProperty("token")
-
-		const foundUser = await manager.findOneBy(User, {
-			email: user.email
-		})
-		expect(foundUser.email).toEqual(user.email)
 	})
 
-	it.todo("can insert already existing email")
+	it("can be accessed by guest and request with non-existing credentials", async () => {
+		const response = await App.request
+			.post("/api/user/log_in")
+			.send({
+				email: "sample@gmail.com",
+				password: "12345678"
+			})
 
-	it.todo("can insert invalid credentials")
+		expect(response.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY)
+	})
 
 	it("cannot be accessed by authenticated users", async () => {
 		const { user, cookie } = await App.makeAuthenticatedCookie()
 		const response = await App.request
-			.post("/api/user/register")
+			.post("/api/user/log_in")
 			.set("Cookie", cookie)
 			.send({
 				email: user.email,

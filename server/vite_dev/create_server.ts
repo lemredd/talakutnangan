@@ -1,10 +1,15 @@
 import { createPageRenderer } from "vite-plugin-ssr"
-import { static as serveStaticFiles } from "express"
+import { static as serveStaticFiles, Router as createRouter } from "express"
 import type { Express as ExpressApp, Request, Response, NextFunction } from "express"
 
 import { Environment } from "!/types"
 import getRoot from "!/helpers/get_root"
 import getEnvironment from "!/helpers/get_environment"
+import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
+
+type PageRenderer = typeof renderPage
+
+let pageRenderer: PageRenderer|null = null
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
@@ -26,21 +31,24 @@ export default async function(app: ExpressApp) {
 		app.use(viteDevServer.middlewares)
 	}
 
-	const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
-
-	return {
-		viteDevServer, registerUIRoutes() {
-			app.get("*", async (request: Request, response: Response, next: NextFunction) => {
-				const url = request.originalUrl
-				const pageContextInit = {
-					url,
-				}
-				const pageContext = await renderPage(pageContextInit)
-				const { httpResponse } = pageContext
-				if (!httpResponse) return next()
-				const { body, statusCode, contentType } = httpResponse
-				response.status(statusCode).type(contentType).send(body)
-			})
-		}
+	if (pageRenderer === null) {
+		pageRenderer = createPageRenderer({ viteDevServer, isProduction, root })
 	}
+
+	const renderPage = pageRenderer
+
+	const router = createRouter()
+	router.get("*", async (request: Request, response: Response, next: NextFunction) => {
+		const url = request.originalUrl
+		const pageContextInit = {
+			url,
+		}
+		const pageContext = await renderPage(pageContextInit)
+		const { httpResponse } = pageContext
+		if (!httpResponse) return next()
+		const { body, statusCode, contentType } = httpResponse
+		response.status(statusCode).type(contentType).send(body)
+	})
+
+	return router
 }
