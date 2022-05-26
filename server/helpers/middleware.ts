@@ -8,7 +8,7 @@ import RequestEnvironment from "!/helpers/request_environment";
 export default abstract class {
 	protected environment: RequestEnvironment = RequestEnvironment.current
 
-	protected abstract intermediate(request: Request, response: Response, next: NextFunction): void
+	abstract intermediate(request: Request, response: Response, next: NextFunction): void
 
 	generateHandlers(): RequestHandler[] { return [ this.intermediate.bind(this) ] }
 }

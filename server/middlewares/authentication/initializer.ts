@@ -3,7 +3,7 @@ import passport from "passport"
 import type { Request, Response, NextFunction, RequestHandler } from "express"
 
 export default class extends Middleware {
-	protected intermediate(request: Request, response: Response, next: NextFunction): void {}
+	intermediate(request: Request, response: Response, next: NextFunction): void {}
 
 	generateHandlers(): RequestHandler[] {
 		return [

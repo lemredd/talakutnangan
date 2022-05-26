@@ -8,7 +8,7 @@ export default class extends Controller {
 		super("get", "create")
 	}
 
-	protected async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		await this.environment.manager.upsert(User, [
 			{
 				email: "sample@gmail.com",

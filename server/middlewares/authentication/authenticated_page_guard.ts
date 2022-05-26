@@ -17,7 +17,7 @@ export default class extends Middleware {
 		this.kind = kind
 	}
 
-	protected intermediate(
+	intermediate(
 		request: Request & WithPossibleUser,
 		response: Response,
 		next: NextFunction

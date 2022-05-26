@@ -8,7 +8,7 @@ export default class extends Controller {
 		super("post", "log_out")
 	}
 
-	protected async handle(request: Request & WithUser, response: Response): Promise<void> {
+	async handle(request: Request & WithUser, response: Response): Promise<void> {
 		request.logout()
 
 		// TODO: regenerate XSRF-Token or session

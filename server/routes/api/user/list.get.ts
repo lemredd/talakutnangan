@@ -16,7 +16,7 @@ export default class extends Controller {
 		super("get", "list")
 	}
 
-	protected async handle(request: Request & WithQuery, response: Response): Promise<void> {
+	async handle(request: Request & WithQuery, response: Response): Promise<void> {
 		const { criteria = null } = request.query
 		const findOptionsWhere: FindOptionsWhere<User> = {}
 

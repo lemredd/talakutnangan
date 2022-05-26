@@ -13,7 +13,7 @@ export default class extends GuestFormController {
 		this.prependMiddleware(new LocalLogInMiddleware())
 	}
 
-	protected async handle(request: Request & WithUser, response: Response): Promise<void> {
+	async handle(request: Request & WithUser, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token

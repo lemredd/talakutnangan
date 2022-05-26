@@ -11,7 +11,7 @@ import type { WithPossibleUser, UserKind } from "!/types"
 export default class extends Middleware {
 	constructor() { super() }
 
-	protected intermediate(
+	intermediate(
 		request: Request & WithPossibleUser,
 		response: Response,
 		next: NextFunction

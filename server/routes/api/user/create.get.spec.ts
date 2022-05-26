@@ -9,8 +9,8 @@ describe("GET /api/user/create", () => {
 		const getCreateRoute = new GetCreate()
 
 		const request = makeRequest()
-		const { res: response, next } = makeResponse()
-		await getCreateRoute.generateHandlers()[0](request, response, next)
+		const { res: response, } = makeResponse()
+		await getCreateRoute.handle(request, response)
 
 		const users = await manager.find(User)
 		expect(users).toHaveLength(1)

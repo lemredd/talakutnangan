@@ -14,7 +14,7 @@ export default class extends GuestFormController {
 		this.appendMiddleware(new LogInController())
 	}
 
-	protected async handle(
+	async handle(
 		request: Request & WithRegistration & WithPossibleUser,
 		response: Response
 	): Promise<void> {

@@ -8,7 +8,7 @@ export default class extends Controller {
 		super("get", "log_in_failure")
 	}
 
-	protected async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		response.status(StatusCodes.UNAUTHORIZED).json({
 			email: [
 				"User cannot be found"

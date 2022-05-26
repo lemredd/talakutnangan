@@ -9,7 +9,7 @@ import Controller from "./controller"
 describe("Back-end: Base Controller", () => {
 	it("can create simple route", () => {
 		class ControllerA extends Controller {
-			protected handle(request: Request, response: Response): Promise<void> {
+			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -23,7 +23,7 @@ describe("Back-end: Base Controller", () => {
 
 	it("can override route", () => {
 		class ControllerB extends Controller {
-			protected handle(request: Request, response: Response): Promise<void> {
+			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -36,7 +36,7 @@ describe("Back-end: Base Controller", () => {
 
 	it("can prefix route", () => {
 		class ControllerC extends Controller {
-			protected handle(request: Request, response: Response): Promise<void> {
+			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -51,7 +51,7 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
-			protected intermediate(request: Request, response: Response, next: NextFunction): void {
+			intermediate(request: Request, response: Response, next: NextFunction): void {
 				middlewareFunction()
 			}
 		}
@@ -63,7 +63,7 @@ describe("Back-end: Base Controller", () => {
 				this.prependMiddleware(new MiddlewareA())
 			}
 
-			protected handle(request: Request, response: Response): Promise<void> {
+			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -83,7 +83,7 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareB extends Middleware {
-			protected intermediate(request: Request, response: Response, next: NextFunction): void {
+			intermediate(request: Request, response: Response, next: NextFunction): void {
 				middlewareFunction()
 			}
 		}
@@ -95,7 +95,7 @@ describe("Back-end: Base Controller", () => {
 				this.appendMiddleware(new MiddlewareB())
 			}
 
-			protected handle(request: Request, response: Response): Promise<void> {
+			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -119,16 +119,16 @@ describe("Back-end: Base Controller", () => {
 		class ControllerF extends Controller {
 			private message = targetMessage
 
-			protected async handle(request: Request, response: Response): Promise<void> {
+			async handle(request: Request, response: Response): Promise<void> {
 				handleFunction(this.message)
 			}
 		}
 		const targetURL = "/"
-		const { URL, handlers } = (new ControllerF("get", targetURL)).generateRoute()
+		const controller = new ControllerF("get", targetURL)
 		const request  = makeRequest()
 		const { res: response, next, } = makeResponse()
 
-		handlers[0](request, response, next)
+		controller.handle(request, response, next)
 
 		expect(handleFunction.mock.calls[0]).toEqual([ targetMessage ])
 	})

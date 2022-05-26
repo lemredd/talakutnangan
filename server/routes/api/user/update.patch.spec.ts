@@ -17,11 +17,11 @@ describe("PATCH /api/user/update/:id", () => {
 		const user = await (new UserFactory()).insertOne()
 		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, next } = makeResponse()
+		const { res: response } = makeResponse()
 		request.params.id = String(user.id)
 		request.query.confirm = "1"
 
-		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
+		await patchUpdateRoute.handle(request, response)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.ACCEPTED ])
@@ -36,14 +36,14 @@ describe("PATCH /api/user/update/:id", () => {
 		const user = await (new UserFactory()).insertOne()
 		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, next, clearMockRes } = makeResponse()
+		const { res: response, clearMockRes } = makeResponse()
 		request.params.id = String(user.id)
 		request.query.confirm = "1"
 
-		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
+		await patchUpdateRoute.handle(request, response)
 		const updatedUser = await manager.findOneBy(User, { id: user.id })
 		clearMockRes()
-		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
+		await patchUpdateRoute.handle(request, response)
 		const readmittedUser = await manager.findOneBy(User, { id: user.id })
 
 		const status = response.status as jest.MockedFn<(number) => Response>
@@ -54,11 +54,11 @@ describe("PATCH /api/user/update/:id", () => {
 	it("cannot admit missing user", async () => {
 		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
-		const { res: response, next } = makeResponse()
+		const { res: response } = makeResponse()
 		request.params.id = "1"
 		request.query.confirm = "1"
 
-		await patchUpdateRoute.generateRoute().handlers[0](request, response, next)
+		await patchUpdateRoute.handle(request, response)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])

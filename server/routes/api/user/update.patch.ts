@@ -29,7 +29,7 @@ export default class extends Controller {
 		this.prependMiddleware(CommonMiddlewareList.basicAuthenticatedPageGuard)
 	}
 
-	protected async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		const { id } = request.params
 		const { confirm = "0" } = request.query
 

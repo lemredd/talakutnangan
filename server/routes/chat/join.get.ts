@@ -8,7 +8,7 @@ export default class extends Controller {
 		super("get", "join")
 	}
 
-	protected async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		response.writeHead(StatusCodes.MOVED_TEMPORARILY, {
 			Location: `/chat/room/${v4()}`
 		})
