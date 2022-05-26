@@ -3,7 +3,7 @@ import express from "express"
 import type { Request, Response, NextFunction } from "express"
 
 export default class extends Middleware {
-	private intermediate(request: Request, response: Response, next: NextFunction): void {
+	protected intermediate(request: Request, response: Response, next: NextFunction): void {
 		express.json()(request, response, next)
 	}
 }
