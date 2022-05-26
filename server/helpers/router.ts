@@ -3,7 +3,7 @@ import Middleware from "!/helpers/middleware"
 import Controller from "!/helpers/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
-export default abstract class Router {
+export default class Router {
 	protected environment: RequestEnvironment = RequestEnvironment.current
 	private prefixedRouter = createRouter()
 	private overridenRouter = createRouter()
