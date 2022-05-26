@@ -8,8 +8,8 @@ import PostRegister from "!/routes/api/user/register.post"
 import GetLogInFailure from "!/routes/api/user/log_in_failure.get"
 
 export default class extends Router {
-	constructor() {
-		super("/user")
+	constructor(parentPrefix: string) {
+		super(`${parentPrefix}/user`)
 
 		this.useController(new GetList())
 		this.useController(new GetCreate())
