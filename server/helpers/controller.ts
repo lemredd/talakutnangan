@@ -20,12 +20,10 @@ export default abstract class extends Middleware {
 		this.overridesPrefix = overridesPrefix
 	}
 
-	protected abstract handle(request: Request, response: Response): void
+	protected abstract handle(request: Request, response: Response): Promise<void>
 
 	protected intermediate(request: Request, response: Response, next: NextFunction): void {
-		this.handle(request, response)
-
-		next()
+		this.handle(request, response).then(next)
 	}
 
 	/**

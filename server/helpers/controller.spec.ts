@@ -9,7 +9,9 @@ import Controller from "./controller"
 describe("Back-end: Base Controller", () => {
 	it("can create simple route", () => {
 		class ControllerA extends Controller {
-			protected handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): Promise<void> {
+				return Promise.resolve()
+			}
 		}
 		const targetURL = "/"
 
@@ -21,7 +23,9 @@ describe("Back-end: Base Controller", () => {
 
 	it("can override route", () => {
 		class ControllerB extends Controller {
-			protected handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): Promise<void> {
+				return Promise.resolve()
+			}
 		}
 		const targetURL = "/a/b"
 
@@ -32,7 +36,9 @@ describe("Back-end: Base Controller", () => {
 
 	it("can prefix route", () => {
 		class ControllerC extends Controller {
-			protected handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): Promise<void> {
+				return Promise.resolve()
+			}
 		}
 		const targetURL = "/c/d"
 
@@ -57,7 +63,9 @@ describe("Back-end: Base Controller", () => {
 				this.prependMiddleware(new MiddlewareA())
 			}
 
-			protected handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): Promise<void> {
+				return Promise.resolve()
+			}
 		}
 		const targetURL = "/"
 
@@ -87,7 +95,9 @@ describe("Back-end: Base Controller", () => {
 				this.appendMiddleware(new MiddlewareB())
 			}
 
-			protected handle(request: Request, response: Response): void {}
+			protected handle(request: Request, response: Response): Promise<void> {
+				return Promise.resolve()
+			}
 		}
 
 		const targetURL = "/"
@@ -109,7 +119,7 @@ describe("Back-end: Base Controller", () => {
 		class ControllerF extends Controller {
 			private message = targetMessage
 
-			protected handle(request: Request, response: Response): void {
+			protected async handle(request: Request, response: Response): Promise<void> {
 				handleFunction(this.message)
 			}
 		}
