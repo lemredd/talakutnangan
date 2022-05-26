@@ -126,9 +126,9 @@ describe("Back-end: Base Controller", () => {
 		const targetURL = "/"
 		const controller = new ControllerF("get", targetURL)
 		const request  = makeRequest()
-		const { res: response, next, } = makeResponse()
+		const { res: response, } = makeResponse()
 
-		controller.handle(request, response, next)
+		controller.handle(request, response)
 
 		expect(handleFunction.mock.calls[0]).toEqual([ targetMessage ])
 	})
