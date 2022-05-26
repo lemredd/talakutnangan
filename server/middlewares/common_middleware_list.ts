@@ -9,8 +9,10 @@ export default class CommonMiddlewareList {
 	static JSONBody: JSONBodyParser
 
 	static initialize() {
-		CommonMiddlewareList.guestPageGuard = new GuestPageGuard()
-		CommonMiddlewareList.basicAuthenticatedPageGuard = new AuthenticatedPageGuard(null)
-		CommonMiddlewareList.JSONBody = new JSONBodyParser()
+		if (CommonMiddlewareList.guestPageGuard === undefined) {
+			CommonMiddlewareList.guestPageGuard = new GuestPageGuard()
+			CommonMiddlewareList.basicAuthenticatedPageGuard = new AuthenticatedPageGuard(null)
+			CommonMiddlewareList.JSONBody = new JSONBodyParser()
+		}
 	}
 }
