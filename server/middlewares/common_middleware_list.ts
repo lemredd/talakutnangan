@@ -8,7 +8,7 @@ export default class CommonMiddlewareList {
 	static basicAuthenticatedPageGuard: AuthenticatedPageGuard
 	static JSONBody: JSONBodyParser
 
-	constructor() {
+	static initialize() {
 		CommonMiddlewareList.guestPageGuard = new GuestPageGuard()
 		CommonMiddlewareList.basicAuthenticatedPageGuard = new AuthenticatedPageGuard(null)
 		CommonMiddlewareList.JSONBody = new JSONBodyParser()
