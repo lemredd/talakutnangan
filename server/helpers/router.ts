@@ -1,21 +1,20 @@
-import { Request, Response, router as createRouter } from "express"
+import { Router as createRouter } from "express"
 import Middleware from "!/helpers/middleware"
 import Controller from "!/helpers/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
 export default abstract class Router {
-	protected const environment: RequestEnvironment = RequestEnvironment.current
-	private const prefixedRouter = createRouter()
-	private const overridenRouter = createRouter()
-	private const prefix: string
+	protected environment: RequestEnvironment = RequestEnvironment.current
+	private prefixedRouter = createRouter()
+	private overridenRouter = createRouter()
+	private prefix: string
 
 	constructor(prefix: string) {
 		this.prefix = prefix
 	}
 
-	use(controller: Controller) {
+	useController(controller: Controller): void {
 		const { method, URL, handlers } = controller.generateRoute(this.prefix)
-
 		if (URL.startsWith(this.prefix)) {
 			this.prefixedRouter[method](URL, ...handlers)
 		} else {
@@ -23,9 +22,9 @@ export default abstract class Router {
 		}
 	}
 
-	use(overridenURL: string, middleware: Middleware) {
-		const { URL, handlers } = middleware.generateRoute(overridenURL)
-		this.overridenRouter.use(URL, ...handlers)
+	useMiddleware(overridenURL: string, middleware: Middleware): void {
+		const handlers = middleware.generateHandlers()
+		this.overridenRouter.use(overridenURL, ...handlers)
 	}
 
 	get routers() {
@@ -35,8 +34,8 @@ export default abstract class Router {
 		}
 	}
 
-	use(router: Router) {
-		const { prefixedRouter, overridenRouter } = router.routers()
+	useRouter(router: Router): void {
+		const { prefixedRouter, overridenRouter } = (router.routers)
 		this.prefixedRouter.use(prefixedRouter)
 		this.overridenRouter.use(overridenRouter)
 	}
