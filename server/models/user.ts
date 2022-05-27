@@ -19,18 +19,11 @@ export default class User {
 	})
 	admittedAt: Date|null
 
-	@Column({
-		name: "kind",
-		enum: UserKind
-	})
-	rawKind: string
+	@Column()
+	kind: string
 
 	@Column({
 		nullable: true
 	})
 	emailVerifiedAt: Date|null
-
-	get kind(): UserKind {
-		return this.rawKind as UserKind
-	}
 }
