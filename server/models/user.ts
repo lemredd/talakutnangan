@@ -20,12 +20,17 @@ export default class User {
 	admittedAt: Date|null
 
 	@Column({
+		name: "kind",
 		enum: UserKind
 	})
-	kind: string
+	rawKind: string
 
 	@Column({
 		nullable: true
 	})
 	emailVerifiedAt: Date|null
+
+	get kind(): UserKind {
+		return this.rawKind as UserKind
+	}
 }
