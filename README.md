@@ -67,5 +67,7 @@ The purpose of this documentation is to guide collaborators of this project on c
 ### Scoped types
 If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a "Test" commit can be classified as either unit or integration. To further specify the type of commit, one can use "fix(unit):" or "fix(integration):"
 
+It is up to the developer's discretion on what name would the scoped commit be given, as long as it lines up to the focus of the commit and is appropriate
+
 ### Guidelines
 When specifying scopes, complete spelling of the type is a must.
