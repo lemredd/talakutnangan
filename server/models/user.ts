@@ -20,10 +20,9 @@ export default class User {
 	admittedAt: Date|null
 
 	@Column({
-		type: "enum",
 		enum: UserKind
 	})
-	kind: UserKind
+	kind: string
 
 	@Column({
 		nullable: true
