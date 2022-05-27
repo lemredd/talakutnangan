@@ -7,18 +7,30 @@ export default class UserFactory extends Factory<User> {
 		super(User)
 	}
 
+	#kind = "student"
 	#mustBeVerified = false
 
 	generate() {
 		return {
 			email: faker.internet.exampleEmail(),
 			password: "password",
-			emailVerifiedAt: this.#mustBeVerified ? new Date() : null
+			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
+			kind: this.#kind
 		}
 	}
 
 	verified(): UserFactory {
 		this.#mustBeVerified = true
+		return this
+	}
+
+	beReachableEmployee(): UserFactory {
+		this.#kind = "reachable_emplyee"
+		return this
+	}
+
+	beUnreachableEmployee(): UserFactory {
+		this.#kind = "unreachable_emplyee"
 		return this
 	}
 }
