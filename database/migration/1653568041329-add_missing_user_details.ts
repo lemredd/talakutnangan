@@ -5,7 +5,8 @@ export class addMissingUserDetails1653568041329 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.addColumn("user", createEnumColumn(queryRunner.connection, {
 			name: "kind",
-			enum: [ "unreachable_employee", "reachable_employee", "student" ]
+			enum: [ "unreachable_employee", "reachable_employee", "student" ],
+			isNullable: false
 		}))
 	}
 
