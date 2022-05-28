@@ -74,6 +74,14 @@ integration |  For commits which affect the integration tests                   
 Note that some the scopes are only recommendations.
 
 ### Guidelines
-When specifying scopes, complete spelling of the type is a must.
+- When specifying scopes, complete spelling of the type is a must.
+- Use lowercase for the scopes as much as possible. The tool will properly capitalize the first letter upon generating the change log.
+- Use uppercase if the scope is an acronym.
+- It is best to follow the current scopes before the next release. Upon releasing the new version, developers may apply the new spellings of the labels.
+- New scopes may be committed immediately.
+
+### Further Reading
+There is also a good [article] to read about the Conventional Commits.
 
 [specification]: https://www.conventionalcommits.org/en/v1.0.0/
+[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
