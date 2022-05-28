@@ -22,7 +22,7 @@ export default class {
 	}
 
 	static async destroy(): Promise<void> {
-		await this.dataSource.destroy()
+		await this.dataSource?.destroy()
 	}
 
 	static get manager() {
