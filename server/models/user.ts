@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
-import { UserKind } from "!/types"
 
 @Entity()
 export default class User {
@@ -26,4 +25,9 @@ export default class User {
 		nullable: true
 	})
 	emailVerifiedAt: Date|null
+
+	@Column({
+		nullable: true
+	})
+	signature: Buffer|null
 }
