@@ -1,7 +1,6 @@
 import { Router, RequestHandler } from "express"
 
 import User from "!/models/user"
-import Middleware from "./helpers/middleware"
 
 /**
  * Determines the type of current environment where the script is running
