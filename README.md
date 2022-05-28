@@ -77,9 +77,9 @@ database    |  For commits which affect the communication between the app server
 unit        |  For commits which affect the unit tests                                          | Strictly for *test:* types only
 integration |  For commits which affect the integration tests                                   | Strictly for *test:* types only
 
-Note that some the scopes are only recommendations.
-
-It is up to the developer's discretion on what name would the scoped commit be given, as long as it lines up to the focus of the commit and is appropriate
+Note that some the scopes are only recommendations. It is up to the developer's discretion on what
+name would the scoped commit be given, as long as it lines up to the focus of the commit and is
+appropriate.
 
 ### Guidelines
 - When specifying scopes, complete spelling of the type is a MUST.
