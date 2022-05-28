@@ -59,7 +59,19 @@ Type		| Description
 For more information, please visit the [specification].
 
 ### Scoped types
-If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a "Test" commit can be classified as either unit or integration. To further specify the type of commit, one can use "fix(unit):" or "fix(integration):"
+If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a
+"Test" commit can be classified as either unit or integration. To further specify the type of
+commit, one can use "fix(unit):" or "fix(integration):". Below are scoped types usually used during
+development.
+
+Scope       | Description | Remarks
+--- | --- | ---
+server      |  For commits which affect server's mechanism (middlewares, routing, etc...).      | -
+database    |  For commits which affect the communication between the app server and database.  | -
+unit        |  For commits which affect the unit tests                                          | Strictly for *test:* types only
+integration |  For commits which affect the integration tests                                   | Strictly for *test:* types only
+
+Note that some the scopes are only recommendations.
 
 ### Guidelines
 When specifying scopes, complete spelling of the type is a must.
