@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 import createIDColumn from "!/data_source/create_id_column"
-import getDateType from "!/data_source/get_date_type"
+import createDateColumn from "!/data_source/create_date_column"
 
 export class user1653363604581 implements MigrationInterface {
 	name = 'user1653363604581'
@@ -22,18 +22,16 @@ export class user1653363604581 implements MigrationInterface {
 						type: "varchar",
 						isNullable: false
 					},
-					{
+					createDateColumn(queryRunner.connection, {
 						name: "admittedAt",
-						type: getDateType(queryRunner.connection),
 						isNullable: true,
 						default: null
-					},
-					{
+					}),
+					createDateColumn(queryRunner.connection, {
 						name: "emailVerifiedAt",
-						type: getDateType(queryRunner.connection),
 						isNullable: true,
 						default: null
-					}
+					})
 				]
 			}),
 			true

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm"
 
 @Entity()
 export default class User {
@@ -30,4 +30,13 @@ export default class User {
 		nullable: true
 	})
 	signature: Buffer|null
+
+	@CreateDateColumn()
+	createdAt: Date
+
+	@UpdateDateColumn()
+	updatedAt: Date
+
+	@DeleteDateColumn()
+	deletedAt: Date|null
 }
