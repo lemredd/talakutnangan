@@ -24,4 +24,8 @@ export default class RequestEnvironment {
 	static get manager(): EntityManager { return RequestEnvironment.dataSource.manager }
 
 	static get environment(): Environment { return getEnvironment() }
+
+	get manager(): EntityManager { return RequestEnvironment.dataSource.manager }
+
+	get environment(): Environment { return getEnvironment() }
 }
