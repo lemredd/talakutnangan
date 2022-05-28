@@ -9,9 +9,11 @@ export default class {
 
 	static async create() {
 		if (getEnvironment() === Environment.UnitTest) {
-			this.#dataSource = await createDataSource("unit test")
+			this.#dataSource = await Promise.resolve(createDataSource("unit test"))
 		} else {
-			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+			this.#dataSource = await Promise.resolve(
+				createDataSource(process.env.DATABASE_TYPE as SourceType)
+			)
 		}
 	}
 
