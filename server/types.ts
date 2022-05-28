@@ -91,3 +91,21 @@ export interface Route {
 	URL: string,
 	handlers: RequestHandler[]
 }
+
+/**
+ * Mostly-based on `TableColumnOptions` where name and type is optional.
+ */
+export interface PartialTableColumnOptions {
+	name?: string,
+	type?: string,
+	default?: any,
+	isNullable?: boolean,
+	isGenerated?: boolean,
+	generationStrategy?: "uuid" | "increment",
+	isPrimary?: boolean,
+	isUnique?: boolean,
+	length?: string,
+	precision?: number | null,
+	scale?: number,
+	enum?: string[]
+}
