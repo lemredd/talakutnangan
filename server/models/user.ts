@@ -29,7 +29,7 @@ export default class User {
 	@Column({
 		nullable: true
 	})
-	signature: Buffer|null
+	signature: string|null
 
 	@CreateDateColumn()
 	createdAt: Date
