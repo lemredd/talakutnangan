@@ -12,4 +12,14 @@ export enum UserKind {
 /**
  * Type of databases this application can handle
  */
- export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
+export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
+
+export interface RawUser {
+	name?: string,
+	email?: string,
+	password?: string,
+	kind?: UserKind,
+	emailVerifiedAt?: Date|null,
+	admittedAt?: Date|null,
+	signature?: Buffer|null
+}
