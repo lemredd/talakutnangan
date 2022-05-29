@@ -23,3 +23,5 @@ export interface RawUser {
 	admittedAt?: Date|null,
 	signature?: Buffer|null
 }
+
+export type Criteria = "incomplete" | "unadmitted" | "admitted"
