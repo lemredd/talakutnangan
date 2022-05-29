@@ -64,7 +64,18 @@ describe("General: Basic CRUD", () => {
 })
 
 describe("Extra: Custom Operations", () => {
-	it.todo("list users")
-	it.todo("admit user")
-	it.todo("verify user")
+	it("can list unadmitted users", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+
+		const foundUsers = await manager.list("unadmitted")
+
+		expect(foundUsers).toHaveLength(1)
+		expect(foundUsers[0].email).toStrictEqual(user.email)
+	})
+
+	it.todo("can list admitted users")
+	it.todo("can list incomplete users")
+	it.todo("can admit user")
+	it.todo("can verify user")
 })
