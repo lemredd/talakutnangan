@@ -1,5 +1,6 @@
 import User from "%/models/user"
-import type { RawUser } from "%/types"
+import { Op } from "sequelize"
+import type { Criteria, RawUser } from "%/types"
 
 export default class UserManager {
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
@@ -19,5 +20,29 @@ export default class UserManager {
 
 	async create(details: RawUser): Promise<User> {
 		return await User.create({ ...details })
+	}
+
+	async list(criteria: Criteria|null): Promise<Array<User>> {
+		const options: { [key: string]: object } = {}
+
+		switch(criteria) {
+			case "admitted": { // Complete profile and admitted
+				// TODO
+				break
+			}
+			case "unadmitted": { // Complete profile but not admitted
+				options.emailVerifiedAt = { [Op.not]: null }
+				options.signature = { [Op.not]: null }
+				options.admittedAt = { [Op.is]: null }
+				break
+			}
+			case "incomplete": { // Incomplete profile
+				// TODO
+				break
+			}
+			default: // All users
+		}
+
+		return User.findAll({ where: options })
 	}
 }
