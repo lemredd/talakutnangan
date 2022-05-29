@@ -1,4 +1,4 @@
-import { DataSource, EntityManager } from "typeorm"
+import { Sequelize } from "sequelize-typescript"
 import { StatusCodes } from "http-status-codes"
 
 import { Environment } from "!/types"
@@ -8,9 +8,9 @@ import getEnvironment from "!/helpers/get_environment"
  * Contains the environment that can be used by the request handlers.
  */
 export default class RequestEnvironment {
-	protected static dataSource: DataSource
+	protected static dataSource: Sequelize
 
-	static intialize(source: DataSource) {
+	static intialize(source: Sequelize) {
 		RequestEnvironment.dataSource = source
 	}
 
@@ -22,13 +22,13 @@ export default class RequestEnvironment {
 		}
 	}
 
-	static get manager(): EntityManager { return RequestEnvironment.dataSource.manager }
+	// static get manager() { return RequestEnvironment.dataSource.manager }
 
 	static get environment(): Environment { return getEnvironment() }
 
 	static get status() { return StatusCodes }
 
-	get manager(): EntityManager { return RequestEnvironment.dataSource.manager }
+	// get manager() { return RequestEnvironment.dataSource.manager }
 
 	get environment(): Environment { return getEnvironment() }
 
