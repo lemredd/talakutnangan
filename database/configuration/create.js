@@ -1,6 +1,5 @@
-module.exports = function() {
+module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 	const configuration = {}
-	const databaseType = process.env.DATABASE_TYPE
 
 	switch(databaseType) {
 		case "mysql":
@@ -23,6 +22,13 @@ module.exports = function() {
 		case "memoried_sqlite": {
 			configuration.dialect = "sqlite"
 			configuration.storage = ":memory:"
+			break
+		}
+
+		case "unit_test": {
+			configuration.dialect = "sqlite"
+			configuration.storage = ":memory:"
+			configuration.logging = () => {}
 			break
 		}
 
