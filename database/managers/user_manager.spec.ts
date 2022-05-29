@@ -1,25 +1,24 @@
-import Database from "~/database"
-import User from "%/models/user"
+import UserManager from "./user_manager"
 import UserFactory from "~/factories/user"
-import searchUserByCredentials from "./search_user_by_credentials"
 
 describe("Authentication: Search user by credentials", () => {
 	it("can search user", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
 		const { email, password } = user
 
-		const foundUser = await searchUserByCredentials(manager, email, password)
+		const foundUser = await manager.searchUserByCredentials(email, password)
 
-		expect(foundUser).toStrictEqual(user)
+		expect(foundUser.email).toStrictEqual(user.email)
+		expect(foundUser.password).toStrictEqual(user.password)
 	})
 
 	it("cannot search user", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		const user = await (new UserFactory()).makeOne()
 		const { email, password } = user
 
-		const foundUser = await searchUserByCredentials(manager, email, password)
+		const foundUser = await manager.searchUserByCredentials(email, password)
 
 		expect(foundUser).toBeNull()
 	})
