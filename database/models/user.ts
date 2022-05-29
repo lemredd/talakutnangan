@@ -1,42 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm"
+import { Table, Model, Column, DataType, AllowNull } from "sequelize-typescript"
+import { UserKind } from "%/types"
 
-@Entity()
-export default class User {
-	@PrimaryGeneratedColumn()
-	id: number
-
+@Table({
+	timestamps: true,
+	paranoid: true
+})
+export default class User extends Model {
 	@Column({
-		unique: true
+		unique: true,
 	})
 	email: string
 
-	@Column()
+	@Column
 	password: string
 
 	@Column({
-		nullable: true
+		type: DataType.ENUM(
+			UserKind.UnreachableEmployee,
+			UserKind.ReachableEmployee,
+			UserKind.Student
+		)
 	})
-	admittedAt: Date|null
+	kind: UserKind
 
-	@Column()
-	kind: string
-
-	@Column({
-		nullable: true
-	})
+	@AllowNull
+	@Column
 	emailVerifiedAt: Date|null
 
+	@AllowNull
+	@Column
+	admittedAt: Date|null
+
+	@AllowNull
 	@Column({
-		nullable: true
+		type: DataType.BLOB("medium")
 	})
-	signature: string|null
-
-	@CreateDateColumn()
-	createdAt: Date
-
-	@UpdateDateColumn()
-	updatedAt: Date
-
-	@DeleteDateColumn()
-	deletedAt: Date|null
+	signature: Buffer|null
 }
