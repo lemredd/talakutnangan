@@ -1,10 +1,7 @@
 import User from "%/models/user"
 
 export default class UserManager {
-	async searchUserByCredentials(
-		email: string,
-		password: string
-	): Promise<User> {
+	async findWithCredentials(email: string, password: string): Promise<User|null> {
 		// TODO: Encrypt the password
 
 		return await User.findOne({
@@ -15,7 +12,7 @@ export default class UserManager {
 		})
 	}
 
-	async findUsingID(id: number): Promise<User> {
+	async findWithID(id: number): Promise<User|null> {
 		return await User.findOne({ where: { id } })
 	}
 }
