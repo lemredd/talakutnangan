@@ -8,3 +8,8 @@ export enum UserKind {
 	ReachableEmployee = "reachable_employee",
 	Student = "student"
 }
+
+/**
+ * Type of databases this application can handle
+ */
+ export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
