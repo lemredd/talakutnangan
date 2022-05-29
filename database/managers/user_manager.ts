@@ -17,7 +17,7 @@ export default class UserManager {
 		return await User.findOne({ where: { id } })
 	}
 
-	async create(details: RawUser) {
+	async create(details: RawUser): Promise<User> {
 		return await User.create({ ...details })
 	}
 }
