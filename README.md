@@ -40,11 +40,6 @@ as shown here.
 4. Run `npm run dev`
 5. Visit http://localhost:16000
 
-### Contributors
-- Angelo Magtoto
-- Jarlem Red De Peralta
-- Kenneth Trecy Tobias
-
 ## Conventional Commits
 The purpose of this documentation is to guide collaborators of this project on commiting according
 to the type of change.
@@ -77,7 +72,7 @@ database    |  For commits which affect the communication between the app server
 unit        |  For commits which affect the unit tests                                          | Strictly for *test:* types only
 integration |  For commits which affect the integration tests                                   | Strictly for *test:* types only
 
-Note that some the scopes are only recommendations. It is up to the developer's discretion on what
+Note that some of the scopes are only recommendations. It is up to the developer's discretion on what
 name would the scoped commit be given, as long as it lines up to the focus of the commit and is
 appropriate.
 
@@ -92,6 +87,11 @@ appropriate.
 
 ### Further Reading
 There is also a good [article] to read about the Conventional Commits.
+
+### Contributors
+- Angelo Magtoto
+- Jarlem Red De Peralta
+- Kenneth Trecy Tobias
 
 [specification]: https://www.conventionalcommits.org/en/v1.0.0/
 [article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
