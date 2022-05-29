@@ -23,3 +23,25 @@ describe("Authentication: Search user by credentials", () => {
 		expect(foundUser).toBeNull()
 	})
 })
+
+describe("General: Search user by ID", () => {
+	it("can search user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const id = user.id
+
+		const foundUser = await manager.findUsingID(id)
+
+		expect(foundUser.email).toStrictEqual(user.email)
+		expect(foundUser.password).toStrictEqual(user.password)
+	})
+
+	it("cannot search user", async () => {
+		const manager = new UserManager()
+		const id = 0
+
+		const foundUser = await manager.findUsingID(id)
+
+		expect(foundUser).toBeNull()
+	})
+})

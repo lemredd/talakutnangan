@@ -14,4 +14,8 @@ export default class UserManager {
 			}
 		})
 	}
+
+	async findUsingID(id: number): Promise<User> {
+		return await User.findOne({ where: { id } })
+	}
 }
