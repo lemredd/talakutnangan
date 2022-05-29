@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from "express"
 
-import User from "!/models/user"
+import User from "%/models/user"
 
 /**
  * Determines the type of current environment where the script is running

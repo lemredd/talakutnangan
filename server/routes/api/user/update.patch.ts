@@ -4,7 +4,7 @@ import { IsNull } from "typeorm"
 import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
 
-import User from "!/models/user"
+import User from "%/models/user"
 import type { WithUser } from "!/types"
 import Controller from "!/helpers/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"

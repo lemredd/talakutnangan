@@ -2,7 +2,7 @@ import { v4 } from "uuid"
 import { EntityManager } from "typeorm"
 import { Request, Response } from "express"
 
-import User from "!/models/user"
+import User from "%/models/user"
 import type { WithRegistration, WithPossibleUser }  from "!/types"
 import GuestFormController from "!/routes/helpers/guest_form_controller"
 import LogInController from "!/routes/api/user/log_in.post"

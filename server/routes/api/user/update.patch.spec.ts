@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import User from "!/models/user"
+import User from "%/models/user"
 
 import Database from "~/database"
 import UserFactory from "~/factories/user"

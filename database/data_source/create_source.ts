@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from "typeorm"
-import User from "!/models/user"
+import User from "%/models/user"
 import getRoot from "!/helpers/get_root"
 import type { SourceType } from "!/types"
 

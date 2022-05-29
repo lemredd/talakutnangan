@@ -1,5 +1,5 @@
 import Database from "~/database"
-import User from "!/models/user"
+import User from "%/models/user"
 import UserFactory from "~/factories/user"
 import searchUserByCredentials from "./search_user_by_credentials"
 

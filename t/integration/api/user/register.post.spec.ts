@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import User from "!/models/user"
+import User from "%/models/user"
 
 import App from "~/app"
 import Database from "~/database"

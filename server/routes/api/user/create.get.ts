@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
-import User from "!/models/user"
+import User from "%/models/user"
 import Controller from "!/helpers/controller"
 
 export default class extends Controller {

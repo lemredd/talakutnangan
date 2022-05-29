@@ -7,7 +7,7 @@ import type { SourceType } from "!/types"
 import createWSServer from "!/ws/create_server"
 import RouterManager from "!/routes/router_manager"
 import createAppHandler from "!/app/create_handler"
-import createDataSource from "!/data_source/create_source"
+import createDataSource from "%/data_source/create_source"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
 startServer()

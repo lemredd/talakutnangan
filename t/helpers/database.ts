@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm"
-import User from "!/models/user"
+import User from "%/models/user"
 import { Environment, SourceType } from "!/types"
 import getEnvironment from "!/helpers/get_environment"
-import createDataSource from "!/data_source/create_source"
+import createDataSource from "%/data_source/create_source"
 
 export default class {
 	private static dataSource: DataSource

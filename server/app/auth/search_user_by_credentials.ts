@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm"
-import User from "!/models/user"
+import User from "%/models/user"
 
 export default async function(
 	manager: EntityManager,

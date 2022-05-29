@@ -1,6 +1,6 @@
 import dataURIToBuffer from "data-uri-to-buffer/src/index"
 import { faker } from "@faker-js/faker"
-import User from "!/models/user"
+import User from "%/models/user"
 import Factory from "~/factory"
 
 export default class UserFactory extends Factory<User> {

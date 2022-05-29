@@ -1,5 +1,5 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
-import User from "!/models/user"
+import User from "%/models/user"
 import Database from "~/database"
 import GetCreate from "./create.get"
 

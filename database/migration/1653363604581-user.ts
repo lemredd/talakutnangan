@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
-import makeIDColumn from "!/data_source/make_id_column"
-import makeDateColumn from "!/data_source/make_date_column"
+import makeIDColumn from "%/data_source/make_id_column"
+import makeDateColumn from "%/data_source/make_date_column"
 
 export class user1653363604581 implements MigrationInterface {
 	name = 'user1653363604581'

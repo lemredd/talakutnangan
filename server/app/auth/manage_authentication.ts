@@ -1,7 +1,7 @@
 import passport from "passport"
 import LocalStrategy from "passport-local"
 import { EntityManager } from "typeorm"
-import User from "!/models/user"
+import User from "%/models/user"
 import searchUserByCredentials from "./search_user_by_credentials"
 
 export default async function(manager: EntityManager) {
