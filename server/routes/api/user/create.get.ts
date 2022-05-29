@@ -1,15 +1,19 @@
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
 import User from "!/models/user"
+import { RawRoute } from "!/types"
 import Controller from "!/helpers/controller"
 
 export default class extends Controller {
-	constructor() {
-		super("get", "create")
+	getRawRoute(): RawRoute {
+		return {
+			method: "get",
+			baseURL: "create"
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		await this.environment.manager.upsert(User, [
+		await this.manager.upsert(User, [
 			{
 				email: "sample@gmail.com",
 				password: "12345678"

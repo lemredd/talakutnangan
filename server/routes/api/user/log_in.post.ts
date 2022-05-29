@@ -2,15 +2,23 @@ import { v4 } from "uuid"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 
-import type { WithUser }  from "!/types"
+import Middleware from "!/helpers/middleware"
+import type { RawURLInfo, WithUser }  from "!/types"
 import GuestFormController from "!/routes/helpers/guest_form_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 export default class extends GuestFormController {
-	constructor() {
-		super("log_in")
+	getRawURLInfo(): RawURLInfo {
+		return {
+			baseURL: "log_in"
+		}
+	}
 
-		this.prependMiddleware(new LocalLogInMiddleware())
+	getPremiddlewares(): Middleware[] {
+		return [
+			...super.getPremiddlewares(),
+			new LocalLogInMiddleware()
+		]
 	}
 
 	async handle(request: Request & WithUser, response: Response): Promise<void> {
