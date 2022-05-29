@@ -14,14 +14,17 @@ export default class {
 		} else {
 			this.#dataSource = createDataSource(process.env.DATABASE_TYPE as SourceType)
 		}
+
+		await this.#dataSource.sync({ force: true })
 	}
 
 	static async clear(): Promise<void> {
 		await this.dataSource.drop()
+		await this.#dataSource.sync({ force: true })
 	}
 
 	static async destroy(): Promise<void> {
-		await this.dataSource.close()
+		await this.dataSource?.close()
 	}
 
 	static get dataSource() {
