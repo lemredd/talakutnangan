@@ -1,6 +1,12 @@
 # Talakutnangan
 A capstone project aim to create a consultation chat platform for MCC.
 
+## Keywords
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT",
+"RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as
+described in [BCP 14] \[[RFC2119]\] \[[RFC8174]\] when, and only when, they appear in all capitals,
+as shown here.
+
 ## Installation
 
 ### Prerequisites
@@ -23,7 +29,8 @@ A capstone project aim to create a consultation chat platform for MCC.
      - Run `docker-compose up -d --build`
        - It will run too long for the first build only. Subsequent builds will be fast. This will
          create the database server.
-     - **Note**: Re-run `docker-compose up -d --build` every time you change one of the following variables in your *.env*:
+     - **Note**: Re-run `docker-compose up -d --build` every time you change one of the following
+       variables in your *.env*:
        - `DATABASE_PASSWORD`
        - `DATABASE_PORT`
        - `DATABASE_NAME`
@@ -38,5 +45,58 @@ A capstone project aim to create a consultation chat platform for MCC.
 - Jarlem Red De Peralta
 - Kenneth Trecy Tobias
 
+## Conventional Commits
+The purpose of this documentation is to guide collaborators of this project on commiting according
+to the type of change.
+
+### Primary types
+These are the general types of commit that repository has. There MAY be other types that will be
+proposed in the future.
+
+Type     | Description
+--- | ---
+*feat:*  | This commit focuses on the project's enhancement by implementing a new feature.
+*fix:*   | This focuses on debugging and solving problems in features.
+*test:*  | This focuses on any kinds of test scripts.
+*config:*| This focuses on changes in the configuration files of the project.
+*docs:*  | This focuses on additions or changes in any of the documentation files.
+*chore:* | Any other commits that are still uncategorized falls into this commit.
+
+For more information, please visit the [specification].
+
+### Scoped types
+If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a
+"Test" commit can be classified as either unit or integration. To further specify the type of
+commit, one can use "fix(unit):" or "fix(integration):". Below are scoped types usually used during
+development.
+
+Scope       | Description | Remarks
+--- | --- | ---
+server      |  For commits which affect server's mechanism (middlewares, routing, etc...).      | -
+database    |  For commits which affect the communication between the app server and database.  | -
+unit        |  For commits which affect the unit tests                                          | Strictly for *test:* types only
+integration |  For commits which affect the integration tests                                   | Strictly for *test:* types only
+
+Note that some the scopes are only recommendations. It is up to the developer's discretion on what
+name would the scoped commit be given, as long as it lines up to the focus of the commit and is
+appropriate.
+
+### Guidelines
+- When specifying scopes, complete spelling of the type is a MUST.
+- Lowercase SHOULD be used for the scopes. The tool will properly capitalize the first letter upon
+  generating the change log.
+- Uppercase SHOULD be used if the scope is an acronym.
+- It is best to follow the current scopes before the next release. Upon releasing the new version,
+  developers SHOULD apply the new spellings of the labels.
+- New scopes MAY be committed immediately.
+
+### Further Reading
+There is also a good [article] to read about the Conventional Commits.
+
+[specification]: https://www.conventionalcommits.org/en/v1.0.0/
+[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
+[BCP 14]: https://www.rfc-editor.org/info/bcp14
+[RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
+[RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/
