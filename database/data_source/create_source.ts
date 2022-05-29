@@ -5,7 +5,7 @@ import type { SourceType } from "%/types"
 import createConfiguration from "%/configuration/create"
 
 export default function(type: SourceType): Sequelize {
-	const configuration: SequelizeOptions = createConfiguration() as SequelizeOptions
+	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
 	const sequelize = new Sequelize({
 		...configuration,
 		models: [
