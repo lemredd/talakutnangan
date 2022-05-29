@@ -23,7 +23,11 @@ export default class {
 		await this.#dataSource.destroy()
 	}
 
+	static get dataSource() {
+		return this.#dataSource
+	}
+
 	static get manager() {
-		return this.#dataSource.manager
+		return this.dataSource.manager
 	}
 }
