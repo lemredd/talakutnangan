@@ -10,7 +10,7 @@ module.exports = function() {
 			configuration.password = process.env.DATABASE_PASS
 			configuration.database = process.env.DATABASE_NAME
 			configuration.host = process.env.DATABASE_HOST
-			configuration.port = process.env.DATABASE_PORT
+			configuration.port = +process.env.DATABASE_PORT
 			break
 		}
 
