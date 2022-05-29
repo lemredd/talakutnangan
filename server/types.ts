@@ -84,7 +84,7 @@ export enum UserKind {
 export type Method = "get" | "post" | "patch" | "delete"
 
 /**
- * Used to information about a certain route and its handlers.
+ * Used to group information about a certain route and its handlers.
  */
 export interface Route {
 	method: Method,
@@ -108,4 +108,19 @@ export interface PartialTableColumnOptions {
 	precision?: number | null,
 	scale?: number,
 	enum?: string[]
+}
+
+/*
+ * Used to pass information where the controller extends a class that has predetermined HTTP method
+ */
+export interface RawURLInfo {
+	baseURL: string,
+	overridesPrefix?: boolean
+}
+
+/**
+ * Used to pass information where the controller can be accessed.
+ */
+export interface RawRoute extends RawURLInfo {
+	method: Method,
 }

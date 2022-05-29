@@ -5,9 +5,10 @@ import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
 
 import User from "%/models/user"
-import type { WithUser } from "!/types"
+import type { RawRoute, WithUser } from "!/types"
 import Controller from "!/helpers/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import Middleware from "!/helpers/middleware"
 
 interface ExpectedParameters extends ParamsDictionary {
 	id: string
@@ -23,10 +24,18 @@ export interface WithUpdate extends WithUser {
 }
 
 export default class extends Controller {
-	constructor() {
-		super("patch", "update/:id")
+	getRawRoute(): RawRoute {
+		return {
+			method: "patch",
+			baseURL: "update/:id"
+		}
+	}
 
-		this.prependMiddleware(CommonMiddlewareList.basicAuthenticatedPageGuard)
+	getPremiddlewares(): Middleware[] {
+		return [
+			...super.getPremiddlewares(),
+			CommonMiddlewareList.basicAuthenticatedPageGuard
+		]
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
@@ -38,7 +47,7 @@ export default class extends Controller {
 		// TODO: Check if the user can admit
 		if (confirm) {
 			// TODO: Check if within the department
-			const { affected } = await this.environment.manager.update(User, {
+			const { affected } = await this.manager.update(User, {
 				id,
 				admittedAt: IsNull()
 			}, {

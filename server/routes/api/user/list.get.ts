@@ -4,6 +4,7 @@ import { Request, Response } from "express"
 
 import User from "%/models/user"
 import Controller from "!/helpers/controller"
+import { RawRoute } from "!/types"
 
 interface WithQuery {
 	query: {
@@ -12,8 +13,11 @@ interface WithQuery {
 }
 
 export default class extends Controller {
-	constructor() {
-		super("get", "list")
+	getRawRoute(): RawRoute {
+		return {
+			method: "get",
+			baseURL: "list"
+		}
 	}
 
 	async handle(request: Request & WithQuery, response: Response): Promise<void> {
@@ -39,7 +43,7 @@ export default class extends Controller {
 			default: // All users
 		}
 
-		const users = await this.environment.manager.findBy(User, findOptionsWhere)
+		const users = await this.manager.findBy(User, findOptionsWhere)
 
 		// TODO: Hide the signatures of users
 		response.status(StatusCodes.OK).json(users)

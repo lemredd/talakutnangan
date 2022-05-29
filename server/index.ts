@@ -16,7 +16,7 @@ async function startServer() {
 	const dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 	const manager = dataSource.manager
 
-	initializeSingletons(manager)
+	initializeSingletons(dataSource)
 	const customRouteManager = new RouterManager()
 	const customRoutes = customRouteManager.combinedRouter
 
