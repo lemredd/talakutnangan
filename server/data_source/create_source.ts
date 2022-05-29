@@ -31,7 +31,7 @@ export default function(
 		case "memoried_sqlite": {
 			dataSourceOptions.type = "sqlite"
 			dataSourceOptions.database = ":memory:"
-			dataSourceOptions.synchronize = true
+			dataSourceOptions.synchronize = false
 			dataSourceOptions.logging = true
 			break
 		}
@@ -45,7 +45,7 @@ export default function(
 		case "unit test": {
 			dataSourceOptions.type = "sqlite"
 			dataSourceOptions.database = ":memory:"
-			dataSourceOptions.synchronize = true
+			dataSourceOptions.synchronize = false
 			break
 		}
 	}
@@ -63,7 +63,7 @@ export default function(
 
 	if (mustInitialize) {
 		return dataSource.initialize()
-			.then(() => type === "unit test"? null: dataSource.runMigrations())
+			.then(() => dataSource.runMigrations())
 			.then(() => dataSource)
 	} else {
 		return dataSource

@@ -1,29 +1,31 @@
 import { DataSource } from "typeorm"
 import User from "!/models/user"
 import { Environment, SourceType } from "!/types"
-import createDataSource from "!/data_source/create_source"
 import getEnvironment from "!/helpers/get_environment"
+import createDataSource from "!/data_source/create_source"
 
 export default class {
-	static #dataSource: DataSource
+	private static dataSource: DataSource
 
-	static async create() {
+	static async create(): Promise<void> {
 		if (getEnvironment() === Environment.UnitTest) {
-			this.#dataSource = await createDataSource("unit test")
+			this.dataSource = await Promise.resolve(createDataSource("unit test"))
 		} else {
-			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+			this.dataSource = await Promise.resolve(
+				createDataSource(process.env.DATABASE_TYPE as SourceType)
+			)
 		}
 	}
 
-	static async clear() {
-		await this.#dataSource.manager.clear(User)
+	static async clear(): Promise<void> {
+		await this.dataSource.manager.clear(User)
 	}
 
-	static async destroy() {
-		await this.#dataSource.destroy()
+	static async destroy(): Promise<void> {
+		await this.dataSource?.destroy()
 	}
 
 	static get manager() {
-		return this.#dataSource.manager
+		return this.dataSource.manager
 	}
 }

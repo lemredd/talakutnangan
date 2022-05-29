@@ -12,7 +12,8 @@ export default class extends Controller {
 		await this.environment.manager.upsert(User, [
 			{
 				email: "sample@gmail.com",
-				password: "12345678"
+				password: "12345678",
+				kind: "student"
 			}
 		], [ "email" ])
 		response.statusCode = StatusCodes.CREATED

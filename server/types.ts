@@ -1,7 +1,6 @@
 import { Router, RequestHandler } from "express"
 
 import User from "!/models/user"
-import Middleware from "./helpers/middleware"
 
 /**
  * Determines the type of current environment where the script is running
@@ -74,9 +73,9 @@ export interface Routers {
  * Possible kinds of user that the system can handle
  */
 export enum UserKind {
-	UnreachableEmployee,
-	ReachableEmployee,
-	Student
+	UnreachableEmployee = "unreachable_employee",
+	ReachableEmployee = "reachable_employee",
+	Student = "student"
 }
 
 /**
@@ -91,4 +90,22 @@ export interface Route {
 	method: Method,
 	URL: string,
 	handlers: RequestHandler[]
+}
+
+/**
+ * Mostly-based on `TableColumnOptions` where name and type is optional.
+ */
+export interface PartialTableColumnOptions {
+	name?: string,
+	type?: string,
+	default?: any,
+	isNullable?: boolean,
+	isGenerated?: boolean,
+	generationStrategy?: "uuid" | "increment",
+	isPrimary?: boolean,
+	isUnique?: boolean,
+	length?: string,
+	precision?: number | null,
+	scale?: number,
+	enum?: string[]
 }
