@@ -85,10 +85,19 @@ export enum UserKind {
 export type Method = "get" | "post" | "patch" | "delete"
 
 /**
- * Used to information about a certain route and its handlers.
+ * Used to group information about a certain route and its handlers.
  */
 export interface Route {
 	method: Method,
 	URL: string,
 	handlers: RequestHandler[]
+}
+
+/**
+ * Used to pass information where the controller can be accessed.
+ */
+export interface RawRoute {
+	method: Method,
+	baseURL: string,
+	overridesPrefix?: boolean
 }
