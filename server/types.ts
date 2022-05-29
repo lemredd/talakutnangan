@@ -94,10 +94,16 @@ export interface Route {
 }
 
 /**
- * Used to pass information where the controller can be accessed.
+ * Used to pass information where the controller extends a class that has predetermined HTTP method
  */
-export interface RawRoute {
-	method: Method,
+export interface RawURLInfo {
 	baseURL: string,
 	overridesPrefix?: boolean
+}
+
+/**
+ * Used to pass information where the controller can be accessed.
+ */
+export interface RawRoute extends RawURLInfo {
+	method: Method,
 }
