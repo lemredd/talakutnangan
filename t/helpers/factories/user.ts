@@ -9,6 +9,7 @@ export default class UserFactory {
 
 	generate() {
 		return {
+			name: faker.name.findName(),
 			email: faker.internet.exampleEmail(),
 			password: "password",
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,

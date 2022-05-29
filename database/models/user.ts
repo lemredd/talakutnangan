@@ -6,6 +6,9 @@ import { UserKind } from "%/types"
 	paranoid: true
 })
 export default class User extends Model {
+	@Column
+	name: string
+
 	@Column({
 		unique: true,
 	})
