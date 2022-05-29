@@ -1,4 +1,5 @@
 import { DataSource, EntityManager } from "typeorm"
+import { StatusCodes } from "http-status-codes"
 
 import { Environment } from "!/types"
 import getEnvironment from "!/helpers/get_environment"
@@ -25,7 +26,11 @@ export default class RequestEnvironment {
 
 	static get environment(): Environment { return getEnvironment() }
 
+	static get status() { return StatusCodes }
+
 	get manager(): EntityManager { return RequestEnvironment.dataSource.manager }
 
 	get environment(): Environment { return getEnvironment() }
+
+	get status() { return StatusCodes }
 }
