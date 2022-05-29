@@ -1,13 +1,8 @@
 import dataURIToBuffer from "data-uri-to-buffer/src/index"
 import { faker } from "@faker-js/faker"
 import User from "%/models/user"
-import Factory from "~/factory"
 
-export default class UserFactory extends Factory<User> {
-	constructor() {
-		super(User)
-	}
-
+export default class UserFactory {
 	#signature = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
 	#mustBeVerified = false
@@ -17,9 +12,19 @@ export default class UserFactory extends Factory<User> {
 			email: faker.internet.exampleEmail(),
 			password: "password",
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
+			admittedAt: null,
 			kind: this.#kind,
-			signature: this.#signature
+			signature: this.#signature,
+			deletedAt: null
 		}
+	}
+
+	async makeOne() {
+		return await User.build(this.generate())
+	}
+
+	async insertOne() {
+		return await User.create(this.generate())
 	}
 
 	verified(): UserFactory {
