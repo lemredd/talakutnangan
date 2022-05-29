@@ -3,7 +3,6 @@ import Database from "./database"
 
 beforeAll(async () => {
 	await Database.create()
-	console.log("created the database")
 });
 
 afterAll(async () => {
