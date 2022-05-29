@@ -5,7 +5,7 @@ import User from "%/models/user"
 export default class UserFactory {
 	#signature = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
-	#mustBeVerified = false
+	#mustBeVerified = true
 
 	generate() {
 		return {
@@ -28,7 +28,7 @@ export default class UserFactory {
 		return await User.create(this.generate())
 	}
 
-	verified(): UserFactory {
+	notVerified(): UserFactory {
 		this.#mustBeVerified = true
 		return this
 	}
