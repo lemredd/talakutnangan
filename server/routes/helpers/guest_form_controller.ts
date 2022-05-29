@@ -1,11 +1,23 @@
+import { RawRoute, RawURLInfo } from "!/types"
 import Controller from "!/helpers/controller"
+import Middleware from "!/helpers/middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default abstract class extends Controller {
-	constructor(URL: string) {
-		super("post", URL)
+	abstract getRawURLInfo(): RawURLInfo
 
-		this.prependMiddleware(CommonMiddlewareList.guestPageGuard)
-		this.prependMiddleware(CommonMiddlewareList.JSONBody)
+	getRawRoute(): RawRoute {
+		return {
+			method: "post",
+			...this.getRawURLInfo()
+		}
+	}
+
+	getPremiddlewares(): Middleware[] {
+		return [
+			...super.getPremiddlewares(),
+			CommonMiddlewareList.guestPageGuard,
+			CommonMiddlewareList.JSONBody
+		]
 	}
 }
