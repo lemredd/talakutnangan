@@ -24,7 +24,7 @@ export default class User extends Model {
 			UserKind.Student
 		)
 	})
-	kind: UserKind
+	kind: string
 
 	@AllowNull
 	@Column
