@@ -2,8 +2,12 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 	const configuration = {}
 
 	switch(databaseType) {
-		case "mysql":
 		case "pgsql": {
+			return process.env.DATABASE_URL
+			break
+		}
+
+		case "mysql": {
 			configuration.dialect = databaseType
 			configuration.username = process.env.DATABASE_USER
 			configuration.password = process.env.DATABASE_PASS
