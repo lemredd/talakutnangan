@@ -1,7 +1,6 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
-import Database from "~/database"
 import Router from "!/helpers/router"
 import UserFactory from "~/factories/user"
 import Controller from "!/helpers/controller"
@@ -18,7 +17,7 @@ export default class {
 		const router = new Router(prefix)
 		router.useController(controller)
 		this.#router = router
-		this.#app = await createAppHandler(Database.manager, router.combinedRouter)
+		this.#app = await createAppHandler(router.combinedRouter)
 		this.#request = supertest(this.#app)
 	}
 
