@@ -21,7 +21,8 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"database/.*\\.spec\\.ts"
+		"database/.*\\.spec\\.ts",
+		"server/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"
