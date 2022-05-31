@@ -19,8 +19,7 @@ export default class {
 	}
 
 	static async clear(): Promise<void> {
-		await this.dataSource.drop()
-		await this.#dataSource.sync({ force: true })
+		this.#dataSource.truncate()
 	}
 
 	static async destroy(): Promise<void> {
