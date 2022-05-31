@@ -1,10 +1,9 @@
 import { ParsedQs } from "qs"
 import { Request, Response } from "express"
-import { IsNull } from "typeorm"
-import { StatusCodes } from "http-status-codes"
 import { ParamsDictionary } from "express-serve-static-core"
 
-import User from "%/models/user"
+import UserManager from "%/managers/user_manager"
+
 import type { RawRoute, WithUser } from "!/types"
 import Controller from "!/helpers/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -39,6 +38,7 @@ export default class extends Controller {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
+		const manager = new UserManager()
 		const { id } = request.params
 		const { confirm = "0" } = request.query
 
@@ -47,14 +47,9 @@ export default class extends Controller {
 		// TODO: Check if the user can admit
 		if (confirm) {
 			// TODO: Check if within the department
-			const { affected } = await this.manager.update(User, {
-				id,
-				admittedAt: IsNull()
-			}, {
-				admittedAt: new Date()
-			})
+			const affectedCount = await manager.admit(+id, true)
 
-			response.status(affected > 0 ? StatusCodes.ACCEPTED : StatusCodes.NOT_MODIFIED).end()
+			response.status(affectedCount > 0 ? this.status.ACCEPTED : this.status.NOT_MODIFIED).end()
 
 			// ?: This code does not work for some reason. This is why manual checking is needed
 			// await manager.update(
@@ -64,7 +59,7 @@ export default class extends Controller {
 			// )
 		} else {
 			// TODO: Update user details
-			response.status(StatusCodes.INTERNAL_SERVER_ERROR)
+			response.status(this.status.INTERNAL_SERVER_ERROR)
 		}
 	}
 }

@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
 
-import User from "%/models/user"
+import UserManager from "%/managers/user_manager"
 import Middleware from "!/helpers/middleware"
 import LogInController from "!/routes/api/user/log_in.post"
 import GuestFormController from "!/routes/helpers/guest_form_controller"
-import type { WithRegistration, WithPossibleUser, RawURLInfo }  from "!/types"
+import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 
 export default class extends GuestFormController {
 	getRawURLInfo(): RawURLInfo {
@@ -18,16 +18,15 @@ export default class extends GuestFormController {
 		response: Response
 	): Promise<void> {
 		// TODO: Add validation
-
+		const manager = new UserManager()
 		const { email, password } = request.body
 
 		// TODO: Handle duplicated emails
-		const user = this.manager.create(User, {
+		const user = await manager.create({
 			email,
-			password
+			password,
+			kind: UserKind.Student
 		})
-
-		await this.manager.save(user)
 
 		request.user = user
 	}
