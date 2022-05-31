@@ -34,4 +34,6 @@ jobs:
     - name: Use .env.ci as the environment file for back-end
       run: mv .env.ci .env
     - run: npm install
+    - run: npm run migrate:up
+    - run: npm run build
     - run: npm run test:intg:back
