@@ -25,15 +25,19 @@ module.exports = {
 				type: Sequelize.ENUM([ "unreachable_employee", "reachable_employee", "student" ])
 			},
 			emailVerifiedAt: {
+				type: Sequelize.DATE,
 				allowNull: true,
-				type: Sequelize.STRING
+				defaultValue: null
 			},
 			admittedAt: {
+				type: Sequelize.DATE,
 				allowNull: true,
-				type: Sequelize.STRING
+				defaultValue: null
 			},
 			signature: {
-				type: Sequelize.BLOB
+				type: Sequelize.BLOB,
+				allowNull: true,
+				defaultValue: null
 			},
 			createdAt: {
 				allowNull: false,
