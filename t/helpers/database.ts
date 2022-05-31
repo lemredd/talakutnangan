@@ -19,7 +19,9 @@ export default class {
 	}
 
 	static async clear(): Promise<void> {
-		this.#dataSource.truncate()
+		this.#dataSource.truncate({
+			force: true
+		})
 	}
 
 	static async destroy(): Promise<void> {
