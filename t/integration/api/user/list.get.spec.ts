@@ -10,7 +10,7 @@ describe("GET /api/user/list", () => {
 	})
 
 	it("can be accessed by permitted user and get single unadmitted user", async () => {
-		const user = await (new UserFactory()).verified().insertOne()
+		const user = await (new UserFactory()).insertOne()
 
 		const response = await App.request
 			.get("/api/user/list")

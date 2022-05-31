@@ -1,8 +1,7 @@
 import { StatusCodes } from "http-status-codes"
-import User from "%/models/user"
+import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
-import Database from "~/database"
 import UserFactory from "~/factories/user"
 import Route from "!/routes/api/user/register.post"
 
@@ -12,7 +11,7 @@ describe("POST /api/user/register", () => {
 	})
 
 	it("can be accessed by guest and request with non-existing credentials", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		const user = await (new UserFactory()).makeOne()
 
 		const response = await App.request
@@ -25,9 +24,7 @@ describe("POST /api/user/register", () => {
 		expect(response.statusCode).toBe(StatusCodes.OK)
 		expect(response.body).toHaveProperty("token")
 
-		const foundUser = await manager.findOneBy(User, {
-			email: user.email
-		})
+		const foundUser = await manager.findWithCredentials(user.email, user.password)
 		expect(foundUser.email).toEqual(user.email)
 	})
 
