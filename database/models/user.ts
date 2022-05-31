@@ -24,19 +24,24 @@ export default class User extends Model {
 			UserKind.Student
 		)
 	})
-	kind: string
+	kind: UserKind
 
 	@AllowNull
-	@Column
+	@Column({
+		defaultValue: null
+	})
 	emailVerifiedAt: Date|null
 
 	@AllowNull
-	@Column
+	@Column({
+		defaultValue: null
+	})
 	admittedAt: Date|null
 
 	@AllowNull
 	@Column({
-		type: DataType.BLOB("medium")
+		type: DataType.BLOB("medium"),
+		defaultValue: null
 	})
 	signature: Buffer|null
 }
