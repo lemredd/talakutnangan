@@ -9,7 +9,7 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 			configuration.dialect = "postgres"
 			configuration.username = databaseURL.username
 			configuration.password = databaseURL.password
-			configuration.database = databaseURL.pathname
+			configuration.database = databaseURL.pathname.slice(1)
 			configuration.host = databaseURL.hostname
 			configuration.port = +databaseURL.port
 			break
