@@ -31,7 +31,7 @@ export default class UserManager {
 				break
 			}
 			case "unadmitted": { // Complete profile but not admitted
-				options.emailVerifiedAt = { [Op.not]: null }
+				options.emailVerifiedAt =  { [Op.not]: null }
 				options.signature = { [Op.not]: null }
 				options.admittedAt = { [Op.is]: null }
 				break
@@ -43,7 +43,8 @@ export default class UserManager {
 			default: // All users
 		}
 
-		return User.findAll({ where: options })
+		const users = await User.findAll({ where: options })
+		return users
 	}
 
 	async admit(id: number, confirm: boolean): Promise<number> {
