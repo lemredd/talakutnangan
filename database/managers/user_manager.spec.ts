@@ -76,6 +76,16 @@ describe("Extra: Custom Operations", () => {
 
 	it.todo("can list admitted users")
 	it.todo("can list incomplete users")
-	it.todo("can admit user")
+
+	it("can admit user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+
+		const admittedUserCount = await manager.admit(user.id, true)
+
+		expect(admittedUserCount).toBe(1)
+	})
+
+	it.todo("can reject user")
 	it.todo("can verify user")
 })

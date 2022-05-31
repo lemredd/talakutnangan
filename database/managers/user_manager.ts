@@ -45,4 +45,22 @@ export default class UserManager {
 
 		return User.findAll({ where: options })
 	}
+
+	async admit(id: number, confirm: boolean): Promise<number> {
+		if (confirm) {
+			const [ affectedCount ] = await User.update({
+				admittedAt: new Date()
+			}, {
+				where: {
+					id,
+					admittedAt: { [Op.is]: null }
+				}
+			})
+
+			return affectedCount
+		} else {
+			// TODO: Delete account and send e-mail
+			return 1
+		}
+	}
 }
