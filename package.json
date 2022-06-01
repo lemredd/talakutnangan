@@ -18,8 +18,6 @@
 		"changelog:generate": "npx changelogen",
 		"migrate:up": "sequelize-cli db:migrate",
 		"migrate:down": "sequelize-cli db:migrate:undo",
-		"typeorm:with_source": "typeorm-ts-node-commonjs -d ./database/migration/data_source.ts",
-		"typeorm:create": "typeorm-ts-node-commonjs migration:create",
 		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
 		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
