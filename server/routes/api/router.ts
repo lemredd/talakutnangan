@@ -2,10 +2,11 @@ import Router from "!/helpers/router"
 import UserRouter from "!/routes/api/user/router"
 
 export default class extends Router {
-	constructor() {
-		const prefix = "/api"
-		super(prefix)
+	get prefix(): string { return "/api" }
 
-		this.useRouter(new UserRouter(prefix))
+	constructor() {
+		super()
+
+		this.useRouter(new UserRouter(this.prefix))
 	}
 }
