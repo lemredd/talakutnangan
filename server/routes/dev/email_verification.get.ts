@@ -12,11 +12,19 @@ export default class extends Controller {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const verificationTemplate = await promisify(readFile)(`${__dirname}/../../../email/email_verification.md`)
+		const verificationTemplate = (await promisify(readFile)(`${__dirname}/../../../email/email_verification.md`)).toString()
+		const specializedTemplate = template(verificationTemplate, {
+			email: faker.internet.exampleEmail(),
+			homePageURL: faker.internet.url(),
+			emailVerificationURL: faker.internet.url()
+		}, {
+			before: "{{ ",
+			after: " }}"
+		})
 
 		response.status(StatusCodes.OK)
 		response.header("Content-Type", "text/html")
-		response.send(verificationTemplate)
+		response.send(specializedTemplate)
 		response.end()
 	}
 }
