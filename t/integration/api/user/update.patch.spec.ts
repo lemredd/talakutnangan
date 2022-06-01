@@ -1,8 +1,7 @@
 import { StatusCodes } from "http-status-codes"
-import User from "!/models/user"
+import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
-import Database from "~/database"
 import UserFactory from "~/factories/user"
 import Route from "!/routes/api/user/update.patch"
 
@@ -12,9 +11,9 @@ describe("PATCH /api/user/update/:id", () => {
 	})
 
 	it("can be accessed by permitted user and admit other user", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		// const admin = await (new UserFactory()).verified().insertOne()
-		const student = await (new UserFactory()).verified().insertOne()
+		const student = await (new UserFactory()).insertOne()
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
@@ -22,7 +21,7 @@ describe("PATCH /api/user/update/:id", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
 
-		const updatedStudent = await manager.findOneBy(User, { id: student.id })
+		const updatedStudent = await manager.findWithID(student.id)
 		expect(updatedStudent.admittedAt).not.toBeNull()
 	})
 

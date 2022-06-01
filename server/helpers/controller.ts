@@ -1,80 +1,71 @@
 import { Request, Response, NextFunction, RequestHandler } from "express"
 
-import { Method, Route } from "!/types"
+import { Route, RawRoute } from "!/types"
 import Middleware from "!/helpers/middleware"
-import RequestEnvironment from "!/helpers/request_environment"
 
 export default abstract class extends Middleware {
-	private premiddlewares: Middleware[] = []
-	private postmiddlewares: Middleware[] = []
-
-	private method: Method
-	private URL: string
-	private overridesPrefix: boolean
-
-	constructor(method: Method, URL: string, overridesPrefix: boolean = false) {
+	constructor() {
 		super()
-
-		this.method = method
-		this.URL = URL
-		this.overridesPrefix = overridesPrefix
 	}
 
+	/**
+	 * Returns the configuration where to access the controller
+	 */
+	abstract getRawRoute(): RawRoute
+
+	/**
+	 * Handles the request mainly
+	 */
 	abstract handle(request: Request, response: Response): Promise<void>
+
+	/**
+	 * Returns the middlewares to be used before that handle will execute.
+	 */
+	protected getPremiddlewares(): Middleware[] {
+		return []
+	}
+
+	/**
+	 * Returns the middlewares to be used after the handle executed.
+	 */
+	protected getPostmiddlewares(): Middleware[] {
+		return []
+	}
 
 	intermediate(request: Request, response: Response, next: NextFunction): void {
 		this.handle(request, response).then(next)
 	}
 
-	/**
-	 * Adds middleware before the handler will be executed.
-	 *
-	 * Other middlewares previously prepended will be executed first before the new prepended
-	 * middleware.
-	 */
-	protected prependMiddleware(middleware: Middleware): void {
-		this.premiddlewares.push(middleware)
-	}
-
-	/**
-	 * Adds middleware after the handler executed.
-	 *
-	 * Other middlewares previously appended will be executed first before the new appended
-	 * middleware.
-	 *
-	 * Make sure the last middleware appended is a controller.
-	 */
-	protected appendMiddleware(middleware: Middleware): void {
-		this.postmiddlewares.push(middleware)
-	}
-
 	generateRoute(prefix: string|null = null): Route {
+		const { method, baseURL, overridesPrefix = false } = this.getRawRoute()
 		const URL = (
-			this.overridesPrefix || prefix === "/" || prefix === null
-			? this.URL
-			: `${prefix}/${this.URL}`
+			overridesPrefix || prefix === "/" || prefix === null
+			? baseURL
+			: `${prefix}/${baseURL}`
 		)
 
-		const handlers = this.flattenHandlers(this.premiddlewares)
+		const handlers = this.flattenHandlers(this.getPremiddlewares())
 
-		if (this.postmiddlewares.length === 0) {
+		const postmiddlewares = this.getPostmiddlewares()
+
+		if (postmiddlewares.length === 0) {
 			handlers.push(this.handle.bind(this))
 		} else {
 			handlers.push(this.intermediate.bind(this))
 
-			for (const postHandler of (this.flattenHandlers(this.postmiddlewares))) {
+			for (const postHandler of (this.flattenHandlers(postmiddlewares))) {
 				handlers.push(postHandler)
 			}
 		}
 
 		return {
-			method: this.method,
+			method,
 			URL,
 			handlers
 		}
 	}
 
-	private flattenHandlers(middlewares: Middleware[]): RequestHandler[] {
+	protected flattenHandlers(middlewares: Middleware[]): RequestHandler[] {
 		const handlers = []
 
 		for (const middleware of middlewares) {

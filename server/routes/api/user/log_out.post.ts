@@ -1,11 +1,14 @@
 import { Request, Response } from "express"
 
-import type { WithUser }  from "!/types"
 import Controller from "!/helpers/controller"
+import type { RawRoute, WithUser }  from "!/types"
 
 export default class extends Controller {
-	constructor() {
-		super("post", "log_out")
+	getRawRoute(): RawRoute {
+		return {
+			method: "get",
+			baseURL: "log_out"
+		}
 	}
 
 	async handle(request: Request & WithUser, response: Response): Promise<void> {

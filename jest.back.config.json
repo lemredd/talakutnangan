@@ -7,6 +7,7 @@
 	],
 
 	"moduleNameMapper": {
+		"%/(.*)": "<rootDir>/database/$1",
 		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"#/(.*)": "<rootDir>/renderer/$1"
@@ -20,6 +21,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
+		"database/.*\\.spec\\.ts",
 		"server/.*\\.spec\\.ts"
 	],
 

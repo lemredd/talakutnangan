@@ -1,17 +1,16 @@
-import { v4 } from "uuid"
-import { EntityManager } from "typeorm"
 import { Request, Response } from "express"
 
-import User from "!/models/user"
-import type { WithRegistration, WithPossibleUser }  from "!/types"
-import GuestFormController from "!/routes/helpers/guest_form_controller"
+import UserManager from "%/managers/user_manager"
+import Middleware from "!/helpers/middleware"
 import LogInController from "!/routes/api/user/log_in.post"
+import GuestFormController from "!/routes/helpers/guest_form_controller"
+import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 
 export default class extends GuestFormController {
-	constructor() {
-		super("register")
-
-		this.appendMiddleware(new LogInController())
+	getRawURLInfo(): RawURLInfo {
+		return {
+			baseURL: "register"
+		}
 	}
 
 	async handle(
@@ -19,17 +18,23 @@ export default class extends GuestFormController {
 		response: Response
 	): Promise<void> {
 		// TODO: Add validation
-
+		const manager = new UserManager()
 		const { email, password } = request.body
 
 		// TODO: Handle duplicated emails
-		const user = this.environment.manager.create(User, {
+		const user = await manager.create({
 			email,
-			password
+			password,
+			kind: UserKind.Student
 		})
 
-		await this.environment.manager.save(user)
-
 		request.user = user
+	}
+
+	getPostmiddlewares(): Middleware[] {
+		return [
+			...super.getPostmiddlewares(),
+			new LogInController()
+		]
 	}
 }
