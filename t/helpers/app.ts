@@ -14,7 +14,9 @@ export default class {
 	static #hasLogInRoute = false
 
 	static async create(prefix: string, controller: Controller) {
-		const router = new Router(prefix)
+		const router = new class extends Router {
+			get prefix(): string { return prefix }
+		}
 		router.useController(controller)
 		this.#router = router
 		this.#app = await createAppHandler(router.combinedRouter)
