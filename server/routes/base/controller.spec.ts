@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { Method, RawRoute } from "!/types"
-import Middleware from "!/helpers/middleware"
+import Middleware from "!/routes/base/middleware"
 
 import Controller from "./controller"
 

@@ -1,4 +1,4 @@
-import Middleware from "!/helpers/middleware";
+import Middleware from "!/routes/base/middleware";
 import express from "express"
 import type { Request, Response, NextFunction } from "express"
 

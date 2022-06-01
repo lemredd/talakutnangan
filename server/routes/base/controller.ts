@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from "express"
 
 import { Route, RawRoute } from "!/types"
-import Middleware from "!/helpers/middleware"
+import Middleware from "!/routes/base/middleware"
 
 export default abstract class extends Middleware {
 	constructor() {

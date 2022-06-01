@@ -1,6 +1,6 @@
 import { Router as createRouter } from "express"
-import Middleware from "!/helpers/middleware"
-import Controller from "!/helpers/controller"
+import Middleware from "!/routes/base/middleware"
+import Controller from "!/routes/base/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
 export default abstract class Router extends RequestEnvironment {

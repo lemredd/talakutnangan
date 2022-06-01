@@ -1,4 +1,4 @@
-import Router from "!/helpers/router"
+import Router from "!/routes/base/router"
 import UserRouter from "!/routes/api/user/router"
 
 export default class extends Router {

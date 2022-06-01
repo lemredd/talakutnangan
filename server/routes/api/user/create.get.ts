@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { RawRoute } from "!/types"
-import Controller from "!/helpers/controller"
+import Controller from "!/routes/base/controller"
 
 import UserManager from "%/managers/user_manager"
 import { UserKind } from "%/types"

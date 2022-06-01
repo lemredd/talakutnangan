@@ -1,5 +1,5 @@
-import Router from "!/helpers/router"
-import Controller from "!/helpers/controller"
+import Router from "!/routes/base/router"
+import Controller from "!/routes/base/controller"
 import GetList from "!/routes/api/user/list.get"
 import GetCreate from "!/routes/api/user/create.get"
 import PostLogIn from "!/routes/api/user/log_in.post"
