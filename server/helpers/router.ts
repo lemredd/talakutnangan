@@ -9,6 +9,14 @@ export default abstract class Router extends RequestEnvironment {
 
 	abstract get prefix(): string;
 
+	useControllers(controllers: Controller[]): void {
+		controllers.forEach(controller => this.useController(controller))
+	}
+
+	useRouters(routers: Router[]): void {
+		routers.forEach(router => this.useRouter(router))
+	}
+
 	useController(controller: Controller): void {
 		const { method, URL, handlers } = controller.generateRoute(this.prefix)
 		if (URL.startsWith(this.prefix)) {
@@ -16,6 +24,12 @@ export default abstract class Router extends RequestEnvironment {
 		} else {
 			this.overridenRouter[method](URL, ...handlers)
 		}
+	}
+
+	useRouter(router: Router): void {
+		const [ prefixedRouter, overridenRouter ] = (router.routers)
+		this.prefixedRouter.use(prefixedRouter)
+		this.overridenRouter.use(overridenRouter)
 	}
 
 	useMiddleware(overridenURL: string, middleware: Middleware): void {
@@ -35,11 +49,5 @@ export default abstract class Router extends RequestEnvironment {
 		main.use(this.prefixedRouter)
 		main.use(this.overridenRouter)
 		return main
-	}
-
-	useRouter(router: Router): void {
-		const [ prefixedRouter, overridenRouter ] = (router.routers)
-		this.prefixedRouter.use(prefixedRouter)
-		this.overridenRouter.use(overridenRouter)
 	}
 }
