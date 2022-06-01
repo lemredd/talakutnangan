@@ -3,15 +3,11 @@ import Middleware from "!/helpers/middleware"
 import Controller from "!/helpers/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
-export default class Router extends RequestEnvironment {
+export default abstract class Router extends RequestEnvironment {
 	private prefixedRouter = createRouter()
 	private overridenRouter = createRouter()
-	private prefix: string
 
-	constructor(prefix: string) {
-		super()
-		this.prefix = prefix
-	}
+	abstract get prefix(): string;
 
 	useController(controller: Controller): void {
 		const { method, URL, handlers } = controller.generateRoute(this.prefix)
