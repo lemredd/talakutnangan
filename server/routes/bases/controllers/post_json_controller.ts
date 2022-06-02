@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { Validator } from "node-input-validator"
+import { ValidationError } from "!/types"
 import Middleware from "!/routes/bases/middleware"
 import PostController from "!/routes/bases/controllers/post_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -25,16 +26,16 @@ export default abstract class extends PostController {
 		}
 	}
 
-	async validate(body: object): Promise<object[]> {
+	async validate(body: object): Promise<ValidationError[]> {
 		const validator = new Validator(body, this.validationRules)
-		const areAllValid = await validator.check()
 
-		if (areAllValid) {
-			return []
-		} else {
-			return [
-				validator.errors
-			]
-		}
+		await validator.check()
+
+		const rawErrors = validator.getErrors()
+
+		return Object.keys(rawErrors).sort().map(field => ({
+			field,
+			message: rawErrors[field].message
+		}))
 	}
 }
