@@ -8,58 +8,67 @@ import type { RawURLInfo } from "!/types"
 import PostJSONController from "./post_json_controller"
 
 describe("Back-end: Post JSON Controller", () => {
-	it("can handle validated body", async () => {
-		const handlerFunction = jest.fn()
+	it("does include validation as middleware", async () => {
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
+			get validationRules(): object { return {} }
+		}
+
+		const premiddlewares = controller.getPremiddlewares()
+		const lastPremiddleware = premiddlewares[premiddlewares.length - 1]
+
+		expect((lastPremiddleware as unknown as Function).name).toBe("bound validateRequest")
+	})
+
+	it("can handle validated body", async () => {
+		const controller = new class extends PostJSONController {
+			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 
 			get validationRules(): object {
 				return {
 					email: ["required", "email"]
 				}
 			}
-
-			handleValidatedBody(request: Request, response: Response): Promise<void> {
-				handlerFunction()
-				return Promise.resolve()
-			}
 		}
+
 		const request  = makeRequest()
-		const { res: response } = makeResponse()
+		const { res: response, next } = makeResponse()
 		request.body = {
 			email: faker.internet.exampleEmail()
 		}
 
-		await controller.handle(request, response)
+		await controller.validateRequest(request, response, next)
 
-		expect(handlerFunction).toHaveBeenCalled()
+		expect(next).toHaveBeenCalled()
+		// Ensure the function has been bound
+		const premiddlewares = controller.getPremiddlewares()
+		expect((premiddlewares[premiddlewares.length - 1] as unknown as Function).name)
+			.toBe("bound validateRequest")
 	})
 
 	it("cannot handle invalid body with single field", async () => {
 		const handlerFunction = jest.fn()
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 
 			get validationRules(): object {
 				return {
 					email: ["required", "email"]
 				}
 			}
-
-			handleValidatedBody(request: Request, response: Response): Promise<void> {
-				handlerFunction()
-				return Promise.resolve()
-			}
 		}
 		const request  = makeRequest()
-		const { res: response } = makeResponse()
+		const { res: response, next } = makeResponse()
 		request.body = {
 			email: faker.internet.domainName()
 		}
 
-		await controller.handle(request, response)
+		await controller.validateRequest(request, response, next)
 
-		expect(handlerFunction).not.toHaveBeenCalled()
+		expect(next).not.toHaveBeenCalled()
 		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
@@ -70,6 +79,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const handlerFunction = jest.fn()
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 
 			get validationRules(): object {
 				return {
@@ -77,22 +87,17 @@ describe("Back-end: Post JSON Controller", () => {
 					email: ["required", "email"]
 				}
 			}
-
-			handleValidatedBody(request: Request, response: Response): Promise<void> {
-				handlerFunction()
-				return Promise.resolve()
-			}
 		}
 		const request  = makeRequest()
-		const { res: response } = makeResponse()
+		const { res: response, next } = makeResponse()
 		request.body = {
 			username: faker.random.alpha(14),
 			email: faker.internet.domainName()
 		}
 
-		await controller.handle(request, response)
+		await controller.validateRequest(request, response, next)
 
-		expect(handlerFunction).not.toHaveBeenCalled()
+		expect(next).not.toHaveBeenCalled()
 		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
