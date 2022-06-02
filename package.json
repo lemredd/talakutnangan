@@ -54,6 +54,7 @@
 		"@vitejs/plugin-vue": "^2.2.2",
 		"@vue/compiler-sfc": "^3.2.31",
 		"@vue/server-renderer": "^3.2.31",
+		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.0",
 		"compression": "^1.7.4",
 		"cross-env": "^7.0.3",
