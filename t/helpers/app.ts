@@ -1,10 +1,9 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
-import Database from "~/database"
-import Router from "!/helpers/router"
+import Router from "!/routes/bases/router"
 import UserFactory from "~/factories/user"
-import Controller from "!/helpers/controller"
+import Controller from "!/routes/bases/controller"
 import LogInController from "!/routes/api/user/log_in.post"
 import createAppHandler from "!/app/create_handler"
 
@@ -15,10 +14,12 @@ export default class {
 	static #hasLogInRoute = false
 
 	static async create(prefix: string, controller: Controller) {
-		const router = new Router(prefix)
+		const router = new class extends Router {
+			get prefix(): string { return prefix }
+		}
 		router.useController(controller)
 		this.#router = router
-		this.#app = await createAppHandler(Database.manager, router.combinedRouter)
+		this.#app = await createAppHandler(router.combinedRouter)
 		this.#request = supertest(this.#app)
 	}
 

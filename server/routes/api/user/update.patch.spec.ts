@@ -2,9 +2,8 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import User from "!/models/user"
+import UserManager from "%/managers/user_manager"
 
-import Database from "~/database"
 import UserFactory from "~/factories/user"
 
 import PatchUpdateRoute, { WithUpdate } from "./update.patch"
@@ -13,7 +12,7 @@ describe("PATCH /api/user/update/:id", () => {
 	type RequestWithUpdate = Request & WithUpdate
 
 	it("can admit user", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
 		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
@@ -26,13 +25,12 @@ describe("PATCH /api/user/update/:id", () => {
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.ACCEPTED ])
 
-		const users = await manager.find(User)
-		expect(users).toHaveLength(1)
-		expect(users[0].admittedAt).not.toBeNull()
+		const updatedUser = await manager.findWithID(user.id)
+		expect(updatedUser.admittedAt).not.toBeNull()
 	})
 
 	it("cannot readmit user", async () => {
-		const manager = Database.manager
+		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
 		const patchUpdateRoute = new PatchUpdateRoute()
 		const request = makeRequest<RequestWithUpdate>()
@@ -41,10 +39,10 @@ describe("PATCH /api/user/update/:id", () => {
 		request.query.confirm = "1"
 
 		await patchUpdateRoute.handle(request, response)
-		const updatedUser = await manager.findOneBy(User, { id: user.id })
+		const updatedUser = await manager.findWithID(user.id)
 		clearMockRes()
 		await patchUpdateRoute.handle(request, response)
-		const readmittedUser = await manager.findOneBy(User, { id: user.id })
+		const readmittedUser = await manager.findWithID(user.id)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status.mock.calls[0]).toEqual([ StatusCodes.NOT_MODIFIED ])

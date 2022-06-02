@@ -1,4 +1,5 @@
-import Router from "!/helpers/router"
+import Router from "!/routes/bases/router"
+import Controller from "!/routes/bases/controller"
 import GetList from "!/routes/api/user/list.get"
 import GetCreate from "!/routes/api/user/create.get"
 import PostLogIn from "!/routes/api/user/log_in.post"
@@ -8,15 +9,22 @@ import PostRegister from "!/routes/api/user/register.post"
 import GetLogInFailure from "!/routes/api/user/log_in_failure.get"
 
 export default class extends Router {
-	constructor(parentPrefix: string) {
-		super(`${parentPrefix}/user`)
+	private parentPrefix: string
+	get prefix(): string { return `${this.parentPrefix}/user` }
 
-		this.useController(new GetList())
-		this.useController(new GetCreate())
-		this.useController(new PostLogIn())
-		this.useController(new PostLogOut())
-		this.useController(new PatchUpdate())
-		this.useController(new PostRegister())
-		this.useController(new GetLogInFailure())
+	constructor(parentPrefix: string) {
+		super()
+
+		this.parentPrefix = parentPrefix
+
+		this.useControllers([
+			new GetList(),
+			new GetCreate(),
+			new PostLogIn(),
+			new PostLogOut(),
+			new PatchUpdate(),
+			new PostRegister(),
+			new GetLogInFailure()
+		])
 	}
 }

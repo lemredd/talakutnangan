@@ -1,11 +1,15 @@
 import { v4 } from "uuid"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import Controller from "!/helpers/controller"
+import { RawRoute } from "!/types"
+import Controller from "!/routes/bases/controller"
 
 export default class extends Controller {
-	constructor() {
-		super("get", "join")
+	getRawRoute(): RawRoute {
+		return {
+			method: "get",
+			baseURL: "join"
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

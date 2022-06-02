@@ -12,6 +12,7 @@
 		"esModuleInterop": true,
 		"jsx": "preserve",
 		"paths": {
+			"%/*": [ "./database/*" ],
 			"!/*": [ "./server/*" ],
 			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],

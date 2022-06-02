@@ -3,7 +3,7 @@ import RequestEnvironment from "!/helpers/request_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
 beforeAll(() => {
-	initializeSingletons(Database.manager)
+	initializeSingletons(Database.dataSource)
 });
 
 afterAll(() => {
