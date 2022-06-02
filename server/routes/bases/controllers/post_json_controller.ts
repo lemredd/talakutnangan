@@ -18,7 +18,7 @@ export default abstract class extends PostController {
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const errors = await this.validate(request.body)
-		if (errors.length > 1) {
+		if (errors.length > 0) {
 			response.status(this.status.BAD_REQUEST).json(errors)
 		} else {
 			await this.handleValidatedBody(request, response)
