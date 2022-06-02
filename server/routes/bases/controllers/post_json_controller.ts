@@ -25,7 +25,7 @@ export default abstract class extends PostController {
 		}
 	}
 
-	async validate(body: object): Promise<Array<object>> {
+	async validate(body: object): Promise<object[]> {
 		const validator = new Validator(body, this.validationRules)
 		const areAllValid = await validator.check()
 
