@@ -21,7 +21,14 @@ export default class extends GuestFormController {
 		]
 	}
 
-	async handle(request: Request & WithUser, response: Response): Promise<void> {
+	get validationRules(): object {
+		return {
+			email: [ "required", "string", "email", "maxLength:255" ],
+			password: [ "required", "string", "minLength:8" ]
+		}
+	}
+
+	async handleValidatedBody(request: Request & WithUser, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token
