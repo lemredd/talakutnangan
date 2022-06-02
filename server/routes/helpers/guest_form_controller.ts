@@ -1,6 +1,6 @@
 import { RawRoute, RawURLInfo } from "!/types"
-import Controller from "!/routes/base/controller"
-import Middleware from "!/routes/base/middleware"
+import Controller from "!/routes/bases/controller"
+import Middleware from "!/routes/bases/middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default abstract class extends Controller {

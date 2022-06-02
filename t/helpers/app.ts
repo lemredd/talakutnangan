@@ -1,9 +1,9 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
-import Router from "!/routes/base/router"
+import Router from "!/routes/bases/router"
 import UserFactory from "~/factories/user"
-import Controller from "!/routes/base/controller"
+import Controller from "!/routes/bases/controller"
 import LogInController from "!/routes/api/user/log_in.post"
 import createAppHandler from "!/app/create_handler"
 
