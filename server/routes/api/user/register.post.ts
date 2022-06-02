@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
 
 import UserManager from "%/managers/user_manager"
-import Middleware from "!/helpers/middleware"
+import Middleware from "!/routes/bases/middleware"
 import LogInController from "!/routes/api/user/log_in.post"
-import GuestFormController from "!/routes/helpers/guest_form_controller"
+import GuestFormController from "!/routes/kinds/guest_form_controller"
 import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 
 export default class extends GuestFormController {
@@ -13,11 +13,17 @@ export default class extends GuestFormController {
 		}
 	}
 
+	get validationRules(): object {
+		return {
+			email: [ "required", "string", "email", "maxLength:255" ],
+			password: [ "required", "string", "minLength:8" ]
+		}
+	}
+
 	async handle(
 		request: Request & WithRegistration & WithPossibleUser,
 		response: Response
 	): Promise<void> {
-		// TODO: Add validation
 		const manager = new UserManager()
 		const { email, password } = request.body
 

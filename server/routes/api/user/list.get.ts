@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 
 import UserManager from "%/managers/user_manager"
-import Controller from "!/helpers/controller"
+import Controller from "!/routes/bases/controller"
 import { RawRoute } from "!/types"
 import { Criteria } from "%/types"
 

@@ -30,7 +30,7 @@ export default async function() {
 		const manager = new UserManager()
 
 		const user = await manager.findWithID(id)
-		// TODO: encrypt user password
+
 		return done(null, user)
 	})
 }

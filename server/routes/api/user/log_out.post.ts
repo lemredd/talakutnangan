@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 
-import Controller from "!/helpers/controller"
+import Controller from "!/routes/bases/controller"
 import type { RawRoute, WithUser }  from "!/types"
 
 export default class extends Controller {
