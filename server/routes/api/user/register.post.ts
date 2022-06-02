@@ -13,11 +13,17 @@ export default class extends GuestFormController {
 		}
 	}
 
+	get validationRules(): object {
+		return {
+			email: [ "required", "string", "email", "maxLength:255" ],
+			password: [ "required", "string", "minLength:8" ]
+		}
+	}
+
 	async handle(
 		request: Request & WithRegistration & WithPossibleUser,
 		response: Response
 	): Promise<void> {
-		// TODO: Add validation
 		const manager = new UserManager()
 		const { email, password } = request.body
 
