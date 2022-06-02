@@ -1,11 +1,11 @@
 import { compare } from "bcryptjs"
-import encrypt from "./encrypt"
+import hash from "./hash"
 
-describe("Security: Encryption", () => {
+describe("Security: Password hasing", () => {
 	it("can hash password", async () => {
 		const rawPassword = "hello world"
 
-		const hashedPassword = await encrypt(rawPassword)
+		const hashedPassword = await hash(rawPassword)
 
 		expect(await compare(rawPassword, hashedPassword)).toBeTruthy()
 	})
