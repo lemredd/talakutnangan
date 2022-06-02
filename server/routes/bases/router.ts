@@ -1,16 +1,20 @@
 import { Router as createRouter } from "express"
-import Middleware from "!/helpers/middleware"
-import Controller from "!/helpers/controller"
+import Middleware from "!/routes/bases/middleware"
+import Controller from "!/routes/bases/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
-export default class Router extends RequestEnvironment {
+export default abstract class Router extends RequestEnvironment {
 	private prefixedRouter = createRouter()
 	private overridenRouter = createRouter()
-	private prefix: string
 
-	constructor(prefix: string) {
-		super()
-		this.prefix = prefix
+	abstract get prefix(): string;
+
+	useControllers(controllers: Controller[]): void {
+		controllers.forEach(controller => this.useController(controller))
+	}
+
+	useRouters(routers: Router[]): void {
+		routers.forEach(router => this.useRouter(router))
 	}
 
 	useController(controller: Controller): void {
@@ -20,6 +24,12 @@ export default class Router extends RequestEnvironment {
 		} else {
 			this.overridenRouter[method](URL, ...handlers)
 		}
+	}
+
+	useRouter(router: Router): void {
+		const [ prefixedRouter, overridenRouter ] = (router.routers)
+		this.prefixedRouter.use(prefixedRouter)
+		this.overridenRouter.use(overridenRouter)
 	}
 
 	useMiddleware(overridenURL: string, middleware: Middleware): void {
@@ -39,11 +49,5 @@ export default class Router extends RequestEnvironment {
 		main.use(this.prefixedRouter)
 		main.use(this.overridenRouter)
 		return main
-	}
-
-	useRouter(router: Router): void {
-		const [ prefixedRouter, overridenRouter ] = (router.routers)
-		this.prefixedRouter.use(prefixedRouter)
-		this.overridenRouter.use(overridenRouter)
 	}
 }

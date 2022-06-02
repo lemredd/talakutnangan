@@ -1,12 +1,16 @@
-import Router from "!/helpers/router"
+import Router from "!/routes/bases/router"
 import APIRouter from "!/routes/api/router"
 import ChatRouter from "!/routes/chat/router"
 
 export default class extends Router {
-	constructor() {
-		super("/")
+	get prefix(): string { return "/" }
 
-		this.useRouter(new ChatRouter())
-		this.useRouter(new APIRouter())
+	constructor() {
+		super()
+
+		this.useRouters([
+			new ChatRouter(),
+			new APIRouter()
+		])
 	}
 }

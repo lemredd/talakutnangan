@@ -1,17 +1,23 @@
-import User from "%/models/user"
 import { Op } from "sequelize"
+import User from "%/models/user"
 import type { Criteria, RawUser } from "%/types"
+
+import hash from "!/helpers/auth/hash"
+import compare from "!/helpers/auth/compare"
 
 export default class UserManager {
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
-		// TODO: Encrypt the password
-
-		return await User.findOne({
+		const foundUser = await User.findOne({
 			where: {
-				email,
-				password
+				email
 			}
 		})
+
+		if (foundUser !== null && await compare(password, foundUser.password)) {
+			return foundUser
+		} else {
+			return null
+		}
 	}
 
 	async findWithID(id: number): Promise<User|null> {
@@ -19,6 +25,7 @@ export default class UserManager {
 	}
 
 	async create(details: RawUser): Promise<User> {
+		details.password = await hash(details.password)
 		return await User.create({ ...details })
 	}
 
