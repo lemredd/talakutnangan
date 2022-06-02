@@ -4,11 +4,12 @@ import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { RawURLInfo } from "!/types"
+import Middleware from "!/routes/bases/middleware"
 
 import PostJSONController from "./post_json_controller"
 
 describe("Back-end: Post JSON Controller", () => {
-	it("does include validation as middleware", async () => {
+	it("does include validation middleware", async () => {
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
@@ -18,7 +19,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const premiddlewares = controller.getPremiddlewares()
 		const lastPremiddleware = premiddlewares[premiddlewares.length - 1]
 
-		expect((lastPremiddleware as unknown as Function).name).toBe("bound validateRequest")
+		expect(lastPremiddleware instanceof Middleware).toBeTruthy()
 	})
 
 	it("can handle validated body", async () => {
@@ -33,23 +34,14 @@ describe("Back-end: Post JSON Controller", () => {
 			}
 		}
 
-		const request  = makeRequest()
-		const { res: response, next } = makeResponse()
-		request.body = {
+		const errors = await controller.validate({
 			email: faker.internet.exampleEmail()
-		}
+		})
 
-		await controller.validateRequest(request, response, next)
-
-		expect(next).toHaveBeenCalled()
-		// Ensure the function has been bound
-		const premiddlewares = controller.getPremiddlewares()
-		expect((premiddlewares[premiddlewares.length - 1] as unknown as Function).name)
-			.toBe("bound validateRequest")
+		expect(errors).toHaveLength(0)
 	})
 
 	it("cannot handle invalid body with single field", async () => {
-		const handlerFunction = jest.fn()
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
@@ -60,23 +52,16 @@ describe("Back-end: Post JSON Controller", () => {
 				}
 			}
 		}
-		const request  = makeRequest()
-		const { res: response, next } = makeResponse()
-		request.body = {
+
+		const errors = await controller.validate({
 			email: faker.internet.domainName()
-		}
+		})
 
-		await controller.validateRequest(request, response, next)
-
-		expect(next).not.toHaveBeenCalled()
-		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
-		expect(mockResponse.status).toHaveBeenCalled()
-		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
-		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
+		expect(errors).toHaveLength(1)
+		expect(errors).toHaveProperty([0, "field"], "email")
 	})
 
 	it("cannot handle invalid body with multiple fields", async () => {
-		const handlerFunction = jest.fn()
 		const controller = new class extends PostJSONController {
 			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
@@ -88,20 +73,64 @@ describe("Back-end: Post JSON Controller", () => {
 				}
 			}
 		}
+
+		const errors = await controller.validate({
+			username: faker.random.alpha(14),
+			email: faker.internet.domainName()
+		})
+
+		expect(errors).toHaveLength(2)
+		expect(errors).toHaveProperty([0, "field"], "email")
+		expect(errors).toHaveProperty([1, "field"], "username")
+	})
+
+	it("does validation middleware works properly with valid values", async () => {
+		const controller = new class extends PostJSONController {
+			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
+			get validationRules(): object {
+				return {
+					email: ["required", "email"]
+				}
+			}
+		}
+
+		const middleware = controller.createValidationMiddleware()
 		const request  = makeRequest()
 		const { res: response, next } = makeResponse()
 		request.body = {
-			username: faker.random.alpha(14),
+			email: faker.internet.exampleEmail()
+		}
+
+		await middleware.intermediate(request, response, next)
+
+		expect(next).toBeCalled()
+	})
+
+	it("does validation middleware works properly with invalid values", async () => {
+		const controller = new class extends PostJSONController {
+			getRawURLInfo(): RawURLInfo { return { baseURL: "/" } }
+			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
+			get validationRules(): object {
+				return {
+					email: ["required", "email"]
+				}
+			}
+		}
+
+		const middleware = controller.createValidationMiddleware()
+		const request  = makeRequest()
+		const { res: response, next } = makeResponse()
+		request.body = {
 			email: faker.internet.domainName()
 		}
 
-		await controller.validateRequest(request, response, next)
+		await middleware.intermediate(request, response, next)
 
-		expect(next).not.toHaveBeenCalled()
+		expect(next).not.toBeCalled()
 		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
 		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
-		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([1, "field"], "username")
 	})
 })
