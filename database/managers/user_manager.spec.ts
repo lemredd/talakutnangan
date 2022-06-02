@@ -1,5 +1,6 @@
 import UserManager from "./user_manager"
 import UserFactory from "~/factories/user"
+import compare from "!/helpers/auth/compare"
 
 describe("Authentication: Search user with credentials", () => {
 	it("can search user", async () => {
@@ -10,7 +11,6 @@ describe("Authentication: Search user with credentials", () => {
 		const foundUser = await manager.findWithCredentials(email, password)
 
 		expect(foundUser.email).toStrictEqual(user.email)
-		expect(foundUser.password).toStrictEqual(user.password)
 	})
 
 	it("cannot search user", async () => {
@@ -33,7 +33,6 @@ describe("General: Search user with ID", () => {
 		const foundUser = await manager.findWithID(id)
 
 		expect(foundUser.email).toStrictEqual(user.email)
-		expect(foundUser.password).toStrictEqual(user.password)
 	})
 
 	it("cannot search user", async () => {
@@ -54,7 +53,7 @@ describe("General: Basic CRUD", () => {
 		const foundUser = await manager.create(user.toJSON())
 
 		expect(foundUser.email).toStrictEqual(user.email)
-		expect(foundUser.password).toStrictEqual(user.password)
+		expect(compare(user.password, foundUser.password)).resolves.toBeTruthy()
 	})
 
 	it.todo("read user profile")
