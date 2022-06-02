@@ -10,18 +10,24 @@ export default abstract class extends PostController {
 		return [
 			...super.getPremiddlewares(),
 			CommonMiddlewareList.JSONBody,
-			this.validateRequest.bind(this)
+			this.createValidationMiddleware()
 		]
 	}
 
 	abstract get validationRules(): object;
 
-	async validateRequest(request: Request, response: Response, next: NextFunction): Promise<void> {
-		const errors = await this.validate(request.body)
-		if (errors.length > 0) {
-			response.status(this.status.BAD_REQUEST).json(errors)
-		} else {
-			next()
+	createValidationMiddleware(): Middleware {
+		const validateFromParent = this.validate.bind(this)
+		return new class extends Middleware {
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
+				const errors = await validateFromParent(request.body)
+				if (errors.length > 0) {
+					response.status(this.status.BAD_REQUEST).json(errors)
+				} else {
+					next()
+				}
+			}
 		}
 	}
 
