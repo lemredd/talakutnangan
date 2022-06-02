@@ -2,6 +2,7 @@ import { Op } from "sequelize"
 import User from "%/models/user"
 import type { Criteria, RawUser } from "%/types"
 
+import hash from "!/helpers/auth/hash"
 import compare from "!/helpers/auth/compare"
 
 export default class UserManager {
@@ -24,6 +25,7 @@ export default class UserManager {
 	}
 
 	async create(details: RawUser): Promise<User> {
+		details.password = await hash(details.password)
 		return await User.create({ ...details })
 	}
 
