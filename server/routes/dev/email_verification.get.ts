@@ -3,6 +3,7 @@ import { promisify } from "util"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
 import { faker } from "@faker-js/faker"
+import { Converter } from "showdown"
 import template from "string-placeholder"
 import { RawRoute } from "!/types"
 import Controller from "!/routes/bases/controller"
@@ -26,10 +27,12 @@ export default class extends Controller {
 			before: "{{ ",
 			after: " }}"
 		})
+		const converter = new Converter()
+		const convertedTemplate = converter.makeHtml(specializedTemplate)
 
 		response.status(StatusCodes.OK)
 		response.header("Content-Type", "text/html")
-		response.send(specializedTemplate)
+		response.send(convertedTemplate)
 		response.end()
 	}
 }
