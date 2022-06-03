@@ -1,5 +1,8 @@
 import { createTransport } from "nodemailer"
-import type { Transporter, SentMessageInfo } from "nodemailer"
+import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
+
+import { Environment } from "!/types"
+import RequestEnvironment from "!/helpers/request_environment"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"
 
@@ -32,14 +35,15 @@ export default class Transport {
 
 	constructor(host: string, port: number, user: string, pass: string) {
 		this.senderUser = user
-		this.transport = createTransport({
+		this.transport = createTransport(<TransportOptions>{
 			host,
 			port,
 			auth: {
 				type: "login",
 				user,
 				pass
-			}
+			},
+			streamTransport: RequestEnvironment.environment === Environment.UnitTest || RequestEnvironment.environment === Environment.IntegrationTest
 		})
 
 		this.transport.verify((error, success) => {
