@@ -4,15 +4,20 @@ import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
 import { faker } from "@faker-js/faker"
 import template from "string-placeholder"
-import Controller from "!/helpers/controller"
+import { RawRoute } from "!/types"
+import Controller from "!/routes/bases/controller"
 
 export default class extends Controller {
-	constructor() {
-		super("get", "email_verification")
+	getRawRoute(): RawRoute {
+		return {
+			method: "get",
+			baseURL: "email_verification"
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const verificationTemplate = (await promisify(readFile)(`${__dirname}/../../../email/email_verification.md`)).toString()
+		const verificationTemplatePath = `${this.root}/email/email_verification.md`
+		const verificationTemplate = (await promisify(readFile)(verificationTemplatePath)).toString()
 		const specializedTemplate = template(verificationTemplate, {
 			email: faker.internet.exampleEmail(),
 			homePageURL: faker.internet.url(),
