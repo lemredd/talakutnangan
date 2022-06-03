@@ -43,7 +43,7 @@ export default class Transport {
 				user,
 				pass
 			},
-			streamTransport: RequestEnvironment.environment === Environment.UnitTest || RequestEnvironment.environment === Environment.IntegrationTest
+			streamTransport: RequestEnvironment.isOnTest
 		})
 
 		this.transport.verify((error, success) => {

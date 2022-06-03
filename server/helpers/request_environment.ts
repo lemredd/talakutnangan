@@ -18,7 +18,7 @@ export default class RequestEnvironment {
 	static destroy() {
 		const environment = getEnvironment()
 
-		if (environment === Environment.UnitTest || environment === Environment.IntegrationTest) {
+		if (this.isOnTest) {
 			RequestEnvironment.dataSource = null
 		}
 	}
