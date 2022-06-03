@@ -45,5 +45,27 @@ export default class extends Controller {
 		response.header("Content-Type", "text/html")
 		response.send(parsedVerification)
 		response.end()
+
+		const from = process.env.EMAIL_USER
+		const to = process.env.EMAIL_USER
+		const message = {
+			from,
+			to,
+			envelope: {
+				from,
+				to
+			},
+			subject: "Email Verification",
+			text: rawVerification,
+			html: parsedVerification
+		}
+
+		transport.sendMail(message, (error, info) => {
+			if (error) {
+				console.error(`Error [${error}]: ${error.message}`)
+			} else {
+				console.log(info)
+			}
+		})
 	}
 }
