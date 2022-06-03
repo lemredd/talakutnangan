@@ -1,10 +1,7 @@
-import { Sequelize } from "sequelize-typescript";
 import Transport from "!/helpers/email/transport";
-import RequestEnvironment from "!/helpers/request_environment";
 import CommonMiddlewareList from "!/middlewares/common_middleware_list";
 
-export default function(dataSource: Sequelize) {
-	RequestEnvironment.intialize(dataSource)
+export default function() {
 	Transport.initialize(
 		process.env.EMAIL_HOST,
 		+process.env.EMAIL_PORT,

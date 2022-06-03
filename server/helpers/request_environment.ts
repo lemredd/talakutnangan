@@ -1,4 +1,3 @@
-import { Sequelize } from "sequelize-typescript"
 import { StatusCodes } from "http-status-codes"
 
 import { Environment } from "!/types"
@@ -9,20 +8,6 @@ import getEnvironment from "!/helpers/get_environment"
  * Contains the environment that can be used by the request handlers.
  */
 export default class RequestEnvironment {
-	protected static dataSource: Sequelize
-
-	static intialize(source: Sequelize) {
-		RequestEnvironment.dataSource = source
-	}
-
-	static destroy() {
-		const environment = getEnvironment()
-
-		if (this.isOnTest) {
-			RequestEnvironment.dataSource = null
-		}
-	}
-
 	static get environment(): Environment { return getEnvironment() }
 
 	static get root(): string { return getRoot() }
