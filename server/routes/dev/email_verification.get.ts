@@ -1,12 +1,9 @@
-import { readFile } from "fs"
-import { promisify } from "util"
-import { StatusCodes } from "http-status-codes"
 import { Request, Response } from "express"
 import { faker } from "@faker-js/faker"
-import { Converter } from "showdown"
-import template from "string-placeholder"
 import { RawRoute } from "!/types"
 import Controller from "!/routes/bases/controller"
+import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
+import specializeTemplateFile from "!/helpers/specialize_template_file"
 
 export default class extends Controller {
 	getRawRoute(): RawRoute {
@@ -17,22 +14,16 @@ export default class extends Controller {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const verificationTemplatePath = `${this.root}/email/email_verification.md`
-		const verificationTemplate = (await promisify(readFile)(verificationTemplatePath)).toString()
-		const specializedTemplate = template(verificationTemplate, {
+		const rawVerification = await specializeTemplateFile("email/email_verification.md", {
 			email: faker.internet.exampleEmail(),
 			homePageURL: faker.internet.url(),
 			emailVerificationURL: faker.internet.url()
-		}, {
-			before: "{{ ",
-			after: " }}"
 		})
-		const converter = new Converter()
-		const convertedTemplate = converter.makeHtml(specializedTemplate)
+		const parsedVerification = convertMarkdownToHTML(rawVerification)
 
-		response.status(StatusCodes.OK)
+		response.status(this.status.OK)
 		response.header("Content-Type", "text/html")
-		response.send(convertedTemplate)
+		response.send(parsedVerification)
 		response.end()
 	}
 }
