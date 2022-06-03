@@ -1,6 +1,5 @@
-import { faker } from "@faker-js/faker"
 import { Request, Response } from "express"
-import { createTransport } from "nodemailer"
+import Transport from "!/helpers/email/transport"
 import { RawRoute } from "!/types"
 import Controller from "!/routes/bases/controller"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
@@ -15,57 +14,29 @@ export default class extends Controller {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const rawVerification = await specializeTemplateFile("email/email_verification.md", {
+		const emailTemplatePath = "email_verification.md"
+		const variables = {
 			email: process.env.EMAIL_USER,
-			homePageURL: faker.internet.url(),
-			emailVerificationURL: faker.internet.url()
-		})
+			homePageURL: `${request.protocol}://${request.hostname}`,
+			emailVerificationURL: `${request.protocol}://${request.hostname}/user/verification`
+		}
+		const rawVerification = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedVerification = convertMarkdownToHTML(rawVerification)
-
-		const transport = createTransport({
-			port: +process.env.EMAIL_PORT,
-			host: process.env.EMAIL_HOST,
-			auth: {
-				type: "login",
-				user: process.env.EMAIL_USER,
-				pass: process.env.EMAIL_PASS
-			}
-		})
-
-		transport.verify((error, success) => {
-			if (error) {
-				console.error("There is a problem on connecting with the e-mail server.")
-				console.error(`Error [${error.name}]: ${error.message}`)
-			} else {
-				console.log("Connected to the e-mail server")
-			}
-		})
 
 		response.status(this.status.OK)
 		response.header("Content-Type", "text/html")
 		response.send(parsedVerification)
 		response.end()
 
-		const from = process.env.EMAIL_USER
 		const to = process.env.EMAIL_USER
-		const message = {
-			from,
-			to,
-			envelope: {
-				from,
-				to
-			},
-			subject: "Email Verification",
-			text: rawVerification,
-			html: parsedVerification
-		}
+		const subject = "Email Verification"
 
-		transport.sendMail(message, (error, info) => {
-			if (error) {
-				console.error(`Error [${error}]: ${error.message}`)
-			} else {
+		Transport.sendMail(to, subject, emailTemplatePath, variables)
+			.then(info => {
 				console.log(info)
-			}
-		})
+			})
+			.catch(error => {
+				console.error(`Error [${error}]: ${error.message}`)
+			})
 	}
 }
