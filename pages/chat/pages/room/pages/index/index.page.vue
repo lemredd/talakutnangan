@@ -1,5 +1,9 @@
 <template>
 	<div>
+		<header>
+			<h1>Chat Room</h1>
+
+		</header>
 		<form @submit.prevent="joinRoom" v-if="!hasEmail" class="flex flex-row flex-nowrap">
 			<label class="flex-1 flex-grow flex-shrink-0">
 				E-mail: <input type="email" ref="emailField" class="bg-gray-500"/>
@@ -45,7 +49,7 @@ function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
-	clientWebSocket.emit("join_room", pageContext.uuid, rawEmail)
+	clientWebSocket.emit("join_room", pageContext.routeParams.uuid, rawEmail)
 	email.value = rawEmail
 }
 
