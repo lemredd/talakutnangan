@@ -4,6 +4,7 @@ import UserManager from "%/managers/user_manager"
 import Middleware from "!/routes/bases/middleware"
 import LogInController from "!/routes/api/user/log_in.post"
 import GuestFormController from "!/routes/kinds/guest_form_controller"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 
 export default class extends GuestFormController {
@@ -40,7 +41,8 @@ export default class extends GuestFormController {
 	getPostmiddlewares(): Middleware[] {
 		return [
 			...super.getPostmiddlewares(),
-			new LogInController()
+			new LogInController(),
+			CommonMiddlewareList.emailVerificationSender
 		]
 	}
 }
