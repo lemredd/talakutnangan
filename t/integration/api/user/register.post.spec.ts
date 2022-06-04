@@ -3,7 +3,7 @@ import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
-import Route from "!/routes/api/user/register.post"
+import Route from "!/app/routes/api/user/register.post"
 
 describe("POST /api/user/register", () => {
 	beforeAll(async () => {

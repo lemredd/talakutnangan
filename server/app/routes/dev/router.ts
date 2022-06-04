@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import GetEmailVerificationRoute from "!/routes/dev/email_verification.get"
+import GetEmailVerificationRoute from "!/app/routes/dev/email_verification.get"
 
 export default class extends Router {
 	get prefix():string { return "/dev" }

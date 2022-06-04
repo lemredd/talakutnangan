@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import UserRouter from "!/routes/api/user/router"
+import UserRouter from "!/app/routes/api/user/router"
 
 export default class extends Router {
 	get prefix(): string { return "/api" }

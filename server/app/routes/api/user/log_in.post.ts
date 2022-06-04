@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express"
 
 import Middleware from "!/bases/middleware"
 import type { RawURLInfo, WithUser }  from "!/types"
-import GuestFormController from "!/routes/kinds/guest_form_controller"
+import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 export default class extends GuestFormController {

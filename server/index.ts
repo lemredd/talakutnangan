@@ -4,7 +4,7 @@ import "dotenv/config"
 import { Server as HTTPServer } from "http"
 
 import createWSServer from "!/ws/create_server"
-import RouterManager from "!/routes/router_manager"
+import RouterManager from "!/app/routes/router_manager"
 import createAppHandler from "!/app/create_handler"
 import initializeSingletons from "!/helpers/initialize_singletons"
 

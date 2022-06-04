@@ -1,6 +1,6 @@
 import Router from "!/bases/router"
 import Controller from "!/bases/controller"
-import GetJoin from "!/routes/chat/join.get"
+import GetJoin from "!/app/routes/chat/join.get"
 
 export default class extends Router {
 	get prefix(): string { return "/chat" }

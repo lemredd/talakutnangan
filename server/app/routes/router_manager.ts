@@ -1,7 +1,7 @@
 import Router from "!/bases/router"
-import APIRouter from "!/routes/api/router"
-import ChatRouter from "!/routes/chat/router"
-import DevRouter from "!/routes/dev/router"
+import APIRouter from "!/app/routes/api/router"
+import ChatRouter from "!/app/routes/chat/router"
+import DevRouter from "!/app/routes/dev/router"
 import { Environment } from "!/types"
 
 export default class extends Router {

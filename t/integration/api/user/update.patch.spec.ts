@@ -3,7 +3,7 @@ import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
-import Route from "!/routes/api/user/update.patch"
+import Route from "!/app/routes/api/user/update.patch"
 
 describe("PATCH /api/user/update/:id", () => {
 	beforeAll(async () => {

@@ -2,8 +2,8 @@ import { Request, Response } from "express"
 
 import UserManager from "%/managers/user_manager"
 import Middleware from "!/bases/middleware"
-import LogInController from "!/routes/api/user/log_in.post"
-import GuestFormController from "!/routes/kinds/guest_form_controller"
+import LogInController from "!/app/routes/api/user/log_in.post"
+import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 

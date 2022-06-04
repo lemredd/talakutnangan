@@ -1,12 +1,12 @@
 import Router from "!/bases/router"
 import Controller from "!/bases/controller"
-import GetList from "!/routes/api/user/list.get"
-import GetCreate from "!/routes/api/user/create.get"
-import PostLogIn from "!/routes/api/user/log_in.post"
-import PostLogOut from "!/routes/api/user/log_out.post"
-import PatchUpdate from "!/routes/api/user/update.patch"
-import PostRegister from "!/routes/api/user/register.post"
-import GetLogInFailure from "!/routes/api/user/log_in_failure.get"
+import GetList from "!/app/routes/api/user/list.get"
+import GetCreate from "!/app/routes/api/user/create.get"
+import PostLogIn from "!/app/routes/api/user/log_in.post"
+import PostLogOut from "!/app/routes/api/user/log_out.post"
+import PatchUpdate from "!/app/routes/api/user/update.patch"
+import PostRegister from "!/app/routes/api/user/register.post"
+import GetLogInFailure from "!/app/routes/api/user/log_in_failure.get"
 
 export default class extends Router {
 	private parentPrefix: string
