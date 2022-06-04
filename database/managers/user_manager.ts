@@ -71,4 +71,17 @@ export default class UserManager {
 			return 1
 		}
 	}
+
+	async verify(email: string): Promise<number> {
+		const [ affectedCount ] = await User.update({
+			emailVerifiedAt: new Date()
+		}, {
+			where: {
+				email,
+				emailVerifiedAt: { [Op.is]: null }
+			}
+		})
+
+		return affectedCount
+	}
 }
