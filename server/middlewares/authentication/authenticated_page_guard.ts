@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 import type { RequestHandler, Request, Response, NextFunction } from "express"
 
-import Middleware from "!/routes/bases/middleware";
+import Middleware from "!/bases/middleware";
 import type { WithPossibleUser, UserKind } from "!/types"
 
 /**

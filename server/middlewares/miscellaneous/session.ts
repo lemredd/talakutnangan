@@ -1,7 +1,7 @@
 import createSessionMiddleware from "express-session"
 import type { Request, Response, NextFunction, RequestHandler } from "express"
 
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
 export default class extends Middleware {
 	intermediate(request: Request, response: Response, next: NextFunction): void {}

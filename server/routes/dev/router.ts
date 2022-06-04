@@ -1,4 +1,4 @@
-import Router from "!/routes/bases/router"
+import Router from "!/bases/router"
 import GetEmailVerificationRoute from "!/routes/dev/email_verification.get"
 
 export default class extends Router {

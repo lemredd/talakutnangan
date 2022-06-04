@@ -5,9 +5,9 @@ import { ParamsDictionary } from "express-serve-static-core"
 import UserManager from "%/managers/user_manager"
 
 import type { RawRoute, WithUser } from "!/types"
-import Controller from "!/routes/bases/controller"
+import Controller from "!/bases/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
 interface ExpectedParameters extends ParamsDictionary {
 	id: string

@@ -1,4 +1,4 @@
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 import passport from "passport"
 import type { Request, Response, NextFunction, RequestHandler } from "express"
 

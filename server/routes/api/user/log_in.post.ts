@@ -2,7 +2,7 @@ import { v4 } from "uuid"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
 
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 import type { RawURLInfo, WithUser }  from "!/types"
 import GuestFormController from "!/routes/kinds/guest_form_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"

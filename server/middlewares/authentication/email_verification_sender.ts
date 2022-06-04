@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express"
 
 import type { WithRegistration } from "!/types"
 import Transport from "!/helpers/email/transport"
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
 /**
  * Creates middleware to provide email verification for new users or updated email addresses.

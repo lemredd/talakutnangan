@@ -1,4 +1,4 @@
-import Router from "!/routes/bases/router"
+import Router from "!/bases/router"
 import APIRouter from "!/routes/api/router"
 import ChatRouter from "!/routes/chat/router"
 import DevRouter from "!/routes/dev/router"

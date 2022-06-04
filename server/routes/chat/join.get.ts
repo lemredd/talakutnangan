@@ -2,7 +2,7 @@ import { v4 } from "uuid"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { RawRoute } from "!/types"
-import Controller from "!/routes/bases/controller"
+import Controller from "!/bases/controller"
 
 export default class extends Controller {
 	getRawRoute(): RawRoute {

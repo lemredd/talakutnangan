@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { RawURLInfo } from "!/types"
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
 import PostJSONController from "./post_json_controller"
 

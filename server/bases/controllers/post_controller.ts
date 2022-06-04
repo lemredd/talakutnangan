@@ -1,5 +1,5 @@
 import { RawRoute, RawURLInfo } from "!/types"
-import Controller from "!/routes/bases/controller"
+import Controller from "!/bases/controller"
 
 export default abstract class extends Controller {
 	abstract getRawURLInfo(): RawURLInfo

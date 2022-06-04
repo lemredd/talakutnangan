@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import { Validator } from "node-input-validator"
 import { ValidationError } from "!/types"
-import Middleware from "!/routes/bases/middleware"
-import PostController from "!/routes/bases/controllers/post_controller"
+import Middleware from "!/bases/middleware"
+import PostController from "!/bases/controllers/post_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default abstract class extends PostController {
