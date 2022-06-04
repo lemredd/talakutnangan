@@ -45,7 +45,7 @@ function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
-	clientWebSocket.emit("join_room", pageContext.uuid, rawEmail)
+	clientWebSocket.emit("join_room", pageContext.routeParams.uuid, rawEmail)
 	email.value = rawEmail
 }
 
