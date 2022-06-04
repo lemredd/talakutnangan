@@ -92,7 +92,7 @@ describe("Extra: Custom Operations", () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
 
-		const verifiedUserCount = await manager.verify(user.id)
+		const verifiedUserCount = await manager.verify(user.email)
 
 		expect(verifiedUserCount).toBe(1)
 		expect((await manager.findWithID(user.id)).emailVerifiedAt).not.toBeNull()
