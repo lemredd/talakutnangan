@@ -87,5 +87,14 @@ describe("Extra: Custom Operations", () => {
 	})
 
 	it.todo("can reject user")
-	it.todo("can verify user")
+
+	it("can verify user", async () => {
+		const manager = new UserManager()
+		const user = await ((new UserFactory()).notVerified()).insertOne()
+
+		const verifiedUserCount = await manager.verify(user.id)
+
+		expect(verifiedUserCount).toBe(1)
+		expect((await manager.findWithID(user.id)).emailVerifiedAt).not.toBeNull()
+	})
 })
