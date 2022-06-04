@@ -37,7 +37,7 @@ export default class UserFactory {
 	}
 
 	notVerified(): UserFactory {
-		this.#mustBeVerified = true
+		this.#mustBeVerified = false
 		return this
 	}
 
