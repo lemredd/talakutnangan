@@ -25,8 +25,11 @@
                         </h2>
                     </div>
                     <div class="right">
+                        <h2 class = "title">
+                            {{ post.voteCount() }}
+                        </h2>
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" class="switch" @click="upVote($event, post)" >
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -42,7 +45,7 @@
 
         <!--footer start-->
         <footer>
-            <p>Footer space<br>
+            <p>Footer space<br> 
             <a href="./forum">email@example.com</a></p>
         </footer>
         <!--footer end-->
@@ -54,10 +57,26 @@
 </style>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { getPosts } from "./data";
 
-var posts = getPosts();
+var posts = ref(getPosts());
 
-var userVotes = 0;
+function upVote(e, post)
+{
+
+    if(e.target.checked)
+    {
+        post.voters.push(post.user);
+    }
+    else
+    {
+        post.voters=post.voters.filter(function(voter)
+        {
+            return voter!=post.user;
+        });
+    }
+    
+}
 
 </script>
