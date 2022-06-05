@@ -14,6 +14,6 @@ export default async function(app: ExpressApp) {
 	]
 
 	middlewares.forEach(middleware => {
-		app.use(...middleware.generateHandlers())
+		app.use(middleware.intermediate.bind(middleware))
 	})
 }
