@@ -6,12 +6,7 @@ import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "email_verification"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const emailTemplatePath = "email_verification.md"

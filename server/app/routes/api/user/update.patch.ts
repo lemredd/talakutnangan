@@ -23,16 +23,11 @@ export interface WithUpdate extends WithUser {
 }
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "patch",
-			baseURL: "update/:id"
-		}
-	}
+	get filePath(): string { return __filename }
 
-	getPremiddlewares(): Middleware[] {
+	get middlewares(): Middleware[] {
 		return [
-			...super.getPremiddlewares(),
+			...super.middlewares,
 			CommonMiddlewareList.basicAuthenticatedPageGuard
 		]
 	}

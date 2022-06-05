@@ -5,12 +5,7 @@ import { RawRoute } from "!/types"
 import Controller from "!/bases/controller"
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "join"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
 		response.writeHead(StatusCodes.MOVED_TEMPORARILY, {

@@ -11,12 +11,7 @@ interface WithQuery {
 }
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "verify"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request & WithQuery, response: Response): Promise<void> {
 		// TODO: Validate query parameter

@@ -8,15 +8,11 @@ import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 export default class extends GuestFormController {
-	getRawURLInfo(): RawURLInfo {
-		return {
-			baseURL: "log_in"
-		}
-	}
+	get filePath(): string { return __filename }
 
-	getPremiddlewares(): Middleware[] {
+	get middlewares(): Middleware[] {
 		return [
-			...super.getPremiddlewares(),
+			...super.middlewares,
 			new LocalLogInMiddleware()
 		]
 	}

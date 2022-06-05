@@ -8,11 +8,7 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
 
 export default class extends GuestFormController {
-	getRawURLInfo(): RawURLInfo {
-		return {
-			baseURL: "register"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	get validationRules(): object {
 		return {
@@ -38,9 +34,9 @@ export default class extends GuestFormController {
 		request.user = user
 	}
 
-	getPostmiddlewares(): Middleware[] {
+	get postJobs(): Middleware[] {
 		return [
-			...super.getPostmiddlewares(),
+			...super.postJobs,
 			new LogInController(),
 			CommonMiddlewareList.emailVerificationSender
 		]

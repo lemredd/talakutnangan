@@ -6,12 +6,7 @@ import UserManager from "%/managers/user_manager"
 import { UserKind } from "%/types"
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "create"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new UserManager()

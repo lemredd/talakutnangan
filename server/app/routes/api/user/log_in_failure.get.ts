@@ -5,12 +5,7 @@ import Controller from "!/bases/controller"
 import { RawRoute } from "!/types"
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "log_in_failure"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
 		response.status(StatusCodes.UNAUTHORIZED).json({

@@ -12,12 +12,7 @@ interface WithQuery {
 }
 
 export default class extends Controller {
-	getRawRoute(): RawRoute {
-		return {
-			method: "get",
-			baseURL: "list"
-		}
-	}
+	get filePath(): string { return __filename }
 
 	async handle(request: Request & WithQuery, response: Response): Promise<void> {
 		const { criteria = null } = request.query
