@@ -15,16 +15,16 @@ export default abstract class extends Middleware {
 	abstract handle(request: Request, response: Response): Promise<void>
 
 	/**
-	 * Returns the middlewares to be used before that handle will execute.
+	 * Returns the middlewares to be used before that main handle will execute.
 	 */
-	protected getPremiddlewares(): Middleware[] {
+	protected get middlewares(): Middleware[] {
 		return []
 	}
 
 	/**
-	 * Returns the middlewares to be used after the handle executed.
+	 * Returns the jobs to run after the main handle executed.
 	 */
-	protected getPostmiddlewares(): Middleware[] {
+	protected get postJobs(): Middleware[] {
 		return []
 	}
 
@@ -42,19 +42,19 @@ export default abstract class extends Middleware {
 	}
 
 	get handler(): RequestHandler[] {
-		const premiddlewares = this.getPremiddlewares()
-		const postmiddlewares = this.getPostmiddlewares()
+		const middlewares = this.middlewares
+		const postJobs = this.postJobs
 
-		if (postmiddlewares.length === 0) {
+		if (postJobs.length === 0) {
 			return [
-				...premiddlewares,
+				...middlewares,
 				this.handle.bind(this)
 			]
 		} else {
 			return [
-				...premiddlewares,
+				...middlewares,
 				this.intermediate.bind(this),
-				...postmiddlewares
+				...postJobs
 			]
 		}
 	}
