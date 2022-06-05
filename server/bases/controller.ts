@@ -1,17 +1,13 @@
-import { Request, Response, NextFunction, RequestHandler } from "express"
-
-import { Route, RawRoute } from "!/types"
 import Middleware from "!/bases/middleware"
+import { RouteInformation } from "!/types/independent"
+import extractRouteInfo from "!/helpers/extract_route_info"
+import { Request, Response, NextFunction, RequestHandler } from "!/types/dependent"
 
 export default abstract class extends Middleware {
-	constructor() {
-		super()
-	}
-
 	/**
-	 * Returns the configuration where to access the controller
+	 * Returns the path of the controller. It should return `__filename`
 	 */
-	abstract getRawRoute(): RawRoute
+	abstract get filePath(): string
 
 	/**
 	 * Handles the request mainly
@@ -36,46 +32,30 @@ export default abstract class extends Middleware {
 		this.handle(request, response).then(next)
 	}
 
-	generateRoute(prefix: string|null = null): Route {
-		const { method, baseURL, overridesPrefix = false } = this.getRawRoute()
-		const URL = (
-			overridesPrefix || prefix === "/" || prefix === null
-			? baseURL
-			: `${prefix}/${baseURL}`
-		)
+	get description(): string|null { return null }
 
-		const handlers = this.flattenHandlers(this.getPremiddlewares())
-
-		const postmiddlewares = this.getPostmiddlewares()
-
-		if (postmiddlewares.length === 0) {
-			handlers.push(this.handle.bind(this))
-		} else {
-			handlers.push(this.intermediate.bind(this))
-
-			for (const postHandler of (this.flattenHandlers(postmiddlewares))) {
-				handlers.push(postHandler)
-			}
-		}
-
-		return {
-			method,
-			URL,
-			handlers
+	get routeInformation(): RouteInformation {
+		return <RouteInformation>{
+			...extractRouteInfo(this.filePath),
+			description: this.description
 		}
 	}
 
-	protected flattenHandlers(middlewares: Middleware[]): RequestHandler[] {
-		const handlers = []
+	get handler(): RequestHandler[] {
+		const premiddlewares = this.getPremiddlewares()
+		const postmiddlewares = this.getPostmiddlewares()
 
-		for (const middleware of middlewares) {
-			const subhandlers = middleware.generateHandlers()
-
-			for(const subhandler of subhandlers) {
-				handlers.push(subhandler)
-			}
+		if (postmiddlewares.length === 0) {
+			return [
+				...premiddlewares,
+				this.handle.bind(this)
+			]
+		} else {
+			return [
+				...premiddlewares,
+				this.intermediate.bind(this),
+				...postmiddlewares
+			]
 		}
-
-		return handlers
 	}
 }
