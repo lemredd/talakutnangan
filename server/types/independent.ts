@@ -4,8 +4,11 @@
  * other parts of the repository. However, they are placed here to indicate where they originate.
  */
 
-import type { Method } from "!/types"
-// TODO: Move Method here
+/**
+ * List of methods that is supported by `express` package
+ */
+export type Method = "get" | "post" | "patch" | "delete"
+
 
 /**
  * Used to indicate the purpose of a certain registered custom route.

@@ -1,6 +1,7 @@
 import { Router, RequestHandler } from "express"
 
 import User from "%/models/user"
+import type { Method } from "!/types/independent"
 
 /**
  * Determines the type of current environment where the script is running
@@ -72,11 +73,6 @@ export enum UserKind {
 	ReachableEmployee = "reachable_employee",
 	Student = "student"
 }
-
-/**
- * List of methods that is supported by `express` package
- */
-export type Method = "get" | "post" | "patch" | "delete"
 
 /**
  * Used to group information about a certain route and its handlers.
