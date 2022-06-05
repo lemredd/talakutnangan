@@ -1,80 +1,46 @@
-import { Request, Response, NextFunction } from "express"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import type { Method, RawRoute } from "!/types"
 import Middleware from "!/bases/middleware"
+import { RouteInformation } from "!/types/independent"
+import { Request, Response, NextFunction } from "!/types/dependent"
 
 import Controller from "./controller"
 
 describe("Back-end: Base Controller", () => {
-	it("can create simple route", () => {
-		const targetURL = "/"
-
+	it("can make handlers", () => {
 		class ControllerA extends Controller {
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL
-				}
-			}
+			get filePath(): string { return __filename }
 
 			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
 
-		const { URL, handlers } = (new ControllerA()).generateRoute()
+		const handlers = (new ControllerA()).handlers
 
-		expect(URL).toBe(targetURL)
 		expect(handlers).toHaveLength(1)
 	})
 
-	it("can override route", () => {
-		const targetURL = "/a/b"
-
+	it("can make route information", () => {
 		class ControllerB extends Controller {
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL,
-					overridesPrefix: true
-				}
-			}
+			get filePath(): string { return `${this.root}/server/app/routes/a/b/index.get.ts` }
 
 			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 		}
 
-		const { URL, handlers } = (new ControllerB()).generateRoute("/c")
+		const routeInformation = (new ControllerB()).routeInformation
 
-		expect(URL).toBe(targetURL)
-	})
-
-	it("can prefix route", () => {
-		const targetURL = "/c/d"
-
-		class ControllerC extends Controller {
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL,
-					overridesPrefix: false
-				}
-			}
-
-			handle(request: Request, response: Response): Promise<void> {
-				return Promise.resolve()
-			}
-		}
-
-		const { URL, handlers } = (new ControllerC()).generateRoute("/a/b")
-
-		expect(URL).toBe(`/a/b/${targetURL}`)
+		expect(routeInformation).toStrictEqual(<RouteInformation>{
+			method: "get",
+			path: "/a/b/index",
+			purpose: "enhancer",
+			description: null
+		})
 	})
 
 	it("can prepend middleware", () => {
-		const targetURL = "/"
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
@@ -84,26 +50,21 @@ describe("Back-end: Base Controller", () => {
 		}
 
 		class ControllerD extends Controller {
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL
-				}
-			}
+			get filePath(): string { return __filename }
 
 			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 
-			getPremiddlewares(): Middleware[] {
+			get middlewares(): Middleware[] {
 				return [
-					...super.getPremiddlewares(),
+					...super.middlewares,
 					new MiddlewareA()
 				]
 			}
 		}
 
-		const { URL, handlers } = (new ControllerD()).generateRoute()
+		const handlers = (new ControllerD()).handlers
 
 		expect(handlers).toHaveLength(2)
 
@@ -113,9 +74,8 @@ describe("Back-end: Base Controller", () => {
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-	it("can append middleware", () => {
+	it("can append post jobs", () => {
 		const middlewareFunction = jest.fn()
-		const targetURL = "/"
 
 		class MiddlewareB extends Middleware {
 			intermediate(request: Request, response: Response, next: NextFunction): void {
@@ -124,26 +84,21 @@ describe("Back-end: Base Controller", () => {
 		}
 
 		class ControllerE extends Controller {
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL
-				}
-			}
+			get filePath(): string { return __filename }
 
 			handle(request: Request, response: Response): Promise<void> {
 				return Promise.resolve()
 			}
 
-			getPostmiddlewares(): Middleware[] {
+			get postJobs(): Middleware[] {
 				return [
-					...super.getPostmiddlewares(),
+					...super.postJobs,
 					new MiddlewareB()
 				]
 			}
 		}
 
-		const { URL, handlers } = (new ControllerE()).generateRoute()
+		const handlers = (new ControllerE()).handlers
 
 		expect(handlers).toHaveLength(2)
 
@@ -156,17 +111,11 @@ describe("Back-end: Base Controller", () => {
 	it("can retain context upon passing", () => {
 		const targetMessage = "Hello world"
 		const handleFunction = jest.fn()
-		const targetURL = "/"
 
 		class ControllerF extends Controller {
 			private message = targetMessage
 
-			getRawRoute(): RawRoute {
-				return {
-					method: "get",
-					baseURL: targetURL
-				}
-			}
+			get filePath(): string { return __filename }
 
 			async handle(request: Request, response: Response): Promise<void> {
 				handleFunction(this.message)
