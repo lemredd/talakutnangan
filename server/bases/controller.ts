@@ -41,7 +41,7 @@ export default abstract class extends Middleware {
 		}
 	}
 
-	get handler(): RequestHandler[] {
+	get handlers(): RequestHandler[] {
 		const middlewares = this.middlewares
 		const postJobs = this.postJobs
 
