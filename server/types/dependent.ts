@@ -7,9 +7,11 @@
 import type {
 	Request as BaseRequest,
 	Response as BaseResponse,
-	NextFunction as BaseNextFunction
+	NextFunction as BaseNextFunction,
+	RequestHandler as BaseRequestHandler
 } from "express"
 
 export interface Request extends BaseRequest {}
 export interface Response extends BaseResponse {}
 export interface NextFunction extends BaseNextFunction {}
+export interface RequestHandler extends BaseRequestHandler {}
