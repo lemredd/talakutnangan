@@ -1,0 +1,28 @@
+/**
+ * @module IndependentTypes
+ * @description This module contains types that do not depend from other packages and can be used by
+ * other parts of the repository. However, they are placed here to indicate where they originate.
+ */
+
+import type { Method } from "!/types"
+// TODO: Move Method here
+
+/**
+ * Used to indicate the purpose of a certain registered custom route.
+ *
+ * Here are the meanings of the following values:
+ * - "api". Route is used as REST API.
+ * - "enhancer". Route is used to enhance to the view route it is associated.
+ * - "web". Route is used to show a web page.
+ */
+export type Purpose = "api" | "enhancer" | "web"
+
+/**
+ * Used to provide route information to be used by server routers.
+ */
+export interface RouteInformation {
+	method: Method,
+	path: string,
+	purpose: Purpose,
+	description: string|null
+}
