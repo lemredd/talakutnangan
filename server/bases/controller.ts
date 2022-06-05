@@ -43,7 +43,8 @@ export default abstract class extends Middleware {
 
 	get handlers(): RequestHandler[] {
 		const middlewares = this.middlewares
-		const postJobs = this.postJobs
+			.map(middleware => middleware.intermediate.bind(middleware))
+		const postJobs = this.postJobs.map(postJob => postJob.intermediate.bind(postJob))
 
 		if (postJobs.length === 0) {
 			return [
