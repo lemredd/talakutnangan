@@ -15,9 +15,9 @@ export type Method = "get" | "post" | "patch" | "delete"
  * Here are the meanings of the following values:
  * - "api". Route is used as REST API.
  * - "enhancer". Route is used to enhance to the view route it is associated.
- * - "web". Route is used to show a web page.
+ * - "dev". Route is used for development.
  */
-export type Purpose = "api" | "enhancer" | "web"
+export type Purpose = "api" | "enhancer" | "dev"
 
 /**
  * Used to provide route information to be used by server routers.
