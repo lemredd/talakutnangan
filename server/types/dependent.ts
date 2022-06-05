@@ -1,5 +1,5 @@
 /**
- * @module Dependent
+ * @module DependentTypes
  * @description This module contains types that are dependent to a third-party package. It was
  * created for compatibility reasons.
  */
