@@ -1,8 +1,8 @@
 import { Router, RequestHandler } from "express"
 
 import User from "%/models/user"
-import type { Method } from "!/types/independent"
-
+import type { Method as BaseMethod } from "!/types/independent"
+export type Method = BaseMethod
 /**
  * Determines the type of current environment where the script is running
  */

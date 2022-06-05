@@ -9,7 +9,6 @@
  */
 export type Method = "get" | "post" | "patch" | "delete"
 
-
 /**
  * Used to indicate the purpose of a certain registered custom route.
  *
