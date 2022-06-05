@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import type { WithRegistration } from "!/types"
 import Transport from "!/helpers/email/transport"

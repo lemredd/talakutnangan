@@ -1,6 +1,6 @@
 import passport from "passport"
 import express from "express"
-import type { Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware";
 

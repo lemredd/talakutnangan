@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import type { Request, Response } from "express"
+import type { Request, Response } from "!/types/dependent"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { WithPossibleUser } from "!/types"
