@@ -7,14 +7,13 @@ import { RouteInformation } from "!/types/independent";
 
 export default abstract class Router extends RequestEnvironment {
 	private routes: UsableRoute[] = []
-	private subrouters: Router[] = []
 
 	useControllers(controllers: Controller[]): void {
 		controllers.forEach(controller => this.useController(controller))
 	}
 
 	useRouters(routers: Router[]): void {
-		this.subrouters.push(...routers)
+		routers.forEach(router => this.useRouter(router))
 	}
 
 	useController(controller: Controller): void {
@@ -27,7 +26,7 @@ export default abstract class Router extends RequestEnvironment {
 	}
 
 	useRouter(router: Router): void {
-		this.subrouters.push(router)
+		this.routes.push(...router.allUsableRoutes)
 	}
 
 	get allRouteInformation(): RouteInformation[] {
@@ -37,26 +36,10 @@ export default abstract class Router extends RequestEnvironment {
 			allRouteInformation.push(information)
 		}
 
-		for (const subrouter of this.subrouters) {
-			const allSubrouteInformation = subrouter.allRouteInformation
-			allRouteInformation.push(...allSubrouteInformation)
-		}
-
 		return allRouteInformation
 	}
 
 	get allUsableRoutes(): UsableRoute[] {
-		const allUsableRoutes: UsableRoute[] = []
-
-		for (const processor of this.routes) {
-			allUsableRoutes.push(processor)
-		}
-
-		for (const subrouter of this.subrouters) {
-			const allUsableSubroutes = subrouter.allUsableRoutes
-			allUsableRoutes.push(...allUsableSubroutes)
-		}
-
-		return allUsableRoutes
+		return this.routes
 	}
 }
