@@ -35,6 +35,15 @@ describe("Helpers: Extract route info", () => {
 		expect(purpose).toBe("enhancer")
 	})
 
+	it("can extract route with argument", () => {
+		const root = "/sample"
+		const currentPath = `${root}/sample(id).get.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(path).toBe("/sample/:id")
+	})
+
 	it("can extract with real path properly", () => {
 		const currentPath = `${getRoot()}/server/app/routes/api/user/log_in.post.ts`
 
