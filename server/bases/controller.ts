@@ -46,7 +46,8 @@ export default abstract class extends Middleware {
 	get handlers(): RouteHandlers {
 		return {
 			middlewares: this.middlewares,
-			controller: this.intermediate.bind(this),
+			controllerAsMiddleware: this.intermediate.bind(this),
+			controllerAsEnd: this.handle.bind(this),
 			postJobs: this.postJobs
 		}
 	}
