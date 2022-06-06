@@ -14,14 +14,13 @@ export default abstract class extends Middleware {
 
 	abstract getSubject(request: Request): object
 
-	intermediate(request: Request, response: Response, next: NextFunction): void {
-		this.validate(this.getSubject).then(errors => {
-			if (errors.length > 0) {
-				response.status(this.status.BAD_REQUEST).json(errors)
-			} else {
-				next()
-			}
-		})
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		const errors = await this.validate(this.getSubject(request))
+		if (errors.length > 0) {
+			response.status(this.status.BAD_REQUEST).json(errors)
+		} else {
+			next()
+		}
 	}
 
 	async validate(body: object): Promise<ValidationError[]> {
