@@ -4,13 +4,16 @@
  */
 
 import type Middleware from "!/bases/middleware"
-import type { RequestHandler } from "!/types/dependent"
+import type { Response, Request, RequestHandler } from "!/types/dependent"
+
+export type EndHandler = (Request, Response) => Promise<void>
 
 /**
  * Used to structure the stored route information with its associated handlers.
  */
  export interface RouteHandlers {
 	middlewares: Middleware[],
-	controller: RequestHandler,
+	controllerAsMiddleware: RequestHandler,
+	controllerAsEnd: EndHandler,
 	postJobs: Middleware[]
 }
