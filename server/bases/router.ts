@@ -40,6 +40,6 @@ export default abstract class Router extends RequestEnvironment {
 	}
 
 	get allUsableRoutes(): UsableRoute[] {
-		return this.routes
+		return [ ...this.routes ]
 	}
 }
