@@ -4,6 +4,7 @@
  */
 
 import type Middleware from "!/bases/middleware"
+import type { RouteInformation } from "!/types/independent"
 import type { Response, Request, RequestHandler } from "!/types/dependent"
 
 export type EndHandler = (Request, Response) => Promise<void>
@@ -16,4 +17,9 @@ export type EndHandler = (Request, Response) => Promise<void>
 	controllerAsMiddleware: RequestHandler,
 	controllerAsEnd: EndHandler,
 	postJobs: Middleware[]
+}
+
+export interface UsableRoute {
+	information: RouteInformation,
+	handlers: RouteHandlers
 }
