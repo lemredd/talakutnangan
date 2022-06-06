@@ -9,16 +9,15 @@ export default async function() {
 			usernameField: "email",
 			passwordField: "password"
 		},
-		(email: string, password: string, done: Function) => {
+		async (email: string, password: string, done: Function) => {
 			const manager = new UserManager()
+			const foundUser = await manager.findWithCredentials(email, password)
 
-			manager.findWithCredentials(email, password).then(foundUser => {
-				if (foundUser === null) {
-					done(null, false, "User not found")
-				} else {
-					done(null, foundUser)
-				}
-			})
+			if (foundUser === null) {
+				done(null, false, "User not found")
+			} else {
+				done(null, foundUser)
+			}
 		}
 	))
 
