@@ -1,7 +1,9 @@
 import Middleware from "!/bases/middleware"
-import { RouteInformation } from "!/types/independent"
 import extractRouteInfo from "!/helpers/extract_route_info"
-import { Request, Response, NextFunction, RequestHandler } from "!/types/dependent"
+
+import { RouteHandlers } from "!/types/hybrid"
+import { RouteInformation } from "!/types/independent"
+import { Request, Response, NextFunction } from "!/types/dependent"
 
 export default abstract class extends Middleware {
 	/**
@@ -41,22 +43,11 @@ export default abstract class extends Middleware {
 		}
 	}
 
-	get handlers(): RequestHandler[] {
-		const middlewares = this.middlewares
-			.map(middleware => middleware.intermediate.bind(middleware))
-		const postJobs = this.postJobs.map(postJob => postJob.intermediate.bind(postJob))
-
-		if (postJobs.length === 0) {
-			return [
-				...middlewares,
-				this.handle.bind(this)
-			]
-		} else {
-			return [
-				...middlewares,
-				this.intermediate.bind(this),
-				...postJobs
-			]
+	get handlers(): RouteHandlers {
+		return {
+			middlewares: this.middlewares,
+			controller: this.intermediate.bind(this),
+			postJobs: this.postJobs
 		}
 	}
 }
