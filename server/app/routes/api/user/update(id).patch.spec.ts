@@ -6,7 +6,7 @@ import UserManager from "%/managers/user_manager"
 
 import UserFactory from "~/factories/user"
 
-import PatchUpdateRoute, { WithUpdate } from "./update.patch"
+import PatchUpdateRoute, { WithUpdate } from "./update(id).patch"
 
 describe("PATCH /api/user/update/:id", () => {
 	type RequestWithUpdate = Request & WithUpdate
