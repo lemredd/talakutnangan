@@ -18,7 +18,10 @@ describe("Back-end: Base Controller", () => {
 
 		const handlers = (new ControllerA()).handlers
 
-		expect(handlers).toHaveLength(1)
+		expect(handlers.middlewares).toHaveLength(0)
+		expect(handlers.controllerAsEnd.name).toBe("bound handle")
+		expect(handlers.controllerAsMiddleware.name).toBe("bound intermediate")
+		expect(handlers.postJobs).toHaveLength(0)
 	})
 
 	it("can make route information", () => {
@@ -44,8 +47,9 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
-			intermediate(request: Request, response: Response, next: NextFunction): void {
+			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
+				return Promise.resolve()
 			}
 		}
 
@@ -66,11 +70,12 @@ describe("Back-end: Base Controller", () => {
 
 		const handlers = (new ControllerD()).handlers
 
-		expect(handlers).toHaveLength(2)
+		expect(handlers.middlewares).toHaveLength(1)
+		expect(handlers.postJobs).toHaveLength(0)
 
 		const request  = makeRequest()
 		const { res: response, next, } = makeResponse()
-		handlers[0](request, response, next)
+		handlers.middlewares[0].intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -78,8 +83,9 @@ describe("Back-end: Base Controller", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareB extends Middleware {
-			intermediate(request: Request, response: Response, next: NextFunction): void {
+			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
+				return Promise.resolve()
 			}
 		}
 
@@ -100,11 +106,12 @@ describe("Back-end: Base Controller", () => {
 
 		const handlers = (new ControllerE()).handlers
 
-		expect(handlers).toHaveLength(2)
+		expect(handlers.middlewares).toHaveLength(0)
+		expect(handlers.postJobs).toHaveLength(1)
 
 		const request  = makeRequest()
 		const { res: response, next, } = makeResponse()
-		handlers[1](request, response, next)
+		handlers.postJobs[0].intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 

@@ -8,24 +8,24 @@ import GuestPageGuard from "./guest_page_guard"
 describe("Middleware: Authenticated Guard", () => {
 	type RequestWithPossibleUser = Request & WithPossibleUser
 
-	it("can allow guest users", () => {
+	it("can allow guest users", async () => {
 		const authenticatedGuard = new GuestPageGuard()
 		const request  = makeRequest<RequestWithPossibleUser>()
 		const { res: response, next, } = makeResponse()
 		request.isAuthenticated = jest.fn().mockReturnValue(false)
 
-		authenticatedGuard.generateHandlers()[0](request, response, next)
+		await authenticatedGuard.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can deny authenticated users", () => {
+	it.skip("can deny authenticated users", async () => {
 		const authenticatedGuard = new GuestPageGuard()
 		const request  = makeRequest<RequestWithPossibleUser>()
 		const { res: response, next, } = makeResponse()
 		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
-		authenticatedGuard.generateHandlers()[0](request, response, next)
+		await authenticatedGuard.intermediate(request, response, next)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status).toHaveBeenCalled()

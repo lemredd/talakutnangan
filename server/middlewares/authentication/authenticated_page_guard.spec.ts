@@ -17,7 +17,7 @@ describe("Middleware: Authorization guard", () => {
 		const { res: response, next, } = makeResponse()
 		request.user = user
 
-		pageGuard.generateHandlers()[0](request, response, next)
+		await pageGuard.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
 	})
@@ -29,7 +29,7 @@ describe("Middleware: Authorization guard", () => {
 		const { res: response, next, } = makeResponse()
 		request.user = user
 
-		pageGuard.generateHandlers()[0](request, response, next)
+		await pageGuard.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
 	})
@@ -41,7 +41,7 @@ describe("Middleware: Authorization guard", () => {
 		const { res: response, next, } = makeResponse()
 		request.user = user
 
-		pageGuard.generateHandlers()[0](request, response, next)
+		await pageGuard.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
 	})
@@ -53,7 +53,7 @@ describe("Middleware: Authorization guard", () => {
 		const { res: response, next, } = makeResponse()
 		request.user = user
 
-		pageGuard.generateHandlers()[0](request, response, next)
+		await pageGuard.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
 	})
@@ -64,7 +64,7 @@ describe("Middleware: Authorization guard", () => {
 		const { res: response, next, } = makeResponse()
 		request.user = null
 
-		pageGuard.generateHandlers()[0](request, response, next)
+		await pageGuard.intermediate(request, response, next)
 
 		const status = response.status as jest.MockedFn<(number) => Response>
 		expect(status).toHaveBeenCalled()
