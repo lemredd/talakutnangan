@@ -1,53 +1,62 @@
-import { Router as createRouter } from "express"
 import Middleware from "!/bases/middleware"
 import Controller from "!/bases/controller"
 import RequestEnvironment from "!/helpers/request_environment";
 
-export default abstract class Router extends RequestEnvironment {
-	private prefixedRouter = createRouter()
-	private overridenRouter = createRouter()
+import { UsableRoute } from "!/types/hybrid";
+import { RouteInformation } from "!/types/independent";
 
-	abstract get prefix(): string;
+export default abstract class Router extends RequestEnvironment {
+	private routes: UsableRoute[] = []
+	private subrouters: Router[] = []
 
 	useControllers(controllers: Controller[]): void {
 		controllers.forEach(controller => this.useController(controller))
 	}
 
 	useRouters(routers: Router[]): void {
-		routers.forEach(router => this.useRouter(router))
+		this.subrouters.push(...routers)
 	}
 
 	useController(controller: Controller): void {
-		const { method, URL, handlers } = controller.generateRoute(this.prefix)
-		if (URL.startsWith(this.prefix)) {
-			this.prefixedRouter[method](URL, ...handlers)
-		} else {
-			this.overridenRouter[method](URL, ...handlers)
-		}
+		const information = controller.routeInformation
+		const handlers = controller.handlers
+		this.routes.push({
+			information,
+			handlers
+		})
 	}
 
 	useRouter(router: Router): void {
-		const [ prefixedRouter, overridenRouter ] = (router.routers)
-		this.prefixedRouter.use(prefixedRouter)
-		this.overridenRouter.use(overridenRouter)
+		this.subrouters.push(router)
 	}
 
-	useMiddleware(overridenURL: string, middleware: Middleware): void {
-		const handlers = middleware.generateHandlers()
-		this.overridenRouter.use(overridenURL, ...handlers)
+	get allRouteInformation(): RouteInformation[] {
+		const allRouteInformation: RouteInformation[] = []
+
+		for (const { information } of this.routes) {
+			allRouteInformation.push(information)
+		}
+
+		for (const subrouter of this.subrouters) {
+			const allSubrouteInformation = subrouter.allRouteInformation
+			allRouteInformation.push(...allSubrouteInformation)
+		}
+
+		return allRouteInformation
 	}
 
-	get routers(): createRouter[] {
-		return [
-			this.prefixedRouter,
-			this.overridenRouter
-		]
-	}
+	get allUsableRoutes(): UsableRoute[] {
+		const allUsableRoutes: UsableRoute[] = []
 
-	get combinedRouter(): createRouter {
-		const main = createRouter()
-		main.use(this.prefixedRouter)
-		main.use(this.overridenRouter)
-		return main
+		for (const processor of this.routes) {
+			allUsableRoutes.push(processor)
+		}
+
+		for (const subrouter of this.subrouters) {
+			const allUsableSubroutes = subrouter.allUsableRoutes
+			allUsableRoutes.push(...allUsableSubroutes)
+		}
+
+		return allUsableRoutes
 	}
 }
