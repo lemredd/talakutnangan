@@ -9,13 +9,8 @@ import PostRegister from "!/app/routes/api/user/register.post"
 import GetLogInFailure from "!/app/routes/api/user/log_in_failure.get"
 
 export default class extends Router {
-	private parentPrefix: string
-	get prefix(): string { return `${this.parentPrefix}/user` }
-
-	constructor(parentPrefix: string) {
+	constructor() {
 		super()
-
-		this.parentPrefix = parentPrefix
 
 		this.useControllers([
 			new GetList(),
