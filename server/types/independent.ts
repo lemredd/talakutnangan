@@ -28,3 +28,17 @@ export interface RouteInformation {
 	purpose: Purpose,
 	description: string|null
 }
+
+import type Policy from "!/bases/policy"
+import type Middleware from "!/bases/middleware"
+import type Validation from "!/bases/validation"
+
+/**
+ * Used to structure the stored route information with its associated handlers.
+ */
+ export interface RouteHandlers {
+	middlewares: Middleware[],
+	policy: Policy,
+	validation: Validation,
+	postJobs: Middleware[]
+}
