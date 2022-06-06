@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import type { RequestHandler, Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 
 import Middleware from "!/bases/middleware";
 import type { WithPossibleUser, UserKind } from "!/types"
