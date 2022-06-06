@@ -14,7 +14,7 @@ export default class Session extends Middleware {
 		}
 	})
 
-	intermediate(request: Request, response: Response, next: NextFunction): void {
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		Session.session(request, response, next)
 	}
 }

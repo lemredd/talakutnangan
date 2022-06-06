@@ -8,11 +8,11 @@ import Middleware from "!/bases/middleware"
  * Creates middleware to provide email verification for new users or updated email addresses.
  */
 export default class extends Middleware {
-	intermediate(
+	async intermediate(
 		request: Request & WithRegistration,
 		_response: Response,
 		next: NextFunction
-	): void {
+	): Promise<void> {
 		const to = request.body.email
 		const subject = "Email Verification"
 		Transport.sendMail(to, subject, "email_verification.md", {

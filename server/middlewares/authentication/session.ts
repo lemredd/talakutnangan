@@ -5,7 +5,7 @@ import Middleware from "!/bases/middleware"
 export default class Session extends Middleware {
 	private static session = passport.session()
 
-	intermediate(request: Request, response: Response, next: NextFunction): void {
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		Session.session(request, response, next)
 	}
 }

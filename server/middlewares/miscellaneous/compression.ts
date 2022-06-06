@@ -6,7 +6,7 @@ import Middleware from "!/bases/middleware";
 export default class Compression extends Middleware {
 	private static compress = compression()
 
-	intermediate(request: Request, response: Response, next: NextFunction): void {
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		Compression.compress(request, response, next)
 	}
 }

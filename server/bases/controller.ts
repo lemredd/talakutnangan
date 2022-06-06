@@ -30,8 +30,8 @@ export default abstract class extends Middleware {
 		return []
 	}
 
-	intermediate(request: Request, response: Response, next: NextFunction): void {
-		this.handle(request, response).then(next)
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		return this.handle(request, response).then(next)
 	}
 
 	get description(): string|null { return null }
