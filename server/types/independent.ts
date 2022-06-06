@@ -32,13 +32,15 @@ export interface RouteInformation {
 import type Policy from "!/bases/policy"
 import type Middleware from "!/bases/middleware"
 import type Validation from "!/bases/validation"
+import type Controller from "!/bases/controller"
 
 /**
  * Used to structure the stored route information with its associated handlers.
  */
  export interface RouteHandlers {
 	middlewares: Middleware[],
-	policy: Policy,
-	validation: Validation,
+	policy: Policy|null,
+	validation: Validation|null,
+	controller: Controller,
 	postJobs: Middleware[]
 }
