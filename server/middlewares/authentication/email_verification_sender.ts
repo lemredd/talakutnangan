@@ -1,18 +1,18 @@
-import type { Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import type { WithRegistration } from "!/types"
 import Transport from "!/helpers/email/transport"
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
 /**
  * Creates middleware to provide email verification for new users or updated email addresses.
  */
 export default class extends Middleware {
-	intermediate(
+	async intermediate(
 		request: Request & WithRegistration,
 		_response: Response,
 		next: NextFunction
-	): void {
+	): Promise<void> {
 		const to = request.body.email
 		const subject = "Email Verification"
 		Transport.sendMail(to, subject, "email_verification.md", {

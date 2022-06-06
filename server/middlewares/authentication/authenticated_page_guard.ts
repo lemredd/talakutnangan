@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
-import type { RequestHandler, Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 
-import Middleware from "!/routes/bases/middleware";
+import Middleware from "!/bases/middleware";
 import type { WithPossibleUser, UserKind } from "!/types"
 
 /**
@@ -17,11 +17,11 @@ export default class extends Middleware {
 		this.kind = kind
 	}
 
-	intermediate(
+	async intermediate(
 		request: Request & WithPossibleUser,
 		response: Response,
 		next: NextFunction
-	): void {
+	): Promise<void> {
 		// TODO: Add user kind in the model
 		if (request.user === null || (this.kind !== null && true /** Replace to kind property **/)) {
 			response.status(StatusCodes.UNAUTHORIZED).json({
