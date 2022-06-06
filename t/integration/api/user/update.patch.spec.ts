@@ -20,7 +20,6 @@ describe("PATCH /api/user/update/:id", () => {
 			.query({ confirm: true })
 			.set("Cookie", cookie)
 
-		expect(response.body).toBe(StatusCodes.ACCEPTED)
 		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
 
 		const updatedStudent = await manager.findWithID(student.id)
