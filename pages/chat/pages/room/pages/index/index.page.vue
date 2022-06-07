@@ -46,7 +46,7 @@
 import { ref, computed } from "vue"
 import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
-import Video from "./Video.vue";
+import Participant from "./Participant.vue";
 
 const clientWebSocket = makeClient()
 const pageContext = usePageContext()
