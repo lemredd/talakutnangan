@@ -17,11 +17,7 @@
 			</div>
 		</header>
 		<div class="chatbox grid grid-cols-[2fr,1fr]">
-			<div class="videos" v-if="isCalling">
-				<div class="participants">
-				<Participant :id="`user-id-${email}`"></Participant>
-				</div>
-			</div>
+			<GroupCall></GroupCall>
 
 			<form @submit.prevent="sendMessage">
 				<label class="flex-1 flex-grow flex-shrink-0">
@@ -43,15 +39,15 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, provide } from "vue"
 import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
-import Participant from "@/room/Participant.vue";
+import GroupCall from "@/room/GroupCall.vue";
 
 const clientWebSocket = makeClient()
 const pageContext = usePageContext()
 const emailField = ref(null)
-const email = ref("user@user")
+const email = ref("")
 const isCalling = ref(false)
 const hasEmail = computed(() => email.value !== "")
 
@@ -62,16 +58,17 @@ clientWebSocket.on("receive_message", message => {
 	messages.value.push(message)
 })
 
-function initiateCall() {
-	isCalling.value = true
-}
-
 function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
 	clientWebSocket.emit("join_room", pageContext.routeParams.uuid, rawEmail)
 	email.value = rawEmail
+}
+
+function initiateCall() {
+	isCalling.value = true
+	clientWebSocket.emit("call_on_room", email.value)
 }
 
 function sendMessage(event) {
@@ -87,4 +84,6 @@ function sendMessage(event) {
 	input.value = ""
 }
 
+provide("isCalling", isCalling)
+provide("email", email)
 </script>
