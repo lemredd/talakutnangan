@@ -19,7 +19,7 @@
 		<div class="chatbox grid grid-cols-[2fr,1fr]">
 			<div class="videos" v-if="isCalling">
 				<div class="participants">
-				<Video :id="email"></Video>
+				<Video :id="`user-id-${email}`"></Video>
 				</div>
 			</div>
 
