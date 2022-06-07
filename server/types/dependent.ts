@@ -27,3 +27,12 @@ export interface Request extends BaseRequest {
 export interface Response extends BaseResponse {}
 export interface NextFunction extends BaseNextFunction {}
 export interface RequestHandler extends BaseRequestHandler {}
+
+import { ParsedQs } from "qs"
+export type Query = ParsedQs
+
+import { ParamsDictionary } from "express-serve-static-core"
+export type Parameters = ParamsDictionary
+export interface IDParameter extends Parameters {
+	id: string
+}
