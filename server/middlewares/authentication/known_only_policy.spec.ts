@@ -6,12 +6,12 @@ import type { Request, Response } from "!/types/dependent"
 
 import UserFactory from "~/factories/user"
 
-import AuthenticatedPageGuard from "./authenticated_page_guard"
+import KnownOnlyPolicy from "./known_only_policy"
 
 describe("Middleware: Authorization guard", () => {
 	it("can allow any authenticated users", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new AuthenticatedPageGuard(null)
+		const pageGuard = new KnownOnlyPolicy(null)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -23,7 +23,7 @@ describe("Middleware: Authorization guard", () => {
 
 	it.skip("can allow unreachable employees only", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new AuthenticatedPageGuard(UserKind.UnreachableEmployee)
+		const pageGuard = new KnownOnlyPolicy(UserKind.UnreachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -35,7 +35,7 @@ describe("Middleware: Authorization guard", () => {
 
 	it.skip("can allow reachable employees only", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new AuthenticatedPageGuard(UserKind.ReachableEmployee)
+		const pageGuard = new KnownOnlyPolicy(UserKind.ReachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -47,7 +47,7 @@ describe("Middleware: Authorization guard", () => {
 
 	it.skip("can allow students only", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new AuthenticatedPageGuard(UserKind.Student)
+		const pageGuard = new KnownOnlyPolicy(UserKind.Student)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -58,7 +58,7 @@ describe("Middleware: Authorization guard", () => {
 	})
 
 	it("can deny guest users", async () => {
-		const pageGuard = new AuthenticatedPageGuard(null)
+		const pageGuard = new KnownOnlyPolicy(null)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = null

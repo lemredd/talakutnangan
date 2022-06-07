@@ -22,7 +22,7 @@ export default class extends Controller {
 	get middlewares(): Middleware[] {
 		return [
 			...super.middlewares,
-			CommonMiddlewareList.basicAuthenticatedPageGuard
+			CommonMiddlewareList.knownOnlyPolicy
 		]
 	}
 
