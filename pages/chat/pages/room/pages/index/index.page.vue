@@ -43,7 +43,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, VNode} from "vue"
+import { ref, computed } from "vue"
 import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
 import Video from "./Video.vue";
