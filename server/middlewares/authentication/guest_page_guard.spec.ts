@@ -2,15 +2,12 @@ import { StatusCodes } from "http-status-codes"
 import type { Request, Response } from "!/types/dependent"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import type { WithPossibleUser } from "!/types"
 import GuestPageGuard from "./guest_page_guard"
 
 describe("Middleware: Authenticated Guard", () => {
-	type RequestWithPossibleUser = Request & WithPossibleUser
-
 	it("can allow guest users", async () => {
 		const authenticatedGuard = new GuestPageGuard()
-		const request  = makeRequest<RequestWithPossibleUser>()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.isAuthenticated = jest.fn().mockReturnValue(false)
 
@@ -21,7 +18,7 @@ describe("Middleware: Authenticated Guard", () => {
 
 	it.skip("can deny authenticated users", async () => {
 		const authenticatedGuard = new GuestPageGuard()
-		const request  = makeRequest<RequestWithPossibleUser>()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
