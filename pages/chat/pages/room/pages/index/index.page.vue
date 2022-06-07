@@ -19,7 +19,7 @@
 		<div class="chatbox grid grid-cols-[2fr,1fr]">
 			<div class="videos" v-if="isCalling">
 				<div class="participants">
-				<Video :id="`user-id-${email}`"></Video>
+				<Participant :id="`user-id-${email}`"></Participant>
 				</div>
 			</div>
 
@@ -46,12 +46,12 @@
 import { ref, computed } from "vue"
 import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
-import Participant from "./Participant.vue";
+import Participant from "@/room/Participant.vue";
 
 const clientWebSocket = makeClient()
 const pageContext = usePageContext()
 const emailField = ref(null)
-const email = ref("")
+const email = ref("user@user")
 const isCalling = ref(false)
 const hasEmail = computed(() => email.value !== "")
 
