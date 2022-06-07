@@ -46,3 +46,14 @@ export interface ValidationError {
 	field: string,
 	message: string
 }
+
+/**
+ * Type to combine with `Request` type to do registration
+ */
+export interface WithRegistration {
+	body: {
+		email: string,
+		password: string,
+		kind?: "unreachable employee" | "reachable employee" | "student"
+	}
+}
