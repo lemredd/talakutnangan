@@ -1,26 +1,20 @@
-import { ParsedQs } from "qs"
-import { Request, Response } from "express"
-import { ParamsDictionary } from "express-serve-static-core"
+import type { IDParameter, Query, Request as BaseRequest, Response } from "!/types/dependent"
 
-import UserManager from "%/managers/user_manager"
-
-import type { RawRoute, WithUser } from "!/types"
 import Controller from "!/bases/controller"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import Middleware from "!/bases/middleware"
+import UserManager from "%/managers/user_manager"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-interface ExpectedParameters extends ParamsDictionary {
-	id: string
-}
-
-interface ExpectedQuery extends ParsedQs {
+interface ExpectedQuery extends Query {
 	confirm: string
 }
 
-export interface WithUpdate extends WithUser {
-	params: ExpectedParameters,
+interface WithUpdate {
+	params: IDParameter,
 	query: ExpectedQuery
 }
+
+export type Request = BaseRequest & WithUpdate
 
 export default class extends Controller {
 	get filePath(): string { return __filename }

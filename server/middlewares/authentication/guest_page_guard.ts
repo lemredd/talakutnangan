@@ -1,7 +1,5 @@
-import Middleware from "!/bases/middleware";
-import { StatusCodes } from "http-status-codes"
-import type { RequestHandler, Request, Response, NextFunction } from "express"
-import type { WithPossibleUser, UserKind } from "!/types"
+import Middleware from "!/bases/middleware"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 /**
  * Creates middleware to guards guest pages against authenticated users.
@@ -9,13 +7,9 @@ import type { WithPossibleUser, UserKind } from "!/types"
  * Useful for home page and some authentication forms.
  */
 export default class extends Middleware {
-	async intermediate(
-		request: Request & WithPossibleUser,
-		response: Response,
-		next: NextFunction
-	): Promise<void> {
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		if (request.isAuthenticated()) {
-			response.status(StatusCodes.UNAUTHORIZED)
+			response.status(this.status.UNAUTHORIZED)
 
 			response.json({
 				errors: [

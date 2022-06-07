@@ -1,11 +1,12 @@
-import { Request, Response } from "express"
+import { UserKind } from "%/types"
+import { Response } from "!/types/dependent"
+import { RequestWithRegistration as Request }  from "!/types/hybrid"
 
-import UserManager from "%/managers/user_manager"
 import Middleware from "!/bases/middleware"
+import UserManager from "%/managers/user_manager"
 import LogInController from "!/app/routes/api/user/log_in.post"
-import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import { WithRegistration, WithPossibleUser, RawURLInfo, UserKind }  from "!/types"
+import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 
 export default class extends GuestFormController {
 	get filePath(): string { return __filename }
@@ -17,10 +18,7 @@ export default class extends GuestFormController {
 		}
 	}
 
-	async handle(
-		request: Request & WithRegistration & WithPossibleUser,
-		response: Response
-	): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new UserManager()
 		const { email, password } = request.body
 

@@ -1,8 +1,7 @@
-import { StatusCodes } from "http-status-codes"
-import type { Request, Response, NextFunction } from "express"
-
 import Middleware from "!/bases/middleware";
-import type { WithPossibleUser, UserKind } from "!/types"
+
+import type { UserKind } from "%/types"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 /**
  * Creates middleware to only allow authenticated users.
@@ -17,14 +16,10 @@ export default class extends Middleware {
 		this.kind = kind
 	}
 
-	async intermediate(
-		request: Request & WithPossibleUser,
-		response: Response,
-		next: NextFunction
-	): Promise<void> {
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		// TODO: Add user kind in the model
 		if (request.user === null || (this.kind !== null && true /** Replace to kind property **/)) {
-			response.status(StatusCodes.UNAUTHORIZED).json({
+			response.status(this.status.UNAUTHORIZED).json({
 				errors: [
 					"You are not allowed to go to that page."
 				]
