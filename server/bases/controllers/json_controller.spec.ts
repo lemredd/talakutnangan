@@ -1,9 +1,8 @@
 import { faker } from "@faker-js/faker"
-import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
+import { Request, Response } from "!/types/dependent"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import Middleware from "!/bases/middleware"
 import Validation from "!/bases/middleware"
 
 import JSONController from "./json_controller"
@@ -35,7 +34,7 @@ describe("Back-end: Post JSON Controller", () => {
 
 		const middlewares = controller.handlers.middlewares
 		const validationMiddleware = middlewares[middlewares.length - 1]
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next } = makeResponse()
 		request.body = {
 			email: faker.internet.exampleEmail()
@@ -59,7 +58,7 @@ describe("Back-end: Post JSON Controller", () => {
 
 		const middlewares = controller.handlers.middlewares
 		const validationMiddleware = middlewares[middlewares.length - 1]
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next } = makeResponse()
 		request.body = {
 			email: faker.internet.domainName()
@@ -88,7 +87,7 @@ describe("Back-end: Post JSON Controller", () => {
 
 		const middlewares = controller.handlers.middlewares
 		const validationMiddleware = middlewares[middlewares.length - 1]
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next } = makeResponse()
 		request.body = {
 			username: faker.random.alpha(14),
