@@ -15,6 +15,7 @@ describe("Middleware: Authorization guard", () => {
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await pageGuard.intermediate(request, response, next)
 
@@ -27,6 +28,7 @@ describe("Middleware: Authorization guard", () => {
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await pageGuard.intermediate(request, response, next)
 
@@ -39,6 +41,7 @@ describe("Middleware: Authorization guard", () => {
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await pageGuard.intermediate(request, response, next)
 
@@ -51,6 +54,7 @@ describe("Middleware: Authorization guard", () => {
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await pageGuard.intermediate(request, response, next)
 
@@ -62,6 +66,7 @@ describe("Middleware: Authorization guard", () => {
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = null
+		request.isAuthenticated = jest.fn().mockReturnValue(false)
 
 		await pageGuard.intermediate(request, response, next)
 
