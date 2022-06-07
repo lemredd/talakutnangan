@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes"
 import type { Request, Response } from "!/types/dependent"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import GuestPageGuard from "./guest_page_guard"
+import GuestPageGuard from "./guest_only_policy"
 
 describe("Middleware: Authenticated Guard", () => {
 	it("can allow guest users", async () => {
