@@ -1,14 +1,12 @@
 import compression from "compression"
-import type { Request, Response, NextFunction, RequestHandler } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Middleware from "!/routes/bases/middleware";
+import Middleware from "!/bases/middleware";
 
-export default class extends Middleware {
-	intermediate(request: Request, response: Response, next: NextFunction): void {}
+export default class Compression extends Middleware {
+	private static compress = compression()
 
-	generateHandlers(): RequestHandler[] {
-		return [
-			compression()
-		]
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		Compression.compress(request, response, next)
 	}
 }

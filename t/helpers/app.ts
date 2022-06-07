@@ -1,25 +1,29 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
-import Router from "!/routes/bases/router"
+import Router from "!/bases/router"
 import UserFactory from "~/factories/user"
-import Controller from "!/routes/bases/controller"
-import LogInController from "!/routes/api/user/log_in.post"
+import Controller from "!/bases/controller"
+import LogInController from "!/app/routes/api/user/log_in.post"
 import createAppHandler from "!/app/create_handler"
 
 export default class {
 	static #app: Express
 	static #request
-	static #router
-	static #hasLogInRoute = false
 
-	static async create(prefix: string, controller: Controller) {
+	static async create(
+		prefix: string,
+		controller: Controller,
+		needsAuthentication: boolean = true
+	) {
 		const router = new class extends Router {
-			get prefix(): string { return prefix }
+			constructor() {
+				super()
+				this.useController(controller)
+				if (needsAuthentication) this.useController(new LogInController())
+			}
 		}
-		router.useController(controller)
-		this.#router = router
-		this.#app = await createAppHandler(router.combinedRouter)
+		this.#app = await createAppHandler(router)
 		this.#request = supertest(this.#app)
 	}
 
@@ -28,11 +32,6 @@ export default class {
 	}
 
 	static async makeAuthenticatedCookie() {
-		if (!this.#hasLogInRoute) {
-			this.#router.useController(new LogInController())
-			this.#hasLogInRoute = true
-		}
-
 		const user = await (new UserFactory()).insertOne()
 
 		const response = await this.#request

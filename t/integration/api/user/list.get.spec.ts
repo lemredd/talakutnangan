@@ -3,7 +3,7 @@ import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
-import Route from "!/routes/api/user/list.get"
+import Route from "!/app/routes/api/user/list.get"
 
 describe("GET /api/user/list", () => {
 	beforeAll(async () => {

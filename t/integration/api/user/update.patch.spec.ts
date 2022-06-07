@@ -3,7 +3,7 @@ import UserManager from "%/managers/user_manager"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
-import Route from "!/routes/api/user/update.patch"
+import Route from "!/app/routes/api/user/update(id).patch"
 
 describe("PATCH /api/user/update/:id", () => {
 	beforeAll(async () => {
@@ -12,12 +12,13 @@ describe("PATCH /api/user/update/:id", () => {
 
 	it("can be accessed by permitted user and admit other user", async () => {
 		const manager = new UserManager()
-		// const admin = await (new UserFactory()).verified().insertOne()
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
 		const student = await (new UserFactory()).insertOne()
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
 			.query({ confirm: true })
+			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
 
