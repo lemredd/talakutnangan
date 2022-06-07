@@ -19,6 +19,7 @@ export default class extends Policy {
 	mayAllow(request: Request): boolean {
 		return request.isAuthenticated() && (
 			request.user.kind === this.kind
-		) || this.kind !== null
+			|| this.kind === null
+		)
 	}
 }
