@@ -5,6 +5,16 @@
  */
 
 /**
+ * Used to indicate the type of current environment where the script is running.
+ */
+ export enum Environment {
+	Production,
+	Development,
+	UnitTest,
+	IntegrationTest
+}
+
+/**
  * List of methods that is supported by `express` package
  */
 export type Method = "get" | "post" | "patch" | "delete"
@@ -27,4 +37,12 @@ export interface RouteInformation {
 	path: string,
 	purpose: Purpose,
 	description: string|null
+}
+
+/**
+ * Used to return as an output by validation methods in non-GET controllers
+ */
+export interface ValidationError {
+	field: string,
+	message: string
 }

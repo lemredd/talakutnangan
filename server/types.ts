@@ -1,17 +1,4 @@
-import { Router, RequestHandler } from "express"
-
 import User from "%/models/user"
-import type { Method as BaseMethod } from "!/types/independent"
-export type Method = BaseMethod
-/**
- * Determines the type of current environment where the script is running
- */
-export enum Environment {
-	Production,
-	Development,
-	UnitTest,
-	IntegrationTest
-}
 
 /**
  * Type to combine with `Request` type to get the session
@@ -50,37 +37,12 @@ export interface WithRegistration extends WithSession {
 }
 
 /**
- * Type returned by the route managers
- */
-export interface Routers {
-	/**
-	 * Router that can be prefixed by the parent route manager.
-	 */
-	main: Router,
-
-	/**
-	 * Router that cannot be prefixed by the parent route manager. It will be based possibly in in
-	 * root route.
-	 */
-	special?: Router
-}
-
-/**
  * Possible kinds of user that the system can handle
  */
 export enum UserKind {
 	UnreachableEmployee = "unreachable_employee",
 	ReachableEmployee = "reachable_employee",
 	Student = "student"
-}
-
-/**
- * Used to group information about a certain route and its handlers.
- */
-export interface Route {
-	method: Method,
-	URL: string,
-	handlers: RequestHandler[]
 }
 
 /**
@@ -99,27 +61,4 @@ export interface PartialTableColumnOptions {
 	precision?: number | null,
 	scale?: number,
 	enum?: string[]
-}
-
-/*
- * Used to pass information where the controller extends a class that has predetermined HTTP method
- */
-export interface RawURLInfo {
-	baseURL: string,
-	overridesPrefix?: boolean
-}
-
-/**
- * Used to pass information where the controller can be accessed.
- */
-export interface RawRoute extends RawURLInfo {
-	method: Method,
-}
-
-/**
- * Used to return as an output by validation methods in non-GET controllers
- */
-export interface ValidationError {
-	field: string,
-	message: string
 }
