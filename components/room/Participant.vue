@@ -1,5 +1,7 @@
 <template>
-<video ref="videoElement"></video>
+<div class="participant">
+    <video ref="videoElement"></video>
+</div>
 </template>
 
 <style scoped lang="scss">
