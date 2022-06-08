@@ -27,6 +27,9 @@ const clientWebSocket = inject("clientWebSocket") as Socket
 
 const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, stream: MediaStream) => void
 onMounted(() => {
+	peer.on("open", function(id) {
+		clientWebSocket.emit("call_on_room", id)
+	})
     navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         peer.on("call", (call: Call) => {

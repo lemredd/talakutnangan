@@ -68,7 +68,6 @@ function joinRoom() {
 
 function initiateCall() {
 	isCalling.value = true
-	clientWebSocket.emit("call_on_room", email.value)
 }
 
 function sendMessage(event) {
