@@ -31,23 +31,36 @@ onMounted(() => {
 	peer.on("open", function(id) {
 		clientWebSocket.emit("call_on_room", id)
 	})
-    navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        peer.on("call", (call: Call) => {
-            // const document = new Document()
-            // call.answer(stream)
-            // const remoteVideo = document.createElement("video")
-            // call.on("stream", function(userVideoStream: MediaStream) {
-            //     addVideoStream(remoteVideo, userVideoStream)
-            // })
-        })
 
-        addVideoStream(videoElement.value, stream)
-    })
+	navigator.mediaDevices.getUserMedia({ video: true })
+	.then(stream => {
+		peer.on("call", (call: any) => {
 			const remoteVideo = document.createElement("video")
+			call.answer(stream)
+			call.on("stream", (userVideoStream: MediaStream) => {
+				addVideoStream(remoteVideo, userVideoStream, true)
+			})
+		})
+
+		clientWebSocket.on("user_connected", function(peerUserID) {
+			connectToNewUser(peerUserID, stream)
+		})
+
+		addVideoStream(videoElement.value, stream, false)
+	})
 })
 
+function connectToNewUser(peerUserID: string, stream: MediaStream) {
+	const call = peer.call(peerUserID, stream)
 	const video = document.createElement("video")
+
+	call.on("stream", (userVideoStream: MediaStream) => {
+		addVideoStream(video, userVideoStream, true)
+	})
+	call.on("close", () => {
+		video.remove()
+	})
+}
 
 function addVideoStream(video: HTMLVideoElement, stream: MediaStream, isRemote: boolean) {
 	video.srcObject = stream
