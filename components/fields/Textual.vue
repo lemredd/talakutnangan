@@ -4,7 +4,7 @@
 			{{ label }}
 		</label>
 		<input
-			class="flex-1"
+			class="flex-1 bg-transparent"
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -12,6 +12,13 @@
 			/>
 	</div>
 </template>
+
+<style scoped>
+input {
+	border-bottom: 1px solid white;
+	padding-bottom: .25em;
+}
+</style>
 
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
