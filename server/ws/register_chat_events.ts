@@ -22,14 +22,16 @@ export default function(wsServer: Server) {
 
 			socket.to(connectionInfo.roomID)
 				.emit("connect_user", connectionInfo.userName, connectionInfo.userID)
+			socket.on("call_on_room", function(peerUserID) {
+				console.log(peerUserID, "initiated call")
+				socket.to(connectionInfo.roomID).emit("user_connected", peerUserID)
+			})
 			socket.on("disconnect", () => {
 				console.log(`User ${connectionInfo.userName} leaved`)
 				socket.to(connectionInfo.roomID).emit("disconnect_user", connectionInfo.userName)
 			})
 		})
 
-		socket.on("call_on_room", function(email) {
-			console.log(email, "initiated call")
 		})
 
 		socket.on("get_last_messages", function (fn) {
