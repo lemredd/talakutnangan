@@ -6,6 +6,7 @@
 			</a>
 			<Link href="/">Home</Link>
 			<Link href="/about">About</Link>
+						<span class="material-icons">account_circle</span>
 		</div>
 		<div class="content"><slot /></div>
 	</div>
@@ -16,6 +17,8 @@ import Link from './Link.vue'
 </script>
 
 <style>
+@import 'material-icons/iconfont/material-icons.css';
+
 body {
 	margin: 0;
 	font-family: sans-serif;
