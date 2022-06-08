@@ -15,19 +15,11 @@ video {
 <script setup lang="ts">
 import { inject, onMounted, ref, Ref } from 'vue';
 
-class Peer {
-    on(event: string, anonymousFunction: (arg?: any) => void) {
-        anonymousFunction()
-    }
+interface PeerAddition extends Window {
+	Peer: any
 }
 
-class Call {
-    on(event: string, anonymousFunction: (arg?: any) => void) {
-        anonymousFunction()
-    }
-    answer(stream?: MediaStream, options?: any): void {}
-}
-
+const Peer = ((window as unknown) as PeerAddition).Peer
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
 const peer = new Peer()
 
