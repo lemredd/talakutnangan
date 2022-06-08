@@ -28,6 +28,10 @@ export default function(wsServer: Server) {
 			})
 		})
 
+		socket.on("call_on_room", function(email) {
+			console.log(email, "initiated call")
+		})
+
 		socket.on("get_last_messages", function (fn) {
 			fn(messages.slice(-50))
 		})
