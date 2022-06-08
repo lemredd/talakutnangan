@@ -7,7 +7,7 @@ export default class DepartmentFactory {
 	async generate() {
 		const departmentName = faker.random.words()
 		return {
-			name: departmentName,
+			fullName: departmentName,
 			acronym: departmentName.split(" ").map(name => name.slice(0, 1)).join(""),
 			mayAdmit: this.#mayAdmit
 		}
