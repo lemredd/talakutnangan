@@ -6,9 +6,13 @@
 <style scoped>
 a {
 	padding: 3px 10px;
+	height: 100%;
+	display: flex;
+	align-items: center;
 }
 a.active {
 	background-color: #eee;
+	color: #222;
 }
 </style>
 <script lang="ts" setup>
