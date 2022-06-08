@@ -22,6 +22,7 @@ export default function(wsServer: Server) {
 
 			socket.to(connectionInfo.roomID)
 				.emit("connect_user", connectionInfo.userName, connectionInfo.userID)
+
 			socket.on("call_on_room", function(peerUserID) {
 				console.log(peerUserID, "initiated call")
 				socket.to(connectionInfo.roomID).emit("user_connected", peerUserID)
@@ -32,6 +33,8 @@ export default function(wsServer: Server) {
 			})
 		})
 
+		socket.on("console", function (message) {
+			console.log("message from client:", message)
 		})
 
 		socket.on("get_last_messages", function (fn) {
