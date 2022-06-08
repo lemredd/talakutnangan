@@ -22,6 +22,7 @@ interface PeerAddition extends Window {
 
 const Peer = ((window as unknown) as PeerAddition).Peer
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
+const document = new Document()
 const peer = new Peer()
 const clientWebSocket = inject("clientWebSocket") as Socket
 
@@ -43,7 +44,9 @@ onMounted(() => {
 
         addVideoStream(videoElement.value, stream)
     })
+			const remoteVideo = document.createElement("video")
 })
 
+	const video = document.createElement("video")
 
 </script>
