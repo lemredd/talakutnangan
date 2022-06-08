@@ -86,4 +86,5 @@ function sendMessage(event) {
 
 provide("isCalling", isCalling)
 provide("email", email)
+provide("clientWebSocket", clientWebSocket)
 </script>
