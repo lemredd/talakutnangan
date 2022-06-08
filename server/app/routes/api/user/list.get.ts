@@ -1,9 +1,8 @@
-import { Request, Response } from "express"
+import { Criteria } from "%/types"
+import { Request, Response } from "!/types/dependent"
 
 import UserManager from "%/managers/user_manager"
 import Controller from "!/bases/controller"
-import { RawRoute } from "!/types"
-import { Criteria } from "%/types"
 
 interface WithQuery {
 	query: {

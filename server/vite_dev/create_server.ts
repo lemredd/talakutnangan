@@ -1,8 +1,10 @@
 import { createPageRenderer } from "vite-plugin-ssr"
+import type { Express as ExpressApp } from "express"
 import { static as serveStaticFiles, Router as createRouter } from "express"
-import type { Express as ExpressApp, Request, Response, NextFunction } from "express"
 
-import { Environment } from "!/types"
+import { Environment } from "!/types/independent"
+import { Request, Response, NextFunction } from "!/types/dependent"
+
 import getRoot from "!/helpers/get_root"
 import getEnvironment from "!/helpers/get_environment"
 import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
