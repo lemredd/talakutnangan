@@ -10,9 +10,16 @@
 </style>
 
 <script setup lang="ts">
-import { inject, Ref } from "vue";
+import { inject, provide, Ref } from "vue";
 import Participant from "./Participant.vue";
 
 const email = inject("email") as Ref<string>
 const isCalling = inject("isCalling") as Ref<boolean>
+
+function addVideoStream(video: HTMLVideoElement, stream: MediaStream) {
+    video.srcObject = stream
+    video.addEventListener("loadedmetadata", () => video.play())
+}
+
+provide("addVideoStream", addVideoStream)
 </script>
