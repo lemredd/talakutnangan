@@ -14,6 +14,19 @@ video {
 <script setup lang="ts">
 import { inject, onMounted, ref, Ref } from 'vue';
 
+class Peer {
+    on(event: string, anonymousFunction: (arg?: any) => void) {
+        anonymousFunction()
+    }
+}
+
+class Call {
+    on(event: string, anonymousFunction: (arg?: any) => void) {
+        anonymousFunction()
+    }
+    answer(stream?: MediaStream, options?: any): void {}
+}
+
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
 
 onMounted(() => {
