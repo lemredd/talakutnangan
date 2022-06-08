@@ -1,37 +1,54 @@
 <template>
-	<div>
-		<form @submit.prevent="joinRoom" v-if="!hasEmail" class="flex flex-row flex-nowrap">
+	<div v-if="!hasEmail">
+		<form @submit.prevent="joinRoom" class="flex flex-row flex-nowrap">
 			<label class="flex-1 flex-grow flex-shrink-0">
 				E-mail: <input type="email" ref="emailField" class="bg-gray-500"/>
 			</label>
 		</form>
-		<form @submit.prevent="sendMessage" v-if="hasEmail">
-			<label class="flex-1 flex-grow flex-shrink-0">
-				Message:
-				<input type="text" ref="chatBox"/>
-			</label>
-			<output>
-				<p v-for="{ time, email, content } in messages">
-					{{ time }} {{ email }}: {{ content }}
-				</p>
-			</output>
-		</form>
+	</div>
+
+	<div v-else>
+		<header>
+			<h1>Chat Room</h1>
+			<div class="btns">
+				<button class="bg-gray-200 px-3 py-1" @click="initiateCall" :disabled="isCalling">
+					call
+				</button>
+			</div>
+		</header>
+		<div class="chatbox grid grid-cols-[2fr,1fr]">
+			<GroupCall></GroupCall>
+
+			<form @submit.prevent="sendMessage">
+				<label class="flex-1 flex-grow flex-shrink-0">
+					Message:
+					<input type="text" ref="chatBox" class="rounded border-1 border-gray-500 focus:outline-none"/>
+				</label>
+				<output>
+					<p v-for="{ time, email, content } in messages">
+						{{ time }} {{ email }}: {{ content }}
+					</p>
+				</output>
+			</form>
+		</div>
 	</div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, provide } from "vue"
 import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
+import GroupCall from "@/room/GroupCall.vue";
 
 const clientWebSocket = makeClient()
 const pageContext = usePageContext()
 const emailField = ref(null)
 const email = ref("")
+const isCalling = ref(false)
 const hasEmail = computed(() => email.value !== "")
 
 const chatBox = ref(null)
@@ -45,8 +62,12 @@ function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
-	clientWebSocket.emit("join_room", pageContext.uuid, rawEmail)
+	clientWebSocket.emit("join_room", pageContext.routeParams.uuid, rawEmail)
 	email.value = rawEmail
+}
+
+function initiateCall() {
+	isCalling.value = true
 }
 
 function sendMessage(event) {
@@ -62,4 +83,7 @@ function sendMessage(event) {
 	input.value = ""
 }
 
+provide("isCalling", isCalling)
+provide("email", email)
+provide("clientWebSocket", clientWebSocket)
 </script>

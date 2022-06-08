@@ -1,17 +1,11 @@
-import Middleware from "!/routes/bases/middleware"
 import passport from "passport"
-import type { Request, Response, NextFunction, RequestHandler } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
+import Middleware from "!/bases/middleware"
 
-export default class extends Middleware {
-	intermediate(request: Request, response: Response, next: NextFunction): void {}
+export default class Initializer extends Middleware {
+	private static intialize = passport.initialize()
 
-	generateHandlers(): RequestHandler[] {
-		return [
-			passport.initialize(),
-
-			// Disable middleware below if application is not using persistent log in.
-			// See README in https://github.com/jaredhanson/passport
-			passport.session()
-		]
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		Initializer.intialize(request, response, next)
 	}
 }

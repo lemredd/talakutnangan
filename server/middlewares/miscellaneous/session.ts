@@ -1,22 +1,20 @@
 import createSessionMiddleware from "express-session"
-import type { Request, Response, NextFunction, RequestHandler } from "express"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Middleware from "!/routes/bases/middleware"
+import Middleware from "!/bases/middleware"
 
-export default class extends Middleware {
-	intermediate(request: Request, response: Response, next: NextFunction): void {}
+export default class Session extends Middleware {
+	private static session = createSessionMiddleware({
+		name: process.env.SESSION_NAME || "talakutnangan_session",
+		secret: process.env.SESSION_SECRET || "12345678",
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			 maxAge: process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
+		}
+	})
 
-	generateHandlers(): RequestHandler[] {
-		return [
-			createSessionMiddleware({
-				name: process.env.SESSION_NAME || "talakutnangan_session",
-				secret: process.env.SESSION_SECRET || "12345678",
-				resave: false,
-				saveUninitialized: false,
-				cookie: {
-					 maxAge: process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
-				}
-		  })
-		]
+	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		Session.session(request, response, next)
 	}
 }
