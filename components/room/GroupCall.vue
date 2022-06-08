@@ -1,8 +1,8 @@
 <template>
 <div class="videos" v-if="isCalling">
-    <div class="participants">
-        <Participant :id="`user-id-${email}`"></Participant>
-    </div>
+	<div class="participants" ref="participants">
+		<Participant :id="`user-id-${email}`"></Participant>
+	</div>
 </div>
 </template>
 
@@ -15,7 +15,9 @@ import Participant from "./Participant.vue";
 
 const email = inject("email") as Ref<string>
 const isCalling = inject("isCalling") as Ref<boolean>
+const participants = ref(null)
 
+provide("participants", participants)
 function addVideoStream(video: HTMLVideoElement, stream: MediaStream) {
     video.srcObject = stream
     video.addEventListener("loadedmetadata", () => video.play())

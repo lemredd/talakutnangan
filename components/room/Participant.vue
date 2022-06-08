@@ -25,6 +25,7 @@ const videoElement: Ref<HTMLVideoElement | null> = ref(null)
 const document = new Document()
 const peer = new Peer()
 const clientWebSocket = inject("clientWebSocket") as Socket
+const participants = inject("participants") as Ref<HTMLElement>
 
 const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, stream: MediaStream) => void
 onMounted(() => {
@@ -49,4 +50,5 @@ onMounted(() => {
 
 	const video = document.createElement("video")
 
+	participants.value.append(video)
 </script>
