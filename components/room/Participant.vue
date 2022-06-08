@@ -28,6 +28,7 @@ class Call {
 }
 
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
+const peer = new Peer()
 
 onMounted(() => {
     navigator.mediaDevices.getUserMedia({ video: true })
