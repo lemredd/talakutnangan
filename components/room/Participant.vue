@@ -27,7 +27,6 @@ const peer = new Peer()
 const clientWebSocket = inject("clientWebSocket") as Socket
 const participants = inject("participants") as Ref<HTMLElement>
 
-const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, stream: MediaStream) => void
 onMounted(() => {
 	peer.on("open", function(id) {
 		clientWebSocket.emit("call_on_room", id)
@@ -50,5 +49,12 @@ onMounted(() => {
 
 	const video = document.createElement("video")
 
+function addVideoStream(video: HTMLVideoElement, stream: MediaStream, isRemote: boolean) {
+	video.srcObject = stream
+	video.autoplay = true
+	video.addEventListener("loadedmetadata", () => video.play())
+	clientWebSocket.emit("console", isRemote)
+
 	participants.value.append(video)
+}
 </script>

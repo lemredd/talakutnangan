@@ -18,10 +18,4 @@ const isCalling = inject("isCalling") as Ref<boolean>
 const participants = ref(null)
 
 provide("participants", participants)
-function addVideoStream(video: HTMLVideoElement, stream: MediaStream) {
-    video.srcObject = stream
-    video.addEventListener("loadedmetadata", () => video.play())
-}
-
-provide("addVideoStream", addVideoStream)
 </script>
