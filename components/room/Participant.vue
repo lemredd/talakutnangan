@@ -12,7 +12,7 @@ video {
 </style>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
+import { inject, onMounted, ref, Ref } from 'vue';
 
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
 
