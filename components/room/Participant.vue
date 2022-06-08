@@ -11,7 +11,6 @@ video {
 }
 </style>
 
-
 <script setup lang="ts">
 import { inject, onMounted, ref, Ref } from 'vue';
 import { Socket } from 'socket.io-client';
