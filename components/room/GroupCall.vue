@@ -10,7 +10,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, provide, Ref } from "vue";
+import { inject, provide, ref, Ref } from "vue";
 import Participant from "./Participant.vue";
 
 const email = inject("email") as Ref<string>
