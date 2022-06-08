@@ -73,7 +73,7 @@ describe("Back-end: Base Controller", () => {
 		expect(handlers.middlewares).toHaveLength(1)
 		expect(handlers.postJobs).toHaveLength(0)
 
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		handlers.middlewares[0].intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
@@ -109,7 +109,7 @@ describe("Back-end: Base Controller", () => {
 		expect(handlers.middlewares).toHaveLength(0)
 		expect(handlers.postJobs).toHaveLength(1)
 
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		handlers.postJobs[0].intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
@@ -129,7 +129,7 @@ describe("Back-end: Base Controller", () => {
 			}
 		}
 		const controller = new ControllerF()
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, } = makeResponse()
 
 		controller.handle(request, response)
