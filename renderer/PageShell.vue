@@ -1,14 +1,24 @@
 <template>
 	<div class="layout">
-		<div class="navigation">
-			<a href="/" class="logo">
-				<img src="./logo.svg" height="64" width="64" alt="logo" />
-			</a>
-			<Link href="/">Home</Link>
-			<Link href="/about">About</Link>
+		<div class="navigation bg-dark-700">
+			<div class="container">
+				<a href="/" class="logo">
+					<img src="./placeholder.svg" height="64" width="64" alt="logo" />
+					<h1 class="ml-1">TALAKUTNANGAN</h1>
+				</a>
+				<div class="links">
+					<Link href="/log_in">
 						<span class="material-icons">account_circle</span>
+					</Link>
+				</div>
+			</div>
+
 		</div>
-		<div class="content"><slot /></div>
+		<div class="content">
+			<div class="container">
+				<slot />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -23,7 +33,7 @@ body {
 	margin: 0;
 	font-family: sans-serif;
 }
-* {
+*, *::before, *::after {
 	box-sizing: border-box;
 }
 a {
@@ -31,28 +41,48 @@ a {
 }
 </style>
 
-<style scoped>
+<style scoped lang="scss">
 .layout {
 	display: flex;
+	flex-direction: column;
+
+	.navigation {
+		padding: 0 .75em;
+		flex-shrink: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		line-height: 1.8em;
+
+		.container {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.logo {
+			padding: .25em;
+			display: flex;
+			align-items: center;
+		}
+
+		.links {
+			height: 72px;
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	.content {
+		padding: 20px;
+		padding-bottom: 50px;
+		min-height: 100vh;
+	}
+}
+
+.container {
 	max-width: 900px;
 	margin: auto;
-}
-.content {
-	padding: 20px;
-	border-left: 2px solid #eee;
-	padding-bottom: 50px;
-	min-height: 100vh;
-}
-.navigation {
-	padding: 20px;
-	flex-shrink: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	line-height: 1.8em;
-}
-.logo {
-	margin-top: 20px;
-	margin-bottom: 10px;
 }
 </style>
