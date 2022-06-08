@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType, AllowNull } from "sequelize-typescript"
+import { Table, Model, Column, HasMany } from "sequelize-typescript"
+import User from "%/models/user"
 
 @Table({
 	timestamps: true,
@@ -13,4 +14,7 @@ export default class Department extends Model {
 
 	@Column
 	mayAdmit: boolean
+
+	@HasMany(() => User)
+	users: User[]
 }

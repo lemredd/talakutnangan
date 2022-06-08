@@ -1,5 +1,14 @@
-import { Table, Model, Column, DataType, AllowNull } from "sequelize-typescript"
+import {
+	Table,
+	Model,
+	Column,
+	DataType,
+	BelongsTo,
+	AllowNull,
+	ForeignKey
+} from "sequelize-typescript"
 import { UserKind } from "%/types"
+import Department from "%/models/department"
 
 @Table({
 	timestamps: true,
@@ -44,4 +53,11 @@ export default class User extends Model {
 		defaultValue: null
 	})
 	signature: Buffer|null
+
+	@ForeignKey(() => Department)
+	@Column
+	departmentID: number
+
+	@BelongsTo(() => Department)
+	department: Department
 }
