@@ -1,9 +1,9 @@
 <template>
 	<div class="layout">
-		<div class="navigation">
+		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
-					<img src="./placeholder.svg" height="64" width="64" alt="logo" />
+					<img src="./placeholder.svg" class="w-[48px]" alt="logo" />
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 				<div class="links">
@@ -14,7 +14,7 @@
 			</div>
 
 		</div>
-		<div class="content">
+		<div class="content dark:">
 			<div class="container">
 				<slot />
 			</div>
@@ -24,6 +24,11 @@
 
 <script lang="ts" setup>
 import Link from './Link.vue'
+import { usePageContext } from "#/usePageContext"
+
+const pageContext = usePageContext()
+const path = pageContext.urlPathname
+const isLoggingIn = path === "/log_in"
 </script>
 
 <style>
@@ -54,6 +59,7 @@ a {
 		align-items: center;
 		justify-content: space-between;
 		line-height: 1.8em;
+		box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 
 		.container {
 			display: flex;

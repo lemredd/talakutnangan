@@ -27,8 +27,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<meta name="description" content="${desc}" />
 				<title>${title}</title>
 			</head>
-			<body>
-				<div id="app">${dangerouslySkipEscape(appHtml)}</div>
+			<body class="dark">
+				<div id="app" class="dark:text-light-50 dark:bg-dark-700">${dangerouslySkipEscape(appHtml)}</div>
 			</body>
 		</html>`
 
