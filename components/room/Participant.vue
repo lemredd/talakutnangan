@@ -11,6 +11,7 @@ video {
 }
 </style>
 
+
 <script setup lang="ts">
 import { inject, onMounted, ref, Ref } from 'vue';
 
@@ -34,7 +35,18 @@ const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, str
 onMounted(() => {
     navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
+        peer.on("call", (call: Call) => {
+            // const document = new Document()
+            // call.answer(stream)
+            // const remoteVideo = document.createElement("video")
+            // call.on("stream", function(userVideoStream: MediaStream) {
+            //     addVideoStream(remoteVideo, userVideoStream)
+            // })
+        })
+
         addVideoStream(videoElement.value, stream)
     })
 })
+
+
 </script>
