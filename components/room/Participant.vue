@@ -30,6 +30,7 @@ class Call {
 const videoElement: Ref<HTMLVideoElement | null> = ref(null)
 const peer = new Peer()
 
+const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, stream: MediaStream) => void
 onMounted(() => {
     navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
