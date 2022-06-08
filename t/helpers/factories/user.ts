@@ -4,11 +4,12 @@ import hash from "!/helpers/auth/hash"
 
 import User from "%/models/user"
 import { faker } from "@faker-js/faker"
+import { UserKind } from "%/types"
 
 export default class UserFactory {
 	#password = "password"
 	#signature = dataURIToBuffer(faker.image.dataUri())
-	#kind = "student"
+	#kind = UserKind.Student
 	#mustBeVerified = true
 
 	async generate() {
@@ -41,13 +42,18 @@ export default class UserFactory {
 		return this
 	}
 
+	beStudent(): UserFactory {
+		this.#kind = UserKind.Student
+		return this
+	}
+
 	beReachableEmployee(): UserFactory {
-		this.#kind = "reachable_emplyee"
+		this.#kind = UserKind.ReachableEmployee
 		return this
 	}
 
 	beUnreachableEmployee(): UserFactory {
-		this.#kind = "unreachable_emplyee"
+		this.#kind = UserKind.UnreachableEmployee
 		return this
 	}
 
