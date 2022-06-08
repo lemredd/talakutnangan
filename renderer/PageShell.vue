@@ -1,6 +1,6 @@
 <template>
 	<div class="layout">
-		<div class="navigation bg-dark-700">
+		<div class="navigation">
 			<div class="container">
 				<a href="/" class="logo">
 					<img src="./placeholder.svg" height="64" width="64" alt="logo" />
