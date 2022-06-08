@@ -34,8 +34,7 @@ const addVideoStream = inject("addVideoStream") as (video: HTMLVideoElement, str
 onMounted(() => {
     navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
-        videoElement.value.srcObject = stream
-        videoElement.value.addEventListener("loadedmetadata", () => videoElement.value.play())
+        addVideoStream(videoElement.value, stream)
     })
 })
 </script>
