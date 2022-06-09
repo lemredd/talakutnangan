@@ -68,3 +68,9 @@ const notifications = [
 		dateOccured: new Date(2022, 2, 3).toDateString()
 	}
 ]
+const isNotificationListShown = ref(false)
+
+function toggleNotificationList() {
+	isNotificationListShown.value = !isNotificationListShown.value
+}
+</script>
