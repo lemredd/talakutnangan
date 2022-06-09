@@ -6,11 +6,8 @@
 					<img src="./placeholder.svg" class="w-[48px]" alt="logo" />
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
-				<div class="links">
-					<Link href="/log_in">
-						<span class="material-icons">account_circle</span>
-					</Link>
-				</div>
+
+				<RoleSpecificLinks :role="role"/>
 			</div>
 
 		</div>
@@ -23,12 +20,14 @@
 </template>
 
 <script lang="ts" setup>
-import Link from './Link.vue'
+import RoleSpecificLinks from './RoleSpecificLinks.vue'
 import { usePageContext } from "#/usePageContext"
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
+const roles = ["guest", "student", "employee", "user-manager"]
+const role = roles[0]
 </script>
 
 <style>
