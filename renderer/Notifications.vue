@@ -59,6 +59,10 @@
 }
 </style>
 
+<script setup lang="ts">
+import { Dropdown as NotificationList } from "@/components"
+import { ref } from "vue"
+
 const notifications = [
 	{
 		id: 0,
