@@ -22,7 +22,9 @@ export default class {
 	}
 
 	static async clear(): Promise<void> {
-		await User.truncate({ force: true })
+		// See: https://github.com/sequelize/sequelize/issues/11289
+		// See: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/098668baad17230742eaa9da5a10c2e338e7b71d/types/sequelize/index.d.ts#L3564
+		await User.truncate({ force: true, cascade: true })
 		await Department.truncate({ force: true })
 	}
 
