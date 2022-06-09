@@ -82,14 +82,15 @@ const linksSpecifiers = [
 		role: "student_or_employee",
 		links: [
 			{
-				name: "consultations",
+				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
 			},
 			{
-				name: "forum",
+				name: "Forum",
 				path: "/forum",
 				icon: "forum"
+			},
 			}
 		]
 	},
