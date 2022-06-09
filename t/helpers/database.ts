@@ -5,6 +5,9 @@ import { Environment } from "!/types/independent"
 import getEnvironment from "!/helpers/get_environment"
 import createDataSource from "%/data_source/create_source"
 
+import User from "%/models/user"
+import Department from "%/models/department"
+
 export default class {
 	static #dataSource: Sequelize
 
@@ -19,9 +22,8 @@ export default class {
 	}
 
 	static async clear(): Promise<void> {
-		this.#dataSource.truncate({
-			force: true
-		})
+		await User.truncate({ force: true })
+		await Department.truncate({ force: true })
 	}
 
 	static async destroy(): Promise<void> {
