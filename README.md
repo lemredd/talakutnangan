@@ -53,14 +53,18 @@ to the type of change.
 These are the general types of commit that repository has. There MAY be other types that will be
 proposed in the future.
 
-Type     | Description
+Type        | Description
 --- | ---
-*feat:*  | This commit focuses on the project's enhancement by implementing a new feature.
-*fix:*   | This focuses on debugging and solving problems in features.
-*test:*  | This focuses on any kinds of test scripts.
-*config:*| This focuses on changes in the configuration files of the project.
-*docs:*  | This focuses on additions or changes in any of the documentation files.
-*chore:* | Any other commits that are still uncategorized falls into this commit.
+*feat:*     | This commit focuses on the project's enhancement by implementing a new feature.
+*test:*     | This focuses on any kinds of test scripts.
+*style:*    | This focuses on any kinds of changes in UI.
+*config:*   | This focuses on changes in the configuration files of the project.
+*ci:*       | A *config:* type where it focuses on changes in configurations of workflows.
+*fix:*      | This focuses on debugging and solving problems in features, tests, or configurations.
+*refactor:* | This focuses on refactored code.
+*perf:*     | A *refactor:* type where it focuses on optimizing code.
+*docs:*     | This focuses on additions or changes in any of the documentation files.
+*chore:*    | Any other commits that are still uncategorized falls into this commit.
 
 For more information, please visit the [specification].
 
