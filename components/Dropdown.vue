@@ -8,7 +8,8 @@
 .dropdown-container {
 	position: absolute;
 	box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
-	border: 1px solid white;
+	width: max-content;
+	border-radius: 5px;
 }
 </style>
 
