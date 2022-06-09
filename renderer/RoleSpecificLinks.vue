@@ -1,3 +1,5 @@
+import { computed } from "vue";
+import Link from "./Link.vue"
 type Props = {
 	role: string
 }
