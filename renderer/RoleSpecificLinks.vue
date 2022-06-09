@@ -1,10 +1,5 @@
 <template>
 	<div :class="`links ${role}`">
-		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
-			<span class="material-icons">
-				{{ link.icon }}
-			</span>
-		</Link>
 		<Notifications v-if="!isRoleGuest"></Notifications>
 
 		<div v-if="!isRoleGuest" class="account-controls">
@@ -19,10 +14,19 @@
 	height: 100%;
 	display: flex;
 	align-items: center;
-
-	a, .account-controls a {
-		height: 30px;
-		padding: 3px 10px;
+	.role-links {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		width: 100%;
+		top: 72px; left: 0;
+		.overlay {
+			position: absolute;
+			width: 100%; height: 100vh;
+			z-index: -1;
+		}
 	}
 
 	.account-controls {
