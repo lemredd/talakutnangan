@@ -5,7 +5,7 @@
 				{{ link.icon }}
 			</span>
 		</Link>
-		<Notifications></Notifications>
+		<Notifications v-if="!isRoleGuest"></Notifications>
 
 		<div v-if="!isRoleGuest" class="account-controls">
 			<a role="button" class="material-icons">account_circle</a>
