@@ -1,5 +1,5 @@
 <template>
-	<div :class="`links ${role}`">
+	<div class="links" :class="[role, /* linkClasses */]">
 		<Notifications v-if="!isRoleGuest"></Notifications>
 
 		<div v-if="!isRoleGuest" class="account-controls">
@@ -48,6 +48,17 @@ type Props = {
 const props = defineProps<Props>()
 const role = props.role
 
+// Viewport
+// Currently, window class is undefined
+// const linkClasses = ""
+// const isViewportGreaterThanMobile = computed(function() {
+// 	return screenWidth.value > 640
+// })
+// window.onresize = () => {
+// //   screenWidth.value = window.innerWidth
+// }
+
+// Role
 const isRoleGuest = role === "guest"
 const linksSpecifiers = [
 	{
