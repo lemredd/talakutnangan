@@ -20,6 +20,7 @@
 		"changelog:generate": "npx changelogen",
 		"migrate:up": "sequelize-cli db:migrate",
 		"migrate:down": "sequelize-cli db:migrate:undo",
+		"migrate:redo:all": "sequelize-cli db:drop && sequelize-cli db:create && npm run migrate:up",
 		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
 		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
