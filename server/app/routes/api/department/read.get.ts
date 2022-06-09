@@ -1,12 +1,11 @@
-
 import { Request, Response } from "!/types/dependent"
 
-import Controller from "!/bases/controller"
 import Middleware from "!/bases/middleware"
+import JSONController from "!/bases/controllers/json_controller"
 import DepartmentManager from "%/managers/department_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-export default class extends Controller {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get middlewares(): Middleware[] {
@@ -16,8 +15,13 @@ export default class extends Controller {
 		]
 	}
 
+	get validationRules(): object {
+		return {
+			id: [ "required", "numeric", "min:1" ]
+		}
+	}
+
 	async handle(request: Request, response: Response): Promise<void> {
-		// TODO: Validate ID
 		const { id } = request.body
 		const manager = new DepartmentManager()
 		const departmentInfo = await manager.findWithID(id)
