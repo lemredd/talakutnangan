@@ -12,6 +12,7 @@ export default class Department extends Model {
 	acronym: string
 
 	@Column({
+		unique: true,
 		allowNull: false
 	})
 	fullName: string
