@@ -5,9 +5,7 @@
 				{{ link.icon }}
 			</span>
 		</Link>
-		<a v-if="!isRoleGuest" role="button">
-			<span class="material-icons">notifications</span>
-		</a>
+		<Notifications></Notifications>
 
 		<div v-if="!isRoleGuest" class="account-controls">
 			<a role="button" class="material-icons">account_circle</a>
@@ -31,11 +29,14 @@
 		padding-left: 1em;
 	}
 }
+
+
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from "vue"
 import Link from "./Link.vue"
+import Notifications from "./Notifications.vue"
 
 type Props = {
 	role: string
