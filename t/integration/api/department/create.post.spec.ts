@@ -25,14 +25,12 @@ describe("POST /api/department/create", () => {
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
-		expect(response.body).toStrictEqual(
-			{
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
-			}
-		)
+		expect(response.body.acronym).toBe(department.acronym)
+		expect(response.body.fullName).toBe(department.fullName)
+		expect(response.body.mayAdmit).toBe(department.mayAdmit)
 	})
+
+	it.todo("cannot accept invalid values")
 
 	it("cannot be accessed by guest users", async () => {
 		const department = await (new DepartmentFactory()).makeOne()
