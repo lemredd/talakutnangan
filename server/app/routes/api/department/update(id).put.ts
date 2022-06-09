@@ -23,10 +23,9 @@ export default class extends JSONController {
 	get validationRules(): object {
 		// TODO: Create custom validator for acronym
 		return {
-			acronym: [ "string" ],
-			fullName: [ "string" ],
-			mayAdmit: [ "boolean" ],
-			"*": "any:acronym,fullName,mayAdmit"
+			acronym: [ "required", "string" ],
+			fullName: [ "required", "string" ],
+			mayAdmit: [ "required", "boolean" ]
 		}
 	}
 
