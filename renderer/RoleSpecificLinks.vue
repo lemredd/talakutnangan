@@ -12,6 +12,7 @@
 				<span class="material-icons">
 					{{ link.icon }}
 				</span>
+				<span class="link-name">{{ link.name }}</span>
 			</Link>
 		</div>
 	</div>
