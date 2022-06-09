@@ -90,6 +90,10 @@ const linksSpecifiers = [
 				path: "/forum",
 				icon: "forum"
 			},
+			{
+				name: "User Settings",
+				path: "/settings",
+				icon: "account_circle"
 			}
 		]
 	},
@@ -97,12 +101,12 @@ const linksSpecifiers = [
 		role: "user_manager",
 		links: [
 			{
-				name: "manage",
+				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
 			},
 			{
-				name: "consultations",
+				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
 			},
@@ -117,7 +121,7 @@ const linksSpecifiers = [
 		role: "admin",
 		links: [
 			{
-				name: "manage",
+				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
 			},
