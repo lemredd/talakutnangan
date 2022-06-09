@@ -16,11 +16,20 @@
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .links {
 	height: 100%;
 	display: flex;
 	align-items: center;
+
+	a, .account-controls a {
+		height: 30px;
+		padding: 3px 10px;
+	}
+
+	.account-controls {
+		padding-left: 1em;
+	}
 }
 </style>
 
