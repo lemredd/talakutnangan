@@ -8,7 +8,7 @@ import Route from "!/app/routes/api/user/register.post"
 // TODO: Remove after creating the route to import the CSV file
 describe.skip("POST /api/user/register", () => {
 	beforeAll(async () => {
-		await App.create("/api/user", new Route())
+		await App.create(new Route())
 	})
 
 	it("can be accessed by guest and request with non-existing credentials", async () => {
