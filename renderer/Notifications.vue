@@ -26,6 +26,8 @@
 <style scoped lang="scss">
 .notifications {
 	position: relative;
+	height: 30px;
+	padding: 3px 10px;
 
 	& .dropdown-container {
 		left: -100px;
