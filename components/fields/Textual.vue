@@ -1,10 +1,10 @@
 <template>
-	<div class="flex flex-row flex-nowrap">
+	<div class="flex flex-col text-light-100">
 		<label class="flex-1">
 			{{ label }}
 		</label>
 		<input
-			class="flex-1"
+			class="flex-1 bg-none appearance-none"
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -12,6 +12,13 @@
 			/>
 	</div>
 </template>
+
+<style>
+	input { 
+		background: none;
+		border-bottom:1px white solid;
+	}
+</style>
 
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
