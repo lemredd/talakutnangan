@@ -1,23 +1,23 @@
 <template>
-	<div class="notifications" >
-		<a role="button" @click="toggleNotificationList">
-			<span class="material-icons">notifications</span>
+	<div class="notifications">
+		<a role="button" @click="toggleNotificationList" class="material-icons">
+			notifications
 		</a>
 		<NotificationList v-if="isNotificationListShown">
 			<ul class="notification-items">
-				<a href="">
-					<li class="notification-item" v-for="notification in notifications" :key="notification.id">
-						<div :class="`icon ${notification.type} dark:bg-light-800`">
-							<span class="material-icons">{{ notification.icon }}</span>
-						</div>
-						<h3 class="title">{{ notification.description }}</h3>
-						<small class="date">{{ notification.dateOccured }}</small>
-					</li>
+					<a href="">
+						<li class="notification-item" v-for="notification in notifications" :key="notification.id">
+							<div :class="`icon ${notification.type} dark:bg-light-800`">
+								<span class="material-icons">{{ notification.icon }}</span>
+							</div>
+							<h3 class="title">{{ notification.description }}</h3>
+							<small class="date">{{ notification.dateOccured }}</small>
+						</li>
+					</a>
+
 					<li class="notification-footer">
-						<!-- using anchor tag mismatches on server -->
-						<button role="link">View All</button>
+						<a href="/notifications">View All</a>
 					</li>
-				</a>
 			</ul>
 		</NotificationList>
 	</div>
