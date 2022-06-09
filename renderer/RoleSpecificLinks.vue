@@ -5,6 +5,14 @@
 		<div v-if="!isRoleGuest" class="account-controls">
 			<a role="button" class="material-icons">account_circle</a>
 			<span class="material-icons">expand_more</span>
+		<button class="material-icons" @click="toggleRoleLinks">menu</button>
+		<div v-show="areRoleLinksShown" class="role-links">
+			<div class="overlay bg-dark-700 bg-opacity-60" @click="toggleRoleLinks"></div>
+			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+				<span class="material-icons">
+					{{ link.icon }}
+				</span>
+			</Link>
 		</div>
 	</div>
 </template>
@@ -33,7 +41,6 @@
 		padding-left: 1em;
 	}
 }
-
 
 </style>
 
