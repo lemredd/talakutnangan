@@ -45,7 +45,7 @@ const props = defineProps<Props>()
 const role = props.role
 
 const isRoleGuest = role === "guest"
-const roleSpecifiers = [
+const linksSpecifiers = [
 	{
 		role: "guest",
 		links: [
@@ -110,6 +110,7 @@ const roleSpecifiers = [
 
 
 const determineRoleLinks = computed(() => {
-	return roleSpecifiers.filter(specifier => specifier.role === role)[0]
+	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
+
 </script>
