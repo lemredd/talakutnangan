@@ -12,6 +12,27 @@ describe("GET /api/department/read", () => {
 	})
 
 	it("can be accessed by authenticated user", async () => {
+		const { user, cookie } = await App.makeAuthenticatedCookie()
+		const manager = new DepartmentManager()
+		const department = await (new DepartmentFactory()).insertOne()
+
+		const response = await App.request
+			.get("/api/department/read")
+			.set("Cookie", cookie)
+			.send({
+				id: department.id
+			})
+
+		expect(response.statusCode).toBe(StatusCodes.OK)
+		const expectedDepartment = await manager.findWithID(department.id)
+		expect(response.body).toStrictEqual(
+			JSON.parse(JSON.stringify(
+				expectedDepartment
+			))
+		)
+	})
+
+	it("cannot be accessed by guest users", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
 
@@ -21,14 +42,6 @@ describe("GET /api/department/read", () => {
 				id: department.id
 			})
 
-		expect(response.statusCode).toBe(StatusCodes.OK)
-		const expectedDepartment = await manager.findWithID(department.id)
-		expect(response.body).toStrictEqual(
-			JSON.parse(JSON.stringify([
-				expectedDepartment
-			]))
-		)
+		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
 	})
-
-	it.todo("cannot be accessed by guest users")
 })
