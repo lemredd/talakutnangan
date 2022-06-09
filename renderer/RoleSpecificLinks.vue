@@ -65,6 +65,7 @@ const role = props.role
 
 // Role
 const isRoleGuest = role === "guest"
+const areRoleLinksShown = ref(false)
 const linksSpecifiers = [
 	{
 		role: "guest",
@@ -134,4 +135,8 @@ const determineRoleLinks = computed(() => {
 	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
 
+
+function toggleRoleLinks() {
+	areRoleLinksShown.value = !areRoleLinksShown.value
+}
 </script>
