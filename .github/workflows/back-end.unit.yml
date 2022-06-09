@@ -4,10 +4,8 @@ on:
   push: []
   pull_request:
     types:
-      - opened
       - synchronize
       - reopened
-      - review_requested
     branches:
       - master
     paths:
