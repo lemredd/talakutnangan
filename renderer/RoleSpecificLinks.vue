@@ -1,8 +1,12 @@
+<template>
+	<div :class="`links ${role}`">
 		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
 		</Link>
+	</div>
+</template>
 
 <style>
 
@@ -17,6 +21,7 @@ type Props = {
 }
 const props = defineProps<Props>()
 const role = props.role
+
 const roleSpecifiers = [
 	{
 		role: "guest",
