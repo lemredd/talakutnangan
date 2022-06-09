@@ -91,7 +91,24 @@ const roleSpecifiers = [
 			}
 		]
 	},
+	{
+		role: "admin",
+		links: [
+			{
+				name: "manage",
+				path: "/manage",
+				icon: "group"
+			},
+			{
+				name: "forum",
+				path: "/forum",
+				icon: "forum"
+			}
+		]
+	}
 ]
+
+
 const determineRoleLinks = computed(() => {
 	return roleSpecifiers.filter(specifier => specifier.role === role)[0]
 })
