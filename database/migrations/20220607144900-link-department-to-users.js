@@ -1,29 +1,32 @@
 "use strict";
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		queryInterface.sequelize.transaction(async transaction => {
+		await queryInterface.sequelize.transaction(async transaction => {
 			try {
 				await queryInterface.addColumn(
 					"Users",
 					"departmentID",
 					{
-						type: Sequelize.DataTypes.BIGINT,
-						allowNull: false,
+						type: Sequelize.DataTypes.INTEGER,
+						allowNull: false
 					},
 					{ transaction }
 				);
 
+				// See link for other types of constraints.
+				// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/sequelize/index.d.ts
 				await queryInterface.addConstraint("Users", {
 					fields: [ "departmentID" ],
 					type: "foreign key",
-					name: "department_id_constraint",
+					name: "foreign_key_department_id_constraint",
 					references: {
 						table: "Departments",
 						field: "id"
 					},
-					onDelete: "cascade"
+					onDelete: "cascade",
+					onUpdate: "no action",
+					transaction
 				});
-				await transaction.commit();
 			} catch (err) {
 				await transaction.rollback();
 				throw err;
@@ -31,7 +34,7 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
+		await queryInterface.removeConstraint("Users", "foreign_key_department_id_constraint");
 		await queryInterface.removeColumn("Users", "departmentID");
-		await queryInterface.removeConstraint("Users", "department_id_constraint");
 	}
 };
