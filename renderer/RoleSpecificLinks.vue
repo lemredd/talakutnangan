@@ -34,7 +34,7 @@ const roleSpecifiers = [
 		]
 	},
 	{
-		role: "student",
+		role: "student_or_employee",
 		links: [
 			{
 				name: "login",
@@ -42,7 +42,17 @@ const roleSpecifiers = [
 				icon: "account_circle"
 			}
 		]
-	}
+	},
+	{
+		role: "user_manager",
+		links: [
+			{
+				name: "login",
+				path: "/log_in",
+				icon: "account_circle"
+			}
+		]
+	},
 ]
 const determineRoleLinks = computed(() => {
 	return roleSpecifiers.filter(specifier => specifier.role === role)[0]
