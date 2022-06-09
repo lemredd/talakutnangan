@@ -1,5 +1,5 @@
 <template>
-	<div class="dropdown-container dark:bg-dark-700">
+	<div class="dropdown-container dark:bg-dark-400">
 		<slot></slot>
 	</div>
 </template>
