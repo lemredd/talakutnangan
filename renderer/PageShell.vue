@@ -26,7 +26,7 @@ import { usePageContext } from "#/usePageContext"
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
-const roles = ["guest", "student_or_employee", "user_manager"]
+const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[0]
 </script>
 
