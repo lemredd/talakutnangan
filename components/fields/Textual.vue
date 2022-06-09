@@ -14,9 +14,8 @@
 </template>
 
 <style>
-	input { 
+	input {
 		background: none;
-		border-bottom:1px white solid;
 	}
 </style>
 
