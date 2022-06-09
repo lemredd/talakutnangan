@@ -7,7 +7,8 @@ module.exports = {
 					"Users",
 					"departmentID",
 					{
-						type: Sequelize.DataTypes.BIGINT
+						type: Sequelize.DataTypes.BIGINT,
+						allowNull: false,
 					},
 					{ transaction }
 				);
