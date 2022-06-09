@@ -3,7 +3,7 @@
 		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
-					<img src="./placeholder.svg" class="w-[48px]" alt="logo" />
+					<img src="./placeholder.svg" alt="logo" />
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
@@ -53,10 +53,6 @@ a {
 	.navigation {
 		padding: 0 .75em;
 		flex-shrink: 0;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
 		line-height: 1.8em;
 		box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 
@@ -70,12 +66,11 @@ a {
 			padding: .25em;
 			display: flex;
 			align-items: center;
-		}
 
-		.links {
-			height: 72px;
-			display: flex;
-			align-items: center;
+			img {
+				width: 48px;
+				padding: .5em;
+			}
 		}
 	}
 

@@ -6,7 +6,6 @@
 <style scoped>
 a {
 	padding: 3px 10px;
-	height: 100%;
 	display: flex;
 	align-items: center;
 }

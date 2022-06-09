@@ -8,8 +8,12 @@
 	</div>
 </template>
 
-<style>
-
+<style scoped>
+.links {
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
 </style>
 
 <script setup lang="ts">
@@ -37,9 +41,14 @@ const roleSpecifiers = [
 		role: "student_or_employee",
 		links: [
 			{
-				name: "login",
-				path: "/log_in",
-				icon: "account_circle"
+				name: "consultations",
+				path: "/consultations",
+				icon: "chat"
+			},
+			{
+				name: "forum",
+				path: "/forum",
+				icon: "forum"
 			}
 		]
 	},
@@ -47,9 +56,19 @@ const roleSpecifiers = [
 		role: "user_manager",
 		links: [
 			{
-				name: "login",
-				path: "/log_in",
-				icon: "account_circle"
+				name: "manage",
+				path: "/manage",
+				icon: "group"
+			},
+			{
+				name: "consultations",
+				path: "/consultations",
+				icon: "chat"
+			},
+			{
+				name: "forum",
+				path: "/forum",
+				icon: "forum"
 			}
 		]
 	},
