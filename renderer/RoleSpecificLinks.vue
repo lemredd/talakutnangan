@@ -5,6 +5,14 @@
 				{{ link.icon }}
 			</span>
 		</Link>
+		<a v-if="!isRoleGuest" role="button">
+			<span class="material-icons">notifications</span>
+		</a>
+
+		<div v-if="!isRoleGuest" class="account-controls">
+			<a role="button" class="material-icons">account_circle</a>
+			<span class="material-icons">expand_more</span>
+		</div>
 	</div>
 </template>
 
@@ -26,6 +34,7 @@ type Props = {
 const props = defineProps<Props>()
 const role = props.role
 
+const isRoleGuest = role === "guest"
 const roleSpecifiers = [
 	{
 		role: "guest",
