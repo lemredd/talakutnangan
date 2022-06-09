@@ -43,10 +43,11 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import Link from "./Link.vue"
 import Notifications from "./Notifications.vue"
 
+// Props
 type Props = {
 	role: string
 }
@@ -133,9 +134,7 @@ const linksSpecifiers = [
 		]
 	}
 ]
-
-
-const determineRoleLinks = computed(() => {
+const determineRoleLinks = computed(function()  {
 	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
 
