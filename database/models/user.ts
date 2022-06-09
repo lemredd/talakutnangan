@@ -15,18 +15,24 @@ import Department from "%/models/department"
 	paranoid: true
 })
 export default class User extends Model {
-	@Column
+	@Column({
+		allowNull: false
+	})
 	name: string
 
 	@Column({
 		unique: true,
+		allowNull: false
 	})
 	email: string
 
-	@Column
+	@Column({
+		allowNull: false
+	})
 	password: string
 
 	@Column({
+		allowNull: false,
 		type: DataType.ENUM(
 			UserKind.UnreachableEmployee,
 			UserKind.ReachableEmployee,
@@ -55,7 +61,9 @@ export default class User extends Model {
 	signature: Buffer|null
 
 	@ForeignKey(() => Department)
-	@Column
+	@Column({
+		allowNull: false
+	})
 	departmentID: number
 
 	@BelongsTo(() => Department)

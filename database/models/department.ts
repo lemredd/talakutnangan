@@ -1,4 +1,4 @@
-import { Table, Model, Column, HasMany } from "sequelize-typescript"
+import { Table, Model, Column, HasMany, NotNull } from "sequelize-typescript"
 import User from "%/models/user"
 
 @Table({
@@ -6,13 +6,19 @@ import User from "%/models/user"
 	paranoid: true
 })
 export default class Department extends Model {
-	@Column
+	@Column({
+		allowNull: false
+	})
 	acronym: string
 
-	@Column
+	@Column({
+		allowNull: false
+	})
 	fullName: string
 
-	@Column
+	@Column({
+		allowNull: false
+	})
 	mayAdmit: boolean
 
 	@HasMany(() => User)
