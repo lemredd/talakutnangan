@@ -14,6 +14,11 @@ type Permissions =
 	| "writeOverallScope"
 	| "mergeDepartment"
 
+/**
+ * Permission group for department.
+ *
+ * This is safe to use in client-side.
+ */
 export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 	get name(): string { return departmentColumnName }
 

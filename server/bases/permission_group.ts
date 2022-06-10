@@ -3,7 +3,8 @@ import type { PermissionMap } from "!/types/independent"
 /**
  * Base class for permission groups.
  *
- * Useful to check if a certain operation is safe to be executed.
+ * This is safe to use in client-side. Useful to check if a certain operation is safe to be
+ * executed.
  */
 export default abstract class<T extends { [key: string]: number }, U> {
 	/**
