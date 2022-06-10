@@ -1,6 +1,6 @@
 <template>
 	<div class="notifications">
-		<a role="button" @click="toggleNotificationList" class="material-icons">
+		<a id="notification-btn" role="button" @click="toggleNotificationList" class="material-icons">
 			notifications
 		</a>
 		<NotificationList v-if="isNotificationListShown">
@@ -28,6 +28,7 @@
 	position: relative;
 	height: 30px;
 	padding: 3px 10px;
+	align-self: center;
 
 	& .dropdown-container {
 		left: -100px;
@@ -65,6 +66,11 @@
 import { Dropdown as NotificationList } from "@/components"
 import { ref } from "vue"
 
+type Emissions = {
+	(e: "toggleNotificationList", isNotificationListShown: boolean ): void
+}
+const emit = defineEmits<Emissions>()
+
 const notifications = [
 	{
 		id: 0,
@@ -78,5 +84,6 @@ const isNotificationListShown = ref(false)
 
 function toggleNotificationList() {
 	isNotificationListShown.value = !isNotificationListShown.value
+	emit("toggleNotificationList", isNotificationListShown.value) // for testing purposes
 }
 </script>
