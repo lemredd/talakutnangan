@@ -8,7 +8,7 @@
 	</header>
 
 	<main class="rounded-0.8rem w-100% h-50% bg-dark-500">
-		<component :is="tabs[currentTab]" class="tab" :role="role"></component>
+		<component :is="tabs[currentTab]" class="tab" :userInfo="userInfo"></component>
 	</main>
 </div>
 </template>
@@ -43,6 +43,22 @@ const tabs = {
 	Profile
 }
 const currentTab = ref("Account")
+
 const roles = ["student", "employee"]
 const role = roles[0]
+const userInfo = ref({
+	account: {
+		email: "sample@sample.com",
+		password: "password123",
+		institute: "Institute of Name",
+		role: role,
+		studentNumber: "1920-xxxx",
+	},
+	profile: {
+		displayName: "Sample Display F. Name",
+		profilePic: null,
+		signature: null,
+		prefersDarkMode: true
+	}
+})
 </script>

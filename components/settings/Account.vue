@@ -1,22 +1,22 @@
 <template>
 <form @submit.prevent class="flex flex-col items-left text-light-100">
 	<div class ="p-5 flex justify-between">
-		<TextualField label="E-mail" type="email"  v-model="email"/>
+		<TextualField label="E-mail" type="email"  v-model="accountInfo.email"/>
 		<button class="material-icons">edit</button>
 	</div>
 	<div class ="p-5 flex justify-between">
-		<TextualField label="Password" type="password" v-model="password"/>
+		<TextualField label="Password" type="password" v-model="accountInfo.password"/>
 		<button class="material-icons">edit</button>
 	</div>
-	<div v-if="role === 'student'" class ="p-5 flex justify-between">
-		<TextualField label="Student Number" type="text" v-model="studentNo" :disabled="true"/>
+	<div v-if="accountInfo.role === 'student'" class ="p-5 flex justify-between">
+		<TextualField label="Student Number" type="text" v-model="accountInfo.studentNumber" :disabled="true"/>
 	</div>
 	<div class ="p-5 flex justify-between">
-		<TextualField label="Institute" type="text" v-model="institute" :disabled="true"/>
+		<TextualField label="Institute" type="text" v-model="accountInfo.institute" :disabled="true"/>
 	</div>
 	<div class ="p-5 flex flex-col justify-between">
 		<h3 class="input-header">Roles</h3>
-		<span class="role bg-white text-black">{{ role }}</span>
+		<span class="role bg-white text-black">{{ accountInfo.role }}</span>
 	</div>
 </form>
 </template>
@@ -39,16 +39,12 @@ form {
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 
-const { role } = defineProps<{
-	role: string
+const { userInfo } = defineProps<{
+	userInfo: {
+		[key: string]: any
+	}
 }>()
-
-
-const email = ref("sample@sample.com")
-const password = ref("password123")
-const studentNo = ref("1920-xxxx")
-const institute = ref("Institute of Name")
+const accountInfo = userInfo.account
 </script>
