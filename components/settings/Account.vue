@@ -9,10 +9,10 @@
 		<button class="material-icons">edit</button>
 	</div>
 	<div class ="p-5 flex justify-between">
-		<TextualField label="Student Number" type="text" v-model="studentNo"/>
+		<TextualField label="Student Number" type="text" v-model="studentNo" :disabled="true"/>
 	</div>
 	<div class ="p-5 flex justify-between">
-		<TextualField label="Institute" type="text" v-model="institute"/>
+		<TextualField label="Institute" type="text" v-model="institute" :disabled="true"/>
 	</div>
 	<div class ="p-5 flex justify-between">
 		<TextualField label="Roles" type="text" v-model="role"/>

@@ -9,6 +9,7 @@
 			:value="modelValue"
 			@input="emitUpdate"
 			:required="required"
+			:disabled="disabled"
 			/>
 	</div>
 </template>
@@ -23,11 +24,12 @@ input {
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
 
-const { label, type, modelValue, required = true } = defineProps<{
+const { label, type, modelValue, required = true, disabled } = defineProps<{
 	label: string,
 	type: Textual,
 	modelValue: string,
 	required?: boolean
+	disabled?: boolean
 }>()
 
 const emit = defineEmits<{
