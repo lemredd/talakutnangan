@@ -29,7 +29,8 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 			[ "update",            { flag: 0x004, permissionDependencies: [ "view" ] } ],
 			[ "archiveAndRestore", { flag: 0x008, permissionDependencies: [ "view" ] } ],
 			[ "readOwnScope",      { flag: 0x010, permissionDependencies: [ "view" ] } ],
-			[ "readOverallScope",  { flag: 0x080, permissionDependencies: [ "view" ] } ],
+			[ "readOverallScope",  { flag: 0x020, permissionDependencies: [ "view" ] } ],
+			[ "writeOverallScope", { flag: 0x080, permissionDependencies: [ "view" ] } ],
 			[ "mergeDepartment",   {
 				flag: 0x100,
 				permissionDependencies: [
