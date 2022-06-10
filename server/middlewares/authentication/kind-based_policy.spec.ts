@@ -9,21 +9,8 @@ import UserFactory from "~/factories/user"
 import KindBasedPolicy from "./kind-based_policy"
 
 describe("Middleware: Kind-Based Policy", () => {
-	it("can allow any authenticated users", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new KindBasedPolicy(null)
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		request.user = user
-		request.isAuthenticated = jest.fn().mockReturnValue(true)
-
-		await pageGuard.intermediate(request, response, next)
-
-		expect(next).toHaveBeenCalled()
-	})
-
-	it.skip("can allow unreachable employees only", async () => {
-		const user = await (new UserFactory()).insertOne()
+	it("can allow unreachable employees only as expected", async () => {
+		const user = await (new UserFactory()).beUnreachableEmployee().insertOne()
 		const pageGuard = new KindBasedPolicy(UserKind.UnreachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
@@ -35,8 +22,8 @@ describe("Middleware: Kind-Based Policy", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can allow reachable employees only", async () => {
-		const user = await (new UserFactory()).insertOne()
+	it("can allow reachable employees only as expected", async () => {
+		const user = await (new UserFactory()).beReachableEmployee().insertOne()
 		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
@@ -48,8 +35,8 @@ describe("Middleware: Kind-Based Policy", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can allow students only", async () => {
-		const user = await (new UserFactory()).insertOne()
+	it("can allow students only as expected", async () => {
+		const user = await (new UserFactory()).beStudent().insertOne()
 		const pageGuard = new KindBasedPolicy(UserKind.Student)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
@@ -61,12 +48,13 @@ describe("Middleware: Kind-Based Policy", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it("can deny guest users", async () => {
-		const pageGuard = new KindBasedPolicy(null)
+	it("can deny students if reachable employees are expected", async () => {
+		const user = await (new UserFactory()).beStudent().insertOne()
+		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		request.user = null
-		request.isAuthenticated = jest.fn().mockReturnValue(false)
+		request.user = user
+		request.isAuthenticated = jest.fn().mockReturnValue(true)
 
 		await pageGuard.intermediate(request, response, next)
 
