@@ -1,15 +1,17 @@
-import { mount, VueWrapper } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 import Link from "./Link.vue"
-import { usePageContext } from "#/usePageContext"
 
-let wrapper: VueWrapper
 
 describe("Component: Link", () => {
-	beforeAll(() => {
-		wrapper = mount(Link, {
+		const wrapper = mount(Link, {
+			attrs: {
+				href: path
+			},
 			global: {
-				stubs: {
-					pageContext: usePageContext()
+				provide: {
+					pageContext: {
+						urlPathname: path
+					}
 				}
 			}
 		})
