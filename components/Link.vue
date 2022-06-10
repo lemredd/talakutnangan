@@ -15,6 +15,8 @@ a.active {
 }
 </style>
 <script lang="ts" setup>
-import { usePageContext } from '#/usePageContext'
-const pageContext = usePageContext()
+import { PageContext } from "#/types"
+import { inject } from "vue"
+
+const pageContext = inject("pageContext") as PageContext
 </script>

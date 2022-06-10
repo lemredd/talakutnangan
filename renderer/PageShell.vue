@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts" setup>
+import { provide } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import Notifications from "@/PageShell/Notifications.vue"
 import { usePageContext } from "#/usePageContext"
@@ -32,6 +33,7 @@ const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
 const isRoleGuest = role === "guest"
 
+provide("pageContext", pageContext)
 </script>
 
 <style>
