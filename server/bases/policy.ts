@@ -6,15 +6,15 @@ export default abstract class extends Middleware {
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		if (this.mayAllow(request)) {
+			next()
+		} else {
 			response.status(this.status.UNAUTHORIZED)
 
 			response.json({
 				errors: [
-					"User is not allowed to invoke th functionality."
+					"User is not allowed to invoke the functionality."
 				]
 			})
-		} else {
-			next()
 		}
 	}
 }

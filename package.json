@@ -25,7 +25,7 @@
 		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
 		"test:unit:front:w": "npm run test:unit:front -- --watch",
 		"test:unit:back:w": "npm run test:unit:back -- --watch",
-		"test:intg:back:w": "nodemon --watch server --exec \"npm run build && npm run test:intg:back -- --watch\""
+		"test:intg:back:w": "npm run test:intg:back -- --watch"
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
@@ -69,6 +69,7 @@
 		"express": "^4.17.3",
 		"express-session": "^1.17.3",
 		"http-status-codes": "^2.2.0",
+		"material-icons": "^1.11.1",
 		"node-input-validator": "^4.5.0",
 		"nodemailer": "^6.7.5",
 		"passport": "^0.6.0",

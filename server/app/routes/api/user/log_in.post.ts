@@ -1,9 +1,8 @@
 import { v4 } from "uuid"
-import { StatusCodes } from "http-status-codes"
-import { Request, Response, NextFunction } from "express"
+
+import { Request, Response } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"
-import type { RawURLInfo, WithUser }  from "!/types"
 import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
@@ -24,11 +23,11 @@ export default class extends GuestFormController {
 		}
 	}
 
-	async handle(request: Request & WithUser, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token
-		response.status(StatusCodes.OK).json({
+		response.status(this.status.OK).json({
 			email: user.email,
 			token
 		})
