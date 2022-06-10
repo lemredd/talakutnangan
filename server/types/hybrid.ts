@@ -15,7 +15,8 @@ export type EndHandler = (Request, Response) => Promise<void>
  export interface RouteHandlers {
 	middlewares: Middleware[],
 	controller: RequestHandler,
-	postJobs: Middleware[]
+	postJobs: Middleware[],
+	endHandler: EndHandler | RequestHandler
 }
 
 export interface UsableRoute {
