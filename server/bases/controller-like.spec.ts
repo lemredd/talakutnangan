@@ -1,17 +1,22 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import Middleware from "!/bases/middleware"
+import { EndHandler } from "!/types/hybrid"
+import endRequest from "!/helpers/end_request"
 import { RouteInformation } from "!/types/independent"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
-import Controller from "./controller"
+import ControllerLike from "./controller-like"
 
-describe("Back-end: Base Controller", () => {
+describe("Back-end: Base ControllerLike", () => {
 	it("can make handlers", () => {
-		class ControllerA extends Controller {
+		class ControllerA extends ControllerLike {
 			get filePath(): string { return __filename }
 
-			handle(request: Request, response: Response): Promise<void> {
+			get endHandler(): EndHandler { return endRequest }
+
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -21,13 +26,17 @@ describe("Back-end: Base Controller", () => {
 		expect(handlers.middlewares).toHaveLength(0)
 		expect(handlers.controller.name).toBe("bound intermediate")
 		expect(handlers.postJobs).toHaveLength(0)
+		expect(handlers.endHandler).toStrictEqual(endRequest)
 	})
 
 	it("can make route information", () => {
-		class ControllerB extends Controller {
+		class ControllerB extends ControllerLike {
 			get filePath(): string { return `${this.root}/server/app/routes/a/b/index.get.ts` }
 
-			handle(request: Request, response: Response): Promise<void> {
+			get endHandler(): EndHandler { return endRequest }
+
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
 				return Promise.resolve()
 			}
 		}
@@ -52,10 +61,13 @@ describe("Back-end: Base Controller", () => {
 			}
 		}
 
-		class ControllerD extends Controller {
+		class ControllerD extends ControllerLike {
 			get filePath(): string { return __filename }
 
-			handle(request: Request, response: Response): Promise<void> {
+			get endHandler(): EndHandler { return endRequest }
+
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
 				return Promise.resolve()
 			}
 
@@ -88,10 +100,13 @@ describe("Back-end: Base Controller", () => {
 			}
 		}
 
-		class ControllerE extends Controller {
+		class ControllerE extends ControllerLike {
 			get filePath(): string { return __filename }
 
-			handle(request: Request, response: Response): Promise<void> {
+			get endHandler(): EndHandler { return endRequest }
+
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
 				return Promise.resolve()
 			}
 
@@ -114,24 +129,27 @@ describe("Back-end: Base Controller", () => {
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-	it("can retain context upon passing", () => {
+	it("can retain context upon passing", async () => {
 		const targetMessage = "Hello world"
 		const handleFunction = jest.fn()
 
-		class ControllerF extends Controller {
+		class ControllerF extends ControllerLike {
 			private message = targetMessage
 
 			get filePath(): string { return __filename }
 
-			async handle(request: Request, response: Response): Promise<void> {
+			get endHandler(): EndHandler { return endRequest }
+
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
 				handleFunction(this.message)
 			}
 		}
 		const controller = new ControllerF()
 		const request  = makeRequest<Request>()
-		const { res: response, } = makeResponse()
+		const { res: response, next } = makeResponse()
 
-		controller.handle(request, response)
+		await controller.intermediate(request, response, next)
 
 		expect(handleFunction.mock.calls[0]).toEqual([ targetMessage ])
 	})
