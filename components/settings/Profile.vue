@@ -6,16 +6,16 @@
 		</div>
 		<div class ="p-5">
 			<h3 class="display-name text-lg">Profile Name</h3>
-			<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
+			<div class="picture-container relative p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.profilePic" :src="profileInfo.profilePic">
-				<div class="no-image flex flex-col items-center justify-center" v-else>
-					<label for="input-profile-pic" >
+				<div class="no-image flex justify-center" v-else>
+					<label for="input-profile-pic" class="flex flex-col items-center justify-center">
 						<span class="material-icons">add_circle</span>
 						<input type="file" accept="image/" id="input-profile-pic" class="input-pic" @change="loadImage($event, 'profilePic')">
+						<small class="text-center">
+							Drag and drop or upload image
+						</small>
 					</label>
-					<small class="text-center">
-						Drag and drop or upload image
-					</small>
 				</div>
 			</div>
 		</div>
@@ -23,14 +23,14 @@
 			<h3 class="display-name text-lg">Profile Name</h3>
 			<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.signature" :src="profileInfo.signature">
-				<div class="no-image flex flex-col items-center justify-center" v-else>
-					<label for="input-signature" >
+				<div class="no-image flex justify-center" v-else>
+					<label for="input-signature" class="flex flex-col items-center justify-center">
 						<span class="material-icons">add_circle</span>
 						<input type="file" accept="image/" id="input-signature" class="input-pic" @change="loadImage($event, 'signature')">
+						<small class="text-center">
+							Drag and drop or upload image
+						</small>
 					</label>
-					<small class="text-center">
-						Drag and drop or upload image
-					</small>
 				</div>
 			</div>
 		</div>
