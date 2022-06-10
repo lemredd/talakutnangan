@@ -1,8 +1,7 @@
 <template>
 	<div class="links" :class="[role, /* linkClasses */]">
-		<Notifications v-if="!isRoleGuest"></Notifications>
 
-		<button class="material-icons" @click="toggleRoleLinks">menu</button>
+		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<div v-show="areRoleLinksShown" class="role-links">
 			<div class="overlay bg-dark-700 bg-opacity-60" @click="toggleRoleLinks"></div>
 			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
@@ -44,8 +43,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue"
-import Link from "./Link.vue"
-import Notifications from "./Notifications.vue"
+import Link from "@/Link.vue"
 
 // Props
 type Props = {
