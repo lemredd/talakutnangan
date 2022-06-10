@@ -9,7 +9,7 @@ export default abstract class {
 	/**
 	 * Name of the permission group
 	 */
-	abstract get group(): string
+	abstract get name(): string
 
 	/**
 	 * Map of permissions under the group
@@ -25,7 +25,7 @@ export default abstract class {
 	 * @param permissionName Name of the permission to check if it is allowed in the role.
 	 */
 	mayAllow(role: object, permissionName: string): boolean {
-		if (this.group in role) {
+		if (this.name in role) {
 			// TODO: Create a recursive function to check the flags
 			return false
 		} else {
