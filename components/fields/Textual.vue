@@ -4,7 +4,7 @@
 			{{ label }}
 		</label>
 		<input
-			class="flex-1 bg-none appearance-none"
+			class="flex-1 bg-transparent"
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -13,11 +13,11 @@
 	</div>
 </template>
 
-<style>
-	input { 
-		background: none;
-		border-bottom:1px white solid;
-	}
+<style scoped>
+input {
+	border-bottom: 1px solid white;
+	padding-bottom: .25em;
+}
 </style>
 
 <script setup lang="ts">

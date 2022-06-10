@@ -5,7 +5,7 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 export default abstract class extends JSONController {
 	get middlewares(): Middleware[] {
 		return [
-			CommonMiddlewareList.guestPageGuard,
+			CommonMiddlewareList.guestOnlyPolicy,
 			...super.middlewares
 		]
 	}
