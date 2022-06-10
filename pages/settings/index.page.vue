@@ -8,7 +8,7 @@
 	</header>
 
 	<main class="rounded-0.8rem w-100% h-50% bg-dark-500">
-		<component :is="tabs[currentTab]" class="tab"></component>
+		<component :is="tabs[currentTab]" class="tab" :role="role"></component>
 	</main>
 </div>
 </template>

@@ -8,14 +8,15 @@
 		<TextualField label="Password" type="password" v-model="password"/>
 		<button class="material-icons">edit</button>
 	</div>
-	<div class ="p-5 flex justify-between">
+	<div v-if="role === 'student'" class ="p-5 flex justify-between">
 		<TextualField label="Student Number" type="text" v-model="studentNo" :disabled="true"/>
 	</div>
 	<div class ="p-5 flex justify-between">
 		<TextualField label="Institute" type="text" v-model="institute" :disabled="true"/>
 	</div>
-	<div class ="p-5 flex justify-between">
-		<TextualField label="Roles" type="text" v-model="role"/>
+	<div class ="p-5 flex flex-col justify-between">
+		<h3 class="input-header">Roles</h3>
+		<span class="role bg-white text-black">{{ role }}</span>
 	</div>
 </form>
 </template>
@@ -41,10 +42,13 @@ form {
 import { ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 
+const { role } = defineProps<{
+	role: string
+}>()
+
 
 const email = ref("sample@sample.com")
 const password = ref("password123")
 const studentNo = ref("1920-xxxx")
 const institute = ref("Institute of Name")
-const role = ref ("Roles")
 </script>
