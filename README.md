@@ -49,13 +49,15 @@ as shown here.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
-4. Set the empty email variables. They may vary depending per team.
+4. Run `npm run migrate:first` if it is the database server is newly installed; and chosen database
+   is `mysql` or `pgsql`.
+5. Set the empty email variables. They may vary depending per team.
    - `EMAIL_USER`. This e-mail address will be used to log in to the SMTP server and will be the
      sender of e-mail messages  in the app (i.e. e-mail verification).
    - `EMAIL_PASS`. This is the password of e-mail address above and will be used to log in to the
      SMTP server. It is recommended to use an app password.
-5. Run `npm run dev`
-6. Visit http://localhost:16000
+6. Run `npm run dev`
+7. Visit http://localhost:16000
 
 ## Conventional Commits
 The purpose of this documentation is to guide collaborators of this project on commiting according
