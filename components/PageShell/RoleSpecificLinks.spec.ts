@@ -33,3 +33,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		}
 	})
 
+	it("should have a menu button that is clickable", async () => {
+		const menuButton = wrapper.find("#menu-btn")
+		await menuButton.trigger("click")
+
+		expect(wrapper.emitted().click).toHaveLength(1)
+	})
+})
