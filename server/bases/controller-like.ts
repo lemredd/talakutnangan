@@ -2,7 +2,6 @@ import Middleware from "!/bases/middleware"
 import extractRouteInfo from "!/helpers/extract_route_info"
 
 import { RouteInformation } from "!/types/independent"
-import { RequestHandler } from "!/types/dependent"
 import { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 export default abstract class extends Middleware {
