@@ -42,6 +42,7 @@ const tabs = {
 	Account,
 	Profile
 }
-
 const currentTab = ref("Account")
+const roles = ["student", "employee"]
+const role = roles[0]
 </script>
