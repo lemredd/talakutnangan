@@ -15,6 +15,6 @@ a.active {
 }
 </style>
 <script lang="ts" setup>
-import { usePageContext } from './usePageContext'
+import { usePageContext } from '#/usePageContext'
 const pageContext = usePageContext()
 </script>
