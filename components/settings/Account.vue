@@ -20,11 +20,20 @@
 </form>
 </template>
 
-<style>
+<style lang="scss">
 form {
 	display: flex;
 	flex-direction: column;
 	max-width: 480px;
+
+	.input-header {
+		font-size: 1.25em;
+	}
+	.role {
+		border-radius: 2em;
+		padding: .5em 1em;
+		width: max-content;
+	}
 }
 </style>
 
