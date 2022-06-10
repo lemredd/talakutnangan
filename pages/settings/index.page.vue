@@ -50,6 +50,12 @@
 				<h3 class="display-name text-lg col-span-full">Dark Mode</h3>
 				<h5 class="name">Lorem5</h5>
 				<input type="checkbox" name="" id="">
+				<label for="dark-mode-toggle">
+					<span class="material-icons-outlined">
+						{{ `toggle_${isDarkModeEnabled ? "on" : "off"}` }}
+					</span>
+					<input type="checkbox" name="" id="dark-mode-toggle" v-model="isDarkModeEnabled" @click="toggleDarkMode">
+				</label>
 			</div>
 		 </form>
 	 </main>
@@ -90,4 +96,9 @@ const password = ref("password123")
 const studentNo = ref("1920-xxxx")
 const institute = ref("Institute of Name")
 const role = ref ("Roles")
+const isDarkModeEnabled = ref(true)
+
+function toggleDarkMode() {
+	isDarkModeEnabled.value = !isDarkModeEnabled.value
+}
 </script>
