@@ -13,7 +13,7 @@
         <div class="main">
             <br/>
 
-            <div class="post" v-for="post in posts" v-bind:key="post.id">
+            <div class="post" v-for="post in posts" v-bind:key="post.id" :hidden="secludePostDiv(post)">
                 <div class="container">
                     <div class="left">
                         <h2 class = "title">
@@ -24,17 +24,28 @@
                         <h2 class = "title">
                         {{ post.title }}
                         {{ post.badWordExist() }}
+                        
                         </h2>
                     </div>
                     <div class="right">
                         <h2 class = "title">
-                            {{ post.voteCount() }}
+                            {{ voteCountUpdate(post) }}
                         </h2>
                         <label class="switch">
                             <input type="checkbox" :checked="determineUserVoted(post)" class="switch" @click="upVote($event, post)" >
-                            {{ updateVotes(alreadyVoted, post)}}
                             <span class="slider"></span>
                         </label>
+                        <h2 class = "title">
+                            {{ downVoteCountUpdate(post) }}
+                        </h2>
+                        <label class="switch">
+                            <input type="checkbox" :checked="determineUserDownVoted(post)" class="switch" @click="downVote($event, post)" >
+                            <span class="slider"></span>
+                        </label>
+
+                        <h2 class = "title">
+                            {{ totalVotes(post) }}
+                        </h2>
                     </div>
                 </div>
                 <p v-bind:class="`${post.id}`">
@@ -60,67 +71,15 @@
 </style>
 
 <script setup lang="ts">
-import { ref, Ref } from "vue";
-import { getPosts } from "./data";
-import { getSecludedPosts } from "./data";
-
-var posts = ref(getPosts());
-var secludedPosts = ref(getSecludedPosts());
-var alreadyVoted;
-
-var dummyUser = "User 2"
-
-function determineUserVoted(post) {
-	if (post.voters.includes(dummyUser)) return true
-}
-
-function getSecludedPost(post,secludedPost, i)
-{
-
-    if(post.badWordExist()==true)
-    {
-        if(secludedPost[i]===post)
-        {
-			console.log("this post has already been secluded");
-        }
-        else
-        {
-            secludedPost.push(post);
-        }
-
-    }
-}
-
-posts.value.forEach(function(post, i) {
-	getSecludedPost(post, secludedPosts.value, i)
-})
-
-console.log(secludedPosts.value)
-
-function updateVotes(e, post)
-{
-    if(post.user.match(post.voters))
-    {
-        e.target.checked;
-    }
-}
-
-function upVote(e, post)
-{
-
-    if(e.target.checked)
-    {
-        post.voters.push(post.user);
-    }
-    else
-    {
-        post.voters=post.voters.filter(function(voter)
-        {
-            return voter!=post.user;
-        });
-    }
-
-
-}
+import { posts } from "./post";
+import { secludedPosts } from "./post";
+import { voteCountUpdate } from "./post";
+import { determineUserVoted } from "./post";
+import { upVote } from "./post";
+import { downVoteCountUpdate } from "./post";
+import { determineUserDownVoted } from "./post";
+import { downVote } from "./post";
+import { totalVotes } from "./post";
+import { secludePostDiv } from "./post";
 
 </script>
