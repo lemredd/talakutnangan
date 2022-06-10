@@ -43,7 +43,7 @@ as shown here.
        use the password the same as to the example, use *root* password.
      - Wait for the installation to complete.
      - Search using keyword *pgAdmin 4* and run the matched application. Its purpose is similar to MySQL
-       workbench and MongoDB Compass. This may be need for troubleshooting.
+       workbench and MongoDB Compass. This may be needed for troubleshooting.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
