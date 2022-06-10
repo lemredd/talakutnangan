@@ -38,6 +38,14 @@
 					<small class="text-center">Drag and drop or upload image</small>
 				</div>
 			</div>
+			<div class ="p-5 flex flex-col">
+				<h3 class="display-name text-lg">Signature</h3>
+				<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex flex-col items-center justify-center">
+					<div class="image"></div>
+					<button class="material-icons">add_circle</button>
+					<small class="text-center">Drag and drop or upload image</small>
+				</div>
+			</div>
 			<div class ="p-5 dark-mode-toggle">
 				<h3 class="display-name text-lg col-span-full">Dark Mode</h3>
 				<h5 class="name">Lorem5</h5>
