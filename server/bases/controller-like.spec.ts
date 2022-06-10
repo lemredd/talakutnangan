@@ -1,6 +1,8 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import Middleware from "!/bases/middleware"
+import { EndHandler } from "!/types/hybrid"
+import endRequest from "!/helpers/end_request"
 import { RouteInformation } from "!/types/independent"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
@@ -10,6 +12,8 @@ describe("Back-end: Base ControllerLike", () => {
 	it("can make handlers", () => {
 		class ControllerA extends ControllerLike {
 			get filePath(): string { return __filename }
+
+			get endHandler(): EndHandler { return endRequest }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
@@ -22,11 +26,14 @@ describe("Back-end: Base ControllerLike", () => {
 		expect(handlers.middlewares).toHaveLength(0)
 		expect(handlers.controller.name).toBe("bound intermediate")
 		expect(handlers.postJobs).toHaveLength(0)
+		expect(handlers.endHandler).toStrictEqual(endRequest)
 	})
 
 	it("can make route information", () => {
 		class ControllerB extends ControllerLike {
 			get filePath(): string { return `${this.root}/server/app/routes/a/b/index.get.ts` }
+
+			get endHandler(): EndHandler { return endRequest }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
@@ -56,6 +63,8 @@ describe("Back-end: Base ControllerLike", () => {
 
 		class ControllerD extends ControllerLike {
 			get filePath(): string { return __filename }
+
+			get endHandler(): EndHandler { return endRequest }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
@@ -94,6 +103,8 @@ describe("Back-end: Base ControllerLike", () => {
 		class ControllerE extends ControllerLike {
 			get filePath(): string { return __filename }
 
+			get endHandler(): EndHandler { return endRequest }
+
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
@@ -126,6 +137,8 @@ describe("Back-end: Base ControllerLike", () => {
 			private message = targetMessage
 
 			get filePath(): string { return __filename }
+
+			get endHandler(): EndHandler { return endRequest }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
