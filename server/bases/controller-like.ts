@@ -1,25 +1,30 @@
 import Middleware from "!/bases/middleware"
 import extractRouteInfo from "!/helpers/extract_route_info"
 
-import { RouteHandlers } from "!/types/hybrid"
 import { RouteInformation } from "!/types/independent"
-import { Request, Response, NextFunction } from "!/types/dependent"
+import { RequestHandler } from "!/types/dependent"
+import { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 export default abstract class extends Middleware {
 	/**
-	 * Returns the path of the controller. It should return `__filename`
+	 * Returns the path of the controller-like class. It should return `__filename`
 	 */
 	abstract get filePath(): string
 
 	/**
-	 * Returns the middlewares to be used before that main handle will execute.
+	 * Returns the end handler of the controller-like class.
+	 */
+	abstract get endHandler(): EndHandler | null
+
+	/**
+	 * Returns the middlewares to be used before that main handler will execute.
 	 */
 	protected get middlewares(): Middleware[] {
 		return []
 	}
 
 	/**
-	 * Returns the jobs to run after the main handle executed.
+	 * Returns the jobs to run after the main handler executed.
 	 */
 	protected get postJobs(): Middleware[] {
 		return []
@@ -38,7 +43,8 @@ export default abstract class extends Middleware {
 		return {
 			middlewares: this.middlewares,
 			controller: this.intermediate.bind(this),
-			postJobs: this.postJobs
+			postJobs: this.postJobs,
+			endHandler: this.endHandler
 		}
 	}
 }
