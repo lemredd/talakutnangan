@@ -3,11 +3,13 @@
 	<header class="mb-5">
 		<h1 class="my-5 text-[1.75em] uppercase">User Settings</h1>
 		<ul class="tabs">
-			<li>Account</li>
-			<li>Profile</li>
+			<li v-for="(_, tab) in tabs" :key="tab" :class="['tab-button', { 'active': currentTab === tab }]" @click="currentTab = tab">{{ tab }}</li>
 		</ul>
 	</header>
 
+	<main class="rounded-0.8rem w-100% h-50% bg-dark-500">
+		<component :is="tabs[currentTab]" class="tab"></component>
+	</main>
 </div>
 </template>
 
@@ -32,17 +34,14 @@ main {
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import { ref } from "vue"
+import Account from "@/settings/Account.vue"
+import Profile from "@/settings/Profile.vue"
 
-const email = ref("sample@sample.com")
-const password = ref("password123")
-const studentNo = ref("1920-xxxx")
-const institute = ref("Institute of Name")
-const role = ref ("Roles")
-const isDarkModeEnabled = ref(true)
-
-function toggleDarkMode() {
-	isDarkModeEnabled.value = !isDarkModeEnabled.value
+const tabs = {
+	Account,
+	Profile
 }
+
+const currentTab = ref("Account")
 </script>
