@@ -42,10 +42,8 @@ as shown here.
        Builder is not required. Default port should be 5432. Remember your password. If you want to
        use the password the same as to the example, use *root* password.
      - Wait for the installation to complete.
-     - Search using keyword *pgAdmin 4* and run the application. Its purpose is similar to MySQL
-       workbench and MongoDB Compass.
-     - Go to your database server and create database for capstone project. Name it
-       *talakutnangan_test* or customize it if you know what you are doing.
+     - Search using keyword *pgAdmin 4* and run the matched application. Its purpose is similar to MySQL
+       workbench and MongoDB Compass. This may be need for troubleshooting.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
