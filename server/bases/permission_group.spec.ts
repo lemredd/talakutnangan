@@ -7,6 +7,7 @@ describe("Back-end: Base Permission Group", () => {
 	type AvailablePermissionsA = "a" | "b"
 
 	class GroupA extends PermissionGroup<GroupNameA, AvailablePermissionsA> {
+		get name(): string { return "groupA" }
 		get permissions(): PermissionMap<AvailablePermissionsA> {
 			return new Map<AvailablePermissionsA, PermissionInfo<AvailablePermissionsA>>([
 				[ "a", { flag: 0x1, permissionDependencies: [] } ],
@@ -36,6 +37,7 @@ describe("Back-end: Base Permission Group", () => {
 	type AvailablePermissionsB = "c" | "d"
 
 	class GroupB extends PermissionGroup<GroupNameB, AvailablePermissionsB> {
+		get name(): string { return "groupB" }
 		get permissions(): PermissionMap<AvailablePermissionsB> {
 			return new Map<AvailablePermissionsB, PermissionInfo<AvailablePermissionsB>>([
 				[ "c", { flag: 0x1, permissionDependencies: [] } ],
@@ -48,7 +50,6 @@ describe("Back-end: Base Permission Group", () => {
 		const permissionGroup = new GroupB()
 
 		const isAllowed = permissionGroup.mayAllow({ "groupB": 0x3 }, "d")
-
 		expect(isAllowed).toBeTruthy()
 	})
 
