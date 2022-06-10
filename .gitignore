@@ -11,6 +11,7 @@ pnpm-lock.yaml
 dist/
 *hidden*
 
+
 # Remove the globs below after complete migration
 .nuxt
 .output
