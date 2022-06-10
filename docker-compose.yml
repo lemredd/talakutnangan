@@ -5,84 +5,27 @@ networks:
     external: false
 
 services:
-  # web:
-  #   build:
-  #     context: .
-  #     target: dev
-  #   image: talakutnangan:dev
-  #   environment:
-  #     - DATABASE_URI=${DATABASE_URI}
-  #   # deploy:
-  #   #   resources:
-  #   #     limits:
-  #   #       cpus: "0.40"
-  #   #       memory: 100M
-  #   restart: on-failure
-  #   networks:
-  #     - talakutnangan
-  #   volumes:
-  #     - root:/var/www/html/app
-  #     - type: bind
-  #       source: "./pages"
-  #       target: "/var/www/html/app/pages"
-  #     - type: bind
-  #       source: "./.nuxt"
-  #       target: "/var/www/html/app/.nuxt"
-  #     - type: bind
-  #       source: "./server"
-  #       target: "/var/www/html/app/server"
-  #     - type: bind
-  #       source: "./plugins"
-  #       target: "/var/www/html/app/plugins"
-  #     - type: bind
-  #       source: "./composables"
-  #       target: "/var/www/html/app/composables"
-  #     - type: bind
-  #       source: "./components"
-  #       target: "/var/www/html/app/components"
-  #   ports:
-  #     - "16000:8000"
-  #   depends_on:
-  #     - database
-  #   command: npx nuxt dev --port 8000
-
-  # web_test:
-  #   build:
-  #     context: .
-  #     target: test
-  #   image: talakutnangan:test
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "0.50"
-  #         memory: 50M
-  #   restart: on-failure
-  #   volumes:
-  #     - type: bind
-  #       source: "./.git"
-  #       target: "/var/www/html/.git"
-  #     - type: bind
-  #       source: "./pages"
-  #       target: "/var/www/html/app/pages"
-  #     - type: bind
-  #       source: "./.nuxt"
-  #       target: "/var/www/html/app/.nuxt"
-  #     - type: bind
-  #       source: "./server"
-  #       target: "/var/www/html/app/server"
-  #     - type: bind
-  #       source: "./plugins"
-  #       target: "/var/www/html/app/plugins"
-  #     - type: bind
-  #       source: "./composables"
-  #       target: "/var/www/html/app/composables"
-  #     - type: bind
-  #       source: "./components"
-  #       target: "/var/www/html/app/components"
-  #     - root:/var/www/html/app
-  #   tty: true
-  #   stdin_open: false
-  #   command: npx jest
+  web:
+    build:
+      context: .
+      target: dev
+    image: talakutnangan:dev
+    deploy:
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 100M
+    restart: on-failure
+    networks:
+      - talakutnangan
+    volumes:
+      - "root:/var/www/html/app"
+      - "./:/var/www/html/app/base"
+    ports:
+      - "16000:3000"
+    depends_on:
+      - database
+    command: npm run dev
 
   database:
     image: mysql:8
