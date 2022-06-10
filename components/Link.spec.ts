@@ -4,3 +4,13 @@ import { usePageContext } from "#/usePageContext"
 
 let wrapper: VueWrapper
 
+describe("Component: Link", () => {
+	beforeAll(() => {
+		wrapper = mount(Link, {
+			global: {
+				stubs: {
+					pageContext: usePageContext()
+				}
+			}
+		})
+	})
