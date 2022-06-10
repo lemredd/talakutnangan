@@ -17,12 +17,15 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            "Names 1","Name 2", "Name 3", "User 2"
+            "User 1"
+        ],
+        downVoters: [
+           
         ],
         voteCount: function()
         {
             return this.voters.length;
-        }
+        },
     },
     {
         id:2,
@@ -34,12 +37,15 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            "Names 1","Name 2", "Name 3"
+            
+        ],
+        downVoters: [
+            
         ],
         voteCount: function()
         {
             return this.voters.length;
-        }
+        },
     },
     {
         id:3,
@@ -51,12 +57,16 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            "Names 1","Name 2", "Name 3"
+            
+        ],
+        downVoters: [
+            
         ],
         voteCount: function()
         {
             return this.voters.length;
-        }
+        },
+        
     },
     {
         id:4,
@@ -68,12 +78,15 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            "Names 1","Name 2", "Name 3"
+            
+        ],
+        downVoters: [
+           
         ],
         voteCount: function()
         {
             return this.voters.length;
-        }
+        },
     },
     {
         id:5,
@@ -85,12 +98,15 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            "Names 1","Name 2", "Name 3"
+            
+        ],
+        downVoters: [
+           
         ],
         voteCount: function()
         {
             return this.voters.length;
-        }
+        },
     }
 ];
 
