@@ -16,7 +16,8 @@
 			"!/*": [ "./server/*" ],
 			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],
-			"@/*": [ "./components/*" ]
+			"@/*": [ "./components/*" ],
+			"@@/*": [ "./pages/*" ]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true
