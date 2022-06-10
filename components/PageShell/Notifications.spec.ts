@@ -17,3 +17,9 @@ describe("Component: Page Shell/Notifications", () => {
 		expect(emissions).toHaveProperty("toggleNotificationList")
 		expect(emissions.toggleNotificationList).toBeTruthy()
 	})
+
+	it("should view all notifications once footer is clicked", async () => {
+		const notificationFooter = wrapper.find(".notification-footer a")
+		expect(notificationFooter.attributes("href")).toBe("/notifications")
+	})
+})
