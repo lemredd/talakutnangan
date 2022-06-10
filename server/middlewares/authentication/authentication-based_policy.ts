@@ -9,6 +9,10 @@ import type { Request } from "!/types/dependent"
 export default class extends Policy {
 	private targetAuthenticationState: boolean
 
+	/**
+	 * @param targetAuthenticationState Pass true if page only accepts authenticated users. False if
+	 * guest only.
+	 */
 	constructor(targetAuthenticationState: boolean) {
 		super()
 		this.targetAuthenticationState = targetAuthenticationState
