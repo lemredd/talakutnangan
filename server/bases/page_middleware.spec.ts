@@ -3,9 +3,9 @@ import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-moc
 import Middleware from "!/bases/middleware"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
-import Enhancer from "./enhancer"
+import PageMiddleware from "./page_middleware"
 
-describe("Back-end: Base Enhancer", () => {
+describe("Back-end: Base PageMiddleware", () => {
 	it("can make handlers", () => {
 		class MiddlewareA extends Middleware {
 			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
@@ -13,7 +13,7 @@ describe("Back-end: Base Enhancer", () => {
 			}
 		}
 
-		class EnhancerA extends Enhancer {
+		class PageMiddlewareA extends PageMiddleware {
 			get filePath(): string { return __filename }
 
 			get middleware(): Middleware { return new MiddlewareA() }
@@ -23,7 +23,7 @@ describe("Back-end: Base Enhancer", () => {
 			}
 		}
 
-		const handlers = (new EnhancerA()).handlers
+		const handlers = (new PageMiddlewareA()).handlers
 
 		expect(handlers.middlewares).toHaveLength(0)
 		expect(handlers.controller.name).toBe("bound intermediate")
@@ -42,7 +42,7 @@ describe("Back-end: Base Enhancer", () => {
 			}
 		}
 
-		class EnhancerB extends Enhancer {
+		class PageMiddlewareB extends PageMiddleware {
 			get filePath(): string { return __filename }
 
 			get middleware(): Middleware { return new MiddlewareB() }
@@ -52,7 +52,7 @@ describe("Back-end: Base Enhancer", () => {
 			}
 		}
 
-		const enhancer = new EnhancerB()
+		const enhancer = new PageMiddlewareB()
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
