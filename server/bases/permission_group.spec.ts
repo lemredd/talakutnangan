@@ -67,4 +67,20 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(isAllowed).toBeFalsy()
 	})
+
+	it("can generate mask of simple permission", async () => {
+		const permissionGroup = new GroupB()
+
+		const mask = permissionGroup.generateMask("c")
+
+		expect(mask).toBe(0x1)
+	})
+
+	it("can generate mask of dependent permission", async () => {
+		const permissionGroup = new GroupB()
+
+		const mask = permissionGroup.generateMask("d")
+
+		expect(mask).toBe(0x3)
+	})
 })
