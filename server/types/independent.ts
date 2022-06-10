@@ -61,12 +61,12 @@ export interface WithRegistration {
 /**
  * Used to define the information about a certain permission.
  */
-export interface PermissionInfo {
+export interface PermissionInfo<T> {
 	flag: number,
-	permissionDependencies: string[]
+	permissionDependencies: T[]
 }
 
 /**
  * Used to define a group of permissions.
  */
-export type PermissionMap = Map<string, PermissionInfo>
+export type PermissionMap<T> = Map<T, PermissionInfo<T>>
