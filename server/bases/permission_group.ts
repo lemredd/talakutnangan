@@ -7,6 +7,11 @@ import type { PermissionMap } from "!/types/independent"
  */
 export default abstract class<T extends { [key: string]: number }, U> {
 	/**
+	 * Name of the permission group
+	 */
+	abstract get name(): string
+
+	/**
 	 * Map of permissions under the group
 	 */
 	abstract get permissions(): PermissionMap<U>
@@ -18,8 +23,8 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	 * @param permissionName Name of the permission to check if it is allowed in the role.
 	 */
 	mayAllow(role: T, permissionName: U): boolean {
-		// TODO: Create a recursive function to check the flags
-		return false
+		const mask = this.generateMask(permissionName)
+		return (role[this.name] & mask) === mask
 	}
 
 	/**
