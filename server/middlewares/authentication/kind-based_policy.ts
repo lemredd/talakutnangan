@@ -1,25 +1,25 @@
 import type { UserKind } from "%/types"
 import type { Request } from "!/types/dependent"
 
-import Policy from "!/bases/policy"
+import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 /**
- * Creates middleware to only allow authenticated users.
+ * Creates middleware to only allow certain kind of user.
  *
- * @param kind Kind of user that may be permitted. Use `null` to allow any authenticated user.
+ * Automatically requires user to be authenticated.
  */
-export default class extends Policy {
-	private kind: UserKind|null
+export default class extends AuthenticationBasedPolicy {
+	private kind: UserKind
 
-	constructor(kind: UserKind|null) {
-		super()
+	/**
+	 * @param kind Specific kind of user to only allow.
+	 */
+	constructor(kind: UserKind) {
+		super(true)
 		this.kind = kind
 	}
 
 	mayAllow(request: Request): boolean {
-		return request.isAuthenticated() && (
-			request.user.kind === this.kind
-			|| this.kind === null
-		)
+		return super.mayAllow(request) && request.user.kind === this.kind
 	}
 }
