@@ -12,6 +12,7 @@ as shown here.
 ### Prerequisites
 - [Node.js and NPM]. LTS version is recommended
 - [Docker]
+- [PostgreSQL]. [v14.3] is recommended.
 
 ### General Development Instruction
 1. Run `npm install`
@@ -34,16 +35,27 @@ as shown here.
        - `DATABASE_PASSWORD`
        - `DATABASE_PORT`
        - `DATABASE_NAME`
+   - PostgreSQL (local)
+     - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
+     - Download the [installer] for the latest version.
+     - Install and just click next. You may customize the installation and data directory. Stack
+       Builder is not required. Default port should be 5432. Remember your password. If you want to
+       use the password the same as to the example, use *root* password.
+     - Wait for the installation to complete.
+     - Search using keyword *pgAdmin 4* and run the matched application. Its purpose is similar to MySQL
+       workbench and MongoDB Compass. This may be needed for troubleshooting.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
-4. Set the empty email variables. They may vary depending per team.
+4. Run `npm run migrate:first` if it is the database server is newly installed; and chosen database
+   is `mysql` or `pgsql`.
+5. Set the empty email variables. They may vary depending per team.
    - `EMAIL_USER`. This e-mail address will be used to log in to the SMTP server and will be the
      sender of e-mail messages  in the app (i.e. e-mail verification).
    - `EMAIL_PASS`. This is the password of e-mail address above and will be used to log in to the
      SMTP server. It is recommended to use an app password.
-5. Run `npm run dev`
-6. Visit http://localhost:16000
+6. Run `npm run dev`
+7. Visit http://localhost:16000
 
 ## Conventional Commits
 The purpose of this documentation is to guide collaborators of this project on commiting according
@@ -113,3 +125,6 @@ There is also a good [article] to read about the Conventional Commits.
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/
+[PostgreSQL]: https://www.postgresql.org/download/windows/
+[v14.3]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+[installer]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
