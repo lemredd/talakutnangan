@@ -21,4 +21,17 @@ export default abstract class<T extends { [key: string]: number }, U> {
 		// TODO: Create a recursive function to check the flags
 		return false
 	}
+
+	/**
+	 * Generates mask to the permission.
+	 *
+	 * This mask includes the flags of permission dependencies.
+	 *
+	 * @param name Name of the permission to generate its mask
+	 */
+	generateMask(name: U): number {
+		const permissions = this.permissions
+		const info = permissions.get(name)
+		return info.flag | info.permissionDependencies.reduce((a, b) => a | this.generateMask(b), 0);
+	}
 }
