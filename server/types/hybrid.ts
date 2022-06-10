@@ -7,7 +7,7 @@ import type Middleware from "!/bases/middleware"
 import type { RouteInformation, WithRegistration } from "!/types/independent"
 import type { Response, Request, RequestHandler } from "!/types/dependent"
 
-export type EndHandler = (Request, Response) => Promise<void>
+export type EndHandler = (Request, Response) => Promise<void> | void
 
 /**
  * Used to structure the stored route information with its associated handlers.
