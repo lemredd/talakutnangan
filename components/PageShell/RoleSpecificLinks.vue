@@ -113,6 +113,11 @@ const linksSpecifiers = [
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
+			},
+			{
+				name: "User Settings",
+				path: "/settings",
+				icon: "account_circle"
 			}
 		]
 	},
@@ -128,6 +133,11 @@ const linksSpecifiers = [
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
+			},
+			{
+				name: "User Settings",
+				path: "/settings",
+				icon: "account_circle"
 			}
 		]
 	}
