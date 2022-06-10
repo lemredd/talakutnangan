@@ -41,13 +41,18 @@ export default class UserFactory {
 		return this
 	}
 
+	beStudent(): UserFactory {
+		this.#kind = "student"
+		return this
+	}
+
 	beReachableEmployee(): UserFactory {
-		this.#kind = "reachable_emplyee"
+		this.#kind = "reachable_employee"
 		return this
 	}
 
 	beUnreachableEmployee(): UserFactory {
-		this.#kind = "unreachable_emplyee"
+		this.#kind = "unreachable_employee"
 		return this
 	}
 
