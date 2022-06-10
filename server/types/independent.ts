@@ -65,3 +65,8 @@ export interface PermissionInfo {
 	flag: number,
 	permissionDependencies: string[]
 }
+
+/**
+ * Used to define a group of permissions.
+ */
+export type PermissionMap = Map<string, PermissionInfo>
