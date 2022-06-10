@@ -12,20 +12,21 @@ VOLUME [ "/var/www/html/app/base" ]
 
 WORKDIR /var/www/html/app
 
-COPY ./.env ./.env
-COPY ./package.json ./package.json
-COPY ./tsconfig.json ./tsconfig.json
-COPY ./vite.config.ts ./vite.config.ts
-COPY ./vue.d.ts ./vue.d.ts
-COPY ./.sequelizerc ./.sequelizerc
-
 RUN ln -s base/database database
 RUN ln -s base/server server
 RUN ln -s base/renderer renderer
 RUN ln -s base/pages pages
 RUN ln -s base/components components
 
-RUN npm install -g npm@8.12.1
+COPY ./.env ./.env
+COPY ./package.json ./package.json
+COPY ./tsconfig.json ./tsconfig.json
+COPY ./vite.config.ts ./vite.config.ts
+COPY ./vue.d.ts ./vue.d.ts
+COPY ./.sequelizerc ./.sequelizerc
+COPY ./database/configuration.js ./database/configuration.js
+
+RUN npm install --location=global npm@8.12.1
 RUN npm install
 RUN npm run migrate:up
 
