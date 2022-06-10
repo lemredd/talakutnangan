@@ -25,6 +25,7 @@ RUN ln -s base/renderer renderer
 RUN ln -s base/pages pages
 RUN ln -s base/components components
 
+RUN npm install -g npm@8.12.1
 RUN npm install
 RUN npm run migrate:up
 
