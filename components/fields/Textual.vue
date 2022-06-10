@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col text-light-100">
-		<label class="flex-1">
+		<label class="text-lg">
 			{{ label }}
 		</label>
 		<input
