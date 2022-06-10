@@ -10,6 +10,10 @@
 				</span>
 				<span class="link-name">{{ link.name }}</span>
 			</Link>
+			<a role="button" href="/logout" id="logout-btn" class="bg-gray-600">
+				<span class="material-icons">logout</span>
+				Logout
+			</a>
 		</div>
 	</div>
 </template>
@@ -31,6 +35,14 @@
 			position: absolute;
 			width: 100%; height: 100vh;
 			z-index: -1;
+		}
+
+		#logout-btn {
+			border-radius: 5px;
+			display: flex;
+				align-items: center;
+			margin-top: 1em;
+			padding: .5em 1em;
 		}
 	}
 
