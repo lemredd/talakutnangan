@@ -39,6 +39,7 @@ a {
 	border-left: 2px solid #eee;
 	padding-bottom: 50px;
 	min-height: 100vh;
+	width: 100%;
 }
 .navigation {
 	padding: 20px;
