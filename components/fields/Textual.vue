@@ -35,7 +35,7 @@
 
 	input {
 		padding-bottom: .25em;
-		width: max-content;
+		width: 100%;
 	}
 	button.material-icons {
 		justify-self: end;
