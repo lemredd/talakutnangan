@@ -4,6 +4,7 @@ import express  from "express"
 
 import Router from "!/bases/router"
 import createViteDevServer from "!/vite_dev/create_server"
+import registerCustomValidators from "!/app/auth/register_custom_validators"
 import manageAuthentication from "!/app/auth/manage_authentication"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
 
@@ -14,6 +15,7 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 
 	await registerGlobalMiddlewares(app)
 	await manageAuthentication()
+	await registerCustomValidators()
 
 	const allRouteInformation = customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
