@@ -42,11 +42,8 @@ form {
 
 <script setup lang="ts">
 import TextualField from "@/fields/Textual.vue"
+import { inject, Ref } from "vue"
 
-const { userInfo } = defineProps<{
-	userInfo: {
-		[key: string]: any
-	}
-}>()
-const accountInfo = userInfo.account
+const userInfo = inject("userInfo") as Ref<{ [key: string]: any }>
+const accountInfo = userInfo.value.account
 </script>

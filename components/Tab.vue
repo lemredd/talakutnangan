@@ -8,7 +8,7 @@
 		{{ tab }}
 	</li>
 </ul>
-<component :is="tabs[currentTab]" class="tab" :userInfo="userInfo"></component>
+<component :is="tabs[currentTab]" class="tab"></component>
 </template>
 
 <style scoped lang="scss">
@@ -40,8 +40,7 @@ const { tabs } = defineProps<{
 	}
 }>()
 
-const currentTab = ref("Account")
-const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
+const currentTab = ref(Object.keys(tabs)[0])
 
 function setCurrentTab(tab: ReturnType<typeof defineComponent>) {
 	currentTab.value = tab

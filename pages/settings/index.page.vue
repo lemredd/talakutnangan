@@ -42,5 +42,5 @@ const userInfo = ref({
 	}
 })
 
-provide("userInfo", userInfo.value)
+provide("userInfo", userInfo)
 </script>

@@ -89,15 +89,12 @@ form {
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { inject, Ref, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 
-const { userInfo } = defineProps<{
-	userInfo: {
-		[key: string]: any
-	}
-}>()
-const profileInfo = userInfo.profile
+const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
+
+const profileInfo = userInfo.value.profile
 
 const isDarkModeEnabled = ref(true)
 
