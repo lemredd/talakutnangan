@@ -4,7 +4,7 @@
 			{{ label }}
 		</label>
 		<input
-			class="flex-1 bg-transparent"
+			class="bg-transparent"
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -20,10 +20,14 @@
 .input-container {
 	display: grid;
 	grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
+	padding: 1.5em 0;
 
 	input {
-		border-bottom: 1px solid white;
 		padding-bottom: .25em;
+		width: max-content;
+	}
+	button.material-icons {
+		justify-self: end;
 	}
 }
 
