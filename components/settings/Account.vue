@@ -1,6 +1,5 @@
 <template>
 <form @submit.prevent class="text-light-100">
-	<div>
 		<TextualField
 			label="E-mail"
 			type="email"
@@ -8,17 +7,15 @@
 			:verify="true"
 			v-model="accountInfo.email"
 			/>
-	</div>
-	<div>
-		<TextualField label="Password" type="password" v-model="accountInfo.password"/>
+		<TextualField
+		label="Password"
+		type="password"
+		:editable="true"
+		:verify="true"
+		v-model="accountInfo.password"/>
 
-	</div>
-	<div v-if="accountInfo.role === 'student'">
-		<TextualField label="Student Number" type="text" v-model="accountInfo.studentNumber" :disabled="true"/>
-	</div>
-	<div>
+		<TextualField v-if="accountInfo.role === 'student'" label="Student Number" type="text" v-model="accountInfo.studentNumber" :disabled="true"/>
 		<TextualField label="Institute" type="text" v-model="accountInfo.institute" :disabled="true"/>
-	</div>
 	<div>
 		<h3 class="input-header">Roles</h3>
 		<span class="role bg-white text-black">{{ accountInfo.role }}</span>
