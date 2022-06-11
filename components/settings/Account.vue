@@ -25,7 +25,7 @@
 form {
 	display: flex;
 	flex-direction: column;
-	max-width: 480px;
+	max-width: 640px;
 
 	.input-header {
 		font-size: 1.25em;
