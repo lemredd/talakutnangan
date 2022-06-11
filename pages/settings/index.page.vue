@@ -2,39 +2,21 @@
 <div>
 	<header class="mb-5">
 		<h1 class="my-5 text-[1.75em] uppercase">User Settings</h1>
-		<ul class="tabs">
-			<li v-for="(_, tab) in tabs" :key="tab" :class="['tab-button', { 'active': currentTab === tab }]" @click="currentTab = tab">{{ tab }}</li>
-		</ul>
 	</header>
 
 	<main>
-		<component :is="tabs[currentTab]" class="tab" :userInfo="userInfo"></component>
+		<Tab :tabs="tabs" />
 	</main>
 </div>
 </template>
 
-<style scoped lang="scss">
-.tabs {
-	display: flex;
+<style>
 
-	.tab-button {
-		border-radius: 5px;
-		cursor: pointer;
-		padding: 0.25em 2em;
-
-		&.active {
-			background-color: white;
-			color: black;
-		}
-	}
-}
-main {
-	border-top: 1px solid #888;
-}
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { provide, ref } from "vue"
+import Tab from "@/Tab.vue"
 import Account from "@/settings/Account.vue"
 import Profile from "@/settings/Profile.vue"
 
@@ -42,8 +24,6 @@ const tabs = {
 	Account,
 	Profile
 }
-const currentTab = ref("Account")
-
 const roles = ["student", "employee"]
 const role = roles[0]
 const userInfo = ref({
@@ -61,4 +41,6 @@ const userInfo = ref({
 		prefersDarkMode: true
 	}
 })
+
+provide("userInfo", userInfo.value)
 </script>
