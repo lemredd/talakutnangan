@@ -1,12 +1,12 @@
 <template>
 <form @submit.prevent class="flex flex-col items-left text-light-100">
 	<div class ="p-5 flex justify-between">
-		<TextualField label="E-mail" type="email"  v-model="accountInfo.email"/>
-		<button class="material-icons">edit</button>
+		<TextualField label="E-mail" type="email" :editable="true" v-model="accountInfo.email"/>
+
 	</div>
 	<div class ="p-5 flex justify-between">
 		<TextualField label="Password" type="password" v-model="accountInfo.password"/>
-		<button class="material-icons">edit</button>
+
 	</div>
 	<div v-if="accountInfo.role === 'student'" class ="p-5 flex justify-between">
 		<TextualField label="Student Number" type="text" v-model="accountInfo.studentNumber" :disabled="true"/>
