@@ -40,7 +40,7 @@ export default abstract class extends Middleware {
 	/**
 	 * Returns the middlewares to be used before that main handler will execute.
 	 */
-	protected get middlewares(): OptionalMiddleware[] {
+	get middlewares(): OptionalMiddleware[] {
 		return [
 			this.policy,
 			this.bodyParser,
@@ -51,7 +51,7 @@ export default abstract class extends Middleware {
 	/**
 	 * Returns the jobs to run after the main handler executed.
 	 */
-	protected get postJobs(): OptionalMiddleware[] {
+	get postJobs(): OptionalMiddleware[] {
 		return []
 	}
 
