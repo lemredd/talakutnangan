@@ -1,8 +1,9 @@
-import Middleware from "!/bases/middleware"
-import extractRouteInfo from "!/helpers/extract_route_info"
-
 import { RouteInformation } from "!/types/independent"
 import { RouteHandlers, EndHandler } from "!/types/hybrid"
+
+import Policy from "!/bases/policy"
+import Middleware from "!/bases/middleware"
+import extractRouteInfo from "!/helpers/extract_route_info"
 
 export default abstract class extends Middleware {
 	/**
@@ -14,6 +15,11 @@ export default abstract class extends Middleware {
 	 * Returns the end handler of the controller-like class.
 	 */
 	abstract get endHandler(): EndHandler | null
+
+	/**
+	 * Returns the policy to be followed by the controller-like class.
+	 */
+	abstract get policy(): Policy | null
 
 	/**
 	 * Returns the middlewares to be used before that main handler will execute.
