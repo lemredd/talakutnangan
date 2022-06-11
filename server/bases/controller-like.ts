@@ -6,6 +6,11 @@ import Validation from "!/bases/validation"
 import Middleware from "!/bases/middleware"
 import extractRouteInfo from "!/helpers/extract_route_info"
 
+/**
+ * Base class for all controllers.
+ *
+ * Uses policy, body parser, and validation as initial middlewares.
+ */
 export default abstract class extends Middleware {
 	/**
 	 * Returns the path of the controller-like class. It should return `__filename`
