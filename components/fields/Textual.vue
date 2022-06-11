@@ -21,7 +21,7 @@
 			</button>
 	</div>
 
-	<div class="overlay">
+	<div v-if="isOverlayShown" @click.self="toggleOverlay" class="overlay">
 		<div class="content bg-white text-black">
 			<header>Header</header>
 			<main>
@@ -93,6 +93,7 @@ const emit = defineEmits<{
 }>()
 
 const inputField = ref(null)
+const isOverlayShown = ref(false)
 
 function emitUpdate(event: Event) {
 	emit("update:modelValue", (event.target as HTMLInputElement).value)
@@ -103,6 +104,10 @@ function editField(e: Event) {
 }
 
 function verifyBeforeSubmit() {
-	console.log(verify)
+	toggleOverlay()
+}
+
+function toggleOverlay() {
+	isOverlayShown.value = !isOverlayShown.value
 }
 </script>
