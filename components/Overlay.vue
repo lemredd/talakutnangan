@@ -1,5 +1,5 @@
 <template>
-	<div class="overlay">
+	<div class="overlay" @click.self="emitClose">
 		<div class="content bg-white text-black">
 			<header>Header</header>
 			<main>
@@ -32,4 +32,9 @@
 </style>
 
 <script setup lang="ts">
+const emit = defineEmits(["close"])
+
+function emitClose() {
+	emit("close")
+}
 </script>
