@@ -16,7 +16,7 @@ export default class extends GuestFormController {
 		]
 	}
 
-	get validationRules(): object {
+	get bodyValidationRules(): object {
 		return {
 			email: [ "required", "string", "email", "maxLength:255" ],
 			password: [ "required", "string", "minLength:8" ]

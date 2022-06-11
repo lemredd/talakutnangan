@@ -11,7 +11,7 @@ import GuestFormController from "!/app/routes/kinds/guest_form_controller"
 export default class extends GuestFormController {
 	get filePath(): string { return __filename }
 
-	get validationRules(): object {
+	get bodyValidationRules(): object {
 		return {
 			email: [ "required", "string", "email", "maxLength:255" ],
 			password: [ "required", "string", "minLength:8" ]

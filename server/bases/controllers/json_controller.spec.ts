@@ -12,7 +12,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const controller = new class extends JSONController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
-			get validationRules(): object { return {} }
+			get bodyValidationRules(): object { return {} }
 		}
 
 		const middlewares = controller.middlewares
@@ -25,7 +25,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const controller = new class extends JSONController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
-			get validationRules(): object {
+			get bodyValidationRules(): object {
 				return {
 					email: ["required", "email"]
 				}
@@ -49,7 +49,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const controller = new class extends JSONController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
-			get validationRules(): object {
+			get bodyValidationRules(): object {
 				return {
 					email: ["required", "email"]
 				}
@@ -77,7 +77,7 @@ describe("Back-end: Post JSON Controller", () => {
 		const controller = new class extends JSONController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
-			get validationRules(): object {
+			get bodyValidationRules(): object {
 				return {
 					username: ["required", "minLength:15"],
 					email: ["required", "email"]

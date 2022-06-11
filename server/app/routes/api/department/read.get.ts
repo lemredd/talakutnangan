@@ -15,7 +15,7 @@ export default class extends JSONController {
 		]
 	}
 
-	get validationRules(): object {
+	get bodyValidationRules(): object {
 		return {
 			id: [ "required", "numeric", "min:1" ]
 		}

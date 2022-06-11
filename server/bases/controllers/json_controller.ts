@@ -8,9 +8,9 @@ export default abstract class extends Controller {
 		return [
 			...super.middlewares,
 			CommonMiddlewareList.JSONBody,
-			new BodyValidation(this.validationRules)
+			new BodyValidation(this.bodyValidationRules)
 		]
 	}
 
-	abstract get validationRules(): object;
+	abstract get bodyValidationRules(): object;
 }
