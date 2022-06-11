@@ -72,7 +72,6 @@
 	}
 }
 </style>
-
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
 import { ref } from "vue"

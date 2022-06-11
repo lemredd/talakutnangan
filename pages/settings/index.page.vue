@@ -61,4 +61,3 @@ const userInfo = ref({
 		prefersDarkMode: true
 	}
 })
-</script>
