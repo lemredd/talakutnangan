@@ -1,17 +1,25 @@
 import dataURIToBuffer from "data-uri-to-buffer/src/index"
+import { faker } from "@faker-js/faker"
 
-import hash from "!/helpers/auth/hash"
+import { UserKind } from "%/types"
 
 import User from "%/models/user"
-import { faker } from "@faker-js/faker"
+import hash from "!/helpers/auth/hash"
+import Department from "%/models/department"
+import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory {
 	#password = "password"
 	#signature = dataURIToBuffer(faker.image.dataUri())
-	#kind = "student"
+	#kind = UserKind.Student
 	#mustBeVerified = true
+	#department: Department|null = null
 
 	async generate() {
+		if (this.#department === null) {
+			this.#department = await (new DepartmentFactory()).insertOne()
+		}
+
 		return {
 			name: faker.name.findName(),
 			email: faker.internet.exampleEmail(),
@@ -20,6 +28,7 @@ export default class UserFactory {
 			admittedAt: null,
 			kind: this.#kind,
 			signature: this.#signature,
+			departmentID: this.#department.id,
 			deletedAt: null
 		}
 	}
@@ -58,6 +67,11 @@ export default class UserFactory {
 
 	hasNoSignature(): UserFactory {
 		this.#signature = null
+		return this
+	}
+
+	in(department: Department) {
+		this.#department = department
 		return this
 	}
 }

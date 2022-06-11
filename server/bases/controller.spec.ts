@@ -19,8 +19,7 @@ describe("Back-end: Base Controller", () => {
 		const handlers = (new ControllerA()).handlers
 
 		expect(handlers.middlewares).toHaveLength(0)
-		expect(handlers.controllerAsEnd.name).toBe("bound handle")
-		expect(handlers.controllerAsMiddleware.name).toBe("bound intermediate")
+		expect(handlers.controller.name).toBe("bound intermediate")
 		expect(handlers.postJobs).toHaveLength(0)
 	})
 

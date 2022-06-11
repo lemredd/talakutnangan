@@ -12,7 +12,6 @@ export default class {
 	static #request
 
 	static async create(
-		prefix: string,
 		controller: Controller,
 		needsAuthentication: boolean = true
 	) {

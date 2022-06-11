@@ -7,7 +7,7 @@ import Route from "!/app/routes/api/user/update(id).patch"
 
 describe("PATCH /api/user/update/:id", () => {
 	beforeAll(async () => {
-		await App.create("/api/user", new Route())
+		await App.create(new Route())
 	})
 
 	it("can be accessed by permitted user and admit other user", async () => {

@@ -12,6 +12,7 @@ as shown here.
 ### Prerequisites
 - [Node.js and NPM]. LTS version is recommended
 - [Docker]
+- [PostgreSQL]. [v14.3] is recommended.
 
 ### General Development Instruction
 1. Run `npm install`
@@ -34,11 +35,27 @@ as shown here.
        - `DATABASE_PASSWORD`
        - `DATABASE_PORT`
        - `DATABASE_NAME`
+   - PostgreSQL (local)
+     - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
+     - Download the [installer] for the latest version.
+     - Install and just click next. You may customize the installation and data directory. Stack
+       Builder is not required. Default port should be 5432. Remember your password. If you want to
+       use the password the same as to the example, use *root* password.
+     - Wait for the installation to complete.
+     - Search using keyword *pgAdmin 4* and run the matched application. Its purpose is similar to MySQL
+       workbench and MongoDB Compass. This may be needed for troubleshooting.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
-4. Run `npm run dev`
-5. Visit http://localhost:16000
+4. Run `npm run migrate:initial` if it is the database server is newly installed; and chosen database
+   is `mysql` or `pgsql`.
+5. Set the empty email variables. They may vary depending per team.
+   - `EMAIL_USER`. This e-mail address will be used to log in to the SMTP server and will be the
+     sender of e-mail messages  in the app (i.e. e-mail verification).
+   - `EMAIL_PASS`. This is the password of e-mail address above and will be used to log in to the
+     SMTP server. It is recommended to use an app password.
+6. Run `npm run dev`
+7. Visit http://localhost:16000
 
 ## Conventional Commits
 The purpose of this documentation is to guide collaborators of this project on commiting according
@@ -48,32 +65,40 @@ to the type of change.
 These are the general types of commit that repository has. There MAY be other types that will be
 proposed in the future.
 
-Type     | Description
+Type        | Description
 --- | ---
-*feat:*  | This commit focuses on the project's enhancement by implementing a new feature.
-*fix:*   | This focuses on debugging and solving problems in features.
-*test:*  | This focuses on any kinds of test scripts.
-*config:*| This focuses on changes in the configuration files of the project.
-*docs:*  | This focuses on additions or changes in any of the documentation files.
-*chore:* | Any other commits that are still uncategorized falls into this commit.
+*feat:*     | This commit focuses on the project's enhancement by implementing a new feature.
+*test:*     | This focuses on any kinds of test scripts.
+*style:*    | This focuses on any kinds of changes in UI.
+*config:*   | This focuses on changes in the configuration files of the project.
+*ci:*       | A *config:* type where it focuses on changes in configurations of workflows.
+*fix:*      | This focuses on debugging and solving problems in features, tests, or configurations.
+*refactor:* | This focuses on refactored code.
+*perf:*     | A *refactor:* type where it focuses on optimizing code.
+*docs:*     | This focuses on additions or changes in any of the documentation files.
+*chore:*    | Any other commits that are still uncategorized falls into this commit.
 
 For more information, please visit the [specification].
 
 ### Scoped types
 If a commit type has multiple types, it is possible to nest it under a primary type. For instance, a
 "Test" commit can be classified as either unit or integration. To further specify the type of
-commit, one can use "fix(unit):" or "fix(integration):". Below are scoped types usually used during
-development.
+commit, one can use "test(unit):" or "test(integration):". Below are scoped types usually used
+during development.
 
-Scope       | Description | Remarks
+Scope          | Description | Remarks
 --- | --- | ---
-server      |  For commits which affect server's mechanism (middlewares, routing, etc...).      | -
-database    |  For commits which affect the communication between the app server and database.  | -
-unit        |  For commits which affect the unit tests                                          | Strictly for *test:* types only
-integration |  For commits which affect the integration tests                                   | Strictly for *test:* types only
+server         |  For commits which affect server's mechanism (middlewares, routing, etc...).      | -
+database       |  For commits which affect the communication between the app server and database.  | -
+authentication |  For commits which affect authentication components.                              | -
+email          |  For commits which affect email components or communication to SMTP server.       | -
+call           |  For commits which affect call components or peer communication                   | -
+deps           |  For commits which add, remove, or change dependencies                            | Strictly for *chore:* types only and are excluded in logs.
+unit           |  For commits which affect the unit tests                                          | Strictly for *test:* types only
+integration    |  For commits which affect the integration tests                                   | Strictly for *test:* types only
 
-Note that some of the scopes are only recommendations. It is up to the developer's discretion on what
-name would the scoped commit be given, as long as it lines up to the focus of the commit and is
+Note that some of the scopes are only recommendations. It is up to the developer's discretion on
+what name would the scoped commit be given, as long as it lines up to the focus of the commit and is
 appropriate.
 
 ### Guidelines
@@ -100,3 +125,6 @@ There is also a good [article] to read about the Conventional Commits.
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/
+[PostgreSQL]: https://www.postgresql.org/download/windows/
+[v14.3]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+[installer]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
