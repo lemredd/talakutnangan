@@ -38,7 +38,7 @@
 			<div class="password"></div>
 		</template>
 		<template #footer>
-			<button type="button">Save email</button>
+			<button type="button">Save {{ type }}</button>
 		</template>
 	</Overlay>
 </template>
