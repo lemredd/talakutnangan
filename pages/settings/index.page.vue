@@ -7,7 +7,7 @@
 		</ul>
 	</header>
 
-	<main class="rounded-0.8rem w-100% h-50% bg-dark-500">
+	<main>
 		<component :is="tabs[currentTab]" class="tab" :userInfo="userInfo"></component>
 	</main>
 </div>
@@ -29,7 +29,7 @@
 	}
 }
 main {
-	border-radius: 8px;
+	border-top: 1px solid #888;
 }
 </style>
 
