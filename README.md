@@ -47,7 +47,7 @@ as shown here.
    - PostgreSQL (deployment) [slowest to set]
      - Change the `DATABASE_TYPE` variable in your *.env* to `pgsql`
      - Change the `DATABASE_URL` variable in your *.env* to URL provided by your host
-4. Run `npm run migrate:first` if it is the database server is newly installed; and chosen database
+4. Run `npm run migrate:initial` if it is the database server is newly installed; and chosen database
    is `mysql` or `pgsql`.
 5. Set the empty email variables. They may vary depending per team.
    - `EMAIL_USER`. This e-mail address will be used to log in to the SMTP server and will be the
