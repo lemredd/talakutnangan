@@ -1,10 +1,14 @@
 <template>
 	<form @submit.prevent>
-		<div class ="p-5">
-			<h3 class="display-name text-lg">Display Name</h3>
-			<h5 class="name">{{ profileInfo.displayName }}</h5>
+		<div>
+			<TextualField
+				label="Display Name"
+				type="text"
+				:editable="true"
+				v-model="profileInfo.displayName"
+			/>
 		</div>
-		<div class ="p-5">
+		<div>
 			<h3 class="display-name text-lg">Profile Name</h3>
 			<div class="picture-container relative p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.profilePic" :src="profileInfo.profilePic">
@@ -19,7 +23,7 @@
 				</div>
 			</div>
 		</div>
-		<div class ="p-5">
+		<div>
 			<h3 class="display-name text-lg">Profile Name</h3>
 			<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.signature" :src="profileInfo.signature">
@@ -51,7 +55,7 @@
 form {
 	display: flex;
 	flex-direction: column;
-	max-width: 480px;
+	max-width: 640px;
 
 	.input-pic {
 		display: none;
@@ -88,7 +92,7 @@ form {
 
 <script setup lang="ts">
 import { ref } from "vue"
-
+import TextualField from "@/fields/Textual.vue"
 
 const { userInfo } = defineProps<{
 	userInfo: {
