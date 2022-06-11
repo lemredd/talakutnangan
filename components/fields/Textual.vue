@@ -12,8 +12,15 @@
 			:disabled="disabled || editable"
 			ref="inputField"
 			/>
-			<button v-if="editable" class="material-icons" @click="editField">edit</button>
+			<button
+				v-if="editable"
+				class="material-icons"
+				@click="verify ? verifyBeforeSubmit() : editField($event)"
+				>
+				edit
+			</button>
 	</div>
+
 </template>
 
 <style scoped lang="scss">
@@ -37,13 +44,22 @@
 import type { Textual } from "@/fields/types"
 import { ref } from "vue"
 
-const { label, type, modelValue, required = true, disabled, editable } = defineProps<{
-	label: string,
-	type: Textual,
-	modelValue: string,
+const {
+	label,
+	type,
+	modelValue,
+	required = true,
+	disabled,
+	editable,
+	verify
+	} = defineProps<{
+	label: string
+	type: Textual
+	modelValue: string
 	required?: boolean
 	disabled?: boolean
 	editable?: boolean
+	verify?: boolean
 }>()
 const emit = defineEmits<{
 	(e: "update:modelValue", modelValue: string ): void
@@ -57,5 +73,9 @@ function emitUpdate(event: Event) {
 
 function editField(e: Event) {
 	inputField.value.disabled = !inputField.value.disabled
+}
+
+function verifyBeforeSubmit() {
+	console.log(verify)
 }
 </script>

@@ -1,7 +1,13 @@
 <template>
-<form @submit.prevent class="flex flex-col items-left text-light-100">
-		<TextualField label="E-mail" type="email" :editable="true" v-model="accountInfo.email"/>
-
+<form @submit.prevent class="text-light-100">
+	<div>
+		<TextualField
+			label="E-mail"
+			type="email"
+			:editable="true"
+			:verify="true"
+			v-model="accountInfo.email"
+			/>
 	</div>
 	<div>
 		<TextualField label="Password" type="password" v-model="accountInfo.password"/>
