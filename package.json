@@ -63,6 +63,7 @@
 		"@vue/server-renderer": "^3.2.31",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.0",
+		"busboy": "^1.6.0",
 		"compression": "^1.7.4",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.0.1",
