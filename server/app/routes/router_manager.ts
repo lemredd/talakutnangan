@@ -2,7 +2,7 @@ import Router from "!/bases/router"
 import APIRouter from "!/app/routes/api/router"
 import ChatRouter from "!/app/routes/chat/router"
 import DevRouter from "!/app/routes/dev/router"
-import { Environment } from "!/types"
+import { Environment } from "!/types/independent"
 
 export default class extends Router {
 	get prefix(): string { return "/" }

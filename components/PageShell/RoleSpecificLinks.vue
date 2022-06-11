@@ -1,0 +1,143 @@
+<template>
+	<div class="links" :class="[role, /* linkClasses */]">
+
+		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
+		<div v-show="areRoleLinksShown" class="role-links">
+			<div class="overlay bg-dark-700 bg-opacity-60" @click="toggleRoleLinks"></div>
+			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+				<span class="material-icons">
+					{{ link.icon }}
+				</span>
+				<span class="link-name">{{ link.name }}</span>
+			</Link>
+		</div>
+	</div>
+</template>
+
+<style scoped lang="scss">
+.links {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	.role-links {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		width: 100%;
+		top: 72px; left: 0;
+		.overlay {
+			position: absolute;
+			width: 100%; height: 100vh;
+			z-index: -1;
+		}
+	}
+
+	.account-controls {
+		padding-left: 1em;
+	}
+}
+
+</style>
+
+<script setup lang="ts">
+import { computed, ref } from "vue"
+import Link from "@/Link.vue"
+
+// Props
+type Props = {
+	role: string
+}
+const props = defineProps<Props>()
+const role = props.role
+
+// Viewport
+// Currently, window class is undefined
+// const linkClasses = ""
+// const isViewportGreaterThanMobile = computed(function() {
+// 	return screenWidth.value > 640
+// })
+// window.onresize = () => {
+// //   screenWidth.value = window.innerWidth
+// }
+
+// Role
+const isRoleGuest = role === "guest"
+const areRoleLinksShown = ref(false)
+const linksSpecifiers = [
+	{
+		role: "guest",
+		links: [
+			{
+				name: "login",
+				path: "/log_in",
+				icon: "account_circle"
+			}
+		]
+	},
+	{
+		role: "student_or_employee",
+		links: [
+			{
+				name: "Consultations",
+				path: "/consultations",
+				icon: "chat"
+			},
+			{
+				name: "Forum",
+				path: "/forum",
+				icon: "forum"
+			},
+			{
+				name: "User Settings",
+				path: "/settings",
+				icon: "account_circle"
+			}
+		]
+	},
+	{
+		role: "user_manager",
+		links: [
+			{
+				name: "Manage Users",
+				path: "/manage",
+				icon: "group"
+			},
+			{
+				name: "Consultations",
+				path: "/consultations",
+				icon: "chat"
+			},
+			{
+				name: "Forum",
+				path: "/forum",
+				icon: "forum"
+			}
+		]
+	},
+	{
+		role: "admin",
+		links: [
+			{
+				name: "Manage Users",
+				path: "/manage",
+				icon: "group"
+			},
+			{
+				name: "Forum",
+				path: "/forum",
+				icon: "forum"
+			}
+		]
+	}
+]
+const determineRoleLinks = computed(function()  {
+	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
+})
+
+
+function toggleRoleLinks() {
+	areRoleLinksShown.value = !areRoleLinksShown.value
+}
+</script>

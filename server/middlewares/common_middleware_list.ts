@@ -1,19 +1,30 @@
-import GuestPageGuard from "!/middlewares/authentication/guest_page_guard"
-import AuthenticatedPageGuard from "!/middlewares/authentication/authenticated_page_guard"
-
+import { UserKind } from "%/types"
 import JSONBodyParser from "!/middlewares/body_parser/json"
+import KindBasedPolicy from "!/middlewares/authentication/kind-based_policy"
 import EmailVerificationSender from "!/middlewares/authentication/email_verification_sender"
+import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 export default class CommonMiddlewareList {
-	static guestPageGuard: GuestPageGuard
-	static basicAuthenticatedPageGuard: AuthenticatedPageGuard
+	static guestOnlyPolicy: AuthenticationBasedPolicy
+	static knownOnlyPolicy: AuthenticationBasedPolicy
+	static unreachableEmployeeOnlyPolicy: KindBasedPolicy
+	static reachableEmployeeOnlyPolicy: KindBasedPolicy
+	static studentOnlyPolicy: KindBasedPolicy
 	static JSONBody: JSONBodyParser
 	static emailVerificationSender: EmailVerificationSender
 
 	static initialize() {
-		if (CommonMiddlewareList.guestPageGuard === undefined) {
-			CommonMiddlewareList.guestPageGuard = new GuestPageGuard()
-			CommonMiddlewareList.basicAuthenticatedPageGuard = new AuthenticatedPageGuard(null)
+		if (CommonMiddlewareList.guestOnlyPolicy === undefined) {
+			CommonMiddlewareList.guestOnlyPolicy = new AuthenticationBasedPolicy(false)
+			CommonMiddlewareList.knownOnlyPolicy = new AuthenticationBasedPolicy(true)
+			CommonMiddlewareList.unreachableEmployeeOnlyPolicy= new KindBasedPolicy(
+				UserKind.UnreachableEmployee
+			)
+			CommonMiddlewareList.reachableEmployeeOnlyPolicy= new KindBasedPolicy(
+				UserKind.ReachableEmployee
+			)
+			CommonMiddlewareList.studentOnlyPolicy= new KindBasedPolicy(UserKind.Student)
+
 			CommonMiddlewareList.JSONBody = new JSONBodyParser()
 			CommonMiddlewareList.emailVerificationSender = new EmailVerificationSender()
 		}

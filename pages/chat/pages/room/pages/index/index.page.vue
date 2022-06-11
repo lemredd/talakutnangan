@@ -68,7 +68,6 @@ function joinRoom() {
 
 function initiateCall() {
 	isCalling.value = true
-	clientWebSocket.emit("call_on_room", email.value)
 }
 
 function sendMessage(event) {
@@ -86,4 +85,5 @@ function sendMessage(event) {
 
 provide("isCalling", isCalling)
 provide("email", email)
+provide("clientWebSocket", clientWebSocket)
 </script>

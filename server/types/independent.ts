@@ -5,6 +5,16 @@
  */
 
 /**
+ * Used to indicate the type of current environment where the script is running.
+ */
+ export enum Environment {
+	Production,
+	Development,
+	UnitTest,
+	IntegrationTest
+}
+
+/**
  * List of methods that is supported by `express` package
  */
 export type Method = "get" | "post" | "patch" | "delete"
@@ -28,3 +38,35 @@ export interface RouteInformation {
 	purpose: Purpose,
 	description: string|null
 }
+
+/**
+ * Used to return as an output by validation methods in non-GET controllers
+ */
+export interface ValidationError {
+	field: string,
+	message: string
+}
+
+/**
+ * Type to combine with `Request` type to do registration
+ */
+export interface WithRegistration {
+	body: {
+		email: string,
+		password: string,
+		kind?: "unreachable employee" | "reachable employee" | "student"
+	}
+}
+
+/**
+ * Used to define the information about a certain permission.
+ */
+export interface PermissionInfo<T> {
+	flag: number,
+	permissionDependencies: T[]
+}
+
+/**
+ * Used to define a group of permissions.
+ */
+export type PermissionMap<T> = Map<T, PermissionInfo<T>>

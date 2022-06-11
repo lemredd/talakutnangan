@@ -1,14 +1,17 @@
-import { Request, Response } from "express"
+import { Request as BaseRequest, Response, Query } from "!/types/dependent"
 
 import UserManager from "%/managers/user_manager"
 import Controller from "!/bases/controller"
-import { RawRoute } from "!/types"
+
+interface RequiredQuery extends Query {
+	to: string
+}
 
 interface WithQuery {
-	query: {
-		to: string
-	}
+	query: RequiredQuery
 }
+
+type Request = BaseRequest & WithQuery
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
