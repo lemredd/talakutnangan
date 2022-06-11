@@ -57,3 +57,16 @@ export interface WithRegistration {
 		kind?: "unreachable employee" | "reachable employee" | "student"
 	}
 }
+
+/**
+ * Used to define the information about a certain permission.
+ */
+export interface PermissionInfo<T> {
+	flag: number,
+	permissionDependencies: T[]
+}
+
+/**
+ * Used to define a group of permissions.
+ */
+export type PermissionMap<T> = Map<T, PermissionInfo<T>>

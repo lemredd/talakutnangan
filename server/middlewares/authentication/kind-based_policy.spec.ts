@@ -6,12 +6,12 @@ import type { Request, Response } from "!/types/dependent"
 
 import UserFactory from "~/factories/user"
 
-import KnownOnlyPolicy from "./known_only_policy"
+import KindBasedPolicy from "./kind-based_policy"
 
-describe("Middleware: Authorization guard", () => {
-	it("can allow any authenticated users", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new KnownOnlyPolicy(null)
+describe("Middleware: Kind-Based Policy", () => {
+	it("can allow unreachable employees only as expected", async () => {
+		const user = await (new UserFactory()).beUnreachableEmployee().insertOne()
+		const pageGuard = new KindBasedPolicy(UserKind.UnreachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -22,9 +22,9 @@ describe("Middleware: Authorization guard", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can allow unreachable employees only", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new KnownOnlyPolicy(UserKind.UnreachableEmployee)
+	it("can allow reachable employees only as expected", async () => {
+		const user = await (new UserFactory()).beReachableEmployee().insertOne()
+		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -35,9 +35,9 @@ describe("Middleware: Authorization guard", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can allow reachable employees only", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new KnownOnlyPolicy(UserKind.ReachableEmployee)
+	it("can allow students only as expected", async () => {
+		const user = await (new UserFactory()).beStudent().insertOne()
+		const pageGuard = new KindBasedPolicy(UserKind.Student)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
@@ -48,25 +48,13 @@ describe("Middleware: Authorization guard", () => {
 		expect(next).toHaveBeenCalled()
 	})
 
-	it.skip("can allow students only", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const pageGuard = new KnownOnlyPolicy(UserKind.Student)
+	it("can deny students if reachable employees are expected", async () => {
+		const user = await (new UserFactory()).beStudent().insertOne()
+		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		request.user = user
 		request.isAuthenticated = jest.fn().mockReturnValue(true)
-
-		await pageGuard.intermediate(request, response, next)
-
-		expect(next).toHaveBeenCalled()
-	})
-
-	it("can deny guest users", async () => {
-		const pageGuard = new KnownOnlyPolicy(null)
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		request.user = null
-		request.isAuthenticated = jest.fn().mockReturnValue(false)
 
 		await pageGuard.intermediate(request, response, next)
 
