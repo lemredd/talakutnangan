@@ -21,7 +21,10 @@
 			</button>
 	</div>
 
-	<Overlay v-if="isOverlayShown" @close="toggleOverlay"></Overlay>
+	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
+		<template #header>hello</template>
+		<template #default>123456</template>
+	</Overlay>
 </template>
 
 <style scoped lang="scss">

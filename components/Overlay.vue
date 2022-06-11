@@ -1,10 +1,13 @@
 <template>
-	<div class="overlay" @click.self="emitClose">
-		<div class="content bg-white text-black">
-			<header>Header</header>
+	<div class="overlay bg-[rgba(0,0,0,0.3)]" @click.self="emitClose">
+		<div class="content bg-dark-200 text-white">
+			<header>
+				<slot name="header"></slot>
+				<button class="close-btn material-icons-outlined" @click="emitClose">close</button>
+
+			</header>
 			<main>
-				123
-				456
+				<slot></slot>
 			</main>
 		</div>
 	</div>
@@ -17,16 +20,24 @@
 	height: 100vh;
 	width: 100%;
 
-	background-color: rgba(0,0,0,0.3);
-
 	.content {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		padding: 1em;
-		width: max-content;
+		width: 60%;
+		max-width: 900px;
 		height: max-content;
+
+		header {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: .5em;
+			border-bottom: 1px solid white;
+			padding-bottom: .5em;
+
+		}
 	}
 }
 </style>
