@@ -1,4 +1,4 @@
-import { RouteInformation } from "!/types/independent"
+import { RouteInformation, OptionalMiddleware } from "!/types/independent"
 import { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 import Policy from "!/bases/policy"
@@ -23,7 +23,12 @@ export default abstract class extends Middleware {
 	abstract get policy(): Policy | null
 
 	/**
-	 * Returns the validations to be run after authorization by the controller-like class.
+	 * Returns the body parser to be run after authorization by the controller-like class.
+	 */
+	abstract get bodyParser(): OptionalMiddleware
+
+	/**
+	 * Returns the validations to be run after body parsing by the controller-like class.
 	 */
 	abstract get validations(): Validation[]
 
