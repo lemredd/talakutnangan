@@ -1,5 +1,5 @@
 <template>
-	<div class="input-container text-light-100">
+	<div :class="{ 'default': !editable }" class="input-container text-light-100">
 		<label class="input-header col-span-full">
 			{{ label }}
 		</label>
@@ -49,7 +49,12 @@
 	grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
 	padding: 1.5em 0;
 
+	&.default {
+		display: block;
+	}
+
 	input {
+		border: 1px solid #444;
 		padding-bottom: .25em;
 		width: 100%;
 	}
