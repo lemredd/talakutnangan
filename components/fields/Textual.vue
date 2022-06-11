@@ -27,13 +27,12 @@
 			<h1>Update your {{ type }}</h1>
 		</template>
 		<template #default>
-			<div v-if="type === 'email'" class="email">
+			<div v-if="type === 'email' || type === 'password'" class="verification">
 				<label for="password-confirm">
 					<input type="password" placeholder="enter your password" id="password-confirm">
 				</label>
-				<br>
-				<label for="new-email">
-					<input type="email" placeholder="enter your new email" id="new-email">
+				<label :for="`new-${type}`">
+					<input :type="type" :placeholder="`enter your new ${type}`" :id="`new-${type}`">
 				</label>
 			</div>
 			<div class="password"></div>
@@ -59,7 +58,19 @@
 	}
 }
 
+.verification {
+	display: flex;
+	flex-direction: column;
 
+	label {
+		padding: .5em 1em;
+		color: black;
+
+		input {
+			padding: .25em .5em;
+		}
+	}
+}
 </style>
 
 <script setup lang="ts">
