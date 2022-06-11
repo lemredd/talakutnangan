@@ -22,8 +22,24 @@
 	</div>
 
 	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
-		<template #header>hello</template>
-		<template #default>123456</template>
+		<template #header>
+			<h1>Update your {{ type }}</h1>
+		</template>
+		<template #default>
+			<div v-if="type === 'email'" class="email">
+				<label for="password-confirm">
+					<input type="password" placeholder="enter your password" id="password-confirm">
+				</label>
+				<br>
+				<label for="new-email">
+					<input type="email" placeholder="enter your new email" id="new-email">
+				</label>
+			</div>
+			<div class="password"></div>
+		</template>
+		<template #footer>
+			<button type="button">Save email</button>
+		</template>
 	</Overlay>
 </template>
 
