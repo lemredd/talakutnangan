@@ -17,9 +17,9 @@
 input {
 	border-bottom: 1px solid white;
 	padding-bottom: .25em;
+	width: 100%;
 }
 </style>
-
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
 
