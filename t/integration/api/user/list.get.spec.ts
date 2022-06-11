@@ -7,7 +7,7 @@ import Route from "!/app/routes/api/user/list.get"
 
 describe("GET /api/user/list", () => {
 	beforeAll(async () => {
-		await App.create("/api/user", new Route())
+		await App.create(new Route())
 	})
 
 	it("can be accessed by permitted user and get single unadmitted user", async () => {

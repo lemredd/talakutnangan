@@ -25,3 +25,12 @@ export interface RawUser {
 }
 
 export type Criteria = "incomplete" | "unadmitted" | "admitted"
+
+/**
+ * Used to receive raw validated department details.
+ */
+export interface RawDepartment {
+	fullName: string,
+	acronym: string,
+	mayAdmit: boolean
+}

@@ -1,7 +1,9 @@
 import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
-import User from "%/models/user"
 import type { SourceType } from "%/types"
+
+import User from "%/models/user"
+import Department from "%/models/department"
 import createConfiguration from "%/configuration/create"
 
 export default function(type: SourceType): Sequelize {
@@ -9,7 +11,8 @@ export default function(type: SourceType): Sequelize {
 	const sequelize = new Sequelize({
 		...configuration,
 		models: [
-			User
+			User,
+			Department
 		]
 	})
 

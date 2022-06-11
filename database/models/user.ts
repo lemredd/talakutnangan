@@ -1,23 +1,38 @@
-import { Table, Model, Column, DataType, AllowNull } from "sequelize-typescript"
+import {
+	Table,
+	Model,
+	Column,
+	DataType,
+	BelongsTo,
+	AllowNull,
+	ForeignKey
+} from "sequelize-typescript"
 import { UserKind } from "%/types"
+import Department from "%/models/department"
 
 @Table({
 	timestamps: true,
 	paranoid: true
 })
 export default class User extends Model {
-	@Column
+	@Column({
+		allowNull: false
+	})
 	name: string
 
 	@Column({
 		unique: true,
+		allowNull: false
 	})
 	email: string
 
-	@Column
+	@Column({
+		allowNull: false
+	})
 	password: string
 
 	@Column({
+		allowNull: false,
 		type: DataType.ENUM(
 			UserKind.UnreachableEmployee,
 			UserKind.ReachableEmployee,
@@ -44,4 +59,13 @@ export default class User extends Model {
 		defaultValue: null
 	})
 	signature: Buffer|null
+
+	@ForeignKey(() => Department)
+	@Column({
+		allowNull: false
+	})
+	departmentID: number
+
+	@BelongsTo(() => Department)
+	department: Department
 }
