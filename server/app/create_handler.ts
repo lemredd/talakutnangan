@@ -22,13 +22,11 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 		const { method, path } = information
 		const { middlewares, controller, postJobs, endHandler } = handlers
 
-		const rawMiddlewares = middlewares.map(middleware => middleware.intermediate.bind(middleware))
-		const rawPostJobs = postJobs.map(postJob => postJob.intermediate.bind(postJob))
-		const rawHandlers = [ ...rawMiddlewares, controller, ...rawPostJobs ]
-
-		if (endHandler !== null) {
-			rawHandlers.push(endHandler)
-		}
+		const rawMiddlewares = middlewares
+			.map(middleware => middleware?.intermediate.bind(middleware))
+		const rawPostJobs = postJobs.map(postJob => postJob?.intermediate.bind(postJob))
+		const rawHandlers = [ ...rawMiddlewares, controller, ...rawPostJobs, endHandler ]
+			.filter(middleware => middleware !== null)
 
 		app[method](path, ...rawHandlers)
 	}
