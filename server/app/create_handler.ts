@@ -18,15 +18,17 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	const allRouteInformation = customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
 		const { method, path } = information
-		const { middlewares, postJobs } = handlers
+		const { middlewares, controller, postJobs, endHandler } = handlers
 
 		const rawMiddlewares = middlewares.map(middleware => middleware.intermediate.bind(middleware))
 		const rawPostJobs = postJobs.map(postJob => postJob.intermediate.bind(postJob))
-		if (postJobs.length === 0) {
-			app[method](path, ...rawMiddlewares, handlers.controllerAsEnd)
-		} else {
-			app[method](path, ...rawMiddlewares, handlers.controllerAsMiddleware, ...rawPostJobs)
+		const rawHandlers = [ ...rawMiddlewares, controller, ...rawPostJobs ]
+
+		if (endHandler !== null) {
+			rawHandlers.push(endHandler)
 		}
+
+		app[method](path, ...rawHandlers)
 	}
 
 	app.use(viteDevRouter)
