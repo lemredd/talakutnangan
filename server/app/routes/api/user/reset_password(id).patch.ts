@@ -33,7 +33,7 @@ export default class extends Controller {
 		if (isSuccess) {
 			response.status(this.status.NO_CONTENT).end()
 		} else {
-			response.status(this.status.INSUFFICIENT_STORAGE).json({
+			response.status(this.status.INTERNAL_SERVER_ERROR).json({
 				"errors": [
 					"User was not found or there is a problem with the database."
 				]
