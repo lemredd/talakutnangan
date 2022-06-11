@@ -13,6 +13,7 @@
 			ref="inputField"
 			/>
 			<button
+				type="button"
 				v-if="editable"
 				class="material-icons"
 				@click="verify ? verifyBeforeSubmit() : editField($event)"
