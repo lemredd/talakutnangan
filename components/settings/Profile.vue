@@ -62,8 +62,6 @@ form {
 	}
 }
 
-
-
 .dark-mode-toggle {
 	display: grid;
 	grid-template:
