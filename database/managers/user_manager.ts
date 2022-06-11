@@ -90,7 +90,7 @@ export default class UserManager {
 	 * @param id ID of the user to reset the password.
 	 * @param rawPassword New password to put in the database.
 	 */
-	async reset_password(id: number, rawPassword: string): Promise<boolean> {
+	async resetPassword(id: number, rawPassword: string): Promise<boolean> {
 		// TODO: use the student number or random password
 		const hashedPassword = await hash(rawPassword)
 
