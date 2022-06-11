@@ -26,7 +26,18 @@ export default class extends Controller {
 		const manager = new UserManager()
 		// TODO: Make parameter validation
 		const { id } = request.params
+		// TODO: Generate password using student number or random
+		const newPassword = "12345678"
+		const isSuccess = await manager.resetPassword(+id, newPassword)
 
-
+		if (isSuccess) {
+			response.status(this.status.NO_CONTENT).end()
+		} else {
+			response.status(this.status.INSUFFICIENT_STORAGE).json({
+				"errors": [
+					"User was not found or there is a problem with the database."
+				]
+			})
+		}
 	}
 }
