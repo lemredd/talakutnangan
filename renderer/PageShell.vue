@@ -54,22 +54,6 @@ a {
 <style scoped lang="scss">
 .layout {
 	display: flex;
-
-	max-width: 900px;
-	margin: auto;
-}
-.content {
-	padding: 20px;
-	border-left: 2px solid #eee;
-	padding-bottom: 50px;
-	min-height: 100vh;
-	width: 100%;
-}
-.navigation {
-	padding: 20px;
-	flex-shrink: 0;
-	display: flex;
-  
 	flex-direction: column;
 
 	.navigation {
@@ -99,11 +83,19 @@ a {
 		padding: 20px;
 		padding-bottom: 50px;
 		min-height: 100vh;
+
+		&.login-content {
+			padding: 0;
+			.container {
+				max-width: none;
+			}
+		}
 	}
 }
 
 .container {
 	max-width: 900px;
 	margin: auto;
+
 }
 </style>
