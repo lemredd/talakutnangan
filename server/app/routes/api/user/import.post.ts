@@ -2,7 +2,7 @@ import { Buffer } from "node:buffer"
 import { Request, Response } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 import UserManager from "%/managers/user_manager"
 
  export interface WithImport {

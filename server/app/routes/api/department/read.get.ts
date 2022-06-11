@@ -1,7 +1,7 @@
 import { Request, Response } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"
-import JSONController from "!/bases/controllers/json_controller"
+import JSONController from "!/bases/controller-likes/json_controller-like/controller"
 import DepartmentManager from "%/managers/department_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 

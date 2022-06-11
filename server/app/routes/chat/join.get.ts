@@ -2,7 +2,7 @@ import { v4 } from "uuid"
 
 import { Request, Response } from "!/types/dependent"
 
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }

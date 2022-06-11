@@ -1,6 +1,6 @@
 import type { IDParameter, Query, Request as BaseRequest, Response } from "!/types/dependent"
 
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 import Middleware from "!/bases/middleware"
 import UserManager from "%/managers/user_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"

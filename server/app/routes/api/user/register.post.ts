@@ -6,7 +6,7 @@ import Middleware from "!/bases/middleware"
 import UserManager from "%/managers/user_manager"
 import LogInController from "!/app/routes/api/user/log_in.post"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import GuestFormController from "!/app/routes/kinds/guest_form_controller"
+import GuestFormController from "!/app/routes/kinds/guest_form_controller-like/controller"
 
 export default class extends GuestFormController {
 	get filePath(): string { return __filename }

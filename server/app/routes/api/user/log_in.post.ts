@@ -3,7 +3,7 @@ import { v4 } from "uuid"
 import { Request, Response } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"
-import GuestFormController from "!/app/routes/kinds/guest_form_controller"
+import GuestFormController from "!/app/routes/kinds/guest_form_controller-like/controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 export default class extends GuestFormController {

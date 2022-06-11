@@ -3,7 +3,7 @@ import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-moc
 import Policy from "!/bases/policy"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
-import PageMiddleware from "./page_middleware"
+import PageMiddleware from "./controller-like/page_middleware"
 
 describe("Back-end: Base PageMiddleware", () => {
 	it("can make handlers", () => {

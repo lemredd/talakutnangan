@@ -1,7 +1,7 @@
 import { IDParameter, Request as BaseRequest, Response } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 import DepartmentManager from "%/managers/department_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 

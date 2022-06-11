@@ -1,7 +1,7 @@
 import { Request as BaseRequest, Response, Query } from "!/types/dependent"
 
 import UserManager from "%/managers/user_manager"
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 
 interface RequiredQuery extends Query {
 	to: string

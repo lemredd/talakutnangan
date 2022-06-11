@@ -5,7 +5,7 @@ import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-moc
 
 import Validation from "!/bases/middleware"
 
-import JSONController from "./json_controller"
+import JSONController from "./json_controller-like/controller"
 
 describe("Back-end: Post JSON Controller", () => {
 	it("does include validation middleware", async () => {

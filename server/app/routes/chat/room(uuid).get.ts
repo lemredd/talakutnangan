@@ -1,4 +1,4 @@
-import PageMiddleware from "!/bases/page_middleware"
+import PageMiddleware from "!/bases/controller-like/page_middleware"
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 

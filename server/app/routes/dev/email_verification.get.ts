@@ -1,6 +1,6 @@
 import { Request, Response } from "!/types/dependent"
 
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 import Transport from "!/helpers/email/transport"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"

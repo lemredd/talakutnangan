@@ -2,7 +2,7 @@ import { IDParameter, Request as BaseRequest, Response } from "!/types/dependent
 
 import Middleware from "!/bases/middleware"
 import DepartmentManager from "%/managers/department_manager"
-import JSONController from "!/bases/controllers/json_controller"
+import JSONController from "!/bases/controller-likes/json_controller-like/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 interface WithID {

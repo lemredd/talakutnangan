@@ -2,7 +2,7 @@ import { Criteria } from "%/types"
 import { Request, Response } from "!/types/dependent"
 
 import UserManager from "%/managers/user_manager"
-import Controller from "!/bases/controller"
+import Controller from "!/bases/controller-like/controller"
 
 interface WithQuery {
 	query: {
