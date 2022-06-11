@@ -1,16 +1,22 @@
 import { faker } from "@faker-js/faker"
 import { StatusCodes } from "http-status-codes"
-import { Request, Response } from "!/types/dependent"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
+
+import { Request, Response } from "!/types/dependent"
 
 import Validation from "!/bases/middleware"
 
-import JSONController from "./json_controller-like/controller"
+import JSONController from "./json_controller"
 
 describe("Back-end: Post JSON Controller", () => {
+	abstract class BaseTestController extends JSONController {
+		get filePath(): string { return __filename }
+
+		get policy(): null { return null }
+	}
+
 	it("does include validation middleware", async () => {
-		const controller = new class extends JSONController {
-			get filePath(): string { return __filename }
+		const controller = new class extends BaseTestController {
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 			get bodyValidationRules(): object { return {} }
 		}
@@ -22,7 +28,7 @@ describe("Back-end: Post JSON Controller", () => {
 	})
 
 	it("does validation middleware works properly with valid values", async () => {
-		const controller = new class extends JSONController {
+		const controller = new class extends BaseTestController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 			get bodyValidationRules(): object {
@@ -46,7 +52,7 @@ describe("Back-end: Post JSON Controller", () => {
 	})
 
 	it("does validation middleware works properly with invalid single value", async () => {
-		const controller = new class extends JSONController {
+		const controller = new class extends BaseTestController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 			get bodyValidationRules(): object {
@@ -74,7 +80,7 @@ describe("Back-end: Post JSON Controller", () => {
 	})
 
 	it("does validation middleware works properly with invalid multiple values", async () => {
-		const controller = new class extends JSONController {
+		const controller = new class extends BaseTestController {
 			get filePath(): string { return __filename }
 			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
 			get bodyValidationRules(): object {
