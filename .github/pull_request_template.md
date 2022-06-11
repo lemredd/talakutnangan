@@ -5,5 +5,5 @@ Put your additions and changes here...
 - Closes #
 
 ## Lacking Mechanism
-**Note**: Issues were already created.
+**Note**: Issues will be created by the pull requester.
 -
