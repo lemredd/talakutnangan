@@ -9,6 +9,10 @@
 			<main>
 				<slot></slot>
 			</main>
+
+			<footer>
+				<slot name="footer"></slot>
+			</footer>
 		</div>
 	</div>
 </template>
@@ -26,7 +30,6 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		padding: 1em;
-		width: 60%;
 		max-width: 900px;
 		height: max-content;
 
@@ -37,6 +40,11 @@
 			border-bottom: 1px solid white;
 			padding-bottom: .5em;
 
+		}
+
+		footer {
+			display: flex;
+			flex-direction: row-reverse;
 		}
 	}
 }
