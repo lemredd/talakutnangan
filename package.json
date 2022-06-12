@@ -12,7 +12,7 @@
 	"types": "module",
 	"scripts": {
 		"dev": "nodemon --watch server --ext ts --ignore \"*.spec.ts\" --exec \"npm run server\"",
-		"list": "ts-node ./server/cli/list_routes.ts",
+		"list:routes": "ts-node ./server/cli/list_routes.ts",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
 		"server": "ts-node ./server",
