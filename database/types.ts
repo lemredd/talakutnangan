@@ -42,13 +42,13 @@ export interface RawDepartment {
  */
 export interface RawRole {
 	name: string,
-	department_flags: number,
-	role_flags: number,
-	semester_flags: number,
-	tag_flags: number,
-	post_flags: number,
-	comment_flags: number,
-	profanity_flags: number,
-	user_flags: number,
-	audit_trail_flags: number
+	departmentFlags: number,
+	roleFlags: number,
+	semesterFlags: number,
+	tagFlags: number,
+	postFlags: number,
+	commentFlags: number,
+	profanityFlags: number,
+	userFlags: number,
+	auditTrailFlags: number
 }

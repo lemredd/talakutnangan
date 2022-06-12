@@ -18,45 +18,45 @@ export default class User extends Model {
 	@Column({
 		allowNull: false
 	})
-	department_flags!: number
+	departmentFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	role_flags!: number
+	roleFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	semester_flags!: number
+	semesterFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	tag_flags!: number
+	tagFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	post_flags!: number
+	postFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	comment_flags!: number
+	commentFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	profanity_flags!: number
+	profanityFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	user_flags!: number
+	userFlags!: number
 
 	@Column({
 		allowNull: false
 	})
-	audit_trail_flags!: number
+	auditTrailFlags!: number
 }

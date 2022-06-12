@@ -13,39 +13,39 @@ module.exports = {
 				unique: true,
 				type: Sequelize.STRING
 			},
-			department_flags: {
+			departmentFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			role_flags: {
+			roleFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			semester_flags: {
+			semesterFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			tag_flags: {
+			tagFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			post_flags: {
+			postFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			comment_flags: {
+			commentFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			profanity_flags: {
+			profanityFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			user_flags: {
+			userFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			audit_trail_flags: {
+			auditTrailFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
