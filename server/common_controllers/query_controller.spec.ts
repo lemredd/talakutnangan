@@ -45,7 +45,7 @@ describe("Back-end: Query Controller", () => {
 			order: "ascending"
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).toBeCalled()
 	})
@@ -67,7 +67,7 @@ describe("Back-end: Query Controller", () => {
 			order: "acending"
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response
@@ -97,7 +97,7 @@ describe("Back-end: Query Controller", () => {
 			limit: "a2"
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response

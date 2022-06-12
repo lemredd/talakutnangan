@@ -45,7 +45,7 @@ describe("Back-end: Bound Controller", () => {
 			id: "1"
 		}
 
-		await validationMiddleware?.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).toBeCalled()
 	})
@@ -67,7 +67,7 @@ describe("Back-end: Bound Controller", () => {
 			id: "NaN"
 		}
 
-		await validationMiddleware?.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response
@@ -97,7 +97,7 @@ describe("Back-end: Bound Controller", () => {
 			commentID: "Infinite"
 		}
 
-		await validationMiddleware?.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response

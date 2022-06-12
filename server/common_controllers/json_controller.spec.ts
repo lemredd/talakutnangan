@@ -47,7 +47,7 @@ describe("Back-end: Post JSON Controller", () => {
 			email: faker.internet.exampleEmail()
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).toBeCalled()
 	})
@@ -71,7 +71,7 @@ describe("Back-end: Post JSON Controller", () => {
 			email: faker.internet.domainName()
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response
@@ -101,7 +101,7 @@ describe("Back-end: Post JSON Controller", () => {
 			email: faker.internet.domainName()
 		}
 
-		await validationMiddleware.intermediate(request, response, next)
+		await validationMiddleware!.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
 		const mockResponse = <MockResponse><unknown>response
