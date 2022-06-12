@@ -25,7 +25,7 @@ export default class UserManager {
 	}
 
 	async create(details: RawUser): Promise<User> {
-		details.password = await hash(details.password)
+		details.password = await hash(details.password!)
 		return await User.create({ ...details })
 	}
 

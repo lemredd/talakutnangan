@@ -23,7 +23,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 
 		const updatedStudent = await manager.findWithID(student.id)
-		expect(compare("12345678", updatedStudent.password)).resolves.toBeTruthy()
+		expect(compare("12345678", updatedStudent!.password)).resolves.toBeTruthy()
 	})
 
 	it.todo("cannot be accessed by not permitted users")

@@ -10,18 +10,28 @@ import type {
 	NextFunction as BaseNextFunction,
 	RequestHandler as BaseRequestHandler
 } from "express"
+import type { Session } from "express-session"
 import User from "%/models/user"
 
+// @ts-ignore
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
-	session: {
-		token: string|null
+	session: Session & {
+		token?: string
 	}
 
 	// Added due to `passport` package
-	user: User|null
+	user: User|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+}
+
+export interface AuthenticatedRequest extends Request {
+	session: Session & {
+		token: string
+	}
+
+	user: User
 }
 
 export interface Response extends BaseResponse {}
@@ -35,4 +45,8 @@ import { ParamsDictionary } from "express-serve-static-core"
 export type Parameters = ParamsDictionary
 export interface IDParameter extends Parameters {
 	id: string
+}
+
+export interface AuthenticatedIDRequest extends AuthenticatedRequest {
+	params: IDParameter
 }

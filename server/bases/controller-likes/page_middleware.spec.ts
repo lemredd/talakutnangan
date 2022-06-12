@@ -1,7 +1,7 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import Policy from "!/bases/policy"
-import { Request, Response, NextFunction } from "!/types/dependent"
+import { Request } from "!/types/dependent"
 
 import PageMiddleware from "./page_middleware"
 
@@ -19,7 +19,7 @@ describe("Back-end: Base PageMiddleware", () => {
 
 		const handlers = (new PageMiddlewareA()).handlers
 
-		expect(handlers.middlewares).toHaveLength(0)
+		expect(handlers.middlewares).toHaveLength(2)
 		expect(handlers.controller.name).toBe("bound intermediate")
 		expect(handlers.postJobs).toHaveLength(0)
 		expect(handlers.endHandler).toBeNull()

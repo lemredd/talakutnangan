@@ -70,3 +70,10 @@ export interface PermissionInfo<T> {
  * Used to define a group of permissions.
  */
 export type PermissionMap<T> = Map<T, PermissionInfo<T>>
+
+import type Middleware from "!/bases/middleware"
+
+/**
+ * Used to indicate which middlewares to use in a route.
+ */
+export type OptionalMiddleware = Middleware | null

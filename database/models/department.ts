@@ -9,19 +9,19 @@ export default class Department extends Model {
 	@Column({
 		allowNull: false
 	})
-	acronym: string
+	acronym!: string
 
 	@Column({
 		unique: true,
 		allowNull: false
 	})
-	fullName: string
+	fullName!: string
 
 	@Column({
 		allowNull: false
 	})
-	mayAdmit: boolean
+	mayAdmit!: boolean
 
 	@HasMany(() => User)
-	users: User[]
+	users!: User[]
 }

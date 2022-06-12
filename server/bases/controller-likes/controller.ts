@@ -4,6 +4,9 @@ import { Request, Response, NextFunction } from "!/types/dependent"
 import endRequest from "!/helpers/end_request"
 import ControllerLike from "!/bases/controller-like"
 
+/**
+ * Base class for controllers which accept JSON as their request body.
+ */
 export default abstract class extends ControllerLike {
 	/**
 	 * Handles the request mainly.

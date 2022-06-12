@@ -1,4 +1,5 @@
 import dataURIToBuffer from "data-uri-to-buffer/src/index"
+import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
 import { UserKind } from "%/types"
@@ -10,7 +11,7 @@ import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory {
 	#password = "password"
-	#signature = dataURIToBuffer(faker.image.dataUri())
+	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = UserKind.Student
 	#mustBeVerified = true
 	#department: Department|null = null

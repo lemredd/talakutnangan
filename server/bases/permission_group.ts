@@ -37,7 +37,7 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	 */
 	generateMask(name: U): number {
 		const permissions = this.permissions
-		const info = permissions.get(name)
+		const info = permissions.get(name) || { flag: 0, permissionDependencies: [] }
 		return info.flag | info.permissionDependencies.reduce((a, b) => a | this.generateMask(b), 0);
 	}
 }

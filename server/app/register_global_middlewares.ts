@@ -1,5 +1,6 @@
 import type { Express as ExpressApp } from "express"
 
+import type { RequestHandler } from "!/types/dependent"
 import Session from "!/middlewares/miscellaneous/session"
 import Compression from "!/middlewares/miscellaneous/compression"
 import AuthenticationSession from "!/middlewares/authentication/session"
@@ -14,6 +15,6 @@ export default async function(app: ExpressApp) {
 	]
 
 	middlewares.forEach(middleware => {
-		app.use(middleware.intermediate.bind(middleware))
+		app.use(middleware.intermediate.bind(middleware) as unknown as RequestHandler)
 	})
 }
