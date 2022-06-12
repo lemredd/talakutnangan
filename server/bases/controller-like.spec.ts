@@ -75,7 +75,7 @@ describe("Back-end: Base ControllerLike", () => {
 				return Promise.resolve()
 			}
 
-			get middlewares(): Middleware[] {
+			get middlewares(): OptionalMiddleware[] {
 				return [
 					...super.middlewares,
 					new MiddlewareA()
@@ -90,7 +90,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		handlers.middlewares[handlers.middlewares.length - 1].intermediate(request, response, next)
+		handlers.middlewares[handlers.middlewares.length - 1]!.intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -110,7 +110,7 @@ describe("Back-end: Base ControllerLike", () => {
 				return Promise.resolve()
 			}
 
-			get postJobs(): Middleware[] {
+			get postJobs(): OptionalMiddleware[] {
 				return [
 					...super.postJobs,
 					new MiddlewareB()
@@ -125,7 +125,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		handlers.postJobs[0].intermediate(request, response, next)
+		handlers.postJobs[0]!.intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -173,7 +173,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		handlers.middlewares[0].intermediate(request, response, next)
+		handlers.middlewares[0]!.intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -201,7 +201,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		handlers.middlewares[1].intermediate(request, response, next)
+		handlers.middlewares[1]!.intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -228,7 +228,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
-		handlers.middlewares[2].intermediate(request, response, next)
+		handlers.middlewares[2]!.intermediate(request, response, next)
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 })

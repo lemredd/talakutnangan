@@ -1,9 +1,10 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import Validation from "!/bases/validation"
 import { EndHandler } from "!/types/hybrid"
+import { Request, Response } from "!/types/dependent"
+
+import Validation from "!/bases/validation"
 import endRequest from "!/helpers/end_request"
-import { RouteInformation } from "!/types/independent"
 
 import Controller from "./controller"
 
@@ -19,4 +20,35 @@ describe("Back-end: Base Controller", () => {
 
 		get validations(): Validation[] { return [] }
 	}
+
+	it("can make handlers", () => {
+		class ControllerA extends BaseTestController {
+			async handle(request: Request, response: Response): Promise<void> {}
+		}
+
+		const handlers = (new ControllerA()).handlers
+
+		expect(handlers.middlewares).toHaveLength(2)
+		expect(handlers.controller.name).toBe("bound intermediate")
+		expect(handlers.postJobs).toHaveLength(0)
+		expect(handlers.endHandler).toStrictEqual(endRequest)
+	})
+
+	it("can run handler", async () => {
+		const handleFunction = jest.fn()
+
+		class ControllerB extends BaseTestController {
+			async handle(request: Request, response: Response): Promise<void> {
+				handleFunction()
+			}
+		}
+
+		const controller = new ControllerB()
+
+		const request  = makeRequest<Request>()
+		const { res: response, next, } = makeResponse()
+		await controller.intermediate(request, response, next)
+
+		expect(next).toHaveBeenCalled()
+	})
 })

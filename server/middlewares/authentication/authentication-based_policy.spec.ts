@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
+import type { MockResponse } from "!/types/test"
 import type { Request, Response } from "!/types/dependent"
 
 import AuthenticationBasedPolicy from "./authentication-based_policy"
@@ -25,10 +26,10 @@ describe("Middleware: Authenticated-Based Policy", () => {
 
 		await authenticatedGuard.intermediate(request, response, next)
 
-		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status).toHaveBeenCalled()
-		expect(status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
-		expect(response.json).toHaveBeenCalled()
+		const mockResponse = <MockResponse><unknown>response
+		expect(mockResponse.status).toHaveBeenCalled()
+		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
+		expect(mockResponse.json).toHaveBeenCalled()
 	})
 
 	it("can allow known users if known are expected", async () => {
@@ -51,9 +52,9 @@ describe("Middleware: Authenticated-Based Policy", () => {
 
 		await authenticatedGuard.intermediate(request, response, next)
 
-		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status).toHaveBeenCalled()
-		expect(status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
-		expect(response.json).toHaveBeenCalled()
+		const mockResponse = <MockResponse><unknown>response
+		expect(mockResponse.status).toHaveBeenCalled()
+		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
+		expect(mockResponse.json).toHaveBeenCalled()
 	})
 })
