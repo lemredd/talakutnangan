@@ -3,8 +3,8 @@ import consola from "consola"
 export default class Log {
 	private static allowedAreas: string[]
 
-	static intialize(isTest): void {
-		const allowedAreas = isTest
+	static initialize(isOnTest): void {
+		const allowedAreas = isOnTest
 			? process.env.LOGGING_ALLOWED_TEST_AREAS || ""
 			: process.env.LOGGING_ALLOWED_DEV_AREAS || ""
 
