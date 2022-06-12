@@ -11,6 +11,9 @@ export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
 	const sequelize = new Sequelize({
 		...configuration,
+		logging: (query: string) => {
+			Log.trace("query", query)
+		},
 		models: [
 			User,
 			Department
