@@ -16,7 +16,7 @@ export default class extends JSONController {
 	get bodyValidationRules(): object {
 		// TODO: Create custom validator for acronym
 		return {
-			id: [ "required", "number" ],
+			id: [ "required", "numeric" ],
 			acronym: [ "required", "string" ],
 			fullName: [ "required", "string" ],
 			mayAdmit: [ "required", "boolean" ]
@@ -28,6 +28,6 @@ export default class extends JSONController {
 		const { id, ...attributes } = request.body
 		const affectedCount = await manager.update(id, attributes)
 
-		response.status(affectedCount > 0? this.status.ACCEPTED : this.status.NOT_MODIFIED)
+		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 	}
 }
