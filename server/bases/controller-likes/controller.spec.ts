@@ -31,7 +31,7 @@ describe("Back-end: Base Controller", () => {
 		expect(handlers.middlewares).toHaveLength(2)
 		expect(handlers.controller.name).toBe("bound intermediate")
 		expect(handlers.postJobs).toHaveLength(0)
-		expect(handlers.endHandler).toBeNull()
+		expect(handlers.endHandler).toStrictEqual(endRequest)
 	})
 
 	it("can run handler", async () => {
