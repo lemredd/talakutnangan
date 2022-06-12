@@ -44,3 +44,7 @@ export type Parameters = ParamsDictionary
 export interface IDParameter extends Parameters {
 	id: string
 }
+
+export interface AuthenticatedIDRequest extends AuthenticatedRequest {
+	params: IDParameter
+}
