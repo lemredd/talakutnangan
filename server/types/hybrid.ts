@@ -3,9 +3,16 @@
  * @description This module contains types that depend on both independent and dependent types.
  */
 
-import type { Response, Request, RequestHandler } from "!/types/dependent"
+import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
 import type { RouteInformation, WithRegistration, OptionalMiddleware } from "!/types/independent"
 
+export interface AsynchronousRequestHandler {
+	(
+		_request: Request,
+		_response: Response,
+		_next: NextFunction
+	): Promise<void>
+}
 export type EndHandler = (_request: Request, _response: Response) => Promise<void> | void
 
 /**
@@ -13,7 +20,7 @@ export type EndHandler = (_request: Request, _response: Response) => Promise<voi
  */
  export interface RouteHandlers {
 	middlewares: OptionalMiddleware[],
-	controller: RequestHandler,
+	controller: RequestHandler | AsynchronousRequestHandler,
 	postJobs: OptionalMiddleware[],
 	endHandler: EndHandler | null
 }
