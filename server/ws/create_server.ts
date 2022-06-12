@@ -7,7 +7,7 @@ import registerChatEvents from "!/ws/register_chat_events"
 export default function(httpServer: Server) {
 	const wsServer = new WebSocketServer(httpServer)
 
-	Log.success("Server", "Initialized web socket server")
+	Log.success("server", "Initialized web socket server")
 
 	registerChatEvents(wsServer)
 
