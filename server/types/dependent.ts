@@ -24,6 +24,14 @@ export interface Request extends BaseRequest {
 	logout: () => void
 }
 
+export interface AuthenticatedRequest extends Request {
+	session: {
+		token: string
+	}
+
+	user: User
+}
+
 export interface Response extends BaseResponse {}
 export interface NextFunction extends BaseNextFunction {}
 export interface RequestHandler extends BaseRequestHandler {}
