@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.3.0-dev",
+	"version": "0.3.1",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
@@ -106,6 +106,10 @@
 		{
 			"name": "Angelo Magtoto",
 			"email": "19201.magtoto.angelo.l@gmail.com"
+		},
+		{
+			"name": "AteKitty07",
+			"email": "kiritogregorio@gmail.com"
 		},
 		{
 			"name": "IKnightSKyI",

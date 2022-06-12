@@ -1,5 +1,131 @@
 # Changelog
 
+## v0.3.1
+
+### 🚀 Enhancements
+
+#### Login
+- 76bc7c4 Add controls
+
+#### Fields
+- f94a1ad Add default styling
+
+#### Admin
+- 29046d6 Make sem config page
+
+#### User
+- 3876bd5 Rename dir and make profile setting page
+- 4fcf7b2 Add field for signature
+- efcbbcd Implement tabs in user settings
+- fedf30f Disable some setting fields
+- 33266e4 Implement roles
+- 5460114 Apply role specific fields
+- 410d075 Implement uploading of pictures
+- 4179ad6 Allow user to logout
+- 58cb8b3 Make textual fields protected
+- a88bb08 Allow text fields to be verifiable
+- 5da2bac Make overlay
+- a847b93 Add overlay functionalities
+- c2de35f Make display name editable
+- f8851f1 Make edit verification templates
+- a432bc2 Make password editable with verification
+- 7017dc9 Make edit verification dynamic to email and password
+
+#### Overlay
+- 99d8d6f Add footer slot
+
+#### General
+- 8d7e010 Make overlay as component
+- 3b25622 Emit closing overlay
+- 9395e94 Implement slots in overlay
+
+#### Shell
+- 9171b3a Add user settings link on other roles
+
+#### Dark
+- 51a4ed0 Create dark mode toggle button
+
+#### Pages
+- 51cdc12 Rename and restructure page
+
+### 🩹 Fixes
+
+#### Test
+- 6362da9 Remove unnecessary path to create app for reset password test
+
+#### General
+- 7faffc5 Add end tag that was removed by merge conflict
+
+### 💅 Refactors
+
+#### TAB
+- 5b6e192 Provide and inject required data
+
+#### Component
+- 1db5cc2 Make tab as component
+
+### 🏡 Chore
+
+#### General
+- e5be529 Clear some spaces
+
+#### User
+- 7b23685 Make settings components
+- 50e7064 Provide user info as props
+- f96ee83 Display proper text
+
+#### Fields
+- f9bb2fc Type edit button to prevent form submission
+
+#### Shell
+- 0156f45 Use default aliasing of component
+
+#### Server
+- 1d3639e Pass some pageContext properties to client
+
+### ✅ Tests
+
+#### Overlay
+- f7adb38 Test overlay closing event
+
+#### Field
+- e4b8984 Test more cases of textual field
+
+#### TAB
+- e9f9926 Test tab components
+
+### 🎨 Styles
+
+#### Shell
+- 390fc17 Maximize content width
+- eea06c0 Add login page class binding
+- 006af79 Remove old styles from outdated branch
+
+#### Login
+- c477861 Style login page for mobile and larger viewports
+
+#### Fields
+- eac331d Maximize textual field width
+- 4fc639a Maximize width
+
+#### User
+- 6de142b Customize input header size for settings page
+- 25f97b8 Make full picture-container clickable
+- 7b8bf89 Increase account tab max width
+- 5d5e9b5 Adjust text field spacings
+- 63c30a9 Add minor styles
+
+#### General
+- abe2b5f Add some styles
+- 6fff214 Remove border
+- bcaf45f Enlarge label size
+- e0be707 Organize markup and styles
+
+### ❤️  Contributors
+- Ardrin Gregorio
+- Jarlem Red De Peralta
+- Kenneth Trecy Tobias
+
 ## v0.3.0
 
 ### 🚀 Enhancements
