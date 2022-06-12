@@ -15,7 +15,6 @@ export default function() {
 			process.env.EMAIL_USER,
 			process.env.EMAIL_PASS
 		)
-		CommonMiddlewareList.initialize()
 	} else {
 		if (!RequestEnvironment.isOnTest) {
 			console.error("Some e-mail variables are not defined");
@@ -23,4 +22,5 @@ export default function() {
 		}
 	}
 
+	CommonMiddlewareList.initialize()
 }
