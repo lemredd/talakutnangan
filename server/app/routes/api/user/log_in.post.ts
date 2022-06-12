@@ -1,20 +1,17 @@
 import { v4 } from "uuid"
 
-import { Request, Response } from "!/types/dependent"
+import { OptionalMiddleware } from "!/types/independent"
+import { AuthenticatedRequest, Response } from "!/types/dependent"
 
-import Middleware from "!/bases/middleware"
-import GuestFormController from "!/app/routes/kinds/guest_form_controller-like/controller"
+import Policy from "!/bases/policy"
+import JSONController from "!/specialized/json_controller"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
-export default class extends GuestFormController {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
-	get middlewares(): Middleware[] {
-		return [
-			...super.middlewares,
-			new LocalLogInMiddleware()
-		]
-	}
+	get policy(): Policy { return CommonMiddlewareList.guestOnlyPolicy }
 
 	get bodyValidationRules(): object {
 		return {
@@ -23,7 +20,14 @@ export default class extends GuestFormController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	get middlewares(): OptionalMiddleware[] {
+		return [
+			...super.middlewares,
+			new LocalLogInMiddleware()
+		]
+	}
+
+	async handle(request: AuthenticatedRequest, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token
