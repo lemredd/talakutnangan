@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.3.0-dev",
+	"version": "0.4.0-dev",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
@@ -34,6 +34,7 @@
 		"@faker-js/faker": "^6.3.1",
 		"@jest-mock/express": "^1.4.5",
 		"@types/bcryptjs": "^2.4.2",
+		"@types/busboy": "^1.5.0",
 		"@types/compression": "^1.7.2",
 		"@types/express": "^4.17.13",
 		"@types/jest": "^27.5.1",
@@ -65,6 +66,7 @@
 		"@vue/server-renderer": "^3.2.31",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.0",
+		"busboy": "^1.6.0",
 		"compression": "^1.7.4",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.0.1",
@@ -106,7 +108,15 @@
 			"email": "19201.magtoto.angelo.l@gmail.com"
 		},
 		{
-			"name": "Jarlem Red De Peralta",
+			"name": "AteKitty07",
+			"email": "kiritogregorio@gmail.com"
+		},
+		{
+			"name": "IKnightSKyI",
+			"email": "johnjeromepertez@yahoo.com"
+		},
+		{
+			"name": "Jarlem Red de Peralta",
 			"email": "lmoa.jhdp@gmail.com"
 		},
 		{

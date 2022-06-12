@@ -12,7 +12,7 @@
 			</div>
 
 		</div>
-		<div class="content dark:">
+		<div class="content" :class="{ 'login-content': isLoggingIn }">
 			<div class="container">
 				<slot />
 			</div>
@@ -83,11 +83,19 @@ a {
 		padding: 20px;
 		padding-bottom: 50px;
 		min-height: 100vh;
+
+		&.login-content {
+			padding: 0;
+			.container {
+				max-width: none;
+			}
+		}
 	}
 }
 
 .container {
 	max-width: 900px;
 	margin: auto;
+
 }
 </style>

@@ -63,7 +63,7 @@
 </style>
 
 <script setup lang="ts">
-import { Dropdown as NotificationList } from "@/components"
+import NotificationList from "@/Dropdown.vue"
 import { ref } from "vue"
 
 type Emissions = {
