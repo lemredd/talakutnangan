@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker"
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
+import { MockResponse } from "!/types/test"
 import { Request, Response } from "!/types/dependent"
 
 import Validation from "!/bases/middleware"
@@ -73,7 +74,7 @@ describe("Back-end: Post JSON Controller", () => {
 		await validationMiddleware.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
-		const mockResponse = <{[key: string]: jest.MockedFn<(_: number) => Response>}><unknown>response
+		const mockResponse = <MockResponse><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
 		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
@@ -103,7 +104,7 @@ describe("Back-end: Post JSON Controller", () => {
 		await validationMiddleware.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
-		const mockResponse = <{[key: string]: jest.MockedFn<(_: number) => Response>}><unknown>response
+		const mockResponse = <MockResponse><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
 		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
