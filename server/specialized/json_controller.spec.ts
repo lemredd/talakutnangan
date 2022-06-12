@@ -73,7 +73,7 @@ describe("Back-end: Post JSON Controller", () => {
 		await validationMiddleware.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
-		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
+		const mockResponse = <{[key: string]: jest.MockedFn<(_: number) => Response>}><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
 		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
@@ -103,7 +103,7 @@ describe("Back-end: Post JSON Controller", () => {
 		await validationMiddleware.intermediate(request, response, next)
 
 		expect(next).not.toBeCalled()
-		const mockResponse = <{[key: string]: jest.MockedFn<(number) => Response>}><unknown>response
+		const mockResponse = <{[key: string]: jest.MockedFn<(_: number) => Response>}><unknown>response
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.BAD_REQUEST ])
 		expect(mockResponse.json.mock.calls[0][0]).toHaveProperty([0, "field"], "email")
