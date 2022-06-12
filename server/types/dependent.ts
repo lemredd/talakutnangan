@@ -34,7 +34,13 @@ export interface AuthenticatedRequest extends Request {
 
 export interface Response extends BaseResponse {}
 export interface NextFunction extends BaseNextFunction {}
-export interface RequestHandler extends BaseRequestHandler {}
+export interface RequestHandler extends BaseRequestHandler {
+	(
+		_request: Request,
+		_response: Response,
+		_next: NextFunction
+	): Promise<void>
+}
 
 import { ParsedQs } from "qs"
 export type Query = ParsedQs
