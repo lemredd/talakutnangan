@@ -18,18 +18,18 @@ export default class User extends Model {
 	@Column({
 		allowNull: false
 	})
-	name: string
+	name!: string
 
 	@Column({
 		unique: true,
 		allowNull: false
 	})
-	email: string
+	email!: string
 
 	@Column({
 		allowNull: false
 	})
-	password: string
+	password!: string
 
 	@Column({
 		allowNull: false,
@@ -39,33 +39,35 @@ export default class User extends Model {
 			UserKind.Student
 		)
 	})
-	kind: UserKind
+	kind!: UserKind
 
 	@AllowNull
 	@Column({
+		type: DataType.DATE,
 		defaultValue: null
 	})
-	emailVerifiedAt: Date|null
+	emailVerifiedAt!: Date|null
 
 	@AllowNull
 	@Column({
+		type: DataType.DATE,
 		defaultValue: null
 	})
-	admittedAt: Date|null
+	admittedAt!: Date|null
 
 	@AllowNull
 	@Column({
 		type: DataType.BLOB("medium"),
 		defaultValue: null
 	})
-	signature: Buffer|null
+	signature!: Buffer|null
 
 	@ForeignKey(() => Department)
 	@Column({
 		allowNull: false
 	})
-	departmentID: number
+	departmentID!: number
 
 	@BelongsTo(() => Department)
-	department: Department
+	department!: Department
 }
