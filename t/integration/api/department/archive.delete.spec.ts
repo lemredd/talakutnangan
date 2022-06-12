@@ -20,7 +20,7 @@ describe("DELETE /api/department/archive/:id", () => {
 			.delete(`/api/department/archive/${department.id}`)
 			.set("Cookie", cookie)
 
-		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
+		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 		expect(response.body).toStrictEqual({})
 		expect(manager.findWithID(department.id)).resolves.toBeNull()
 	})

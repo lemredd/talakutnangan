@@ -19,7 +19,7 @@ describe("Component: fields/Textual", () => {
 
 		const updates = wrapper.emitted("update:modelValue")
 		expect(updates).toHaveLength(1)
-		expect(updates[0]).toEqual([ exampleEmail ])
+		expect(updates![0]).toEqual([ exampleEmail ])
 	})
 
 	it("should be edit protected", async () => {

@@ -9,25 +9,16 @@ export default class extends ModelBoundController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Use policy to that authenticates overall level update
+		// TODO: Base the policy from permission
 		return CommonMiddlewareList.knownOnlyPolicy
 	}
 
 	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
 		const manager = new UserManager()
 		const { id } = request.params
-		// TODO: Generate password using student number or random
-		const newPassword = "12345678"
-		const isSuccess = await manager.resetPassword(+id, newPassword)
 
-		if (isSuccess) {
-			response.status(this.status.NO_CONTENT).end()
-		} else {
-			response.status(this.status.INTERNAL_SERVER_ERROR).json({
-				"errors": [
-					"User was not found or there is a problem with the database."
-				]
-			})
-		}
+		// TODO: Update user details
+
+		response.status(this.status.NOT_IMPLEMENTED)
 	}
 }

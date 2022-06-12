@@ -12,6 +12,7 @@ import type {
 } from "express"
 import User from "%/models/user"
 
+// @ts-ignore
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
 	session: {
@@ -22,6 +23,14 @@ export interface Request extends BaseRequest {
 	user: User|null
 	isAuthenticated: () => boolean
 	logout: () => void
+}
+
+export interface AuthenticatedRequest extends Request {
+	session: {
+		token: string
+	}
+
+	user: User
 }
 
 export interface Response extends BaseResponse {}
@@ -35,4 +44,8 @@ import { ParamsDictionary } from "express-serve-static-core"
 export type Parameters = ParamsDictionary
 export interface IDParameter extends Parameters {
 	id: string
+}
+
+export interface AuthenticatedIDRequest extends AuthenticatedRequest {
+	params: IDParameter
 }

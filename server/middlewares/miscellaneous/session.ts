@@ -15,6 +15,7 @@ export default class Session extends Middleware {
 	})
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		// @ts-ignore
 		Session.session(request, response, next)
 	}
 }

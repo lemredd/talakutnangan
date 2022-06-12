@@ -3,6 +3,6 @@ import Validation from "!/bases/validation"
 
 export default class extends Validation {
 	getSubject(request: Request): object {
-		return request.body
+		return request.params
 	}
 }
