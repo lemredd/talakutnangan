@@ -4,6 +4,9 @@ import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BodyValidation from "!/middlewares/authorization/body_validation"
 
+/**
+ * Base class for controllers which accept JSON as their request body.
+ */
 export default abstract class extends Controller {
 	get bodyParser(): Middleware {
 		return CommonMiddlewareList.JSONBody
