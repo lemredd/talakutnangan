@@ -3,19 +3,18 @@
  * @description This module contains types that depend on both independent and dependent types.
  */
 
-import type Middleware from "!/bases/middleware"
-import type { RouteInformation, WithRegistration } from "!/types/independent"
 import type { Response, Request, RequestHandler } from "!/types/dependent"
+import type { RouteInformation, WithRegistration, OptionalMiddleware } from "!/types/independent"
 
-export type EndHandler = (Request, Response) => Promise<void> | void
+export type EndHandler = (_request: Request, _response: Response) => Promise<void> | void
 
 /**
  * Used to structure the stored route information with its associated handlers.
  */
  export interface RouteHandlers {
-	middlewares: Middleware[],
+	middlewares: OptionalMiddleware[],
 	controller: RequestHandler,
-	postJobs: Middleware[],
+	postJobs: OptionalMiddleware[],
 	endHandler: EndHandler | null
 }
 
