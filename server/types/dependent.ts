@@ -12,6 +12,7 @@ import type {
 } from "express"
 import User from "%/models/user"
 
+// @ts-ignore
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
 	session: {
