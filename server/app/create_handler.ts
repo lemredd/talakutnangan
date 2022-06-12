@@ -1,12 +1,13 @@
 import "dotenv/config"
-
 import express  from "express"
+
+import type { RequestHandler } from "!/types/dependent"
 
 import Router from "!/bases/router"
 import createViteDevServer from "!/vite_dev/create_server"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 import manageAuthentication from "!/app/auth/manage_authentication"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
+import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 export default async function(customRoutes: Router): Promise<express.Express> {
 	const app = express()
@@ -28,7 +29,7 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 		const rawHandlers = [ ...rawMiddlewares, controller, ...rawPostJobs, endHandler ]
 			.filter(middleware => middleware !== null)
 
-		app[method](path, ...rawHandlers)
+		app[method](path, ...(<RequestHandler[]><unknown>rawHandlers))
 	}
 
 	app.use(viteDevRouter)
