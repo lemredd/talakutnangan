@@ -16,7 +16,7 @@ import User from "%/models/user"
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
 	session: {
-		token: string|null
+		token?: string
 	}
 
 	// Added due to `passport` package
