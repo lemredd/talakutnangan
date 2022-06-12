@@ -1,9 +1,11 @@
 import { Buffer } from "node:buffer"
 import { Request, Response } from "!/types/dependent"
 
+import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
-import Controller from "!/bases/controller-likes/controller"
 import UserManager from "%/managers/user_manager"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import MultipartController from "!/common_controllers/multipart_controller"
 
  export interface WithImport {
 	body: {
@@ -11,8 +13,11 @@ import UserManager from "%/managers/user_manager"
 	}
 }
 
-export default class extends Controller {
+export default class extends MultipartController {
 	get filePath(): string { return __filename }
+
+	// TODO: Use a permission-based policy
+	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
 
 	get bodyValidationRules(): object {
 		// Create validator for buffers
@@ -27,12 +32,11 @@ export default class extends Controller {
 		// TODO: READ the CSV file
 		// TODO: Pass the the converted CSV file to user manager
 
-		response.status(this.status.NOT_IMPLEMENTED).end()
+		response.status(this.status.NOT_IMPLEMENTED)
 	}
 
+	// TODO: Send e-mails to new users
 	get postJobs(): Middleware[] {
-		return [
-			...super.postJobs
-		]
+		return []
 	}
 }
