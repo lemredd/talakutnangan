@@ -18,6 +18,6 @@ export default class extends ModelBoundController {
 		const manager = new DepartmentManager()
 		const deleteCount = await manager.archive(+id)
 
-		response.status(deleteCount > 0? this.status.ACCEPTED : this.status.NOT_MODIFIED)
+		response.status(deleteCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 	}
 }
