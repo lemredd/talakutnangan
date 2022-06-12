@@ -22,6 +22,34 @@ describe("Authentication: Search user with credentials", () => {
 
 		expect(foundUser).toBeNull()
 	})
+
+	it("can reset password of existing user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const newPassword = "12345678"
+
+		const isResetSuccess = await manager.resetPassword(user.id, newPassword)
+
+		expect(isResetSuccess).toBeTruthy()
+		expect(compare(
+			newPassword,
+			(await manager.findWithID(user.id)).password,
+		)).resolves.toBeTruthy()
+	})
+
+	it("can reset password of non-existing user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const newPassword = "12345678"
+
+		const isResetSuccess = await manager.resetPassword(user.id+1, newPassword)
+
+		expect(isResetSuccess).toBeFalsy()
+		expect(compare(
+			newPassword,
+			(await manager.findWithID(user.id)).password,
+		)).resolves.toBeFalsy()
+	})
 })
 
 describe("General: Search user with ID", () => {
