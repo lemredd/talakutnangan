@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.3.0-dev",
+	"version": "0.3.0",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
@@ -108,7 +108,11 @@
 			"email": "19201.magtoto.angelo.l@gmail.com"
 		},
 		{
-			"name": "Jarlem Red De Peralta",
+			"name": "IKnightSKyI",
+			"email": "johnjeromepertez@yahoo.com"
+		},
+		{
+			"name": "Jarlem Red de Peralta",
 			"email": "lmoa.jhdp@gmail.com"
 		},
 		{
