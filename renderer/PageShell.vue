@@ -12,7 +12,7 @@
 			</div>
 
 		</div>
-		<div class="content dark:">
+		<div class="content" :class="{ 'login-content': isLoggingIn }">
 			<div class="container">
 				<slot />
 			</div>
