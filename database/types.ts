@@ -36,3 +36,19 @@ export interface RawDepartment {
 	acronym: string,
 	mayAdmit: boolean
 }
+
+/**
+ * Used to receive raw validated role details.
+ */
+export interface RawRole {
+	name: string,
+	department_flags: number,
+	role_flags: number,
+	semester_flags: number,
+	tag_flags: number,
+	post_flags: number,
+	comment_flags: number,
+	profanity_flags: number,
+	user_flags: number,
+	audit_trail_flags: number
+}
