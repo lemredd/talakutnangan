@@ -5,7 +5,7 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default function() {
 	Log.initialize(RequestEnvironment.isOnTest)
-  
+
 	if (
 		process.env.EMAIL_HOST !== undefined
 		&& process.env.EMAIL_PORT !== undefined

@@ -97,8 +97,8 @@ export default class Log {
 		}
 	}
 
-	static formatMessage(area: string, message: string): string {
-		const preformattedAreaName = this.allowedAreas.get(area)
+	private static formatMessage(area: string, message: string): string {
+		const preformattedAreaName = this.allowedAreas.get(area)!
 		const paddedArea = preformattedAreaName.padStart(this.maxStringLength, " ")
 		return `${paddedArea}: ${message}`
 	}
