@@ -1,14 +1,23 @@
 import consola from "consola"
 
 export default class Log {
-	private static allowedAreas: string[]
+	private static maxStringLength: number
+	private static allowedAreas: Map<string, string>
 
-	static initialize(isOnTest): void {
-		const allowedAreas = isOnTest
+	static initialize(isOnTest: boolean): void {
+		const rawAllowedAreas = isOnTest
 			? process.env.LOGGING_ALLOWED_TEST_AREAS || ""
 			: process.env.LOGGING_ALLOWED_DEV_AREAS || ""
 
-		this.allowedAreas = allowedAreas.split(",")
+		const splittedAreas = rawAllowedAreas.split(",")
+		const bracketedAreas = splittedAreas.map(area => `[${area}]`)
+		const longestArea = Math.max(...bracketedAreas.map(area => area.length))
+
+		const allowance = 0
+		this.maxStringLength = longestArea + allowance
+		this.allowedAreas = new Map(
+			splittedAreas.map((area, index) => [ area, bracketedAreas[index] ])
+		)
 	}
 
 	/**
@@ -16,9 +25,9 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static error(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).error(message)
+	 static error(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.error(this.formatMessage(area, message))
 		}
 	}
 
@@ -27,9 +36,9 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static warn(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).warn(message)
+	 static warn(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.warn(this.formatMessage(area, message))
 		}
 	}
 
@@ -38,9 +47,9 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static log(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).log(message)
+	 static log(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.log(this.formatMessage(area, message))
 		}
 	}
 
@@ -49,9 +58,9 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	static success(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).success(message)
+	static success(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.success(this.formatMessage(area, message))
 		}
 	}
 
@@ -60,9 +69,9 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	static debug(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).debug(message)
+	static debug(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.debug(this.formatMessage(area, message))
 		}
 	}
 
@@ -71,9 +80,15 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	static trace(area, message) {
-		if (this.allowedAreas.includes(area)) {
-			consola.withTag(area).trace(message)
+	static trace(area: string, message: string): void {
+		if (this.allowedAreas.has(area)) {
+			consola.trace(this.formatMessage(area, message))
 		}
+	}
+
+	static formatMessage(area: string, message: string): string {
+		const preformattedAreaName = this.allowedAreas.get(area)
+		const paddedArea = preformattedAreaName.padStart(this.maxStringLength, " ")
+		return `${paddedArea}: ${message}`
 	}
 }
