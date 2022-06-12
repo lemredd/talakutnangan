@@ -25,9 +25,20 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static error(area: string, message: string): void {
+	static errorMessage(area: string, message: string): void {
 		if (this.allowedAreas.has(area)) {
 			consola.error(this.formatMessage(area, message))
+		}
+	}
+
+	/**
+	 * Method to use to report the original error.
+	 * @param area Area where the message belongs
+	 * @param error Original error to show
+	 */
+	static error(area: string, error: Error): void {
+		if (this.allowedAreas.has(area)) {
+			consola.error(error)
 		}
 	}
 
@@ -36,7 +47,7 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static warn(area: string, message: string): void {
+	static warn(area: string, message: string): void {
 		if (this.allowedAreas.has(area)) {
 			consola.warn(this.formatMessage(area, message))
 		}
@@ -47,7 +58,7 @@ export default class Log {
 	 * @param area Area where the message belongs
 	 * @param message Message to output
 	 */
-	 static log(area: string, message: string): void {
+	static log(area: string, message: string): void {
 		if (this.allowedAreas.has(area)) {
 			consola.log(this.formatMessage(area, message))
 		}
