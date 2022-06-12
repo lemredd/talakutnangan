@@ -4,7 +4,7 @@ import { OptionalMiddleware } from "!/types/independent"
 import { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import JSONController from "!/specialized/json_controller"
+import JSONController from "!/common_controllers/json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 

@@ -1,5 +1,5 @@
 import Validation from "!/bases/validation"
-import BoundController from "!/specialized/bound_controller"
+import BoundController from "!/common_controllers/bound_controller"
 import RouteParamterValidation from "!/middlewares/authorization/route_parameter_validation"
 
 /**

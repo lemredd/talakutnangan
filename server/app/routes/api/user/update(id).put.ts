@@ -2,8 +2,8 @@ import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user_manager"
-import ModelBoundController from "!/specialized/model_bound_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import ModelBoundController from "!/common_controllers/model_bound_controller"
 
 export default class extends ModelBoundController {
 	get filePath(): string { return __filename }

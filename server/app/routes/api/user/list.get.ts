@@ -3,7 +3,7 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user_manager"
-import QueryController from "!/specialized/query_controller"
+import QueryController from "!/common_controllers/query_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 interface WithQuery {
