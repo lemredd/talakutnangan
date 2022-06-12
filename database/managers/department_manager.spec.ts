@@ -2,7 +2,7 @@ import DepartmentManager from "./department_manager"
 import DepartmentFactory from "~/factories/department"
 import Department from "%/models/department"
 
-describe("Database: Search department with ID", () => {
+describe("Database: Department Read Operations", () => {
 	it("can search department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
@@ -10,7 +10,7 @@ describe("Database: Search department with ID", () => {
 
 		const foundDepartment = await manager.findWithID(id)
 
-		expect(foundDepartment.fullName).toStrictEqual(department.fullName)
+		expect(foundDepartment!.fullName).toStrictEqual(department.fullName)
 	})
 
 	it("cannot search department", async () => {
@@ -21,7 +21,9 @@ describe("Database: Search department with ID", () => {
 
 		expect(foundDepartment).toBeNull()
 	})
+})
 
+describe("Database: Department Create Operations", () => {
 	it("can create department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).makeOne()
@@ -30,7 +32,9 @@ describe("Database: Search department with ID", () => {
 
 		expect(createdDepartment.fullName).toStrictEqual(department.fullName)
 	})
+})
 
+describe("Database: Department Update Operations", () => {
 	it("can update department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
@@ -45,9 +49,11 @@ describe("Database: Search department with ID", () => {
 			await Department.findOne({
 				where: { id: department.id }
 			})
-		).mayAdmit).not.toBe(department.mayAdmit)
+		)!.mayAdmit).not.toBe(department.mayAdmit)
 	})
+})
 
+describe("Database: Department Archival and Restoration Operations", () => {
 	it("archive department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
@@ -74,6 +80,6 @@ describe("Database: Search department with ID", () => {
 			await Department.findOne({
 				where: { id: department.id }
 			})
-		).deletedAt).toBeNull()
+		)!.deletedAt).toBeNull()
 	})
 })

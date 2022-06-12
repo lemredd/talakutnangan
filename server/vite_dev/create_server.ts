@@ -40,6 +40,7 @@ export default async function(app: ExpressApp) {
 	const renderPage = pageRenderer
 
 	const router = createRouter()
+	// @ts-ignore
 	router.get("*", async (request: Request, response: Response, next: NextFunction) => {
 		const url = request.originalUrl
 		const pageContextInit = {

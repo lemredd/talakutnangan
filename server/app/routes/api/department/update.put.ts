@@ -14,16 +14,20 @@ export default class extends JSONController {
 	}
 
 	get bodyValidationRules(): object {
+		// TODO: Create custom validator for acronym
 		return {
-			id: [ "required", "numeric", "min:1" ]
+			id: [ "required", "numeric" ],
+			acronym: [ "required", "string" ],
+			fullName: [ "required", "string" ],
+			mayAdmit: [ "required", "boolean" ]
 		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const { id } = request.body
 		const manager = new DepartmentManager()
-		const departmentInfo = await manager.findWithID(id)
+		const { id, ...attributes } = request.body
+		const affectedCount = await manager.update(id, attributes)
 
-		response.status(this.status.OK).json(departmentInfo)
+		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 	}
 }

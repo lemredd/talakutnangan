@@ -11,17 +11,21 @@ describe("GET /api/user/list", () => {
 	})
 
 	it("can be accessed by permitted user and get single unadmitted user", async () => {
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
 		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
+		const student = await (new UserFactory()).beStudent().insertOne()
 
 		const response = await App.request
 			.get("/api/user/list")
 			.query({ criteria: "unadmitted" })
+			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
-		const expectedUser = await manager.findWithID(user.id)
+		const expectedUser = await manager.findWithID(student.id)
+		const refreshedAdmin = await manager.findWithID(admin.id)
 		expect(response.body).toStrictEqual(
 			JSON.parse(JSON.stringify([
+				refreshedAdmin,
 				expectedUser
 			]))
 		)

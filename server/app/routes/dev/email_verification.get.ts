@@ -1,11 +1,11 @@
 import { Request, Response } from "!/types/dependent"
 
-import Controller from "!/bases/controller"
 import Transport from "!/helpers/email/transport"
+import DevController from "!/common_controllers/dev_controller"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"
 
-export default class extends Controller {
+export default class extends DevController {
 	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
@@ -23,7 +23,7 @@ export default class extends Controller {
 		response.send(parsedVerification)
 		response.end()
 
-		const to = process.env.EMAIL_USER
+		const to = process.env.EMAIL_USER!
 		const subject = "Email Verification"
 
 		Transport.sendMail(to, subject, emailTemplatePath, variables)

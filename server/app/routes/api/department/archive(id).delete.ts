@@ -1,30 +1,23 @@
-import { IDParameter, Request as BaseRequest, Response } from "!/types/dependent"
+import { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
-import Middleware from "!/bases/middleware"
-import Controller from "!/bases/controller"
+import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import ModelBoundController from "!/common_controllers/model_bound_controller"
 
-interface WithID {
-	params: IDParameter
-}
-export type Request = BaseRequest & WithID
-
-export default class extends Controller {
+export default class extends ModelBoundController {
 	get filePath(): string { return __filename }
 
-	get middlewares(): Middleware[] {
-		return [
-			CommonMiddlewareList.knownOnlyPolicy,
-			...super.middlewares
-		]
+	get policy(): Policy {
+		// TODO: Use a permission-based policy
+		return CommonMiddlewareList.knownOnlyPolicy
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
 		const { id } = request.params
 		const manager = new DepartmentManager()
 		const deleteCount = await manager.archive(+id)
 
-		response.status(deleteCount > 0? this.status.ACCEPTED : this.status.NOT_MODIFIED).end()
+		response.status(deleteCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 	}
 }

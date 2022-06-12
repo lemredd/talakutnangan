@@ -7,7 +7,7 @@ import type { Request, Response, NextFunction } from "!/types/dependent"
  */
 export default class FormBodyParser extends Middleware {
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		const newBody = {}
+		const newBody: { [key: string]: any } = {}
 		const parser = busboy({ headers: request.headers })
 
 		parser.on("file", (name, stream, info) => {

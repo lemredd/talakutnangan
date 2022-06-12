@@ -1,5 +1,6 @@
 import passport from "passport"
-import LocalStrategy from "passport-local"
+import { Strategy as LocalStrategy } from "passport-local"
+
 import User from "%/models/user"
 import UserManager from "%/managers/user_manager"
 
@@ -21,11 +22,12 @@ export default async function() {
 		}
 	))
 
-	passport.serializeUser((user: User, done: Function) => {
-		return done(null, user.id)
+	// @ts-ignore
+	passport.serializeUser((user: User, done: (error: any, id: number) => void): void => {
+		done(null, user.id)
 	})
 
-	passport.deserializeUser(async (id, done: Function) => {
+	passport.deserializeUser(async (id: number, done: Function) => {
 		const manager = new UserManager()
 
 		const user = await manager.findWithID(id)

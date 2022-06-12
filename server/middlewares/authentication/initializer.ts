@@ -6,6 +6,7 @@ export default class Initializer extends Middleware {
 	private static intialize = passport.initialize()
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+		// @ts-ignore
 		Initializer.intialize(request, response, next)
 	}
 }
