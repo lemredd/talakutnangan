@@ -20,7 +20,7 @@ export interface Request extends BaseRequest {
 	}
 
 	// Added due to `passport` package
-	user: User|null
+	user: User|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
 }
