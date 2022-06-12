@@ -10,12 +10,13 @@ import type {
 	NextFunction as BaseNextFunction,
 	RequestHandler as BaseRequestHandler
 } from "express"
+import type { Session } from "express-session"
 import User from "%/models/user"
 
 // @ts-ignore
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
-	session: {
+	session: Session & {
 		token?: string
 	}
 
@@ -26,7 +27,7 @@ export interface Request extends BaseRequest {
 }
 
 export interface AuthenticatedRequest extends Request {
-	session: {
+	session: Session & {
 		token: string
 	}
 
