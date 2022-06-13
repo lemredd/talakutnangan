@@ -1,8 +1,11 @@
 import {
 	Table,
 	Model,
-	Column
+	Column,
+	BelongsToMany
 } from "sequelize-typescript"
+import User from "%/models/user"
+import AttachedRole from "%/models/attached_role"
 
 @Table({
 	timestamps: true,
@@ -59,4 +62,7 @@ export default class Role extends Model {
 		allowNull: false
 	})
 	auditTrailFlags!: number
+
+	@BelongsToMany(() => User, () => AttachedRole)
+	users!: User[]
 }
