@@ -1,6 +1,6 @@
 import { badWordExist } from "./profanityFilter";
 
-var secludedPosts =
+var secludedPosts: any =
 [
 
 ];
@@ -20,7 +20,7 @@ var posts =
             "User 1"
         ],
         downVoters: [
-           
+
         ],
         voteCount: function()
         {
@@ -37,10 +37,10 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            
+
         ],
         downVoters: [
-            
+
         ],
         voteCount: function()
         {
@@ -57,16 +57,16 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            
+
         ],
         downVoters: [
-            
+
         ],
         voteCount: function()
         {
             return this.voters.length;
         },
-        
+
     },
     {
         id:4,
@@ -78,10 +78,10 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            
+
         ],
         downVoters: [
-           
+
         ],
         voteCount: function()
         {
@@ -98,10 +98,10 @@ var posts =
             return badWordExist(this.title)||badWordExist(this.desc);
         },
         voters: [
-            
+
         ],
         downVoters: [
-           
+
         ],
         voteCount: function()
         {

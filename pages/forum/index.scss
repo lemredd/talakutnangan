@@ -1,10 +1,5 @@
 html
 {
-	body
-	{
-		margin: 10px 60px;
-		font-weight: 0;
-	}
 	a
 	{
 		text-decoration: none;
@@ -41,7 +36,7 @@ html
 		height: 34px;
 	}
 	.switch input
-	{ 
+	{
 		opacity: 0;
 		width: 0;
 		height: 0;
@@ -74,7 +69,7 @@ html
 	{
 		background-color: #2196F3;
 	}
-	  
+
 	input:focus + .slider
 	{
 		box-shadow: 0 0 1px #2196F3;
@@ -89,14 +84,14 @@ html
 	{
 		border-radius: 34px;
 	}
-	.slider.round:before 
+	.slider.round:before
 	{
 		border-radius: 50%;
 	}
-	.container
+	.post-container
 	{
-		
-		overflow: hidden;    
+
+		overflow: hidden;
 	}
 	.left
 	{
@@ -114,5 +109,5 @@ html
 		float: right;
    		width: 100px;
 		padding: 0px 10px 0px 10px;
-	} 
+	}
 }

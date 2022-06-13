@@ -1,9 +1,9 @@
-const reEscape = s => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+const reEscape = (s: any) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
 const badWords = ["Putanginang","Putangina","gago"];
 const badWordsExist = new RegExp(badWords.map(reEscape).join('|'));
 
-export function badWordExist(e)
+export function badWordExist(e: any)
 {
     if(e.match(badWordsExist)==null)
     {
