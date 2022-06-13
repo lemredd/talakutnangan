@@ -13,9 +13,9 @@ export default class {
 
 	static async create(): Promise<void> {
 		if (getEnvironment() === Environment.UnitTest) {
-			this.#dataSource = createDataSource("unit_test")
+			this.#dataSource = await createDataSource("unit_test")
 		} else {
-			this.#dataSource = createDataSource(process.env.DATABASE_TYPE as SourceType)
+			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 		}
 
 		await this.#dataSource.sync({ force: true })

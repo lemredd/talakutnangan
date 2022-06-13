@@ -1,8 +1,11 @@
-import Transport from "!/helpers/email/transport";
+import Log from "!/helpers/log"
+import Transport from "!/helpers/email/transport"
 import RequestEnvironment from "!/helpers/request_environment"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list";
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default function() {
+	Log.initialize(RequestEnvironment.isOnTest)
+
 	if (
 		process.env.EMAIL_HOST !== undefined
 		&& process.env.EMAIL_PORT !== undefined
