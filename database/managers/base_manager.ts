@@ -1,4 +1,4 @@
-import {
+import type {
 	Attributes,
 	FindOptions,
 	UpdateOptions,
@@ -7,7 +7,7 @@ import {
 	CreationAttributes,
 	FindAndCountOptions
 } from "sequelize"
-import { Model, ModelCtor } from "sequelize-typescript"
+import type { Model, ModelCtor } from "sequelize-typescript"
 
 import type { List, Pipe } from "%/types"
 
@@ -29,11 +29,11 @@ export default abstract class Manager<T extends Model, U> {
 		return { records: rows, count }
 	}
 
-	async createWithDetails(details: U & CreationAttributes<T>): Promise<T> {
+	async create(details: U & CreationAttributes<T>): Promise<T> {
 		return await this.model.create(details)
 	}
 
-	async updateWithDetails(id: number, details: U & Attributes<T>): Promise<number> {
+	async update(id: number, details: U & Attributes<T>): Promise<number> {
 		const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
 			where: { id }
 		})
@@ -41,13 +41,13 @@ export default abstract class Manager<T extends Model, U> {
 		return affectedCount
 	}
 
-	async archiveWithID(id: number): Promise<number> {
+	async archive(id: number): Promise<number> {
 		return await this.model.destroy(<DestroyOptions<T>>{
 			where: { id }
 		})
 	}
 
-	async restoreWithID(id: number): Promise<void> {
+	async restore(id: number): Promise<void> {
 		return await this.model.restore(<RestoreOptions<T>>{
 			where: { id }
 		})
