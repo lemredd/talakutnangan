@@ -12,6 +12,44 @@
         <!--body start-->
         <div class="main">
             <br/>
+            <div class="post-container">
+                <div class="left">
+                    {{ dummyUserDemo[0].userName }}
+                </div>
+                <div class="middle">
+                    <h1>What's on your mind?</h1>
+                </div>
+                <div class="right">
+                    <button @click="showCreate()">Create</button>
+                </div>
+
+            </div>
+            <div class="post-container" :hidden="isCreateShown">
+                <div class="container">
+                <form @submit.prevent="sumbitPostDetails">
+                    <div class="row">
+                    <div class="col-25">
+                        <label for="title">Title</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" id="title" name="title" placeholder="Your title.." v-model="title">
+                    </div>
+                    </div>       
+                    <div class="row">
+                    <div class="col-25">
+                        <label for="desc">Description</label>
+                    </div>
+                    <div class="col-75">
+                        <textarea id="desc" name="desc" placeholder="Write something.." style="height:200px" v-model="description"></textarea>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <input type="submit" value="Submit">
+                    </div>
+                </form>
+                </div>
+
+            </div>
 
             <div class="post" v-for="post in posts" v-bind:key="post.id" :hidden="secludePostDiv(post)">
 
@@ -27,13 +65,13 @@
                     <div class="controls relative">
 						<button class="material-icons" @click="togglePostMenu">more_vert</button>
 						<PostMenu class="postmenu absolute top-[2em] right-0 flex flex-col" v-if="isPostMenuShown">
-                            <button v-if="dummyUser===post.user">
+                            <button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
                                 Edit
                             </button>
-                            <button v-if="dummyUser===post.user">
+                            <button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post)">
                                 Delete
                             </button>
-                            <button v-if="dummyUser!==post.user">
+                            <button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
                                 Report
                             </button>
                         </PostMenu>
@@ -74,10 +112,11 @@
                             {{ totalVotes(post) }}
                         </h2>
                     </div>
-                </div>
-                <p v-bind:class="`${post.id}`">
+                    <p v-bind:class="`${post.id}`">
                     {{ post.desc }}
-                </p>
+                    </p>
+                </div>
+                
                 <br/>
 
             </div>
@@ -110,15 +149,68 @@ import {
     downVote,
     totalVotes,
     secludePostDiv,
-    dummyUser
+    dummyUserDemo,
+    createPost,
+    getSecludedPost
 } from "./post";
 import PostMenu from "@/Dropdown.vue";
 
 
+var title = ref("");
+var description = ref("");
+
 var isPostMenuShown = ref(false);
+var isCreateShown = ref(true);
+
+function sumbitPostDetails()
+{
+    const titleText = title.value;
+    //Creation
+    const descriptionText = description.value;
+    createPost(1, dummyUserDemo[0].userName, titleText, descriptionText, [], []);
+    //Seclusion
+    posts.value.forEach(function(post: any, i: any) {
+	    getSecludedPost(post, secludedPosts.value, i)
+    });
+    //Finishing
+    alert("Successfully posted!")
+    console.log(secludedPosts.value);
+    isCreateShown.value=true;
+    
+}
+
+function showCreate()
+{
+    isCreateShown.value=!isCreateShown.value;
+}
 
 function togglePostMenu()
 {
     isPostMenuShown.value=!isPostMenuShown.value;
 }
+
+function editPost(post: any)
+{
+    console.log(post);
+    
+}
+
+function deletePost(post: any)
+{
+    
+}
+
+function reportPost(post: any)
+{
+
+}
+
+//To create a post, the needed variables are
+// - ID - 1
+// - Username - 2
+// - Post title - 3
+// - Post description - 4
+// - Empty voters object - 5
+// - Empty down voters object - 6
+
 </script>

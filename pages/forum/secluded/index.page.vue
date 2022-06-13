@@ -14,7 +14,7 @@
             <br/>
 
             <div class="post" v-for="post in secludedPosts" v-bind:key="post.id">
-                <div class="container">
+                <div class="post-container">
                     <div class="left">
                         <div><img src="../images/emptyUser.png"></div>
                         <h2 class = "title">
@@ -48,10 +48,10 @@
                             {{ totalVotes(post) }}
                         </h2>
                     </div>
-                </div>
-                <p v-bind:class="`${post.id}`">
+                    <p v-bind:class="`${post.id}`">
                     {{ post.desc }}
-                </p>
+                    </p>
+                </div>
                 <br/>
 
             </div>

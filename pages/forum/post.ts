@@ -1,13 +1,52 @@
 import { ref, Ref } from "vue";
 import { getPosts } from "./data";
 import { getSecludedPosts } from "./data";
+import { badWordExist } from "./profanityFilter";
 
 export var posts = ref(getPosts());
 export var secludedPosts = ref(getSecludedPosts());
 
-export var dummyUser = "User 2";
-var dummyUserDownVote = "User 3";
+export var dummyUserDemo =
+[
+    {
+        userName: "Gregorio"
+    }
+];
 
+//Create post start
+//To create a post, the needed variables are
+// - ID - 1
+// - Username - 2
+// - Post title - 3
+// - Post description - 4
+// - Empty voters object - 5
+// - Empty down voters object - 6
+export function createPost(id: number, user: string, title: string, desc: string, voters:[], downVoters: [])
+{
+    var postCreate = 
+    [
+        {
+            id,
+            user,
+            title,
+            desc,
+            badWordExist: function()
+            {
+                return badWordExist(title)||badWordExist(desc);
+            },
+            voters,
+            downVoters,
+            voteCount: function()
+            {
+                return voters.length;
+            },
+        }
+    ];
+    posts.value.push(postCreate[0]);
+}
+//Create post end
+
+//Post seclusion start
 export function secludePostDiv(post: any)
 {
     if(secludedPosts.value.includes(post))
@@ -19,28 +58,28 @@ export function secludePostDiv(post: any)
         return false;
     }
 }
+//Post seclusion end
 
 //Post seclusion push start
-export function getSecludedPost(post: any ,secludedPost: any, i: any)
+export function getSecludedPost(post: any, secludedPost: any, i: any)
 {
-
     if(post.badWordExist()==true)
     {
         if(secludedPost[i]===post)
         {
-			console.log("this post has already been secluded");
+			console.log("This post has already been secluded");
         }
         else
         {
             secludedPost.push(post);
+            alert("Please correct your post!")
         }
-
     }
 }
 
-posts.value.forEach(function(post, i) {
-	getSecludedPost(post, secludedPosts.value, i)
-})
+// posts.value.forEach(function(post: any, i: any) {
+// 	getSecludedPost(post, secludedPosts.value, i)
+// })
 //Post seclusion push end
 
 //Upvote start
@@ -60,18 +99,18 @@ export function downVoteCountUpdate(post: any)
 }
 
 export function determineUserVoted(post: any) {
-	if (post.voters.includes(dummyUser)) return true;
+	if (post.voters.includes(dummyUserDemo[0].userName)) return true;
 }
 
 function removeBothVotes(post: any)
 {
     post.voters=post.voters.filter(function(voter: any){
         
-        return voter!=dummyUser;
+        return voter!=dummyUserDemo[0].userName;
     });
     post.downVoters=post.downVoters.filter(function(downVote: any) {
         
-        return downVote!=dummyUserDownVote;
+        return downVote!=dummyUserDemo[0].userName;
     });
 }
 
@@ -80,14 +119,14 @@ export function upVote(e: any, post: any)
     removeBothVotes(post)
     if(e.target.checked)
     {
-        post.voters.push(dummyUser);
+        post.voters.push(dummyUserDemo[0].userName);
     }
     else
     {
         post.voters=post.voters.filter(function(voter: any)
         {
             
-            return voter!=dummyUser;
+            return voter!=dummyUserDemo[0].userName;
         });
     }
     if(determineUserDownVoted(post)==true)
@@ -99,7 +138,7 @@ export function upVote(e: any, post: any)
 
 //Downvote start
 export function determineUserDownVoted(post: any) {
-	if (post.downVoters.includes(dummyUserDownVote)) return true;
+	if (post.downVoters.includes(dummyUserDemo[0].userName)) return true;
 }
 
 export function downVote(e: any, post: any)
@@ -108,14 +147,14 @@ export function downVote(e: any, post: any)
     removeBothVotes(post)
     if(e.target.checked)
     {
-        post.downVoters.push(dummyUserDownVote);
+        post.downVoters.push(dummyUserDemo[0].userName);
     }
     else
     {
         post.downVoters=post.downVoters.filter(function(downVote: any)
         {
             
-            return downVote!=dummyUserDownVote;
+            return downVote!=dummyUserDemo[0].userName;
         });
     }
 }
