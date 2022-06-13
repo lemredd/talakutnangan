@@ -52,3 +52,10 @@ export interface RawRole {
 	userFlags: number,
 	auditTrailFlags: number
 }
+
+export type List<T> = Promise<{
+	records: T[],
+	count: number
+}>
+
+export type Pipe<T> = (currentState: T, constraints: object) => T
