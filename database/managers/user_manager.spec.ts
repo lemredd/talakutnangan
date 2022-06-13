@@ -1,16 +1,25 @@
+import Role from "%/models/role"
 import UserManager from "./user_manager"
 import UserFactory from "~/factories/user"
+import RoleFactory from "~/factories/role"
 import compare from "!/helpers/auth/compare"
+import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
 
 describe("Authentication: Search user with credentials", () => {
 	it("can search user", async () => {
+		const role = await (new RoleFactory()).insertOne()
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
+		AttachedRole.create({ userID: user.id, roleID: role.id })
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
 
 		expect(foundUser!.email).toStrictEqual(user.email)
+		expect(foundUser!.roles).toHaveLength(1)
+		expect(foundUser!.roles[0] instanceof Role).toBeTruthy()
+		expect(foundUser!.department instanceof Department).toBeTruthy()
 	})
 
 	it("cannot search user", async () => {
