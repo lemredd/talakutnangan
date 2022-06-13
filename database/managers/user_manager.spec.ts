@@ -61,8 +61,8 @@ describe("Authentication: Search user with credentials", () => {
 	})
 })
 
-describe("General: Search user with ID", () => {
-	it("can search user", async () => {
+describe("Database: User read operations", () => {
+	it("can search existing user with ID", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
 		const id = user.id
@@ -72,13 +72,52 @@ describe("General: Search user with ID", () => {
 		expect(foundUser!.email).toStrictEqual(user.email)
 	})
 
-	it("cannot search user", async () => {
+	it("cannot search non-existing user with ID", async () => {
 		const manager = new UserManager()
 		const id = 0
 
 		const foundUser = await manager.findWithID(id)
 
 		expect(foundUser).toBeNull()
+	})
+
+	it("can list users with incomplete profile", async () => {
+		const manager = new UserManager()
+		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
+		// Create dummy complete profile
+		await (new UserFactory()).insertOne()
+
+		const { records, count } = await manager.list("incomplete", 0)
+
+		expect(count).toBe(1)
+		expect(records).toHaveLength(1)
+		expect(records[0].email).toStrictEqual(incompleteUserProfile.email)
+	})
+
+	it("can list users with complete profile", async () => {
+		const manager = new UserManager()
+		const completeUserProfile = await (new UserFactory()).insertOne()
+		// Create dummy incomplete profile
+		await (new UserFactory()).hasNoSignature().insertOne()
+
+		const { records, count } = await manager.list("complete", 0)
+
+		expect(count).toBe(1)
+		expect(records).toHaveLength(1)
+		expect(records[0].email).toStrictEqual(completeUserProfile.email)
+	})
+
+	it("can list all users", async () => {
+		const manager = new UserManager()
+		const completeUserProfile = await (new UserFactory()).insertOne()
+		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
+
+		const { records, count } = await manager.list("all", 0)
+
+		expect(count).toBe(2)
+		expect(records).toHaveLength(2)
+		expect(records[0].email).toStrictEqual(completeUserProfile.email)
+		expect(records[1].email).toStrictEqual(incompleteUserProfile.email)
 	})
 })
 
@@ -100,31 +139,6 @@ describe("General: Basic CRUD", () => {
 })
 
 describe("Extra: Custom Operations", () => {
-	it("can list unadmitted users", async () => {
-		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
-
-		const foundUsers = await manager.list("unadmitted")
-
-		expect(foundUsers).toHaveLength(1)
-		expect(foundUsers[0].email).toStrictEqual(user.email)
-	})
-
-	it.todo("can list admitted users")
-	it.todo("can list incomplete users")
-
-	it("can admit user", async () => {
-		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
-
-		const admittedUserCount = await manager.admit(user.id, true)
-
-		expect(admittedUserCount).toBe(1)
-		expect((await manager.findWithID(user.id))!.admittedAt).not.toBeNull()
-	})
-
-	it.todo("can reject user")
-
 	it("can verify user", async () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
