@@ -1,4 +1,4 @@
-import { Op } from "sequelize"
+import { Op, FindAndCountOptions } from "sequelize"
 
 import Role from "%/models/role"
 import User from "%/models/user"
@@ -32,29 +32,40 @@ export default class UserManager {
 		return await User.create({ ...details })
 	}
 
-	async list(criteria: Criteria|null): Promise<Array<User>> {
-		const options: { [key: string]: object } = {}
-
-		switch(criteria) {
-			case "admitted": { // Complete profile and admitted
-				// TODO
-				break
-			}
-			case "unadmitted": { // Complete profile but not admitted
-				options.emailVerifiedAt =  { [Op.not]: null }
-				options.signature = { [Op.not]: null }
-				options.admittedAt = { [Op.is]: null }
-				break
-			}
-			case "incomplete": { // Incomplete profile
-				// TODO
-				break
-			}
-			default: // All users
+	async list(criteria: Criteria|null, offset: number): Promise<{
+		records: User[],
+		count: number
+	}> {
+		const options: FindAndCountOptions<User> = {
+			offset
 		}
 
-		const users = await User.findAll({ where: options })
-		return users
+		switch(criteria) {
+			case "incomplete": { // Incomplete profile
+				// ?: Should password be included?
+				options.where = {
+					[Op.or]: {
+						emailVerifiedAt: { [Op.is]: null },
+						signature: { [Op.is]: null }
+					}
+				}
+				break
+			}
+			case "complete": { // Complete profile
+				options.where = {
+					emailVerifiedAt: { [Op.not]: null },
+					signature: { [Op.not]: null }
+				}
+				break
+			}
+			case "all":
+			default: { // All users
+				break
+			}
+		}
+
+		const { rows, count } = await User.findAndCountAll(options)
+		return { records: rows, count }
 	}
 
 	async admit(id: number, confirm: boolean): Promise<number> {
