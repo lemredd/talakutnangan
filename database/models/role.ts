@@ -8,7 +8,7 @@ import {
 	timestamps: true,
 	paranoid: true
 })
-export default class User extends Model {
+export default class Role extends Model {
 	@Column({
 		unique: true,
 		allowNull: false
