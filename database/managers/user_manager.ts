@@ -1,16 +1,19 @@
 import { Op } from "sequelize"
-import User from "%/models/user"
-import type { Criteria, RawUser } from "%/types"
 
+import Role from "%/models/role"
+import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
 import compare from "!/helpers/auth/compare"
+import Department from "%/models/department"
+import type { Criteria, RawUser } from "%/types"
 
 export default class UserManager {
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
 		const foundUser = await User.findOne({
 			where: {
 				email
-			}
+			},
+			include: [ Role, Department ]
 		})
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
