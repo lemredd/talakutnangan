@@ -1,25 +1,23 @@
-import { FindAndCountOptions, CreationAttributes } from "sequelize"
-import { Model, ModelStatic } from "sequelize-typescript"
+import {
+	Attributes,
+	FindOptions,
+	UpdateOptions,
+	DestroyOptions,
+	RestoreOptions,
+	CreationAttributes,
+	FindAndCountOptions
+} from "sequelize"
+import { Model, ModelCtor } from "sequelize-typescript"
 
-import type { List, Pipe, FindAndCountFunction, FindOneFunction, CreateFunction, UpdateFunction, DestroyFunction, RestoreFunction } from "%/types"
+import type { List, Pipe } from "%/types"
 
 export default abstract class Manager<T extends Model, U> {
 	abstract get listPipeline(): Pipe<FindAndCountOptions<T>>[]
 
-	abstract get findOne(): FindOneFunction<T>
-
-	abstract get findAndCountAll(): FindAndCountFunction<T>
-
-	abstract get create(): CreateFunction<T, U>
-
-	abstract get update(): UpdateFunction<T, U>
-
-	abstract get destroy(): DestroyFunction
-
-	abstract get restore(): RestoreFunction
+	abstract get model(): ModelCtor<T>
 
 	async findWithID(id: number): Promise<T|null> {
-		return await this.findOne({ where: { id } })
+		return await this.model.findOne(<FindOptions>{ where: { id } })
 	}
 
 	async list(query: object): List<T> {
@@ -27,18 +25,16 @@ export default abstract class Manager<T extends Model, U> {
 			return pipe(options, query)
 		}, {})
 
-		const { rows, count } = await this.findAndCountAll(options)
+		const { rows, count } = await this.model.findAndCountAll(options)
 		return { records: rows, count }
 	}
 
 	async createWithDetails(details: U & CreationAttributes<T>): Promise<T> {
-		return await this.create(details)
+		return await this.model.create(details)
 	}
 
-	async updateWithDetails(id: number, details: U & CreationAttributes<T>): Promise<number> {
-		const [ affectedCount ] = await this.update({
-			...details
-		}, {
+	async updateWithDetails(id: number, details: U & Attributes<T>): Promise<number> {
+		const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
 			where: { id }
 		})
 
@@ -46,13 +42,13 @@ export default abstract class Manager<T extends Model, U> {
 	}
 
 	async archiveWithID(id: number): Promise<number> {
-		return await this.destroy({
+		return await this.model.destroy(<DestroyOptions<T>>{
 			where: { id }
 		})
 	}
 
 	async restoreWithID(id: number): Promise<void> {
-		return await this.restore({
+		return await this.model.restore(<RestoreOptions<T>>{
 			where: { id }
 		})
 	}
