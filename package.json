@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.3.0-dev",
+	"version": "0.4.0-dev",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
@@ -12,31 +12,36 @@
 	"types": "module",
 	"scripts": {
 		"dev": "nodemon --watch server --ext ts --ignore \"*.spec.ts\" --exec \"npm run server\"",
-		"list": "ts-node ./server/cli/list_routes.ts",
+		"list:routes": "ts-node ./server/cli/list_routes.ts",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
 		"server": "ts-node ./server",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
+		"migrate:initial": "sequelize-cli db:create && npm run migrate:up",
 		"migrate:up": "sequelize-cli db:migrate",
 		"migrate:down": "sequelize-cli db:migrate:undo",
+		"migrate:redo:all": "sequelize-cli db:drop && sequelize-cli db:create && npm run migrate:up",
 		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
 		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
 		"test:unit:front:w": "npm run test:unit:front -- --watch",
 		"test:unit:back:w": "npm run test:unit:back -- --watch",
-		"test:intg:back:w": "nodemon --watch server --exec \"npm run build && npm run test:intg:back -- --watch\""
+		"test:intg:back:w": "npm run test:intg:back -- --watch"
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
 		"@faker-js/faker": "^6.3.1",
 		"@jest-mock/express": "^1.4.5",
 		"@types/bcryptjs": "^2.4.2",
+		"@types/busboy": "^1.5.0",
 		"@types/compression": "^1.7.2",
 		"@types/express": "^4.17.13",
+		"@types/express-session": "^1.17.4",
 		"@types/jest": "^27.5.1",
 		"@types/node": "^17.0.36",
 		"@types/nodemailer": "^6.4.4",
+		"@types/passport-local": "^1.0.34",
 		"@types/showdown": "^2.0.0",
 		"@types/string-placeholder": "^1.0.1",
 		"@types/supertest": "^2.0.12",
@@ -46,6 +51,7 @@
 		"babel-jest": "^26",
 		"chalk": "^4",
 		"changelogen": "^0.0.6",
+		"consola": "^2.15.3",
 		"data-uri-to-buffer": "^4.0.0",
 		"jest": "^26.6.3",
 		"mysql2": "^2.3.3",
@@ -63,12 +69,14 @@
 		"@vue/server-renderer": "^3.2.31",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.0",
+		"busboy": "^1.6.0",
 		"compression": "^1.7.4",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.0.1",
 		"express": "^4.17.3",
 		"express-session": "^1.17.3",
 		"http-status-codes": "^2.2.0",
+		"material-icons": "^1.11.1",
 		"node-input-validator": "^4.5.0",
 		"nodemailer": "^6.7.5",
 		"passport": "^0.6.0",
@@ -103,7 +111,15 @@
 			"email": "19201.magtoto.angelo.l@gmail.com"
 		},
 		{
-			"name": "Jarlem Red De Peralta",
+			"name": "AteKitty07",
+			"email": "kiritogregorio@gmail.com"
+		},
+		{
+			"name": "IKnightSKyI",
+			"email": "johnjeromepertez@yahoo.com"
+		},
+		{
+			"name": "Jarlem Red de Peralta",
 			"email": "lmoa.jhdp@gmail.com"
 		},
 		{

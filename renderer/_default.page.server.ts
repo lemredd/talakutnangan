@@ -7,7 +7,7 @@ import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'routeParams']
+export const passToClient = ['pageProps', 'urlPathname', 'routeParams', 'state', '_', 'render']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
 	const app = createApp(pageContext)
@@ -28,8 +28,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<script defer src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script>
 				<title>${title}</title>
 			</head>
-			<body>
-				<div id="app">${dangerouslySkipEscape(appHtml)}</div>
+			<body class="dark">
+				<div id="app" class="dark:text-light-50 dark:bg-dark-700">${dangerouslySkipEscape(appHtml)}</div>
 			</body>
 		</html>`
 

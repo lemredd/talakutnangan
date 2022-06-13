@@ -1,31 +1,34 @@
 import { UserKind } from "%/types"
 import JSONBodyParser from "!/middlewares/body_parser/json"
-import GuestOnlyPolicy from "!/middlewares/authentication/guest_only_policy"
-import KnownOnlyPolicy from "!/middlewares/authentication/known_only_policy"
+import MultipartParser from "!/middlewares/body_parser/multipart"
+import KindBasedPolicy from "!/middlewares/authentication/kind-based_policy"
 import EmailVerificationSender from "!/middlewares/authentication/email_verification_sender"
+import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 export default class CommonMiddlewareList {
-	static guestOnlyPolicy: GuestOnlyPolicy
-	static knownOnlyPolicy: KnownOnlyPolicy
-	static unreachableEmployeeOnlyPolicy: KnownOnlyPolicy
-	static reachableEmployeeOnlyPolicy: KnownOnlyPolicy
-	static studentOnlyPolicy: KnownOnlyPolicy
+	static guestOnlyPolicy: AuthenticationBasedPolicy
+	static knownOnlyPolicy: AuthenticationBasedPolicy
+	static unreachableEmployeeOnlyPolicy: KindBasedPolicy
+	static reachableEmployeeOnlyPolicy: KindBasedPolicy
+	static studentOnlyPolicy: KindBasedPolicy
 	static JSONBody: JSONBodyParser
+	static multipart: MultipartParser
 	static emailVerificationSender: EmailVerificationSender
 
 	static initialize() {
 		if (CommonMiddlewareList.guestOnlyPolicy === undefined) {
-			CommonMiddlewareList.guestOnlyPolicy = new GuestOnlyPolicy()
-			CommonMiddlewareList.knownOnlyPolicy = new KnownOnlyPolicy(null)
-			CommonMiddlewareList.unreachableEmployeeOnlyPolicy= new KnownOnlyPolicy(
+			CommonMiddlewareList.guestOnlyPolicy = new AuthenticationBasedPolicy(false)
+			CommonMiddlewareList.knownOnlyPolicy = new AuthenticationBasedPolicy(true)
+			CommonMiddlewareList.unreachableEmployeeOnlyPolicy= new KindBasedPolicy(
 				UserKind.UnreachableEmployee
 			)
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy= new KnownOnlyPolicy(
+			CommonMiddlewareList.reachableEmployeeOnlyPolicy= new KindBasedPolicy(
 				UserKind.ReachableEmployee
 			)
-			CommonMiddlewareList.studentOnlyPolicy= new KnownOnlyPolicy(UserKind.Student)
+			CommonMiddlewareList.studentOnlyPolicy= new KindBasedPolicy(UserKind.Student)
 
 			CommonMiddlewareList.JSONBody = new JSONBodyParser()
+			CommonMiddlewareList.multipart = new MultipartParser()
 			CommonMiddlewareList.emailVerificationSender = new EmailVerificationSender()
 		}
 	}

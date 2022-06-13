@@ -24,4 +24,15 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export type Criteria = "incomplete" | "unadmitted" | "admitted"
+export const rawCriteria = [ "incomplete", "unadmitted", "admitted" ]
+
+export type Criteria = typeof rawCriteria[number]
+
+/**
+ * Used to receive raw validated department details.
+ */
+export interface RawDepartment {
+	fullName: string,
+	acronym: string,
+	mayAdmit: boolean
+}

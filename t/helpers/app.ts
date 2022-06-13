@@ -3,16 +3,16 @@ import type { Express } from "express"
 
 import Router from "!/bases/router"
 import UserFactory from "~/factories/user"
-import Controller from "!/bases/controller"
-import LogInController from "!/app/routes/api/user/log_in.post"
 import createAppHandler from "!/app/create_handler"
+import Controller from "!/bases/controller-likes/controller"
+import LogInController from "!/app/routes/api/user/log_in.post"
 
 export default class {
 	static #app: Express
+	// @ts-ignore
 	static #request
 
 	static async create(
-		prefix: string,
 		controller: Controller,
 		needsAuthentication: boolean = true
 	) {

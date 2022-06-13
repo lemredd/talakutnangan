@@ -5,23 +5,27 @@ import { Environment } from "!/types/independent"
 import getEnvironment from "!/helpers/get_environment"
 import createDataSource from "%/data_source/create_source"
 
+import User from "%/models/user"
+import Department from "%/models/department"
+
 export default class {
 	static #dataSource: Sequelize
 
 	static async create(): Promise<void> {
 		if (getEnvironment() === Environment.UnitTest) {
-			this.#dataSource = createDataSource("unit_test")
+			this.#dataSource = await createDataSource("unit_test")
 		} else {
-			this.#dataSource = createDataSource(process.env.DATABASE_TYPE as SourceType)
+			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
 		}
 
 		await this.#dataSource.sync({ force: true })
 	}
 
 	static async clear(): Promise<void> {
-		this.#dataSource.truncate({
-			force: true
-		})
+		// See: https://github.com/sequelize/sequelize/issues/11289
+		// See: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/098668baad17230742eaa9da5a10c2e338e7b71d/types/sequelize/index.d.ts#L3564
+		await User.truncate({ force: true, cascade: true })
+		await Department.truncate({ force: true, cascade: true })
 	}
 
 	static async destroy(): Promise<void> {

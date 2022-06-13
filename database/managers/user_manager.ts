@@ -25,7 +25,7 @@ export default class UserManager {
 	}
 
 	async create(details: RawUser): Promise<User> {
-		details.password = await hash(details.password)
+		details.password = await hash(details.password!)
 		return await User.create({ ...details })
 	}
 
@@ -83,5 +83,25 @@ export default class UserManager {
 		})
 
 		return affectedCount
+	}
+
+	/**
+	 * Resets password and returns true if it has been successfully changed.
+	 * @param id ID of the user to reset the password.
+	 * @param rawPassword New password to put in the database.
+	 */
+	async resetPassword(id: number, rawPassword: string): Promise<boolean> {
+		// TODO: use the student number or random password
+		const hashedPassword = await hash(rawPassword)
+
+		const [ affectedCount ] = await User.update({
+			password: hashedPassword
+		}, {
+			where: {
+				id
+			}
+		})
+
+		return affectedCount > 0
 	}
 }
