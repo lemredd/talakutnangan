@@ -16,6 +16,7 @@
             <div class="post" v-for="post in secludedPosts" v-bind:key="post.id">
                 <div class="container">
                     <div class="left">
+                        <div><img src="../images/emptyUser.png"></div>
                         <h2 class = "title">
                         {{ post.user }}
                         </h2>
