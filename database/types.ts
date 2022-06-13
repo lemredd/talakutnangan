@@ -59,25 +59,3 @@ export type List<T> = Promise<{
 }>
 
 export type Pipe<T> = (currentState: T, constraints: object) => T
-
-import type { FindAndCountOptions, FindOptions, DestroyOptions, RestoreOptions, CreationAttributes, Model, UpdateOptions } from "sequelize"
-
-export type FindOneFunction<T> = (options: FindOptions) => Promise<T|null>
-
-export type FindAndCountFunction<T> = (options: FindAndCountOptions) => Promise<{
-	rows: T[],
-	count: number
-}>
-
-export type CreateFunction<T extends Model, U> = (
-	values: U & CreationAttributes<T>
-) => Promise<T>
-
-export type UpdateFunction<T extends Model, U> = (
-	values: U & CreationAttributes<T>,
-	options: UpdateOptions<any>
-) => Promise<[ number, T[] ]>
-
-export type DestroyFunction = (options: DestroyOptions<any>) => Promise<number>
-
-export type RestoreFunction = (options: RestoreOptions<any>) => Promise<void>
