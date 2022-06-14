@@ -87,7 +87,7 @@ describe("Database: User read operations", () => {
 		// Create dummy complete profile
 		await (new UserFactory()).insertOne()
 
-		const { records, count } = await manager.list("incomplete", 0)
+		const { records, count } = await manager.list({ criteria: "incomplete", page: 0 })
 
 		expect(count).toBe(1)
 		expect(records).toHaveLength(1)
@@ -100,7 +100,7 @@ describe("Database: User read operations", () => {
 		// Create dummy incomplete profile
 		await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list("complete", 0)
+		const { records, count } = await manager.list({ criteria: "complete", page: 0 })
 
 		expect(count).toBe(1)
 		expect(records).toHaveLength(1)
@@ -112,7 +112,7 @@ describe("Database: User read operations", () => {
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list("all", 0)
+		const { records, count } = await manager.list({ criteria: "all", page: 0 })
 
 		expect(count).toBe(2)
 		expect(records).toHaveLength(2)
