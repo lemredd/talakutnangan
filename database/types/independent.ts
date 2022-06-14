@@ -63,4 +63,4 @@ export type List<T> = Promise<{
 	count: number
 }>
 
-export type Pipe<T extends object, U extends object> = (currentState: T, constraints: U) => T
+export type Pipe<T, U> = (currentState: T, constraints: U) => T
