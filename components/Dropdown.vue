@@ -11,8 +11,6 @@
 	inset: 0;
 }
 .dropdown-container {
-	position: absolute;
-
 	border-top: 1px solid #888;
 	box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
 }

@@ -26,6 +26,11 @@
 	display: flex;
 	align-items: center;
 
+	.dropdown-container {
+		padding-top: 1em;
+		position: fixed;
+		inset: 56px 0 0;
+	}
 
 	.role-links {
 		display: flex;
