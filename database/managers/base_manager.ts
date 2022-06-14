@@ -11,6 +11,9 @@ import type {
 	FindAndCountOptions
 } from "%/types/dependent"
 
+/**
+ * A base class for model managers which contains methods for CRUD operations.
+ */
 export default abstract class Manager<T extends Model, U> {
 	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
 
