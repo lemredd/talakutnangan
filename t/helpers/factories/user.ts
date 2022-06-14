@@ -2,7 +2,7 @@ import dataURIToBuffer from "data-uri-to-buffer/src/index"
 import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
-import { UserKind } from "%/types"
+import { UserKind } from "%/types/independent"
 
 import User from "%/models/user"
 import hash from "!/helpers/auth/hash"

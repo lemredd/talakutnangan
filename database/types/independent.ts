@@ -1,3 +1,8 @@
+/**
+ * @module DatabaseIndependentTypes
+ * @description This module exports types that are independent from any third-party packages.
+ */
+
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ]
 
 /**
@@ -24,7 +29,7 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export const rawCriteria = [ "incomplete", "unadmitted", "admitted" ]
+export const rawCriteria = [ "incomplete", "complete", "all" ]
 
 export type Criteria = typeof rawCriteria[number]
 
@@ -36,3 +41,26 @@ export interface RawDepartment {
 	acronym: string,
 	mayAdmit: boolean
 }
+
+/**
+ * Used to receive raw validated role details.
+ */
+export interface RawRole {
+	name: string,
+	departmentFlags: number,
+	roleFlags: number,
+	semesterFlags: number,
+	tagFlags: number,
+	postFlags: number,
+	commentFlags: number,
+	profanityFlags: number,
+	userFlags: number,
+	auditTrailFlags: number
+}
+
+export type List<T> = Promise<{
+	records: T[],
+	count: number
+}>
+
+export type Pipe<T> = (currentState: T, constraints: object) => T

@@ -1,4 +1,4 @@
-import { rawCriteria, Criteria } from "%/types"
+import { rawCriteria, Criteria } from "%/types/independent"
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"

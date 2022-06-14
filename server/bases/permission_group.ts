@@ -1,4 +1,4 @@
-import type { PermissionMap } from "!/types/independent"
+import type { PermissionMap, PermissionInfo } from "!/types/independent"
 
 /**
  * Base class for permission groups.
@@ -18,26 +18,32 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	abstract get permissions(): PermissionMap<U>
 
 	/**
-	 * Returns true if role is permitted. Otherwise, false.
+	 * Returns true if all stated permissions are allowed for the role. Otherwise, false.
 	 *
 	 * @param role An object which contains flags named under a permission group name.
-	 * @param permissionName Name of the permission to check if it is allowed in the role.
+	 * @param permissionNames Name of the permission(s) to check if they are allowed in the role.
 	 */
-	mayAllow(role: T, permissionName: U): boolean {
-		const mask = this.generateMask(permissionName)
+	mayAllow(role: T, ...permissionNames: U[]): boolean {
+		const mask = this.generateMask(...permissionNames)
 		return (role[this.name] & mask) === mask
 	}
 
 	/**
-	 * Generates mask to the permission.
+	 * Generates mask of the permission(s).
 	 *
-	 * This mask includes the flags of permission dependencies.
+	 * The mask includes the flags of permission dependencies.
 	 *
-	 * @param name Name of the permission to generate its mask
+	 * @param names Name of the permission to generate its mask
 	 */
-	generateMask(name: U): number {
+	generateMask(...names: U[]): number {
 		const permissions = this.permissions
-		const info = permissions.get(name) || { flag: 0, permissionDependencies: [] }
-		return info.flag | info.permissionDependencies.reduce((a, b) => a | this.generateMask(b), 0);
+		return names.reduce((combinedMask, name) => {
+			const info: PermissionInfo<U> = permissions.get(name)
+				|| { flag: 0, permissionDependencies: [] }
+			return combinedMask
+				| info.permissionDependencies.reduce((dependentMask, dependentName) => {
+					return dependentMask | this.generateMask(dependentName)
+				}, info.flag)
+		}, 0)
 	}
 }

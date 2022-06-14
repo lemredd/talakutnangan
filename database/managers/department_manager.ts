@@ -1,5 +1,5 @@
 import { Op } from "sequelize"
-import { RawDepartment } from "%/types"
+import { RawDepartment } from "%/types/independent"
 import Department from "%/models/department"
 
 export default class DepartmentManager {
