@@ -29,7 +29,7 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ]
+export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 
 export type Criteria = typeof rawCriteria[number]
 
