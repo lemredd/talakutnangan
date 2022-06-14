@@ -1,5 +1,5 @@
 <template>
-	<div class="layout">
+	<div class="layout" ref="layout">
 		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { provide } from "vue"
+import { onMounted, provide, ref } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import { usePageContext } from "#/usePageContext"
 
@@ -32,7 +32,17 @@ const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
 const isRoleGuest = role === "guest"
 
+// beware of smelly
+const layout = ref<HTMLElement | null>(null)
+const body = ref<HTMLBodyElement | null>(null)
+onMounted(function() {
+	if (layout.value) {
+		body.value = layout.value.parentElement?.parentElement as HTMLBodyElement
+	}
+})
+
 provide("pageContext", pageContext)
+provide("body", body)
 </script>
 
 <style>
