@@ -1,5 +1,4 @@
-import type { FindOptions } from "sequelize"
-import type { Model } from "sequelize-typescript"
+import type { FindOptions, Model } from "%/types/dependent"
 
 import Log from "!/helpers/log"
 
