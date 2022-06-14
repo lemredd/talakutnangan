@@ -3,6 +3,9 @@ import type { Criteria } from "%/types/independent"
 import Log from "!/helpers/log"
 import Condition from "%/managers/helpers/condition"
 
+/**
+ * Sift any model which has a signature or verified e-mail based on criteria.
+ */
 export default function<T extends { where: object, [key: string]: any }>(
 	currentState: T,
 	constraints: { criteria?: Criteria | undefined, [key: string]: any }
