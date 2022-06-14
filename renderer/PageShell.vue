@@ -66,6 +66,8 @@ a {
 	flex-direction: column;
 
 	.navigation {
+		position: fixed;
+		left: 0; right: 0;
 		padding: 0 .75em;
 		flex-shrink: 0;
 		line-height: 1.8em;
@@ -90,6 +92,7 @@ a {
 	}
 
 	.content {
+		margin-top: 56px;
 		padding: 20px;
 		min-height: calc(100vh - 56px);
 
