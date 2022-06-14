@@ -154,6 +154,7 @@ import {
     getSecludedPost
 } from "./post";
 import PostMenu from "@/Dropdown.vue";
+import type { Post } from "./data";
 
 
 var title = ref("");
@@ -169,7 +170,7 @@ function sumbitPostDetails()
     const descriptionText = description.value;
     createPost(1, dummyUserDemo[0].userName, titleText, descriptionText, [], []);
     //Seclusion
-    posts.value.forEach(function(post: any, i: any) {
+    posts.value.forEach(function(post: Post, i: number) {
 	    getSecludedPost(post, secludedPosts.value, i)
     });
     //Finishing
@@ -189,18 +190,18 @@ function togglePostMenu()
     isPostMenuShown.value=!isPostMenuShown.value;
 }
 
-function editPost(post: any)
+function editPost(post: Post)
 {
     console.log(post);
     
 }
 
-function deletePost(post: any)
+function deletePost(post: Post)
 {
     
 }
 
-function reportPost(post: any)
+function reportPost(post: Post)
 {
 
 }

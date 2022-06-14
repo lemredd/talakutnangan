@@ -2,6 +2,7 @@ import { ref, Ref } from "vue";
 import { getPosts } from "./data";
 import { getSecludedPosts } from "./data";
 import { badWordExist } from "./profanityFilter";
+import type { Post } from "./data";
 
 export var posts = ref(getPosts());
 export var secludedPosts = ref(getSecludedPosts());
@@ -24,30 +25,29 @@ export var dummyUserDemo =
 export function createPost(id: number, user: string, title: string, desc: string, voters:[], downVoters: [])
 {
     var postCreate = 
-    [
+    {
+        id,
+        user,
+        title,
+        desc,
+        badWordExist: function()
         {
-            id,
-            user,
-            title,
-            desc,
-            badWordExist: function()
-            {
-                return badWordExist(title)||badWordExist(desc);
-            },
-            voters,
-            downVoters,
-            voteCount: function()
-            {
-                return voters.length;
-            },
-        }
-    ];
-    posts.value.push(postCreate[0]);
+            return badWordExist(title)||badWordExist(desc);
+        },
+        voters,
+        downVoters,
+        voteCount: function()
+        {
+            return voters.length;
+        },
+    };
+    
+    posts.value.push(postCreate);
 }
 //Create post end
 
 //Post seclusion start
-export function secludePostDiv(post: any)
+export function secludePostDiv(post: Post)
 {
     if(secludedPosts.value.includes(post))
     {
@@ -61,17 +61,17 @@ export function secludePostDiv(post: any)
 //Post seclusion end
 
 //Post seclusion push start
-export function getSecludedPost(post: any, secludedPost: any, i: any)
+export function getSecludedPost(post: Post, secludedPosts: Post[], i: number)
 {
     if(post.badWordExist()==true)
     {
-        if(secludedPost[i]===post)
+        if(secludedPosts[i]===post)
         {
 			console.log("This post has already been secluded");
         }
         else
         {
-            secludedPost.push(post);
+            secludedPosts.push(post);
             alert("Please correct your post!")
         }
     }
@@ -83,47 +83,48 @@ export function getSecludedPost(post: any, secludedPost: any, i: any)
 //Post seclusion push end
 
 //Upvote start
-export function totalVotes(post: any)
+export function totalVotes(post: Post)
 {
    return post.voters.length-post.downVoters.length;
 }
 
-export function voteCountUpdate(post: any)
+export function voteCountUpdate(post: Post)
 {
     return post.voteCount();
 }
 
-export function downVoteCountUpdate(post: any)
+export function downVoteCountUpdate(post: Post)
 {
     return post.downVoters.length;
 }
 
-export function determineUserVoted(post: any) {
+export function determineUserVoted(post: Post) {
 	if (post.voters.includes(dummyUserDemo[0].userName)) return true;
 }
 
-function removeBothVotes(post: any)
+function removeBothVotes(post: Post)
 {
-    post.voters=post.voters.filter(function(voter: any){
+    post.voters=post.voters.filter(function(voter: string){
         
         return voter!=dummyUserDemo[0].userName;
     });
-    post.downVoters=post.downVoters.filter(function(downVote: any) {
+    post.downVoters=post.downVoters.filter(function(downVote: string) {
         
         return downVote!=dummyUserDemo[0].userName;
     });
 }
 
-export function upVote(e: any, post: any)
+export function upVote(e: Event, post: Post)
 {
+    const targetHTML = e.target as HTMLInputElement;
     removeBothVotes(post)
-    if(e.target.checked)
+    if(targetHTML.checked)
     {
         post.voters.push(dummyUserDemo[0].userName);
     }
     else
     {
-        post.voters=post.voters.filter(function(voter: any)
+        post.voters=post.voters.filter(function(voter: string)
         {
             
             return voter!=dummyUserDemo[0].userName;
@@ -137,21 +138,21 @@ export function upVote(e: any, post: any)
 //Upvote end
 
 //Downvote start
-export function determineUserDownVoted(post: any) {
+export function determineUserDownVoted(post: Post) {
 	if (post.downVoters.includes(dummyUserDemo[0].userName)) return true;
 }
 
-export function downVote(e: any, post: any)
+export function downVote(e: Event, post: Post)
 {
-
+    const targetHTML = e.target as HTMLInputElement;
     removeBothVotes(post)
-    if(e.target.checked)
+    if(targetHTML.checked)
     {
         post.downVoters.push(dummyUserDemo[0].userName);
     }
     else
     {
-        post.downVoters=post.downVoters.filter(function(downVote: any)
+        post.downVoters=post.downVoters.filter(function(downVote: string)
         {
             
             return downVote!=dummyUserDemo[0].userName;
