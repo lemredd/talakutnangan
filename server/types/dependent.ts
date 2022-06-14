@@ -12,6 +12,21 @@ import type {
 } from "express"
 import type { Session } from "express-session"
 import User from "%/models/user"
+import type { UserProfile } from "%/types/independent"
+
+export interface Payload {
+	[key: string]:
+		| string
+		| number
+		| boolean
+		| null
+		| Payload[]
+		| Payload
+}
+
+export interface ClientPayload extends Payload {
+	user: UserProfile
+}
 
 // @ts-ignore
 export interface Request extends BaseRequest {
@@ -24,6 +39,9 @@ export interface Request extends BaseRequest {
 	user: User|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+
+	// Added to pass data from server to client
+	clientPayload: ClientPayload
 }
 
 export interface AuthenticatedRequest extends Request {
