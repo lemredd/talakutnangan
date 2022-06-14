@@ -84,4 +84,34 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(mask).toBe(0x3)
 	})
+
+	type GroupNameC = { "groupC": number }
+	type AvailablePermissionsC = "e" | "f" | "g"
+
+	class GroupC extends PermissionGroup<GroupNameC, AvailablePermissionsC> {
+		get name(): string { return "groupC" }
+		get permissions(): PermissionMap<AvailablePermissionsC> {
+			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
+				[ "e", { flag: 0x1, permissionDependencies: [] } ],
+				[ "f", { flag: 0x2, permissionDependencies: [] } ],
+				[ "g", { flag: 0x4, permissionDependencies: [] } ]
+			])
+		}
+	}
+
+	it("can allow using multiple independent permissions", async () => {
+		const permissionGroup = new GroupC()
+
+		const isAllowed = permissionGroup.mayAllow({ "groupC": 0x7 }, "e", "f", "g")
+
+		expect(isAllowed).toBeTruthy()
+	})
+
+	it("can generate mask of multiple independent permission", async () => {
+		const permissionGroup = new GroupC()
+
+		const mask = permissionGroup.generateMask("e", "f", "g")
+
+		expect(mask).toBe(0x7)
+	})
 })

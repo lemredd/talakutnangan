@@ -3,7 +3,7 @@ import "dotenv/config"
 
 import { Server as HTTPServer } from "node:http"
 
-import { SourceType } from "%/types"
+import { SourceType } from "%/types/independent"
 
 import Log from "!/helpers/log"
 import createWSServer from "!/ws/create_server"
