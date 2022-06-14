@@ -17,6 +17,7 @@
 				<slot />
 			</div>
 		</div>
+		<Footer></Footer>
 	</div>
 </template>
 
@@ -25,7 +26,7 @@ import { provide } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import Notifications from "@/PageShell/Notifications.vue"
 import { usePageContext } from "#/usePageContext"
-
+import Footer from "@/Footer.vue"
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
