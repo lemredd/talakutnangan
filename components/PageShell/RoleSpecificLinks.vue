@@ -194,6 +194,4 @@ function toggleRoleLinks() {
 	// smelly!
 	body.value.classList.toggle("unscrollable")
 }
-
-}
 </script>
