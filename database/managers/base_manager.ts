@@ -1,4 +1,7 @@
+import type { List, Pipe } from "%/types/independent"
 import type {
+	Model,
+	ModelCtor,
 	Attributes,
 	FindOptions,
 	UpdateOptions,
@@ -6,18 +9,15 @@ import type {
 	RestoreOptions,
 	CreationAttributes,
 	FindAndCountOptions
-} from "sequelize"
-import type { Model, ModelCtor } from "sequelize-typescript"
-
-import type { List, Pipe } from "%/types/independent"
+} from "%/types/dependent"
 
 export default abstract class Manager<T extends Model, U> {
-	abstract get listPipeline(): Pipe<FindAndCountOptions<T>>[]
+	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
 
 	abstract get model(): ModelCtor<T>
 
 	async findWithID(id: number): Promise<T|null> {
-		return await this.model.findOne(<FindOptions>{ where: { id } })
+		return await this.model.findOne(<FindOptions<T>>{ where: { id } })
 	}
 
 	async list(query: object): List<T> {
