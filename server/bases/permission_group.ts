@@ -1,4 +1,4 @@
-import type { PermissionMap } from "!/types/independent"
+import type { PermissionMap, PermissionInfo } from "!/types/independent"
 
 /**
  * Base class for permission groups.
@@ -38,11 +38,12 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	generateMask(...names: U[]): number {
 		const permissions = this.permissions
 		return names.reduce((combinedMask, name) => {
-			const info = permissions.get(name) || { flag: 0, permissionDependencies: [] }
-			return info.flag
+			const info: PermissionInfo<U> = permissions.get(name)
+				|| { flag: 0, permissionDependencies: [] }
+			return combinedMask
 				| info.permissionDependencies.reduce((dependentMask, dependentName) => {
 					return dependentMask | this.generateMask(dependentName)
-				}, 0)
+				}, info.flag)
 		}, 0)
 	}
 }
