@@ -7,7 +7,7 @@
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
-				<Notifications v-if="!isRoleGuest"></Notifications>
+				<!-- <Notifications v-if="!isRoleGuest"></Notifications> -->
 				<RoleSpecificLinks :role="role"/>
 			</div>
 
@@ -23,7 +23,6 @@
 <script lang="ts" setup>
 import { provide } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
-import Notifications from "@/PageShell/Notifications.vue"
 import { usePageContext } from "#/usePageContext"
 
 const pageContext = usePageContext()
@@ -71,6 +70,7 @@ a {
 			padding: .25em;
 			display: flex;
 			align-items: center;
+			width: max-content;
 
 			img {
 				width: 48px;
@@ -81,8 +81,7 @@ a {
 
 	.content {
 		padding: 20px;
-		padding-bottom: 50px;
-		min-height: 100vh;
+		min-height: calc(100vh - 56px);
 
 		&.login-content {
 			padding: 0;
