@@ -37,6 +37,11 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		}
 	}
 
+	async create(details: RawUser): Promise<User> {
+		details.password = await hash(details.password!)
+		return await super.create({ ...details })
+	}
+
 	async verify(email: string): Promise<number> {
 		const [ affectedCount ] = await User.update({
 			emailVerifiedAt: new Date()
