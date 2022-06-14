@@ -3,7 +3,7 @@
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<div v-show="areRoleLinksShown" class="role-links">
-			<div class="overlay bg-dark-700 bg-opacity-60" @click="toggleRoleLinks"></div>
+			<div class="overlay bg-dark-700 opacity-30" @click="toggleRoleLinks"></div>
 			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 				<span class="material-icons">
 					{{ link.icon }}
@@ -23,6 +23,8 @@
 	height: 100%;
 	display: flex;
 	align-items: center;
+
+
 	.role-links {
 		display: flex;
 		flex-direction: column;
@@ -31,6 +33,7 @@
 		position: fixed;
 		width: 100%;
 		top: 72px; left: 0;
+
 		.overlay {
 			position: absolute;
 			width: 100%; height: 100vh;
@@ -92,6 +95,11 @@ const linksSpecifiers = [
 		role: "student_or_employee",
 		links: [
 			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
+			{
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
@@ -111,6 +119,11 @@ const linksSpecifiers = [
 	{
 		role: "user_manager",
 		links: [
+			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
 			{
 				name: "Manage Users",
 				path: "/manage",
@@ -136,6 +149,11 @@ const linksSpecifiers = [
 	{
 		role: "admin",
 		links: [
+			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
 			{
 				name: "Manage Users",
 				path: "/manage",

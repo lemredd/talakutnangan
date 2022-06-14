@@ -20,10 +20,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 
 		switch (specifiedRole) {
 			case "student_or_employee":
-				expect(linkHref).toBe("/consultations")
+				expect(linkHref).toBe("/notifications")
 				break
 			case "user_manager":
-				expect(linkHref).toBe("/consultations")
+				expect(linkHref).toBe("/notifications")
 				break
 			case "admin":
 				expect(linkHref).toBe("/manage")
