@@ -67,8 +67,9 @@ body.unscrollable {
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
+import RoleLinksList from "@/Dropdown.vue"
 
 // Props
 type Props = {
@@ -185,9 +186,14 @@ const linksSpecifiers = [
 const determineRoleLinks = computed(function()  {
 	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
-
+const body = inject("body") as Ref<HTMLBodyElement>
 
 function toggleRoleLinks() {
 	areRoleLinksShown.value = !areRoleLinksShown.value
+
+	// smelly!
+	body.value.classList.toggle("unscrollable")
+}
+
 }
 </script>
