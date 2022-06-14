@@ -1,4 +1,4 @@
-import type { UserKind } from "%/types"
+import type { UserKind } from "%/types/independent"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"

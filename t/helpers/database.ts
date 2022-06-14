@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript"
 
-import { SourceType } from "%/types"
+import { SourceType } from "%/types/independent"
 import { Environment } from "!/types/independent"
 import getEnvironment from "!/helpers/get_environment"
 import createDataSource from "%/data_source/create_source"

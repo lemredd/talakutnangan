@@ -1,3 +1,8 @@
+/**
+ * @module DatabaseIndependentTypes
+ * @description This module exports types that are independent from any third-party packages.
+ */
+
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ]
 
 /**

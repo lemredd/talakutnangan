@@ -5,7 +5,7 @@ import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
 import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
-import type { Criteria, RawUser } from "%/types"
+import type { Criteria, RawUser } from "%/types/independent"
 
 export default class UserManager {
 	async findWithCredentials(email: string, password: string): Promise<User|null> {

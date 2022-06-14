@@ -9,7 +9,7 @@ import type {
 } from "sequelize"
 import type { Model, ModelCtor } from "sequelize-typescript"
 
-import type { List, Pipe } from "%/types"
+import type { List, Pipe } from "%/types/independent"
 
 export default abstract class Manager<T extends Model, U> {
 	abstract get listPipeline(): Pipe<FindAndCountOptions<T>>[]

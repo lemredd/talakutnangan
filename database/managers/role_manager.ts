@@ -1,5 +1,5 @@
 import { Op } from "sequelize"
-import { RawRole } from "%/types"
+import { RawRole } from "%/types/independent"
 import Role from "%/models/role"
 
 export default class RoleManager {
