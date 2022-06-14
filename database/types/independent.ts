@@ -64,3 +64,23 @@ export type List<T> = Promise<{
 }>
 
 export type Pipe<T> = (currentState: T, constraints: object) => T
+
+/**
+ * Used as part of user profile data to be returned to client.
+ */
+ export interface Role extends RawRole {}
+
+ /**
+  * Used to return user profile data to client.
+  *
+  * Signature should be a URL to signature image.
+  */
+ export interface UserProfile {
+	 name: string,
+	 email: string,
+	 department: string,
+	 roles: Role[],
+	 kind: UserKind,
+	 emailVerifiedAt: string|null,
+	 signature: string|null
+ }
