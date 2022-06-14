@@ -77,3 +77,10 @@ import type Middleware from "!/bases/middleware"
  * Used to indicate which middlewares to use in a route.
  */
 export type OptionalMiddleware = Middleware | null
+
+import type { UserProfile, Serializable } from "%/types/independent"
+
+export interface ClientPayload extends Serializable {
+	// Added to pass data from server to client
+	userProfile: UserProfile
+}
