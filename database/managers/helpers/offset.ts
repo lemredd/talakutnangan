@@ -1,12 +1,15 @@
+import type { FindOptions } from "sequelize"
+import type { Model } from "sequelize-typescript"
+
 import Log from "!/helpers/log"
 
 /**
  * Skips any number of model to retrieve from database.
  */
-export default function<T extends { offset: number }>(
-	currentState: T,
+export default function<T extends Model>(
+	currentState: FindOptions<T>,
 	constraints: { page?: number, [key: string]: any }
-): T {
+): FindOptions<T> {
 	const newState = { ...currentState }
 
 	if (constraints.page !== undefined) {
