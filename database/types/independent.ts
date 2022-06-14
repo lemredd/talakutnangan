@@ -63,4 +63,9 @@ export type List<T> = Promise<{
 	count: number
 }>
 
+export type CommonConstraints = {
+	page?: number,
+	[key: string]: any
+}
+
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
