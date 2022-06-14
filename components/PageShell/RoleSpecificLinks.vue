@@ -20,7 +20,12 @@
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+body.unscrollable {
+	// smelly
+	overflow-y: hidden;
+}
+
 .links {
 	height: 100%;
 	display: flex;
