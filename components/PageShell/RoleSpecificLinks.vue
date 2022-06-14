@@ -35,11 +35,9 @@
 	.role-links {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		position: fixed;
+		justify-content: space-between;
 		width: 100%;
-		top: 72px; left: 0;
+		height: 100%;
 
 		.overlay {
 			position: absolute;
