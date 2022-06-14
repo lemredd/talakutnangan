@@ -2,19 +2,21 @@
 	<div class="links" :class="[role, /* linkClasses */]">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
-		<div v-show="areRoleLinksShown" class="role-links">
-			<div class="overlay bg-dark-700 opacity-30" @click="toggleRoleLinks"></div>
-			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
-				<span class="material-icons">
-					{{ link.icon }}
-				</span>
-				<span class="link-name">{{ link.name }}</span>
-			</Link>
-			<a role="button" href="/logout" id="logout-btn" class="bg-gray-600">
-				<span class="material-icons">logout</span>
-				Logout
-			</a>
-		</div>
+		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
+			<div class="role-links">
+				<div class="overlay"></div>
+				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+					<span class="material-icons">
+						{{ link.icon }}
+					</span>
+					<span class="link-name">{{ link.name }}</span>
+				</Link>
+				<a role="button" href="/logout" id="logout-btn" class="bg-gray-600">
+					<span class="material-icons">logout</span>
+					Logout
+				</a>
+			</div>
+		</RoleLinksList>
 	</div>
 </template>
 
