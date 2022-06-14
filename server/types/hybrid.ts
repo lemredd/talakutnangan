@@ -11,9 +11,9 @@ import type {
 	ClientPayload
 } from "!/types/independent"
 
-export interface PageRequest {
+export interface PageRequest extends Request {
 	// Added to pass data from server to client
-	clientPayload: ClientPayload
+	clientPayload: ClientPayload|null
 }
 
 export interface AsynchronousRequestHandler {
