@@ -10,7 +10,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const auditTrailColumnName = "auditTrail_flags"
+const auditTrailColumnName = "auditTrailFlags"
 
 type AuditTrailFlags = { [auditTrailColumnName]: number }
 type Permissions = OperationPermission

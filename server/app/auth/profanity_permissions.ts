@@ -16,7 +16,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const profanityColumnName = "profanity_flags"
+const profanityColumnName = "profanityFlags"
 
 type ProfanityFlags = { [profanityColumnName]: number }
 type Permissions =

@@ -19,7 +19,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const commentColumnName = "comment_flags"
+const commentColumnName = "commentFlags"
 
 type CommentFlags = { [commentColumnName]: number }
 type Permissions =

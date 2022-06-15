@@ -19,7 +19,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const postColumnName = "post_flags"
+const postColumnName = "postFlags"
 
 type PostFlags = { [postColumnName]: number }
 type Permissions =

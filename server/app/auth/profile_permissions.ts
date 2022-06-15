@@ -20,7 +20,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const profileColumnName = "profile_flags"
+const profileColumnName = "profileFlags"
 
 type ProfileFlags = { [profileColumnName]: number }
 type Permissions =

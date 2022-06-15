@@ -13,7 +13,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const departmentColumnName = "department_flags"
+const departmentColumnName = "departmentFlags"
 
 type DepartmentFlags = { [departmentColumnName]: number }
 type Permissions =

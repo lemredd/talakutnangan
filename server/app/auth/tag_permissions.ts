@@ -13,7 +13,7 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const tagColumnName = "tag_flags"
+const tagColumnName = "tagFlags"
 
 type TagFlags = { [tagColumnName]: number }
 type Permissions = OperationPermission
