@@ -1,3 +1,5 @@
+import { faker } from "@faker-js/faker"
+
 import Role from "%/models/role"
 import UserManager from "./user"
 import UserFactory from "~/factories/user"
@@ -6,7 +8,7 @@ import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 
-describe("Authentication: Search user with credentials", () => {
+describe("Database: User Authentication Operations", () => {
 	it("can search user", async () => {
 		const role = await (new RoleFactory()).insertOne()
 		const manager = new UserManager()
@@ -61,7 +63,7 @@ describe("Authentication: Search user with credentials", () => {
 	})
 })
 
-describe("Database: User read operations", () => {
+describe("Database: User Read Operations", () => {
 	it("can search existing user with ID", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
@@ -119,6 +121,27 @@ describe("Database: User read operations", () => {
 		expect(records[0].email).toStrictEqual(completeUserProfile.email)
 		expect(records[1].email).toStrictEqual(incompleteUserProfile.email)
 	})
+
+	it("can search users with a specified name", async () => {
+		const manager = new UserManager()
+		const namesStartWithO = await (new UserFactory())
+			.setNameGenerator(() => "O"+faker.random.alpha({
+				bannedChars: [ "o", "n", "N" ],
+				count: faker.mersenne.rand(7, 1)
+			}))
+			.insertMany(faker.mersenne.rand(5, 1))
+		const namesStartWithN = await (new UserFactory())
+			.setNameGenerator(() => "N"+faker.random.alpha({
+				bannedChars: [ "n", "N" ],
+				count: faker.mersenne.rand(7, 1)
+			}))
+			.insertMany(faker.mersenne.rand(10, namesStartWithO.length))
+
+		const { records, count } = await manager.list({name: "N", page: 0 })
+
+		expect(count).toBe(namesStartWithN.length)
+		expect(records).toHaveLength(namesStartWithN.length)
+	})
 })
 
 describe("General: Basic CRUD", () => {
@@ -132,7 +155,6 @@ describe("General: Basic CRUD", () => {
 		expect(compare(user.password, foundUser.password)).resolves.toBeTruthy()
 	})
 
-	it.todo("read user profile")
 	it.todo("update user profile")
 	it.todo("archive user")
 	it.todo("restore user")
