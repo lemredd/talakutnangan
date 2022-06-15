@@ -1,4 +1,4 @@
-import DepartmentManager from "./department_manager"
+import DepartmentManager from "./department"
 import DepartmentFactory from "~/factories/department"
 import Department from "%/models/department"
 

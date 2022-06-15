@@ -1,5 +1,5 @@
 import Role from "%/models/role"
-import UserManager from "./user_manager"
+import UserManager from "./user"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import compare from "!/helpers/auth/compare"

@@ -2,7 +2,7 @@ import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
 import DepartmentPermissions from "!/app/auth/department_permissions"
 
-import RoleManager from "./role_manager"
+import RoleManager from "./role"
 
 describe("Database: Role read operations", () => {
 	it("can search role with matching query", async () => {
