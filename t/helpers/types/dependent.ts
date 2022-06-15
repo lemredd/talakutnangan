@@ -7,3 +7,5 @@
 import type { Model, CreationAttributes } from "%/types/dependent"
 
 export type GeneratedData<T extends Model> = Promise<CreationAttributes<T>>
+
+export type MultipleGeneratedData<T extends Model> = Promise<CreationAttributes<T>[]>
