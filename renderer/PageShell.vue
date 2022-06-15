@@ -1,5 +1,5 @@
 <template>
-	<div class="layout">
+	<div class="layout" ref="layout">
 		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
@@ -7,7 +7,7 @@
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
-				<Notifications v-if="!isRoleGuest"></Notifications>
+				<!-- <Notifications v-if="!isRoleGuest"></Notifications> -->
 				<RoleSpecificLinks :role="role"/>
 			</div>
 
@@ -21,9 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import { provide } from "vue"
+import { onMounted, provide, ref, watch } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
-import Notifications from "@/PageShell/Notifications.vue"
 import { usePageContext } from "#/usePageContext"
 
 const pageContext = usePageContext()
@@ -33,7 +32,23 @@ const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
 const isRoleGuest = role === "guest"
 
+const layout = ref<HTMLElement | null>(null)
+const body = ref<HTMLBodyElement | null>(null)
+const bodyClasses = ref<string[]>(["dark"])
+
+onMounted(function() {
+	if (layout.value) {
+		// ! Risky
+		body.value = layout.value.parentElement!.parentElement as HTMLBodyElement
+	}
+})
+
 provide("pageContext", pageContext)
+provide("bodyClasses", bodyClasses)
+watch(bodyClasses, newSource => {
+	body.value!.classList.remove(...body.value!.classList.values())
+	body.value!.classList.add(...newSource)
+})
 </script>
 
 <style>
@@ -57,6 +72,8 @@ a {
 	flex-direction: column;
 
 	.navigation {
+		position: fixed;
+		left: 0; right: 0;
 		padding: 0 .75em;
 		flex-shrink: 0;
 		line-height: 1.8em;
@@ -71,6 +88,7 @@ a {
 			padding: .25em;
 			display: flex;
 			align-items: center;
+			width: max-content;
 
 			img {
 				width: 48px;
@@ -80,9 +98,9 @@ a {
 	}
 
 	.content {
+		margin-top: 56px;
 		padding: 20px;
-		padding-bottom: 50px;
-		min-height: 100vh;
+		min-height: calc(100vh - 56px);
 
 		&.login-content {
 			padding: 0;
@@ -96,6 +114,5 @@ a {
 .container {
 	max-width: 900px;
 	margin: auto;
-
 }
 </style>

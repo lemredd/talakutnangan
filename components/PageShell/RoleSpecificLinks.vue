@@ -2,48 +2,61 @@
 	<div class="links" :class="[role, /* linkClasses */]">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
-		<div v-show="areRoleLinksShown" class="role-links">
-			<div class="overlay bg-dark-700 bg-opacity-60" @click="toggleRoleLinks"></div>
-			<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
-				<span class="material-icons">
-					{{ link.icon }}
-				</span>
-				<span class="link-name">{{ link.name }}</span>
-			</Link>
-			<a role="button" href="/logout" id="logout-btn" class="bg-gray-600">
-				<span class="material-icons">logout</span>
-				Logout
+		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
+			<div class="role-links">
+				<div class="overlay"></div>
+				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+					<span class="material-icons">
+						{{ link.icon }}
+					</span>
+					<span class="link-name">{{ link.name }}</span>
+				</Link>
+
+			</div>
+			<a role="button" href="/logout" id="logout-btn">
+					<span class="material-icons">logout</span>
+					Logout
 			</a>
-		</div>
+		</RoleLinksList>
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+body.unscrollable {
+	overflow-y: hidden;
+}
+
 .links {
 	height: 100%;
 	display: flex;
 	align-items: center;
+
+	.dropdown-container {
+		padding-top: 1em;
+		position: fixed;
+		inset: 56px 0 0;
+	}
+
 	.role-links {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		position: fixed;
-		width: 100%;
-		top: 72px; left: 0;
+		height: calc(100% - 56px);
+
 		.overlay {
 			position: absolute;
 			width: 100%; height: 100vh;
 			z-index: -1;
 		}
 
-		#logout-btn {
-			border-radius: 5px;
-			display: flex;
-				align-items: center;
-			margin-top: 1em;
-			padding: .5em 1em;
+		a:not(a:last-of-type) {
+			margin-bottom: 1em;
 		}
+	}
+	#logout-btn {
+		border-radius: 5px;
+		display: flex;
+		align-items: center;
+		padding: .5em 1em;
 	}
 
 	.account-controls {
@@ -54,8 +67,9 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
+import RoleLinksList from "@/Dropdown.vue"
 
 // Props
 type Props = {
@@ -92,6 +106,11 @@ const linksSpecifiers = [
 		role: "student_or_employee",
 		links: [
 			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
+			{
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
@@ -111,6 +130,11 @@ const linksSpecifiers = [
 	{
 		role: "user_manager",
 		links: [
+			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
 			{
 				name: "Manage Users",
 				path: "/manage",
@@ -137,6 +161,11 @@ const linksSpecifiers = [
 		role: "admin",
 		links: [
 			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
+			{
 				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
@@ -157,9 +186,18 @@ const linksSpecifiers = [
 const determineRoleLinks = computed(function()  {
 	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
-
+const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
 	areRoleLinksShown.value = !areRoleLinksShown.value
+	disableScroll()
+}
+
+function disableScroll() {
+	const bodyClasses = new Set([ ...rawBodyClasses.value ])
+	if (!bodyClasses.has("unscrollable")) bodyClasses.add("unscrollable")
+	else bodyClasses.delete("unscrollable")
+
+	rawBodyClasses.value = [...bodyClasses]
 }
 </script>
