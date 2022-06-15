@@ -12,7 +12,7 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "ser
 	const dirtyPath = "/" + (purpose === "enhancer" ? rawPath : join(purpose, rawPath))
 	let path = dirtyPath.replace(/\\/g, "/").replace(/\((\w+)\)/g, "/:$1")
 
-	if (purpose === "enhancer") path = path.replace(/index$/, "")
+	if (purpose === "enhancer") path = path.replace(/^\/(.*?)\/?index$/, "/$1")
 
 	return {
 		method: <Method><unknown>method,
