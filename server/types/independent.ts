@@ -87,3 +87,20 @@ export const rawOperationPermissions = [ "view", "create", "update", "archiveAnd
  * Union of raw operation permissions.
  */
 export type OperationPermission = typeof rawOperationPermissions[number]
+
+/**
+ * Array of permissions that dictate the administration level of read and write operations.
+ */
+export const rawLevelPermissions = [
+	"readOwnScope",
+	"readDepartmentScope",
+	"readOverallScope",
+	"writeOwnScope",
+	"writeDepartmentScope",
+	"writeOverallScope"
+] as const
+
+/**
+ * Union of raw level permissions.
+ */
+export type LevelPermission = typeof rawLevelPermissions[number]
