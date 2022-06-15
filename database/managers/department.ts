@@ -1,39 +1,20 @@
-import { Op } from "sequelize"
-import { RawDepartment } from "%/types/independent"
+import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { CommonConstraints, RawDepartment, Pipe } from "%/types/independent"
+
+import BaseManager from "%/managers/base"
 import Department from "%/models/department"
+import limit from "%/managers/helpers/limit"
+import offset from "%/managers/helpers/offset"
+import search_name from "%/managers/helpers/search_name"
 
-export default class DepartmentManager {
-	async findWithID(id: number): Promise<Department|null> {
-		return await Department.findOne({ where: { id } })
-	}
+export default class  extends BaseManager<Department, RawDepartment> {
+	get model(): ModelCtor<Department> { return Department }
 
-	async create(details: RawDepartment): Promise<Department> {
-		return await Department.create({ ...details })
-	}
-
-	async update(id: number, details: Partial<RawDepartment>): Promise<number> {
-		const [ affectedCount ] = await Department.update({
-			...details
-		}, {
-			where: { id }
-		})
-
-		return affectedCount
-	}
-
-	async archive(id: number): Promise<number> {
-		const deleteCount = await Department.destroy({
-			where: { id }
-		})
-
-		return deleteCount
-	}
-
-	async restore(id: number): Promise<void> {
-		await Department.restore({
-			where: {
-				id
-			}
-		})
+	get listPipeline(): Pipe<FindAndCountOptions<Department>, CommonConstraints>[] {
+		return [
+			search_name,
+			offset,
+			limit
+		]
 	}
 }
