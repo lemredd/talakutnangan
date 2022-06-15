@@ -7,30 +7,15 @@ describe("Component: Page Shell/Role Specific Links", () => {
 	beforeAll(() => {
 		wrapper = mount(RoleSpecificLinks, {
 			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				}
+			},
 			props: {
 				role: "student_or_employee"
 			}
 		})
-	})
-
-	it("should specify the right link/s for a specific role", async () => {
-		const link = wrapper.find(".role-links link-stub:first-of-type")
-		const linkHref = link.attributes("href")
-		const specifiedRole = wrapper.props().role
-
-		switch (specifiedRole) {
-			case "student_or_employee":
-				expect(linkHref).toBe("/notifications")
-				break
-			case "user_manager":
-				expect(linkHref).toBe("/notifications")
-				break
-			case "admin":
-				expect(linkHref).toBe("/manage")
-				break
-			default:
-				expect(linkHref).toBe("/log_in")
-		}
 	})
 
 	it("should have a menu button that is clickable", async () => {
@@ -38,5 +23,14 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		await menuButton.trigger("click")
 
 		expect(wrapper.emitted().click).toHaveLength(1)
+	})
+
+	it("should specify the right link/s for a specific role", async () => {
+		const link = wrapper.find("link-stub:first-of-type")
+		const linkHref = link.attributes("href")
+		const specifiedRole = wrapper.props().role
+
+		if(specifiedRole !== "guest") expect(linkHref).toBe("/notifications")
+		else expect(linkHref).toBe("/log_in")
 	})
 })
