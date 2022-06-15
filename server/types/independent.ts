@@ -78,6 +78,13 @@ import type Middleware from "!/bases/middleware"
  */
 export type OptionalMiddleware = Middleware | null
 
+import type { UserProfile, Serializable } from "%/types/independent"
+
+export interface PageProps extends Serializable {
+	// Added to pass data from server to client
+	userProfile: UserProfile
+}
+
 /**
  * Array of permissions that dictate the CRUD operations
  */
