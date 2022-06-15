@@ -1,8 +1,14 @@
 import type {
 	PermissionMap,
 	PermissionInfo,
-	LevelPermission,
-	OperationPermission
+	OperationPermission,
+} from "!/types/independent"
+
+import {
+	VIEW,
+	CREATE,
+	UPDATE,
+	ARCHIVE_AND_RESTORE
 } from "!/types/independent"
 
 import PermissionGroup from "!/bases/permission_group"
@@ -24,10 +30,10 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: 0x001, permissionDependencies: [] } ],
-			[ "create",            { flag: 0x002, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: 0x004, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: 0x008, permissionDependencies: [ "view" ] } ],
+			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
+			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
+			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
+			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
 			[ "mergeDepartment",   {
 				flag: 0x100,
 				permissionDependencies: [
