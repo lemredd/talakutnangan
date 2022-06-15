@@ -13,6 +13,7 @@ import Department from "%/models/department"
 import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory extends BaseFactory<User> {
+	nameGenerator = () => faker.name.findName()
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = UserKind.Student
@@ -27,7 +28,7 @@ export default class UserFactory extends BaseFactory<User> {
 		}
 
 		return {
-			name: faker.name.findName(),
+			name: this.nameGenerator(),
 			email: faker.internet.exampleEmail(),
 			password: await hash(this.#password),
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
@@ -61,6 +62,11 @@ export default class UserFactory extends BaseFactory<User> {
 		const users = await super.insertMany(count)
 		users.forEach(user => user.password = this.#password)
 		return users
+	}
+
+	setNameGenerator(generator: () => string): UserFactory {
+		this.nameGenerator = generator
+		return this
 	}
 
 	notVerified(): UserFactory {
