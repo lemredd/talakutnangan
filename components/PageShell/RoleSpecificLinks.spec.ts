@@ -9,6 +9,9 @@ describe("Component: Page Shell/Role Specific Links", () => {
 			global: {
 				stubs: {
 					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
 				}
 			},
 			props: {
@@ -28,6 +31,9 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				stubs: {
 					RoleLinksList: false
 				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+				}
 			},
 			props: {
 				role: "student_or_employee"
@@ -45,6 +51,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				stubs: {
 					RoleLinksList: false
 				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+				}
+			},
 			props: {
 				role: "guest"
 			}
