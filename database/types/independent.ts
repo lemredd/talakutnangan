@@ -29,7 +29,7 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ]
+export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 
 export type Criteria = typeof rawCriteria[number]
 
@@ -97,3 +97,10 @@ export interface Role extends RawRole, Serializable {}
 	 emailVerifiedAt: string|null,
 	 signature: string|null
  }
+
+export type CommonConstraints = {
+	page?: number,
+	[key: string]: any
+}
+
+export type Pipe<T, U> = (currentState: T, constraints: U) => T
