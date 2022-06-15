@@ -13,7 +13,7 @@ import type {
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client
-	clientPayload: PageProps|null
+	pageProps: PageProps|null
 }
 
 export interface AsynchronousRequestHandler {

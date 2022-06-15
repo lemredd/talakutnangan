@@ -46,7 +46,7 @@ export default async function(app: ExpressApp) {
 		const url = request.originalUrl
 		const pageContextInit = {
 			url,
-			pageProps: request.clientPayload
+			pageProps: request.pageProps
 		}
 		const pageContext = await renderPage(pageContextInit)
 		const { httpResponse } = pageContext
