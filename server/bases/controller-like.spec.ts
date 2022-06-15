@@ -53,7 +53,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		expect(routeInformation).toStrictEqual(<RouteInformation>{
 			method: "get",
-			path: "/a/b/index",
+			path: "/a/b/",
 			purpose: "enhancer",
 			description: null
 		})
