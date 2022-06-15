@@ -104,3 +104,21 @@ export const rawLevelPermissions = [
  * Union of raw level permissions.
  */
 export type LevelPermission = typeof rawLevelPermissions[number]
+
+/**
+ * Used to set the flag of a common permission prventing errors in the future.
+ *
+ * Special flag(s) of a permission group should have flags > 0x00FF or 0b1100_0000.
+ */
+export enum CommonPermissionFlag {
+	VIEW							= 0x0001,
+	CREATE						= 0x0002,
+	UPDATE						= 0x0004,
+	ARCHIVE_AND_RESTORE		= 0x0008,
+	READ_OWN_SCOPE				= 0x0010,
+	READ_DEPARTMENT_SCOPE	= 0x0020,
+	READ_OVERALL_SCOPE		= 0x0030,
+	WRITE_OWN_SCOPE			= 0x0040,
+	WRITE_DEPARTMENT_SCOPE	= 0x0080,
+	WRITE_OVERALL_SCOPE		= 0x00C0
+}
