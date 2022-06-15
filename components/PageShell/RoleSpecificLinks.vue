@@ -11,18 +11,18 @@
 					</span>
 					<span class="link-name">{{ link.name }}</span>
 				</Link>
-				<a role="button" href="/logout" id="logout-btn" class="bg-gray-600">
+
+			</div>
+			<a role="button" href="/logout" id="logout-btn">
 					<span class="material-icons">logout</span>
 					Logout
-				</a>
-			</div>
+			</a>
 		</RoleLinksList>
 	</div>
 </template>
 
 <style lang="scss">
 body.unscrollable {
-	// smelly
 	overflow-y: hidden;
 }
 
@@ -40,9 +40,7 @@ body.unscrollable {
 	.role-links {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		width: 100%;
-		height: 100%;
+		height: calc(100% - 56px);
 
 		.overlay {
 			position: absolute;
@@ -50,13 +48,15 @@ body.unscrollable {
 			z-index: -1;
 		}
 
-		#logout-btn {
-			border-radius: 5px;
-			display: flex;
-				align-items: center;
-			margin-top: 1em;
-			padding: .5em 1em;
+		a:not(a:last-of-type) {
+			margin-bottom: 1em;
 		}
+	}
+	#logout-btn {
+		border-radius: 5px;
+		display: flex;
+		align-items: center;
+		padding: .5em 1em;
 	}
 
 	.account-controls {
