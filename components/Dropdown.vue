@@ -17,11 +17,6 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
-const isDropdownShown = ref(false)
-
-function toggleDropdown() {
-	
 const emit = defineEmits(["close"])
 
 function emitClose() {

@@ -23,16 +23,6 @@ describe("Database: Condition Builder", () => {
 		})
 	})
 
-	it("can make 'search' operation", () => {
-		const condition = new Condition()
-
-		const builtCondition = condition.search("name", "abcd").build()
-
-		expect(builtCondition).toStrictEqual({
-			name: { [Op.like]: "%abcd%" }
-		})
-	})
-
 	it("can make 'or' operation", () => {
 		const condition = new Condition()
 		const subconditionA = (new Condition()).is("columnA", null)

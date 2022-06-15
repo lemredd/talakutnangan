@@ -1,4 +1,4 @@
-import DepartmentManager from "./department"
+import DepartmentManager from "./department_manager"
 import DepartmentFactory from "~/factories/department"
 import Department from "%/models/department"
 
@@ -38,12 +38,10 @@ describe("Database: Department Update Operations", () => {
 	it("can update department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
-		const originalMayAdmit = department.mayAdmit
+		department.mayAdmit = !department.mayAdmit
 
 		const updateCount = await manager.update(department.id, {
-			acronym: department.acronym,
-			fullName: department.fullName,
-			mayAdmit: !originalMayAdmit
+			mayAdmit: !department.mayAdmit
 		})
 
 		expect(updateCount).toBe(1)

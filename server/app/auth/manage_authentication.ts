@@ -2,7 +2,7 @@ import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
 
 import User from "%/models/user"
-import UserManager from "%/managers/user"
+import UserManager from "%/managers/user_manager"
 
 export default async function() {
 	passport.use(new LocalStrategy(

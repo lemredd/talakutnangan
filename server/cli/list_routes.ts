@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import RouterManager from "!/app/routes/router"
+import RouterManager from "!/app/routes/router_manager"
 
 function main() {
 	console.log("Registered custom routes:")

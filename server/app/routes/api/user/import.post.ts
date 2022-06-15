@@ -3,7 +3,7 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
-import UserManager from "%/managers/user"
+import UserManager from "%/managers/user_manager"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import MultipartController from "!/common_controllers/multipart_controller"
 

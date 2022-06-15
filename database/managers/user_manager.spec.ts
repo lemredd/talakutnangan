@@ -1,15 +1,12 @@
-import { faker } from "@faker-js/faker"
-
-import User from "%/models/user"
 import Role from "%/models/role"
-import UserManager from "./user"
+import UserManager from "./user_manager"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 
-describe("Database: User Authentication Operations", () => {
+describe("Authentication: Search user with credentials", () => {
 	it("can search user", async () => {
 		const role = await (new RoleFactory()).insertOne()
 		const manager = new UserManager()
@@ -64,7 +61,7 @@ describe("Database: User Authentication Operations", () => {
 	})
 })
 
-describe("Database: User Read Operations", () => {
+describe("Database: User read operations", () => {
 	it("can search existing user with ID", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
@@ -122,30 +119,9 @@ describe("Database: User Read Operations", () => {
 		expect(records[0].email).toStrictEqual(completeUserProfile.email)
 		expect(records[1].email).toStrictEqual(incompleteUserProfile.email)
 	})
-
-	it("can search users with a specified name", async () => {
-		const manager = new UserManager()
-		const namesStartWithO = await (new UserFactory())
-			.setNameGenerator(() => "O"+faker.random.alpha({
-				bannedChars: [ "o", "n", "N" ],
-				count: faker.mersenne.rand(7, 1)
-			}))
-			.insertMany(faker.mersenne.rand(5, 1))
-		const namesStartWithN = await (new UserFactory())
-			.setNameGenerator(() => "N"+faker.random.alpha({
-				bannedChars: [ "n", "N" ],
-				count: faker.mersenne.rand(7, 1)
-			}))
-			.insertMany(faker.mersenne.rand(10, namesStartWithO.length))
-
-		const { records, count } = await manager.list({name: "N", page: 0 })
-
-		expect(count).toBe(namesStartWithN.length)
-		expect(records).toHaveLength(namesStartWithN.length)
-	})
 })
 
-describe("Database: User Create Operations", () => {
+describe("General: Basic CRUD", () => {
 	it("can create user", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).makeOne()
@@ -155,11 +131,14 @@ describe("Database: User Create Operations", () => {
 		expect(foundUser.email).toStrictEqual(user.email)
 		expect(compare(user.password, foundUser.password)).resolves.toBeTruthy()
 	})
+
+	it.todo("read user profile")
+	it.todo("update user profile")
+	it.todo("archive user")
+	it.todo("restore user")
 })
 
-describe("Database: User Update Operations", () => {
-	it.todo("update user profile")
-
+describe("Extra: Custom Operations", () => {
 	it("can verify user", async () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
@@ -168,37 +147,5 @@ describe("Database: User Update Operations", () => {
 
 		expect(verifiedUserCount).toBe(1)
 		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()
-	})
-})
-
-
-describe("Database: User Archival and Restoration Operations", () => {
-	it("archive user", async () => {
-		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
-
-		const deleteCount = await manager.archive(user.id)
-
-		expect(deleteCount).toBe(1)
-		expect((
-			await User.findOne({
-				where: { id: user.id },
-				paranoid: true
-			})
-		)?.deletedAt).not.toBeNull()
-	})
-
-	it("restore user", async () => {
-		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
-		await user.destroy({force: false})
-
-		await manager.restore(user.id)
-
-		expect((
-			await User.findOne({
-				where: { id: user.id }
-			})
-		)!.deletedAt).toBeNull()
 	})
 })
