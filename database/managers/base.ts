@@ -10,6 +10,7 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+import runThroughPipeline from "%/managers/helpers/run_through_pipeline"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
@@ -24,9 +25,7 @@ export default abstract class Manager<T extends Model, U> {
 	}
 
 	async list(query: object): List<T> {
-		const options: FindAndCountOptions<T> = this.listPipeline.reduce((options, pipe) => {
-			return pipe(options, query)
-		}, {})
+		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
 		const { rows, count } = await this.model.findAndCountAll(options)
 		return { records: rows, count }
