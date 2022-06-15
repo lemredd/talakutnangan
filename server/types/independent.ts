@@ -77,3 +77,13 @@ import type Middleware from "!/bases/middleware"
  * Used to indicate which middlewares to use in a route.
  */
 export type OptionalMiddleware = Middleware | null
+
+/**
+ * Array of permissions that dictate the CRUD operations
+ */
+export const rawOperationPermissions = [ "view", "create", "update", "archiveAndRestore" ] as const
+
+/**
+ * Union of raw operation permissions.
+ */
+export type OperationPermission = typeof rawOperationPermissions[number]
