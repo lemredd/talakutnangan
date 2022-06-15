@@ -1,12 +1,9 @@
 <template>
 <div class="text-center">
-	<h1 class="p-5 text-1.5rem">
-		Insert phrase here.
-	</h1>
-	<p class="px-5 text-0.75rem">
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum aliquid illo vel possimus suscipit consequuntur maxime doloremque explicabo tenetur dolor.
-	</p>
-
+	<Description>
+		<template #header>Chat header</template>
+		<template #details>The quick brown fox jumped over the lazy dog.</template>
+	</Description>
 	<div class="graphics">
 		<Person accessory="chat" type="talking left"/>
 		<Person accessory="chat" type="talking right"/>
@@ -15,13 +12,12 @@
 </div>
 
 <div class="text-center">
-	<h1 class="p-5 text-1.5rem">
-		Insert phrase here.
-	</h1>
-	<p class="px-5 text-0.75rem">
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum aliquid illo vel possimus suscipit consequuntur maxime doloremque explicabo tenetur dolor.
-	</p>
-
+	<Description>
+		<template #header>Forum Header</template>
+		<template #details>
+			Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim, alias?
+		</template>
+	</Description>
 	<div class="graphics graphics-left">
 		<Person accessory="campaign" type="announce"/>
 	</div>
@@ -53,4 +49,5 @@
 
 <script lang="ts" setup>
 import Person from "@/Person.vue"
+import Description from "@/Description.vue"
 </script>
