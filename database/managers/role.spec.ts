@@ -2,7 +2,7 @@ import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
 import DepartmentPermissions from "!/app/auth/department_permissions"
 
-import RoleManager from "./role_manager"
+import RoleManager from "./role"
 
 describe("Database: Role read operations", () => {
 	it("can search role with matching query", async () => {
@@ -10,10 +10,14 @@ describe("Database: Role read operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		const incompleteName = role.name.slice(1)
 
-		const { roles, count } = await manager.search(incompleteName, 0, 1)
+		const { records, count } = await manager.list({
+			name: incompleteName,
+			page: 0,
+			limit: 1
+		})
 
 		expect(count).toBe(1)
-		expect(roles[0].name).toBe(role.name)
+		expect(records[0].name).toBe(role.name)
 	})
 
 	it("cannot search role with non-matching query", async () => {
@@ -21,10 +25,14 @@ describe("Database: Role read operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		const incorrectName = role.name + "1"
 
-		const { roles, count } = await manager.search(incorrectName, 0, 1)
+		const { records, count } = await manager.list({
+			name: incorrectName,
+			page: 0,
+			limit: 1
+	})
 
 		expect(count).toBe(0)
-		expect(roles).toHaveLength(0)
+		expect(records).toHaveLength(0)
 	})
 })
 

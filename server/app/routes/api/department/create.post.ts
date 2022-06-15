@@ -1,7 +1,7 @@
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import DepartmentManager from "%/managers/department_manager"
+import DepartmentManager from "%/managers/department"
 import JSONController from "!/common_controllers/json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 

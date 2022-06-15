@@ -1,8 +1,12 @@
 import { faker } from "@faker-js/faker"
 
-import Role from "%/models/role"
+import type { ModelCtor } from "%/types/dependent"
+import type { GeneratedData } from "~/types/dependent"
 
-export default class RoleFactory {
+import Role from "%/models/role"
+import BaseFactory from "~/factories/base"
+
+export default class RoleFactory extends BaseFactory<Role> {
 	#name: string = faker.name.findName()
 	#departmentFlags: number = 0
 	#roleFlags: number = 0
@@ -14,7 +18,9 @@ export default class RoleFactory {
 	#userFlags: number = 0
 	#auditTrailFlags: number = 0
 
-	async generate() {
+	get model(): ModelCtor<Role> { return Role }
+
+	async generate(): GeneratedData<Role> {
 		return {
 			name: this.#name,
 			departmentFlags: this.#departmentFlags,
@@ -27,16 +33,6 @@ export default class RoleFactory {
 			userFlags: this.#userFlags,
 			auditTrailFlags: this.#auditTrailFlags
 		}
-	}
-
-	async makeOne() {
-		const role = await Role.build(await this.generate())
-		return role
-	}
-
-	async insertOne() {
-		const role = await Role.create(await this.generate())
-		return role
 	}
 
 	name(name: string): RoleFactory {
