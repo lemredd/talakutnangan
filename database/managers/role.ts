@@ -1,8 +1,21 @@
 import { Op } from "sequelize"
-import { RawRole } from "%/types/independent"
-import Role from "%/models/role"
 
-export default class RoleManager {
+import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { CommonConstraints, RawRole, Pipe } from "%/types/independent"
+
+import Role from "%/models/role"
+import BaseManager from "%/managers/base"
+import offset from "%/managers/helpers/offset"
+
+export default class extends BaseManager<Role, RawRole> {
+	get model(): ModelCtor<Role> { return Role }
+
+	get listPipeline(): Pipe<FindAndCountOptions<Role>, CommonConstraints>[] {
+		return [
+			offset
+		]
+	}
+
 	async search(
 		query: string,
 		offset: number,
