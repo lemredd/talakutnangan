@@ -4,7 +4,7 @@
  * created for compatibility reasons.
  */
 
-import type {
+import {
 	Request as BaseRequest,
 	Response as BaseResponse,
 	NextFunction as BaseNextFunction,
@@ -13,7 +13,6 @@ import type {
 import type { Session } from "express-session"
 import User from "%/models/user"
 
-// @ts-ignore
 export interface Request extends BaseRequest {
 	// Added due to `express-session` package
 	session: Session & {
