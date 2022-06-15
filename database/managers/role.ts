@@ -21,10 +21,6 @@ export default class extends BaseManager<Role, RawRole> {
 		offset: number,
 		limit: number
 	): Promise<{ roles: Role[], count: number }> {
-		// `findAndCountAll` uses `findAll`. See https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L2070
-		// `findAll` uses `select`. See https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L1713
-		// `select` uses query generator which handles replacements. See https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/dialects/abstract/query-interface.js#L1062
-		// Replacements are escaped. See https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
 		const { rows, count } = await Role.findAndCountAll({
 			where: {
 				name: {
