@@ -1,28 +1,15 @@
-import { EntityManager, EntityTarget, FindOptionsWhere, DeepPartial } from "typeorm"
-import Database from "~/database"
+import type { Model, ModelCtor, CreationAttributes } from "%/types/dependent"
 
-export default abstract class Factory<T> {
-	#manager: EntityManager = Database.manager
-	#model: EntityTarget<T>
-	#modelData: object[] = []
+export default abstract class Factory<T extends Model> {
+	abstract get model(): ModelCtor<T>
 
-	constructor(entity: EntityTarget<T>) {
-		this.#model = entity
-	}
-
-	abstract generate(): object
+	abstract generate(): CreationAttributes<T>
 
 	async makeOne(): Promise<T> {
-		return await this.#manager.create(
-			this.#model,
-			(this.#modelData[0] || this.generate()) as DeepPartial<T>
-		)
+		return await this.model.build(this.generate())
 	}
 
 	async insertOne(): Promise<T> {
-		const result = await this.#manager.insert(this.#model, this.#modelData[0] || this.generate())
-		return await this.#manager.findOne(this.#model, {
-			where: result.identifiers[0] as FindOptionsWhere<T>
-		})
+		return await this.model.create(this.generate())
 	}
 }
