@@ -1,32 +1,35 @@
 import type {
 	PermissionMap,
 	PermissionInfo,
-	OperationPermission,
+	LevelPermission,
+	OperationPermission
 } from "!/types/independent"
 
 import {
 	VIEW,
 	CREATE,
 	UPDATE,
-	ARCHIVE_AND_RESTORE
+	ARCHIVE_AND_RESTORE,
+	WRITE_OVERALL_SCOPE,
+	READ_OVERALL_SCOPE
 } from "!/types/independent"
 
 import PermissionGroup from "!/bases/permission_group"
 
-const departmentColumnName = "departmentFlags"
+const profanityColumnName = "profanityFlags"
 
-type DepartmentFlags = { [departmentColumnName]: number }
+type ProfanityFlags = { [profanityColumnName]: number }
 type Permissions =
 	| OperationPermission
-	| "mergeDepartment"
+	| Extract<LevelPermission, "readOverallScope" | "writeOverallScope">
 
 /**
- * Permission group for department.
+ * Permission group for profanity.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<DepartmentFlags, Permissions> {
-	get name(): string { return departmentColumnName }
+export default class extends PermissionGroup<ProfanityFlags, Permissions> {
+	get name(): string { return profanityColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
@@ -34,11 +37,11 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
 			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
 			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
-			[ "mergeDepartment",   {
-				flag: 0x100,
-				permissionDependencies: [
-					"archiveAndRestore", "create"
-				]
+
+			[ "readOverallScope",     { flag: READ_OVERALL_SCOPE, permissionDependencies: [ ] } ],
+			[ "writeOverallScope", {
+				flag: WRITE_OVERALL_SCOPE,
+				permissionDependencies: [ "readOverallScope" ]
 			} ]
 		])
 	}
