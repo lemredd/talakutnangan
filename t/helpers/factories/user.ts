@@ -51,6 +51,18 @@ export default class UserFactory extends BaseFactory<User> {
 		return user
 	}
 
+	async makeMany(count: number): Promise<User[]> {
+		const users = await super.makeMany(count)
+		users.forEach(user => user.password = this.#password)
+		return users
+	}
+
+	async insertMany(count: number): Promise<User[]> {
+		const users = await super.insertMany(count)
+		users.forEach(user => user.password = this.#password)
+		return users
+	}
+
 	notVerified(): UserFactory {
 		this.#mustBeVerified = false
 		return this
