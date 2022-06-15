@@ -1,7 +1,7 @@
 import { Request as BaseRequest, Response, Query } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user_manager"
+import UserManager from "%/managers/user"
 import QueryController from "!/common_controllers/query_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
