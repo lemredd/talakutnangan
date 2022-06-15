@@ -6,11 +6,11 @@ import type { Criteria, CommonConstraints, RawUser, Pipe } from "%/types/indepen
 import Role from "%/models/role"
 import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
+import BaseManager from "%/managers/base"
 import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
 import offset from "%/managers/helpers/offset"
-import BaseManager from "%/managers/base_manager"
-import siftByCriteria from "%/managers/user_manager/sift_by_criteria"
+import siftByCriteria from "%/managers/user/sift_by_criteria"
 
 export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
