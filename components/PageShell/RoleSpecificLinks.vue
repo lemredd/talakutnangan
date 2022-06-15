@@ -2,7 +2,7 @@
 	<div class="links" :class="[role, /* linkClasses */]">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
-		<RoleLinksList v-show="areRoleLinksShown" @close="toggleRoleLinks">
+		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
 			<div class="role-links">
 				<div class="overlay"></div>
 				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
