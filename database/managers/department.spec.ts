@@ -47,8 +47,11 @@ describe("Database: Department Update Operations", () => {
 		})
 
 		expect(updateCount).toBe(1)
-		department.reload()
-		expect(department.mayAdmit).not.toBe(originalMayAdmit)
+		expect((
+			await Department.findOne({
+				where: { id: department.id }
+			})
+		)!.mayAdmit).not.toBe(department.mayAdmit)
 	})
 })
 
