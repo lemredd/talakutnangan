@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 
+import User from "%/models/user"
 import Role from "%/models/role"
 import UserManager from "./user"
 import UserFactory from "~/factories/user"
@@ -144,7 +145,7 @@ describe("Database: User Read Operations", () => {
 	})
 })
 
-describe("General: Basic CRUD", () => {
+describe("Database: User Create Operations", () => {
 	it("can create user", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).makeOne()
@@ -154,13 +155,11 @@ describe("General: Basic CRUD", () => {
 		expect(foundUser.email).toStrictEqual(user.email)
 		expect(compare(user.password, foundUser.password)).resolves.toBeTruthy()
 	})
-
-	it.todo("update user profile")
-	it.todo("archive user")
-	it.todo("restore user")
 })
 
-describe("Extra: Custom Operations", () => {
+describe("Database: User Update Operations", () => {
+	it.todo("update user profile")
+
 	it("can verify user", async () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
@@ -169,5 +168,37 @@ describe("Extra: Custom Operations", () => {
 
 		expect(verifiedUserCount).toBe(1)
 		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()
+	})
+})
+
+
+describe("Database: User Archival and Restoration Operations", () => {
+	it("archive user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+
+		const deleteCount = await manager.archive(user.id)
+
+		expect(deleteCount).toBe(1)
+		expect((
+			await User.findOne({
+				where: { id: user.id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+	})
+
+	it("restore user", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		await user.destroy({force: false})
+
+		await manager.restore(user.id)
+
+		expect((
+			await User.findOne({
+				where: { id: user.id }
+			})
+		)!.deletedAt).toBeNull()
 	})
 })
