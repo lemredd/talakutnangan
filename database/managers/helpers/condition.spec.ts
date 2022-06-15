@@ -1,0 +1,43 @@
+import { Op } from "sequelize"
+
+import Condition from "./condition"
+
+describe("Database: Condition Builder", () => {
+	it("can make 'is' operation", () => {
+		const condition = new Condition()
+
+		const builtCondition = condition.not("sample", null).build()
+
+		expect(builtCondition).toStrictEqual({
+			sample: { [Op.not]: null }
+		})
+	})
+
+	it("can make 'is' operation", () => {
+		const condition = new Condition()
+
+		const builtCondition = condition.is("sample", null).build()
+
+		expect(builtCondition).toStrictEqual({
+			sample: { [Op.is]: null }
+		})
+	})
+
+	it("can make 'or' operation", () => {
+		const condition = new Condition()
+		const subconditionA = (new Condition()).is("columnA", null)
+		const subconditionB = (new Condition()).not("columnB", null)
+
+		const builtCondition = condition.or(
+			subconditionA,
+			subconditionB
+		).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.or]: {
+				columnA: { [Op.is]: null },
+				columnB: { [Op.not]: null }
+			}
+		})
+	})
+})

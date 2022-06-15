@@ -29,7 +29,7 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ]
+export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 
 export type Criteria = typeof rawCriteria[number]
 
@@ -63,4 +63,9 @@ export type List<T> = Promise<{
 	count: number
 }>
 
-export type Pipe<T> = (currentState: T, constraints: object) => T
+export type CommonConstraints = {
+	page?: number,
+	[key: string]: any
+}
+
+export type Pipe<T, U> = (currentState: T, constraints: U) => T
