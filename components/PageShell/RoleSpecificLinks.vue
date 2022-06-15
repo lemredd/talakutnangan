@@ -190,7 +190,10 @@ const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
 	areRoleLinksShown.value = !areRoleLinksShown.value
+	disableScroll()
+}
 
+function disableScroll() {
 	const bodyClasses = new Set([ ...rawBodyClasses.value ])
 	if (!bodyClasses.has("unscrollable")) bodyClasses.add("unscrollable")
 	else bodyClasses.delete("unscrollable")
