@@ -63,8 +63,6 @@ export type List<T> = Promise<{
 	count: number
 }>
 
-export type Pipe<T> = (currentState: T, constraints: object) => T
-
 /**
  * Used to indicate that a variable is serializable into a specific data format.
  */
