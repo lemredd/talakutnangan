@@ -40,13 +40,10 @@ export interface RequestHandler extends BaseRequestHandler {}
 
 import { ParsedQs } from "qs"
 export type Query = ParsedQs
-
-import { ParamsDictionary } from "express-serve-static-core"
-export type Parameters = ParamsDictionary
-export interface IDParameter extends Parameters {
+export interface IDParameter {
 	id: string
 }
 
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
-	params: IDParameter
+	params: IDParameter & any
 }
