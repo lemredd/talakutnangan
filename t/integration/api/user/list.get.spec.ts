@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import UserManager from "%/managers/user_manager"
+import UserManager from "%/managers/user"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
