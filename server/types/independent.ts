@@ -80,7 +80,7 @@ export type OptionalMiddleware = Middleware | null
 
 import type { UserProfile, Serializable } from "%/types/independent"
 
-export interface ClientPayload extends Serializable {
+export interface PageProps extends Serializable {
 	// Added to pass data from server to client
 	userProfile: UserProfile
 }

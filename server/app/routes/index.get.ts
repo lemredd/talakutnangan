@@ -7,7 +7,7 @@ export default class extends PageMiddleware {
 
 	get policy(): null { return null }
 
-	getClientPayload(request: Request): Serializable {
+	getPageProps(request: Request): Serializable {
 		return {
 			data: "Hello world!"
 		}

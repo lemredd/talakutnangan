@@ -11,7 +11,7 @@ import ControllerLike from "!/bases/controller-like"
  * This is intended to set up the passing of data to client.
  */
 export default abstract class extends ControllerLike {
-	getClientPayload(request: Request): Serializable { return {} }
+	getPageProps(request: Request): Serializable { return {} }
 
 	get endHandler(): null { return null }
 
@@ -27,7 +27,7 @@ export default abstract class extends ControllerLike {
 		// TODO: Pre-serialize the user data
 		request.clientPayload = {
 			userProfile: request.isAuthenticated() ? <any><unknown>request.user : null,
-			...this.getClientPayload(request)
+			...this.getPageProps(request)
 		}
 		next()
 	}

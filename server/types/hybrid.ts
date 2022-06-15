@@ -8,12 +8,12 @@ import type {
 	RouteInformation,
 	WithRegistration,
 	OptionalMiddleware,
-	ClientPayload
+	PageProps
 } from "!/types/independent"
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client
-	clientPayload: ClientPayload|null
+	clientPayload: PageProps|null
 }
 
 export interface AsynchronousRequestHandler {

@@ -1,6 +1,6 @@
-import type { ClientPayload } from "!/types/independent"
+import type { PageProps as BasePageProps } from "!/types/independent"
 
-export type PageProps = ClientPayload
+export type PageProps = BasePageProps
 
 // The `pageContext` that are available in both on the server-side and browser-side
 export type PageContext = {
