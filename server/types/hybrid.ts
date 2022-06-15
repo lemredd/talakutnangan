@@ -4,7 +4,17 @@
  */
 
 import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
-import type { RouteInformation, WithRegistration, OptionalMiddleware } from "!/types/independent"
+import type {
+	RouteInformation,
+	WithRegistration,
+	OptionalMiddleware,
+	PageProps
+} from "!/types/independent"
+
+export interface PageRequest extends Request {
+	// Added to pass data from server to client
+	pageProps: PageProps|null
+}
 
 export interface AsynchronousRequestHandler {
 	(
