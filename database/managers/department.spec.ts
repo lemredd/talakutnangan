@@ -38,18 +38,17 @@ describe("Database: Department Update Operations", () => {
 	it("can update department", async () => {
 		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
-		department.mayAdmit = !department.mayAdmit
+		const originalMayAdmit = department.mayAdmit
 
 		const updateCount = await manager.update(department.id, {
-			mayAdmit: !department.mayAdmit
+			acronym: department.acronym,
+			fullName: department.fullName,
+			mayAdmit: !originalMayAdmit
 		})
 
 		expect(updateCount).toBe(1)
-		expect((
-			await Department.findOne({
-				where: { id: department.id }
-			})
-		)!.mayAdmit).not.toBe(department.mayAdmit)
+		department.reload()
+		expect(department.mayAdmit).not.toBe(originalMayAdmit)
 	})
 })
 
