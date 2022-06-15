@@ -4,7 +4,6 @@
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
 			<div class="role-links">
-				<div class="overlay"></div>
 				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 					<span class="material-icons">
 						{{ link.icon }}
@@ -32,7 +31,6 @@ body.unscrollable {
 	align-items: center;
 
 	.dropdown-container {
-		padding-top: 1em;
 		position: fixed;
 		inset: 56px 0 0;
 	}
@@ -48,8 +46,12 @@ body.unscrollable {
 			z-index: -1;
 		}
 
-		a:not(a:last-of-type) {
-			margin-bottom: 1em;
+		.link {
+			padding: .5em;
+
+			.material-icons {
+				margin-right: .5em;
+			}
 		}
 	}
 	#logout-btn {
