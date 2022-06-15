@@ -34,9 +34,11 @@ const isRoleGuest = role === "guest"
 
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
+
 onMounted(function() {
 	if (layout.value) {
-		body.value = layout.value.parentElement?.parentElement as HTMLBodyElement
+		// ! Risky
+		body.value = layout.value.parentElement!.parentElement as HTMLBodyElement
 	}
 })
 
@@ -111,6 +113,5 @@ a {
 .container {
 	max-width: 900px;
 	margin: auto;
-
 }
 </style>
