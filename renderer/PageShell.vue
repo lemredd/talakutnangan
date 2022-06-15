@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, provide, ref } from "vue"
+import { onMounted, provide, ref, watch } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import { usePageContext } from "#/usePageContext"
 
@@ -32,7 +32,6 @@ const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
 const isRoleGuest = role === "guest"
 
-// beware of smelly
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
 onMounted(function() {
@@ -42,7 +41,11 @@ onMounted(function() {
 })
 
 provide("pageContext", pageContext)
-provide("body", body)
+provide("bodyClasses", bodyClasses)
+watch(bodyClasses, newSource => {
+	body.value!.classList.remove(...body.value!.classList.values())
+	body.value!.classList.add(...newSource)
+})
 </script>
 
 <style>
