@@ -186,12 +186,15 @@ const linksSpecifiers = [
 const determineRoleLinks = computed(function()  {
 	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
 })
-// const body = inject("body") as Ref<HTMLBodyElement>
+const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
 	areRoleLinksShown.value = !areRoleLinksShown.value
 
-	// smelly!
-	// body.value.classList.toggle("unscrollable")
+	const bodyClasses = new Set([ ...rawBodyClasses.value ])
+	if (!bodyClasses.has("unscrollable")) bodyClasses.add("unscrollable")
+	else bodyClasses.delete("unscrollable")
+
+	rawBodyClasses.value = [...bodyClasses]
 }
 </script>
