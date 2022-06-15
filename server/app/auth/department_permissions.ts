@@ -1,17 +1,17 @@
-import type { PermissionMap, PermissionInfo } from "!/types/independent"
+import type {
+	PermissionMap,
+	PermissionInfo,
+	LevelPermission,
+	OperationPermission
+} from "!/types/independent"
+
 import PermissionGroup from "!/bases/permission_group"
 
 const departmentColumnName = "department_flags"
 
 type DepartmentFlags = { [departmentColumnName]: number }
 type Permissions =
-	| "view"
-	| "create"
-	| "update"
-	| "archiveAndRestore"
-	| "readOwnScope"
-	| "readOverallScope"
-	| "writeOverallScope"
+	| OperationPermission
 	| "mergeDepartment"
 
 /**
