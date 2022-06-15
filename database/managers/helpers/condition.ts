@@ -13,6 +13,11 @@ export default class Condition {
 		return this
 	}
 
+	search(column: string, value: string): Condition {
+		this.currentCondition[column] = { [Op.like]: `%${value}%` }
+		return this
+	}
+
 	or(...conditions: Condition[]): Condition {
 		this.currentCondition[Op.or] = conditions.reduce((previousConditions, raw) => {
 			return {
