@@ -35,28 +35,6 @@ describe("Helpers: Extract route info", () => {
 		expect(purpose).toBe("enhancer")
 	})
 
-	it("can extract index enhancer route", () => {
-		const root = "/sample"
-		const currentPath = `${root}/index.get.ts`
-
-		const { method, path, purpose } = extractRouteInfo(currentPath, root)
-
-		expect(method).toBe("get")
-		expect(path).toBe("/")
-		expect(purpose).toBe("enhancer")
-	})
-
-	it("can extract subindex enhancer route", () => {
-		const root = "/sample"
-		const currentPath = `${root}/a/index.get.ts`
-
-		const { method, path, purpose } = extractRouteInfo(currentPath, root)
-
-		expect(method).toBe("get")
-		expect(path).toBe("/a")
-		expect(purpose).toBe("enhancer")
-	})
-
 	it("can extract route with argument", () => {
 		const root = "/sample"
 		const currentPath = `${root}/sample(id).get.ts`

@@ -1,11 +1,8 @@
-import type { PageProps as BasePageProps } from "!/types/independent"
-
-export type PageProps = BasePageProps
-
+export type PageProps = {}
 // The `pageContext` that are available in both on the server-side and browser-side
 export type PageContext = {
 	Page: any
-	pageProps: PageProps
+	pageProps?: PageProps
 	documentProps?: {
 		title?: string
 		description?: string
