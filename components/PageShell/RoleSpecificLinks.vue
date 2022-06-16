@@ -1,5 +1,5 @@
 <template>
-	<div class="links" :class="[role, /* linkClasses */]">
+	<div v-if="!isViewportGreaterThanMobile" class="links mobile" :class="[role, /* linkClasses */]">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
@@ -17,6 +17,14 @@
 					Logout
 			</a>
 		</RoleLinksList>
+	</div>
+
+	<div v-else class="links desktop">
+		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+			<span class="material-icons">
+				{{ link.icon }}
+			</span>
+		</Link>
 	</div>
 </template>
 
