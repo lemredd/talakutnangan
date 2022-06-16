@@ -40,8 +40,6 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				role: "student_or_employee"
 			}
 		})
-		const menuButton = wrapper.find("#menu-btn")
-		await menuButton.trigger("click")
 		const link = wrapper.find("link-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
@@ -63,8 +61,6 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				role: "guest"
 			}
 		})
-		const menuButton = wrapper.find("#menu-btn")
-		await menuButton.trigger("click")
 		const link = wrapper.find("link-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
