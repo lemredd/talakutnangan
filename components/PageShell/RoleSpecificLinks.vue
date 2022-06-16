@@ -92,6 +92,9 @@ body.unscrollable {
 import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
+import RequestEnvironment from "!/helpers/request_environment"
+
+const emit = defineEmits(["toggle"])
 
 // Props
 type Props = {
@@ -200,6 +203,7 @@ const determineRoleLinks = computed(function()  {
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
+	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
 }
