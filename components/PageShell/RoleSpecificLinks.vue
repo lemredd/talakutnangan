@@ -78,14 +78,14 @@ body.unscrollable {
 	}
 }
 
-// @media (min-width: 640px) {
-// 	.links.mobile {
-// 		display: none;
-// 	}
-// 	.links.desktop {
-// 		display: flex;
-// 	}
-// }
+@media (min-width: 640px) {
+	.links.mobile {
+		display: none;
+	}
+	.links.desktop {
+		display: flex;
+	}
+}
 </style>
 
 <script setup lang="ts">
