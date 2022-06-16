@@ -21,9 +21,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, provide, ref, watch } from "vue"
+import { onMounted, provide, ref, watch, computed } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import { usePageContext } from "#/usePageContext"
+import { useGlobalWindow } from "#/global"
+
+const window = useGlobalWindow()
+const screenWidth = ref<number>(window.innerWidth)
+const isViewportGreaterThanMobile = computed(() => screenWidth.value! > 640)
+window.onresize = function() {
+	screenWidth.value = window.innerWidth
+}
+provide("isViewportGreaterThanMobile", isViewportGreaterThanMobile)
+
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
@@ -35,20 +45,18 @@ const isRoleGuest = role === "guest"
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
 const bodyClasses = ref<string[]>(["dark"])
-
 onMounted(function() {
 	if (layout.value) {
 		// ! Risky
 		body.value = layout.value.parentElement!.parentElement as HTMLBodyElement
 	}
 })
-
-provide("pageContext", pageContext)
-provide("bodyClasses", bodyClasses)
 watch(bodyClasses, newSource => {
 	body.value!.classList.remove(...body.value!.classList.values())
 	body.value!.classList.add(...newSource)
 })
+provide("pageContext", pageContext)
+provide("bodyClasses", bodyClasses)
 </script>
 
 <style>
