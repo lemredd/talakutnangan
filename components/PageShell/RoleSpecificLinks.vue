@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!isViewportGreaterThanMobile" class="links mobile" :class="[role, /* linkClasses */]">
+	<div class="links mobile" :class="role">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
@@ -19,7 +19,7 @@
 		</RoleLinksList>
 	</div>
 
-	<div v-else class="links desktop">
+	<div class="links desktop">
 		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
@@ -77,7 +77,7 @@ body.unscrollable {
 </style>
 
 <script setup lang="ts">
-import { computed, ComputedRef, inject, ref, Ref } from "vue"
+import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
 
@@ -86,9 +86,6 @@ type Props = {
 	role: string
 }
 const { role } = defineProps<Props>()
-
-// Viewport
-const isViewportGreaterThanMobile = inject("isViewportGreaterThanMobile") as ComputedRef<boolean>
 
 // Role
 const isRoleGuest = role === "guest"

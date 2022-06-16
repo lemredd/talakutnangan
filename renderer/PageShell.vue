@@ -24,23 +24,12 @@
 import { onMounted, provide, ref, watch, computed } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import { usePageContext } from "#/usePageContext"
-import { useGlobalWindow } from "#/global"
-
-const window = useGlobalWindow()
-const screenWidth = ref<number>(window.innerWidth)
-const isViewportGreaterThanMobile = computed(() => screenWidth.value! > 640)
-window.onresize = function() {
-	screenWidth.value = window.innerWidth
-}
-provide("isViewportGreaterThanMobile", isViewportGreaterThanMobile)
-
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
 const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
-const isRoleGuest = role === "guest"
 
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
