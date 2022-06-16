@@ -19,15 +19,15 @@ describe("POST /api/role/create", () => {
 			.set("Cookie", cookie)
 			.send({
 				name: role.name,
-				departmentFlags: role.departmentFlags,
-				roleFlags: role.roleFlags,
-				semesterFlags: role.semesterFlags,
-				tagFlags: role.tagFlags,
-				postFlags: role.postFlags,
-				commentFlags: role.commentFlags,
-				profanityFlags: role.profanityFlags,
-				userFlags: role.userFlags,
-				auditTrailFlags: role.auditTrailFlags
+				departmentFlags:   role.departmentFlags,
+				roleFlags:         role.roleFlags,
+				semesterFlags:     role.semesterFlags,
+				tagFlags:          role.tagFlags,
+				postFlags:         role.postFlags,
+				commentFlags:      role.commentFlags,
+				profanityFlags:    role.profanityFlags,
+				userFlags:         role.userFlags,
+				auditTrailFlags:   role.auditTrailFlags
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.CREATED)
@@ -43,16 +43,16 @@ describe("POST /api/role/create", () => {
 			.post("/api/role/create")
 			.send({
 				name: role.name,
-				departmentFlags: role.departmentFlags,
-				roleFlags: role.roleFlags,
-				semesterFlags: role.semesterFlags,
-				tagFlags: role.tagFlags,
-				postFlags: role.postFlags,
-				commentFlags: role.commentFlags,
-				profanityFlags: role.profanityFlags,
-				userFlags: role.userFlags,
-				auditTrailFlags: role.auditTrailFlags
-			})
+				departmentFlags:   role.departmentFlags,
+				roleFlags:         role.roleFlags,
+				semesterFlags:     role.semesterFlags,
+				tagFlags:          role.tagFlags,
+				postFlags:         role.postFlags,
+				commentFlags:      role.commentFlags,
+				profanityFlags:    role.profanityFlags,
+				userFlags:         role.userFlags,
+				auditTrailFlags:   role.auditTrailFlags
+			});
 
 		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
 	})
