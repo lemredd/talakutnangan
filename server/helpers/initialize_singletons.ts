@@ -3,7 +3,7 @@ import { SourceType } from "$/types/database"
 import Log from "!/helpers/log"
 import Database from "%/data_source/database"
 import Transport from "!/helpers/email/transport"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default async function(sourceType: SourceType) {

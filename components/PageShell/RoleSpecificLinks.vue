@@ -92,7 +92,7 @@ body.unscrollable {
 import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 
 const emit = defineEmits(["toggle"])
 
