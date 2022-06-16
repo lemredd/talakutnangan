@@ -1,17 +1,23 @@
-import type { PermissionMap, PermissionInfo } from "!/types/independent"
+import type {
+	PermissionMap,
+	PermissionInfo,
+	OperationPermission,
+} from "!/types/independent"
+
+import {
+	VIEW,
+	CREATE,
+	UPDATE,
+	ARCHIVE_AND_RESTORE
+} from "!/types/independent"
+
 import PermissionGroup from "!/bases/permission_group"
 
-const departmentColumnName = "department_flags"
+const departmentColumnName = "departmentFlags"
 
 type DepartmentFlags = { [departmentColumnName]: number }
 type Permissions =
-	| "view"
-	| "create"
-	| "update"
-	| "archiveAndRestore"
-	| "readOwnScope"
-	| "readOverallScope"
-	| "writeOverallScope"
+	| OperationPermission
 	| "mergeDepartment"
 
 /**
@@ -24,10 +30,10 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: 0x001, permissionDependencies: [] } ],
-			[ "create",            { flag: 0x002, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: 0x004, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: 0x008, permissionDependencies: [ "view" ] } ],
+			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
+			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
+			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
+			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
 			[ "mergeDepartment",   {
 				flag: 0x100,
 				permissionDependencies: [

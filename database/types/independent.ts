@@ -29,7 +29,7 @@ export interface RawUser {
 	signature?: Buffer|null
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ]
+export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 
 export type Criteria = typeof rawCriteria[number]
 
@@ -63,4 +63,42 @@ export type List<T> = Promise<{
 	count: number
 }>
 
-export type Pipe<T> = (currentState: T, constraints: object) => T
+export type CommonConstraints = {
+	page?: number,
+	[key: string]: any
+}
+
+export type Pipe<T, U> = (currentState: T, constraints: U) => T
+
+/**
+ * Used to indicate that a variable is serializable into a specific data format.
+ */
+export interface Serializable {
+	[key: string]:
+		| string
+		| number
+		| boolean
+		| null
+		| Serializable[]
+		| Serializable
+}
+
+/**
+ * Used as part of user profile data to be returned to client.
+ */
+export interface Role extends RawRole, Serializable {}
+
+ /**
+  * Used to return user profile data to client.
+  *
+  * Signature should be a URL to signature image.
+  */
+ export interface UserProfile extends Serializable {
+	 name: string,
+	 email: string,
+	 department: string,
+	 roles: Role[],
+	 kind: UserKind,
+	 emailVerifiedAt: string|null,
+	 signature: string|null
+ }
