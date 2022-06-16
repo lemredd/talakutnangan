@@ -9,6 +9,7 @@
 
 	"moduleNameMapper": {
 		"~/(.*)": "<rootDir>/t/helpers/$1",
+		"!/(.*)": "<rootDir>/server/$1",
 		"#/(.*)": "<rootDir>/renderer/$1",
 		"@/(.*)": "<rootDir>/components/$1"
 	},
