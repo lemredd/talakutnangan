@@ -11,7 +11,8 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
+					bodyClasses: ref<string[]>(["dark"]),
+					isViewportGreaterThanMobile: ref(false)
 				}
 			},
 			props: {
@@ -32,7 +33,9 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
+					bodyClasses: ref<string[]>(["dark"]),
+					isViewportGreaterThanMobile: ref(false)
+
 				}
 			},
 			props: {
@@ -55,7 +58,8 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
+					bodyClasses: ref<string[]>(["dark"]),
+					isViewportGreaterThanMobile: ref(false)
 				}
 			},
 			props: {
@@ -68,5 +72,26 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const linkHref = link.attributes("href")
 
 		expect(linkHref).toBe("/log_in")
+	})
+
+	it("should appear different in desktop", () => {
+		const wrapper = mount(RoleSpecificLinks, {
+			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"]),
+					isViewportGreaterThanMobile: ref(true)
+				}
+			},
+			props: {
+				role: "student_or_employee"
+			}
+		})
+
+		const desktopLinks = wrapper.findAll("link-stub")
+		expect(desktopLinks.length).toBeGreaterThan(1)
 	})
 })
