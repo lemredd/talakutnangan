@@ -8,4 +8,8 @@ export default class Database {
 	static async initialize(sourceType: SourceType) {
 		this.source = await createSource(sourceType)
 	}
+
+	static get dataSource(): Sequelize {
+		return this.source
+	}
 }
