@@ -11,8 +11,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					isViewportGreaterThanMobile: ref(false)
+					bodyClasses: ref<string[]>(["dark"])
 				}
 			},
 			props: {
@@ -33,8 +32,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					isViewportGreaterThanMobile: ref(false)
+					bodyClasses: ref<string[]>(["dark"])
 
 				}
 			},
@@ -58,8 +56,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					isViewportGreaterThanMobile: ref(false)
+					bodyClasses: ref<string[]>(["dark"])
 				}
 			},
 			props: {
@@ -82,8 +79,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					isViewportGreaterThanMobile: ref(true)
+					bodyClasses: ref<string[]>(["dark"])
 				}
 			},
 			props: {
