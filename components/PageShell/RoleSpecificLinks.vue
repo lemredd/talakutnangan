@@ -72,23 +72,23 @@ body.unscrollable {
 import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
+import { useGlobalWindow } from "#/global"
 
 // Props
 type Props = {
 	role: string
 }
-const props = defineProps<Props>()
-const role = props.role
+const { role } = defineProps<Props>()
 
 // Viewport
-// Currently, window class is undefined
-// const linkClasses = ""
-// const isViewportGreaterThanMobile = computed(function() {
-// 	return screenWidth.value > 640
-// })
-// window.onresize = () => {
-// //   screenWidth.value = window.innerWidth
-// }
+const linkClasses = ""
+const window = useGlobalWindow()
+const screenWidth = ref<number>(window.innerWidth)
+const isViewportGreaterThanMobile = computed(() => screenWidth.value! > 640)
+
+window.onresize = function() {
+	screenWidth.value = window.innerWidth
+}
 
 // Role
 const isRoleGuest = role === "guest"
