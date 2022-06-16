@@ -10,6 +10,7 @@ Fixes, breaking change, or initial code of a feature should be merge as soon as 
 because the can affect the code or experience greatly in the future. Enhancements can be deferred.
 -->
 - PRs to push first: #xx/none  <!-- Put PR number if there are or none. -->
+- Is complete? Yes/No
 - Must be merged ASAP? Yes/No
 
 ## Lacking Mechanism
