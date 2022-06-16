@@ -1,4 +1,4 @@
-import { Environment } from "!/types/independent";
+import { Environment } from "$/types/server";
 
 export default function(): Environment {
 	const environment = process.env.NODE_ENV

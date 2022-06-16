@@ -1,7 +1,7 @@
 import { Op } from "sequelize"
 
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { Criteria, CommonConstraints, RawUser, Pipe } from "%/types/independent"
+import type { Criteria, CommonConstraints, RawUser, Pipe } from "$/types/database"
 
 import Role from "%/models/role"
 import User from "%/models/user"

@@ -9,7 +9,7 @@ import {
 	BelongsToMany
 } from "sequelize-typescript"
 import Role from "%/models/role"
-import { UserKind } from "%/types/independent"
+import { UserKind } from "$/types/database"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 

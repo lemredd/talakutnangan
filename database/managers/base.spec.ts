@@ -1,6 +1,6 @@
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
-import type { RawUser, Pipe, List } from "%/types/independent"
+import type { RawUser, Pipe, List } from "$/types/database"
 import type { FindAndCountOptions } from "sequelize"
 import type { ModelCtor } from "sequelize-typescript"
 

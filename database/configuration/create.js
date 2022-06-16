@@ -3,8 +3,6 @@ const { URL } = require("url")
 module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 	const configuration = {}
 
-	if (process.env.DATABASE_LOGGING === "false") configuration.logging = () => {}
-
 	switch(databaseType) {
 		case "pgsql": {
 			const databaseURL = new URL(process.env.DATABASE_URL)

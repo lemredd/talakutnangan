@@ -2,7 +2,7 @@ import dataURIToBuffer from "data-uri-to-buffer/src/index"
 import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
-import { UserKind } from "%/types/independent"
+import { UserKind } from "$/types/database"
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 

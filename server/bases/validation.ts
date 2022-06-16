@@ -1,6 +1,6 @@
 import { Validator } from "node-input-validator"
 
-import { ValidationError } from "!/types/independent"
+import { ValidationError } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware"

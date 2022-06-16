@@ -1,5 +1,5 @@
 import { PageRequest } from "!/types/hybrid"
-import { Serializable } from "%/types/independent"
+import { Serializable } from "$/types/database"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
 import Validation from "!/bases/validation"

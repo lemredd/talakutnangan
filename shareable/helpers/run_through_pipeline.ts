@@ -1,4 +1,4 @@
-import type { Pipe } from "%/types/independent"
+import type { Pipe } from "$/types/database"
 
 /**
  * Function which allows multiple transformations of data at specified constraints and pipes.

@@ -1,5 +1,5 @@
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { CommonConstraints, RawDepartment, Pipe } from "%/types/independent"
+import type { CommonConstraints, RawDepartment, Pipe } from "$/types/database"
 
 import BaseManager from "%/managers/base"
 import Department from "%/models/department"
