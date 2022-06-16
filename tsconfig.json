@@ -16,6 +16,7 @@
 			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],
 			"@/*": [ "./components/*" ],
+			"$/*": [ "./shareable/*" ],
 			"@@/*": [ "./pages/*" ]
 		},
 		"emitDecoratorMetadata": true,
