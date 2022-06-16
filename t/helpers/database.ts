@@ -1,19 +1,12 @@
 import { Sequelize } from "sequelize-typescript"
 
-import { SourceType } from "%/types/independent"
-import { Environment } from "!/types/independent"
-import getEnvironment from "!/helpers/get_environment"
-import createDataSource from "%/data_source/create_source"
+import Database from "%/data_source/database"
 
 export default class {
 	static #dataSource: Sequelize
 
 	static async create(): Promise<void> {
-		if (getEnvironment() === Environment.UnitTest) {
-			this.#dataSource = await createDataSource("unit_test")
-		} else {
-			this.#dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
-		}
+		this.#dataSource = Database.dataSource
 
 		await this.#dataSource.sync({ force: true })
 	}
