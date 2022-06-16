@@ -1,7 +1,7 @@
 import { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import RoleManager from "%/managers/department"
+import RoleManager from "%/managers/role"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import ModelBoundController from "!/common_controllers/model_bound_controller"
 
