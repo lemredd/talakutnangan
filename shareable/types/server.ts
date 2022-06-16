@@ -1,6 +1,6 @@
 /**
  * @module IndependentServerTypes
- * @description This module contains types originallt used in server and do not depend from other
+ * @description This module contains types originally used in database and do not depend from other
  * packages. However, they can be used by other parts of the repository.
  */
 
@@ -78,7 +78,7 @@ import type Middleware from "!/bases/middleware"
  */
 export type OptionalMiddleware = Middleware | null
 
-import type { UserProfile, Serializable } from "%/types/independent"
+import type { UserProfile, Serializable } from "$/types/database"
 
 export interface PageProps extends Serializable {
 	// Added to pass data from server to client
