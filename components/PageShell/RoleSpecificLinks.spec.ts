@@ -21,7 +21,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const menuButton = wrapper.find("#menu-btn")
 		await menuButton.trigger("click")
 
-		expect(wrapper.emitted()).toHaveProperty("click")
+		expect(wrapper.emitted()).toHaveProperty("toggle")
 	})
 
 	it("should specify the right link/s for a non-guest role", async () => {
