@@ -9,7 +9,7 @@ import type {
 	WithRegistration,
 	OptionalMiddleware,
 	PageProps
-} from "$/types/independent"
+} from "$/types/server"
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client

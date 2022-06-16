@@ -2,14 +2,14 @@ import type {
 	PermissionMap,
 	PermissionInfo,
 	OperationPermission,
-} from "$/types/independent"
+} from "$/types/server"
 
 import {
 	VIEW,
 	CREATE,
 	UPDATE,
 	ARCHIVE_AND_RESTORE
-} from "$/types/independent"
+} from "$/types/server"
 
 import PermissionGroup from "!/bases/permission_group"
 

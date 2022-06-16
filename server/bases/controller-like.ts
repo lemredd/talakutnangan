@@ -1,4 +1,4 @@
-import { RouteInformation, OptionalMiddleware } from "$/types/independent"
+import { RouteInformation, OptionalMiddleware } from "$/types/server"
 import { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 import Policy from "!/bases/policy"
