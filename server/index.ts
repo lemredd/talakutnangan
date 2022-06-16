@@ -9,15 +9,12 @@ import Log from "!/helpers/log"
 import createWSServer from "!/ws/create_server"
 import Router from "!/app/routes/router"
 import createAppHandler from "!/app/create_handler"
-import createDataSource from "%/data_source/create_source"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
 startServer()
 
 async function startServer() {
-	initializeSingletons()
-
-	const _dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+	initializeSingletons(process.env.DATABASE_TYPE as SourceType)
 
 	const customRouter = new Router()
 
