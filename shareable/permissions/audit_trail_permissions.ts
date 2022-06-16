@@ -8,7 +8,7 @@ import {
 	VIEW
 } from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
 const auditTrailColumnName = "auditTrailFlags"
 

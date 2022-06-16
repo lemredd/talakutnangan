@@ -11,20 +11,20 @@ import {
 	ARCHIVE_AND_RESTORE
 } from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const tagColumnName = "tagFlags"
+const semesterColumnName = "semesterFlags"
 
-type TagFlags = { [tagColumnName]: number }
+type SemesterFlags = { [semesterColumnName]: number }
 type Permissions = OperationPermission
 
 /**
- * Permission group for tag.
+ * Permission group for semester.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<TagFlags, Permissions> {
-	get name(): string { return tagColumnName }
+export default class extends PermissionGroup<SemesterFlags, Permissions> {
+	get name(): string { return semesterColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([

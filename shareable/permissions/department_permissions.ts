@@ -11,20 +11,22 @@ import {
 	ARCHIVE_AND_RESTORE
 } from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const semesterColumnName = "semesterFlags"
+const departmentColumnName = "departmentFlags"
 
-type SemesterFlags = { [semesterColumnName]: number }
-type Permissions = OperationPermission
+type DepartmentFlags = { [departmentColumnName]: number }
+type Permissions =
+	| OperationPermission
+	| "mergeDepartment"
 
 /**
- * Permission group for semester.
+ * Permission group for department.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<SemesterFlags, Permissions> {
-	get name(): string { return semesterColumnName }
+export default class extends PermissionGroup<DepartmentFlags, Permissions> {
+	get name(): string { return departmentColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
@@ -32,6 +34,12 @@ export default class extends PermissionGroup<SemesterFlags, Permissions> {
 			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
 			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
 			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
+			[ "mergeDepartment",   {
+				flag: 0x100,
+				permissionDependencies: [
+					"archiveAndRestore", "create"
+				]
+			} ]
 		])
 	}
 }

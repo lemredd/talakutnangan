@@ -17,23 +17,23 @@ import {
 	WRITE_DEPARTMENT_SCOPE
 } from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const commentColumnName = "commentFlags"
+const postColumnName = "postFlags"
 
-type CommentFlags = { [commentColumnName]: number }
+type PostFlags = { [postColumnName]: number }
 type Permissions =
 	| OperationPermission
 	| Exclude<LevelPermission, "readOwnScope">
-	| "vote"
+	| "tag"
 
 /**
- * Permission group for comments.
+ * Permission group for post.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<CommentFlags, Permissions> {
-	get name(): string { return commentColumnName }
+export default class extends PermissionGroup<PostFlags, Permissions> {
+	get name(): string { return postColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
@@ -54,7 +54,7 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 				permissionDependencies: [ "readOverallScope" ]
 			} ],
 
-			[ "vote", { flag: 0x0100, permissionDependencies: [ "view" ] } ],
+			[ "tag", { flag: 0x0100, permissionDependencies: [ "view" ] } ],
 		])
 	}
 }

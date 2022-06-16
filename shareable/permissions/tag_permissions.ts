@@ -11,20 +11,20 @@ import {
 	ARCHIVE_AND_RESTORE
 } from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const roleColumnName = "roleFlags"
+const tagColumnName = "tagFlags"
 
-type RoleFlags = { [roleColumnName]: number }
+type TagFlags = { [tagColumnName]: number }
 type Permissions = OperationPermission
 
 /**
- * Permission group for role.
+ * Permission group for tag.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<RoleFlags, Permissions> {
-	get name(): string { return roleColumnName }
+export default class extends PermissionGroup<TagFlags, Permissions> {
+	get name(): string { return tagColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([

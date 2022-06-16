@@ -1,12 +1,12 @@
 import type { PermissionMap, PermissionInfo } from "$/types/server"
 
-import PermissionGroup from "./permission_group"
+import BasePermissionGroup from "./base"
 
 describe("Back-end: Base Permission Group", () => {
 	type GroupNameA = { "groupA": number }
 	type AvailablePermissionsA = "a" | "b"
 
-	class GroupA extends PermissionGroup<GroupNameA, AvailablePermissionsA> {
+	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsA> {
 		get name(): string { return "groupA" }
 		get permissions(): PermissionMap<AvailablePermissionsA> {
 			return new Map<AvailablePermissionsA, PermissionInfo<AvailablePermissionsA>>([
@@ -36,7 +36,7 @@ describe("Back-end: Base Permission Group", () => {
 	type GroupNameB = { "groupB": number }
 	type AvailablePermissionsB = "c" | "d"
 
-	class GroupB extends PermissionGroup<GroupNameB, AvailablePermissionsB> {
+	class GroupB extends BasePermissionGroup<GroupNameB, AvailablePermissionsB> {
 		get name(): string { return "groupB" }
 		get permissions(): PermissionMap<AvailablePermissionsB> {
 			return new Map<AvailablePermissionsB, PermissionInfo<AvailablePermissionsB>>([
@@ -88,7 +88,7 @@ describe("Back-end: Base Permission Group", () => {
 	type GroupNameC = { "groupC": number }
 	type AvailablePermissionsC = "e" | "f" | "g"
 
-	class GroupC extends PermissionGroup<GroupNameC, AvailablePermissionsC> {
+	class GroupC extends BasePermissionGroup<GroupNameC, AvailablePermissionsC> {
 		get name(): string { return "groupC" }
 		get permissions(): PermissionMap<AvailablePermissionsC> {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
