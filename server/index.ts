@@ -14,7 +14,7 @@ import initializeSingletons from "!/helpers/initialize_singletons"
 startServer()
 
 async function startServer() {
-	initializeSingletons(process.env.DATABASE_TYPE as SourceType)
+	await initializeSingletons(process.env.DATABASE_TYPE as SourceType)
 
 	const customRouter = new Router()
 

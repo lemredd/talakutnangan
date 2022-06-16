@@ -6,10 +6,10 @@ import Transport from "!/helpers/email/transport"
 import RequestEnvironment from "!/helpers/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-export default function(sourceType: SourceType) {
+export default async function(sourceType: SourceType) {
 	Log.initialize(RequestEnvironment.isOnTest)
 
-	Database.initialize(sourceType)
+	await Database.initialize(sourceType)
 
 	if (
 		process.env.EMAIL_HOST !== undefined
