@@ -3,7 +3,7 @@
 		<a id="notification-btn" role="button" @click="toggleNotificationList" class="material-icons">
 			notifications
 		</a>
-		<NotificationList v-if="isNotificationListShown">
+		<NotificationList v-if="isNotificationListShown" @close="toggleNotificationList">
 			<ul class="notification-items">
 					<a href="">
 						<li class="notification-item" v-for="notification in notifications" :key="notification.id">
@@ -25,45 +25,45 @@
 
 <style scoped lang="scss">
 .notifications {
-	position: relative;
 	height: 30px;
 	padding: 3px 10px;
 	align-self: center;
-
-	& .dropdown-container {
-		left: -100px;
-	}
 }
 
-.notification-item {
-	padding: .5em 1em;
-	display: grid;
-	grid-template:
-		"icon title"
-		"icon date";
-	.icon {
-	border-radius: 50%;
-	height: min-content;
-	align-self: center;
-	grid-area: icon;
-
-		span {
-			font-size: 32px;
-		}
-	}
-
-	.title { grid-area: title; }
-	.date { grid-area: date; }
-}
-.notification-footer {
-	border-top: 1px solid gray;
+.notification-items {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	justify-content: space-between;
+	height: calc(100vh - 56px);
+
+	.notification-item {
+		padding: .5em 1em;
+		display: grid;
+		grid-template:
+			"icon title"
+			"icon date";
+		.icon {
+		border-radius: 50%;
+		height: min-content;
+		align-self: center;
+		grid-area: icon;
+
+			span {
+				font-size: 32px;
+			}
+		}
+
+		.title { grid-area: title; }
+		.date { grid-area: date; }
+	}
+	.notification-footer {
+		text-align: center;
+	}
 }
 </style>
 
 <script setup lang="ts">
-import { Dropdown as NotificationList } from "@/components"
+import NotificationList from "@/Dropdown.vue"
 import { ref } from "vue"
 
 type Emissions = {
@@ -72,6 +72,20 @@ type Emissions = {
 const emit = defineEmits<Emissions>()
 
 const notifications = [
+	{
+		id: 0,
+		description: "lorem ipsum",
+		type: "general",
+		icon: "notifications",
+		dateOccured: new Date(2022, 2, 3).toDateString()
+	},
+	{
+		id: 0,
+		description: "lorem ipsum",
+		type: "general",
+		icon: "notifications",
+		dateOccured: new Date(2022, 2, 3).toDateString()
+	},
 	{
 		id: 0,
 		description: "lorem ipsum",

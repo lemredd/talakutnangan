@@ -1,47 +1,46 @@
 <template>
-<div class="container m-25 border border-solid border-dark-900 rounded-0.8rem w-100% h-50% bg-dark-500">
+<div>
+	<header class="mb-5">
+		<h1 class="my-5 text-[1.75em] uppercase">User Settings</h1>
+	</header>
 
-     <main>
-         <form class="items-left p-5 text-light-100">
-            <div class = "flex items-center">
-				<TextualField class = "p-5" label="E-mail" type="email" v-model="emailRef"/>
-				<button class="material-icons">edit</button>
-			</div>
-            <div class = "flex items-center">
-				<TextualField class = "p-5" label="Password" type="password" v-model="passwordRef"/>
-				<button class="material-icons">edit</button>
-			</div>
-            <div class = "flex items-center">
-				<TextualField class = "p-5" label="Student Number" type="text" v-model="studentNo"/>
-			</div>
-            <div class = "flex items-center">
-				<TextualField class = "p-5" label="Institute" type="text" v-model="institute"/>
-			</div>
-            <div class = "flex items-center">
-				<TextualField class = "p-5"  label="Role" type="text" v-model="role"/>
-			</div>
-         </form>
-     </main>
-
+	<main>
+		<Tab :tabs="tabs" />
+	</main>
 </div>
 </template>
 
-<style scoped lang = "scss">
-@import "https://fonts.googleapis.com/icon?family=Material+Icons";
-input {
-        width:50%;
+<style>
 
-
-}
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import { provide, ref } from "vue"
+import Tab from "@/Tab.vue"
+import Account from "@/settings/Account.vue"
+import Profile from "@/settings/Profile.vue"
 
-const emailRef = ref("sample@sample.com")
-const passwordRef = ref("password123")
-const studentNo = ref("1920-xxxx")
-const institute = ref("INS (Institute of Name Sample")
-const role = ref("student")
+const tabs = {
+	Account,
+	Profile
+}
+const roles = ["student", "employee"]
+const role = roles[0]
+const userInfo = ref({
+	account: {
+		email: "sample@sample.com",
+		password: "password123",
+		institute: "Institute of Name",
+		role: role,
+		studentNumber: "1920-xxxx",
+	},
+	profile: {
+		displayName: "Sample Display F. Name",
+		profilePic: null,
+		signature: null,
+		prefersDarkMode: true
+	}
+})
+
+provide("userInfo", userInfo)
 </script>

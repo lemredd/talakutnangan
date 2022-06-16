@@ -6,7 +6,7 @@ import Route from "!/app/routes/api/user/log_in.post"
 
 describe("POST /api/user/log_in", () => {
 	beforeAll(async () => {
-		await App.create("/api/user", new Route(), false)
+		await App.create(new Route(), false)
 	})
 
 	it("can be accessed by guest and request with existing credentials", async () => {

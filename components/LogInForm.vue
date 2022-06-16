@@ -2,14 +2,29 @@
 	<form>
 		<TextualField label="E-mail" type="email" v-model="email"/>
 		<TextualField label="Password" type="password" v-model="password"/>
-		<output>
-			Status: {{ status }}
-		</output>
 	</form>
-	<button v-if="email && !token" @click="logIn">
-		Log in
-	</button>
+	<div class="controls">
+		<a href="">Forgot Password?</a>
+		<button v-if="email && !token" @click="logIn">
+			Log in
+		</button>
+	</div>
 </template>
+
+<style scoped lang="scss">
+.controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	button {
+		border-radius: .5em;
+		padding: 0.5em 1em;
+
+		background-color: #444;
+	}
+}
+</style>
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
@@ -40,9 +55,3 @@ function logIn() {
 	})
 }
 </script>
-
-<style>
-label {
-	display: block;
-}
-</style>

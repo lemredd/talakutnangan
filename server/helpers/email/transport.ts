@@ -1,7 +1,7 @@
 import { createTransport } from "nodemailer"
 import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
-import { Environment } from "!/types/independent"
+import Log from "!/helpers/log"
 import RequestEnvironment from "!/helpers/request_environment"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"
@@ -48,10 +48,10 @@ export default class Transport {
 
 		this.transport.verify((error, success) => {
 			if (error) {
-				console.error("There is a problem on connecting with the e-mail server.")
-				console.error(`Error [${error.name}]: ${error.message}`)
+				Log.errorMessage("server", "There is a problem on connecting with the e-mail server.")
+				Log.error("server", error)
 			} else {
-				console.log("Connected to the e-mail server")
+				Log.success("server", "Connected to the e-mail server")
 			}
 		})
 	}
