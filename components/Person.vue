@@ -1,7 +1,7 @@
 <template>
 <div :class="`person-${type}`">
     <span class="material-icons person">person</span>
-    <span class="material-icons" :class="accessory">{{accessory}}</span>
+    <span class="material-icons accessory" :class="accessory">{{accessory}}</span>
 </div>
 
 </template>
