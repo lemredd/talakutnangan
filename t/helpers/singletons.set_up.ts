@@ -1,4 +1,4 @@
-import { SourceType } from "%/types/independent"
+import { SourceType } from "$/types/database"
 import { Environment } from "$/types/server"
 import getEnvironment from "!/helpers/get_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"

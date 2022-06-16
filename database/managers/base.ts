@@ -1,4 +1,4 @@
-import type { List, Pipe } from "%/types/independent"
+import type { List, Pipe } from "$/types/database"
 import type {
 	Model,
 	ModelCtor,

@@ -1,5 +1,5 @@
 import { Request } from "!/types/dependent"
-import { Serializable } from "%/types/independent"
+import { Serializable } from "$/types/database"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
 export default class extends PageMiddleware {

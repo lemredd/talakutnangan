@@ -1,4 +1,4 @@
-import { SourceType } from "%/types/independent"
+import { SourceType } from "$/types/database"
 
 import Log from "!/helpers/log"
 import Database from "%/data_source/database"

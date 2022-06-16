@@ -1,6 +1,7 @@
 /**
- * @module DatabaseIndependentTypes
- * @description This module exports types that are independent from any third-party packages.
+ * @module IndependentDatabaseTypes
+ * @description This module contains types originally used in database and do not depend from other
+ * packages. However, they can be used by other parts of the repository.
  */
 
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ]

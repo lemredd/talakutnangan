@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript"
-import { SourceType } from "%/types/independent"
+import { SourceType } from "$/types/database"
 import createSource from "%/data_source/create_source"
 
 export default class Database {
