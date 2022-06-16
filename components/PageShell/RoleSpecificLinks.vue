@@ -32,6 +32,10 @@
 body.unscrollable {
 	overflow-y: hidden;
 }
+.links.desktop {
+	display: none;
+}
+
 
 .links {
 	height: 100%;
@@ -74,6 +78,14 @@ body.unscrollable {
 	}
 }
 
+// @media (min-width: 640px) {
+// 	.links.mobile {
+// 		display: none;
+// 	}
+// 	.links.desktop {
+// 		display: flex;
+// 	}
+// }
 </style>
 
 <script setup lang="ts">
