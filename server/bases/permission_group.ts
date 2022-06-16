@@ -1,4 +1,4 @@
-import type { PermissionMap, PermissionInfo } from "!/types/independent"
+import type { PermissionMap, PermissionInfo } from "$/types/independent"
 
 /**
  * Base class for permission groups.

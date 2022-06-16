@@ -1,4 +1,4 @@
-import type { PageProps as BasePageProps } from "!/types/independent"
+import type { PageProps as BasePageProps } from "$/types/independent"
 
 export type PageProps = BasePageProps
 

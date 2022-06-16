@@ -1,7 +1,7 @@
 /**
- * @module IndependentTypes
- * @description This module contains types that do not depend from other packages and can be used by
- * other parts of the repository. However, they are placed here to indicate where they originate.
+ * @module IndependentServerTypes
+ * @description This module contains types originallt used in server and do not depend from other
+ * packages. However, they can be used by other parts of the repository.
  */
 
 /**

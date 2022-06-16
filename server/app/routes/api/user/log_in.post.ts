@@ -1,6 +1,6 @@
 import { v4 } from "uuid"
 
-import { OptionalMiddleware } from "!/types/independent"
+import { OptionalMiddleware } from "$/types/independent"
 import { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"

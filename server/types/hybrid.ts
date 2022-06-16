@@ -1,5 +1,5 @@
 /**
- * @module HybridTypes
+ * @module HybridServerTypes
  * @description This module contains types that depend on both independent and dependent types.
  */
 
@@ -9,7 +9,7 @@ import type {
 	WithRegistration,
 	OptionalMiddleware,
 	PageProps
-} from "!/types/independent"
+} from "$/types/independent"
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client

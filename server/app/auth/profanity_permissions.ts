@@ -3,7 +3,7 @@ import type {
 	PermissionInfo,
 	LevelPermission,
 	OperationPermission
-} from "!/types/independent"
+} from "$/types/independent"
 
 import {
 	VIEW,
@@ -12,7 +12,7 @@ import {
 	ARCHIVE_AND_RESTORE,
 	WRITE_OVERALL_SCOPE,
 	READ_OVERALL_SCOPE
-} from "!/types/independent"
+} from "$/types/independent"
 
 import PermissionGroup from "!/bases/permission_group"
 

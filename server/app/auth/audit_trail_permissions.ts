@@ -2,11 +2,11 @@ import type {
 	PermissionMap,
 	PermissionInfo,
 	OperationPermission,
-} from "!/types/independent"
+} from "$/types/independent"
 
 import {
 	VIEW
-} from "!/types/independent"
+} from "$/types/independent"
 
 import PermissionGroup from "!/bases/permission_group"
 
