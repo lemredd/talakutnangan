@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes"
 import App from "~/app"
 import UserFactory from "~/factories/user"
 import compare from "!/helpers/auth/compare"
-import UserManager from "%/managers/user_manager"
+import UserManager from "%/managers/user"
 import Route from "!/app/routes/api/user/reset_password(id).patch"
 
 describe("PATCH /api/user/reset_password/:id", () => {

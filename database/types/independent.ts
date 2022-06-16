@@ -63,7 +63,12 @@ export type List<T> = Promise<{
 	count: number
 }>
 
-export type Pipe<T> = (currentState: T, constraints: object) => T
+export type CommonConstraints = {
+	page?: number,
+	[key: string]: any
+}
+
+export type Pipe<T, U> = (currentState: T, constraints: U) => T
 
 /**
  * Used to indicate that a variable is serializable into a specific data format.
@@ -97,10 +102,3 @@ export interface Role extends RawRole, Serializable {}
 	 emailVerifiedAt: string|null,
 	 signature: string|null
  }
-
-export type CommonConstraints = {
-	page?: number,
-	[key: string]: any
-}
-
-export type Pipe<T, U> = (currentState: T, constraints: U) => T

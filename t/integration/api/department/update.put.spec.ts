@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes"
 
 import App from "~/app"
+import DepartmentManager from "%/managers/department"
 import DepartmentFactory from "~/factories/department"
-import DepartmentManager from "%/managers/department_manager"
 
 import Route from "!/app/routes/api/department/update.put"
 
