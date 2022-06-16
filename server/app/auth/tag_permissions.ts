@@ -13,20 +13,18 @@ import {
 
 import PermissionGroup from "!/bases/permission_group"
 
-const departmentColumnName = "departmentFlags"
+const tagColumnName = "tagFlags"
 
-type DepartmentFlags = { [departmentColumnName]: number }
-type Permissions =
-	| OperationPermission
-	| "mergeDepartment"
+type TagFlags = { [tagColumnName]: number }
+type Permissions = OperationPermission
 
 /**
- * Permission group for department.
+ * Permission group for tag.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<DepartmentFlags, Permissions> {
-	get name(): string { return departmentColumnName }
+export default class extends PermissionGroup<TagFlags, Permissions> {
+	get name(): string { return tagColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
@@ -34,12 +32,6 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
 			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
 			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
-			[ "mergeDepartment",   {
-				flag: 0x100,
-				permissionDependencies: [
-					"archiveAndRestore", "create"
-				]
-			} ]
 		])
 	}
 }

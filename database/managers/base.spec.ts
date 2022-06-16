@@ -4,10 +4,10 @@ import type { RawUser, Pipe, List } from "%/types/independent"
 import type { FindAndCountOptions } from "sequelize"
 import type { ModelCtor } from "sequelize-typescript"
 
-import BaseManager from "./base_manager"
+import BaseManager from "./base"
 
 class MockUserManager extends BaseManager<User, RawUser> {
-	get listPipeline(): Pipe<FindAndCountOptions<User>>[] { return [] }
+	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [] }
 
 	get model(): ModelCtor<User> { return User }
 }

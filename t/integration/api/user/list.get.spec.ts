@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import UserManager from "%/managers/user_manager"
+import UserManager from "%/managers/user"
 
 import App from "~/app"
 import UserFactory from "~/factories/user"
@@ -10,14 +10,14 @@ describe("GET /api/user/list", () => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by permitted user and get single unadmitted user", async () => {
+	it("can be accessed by permitted user and get single complete user", async () => {
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
 		const manager = new UserManager()
 		const student = await (new UserFactory()).beStudent().insertOne()
 
 		const response = await App.request
 			.get("/api/user/list")
-			.query({ criteria: "unadmitted" })
+			.query({ criteria: "complete" })
 			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
@@ -31,6 +31,6 @@ describe("GET /api/user/list", () => {
 		)
 	})
 
-	it.todo("can be accessed by permitted user and get multiple unadmitted users")
+	it.todo("can be accessed by permitted user and get multiple complete users")
 	it.todo("cannot be accessed by guest users")
 })

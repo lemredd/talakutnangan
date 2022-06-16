@@ -1,13 +1,31 @@
-import { Op, FindAndCountOptions } from "sequelize"
+import { Op } from "sequelize"
+
+import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { Criteria, CommonConstraints, RawUser, Pipe } from "%/types/independent"
 
 import Role from "%/models/role"
 import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
+import BaseManager from "%/managers/base"
 import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
-import type { Criteria, RawUser } from "%/types/independent"
+import limit from "%/managers/helpers/limit"
+import searchName from "%/managers/helpers/search_name"
+import offset from "%/managers/helpers/offset"
+import siftByCriteria from "%/managers/user/sift_by_criteria"
 
-export default class UserManager {
+export default class UserManager extends BaseManager<User, RawUser> {
+	get model(): ModelCtor<User> { return User }
+
+	get listPipeline(): Pipe<FindAndCountOptions<User>, CommonConstraints & { criteria: Criteria }>[] {
+		return [
+			searchName,
+			siftByCriteria,
+			offset,
+			limit
+		]
+	}
+
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
 		const foundUser = await User.findOne({
 			where: {
@@ -23,49 +41,9 @@ export default class UserManager {
 		}
 	}
 
-	async findWithID(id: number): Promise<User|null> {
-		return await User.findOne({ where: { id } })
-	}
-
 	async create(details: RawUser): Promise<User> {
 		details.password = await hash(details.password!)
-		return await User.create({ ...details })
-	}
-
-	async list(criteria: Criteria|null, offset: number): Promise<{
-		records: User[],
-		count: number
-	}> {
-		const options: FindAndCountOptions<User> = {
-			offset
-		}
-
-		switch(criteria) {
-			case "incomplete": { // Incomplete profile
-				// ?: Should password be included?
-				options.where = {
-					[Op.or]: {
-						emailVerifiedAt: { [Op.is]: null },
-						signature: { [Op.is]: null }
-					}
-				}
-				break
-			}
-			case "complete": { // Complete profile
-				options.where = {
-					emailVerifiedAt: { [Op.not]: null },
-					signature: { [Op.not]: null }
-				}
-				break
-			}
-			case "all":
-			default: { // All users
-				break
-			}
-		}
-
-		const { rows, count } = await User.findAndCountAll(options)
-		return { records: rows, count }
+		return await super.create({ ...details })
 	}
 
 	async verify(email: string): Promise<number> {
