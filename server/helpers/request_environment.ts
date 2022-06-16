@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes"
 
-import { Environment } from "!/types/independent"
+import { Environment } from "$/types/server"
 import getRoot from "!/helpers/get_root"
 import getEnvironment from "!/helpers/get_environment"
 

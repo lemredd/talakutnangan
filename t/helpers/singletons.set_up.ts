@@ -1,5 +1,12 @@
+import { SourceType } from "$/types/database"
+import { Environment } from "$/types/server"
+import getEnvironment from "!/helpers/get_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
-beforeAll(() => {
-	initializeSingletons()
+beforeAll(async () => {
+	if (getEnvironment() === Environment.UnitTest) {
+		await initializeSingletons("unit_test")
+	} else {
+		await initializeSingletons(process.env.DATABASE_TYPE as SourceType)
+	}
 });

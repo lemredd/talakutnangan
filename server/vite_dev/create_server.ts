@@ -3,7 +3,7 @@ import type { Express as ExpressApp } from "express"
 import { static as serveStaticFiles, Router as createRouter } from "express"
 
 import { PageRequest } from "!/types/hybrid"
-import { Environment } from "!/types/independent"
+import { Environment } from "$/types/server"
 import { Response, NextFunction } from "!/types/dependent"
 
 import getRoot from "!/helpers/get_root"

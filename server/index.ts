@@ -3,21 +3,18 @@ import "dotenv/config"
 
 import { Server as HTTPServer } from "node:http"
 
-import { SourceType } from "%/types/independent"
+import { SourceType } from "$/types/database"
 
 import Log from "!/helpers/log"
 import createWSServer from "!/ws/create_server"
 import Router from "!/app/routes/router"
 import createAppHandler from "!/app/create_handler"
-import createDataSource from "%/data_source/create_source"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
 startServer()
 
 async function startServer() {
-	initializeSingletons()
-
-	const _dataSource = await createDataSource(process.env.DATABASE_TYPE as SourceType)
+	await initializeSingletons(process.env.DATABASE_TYPE as SourceType)
 
 	const customRouter = new Router()
 

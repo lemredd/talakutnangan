@@ -3,7 +3,7 @@ import type {
 	PermissionInfo,
 	LevelPermission,
 	OperationPermission
-} from "!/types/independent"
+} from "$/types/server"
 
 import {
 	VIEW,
@@ -15,25 +15,25 @@ import {
 	READ_OVERALL_SCOPE,
 	READ_DEPARTMENT_SCOPE,
 	WRITE_DEPARTMENT_SCOPE
-} from "!/types/independent"
+} from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const postColumnName = "postFlags"
+const commentColumnName = "commentFlags"
 
-type PostFlags = { [postColumnName]: number }
+type CommentFlags = { [commentColumnName]: number }
 type Permissions =
 	| OperationPermission
 	| Exclude<LevelPermission, "readOwnScope">
-	| "tag"
+	| "vote"
 
 /**
- * Permission group for post.
+ * Permission group for comments.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<PostFlags, Permissions> {
-	get name(): string { return postColumnName }
+export default class extends PermissionGroup<CommentFlags, Permissions> {
+	get name(): string { return commentColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
@@ -54,7 +54,7 @@ export default class extends PermissionGroup<PostFlags, Permissions> {
 				permissionDependencies: [ "readOverallScope" ]
 			} ],
 
-			[ "tag", { flag: 0x0100, permissionDependencies: [ "view" ] } ],
+			[ "vote", { flag: 0x0100, permissionDependencies: [ "view" ] } ],
 		])
 	}
 }

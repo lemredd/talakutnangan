@@ -3,7 +3,7 @@ import GetIndex from "!/app/routes/index.get"
 import DevRouter from "!/app/routes/dev/router"
 import APIRouter from "!/app/routes/api/router"
 import ChatRouter from "!/app/routes/chat/router"
-import { Environment } from "!/types/independent"
+import { Environment } from "$/types/server"
 
 export default class extends Router {
 	get prefix(): string { return "/" }

@@ -2,29 +2,29 @@ import type {
 	PermissionMap,
 	PermissionInfo,
 	OperationPermission,
-} from "!/types/independent"
+} from "$/types/server"
 
 import {
 	VIEW,
 	CREATE,
 	UPDATE,
 	ARCHIVE_AND_RESTORE
-} from "!/types/independent"
+} from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
-const semesterColumnName = "semesterFlags"
+const tagColumnName = "tagFlags"
 
-type SemesterFlags = { [semesterColumnName]: number }
+type TagFlags = { [tagColumnName]: number }
 type Permissions = OperationPermission
 
 /**
- * Permission group for semester.
+ * Permission group for tag.
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<SemesterFlags, Permissions> {
-	get name(): string { return semesterColumnName }
+export default class extends PermissionGroup<TagFlags, Permissions> {
+	get name(): string { return tagColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([

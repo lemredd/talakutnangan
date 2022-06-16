@@ -3,7 +3,7 @@ import type {
 	PermissionInfo,
 	LevelPermission,
 	OperationPermission
-} from "!/types/independent"
+} from "$/types/server"
 
 import {
 	VIEW,
@@ -16,9 +16,9 @@ import {
 	READ_OVERALL_SCOPE,
 	READ_DEPARTMENT_SCOPE,
 	WRITE_DEPARTMENT_SCOPE
-} from "!/types/independent"
+} from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
 const profileColumnName = "profileFlags"
 

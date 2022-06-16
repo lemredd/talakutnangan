@@ -2,7 +2,7 @@ import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-moc
 
 import { Request } from "!/types/dependent"
 import { PageRequest } from "!/types/hybrid"
-import type { Serializable } from "%/types/independent"
+import type { Serializable } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserFactory from "~/factories/user"

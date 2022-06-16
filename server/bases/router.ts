@@ -1,5 +1,5 @@
 import { UsableRoute } from "!/types/hybrid"
-import { RouteInformation } from "!/types/independent"
+import { RouteInformation } from "$/types/server"
 
 import ControllerLike from "!/bases/controller-like"
 import RequestEnvironment from "!/helpers/request_environment"
