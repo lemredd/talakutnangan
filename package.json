@@ -50,6 +50,7 @@
 		"@types/supertest": "^2.0.12",
 		"@types/uuid": "^8.3.4",
 		"@types/validator": "^13.7.2",
+		"@types/yayson": "^2.0.2",
 		"@vue/test-utils": "^2.0.0-rc.18",
 		"babel-jest": "^26",
 		"chalk": "^4",
