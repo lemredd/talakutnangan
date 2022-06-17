@@ -2,7 +2,7 @@ import { createTransport } from "nodemailer"
 import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "!/helpers/log"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/specialize_template_file"
 

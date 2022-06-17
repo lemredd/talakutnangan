@@ -1,10 +1,9 @@
 <template>
-	<div class="links" :class="[role, /* linkClasses */]">
+	<div class="links mobile" :class="role">
 
 		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
 		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
 			<div class="role-links">
-				<div class="overlay"></div>
 				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 					<span class="material-icons">
 						{{ link.icon }}
@@ -19,12 +18,24 @@
 			</a>
 		</RoleLinksList>
 	</div>
+
+	<div class="links desktop">
+		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+			<span class="material-icons">
+				{{ link.icon }}
+			</span>
+		</Link>
+	</div>
 </template>
 
 <style lang="scss">
 body.unscrollable {
 	overflow-y: hidden;
 }
+.links.desktop {
+	display: none;
+}
+
 
 .links {
 	height: 100%;
@@ -32,7 +43,6 @@ body.unscrollable {
 	align-items: center;
 
 	.dropdown-container {
-		padding-top: 1em;
 		position: fixed;
 		inset: 56px 0 0;
 	}
@@ -48,8 +58,12 @@ body.unscrollable {
 			z-index: -1;
 		}
 
-		a:not(a:last-of-type) {
-			margin-bottom: 1em;
+		.link {
+			padding: .5em;
+
+			.material-icons {
+				margin-right: .5em;
+			}
 		}
 	}
 	#logout-btn {
@@ -64,29 +78,29 @@ body.unscrollable {
 	}
 }
 
+@media (min-width: 640px) {
+	.links.mobile {
+		display: none;
+	}
+	.links.desktop {
+		display: flex;
+	}
+}
 </style>
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
+import RequestEnvironment from "$/helpers/request_environment"
+
+const emit = defineEmits(["toggle"])
 
 // Props
 type Props = {
 	role: string
 }
-const props = defineProps<Props>()
-const role = props.role
-
-// Viewport
-// Currently, window class is undefined
-// const linkClasses = ""
-// const isViewportGreaterThanMobile = computed(function() {
-// 	return screenWidth.value > 640
-// })
-// window.onresize = () => {
-// //   screenWidth.value = window.innerWidth
-// }
+const { role } = defineProps<Props>()
 
 // Role
 const isRoleGuest = role === "guest"
@@ -189,6 +203,7 @@ const determineRoleLinks = computed(function()  {
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
+	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
 }

@@ -7,7 +7,7 @@ import { Environment } from "$/types/server"
 import { Response, NextFunction } from "!/types/dependent"
 
 import getRoot from "!/helpers/get_root"
-import getEnvironment from "!/helpers/get_environment"
+import getEnvironment from "$/helpers/get_environment"
 import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
 
 type PageRenderer = typeof renderPage

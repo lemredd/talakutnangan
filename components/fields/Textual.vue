@@ -103,7 +103,7 @@ const emit = defineEmits<{
 	(e: "update:modelValue", modelValue: string ): void
 }>()
 
-const inputField = ref(null)
+const inputField = ref<HTMLInputElement | null>(null)
 const isOverlayShown = ref(false)
 
 function emitUpdate(event: Event) {
@@ -111,7 +111,7 @@ function emitUpdate(event: Event) {
 }
 
 function editField(e: Event) {
-	inputField.value.disabled = !inputField.value.disabled
+	inputField.value!.disabled = !inputField.value!.disabled
 }
 
 function verifyBeforeSubmit() {

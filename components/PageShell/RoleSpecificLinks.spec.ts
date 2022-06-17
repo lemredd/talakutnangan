@@ -21,7 +21,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const menuButton = wrapper.find("#menu-btn")
 		await menuButton.trigger("click")
 
-		expect(wrapper.emitted()).toHaveProperty("click")
+		expect(wrapper.emitted()).toHaveProperty("toggle")
 	})
 
 	it("should specify the right link/s for a non-guest role", async () => {
@@ -33,14 +33,13 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				},
 				provide: {
 					bodyClasses: ref<string[]>(["dark"])
+
 				}
 			},
 			props: {
 				role: "student_or_employee"
 			}
 		})
-		const menuButton = wrapper.find("#menu-btn")
-		await menuButton.trigger("click")
 		const link = wrapper.find("link-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
@@ -62,11 +61,29 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				role: "guest"
 			}
 		})
-		const menuButton = wrapper.find("#menu-btn")
-		await menuButton.trigger("click")
 		const link = wrapper.find("link-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
 		expect(linkHref).toBe("/log_in")
+	})
+
+	it("should appear different in desktop", () => {
+		const wrapper = mount(RoleSpecificLinks, {
+			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+				}
+			},
+			props: {
+				role: "student_or_employee"
+			}
+		})
+
+		const desktopLinks = wrapper.findAll("link-stub")
+		expect(desktopLinks.length).toBeGreaterThan(1)
 	})
 })
