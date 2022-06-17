@@ -64,6 +64,7 @@ body.unscrollable {
 			.material-icons {
 				margin-right: .5em;
 			}
+
 		}
 	}
 	#logout-btn {
@@ -84,6 +85,10 @@ body.unscrollable {
 	}
 	.links.desktop {
 		display: flex;
+
+		.link[href="/notifications"] {
+			display: none;
+		}
 	}
 }
 </style>

@@ -7,7 +7,7 @@
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
-				<!-- <Notifications v-if="!isRoleGuest"></Notifications> -->
+				<Notifications v-if="!isRoleGuest"></Notifications>
 				<RoleSpecificLinks :role="role"/>
 			</div>
 
@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import { onMounted, provide, ref, watch, computed } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
+import Notifications from '@/PageShell/Notifications.vue'
 import { usePageContext } from "#/usePageContext"
 
 const pageContext = usePageContext()
@@ -30,6 +31,7 @@ const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
 const roles = ["guest", "student_or_employee", "user_manager", "admin"]
 const role = roles[2]
+const isRoleGuest = role === "guest"
 
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
@@ -111,5 +113,14 @@ a {
 .container {
 	max-width: 900px;
 	margin: auto;
+}
+
+.notifications {
+	display: none;
+}
+@media screen and (min-width: 640px) {
+	.notifications {
+		display: initial;
+	}
 }
 </style>
