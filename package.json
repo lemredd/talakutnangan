@@ -103,7 +103,8 @@
 		"vite-plugin-windicss": "^1.8.4",
 		"vite-tsconfig-paths": "^3.4.1",
 		"vue": "^3.2.33",
-		"windicss": "^3.5.4"
+		"windicss": "^3.5.4",
+		"yayson": "^2.1.0"
 	},
 	"engines": {
 		"node": "16.x"
