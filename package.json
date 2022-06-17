@@ -25,9 +25,11 @@
 		"migrate:redo:all": "sequelize-cli db:drop && sequelize-cli db:create && npm run migrate:up",
 		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
 		"test:unit:back": "cross-env NODE_ENV=unit_test jest -c jest.back.config.json",
+		"test:unit:share": "cross-env NODE_ENV=unit_test jest -c jest.share.config.json",
 		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
 		"test:unit:front:w": "npm run test:unit:front -- --watch",
 		"test:unit:back:w": "npm run test:unit:back -- --watch",
+		"test:unit:share:w": "npm run test:unit:share -- --watch",
 		"test:intg:back:w": "npm run test:intg:back -- --watch"
 	},
 	"devDependencies": {
