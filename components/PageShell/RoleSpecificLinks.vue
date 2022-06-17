@@ -86,7 +86,7 @@ body.unscrollable {
 	.links.desktop {
 		display: flex;
 
-		.link[href="/notifications"] {
+		.link[href="/settings"], .link[href="/notifications"] {
 			display: none;
 		}
 	}
