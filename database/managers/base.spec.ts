@@ -63,7 +63,6 @@ describe("Database: Base Read Operations", () => {
 
 		const users = await manager.list({})
 
-		console.log(users.data)
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(bases.length)
 	})
