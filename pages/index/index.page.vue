@@ -1,16 +1,13 @@
 <template>
-	<h1>Welcome</h1>
-	This page is:
-	<ul>
-		<li>Rendered to HTML.</li>
-		<li>Interactive. <Counter /></li>
-	</ul>
 
+	<Opening></Opening>
+	<Instructions/>
 	<p>Page properties: {{ JSON.stringify(pageProps) }}</p>
-</template>
 
+</template>
 <script lang="ts" setup>
-import Counter from "@@/index/Counter.vue"
+import Opening from "@/Opening.vue"
+import Instructions from "@/Instructions.vue"
 import { usePageContext } from "#/usePageContext"
 
 const pageProps = usePageContext().pageProps

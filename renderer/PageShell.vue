@@ -56,6 +56,7 @@
 				<slot />
 			</div>
 		</div>
+		<Footer></Footer>
 	</div>
 </template>
 
@@ -64,7 +65,7 @@ import { onMounted, provide, ref, watch } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import Dropdown from '@/Dropdown.vue'
 import { usePageContext } from "#/usePageContext"
-
+import Footer from "@/Footer.vue"
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
@@ -140,6 +141,7 @@ a {
 		flex-shrink: 0;
 		line-height: 1.8em;
 		box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+		z-index: 1;
 
 		.container {
 			display: grid;
