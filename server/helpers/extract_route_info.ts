@@ -1,5 +1,5 @@
 import { relative, resolve, join } from "path"
-import { Purpose, Method, RouteInformation } from "!/types/independent"
+import { Purpose, Method, RouteInformation } from "$/types/server"
 
 import getRoot from "!/helpers/get_root"
 

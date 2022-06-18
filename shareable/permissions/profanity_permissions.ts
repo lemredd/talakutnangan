@@ -3,7 +3,7 @@ import type {
 	PermissionInfo,
 	LevelPermission,
 	OperationPermission
-} from "!/types/independent"
+} from "$/types/server"
 
 import {
 	VIEW,
@@ -12,9 +12,9 @@ import {
 	ARCHIVE_AND_RESTORE,
 	WRITE_OVERALL_SCOPE,
 	READ_OVERALL_SCOPE
-} from "!/types/independent"
+} from "$/types/server"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 
 const profanityColumnName = "profanityFlags"
 

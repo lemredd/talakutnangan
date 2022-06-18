@@ -1,6 +1,6 @@
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
-import DepartmentPermissions from "!/app/auth/department_permissions"
+import DepartmentPermissions from "$/permissions/department_permissions"
 
 import RoleManager from "./role"
 

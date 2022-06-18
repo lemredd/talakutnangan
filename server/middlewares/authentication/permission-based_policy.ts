@@ -1,6 +1,6 @@
 import type { Request } from "!/types/dependent"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 /**

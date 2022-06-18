@@ -1,4 +1,4 @@
-import type { List, Pipe } from "%/types/independent"
+import type { List, Pipe } from "$/types/database"
 import type {
 	Model,
 	ModelCtor,
@@ -10,7 +10,7 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
-import runThroughPipeline from "%/managers/helpers/run_through_pipeline"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.

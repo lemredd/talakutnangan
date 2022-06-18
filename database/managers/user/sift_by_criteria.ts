@@ -1,4 +1,4 @@
-import type { Criteria } from "%/types/independent"
+import type { Criteria } from "$/types/database"
 import type { FindOptions } from "%/types/dependent"
 
 import Log from "!/helpers/log"
