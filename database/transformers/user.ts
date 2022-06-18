@@ -18,6 +18,9 @@ export default class extends Transformer<User, void> {
 			"signature"
 		])
 
+		// TODO: Make URL to get the signature
+		safeObject.signature = ""
+
 		return safeObject
 	}
 }
