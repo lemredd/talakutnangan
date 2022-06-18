@@ -1,21 +1,26 @@
 <template>
-	<div class="links mobile" :class="role">
+	<div class="links mobile">
 
-		<button id="menu-btn" class="material-icons" @click="toggleRoleLinks">menu</button>
-		<RoleLinksList v-if="areRoleLinksShown" @close="toggleRoleLinks">
-			<div class="role-links">
-				<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
-					<span class="material-icons">
-						{{ link.icon }}
-					</span>
-					<span class="link-name">{{ link.name }}</span>
-				</Link>
+		<RoleLinksList purpose="role-navigation" @close="toggleRoleLinks">
+			<template #toggler>
+				<span id="menu-btn" class="material-icons">menu</span>
+			</template>
 
-			</div>
-			<a role="button" href="/logout" id="logout-btn">
-					<span class="material-icons">logout</span>
-					Logout
-			</a>
+			<template #default>
+				<div class="role-links">
+					<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+						<span class="material-icons">
+							{{ link.icon }}
+						</span>
+						<span class="link-name">{{ link.name }}</span>
+					</Link>
+
+				</div>
+				<a role="button" href="/logout" id="logout-btn">
+						<span class="material-icons">logout</span>
+						Logout
+				</a>
+			</template>
 		</RoleLinksList>
 	</div>
 
@@ -35,7 +40,6 @@ body.unscrollable {
 .links.desktop {
 	display: none;
 }
-
 
 .links {
 	height: 100%;
