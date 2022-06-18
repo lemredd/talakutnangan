@@ -29,12 +29,7 @@ import { ref } from "vue"
 const { purpose } = defineProps<{
 	purpose: string
 }>()
-const emit = defineEmits(["close"])
 const isDropdownShown = ref(false)
-
-function emitClose() {
-	emit("close")
-}
 
 function toggleDropdown() {
 	isDropdownShown.value = !isDropdownShown.value
