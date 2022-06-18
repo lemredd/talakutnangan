@@ -1,14 +1,18 @@
 <template>
-<div :class="`person-${type}`">
+<div :class="`person-${variant}`">
     <span class="material-icons person">person</span>
-    <span class="material-icons accessory" :class="accessory">{{accessory}}</span>
+    <span v-if="accessory" class="material-icons accessory" :class="accessory">{{accessory}}</span>
 </div>
 
 </template>
 
 <style scoped lang="scss">
-.person-talking, .person-announce  {
-	 position: relative;
+
+.person-talking, .person-announce {
+	position: relative;
+}
+.person-talking, .person-announce, .person-default  {
+	
 	.person {
 		font-size: 15vw;
 	}
@@ -18,12 +22,10 @@
 		font-size: 5vw;
 	}
 	.campaign {
-			position: absolute;
-			top: -5px; right: -30px;
-			font-size: 10vw;
-			transform: rotate(-20deg);
-			
-			
+		position: absolute;
+		top: -5px; right: -30px;
+		font-size: 10vw;
+		transform: rotate(-20deg);
 	}		
 	&.left {
 		margin-right: 3vw;
@@ -53,7 +55,7 @@
 
 <script setup lang="ts">
 defineProps<{
-    type: string,
-    accessory: string
+    variant: string,
+    accessory?: string
 }>()
 </script>
