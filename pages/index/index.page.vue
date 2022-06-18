@@ -1,12 +1,7 @@
 <template>
-	<h1>Welcome</h1>
-	This page is:
-	<ul>
-		<li>Rendered to HTML.</li>
-		<li>Interactive. <Counter /></li>
-	</ul>
+	<Instructions/>
 </template>
 
 <script lang="ts" setup>
-import Counter from "@@/index/Counter.vue"
+import Instructions from "@/Instructions.vue"
 </script>
