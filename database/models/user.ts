@@ -5,10 +5,13 @@ import {
 	DataType,
 	BelongsTo,
 	AllowNull,
-	ForeignKey
+	ForeignKey,
+	BelongsToMany
 } from "sequelize-typescript"
-import { UserKind } from "%/types"
+import Role from "%/models/role"
+import { UserKind } from "$/types/database"
 import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
 
 @Table({
 	timestamps: true,
@@ -70,4 +73,7 @@ export default class User extends Model {
 
 	@BelongsTo(() => Department)
 	department!: Department
+
+	@BelongsToMany(() => Role, () => AttachedRole)
+	roles!: Role[]
 }

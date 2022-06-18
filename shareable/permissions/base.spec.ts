@@ -1,12 +1,12 @@
-import type { PermissionMap, PermissionInfo } from "!/types/independent"
+import type { PermissionMap, PermissionInfo } from "$/types/server"
 
-import PermissionGroup from "./permission_group"
+import BasePermissionGroup from "./base"
 
 describe("Back-end: Base Permission Group", () => {
 	type GroupNameA = { "groupA": number }
 	type AvailablePermissionsA = "a" | "b"
 
-	class GroupA extends PermissionGroup<GroupNameA, AvailablePermissionsA> {
+	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsA> {
 		get name(): string { return "groupA" }
 		get permissions(): PermissionMap<AvailablePermissionsA> {
 			return new Map<AvailablePermissionsA, PermissionInfo<AvailablePermissionsA>>([
@@ -36,7 +36,7 @@ describe("Back-end: Base Permission Group", () => {
 	type GroupNameB = { "groupB": number }
 	type AvailablePermissionsB = "c" | "d"
 
-	class GroupB extends PermissionGroup<GroupNameB, AvailablePermissionsB> {
+	class GroupB extends BasePermissionGroup<GroupNameB, AvailablePermissionsB> {
 		get name(): string { return "groupB" }
 		get permissions(): PermissionMap<AvailablePermissionsB> {
 			return new Map<AvailablePermissionsB, PermissionInfo<AvailablePermissionsB>>([
@@ -83,5 +83,35 @@ describe("Back-end: Base Permission Group", () => {
 		const mask = permissionGroup.generateMask("d")
 
 		expect(mask).toBe(0x3)
+	})
+
+	type GroupNameC = { "groupC": number }
+	type AvailablePermissionsC = "e" | "f" | "g"
+
+	class GroupC extends BasePermissionGroup<GroupNameC, AvailablePermissionsC> {
+		get name(): string { return "groupC" }
+		get permissions(): PermissionMap<AvailablePermissionsC> {
+			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
+				[ "e", { flag: 0x1, permissionDependencies: [] } ],
+				[ "f", { flag: 0x2, permissionDependencies: [] } ],
+				[ "g", { flag: 0x4, permissionDependencies: [] } ]
+			])
+		}
+	}
+
+	it("can allow using multiple independent permissions", async () => {
+		const permissionGroup = new GroupC()
+
+		const isAllowed = permissionGroup.mayAllow({ "groupC": 0x7 }, "e", "f", "g")
+
+		expect(isAllowed).toBeTruthy()
+	})
+
+	it("can generate mask of multiple independent permission", async () => {
+		const permissionGroup = new GroupC()
+
+		const mask = permissionGroup.generateMask("e", "f", "g")
+
+		expect(mask).toBe(0x7)
 	})
 })

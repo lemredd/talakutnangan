@@ -6,7 +6,7 @@ import Validation from "!/bases/validation"
 import { EndHandler } from "!/types/hybrid"
 import endRequest from "!/helpers/end_request"
 import { Request, Response, NextFunction } from "!/types/dependent"
-import { RouteInformation, OptionalMiddleware } from "!/types/independent"
+import { RouteInformation, OptionalMiddleware } from "$/types/server"
 
 import ControllerLike from "./controller-like"
 
@@ -53,7 +53,7 @@ describe("Back-end: Base ControllerLike", () => {
 
 		expect(routeInformation).toStrictEqual(<RouteInformation>{
 			method: "get",
-			path: "/a/b/index",
+			path: "/a/b",
 			purpose: "enhancer",
 			description: null
 		})

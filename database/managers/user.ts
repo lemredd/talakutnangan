@@ -1,16 +1,37 @@
 import { Op } from "sequelize"
+
+import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { Criteria, CommonConstraints, RawUser, Pipe } from "$/types/database"
+
+import Role from "%/models/role"
 import User from "%/models/user"
-import type { Criteria, RawUser } from "%/types"
-
 import hash from "!/helpers/auth/hash"
+import BaseManager from "%/managers/base"
 import compare from "!/helpers/auth/compare"
+import Department from "%/models/department"
+import limit from "%/managers/helpers/limit"
+import searchName from "%/managers/helpers/search_name"
+import offset from "%/managers/helpers/offset"
+import siftByCriteria from "%/managers/user/sift_by_criteria"
 
-export default class UserManager {
+export default class UserManager extends BaseManager<User, RawUser> {
+	get model(): ModelCtor<User> { return User }
+
+	get listPipeline(): Pipe<FindAndCountOptions<User>, CommonConstraints & { criteria: Criteria }>[] {
+		return [
+			searchName,
+			siftByCriteria,
+			offset,
+			limit
+		]
+	}
+
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
 		const foundUser = await User.findOne({
 			where: {
 				email
-			}
+			},
+			include: [ Role, Department ]
 		})
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
@@ -20,56 +41,9 @@ export default class UserManager {
 		}
 	}
 
-	async findWithID(id: number): Promise<User|null> {
-		return await User.findOne({ where: { id } })
-	}
-
 	async create(details: RawUser): Promise<User> {
 		details.password = await hash(details.password!)
-		return await User.create({ ...details })
-	}
-
-	async list(criteria: Criteria|null): Promise<Array<User>> {
-		const options: { [key: string]: object } = {}
-
-		switch(criteria) {
-			case "admitted": { // Complete profile and admitted
-				// TODO
-				break
-			}
-			case "unadmitted": { // Complete profile but not admitted
-				options.emailVerifiedAt =  { [Op.not]: null }
-				options.signature = { [Op.not]: null }
-				options.admittedAt = { [Op.is]: null }
-				break
-			}
-			case "incomplete": { // Incomplete profile
-				// TODO
-				break
-			}
-			default: // All users
-		}
-
-		const users = await User.findAll({ where: options })
-		return users
-	}
-
-	async admit(id: number, confirm: boolean): Promise<number> {
-		if (confirm) {
-			const [ affectedCount ] = await User.update({
-				admittedAt: new Date()
-			}, {
-				where: {
-					id,
-					admittedAt: { [Op.is]: null }
-				}
-			})
-
-			return affectedCount
-		} else {
-			// TODO: Delete account and send e-mail
-			return 1
-		}
+		return await super.create({ ...details })
 	}
 
 	async verify(email: string): Promise<number> {

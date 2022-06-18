@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import { UserKind } from "%/types"
+import { UserKind } from "$/types/database"
 import type { MockResponse } from "!/types/test"
 import type { Request, Response } from "!/types/dependent"
 

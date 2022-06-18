@@ -1,4 +1,4 @@
-import { UserKind } from "%/types"
+import { UserKind } from "$/types/database"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import MultipartParser from "!/middlewares/body_parser/multipart"
 import KindBasedPolicy from "!/middlewares/authentication/kind-based_policy"

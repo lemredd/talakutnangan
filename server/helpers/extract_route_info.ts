@@ -1,5 +1,5 @@
 import { relative, resolve, join } from "path"
-import { Purpose, Method, RouteInformation } from "!/types/independent"
+import { Purpose, Method, RouteInformation } from "$/types/server"
 
 import getRoot from "!/helpers/get_root"
 
@@ -10,7 +10,9 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "ser
 	const [ _, rawPurpose, rawPath, method ] = pathExpression.exec(relativePath)!
 	const purpose = <Purpose>(rawPurpose || "enhancer")
 	const dirtyPath = "/" + (purpose === "enhancer" ? rawPath : join(purpose, rawPath))
-	const path = dirtyPath.replace(/\\/g, "/").replace(/\((\w+)\)/g, "/:$1")
+	let path = dirtyPath.replace(/\\/g, "/").replace(/\((\w+)\)/g, "/:$1")
+
+	if (purpose === "enhancer") path = path.replace(/^\/(.*?)\/?index$/, "/$1")
 
 	return {
 		method: <Method><unknown>method,

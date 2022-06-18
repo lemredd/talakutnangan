@@ -1,7 +1,11 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import Policy from "!/bases/policy"
 import { Request } from "!/types/dependent"
+import { PageRequest } from "!/types/hybrid"
+import type { Serializable } from "$/types/database"
+
+import Policy from "!/bases/policy"
+import UserFactory from "~/factories/user"
 
 import PageMiddleware from "./page_middleware"
 
@@ -37,11 +41,61 @@ describe("Back-end: Base PageMiddleware", () => {
 		}
 
 		const enhancer = new PageMiddlewareB()
-
-		const request  = makeRequest<Request>()
+		const request  = makeRequest<PageRequest>()
 		const { res: response, next, } = makeResponse()
+		request.isAuthenticated = jest.fn(() => false)
+
 		await enhancer.intermediate(request, response, next)
 
 		expect(next).toHaveBeenCalled()
+	})
+
+	it("can pass page props for guests", async () => {
+		class PageMiddlewareC extends PageMiddleware {
+			get filePath(): string { return __filename }
+
+			get policy(): null { return null }
+
+			getPageProps(request: Request): Serializable {
+				return { hello: "world" }
+			}
+		}
+
+		const enhancer = new PageMiddlewareC()
+		const request  = makeRequest<PageRequest>()
+		const { res: response, next, } = makeResponse()
+		request.isAuthenticated = jest.fn(() => false)
+
+		await enhancer.intermediate(request, response, next)
+
+		expect(request.pageProps).toStrictEqual({
+			userProfile: null,
+			hello: "world"
+		})
+	})
+
+	it("can pass page props for known", async () => {
+		class PageMiddlewareD extends PageMiddleware {
+			get filePath(): string { return __filename }
+
+			get policy(): null { return null }
+
+			getPageProps(request: Request): Serializable {
+				return { hello: "world" }
+			}
+		}
+
+		const enhancer = new PageMiddlewareD()
+		const request  = makeRequest<PageRequest>()
+		const { res: response, next, } = makeResponse()
+		request.isAuthenticated = jest.fn(() => true)
+		request.user = await (new UserFactory()).makeOne()
+
+		await enhancer.intermediate(request, response, next)
+
+		expect(request.pageProps).toStrictEqual({
+			userProfile: request.user,
+			hello: "world"
+		})
 	})
 })

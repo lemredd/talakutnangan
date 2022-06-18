@@ -2,27 +2,33 @@ import dataURIToBuffer from "data-uri-to-buffer/src/index"
 import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
-import { UserKind } from "%/types"
+import { UserKind } from "$/types/database"
+import type { ModelCtor } from "%/types/dependent"
+import type { GeneratedData } from "~/types/dependent"
 
 import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
+import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 import DepartmentFactory from "~/factories/department"
 
-export default class UserFactory {
+export default class UserFactory extends BaseFactory<User> {
+	nameGenerator = () => faker.name.findName()
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = UserKind.Student
 	#mustBeVerified = true
 	#department: Department|null = null
 
-	async generate() {
+	get model(): ModelCtor<User> { return User }
+
+	async generate(): GeneratedData<User> {
 		if (this.#department === null) {
 			this.#department = await (new DepartmentFactory()).insertOne()
 		}
 
 		return {
-			name: faker.name.findName(),
+			name: this.nameGenerator(),
 			email: faker.internet.exampleEmail(),
 			password: await hash(this.#password),
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
@@ -35,15 +41,32 @@ export default class UserFactory {
 	}
 
 	async makeOne() {
-		const user = await User.build(await this.generate())
+		const user = await super.makeOne()
 		user.password = this.#password
 		return user
 	}
 
 	async insertOne() {
-		const user = await User.create(await this.generate())
+		const user = await super.insertOne()
 		user.password = this.#password
 		return user
+	}
+
+	async makeMany(count: number): Promise<User[]> {
+		const users = await super.makeMany(count)
+		users.forEach(user => user.password = this.#password)
+		return users
+	}
+
+	async insertMany(count: number): Promise<User[]> {
+		const users = await super.insertMany(count)
+		users.forEach(user => user.password = this.#password)
+		return users
+	}
+
+	setNameGenerator(generator: () => string): UserFactory {
+		this.nameGenerator = generator
+		return this
 	}
 
 	notVerified(): UserFactory {
