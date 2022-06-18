@@ -9,6 +9,7 @@
 
 				<Notifications v-if="!isRoleGuest"></Notifications>
 				<RoleSpecificLinks :role="role"/>
+				<UserSettings v-if="!isRoleGuest"></UserSettings>
 			</div>
 
 		</div>
@@ -24,6 +25,7 @@
 import { onMounted, provide, ref, watch, computed } from "vue"
 import RoleSpecificLinks from '@/PageShell/RoleSpecificLinks.vue'
 import Notifications from '@/PageShell/Notifications.vue'
+import UserSettings from '@/PageShell/UserSettings.vue'
 import { usePageContext } from "#/usePageContext"
 
 const pageContext = usePageContext()
@@ -80,7 +82,7 @@ a {
 
 		.container {
 			display: grid;
-			grid-template-columns: 1fr min-content min-content;
+			grid-template-columns: 1fr repeat(3, min-content);
 		}
 
 		.logo {
