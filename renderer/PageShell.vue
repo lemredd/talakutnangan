@@ -141,6 +141,7 @@ a {
 		flex-shrink: 0;
 		line-height: 1.8em;
 		box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+		z-index: 1;
 
 		.container {
 			display: grid;
