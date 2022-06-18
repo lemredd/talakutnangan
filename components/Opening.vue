@@ -5,8 +5,8 @@
 		<template #details>The quick brown fox jumped over the lazy dog.</template>
 	</Description>
 	<div class="graphics">
-		<Person accessory="chat" type="talking left"/>
-		<Person accessory="chat" type="talking right"/>
+		<Person accessory="chat" variant="talking left"/>
+		<Person accessory="chat" variant="talking right"/>
 
 	</div>
 </div>
@@ -19,7 +19,7 @@
 		</template>
 	</Description>
 	<div class="graphics graphics-left">
-		<Person accessory="campaign" type="announce"/>
+		<Person accessory="campaign" variant="announce"/>
 	</div>
 </div>
 </template>
