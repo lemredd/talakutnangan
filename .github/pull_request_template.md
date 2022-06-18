@@ -1,9 +1,23 @@
 # Changes
-Put your additions and changes here...
+Put your additions and compatible changes here...
 
 ## Resolved issues
 - Closes #
 
+## Merge Instructions
+<!--
+Fixes, breaking change, or initial code of a feature should be merge as soon as possible. This is
+because the can affect the code or experience greatly in the future. Enhancements can be deferred.
+-->
+- PRs to push first: #xx/None  <!-- Put PR number if there are or none. -->
+- Is complete? Yes/No
+- Must be merged ASAP? Yes/No
+
 ## Lacking Mechanism
-**Note**: Issues were already created.
--
+<!--
+Note: Pull requester should create issues for lacking mechanisms then just link the issue number.
+-->
+- #
+
+## Breaking Change Details
+None

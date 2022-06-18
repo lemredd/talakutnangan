@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes"
 
 import App from "~/app"
+import DepartmentManager from "%/managers/department"
 import DepartmentFactory from "~/factories/department"
-import DepartmentManager from "%/managers/department_manager"
 
 import Route from "!/app/routes/api/department/restore(id).patch"
 
@@ -21,9 +21,9 @@ describe("DELETE /api/department/restore/:id", () => {
 			.patch(`/api/department/restore/${department.id}`)
 			.set("Cookie", cookie)
 
-		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
+		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 		expect(response.body).toStrictEqual({})
-		expect((await manager.findWithID(department.id)).deletedAt).toBeNull()
+		expect((await manager.findWithID(department.id))!.deletedAt).toBeNull()
 	})
 
 	it.todo("cannot restore non-existing")

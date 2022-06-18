@@ -1,5 +1,5 @@
-import type { UserKind } from "%/types"
-import type { Request } from "!/types/dependent"
+import type { UserKind } from "$/types/database"
+import type { AuthenticatedRequest } from "!/types/dependent"
 
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
@@ -19,7 +19,7 @@ export default class extends AuthenticationBasedPolicy {
 		this.kind = kind
 	}
 
-	mayAllow(request: Request): boolean {
+	mayAllow(request: AuthenticatedRequest): boolean {
 		return super.mayAllow(request) && request.user.kind === this.kind
 	}
 }

@@ -10,12 +10,13 @@
 		"%/(.*)": "<rootDir>/database/$1",
 		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
-		"#/(.*)": "<rootDir>/renderer/$1"
+		"#/(.*)": "<rootDir>/renderer/$1",
+		"\\$/(.*)": "<rootDir>/shareable/$1"
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/database.set_up.ts",
-		"./t/helpers/singletons.set_up.ts"
+		"./t/helpers/singletons.set_up.ts",
+		"./t/helpers/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],

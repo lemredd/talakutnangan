@@ -1,6 +1,6 @@
 import type { Request } from "!/types/dependent"
 
-import PermissionGroup from "!/bases/permission_group"
+import PermissionGroup from "$/permissions/base"
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 /**
@@ -10,7 +10,6 @@ import AuthenticationBasedPolicy from "!/middlewares/authentication/authenticati
  */
 export default class<T extends { [key:string]: number }, U> extends AuthenticationBasedPolicy {
 	private permissionGroup: PermissionGroup<T, U>
-	private permission: string
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.

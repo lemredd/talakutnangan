@@ -1,7 +1,8 @@
 import { StatusCodes } from "http-status-codes"
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
-import { Response } from "!/types/dependent"
+import { Request } from "!/types/dependent"
+import { MockResponse } from "!/types/test"
 
 import Policy from "./policy"
 
@@ -12,7 +13,7 @@ describe("Back-end: Base Policy", () => {
 		}
 		const policy = new PolicyA()
 
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		await policy.intermediate(request, response, next)
 		expect(next).toHaveBeenCalled()
@@ -24,11 +25,12 @@ describe("Back-end: Base Policy", () => {
 		}
 		const policy = new PolicyB()
 
-		const request  = makeRequest()
+		const request  = makeRequest<Request>()
 		const { res: response, next, } = makeResponse()
 		await policy.intermediate(request, response, next)
 
-		const status = response.status as jest.MockedFn<(number) => Response>
-		expect(status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
+		const mockResponse = <MockResponse><unknown>response
+		expect(mockResponse.status).toHaveBeenCalled()
+		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
 	})
 })

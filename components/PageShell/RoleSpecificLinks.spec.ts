@@ -1,42 +1,68 @@
-import { mount, VueWrapper } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 import RoleSpecificLinks from "./RoleSpecificLinks.vue"
-
-let wrapper: VueWrapper
+import { ref } from "vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
-	beforeAll(() => {
-		wrapper = mount(RoleSpecificLinks, {
+	it("should specify the right link/s for a non-guest role", async () => {
+		const wrapper = mount(RoleSpecificLinks, {
 			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+
+				}
+			},
 			props: {
 				role: "student_or_employee"
 			}
 		})
-	})
-
-	it("should specify the right link/s for a specific role", async () => {
-		const link = wrapper.find(".role-links link-stub:first-of-type")
+		const link = wrapper.find("link-stub:first-of-type")
 		const linkHref = link.attributes("href")
-		const specifiedRole = wrapper.props().role
 
-		switch (specifiedRole) {
-			case "student_or_employee":
-				expect(linkHref).toBe("/consultations")
-				break
-			case "user_manager":
-				expect(linkHref).toBe("/consultations")
-				break
-			case "admin":
-				expect(linkHref).toBe("/manage")
-				break
-			default:
-				expect(linkHref).toBe("/log_in")
-		}
+		expect(linkHref).toBe("/notifications")
 	})
 
-	it("should have a menu button that is clickable", async () => {
-		const menuButton = wrapper.find("#menu-btn")
-		await menuButton.trigger("click")
+	it("should specify the right link/s for a guest role", async () => {
+		const wrapper = mount(RoleSpecificLinks, {
+			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+				}
+			},
+			props: {
+				role: "guest"
+			}
+		})
+		const link = wrapper.find("link-stub:first-of-type")
+		const linkHref = link.attributes("href")
 
-		expect(wrapper.emitted().click).toHaveLength(1)
+		expect(linkHref).toBe("/log_in")
+	})
+
+	it("should appear different in desktop", () => {
+		const wrapper = mount(RoleSpecificLinks, {
+			shallow: true,
+			global: {
+				stubs: {
+					RoleLinksList: false
+				},
+				provide: {
+					bodyClasses: ref<string[]>(["dark"])
+				}
+			},
+			props: {
+				role: "student_or_employee"
+			}
+		})
+
+		const desktopLinks = wrapper.findAll("link-stub")
+		expect(desktopLinks.length).toBeGreaterThan(1)
 	})
 })

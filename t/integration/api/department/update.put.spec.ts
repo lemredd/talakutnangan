@@ -1,12 +1,12 @@
 import { StatusCodes } from "http-status-codes"
 
 import App from "~/app"
+import DepartmentManager from "%/managers/department"
 import DepartmentFactory from "~/factories/department"
-import DepartmentManager from "%/managers/department_manager"
 
-import Route from "!/app/routes/api/department/update(id).put"
+import Route from "!/app/routes/api/department/update.put"
 
-describe("PUT /api/department/update/:id", () => {
+describe("PUT /api/department/update", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -17,16 +17,16 @@ describe("PUT /api/department/update/:id", () => {
 		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
 
 		const response = await App.request
-			.put(`/api/department/update/${department.id}`)
+			.put("/api/department/update")
 			.set("Cookie", cookie)
 			.send({
+				id: department.id,
 				acronym: newDepartmentDetails.acronym,
 				fullName: newDepartmentDetails.fullName,
 				mayAdmit: newDepartmentDetails.mayAdmit
 			})
 
-		expect(response.statusCode).toBe(StatusCodes.OK)
-		expect(response.body).toBe(1)
+		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 	})
 
 	it.todo("cannot accept invalid values")
@@ -37,8 +37,9 @@ describe("PUT /api/department/update/:id", () => {
 		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
 
 		const response = await App.request
-			.put(`/api/department/update/${department.id}`)
+			.put("/api/department/update")
 			.send({
+				id: department.id,
 				acronym: newDepartmentDetails.acronym,
 				fullName: newDepartmentDetails.fullName,
 				mayAdmit: newDepartmentDetails.mayAdmit
