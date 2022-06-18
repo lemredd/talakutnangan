@@ -23,41 +23,46 @@
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .notifications {
 	height: 30px;
 	padding: 3px 10px;
 	align-self: center;
-}
+	position: relative;
 
-.notification-items {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: calc(100vh - 56px);
+	.dropdown-container {
+		position: absolute;
+		top: 56px;
+		left: -50%;
 
-	.notification-item {
-		padding: .5em 1em;
-		display: grid;
-		grid-template:
-			"icon title"
-			"icon date";
-		.icon {
-		border-radius: 50%;
-		height: min-content;
-		align-self: center;
-		grid-area: icon;
+			.notification-items {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				.notification-item {
+					padding: .5em 1em;
+					display: grid;
+					grid-template:
+						"icon title"
+						"icon date";
+					.icon {
+					border-radius: 50%;
+					height: min-content;
+					align-self: center;
+					grid-area: icon;
 
-			span {
-				font-size: 32px;
+						span {
+							font-size: 32px;
+						}
+					}
+
+					.title { grid-area: title; }
+					.date { grid-area: date; }
+				}
+				.notification-footer {
+					text-align: center;
+				}
 			}
-		}
-
-		.title { grid-area: title; }
-		.date { grid-area: date; }
-	}
-	.notification-footer {
-		text-align: center;
 	}
 }
 </style>
@@ -79,20 +84,20 @@ const notifications = [
 		icon: "notifications",
 		dateOccured: new Date(2022, 2, 3).toDateString()
 	},
-	{
-		id: 0,
-		description: "lorem ipsum",
-		type: "general",
-		icon: "notifications",
-		dateOccured: new Date(2022, 2, 3).toDateString()
-	},
-	{
-		id: 0,
-		description: "lorem ipsum",
-		type: "general",
-		icon: "notifications",
-		dateOccured: new Date(2022, 2, 3).toDateString()
-	}
+	// {
+	// 	id: 0,
+	// 	description: "lorem ipsum",
+	// 	type: "general",
+	// 	icon: "notifications",
+	// 	dateOccured: new Date(2022, 2, 3).toDateString()
+	// },
+	// {
+	// 	id: 0,
+	// 	description: "lorem ipsum",
+	// 	type: "general",
+	// 	icon: "notifications",
+	// 	dateOccured: new Date(2022, 2, 3).toDateString()
+	// }
 ]
 const isNotificationListShown = ref(false)
 
