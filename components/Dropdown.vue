@@ -2,7 +2,7 @@
 	<div :class="purpose">
 		<div class="invisible-closer" v-if="isDropdownShown" @click="toggleDropdown"></div>
 		<div class="toggler">
-			<a id="notification-btn" role="button" @click="toggleDropdown">
+			<a id="dropdown-btn" role="button" @click="toggleDropdown">
 				<slot name="toggler"></slot>
 			</a>
 		</div>
