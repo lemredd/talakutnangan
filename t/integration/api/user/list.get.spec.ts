@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 import UserManager from "%/managers/user"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 import Route from "!/app/routes/api/user/list.get"
 
