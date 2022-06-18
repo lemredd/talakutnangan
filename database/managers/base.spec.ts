@@ -1,15 +1,40 @@
-import User from "%/models/user"
-import UserFactory from "~/factories/user"
-import type { RawUser, Pipe, List } from "$/types/database"
 import type { FindAndCountOptions } from "sequelize"
 import type { ModelCtor } from "sequelize-typescript"
 
+import type { RawUser, Pipe } from "$/types/database"
+import type { AttributesObject, TransformerOptions } from "%/types/dependent"
+
+import User from "%/models/user"
+import UserFactory from "~/factories/user"
+import Transformer from "%/transformers/base"
+import Serializer from "%/transformers/serializer"
+
 import BaseManager from "./base"
+
+class MockUserTransformer extends Transformer<User, void> {
+	constructor() {
+		super()
+		this.type = "user"
+	}
+
+	transform(model: User|User[], options: TransformerOptions): AttributesObject {
+		const safeObject = Serializer.whitelist(model, [
+			"id",
+			"name",
+			"email",
+			"kind"
+		])
+
+		return safeObject
+	}
+}
 
 class MockUserManager extends BaseManager<User, RawUser> {
 	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [] }
 
 	get model(): ModelCtor<User> { return User }
+
+	get transformer(): MockUserTransformer { return new MockUserTransformer() }
 }
 
 describe("Database: Base Read Operations", () => {
@@ -32,7 +57,16 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser).toBeNull()
 	})
 
-	it.todo("can search with pipelines")
+	it("can list base", async () => {
+		const manager = new MockUserManager()
+		const bases = await (new UserFactory()).insertMany(5)
+
+		const users = await manager.list({})
+
+		console.log(users.data)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(bases.length)
+	})
 })
 
 describe("Database: Base Create Operations", () => {
@@ -65,7 +99,7 @@ describe("Database: Base Update Operations", () => {
 	})
 })
 
-describe("Database: Base Archival and Restoration Operations", () => {
+describe("Database: Base Archive and Restore Operations", () => {
 	it("archive base", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
