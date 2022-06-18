@@ -47,11 +47,13 @@ export default class<T extends Request> extends RequestEnvironment {
 		expect(this.next).toHaveBeenCalled()
 	}
 
-	expectFailure(status: number): void {
+	expectFailure(status: number): any {
 		const mockResponse = this.response as unknown as MockResponse
 		expect(mockResponse.status).toHaveBeenCalled()
 		expect(mockResponse.status.mock.calls[0]).toEqual([ status ])
 		expect(mockResponse.json).toHaveBeenCalled()
+
+		return mockResponse.json.mock.calls[0][0]
 	}
 
 	reset() {
