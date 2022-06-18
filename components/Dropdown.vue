@@ -1,7 +1,14 @@
 <template>
-	<div class="invisible-closer" @click="emitClose"></div>
-	<div class="dropdown-container dark:bg-dark-400">
-		<slot></slot>
+	<div :class="purpose">
+		<div class="invisible-closer" v-if="isDropdownShown" @click="toggleDropdown"></div>
+		<div class="toggler">
+			<a id="notification-btn" role="button" @click="toggleDropdown">
+				<slot name="toggler"></slot>
+			</a>
+		</div>
+		<div class="dropdown-container dark:bg-dark-400" v-if="isDropdownShown">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -18,11 +25,18 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-const isDropdownShown = ref(false)
 
+const { purpose } = defineProps<{
+	purpose: string
+}>()
 const emit = defineEmits(["close"])
+const isDropdownShown = ref(false)
 
 function emitClose() {
 	emit("close")
+}
+
+function toggleDropdown() {
+	isDropdownShown.value = !isDropdownShown.value
 }
 </script>
