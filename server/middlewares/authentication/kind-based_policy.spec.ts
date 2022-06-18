@@ -16,7 +16,7 @@ describe("Middleware: Kind-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
 		requester.expectSuccess()
 	})
@@ -29,7 +29,7 @@ describe("Middleware: Kind-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
 		requester.expectSuccess()
 	})
@@ -42,7 +42,7 @@ describe("Middleware: Kind-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
 		requester.expectSuccess()
 	})
@@ -55,7 +55,7 @@ describe("Middleware: Kind-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
 		requester.expectFailure(requester.status.UNAUTHORIZED)
 	})

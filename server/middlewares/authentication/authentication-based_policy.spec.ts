@@ -11,7 +11,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(false)
 		})
 
-		requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
+		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
 		requester.expectSuccess()
 	})
@@ -22,7 +22,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
+		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
 		requester.expectFailure(requester.status.UNAUTHORIZED)
 	})
@@ -33,7 +33,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(true)
 		})
 
-		requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
+		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
 		requester.expectSuccess()
 	})
@@ -45,7 +45,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			isAuthenticated: jest.fn().mockReturnValue(false)
 		})
 
-		requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
+		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
 		requester.expectFailure(requester.status.UNAUTHORIZED)
 	})
