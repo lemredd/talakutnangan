@@ -1,7 +1,6 @@
 import { Request, Response } from "!/types/dependent"
 
 import MockRequester from "~/set-ups/mock_requester"
-import RouteParameterValidation from "!/middlewares/authorization/route_parameter_validation"
 
 import BoundController from "./bound_controller"
 
@@ -13,20 +12,7 @@ abstract class BaseTestController extends BoundController {
 	handle(_request: Request, _response: Response): Promise<void> { return Promise.resolve() }
 }
 
-describe("Controller: Bound Controller Validation", () => {
-	it("does include validation middleware", async () => {
-		const controller = new class extends BaseTestController {
-			get routeParameterValidationRules(): object { return {} }
-		}
-
-		const middlewares = controller.middlewares
-		const lastMiddleware = middlewares[middlewares.length - 1]
-
-		expect(lastMiddleware instanceof RouteParameterValidation).toBeTruthy()
-	})
-})
-
-describe("Controller: Bound Controller Request", () => {
+describe("Controller: Bound Controller Special Validation", () => {
 	const requester  = new MockRequester()
 
 	it("does validation middleware works properly with valid values", async () => {
