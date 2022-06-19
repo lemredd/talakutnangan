@@ -8,13 +8,14 @@
 
 	"moduleNameMapper": {
 		"%/(.*)": "<rootDir>/database/$1",
+		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"#/(.*)": "<rootDir>/renderer/$1",
 		"\\$/(.*)": "<rootDir>/shareable/$1"
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/singletons.set_up.ts",
+		"./t/helpers/set-ups/log.set_up.ts",
 		"./t/helpers/set-ups/database.set_up.ts"
 	],
 
