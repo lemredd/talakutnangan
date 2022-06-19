@@ -1,7 +1,10 @@
 name: Web Back-end Unit Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'database/**'
+      - 'server/**'
   pull_request:
     types:
       - reopened
