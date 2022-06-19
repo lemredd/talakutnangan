@@ -8,10 +8,11 @@ on:
     branches:
       - master
     paths:
+      - 'database/**'
       - 'server/**'
 
 jobs:
-  unit_tests:
+  server_unit_tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -28,4 +29,23 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run test:unit:back
+    - run: npm run test:unit:server
+
+  database_unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_
+    - run: npm install
+    - run: npm run test:unit:database
