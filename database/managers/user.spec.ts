@@ -1,6 +1,3 @@
-import { faker } from "@faker-js/faker"
-
-import User from "%/models/user"
 import Role from "%/models/role"
 import UserManager from "./user"
 import UserFactory from "~/factories/user"
@@ -87,14 +84,13 @@ describe("Database: User Read Operations", () => {
 	it("can list users with incomplete profile", async () => {
 		const manager = new UserManager()
 		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
-		// Create dummy complete profile
+		// Create dummy complete profile to see if it would return two records or not
 		await (new UserFactory()).insertOne()
 
-		const { records, count } = await manager.list({ criteria: "incomplete", page: 0 })
+		const users = await manager.list({ criteria: "incomplete", page: 0 })
 
-		expect(count).toBe(1)
-		expect(records).toHaveLength(1)
-		expect(records[0].email).toStrictEqual(incompleteUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
 	})
 
 	it("can list users with complete profile", async () => {
@@ -103,11 +99,10 @@ describe("Database: User Read Operations", () => {
 		// Create dummy incomplete profile
 		await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list({ criteria: "complete", page: 0 })
+		const users = await manager.list({ criteria: "complete", page: 0 })
 
-		expect(count).toBe(1)
-		expect(records).toHaveLength(1)
-		expect(records[0].email).toStrictEqual(completeUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
 	})
 
 	it("can list all users", async () => {
@@ -115,12 +110,10 @@ describe("Database: User Read Operations", () => {
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list({ criteria: "all", page: 0 })
+		const users = await manager.list({ criteria: "all", page: 0 })
 
-		expect(count).toBe(2)
-		expect(records).toHaveLength(2)
-		expect(records[0].email).toStrictEqual(completeUserProfile.email)
-		expect(records[1].email).toStrictEqual(incompleteUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(2)
 	})
 })
 

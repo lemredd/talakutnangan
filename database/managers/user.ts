@@ -10,12 +10,15 @@ import BaseManager from "%/managers/base"
 import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
 import limit from "%/managers/helpers/limit"
-import searchName from "%/managers/helpers/search_name"
 import offset from "%/managers/helpers/offset"
+import UserTransformer from "%/transformers/user"
+import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
 
 export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
+
+	get transformer(): UserTransformer { return new UserTransformer() }
 
 	get listPipeline(): Pipe<FindAndCountOptions<User>, CommonConstraints & { criteria: Criteria }>[] {
 		return [

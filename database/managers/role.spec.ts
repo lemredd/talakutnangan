@@ -10,14 +10,14 @@ describe("Database: Role read operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		const incompleteName = role.name.slice(1)
 
-		const { records, count } = await manager.list({
+		const roles = await manager.list({
 			name: incompleteName,
 			page: 0,
 			limit: 1
 		})
 
-		expect(count).toBe(1)
-		expect(records[0].name).toBe(role.name)
+		expect(roles).toHaveProperty("data")
+		expect(roles.data).toHaveLength(1)
 	})
 
 	it("cannot search role with non-matching query", async () => {
@@ -25,14 +25,14 @@ describe("Database: Role read operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		const incorrectName = role.name + "1"
 
-		const { records, count } = await manager.list({
+		const roles = await manager.list({
 			name: incorrectName,
 			page: 0,
 			limit: 1
-	})
+		})
 
-		expect(count).toBe(0)
-		expect(records).toHaveLength(0)
+		expect(roles).toHaveProperty("data")
+		expect(roles.data).toHaveLength(0)
 	})
 })
 
