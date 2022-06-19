@@ -1,22 +1,19 @@
-import { StatusCodes } from "http-status-codes"
-import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
-
-import { Request } from "!/types/dependent"
-import { MockResponse } from "!/types/test"
+import MockRequester from "~/set-ups/mock_requester"
 
 import Policy from "./policy"
 
-describe("Back-end: Base Policy", () => {
+describe("Back-end Base: Policy", () => {
+	const requester = new MockRequester()
+
 	it("can allow user", async () => {
 		class PolicyA extends Policy {
 			mayAllow(): boolean { return true }
 		}
 		const policy = new PolicyA()
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		await policy.intermediate(request, response, next)
-		expect(next).toHaveBeenCalled()
+		await requester.runMiddleware(policy.intermediate.bind(policy))
+
+		requester.expectSuccess()
 	})
 
 	it("can deny user", async () => {
@@ -25,12 +22,8 @@ describe("Back-end: Base Policy", () => {
 		}
 		const policy = new PolicyB()
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		await policy.intermediate(request, response, next)
+		await requester.runMiddleware(policy.intermediate.bind(policy))
 
-		const mockResponse = <MockResponse><unknown>response
-		expect(mockResponse.status).toHaveBeenCalled()
-		expect(mockResponse.status.mock.calls[0]).toEqual([ StatusCodes.UNAUTHORIZED ])
+		requester.expectFailure(requester.status.UNAUTHORIZED)
 	})
 })
