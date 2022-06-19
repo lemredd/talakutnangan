@@ -43,8 +43,10 @@ export default class<T extends Request> extends RequestEnvironment {
 		await middleware(this.request, this.response, this.next)
 	}
 
-	expectSuccess(): void {
+	expectSuccess(): any {
 		expect(this.next).toHaveBeenCalled()
+
+		return this.request
 	}
 
 	expectFailure(status: number): any {
