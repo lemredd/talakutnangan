@@ -8,14 +8,8 @@ import initializeSingletons from "!/helpers/initialize_singletons"
 beforeAll(async () => {
 	if (RequestEnvironment.environment === Environment.UnitTest) {
 		consola.wrapAll()
-		consola.mockTypes(() => jest.fn())
+		consola.mockTypes(() => () => {})
 	}
 
 	await initializeSingletons(getDataSourceType())
-})
-
-beforeEach(() => {
-	if (RequestEnvironment.environment === Environment.UnitTest) {
-		consola.mockTypes(() => jest.fn())
-	}
 })

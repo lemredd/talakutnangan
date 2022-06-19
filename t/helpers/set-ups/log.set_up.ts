@@ -5,10 +5,6 @@ import Log from "!/helpers/log"
 
 beforeAll(() => {
 	consola.wrapAll()
-	consola.mockTypes(() => jest.fn())
+	consola.mockTypes(() => () => {})
 	Log.initialize()
-})
-
-beforeEach(() => {
-	consola.mockTypes(() => jest.fn())
 })
