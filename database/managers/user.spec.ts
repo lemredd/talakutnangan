@@ -62,25 +62,6 @@ describe("Database: User Authentication Operations", () => {
 })
 
 describe("Database: User Read Operations", () => {
-	it("can search existing user with ID", async () => {
-		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
-		const id = user.id
-
-		const foundUser = await manager.findWithID(id)
-
-		expect(foundUser!.email).toStrictEqual(user.email)
-	})
-
-	it("cannot search non-existing user with ID", async () => {
-		const manager = new UserManager()
-		const id = 0
-
-		const foundUser = await manager.findWithID(id)
-
-		expect(foundUser).toBeNull()
-	})
-
 	it("can list users with incomplete profile", async () => {
 		const manager = new UserManager()
 		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()

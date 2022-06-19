@@ -41,7 +41,7 @@ class MockUserManager extends BaseManager<User, RawUser> {
 }
 
 describe("Database: Base Read Operations", () => {
-	it("can search base", async () => {
+	it("can search base with ID", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
 		const id = base.id
@@ -51,7 +51,7 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser!.email).toStrictEqual(base.email)
 	})
 
-	it("cannot search base", async () => {
+	it("cannot search non-existing base with ID", async () => {
 		const manager = new MockUserManager()
 		const id = 0
 
