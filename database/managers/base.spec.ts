@@ -1,11 +1,14 @@
-import type { FindAndCountOptions } from "sequelize"
-import type { ModelCtor } from "sequelize-typescript"
-
 import type { RawUser, Pipe } from "$/types/database"
-import type { AttributesObject, TransformerOptions } from "%/types/dependent"
+import type {
+	ModelCtor,
+	FindAndCountOptions,
+	TransformerOptions,
+	AttributesObject
+} from "%/types/dependent"
 
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
+import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
 
@@ -30,7 +33,7 @@ class MockUserTransformer extends Transformer<User, void> {
 }
 
 class MockUserManager extends BaseManager<User, RawUser> {
-	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [] }
+	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [ limit ] }
 
 	get model(): ModelCtor<User> { return User }
 
@@ -65,6 +68,16 @@ describe("Database: Base Read Operations", () => {
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(bases.length)
+	})
+
+	it("can search with pipelines", async() => {
+		const manager = new MockUserManager()
+		await (new UserFactory()).insertMany(10)
+
+		const users = await manager.list({ limit: 5 })
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(5)
 	})
 })
 
