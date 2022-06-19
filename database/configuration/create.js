@@ -1,10 +1,18 @@
+// @ts-check
 const { URL } = require("url")
 
 module.exports = function(databaseType = process.env.DATABASE_TYPE) {
-	const configuration = {}
+	/**
+	 * @type {import("sequelize-typescript").SequelizeOptions & { seederStorage: "sequelize" }}
+	 * @const
+	 */
+	const configuration = {
+		seederStorage: "sequelize"
+	}
 
 	switch(databaseType) {
 		case "pgsql": {
+			// @ts-ignore
 			const databaseURL = new URL(process.env.DATABASE_URL)
 			configuration.dialect = "postgres"
 			configuration.username = databaseURL.username
@@ -21,6 +29,7 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 			configuration.password = process.env.DATABASE_PASS
 			configuration.database = process.env.DATABASE_NAME
 			configuration.host = process.env.DATABASE_HOST
+			// @ts-ignore
 			configuration.port = +process.env.DATABASE_PORT
 			break
 		}
