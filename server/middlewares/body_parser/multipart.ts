@@ -25,5 +25,7 @@ export default class FormBodyParser extends Middleware {
 
 			next()
 		})
+
+		request.pipe(parser)
 	}
 }
