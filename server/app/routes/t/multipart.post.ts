@@ -1,4 +1,4 @@
-import { Buffer } from "node:buffer"
+import { Buffer } from "buffer"
 import { Request, Response } from "!/types/dependent"
 
 import MultipartController from "!/common_controllers/multipart_controller"
