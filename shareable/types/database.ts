@@ -4,16 +4,12 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
-export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ]
+export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
 /**
  * Possible kinds of user that the system can handle
  */
-export enum UserKind {
-	UnreachableEmployee = "unreachable_employee",
-	ReachableEmployee = "reachable_employee",
-	Student = "student"
-}
+export type UserKind = typeof UserKindValues[number]
 
 /**
  * Type of databases this application can handle

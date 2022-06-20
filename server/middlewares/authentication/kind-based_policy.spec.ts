@@ -1,5 +1,3 @@
-import { UserKind } from "$/types/database"
-
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
 
@@ -10,7 +8,7 @@ describe("Middleware: Kind-Based Policy", () => {
 
 	it("can allow unreachable employees only as expected", async () => {
 		const user = await (new UserFactory()).beUnreachableEmployee().insertOne()
-		const pageGuard = new KindBasedPolicy(UserKind.UnreachableEmployee)
+		const pageGuard = new KindBasedPolicy("unreachable_employee")
 		requester.customizeRequest({
 			user,
 			isAuthenticated: jest.fn().mockReturnValue(true)
@@ -23,7 +21,7 @@ describe("Middleware: Kind-Based Policy", () => {
 
 	it("can allow reachable employees only as expected", async () => {
 		const user = await (new UserFactory()).beReachableEmployee().insertOne()
-		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
+		const pageGuard = new KindBasedPolicy("reachable_employee")
 		requester.customizeRequest({
 			user,
 			isAuthenticated: jest.fn().mockReturnValue(true)
@@ -36,7 +34,7 @@ describe("Middleware: Kind-Based Policy", () => {
 
 	it("can allow students only as expected", async () => {
 		const user = await (new UserFactory()).beStudent().insertOne()
-		const pageGuard = new KindBasedPolicy(UserKind.Student)
+		const pageGuard = new KindBasedPolicy("student")
 		requester.customizeRequest({
 			user,
 			isAuthenticated: jest.fn().mockReturnValue(true)
@@ -49,7 +47,7 @@ describe("Middleware: Kind-Based Policy", () => {
 
 	it("can deny students if reachable employees are expected", async () => {
 		const user = await (new UserFactory()).beStudent().insertOne()
-		const pageGuard = new KindBasedPolicy(UserKind.ReachableEmployee)
+		const pageGuard = new KindBasedPolicy("reachable_employee")
 		requester.customizeRequest({
 			user,
 			isAuthenticated: jest.fn().mockReturnValue(true)

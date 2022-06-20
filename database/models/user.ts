@@ -8,8 +8,9 @@ import {
 	ForeignKey,
 	BelongsToMany
 } from "sequelize-typescript"
+import { UserKind, UserKindValues } from "$/types/database"
+
 import Role from "%/models/role"
-import { UserKind } from "$/types/database"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 
@@ -37,9 +38,7 @@ export default class User extends Model {
 	@Column({
 		allowNull: false,
 		type: DataType.ENUM(
-			UserKind.UnreachableEmployee,
-			UserKind.ReachableEmployee,
-			UserKind.Student
+			...UserKindValues
 		)
 	})
 	kind!: UserKind
