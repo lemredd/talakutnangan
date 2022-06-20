@@ -1,6 +1,7 @@
 <template>
 	<form @submit.prevent="importData">
-		<input type="file" accept="text/csv" name="csv_file"/>
+		<input type="file" accept="text/csv" name="importedCSV"/>
+		<input type="submit" value="Import"/>
 	</form>
 </template>
 
