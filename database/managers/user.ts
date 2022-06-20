@@ -1,7 +1,8 @@
 import { Op } from "sequelize"
 
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { Criteria, CommonConstraints, RawUser, Pipe } from "$/types/database"
+import type { BulkCreateStudents, BulkCreateEmployees } from "%/types/independent"
+import type { Criteria, CommonConstraints, RawUser, Pipe, Serializable } from "$/types/database"
 
 import Role from "%/models/role"
 import User from "%/models/user"
@@ -12,6 +13,7 @@ import Department from "%/models/department"
 import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
 import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
 import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
 
@@ -47,6 +49,27 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	async create(details: RawUser): Promise<User> {
 		details.password = await hash(details.password!)
 		return await super.create({ ...details })
+	}
+
+	async bulkCreate(bulkData: BulkCreateStudents | BulkCreateEmployees): Promise<Serializable> {
+		const incompleteProfiles = await Promise.all(bulkData.importedCSV.map(async data => {
+			const { rawPassword, ...securedData } = data
+			return {
+				...securedData,
+				kind: bulkData.kind,
+				password: await hash(rawPassword)
+			}
+		}))
+
+		const transformer = this.transformer
+
+		// TODO: separate the student number if students then link them to student info if necessary
+		// const serializableData = Serializer.serialize(
+		// 	incompleteProfiles,
+		// 	transformer,
+		// 	{}
+		// )
+		return {}
 	}
 
 	async verify(email: string): Promise<number> {
