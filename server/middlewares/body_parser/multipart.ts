@@ -1,3 +1,4 @@
+import { Buffer } from "buffer"
 import busboy from "busboy"
 import Middleware from "!/bases/middleware"
 import type { Request, Response, NextFunction } from "!/types/dependent"
@@ -11,8 +12,12 @@ export default class FormBodyParser extends Middleware {
 		const parser = busboy({ headers: request.headers })
 
 		parser.on("file", (name, stream, info) => {
+			let rawBuffer: number[] = []
 			stream.on("data", data => {
-				newBody[name] = { stream, info }
+				rawBuffer.push(...data)
+			})
+			.on("close", () => {
+				newBody[name] = { buffer: Buffer.from(rawBuffer), info }
 			})
 		})
 
