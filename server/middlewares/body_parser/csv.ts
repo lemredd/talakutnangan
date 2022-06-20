@@ -5,6 +5,7 @@ import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "!/helpers/log"
 import Middleware from "!/bases/middleware"
+import convertToCamelCase from "$/helpers/convert_to_camel_case"
 
 /**
  * Used to parse CSV files attached.
@@ -13,7 +14,7 @@ import Middleware from "!/bases/middleware"
  */
 export default class CSVParser extends Middleware {
 	private parser = parse({
-		columns: true,
+		columns: headers => headers.map((header: string) => convertToCamelCase(header)),
 		bom: true
 	})
 
