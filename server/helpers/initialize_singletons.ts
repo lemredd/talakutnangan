@@ -7,7 +7,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default async function(sourceType: SourceType) {
-	Log.initialize(RequestEnvironment.isOnTest)
+	Log.initialize()
 
 	await Database.initialize(sourceType)
 

@@ -1,11 +1,12 @@
 import consola from "consola"
+import RequestEnvironment from "!/helpers/request_environment"
 
 export default class Log {
 	private static maxStringLength: number
 	private static allowedAreas: Map<string, string>
 
-	static initialize(isOnTest: boolean): void {
-		const rawAllowedAreas = isOnTest
+	static initialize(): void {
+		const rawAllowedAreas = RequestEnvironment.isOnTest
 			? process.env.LOGGING_ALLOWED_TEST_AREAS || ""
 			: process.env.LOGGING_ALLOWED_DEV_AREAS || ""
 

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 
 import Route from "!/app/routes/api/role/create.post"

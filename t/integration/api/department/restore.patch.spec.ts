@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import DepartmentManager from "%/managers/department"
 import DepartmentFactory from "~/factories/department"
 
