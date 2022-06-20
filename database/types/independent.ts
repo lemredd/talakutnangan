@@ -5,16 +5,22 @@
  */
 
 /**
+ * Common shape to expect for creating profiles in bulk
+ */
+export interface CommonBulkData {
+	name: string,
+	email: string,
+	department: string
+}
+
+/**
  * Shape to expect for creating students profiles in bulk
  */
 export interface BulkCreateStudents {
 	kind: "student",
-	importedCSV: {
+	importedCSV: (CommonBulkData & {
 		studentNumber: string,
-		name: string,
-		email: string,
-		department: string
-	}[]
+	})[]
 }
 
 /**
@@ -22,9 +28,5 @@ export interface BulkCreateStudents {
  */
 export interface BulkCreateEmployees {
 	kind: "reachable_employee",
-	importedCSV: {
-		name: string,
-		email: string,
-		department: string
-	}[]
+	importedCSV: CommonBulkData[]
 }
