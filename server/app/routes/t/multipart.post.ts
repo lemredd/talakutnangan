@@ -12,7 +12,6 @@ import MultipartController from "!/common_controllers/multipart_controller"
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
-	// TODO: Use a permission-based policy
 	get policy(): null { return null }
 
 	get bodyValidationRules(): object {
