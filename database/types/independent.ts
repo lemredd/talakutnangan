@@ -10,7 +10,8 @@
 export interface CommonBulkData {
 	name: string,
 	email: string,
-	department: string
+	department: string,
+	rawPassword: string
 }
 
 /**
