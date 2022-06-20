@@ -24,9 +24,9 @@ describe("Middleware: CSV Form Data Transformation", () => {
 		await requester.runMiddleware(parser.intermediate.bind(parser))
 
 		const successfulRequest = requester.expectSuccess()
-		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 0, "Department" ], "IBCE")
-		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 1, "Department" ], "IASTE")
-		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 2, "Department" ], "IHTM")
+		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 0, "department" ], "IBCE")
+		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 1, "department" ], "IASTE")
+		expect(successfulRequest.body).toHaveProperty([ "importedCSV", 2, "department" ], "IHTM")
 	})
 
 	it.todo("cannot process invalid body")
