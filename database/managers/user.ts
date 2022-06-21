@@ -1,5 +1,4 @@
-import { Op } from "sequelize"
-
+import { Op, HasOne } from "sequelize"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
 	RawBulkDataForStudents,
@@ -97,13 +96,17 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				incompleteProfile: ProcessedDataForStudent
 			) => {
 				const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
-				return { ...incompleteNormalizedProfile, studentDetails: { studentNumber } }
+				return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
 			})
 
 			// Create the students in bulk
 			const users = await User.bulkCreate(normalizedProfiles, {
-				include: [ StudentDetail ]
+				include: [
+					new HasOne(User, StudentDetail, {})
+				]
 			})
+
+			console.log(users)
 		} else if (bulkData.kind === "reachable_employee") {
 
 		} else {
