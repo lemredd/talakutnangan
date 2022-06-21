@@ -2,6 +2,7 @@ import {
 	Table,
 	Model,
 	Column,
+	HasOne,
 	DataType,
 	BelongsTo,
 	AllowNull,
@@ -13,6 +14,8 @@ import { UserKind, UserKindValues } from "$/types/database"
 import Role from "%/models/role"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
+import StudentDetail from "%/models/student_detail"
+import EmployeeSchedule from "%/models/employee_schedule"
 
 @Table({
 	timestamps: true,
@@ -75,4 +78,10 @@ export default class User extends Model {
 
 	@BelongsToMany(() => Role, () => AttachedRole)
 	roles!: Role[]
+
+	@HasOne(() => StudentDetail)
+	studentDetail?: StudentDetail
+
+	@HasOne(() => EmployeeSchedule)
+	employeeSchedule?: EmployeeSchedule
 }
