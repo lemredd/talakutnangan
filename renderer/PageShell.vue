@@ -3,7 +3,7 @@
 		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
-					<img src="./placeholder.svg" alt="logo" />
+					<img src="./Logo.svg" alt="logo" />
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
@@ -94,6 +94,7 @@ a {
 			img {
 				width: 48px;
 				padding: .5em;
+				
 			}
 		}
 	}

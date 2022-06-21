@@ -1,4 +1,5 @@
 <template>
+<img src="./Logo.svg" alt="logo" />
 <div class="text-center">
 	<Description>
 		<template #header>Chat header</template>
@@ -30,7 +31,19 @@
 
 	margin-top:4em;
 }
- 
+.logo {
+			padding: .25em;
+			display: flex;
+			align-items: center;
+			width: max-content;
+
+			img {
+				width: 300px;
+				padding: .5em;
+				display: flex;
+				align-items: center;
+			}
+}
 
 
 
