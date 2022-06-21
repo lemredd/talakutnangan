@@ -99,3 +99,8 @@ export interface Role extends RawRole, Serializable {}
 	 emailVerifiedAt: string|null,
 	 signature: string|null
  }
+
+import { days } from "$/types/database.native"
+
+const rawDays = [ ...days ] as const
+export type Day = typeof rawDays[number]
