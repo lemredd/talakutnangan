@@ -1,7 +1,12 @@
 import { Op } from "sequelize"
 
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { BulkCreateStudents, BulkCreateEmployees } from "%/types/independent"
+import type {
+	RawBulkDataForStudents,
+	RawBulkDataForEmployees,
+	ProcessedDataForStudent,
+	ProcessedDataForEmployee
+} from "%/types/independent"
 import type { Criteria, CommonConstraints, RawUser, Pipe, Serializable } from "$/types/database"
 
 import Role from "%/models/role"
@@ -14,6 +19,8 @@ import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
+import StudentDetail from "%/models/student_detail"
+import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
 
@@ -51,15 +58,57 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return await super.create({ ...details })
 	}
 
-	async bulkCreate(bulkData: BulkCreateStudents | BulkCreateEmployees): Promise<Serializable> {
-		const incompleteProfiles = await Promise.all(bulkData.importedCSV.map(async data => {
-			const { rawPassword, ...securedData } = data
+	async bulkCreate(bulkData: RawBulkDataForStudents | RawBulkDataForEmployees): Promise<Serializable> {
+		// Get the department name firsts
+		const departmentNames = bulkData.importedCSV.map(data => data.department)
+		// Find the IDs of the departments
+		const departmentWhereConditions: Condition[] = departmentNames.reduce((
+			conditions: Condition[],
+			name: string
+		) => {
+			const condition = new Condition()
+			condition.equal("acronym", name)
+			return [ ...conditions, condition ]
+		}, [])
+		const departmentFindOptions = {
+			where: (new Condition()).or(...departmentWhereConditions).build()
+		}
+		const departments = await Department.findAll(departmentFindOptions)
+		const departmentIDs: { [key: string]: number } = departments.reduce(
+			(previousMappings, department) => {
+				return { ...previousMappings, [department.fullName]: department.id }
+			}, {})
+
+		// Preprocess the bulk data
+		type ProcessedData = ProcessedDataForStudent | ProcessedDataForEmployee
+		const incompleteProfiles: ProcessedData[] = await Promise.all(bulkData.importedCSV.map(async data => {
+			const { password, department, ...securedData } = data
 			return {
 				...securedData,
 				kind: bulkData.kind,
-				password: await hash(rawPassword)
-			}
+				password: await hash(password),
+				departmentID: departmentIDs[department]
+			} as ProcessedData
 		}))
+
+		if (bulkData.kind === "student") {
+			// Prepare for bulk creation
+			const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
+				incompleteProfile: ProcessedDataForStudent
+			) => {
+				const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
+				return { ...incompleteNormalizedProfile, studentDetails: { studentNumber } }
+			})
+
+			// Create the students in bulk
+			const users = await User.bulkCreate(normalizedProfiles, {
+				include: [ StudentDetail ]
+			})
+		} else if (bulkData.kind === "reachable_employee") {
+
+		} else {
+			// TODO: Throw error to prevent bulk creation of unreachable employees or make a route
+		}
 
 		const transformer = this.transformer
 
