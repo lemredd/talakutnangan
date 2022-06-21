@@ -76,7 +76,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		const departments = await Department.findAll(departmentFindOptions)
 		const departmentIDs: { [key: string]: number } = departments.reduce(
 			(previousMappings, department) => {
-				return { ...previousMappings, [department.fullName]: department.id }
+				return { ...previousMappings, [department.acronym]: department.id }
 			}, {})
 
 		// Preprocess the bulk data
