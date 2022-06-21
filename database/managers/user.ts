@@ -1,4 +1,4 @@
-import { Op, HasOne } from "sequelize"
+import { Op, HasOne, BelongsTo } from "sequelize"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
 	RawBulkDataForStudents,
@@ -109,16 +109,22 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				]
 			})
 
-			console.log(users)
+			const departmentModels: { [key: string]: Department } = departments.reduce(
+				(previousMappings, department) => {
+					return { ...previousMappings, [`${department.id}`]: department }
+				}, {})
+			const completeUserInfo = users.map(user => {
+				user.department = departmentModels[`${user.departmentID}`]
+				return user
+			})
+
+			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else if (bulkData.kind === "reachable_employee") {
 
 		} else {
 			// TODO: Throw error to prevent bulk creation of unreachable employees or make a route
 		}
 
-		const transformer = this.transformer
-
-		// TODO: separate the student number if students then link them to student info if necessary
 		// const serializableData = Serializer.serialize(
 		// 	incompleteProfiles,
 		// 	transformer,
