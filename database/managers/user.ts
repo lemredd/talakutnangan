@@ -102,7 +102,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			// Create the students in bulk
 			const users = await User.bulkCreate(normalizedProfiles, {
 				include: [
-					new HasOne(User, StudentDetail, {})
+					{
+						model: StudentDetail,
+						as: "studentDetail"
+					}
 				]
 			})
 
