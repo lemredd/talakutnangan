@@ -9,6 +9,7 @@ import {
 	RestoreOptions as BaseRestoreOptions,
 	CreationAttributes as BaseCreationAttributes,
 	FindOptions as BaseFindOptions,
+	WhereOptions as BaseWhereOptions,
 	FindAndCountOptions as BaseFindAndCountOptions
 } from "sequelize"
 import type {
@@ -23,6 +24,7 @@ import {
 
 export type Model = BaseModel
 export type FindOptions<T> = BaseFindOptions<T>
+export type WhereOptions<T> = BaseWhereOptions<T>
 export type UpdateOptions<T> = BaseUpdateOptions<T>
 export type DestroyOptions<T> = BaseDestroyOptions<T>
 export type RestoreOptions<T> = BaseRestoreOptions<T>
