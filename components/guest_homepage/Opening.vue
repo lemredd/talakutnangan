@@ -1,5 +1,5 @@
 <template>
-<img src="./Logo.svg" alt="logo" />
+<img src="@assets/logo_bg_transparent.svg" alt="logo" />
 <div class="text-center">
 	<Description>
 		<template #header>Chat header</template>
