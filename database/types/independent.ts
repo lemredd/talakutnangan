@@ -49,7 +49,9 @@ export interface RawBulkDataForEmployees {
  */
 export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "department"> {
 	kind: "student",
-	departmentID: number
+	department: {
+		acronym: string
+	}
 }
 
 /**
@@ -59,5 +61,7 @@ export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "de
  */
 export interface ProcessedDataForEmployee extends Omit<RawBulkDataForEmployee, "department"> {
 	kind: "reachable_employee",
-	departmentID: number
+	department: {
+		acronym: string
+	}
 }
