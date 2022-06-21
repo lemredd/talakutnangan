@@ -13,6 +13,11 @@ export default class Condition {
 		return this
 	}
 
+	equal(column: string, value: any): Condition {
+		this.currentCondition[column] = { [Op.eq]: value }
+		return this
+	}
+
 	search(column: string, value: string): Condition {
 		// `findAndCountAll` uses `findAll`. See
 		// https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L2070
