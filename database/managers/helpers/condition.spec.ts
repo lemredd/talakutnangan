@@ -54,10 +54,10 @@ describe("Database: Condition Builder", () => {
 		).build()
 
 		expect(builtCondition).toStrictEqual({
-			[Op.or]: {
-				columnA: { [Op.is]: null },
-				columnB: { [Op.not]: null }
-			}
+			[Op.or]: [
+				{ columnA: { [Op.is]: null } },
+				{ columnB: { [Op.not]: null } }
+			]
 		})
 	})
 })
