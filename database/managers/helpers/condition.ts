@@ -1,6 +1,7 @@
+import type { WhereOptions } from "%/types/dependent"
 import { Op } from "sequelize"
 
-export default class Condition {
+export default class Condition<T = any> {
 	private currentCondition: { [key: string|symbol]: any } = {}
 
 	not(column: string, value: any): Condition {
@@ -41,5 +42,5 @@ export default class Condition {
 		return this
 	}
 
-	build(): object { return { ...this.currentCondition } }
+	build(): WhereOptions<T> { return { ...this.currentCondition } }
 }
