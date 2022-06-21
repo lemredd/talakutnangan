@@ -1,7 +1,9 @@
 name: Shareable Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'shareable/**'
   pull_request:
     types:
       - reopened

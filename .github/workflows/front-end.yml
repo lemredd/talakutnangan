@@ -1,7 +1,10 @@
 name: Web Front-end Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'components/**'
+      - 'pages/**'
   pull_request:
     types:
       - reopened

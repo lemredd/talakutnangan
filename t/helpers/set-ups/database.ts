@@ -1,11 +1,15 @@
 import { Sequelize } from "sequelize-typescript"
-
 import Database from "%/data_source/database"
+import getDataSourceType from "~/set-ups/get_data_source_type"
 
 export default class {
 	static #dataSource: Sequelize
 
 	static async create(): Promise<void> {
+		if (Database.dataSource === undefined) {
+			await Database.initialize(getDataSourceType())
+		}
+
 		this.#dataSource = Database.dataSource
 
 		await this.#dataSource.sync({ force: true })
