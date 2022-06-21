@@ -24,7 +24,7 @@ export interface RawBulkDataForStudent extends CommonRawBulkData {
 /**
  * Shape to expect for creating employee profiles in bulk
  */
-export interface RawBulkDataforEmployees extends CommonRawBulkData {}
+export interface RawBulkDataForEmployee extends CommonRawBulkData {}
 
 /**
  * Shape to expect for creating students profiles in bulk
@@ -39,7 +39,7 @@ export interface RawBulkDataForStudents {
  */
 export interface RawBulkDataForEmployees {
 	kind: "reachable_employee",
-	importedCSV: RawBulkDataforEmployees[]
+	importedCSV: RawBulkDataForEmployee[]
 }
 
 /**
@@ -47,8 +47,9 @@ export interface RawBulkDataForEmployees {
  *
  * Assumes password has been hashed
  */
-export interface ProcessedDataForStudent extends RawBulkDataForStudent {
-	kind: "student"
+export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "department"> {
+	kind: "student",
+	departmentID: number
 }
 
 /**
@@ -56,6 +57,7 @@ export interface ProcessedDataForStudent extends RawBulkDataForStudent {
  *
  * Assumes password has been hashed
  */
-export interface ProcessedDataForEmployee extends RawBulkDataForEmployee {
-	kind: "reachable_employee"
+export interface ProcessedDataForEmployee extends Omit<RawBulkDataForEmployee, "department"> {
+	kind: "reachable_employee",
+	departmentID: number
 }
