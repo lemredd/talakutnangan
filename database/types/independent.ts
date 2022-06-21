@@ -7,27 +7,55 @@
 /**
  * Common shape to expect for creating profiles in bulk
  */
-export interface CommonBulkData {
+export interface CommonRawBulkData {
 	name: string,
 	email: string,
 	department: string,
-	rawPassword: string
+	password: string
 }
+
+/**
+ * Shape to expect for creating student profiles in bulk
+ */
+export interface RawBulkDataForStudent extends CommonRawBulkData {
+	studentNumber: string
+}
+
+/**
+ * Shape to expect for creating employee profiles in bulk
+ */
+export interface RawBulkDataforEmployees extends CommonRawBulkData {}
 
 /**
  * Shape to expect for creating students profiles in bulk
  */
-export interface BulkCreateStudents {
+export interface RawBulkDataForStudents {
 	kind: "student",
-	importedCSV: (CommonBulkData & {
-		studentNumber: string,
-	})[]
+	importedCSV: RawBulkDataForStudent[]
 }
 
 /**
  * Shape to expect for creating employees in bulk
  */
-export interface BulkCreateEmployees {
+export interface RawBulkDataForEmployees {
 	kind: "reachable_employee",
-	importedCSV: CommonBulkData[]
+	importedCSV: RawBulkDataforEmployees[]
+}
+
+/**
+ * Shape to expect after preprocessing bulk data of students
+ *
+ * Assumes password has been hashed
+ */
+export interface ProcessedDataForStudent extends RawBulkDataForStudent {
+	kind: "student"
+}
+
+/**
+ * Shape to expect after preprocessing bulk data of employees
+ *
+ * Assumes password has been hashed
+ */
+export interface ProcessedDataForEmployee extends RawBulkDataForEmployee {
+	kind: "reachable_employee"
 }
