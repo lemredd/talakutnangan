@@ -97,6 +97,9 @@ describe("Database: User Create Operations", () => {
 		expect(StudentDetail.count()).resolves.toBe(2)
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(2)
+		expect(userData.included).toHaveLength(2)
+		expect(userData.included).toHaveProperty([ 0, "type" ], "department")
+		expect(userData.included).toHaveProperty([ 1, "type" ], "department")
 	})
 })
 
