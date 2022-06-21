@@ -1,28 +1,28 @@
-import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
+import { EndHandler } from "!/types/hybrid"
+import { Request, Response, NextFunction } from "!/types/dependent"
+import { RouteInformation, OptionalMiddleware } from "$/types/server"
 
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import { EndHandler } from "!/types/hybrid"
 import endRequest from "!/helpers/end_request"
-import { Request, Response, NextFunction } from "!/types/dependent"
-import { RouteInformation, OptionalMiddleware } from "!/types/independent"
+import MockRequester from "~/set-ups/mock_requester"
 
 import ControllerLike from "./controller-like"
 
-describe("Back-end: Base ControllerLike", () => {
-	abstract class BaseTestController extends ControllerLike {
-		get filePath(): string { return __filename }
+abstract class BaseTestController extends ControllerLike {
+	get filePath(): string { return __filename }
 
-		get endHandler(): EndHandler { return endRequest }
+	get endHandler(): EndHandler { return endRequest }
 
-		get policy(): Policy | null { return null }
+	get policy(): Policy | null { return null }
 
-		get bodyParser(): OptionalMiddleware { return null }
+	get bodyParser(): OptionalMiddleware { return null }
 
-		get validations(): Validation[] { return [] }
-	}
+	get validations(): Validation[] { return [] }
+}
 
+describe("Back-end Base: ControllerLike Non-Request", () => {
 	it("can make handlers", () => {
 		class ControllerA extends BaseTestController {
 			async intermediate(request: Request, response: Response, next: NextFunction)
@@ -58,13 +58,18 @@ describe("Back-end: Base ControllerLike", () => {
 			description: null
 		})
 	})
+})
 
-	it("can prepend middleware", () => {
+describe("Back-end Base: ControllerLike Middlewares", () => {
+	const requester = new MockRequester()
+
+	it("can prepend middleware", async () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
 			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
+				next()
 				return Promise.resolve()
 			}
 		}
@@ -84,22 +89,24 @@ describe("Back-end: Base ControllerLike", () => {
 		}
 
 		const handlers = (new ControllerD()).handlers
+		const { middlewares, postJobs } = handlers
+		const targetMiddleware = middlewares[middlewares.length - 1]!
 
-		expect(handlers.middlewares).toHaveLength(3)
-		expect(handlers.postJobs).toHaveLength(0)
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		handlers.middlewares[handlers.middlewares.length - 1]!.intermediate(request, response, next)
+		expect(postJobs).toHaveLength(0)
+		expect(middlewares).toHaveLength(3)
+		requester.expectSuccess()
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-	it("can append post jobs", () => {
+	it("can append post jobs", async () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareB extends Middleware {
 			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
+				next()
 				return Promise.resolve()
 			}
 		}
@@ -119,13 +126,14 @@ describe("Back-end: Base ControllerLike", () => {
 		}
 
 		const handlers = (new ControllerE()).handlers
+		const { middlewares, postJobs } = handlers
+		const targetPostJob = postJobs[postJobs.length - 1]!
 
-		expect(handlers.middlewares).toHaveLength(2)
-		expect(handlers.postJobs).toHaveLength(1)
+		await requester.runMiddleware(targetPostJob.intermediate.bind(targetPostJob))
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		handlers.postJobs[0]!.intermediate(request, response, next)
+		expect(middlewares).toHaveLength(2)
+		expect(postJobs).toHaveLength(1)
+		requester.expectSuccess()
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
@@ -142,15 +150,13 @@ describe("Back-end: Base ControllerLike", () => {
 			}
 		}
 		const controller = new ControllerF()
-		const request  = makeRequest<Request>()
-		const { res: response, next } = makeResponse()
 
-		await controller.intermediate(request, response, next)
+		await requester.runMiddleware(controller.intermediate.bind(controller))
 
 		expect(handleFunction.mock.calls[0]).toEqual([ targetMessage ])
 	})
 
-	it("can use policy", () => {
+	it("can use policy", async () => {
 		const middlewareFunction = jest.fn()
 
 		class PolicyA extends Policy {
@@ -170,14 +176,15 @@ describe("Back-end: Base ControllerLike", () => {
 		}
 
 		const handlers = (new ControllerG()).handlers
+		const { middlewares } = handlers
+		const targetMiddleware = middlewares[0]!
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		handlers.middlewares[0]!.intermediate(request, response, next)
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
+
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-	it("can use body parser", () => {
+	it("can use body parser", async () => {
 		const middlewareFunction = jest.fn()
 
 		class BodyParserA extends Middleware {
@@ -198,14 +205,15 @@ describe("Back-end: Base ControllerLike", () => {
 		}
 
 		const handlers = (new ControllerH()).handlers
+		const { middlewares } = handlers
+		const targetMiddleware = middlewares[1]!
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		handlers.middlewares[1]!.intermediate(request, response, next)
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
+
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-	it("can use validations", () => {
+	it("can use validations", async () => {
 		const middlewareFunction = jest.fn()
 
 		class ValidationA extends Validation {
@@ -225,10 +233,11 @@ describe("Back-end: Base ControllerLike", () => {
 		}
 
 		const handlers = (new ControllerI()).handlers
+		const { middlewares } = handlers
+		const targetMiddleware = middlewares[2]!
 
-		const request  = makeRequest<Request>()
-		const { res: response, next, } = makeResponse()
-		handlers.middlewares[2]!.intermediate(request, response, next)
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
+
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 })

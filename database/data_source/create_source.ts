@@ -1,6 +1,6 @@
 import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
-import type { SourceType } from "%/types/independent"
+import type { SourceType } from "$/types/database"
 
 import Log from "!/helpers/log"
 import Role from "%/models/role"
