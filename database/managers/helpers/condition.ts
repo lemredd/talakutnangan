@@ -33,12 +33,7 @@ export default class Condition<T = any> {
 	}
 
 	or(...conditions: Condition[]): Condition {
-		this.currentCondition[Op.or] = conditions.reduce((previousConditions, raw) => {
-			return {
-				...previousConditions,
-				...raw.build()
-			}
-		}, {})
+		this.currentCondition[Op.or] = conditions.map(condition => condition.build())
 		return this
 	}
 
