@@ -30,7 +30,7 @@
 
 	margin-top:4em;
 }
- 
+
 
 
 
@@ -41,13 +41,13 @@
 		&.graphics-left {
 			justify-content: flex-start;
 		}
-	}	
+	}
 }
 
 
 </style>
 
 <script lang="ts" setup>
-import Person from "@/Person.vue"
-import Description from "@/Description.vue"
+import Person from "@/guest_homepage/opening/Person.vue"
+import Description from "@/guest_homepage/opening/Description.vue"
 </script>

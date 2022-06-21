@@ -167,9 +167,14 @@ a {
 		min-height: calc(100vh - 56px);
 
 		&.login-content {
+			margin-top: 0;
 			padding: 0;
 			.container {
 				max-width: none;
+			}
+
+			footer {
+				display: none;
 			}
 		}
 	}
