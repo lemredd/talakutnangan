@@ -87,14 +87,13 @@ describe("Database: User Read Operations", () => {
 	it("can list users with incomplete profile", async () => {
 		const manager = new UserManager()
 		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
-		// Create dummy complete profile
+		// Create dummy complete profile to see if it would return two records or not
 		await (new UserFactory()).insertOne()
 
-		const { records, count } = await manager.list({ criteria: "incomplete", page: 0 })
+		const users = await manager.list({ criteria: "incomplete", page: 0 })
 
-		expect(count).toBe(1)
-		expect(records).toHaveLength(1)
-		expect(records[0].email).toStrictEqual(incompleteUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
 	})
 
 	it("can list users with complete profile", async () => {
@@ -103,11 +102,10 @@ describe("Database: User Read Operations", () => {
 		// Create dummy incomplete profile
 		await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list({ criteria: "complete", page: 0 })
+		const users = await manager.list({ criteria: "complete", page: 0 })
 
-		expect(count).toBe(1)
-		expect(records).toHaveLength(1)
-		expect(records[0].email).toStrictEqual(completeUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
 	})
 
 	it("can list all users", async () => {
@@ -115,12 +113,10 @@ describe("Database: User Read Operations", () => {
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
 
-		const { records, count } = await manager.list({ criteria: "all", page: 0 })
+		const users = await manager.list({ criteria: "all", page: 0 })
 
-		expect(count).toBe(2)
-		expect(records).toHaveLength(2)
-		expect(records[0].email).toStrictEqual(completeUserProfile.email)
-		expect(records[1].email).toStrictEqual(incompleteUserProfile.email)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(2)
 	})
 
 	it("can search users with a specified name", async () => {
@@ -138,10 +134,29 @@ describe("Database: User Read Operations", () => {
 			}))
 			.insertMany(faker.mersenne.rand(10, namesStartWithO.length))
 
-		const { records, count } = await manager.list({name: "N", page: 0 })
+		const users = await manager.list({ name: "N", page: 0 })
 
-		expect(count).toBe(namesStartWithN.length)
-		expect(records).toHaveLength(namesStartWithN.length)
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(namesStartWithN.length)
+	})
+
+	it("cannot search search with non-matching name", async () => {
+		const manager = new UserManager()
+		await (new UserFactory())
+			.setNameGenerator(() => faker.random.alpha({
+				bannedChars: [ "n", "N" ],
+				count: faker.mersenne.rand(7, 1)
+			}))
+			.insertMany(faker.mersenne.rand(10, 5))
+
+		const roles = await manager.list({
+			name: "N",
+			page: 0,
+			limit: 1
+		})
+
+		expect(roles).toHaveProperty("data")
+		expect(roles.data).toHaveLength(0)
 	})
 })
 
@@ -172,7 +187,7 @@ describe("Database: User Update Operations", () => {
 })
 
 
-describe("Database: User Archival and Restoration Operations", () => {
+describe("Database: User Archive and Restore Operations", () => {
 	it("archive user", async () => {
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
