@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
+<div v-if="!isLoggingIn" class="navigation bg-white dark:bg-dark-700">
 	<div class="container">
 		<a href="/" class="logo">
 			<img src="@assets/logo_navbar.svg" alt="logo" />
