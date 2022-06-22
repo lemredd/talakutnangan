@@ -2,8 +2,7 @@ import { Op } from "sequelize"
 import { days } from "$/types/database.native"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
-	RawBulkDataForStudents,
-	RawBulkDataForEmployees,
+	RawBulkData,
 	ProcessedDataForStudent,
 	ProcessedDataForEmployee,
 	RawEmployeeSchedule
@@ -68,8 +67,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return await super.create({ ...details })
 	}
 
-	async bulkCreate(bulkData: RawBulkDataForStudents | RawBulkDataForEmployees)
-		: Promise<Serializable> {
+	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		// Get the department name firsts
 		const departmentNames = bulkData.importedCSV.map(data => data.department)
 		// Find the IDs of the departments
