@@ -67,12 +67,14 @@ describe("Database: User Authentication Operations", () => {
 
 describe("Database: User Create Operations", () => {
 	it("can create students in bulk", async () => {
+		const roles = await (new RoleFactory()).insertMany(3)
 		const departments = await (new DepartmentFactory()).insertMany(2)
 		const fakeUserA = await ((new UserFactory()).in(departments[0])).makeOne()
 		const fakeUserB = await ((new UserFactory()).in(departments[1])).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForStudents = {
 			kind: "student",
+			roles: roles.map(role => role.name),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
@@ -95,6 +97,7 @@ describe("Database: User Create Operations", () => {
 
 		expect(Department.count()).resolves.toBe(2)
 		expect(StudentDetail.count()).resolves.toBe(2)
+		expect(AttachedRole.count()).resolves.toBe(6)
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(2)
 		expect(userData.included).toHaveLength(2)
