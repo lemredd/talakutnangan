@@ -86,6 +86,6 @@ export default class User extends Model {
 	@HasOne(() => StudentDetail)
 	studentDetail?: StudentDetail
 
-	@HasOne(() => EmployeeSchedule)
-	employeeSchedule?: EmployeeSchedule
+	@HasMany(() => EmployeeSchedule)
+	employeeSchedules?: EmployeeSchedule[]
 }
