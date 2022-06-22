@@ -1,6 +1,8 @@
 import { Buffer } from "buffer"
+
 import { OptionalMiddleware } from "$/types/server"
 import { Request, Response } from "!/types/dependent"
+import { RawBulkData, RawBulkDataForStudent, RawBulkDataForEmployee } from "%/types/independent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -36,10 +38,21 @@ export default class extends MultipartController {
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new UserManager()
+		const body: Partial<RawBulkData> = request.body
 
-		// TODO: Pass the the converted CSV file to user manager
+		body.importedCSV = body.importedCSV!.map(data => {
+			if (body.kind! === "student") {
+				data.password = (data as RawBulkDataForStudent).studentNumber
+			} else {
+				// TODO: Think of a way to produce password for employees
+				data.password = (data as RawBulkDataForEmployee).email
+			}
+			return data
+		})
 
-		response.status(this.status.NOT_IMPLEMENTED).json(request.body)
+		const createdModels = await manager.bulkCreate(body as RawBulkData)
+
+		response.status(this.status.OK).json(createdModels)
 	}
 
 	// TODO: Send e-mails to new users
