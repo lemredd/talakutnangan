@@ -3,6 +3,7 @@ import {
 	Model,
 	Column,
 	HasOne,
+	HasMany,
 	DataType,
 	BelongsTo,
 	AllowNull,
@@ -78,6 +79,9 @@ export default class User extends Model {
 
 	@BelongsToMany(() => Role, () => AttachedRole)
 	roles!: Role[]
+
+	@HasMany(() => AttachedRole, "userID")
+	attachedRoles!: AttachedRole[]
 
 	@HasOne(() => StudentDetail)
 	studentDetail?: StudentDetail
