@@ -6,6 +6,7 @@ import type {
 
 import User from "%/models/user"
 import Transformer from "%/transformers/base"
+import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import DepartmentTransformer from "%/transformers/department"
 
@@ -14,6 +15,7 @@ export default class extends Transformer<User, void> {
 		super()
 		this.type = "user"
 		this.relationships = {
+			roles: this.roles,
 			department: this.department
 		}
 	}
@@ -35,5 +37,9 @@ export default class extends Transformer<User, void> {
 
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(model.department, new DepartmentTransformer(), options)
+	}
+
+	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(model.roles, new RoleTransformer(), options)
 	}
 }
