@@ -31,6 +31,7 @@ export interface RawBulkDataForEmployee extends CommonRawBulkData {}
  */
 export interface RawBulkDataForStudents {
 	kind: "student",
+	roles: string[]
 	importedCSV: RawBulkDataForStudent[]
 }
 
@@ -39,6 +40,7 @@ export interface RawBulkDataForStudents {
  */
 export interface RawBulkDataForEmployees {
 	kind: "reachable_employee",
+	roles: string[]
 	importedCSV: RawBulkDataForEmployee[]
 }
 
@@ -49,7 +51,10 @@ export interface RawBulkDataForEmployees {
  */
 export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "department"> {
 	kind: "student",
-	departmentID: number
+	departmentID: number,
+	attachedRoles: ({
+		roleID: number
+	})[]
 }
 
 /**
@@ -59,5 +64,8 @@ export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "de
  */
 export interface ProcessedDataForEmployee extends Omit<RawBulkDataForEmployee, "department"> {
 	kind: "reachable_employee",
-	departmentID: number
+	departmentID: number,
+	attachedRoles: ({
+		roleID: number
+	})[]
 }
