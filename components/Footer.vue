@@ -1,5 +1,5 @@
 <template>
-	<footer class="flex flex-col justify-around">
+	<footer class="flex flex-col justify-around bg-dark-200">
 		<div class="links flex justify-around">
 			<div v-for="N in 4" class ="footer-list">
 				<h1>Footer</h1>
@@ -16,7 +16,6 @@
 </template>
 <style scoped lang="scss">
 footer {
-	background-color: #313131;
 	color: #fff;
 	padding: 1em 3em;
 }
