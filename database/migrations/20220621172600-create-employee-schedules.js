@@ -25,11 +25,11 @@ module.exports = {
 					},
 					scheduleStart: {
 						allowNull: false,
-						type: Sequelize.INT
+						type: Sequelize.INTEGER
 					},
 					scheduleEnd: {
 						allowNull: false,
-						type: Sequelize.INT
+						type: Sequelize.INTEGER
 					},
 					dayName: {
 						allowNull: false,
