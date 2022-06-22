@@ -4,6 +4,8 @@
  * packages.
  */
 
+import type { Day } from "$/types/database"
+
 /**
  * Common shape to expect for creating profiles in bulk
  */
@@ -68,4 +70,13 @@ export interface ProcessedDataForEmployee extends Omit<RawBulkDataForEmployee, "
 	attachedRoles: ({
 		roleID: number
 	})[]
+}
+
+/**
+ * Shape to expect for creating reachable employees in bulk or updating employee schedule.
+ */
+export interface RawEmployeeSchedule {
+	scheduleStart: number,
+	scheduleEnd: number,
+	dayName: Day
 }
