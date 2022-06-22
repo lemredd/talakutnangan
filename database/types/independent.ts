@@ -47,6 +47,11 @@ export interface RawBulkDataForEmployees {
 }
 
 /**
+ * Shape to expect for creating users in bulk
+ */
+export type RawBulkData = RawBulkDataForStudents | RawBulkDataForEmployees
+
+/**
  * Shape to expect after preprocessing bulk data of students
  *
  * Assumes password has been hashed
