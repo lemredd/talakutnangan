@@ -8,7 +8,7 @@
                 type="text"
                 v-model="input"
             />
-            <img class="img1 bg-dark-900 rounded-md h-6 p-1.5" :src="SearchIcon"/>
+            <span class="material-icons img1 bg-dark-900 rounded-md h-6 p-1.5">search</span>
             </div>
         </div>
     </div>
@@ -30,12 +30,6 @@
 
 <style>
 
-body {
-    padding: 20px;
-    min-height: 100vh;
-    background-color: rgb(37, 40, 46);
-}
-
 .btn1 {
 background:white;
 }
@@ -44,7 +38,7 @@ background: gray;
 }
 
 .img1{
-
+    font-size: 13px;
     margin-top:8px;
     margin-left:-15px;
 }
@@ -90,8 +84,6 @@ function filteredList() {
         student.name.toLowerCase().includes(input.value.toLowerCase())
     );
 }
-
-import SearchIcon from "./search_icon.png"
 </script>
 
 
