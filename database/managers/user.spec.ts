@@ -95,9 +95,8 @@ describe("Database: User Create Operations", () => {
 
 		const userData = await manager.bulkCreate(bulkData)
 
-		expect(Department.count()).resolves.toBe(2)
-		expect(StudentDetail.count()).resolves.toBe(2)
-		expect(AttachedRole.count()).resolves.toBe(6)
+		expect(await StudentDetail.count()).toBe(2)
+		expect(await AttachedRole.count()).toBe(6)
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(2)
 		expect(userData.included).toHaveLength(5)
