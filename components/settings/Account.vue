@@ -1,5 +1,5 @@
 <template>
-<form @submit.prevent class="text-light-100">
+<form @submit.prevent class="text-dark-200 dark:text-light-100">
 		<TextualField
 			label="E-mail"
 			type="email"

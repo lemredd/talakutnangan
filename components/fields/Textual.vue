@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container text-light-100">
+	<div :class="{ 'default': !editable }" class="input-container">
 		<label class="input-header col-span-full">
 			{{ label }}
 		</label>
