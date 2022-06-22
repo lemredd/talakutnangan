@@ -1,13 +1,13 @@
 name: Web Front-end Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'components/**'
+      - 'pages/**'
   pull_request:
     types:
-      - opened
-      - synchronize
       - reopened
-      - review_requested
     branches:
       - master
     paths:

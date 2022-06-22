@@ -1,25 +1,43 @@
 /**
- * @module HybridTypes
+ * @module HybridServerTypes
  * @description This module contains types that depend on both independent and dependent types.
  */
 
-import type Middleware from "!/bases/middleware"
-import type { RouteInformation } from "!/types/independent"
-import type { Response, Request, RequestHandler } from "!/types/dependent"
+import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
+import type {
+	RouteInformation,
+	WithRegistration,
+	OptionalMiddleware,
+	PageProps
+} from "$/types/server"
 
-export type EndHandler = (Request, Response) => Promise<void>
+export interface PageRequest extends Request {
+	// Added to pass data from server to client
+	pageProps: PageProps|null
+}
+
+export interface AsynchronousRequestHandler {
+	(
+		_request: Request,
+		_response: Response,
+		_next: NextFunction
+	): Promise<void>
+}
+export type EndHandler = (_request: Request, _response: Response) => Promise<void> | void
 
 /**
  * Used to structure the stored route information with its associated handlers.
  */
  export interface RouteHandlers {
-	middlewares: Middleware[],
-	controllerAsMiddleware: RequestHandler,
-	controllerAsEnd: EndHandler,
-	postJobs: Middleware[]
+	middlewares: OptionalMiddleware[],
+	controller: RequestHandler | AsynchronousRequestHandler,
+	postJobs: OptionalMiddleware[],
+	endHandler: EndHandler | null
 }
 
 export interface UsableRoute {
 	information: RouteInformation,
 	handlers: RouteHandlers
 }
+
+export type RequestWithRegistration = Request & WithRegistration

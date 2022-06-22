@@ -1,34 +1,37 @@
 import { v4 } from "uuid"
-import { StatusCodes } from "http-status-codes"
-import { Request, Response, NextFunction } from "express"
 
-import Middleware from "!/bases/middleware"
-import type { RawURLInfo, WithUser }  from "!/types"
-import GuestFormController from "!/app/routes/kinds/guest_form_controller"
+import { OptionalMiddleware } from "$/types/server"
+import { AuthenticatedRequest, Response } from "!/types/dependent"
+
+import Policy from "!/bases/policy"
+import JSONController from "!/common_controllers/json_controller"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
-export default class extends GuestFormController {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
-	get middlewares(): Middleware[] {
-		return [
-			...super.middlewares,
-			new LocalLogInMiddleware()
-		]
-	}
+	get policy(): Policy { return CommonMiddlewareList.guestOnlyPolicy }
 
-	get validationRules(): object {
+	get bodyValidationRules(): object {
 		return {
 			email: [ "required", "string", "email", "maxLength:255" ],
 			password: [ "required", "string", "minLength:8" ]
 		}
 	}
 
-	async handle(request: Request & WithUser, response: Response): Promise<void> {
+	get middlewares(): OptionalMiddleware[] {
+		return [
+			...super.middlewares,
+			new LocalLogInMiddleware()
+		]
+	}
+
+	async handle(request: AuthenticatedRequest, response: Response): Promise<void> {
 		const user = request.user
 		const token = v4()
 		request.session.token = token
-		response.status(StatusCodes.OK).json({
+		response.status(this.status.OK).json({
 			email: user.email,
 			token
 		})

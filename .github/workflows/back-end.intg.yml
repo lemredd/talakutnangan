@@ -1,16 +1,18 @@
 name: Web Back-end Integration Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'database/**'
+      - 'server/**'
+      - 't/integration/**'
   pull_request:
     types:
-      - opened
-      - synchronize
       - reopened
-      - review_requested
     branches:
       - master
     paths:
+      - 'database/**'
       - 'server/**'
       - 't/integration/**'
 

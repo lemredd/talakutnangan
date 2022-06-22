@@ -1,7 +1,6 @@
 {
 	"compilerOptions": {
-		"strict": false,
-		"strictPropertyInitialization": false,
+		"strict": true,
 		"module": "ES2020",
 		"moduleResolution": "Node",
 		"allowJs": true,
@@ -16,7 +15,10 @@
 			"!/*": [ "./server/*" ],
 			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],
-			"@/*": [ "./components/*" ]
+			"@/*": [ "./components/*" ],
+			"$/*": [ "./shareable/*" ],
+			"@@/*": [ "./pages/*" ],
+			"@assets/*": ["./assets/*"]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true

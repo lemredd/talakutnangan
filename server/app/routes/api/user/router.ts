@@ -1,12 +1,11 @@
 import Router from "!/bases/router"
-import Controller from "!/bases/controller"
 import GetList from "!/app/routes/api/user/list.get"
-import GetCreate from "!/app/routes/api/user/create.get"
 import PostLogIn from "!/app/routes/api/user/log_in.post"
+import PostImport from "!/app/routes/api/user/import.post"
 import PostLogOut from "!/app/routes/api/user/log_out.post"
-import PostRegister from "!/app/routes/api/user/register.post"
-import PatchUpdate from "!/app/routes/api/user/update(id).patch"
+import PutUpdate from "!/app/routes/api/user/update(id).put"
 import GetLogInFailure from "!/app/routes/api/user/log_in_failure.get"
+import PatchResetPassword from "!/app/routes/api/user/reset_password(id).patch"
 
 export default class extends Router {
 	constructor() {
@@ -14,12 +13,12 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetList(),
-			new GetCreate(),
 			new PostLogIn(),
+			new PutUpdate(),
+			new PostImport(),
 			new PostLogOut(),
-			new PatchUpdate(),
-			new PostRegister(),
-			new GetLogInFailure()
+			new GetLogInFailure(),
+			new PatchResetPassword()
 		])
 	}
 }

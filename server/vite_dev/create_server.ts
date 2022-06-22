@@ -1,10 +1,13 @@
 import { createPageRenderer } from "vite-plugin-ssr"
+import type { Express as ExpressApp } from "express"
 import { static as serveStaticFiles, Router as createRouter } from "express"
-import type { Express as ExpressApp, Request, Response, NextFunction } from "express"
 
-import { Environment } from "!/types"
+import { PageRequest } from "!/types/hybrid"
+import { Environment } from "$/types/server"
+import { Response, NextFunction } from "!/types/dependent"
+
 import getRoot from "!/helpers/get_root"
-import getEnvironment from "!/helpers/get_environment"
+import getEnvironment from "$/helpers/get_environment"
 import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
 
 type PageRenderer = typeof renderPage
@@ -38,10 +41,12 @@ export default async function(app: ExpressApp) {
 	const renderPage = pageRenderer
 
 	const router = createRouter()
-	router.get("*", async (request: Request, response: Response, next: NextFunction) => {
+	// @ts-ignore
+	router.get("*", async (request: PageRequest, response: Response, next: NextFunction) => {
 		const url = request.originalUrl
 		const pageContextInit = {
 			url,
+			pageProps: request.pageProps
 		}
 		const pageContext = await renderPage(pageContextInit)
 		const { httpResponse } = pageContext

@@ -13,7 +13,7 @@ const config: UserConfig = {
 		ssr(),
 		windicss({
 			scan: {
-				dirs: ["pages"],
+				dirs: ["pages", "renderer", "components"],
 				fileExtensions: ["vue", "js", "ts"]
 			}
 		})

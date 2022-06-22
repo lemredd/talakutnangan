@@ -1,14 +1,13 @@
-import Middleware from "!/bases/middleware"
-import Controller from "!/bases/controller"
-import RequestEnvironment from "!/helpers/request_environment";
+import { UsableRoute } from "!/types/hybrid"
+import { RouteInformation } from "$/types/server"
 
-import { UsableRoute } from "!/types/hybrid";
-import { RouteInformation } from "!/types/independent";
+import ControllerLike from "!/bases/controller-like"
+import RequestEnvironment from "$/helpers/request_environment"
 
 export default abstract class Router extends RequestEnvironment {
 	private routes: UsableRoute[] = []
 
-	useControllers(controllers: Controller[]): void {
+	useControllers(controllers: ControllerLike[]): void {
 		controllers.forEach(controller => this.useController(controller))
 	}
 
@@ -16,7 +15,7 @@ export default abstract class Router extends RequestEnvironment {
 		routers.forEach(router => this.useRouter(router))
 	}
 
-	useController(controller: Controller): void {
+	useController(controller: ControllerLike): void {
 		const information = controller.routeInformation
 		const handlers = controller.handlers
 		this.routes.push({

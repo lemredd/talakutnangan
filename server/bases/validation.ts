@@ -1,7 +1,8 @@
 import { Validator } from "node-input-validator"
-import { Request, Response, NextFunction } from "express"
 
-import { ValidationError } from "!/types"
+import { ValidationError } from "$/types/server"
+import { Request, Response, NextFunction } from "!/types/dependent"
+
 import Middleware from "!/bases/middleware"
 
 export default abstract class extends Middleware {

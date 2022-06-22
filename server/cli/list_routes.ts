@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import RouterManager from "!/app/routes/router_manager"
+import RouterManager from "!/app/routes/router"
 
 function main() {
 	console.log("Registered custom routes:")
@@ -19,7 +19,7 @@ function main() {
 
 	for(const { purpose, method, path } of allInformation) {
 		console.log(
-			`\t${purpose} ${method.padStart(5, " ")} ${path}`
+			`\t${purpose} ${method.padStart(6, " ")} ${path}`
 		)
 	}
 }

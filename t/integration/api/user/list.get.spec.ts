@@ -1,32 +1,48 @@
 import { StatusCodes } from "http-status-codes"
-import UserManager from "%/managers/user_manager"
+import UserManager from "%/managers/user"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 import Route from "!/app/routes/api/user/list.get"
 
 describe("GET /api/user/list", () => {
 	beforeAll(async () => {
-		await App.create("/api/user", new Route())
+		await App.create(new Route())
 	})
 
-	it("can be accessed by permitted user and get single unadmitted user", async () => {
+	it("can be accessed by permitted user and get single complete user", async () => {
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
 		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
+		const student = await (new UserFactory()).beStudent().insertOne()
 
 		const response = await App.request
 			.get("/api/user/list")
-			.query({ criteria: "unadmitted" })
+			.query({ criteria: "complete" })
+			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
-		const expectedUser = await manager.findWithID(user.id)
-		expect(response.body).toStrictEqual(
-			JSON.parse(JSON.stringify([
+		const expectedUser = await manager.findWithID(student.id)
+		const refreshedAdmin = await manager.findWithID(admin.id)
+		expect(response.body).toStrictEqual({
+			data: [
+				refreshedAdmin,
 				expectedUser
-			]))
-		)
+			].map(model => {
+				const { id, name, email, kind, signature } = model!.toJSON()
+				return {
+					type: "user",
+					id,
+					attributes: {
+						name,
+						email,
+						kind,
+						signature: ""
+					}
+				}
+			})
+		})
 	})
 
-	it.todo("can be accessed by permitted user and get multiple unadmitted users")
+	it.todo("can be accessed by permitted user and get multiple complete users")
 	it.todo("cannot be accessed by guest users")
 })
