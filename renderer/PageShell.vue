@@ -1,5 +1,5 @@
 <template>
-	<div class="layout" ref="layout">
+	<div class="layout flex flex-col" ref="layout">
 		<ShellNav />
 		<Content>
 			<slot/>
@@ -53,8 +53,6 @@ a {
 }
 
 .layout {
-	display: flex;
-	flex-direction: column;
 
 	.content {
 		margin-top: $nav-height;
