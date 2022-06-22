@@ -52,27 +52,6 @@ a {
 	text-decoration: none;
 }
 
-.layout {
-
-	.content {
-		margin-top: $nav-height;
-		padding: 20px;
-		min-height: calc(100vh - $nav-height);
-
-		&.login-content {
-			margin-top: 0;
-			padding: 0;
-			.container {
-				max-width: none;
-			}
-
-			footer {
-				display: none;
-			}
-		}
-	}
-}
-
 .container {
 	max-width: 900px;
 	margin: auto;
