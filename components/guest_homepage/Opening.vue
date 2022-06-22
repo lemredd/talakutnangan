@@ -33,20 +33,12 @@
 
 	margin-top:4em;
 }
-.logo {
-			padding: .25em;
-			display: flex;
-			align-items: center;
-			width: max-content;
 
-			img {
-				width: 300px;
-				padding: .5em;
-				display: flex;
-				align-items: center;
-			}
+img {
+	padding: 2em 0 4em;
+	display: flex;
+	align-items: center;
 }
-
 
 @media screen and (min-width: 768px) {
 	.graphics {
