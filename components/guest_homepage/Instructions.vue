@@ -1,5 +1,5 @@
 <template>
-	<div class="forum bg-dark-200 w-auto rounded-3xl h-auto p-5 mb-5">
+	<div class="forum bg-light-800 dark:bg-dark-200 w-auto rounded-3xl h-auto p-5 mb-5">
 		<h1 class="text-center">Participate in a forum</h1>
 		<div class="flex flex-col md:flex-row justify-center md:justify-around">
 			<div class="ttl text right-auto py-3">
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="chat bg-dark-200 w-auto rounded-3xl h-auto p-5 mb-5">
+	<div class="chat bg-light-800 dark:bg-dark-200 w-auto rounded-3xl h-auto p-5 mb-5">
 		<h1 class="text-center">Start a consultation</h1>
 		<div class="flex flex-col md:flex-row justify-center md:justify-around">
 			<div class="ttl text right-auto py-3 md:order-2">
