@@ -1,12 +1,21 @@
 import { Op } from "sequelize"
+import { days } from "$/types/database.native"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
 	RawBulkDataForStudents,
 	RawBulkDataForEmployees,
 	ProcessedDataForStudent,
-	ProcessedDataForEmployee
+	ProcessedDataForEmployee,
+	RawEmployeeSchedule
 } from "%/types/independent"
-import type { Criteria, CommonConstraints, RawUser, Pipe, Serializable } from "$/types/database"
+import type {
+	Day,
+	Pipe,
+	Criteria,
+	RawUser,
+	Serializable,
+	CommonConstraints
+} from "$/types/database"
 
 import Role from "%/models/role"
 import User from "%/models/user"
@@ -22,6 +31,7 @@ import Serializer from "%/transformers/serializer"
 import StudentDetail from "%/models/student_detail"
 import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
+import EmployeeSchedule from "%/models/employee_schedule"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
 
 export default class UserManager extends BaseManager<User, RawUser> {
@@ -79,6 +89,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			(previousMappings, department) => {
 				return { ...previousMappings, [department.acronym]: department.id }
 			}, {})
+		const departmentModels: { [key: string]: Department } = departments.reduce(
+			(previousMappings, department) => {
+				return { ...previousMappings, [`${department.id}`]: department }
+			}, {})
 
 		// Find the IDs of the roles
 		const roleWhereConditions: Condition[] = bulkData.roles.reduce((
@@ -122,20 +136,16 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			const users = await User.bulkCreate(normalizedProfiles, {
 				include: [
 					{
-						model: StudentDetail,
-						as: "studentDetail"
-					},
-					{
 						model: AttachedRole,
 						as: "attachedRoles"
+					},
+					{
+						model: StudentDetail,
+						as: "studentDetail"
 					}
 				]
 			})
 
-			const departmentModels: { [key: string]: Department } = departments.reduce(
-				(previousMappings, department) => {
-					return { ...previousMappings, [`${department.id}`]: department }
-				}, {})
 			const completeUserInfo = users.map(user => {
 				user.department = departmentModels[`${user.departmentID}`]
 				user.roles = roles
@@ -144,7 +154,50 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else if (bulkData.kind === "reachable_employee") {
+			// Prepare for bulk reachable employee creation
+			const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
+				previousSchedule: RawEmployeeSchedule[],
+				dayName: Day
+			) => {
+				if (dayName !== "saturday" && dayName !== "sunday") {
+					const scheduleStart = 60*60*8 // Start at 8am
+					const scheduleEnd = 60*60*(12+5) // End at 5pm
+					return [ ...previousSchedule, {
+						scheduleStart,
+						scheduleEnd,
+						dayName
+					}]
+				} else {
+					return previousSchedule
+				}
+			}, [])
+			const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
+				incompleteProfile: ProcessedDataForEmployee
+			) => {
+				return { ...incompleteProfile, employeeSchedules }
+			})
 
+			// Create the reachable employees in bulk
+			const users = await User.bulkCreate(normalizedProfiles, {
+				include: [
+					{
+						model: AttachedRole,
+						as: "attachedRoles"
+					},
+					{
+						model: EmployeeSchedule,
+						as: "employeeSchedules"
+					}
+				]
+			})
+
+			const completeUserInfo = users.map(user => {
+				user.department = departmentModels[`${user.departmentID}`]
+				user.roles = roles
+				return user
+			})
+
+			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else {
 			// TODO: Throw error to prevent bulk creation of unreachable employees or make a route
 		}
