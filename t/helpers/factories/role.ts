@@ -7,7 +7,7 @@ import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
 
 export default class RoleFactory extends BaseFactory<Role> {
-	#name: string = faker.name.findName()
+	#name: () => string = () => faker.name.findName()
 	#departmentFlags: number = 0
 	#roleFlags: number = 0
 	#semesterFlags: number = 0
@@ -22,7 +22,7 @@ export default class RoleFactory extends BaseFactory<Role> {
 
 	async generate(): GeneratedData<Role> {
 		return {
-			name: this.#name,
+			name: this.#name(),
 			departmentFlags: this.#departmentFlags,
 			roleFlags: this.#roleFlags,
 			semesterFlags: this.#semesterFlags,
@@ -35,7 +35,7 @@ export default class RoleFactory extends BaseFactory<Role> {
 		}
 	}
 
-	name(name: string): RoleFactory {
+	name(name: () => string): RoleFactory {
 		this.#name = name
 		return this
 	}
