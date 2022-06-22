@@ -35,7 +35,8 @@ export default class EmployeeSchedule extends Model {
 
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false
+		allowNull: false,
+		type: DataType.BIGINT
 	})
 	userID!: number
 
