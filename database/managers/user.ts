@@ -1,4 +1,4 @@
-import { Op, HasOne, BelongsTo } from "sequelize"
+import { Op } from "sequelize"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
 	RawBulkDataForStudents,
@@ -16,6 +16,7 @@ import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
 import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
+import AttachedRole from "%/models/attached_role"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import StudentDetail from "%/models/student_detail"
@@ -57,7 +58,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return await super.create({ ...details })
 	}
 
-	async bulkCreate(bulkData: RawBulkDataForStudents | RawBulkDataForEmployees): Promise<Serializable> {
+	async bulkCreate(bulkData: RawBulkDataForStudents | RawBulkDataForEmployees)
+		: Promise<Serializable> {
 		// Get the department name firsts
 		const departmentNames = bulkData.importedCSV.map(data => data.department)
 		// Find the IDs of the departments
@@ -78,6 +80,22 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				return { ...previousMappings, [department.acronym]: department.id }
 			}, {})
 
+		// Find the IDs of the roles
+		const roleWhereConditions: Condition[] = bulkData.roles.reduce((
+			conditions: Condition[],
+			name: string
+		) => {
+			const condition = new Condition()
+			condition.equal("name", name)
+			return [ ...conditions, condition ]
+		}, [])
+		const roles = await Role.findAll({
+			where: (new Condition()).or(...roleWhereConditions).build()
+		})
+		const rolesToAttach = roles.reduce<{ roleID: number }[]>((previousRoles, role) => {
+			return [ ...previousRoles, { roleID: role.id } ]
+		}, [])
+
 		// Preprocess the bulk data
 		type ProcessedData = ProcessedDataForStudent | ProcessedDataForEmployee
 		const incompleteProfiles: ProcessedData[] = await Promise.all(bulkData.importedCSV.map(async data => {
@@ -86,12 +104,13 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				...securedData,
 				kind: bulkData.kind,
 				password: await hash(password),
-				departmentID: departmentIDs[department]
+				departmentID: departmentIDs[department],
+				attachedRoles: rolesToAttach
 			} as ProcessedData
 		}))
 
 		if (bulkData.kind === "student") {
-			// Prepare for bulk creation
+			// Prepare for bulk student creation
 			const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
 				incompleteProfile: ProcessedDataForStudent
 			) => {
@@ -105,6 +124,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 					{
 						model: StudentDetail,
 						as: "studentDetail"
+					},
+					{
+						model: AttachedRole,
+						as: "attachedRoles"
 					}
 				]
 			})
@@ -115,6 +138,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				}, {})
 			const completeUserInfo = users.map(user => {
 				user.department = departmentModels[`${user.departmentID}`]
+				user.roles = roles
 				return user
 			})
 
