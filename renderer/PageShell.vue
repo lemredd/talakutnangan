@@ -22,7 +22,7 @@ provide("isLoggingIn", isLoggingIn)
 
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)
-const bodyClasses = ref<string[]>(["dark"])
+const bodyClasses = ref<string[]>(["light"])
 onMounted(function() {
 	if (layout.value) {
 		// ! Risky
