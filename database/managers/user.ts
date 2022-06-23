@@ -53,7 +53,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		]
 	}
 
-	async findWithCredentials(email: string, password: string): Promise<User|null> {
+	async findWithCredentials(email: string, password: string): Promise<Serializable|null> {
 		const condition = new Condition()
 		condition.is("email", email)
 		const whereOptions: FindOptions<User> = { where: condition.build() }
@@ -62,7 +62,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		const foundUser = await User.findOne(findOptions)
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
-			return foundUser
+			return Serializer.serialize(foundUser, this.transformer, {})
 		} else {
 			return null
 		}
