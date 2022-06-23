@@ -6,6 +6,9 @@ on:
       - 'database/**'
       - 'server/**'
       - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
   pull_request:
     types:
       - reopened
@@ -15,6 +18,9 @@ on:
       - 'database/**'
       - 'server/**'
       - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
 
 jobs:
   integration_tests:
