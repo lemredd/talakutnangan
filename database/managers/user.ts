@@ -49,7 +49,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			searchName,
 			siftByCriteria,
 			offset,
-			limit
+			limit,
+			includeRoleAndDepartment
 		]
 	}
 
