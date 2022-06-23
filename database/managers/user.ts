@@ -16,6 +16,7 @@ import type {
 	CommonConstraints
 } from "$/types/database"
 
+import Log from "!/helpers/log"
 import Role from "%/models/role"
 import User from "%/models/user"
 import hash from "!/helpers/auth/hash"
@@ -68,8 +69,17 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
+		Log.trace("manager", "entered user manager -> bulk create method")
+
+		await User.sequelize?.authenticate()
+
+		Log.trace("manager", "connected to database?"+User.sequelize?.connectionManager.initPools())
+
 		// Get the department name firsts
 		const departmentNames = bulkData.importedCSV.map(data => data.department)
+
+		Log.trace("manager", "prepared names for searching IDs: "+departmentNames.join(","))
+
 		// Find the IDs of the departments
 		const departmentWhereConditions: Condition[] = departmentNames.reduce((
 			conditions: Condition[],
@@ -92,6 +102,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				return { ...previousMappings, [`${department.id}`]: department }
 			}, {})
 
+		Log.trace("manager", "found department IDs")
+
 		// Find the IDs of the roles
 		const roleWhereConditions: Condition[] = bulkData.roles.reduce((
 			conditions: Condition[],
@@ -108,6 +120,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			return [ ...previousRoles, { roleID: role.id } ]
 		}, [])
 
+		Log.trace("manager", "prepared roles to attach")
+
 		// Preprocess the bulk data
 		type ProcessedData = ProcessedDataForStudent | ProcessedDataForEmployee
 		const incompleteProfiles: ProcessedData[] = await Promise.all(bulkData.importedCSV.map(async data => {
@@ -121,6 +135,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			} as ProcessedData
 		}))
 
+		Log.trace("manager", "processed the data into general structure for bulk creation")
+
 		if (bulkData.kind === "student") {
 			// Prepare for bulk student creation
 			const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
@@ -129,6 +145,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
 				return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
 			})
+
+			Log.trace("manager", "specialized the data structure for student bulk creation")
 
 			// Create the students in bulk
 			const users = await User.bulkCreate(normalizedProfiles, {
@@ -144,11 +162,17 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				]
 			})
 
+			Log.success("manager", "created students in bulk")
+
 			const completeUserInfo = users.map(user => {
 				user.department = departmentModels[`${user.departmentID}`]
 				user.roles = roles
 				return user
 			})
+
+			Log.trace(
+				"manager",
+				"exiting user manager -> bulk create method with serialized student info")
 
 			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else if (bulkData.kind === "reachable_employee") {
@@ -175,6 +199,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				return { ...incompleteProfile, employeeSchedules }
 			})
 
+			Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
+
 			// Create the reachable employees in bulk
 			const users = await User.bulkCreate(normalizedProfiles, {
 				include: [
@@ -189,11 +215,17 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				]
 			})
 
+			Log.success("manager", "created reachable employees in bulk")
+
 			const completeUserInfo = users.map(user => {
 				user.department = departmentModels[`${user.departmentID}`]
 				user.roles = roles
 				return user
 			})
+
+			Log.trace(
+				"manager",
+				"exiting user manager -> bulk create method with serialized reachable employee info")
 
 			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else {
