@@ -91,6 +91,7 @@
 		"peer": "^0.6.1",
 		"pg": "^8.7.3",
 		"pg-hstore": "^2.3.4",
+		"qs": "^6.10.5",
 		"reflect-metadata": "^0.1.13",
 		"sequelize": "^6.20.1",
 		"sequelize-typescript": "^2.1.3",
