@@ -1,5 +1,6 @@
 import type { RawBulkDataForStudents, RawBulkDataForEmployees } from "%/types/independent"
 
+import User from "%/models/user"
 import UserManager from "./user"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
@@ -47,7 +48,7 @@ describe("Database: User Authentication Operations", () => {
 		expect(isResetSuccess).toBeTruthy()
 		expect(compare(
 			newPassword,
-			(await manager.findWithID(user.id))!.password,
+			(await User.findByPk(user.id))!.password,
 		)).resolves.toBeTruthy()
 	})
 
@@ -61,7 +62,7 @@ describe("Database: User Authentication Operations", () => {
 		expect(isResetSuccess).toBeFalsy()
 		expect(compare(
 			newPassword,
-			(await manager.findWithID(user.id))!.password,
+			(await User.findOne(user.id))!.password,
 		)).resolves.toBeFalsy()
 	})
 })

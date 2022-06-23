@@ -48,7 +48,7 @@ describe("Database: Base Read Operations", () => {
 
 		const foundUser = await manager.findWithID(id)
 
-		expect(foundUser!.email).toStrictEqual(base.email)
+		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
 	it("cannot search non-existing base with ID", async () => {
@@ -57,7 +57,7 @@ describe("Database: Base Read Operations", () => {
 
 		const foundUser = await manager.findWithID(id)
 
-		expect(foundUser).toBeNull()
+		expect(foundUser.data).toBeNull()
 	})
 
 	it("can list base", async () => {
