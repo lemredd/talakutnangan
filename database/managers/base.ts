@@ -24,8 +24,10 @@ export default abstract class Manager<T extends Model, U> {
 
 	abstract get transformer(): Transformer<T, void>
 
-	async findWithID(id: number): Promise<T|null> {
-		return await this.model.findOne(<FindOptions<T>>{ where: { id } })
+	async findWithID(id: number): Promise<Serializable> {
+		const model = await this.model.findOne(<FindOptions<T>>{ where: { id } })
+
+		return this.serialize(model)
 	}
 
 	async list(query: object): Promise<Serializable> {
