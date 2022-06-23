@@ -60,7 +60,7 @@ export default abstract class Manager<T extends Model, U> {
 		})
 	}
 
-	protected serialize(models: T|T[]): Serializable {
+	protected serialize(models: T|T[]|null): Serializable {
 		return Serializer.serialize(
 			models,
 			this.transformer,
