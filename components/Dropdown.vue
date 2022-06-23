@@ -6,7 +6,7 @@
 				<slot name="toggler"></slot>
 			</a>
 		</div>
-		<div class="dropdown-container dark:bg-dark-400" v-if="isDropdownShown">
+		<div class="dropdown-container bg-white dark:bg-dark-400" v-if="isDropdownShown">
 			<slot></slot>
 		</div>
 	</div>
@@ -29,9 +29,11 @@ import { ref } from "vue"
 const { purpose } = defineProps<{
 	purpose: string
 }>()
+const emit = defineEmits(["toggle"])
 const isDropdownShown = ref(false)
 
 function toggleDropdown() {
+	emit("toggle")
 	isDropdownShown.value = !isDropdownShown.value
 }
 </script>

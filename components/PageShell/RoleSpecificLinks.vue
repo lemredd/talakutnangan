@@ -1,7 +1,7 @@
 <template>
 	<div class="links mobile">
 
-		<RoleLinksList purpose="role-navigation" @close="toggleRoleLinks">
+		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks" @close="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
 			</template>
@@ -212,6 +212,7 @@ const determineRoleLinks = computed(function()  {
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
+	console.log("hello")
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
