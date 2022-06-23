@@ -1,13 +1,13 @@
-import { renderToString } from '@vue/server-renderer'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { createApp } from './app'
-import logoUrl from './Logo.svg'
-import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import { renderToString } from "@vue/server-renderer"
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
+import { createApp } from "./app"
+import logoUrl from "@assets/logo_bg_transparent.svg"
+import type { PageContext } from "./types"
+import type { PageContextBuiltIn } from "vite-plugin-ssr"
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'routeParams', 'state', '_', 'render']
+export const passToClient = ["pageProps", "urlPathname", "routeParams", "state", "_", "render"]
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
 	const app = createApp(pageContext)
@@ -15,8 +15,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
 	// See https://vite-plugin-ssr.com/head
 	const { documentProps } = pageContext
-	const title = (documentProps && documentProps.title) || 'Vite SSR app'
-	const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+	const title = (documentProps && documentProps.title) || "Vite SSR app"
+	const desc = (documentProps && documentProps.description) || "App using Vite + vite-plugin-ssr"
 
 	const documentHtml = escapeInject`<!DOCTYPE html>
 		<html lang="en">
