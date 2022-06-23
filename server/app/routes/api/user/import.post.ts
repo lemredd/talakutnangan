@@ -1,8 +1,13 @@
 import { Buffer } from "buffer"
 
-import { OptionalMiddleware } from "$/types/server"
-import { Request, Response } from "!/types/dependent"
-import { RawBulkData, RawBulkDataForStudent, RawBulkDataForEmployee } from "%/types/independent"
+import { UserKindValues } from "$/types/database"
+import type { OptionalMiddleware } from "$/types/server"
+import type { Request, Response } from "!/types/dependent"
+import type {
+	RawBulkData,
+	RawBulkDataForStudent,
+	RawBulkDataForEmployee
+} from "%/types/independent"
 
 import Log from "!/helpers/log"
 import Policy from "!/bases/policy"
@@ -32,8 +37,11 @@ export default class extends MultipartController {
 
 	get bodyValidationRules(): object {
 		// TODO: Create validator for buffers
+		// TODO: Validate nested properties of imported CSV
 		return {
-			importedCSV: [ "required" ]
+			importedCSV: [ "required" ],
+			roles: [ "required", "array" ],
+			kind: [ "required", [ "in", ...UserKindValues] ]
 		}
 	}
 
