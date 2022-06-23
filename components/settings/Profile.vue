@@ -93,16 +93,24 @@ import { inject, Ref, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 
 const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
-
 const profileInfo = userInfo.value.profile
 
-const isDarkModeEnabled = ref(true)
-
+const bodyClasses = inject("bodyClasses") as Ref<string[]>
+const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
 function toggleDarkMode() {
-	isDarkModeEnabled.value = !isDarkModeEnabled.value
+	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
+	if (!mutatedBodyClasses.has("dark")) {
+		mutatedBodyClasses.delete("light")
+		mutatedBodyClasses.add("dark")
+	} else {
+		mutatedBodyClasses.add("light")
+		mutatedBodyClasses.delete("dark")
+	}
+
+	bodyClasses.value = [...mutatedBodyClasses]
 }
 
-function loadImage(e, type) {
+function loadImage(e: any, type: any) {
 	const [file] = e.target.files
 	const fileObjectURL = URL.createObjectURL(file)
 
