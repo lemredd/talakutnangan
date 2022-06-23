@@ -14,11 +14,11 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (newState.include !== undefined) {
+	if (newState.include === undefined) {
 		newState.include = []
 	}
 
-	newState.include!.push(Role, Department)
+	(newState.include as any[])!.push(Role, Department)
 
 	Log.trace("pipeline", "applied role and department includer")
 
