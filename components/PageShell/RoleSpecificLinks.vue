@@ -1,13 +1,13 @@
 <template>
-	<div class="links mobile">
+	<div class="links mobile flex items-center">
 
-		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks" @close="toggleRoleLinks">
+		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
 			</template>
 
 			<template #default>
-				<div class="role-links">
+				<div class="role-links flex flex-col">
 					<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
@@ -16,7 +16,7 @@
 					</Link>
 
 				</div>
-				<a role="button" href="/logout" id="logout-btn">
+				<a role="button" href="/logout" id="logout-btn" class="flex items-center">
 						<span class="material-icons">logout</span>
 						Logout
 				</a>
@@ -24,7 +24,7 @@
 		</RoleLinksList>
 	</div>
 
-	<div class="links desktop">
+	<div class="links desktop hidden sm:flex">
 		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
@@ -37,14 +37,9 @@
 body.unscrollable {
 	overflow-y: hidden;
 }
-.links.desktop {
-	display: none;
-}
 
 .links {
 	height: 100%;
-	display: flex;
-	align-items: center;
 
 	.dropdown-container {
 		position: fixed;
@@ -52,8 +47,6 @@ body.unscrollable {
 	}
 
 	.role-links {
-		display: flex;
-		flex-direction: column;
 		height: calc(100% - 56px);
 
 		.overlay {
@@ -73,8 +66,6 @@ body.unscrollable {
 	}
 	#logout-btn {
 		border-radius: 5px;
-		display: flex;
-		align-items: center;
 		padding: .5em 1em;
 	}
 
@@ -88,8 +79,6 @@ body.unscrollable {
 		display: none;
 	}
 	.links.desktop {
-		display: flex;
-
 		.link[href="/settings"], .link[href="/notifications"] {
 			display: none;
 		}
@@ -212,7 +201,6 @@ const determineRoleLinks = computed(function()  {
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
-	console.log("hello")
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
