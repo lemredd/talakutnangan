@@ -59,11 +59,17 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		const whereOptions: FindOptions<User> = { where: condition.build() }
 		const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
 
+		Log.trace("manager", "prepared query to find user with certain credential")
+
 		const foundUser = await User.findOne(findOptions)
 
+		Log.trace("manager", "done finding for user")
+
 		if (foundUser !== null && await compare(password, foundUser.password)) {
+			Log.success("manager", "found a matching user")
 			return Serializer.serialize(foundUser, this.transformer, {})
 		} else {
+			Log.errorMessage("manager", "matching user not found")
 			return null
 		}
 	}
@@ -74,12 +80,6 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
-		Log.trace("manager", "entered user manager -> bulk create method")
-
-		await User.sequelize?.authenticate()
-
-		Log.trace("manager", "connected to database?"+User.sequelize?.connectionManager.initPools())
-
 		// Get the department name firsts
 		const departmentNames = bulkData.importedCSV.map(data => data.department)
 
@@ -174,10 +174,6 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				user.roles = roles
 				return user
 			})
-
-			Log.trace(
-				"manager",
-				"exiting user manager -> bulk create method with serialized student info")
 
 			return Serializer.serialize(completeUserInfo, this.transformer)
 		} else if (bulkData.kind === "reachable_employee") {
