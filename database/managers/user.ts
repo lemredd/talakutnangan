@@ -1,6 +1,6 @@
 import { Op } from "sequelize"
 import { days } from "$/types/database.native"
-import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
 import type {
 	RawBulkData,
 	ProcessedDataForStudent,
@@ -17,22 +17,27 @@ import type {
 } from "$/types/database"
 
 import Log from "!/helpers/log"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
+
 import Role from "%/models/role"
 import User from "%/models/user"
-import hash from "!/helpers/auth/hash"
-import BaseManager from "%/managers/base"
-import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
+import StudentDetail from "%/models/student_detail"
+import EmployeeSchedule from "%/models/employee_schedule"
+
+import BaseManager from "%/managers/base"
+import Serializer from "%/transformers/serializer"
+import UserTransformer from "%/transformers/user"
+
+import hash from "!/helpers/auth/hash"
+import compare from "!/helpers/auth/compare"
 import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
-import AttachedRole from "%/models/attached_role"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-import StudentDetail from "%/models/student_detail"
 import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
-import EmployeeSchedule from "%/models/employee_schedule"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
+import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 
 export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
@@ -49,12 +54,12 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async findWithCredentials(email: string, password: string): Promise<User|null> {
-		const foundUser = await User.findOne({
-			where: {
-				email
-			},
-			include: [ Role, Department ]
-		})
+		const condition = new Condition()
+		condition.is("email", email)
+		const whereOptions: FindOptions<User> = { where: condition.build() }
+		const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
+
+		const foundUser = await User.findOne(findOptions)
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
 			return foundUser
