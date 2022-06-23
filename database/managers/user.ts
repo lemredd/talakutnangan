@@ -68,7 +68,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
 			Log.success("manager", "found a matching user")
-			return Serializer.serialize(foundUser, this.transformer, {})
+			return this.serialize(foundUser)
 		} else {
 			Log.errorMessage("manager", "matching user not found")
 			return null
@@ -176,7 +176,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				return user
 			})
 
-			return Serializer.serialize(completeUserInfo, this.transformer)
+			return this.serialize(completeUserInfo)
 		} else if (bulkData.kind === "reachable_employee") {
 			// Prepare for bulk reachable employee creation
 			const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
@@ -229,16 +229,12 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				"manager",
 				"exiting user manager -> bulk create method with serialized reachable employee info")
 
-			return Serializer.serialize(completeUserInfo, this.transformer)
+			return this.serialize(completeUserInfo)
 		} else {
-			// TODO: Throw error to prevent bulk creation of unreachable employees or make a route
+			// TODO: Possibly throw error to prevent bulk creation of unreachable employees or make a
+			// route
 		}
 
-		// const serializableData = Serializer.serialize(
-		// 	incompleteProfiles,
-		// 	transformer,
-		// 	{}
-		// )
 		return {}
 	}
 

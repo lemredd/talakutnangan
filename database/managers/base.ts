@@ -31,17 +31,9 @@ export default abstract class Manager<T extends Model, U> {
 	async list(query: object): Promise<Serializable> {
 		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
-		const { rows, count } = await this.model.findAndCountAll(options)
+		const rows = await this.model.findAll(options)
 
-		const transformer = this.transformer
-
-		const serializableData = Serializer.serialize(
-			rows,
-			transformer,
-			{}
-		)
-
-		return serializableData
+		return this.serialize(rows)
 	}
 
 	async create(details: U & CreationAttributes<T>): Promise<T> {
@@ -66,5 +58,13 @@ export default abstract class Manager<T extends Model, U> {
 		return await this.model.restore(<RestoreOptions<T>>{
 			where: { id }
 		})
+	}
+
+	protected serialize(models: T|T[]): Serializable {
+		return Serializer.serialize(
+			models,
+			this.transformer,
+			{}
+		)
 	}
 }
