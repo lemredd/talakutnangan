@@ -22,7 +22,7 @@ Fixes, breaking change, or initial code of a feature should be merge as soon as 
 because it can affect the code or experience greatly in the future. Enhancements can be deferred.
 -->
 - PRs to merge first: #xx/None  <!-- Put PR number if there are or none. -->
-- Will have to additional commits? Yes/No
+- Will have additional commits? Yes/No
 - Must be merged ASAP? Yes/No
 - In case of merge conflicts, who will resolve them? Reviewer/Pull requester/Whoever caught it first
 
