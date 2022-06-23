@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isLoggingIn" class="navigation bg-white dark:bg-dark-700">
+<div v-if="!isLoggingIn" class="navigation bg-white dark:bg-dark-700 flex justify-center">
 	<div class="container">
 		<a href="/" class="logo">
 			<img src="@assets/logo_navbar.svg" alt="logo" />
@@ -63,6 +63,7 @@
 	line-height: 1.8em;
 	box-shadow: $box-shadow;
 	z-index: 1;
+	height: $nav-height;
 
 	.container {
 		display: grid;
