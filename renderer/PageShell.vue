@@ -3,7 +3,7 @@
 		<div v-if="!isLoggingIn" class="navigation dark:bg-dark-700">
 			<div class="container">
 				<a href="/" class="logo">
-					<img src="./placeholder.svg" alt="logo" />
+					<img src="@assets/logo_navbar.svg" alt="logo" />
 					<h1 class="ml-1">TALAKUTNANGAN</h1>
 				</a>
 
@@ -157,6 +157,7 @@ a {
 			img {
 				width: 48px;
 				padding: .5em;
+
 			}
 		}
 	}
@@ -167,9 +168,14 @@ a {
 		min-height: calc(100vh - 56px);
 
 		&.login-content {
+			margin-top: 0;
 			padding: 0;
 			.container {
 				max-width: none;
+			}
+
+			footer {
+				display: none;
 			}
 		}
 	}

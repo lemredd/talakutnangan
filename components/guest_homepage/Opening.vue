@@ -1,4 +1,5 @@
 <template>
+<img src="@assets/logo_bg_transparent.svg" alt="logo" />
 <div class="text-center">
 	<Description>
 		<template #header>Chat header</template>
@@ -30,7 +31,19 @@
 
 	margin-top:4em;
 }
- 
+.logo {
+			padding: .25em;
+			display: flex;
+			align-items: center;
+			width: max-content;
+
+			img {
+				width: 300px;
+				padding: .5em;
+				display: flex;
+				align-items: center;
+			}
+}
 
 
 
@@ -41,13 +54,13 @@
 		&.graphics-left {
 			justify-content: flex-start;
 		}
-	}	
+	}
 }
 
 
 </style>
 
 <script lang="ts" setup>
-import Person from "@/Person.vue"
-import Description from "@/Description.vue"
+import Person from "@/guest_homepage/opening/Person.vue"
+import Description from "@/guest_homepage/opening/Description.vue"
 </script>

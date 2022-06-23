@@ -55,5 +55,5 @@
 </style>
 
 <script setup lang="ts">
-import Person from './Person.vue';
+import Person from './opening/Person.vue';
 </script>
