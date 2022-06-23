@@ -1,4 +1,4 @@
-import { days } from "../../shareable/types/database.native"
+const { days } = require("../../shareable/types/database.native")
 
 "use strict";
 
