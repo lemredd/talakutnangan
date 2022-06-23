@@ -8,7 +8,7 @@ Put your additions and compatible changes here...
 <!--
 Be sure that changes in the PR are compatible with the master branch to prevent test failures.
 -->
-- Is confidently has no changes affected by breaking changes of previous PRs? Yes/No
+- Is pull requester confidently has no changes affected by breaking changes of previous PRs? Yes/No
 - Has breaking changes? Yes/No
 <!--
 Put breaking change details below this comment if there are breaking changes.
