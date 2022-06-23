@@ -161,11 +161,15 @@ describe("Database: User Read Operations", () => {
 		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
 		// Create dummy complete profile to see if it would return two records or not
 		await (new UserFactory()).insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "incomplete", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(2)
 	})
 
 	it("can list users with complete profile", async () => {
@@ -173,22 +177,31 @@ describe("Database: User Read Operations", () => {
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		// Create dummy incomplete profile
 		await (new UserFactory()).hasNoSignature().insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "complete", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(2)
 	})
 
 	it("can list all users", async () => {
 		const manager = new UserManager()
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
+		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "all", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(2)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(3)
 	})
 })
 
