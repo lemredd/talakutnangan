@@ -44,7 +44,7 @@ export default class Transport {
 				user,
 				pass
 			},
-			streamTransport: RequestEnvironment.isOnTest
+			jsonTransport: RequestEnvironment.isOnTest
 		})
 
 		this.transport.verify((error, success) => {
