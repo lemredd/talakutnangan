@@ -5,6 +5,7 @@
 		</label>
 		<input
 			class="bg-transparent"
+			:class=inputClasses
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -89,7 +90,8 @@ const {
 	required = true,
 	disabled,
 	editable,
-	verify
+	verify,
+	inputClasses
 	} = defineProps<{
 	label?: string
 	type: Textual
@@ -98,6 +100,7 @@ const {
 	disabled?: boolean
 	editable?: boolean
 	verify?: boolean
+	inputClasses?: string
 }>()
 const emit = defineEmits<{
 	(e: "update:modelValue", modelValue: string ): void
