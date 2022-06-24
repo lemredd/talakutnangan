@@ -1,7 +1,7 @@
 <template>
 	<div class="login-container">
 		<div class="image"></div>
-		<div class="login-form bg-dark-700">
+		<div class="login-form ">
 			<h1>Login</h1>
 			<LogInForm />
 		</div>
@@ -16,10 +16,10 @@ body {
 </style>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
+
 .login-container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	@apply flex items-center justify-center;
 	height: 100vh;
 
 	.image {
@@ -33,6 +33,8 @@ body {
 	}
 
 	.login-form {
+		@apply dark:bg-dark-700;
+		background: white;
 		width: 100%;
 		max-width: 1200px;
 		margin: 0 2em;
@@ -47,7 +49,7 @@ body {
 
 }
 
-@media (min-width: 768px) {
+@media (min-width: $mobile-viewport) {
 	.login-container {
 		display: grid;
 		align-items: initial;

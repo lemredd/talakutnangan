@@ -28,24 +28,21 @@
 	text-align: center;
 }
 .graphics {
-	display: flex;
-	justify-content: center;
-
+	@apply flex justify-center;
 	margin-top:4em;
 }
 
 img {
+	@apply flex items-center;
 	padding: 2em 0 4em;
-	display: flex;
-	align-items: center;
 }
 
 @media screen and (min-width: 768px) {
 	.graphics {
-		justify-content: flex-end;
+		@apply justify-end;
 
 		&.graphics-left {
-			justify-content: flex-start;
+			@apply justify-start;
 		}
 	}
 }

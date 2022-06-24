@@ -1,7 +1,7 @@
 <template>
 	<div v-if="!hasEmail">
-		<form @submit.prevent="joinRoom" class="flex flex-row flex-nowrap">
-			<label class="flex-1 flex-grow flex-shrink-0">
+		<form @submit.prevent="joinRoom" class="email-form">
+			<label class="form-control">
 				E-mail: <input type="email" ref="emailField" class="bg-gray-500"/>
 			</label>
 		</form>
@@ -11,18 +11,18 @@
 		<header>
 			<h1>Chat Room</h1>
 			<div class="btns">
-				<button class="bg-gray-200 px-3 py-1" @click="initiateCall" :disabled="isCalling">
+				<button class="call-btn" @click="initiateCall" :disabled="isCalling">
 					call
 				</button>
 			</div>
 		</header>
-		<div class="chatbox grid grid-cols-[2fr,1fr]">
+		<div class="chatbox">
 			<GroupCall></GroupCall>
 
-			<form @submit.prevent="sendMessage">
-				<label class="flex-1 flex-grow flex-shrink-0">
+			<form @submit.prevent="sendMessage" class="message-input">
+				<label class="form-control">
 					Message:
-					<input type="text" ref="chatBox" class="rounded border-1 border-gray-500 focus:outline-none"/>
+					<input type="text" ref="chatBox"/>
 				</label>
 				<output>
 					<p v-for="{ time, email, content } in messages">
@@ -35,7 +35,39 @@
 </template>
 
 <style scoped lang="scss">
+.email-form {
+	@apply flex flex-row flex-nowrap;
 
+	form-control {
+		@apply flex-1 flex-grow flex-shrink-0;
+	}
+}
+
+.btns {
+	.call-btn {
+		padding: .75em .25em;
+		background-color: gray;
+	}
+}
+
+.chatbox {
+	@apply  grid grid-cols-[2fr,1fr];
+
+	.message-input {
+		@apply flex-1 flex-grow flex-shrink-0;
+	}
+}
+
+.message-input {
+	input {
+		border-radius: .25em;
+		border: 1px solid gray;
+
+		&.focus {
+			outline: none;
+		}
+	}
+}
 </style>
 
 <script setup lang="ts">

@@ -13,15 +13,14 @@
 
 <style scoped lang="scss">
 .controls {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	@apply flex items-center justify-between;
 
 	button {
+		@apply dark:bg-dark-100;
 		border-radius: .5em;
 		padding: 0.5em 1em;
-
-		background-color: #444;
+		background-color: gray;
+		color: white;
 	}
 }
 </style>

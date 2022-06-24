@@ -1,5 +1,5 @@
 <template>
-	<div class="links mobile flex items-center">
+	<div class="links mobile">
 
 		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
@@ -24,7 +24,7 @@
 		</RoleLinksList>
 	</div>
 
-	<div class="links desktop hidden sm:flex">
+	<div class="links desktop">
 		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
@@ -40,6 +40,13 @@ body.unscrollable {
 
 .links {
 	height: 100%;
+
+	&.mobile {
+		@apply flex items-center;
+	}
+	&.desktop {
+		display: none;
+	}
 
 	.dropdown-container {
 		position: fixed;
@@ -75,12 +82,16 @@ body.unscrollable {
 }
 
 @media (min-width: 640px) {
-	.links.mobile {
-		display: none;
-	}
-	.links.desktop {
-		.link[href="/settings"], .link[href="/notifications"] {
+	.links{
+		&.mobile {
 			display: none;
+		}
+		&.desktop {
+			@apply flex;
+
+			.link[href="/settings"], .link[href="/notifications"] {
+				display: none;
+			}
 		}
 	}
 }

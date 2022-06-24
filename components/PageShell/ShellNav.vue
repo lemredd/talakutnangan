@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isLoggingIn" class="navigation bg-white dark:bg-dark-700 flex justify-center">
+<div v-if="!isLoggingIn" class="navigation">
 	<div class="container">
 		<a href="/" class="logo">
 			<img src="@assets/logo_navbar.svg" alt="logo" />
@@ -14,7 +14,7 @@
 				<ul class="notification-items">
 					<a href="">
 						<li class="notification-item" v-for="notification in notifications" :key="notification.id">
-							<div :class="`icon ${notification.type} dark:bg-light-800`">
+							<div :class="`icon ${notification.type}`">
 								<span class="material-icons">{{ notification.icon }}</span>
 							</div>
 							<h3 class="title">{{ notification.description }}</h3>
@@ -56,30 +56,29 @@
 @import "@styles/variables.scss";
 
 .navigation {
+	@apply dark:bg-dark-700 flex justify-center;
 	position: fixed;
 	left: 0; right: 0;
-	padding: 0 .75em;
-	flex-shrink: 0;
-	line-height: 1.8em;
-	box-shadow: $box-shadow;
 	z-index: 1;
+	background-color: white;
+
+	padding: 0 .75em;
+	box-shadow: $box-shadow;
 	height: $nav-height;
 
 	.container {
-		display: grid;
-		grid-template-columns: 1fr repeat(3, min-content);
+		@apply grid grid-cols-[1fr,repeat(3,min-content)];
 	}
 
 	.logo {
+		@apply flex items-center;
+
 		padding: .25em;
-		display: flex;
-		align-items: center;
 		width: max-content;
 
 		img {
 			width: 48px;
 			padding: .5em;
-
 		}
 	}
 }
@@ -90,11 +89,11 @@
 
 @media screen and (min-width: $mobile-viewport) {
 	.user-settings {
-		display: initial;
+		@apply self-center;
 
+		display: initial;
 		height: 30px;
 		padding: 3px 10px;
-		align-self: center;
 		position: relative;
 
 		.dropdown-container {
@@ -110,10 +109,11 @@
 		}
 	}
 	.notifications {
+		@apply self-center;
 		display: initial;
+
 		height: 30px;
 		padding: 3px 10px;
-		align-self: center;
 		position: relative;
 
 		.dropdown-container {
@@ -122,30 +122,29 @@
 			left: -50%;
 
 				.notification-items {
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
+					@apply flex flex-col justify-between;
 
 					.notification-item {
+						@apply grid grid-cols-[repeat(2,max-content)] grid-rows-[repeat(2,max-content)];
 						padding: .5em 1em;
-						display: grid;
-						grid-template:
-							"icon title"
-							"icon date";
-						.icon {
 
-						border-radius: 50%;
-						height: min-content;
-						align-self: center;
-						grid-area: icon;
+						.icon {
+							@apply self-center row-span-full  dark:bg-light-800;
+							border-radius: 50%;
+							height: min-content;
+							background-color: gray;
 
 							span {
 								font-size: 32px;
 							}
 						}
 
-						.title { grid-area: title; }
-						.date { grid-area: date; }
+						.title {
+							@apply col-start-2 row-start-1;
+						}
+						.date {
+							@apply col-start-2 row-start-2;
+						}
 					}
 					.notification-footer {
 						text-align: center;

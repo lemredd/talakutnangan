@@ -1,7 +1,7 @@
 <template>
 <div>
-	<header class="mb-5">
-		<h1 class="my-5 text-[1.75em] uppercase">User Settings</h1>
+	<header>
+		<h1>User Settings</h1>
 	</header>
 
 	<main>
@@ -10,8 +10,16 @@
 </div>
 </template>
 
-<style>
+<style scoped lang="scss">
+header {
+	margin-bottom: 1.25em;
 
+	h1 {
+		margin: 1.25em 0;
+		font-size: 1.75em;
+		text-transform: uppercase;
+	}
+}
 </style>
 
 <script setup lang="ts">

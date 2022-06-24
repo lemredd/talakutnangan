@@ -1,5 +1,5 @@
 <template>
-	<div class="layout flex flex-col" ref="layout">
+	<div class="layout" ref="layout">
 		<ShellNav />
 		<Content>
 			<slot/>
@@ -44,12 +44,20 @@ provide("bodyClasses", bodyClasses)
 body {
 	margin: 0;
 	font-family: sans-serif;
+
+	#app {
+		@apply dark:text-light-50 dark:bg-dark-700;
+	}
 }
 *, *::before, *::after {
 	box-sizing: border-box;
 }
 a {
 	text-decoration: none;
+}
+
+.layout {
+	@apply flex flex-col;
 }
 
 .container {
