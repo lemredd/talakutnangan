@@ -24,6 +24,9 @@ export interface Request extends BaseRequest {
 	user: User|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+
+	// Added due to need to test e-mail verification
+	emailsToContact: string[]
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -32,6 +35,10 @@ export interface AuthenticatedRequest extends Request {
 	}
 
 	user: User
+}
+
+export interface EmailRequest extends Request {
+	emailsToContact: string[]
 }
 
 export interface Response extends BaseResponse {}
