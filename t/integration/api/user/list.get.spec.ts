@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 import UserManager from "%/managers/user"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 import Route from "!/app/routes/api/user/list.get"
 
@@ -23,12 +23,24 @@ describe("GET /api/user/list", () => {
 		expect(response.statusCode).toBe(StatusCodes.OK)
 		const expectedUser = await manager.findWithID(student.id)
 		const refreshedAdmin = await manager.findWithID(admin.id)
-		expect(response.body).toStrictEqual(
-			JSON.parse(JSON.stringify([
+		expect(response.body).toStrictEqual({
+			data: [
 				refreshedAdmin,
 				expectedUser
-			]))
-		)
+			].map(model => {
+				const { id, name, email, kind, signature } = model!.toJSON()
+				return {
+					type: "user",
+					id,
+					attributes: {
+						name,
+						email,
+						kind,
+						signature: ""
+					}
+				}
+			})
+		})
 	})
 
 	it.todo("can be accessed by permitted user and get multiple complete users")

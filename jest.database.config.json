@@ -15,15 +15,14 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/singletons.set_up.ts",
-		"./t/helpers/database.set_up.ts"
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"database/.*\\.spec\\.ts",
-		"server/.*\\.spec\\.ts"
+		"database/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

@@ -1,16 +1,15 @@
-import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
-
 import { Request } from "!/types/dependent"
 import { PageRequest } from "!/types/hybrid"
 import type { Serializable } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserFactory from "~/factories/user"
+import MockRequester from "~/set-ups/mock_requester"
 
 import PageMiddleware from "./page_middleware"
 
-describe("Back-end: Base PageMiddleware", () => {
-	it("can make handlers", () => {
+describe("Back-end Base: Page Middleware Handler Generation", () => {
+	it("can make handlers with no end handler", () => {
 		class PolicyA extends Policy {
 			mayAllow(): boolean { return true }
 		}
@@ -28,27 +27,10 @@ describe("Back-end: Base PageMiddleware", () => {
 		expect(handlers.postJobs).toHaveLength(0)
 		expect(handlers.endHandler).toBeNull()
 	})
+})
 
-	it("can run policy", async () => {
-		class PolicyB extends Policy {
-			mayAllow(): boolean { return true }
-		}
-
-		class PageMiddlewareB extends PageMiddleware {
-			get filePath(): string { return __filename }
-
-			get policy(): Policy { return new PolicyB() }
-		}
-
-		const enhancer = new PageMiddlewareB()
-		const request  = makeRequest<PageRequest>()
-		const { res: response, next, } = makeResponse()
-		request.isAuthenticated = jest.fn(() => false)
-
-		await enhancer.intermediate(request, response, next)
-
-		expect(next).toHaveBeenCalled()
-	})
+describe("Back-end Base: Page Middleware Special Features", () => {
+	const requester = new MockRequester<PageRequest>()
 
 	it("can pass page props for guests", async () => {
 		class PageMiddlewareC extends PageMiddleware {
@@ -62,13 +44,15 @@ describe("Back-end: Base PageMiddleware", () => {
 		}
 
 		const enhancer = new PageMiddlewareC()
-		const request  = makeRequest<PageRequest>()
-		const { res: response, next, } = makeResponse()
-		request.isAuthenticated = jest.fn(() => false)
+		requester.customizeRequest({
+			isAuthenticated: jest.fn(() => false)
+		})
 
-		await enhancer.intermediate(request, response, next)
 
-		expect(request.pageProps).toStrictEqual({
+		await requester.runMiddleware(enhancer.intermediate.bind(enhancer))
+
+		const successfulRequest = requester.expectSuccess()
+		expect(successfulRequest.pageProps).toStrictEqual({
 			userProfile: null,
 			hello: "world"
 		})
@@ -86,15 +70,16 @@ describe("Back-end: Base PageMiddleware", () => {
 		}
 
 		const enhancer = new PageMiddlewareD()
-		const request  = makeRequest<PageRequest>()
-		const { res: response, next, } = makeResponse()
-		request.isAuthenticated = jest.fn(() => true)
-		request.user = await (new UserFactory()).makeOne()
+		requester.customizeRequest({
+			isAuthenticated: jest.fn(() => true),
+			user: await (new UserFactory()).makeOne()
+		})
 
-		await enhancer.intermediate(request, response, next)
+		await requester.runMiddleware(enhancer.intermediate.bind(enhancer))
 
-		expect(request.pageProps).toStrictEqual({
-			userProfile: request.user,
+		const successfulRequest = requester.expectSuccess()
+		expect(successfulRequest.pageProps).toStrictEqual({
+			userProfile: successfulRequest.user,
 			hello: "world"
 		})
 	})

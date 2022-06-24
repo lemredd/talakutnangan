@@ -17,7 +17,8 @@
 			"#/*": [ "./renderer/*" ],
 			"@/*": [ "./components/*" ],
 			"$/*": [ "./shareable/*" ],
-			"@@/*": [ "./pages/*" ]
+			"@@/*": [ "./pages/*" ],
+			"@assets/*": ["./assets/*"]
 		},
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true

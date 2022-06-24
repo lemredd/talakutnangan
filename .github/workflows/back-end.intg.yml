@@ -1,15 +1,26 @@
 name: Web Back-end Integration Tests
 
 on:
-  push: []
+  push:
+    paths:
+      - 'database/**'
+      - 'server/**'
+      - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
   pull_request:
     types:
       - reopened
     branches:
       - master
     paths:
+      - 'database/**'
       - 'server/**'
       - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
 
 jobs:
   integration_tests:

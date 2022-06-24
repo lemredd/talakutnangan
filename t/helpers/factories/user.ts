@@ -16,7 +16,7 @@ export default class UserFactory extends BaseFactory<User> {
 	nameGenerator = () => faker.name.findName()
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
-	#kind = UserKind.Student
+	#kind = "student"
 	#mustBeVerified = true
 	#department: Department|null = null
 
@@ -75,17 +75,17 @@ export default class UserFactory extends BaseFactory<User> {
 	}
 
 	beStudent(): UserFactory {
-		this.#kind = UserKind.Student
+		this.#kind = "student"
 		return this
 	}
 
 	beReachableEmployee(): UserFactory {
-		this.#kind = UserKind.ReachableEmployee
+		this.#kind = "reachable_employee"
 		return this
 	}
 
 	beUnreachableEmployee(): UserFactory {
-		this.#kind = UserKind.UnreachableEmployee
+		this.#kind = "unreachable_employee"
 		return this
 	}
 

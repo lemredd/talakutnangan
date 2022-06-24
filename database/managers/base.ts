@@ -1,4 +1,4 @@
-import type { List, Pipe } from "$/types/database"
+import type { Serializable, Pipe } from "$/types/database"
 import type {
 	Model,
 	ModelCtor,
@@ -10,6 +10,8 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+import Transformer from "%/transformers/base"
+import Serializer from "%/transformers/serializer"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 /**
@@ -20,15 +22,26 @@ export default abstract class Manager<T extends Model, U> {
 
 	abstract get model(): ModelCtor<T>
 
+	abstract get transformer(): Transformer<T, void>
+
 	async findWithID(id: number): Promise<T|null> {
 		return await this.model.findOne(<FindOptions<T>>{ where: { id } })
 	}
 
-	async list(query: object): List<T> {
+	async list(query: object): Promise<Serializable> {
 		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
 		const { rows, count } = await this.model.findAndCountAll(options)
-		return { records: rows, count }
+
+		const transformer = this.transformer
+
+		const serializableData = Serializer.serialize(
+			rows,
+			transformer,
+			{}
+		)
+
+		return serializableData
 	}
 
 	async create(details: U & CreationAttributes<T>): Promise<T> {
