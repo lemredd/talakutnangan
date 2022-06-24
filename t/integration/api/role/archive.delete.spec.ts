@@ -21,7 +21,7 @@ describe("DELETE /api/role/archive/:id", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 		expect(response.body).toStrictEqual({})
-		expect(await Role.findOne({ where: { role: role.id } })).toBeNull()
+		expect(await Role.findOne({ where: { id: role.id } })).toBeNull()
 	})
 
 	it.todo("cannot delete non-existing")
