@@ -62,7 +62,7 @@ describe("Database: User Authentication Operations", () => {
 		expect(isResetSuccess).toBeFalsy()
 		expect(compare(
 			newPassword,
-			(await User.findOne(user.id))!.password,
+			(await User.findOne({ where: { id: user.id } }))!.password,
 		)).resolves.toBeFalsy()
 	})
 })
