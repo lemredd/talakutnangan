@@ -9,20 +9,15 @@ import {
 	BelongsToMany
 } from "sequelize-typescript"
 import User from "%/models/user"
-import AttachedRole from "%/models/attached_role"
+import Role from "%/models/role"
 
 
 @Table({
 	timestamps: true,
 	paranoid: true
 })
-//id, user, title, desc, badWordExist, voters, downVoters, voteCount, isMenuShown, isEditShown, isPostShown, createdAt, updatedAt, deletedAt
+//id, user id, role id, title, desc, bad word
 export default class Post extends Model {
-    @Column({
-		unique: true,
-		allowNull: false
-	})
-    user!: string
 
 	@Column({
 		unique: true,
@@ -42,42 +37,23 @@ export default class Post extends Model {
 	})
     badWordExist!: boolean
 
+	@ForeignKey(() => User)
 	@Column({
-		unique: true,
-		allowNull: false
+		allowNull: false,
+		type: DataType.BIGINT
 	})
-    voters!: []
-
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    downVoters!: []
-
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    voteCount!: number
-
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    isMenuShown!: boolean
-
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    isEditPost!: boolean
-
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    isPostShown!: boolean
+	userID!: number
 
 	@BelongsTo(() => User)
-	users!: User[]
+	user!: User
+
+	@ForeignKey(() => Role)
+	@Column({
+		allowNull: false,
+		type: DataType.BIGINT
+	})
+	roleID!: number
+
+	@BelongsTo(() => Role)
+	role!: Role
 }
