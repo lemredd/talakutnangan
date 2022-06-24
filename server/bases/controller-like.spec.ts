@@ -240,4 +240,36 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
+
+
+	it("can use post parser middleares", async () => {
+		const middlewareFunction = jest.fn()
+
+		class PostBodyParserA extends Middleware {
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
+				middlewareFunction()
+				return Promise.resolve()
+			}
+		}
+
+		class ControllerJ extends BaseTestController {
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
+				return Promise.resolve()
+			}
+
+			get postParseMiddlewares(): OptionalMiddleware[] {
+				return [ new PostBodyParserA() ]
+			}
+		}
+
+		const handlers = (new ControllerJ()).handlers
+		const { middlewares } = handlers
+		const targetMiddleware = middlewares[2]!
+
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
+
+		expect(middlewareFunction).toHaveBeenCalled()
+	})
 })

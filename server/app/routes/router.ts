@@ -1,5 +1,6 @@
 import Router from "!/bases/router"
 import GetIndex from "!/app/routes/index.get"
+import TestRouter from "!/app/routes/t/router"
 import DevRouter from "!/app/routes/dev/router"
 import APIRouter from "!/app/routes/api/router"
 import ChatRouter from "!/app/routes/chat/router"
@@ -21,6 +22,8 @@ export default class extends Router {
 		switch(this.environment) {
 			case Environment.Development:
 				this.useRouter(new DevRouter())
+			case Environment.IntegrationTest:
+				this.useRouter(new TestRouter())
 			default:
 		}
 	}

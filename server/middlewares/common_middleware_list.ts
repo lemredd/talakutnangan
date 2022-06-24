@@ -20,12 +20,12 @@ export default class CommonMiddlewareList {
 			CommonMiddlewareList.guestOnlyPolicy = new AuthenticationBasedPolicy(false)
 			CommonMiddlewareList.knownOnlyPolicy = new AuthenticationBasedPolicy(true)
 			CommonMiddlewareList.unreachableEmployeeOnlyPolicy= new KindBasedPolicy(
-				UserKind.UnreachableEmployee
+				"unreachable_employee"
 			)
 			CommonMiddlewareList.reachableEmployeeOnlyPolicy= new KindBasedPolicy(
-				UserKind.ReachableEmployee
+				"reachable_employee"
 			)
-			CommonMiddlewareList.studentOnlyPolicy= new KindBasedPolicy(UserKind.Student)
+			CommonMiddlewareList.studentOnlyPolicy= new KindBasedPolicy("student")
 
 			CommonMiddlewareList.JSONBody = new JSONBodyParser()
 			CommonMiddlewareList.multipart = new MultipartParser()
