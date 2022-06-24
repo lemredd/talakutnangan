@@ -26,8 +26,12 @@ export default class Transport {
 		}
 	}
 
-	static async sendMail(to: string, subject: string, emailTemplatePath: string, variables: object)
-		: Promise<SentMessageInfo> {
+	static async sendMail(
+		to: string[],
+		subject: string,
+		emailTemplatePath: string,
+		variables: object
+	) : Promise<SentMessageInfo> {
 		return await this.currentInstance.sendMail(to, subject, emailTemplatePath, variables)
 	}
 
@@ -57,7 +61,7 @@ export default class Transport {
 		})
 	}
 
-	async sendMail(to: string, subject: string, emailTemplatePath: string, variables: object)
+	async sendMail(to: string[], subject: string, emailTemplatePath: string, variables: object)
 		: Promise<SentMessageInfo> {
 		const text = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const html = convertMarkdownToHTML(text)
