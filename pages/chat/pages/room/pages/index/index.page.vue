@@ -44,15 +44,21 @@ import makeClient from "socket.io-client"
 import { usePageContext } from "#/usePageContext"
 import GroupCall from "@/room/GroupCall.vue";
 
+type message = {
+	time: string,
+	email: string,
+	content: string
+}
+
 const clientWebSocket = makeClient()
 const pageContext = usePageContext()
-const emailField = ref(null)
+const emailField = ref<HTMLInputElement | null>(null)
 const email = ref("")
 const isCalling = ref(false)
 const hasEmail = computed(() => email.value !== "")
 
 const chatBox = ref(null)
-const messages = ref([])
+const messages = ref<message[]>([])
 
 clientWebSocket.on("receive_message", message => {
 	messages.value.push(message)
@@ -62,7 +68,7 @@ function joinRoom() {
 	const input = emailField.value as HTMLInputElement
 	const rawEmail = input.value
 
-	clientWebSocket.emit("join_room", pageContext.routeParams.uuid, rawEmail)
+	clientWebSocket.emit("join_room", pageContext.routeParams!.uuid, rawEmail)
 	email.value = rawEmail
 }
 
@@ -70,8 +76,8 @@ function initiateCall() {
 	isCalling.value = true
 }
 
-function sendMessage(event) {
-	const input = chatBox.value as HTMLInputElement
+function sendMessage(event: Event) {
+	const input = chatBox.value! as HTMLInputElement
 	const message = input.value
 
 	clientWebSocket.emit("send_message", {
