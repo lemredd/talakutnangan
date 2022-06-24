@@ -1,6 +1,6 @@
 <template>
 	<div :class="{ 'default': !editable }" class="input-container text-light-100">
-		<label class="input-header col-span-full">
+		<label v-if="label" class="input-header col-span-full">
 			{{ label }}
 		</label>
 		<input
@@ -12,14 +12,14 @@
 			:disabled="disabled || editable"
 			ref="inputField"
 			/>
-			<button
-				type="button"
-				v-if="editable"
-				class="material-icons"
-				@click="verify ? verifyBeforeSubmit() : editField($event)"
-				>
-				edit
-			</button>
+		<button
+			type="button"
+			v-if="editable"
+			class="material-icons"
+			@click="verify ? verifyBeforeSubmit() : editField($event)"
+			>
+			edit
+		</button>
 	</div>
 
 	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
@@ -46,8 +46,8 @@
 <style scoped lang="scss">
 .input-container {
 	display: grid;
+	gap: 1em;
 	grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
-	padding: 1.5em 0;
 
 	&.default {
 		display: block;
@@ -91,7 +91,7 @@ const {
 	editable,
 	verify
 	} = defineProps<{
-	label: string
+	label?: string
 	type: Textual
 	modelValue: string
 	required?: boolean
