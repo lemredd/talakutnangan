@@ -59,7 +59,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 	async findWithCredentials(email: string, password: string): Promise<Serializable|null> {
 		const condition = new Condition()
-		condition.is("email", email)
+		condition.equal("email", email)
 		const whereOptions: FindOptions<User> = { where: condition.build() }
 		const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
 
