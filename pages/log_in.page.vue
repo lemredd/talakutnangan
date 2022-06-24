@@ -9,6 +9,12 @@
 
 </template>
 
+<style>
+body {
+	overflow-y: hidden;
+}
+</style>
+
 <style scoped lang="scss">
 .login-container {
 	display: flex;
