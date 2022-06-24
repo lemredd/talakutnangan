@@ -29,6 +29,22 @@ export interface RawUser {
 	admittedAt?: Date|null,
 	signature?: Buffer|null
 }
+/**
+ * Used to receive raw posts.
+ */
+
+export interface RawPost {
+	user?: string,
+	title?: string,
+	desc?: string
+	badWordExist?: boolean,
+	voters?: [],
+	downVoters?: [],
+	voteCount?: number,
+	isMenuShown?: boolean,
+	isEditPost?: boolean,
+	isPostShown?: boolean
+}
 
 export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 

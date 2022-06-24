@@ -63,7 +63,7 @@
                         </div>
                         <div class="controls relative">
                             <button class="material-icons" @click="togglePostMenu(post)">more_vert</button>
-                            <PostMenu class="postmenu absolute top-[2em] right-0 flex flex-col" v-if="post.isMenuShown">
+                            <PostMenu class="postmenu absolute top-[2em] right-0 flex flex-col" @close="togglePostMenu(post)" v-if="post.isMenuShown">
                                 <button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
                                     Edit
                                 </button>
@@ -215,12 +215,10 @@ function sumbitPostDetails()
     }
 
     //checking posts creation
-    console.log("Post creation start");
     for(let i=0; i < posts.value.length; i++)
     {
-       console.log(posts.value[i]);
+       console.log("creation ", posts.value[i]);
     }
-    console.log("Post creation end");
 }
 
 //Post edit
@@ -272,22 +270,23 @@ function editPost(post: Post)
 //Post delete
 function deletePost(post: Post, index: number)
 {
-    for(let i=0; i < posts.value.length; i++)
-    {
-        if(post==posts.value[i])
-        {
-            delete posts.value[i];
-        }
-    }
+    const postClones = [ ...posts.value ]
+    const deletedPosts = postClones.splice(index, 1)
+    posts.value = postClones
     
-    //checking
-    console.log("Post deletion start");
+    //checking'
+    for(let i=0; i < deletedPosts.length; i++)
+    {
+       console.log("post deleted", deletedPosts[i]);
+    }
+
     for(let i=0; i < posts.value.length; i++)
     {
-       console.log(posts.value[i]);
+       console.log("all posts", posts.value[i]);
     }
-    console.log("Post deletion end");
     alert("Successfully deleted!");
+
+    
 }
 
 //Reprt post
