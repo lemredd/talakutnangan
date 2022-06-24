@@ -1,19 +1,20 @@
 <template>
     <h1 class="">Institute Name</h1>
     <div>
-        <button>Student
-            </button>>
-            <button>
-            </button>>
-        </div>>
-    <div>
-            <div class=" flex">
-            <input
-                type="text"
-                v-model="input"
-            />
-            <img class="img1 bg-dark-900 rounded-md h-6 p-1.5" :src="SearchIcon"/>
-            </div>
+        <div class="controls-bar">
+            <div class="search-bar ">
+				<TextualField
+					type="email"
+					v-model="input"
+					input-classes="!py-0 pl-1 !border-none" />
+				<button class="material-icons">search</button>
+			</div>
+			<div class="dropdown-filter">
+				<div class="role">
+
+					<button class="material-icons">expand_more</button>
+				</div>
+			</div>
         </div>
     </div>
     <div class="text-2xl m-2 text-light-100" v-for="student in filteredList()" :key="student.name">
@@ -23,10 +24,10 @@
             <div class="btns">
                 <button class=" btn1 text-dark-100 rounded-md w-20 text-base h-7">Update</button>
             </div>
-            
+
         </div>
     </div>
-    
+
     <div class="text-light-200" v-if="input && !filteredList().length">
         <p>No results found!</p>
     </div>
@@ -47,6 +48,7 @@ background: gray;
 		@apply dark:bg-dark-300 inline-flex items-center p-1;
 	}
 }
+
 .img1{
 
     margin-top:8px;
@@ -56,8 +58,9 @@ background: gray;
 </style>
 
 <script setup lang="ts">
-
 import { ref } from "vue";
+import TextualField from "@/fields/Textual.vue"
+
 let input = ref("");
 const students = [
     {
@@ -97,5 +100,3 @@ function filteredList() {
 
 import SearchIcon from "./search_icon.png"
 </script>
-
-
