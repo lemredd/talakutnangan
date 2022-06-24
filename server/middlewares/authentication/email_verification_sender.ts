@@ -1,26 +1,42 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import type { EmailRequest, Response, NextFunction } from "!/types/dependent"
 
-import Transport from "!/helpers/email/transport"
+import Log from "!/helpers/log"
 import Middleware from "!/bases/middleware"
+import Transport from "!/helpers/email/transport"
 
 /**
  * Creates middleware to provide email verification for new users or updated email addresses.
  */
 export default class extends Middleware {
-	async intermediate(request: Request, _response: Response, next: NextFunction): Promise<void> {
-		const to = request.body.email
+	async intermediate(
+		request: EmailRequest,
+		_response: Response,
+		next: NextFunction
+	): Promise<void> {
+		const recipients = request.emailsToContact
 		const subject = "Email Verification"
-		Transport.sendMail(to, subject, "email_verification.md", {
-			email: to,
-			homePageURL: `${request.protocol}://${request.hostname}`,
-			emailVerificationURL: `${request.protocol}://${request.hostname}/user/verify?=${to}`
-		})
+
+		Log.trace("middleware", "sending verification e-mail messages to recipients")
+
+		await Promise.all(recipients.map(recipient => Transport.sendMail(
+			[ recipient ],
+			subject,
+			"email_verification.md",
+			{
+				email: recipient,
+				homePageURL: `${request.protocol}://${request.hostname}`,
+				emailVerificationURL:
+					`${request.protocol}://${request.hostname}/user/verify?=${recipient}`
+			}
+		)))
 			.then(info => {
-				console.log(info)
+				Log.success("middleware", "e-mail messages were sent")
+
 				next()
 			})
 			.catch(error => {
-				console.error(`Error [${error}]: ${error.message}`)
+				Log.error("middleware", error)
+
 				next(error)
 			})
 	}
