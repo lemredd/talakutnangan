@@ -88,4 +88,12 @@ export default class Transport {
 			})
 		})
 	}
+
+	static consumePreviousMessages(): { [key:string]: any }[] {
+		const previousMessages = this.previousMessages
+
+		this.previousMessages = []
+
+		return previousMessages
+	}
 }
