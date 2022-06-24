@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-2xl m-2 text-light-200 text-center">Institute Name</h1>
+    <h1 class="">Institute Name</h1>
     <div>
         <button>Student
             </button>>
@@ -7,10 +7,8 @@
             </button>>
         </div>>
     <div>
-        <div class="bg-dark-100 h-10">
             <div class=" flex">
             <input
-                class="m-2 bg-dark-300 rounded-md w-40 text-light-200 text-xs h-6"
                 type="text"
                 v-model="input"
             />
@@ -19,8 +17,8 @@
         </div>
     </div>
     <div class="text-2xl m-2 text-light-100" v-for="student in filteredList()" :key="student.name">
-        <div class="user-entry flex justify-between border-b p-b-2 basis-70 place-items-center">
-            <span class="user-name text-lg w-50">{{ student.name }}</span>
+        <div class="user-entry flex justify-between border-b p-b-2 place-items-center">
+            <span class="user-name text-lg w-50 text-right">{{ student.name }}</span>
             <span class="user-email text-xs">{{ student.email }}</span>
             <div class="btns">
                 <button class=" btn1 text-dark-100 rounded-md w-20 text-base h-7">Update</button>
@@ -34,14 +32,7 @@
     </div>
 </template>
 
-<style>
-
-body {
-    padding: 20px;
-    min-height: 100vh;
-    background-color: rgb(37, 40, 46);
-}
-
+<style scoped lang="scss">
 .btn1 {
 background:white;
 }
@@ -49,6 +40,13 @@ background:white;
 background: gray;
 }
 
+.controls-bar {
+	@apply dark:bg-dark-100 h-10 bg-light-200 px-2 py-6 flex items-center justify-between;
+
+	.search-bar {
+		@apply dark:bg-dark-300 inline-flex items-center p-1;
+	}
+}
 .img1{
 
     margin-top:8px;
