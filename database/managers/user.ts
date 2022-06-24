@@ -44,7 +44,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<User>, CommonConstraints & { criteria: Criteria }>[] {
+	get listPipeline(): Pipe<
+		FindAndCountOptions<User>,
+		CommonConstraints & { criteria: Criteria }
+	>[] {
 		return [
 			searchName,
 			siftByCriteria,
@@ -75,7 +78,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		}
 	}
 
-	async create(details: RawUser): Promise<User> {
+	async create(details: RawUser): Promise<Serializable> {
 		details.password = await hash(details.password!)
 		return await super.create({ ...details })
 	}

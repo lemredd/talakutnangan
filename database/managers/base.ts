@@ -43,12 +43,12 @@ export default abstract class Manager<T extends Model, U> {
 		return this.serialize(rows)
 	}
 
-	async create(details: U & CreationAttributes<T>): Promise<T> {
+	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
 		const model = await this.model.create(details)
 
 		Log.success("manager", "done creating a model")
 
-		return model
+		return this.serialize(model)
 	}
 
 	async update(id: number, details: U & Attributes<T>): Promise<number> {
