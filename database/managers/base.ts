@@ -10,6 +10,7 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+import Log from "!/helpers/log"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
@@ -24,28 +25,30 @@ export default abstract class Manager<T extends Model, U> {
 
 	abstract get transformer(): Transformer<T, void>
 
-	async findWithID(id: number): Promise<T|null> {
-		return await this.model.findOne(<FindOptions<T>>{ where: { id } })
+	async findWithID(id: number): Promise<Serializable> {
+		const model = await this.model.findOne(<FindOptions<T>>{ where: { id } })
+
+		Log.success("manager", "done searching for a model using ID")
+
+		return this.serialize(model)
 	}
 
 	async list(query: object): Promise<Serializable> {
 		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
-		const { rows, count } = await this.model.findAndCountAll(options)
+		const rows = await this.model.findAll(options)
 
-		const transformer = this.transformer
+		Log.success("manager", "done listing models according to constraints")
 
-		const serializableData = Serializer.serialize(
-			rows,
-			transformer,
-			{}
-		)
-
-		return serializableData
+		return this.serialize(rows)
 	}
 
-	async create(details: U & CreationAttributes<T>): Promise<T> {
-		return await this.model.create(details)
+	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
+		const model = await this.model.create(details)
+
+		Log.success("manager", "done creating a model")
+
+		return this.serialize(model)
 	}
 
 	async update(id: number, details: U & Attributes<T>): Promise<number> {
@@ -53,18 +56,34 @@ export default abstract class Manager<T extends Model, U> {
 			where: { id }
 		})
 
+		Log.success("manager", "done updating a model")
+
 		return affectedCount
 	}
 
 	async archive(id: number): Promise<number> {
-		return await this.model.destroy(<DestroyOptions<T>>{
+		const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
 			where: { id }
 		})
+
+		Log.success("manager", "done archiving a model")
+
+		return destroyCount
 	}
 
 	async restore(id: number): Promise<void> {
-		return await this.model.restore(<RestoreOptions<T>>{
+		await this.model.restore(<RestoreOptions<T>>{
 			where: { id }
 		})
+
+		Log.success("manager", "done restoring a model")
+	}
+
+	protected serialize(models: T|T[]|null): Serializable {
+		return Serializer.serialize(
+			models,
+			this.transformer,
+			{}
+		)
 	}
 }

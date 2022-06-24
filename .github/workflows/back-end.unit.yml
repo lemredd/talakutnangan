@@ -5,6 +5,7 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
   pull_request:
     types:
       - reopened
@@ -13,6 +14,7 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
 
 jobs:
   server_unit_tests:

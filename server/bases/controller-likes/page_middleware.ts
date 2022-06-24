@@ -24,9 +24,8 @@ export default abstract class extends ControllerLike {
 		_response: Response,
 		next: NextFunction
 	): Promise<void> {
-		// TODO: Pre-serialize the user data
 		request.pageProps = {
-			userProfile: request.isAuthenticated() ? <any><unknown>request.user : null,
+			userProfile: request.isAuthenticated() ? request.user! : null,
 			...this.getPageProps(request)
 		}
 		next()
