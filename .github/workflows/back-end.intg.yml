@@ -5,6 +5,7 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
       - 't/integration/**'
   pull_request:
     types:
@@ -14,6 +15,7 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
       - 't/integration/**'
 
 jobs:
