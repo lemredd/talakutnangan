@@ -88,7 +88,7 @@ describe("Database: Base Create Operations", () => {
 
 		const createdDepartment = await manager.create(base.toJSON())
 
-		expect(createdDepartment.email).toStrictEqual(base.email)
+		expect(createdDepartment).toHaveProperty("data.attributes.email", base.email)
 	})
 })
 
