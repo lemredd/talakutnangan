@@ -120,9 +120,19 @@ const users = [
 	},
 ];
 function filteredList() {
-    return students.filter((student) =>
-        student.name.toLowerCase().includes(input.value.toLowerCase())
-    );
+	const filteredBySearchResult = users.filter((user) =>
+		user.name.toLowerCase().includes(input.value.toLowerCase())
+	);
+
+	const filteredByRole = filterByRole(filteredBySearchResult)
+	return filteredByRole
+}
+
+const roles = ["student", "professor", "secretary"]
+const selectedFilterRole = ref("all")
+function filterByRole(usersList: {[key:string]: any}[]) {
+	if (selectedFilterRole.value === "all") return usersList
+	return usersList.filter(user => user.role === selectedFilterRole.value)
 }
 
 import SearchIcon from "./search_icon.png"
