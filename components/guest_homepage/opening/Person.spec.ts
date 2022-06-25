@@ -5,9 +5,9 @@ describe("Component: Opening/Person", () => {
 	it("should have a chat icon", () => {
         const wrapper = mount (Person, {
             props: {
-                type: "talking", 
+                variant: "talking",
                 accessory: "chat"
-            } 
+            }
         })
 
         const accessory = wrapper.find(".accessory")
@@ -18,9 +18,9 @@ describe("Component: Opening/Person", () => {
 	it("should have a campaign icon", () => {
         const wrapper = mount (Person, {
             props: {
-                type: "talking", 
+                variant: "announce",
                 accessory: "campaign"
-            } 
+            }
         })
 
         const accessory = wrapper.find(".accessory")

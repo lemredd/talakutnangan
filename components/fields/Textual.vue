@@ -28,8 +28,8 @@
 			<h1>Update your {{ type }}</h1>
 		</template>
 		<template #default>
-			<div v-if="type === 'email' || type === 'password'" class="verification">
-				<label for="password-confirm">
+			<div v-if="type === 'email' || type === 'password'" class="verification flex flex-col">
+				<label for="password-confirm" class="text-black">
 					<input type="password" placeholder="enter your password" id="password-confirm">
 				</label>
 				<label :for="`new-${type}`">
@@ -59,18 +59,12 @@
 		padding-bottom: .25em;
 		width: 100%;
 	}
-	button.material-icons {
-		justify-self: end;
-	}
 }
 
 .verification {
-	display: flex;
-	flex-direction: column;
 
 	label {
 		padding: .5em 1em;
-		color: black;
 
 		input {
 			padding: .25em .5em;
