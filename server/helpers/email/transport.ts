@@ -8,7 +8,7 @@ import specializeTemplateFile from "!/helpers/specialize_template_file"
 
 export default class Transport {
 	private static currentInstance: Transport
-	private static previousMessages: { [key:string]: any }[]
+	private static previousMessages: { [key:string]: any }[] = []
 
 	static initialize(
 		host: string,
