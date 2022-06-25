@@ -1,5 +1,6 @@
 import Router from "!/bases/router"
 import GetEmailVerificationRoute from "!/app/routes/dev/email_verification.get"
+import GetNewUserNotificationRoute from "!/app/routes/dev/new_user_notification.get"
 
 export default class extends Router {
 	get prefix():string { return "/dev" }
@@ -7,6 +8,9 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useController(new GetEmailVerificationRoute())
+		this.useControllers([
+			new GetEmailVerificationRoute(),
+			new GetNewUserNotificationRoute()
+		])
 	}
 }
