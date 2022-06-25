@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent>
+	<form @submit.prevent class="flex flex-col">
 		<div>
 			<TextualField
 				label="Display Name"
@@ -9,7 +9,7 @@
 			/>
 		</div>
 		<div>
-			<h3 class="display-name text-lg">Profile Name</h3>
+			<h3 class="display-name text-lg">Profile Picture</h3>
 			<div class="picture-container relative p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.profilePic" :src="profileInfo.profilePic">
 				<div class="no-image flex justify-center" v-else>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div>
-			<h3 class="display-name text-lg">Profile Name</h3>
+			<h3 class="display-name text-lg">Signature</h3>
 			<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
 				<img v-if="profileInfo.signature" :src="profileInfo.signature">
 				<div class="no-image flex justify-center" v-else>
@@ -53,8 +53,6 @@
 
 <style scoped lang="scss">
 form {
-	display: flex;
-	flex-direction: column;
 	max-width: 640px;
 
 	.input-pic {
@@ -77,8 +75,7 @@ form {
 	}
 
 	label {
-		display: flex;
-		flex-direction: row-reverse;
+		@apply flex flex-row-reverse;
 		cursor: pointer;
 
 		input {
@@ -100,18 +97,17 @@ const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
 function toggleDarkMode() {
 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
 	if (!mutatedBodyClasses.has("dark")) {
-		mutatedBodyClasses.delete("light")
 		mutatedBodyClasses.add("dark")
 	} else {
-		mutatedBodyClasses.add("light")
 		mutatedBodyClasses.delete("dark")
 	}
 
 	bodyClasses.value = [...mutatedBodyClasses]
 }
 
-function loadImage(e: any, type: any) {
-	const [file] = e.target.files
+function loadImage(e: Event, type: string) {
+	const target = e.target as HTMLInputElement
+	const [file] = target.files!
 	const fileObjectURL = URL.createObjectURL(file)
 
 	if (type === "signature") profileInfo.signature = fileObjectURL

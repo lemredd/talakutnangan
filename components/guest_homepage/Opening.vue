@@ -1,6 +1,6 @@
 <template>
 <img src="@assets/logo_bg_transparent.svg" alt="logo" />
-<div class="text-center">
+<div class="teaser">
 	<Description>
 		<template #header>Chat header</template>
 		<template #details>The quick brown fox jumped over the lazy dog.</template>
@@ -8,11 +8,10 @@
 	<div class="graphics">
 		<Person accessory="chat" variant="talking left"/>
 		<Person accessory="chat" variant="talking right"/>
-
 	</div>
 </div>
 
-<div class="text-center">
+<div class="teaser">
 	<Description>
 		<template #header>Forum Header</template>
 		<template #details>
@@ -25,39 +24,28 @@
 </div>
 </template>
 <style scoped lang="scss">
+.teaser {
+	text-align: center;
+}
 .graphics {
-	display: flex;
-	justify-content: center;
-
+	@apply flex justify-center;
 	margin-top:4em;
 }
-.logo {
-			padding: .25em;
-			display: flex;
-			align-items: center;
-			width: max-content;
 
-			img {
-				width: 300px;
-				padding: .5em;
-				display: flex;
-				align-items: center;
-			}
+img {
+	@apply flex items-center;
+	padding: 2em 0 4em;
 }
-
-
 
 @media screen and (min-width: 768px) {
 	.graphics {
-		justify-content: flex-end;
+		@apply justify-end;
 
 		&.graphics-left {
-			justify-content: flex-start;
+			@apply justify-start;
 		}
 	}
 }
-
-
 </style>
 
 <script lang="ts" setup>

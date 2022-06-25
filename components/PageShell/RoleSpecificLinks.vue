@@ -1,13 +1,13 @@
 <template>
 	<div class="links mobile">
 
-		<RoleLinksList purpose="role-navigation" @close="toggleRoleLinks">
+		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
 			</template>
 
 			<template #default>
-				<div class="role-links">
+				<div class="role-links flex flex-col">
 					<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
@@ -16,7 +16,7 @@
 					</Link>
 
 				</div>
-				<a role="button" href="/logout" id="logout-btn">
+				<a role="button" href="/logout" id="logout-btn" class="flex items-center">
 						<span class="material-icons">logout</span>
 						Logout
 				</a>
@@ -37,14 +37,16 @@
 body.unscrollable {
 	overflow-y: hidden;
 }
-.links.desktop {
-	display: none;
-}
 
 .links {
 	height: 100%;
-	display: flex;
-	align-items: center;
+
+	&.mobile {
+		@apply flex items-center;
+	}
+	&.desktop {
+		display: none;
+	}
 
 	.dropdown-container {
 		position: fixed;
@@ -52,8 +54,6 @@ body.unscrollable {
 	}
 
 	.role-links {
-		display: flex;
-		flex-direction: column;
 		height: calc(100% - 56px);
 
 		.overlay {
@@ -73,8 +73,6 @@ body.unscrollable {
 	}
 	#logout-btn {
 		border-radius: 5px;
-		display: flex;
-		align-items: center;
 		padding: .5em 1em;
 	}
 
@@ -84,14 +82,16 @@ body.unscrollable {
 }
 
 @media (min-width: 640px) {
-	.links.mobile {
-		display: none;
-	}
-	.links.desktop {
-		display: flex;
-
-		.link[href="/settings"], .link[href="/notifications"] {
+	.links{
+		&.mobile {
 			display: none;
+		}
+		&.desktop {
+			@apply flex;
+
+			.link[href="/settings"], .link[href="/notifications"] {
+				display: none;
+			}
 		}
 	}
 }
