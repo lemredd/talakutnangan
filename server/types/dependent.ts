@@ -37,8 +37,11 @@ export interface AuthenticatedRequest extends Request {
 	user: Serializable
 }
 
-export interface EmailRequest extends Request {
-	emailsToContact: string[]
+/**
+ * Type of request to use to communicate between which have non-standard arguments.
+ */
+export interface PreprocessedRequest<T = any> extends Request {
+	nextMiddlewareArguments: T
 }
 
 export interface Response extends BaseResponse {}
