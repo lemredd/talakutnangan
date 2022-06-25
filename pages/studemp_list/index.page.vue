@@ -1,39 +1,38 @@
 <template>
-    <h1 class="">Institute Name</h1>
-    <div>
-        <div class="controls-bar">
-            <div class="search-bar ">
+	<h1 class="">Institute Name</h1>
+	<div>
+		<div class="controls-bar">
+			<div class="search-bar ">
 				<TextualField
 					type="email"
 					v-model="input"
 					input-classes="!py-0 pl-1 !border-none" />
 				<button class="material-icons">search</button>
 			</div>
-			<div class="dropdown-filter">
-				<div class="role">
-
-					<button class="material-icons">expand_more</button>
-				</div>
+			<div class="dropdown-filter grid grid-cols-2 gap-2">
+				<span class="sm:justify-self-end self-center">Role: </span>
+				<select v-model="selectedFilterRole" name="role-filter" id="role-filter" class="role-filter bg-gray-300">
+					<option selected value="all">All</option>
+					<option v-for="role in roles" :value="role">{{ role }}</option>
+				</select>
 			</div>
-        </div>
-    </div>
-    <div class="text-2xl m-2 text-light-100" v-for="student in filteredList()" :key="student.name">
-        <div class="user-entry flex justify-between border-b p-b-2 place-items-center">
-            <span class="user-name text-lg w-50 text-right">{{ student.name }}</span>
-            <span class="user-email text-xs">{{ student.email }}</span>
-            <div class="btns">
-                <button class=" btn1 text-dark-100 rounded-md w-20 text-base h-7">Update</button>
-            </div>
+		</div>
+	</div>
+	<div class="user-row" v-for="user in filteredList()" :key="user.name">
+		<span class="user-name">{{ user.name }}</span>
+		<span class="user-email">{{ user.email }}</span>
+		<span class="user-role">{{ user.role }}</span>
+		<div class="btns">
+			<button class="btn1">Update</button>
+		</div>
+	</div>
 
-        </div>
-    </div>
-
-    <div class="text-light-200" v-if="input && !filteredList().length">
-        <p>No results found!</p>
-    </div>
+	<div class="no-results" v-if="input && !filteredList().length">
+		<p>No results found!</p>
+	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .btn1 {
 background:white;
 }
@@ -42,17 +41,43 @@ background: gray;
 }
 
 .controls-bar {
-	@apply dark:bg-dark-100 h-10 bg-light-200 px-2 py-6 flex items-center justify-between;
+	@apply dark:bg-dark-100 bg-light-600 p-2 grid gap-y-4 sm:grid-cols-2;
 
 	.search-bar {
-		@apply dark:bg-dark-300 inline-flex items-center p-1;
+		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center p-1;
+	}
+	.dropdown-filter {
+		@apply sm:justify-self-end;
+
+		.role-filter {
+			position: relative;
+
+			.dropdown-container {
+				position: absolute;
+				left: 0; right: 0;
+			}
+		}
 	}
 }
 
 .img1{
+	margin-top:8px;
+	margin-left:-15px;
+}
 
-    margin-top:8px;
-    margin-left:-15px;
+.user-row {
+	@apply text-2xl m-2 dark:text-light-100 flex flex-col gap-2 sm:items-center sm:flex-row sm:justify-between border-b p-b-2;
+
+	.user-name {
+		@apply text-lg w-50;
+	}
+	.user-email, .user-role {
+		@apply text-xs;
+	}
+
+	.btn1 {
+		@apply bg-light-600 rounded-md w-20 text-base h-7;
+	}
 }
 
 </style>
