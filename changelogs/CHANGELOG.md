@@ -1,490 +1,314 @@
 # Changelog
 
-## v0.4.0
+## v0.5.0
 
 ### 🚀 Enhancements
 
-#### User
-  - 4767f05 Add dean's user list
-
-#### Guest
-  - 4a7a4ac Make Opening Component
-  - a89538e Make Footer Component
-  - 81a4cd7 Add instruction in homepage
-
-#### Navigation
-  - 5907e5e Make navigation link for mobile
-  - 77b078f Use dropdown component for nav menu
-  - 3650b6d Disable scrolling if navigation menu is open
-  - bb153dd Add unscrollable class to body classes
-  - 8b87293 Implement viewport identifier
-  - e0d8a16 Separate navigation by viewport
-  - 1d9b98a Separate settings for desktop
-
 #### Server
-  - ⚠️  1c28261 Make controller-like classes to follow an optional policy
-  - e33e4c3 Remove null middlewares and controllers
-  - ⚠️  5b3d080 Make controller-like classes to have optional validations
-  - ⚠️  7303900 Make controller-like classes have an optional body parser
-  - ⚠️  32c7732 Redefine the signature of middlewares and post jobs
-  - 92daef7 Make middleware and post jobs public
-  - 6818c94 Rewrite JSON controller
-  - 82eec44 Rewrite page middleware
-  - 92f4976 Make validation middleware for route parameter
-  - ba8c2fa Make validation middleware for queries
-  - 338d83e Make query controller
-  - 0ccfb2e Add validation and policy to list user route
-  - 2a403cf Add policy to log in failure route
-  - 3d57000 Add policy to log in route
-  - 1dd7c1c Add policy to log out route
-  - 074299a Remove register route
-  - e4a43f1 Make bound controller
-  - 27b1b50 Make model bound controller
-  - bc6d895 Add validation to reset password route
-  - fdcc8f8 Rewrite user update route to only update user details
-  - ⚠️  ca06771 Change the HTTP method to use to update the user
-  - 7ba8db2 Add validation and policy to verify user route
-  - 1ddebe5 Remove immediate termination of writing to response
-  - 6e74e0f Write nothing to after deletion
-  - 882ac3d Rewrite the department route to restore
-  - 68d1b33 Rewrite the department route to update
-  - 49588fa Add policy to join chat room
-  - 835de10 Make specialized controller for development routes
-  - 8a64481 Enhance typing of form middleware
-  - 5360722 Rename the file for `multipart/form-data` body parser
-  - cf0c08a Add `multipart/form-data` body parser to common list
-  - 7567412 Make multipart controller
-  - da0cb57 Add policy to import user route
-  - 08fbc33 Terminate if one of the e-mail variables is not defined
-  - 9410e0b Include server logger in initialization
-  - 3283f3e Initialize the singletons before data source creation
-  - 476ec17 Allow passing multiple permission names
-  - 8767f56 Change the available department permissions
-  - a9fef78 Add method to get payload data
-  - 0c97523 Make page middleware for index page
-  - 9b5ae50 Create a sample payload in the index page middleware
-  - 408410e Pass the client payload as page props
-  - 45ebed7 Register index page middleware
-  - 681829c Remove the *index* suffix keyword for page enhancers
-  - 2429298 Treat common permission flags as constants for readability
-  - d6aca81 Initialize database singletons
-  - 9705b24 Make create role controller
-  - c370695 Make router for role API routes
-  - ffc35bb Register role router to API router
-  - a0e7bb8 Make update role controller
-  - fe29c0f Make archive role controller
-  - 163e3fa Make restore role controller
+- 6d0a5c5 Return the list of users directly
+- 24393a2 Make the signature use empty string for the mean time
+- 14ddd42 Pipe the request inputs to parser
+- 41095fc Make test route to check the contents of parsed body
+- 53a3a25 Put streamed data to temporary raw buffer
+- d17f3c7 Create middleware to parse CSV files
+- 69477f6 Allow other middlewares to run before validation
+- 137c77d Make middleware to parse CSV files
+- 1baa41b Apply CSV parser to read the file
+- 57b6395 Convert the CSV column headers to camel case
+- 33d7312 Pass the body as input for bulk creation of users
+- 1e61d41 Log the creation of users in bulk
+- 05eee2b Allow parsing multi-dimensional fields
+- 18a0aa2 Log events in multipart body parser
+- 70109ee Validate the first-level inputs of importing users
+- 69fd812 Create route to list roles
+- 881d5c9 Create route to list department
+- 72281e3 Remove some forced casts as user is serializable
+- dd57917 Register route to list departments
 
 #### Database
-  - 63cf7b5 Acknowledge that attributes of model will be initialized
-  - 02924ca Add new migration for role table
-  - f806313 Make ID columns use big integer type
-  - d09ea47 Make email column unique
-  - e647225 Add new migration for attached role table
-  - 5cb1ab8 Make foreign updates cascade to user table
-  - 6c82924 Make role model
-  - 80a93b3 Create role manager
-  - e5d9679 Re-declare the method for searching roles
-  - e91da1c Include role in models of source
-  - f725d66 Add model for attached roles
-  - 8f2fd24 Link user and role models
-  - 90a6113 Include attached role in model of source
-  - 5167622 Restore the code to truncate all models
-  - f5411bc Include related models upon finding with credentials
-  - 265974c Update code for listing the users
-  - 6471b12 Remove method for admission of users
-  - c7a749e Make a base manager
-  - 2956f0b Rename some methods in base manager
-  - a8162dc Make class to build the query conditions
-  - 1be0060 Make the condition builder to be fluent
-  - 2fb181c Use base manager for user manager
-  - 83a1f15 Base the role manager from the base manager
-  - 03faaa3 Make limit pipe
-  - e87cde1 Make a method to search for specific string on a column
-  - a06d6e1 Make search name pipe
-  - 4ea92a6 Simplify the role model manager
-  - 35cd296 Base the department manager from the base manager
-  - e7c0bef Make a function that will run the data through pipeline
-  - 85ebf5d Allow users to be searched by name and have limits
-  - 75796f7 Remove logging from creation of the configuration
-  - 3416c76 Make a singleton for the source
-  - e4f03c4 Allow source to be retrieved
+- f3332b1 Make a base class for presenter
+- b80f6ed Change the base for transformers
+- 563fc66 Make class to serialize models
+- 158176f Make transformer for user model
+- ⚠️  5bfc378 Require managers to have transformer
+- e4fd671 Make custom search pipe for department
+- b7b4c50 Make department transformer
+- 544ecf7 Improve database manager
+- a6f2115 Make role transformer
+- c7c42ea Improve role manager
+- 34a58e2 Make initial code for bulk create of users
+- 4aabcaf Make migration for student details table
+- f26e576 Make migration for employee schedules table
+- c690abe Make model for student details
+- 554930a Make model for employee schedules
+- 4689caa Link student detail and employee schedule to user model
+- 44b95b9 Add method for comparing equally
+- ea8d94c Resolve department IDs then bulk create the user entity
+- e5b636c Change the structure generated by "or" method
+- cee11c3 Register student detail and employee schedule models
+- 96fb5ff Create student detail along with the bulk creation
+- 0e8f77b Set the department model associated to the user
+- 48f3298 Add method to transform relationships
+- 8f99c0b Link department to user transformer
+- 7bc9c43 Link attached role to user model
+- 170491f Link attached role to user model
+- 7234172 Include role in transforming the data for users
+- b33c9f9 Ensure user ID has big integer type in employee schedule
+- e9c02f2 Add mechanism to bulk create employees
+- e7cd4dc Apply the union type in user manager
+- a8b6575 Log steps in bulk creation of users
+- 255720d Test if importing student details works properly
+- 4db9d75 Make pipe to include role and department
+- e3b926a Serialize user after finding with credentials
+- b0e1d95 Log necessary events in finding user with credential
+- bd6aebf Include role and department in list pipeline
+- d02e48f Allow serializer to accept null as model
+- 6be6377 Serialize model found with ID
+- bba0a7a Log successful actions in base manager
+- 2ef4b56 Return serialized model after creation
 
-#### Viewport
-  - 0312d8d Make window accessible anywhere
+#### Authentication
+- b2eaa50 Use the serializable data structure to get user ID
 
-#### Permissions
-  - b6a5cee Apply operation permission to department permissions
-  - 2b72138 Apply common flags to department permissions
-  - 5c2478d Make role permission group
-  - ad77430 Make semester permission group
-  - 5e354d3 Make tag permission group
-  - 9fff361 Make post permission group
-  - 3129966 Make comment permission group
-  - 062c76d Make profanity permission group
-  - 5b33644 Make profile permission group
-  - 31f2ba5 Make audit trail permission group
+#### Settings
+- 02960a4 Add dark mode toggling method
 
-#### General
-  - 9dd1500 Use the page props in index page
+#### Shareable
+- 9f391b4 Make function for converting string to camel case
+- 3891694 Ensure camel case converter works as expected
 
-#### Pipeline
-  - e5d5102 Make criteria filter
-  - 94d32e5 Rename the pipe for sifting by criteria
-  - 6fdd9ff Make offset pipe
-  - 9047a58 Use the options interface directly from package
+#### Register
+- d0a4a53 Make valid testing details for student creation
+- 9f275b3 Make initial code for uploading CSV files
+- d321691 Add submit button to upload the CSV file
 
-#### Dropdown
-  - b3b97f9 Close on click outside
+### 🔥 Performance
 
-#### Forum
-  - 4f73660 Initial setup
-  - 41f5eb0 Implement vote counting
-  - 3f33499 Implement profanity filter in each post
-  - f59c14d Determine secluded post and user vote
-  - ed4f2d9 Add profanity filter method
-  - 236e374 Modified dummy data
-  - 3503516 Added downvote
-  - e0898f2 Seperated post fucntions
-  - 02ab878 Added secluded posts
-  - eb6f04b Added blank user icons
-  - dd70922 Added any for variables
-  - a23eecc Added dropdown for posts
-  - 19692a4 Removed dummy data
-  - bfe96cb Added post creation
-
-#### Logger
-  - 739e5bc Make a server logger
-  - 6086fbd Log the initialization of web socket as successful
-  - 54c4322 Use lowercase for the area
-  - cb80a6d Format the message to log
-  - 8f4b3cc Log the initialization of HTTP server as successful
-  - 41d5b13 Separate a method to output the original error
-  - 088b437 Log details about connecting to e-mail server
-  - e2e45da Log details about connecting to database server
-  - 14835e7 Log the queries to server logger
-  - 6694905 Make the formatter private to ensure passed area exists
-  - 0a74b20 Force passed error is the expected type
+#### Test
+- b3d07d6 Apply mock requester to test kind-based policy
+- ac58201 Apply mock requester to test authentication-based policy
+- 0bc9a2e Apply mock requester to test bound controller
+- 2e2a1af Apply mock requester to test controller-like class
+- 5b4f1c3 Apply mock requester to test base controller
+- b2bd2d5 Apply mock requester to test base page middleware
+- e371998 Remove the assertion of  validation in bound controller
+- 40b83e6 Apply mock requester to test JSON controller
+- 41c7260 Apply mock requester to test query controller
+- 0270bd9 Remove duplicate tests for user manager
+- 7a46763 Remove another duplicate tests for user manager
+- 51f8072 Remove duplicate tests for role manager
+- fb8c471 Remove duplicate tests for department manager
+- d0fe09f Apply mock requester to test policy middleware
 
 ### 🩹 Fixes
 
-#### Server
-  - 97240a7 Guarantee that raw handlers are request handlers
-  - e87f5b2 Filter the null middleware or post jobs early
-  - c30342a Fix the path to register department route for modification
-  - af39967 Correct some values to update departments
-  - a2014f9 Correct the path to page middleware base to guard chat room
-  - de882e2 Change the mechanism of checking e-mail variables
-  - fc4dbd5 Initialize middleware regardless of variables' existence
-  - 41a4fd6 Include previously combined mask in mask generation
-  - 3f48970 Update the criteria in list user route
-  - fc75d05 Remove trailing slashes unless it is the root
-  - 06f40cf Rename router file
-  - da365be Correct the path to role manager
-  - 098b21e Use the server-only request environment for middleware
-
 #### Test
-  - d776297 Guarantee that validation middlewares are present
-  - 03f9d14 Correct the function to compare from
-  - 298b191 Update the criteria in integration test
-  - dd83e28 Update the path to department permissions
-
-#### General
-  - ed9b55f Remove the invalid syntax
-
-#### Types
-  - 368f90e Correct the types of route handlers
-  - c9df8c9 Make compatible types for session
-  - 915998c Make the criteria array as constant
-  - c160dde Fix the page request type
+- 093c559 Correct the column to check for ID
+- 2ba1405 Mock the types only for unit tests
 
 #### Database
-  - d1499ab Correct the name of the model of role
-  - 957b0e9 Remake create method to ensure hashing of password
+- 532a3c7 Add transformer to user manager
+- 92e577b Remove log in base manager test
+- 02ac6a6 Use the acronym on the department mappings
+- 5fa6ddc Take another approach on creating associated model
+- 545b15f Correct the association of user to employee schedules
+- fbe7380 Correct the type for start and end of schedules
+- 374cc33 Use require instead of import
+- 611f267 Ensure include property has array
+- 4a54b4a Correct the operator to use to match for e-mail
 
-#### Logger
-  - 06f2297 Correct some identifiers in logger
+#### Navigation
+- eb01384 Emit toggle properly
+
+#### Server
+- 68d3c43 Remove prefix to import the buffer properly
 
 ### 💅 Refactors
 
-#### Person
-  - a5bb92b Rename prop type to variant
-
-#### Guest
-  - 28ded61 Refactor person component
-  - d33001a Refactor description component
-  - 613659f Adjust overall design
-
-#### Dropdown
-  - cad6ccb Make customizable dropdowns
-  - 57b6c52 Change button id
-  - 5ee6c7d Remove unused emit
-
-#### Navigation
-  - d3da792 Hide dropdown instead of rendering conditionally
-  - 1052805 Temporarily disable body tag injection
-  - 6547bb8 Revert conditional rendering
-  - 27e87fd Separate scroll disabling to a method
-  - 7c92ca1 Arrange by component's slots
-
-#### Window
-  - a822f38 Provide window from shell
-  - 0352d68 Unuse custom window identifier
-
-#### Database
-  - 4e56b7e Apply pipeline runner in construction of options
+#### General
+- c1916ed Apply pipeline and condition to find with credentials
+- 5344e83 Dedicate a method to serialize one or multiple models
 
 #### Shell
-  - a8940e5 Watch changes in body classes
-  - 8e4273d Enforce referencing of body tag
-  - 7e53058 Reference default body classes
+- aaa8718 Make components for nav & content
+
+#### Guest
+- e7e05b3 Relocate homepage components
+
+### 📖 Documentation
 
 #### General
-  - 078f551 Rewrite the archive department route
-  - b97ab29 Rewrite the department route to create
-  - 32fbdba Rewrite the department route to read
-  - cfe2827 Rewrite development route for testing emails
-  - 0cc489f Provide body tag from page shell
+- aeae41f Fix minor grammar
 
 ### 🏡 Chore
 
 #### General
-  - 19eee60 Cluster controller-like classes
-  - b98398e Document class for controller-like base class
-  - 78e26b0 Document the controller-like classes
-  - 7fa03a9 Import the custom request instead of importing from package
-  - aac45cc Import the custom request instead of importing from package
-  - c99b3c9 Dedicate directory for specialized classes
-  - d47c0ac Delete unit test for user update route
-  - 527e774 Rename directory for common controllers
-  - ef9ecfb Remove test for register user route
-  - ba2bed6 Add some required types
-  - 591e029 Ignore or force some types
-  - 6e4bcff Change the basis of or force some types
-  - 568ff17 Make creation of database as asynchronous
-  - 2dd2544 Make flag columns into camel case
-  - d38ce4d Correct or force some types
-  - fa76d02 Apply dependent types to pipes
-  - 6bbac1b Document base manager class
-  - daa05ae Remove excess brackets
-  - 42886c0 Remove unused controller
-  - 37f802d Refer to client payload as page props
-  - faff40e Rename the properties which are named as client payload
-  - fd4c150 Update the subdirectory for specialized filter
-  - a8dcfc1 Move notes of escaping queries to method of condition builder
-  - 50a1ca4 Move the base factory
-  - 0f05099 Apply type for generated data in base
-  - 71f2512 Make initialization of database to be asynchronous
-  - a7b5e23 Put independent server types to shared directory
-  - f7bd319 Put independent server types to shareable directory
-  - 3e8533b Put independent database types to shareable directory
-  - 2253355 Correct the misspelling of "originally"
-  - f45dd16 Put permissions to shareable directory
-  - 7127ff1 Enhance the pull request template
-  - c1c2781 Remove empty line
-  - 2d2d3cb Put pipeline to shareable directory
-  - 290a11f Improve the phrase if it must be merged or not
-  - 3ab4d0a Add completion state in merge instructions
-  - 889473d Capitalize the "None" keyword
-  - f56781a Share some server helpers
-
-#### Test
-  - 2c8f3fa Make some fields the same line column for readability
-
-#### Permissions
-  - 248de7e Rename the columns of the flags to use camel case
-
-#### Server
-  - 8b090fc Rename the method to get body validation rules
-  - 8da8405 Rename the file names of the model managers
-
-#### Notifications
-  - 803a064 Temporarily disable component
+- de0e482 Use request environment directly in log
+- cb219db Remove unnecessary comment
+- c7d591c Delete unused files
+- d71bb54 Apply approved new pull request template
+- d187fcf Add subject to indicate who is confident
+- d8f6697 Include factor where changes from breaking PRs has been applied
+- 25f6408 Delete unused component and unit test
 
 #### Database
-  - ⚠️  f4b8c15 Treat the database type file as independent
+- 668b5bc Apply where options type in condition
 
-#### Forum
-  - 0f194ed Restructure dummy post data
+#### Shareable
+- f9ceb00 Make user kind as an union
 
+#### Test
+- ⚠️  f01fad3 Dedicate a directory for set up files
 
 ### ✅ Tests
 
-#### Dropdown
-  - f463f06 Test close event
-  - ee3c909 Ensure dropdown elements exist
-  - 4d40841 Ensure dropdown element occurence
-
-#### Navigation
-  - 1c158be Adjust link specification test case
-  - 1fa5c4f Localize wrappers
-  - 3348e66 Provide reference of body classes
-  - ef6cfc0 Separate tests for specific roles
-  - 33d1c83 Provide viewport identifier and test on desktop viewport
-  - 77a6ebd Emit toggle event
-  - ed84f97 Remove unused injected values
-  - 082e9e7 Expect proper emission from nav button
-  - e8950ba Remove redundant triggers
-  - 38f0a8b Test dropdown button click
-
-#### Integration
-  - bb9ec7f Rewrite list user route
-  - 71a6b46 Force updated student to be present
-  - a069eef Skip test for update user route
-  - 70c867d Rewrite the department route tests
-  - 49ada28 Update the paths to managers in integration_tests
-  - 39765ae Ensure create role route works
-  - 931a670 Ensure update role route works
-  - 88b1e05 Ensure archive role route works
-  - 097087b Ensure restore role route works
-
-#### Guest
-  - cf4b47b Test person component
-
 #### General
-  - 11de2b3 Rewrite app singleton
-  - 9be2972 Reverse the order or set up files to initialize logger first
-  - 896c95e Make role factory
-  - 0189eaa Rewrite the general factory
-  - f5c1613 Allow data generator to be asynchronous
-  - 24b7652 Apply base factory to other factories
-  - 9c46351 Add method to make or insert multiple models
-  - aa81867 Specialize some methods for user factory
-  - db9e080 Add method to user factory to control the generation of names
-  - 1bd9e45 Include all attributes in test of update department
-  - d2aa888 Update the set-up files in test
+- 6e074a4 Separate the retrival of data source type
+- c8b166f Apply getting source type to set up database and other singletons
+- 14daf6b Make set up file for log
+- 2c10309 Mock consola instance for unit tests
+- 172e6a5 Mock consola instance for unit tests
+- 832b50b Ensure role factory uses another name
+- 219f0ed Allow department factory customize name generator
+- cea3179 Search model with ID properly
+- 7c49fb5 Allow log set up to be usable in integration tests
 
 #### Unit
-  - 5254fd1 Retest the controller-like base with more-defined abstract
-  - 03d54e3 Test rewritten JSON controller
-  - b79bbd3 Test rewritten page middleware
-  - 275f81b Create base test controller to test the controller
-  - 76ec200 Specialize the type of argument of mock response
-  - 0094bae Test unit controller
-  - ffe2dd2 Test bound controller
-  - 7ca166f Test base controller
-  - 246ea4c Ensure role manager works properly
-  - 8dd87fa Test permission group for multiple arguments
-  - 11ec725 Ensure user model has necessary linked models
-  - f19f475 Update test for listing users according to criteria
-  - e771333 Check base manager if it works
-  - 90e9758 Ensure condition builder works properly
-  - 08dcf3e Restructure the arguments to list the users
-  - 0d8c833 Ensure that page middleware returns the page props
-  - 060d3dd Enhance the tests on replacement of index routes
-  - 86bdeda Remove trailing slash on path of the route information
-  - f88913f Test the method to search for a condition
-  - 7c975c8 Update the arguments to be received by role model manager
-  - 9fc7cc3 Test if the pipeline runner works properly
-  - 109a951 Ensure searching the user by name works
-  - d18e4e1 Improve the test of user manager
-  - 9264422 Find the updated department info
+- 0f91cca Test listing of serialized models
+- 6071de3 Improve tests on managers
+- ca533b3 Allow request to be reusable in kind-based policy test
+- 3c35c55 Wait for middleware to finish running
+- 4d89eb2 Return the request if successful
+- 3c318dd Chack if base manager can use limit pipe
+- 5276d77 Ensure post parse middlewares runs
+- 354e7f6 Check if the CSV parser works as expected
+- 68674ed Update the test for CSV parser
+- 4da0834 Ensure equal operation is properly generated
+- 5cff490 Update expected structure of "or" method
+- 1229fec Ensure bulk creation of students works as expected
+- e466a64 Ensure department models have been included
+- da83ba8 Include attached roles in assertion
+- c1cfc3c Expect role data is included
+- cd4759b Await for count of users instead of using resolve
+- 6fbf6ff Ensure bulk creation of reachable employees works
+- 25e02e4 Check if parsing multidimensional field works
+- 5e2cb08 Update the unit test for finding with credential
+- 93e9188 Update the unit test for listing users
+- b094dde Update the tests to find users with ID
+- ed3e4d1 Update the test for creating to new model with manager
+
+#### Integration
+- 6b819a3 Update the test for listing the users
+- d62c4be Test the route to see if multipart middleware works
+- c662aa6 Make initial test for importing users
+- 70b253a Update the expected body in listing users
+- fe36f81 Check if route to list roles works as expected
+- 871cc28 Check if route to list departments works as expected
+- 9ba0c76 Update the tests to assert the newly-created model
+
+#### Guest
+- 8536489 Rename some props
+
+#### Helpers
+- 5216751 Make class for mocking requests in unit tests
+- 165a78f Return the value returned by using `json` method
 
 ### 🌊 Types
 
-#### Field
-  - e9e610b Specify input field type
-
 #### Server
-  - d1ca295 Add type to make middleware optional
-  - 6b7f96c Make specialized interface for authenticated requests
-  - 760166b Allow other form of request handler
-  - 7bc5faa Make type for requests expects ID route parameter
-  - d1d3ca0 Organize types containing serializable types
-  - 6d9ad57 Create types for operation permissions
-  - e5fc7b3 Make types for level permissions
-  - 7e1e47f Make type for setting values of common flags
-
-#### Test
-  - 7b3941d Make type for generated data
-  - a3053c1 Make type for multiple generated data
-
-#### General
-  - bb09620 Separate type for mock response
-  - da40a42 Separate the declaration for asynchronous handler
-  - c880b8a Use undefined instead to comply with contraints of base request
-  - b401dd8 Make token optional instead to comply with the contraints
-  - 3195db6 Make some types to use to return static functions
-  - 284c407 Remove unnecessary types
-  - 0a94d51 Create type file for dependent types
-  - db654c0 Make the template parameters of pipe more customizable
-  - 0afbda1 Regeneralize pipe type
-  - d6854b6 Separate the types from base manager
-  - 97fc4f0 Use client payload type as basic of page props
+- 9355700 Make user profile in page props to be serializable
 
 #### Database
-  - 15dcbcb Derive criteria from array
-  - 577d817 Make type for raw role details
-  - cb0ae36 Change criteria for listing users
-  - f6f886d Make type to be used for base manager
-  - 382389d Add type for common constraints in pipe
-  - 79e9a02 Re-export used types from other packages
-  - 7375124 Make safe types for user profile and roles
-  - d68637a Make safe types for payload
-  - 7977744 Make a similar interface for others to be serializable
-
-#### Forum
-  - 6e517da Properly typed functions and variables
+- 7edd6a6 Re-export necessary types for serializingobjects
+- f04bdab Make types to expect for creating users in bulk
+- b8fefc2 Separate the common shape for bulk creation of profiles
+- 036cca5 Ensure raw password exists
+- 85e0bee Make code to use for typing correct day
+- dc1b95b Make a union of day strings
+- 63263b8 Improve the types for processing bulk user data
+- 226713c Ensure database has been resolved after processing
+- 35e127d Reexport another type from third-party package
+- 4febde1 Replace the department as object on processed data
+- 75e1f61 Revert back to the usage of department IDs
+- 649abfc Include another type necessary to link transformers
+- 73910eb Add fields to specify the attached roles
+- 7c6bfe5 Create interface for raw employee schedule
+- d76ac02 Add union of bulk data
 
 ### 🎨 Styles
 
-#### Navigation
-  - 8c7dae9 Adjust minor styles to links
-  - 2ea56b3 De-scope to allow styling of body tag
-  - 75efb59 Restructure and restyle links
-  - 955a110 Adjust minor styles
-  - a3c80e7 Use media query to display links
-  - 1fea916 Re-enable media query styles
-  - 967e5ea Hide notif link on desktop
-  - 1b647b5 Hide settings link on desktop
-  - 8fe423a Adjust notification list styles
-  - 15d8fbd Put nav to front
-
-#### Person
-  - f07085c Add default variant styles
-
 #### General
-  - 06701ae Added design for instruction in guest home page
+- 7a32164 Specify div class
+- 30f0fe6 Remove dark mode class from body
+- 53b9513 Use windiCSS @apply on stylesheet
+- 272c10d Remove unused body class
+
+#### Login
+- de1cf28 Disable scrolling
 
 #### Shell
-  - 164b25e Fix navigation position
+- 0374dbb Use windiCSS for flexbox property
+- 079e5a7 Move content styles to its component
+- 83dd3bd Remove dark mode temporarily
 
-#### Dropdown
-  - a41c437 Declare position from parent component
+#### Settings
+- bab592e Use windiCSS flexbox
+- cb9786b Apply windiCSS features
+
+#### Navigation
+- 672ae0a Make dark-mode background color
+- ae6bb56 Use windiCSS features
+
+#### NAV
+- 2b705f5 Use windiCSS flexbox
+
+#### Logo
+- 4eade68 Remove unused nested classes
+- 40023b4 Use logo with transparent background as icon for the site
+
+#### Fields
+- 60e7d5f Use windiCSS text color
+- 4010503 Implement several windiCSS features
+
+#### Footer
+- ef20358 Use windiCSS flexbox
+- d1d893b Use windiCSS background color
+
+#### Guest
+- 6f27d3c Make dark-mode background color
 
 ### 🤖 CI
 
 #### General
-  - f1b9c7a Add workflow for testing shareable codes
+- 53a0eb5 Split the jobs for running server and database tests
+- ae20d39 Add path constraint when to run certain tests
+- 27e43a2 Improve the environment file for CI
+- 62c2700 Add step to install package necessary to run shareable tests
+- 5ec59e7 Run integration tests if there are changes in front-end too
+- 444a007 Include changes in test helpers to trigger workflows
 
 ### 🗒️ Configurations
 
-#### Test
-  - 64da120 Map server dir
-  - 4ac72b0 Remove server directory for front-end unit tests
-
 #### General
-  - 22f67f4 Make compiler strict
-  - f11ecef Change the command name for other package managers
-  - d7ad0ba Add new environment variables for logging
-  - 8317a9f Add command to reset the migrations
-  - abe92c2 Add environment variable that dependency uses
-  - c02133b Remove database variable for logging
-  - 2ef1c4d Ensure shareable directory can be found
-  - c23cd9a Make configuration to test for shareable codes
-  - 8dc5ee8 Add command test for shareable codes
+- 01cad12 Split the unit tests to server and database unit tests
+- 9cb7521 Include log set up in integration tests
+
+#### Vite
+- c09927e Make alias for styles directory
+
+#### Typescript
+- 78109f8 Add path alias for assets
+- 7203909 Add path alias for assets
+
+#### Test
+- b5e7908 Include set up file for log for database test
+- 4872528 Split the commands for running server and database tests
 
 #### ⚠️  Breaking Changes
-  - ⚠️  1c28261 Make controller-like classes to follow an optional policy
-  - ⚠️  5b3d080 Make controller-like classes to have optional validations
-  - ⚠️  7303900 Make controller-like classes have an optional body parser
-  - ⚠️  32c7732 Redefine the signature of middlewares and post jobs
-  - ⚠️  ca06771 Change the HTTP method to use to update the user
-  - ⚠️  f4b8c15 Treat the database type file as independent
+- ⚠️  5bfc378 Require managers to have transformer
+- ⚠️  f01fad3 Dedicate a directory for set up files
 
 ### ❤️  Contributors
-- Angelo Magtoto
 - AteKitty07
-- IKnightSKyI
 - Jarlem Red De Peralta
 - Kenneth Trecy Tobias
