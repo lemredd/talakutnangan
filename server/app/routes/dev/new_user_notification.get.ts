@@ -1,6 +1,7 @@
 import { Request, Response } from "!/types/dependent"
 
 import DevController from "!/common_controllers/dev_controller"
+import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"
 
@@ -18,10 +19,15 @@ export default class extends DevController {
 		}
 		const rawEmail = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedEmail = convertMarkdownToHTML(rawEmail)
+		const containedEmail = encapsulateFragment(
+			"Sample Encapsulation using New User Notification",
+			"",
+			parsedEmail
+		)
 
 		response.status(this.status.OK)
 		response.header("Content-Type", "text/html")
-		response.send(parsedEmail)
+		response.send(containedEmail)
 		response.end()
 	}
 }
