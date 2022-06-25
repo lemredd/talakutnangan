@@ -62,35 +62,37 @@ import { ref } from "vue";
 import TextualField from "@/fields/Textual.vue"
 
 let input = ref("");
-const students = [
-    {
-        name: "Juan Dela Cruz",
-        email: "Email@email.com",
-    },
-    {
-        name: "Alice Dela Cruz",
-        email: "Email@email.com",
-    },
-    {
-        name: "Jun Dela Cruz",
-        email: "Email@email.com",
-
-    },
-        {
-        name: "Jay Dela Cruz",
-        email: "Email@email.com",
-
-    },
-        {
-        name: "Jose Dela Cruz",
-        email: "Email@email.com",
-
-    },
-        {
-        name: "Marie Dela Cruz",
-        email: "Email@email.com",
-
-    },
+const users = [
+	{
+		name: "Juan Dela Cruz",
+		email: "Email@email.com",
+		role: "student"
+	},
+	{
+		name: "Alice Dela Cruz",
+		email: "Email@email.com",
+		role: "professor"
+	},
+	{
+		name: "Jun Dela Cruz",
+		email: "Email@email.com",
+		role: "professor"
+	},
+	{
+		name: "Jay Dela Cruz",
+		email: "Email@email.com",
+		role: "professor"
+	},
+	{
+		name: "Jose Dela Cruz",
+		email: "Email@email.com",
+		role: "secretary"
+	},
+	{
+		name: "Marie Dela Cruz",
+		email: "Email@email.com",
+		role: "student"
+	},
 ];
 function filteredList() {
     return students.filter((student) =>
