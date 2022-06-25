@@ -25,8 +25,12 @@ describe("Middleware: Email Verification Sender", () => {
 		expect(previousMessages).toHaveLength(1)
 		expect(previousMessages[0]).toHaveProperty("message")
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toMatchSnapshot()
-		expect(previousMessages[0].message.html).toMatchSnapshot()
+		expect(previousMessages[0].message.text).toContain(
+			"http://localhost/user/verify?to=sample@example.com"
+		)
+		expect(previousMessages[0].message.html).toContain(
+			"http://localhost/user/verify?to=sample@example.com"
+		)
 	})
 
 	it("can send to multiple users", async () => {
@@ -44,9 +48,17 @@ describe("Middleware: Email Verification Sender", () => {
 		expect(previousMessages).toHaveLength(2)
 		expect(previousMessages[0]).toHaveProperty("message")
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toMatchSnapshot()
-		expect(previousMessages[0].message.html).toMatchSnapshot()
-		expect(previousMessages[1].message.text).toMatchSnapshot()
-		expect(previousMessages[1].message.html).toMatchSnapshot()
+		expect(previousMessages[0].message.text).toContain(
+			"http://localhost/user/verify?to=sampleA@example.com"
+		)
+		expect(previousMessages[0].message.html).toContain(
+			"http://localhost/user/verify?to=sampleA@example.com"
+		)
+		expect(previousMessages[1].message.text).toContain(
+			"http://localhost/user/verify?to=sampleB@example.net"
+		)
+		expect(previousMessages[1].message.html).toContain(
+			"http://localhost/user/verify?to=sampleB@example.net"
+		)
 	})
 })
