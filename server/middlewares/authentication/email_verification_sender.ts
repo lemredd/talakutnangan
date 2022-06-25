@@ -26,7 +26,7 @@ export default class extends Middleware {
 				email: recipient,
 				homePageURL: `${request.protocol}://${request.hostname}`,
 				emailVerificationURL:
-					`${request.protocol}://${request.hostname}/user/verify?=${recipient}`
+					`${request.protocol}://${request.hostname}/user/verify?to=${recipient}`
 			}
 		)))
 			.then(info => {
