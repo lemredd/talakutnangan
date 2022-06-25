@@ -3,7 +3,7 @@ import { Op } from "sequelize"
 import Condition from "./condition"
 
 describe("Database: Condition Builder", () => {
-	it("can make 'is' operation", () => {
+	it("can make 'not' operation", () => {
 		const condition = new Condition()
 
 		const builtCondition = condition.not("sample", null).build()
@@ -20,6 +20,16 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			sample: { [Op.is]: null }
+		})
+	})
+
+	it("can make 'equal' operation", () => {
+		const condition = new Condition()
+
+		const builtCondition = condition.equal("sample", 1).build()
+
+		expect(builtCondition).toStrictEqual({
+			sample: { [Op.eq]: 1 }
 		})
 	})
 
@@ -44,10 +54,10 @@ describe("Database: Condition Builder", () => {
 		).build()
 
 		expect(builtCondition).toStrictEqual({
-			[Op.or]: {
-				columnA: { [Op.is]: null },
-				columnB: { [Op.not]: null }
-			}
+			[Op.or]: [
+				{ columnA: { [Op.is]: null } },
+				{ columnB: { [Op.not]: null } }
+			]
 		})
 	})
 })

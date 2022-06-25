@@ -1,5 +1,11 @@
 import { Model } from "sequelize-typescript"
-import { Transformer, transform, whitelist, ContextBuilder } from "jsonapi-fractal"
+import {
+	Transformer,
+	transform,
+	whitelist,
+	ContextBuilder,
+	RelationshipTransformerInfo
+} from "jsonapi-fractal"
 import type { Serializable } from "$/types/database"
 
 export default class Serializer {
@@ -27,6 +33,16 @@ export default class Serializer {
 		const builder = Serializer.build(model, transformer, options)
 
 		return builder.serialize() as Serializable
+	}
+
+	static makeContext<T extends Model>(
+		model: T|T[],
+		transformer: Transformer<T, void>,
+		options?: object
+	): RelationshipTransformerInfo<void, unknown> {
+		const builder = Serializer.build(model, transformer, options)
+
+		return builder.withIncluded(true).toContext() as RelationshipTransformerInfo<void, unknown>
 	}
 
 	static whitelist<T extends Model>(model: T|T[], attributes: string[]) {

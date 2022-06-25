@@ -1,5 +1,5 @@
 <template>
-<form @submit.prevent class="text-light-100">
+<form @submit.prevent class="text-dark-200 dark:text-light-100 flex flex-col">
 		<TextualField
 			label="E-mail"
 			type="email"
@@ -24,10 +24,10 @@
 </template>
 
 <style lang="scss">
+@import "@styles/variables.scss";
+
 form {
-	display: flex;
-	flex-direction: column;
-	max-width: 640px;
+	max-width: $mobile-viewport;
 
 	.input-header {
 		font-size: 1.25em;
