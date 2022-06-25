@@ -1,6 +1,7 @@
 # New User
 
-Hello {{ name }}, you have been registered as a {{ kind }} in [Talakutnangan]({{ homePageURL }}).
+Hello {{ name }}, your e-mail address ({{ email }}) have been registered as a {{ kind }} in
+[Talakutnangan]({{ homePageURL }}).
 
 Please log in using the following password:
 ```
