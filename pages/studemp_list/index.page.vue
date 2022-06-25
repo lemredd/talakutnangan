@@ -134,6 +134,4 @@ function filterByRole(usersList: {[key:string]: any}[]) {
 	if (selectedFilterRole.value === "all") return usersList
 	return usersList.filter(user => user.role === selectedFilterRole.value)
 }
-
-import SearchIcon from "./search_icon.png"
 </script>
