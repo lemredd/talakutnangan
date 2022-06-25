@@ -1,11 +1,10 @@
 import type { RawBulkDataForStudents, RawBulkDataForEmployees } from "%/types/independent"
 
-import Role from "%/models/role"
+import User from "%/models/user"
 import UserManager from "./user"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import compare from "!/helpers/auth/compare"
-import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import DepartmentFactory from "~/factories/department"
@@ -16,15 +15,17 @@ describe("Database: User Authentication Operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		const manager = new UserManager()
 		const user = await (new UserFactory()).insertOne()
-		AttachedRole.create({ userID: user.id, roleID: role.id })
+		await AttachedRole.create({ userID: user.id, roleID: role.id })
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
 
-		expect(foundUser!.email).toStrictEqual(user.email)
-		expect(foundUser!.roles).toHaveLength(1)
-		expect(foundUser!.roles[0] instanceof Role).toBeTruthy()
-		expect(foundUser!.department instanceof Department).toBeTruthy()
+		expect(foundUser).not.toBeNull()
+		expect(foundUser).toHaveProperty("data.attributes.email", user.email)
+		expect(foundUser).toHaveProperty("data.relationships.roles")
+		expect(foundUser).toHaveProperty("included.0.attributes.name", role.name)
+		expect(foundUser).toHaveProperty("data.relationships.department")
+		expect(foundUser).toHaveProperty("included.1.id", user.departmentID)
 	})
 
 	it("cannot search user with incorrect credentials", async () => {
@@ -47,7 +48,7 @@ describe("Database: User Authentication Operations", () => {
 		expect(isResetSuccess).toBeTruthy()
 		expect(compare(
 			newPassword,
-			(await manager.findWithID(user.id))!.password,
+			(await User.findByPk(user.id))!.password,
 		)).resolves.toBeTruthy()
 	})
 
@@ -61,7 +62,7 @@ describe("Database: User Authentication Operations", () => {
 		expect(isResetSuccess).toBeFalsy()
 		expect(compare(
 			newPassword,
-			(await manager.findWithID(user.id))!.password,
+			(await User.findOne({ where: { id: user.id } }))!.password,
 		)).resolves.toBeFalsy()
 	})
 })
@@ -161,11 +162,15 @@ describe("Database: User Read Operations", () => {
 		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
 		// Create dummy complete profile to see if it would return two records or not
 		await (new UserFactory()).insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "incomplete", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(2)
 	})
 
 	it("can list users with complete profile", async () => {
@@ -173,22 +178,31 @@ describe("Database: User Read Operations", () => {
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		// Create dummy incomplete profile
 		await (new UserFactory()).hasNoSignature().insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "complete", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(2)
 	})
 
 	it("can list all users", async () => {
 		const manager = new UserManager()
 		const completeUserProfile = await (new UserFactory()).insertOne()
 		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
+		const role = await (new RoleFactory()).insertOne()
+		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
+		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
 		const users = await manager.list({ criteria: "all", page: 0 })
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(2)
+		expect(users).toHaveProperty("included")
+		expect(users.included).toHaveLength(3)
 	})
 })
 

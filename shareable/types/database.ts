@@ -85,21 +85,6 @@ export interface Serializable {
  */
 export interface Role extends RawRole, Serializable {}
 
- /**
-  * Used to return user profile data to client.
-  *
-  * Signature should be a URL to signature image.
-  */
- export interface UserProfile extends Serializable {
-	 name: string,
-	 email: string,
-	 department: string,
-	 roles: Role[],
-	 kind: UserKind,
-	 emailVerifiedAt: string|null,
-	 signature: string|null
- }
-
 import { days } from "$/types/database.native"
 
 const rawDays = [ ...days ] as const

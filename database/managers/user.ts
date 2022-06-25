@@ -1,6 +1,6 @@
 import { Op } from "sequelize"
 import { days } from "$/types/database.native"
-import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
 import type {
 	RawBulkData,
 	ProcessedDataForStudent,
@@ -17,64 +17,73 @@ import type {
 } from "$/types/database"
 
 import Log from "!/helpers/log"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
+
 import Role from "%/models/role"
 import User from "%/models/user"
-import hash from "!/helpers/auth/hash"
-import BaseManager from "%/managers/base"
-import compare from "!/helpers/auth/compare"
 import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
+import StudentDetail from "%/models/student_detail"
+import EmployeeSchedule from "%/models/employee_schedule"
+
+import BaseManager from "%/managers/base"
+import Serializer from "%/transformers/serializer"
+import UserTransformer from "%/transformers/user"
+
+import hash from "!/helpers/auth/hash"
+import compare from "!/helpers/auth/compare"
 import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
-import AttachedRole from "%/models/attached_role"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-import StudentDetail from "%/models/student_detail"
 import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
-import EmployeeSchedule from "%/models/employee_schedule"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
+import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 
 export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<User>, CommonConstraints & { criteria: Criteria }>[] {
+	get listPipeline(): Pipe<
+		FindAndCountOptions<User>,
+		CommonConstraints & { criteria: Criteria }
+	>[] {
 		return [
 			searchName,
 			siftByCriteria,
 			offset,
-			limit
+			limit,
+			includeRoleAndDepartment
 		]
 	}
 
-	async findWithCredentials(email: string, password: string): Promise<User|null> {
-		const foundUser = await User.findOne({
-			where: {
-				email
-			},
-			include: [ Role, Department ]
-		})
+	async findWithCredentials(email: string, password: string): Promise<Serializable|null> {
+		const condition = new Condition()
+		condition.equal("email", email)
+		const whereOptions: FindOptions<User> = { where: condition.build() }
+		const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
+
+		Log.trace("manager", "prepared query to find user with certain credential")
+
+		const foundUser = await User.findOne(findOptions)
+
+		Log.trace("manager", "done finding for user")
 
 		if (foundUser !== null && await compare(password, foundUser.password)) {
-			return foundUser
+			Log.success("manager", "found a matching user")
+			return this.serialize(foundUser)
 		} else {
+			Log.errorMessage("manager", "matching user not found")
 			return null
 		}
 	}
 
-	async create(details: RawUser): Promise<User> {
+	async create(details: RawUser): Promise<Serializable> {
 		details.password = await hash(details.password!)
 		return await super.create({ ...details })
 	}
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
-		Log.trace("manager", "entered user manager -> bulk create method")
-
-		await User.sequelize?.authenticate()
-
-		Log.trace("manager", "connected to database?"+User.sequelize?.connectionManager.initPools())
-
 		// Get the department name firsts
 		const departmentNames = bulkData.importedCSV.map(data => data.department)
 
@@ -170,11 +179,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				return user
 			})
 
-			Log.trace(
-				"manager",
-				"exiting user manager -> bulk create method with serialized student info")
-
-			return Serializer.serialize(completeUserInfo, this.transformer)
+			return this.serialize(completeUserInfo)
 		} else if (bulkData.kind === "reachable_employee") {
 			// Prepare for bulk reachable employee creation
 			const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
@@ -227,16 +232,12 @@ export default class UserManager extends BaseManager<User, RawUser> {
 				"manager",
 				"exiting user manager -> bulk create method with serialized reachable employee info")
 
-			return Serializer.serialize(completeUserInfo, this.transformer)
+			return this.serialize(completeUserInfo)
 		} else {
-			// TODO: Throw error to prevent bulk creation of unreachable employees or make a route
+			// TODO: Possibly throw error to prevent bulk creation of unreachable employees or make a
+			// route
 		}
 
-		// const serializableData = Serializer.serialize(
-		// 	incompleteProfiles,
-		// 	transformer,
-		// 	{}
-		// )
 		return {}
 	}
 

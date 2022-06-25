@@ -25,9 +25,9 @@ describe("POST /api/department/create", () => {
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.OK)
-		expect(response.body.acronym).toBe(department.acronym)
-		expect(response.body.fullName).toBe(department.fullName)
-		expect(response.body.mayAdmit).toBe(department.mayAdmit)
+		expect(response.body.data.attributes.acronym).toBe(department.acronym)
+		expect(response.body.data.attributes.fullName).toBe(department.fullName)
+		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
 	})
 
 	it.todo("cannot accept invalid values")
