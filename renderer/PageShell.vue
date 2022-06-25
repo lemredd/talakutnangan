@@ -45,8 +45,9 @@ body {
 	margin: 0;
 	font-family: sans-serif;
 
-	#app {
-		@apply dark:text-light-50 dark:bg-dark-700;
+	&.dark #app {
+		@apply text-light-50 bg-dark-700;
+
 	}
 }
 *, *::before, *::after {
