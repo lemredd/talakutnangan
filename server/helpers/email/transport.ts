@@ -85,7 +85,9 @@ export default class Transport {
 					reject(error)
 				} else {
 					if (RequestEnvironment.isOnTest) {
-						Transport.previousMessages.push(info)
+						const convertedInfo = { ...info }
+						convertedInfo.message = JSON.parse(convertedInfo.message)
+						Transport.previousMessages.push(convertedInfo)
 					}
 					resolve(info)
 				}
