@@ -1,4 +1,4 @@
-import specializeTemplate from "./specialize_template"
+import specializeTemplate from "./text/specialize_template"
 
 describe("Helpers: Specialize template", () => {
 	it("can replace variables", () => {

@@ -1,4 +1,4 @@
-import convertMarkdownToHTML from "./convert_markdown_to_html";
+import convertMarkdownToHTML from "./text/convert_markdown_to_html";
 
 describe("Helpers: Convert Markdown to HTML", () => {
 	it("can convert", () => {
