@@ -9,9 +9,9 @@
 					input-classes="!py-0 pl-1 !border-none" />
 				<button class="material-icons">search</button>
 			</div>
-			<div class="dropdown-filter grid grid-cols-2 gap-2">
-				<span class="sm:justify-self-end self-center">Role: </span>
-				<select v-model="selectedFilterRole" name="role-filter" id="role-filter" class="role-filter bg-gray-300">
+			<div class="dropdown-filter">
+				<label for="role-filter">Role: </label>
+				<select v-model="selectedFilterRole" name="role-filter" id="role-filter" class="role-filter">
 					<option selected value="all">All</option>
 					<option v-for="role in roles" :value="role">{{ role }}</option>
 				</select>
@@ -33,23 +33,24 @@
 </template>
 
 <style lang="scss">
-.btn1 {
-background:white;
-}
-.btn1:hover{
-background: gray;
-}
-
 .controls-bar {
-	@apply dark:bg-dark-100 bg-light-600 p-2 grid gap-y-4 sm:grid-cols-2;
+	@apply dark:bg-dark-100 bg-light-600 grid gap-y-4 sm:grid-cols-2;
+	padding: .5em;
 
 	.search-bar {
-		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center p-1;
+		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
+		padding: .25em;
 	}
+
 	.dropdown-filter {
-		@apply sm:justify-self-end;
+		@apply grid grid-cols-2 gap-2 sm:justify-self-end;
+
+		label {
+			@apply sm:justify-self-end self-center;
+		}
 
 		.role-filter {
+			@apply dark:bg-dark-300 bg-gray-300;
 			position: relative;
 
 			.dropdown-container {
@@ -60,30 +61,32 @@ background: gray;
 	}
 }
 
-.img1{
-	margin-top:8px;
-	margin-left:-15px;
-}
-
 .user-row {
-	@apply text-2xl m-2 dark:text-light-100 flex flex-col gap-2 sm:items-center sm:flex-row sm:justify-between border-b p-b-2;
+	@apply dark:text-light-100 flex flex-col gap-2 sm:items-center sm:flex-row sm:justify-between;
+	margin: .5rem;
+	border-bottom-width: 1px;
+	padding-bottom: .5rem;
+	font-size: 1.5rem;
 
 	.user-name {
-		@apply text-lg w-50;
+		font-size: 1.125rem;
+		@screen sm {
+			width: 20%;
+		}
 	}
 	.user-email, .user-role {
-		@apply text-xs;
+		font-size: 0.75rem;
 	}
 
 	.btn1 {
-		@apply bg-light-600 rounded-md w-20 text-base h-7;
+		@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
 	}
 }
 
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import TextualField from "@/fields/Textual.vue"
 
 let input = ref("");
