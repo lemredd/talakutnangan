@@ -1,4 +1,5 @@
-import type { EmailRequest, Response, NextFunction } from "!/types/dependent"
+import type { EmailVerificationArguments } from "!/types/independent"
+import type { PreprocessedRequest, Response, NextFunction } from "!/types/dependent"
 
 import Log from "!/helpers/log"
 import Middleware from "!/bases/middleware"
@@ -9,11 +10,11 @@ import Transport from "!/helpers/email/transport"
  */
 export default class extends Middleware {
 	async intermediate(
-		request: EmailRequest,
+		request: PreprocessedRequest<EmailVerificationArguments>,
 		_response: Response,
 		next: NextFunction
 	): Promise<void> {
-		const recipients = request.emailsToContact
+		const recipients = request.nextMiddlewareArguments.emailsToContact
 		const subject = "Email Verification"
 
 		Log.trace("middleware", "sending verification e-mail messages to recipients")

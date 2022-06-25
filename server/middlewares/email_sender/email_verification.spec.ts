@@ -1,21 +1,24 @@
 import "~/set-ups/email.set_up"
 import MockRequester from "~/set-ups/mock_requester"
 
-import type { EmailRequest } from "!/types/dependent"
+import type { PreprocessedRequest } from "!/types/dependent"
+import type { EmailVerificationArguments } from "!/types/independent"
 
 import Transport from "!/helpers/email/transport"
 
 import EmailVerification from "./email_verification"
 
 describe("Middleware: Email Verification Sender", () => {
-	const requester  = new MockRequester<EmailRequest>()
+	const requester  = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
 
 	it("can send to single user", async () => {
 		const sender = new EmailVerification()
 		requester.customizeRequest({
 			protocol: "http",
 			hostname: "localhost",
-			emailsToContact: [ "sample@example.com" ]
+			nextMiddlewareArguments: {
+				emailsToContact: [ "sample@example.com" ]
+			}
 		})
 
 		await requester.runMiddleware(sender.intermediate.bind(sender))
@@ -38,7 +41,9 @@ describe("Middleware: Email Verification Sender", () => {
 		requester.customizeRequest({
 			protocol: "http",
 			hostname: "localhost",
-			emailsToContact: [ "sampleA@example.com", "sampleB@example.net" ]
+			nextMiddlewareArguments: {
+				emailsToContact: [ "sampleA@example.com", "sampleB@example.net" ]
+			}
 		})
 
 		await requester.runMiddleware(sender.intermediate.bind(sender))
