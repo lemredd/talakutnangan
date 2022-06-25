@@ -1,6 +1,6 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container text-light-100">
-		<label v-if="label" class="input-header col-span-full">
+	<div :class="{ 'default': !editable }" class="input-container">
+		<label v-if="label" class="input-header">
 			{{ label }}
 		</label>
 		<input
@@ -28,7 +28,7 @@
 			<h1>Update your {{ type }}</h1>
 		</template>
 		<template #default>
-			<div v-if="type === 'email' || type === 'password'" class="verification flex flex-col">
+			<div v-if="type === 'email' || type === 'password'" class="verification">
 				<label for="password-confirm" class="text-black">
 					<input type="password" placeholder="enter your password" id="password-confirm">
 				</label>
@@ -46,9 +46,11 @@
 
 <style scoped lang="scss">
 .input-container {
-	display: grid;
-	gap: 1em;
-	grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
+	@apply grid gap-4 grid-cols-2 grid-rows-2;
+
+	label {
+		@apply col-span-full;
+	}
 
 	&.default {
 		display: block;
@@ -59,9 +61,13 @@
 		padding-bottom: .25em;
 		width: 100%;
 	}
+	.material-icons {
+		@apply justify-self-end;
+	}
 }
 
 .verification {
+	@apply flex flex-col;
 
 	label {
 		padding: .5em 1em;
