@@ -5,13 +5,13 @@ import type { EmailRequest } from "!/types/dependent"
 
 import Transport from "!/helpers/email/transport"
 
-import EmailVerificationSender from "./email_verification_sender"
+import EmailVerification from "./email_verification"
 
 describe("Middleware: Email Verification Sender", () => {
 	const requester  = new MockRequester<EmailRequest>()
 
 	it("can send to single user", async () => {
-		const sender = new EmailVerificationSender()
+		const sender = new EmailVerification()
 		requester.customizeRequest({
 			protocol: "http",
 			hostname: "localhost",
@@ -34,7 +34,7 @@ describe("Middleware: Email Verification Sender", () => {
 	})
 
 	it("can send to multiple users", async () => {
-		const sender = new EmailVerificationSender()
+		const sender = new EmailVerification()
 		requester.customizeRequest({
 			protocol: "http",
 			hostname: "localhost",
