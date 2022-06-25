@@ -15,7 +15,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="user-row" v-for="user in filteredList()" :key="user.name">
+	<div class="user-row" v-for="user in filteredList" :key="user.name">
 		<span class="user-name">{{ user.name }}</span>
 		<span class="user-email">{{ user.email }}</span>
 		<span class="user-role">{{ user.role }}</span>
@@ -24,7 +24,7 @@
 		</div>
 	</div>
 
-	<div class="no-results" v-if="input && !filteredList().length">
+	<div class="no-results" v-if="input && !filteredList.length">
 		<p>No results found!</p>
 	</div>
 </template>
@@ -82,7 +82,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 
 const { users } = defineProps<{
@@ -91,14 +91,14 @@ const { users } = defineProps<{
 
 let input = ref("");
 
-function filteredList() {
+const filteredList = computed(function() {
 	const filteredBySearchResult = users.filter((user) =>
 		user.name.toLowerCase().includes(input.value.toLowerCase())
 	);
 
 	const filteredByRole = filterByRole(filteredBySearchResult)
 	return filteredByRole
-}
+})
 
 const roles = ["student", "professor", "secretary"]
 const selectedFilterRole = ref("all")
