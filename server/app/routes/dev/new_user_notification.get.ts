@@ -1,0 +1,27 @@
+import { Request, Response } from "!/types/dependent"
+
+import DevController from "!/common_controllers/dev_controller"
+import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
+import specializeTemplateFile from "!/helpers/specialize_template_file"
+
+export default class extends DevController {
+	get filePath(): string { return __filename }
+
+	async handle(request: Request, response: Response): Promise<void> {
+		const emailTemplatePath = "new_user.md"
+		const variables = {
+			homePageURL: `${request.protocol}://${request.hostname}`,
+			name: "Test Account",
+			email: process.env.EMAIL_USER,
+			kind: "reachable employee",
+			password: "12345678"
+		}
+		const rawEmail = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
+		const parsedEmail = convertMarkdownToHTML(rawEmail)
+
+		response.status(this.status.OK)
+		response.header("Content-Type", "text/html")
+		response.send(parsedEmail)
+		response.end()
+	}
+}
