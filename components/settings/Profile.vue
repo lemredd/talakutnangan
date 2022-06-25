@@ -97,10 +97,8 @@ const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
 function toggleDarkMode() {
 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
 	if (!mutatedBodyClasses.has("dark")) {
-		mutatedBodyClasses.delete("light")
 		mutatedBodyClasses.add("dark")
 	} else {
-		mutatedBodyClasses.add("light")
 		mutatedBodyClasses.delete("dark")
 	}
 

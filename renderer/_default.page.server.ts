@@ -28,7 +28,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<script defer src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script>
 				<title>${title}</title>
 			</head>
-			<body class="">
+			<body>
 				<div id="app" class="dark:text-light-50 dark:bg-dark-700">${dangerouslySkipEscape(appHtml)}</div>
 			</body>
 		</html>`
