@@ -22,7 +22,7 @@ export default class extends Middleware {
 		await Promise.all(recipients.map(recipient => Transport.sendMail(
 			[ recipient.email ],
 			subject,
-			"new_user_notification.md",
+			"new_user.md",
 			{
 				homePageURL: `${request.protocol}://${request.hostname}`,
 				...recipient
