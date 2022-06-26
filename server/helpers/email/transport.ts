@@ -3,6 +3,7 @@ import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "!/helpers/log"
 import RequestEnvironment from "$/helpers/request_environment"
+import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"
 
@@ -64,7 +65,9 @@ export default class Transport {
 	async sendMail(to: string[], subject: string, emailTemplatePath: string, variables: object)
 		: Promise<SentMessageInfo> {
 		const text = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
-		const html = convertMarkdownToHTML(text)
+		const fragment = convertMarkdownToHTML(text)
+		// TODO: Check for possible CSS files in the future if necessary
+		const html = await encapsulateFragment(subject, "", fragment)
 
 		const from = this.senderUser
 		const message = {
