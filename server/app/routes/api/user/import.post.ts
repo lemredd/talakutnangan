@@ -71,17 +71,20 @@ export default class extends MultipartController {
 		Log.trace("controller", "generated default passwords")
 
 		const createdModels = await manager.bulkCreate(body as RawBulkData)
+
+		Log.success("controller", "created users in bulk")
+
 		const userDetails = body.importedCSV.map(data => {
 			return {
 				name: data.name,
-				kind: body.kind as UserKind,
 				email: data.email,
+				kind: body.kind as UserKind,
 				password: data.password
 			}
 		})
-		request.nextMiddlewareArguments.userDetails = userDetails
+		request.nextMiddlewareArguments = { userDetails }
 
-		Log.success("controller", "created users in bulk")
+		Log.success("controller", "prepared data to inform new users")
 
 		response.status(this.status.OK).json(createdModels)
 
