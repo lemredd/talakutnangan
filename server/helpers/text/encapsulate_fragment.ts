@@ -16,7 +16,7 @@ export default async function(
 	title: string,
 	styles: string,
 	fragment: string,
-	defaultStylePath: string = `${getRoot()}/email/defult.css`
+	defaultStylePath: string = `${getRoot()}/email/default.css`
 ): Promise<string> {
 	const defaultStyles = (await promisify(readFile)(defaultStylePath)).toString()
 
