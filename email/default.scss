@@ -1,0 +1,11 @@
+body {
+	@apply flex flex-row flex-wrap justify-center align-center;
+}
+
+body > div {
+	flex: 1 0 100%;
+	margin: 1em 0.5em;
+}
+
+
+h1 { text-align: center; }
