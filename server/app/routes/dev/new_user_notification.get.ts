@@ -19,7 +19,7 @@ export default class extends DevController {
 		}
 		const rawEmail = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedEmail = convertMarkdownToHTML(rawEmail)
-		const containedEmail = encapsulateFragment(
+		const containedEmail = await encapsulateFragment(
 			"Sample Encapsulation using New User Notification",
 			"",
 			parsedEmail
