@@ -33,7 +33,9 @@ export default async function(
 			</style>
 		</head>
 		<body>
-			${fragment}
+			<div>
+				${fragment}
+			</div>
 		</body>
 	</html>
 	`, {
