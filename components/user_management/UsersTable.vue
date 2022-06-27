@@ -84,10 +84,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
+import type { User, ManagerKind } from "./types"
 
-const { users } = defineProps<{
-	users: { [key:string]: any }[]
+const { users, managerKind } = defineProps<{
 	users: User[]
+	managerKind: ManagerKind
 }>()
 
 let input = ref("");

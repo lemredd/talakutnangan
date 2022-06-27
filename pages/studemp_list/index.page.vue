@@ -1,6 +1,6 @@
 <template>
 	<h1 class="">Institute Name</h1>
-	<UsersTable :users="users" />
+	<UsersTable :users="users" manager-kind="dean" />
 
 </template>
 
