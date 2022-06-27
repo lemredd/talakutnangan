@@ -5,39 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import UsersTable from "@/user_management/UsersTable.vue";
-
-const users = [
-	{
-		name: "Juan Dela Cruz",
-		email: "Email@email.com",
-		role: "student"
-	},
-	{
-		name: "Alice Dela Cruz",
-		email: "Email@email.com",
-		role: "professor"
-	},
-	{
-		name: "Jun Dela Cruz",
-		email: "Email@email.com",
-		role: "professor"
-	},
-	{
-		name: "Jay Dela Cruz",
-		email: "Email@email.com",
-		role: "professor"
-	},
-	{
-		name: "Jose Dela Cruz",
-		email: "Email@email.com",
-		role: "secretary"
-	},
-	{
-		name: "Marie Dela Cruz",
-		email: "Email@email.com",
-		role: "student"
-	},
-];
+import { users } from "./data"
 </script>
