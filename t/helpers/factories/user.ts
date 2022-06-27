@@ -13,6 +13,7 @@ import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory extends BaseFactory<User> {
 	nameGenerator = () => faker.name.findName()
+	emailGenerator = () => faker.internet.exampleEmail()
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
@@ -28,7 +29,7 @@ export default class UserFactory extends BaseFactory<User> {
 
 		return {
 			name: this.nameGenerator(),
-			email: faker.internet.exampleEmail(),
+			email: this.emailGenerator(),
 			password: await hash(this.#password),
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
 			admittedAt: null,
@@ -65,6 +66,11 @@ export default class UserFactory extends BaseFactory<User> {
 
 	name(generator: () => string): UserFactory {
 		this.nameGenerator = generator
+		return this
+	}
+
+	email(generator: () => string): UserFactory {
+		this.emailGenerator = generator
 		return this
 	}
 
