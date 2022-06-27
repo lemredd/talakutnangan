@@ -53,42 +53,34 @@ body {
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
+import { deserialise } from "kitsu-core"
 import SearchIcon from "@@/user_list/search_icon.png"
+
+interface RawUser {
+	id: number,
+	name: string,
+	email: string,
+	kind: string,
+	signature: string
+}
+
 let input = ref("")
-const students = ref([
-	 {
-		  name: "Juan Dela Cruz",
-		  email: "Email@email.com",
-	 },
-	 {
-		  name: "Alice Dela Cruz",
-		  email: "Email@email.com",
-	 },
-	 {
-		  name: "Jun Dela Cruz",
-		  email: "Email@email.com",
-
-	 },
-		  {
-		  name: "Jay Dela Cruz",
-		  email: "Email@email.com",
-
-	 },
-		  {
-		  name: "Jose Dela Cruz",
-		  email: "Email@email.com",
-
-	 },
-		  {
-		  name: "Marie Dela Cruz",
-		  email: "Email@email.com",
-	 }
-])
+const students = ref<RawUser[]>([])
 
 const filteredList = computed(() => {
 	 return students.value.filter((student) =>
 		  student.name.toLowerCase().includes(input.value.toLowerCase())
 	 );
+})
+
+onMounted(() => {
+	fetch("/dev/sample_user_list").then(response => response.json()).then(response => {
+		const deserializedData = deserialise(response).data
+		students.value = deserializedData
+
+		// Check the console for other available info from server
+		console.log(deserializedData)
+	})
 })
 </script>
