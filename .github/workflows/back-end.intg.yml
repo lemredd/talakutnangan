@@ -24,7 +24,7 @@ on:
       - 'pages/**'
       - 'components/**'
 
- env:
+env:
   EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
   EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
   EMAIL_USER: ${{ secrets.EMAIL_USER }}
