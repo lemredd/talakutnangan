@@ -40,22 +40,6 @@
 </template>
 
 <style>
-
-
-.btn1 {
-background:black;
-color:white;
-}
-.btn1:hover{
-background: gray;
-}
-
-.img1{
-
-    margin-top:8px;
-    margin-left:-15px;
-}
-
 </style>
 
 <script setup lang="ts">
