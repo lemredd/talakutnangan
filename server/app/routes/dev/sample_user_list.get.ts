@@ -15,9 +15,10 @@ export default class extends DevController {
 	async handle(request: Request, response: Response): Promise<void> {
 		const department = await new DepartmentFactory().makeOne()
 		const role = await new RoleFactory().makeOne()
-		department.id = 0
-		role.id = 0
-		const list = (await new UserFactory().in(department).makeMany(25)).map(user => {
+		department.id = 1
+		role.id = 1
+		const list = (await new UserFactory().in(department).makeMany(25)).map((user, i) => {
+			user.id = i + 1
 			user.department = department
 			user.roles = [ role ]
 			return user
