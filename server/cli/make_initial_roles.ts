@@ -86,7 +86,340 @@ async function main() {
 				"resetPassword"
 			),
 			auditTrailFlags: auditTrail.generateMask("view")
-		}
+		},
+
+		{
+			name: "dean",
+			departmentFlags: department.generateMask(
+				"view",
+				"update"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"tag"
+
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope"
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "foSH",
+			departmentFlags: department.generateMask(
+				"view"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"tag"
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope"
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "Secretary",
+			departmentFlags: department.generateMask(
+				"view"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"tag"
+
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+
+
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "Service Head",
+			departmentFlags: department.generateMask(
+				"view",
+				"update"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"tag"
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeDepartmentScope"
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "Service Employee",
+			departmentFlags: department.generateMask(
+				"view"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"tag"
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"readOwnScope",
+				"writeOwnScope",
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "Professor",
+			departmentFlags: department.generateMask(
+				"view"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"tag"
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"readOwnScope",
+				"writeOwnScope",
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
+
+		{
+			name: "Student",
+			departmentFlags: department.generateMask(
+				"view"
+			),
+			roleFlags: role.generateMask(
+				"view"
+			),
+			semesterFlags: semester.generateMask(
+				"view"
+			),
+			tagFlags: tag.generateMask(
+				"view"
+			),
+			postFlags: post.generateMask(
+				"view",
+				"readDepartmentScope",
+
+			),
+			commentFlags: comment.generateMask(
+				"view",
+				"create",
+				"update",
+				"archiveAndRestore",
+				"readDepartmentScope",
+				"writeOwnScope",
+				"vote"
+			),
+			profanityFlags: profanity.generateMask(
+				"view",
+				"readOverallScope"
+			),
+			userFlags: profile.generateMask(
+				"view",
+				"create",
+				"update",
+				"readOwnScope",
+				"writeOwnScope",
+			),
+			auditTrailFlags: auditTrail.generateMask()
+		},
 		// Add other roles here using this object
 		// {
 		// 	name: "admin",
