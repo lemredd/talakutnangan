@@ -1,6 +1,8 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-    <div>
+        <UsersTable :users="users" manager-kind="dean" />
+
+    <!-- <div>
         <div>
             <div class=" flex">
             <input
@@ -16,8 +18,8 @@
         <div class="user-entry flex justify-between border-b p-b-2 basis-70 place-items-center">
             <span class="user-name text-lg w-50">{{ student.name }}</span>
             <span class="user-email text-xs">{{ student.email }}</span>
-            <!-- <span class="user-job text-xs">{{ student.job }}</span> -->
-            <div style="width:200px;">
+            <span class="user-job text-xs">{{ student.job }}</span>
+            <div>
                 <select class="custom-select text-xs">
                     <option value="0">Job Title</option>
                     <option value="1"></option>
@@ -34,7 +36,7 @@
     
     <div v-if="input && !filteredList().length">
         <p>No results found!</p>
-    </div>
+    </div> -->
 </template>
 
 <style>
