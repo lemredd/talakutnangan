@@ -57,49 +57,8 @@ background: gray;
 </style>
 
 <script setup lang="ts">
-
-import { ref } from "vue";
-let input = ref("");
-const students = [
-    {
-        name: "Juan Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-    },
-    {
-        name: "Alice Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-    },
-    {
-        name: "Jun Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-
-    },
-        {
-        name: "Jay Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-
-    },
-        {
-        name: "Jose Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-    },
-        {
-        name: "Marie Dela Cruz",
-        email: "Email@email.com",
-        job: "job title",
-    },
-];
-function filteredList() {
-    return students.filter((student) =>
-        student.name.toLowerCase().includes(input.value.toLowerCase())
-    );
-}
-
+import UsersTable from "@/user_management/UsersTable.vue";
+import { users } from "./data"
 </script>
 
 
