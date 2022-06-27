@@ -63,7 +63,7 @@ export default class UserFactory extends BaseFactory<User> {
 		return users
 	}
 
-	setNameGenerator(generator: () => string): UserFactory {
+	name(generator: () => string): UserFactory {
 		this.nameGenerator = generator
 		return this
 	}
