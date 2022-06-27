@@ -75,7 +75,11 @@ const filteredList = computed(() => {
 })
 
 onMounted(() => {
-	fetch("/dev/sample_user_list").then(response => response.json()).then(response => {
+	// Note: Exchange line 79 and 80 to get users from real API route.
+	// fetch("/api/user/list")
+	fetch("/dev/sample_user_list")
+	.then(response => response.json())
+	.then(response => {
 		const deserializedData = deserialise(response).data
 		students.value = deserializedData
 
