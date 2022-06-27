@@ -87,6 +87,7 @@ import TextualField from "@/fields/Textual.vue"
 
 const { users } = defineProps<{
 	users: { [key:string]: any }[]
+	users: User[]
 }>()
 
 let input = ref("");
