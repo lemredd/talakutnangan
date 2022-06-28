@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-        <UsersTable :users="users" />
+        <UsersManager :users="users" />
 
     <!-- <div>
         <div>
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { ManagerKind } from "@/user_management/types";
-import UsersTable from "@/user_management/UsersTable.vue";
+import UsersManager from "@/user_management/UsersManager.vue";
 import { provide } from "vue";
 import { users } from "./data"
 

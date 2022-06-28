@@ -1,11 +1,11 @@
 <template>
 	<h1 class="">Institute Name</h1>
-	<UsersTable :users="users" :manager-kind="managerKind" />
+	<UsersManager :users="users"/>
 
 </template>
 
 <script setup lang="ts">
-import UsersTable from "@/user_management/UsersTable.vue";
+import UsersManager from "@/user_management/UsersManager.vue";
 import { ManagerKind } from "@/user_management/types";
 import { users } from "./data"
 import { provide } from "vue";
