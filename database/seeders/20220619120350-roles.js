@@ -1,6 +1,8 @@
 // @ts-check
 "use strict";
 
+const initialRoles = require("./initial_roles.json")
+
 module.exports = {
 	/**
 	 * @param {import("sequelize").QueryInterface} queryInterface
@@ -46,7 +48,8 @@ module.exports = {
 			role.updatedAt = new Date()
 		})
 		// @ts-ignore
-		await queryInterface.bulkInsert("Roles", roles, {});
+		// await queryInterface.bulkInsert("Roles", roles, {});
+		console.log(initialRoles)
 	},
 
 	/**
