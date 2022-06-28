@@ -1,19 +1,13 @@
 <template>
 	<div class="controls-bar">
-		<div class="search-bar ">
+		<div class="search-bar">
 			<TextualField
 				type="email"
 				v-model="input"
-				input-classes="!py-0 pl-1 !border-none" />
+				input-classes="!py-0 pl-1 !border-none !w-100" />
 			<button class="material-icons">search</button>
 		</div>
-		<div class="dropdown-filter">
-			<label for="role-filter">Role: </label>
-			<select v-model="selectedFilterRole" name="role-filter" id="role-filter" class="role-filter">
-				<option selected value="all">All</option>
-				<option v-for="role in roles" :value="role">{{ role }}</option>
-			</select>
-		</div>
+		<Filter :filter-list="roles" v-model:filter="selectedFilterRole"/>
 	</div>
 	<div class="user-row" v-for="user in filteredList" :key="user.name">
 		<span class="user-name">{{ user.name }}</span>
@@ -37,24 +31,6 @@
 	.search-bar {
 		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
 		padding: .25em;
-	}
-
-	.dropdown-filter {
-		@apply grid grid-cols-2 gap-2 sm:justify-self-end;
-
-		label {
-			@apply sm:justify-self-end self-center;
-		}
-
-		.role-filter {
-			@apply dark:bg-dark-300 bg-gray-300;
-			position: relative;
-
-			.dropdown-container {
-				position: absolute;
-				left: 0; right: 0;
-			}
-		}
 	}
 }
 
@@ -85,6 +61,7 @@
 import { computed, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
 import type { User, ManagerKind } from "./types"
+import Filter from "./users_table/Filter.vue"
 
 const { users, managerKind } = defineProps<{
 	users: User[]
