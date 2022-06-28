@@ -4,16 +4,12 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
-export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ]
+export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
 /**
  * Possible kinds of user that the system can handle
  */
-export enum UserKind {
-	UnreachableEmployee = "unreachable_employee",
-	ReachableEmployee = "reachable_employee",
-	Student = "student"
-}
+export type UserKind = typeof UserKindValues[number]
 
 /**
  * Type of databases this application can handle
@@ -89,17 +85,7 @@ export interface Serializable {
  */
 export interface Role extends RawRole, Serializable {}
 
- /**
-  * Used to return user profile data to client.
-  *
-  * Signature should be a URL to signature image.
-  */
- export interface UserProfile extends Serializable {
-	 name: string,
-	 email: string,
-	 department: string,
-	 roles: Role[],
-	 kind: UserKind,
-	 emailVerifiedAt: string|null,
-	 signature: string|null
- }
+import { days } from "$/types/database.native"
+
+const rawDays = [ ...days ] as const
+export type Day = typeof rawDays[number]

@@ -1,9 +1,9 @@
 import { StatusCodes } from "http-status-codes"
 
-import App from "~/app"
+import App from "~/set-ups/app"
+import User from "%/models/user"
 import UserFactory from "~/factories/user"
 import compare from "!/helpers/auth/compare"
-import UserManager from "%/managers/user"
 import Route from "!/app/routes/api/user/reset_password(id).patch"
 
 describe("PATCH /api/user/reset_password/:id", () => {
@@ -12,7 +12,6 @@ describe("PATCH /api/user/reset_password/:id", () => {
 	})
 
 	it("can be accessed by permitted user and admit other user", async () => {
-		const manager = new UserManager()
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
 		const student = await (new UserFactory()).insertOne()
 
@@ -22,7 +21,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 
-		const updatedStudent = await manager.findWithID(student.id)
+		const updatedStudent = await User.findOne({ where: { id: student.id } })
 		expect(compare("12345678", updatedStudent!.password)).resolves.toBeTruthy()
 	})
 

@@ -1,9 +1,19 @@
-import { Buffer } from "node:buffer"
-import { Request, Response } from "!/types/dependent"
+import { Buffer } from "buffer"
 
+import { UserKindValues } from "$/types/database"
+import type { OptionalMiddleware } from "$/types/server"
+import type { Request, Response } from "!/types/dependent"
+import type {
+	RawBulkData,
+	RawBulkDataForStudent,
+	RawBulkDataForEmployee
+} from "%/types/independent"
+
+import Log from "!/helpers/log"
 import Policy from "!/bases/policy"
-import Middleware from "!/bases/middleware"
 import UserManager from "%/managers/user"
+import Middleware from "!/bases/middleware"
+import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import MultipartController from "!/common_controllers/multipart_controller"
 
@@ -19,20 +29,50 @@ export default class extends MultipartController {
 	// TODO: Use a permission-based policy
 	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
 
+	get postParseMiddlewares(): OptionalMiddleware[] {
+		return [
+			new CSVParser("importedCSV")
+		]
+	}
+
 	get bodyValidationRules(): object {
-		// Create validator for buffers
+		// TODO: Create validator for buffers
+		// TODO: Validate nested properties of imported CSV
 		return {
-			importedCSV: [ "required" ]
+			importedCSV: [ "required" ],
+			roles: [ "required", "array" ],
+			kind: [ "required", [ "in", ...UserKindValues] ]
 		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
+		Log.trace("controller", "entered POST /api/user/import")
+
 		const manager = new UserManager()
+		const body: Partial<RawBulkData> = request.body
 
-		// TODO: READ the CSV file
-		// TODO: Pass the the converted CSV file to user manager
+		Log.trace("controller", "made user manager")
 
-		response.status(this.status.NOT_IMPLEMENTED)
+		body.importedCSV = body.importedCSV!.map(data => {
+			if (body.kind! === "student") {
+				data.password = (data as RawBulkDataForStudent).studentNumber
+			} else {
+				// TODO: Check for unreachable employees
+				// TODO: Think of a way to produce password for employees
+				data.password = (data as RawBulkDataForEmployee).email
+			}
+			return data
+		})
+
+		Log.trace("controller", "generated default passwords")
+
+		const createdModels = await manager.bulkCreate(body as RawBulkData)
+
+		Log.success("controller", "created users in bulk")
+
+		response.status(this.status.OK).json(createdModels)
+
+		Log.trace("controller", "exiting POST /api/user/import")
 	}
 
 	// TODO: Send e-mails to new users

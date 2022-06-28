@@ -1,7 +1,8 @@
 import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
 
-import User from "%/models/user"
+import type { Serializable } from "$/types/database"
+
 import UserManager from "%/managers/user"
 
 export default async function() {
@@ -23,8 +24,8 @@ export default async function() {
 	))
 
 	// @ts-ignore
-	passport.serializeUser((user: User, done: (error: any, id: number) => void): void => {
-		done(null, user.id)
+	passport.serializeUser((user: Serializable, done: (error: any, id: number) => void): void => {
+		done(null, (user!.data as Serializable)!.id as number)
 	})
 
 	passport.deserializeUser(async (id: number, done: Function) => {

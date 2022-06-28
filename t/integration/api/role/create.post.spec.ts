@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes"
 
-import App from "~/app"
+import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 
 import Route from "!/app/routes/api/role/create.post"
@@ -31,7 +31,7 @@ describe("POST /api/role/create", () => {
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.CREATED)
-		expect(response.body.name).toBe(role.name)
+		expect(response.body.data.attributes.name).toBe(role.name)
 	})
 
 	it.todo("cannot accept invalid values")

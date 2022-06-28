@@ -12,7 +12,7 @@
 	position: relative;
 }
 .person-talking, .person-announce, .person-default  {
-	
+
 	.person {
 		font-size: 15vw;
 	}
@@ -26,7 +26,7 @@
 		top: -5px; right: -30px;
 		font-size: 10vw;
 		transform: rotate(-20deg);
-	}		
+	}
 	&.left {
 		margin-right: 3vw;
 	}
@@ -45,11 +45,11 @@
 	.campaign {
 		font-size: 80px !important;
 	}
-	
+
 	.left {
 		margin-right: 2em !important;
 	}
-    
+
 }
 </style>
 
