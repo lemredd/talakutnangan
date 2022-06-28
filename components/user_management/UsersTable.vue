@@ -60,12 +60,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
-import type { User, ManagerKind } from "./types"
+import type { User } from "./types"
 import Filter from "./users_table/Filter.vue"
 
-const { users, managerKind } = defineProps<{
+const { users } = defineProps<{
 	users: User[]
-	managerKind: ManagerKind
 }>()
 
 let input = ref("");
