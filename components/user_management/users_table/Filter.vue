@@ -1,11 +1,11 @@
 <template>
 <div class="dropdown-filter">
-	<label for="role-filter">Role: </label>
+	<label for="select-filter">{{ filterLabel }}: </label>
 	<select
 		@input="emitUpdatedFilter"
 		:value="filter"
-		id="role-filter"
-		class="role-filter">
+		id="select-filter"
+		class="select-filter">
 		<option selected value="all">All</option>
 		<option v-for="filterItem in filterList" :value="filterItem">{{ filterItem }}</option>
 	</select>
@@ -20,14 +20,16 @@
 		@apply sm:justify-self-end self-center;
 	}
 
-	.role-filter {
+	.select-filter {
 		@apply dark:bg-dark-300 bg-gray-300;
 		position: relative;
 	}
 }
 </style>
 
-<script setup lang="ts">
+<script setup lang="ts">import { computed, inject } from 'vue'
+import { ManagerKind } from '../types'
+
 const { filterList, filter } = defineProps<{
 	filterList: string[],
 	filter: string
@@ -35,6 +37,19 @@ const { filterList, filter } = defineProps<{
 const emit = defineEmits<{
 	(e: "update:filter", updatedFilter: string): void
 }>()
+
+const managerKind = inject("managerKind") as ManagerKind
+const filterLabel = computed(function() {
+	switch(managerKind) {
+		case "secretary":
+			return "Status"
+		case "service":
+			return "Job Title"
+		default:
+			return "Role"
+	}
+
+})
 
 function emitUpdatedFilter(event: Event) {
 	const target = event.target as HTMLSelectElement
