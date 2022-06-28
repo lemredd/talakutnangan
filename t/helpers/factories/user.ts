@@ -1,8 +1,7 @@
-import dataURIToBuffer from "data-uri-to-buffer/src/index"
+import dataURIToBuffer from "data-uri-to-buffer"
 import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
-import { UserKind } from "$/types/database"
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 
@@ -14,6 +13,7 @@ import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory extends BaseFactory<User> {
 	nameGenerator = () => faker.name.findName()
+	emailGenerator = () => faker.internet.exampleEmail()
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
@@ -29,7 +29,7 @@ export default class UserFactory extends BaseFactory<User> {
 
 		return {
 			name: this.nameGenerator(),
-			email: faker.internet.exampleEmail(),
+			email: this.emailGenerator(),
 			password: await hash(this.#password),
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
 			admittedAt: null,
@@ -64,8 +64,13 @@ export default class UserFactory extends BaseFactory<User> {
 		return users
 	}
 
-	setNameGenerator(generator: () => string): UserFactory {
+	name(generator: () => string): UserFactory {
 		this.nameGenerator = generator
+		return this
+	}
+
+	email(generator: () => string): UserFactory {
+		this.emailGenerator = generator
 		return this
 	}
 

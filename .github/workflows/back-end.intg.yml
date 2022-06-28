@@ -28,6 +28,12 @@ jobs:
   integration_tests:
     runs-on: ubuntu-latest
     steps:
+    - name: Declare environment variables for e-mail messaging
+      env:
+        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+        EMAIL_USER: ${{ secrets.EMAIL_USER }}
+        EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
     - uses: actions/checkout@v2
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2

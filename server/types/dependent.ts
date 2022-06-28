@@ -24,6 +24,9 @@ export interface Request extends BaseRequest {
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+
+	// Added due to need to test e-mail verification
+	emailsToContact: string[]
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -32,6 +35,13 @@ export interface AuthenticatedRequest extends Request {
 	}
 
 	user: Serializable
+}
+
+/**
+ * Type of request to use to communicate between which have non-standard arguments.
+ */
+export interface PreprocessedRequest<T = any> extends Request {
+	nextMiddlewareArguments: T
 }
 
 export interface Response extends BaseResponse {}
