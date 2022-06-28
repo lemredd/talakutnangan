@@ -24,6 +24,12 @@ on:
       - 'pages/**'
       - 'components/**'
 
+env:
+  EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+  EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+  EMAIL_USER: ${{ secrets.EMAIL_USER }}
+  EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+
 jobs:
   integration_tests:
     runs-on: ubuntu-latest

@@ -3,11 +3,13 @@ import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "!/helpers/log"
 import RequestEnvironment from "$/helpers/request_environment"
-import convertMarkdownToHTML from "!/helpers/convert_markdown_to_html"
-import specializeTemplateFile from "!/helpers/specialize_template_file"
+import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
+import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
+import specializeTemplateFile from "!/helpers/text/specialize_template_file"
 
 export default class Transport {
 	private static currentInstance: Transport
+	private static previousMessages: { [key:string]: any }[] = []
 
 	static initialize(
 		host: string,
@@ -25,8 +27,12 @@ export default class Transport {
 		}
 	}
 
-	static async sendMail(to: string, subject: string, emailTemplatePath: string, variables: object)
-		: Promise<SentMessageInfo> {
+	static async sendMail(
+		to: string[],
+		subject: string,
+		emailTemplatePath: string,
+		variables: object
+	) : Promise<SentMessageInfo> {
 		return await this.currentInstance.sendMail(to, subject, emailTemplatePath, variables)
 	}
 
@@ -43,7 +49,7 @@ export default class Transport {
 				user,
 				pass
 			},
-			streamTransport: RequestEnvironment.isOnTest
+			jsonTransport: RequestEnvironment.isOnTest
 		})
 
 		this.transport.verify((error, success) => {
@@ -56,10 +62,12 @@ export default class Transport {
 		})
 	}
 
-	async sendMail(to: string, subject: string, emailTemplatePath: string, variables: object)
+	async sendMail(to: string[], subject: string, emailTemplatePath: string, variables: object)
 		: Promise<SentMessageInfo> {
 		const text = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
-		const html = convertMarkdownToHTML(text)
+		const fragment = convertMarkdownToHTML(text)
+		// TODO: Check for possible CSS files in the future if necessary
+		const html = await encapsulateFragment(subject, "", fragment)
 
 		const from = this.senderUser
 		const message = {
@@ -79,9 +87,22 @@ export default class Transport {
 				if (error) {
 					reject(error)
 				} else {
+					if (RequestEnvironment.isOnTest) {
+						const convertedInfo = { ...info }
+						convertedInfo.message = JSON.parse(convertedInfo.message)
+						Transport.previousMessages.push(convertedInfo)
+					}
 					resolve(info)
 				}
 			})
 		})
+	}
+
+	static consumePreviousMessages(): { [key:string]: any }[] {
+		const previousMessages = this.previousMessages
+
+		this.previousMessages = []
+
+		return previousMessages
 	}
 }
