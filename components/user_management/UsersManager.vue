@@ -7,7 +7,7 @@
 				input-classes="!py-0 pl-1 !border-none !w-100" />
 			<button class="material-icons">search</button>
 		</div>
-		<Filter :filter-list="roles" v-model:filter="selectedFilterRole"/>
+		<Filter v-model:filter="selectedFilter"/>
 	</div>
 	<UsersList :search-filter="searchFilter" :filtered-list="filteredList"/>
 
@@ -26,9 +26,9 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, inject, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
-import type { User } from "./types"
+import type { ManagerKind, User } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import UsersList from "./users_manager/UsersList.vue"
 
@@ -47,10 +47,12 @@ const filteredList = computed(function() {
 	return filteredByRole
 })
 
-const roles = ["student", "professor", "secretary"]
-const selectedFilterRole = ref("all")
+const selectedFilter = ref("all")
 function filterByRole(usersList: {[key:string]: any}[]) {
-	if (selectedFilterRole.value === "all") return usersList
-	return usersList.filter(user => user.role === selectedFilterRole.value)
+	const managerKind = inject("managerKind") as ManagerKind
+
+	if (selectedFilter.value === "all") return usersList
+	if (managerKind === "service") return usersList.filter(user => user.jobTitle === selectedFilter.value)
+	return usersList.filter(user => user.role === selectedFilter.value)
 }
 </script>

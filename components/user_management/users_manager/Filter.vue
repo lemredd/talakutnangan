@@ -27,13 +27,13 @@
 }
 </style>
 
-<script setup lang="ts">import { computed, inject } from 'vue'
+<script setup lang="ts">import { computed, inject, Ref } from 'vue'
 import { ManagerKind } from '../types'
 
-const { filterList, filter } = defineProps<{
-	filterList: string[],
+defineProps<{
 	filter: string
 }>()
+const filterList = inject("filterList") as Ref<string[]>
 const emit = defineEmits<{
 	(e: "update:filter", updatedFilter: string): void
 }>()
