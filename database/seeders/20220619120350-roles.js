@@ -1,7 +1,10 @@
 // @ts-check
 "use strict";
 
-const initialRoles = require("./initial_roles.json")
+import { readFile } from "fs"
+import { promisify } from "util"
+
+const initialRoles = promisify(readFile)("./initial_roles.json")
 
 module.exports = {
 	/**
@@ -49,7 +52,7 @@ module.exports = {
 		})
 		// @ts-ignore
 		// await queryInterface.bulkInsert("Roles", roles, {});
-		console.log(initialRoles)
+		console.log(await initialRoles)
 	},
 
 	/**
