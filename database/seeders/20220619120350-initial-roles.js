@@ -13,7 +13,6 @@ module.exports = {
 	 * @param {import("sequelize").Sequelize} Sequelize
 	 */
 	async up (queryInterface, Sequelize) {
-		// TODO: Automatically generate the roles
 		/**
 		 * @type {(import("sequelize").Attributes<import("../models/role")>)[]}
 		 * @const
