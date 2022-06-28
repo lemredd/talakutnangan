@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-        <UsersTable :users="users" manager-kind="dean" />
+        <UsersTable :users="users" />
 
     <!-- <div>
         <div>
@@ -43,8 +43,13 @@
 </style>
 
 <script setup lang="ts">
+import { ManagerKind } from "@/user_management/types";
 import UsersTable from "@/user_management/UsersTable.vue";
+import { provide } from "vue";
 import { users } from "./data"
+
+const managerKind = "service" as ManagerKind
+provide("managerKind", managerKind)
 </script>
 
 
