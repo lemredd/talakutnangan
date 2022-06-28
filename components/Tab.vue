@@ -24,8 +24,7 @@
 		padding: 0.25em 2em;
 
 		&.active {
-			background-color: white;
-			color: black;
+			@apply dark:bg-white dark:text-dark-300 bg-dark-300 text-white;
 		}
 	}
 }
