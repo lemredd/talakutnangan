@@ -53,5 +53,6 @@ jobs:
           ${{ runner.os }}_
     - run: npm install
     - run: npm run migrate:up
+    - run: npm run seed:up:all
     - run: npm run build
     - run: npm run test:intg:back
