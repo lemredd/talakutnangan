@@ -24,7 +24,7 @@ async function main() {
 
 	const roles = [
 		{
-			name: "admin",
+			name: "Admin",
 			departmentFlags: department.generateMask(
 				"view",
 				"create",
@@ -87,9 +87,8 @@ async function main() {
 			),
 			auditTrailFlags: auditTrail.generateMask("view")
 		},
-
 		{
-			name: "dean",
+			name: "Dean",
 			departmentFlags: department.generateMask(
 				"view",
 				"update"
@@ -114,7 +113,6 @@ async function main() {
 				"readDepartmentScope",
 				"writeDepartmentScope",
 				"tag"
-
 			),
 			commentFlags: comment.generateMask(
 				"view",
@@ -139,9 +137,8 @@ async function main() {
 			),
 			auditTrailFlags: auditTrail.generateMask()
 		},
-
 		{
-			name: "foSH",
+			name: "FoSH",
 			departmentFlags: department.generateMask(
 				"view"
 			),
@@ -186,7 +183,6 @@ async function main() {
 			),
 			auditTrailFlags: auditTrail.generateMask()
 		},
-
 		{
 			name: "Secretary",
 			departmentFlags: department.generateMask(
@@ -229,13 +225,10 @@ async function main() {
 				"create",
 				"update",
 				"readDepartmentScope",
-				"writeDepartmentScope",
-
-
+				"writeDepartmentScope"
 			),
 			auditTrailFlags: auditTrail.generateMask()
 		},
-
 		{
 			name: "Service Head",
 			departmentFlags: department.generateMask(
@@ -332,7 +325,6 @@ async function main() {
 			),
 			auditTrailFlags: auditTrail.generateMask()
 		},
-
 		{
 			name: "Professor",
 			departmentFlags: department.generateMask(
@@ -378,7 +370,6 @@ async function main() {
 			),
 			auditTrailFlags: auditTrail.generateMask()
 		},
-
 		{
 			name: "Student",
 			departmentFlags: department.generateMask(
@@ -395,8 +386,7 @@ async function main() {
 			),
 			postFlags: post.generateMask(
 				"view",
-				"readDepartmentScope",
-
+				"readDepartmentScope"
 			),
 			commentFlags: comment.generateMask(
 				"view",
