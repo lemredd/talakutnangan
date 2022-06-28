@@ -17,7 +17,7 @@
 			type="button"
 			v-if="editable"
 			class="material-icons"
-			@click="verify ? verifyBeforeSubmit() : editField($event)"
+			@click="verify ? verifyBeforeSubmit() : editField()"
 			>
 			edit
 		</button>
@@ -113,7 +113,7 @@ function emitUpdate(event: Event) {
 	emit("update:modelValue", (event.target as HTMLInputElement).value)
 }
 
-function editField(e: Event) {
+function editField() {
 	inputField.value!.disabled = !inputField.value!.disabled
 }
 
