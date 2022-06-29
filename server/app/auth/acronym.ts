@@ -30,5 +30,5 @@ export default function({ value, args }: { value: string, args: string[] }, vali
 
 	return separatedSource.reduce<boolean>((previousValidation, currentSource, i) => {
 		return previousValidation && currentSource.startsWith(acronymSubstrings[i])
-	}, true)
+	}, separatedSource.length === acronymSubstrings.length)
 }
