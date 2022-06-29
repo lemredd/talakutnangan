@@ -55,4 +55,26 @@ interface RawUser {
 	kind: string,
 	signature: string
 }
+const input = ref<string>("")
+const students = ref<RawUser[]>([])
+
+const filteredList = computed(() => {
+	return students.value.filter((student) =>
+		student.name.toLowerCase().includes(input.value.toLowerCase())
+	);
+})
+
+onMounted(() => {
+	// Note: Exchange line 79 and 80 to get users from real API route.
+	// fetch("/api/user/list")
+	fetch("/dev/sample_user_list")
+	.then(response => response.json())
+	.then(response => {
+		const deserializedData = deserialise(response).data
+		students.value = deserializedData
+
+		// Check the console for other available info from server
+		console.log(deserializedData)
+	})
+})
 </script>
