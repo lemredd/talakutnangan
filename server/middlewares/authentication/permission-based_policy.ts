@@ -25,7 +25,7 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 
 	mayAllow(request: AuthenticatedRequest): boolean {
 		const user = deserialise(request.user)
-		const roles = user.data.roles.data
+		const roles = user?.data?.roles?.data
 		return super.mayAllow(request)
 			&& roles.reduce((previousPermission: boolean, role: Serializable) => {
 				return previousPermission || this.permissionGroup.mayAllow(
