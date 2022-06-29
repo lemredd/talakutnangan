@@ -27,14 +27,15 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 		const roles = user?.data?.roles?.data
 		return super.mayAllow(request)
 			&& roles.reduce((previousPermittedRole: boolean, role: T) => {
-				// Use logical OR to match one of the permission combinations
+				// Use logical OR to match one of the roles of the user
 				return previousPermittedRole || this.permissionCombinations.reduce((
-						previousPermission: boolean,
+						previousPermissionCombination: boolean,
 						combination: U[]
 					) => {
-						// Use logical AND to match every of the permissions in the combination
-						return previousPermission && this.permissionGroup.mayAllow(role, ...combination)
-					}, true)
+						// Use logical OR to match one of the permission combinations
+						return previousPermissionCombination
+							|| this.permissionGroup.mayAllow(role, ...combination)
+					}, false)
 			}, false)
 	}
 }
