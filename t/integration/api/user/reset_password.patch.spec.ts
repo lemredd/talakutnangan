@@ -6,6 +6,7 @@ import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import compare from "!/helpers/auth/compare"
 import UserPermissions from "$/permissions/user_permissions"
+import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import Route from "!/app/routes/api/user/reset_password(id).patch"
 
 describe("PATCH /api/user/reset_password/:id", () => {
@@ -17,7 +18,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 
 	it("can be accessed by permitted user and admit other user", async () => {
 		const adminRole = await new RoleFactory()
-			.userFlags(userPermissions.generateMask("resetPassword", "writeOverallScope"))
+			.userFlags(userPermissions.generateMask(...RESET_PASSWORD))
 			.insertOne()
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const student = await (new UserFactory()).insertOne()
