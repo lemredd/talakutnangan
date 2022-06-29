@@ -25,13 +25,12 @@
 	.tab-button {
 		display: inline;
 		border-radius: 5px;
-		cursor: pointer;
-		padding: 0.25em;
+		padding: 0.25em 1em;
 
 		&.active {
-			@apply dark:bg-white dark:text-dark-300 bg-dark-300 text-white;
+			@apply dark:bg-white dark:text-dark-300 bg-dark-300 text-white flex;
 			.link.active {
-				@apply text-white;
+				@apply text-white p-0;
 				background: none;
 			}
 		}
