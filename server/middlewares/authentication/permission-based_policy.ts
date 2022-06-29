@@ -11,26 +11,31 @@ import AuthenticationBasedPolicy from "!/middlewares/authentication/authenticati
  * Automatically requires user to be authenticated.
  */
 export default class<T extends { [key:string]: number }, U> extends AuthenticationBasedPolicy {
-	private permissions: U[]
+	private permissionCombinations: U[][]
 	private permissionGroup: PermissionGroup<T, U>
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
 	 */
-	constructor(permissionGroup: PermissionGroup<T, U>, permissions: U[]) {
+	constructor(permissionGroup: PermissionGroup<T, U>, permissionCombinations: U[][]) {
 		super(true)
-		this.permissions = permissions
 		this.permissionGroup = permissionGroup
+		this.permissionCombinations = permissionCombinations
 	}
 
 	mayAllow(request: AuthenticatedRequest): boolean {
 		const user = deserialise(request.user)
 		const roles = user?.data?.roles?.data
 		return super.mayAllow(request)
-			&& roles.reduce((previousPermission: boolean, role: Serializable) => {
-				return previousPermission || this.permissionGroup.mayAllow(
-					role as T,
-					...this.permissions)
+			&& roles.reduce((previousPermissionCombination: boolean, role: Serializable) => {
+				// Use logical OR to match one of the permission combinations
+				return previousPermissionCombination || this.permissionCombinations
+					.reduce((previousPermission: boolean, combination: U[]) => {
+						// Use logical AND to match every of the permissions in the combination
+						return previousPermission && this.permissionGroup.mayAllow(
+							role as T,
+							...combination)
+					}, true)
 			}, false)
 	}
 }
