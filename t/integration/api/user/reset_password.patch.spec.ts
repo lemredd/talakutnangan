@@ -33,6 +33,26 @@ describe("PATCH /api/user/reset_password/:id", () => {
 		expect(compare("12345678", updatedStudent!.password)).resolves.toBeTruthy()
 	})
 
-	it.todo("cannot be accessed by not permitted users")
-	it.todo("cannot be accessed by guest users")
+	it("cannot be accessed by not permitted users", async () => {
+		const otherRole = await new RoleFactory()
+			.userFlags(userPermissions.generateMask("view"))
+			.insertOne()
+		const { user: other, cookie } = await App.makeAuthenticatedCookie(otherRole)
+		const student = await (new UserFactory()).insertOne()
+
+		const response = await App.request
+			.patch(`/api/user/reset_password/${student.id}`)
+			.set("Cookie", cookie)
+
+		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+	})
+
+	it("cannot be accessed by guest users", async () => {
+		const student = await (new UserFactory()).insertOne()
+
+		const response = await App.request
+			.patch(`/api/user/reset_password/${student.id}`)
+
+		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+	})
 })
