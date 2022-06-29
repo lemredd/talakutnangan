@@ -44,4 +44,18 @@ describe("Middleware: Kind-Based Policy", () => {
 
 		requester.expectFailure(requester.status.UNAUTHORIZED)
 	})
+
+	it("can deny guest", async () => {
+		const pageGuard = new PermissionBasedPolicy(permissions, [
+			"create"
+		])
+		requester.customizeRequest({
+			user: null,
+			isAuthenticated: jest.fn().mockReturnValue(false)
+		})
+
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+
+		requester.expectFailure(requester.status.UNAUTHORIZED)
+	})
 })
