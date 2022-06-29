@@ -1,7 +1,9 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
+import Role from "%/models/role"
 import Router from "!/bases/router"
+import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import createAppHandler from "!/app/create_handler"
 import Controller from "!/bases/controller-likes/controller"
@@ -31,8 +33,12 @@ export default class {
 		return this.#request
 	}
 
-	static async makeAuthenticatedCookie() {
-		const user = await (new UserFactory()).insertOne()
+	static async makeAuthenticatedCookie(role: Role|null = null) {
+		if (role === null) {
+			role = await new RoleFactory().insertOne()
+		}
+
+		const user = await (new UserFactory().attach(role)).insertOne()
 
 		const response = await this.#request
 			.post("/api/user/log_in")
