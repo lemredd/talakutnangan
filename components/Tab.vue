@@ -1,11 +1,12 @@
 <template>
 <ul class="tabs">
-	<li>
-		<Link 
-		v-for="(_, tab) in tabs"
-		:key="tab"
-		:class="['tab-button', { 'active': currentTab === tab }]"
-		@click="setCurrentTab(tab)"
+	<li
+	v-for="(_, tab) in tabs"
+	:key="tab"
+	:class="['tab-button', { 'active': currentTab === tab }]"
+	>
+		<Link
+		@click.capture="setCurrentTab(tab)"
 		:href="`/admin_settings/${tab}`">
 			{{ tab }}
 		</Link>
@@ -14,7 +15,7 @@
 <component :is="tabs[currentTab]" class="tab"></component>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .tabs {
 	border-bottom: 1px solid #888;
 	padding-bottom: 1em;
@@ -25,21 +26,24 @@
 		display: inline;
 		border-radius: 5px;
 		cursor: pointer;
-		padding: 0.25em 2em;
+		padding: 0.25em;
 
 		&.active {
 			@apply dark:bg-white dark:text-dark-300 bg-dark-300 text-white;
+			.link.active {
+				@apply text-white;
+				background: none;
+			}
 		}
 	}
 }
 </style>
 
 <script setup lang="ts">
-import { defineComponent, ref } from "vue"
-import { usePageContext } from "#/usePageContext"
+import { defineComponent, inject, ref } from "vue"
 import Link from "@/Link.vue"
 
-const url = usePageContext().routeParams!.tab
+const url = inject("url") as string
 const { tabs } = defineProps<{
 	tabs: {
 		[key: string]: ReturnType<typeof defineComponent>
@@ -49,7 +53,6 @@ const { tabs } = defineProps<{
 const currentTab = ref(url)
 
 function setCurrentTab(tab: ReturnType<typeof defineComponent>) {
-	console.log(url)
-	currentTab.value = `/admin_settings/${tab}`
+	currentTab.value = tab.toLowerCase()
 }
 </script>
