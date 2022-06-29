@@ -4,7 +4,7 @@ import RequestEnvironment from "!/helpers/request_environment"
 import TagPermissions from "$/permissions/tag_permissions"
 import RolePermissions from "$/permissions/role_permissions"
 import PostPermissions from "$/permissions/post_permissions"
-import ProfilePermissions from "$/permissions/profile_permissions"
+import UserPermissions from "$/permissions/user_permissions"
 import CommentPermissions from "$/permissions/comment_permissions"
 import SemesterPermissions from "$/permissions/semester_permissions"
 import ProfanityPermissions from "$/permissions/profanity_permissions"
@@ -15,7 +15,7 @@ async function main() {
 	const tag = new TagPermissions()
 	const role = new RolePermissions()
 	const post = new PostPermissions()
-	const profile = new ProfilePermissions()
+	const user = new UserPermissions()
 	const comment = new CommentPermissions()
 	const semester = new SemesterPermissions()
 	const profanity = new ProfanityPermissions()
@@ -76,7 +76,7 @@ async function main() {
 				"readOverallScope",
 				"writeOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -127,7 +127,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -173,7 +173,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -220,7 +220,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -269,7 +269,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -316,7 +316,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -361,7 +361,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -401,7 +401,7 @@ async function main() {
 				"view",
 				"readOverallScope"
 			),
-			userFlags: profile.generateMask(
+			userFlags: user.generateMask(
 				"view",
 				"create",
 				"update",
@@ -420,7 +420,7 @@ async function main() {
 		// 	postFlags: post.generateMask(),
 		// 	commentFlags: comment.generateMask(),
 		// 	profanityFlags: profanity.generateMask(),
-		// 	userFlags: profile.generateMask(),
+		// 	userFlags: user.generateMask(),
 		// 	auditTrailFlags: auditTrail.generateMask("view")
 		// }
 	]
