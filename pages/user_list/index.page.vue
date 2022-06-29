@@ -46,7 +46,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 import { deserialise } from "kitsu-core"
-import SearchIcon from "@@/user_list/search_icon.png"
 
 interface RawUser {
 	id: number,
