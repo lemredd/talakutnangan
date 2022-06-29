@@ -8,7 +8,7 @@
 		<Link
 		@click.capture="setCurrentTab(tab)"
 		:href="`/admin_settings/${tab}`">
-			{{ tab }}
+			{{ (tab as string).charAt(0).toUpperCase() + (tab as string).substring(1) }}
 		</Link>
 	</li>
 </ul>
