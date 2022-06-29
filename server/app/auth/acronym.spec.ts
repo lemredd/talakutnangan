@@ -111,4 +111,18 @@ describe("Validator: Acronym", () => {
 
 		expect(() => acronym({ value, args }, validator as Validator)).toThrow()
 	})
+
+	it("can invalidate uneven word-letter ratio of source and acronym", () => {
+		const validator = {
+			inputs: {
+				source: "abc Def"
+			}
+		}
+		const value = "AD"
+		const args: string[] = [ "source" ]
+
+		const isValid = acronym({ value, args }, validator as Validator)
+
+		expect(isValid).toBeFalsy()
+	})
 })
