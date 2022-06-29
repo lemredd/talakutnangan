@@ -1,8 +1,8 @@
-import { UserKind } from "$/types/database"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import MultipartParser from "!/middlewares/body_parser/multipart"
 import KindBasedPolicy from "!/middlewares/authentication/kind-based_policy"
-import EmailVerificationSender from "!/middlewares/authentication/email_verification_sender"
+import EmailVerification from "!/middlewares/email_sender/email_verification"
+import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 export default class CommonMiddlewareList {
@@ -13,7 +13,8 @@ export default class CommonMiddlewareList {
 	static studentOnlyPolicy: KindBasedPolicy
 	static JSONBody: JSONBodyParser
 	static multipart: MultipartParser
-	static emailVerificationSender: EmailVerificationSender
+	static emailVerification: EmailVerification
+	static newUserNotification: NewUserNotification
 
 	static initialize() {
 		if (CommonMiddlewareList.guestOnlyPolicy === undefined) {
@@ -29,7 +30,8 @@ export default class CommonMiddlewareList {
 
 			CommonMiddlewareList.JSONBody = new JSONBodyParser()
 			CommonMiddlewareList.multipart = new MultipartParser()
-			CommonMiddlewareList.emailVerificationSender = new EmailVerificationSender()
+			CommonMiddlewareList.emailVerification = new EmailVerification()
+			CommonMiddlewareList.newUserNotification = new NewUserNotification()
 		}
 	}
 }

@@ -1,8 +1,9 @@
 import { Buffer } from "buffer"
 
-import { UserKindValues } from "$/types/database"
+import { UserKindValues, UserKind } from "$/types/database"
 import type { OptionalMiddleware } from "$/types/server"
-import type { Request, Response } from "!/types/dependent"
+import type { PreprocessedRequest, Response } from "!/types/dependent"
+import type { NewUserNotificationArguments } from "!/types/independent"
 import type {
 	RawBulkData,
 	RawBulkDataForStudent,
@@ -45,7 +46,10 @@ export default class extends MultipartController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(
+		request: PreprocessedRequest<NewUserNotificationArguments>,
+		response: Response
+	): Promise<void> {
 		Log.trace("controller", "entered POST /api/user/import")
 
 		const manager = new UserManager()
@@ -70,13 +74,26 @@ export default class extends MultipartController {
 
 		Log.success("controller", "created users in bulk")
 
+		const userDetails = body.importedCSV.map(data => {
+			return {
+				name: data.name,
+				email: data.email,
+				kind: body.kind as UserKind,
+				password: data.password
+			}
+		})
+		request.nextMiddlewareArguments = { userDetails }
+
+		Log.success("controller", "prepared data to inform new users")
+
 		response.status(this.status.OK).json(createdModels)
 
 		Log.trace("controller", "exiting POST /api/user/import")
 	}
 
-	// TODO: Send e-mails to new users
 	get postJobs(): Middleware[] {
-		return []
+		return [
+			CommonMiddlewareList.newUserNotification
+		]
 	}
 }

@@ -67,15 +67,22 @@ proposed in the future.
 
 Type        | Description
 --- | ---
-*feat:*     | This commit focuses on the project's enhancement by implementing a new feature.
-*test:*     | This focuses on any kinds of test scripts.
+*feat:*     | A type that focuses on the project's enhancement by implementing a new feature that is **felt or seen** by the users via browsers or APIs.
+*types:*    | A type that focuses on commits to type files and application of new types to other components
 *style:*    | This focuses on any kinds of changes in UI.
 *config:*   | This focuses on changes in the configuration files of the project.
 *ci:*       | A *config:* type where it focuses on changes in configurations of workflows.
 *fix:*      | This focuses on debugging and solving problems in features, tests, or configurations.
 *refactor:* | This focuses on refactored code.
 *perf:*     | A *refactor:* type where it focuses on optimizing code.
+*rfmt:*     | A *refactor:* type where it focuses on reformed HTML templates.
 *docs:*     | This focuses on additions or changes in any of the documentation files.
+*intrn:*    | Any commit that do not contribute to features but it is within on the **internals** of the feature.
+*share:*    | A specific *intrn:* type focuses on general additions/changes/removal in shareable code.
+*dx:*       | A type for commits which improved the developer experience but does not add value to the clients.
+*test:*     | This focuses on any kinds of test scripts.
+*unit:*     | A *test:* type for commits that focuses to unit tests.
+*intg:*     | A *test:* type for commits that focuses to integration tests.
 *chore:*    | Any other commits that are still uncategorized falls into this commit.
 
 For more information, please visit the [specification].

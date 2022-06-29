@@ -9,7 +9,11 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 export default async function(sourceType: SourceType) {
 	Log.initialize()
 
+	Log.trace("app", "initialized logger")
+
 	await Database.initialize(sourceType)
+
+	Log.trace("app", "initialized database")
 
 	if (
 		process.env.EMAIL_HOST !== undefined
@@ -23,6 +27,8 @@ export default async function(sourceType: SourceType) {
 			process.env.EMAIL_USER,
 			process.env.EMAIL_PASS
 		)
+
+		Log.trace("app", "initialized e-mail transport")
 	} else {
 		if (!RequestEnvironment.isOnTest) {
 			console.error("Some e-mail variables are not defined");
@@ -31,4 +37,6 @@ export default async function(sourceType: SourceType) {
 	}
 
 	CommonMiddlewareList.initialize()
+
+	Log.trace("app", "initialized common middleware list")
 }
