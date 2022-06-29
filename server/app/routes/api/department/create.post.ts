@@ -21,7 +21,7 @@ export default class extends JSONController {
 				"required",
 				"string",
 				"minLength:2",
-				"regex:([A-Z][a-z]+)+",
+				"regex:([A-Z][a-z]*)+",
 				"acronym:fullName"
 			],
 			mayAdmit: [ "required", "boolean" ]
