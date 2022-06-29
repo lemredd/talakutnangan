@@ -25,10 +25,14 @@ import Tab from "@/Tab.vue"
 import Users from "@/admin_settings/Users.vue"
 import Roles from "@/admin_settings/Roles.vue"
 import Departments from "@/admin_settings/Departments.vue"
+import { usePageContext } from "#/usePageContext"
+import { provide } from "vue"
 
 const tabs = {
 	Users,
 	Roles,
 	Departments
 }
+
+provide("url", usePageContext().routeParams!.tab)
 </script>
