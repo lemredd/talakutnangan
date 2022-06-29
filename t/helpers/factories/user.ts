@@ -53,7 +53,7 @@ export default class UserFactory extends BaseFactory<User> {
 	async insertOne() {
 		const user = await super.insertOne()
 		user.password = this.#password
-		await AttachedRole.bulkBuild(this.roles.map(role => {
+		await AttachedRole.bulkCreate(this.roles.map(role => {
 			return {
 				userID: user.id,
 				roleID: role.id
@@ -76,7 +76,7 @@ export default class UserFactory extends BaseFactory<User> {
 		for (const user of users) {
 			user.password = this.#password
 
-			await AttachedRole.bulkBuild(this.roles.map(role => {
+			await AttachedRole.bulkCreate(this.roles.map(role => {
 				return {
 					userID: user.id,
 					roleID: role.id
@@ -124,12 +124,12 @@ export default class UserFactory extends BaseFactory<User> {
 		return this
 	}
 
-	in(department: Department) {
+	in(department: Department): UserFactory {
 		this.#department = department
 		return this
 	}
 
-	attach(role: Role) {
+	attach(role: Role): UserFactory {
 		this.roles.push(role)
 		return this
 	}
