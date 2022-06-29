@@ -1,5 +1,4 @@
 import { deserialise } from "kitsu-core"
-import type { Serializable } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import PermissionGroup from "$/permissions/base"
@@ -27,14 +26,14 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 		const user = deserialise(request.user)
 		const roles = user?.data?.roles?.data
 		return super.mayAllow(request)
-			&& roles.reduce((previousPermissionCombination: boolean, role: Serializable) => {
+			&& roles.reduce((previousPermittedRole: boolean, role: T) => {
 				// Use logical OR to match one of the permission combinations
-				return previousPermissionCombination || this.permissionCombinations
-					.reduce((previousPermission: boolean, combination: U[]) => {
+				return previousPermittedRole || this.permissionCombinations.reduce((
+						previousPermission: boolean,
+						combination: U[]
+					) => {
 						// Use logical AND to match every of the permissions in the combination
-						return previousPermission && this.permissionGroup.mayAllow(
-							role as T,
-							...combination)
+						return previousPermission && this.permissionGroup.mayAllow(role, ...combination)
 					}, true)
 			}, false)
 	}
