@@ -29,9 +29,9 @@ import { usePageContext } from "#/usePageContext"
 import { provide } from "vue"
 
 const tabs = {
-	Users,
-	Roles,
-	Departments
+	users: Users,
+	roles: Roles,
+	departments: Departments
 }
 
 provide("url", usePageContext().routeParams!.tab)
