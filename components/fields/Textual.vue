@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container text-light-100">
+	<div :class="{ 'default': !editable }" class="input-container grid grid-cols-2 grid-rows-2">
 		<label class="input-header col-span-full">
 			{{ label }}
 		</label>
@@ -15,7 +15,7 @@
 			<button
 				type="button"
 				v-if="editable"
-				class="material-icons"
+				class="material-icons justify-self-end"
 				@click="verify ? verifyBeforeSubmit() : editField($event)"
 				>
 				edit
@@ -27,8 +27,8 @@
 			<h1>Update your {{ type }}</h1>
 		</template>
 		<template #default>
-			<div v-if="type === 'email' || type === 'password'" class="verification">
-				<label for="password-confirm">
+			<div v-if="type === 'email' || type === 'password'" class="verification flex flex-col">
+				<label for="password-confirm" class="text-black">
 					<input type="password" placeholder="enter your password" id="password-confirm">
 				</label>
 				<label :for="`new-${type}`">
@@ -45,8 +45,6 @@
 
 <style scoped lang="scss">
 .input-container {
-	display: grid;
-	grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
 	padding: 1.5em 0;
 
 	&.default {
@@ -58,18 +56,12 @@
 		padding-bottom: .25em;
 		width: 100%;
 	}
-	button.material-icons {
-		justify-self: end;
-	}
 }
 
 .verification {
-	display: flex;
-	flex-direction: column;
 
 	label {
 		padding: .5em 1em;
-		color: black;
 
 		input {
 			padding: .25em .5em;

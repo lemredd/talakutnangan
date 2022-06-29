@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 
 import App from "~/set-ups/app"
-import DepartmentManager from "%/managers/department"
+import Department from "%/models/department"
 import DepartmentFactory from "~/factories/department"
 
 import Route from "!/app/routes/api/department/archive(id).delete"
@@ -13,7 +13,6 @@ describe("DELETE /api/department/archive/:id", () => {
 
 	it("can be accessed by authenticated user", async () => {
 		const { user, cookie } = await App.makeAuthenticatedCookie()
-		const manager = new DepartmentManager()
 		const department = await (new DepartmentFactory()).insertOne()
 
 		const response = await App.request
@@ -22,7 +21,7 @@ describe("DELETE /api/department/archive/:id", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 		expect(response.body).toStrictEqual({})
-		expect(manager.findWithID(department.id)).resolves.toBeNull()
+		expect(await Department.findOne({ where: { id: department.id } } )).toBeNull()
 	})
 
 	it.todo("cannot delete non-existing")

@@ -5,7 +5,11 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
       - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
   pull_request:
     types:
       - reopened
@@ -14,7 +18,17 @@ on:
     paths:
       - 'database/**'
       - 'server/**'
+      - 't/helpers/**'
       - 't/integration/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+
+env:
+  EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+  EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+  EMAIL_USER: ${{ secrets.EMAIL_USER }}
+  EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
 jobs:
   integration_tests:

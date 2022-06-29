@@ -31,7 +31,7 @@ describe("POST /api/role/create", () => {
 			})
 
 		expect(response.statusCode).toBe(StatusCodes.CREATED)
-		expect(response.body.name).toBe(role.name)
+		expect(response.body.data.attributes.name).toBe(role.name)
 	})
 
 	it.todo("cannot accept invalid values")

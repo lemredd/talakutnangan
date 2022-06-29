@@ -1,11 +1,23 @@
 <template>
-<h1 class="p-5 text-1.5rem">
+	<h1>
 		<slot name="header"></slot>
 	</h1>
-	<p class="px-5 text-0.75rem">
+	<p>
 		<slot name="details"></slot>
-	</p> 
+	</p>
 </template>
+
+<style scoped>
+h1 {
+	padding: 1.25em;
+	font-size: 1.5em;
+}
+
+p {
+	padding: 0 1.25em;
+	font-size: .75em;
+}
+</style>
 
 <script setup lang="ts">
 </script>

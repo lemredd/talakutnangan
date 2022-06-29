@@ -1,6 +1,6 @@
 import { readFile } from "fs"
 import { promisify } from "util"
-import specializeTemplate from "!/helpers/specialize_template"
+import specializeTemplate from "!/helpers/text/specialize_template"
 import getRoot from "!/helpers/get_root"
 
 export default async function(templatePathFromRoot: string, variables: object): Promise<string> {

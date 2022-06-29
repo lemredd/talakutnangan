@@ -5,9 +5,8 @@
 </template>
 <style scoped>
 a {
+	@apply flex items-center;
 	padding: 3px 10px;
-	display: flex;
-	align-items: center;
 }
 a.active {
 	background-color: #eee;

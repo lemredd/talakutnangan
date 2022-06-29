@@ -5,9 +5,11 @@ import type { SourceType } from "$/types/database"
 import Log from "!/helpers/log"
 import Role from "%/models/role"
 import User from "%/models/user"
-import AttachedRole from "%/models/attached_role"
 import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
+import StudentDetail from "%/models/student_detail"
 import createConfiguration from "%/configuration/create"
+import EmployeeSchedule from "%/models/employee_schedule"
 
 export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
@@ -20,7 +22,9 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			Role,
 			User,
 			Department,
-			AttachedRole
+			AttachedRole,
+			StudentDetail,
+			EmployeeSchedule
 		]
 	})
 

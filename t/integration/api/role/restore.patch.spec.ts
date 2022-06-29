@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
 
 import App from "~/set-ups/app"
-import RoleManager from "%/managers/role"
+import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
 
 import Route from "!/app/routes/api/role/restore(id).patch"
@@ -13,7 +13,6 @@ describe("PATCH /api/role/restore/:id", () => {
 
 	it("can be accessed by authenticated user", async () => {
 		const { user, cookie } = await App.makeAuthenticatedCookie()
-		const manager = new RoleManager()
 		const role = await (new RoleFactory()).insertOne()
 		const id = role.id
 		await role.destroy()
@@ -24,7 +23,7 @@ describe("PATCH /api/role/restore/:id", () => {
 
 		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
 		expect(response.body).toStrictEqual({})
-		expect((await manager.findWithID(id))!.deletedAt).toBeNull()
+		expect((await Role.findOne({ where: { id } }))!.deletedAt).toBeNull()
 	})
 
 	it.todo("cannot restore non-existing")

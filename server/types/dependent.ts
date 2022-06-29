@@ -11,7 +11,7 @@ import type {
 	RequestHandler as BaseRequestHandler
 } from "express"
 import type { Session } from "express-session"
-import User from "%/models/user"
+import type { Serializable } from "$/types/database"
 
 // @ts-ignore
 export interface Request extends BaseRequest {
@@ -21,9 +21,12 @@ export interface Request extends BaseRequest {
 	}
 
 	// Added due to `passport` package
-	user: User|undefined
+	user: Serializable|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+
+	// Added due to need to test e-mail verification
+	emailsToContact: string[]
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -31,7 +34,14 @@ export interface AuthenticatedRequest extends Request {
 		token: string
 	}
 
-	user: User
+	user: Serializable
+}
+
+/**
+ * Type of request to use to communicate between which have non-standard arguments.
+ */
+export interface PreprocessedRequest<T = any> extends Request {
+	nextMiddlewareArguments: T
 }
 
 export interface Response extends BaseResponse {}
