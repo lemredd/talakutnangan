@@ -72,7 +72,8 @@ export default class UserFactory extends BaseFactory<User> {
 
 	async insertMany(count: number): Promise<User[]> {
 		const users = await super.insertMany(count)
-		await Promise.all(users.map(async user => {
+
+		for (const user of users) {
 			user.password = this.#password
 
 			await AttachedRole.bulkBuild(this.roles.map(role => {
@@ -83,7 +84,7 @@ export default class UserFactory extends BaseFactory<User> {
 			}))
 
 			user.roles = this.roles
-		}))
+		}
 
 		return users
 	}
