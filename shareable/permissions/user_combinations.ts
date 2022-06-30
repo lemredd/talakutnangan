@@ -30,7 +30,7 @@ export const UPDATE_ANYONE_ON_OWN_DEPARTMENT: Permissions[] = [
 	"writeDepartmentScope"
 ]
 
-export const UPDATE_ANYONE_ON_ALL_DEPARTMENT: Permissions[] = [
+export const UPDATE_ANYONE_ON_ALL_DEPARTMENTS: Permissions[] = [
 	"update",
 	"writeOverallScope"
 ]
