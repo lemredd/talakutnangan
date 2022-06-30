@@ -2,23 +2,31 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
+import { UPDATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Use a permission-based policy
-		return CommonMiddlewareList.knownOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			UPDATE
+		])
 	}
 
 	get bodyValidationRules(): object {
-		// TODO: Create custom validator for acronym
+		// TODO: Think of the minimum length of full name.
 		return {
-			id: [ "required", "numeric" ],
-			acronym: [ "required", "string" ],
-			fullName: [ "required", "string" ],
+			fullName: [ "required", "string", "minLength:10", "regex:([A-Z][a-z]+ )+[A-Z][a-z]+$" ],
+			acronym: [
+				"required",
+				"string",
+				"minLength:2",
+				"regex:([A-Z][a-z]*)+",
+				"acronym:fullName"
+			],
 			mayAdmit: [ "required", "boolean" ]
 		}
 	}
