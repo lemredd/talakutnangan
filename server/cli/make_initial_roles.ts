@@ -90,8 +90,7 @@ async function main() {
 		{
 			name: "Dean",
 			departmentFlags: department.generateMask(
-				"view",
-				"update"
+				"view"
 			),
 			roleFlags: role.generateMask(
 				"view"
@@ -232,8 +231,7 @@ async function main() {
 		{
 			name: "Service Head",
 			departmentFlags: department.generateMask(
-				"view",
-				"update"
+				"view"
 			),
 			roleFlags: role.generateMask(
 				"view"
