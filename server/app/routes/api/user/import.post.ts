@@ -18,14 +18,9 @@ import CSVParser from "!/middlewares/body_parser/csv"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
+import BodyValidation from "!/middlewares/authorization/body_validation"
 import MultipartController from "!/common_controllers/multipart_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
-
- export interface WithImport {
-	body: {
-		importedCSV: Buffer
-	}
-}
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -37,13 +32,17 @@ export default class extends MultipartController {
 	}
 
 	get postParseMiddlewares(): OptionalMiddleware[] {
+		// TODO: Think of the maximum size of the CSV file. currently accepting 1MB.
+		const maxSize = 1*1000
 		return [
+			new BodyValidation({
+				importedCSV: [ "required", `buffer:text/csv,${maxSize}` ]
+			}),
 			new CSVParser("importedCSV")
 		]
 	}
 
 	get bodyValidationRules(): object {
-		// TODO: Create validator for buffers
 		// TODO: Validate nested properties of imported CSV
 		return {
 			importedCSV: [ "required" ],

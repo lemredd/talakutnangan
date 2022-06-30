@@ -17,10 +17,16 @@ export default class extends JSONController {
 	}
 
 	get bodyValidationRules(): object {
-		// TODO: Create custom validator for acronym
+		// TODO: Think of the minimum length of full name.
 		return {
-			acronym: [ "required", "string" ],
-			fullName: [ "required", "string" ],
+			fullName: [ "required", "string", "minLength:10", "regex:([A-Z][a-z]+ )+[A-Z][a-z]+$" ],
+			acronym: [
+				"required",
+				"string",
+				"minLength:2",
+				"regex:([A-Z][a-z]*)+",
+				"acronym:fullName"
+			],
 			mayAdmit: [ "required", "boolean" ]
 		}
 	}
