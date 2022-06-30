@@ -10,7 +10,7 @@ export const READ_ANYONE_ON_OWN_DEPARTMENT: Permissions[] = [
 	"readDepartmentScope"
 ]
 
-export const READ_ANYONE_ON_ALL_DEPARTMENT: Permissions[] = [
+export const READ_ANYONE_ON_ALL_DEPARTMENTS: Permissions[] = [
 	"view",
 	"readOverallScope"
 ]
