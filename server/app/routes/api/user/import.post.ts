@@ -1,5 +1,3 @@
-import { Buffer } from "buffer"
-
 import { UserKindValues, UserKind } from "$/types/database"
 import type { OptionalMiddleware } from "$/types/server"
 import type { PreprocessedRequest, Response } from "!/types/dependent"
