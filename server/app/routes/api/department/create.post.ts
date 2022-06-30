@@ -2,15 +2,18 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
+import { CREATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Use a permission-based policy
-		return CommonMiddlewareList.knownOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE
+		])
 	}
 
 	get bodyValidationRules(): object {
