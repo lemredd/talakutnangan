@@ -28,6 +28,11 @@ describe("POST /api/department/create", () => {
 				mayAdmit: department.mayAdmit
 			})
 
+		console.log("passed input", {
+			acronym: department.acronym,
+			fullName: department.fullName
+		})
+
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
 		expect(response.body.data.attributes.fullName).toBe(department.fullName)
@@ -49,6 +54,11 @@ describe("POST /api/department/create", () => {
 				fullName: department.fullName + "1",
 				mayAdmit: department.mayAdmit
 			})
+
+		console.log("invalid input", {
+			acronym: department.acronym,
+			fullName: department.fullName + "1"
+		})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body).toHaveLength(1)
