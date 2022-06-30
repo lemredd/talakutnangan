@@ -15,8 +15,11 @@ import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"
 import CSVParser from "!/middlewares/body_parser/csv"
+import { IMPORT_USERS } from "$/permissions/user_combinations"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import MultipartController from "!/common_controllers/multipart_controller"
+import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
  export interface WithImport {
 	body: {
@@ -27,8 +30,11 @@ import MultipartController from "!/common_controllers/multipart_controller"
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
-	// TODO: Use a permission-based policy
-	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
+	get policy(): Policy {
+		return new PermissionBasedPolicy(permissionGroup, [
+			IMPORT_USERS
+		])
+	}
 
 	get postParseMiddlewares(): OptionalMiddleware[] {
 		return [
