@@ -11,7 +11,9 @@ export default class extends ModelBoundController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, RESET_PASSWORD)
+		return new PermissionBasedPolicy(permissionGroup, [
+			RESET_PASSWORD
+		])
 	}
 
 	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
