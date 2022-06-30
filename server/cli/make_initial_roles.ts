@@ -30,7 +30,7 @@ async function main() {
 				"create",
 				"update",
 				"archiveAndRestore",
-				"mergeDepartment"
+				"merge"
 			),
 			roleFlags: role.generateMask(
 				"view",

@@ -17,5 +17,5 @@ export const ARCHIVE_AND_RESTORE: Permissions[] = [
 ]
 
 export const MERGE: Permissions[] = [
-	"mergeDepartment"
+	"merge"
 ]
