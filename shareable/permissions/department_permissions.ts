@@ -16,7 +16,7 @@ import PermissionGroup from "$/permissions/base"
 const departmentColumnName = "departmentFlags"
 
 type DepartmentFlags = { [departmentColumnName]: number }
-type Permissions =
+export type Permissions =
 	| OperationPermission
 	| "mergeDepartment"
 
