@@ -5,6 +5,9 @@ import type { MockResponse } from "!/types/test"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import RequestEnvironment from "$/helpers/request_environment"
 
+/**
+ * A set-up class used for testing the middlewares.
+ */
 export default class<T extends Request> extends RequestEnvironment {
 	private request: T
 	private response: Response
