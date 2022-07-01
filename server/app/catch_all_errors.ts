@@ -13,7 +13,7 @@ import RequestEnvironment from "!/helpers/request_environment"
  * @param next Function to call other middlewares or error handlers.
  */
 export default function(error: Error, request: Request, response: Response, next: NextFunction) {
-	if (response.writableEnded || response.headersSent) {
+	if (response.writableEnded) {
 		Log.errorMessage("middleware", `Cannot write the error at "${request.path}"`)
 	} else {
 		if (request.accepts("text/html")) {
@@ -36,7 +36,7 @@ export default function(error: Error, request: Request, response: Response, next
 				errors: [ unitError ]
 			})
 			Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}`)
-		} else {
+		} else if (!response.headersSent) {
 			response.status(RequestEnvironment.status.NOT_ACCEPTABLE)
 
 			const message = "Error message could not be accepted by the client"
