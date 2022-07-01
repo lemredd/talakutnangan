@@ -32,7 +32,8 @@ export default function(error: Error, request: Request, response: Response, next
 			}
 
 			response.status(unitError.status)
-			response.json({
+			response.type("application/vnd.api+json")
+			response.send({
 				errors: [ unitError ]
 			})
 			Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}`)
