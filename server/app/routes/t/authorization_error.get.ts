@@ -7,6 +7,6 @@ export default class extends DevController {
 	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
-		throw new AuthorizationError("Sample athorization error")
+		throw new AuthorizationError("Sample authorization error")
 	}
 }
