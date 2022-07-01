@@ -42,6 +42,16 @@ export default class<T extends Request> extends RequestEnvironment {
 		}
 	}
 
+	customizeResponse(properties: { [key:string]: any }): void {
+		for (const key in properties) {
+			if (Object.prototype.hasOwnProperty.call(properties, key)) {
+				const value = properties[key];
+				// @ts-ignore
+				this.response[key] = value
+			}
+		}
+	}
+
 	async runMiddleware(middleware: Function): Promise<void> {
 		await middleware(this.request, this.response, this.next)
 	}
@@ -53,12 +63,28 @@ export default class<T extends Request> extends RequestEnvironment {
 	}
 
 	expectFailure(status: number): any {
-		const mockResponse = this.response as unknown as MockResponse
-		expect(mockResponse.status).toHaveBeenCalled()
-		expect(mockResponse.status.mock.calls[0]).toEqual([ status ])
-		expect(mockResponse.json).toHaveBeenCalled()
+		this.expectResponse({
+			status: (statusMethod: jest.Mock<any, any>) => {
+				expect(statusMethod).toBeCalled()
+				expect(statusMethod.mock.calls[0]).toEqual([ status ])
+			},
+			json: (jsonMethod: jest.Mock<any, any>) => {
+				expect(jsonMethod).toBeCalled()
+			}
+		})
 
+		const mockResponse = this.response as unknown as MockResponse
 		return mockResponse.json.mock.calls[0][0]
+	}
+
+	expectResponse(properties: { [key:string]: (_: any) => void }): void {
+		for (const key in properties) {
+			if (Object.prototype.hasOwnProperty.call(properties, key)) {
+				const check = properties[key];
+				// @ts-ignore
+				check(this.response[key])
+			}
+		}
 	}
 
 	reset() {
