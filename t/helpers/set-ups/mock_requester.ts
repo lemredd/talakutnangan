@@ -56,6 +56,10 @@ export default class<T extends Request> extends RequestEnvironment {
 		await middleware(this.request, this.response, this.next)
 	}
 
+	async runErrorHandler(handle: Function, error: Error = new Error()): Promise<void> {
+		await handle(error, this.request, this.response, this.next)
+	}
+
 	expectSuccess(): any {
 		expect(this.next).toHaveBeenCalled()
 
