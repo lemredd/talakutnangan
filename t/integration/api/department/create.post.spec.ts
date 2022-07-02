@@ -2,7 +2,7 @@ import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 import { CREATE } from "$/permissions/department_combinations"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!/app/routes/api/department/create.post"

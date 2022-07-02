@@ -1,7 +1,7 @@
 import App from "~/set-ups/app"
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 

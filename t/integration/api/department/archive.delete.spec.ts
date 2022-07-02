@@ -2,7 +2,7 @@ import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import Department from "%/models/department"
 import DepartmentFactory from "~/factories/department"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 

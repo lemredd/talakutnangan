@@ -1,5 +1,5 @@
 import flushPromises from "flush-promises"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 
 import "~/set-ups/email.set_up"
 import App from "~/set-ups/app"

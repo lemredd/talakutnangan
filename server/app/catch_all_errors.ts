@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "!/helpers/log"
 import BaseError from "$!/errors/base"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 
 /**
  * Catches all errors on every route for unified error handling.

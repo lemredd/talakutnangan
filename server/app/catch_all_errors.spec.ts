@@ -1,6 +1,6 @@
 import BaseError from "$!/errors/base"
 import MockRequester from "~/set-ups/mock_requester"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 
 import catchAllErrors from "./catch_all_errors"
 

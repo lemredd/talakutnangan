@@ -1,7 +1,7 @@
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import { READ } from "$/permissions/role_combinations"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!/app/routes/api/role/list.get"

@@ -1,4 +1,4 @@
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
 /**
