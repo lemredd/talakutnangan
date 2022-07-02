@@ -1,7 +1,7 @@
 import { relative, resolve, join } from "path"
 import { Purpose, Method, RouteInformation } from "$/types/server"
 
-import getRoot from "!/helpers/get_root"
+import getRoot from "$!/helpers/get_root"
 
 export default function(currentPath: string, routeRoot = resolve(getRoot(), "server/app/routes"))
 	: Partial<RouteInformation> {
