@@ -1,5 +1,7 @@
 # Changelog
+
 ## v0.6.0
+
 ### 🚀 Enhancements
 - **command:** Make a CLI command to make initial roles (ba9ec90)
 - **email:** Collect the e-mails sent if transport is on test (78261cd)
@@ -62,8 +64,10 @@
 - **role:** Apply correct policy to route to update role (5eb93e6)
 - **role:** Apply correct policy to route to archive role (ecf0202)
 - **role:** Apply correct policy to route to restore role (a816e30)
+
 ### 🔥 Performance
 - **middleware:** Prioritize finding the authorized role (d57fe74)
+
 ### 🩹 Fixes
 - **email:** Initialize the container for previous messages (1dda950)
 - **test:** Restore path to test function for specializing template (a8bbdd6)
@@ -76,11 +80,14 @@
 - **validator:** Ensure the buffer does not exceed maximum size (33495de)
 - **factory:** Create the link of user and role instead of building (d43ae6d)
 - **middleware:** Correct the logical operator to use (55c367a)
+
 ### 💅 Refactors
 - **middleware:** Clean the assertion of permissions (80f520e)
+
 ### 📖 Documentation
 - Document new commit types (f450d13)
 - **installation:** Add new steps to migrate and seed the database (d0a2103)
+
 ### 🏡 Chore
 - Run `npx ts-node server/cli/make_initial_roles` to generate data (3e7fac8)
 - ⚠️  Move email verification sender to dedicated folder (0229c2c)
@@ -95,6 +102,7 @@
 - **permission:** Rename a department permission for consistency (e12edf9)
 - Remove unnecessary test (bae93d3)
 - Remove unnecessary import of buffer (0ced4ef)
+
 ### ✅ Tests
 - Create test account for sending e-mail messages (b2d5ec3)
 - **unit:** Ensure e-mail verification is sent (9ab9d41)
@@ -113,18 +121,22 @@
 - **factory:** Change the approach to attach multiple roles (a60a6c4)
 - Ensure user is permitted to import document with invalid field (74259c9)
 - Log the passed input to detect when the test fails (c26a761)
+
 ### 🌊 Types
 - **server:** Make email request (05753b8)
 - **server:** Generalize email request to preprocessed request (5a09486)
 - **server:** Make type to accept arguments for e-mail verification (cdf9dd7)
 - **server:** Make new type for notifying new users (5156ac0)
+
 ### 🎨 Styles
 - **email:** Improve the default styles for e-mail messages (2e0e005)
+
 ### 🤖 CI
 - Add environment variables that may be used for tests on e-mails (36b1074)
 - Declare the environment variables at top-level (8234fba)
 - Remove prefixed space in "env" key (99e4341)
 - Add step to seed the database (4784a39)
+
 ### 🗒️ Configurations
 - **database:** Add path to seeders (19e7b98)
 - **database:** Ensure seeder storage is set (5556167)
@@ -132,6 +144,7 @@
 - **database:** Add commands for seeding the database (f0e0e39)
 - Remove a pattern for path of IDE configurations in root (6eb5cfa)
 - Add new commit types according to proposal in (#161)
+
 ### 🔩 Internals
 - **validator:** Make initial validator for acronyms (9602fc9)
 - **validator:** Register acronym validator (cfe2d95)
@@ -146,6 +159,7 @@
 - **user:** Pass an array of permission combinations (94b162c)
 - **permission:** Ensure update of department is limited to admin only (d0a3201)
 - **permission:** ⚠️  Regerate the data for seeding roles (890f9e9)
+
 ### 🌐 Shareables
 - **permission:** Export the available flags for user management (d1fee4f)
 - **permission:** Make initial user combination (fe79846)
@@ -158,8 +172,10 @@
 - **permission:** Make initial department permission combination (e83f41f)
 - **permission:** Export the permissions for role management (6d2b0c9)
 - **permission:** Make initial role permission combination (605cd76)
+
 ### 🔦 Developer Experience
 - Use keyword "none" for questions indicating quantity (0f43a17)
+
 ### 🦠 Unit Tests
 - **validator:** Ensure acronym validator works (8d16490)
 - **validator:** Ensure invalidation of uneven ratio of inputs (8f49978)
@@ -168,6 +184,7 @@
 - **manager:** Ensure single read pipeline will be used (b656cc1)
 - **middleware:** Ensure to deny guest on permission-based policy (08732ce)
 - **middleware:** Update the tests to check (1f9c932)
+
 ### 🕷 Integration Tests
 - **department:** Test for invalid inputs (6f4a662)
 - **user:** Ensure to received errors for invalid file uploads (286ffdd)
@@ -186,6 +203,7 @@
 - **role:** Check if policies work in route to update role (f21bce9)
 - **role:** Check if policies work in route to archive role (77b4434)
 - **role:** Check if policies work in route to restore role (8a39d33)
+
 #### ⚠️  Breaking Changes
 - **email:** ⚠️  Accept array of recipients to send an email message (85bc54e)
 - **department:** ⚠️  Remove the route to read department (f333207)
@@ -194,6 +212,7 @@
 - **permission:** ⚠️  Rename the profile permission to user permission (edf1f45)
 - ⚠️  Rename method to customize name generator (d627c4a)
 - **permission:** ⚠️  Regenerate the data for seeding roles (890f9e9)
+
 ### ❤️  Contributors
 - IKnightSKyI
 - Kenneth Trecy Tobias
