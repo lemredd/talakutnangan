@@ -51,8 +51,19 @@ describe("Server: Catching all errors", () => {
 
 		requester.runErrorHandler(catchAllErrors)
 
-		requester.expectFailure(RequestEnvironment.status.INTERNAL_SERVER_ERROR)
 		requester.expectResponse({
+			status: (statusMethod: jest.Mock<any, any>) => {
+				expect(statusMethod).toHaveBeenCalled()
+				expect(statusMethod.mock.calls[0][0])
+					.toBe(RequestEnvironment.status.INTERNAL_SERVER_ERROR)
+			},
+			type: (typeMethod: jest.Mock<any, any>) => {
+				expect(typeMethod).toHaveBeenCalled()
+				expect(typeMethod.mock.calls[0][0]).toBe("application/vnd.api+json")
+			},
+			send: (sendMethod: jest.Mock<any, any>) => {
+				expect(sendMethod).toHaveBeenCalled()
+			},
 			end: (endMethod: jest.Mock<any, any>) => {
 				expect(endMethod).toHaveBeenCalledTimes(1)
 			}
@@ -71,11 +82,26 @@ describe("Server: Catching all errors", () => {
 
 		requester.runErrorHandler(catchAllErrors, error)
 
-		const output = requester.expectFailure(RequestEnvironment.status.BAD_REQUEST)
-		expect(output).toStrictEqual({
-			errors: [
-				error.toJSON()
-			]
+		requester.expectResponse({
+			status: (statusMethod: jest.Mock<any, any>) => {
+				expect(statusMethod).toHaveBeenCalled()
+				expect(statusMethod.mock.calls[0][0]).toBe(RequestEnvironment.status.BAD_REQUEST)
+			},
+			type: (typeMethod: jest.Mock<any, any>) => {
+				expect(typeMethod).toHaveBeenCalled()
+				expect(typeMethod.mock.calls[0][0]).toBe("application/vnd.api+json")
+			},
+			send: (sendMethod: jest.Mock<any, any>) => {
+				expect(sendMethod).toHaveBeenCalled()
+				expect(sendMethod.mock.calls[0][0]).toStrictEqual({
+					errors: [
+						error.toJSON()
+					]
+				})
+			},
+			end: (endMethod: jest.Mock<any, any>) => {
+				expect(endMethod).toHaveBeenCalledTimes(1)
+			}
 		})
 	})
 })
