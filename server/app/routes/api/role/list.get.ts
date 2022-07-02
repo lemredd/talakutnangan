@@ -2,16 +2,18 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
+import { READ } from "$/permissions/role_combinations"
 import QueryController from "!/common_controllers/query_controller"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-
+import { role as permissionGroup } from "$/permissions/permission_list"
+import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Use permission-based policy
-		return CommonMiddlewareList.knownOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			READ
+		])
 	}
 
 	get queryValidationRules(): object {

@@ -16,7 +16,7 @@ import PermissionGroup from "$/permissions/base"
 const roleColumnName = "roleFlags"
 
 type RoleFlags = { [roleColumnName]: number }
-type Permissions = OperationPermission
+export type Permissions = OperationPermission
 
 /**
  * Permission group for role.

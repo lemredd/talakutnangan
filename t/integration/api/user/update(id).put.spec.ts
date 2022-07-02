@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes"
+import RequestEnvironment from "!/helpers/request_environment"
 import UserManager from "%/managers/user"
 
 import App from "~/set-ups/app"
@@ -19,7 +19,7 @@ describe("PUT /api/user/update/:id", () => {
 			.put(`/api/user/update/${student.id}`)
 			.set("Cookie", cookie)
 
-		expect(response.statusCode).toBe(StatusCodes.ACCEPTED)
+		expect(response.statusCode).toBe(RequestEnvironment.status.ACCEPTED)
 
 		const updatedStudent = await manager.findWithID(student.id)
 		expect(updatedStudent!.admittedAt).not.toBeNull()

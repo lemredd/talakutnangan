@@ -16,9 +16,9 @@ import PermissionGroup from "$/permissions/base"
 const departmentColumnName = "departmentFlags"
 
 type DepartmentFlags = { [departmentColumnName]: number }
-type Permissions =
+export type Permissions =
 	| OperationPermission
-	| "mergeDepartment"
+	| "merge"
 
 /**
  * Permission group for department.
@@ -34,7 +34,7 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
 			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
 			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
-			[ "mergeDepartment",   {
+			[ "merge",   {
 				flag: 0x100,
 				permissionDependencies: [
 					"archiveAndRestore", "create"

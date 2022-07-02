@@ -33,11 +33,24 @@ class MockUserTransformer extends Transformer<User, void> {
 }
 
 class MockUserManager extends BaseManager<User, RawUser> {
+	private customReadPipe: Pipe<FindAndCountOptions<User>, any>|null
+
+	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
+		return [
+			this.customReadPipe
+		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
+	}
+
 	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [ limit ] }
 
 	get model(): ModelCtor<User> { return User }
 
 	get transformer(): MockUserTransformer { return new MockUserTransformer() }
+
+	constructor(customReadPipe: Pipe<FindAndCountOptions<User>, any>|null = null) {
+		super()
+		this.customReadPipe = customReadPipe
+	}
 }
 
 describe("Database: Base Read Operations", () => {
@@ -48,6 +61,21 @@ describe("Database: Base Read Operations", () => {
 
 		const foundUser = await manager.findWithID(id)
 
+		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
+	})
+
+	it("can search base with ID and custom read pipe", async () => {
+		const pipe = jest.fn()
+		const manager = new MockUserManager(options => {
+			pipe()
+			return options
+		})
+		const base = await (new UserFactory()).insertOne()
+		const id = base.id
+
+		const foundUser = await manager.findWithID(id)
+
+		expect(pipe).toHaveBeenCalled()
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 

@@ -13,6 +13,7 @@ import type {
 import Log from "!/helpers/log"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
+import Condition from "%/managers/helpers/condition"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 /**
@@ -25,8 +26,17 @@ export default abstract class Manager<T extends Model, U> {
 
 	abstract get transformer(): Transformer<T, void>
 
+	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
+		return []
+	}
+
 	async findWithID(id: number): Promise<Serializable> {
-		const model = await this.model.findOne(<FindOptions<T>>{ where: { id } })
+		const condition = new Condition()
+		condition.equal("id", id)
+		const whereOptions: FindOptions<T> = { where: condition.build() }
+		const findOptions = runThroughPipeline(whereOptions, {}, this.singleReadPipeline)
+
+		const model = await this.model.findOne(findOptions)
 
 		Log.success("manager", "done searching for a model using ID")
 
