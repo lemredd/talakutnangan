@@ -1,5 +1,4 @@
 import Router from "!/bases/router"
-import GetRead from "!/app/routes/api/department/read.get"
 import GetList from "!/app/routes/api/department/list.get"
 import PutUpdate from "!/app/routes/api/department/update.put"
 import PostCreate from "!/app/routes/api/department/create.post"
@@ -11,7 +10,6 @@ export default class extends Router {
 		super()
 
 		this.useControllers([
-			new GetRead(),
 			new GetList(),
 			new PutUpdate(),
 			new PostCreate(),

@@ -6,14 +6,18 @@ import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 
 import User from "%/models/user"
+import Role from "%/models/role"
 import hash from "!/helpers/auth/hash"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
+import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
 
 export default class UserFactory extends BaseFactory<User> {
 	nameGenerator = () => faker.name.findName()
 	emailGenerator = () => faker.internet.exampleEmail()
+	roles: Role[] = []
+
 	#password = "password"
 	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
@@ -49,6 +53,14 @@ export default class UserFactory extends BaseFactory<User> {
 	async insertOne() {
 		const user = await super.insertOne()
 		user.password = this.#password
+		await AttachedRole.bulkCreate(this.roles.map(role => {
+			return {
+				userID: user.id,
+				roleID: role.id
+			}
+		}))
+		user.roles = this.roles
+
 		return user
 	}
 
@@ -60,7 +72,20 @@ export default class UserFactory extends BaseFactory<User> {
 
 	async insertMany(count: number): Promise<User[]> {
 		const users = await super.insertMany(count)
-		users.forEach(user => user.password = this.#password)
+
+		for (const user of users) {
+			user.password = this.#password
+
+			await AttachedRole.bulkCreate(this.roles.map(role => {
+				return {
+					userID: user.id,
+					roleID: role.id
+				}
+			}))
+
+			user.roles = this.roles
+		}
+
 		return users
 	}
 
@@ -99,8 +124,13 @@ export default class UserFactory extends BaseFactory<User> {
 		return this
 	}
 
-	in(department: Department) {
+	in(department: Department): UserFactory {
 		this.#department = department
+		return this
+	}
+
+	attach(role: Role): UserFactory {
+		this.roles.push(role)
 		return this
 	}
 }

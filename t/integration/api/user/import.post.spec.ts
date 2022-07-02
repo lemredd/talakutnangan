@@ -1,13 +1,15 @@
 import flushPromises from "flush-promises"
 import RequestEnvironment from "!/helpers/request_environment"
 
-// import "~/set-ups/email.set_up"
+import "~/set-ups/email.set_up"
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 
 import Transport from "!/helpers/email/transport"
 import Route from "!/app/routes/api/user/import.post"
+import { IMPORT_USERS } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
 
 describe("POST /api/user/import", () => {
 	beforeAll(async () => {
@@ -15,17 +17,20 @@ describe("POST /api/user/import", () => {
 	})
 
 	it("can upload valid student details", async () => {
-		const role = await (new RoleFactory()).insertOne()
+		const adminRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+			.insertOne()
+		const sampleRole = await (new RoleFactory()).insertOne()
 		const IBCE = await (new DepartmentFactory().name(() => "I B C E")).insertOne()
 		const IASTE = await (new DepartmentFactory().name(() => "I A S T E")).insertOne()
 		const IHTM = await (new DepartmentFactory().name(() => "I H T M")).insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
 			.post("/api/user/import")
 			.field("kind", "student")
-			.field("roles[]", [ role.name ])
+			.field("roles[]", [ sampleRole.name ])
 			.attach("importedCSV", path)
 			.set("Cookie", cookie)
 
@@ -63,11 +68,14 @@ describe("POST /api/user/import", () => {
 	})
 
 	it("cannot upload by text field", async () => {
+		const adminRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+			.insertOne()
 		const role = await (new RoleFactory()).insertOne()
 		const IBCE = await (new DepartmentFactory().name(() => "I B C E")).insertOne()
 		const IASTE = await (new DepartmentFactory().name(() => "I A S T E")).insertOne()
 		const IHTM = await (new DepartmentFactory().name(() => "I H T M")).insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
@@ -83,4 +91,22 @@ describe("POST /api/user/import", () => {
 	})
 
 	it.todo("can upload invalid student details")
+
+	it("cannot be accessed without complete permission", async () => {
+		const adminRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask("create"))
+			.insertOne()
+		const sampleRole = await (new RoleFactory()).insertOne()
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
+
+		const response = await App.request
+			.post("/api/user/import")
+			.field("kind", "student")
+			.field("roles[]", [ sampleRole.name ])
+			.attach("importedCSV", path)
+			.set("Cookie", cookie)
+
+		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
+	})
 })
