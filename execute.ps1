@@ -11,13 +11,13 @@ Outputs the help info of the command
 .PARAMETER Test
 Switch to runs tests.
 
-.PARAMETER SuiteNames
+.PARAMETER SuiteName
 Only required if `-Test` switch is on.
-It contains comma-delimited names of test suites to run.
+It contains the name of test suite to run.
 
 .PARAMETER Watch
 Only required if `-Test` switch is on.
-It does not work properly if there are multiple suite names.
+This watches the files included on specified tests.
 
 .INPUTS
 All inputs are done through arguments.
