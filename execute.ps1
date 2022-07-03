@@ -55,7 +55,8 @@ Param(
 		"unit:share",
 		"unit:front",
 		"unit:server",
-		"unit:database"
+		"unit:database",
+		"intg:back"
 	)]
 	[string]
 	$SuiteName,
@@ -73,7 +74,7 @@ if ($Test) {
 	$type, $name = $SuiteName.Split(":")
 
 	$configuration = "jest.$($name).$($type).config.json"
-	if ($type) {
+	if ($type -eq "unit") {
 		$configuration = "jest.$($name).config.json"
 	}
 
