@@ -31,31 +31,36 @@ PS> ./execute -help
 Show the full help.
 
 .EXAMPLE
-PS> ./execute -test unit:server -watch
+PS> ./execute -test unit:front -watch
 
-Runs the server unit tests.
+Runs the front-end unit tests.
+
+.EXAMPLE
+PS> ./execute -test -suitenames unit:server -watch
+
+Runs and watches the server unit tests.
 #>
 
 Param(
-	[Parameter(ParameterSetName="Help")]
+	[Parameter(ParameterSetName="Help", Position=0)]
 	[switch]
 	$Help,
 
-	[Parameter(ParameterSetName="Test")]
+	[Parameter(ParameterSetName="Test", Position=0)]
 	[switch]
 	$Test,
 
-	[Parameter(ParameterSetName="Test", Mandatory)]
+	[Parameter(ParameterSetName="Test", Mandatory, Position=1)]
 	[ValidateSet(
 		"unit:share",
 		"unit:front",
 		"unit:server",
 		"unit:database"
 	)]
-	[string[]]
-	$SuiteNames,
+	[string]
+	$SuiteName,
 
-	[Parameter(ParameterSetName="Test")]
+	[Parameter(ParameterSetName="Test", Position=2)]
 	[switch]
 	$Watch
 )
@@ -65,7 +70,17 @@ if ($Help) {
 }
 
 if ($Test) {
-	foreach($name in $SuiteNames) {
+	$type, $name = $SuiteName.Split(":")
 
+	$configuration = "jest.$($name).$($type).config.json"
+	if ($type) {
+		$configuration = "jest.$($name).config.json"
 	}
+
+	$watchFlag = ""
+	if ($Watch) {
+		$watchFlag = "--watch"
+	}
+
+	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
 }
