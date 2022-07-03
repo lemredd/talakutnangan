@@ -1,5 +1,6 @@
 import { UnitError } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
+import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
 
 import Log from "!/helpers/log"
 import BaseError from "$!/errors/base"
@@ -16,10 +17,10 @@ export default function(error: Error, request: Request, response: Response, next
 	if (response.writableEnded) {
 		Log.errorMessage("middleware", `Cannot write the error at "${request.path}"`)
 	} else {
-		if (request.accepts("text/html")) {
+		if (request.accepts(HTML_MEDIA_TYPE)) {
 			// TODO: Redirect to error page
 			response.status(RequestEnvironment.status.INTERNAL_SERVER_ERROR).end()
-		} else if (request.accepts("application/vnd.api+json")) {
+		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
 			let unitError: UnitError = {
 				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
 				code: "-1",
@@ -32,7 +33,7 @@ export default function(error: Error, request: Request, response: Response, next
 			}
 
 			response.status(unitError.status)
-			response.type("application/vnd.api+json")
+			response.type(JSON_API_MEDIA_TYPE)
 			response.send({
 				errors: [ unitError ]
 			})

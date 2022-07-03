@@ -1,6 +1,7 @@
 import BaseError from "$!/errors/base"
 import MockRequester from "~/set-ups/mock_requester"
 import RequestEnvironment from "$/helpers/request_environment"
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
 
 import catchAllErrors from "./catch_all_errors"
 
@@ -46,7 +47,7 @@ describe("Server: Catching all errors", () => {
 
 	it("can output common error if it only accepts JSON:API media type", () => {
 		requester.customizeRequest({
-			accepts: jest.fn(mediaType => mediaType === "application/vnd.api+json")
+			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})
 
 		requester.runErrorHandler(catchAllErrors)
@@ -59,7 +60,7 @@ describe("Server: Catching all errors", () => {
 			},
 			type: (typeMethod: jest.Mock<any, any>) => {
 				expect(typeMethod).toHaveBeenCalled()
-				expect(typeMethod.mock.calls[0][0]).toBe("application/vnd.api+json")
+				expect(typeMethod.mock.calls[0][0]).toBe(JSON_API_MEDIA_TYPE)
 			},
 			send: (sendMethod: jest.Mock<any, any>) => {
 				expect(sendMethod).toHaveBeenCalled()
@@ -72,7 +73,7 @@ describe("Server: Catching all errors", () => {
 
 	it("can output custom error if it only accepts JSON:API media type", () => {
 		requester.customizeRequest({
-			accepts: jest.fn(mediaType => mediaType === "application/vnd.api+json")
+			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})
 		const error = new BaseError(
 			"0",
@@ -89,7 +90,7 @@ describe("Server: Catching all errors", () => {
 			},
 			type: (typeMethod: jest.Mock<any, any>) => {
 				expect(typeMethod).toHaveBeenCalled()
-				expect(typeMethod.mock.calls[0][0]).toBe("application/vnd.api+json")
+				expect(typeMethod.mock.calls[0][0]).toBe(JSON_API_MEDIA_TYPE)
 			},
 			send: (sendMethod: jest.Mock<any, any>) => {
 				expect(sendMethod).toHaveBeenCalled()
