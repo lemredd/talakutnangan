@@ -1,34 +1,34 @@
-import APILinks from "./api_links"
+import URLMaker from "./url_maker"
 
 describe("Database: API Link Creator", () => {
 	it("can make base URL without custom port", () => {
-		APILinks.initialize("http", "localhost", 0, "/api");
+		URLMaker.initialize("http", "localhost", 0, "/api");
 
-		const baseURL = APILinks.makeBaseURL()
+		const baseURL = URLMaker.makeBaseURL()
 
 		expect(baseURL).toBe("http://localhost/api")
 	})
 
 	it("can make base URL with custom port", () => {
-		APILinks.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api");
 
-		const baseURL = APILinks.makeBaseURL()
+		const baseURL = URLMaker.makeBaseURL()
 
 		expect(baseURL).toBe("http://localhost:16000/api")
 	})
 
 	it("can make base path", () => {
-		APILinks.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api");
 
-		const baseURL = APILinks.makeBaseModelPath("user")
+		const baseURL = URLMaker.makeBaseModelPath("user")
 
 		expect(baseURL).toBe("/api/user")
 	})
 
 	it("can make initial page links", () => {
-		APILinks.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api");
 
-		const document = APILinks.addPaginationLinks({}, "user", 1, 3)
+		const document = URLMaker.addPaginationLinks({}, "user", 1, 3)
 
 		expect(document).toStrictEqual({
 			links: {
@@ -41,9 +41,9 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make middle page links", () => {
-		APILinks.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api");
 
-		const document = APILinks.addPaginationLinks({}, "user", 2, 3)
+		const document = URLMaker.addPaginationLinks({}, "user", 2, 3)
 
 		expect(document).toStrictEqual({
 			links: {
@@ -56,9 +56,9 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make last page links", () => {
-		APILinks.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api");
 
-		const document = APILinks.addPaginationLinks({}, "user", 3, 3)
+		const document = URLMaker.addPaginationLinks({}, "user", 3, 3)
 
 		expect(document).toStrictEqual({
 			links: {
