@@ -6,6 +6,7 @@ on:
       - 'database/**'
       - 'server/**'
       - 't/helpers/**'
+      - '.github/workflows/back-end.unit.yml'
   pull_request:
     types:
       - reopened
@@ -15,6 +16,7 @@ on:
       - 'database/**'
       - 'server/**'
       - 't/helpers/**'
+      - '.github/workflows/back-end.unit.yml'
 
 jobs:
   server_unit_tests:
