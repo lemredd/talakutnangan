@@ -1,20 +1,16 @@
 import { Request, Response, NextFunction } from "!/types/dependent"
+
 import Middleware from "!/bases/middleware"
 
+/**
+ * Base class for policies.
+ *
+ * Policies are expected to throw error if the user is not authorized.
+ */
 export default abstract class extends Middleware {
-	abstract mayAllow(request: Request): boolean
+	abstract authorize(request: Request): Promise<void>
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		if (this.mayAllow(request)) {
-			next()
-		} else {
-			response.status(this.status.UNAUTHORIZED)
-
-			response.json({
-				errors: [
-					"User is not allowed to invoke the functionality."
-				]
-			})
-		}
+	async intermediate(request: Request, _response: Response, next: NextFunction): Promise<void> {
+		return await this.authorize(request).then(next).catch(next)
 	}
 }
