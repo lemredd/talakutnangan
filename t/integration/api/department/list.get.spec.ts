@@ -1,3 +1,5 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
@@ -39,6 +41,7 @@ describe("GET /api/deparment/list", () => {
 		const response = await App.request
 			.get("/api/department/list")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
