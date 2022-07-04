@@ -1,3 +1,5 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
@@ -41,6 +43,7 @@ describe("PATCH /api/role/restore/:id", () => {
 		const response = await App.request
 			.patch(`/api/role/restore/${role.id}`)
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
@@ -50,6 +53,7 @@ describe("PATCH /api/role/restore/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/role/restore/${role.id}`)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})

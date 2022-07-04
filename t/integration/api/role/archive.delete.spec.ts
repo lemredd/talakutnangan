@@ -1,3 +1,5 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
@@ -38,6 +40,7 @@ describe("DELETE /api/role/archive/:id", () => {
 		const response = await App.request
 			.delete(`/api/role/archive/${role.id}`)
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
@@ -47,6 +50,7 @@ describe("DELETE /api/role/archive/:id", () => {
 
 		const response = await App.request
 			.delete(`/api/role/archive/${role.id}`)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})

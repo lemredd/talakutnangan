@@ -1,3 +1,5 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import { UPDATE } from "$/permissions/role_combinations"
@@ -49,6 +51,7 @@ describe("PUT /api/role/update", () => {
 		const response = await App.request
 			.put("/api/role/update")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
@@ -59,6 +62,7 @@ describe("PUT /api/role/update", () => {
 
 		const response = await App.request
 			.put("/api/role/update")
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				id: role.id,
 				name: role.name,
