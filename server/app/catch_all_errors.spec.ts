@@ -1,14 +1,16 @@
+import { Buffer } from "buffer"
 import BaseError from "$!/errors/base"
+import URLMaker from "$!/singletons/url_maker"
 import MockRequester from "~/set-ups/mock_requester"
 import RequestEnvironment from "$/helpers/request_environment"
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
 
 import catchAllErrors from "./catch_all_errors"
 
 describe("Server: Catching all errors", () => {
 	const requester = new MockRequester()
 
-	it("can only end response once if others previously ended the response", () => {
+	it("can only end response once if others previously ended the response", async () => {
 		const customEndMethod = jest.fn()
 		customEndMethod()
 		requester.customizeResponse({
@@ -16,7 +18,7 @@ describe("Server: Catching all errors", () => {
 			end: customEndMethod
 		})
 
-		requester.runErrorHandler(catchAllErrors)
+		await requester.runErrorHandler(catchAllErrors)
 
 		requester.expectResponse({
 			end: (endMethod: jest.Mock<any, any>) => {
@@ -25,13 +27,13 @@ describe("Server: Catching all errors", () => {
 		})
 	})
 
-	it("can only automatically end response for header-sent only responses", () => {
+	it("can only automatically end response for header-sent only responses", async () => {
 		requester.customizeResponse({
 			writableEnded: false,
 			headersSent: true
 		})
 
-		requester.runErrorHandler(catchAllErrors)
+		await requester.runErrorHandler(catchAllErrors)
 
 		requester.expectResponse({
 			status: (statusMethod: jest.Mock<any, any>) => {
@@ -43,14 +45,66 @@ describe("Server: Catching all errors", () => {
 		})
 	})
 
-	it.todo("redirect to error page if it can accept HTML media type")
+	it("redirect to root if it can accept HTML media type", async () => {
+		requester.customizeRequest({
+			accepts: jest.fn(mediaType => mediaType === HTML_MEDIA_TYPE)
+		})
+		const error = new BaseError(
+			"0",
+			RequestEnvironment.status.BAD_REQUEST,
+			"title",
+			"message")
 
-	it("can output common error if it only accepts JSON:API media type", () => {
+		await requester.runErrorHandler(catchAllErrors, error)
+
+		requester.expectResponse({
+			redirect: (redirectMethod: jest.Mock<any, any>) => {
+				expect(redirectMethod).toHaveBeenCalled()
+				expect(redirectMethod.mock.calls[0][0]).toContain(URLMaker.makeBaseURL())
+				expect(redirectMethod.mock.calls[0][0]).toContain(
+					Buffer.from(JSON.stringify(error.toJSON())).toString("base64url")
+				)
+			},
+			end: (endMethod: jest.Mock<any, any>) => {
+				expect(endMethod).toHaveBeenCalledTimes(1)
+			}
+		})
+	})
+
+	it("redirect to custom redirect URL if it can accept HTML media type", async () => {
+		requester.customizeRequest({
+			accepts: jest.fn(mediaType => mediaType === HTML_MEDIA_TYPE)
+		})
+		const customRedirectURL = `${URLMaker.makeBaseURL()}/log_in`
+		const error = new BaseError(
+			"0",
+			RequestEnvironment.status.BAD_REQUEST,
+			"title",
+			"message",
+			customRedirectURL)
+
+		await requester.runErrorHandler(catchAllErrors, error)
+
+		requester.expectResponse({
+			redirect: (redirectMethod: jest.Mock<any, any>) => {
+				expect(redirectMethod).toHaveBeenCalled()
+				expect(redirectMethod.mock.calls[0][0]).toContain(customRedirectURL)
+				expect(redirectMethod.mock.calls[0][0]).toContain(
+					Buffer.from(JSON.stringify(error.toJSON())).toString("base64url")
+				)
+			},
+			end: (endMethod: jest.Mock<any, any>) => {
+				expect(endMethod).toHaveBeenCalledTimes(1)
+			}
+		})
+	})
+
+	it("can output common error if it only accepts JSON:API media type", async () => {
 		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})
 
-		requester.runErrorHandler(catchAllErrors)
+		await requester.runErrorHandler(catchAllErrors)
 
 		requester.expectResponse({
 			status: (statusMethod: jest.Mock<any, any>) => {
@@ -71,7 +125,7 @@ describe("Server: Catching all errors", () => {
 		})
 	})
 
-	it("can output custom error if it only accepts JSON:API media type", () => {
+	it("can output custom error if it only accepts JSON:API media type", async () => {
 		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})
@@ -81,7 +135,7 @@ describe("Server: Catching all errors", () => {
 			"title",
 			"message")
 
-		requester.runErrorHandler(catchAllErrors, error)
+		await requester.runErrorHandler(catchAllErrors, error)
 
 		requester.expectResponse({
 			status: (statusMethod: jest.Mock<any, any>) => {
