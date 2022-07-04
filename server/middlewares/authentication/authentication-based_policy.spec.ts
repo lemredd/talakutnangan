@@ -1,5 +1,6 @@
 import MockRequester from "~/set-ups/mock_requester"
 
+import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "./authentication-based_policy"
 
 describe("Middleware: Authenticated-Based Policy", () => {
@@ -24,7 +25,11 @@ describe("Middleware: Authenticated-Based Policy", () => {
 
 		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
-		requester.expectFailure(requester.status.UNAUTHORIZED)
+		requester.expectNext([
+			[
+				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
+			]
+		])
 	})
 
 	it("can allow known users if known are expected", async () => {
@@ -47,6 +52,10 @@ describe("Middleware: Authenticated-Based Policy", () => {
 
 		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
-		requester.expectFailure(requester.status.UNAUTHORIZED)
+		requester.expectNext([
+			[
+				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
+			]
+		])
 	})
 })
