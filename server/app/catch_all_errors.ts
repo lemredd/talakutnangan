@@ -35,7 +35,7 @@ export default function(error: Error, request: Request, response: Response, next
 
 			const getEncodedError = Buffer.from(JSON.stringify(unitError)).toString("base64url")
 
-			response.redirect(`Location: ${redirectURL}?error=${getEncodedError}`)
+			response.redirect(`${redirectURL}?error=${getEncodedError}`)
 		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
 			let unitError: UnitError = {
 				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
