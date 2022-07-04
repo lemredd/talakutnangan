@@ -1,9 +1,11 @@
+import { Buffer } from "buffer"
 import { UnitError } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
 
 import Log from "!/helpers/log"
 import BaseError from "$!/errors/base"
+import URLMaker from "$!/singletons/url_maker"
 import RequestEnvironment from "$/helpers/request_environment"
 
 /**
@@ -18,8 +20,22 @@ export default function(error: Error, request: Request, response: Response, next
 		Log.errorMessage("middleware", `Cannot write the error at "${request.path}"`)
 	} else {
 		if (request.accepts(HTML_MEDIA_TYPE)) {
-			// TODO: Redirect to error page
-			response.status(RequestEnvironment.status.INTERNAL_SERVER_ERROR).end()
+			let unitError: UnitError = {
+				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
+				code: "-1",
+				title: "Unknown",
+				detail: error.message
+			}
+			let redirectURL = URLMaker.makeBaseURL()
+
+			if (error instanceof BaseError) {
+				unitError = error.toJSON()
+				redirectURL = error.redirectURL ?? redirectURL
+			}
+
+			const getEncodedError = Buffer.from(JSON.stringify(unitError)).toString("base64url")
+
+			response.redirect(`Location: ${redirectURL}?error=${getEncodedError}`)
 		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
 			let unitError: UnitError = {
 				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
