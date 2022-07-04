@@ -1,4 +1,6 @@
 import flushPromises from "flush-promises"
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import "~/set-ups/email.set_up"
@@ -38,6 +40,7 @@ describe("POST /api/user/import", () => {
 		expect(response.body.data).toHaveLength(3)
 		expect(response.body.included).toHaveLength(4)
 
+		await flushPromises() // Policy middleware runs
 		await flushPromises() // Middleware intermediate runs
 		await flushPromises() // E-mail template read for first user
 		await flushPromises() // E-mail template read for second user
@@ -78,6 +81,7 @@ describe("POST /api/user/import", () => {
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
+		// TODO: Output the validation error in better format
 		const response = await App.request
 			.post("/api/user/import")
 			.field("kind", "student")
@@ -106,6 +110,7 @@ describe("POST /api/user/import", () => {
 			.field("roles[]", [ sampleRole.name ])
 			.attach("importedCSV", path)
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
