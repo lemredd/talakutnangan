@@ -1,6 +1,9 @@
-import type { PageProps as BasePageProps } from "$/types/server"
+import type { Serializable } from "$/types/database"
+import type { PageProps as BasePageProps, UnitError } from "$/types/server"
 
-export type PageProps = BasePageProps
+export interface PageProps extends BasePageProps {
+	parsedUnitError: UnitError & Serializable
+}
 
 // The `pageContext` that are available in both on the server-side and browser-side
 export type PageContext = {
