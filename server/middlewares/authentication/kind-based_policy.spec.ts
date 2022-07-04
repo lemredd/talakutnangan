@@ -1,5 +1,6 @@
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
+import AuthorizationError from "$!/errors/authorization"
 
 import KindBasedPolicy from "./kind-based_policy"
 
@@ -55,6 +56,10 @@ describe("Middleware: Kind-Based Policy", () => {
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
-		requester.expectFailure(requester.status.UNAUTHORIZED)
+		requester.expectNext([
+			[
+				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
+			]
+		])
 	})
 })
