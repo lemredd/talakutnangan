@@ -46,10 +46,22 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 			</body>
 		</html>`
 
-	return {
+	const responseDocument = {
 		documentHtml,
 		pageContext: {
 			// We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
 		},
 	}
+
+	if (pageContext.pageProps.parsedUnitError) {
+		const rawStatus = pageContext.pageProps.parsedUnitError.status
+		const parsedStatus = Number(rawStatus)
+		if(!Number.isNaN(parsedStatus) && parsedStatus >= 400 && parsedStatus < 600) {
+			responseDocument.pageContext = {
+				errorStatus: parsedStatus
+			}
+		}
+	}
+
+	return responseDocument
 }
