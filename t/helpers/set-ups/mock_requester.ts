@@ -91,6 +91,16 @@ export default class<T extends Request> extends RequestEnvironment {
 		}
 	}
 
+	expectNext(expectedParameterCheckers: any[][]): void {
+		expect(this.next).toHaveBeenCalled()
+
+		expectedParameterCheckers.forEach((parameterCheckers, i) => {
+			parameterCheckers.forEach((check, j) => {
+				check((this.next as jest.Mock<any, any>).mock.calls[i][j])
+			})
+		})
+	}
+
 	reset() {
 		const oldProperties = this.oldProperties
 		for (const key in oldProperties) {
