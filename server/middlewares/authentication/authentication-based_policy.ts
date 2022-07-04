@@ -1,5 +1,7 @@
-import Policy from "!/bases/policy"
 import type { Request } from "!/types/dependent"
+
+import Policy from "!/bases/policy"
+import AuthorizationError from "$!/errors/authorization"
 
 /**
  * Creates middleware to only allow guest or known users only depending on argument.
@@ -18,7 +20,14 @@ export default class extends Policy {
 		this.targetAuthenticationState = targetAuthenticationState
 	}
 
-	mayAllow(request: Request): boolean {
-		return request.isAuthenticated() === this.targetAuthenticationState
+	async authorize(request: Request): Promise<void> {
+		if (request.isAuthenticated() !== this.targetAuthenticationState) {
+			const reason = this.targetAuthenticationState
+				? "The user must be logged in to invoke the action."
+				: "The user must be logged out to invoke the action."
+
+			// TODO: Add redirect URL
+			throw new AuthorizationError(reason)
+		}
 	}
 }
