@@ -8,7 +8,7 @@ export default class AuthorizationError extends BaseError {
 	static CODE: string = "1"
 	static STATUS: number = RequestEnvironment.status.UNAUTHORIZED
 
-	constructor(message: string = "User is not allowed to invoke the action") {
+	constructor(message: string = "User is not allowed to invoke the action.") {
 		super(
 			AuthorizationError.CODE,
 			AuthorizationError.STATUS,

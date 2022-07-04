@@ -23,7 +23,7 @@ export default class extends AuthenticationBasedPolicy {
 	async authorize(request: AuthenticatedRequest): Promise<void> {
 		await super.authorize(request)
 		if(request.user.kind !== this.kind) {
-			throw new AuthorizationError("Correct user kind can invoke the action")
+			throw new AuthorizationError("Correct user kind can invoke the action.")
 		}
 	}
 }
