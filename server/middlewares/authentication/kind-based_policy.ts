@@ -1,6 +1,7 @@
 import type { UserKind } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
+import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 /**
@@ -19,7 +20,10 @@ export default class extends AuthenticationBasedPolicy {
 		this.kind = kind
 	}
 
-	mayAllow(request: AuthenticatedRequest): boolean {
-		return super.mayAllow(request) && request.user.kind === this.kind
+	async authorize(request: AuthenticatedRequest): Promise<void> {
+		await super.authorize(request)
+		if(request.user.kind !== this.kind) {
+			throw new AuthorizationError("Correct user kind can invoke the action")
+		}
 	}
 }
