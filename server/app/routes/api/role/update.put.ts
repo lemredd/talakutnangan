@@ -2,20 +2,23 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
+import { UPDATE } from "$/permissions/role_combinations"
 import JSONController from "!/common_controllers/json_controller"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { role as permissionGroup } from "$/permissions/permission_list"
+import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Use a permission-based policy
-		return CommonMiddlewareList.knownOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			UPDATE
+		])
 	}
 
 	get bodyValidationRules(): object {
 		// TODO: Add more constraints in role fields
-		// TODO: Check if `min` and `max` rules can accept hex argument instead of decimeal.
+		// TODO: Check if `min` and `max` rules can accept hex argument instead of decimal.
 		return {
 			name:					[ "required", "string" ],
 			departmentFlags:	[ "required", "numeric" ],

@@ -20,10 +20,10 @@ import {
 
 import PermissionGroup from "$/permissions/base"
 
-const profileColumnName = "profileFlags"
+const userColumnName = "userFlags"
 
-type ProfileFlags = { [profileColumnName]: number }
-type Permissions =
+type UserFlags = { [userColumnName]: number }
+export type Permissions =
 	| OperationPermission
 	| LevelPermission
 	| "resetPassword"
@@ -33,8 +33,8 @@ type Permissions =
  *
  * This is safe to use in client-side.
  */
-export default class extends PermissionGroup<ProfileFlags, Permissions> {
-	get name(): string { return profileColumnName }
+export default class extends PermissionGroup<UserFlags, Permissions> {
+	get name(): string { return userColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([

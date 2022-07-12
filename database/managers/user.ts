@@ -27,7 +27,6 @@ import StudentDetail from "%/models/student_detail"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 import BaseManager from "%/managers/base"
-import Serializer from "%/transformers/serializer"
 import UserTransformer from "%/transformers/user"
 
 import hash from "!/helpers/auth/hash"
@@ -43,6 +42,15 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
 
 	get transformer(): UserTransformer { return new UserTransformer() }
+
+	get singleReadPipeline(): Pipe<
+		FindAndCountOptions<User>,
+		CommonConstraints & { criteria: Criteria }
+	>[] {
+		return [
+			includeRoleAndDepartment
+		]
+	}
 
 	get listPipeline(): Pipe<
 		FindAndCountOptions<User>,
