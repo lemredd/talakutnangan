@@ -6,30 +6,20 @@
 -->
 <template>
 	<div class="consultations-container ">
-				<div class="p-3 md:justify-end md:flex" >
-						<p class="r">Consultations</p>
-						<button class="material-icons flex">arrow_back_ios</button>
-						<button class="material-icons flex">search</button>
-						<button class="material-icons flex">add</button>
 		<section class="consultations-picker left">
+			<div class="consultations-list-header p-3">
+				<h2 class="flex-1">Consultations</h2>
+				<button class="material-icons expand-or-collapse">chevron_left</button> <!-- TODO: apply functionality -->
+				<button class="material-icons search">search</button> <!-- TODO: Apply functionality -->
+				<button class="material-icons add">add</button> <!-- TODO: Apply functionality -->
+			</div>
+			<div class="consultations-list">
+				<div class="mx-auto max-w-[max-content] no-consultations" v-if="!consultations.length">
+					<img class="mx-auto" :src="SadIcon" />
+					<h2>There are no consultations yet...</h2>
 				</div>
-				<img class="img" :src="SadIcon" />
-				<p>Click add button to create a consultation</p>
-				<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-						<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
+				<div v-for="consultation in consultations" class="consultation p-2 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] hover:bg-gray-300 justify-between">
+				</div>
 			</div>
 		</section>
 
