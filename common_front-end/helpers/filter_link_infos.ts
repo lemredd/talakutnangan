@@ -4,11 +4,11 @@ import type PermissionGroup from "$/permissions/base"
 
 export default function<T, U extends PermissionGroup<any, T>>(
 	context: DeserializedPageContext,
-	linkInfos: ConditionalLinkInfo<T, U>[]
+	conditionalLinkInfos: ConditionalLinkInfo<T, U>[]
 ): LinkInfo[] {
 	const { userProfile } = context.pageProps
 
-	linkInfos.filter(linkInfo => {
+	const filteredLinkInfos = conditionalLinkInfos.filter(linkInfo => {
 		/**
 		 * A = user is guest
 		 * B = condition states that user must be guest
@@ -28,15 +28,24 @@ export default function<T, U extends PermissionGroup<any, T>>(
 		 *    (¬A ∧ C ∧ (¬D ∨ (D ∧ E))) ∨ (A ∧ B) ∨ (¬B ∧ ¬C)
 		 */
 		return (
-			!linkInfo.mustBeGuest && userProfile != null
+			!linkInfo.mustBeGuest
+			&& userProfile != null
 			&& (
 				linkInfo.perimissionGroup == null
-				|| (true /** check if has one role permitted */)
+				|| (
+					linkInfo.permissionCombinations !== null
+					&& linkInfo.perimissionGroup.hasOneRoleAllowed(
+						userProfile.data.role.data,
+						linkInfo.permissionCombinations
+					)
+				)
 			)
 		)
 		|| (!linkInfo.mustBeGuest && linkInfo.permissionCombinations == null)
 		|| (linkInfo.mustBeGuest && userProfile == null)
 	})
 
-	return  []
+	return filteredLinkInfos.reduce<LinkInfo[]>((previousLinkInfo, currentlinkInfo) => [
+		...previousLinkInfo, ...currentlinkInfo.links
+	], [])
 }
