@@ -6,13 +6,12 @@
 -->
 <template>
 	<div class="consultations-container flex">
-		<section class="left">
-			<div class="">
 				<div class="p-3 md:justify-end md:flex" >
 						<p class="r">Consultations</p>
 						<button class="material-icons flex">arrow_back_ios</button>
 						<button class="material-icons flex">search</button>
 						<button class="material-icons flex">add</button>
+		<section class="consultations-picker left">
 				</div>
 				<img class="img" :src="SadIcon" />
 				<p>Click add button to create a consultation</p>
@@ -34,7 +33,7 @@
 			</div>
 		</section>
 
-		<section class="right">
+		<section class="selected-consultation right">
 			<p>Sample</p>
 			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
 			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
