@@ -55,8 +55,12 @@ footer {
 </style>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
 @import "@styles/mixins.scss";
 
+.consultations-container, .consultations-list-header {
+	@apply flex;
+}
 .consultations-container {
 	section {
 		@include useContentBaseHeight;
