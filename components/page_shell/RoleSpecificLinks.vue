@@ -123,7 +123,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		mustBeGuest: true,
 		permissionCombinations: null,
-		perimissionGroup: null,
+		permissionGroup: null,
 		links: [
 			{
 				name: "Log in",
@@ -135,7 +135,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		mustBeGuest: false,
 		permissionCombinations: [],
-		perimissionGroup: null,
+		permissionGroup: null,
 		links: [
 			{
 				name: "Notifications",
@@ -151,6 +151,18 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				name: "User Settings",
 				path: "/settings",
 				icon: "account_circle"
+			}
+		]
+	},
+	{
+		mustBeGuest: false,
+		permissionCombinations: [],
+		permissionGroup: null,
+		links: [
+			{
+				name: "Consultations",
+				path: "/consultations",
+				icon: "chat"
 			}
 		]
 	}
@@ -175,7 +187,7 @@ const linksSpecifiers = [
 				path: "/notifications",
 				icon: "notifications"
 			},
-			{
+			{// Converted
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
@@ -205,7 +217,7 @@ const linksSpecifiers = [
 				path: "/manage",
 				icon: "group"
 			},
-			{
+			{// Converted
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
