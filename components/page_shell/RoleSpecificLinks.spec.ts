@@ -16,7 +16,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				}
 			},
 			props: {
-				role: "student_or_employee"
+				role: "student_or_employee",
+				pageProps: {
+					parsedUnitError: {}
+				}
 			}
 		})
 		const link = wrapper.find("link-stub:first-of-type")
@@ -37,7 +40,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				}
 			},
 			props: {
-				role: "guest"
+				role: "guest",
+				pageProps: {
+					parsedUnitError: {}
+				}
 			}
 		})
 		const link = wrapper.find("link-stub:first-of-type")
@@ -58,7 +64,10 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				}
 			},
 			props: {
-				role: "student_or_employee"
+				role: "student_or_employee",
+				pageProps: {
+					parsedUnitError: {}
+				}
 			}
 		})
 
