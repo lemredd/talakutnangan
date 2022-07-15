@@ -1,0 +1,24 @@
+{
+	"preset": "ts-jest",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts"
+	],
+
+	"moduleNameMapper": {
+		"\\$/(.*)": "<rootDir>/shareable/$1",
+		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"~/(.*)": "<rootDir>/t/helpers/$1"
+	},
+
+	"setupFilesAfterEnv": [],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"common_back-end/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "node"
+}

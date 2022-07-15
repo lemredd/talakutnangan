@@ -11,7 +11,7 @@ import PageMiddleware from "./page_middleware"
 describe("Back-end Base: Page Middleware Handler Generation", () => {
 	it("can make handlers with no end handler", () => {
 		class PolicyA extends Policy {
-			mayAllow(): boolean { return true }
+			async authorize(): Promise<void> { return }
 		}
 
 		class PageMiddlewareA extends PageMiddleware {

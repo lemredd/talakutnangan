@@ -1,5 +1,6 @@
-import { StatusCodes } from "http-status-codes"
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
 
+import RequestEnvironment from "$!/singletons/request_environment"
 import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 import Route from "!/app/routes/api/user/log_in.post"
@@ -19,7 +20,7 @@ describe("POST /api/user/log_in", () => {
 				password: user.password
 			})
 
-		expect(response.statusCode).toBe(StatusCodes.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("token")
 	})
 
@@ -31,7 +32,8 @@ describe("POST /api/user/log_in", () => {
 				password: "12345678"
 			})
 
-		expect(response.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY)
+		// TODO: Output the validation error in better format
+		expect(response.statusCode).toBe(RequestEnvironment.status.MOVED_TEMPORARILY)
 	})
 
 	it("cannot be accessed by authenticated users", async () => {
@@ -43,8 +45,9 @@ describe("POST /api/user/log_in", () => {
 				email: user.email,
 				password: user.password
 			})
+			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 		expect(response.body).toHaveProperty("errors")
 	})
 })

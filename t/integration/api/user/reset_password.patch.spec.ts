@@ -1,4 +1,5 @@
-import { StatusCodes } from "http-status-codes"
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
 import User from "%/models/user"
@@ -25,7 +26,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 			.patch(`/api/user/reset_password/${student.id}`)
 			.set("Cookie", cookie)
 
-		expect(response.statusCode).toBe(StatusCodes.NO_CONTENT)
+		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ where: { id: student.id } })
 		expect(compare("12345678", updatedStudent!.password)).resolves.toBeTruthy()
@@ -41,8 +42,9 @@ describe("PATCH /api/user/reset_password/:id", () => {
 		const response = await App.request
 			.patch(`/api/user/reset_password/${student.id}`)
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
 
 	it("cannot be accessed by guest users", async () => {
@@ -50,7 +52,8 @@ describe("PATCH /api/user/reset_password/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/reset_password/${student.id}`)
+			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED)
+		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
 })

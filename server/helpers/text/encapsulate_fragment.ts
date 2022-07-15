@@ -5,7 +5,7 @@ import { Processor } from "windicss/lib"
 import { CSSParser } from "windicss/utils/parser"
 import { HTMLParser } from "windicss/utils/parser"
 
-import getRoot from "!/helpers/get_root"
+import getRoot from "$!/helpers/get_root"
 
 /**
  * Encapsulates the HTML fragment converted from Markdown syntax.

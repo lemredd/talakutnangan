@@ -1,4 +1,5 @@
-import RequestEnvironment from "!/helpers/request_environment"
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
@@ -40,12 +41,13 @@ describe("GET /api/user/list", () => {
 		const response = await App.request
 			.get("/api/user/list")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
 
 	it("cannot be accessed by a guest user", async () => {
-		const response = await App.request.get("/api/user/list")
+		const response = await App.request.get("/api/user/list").accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})

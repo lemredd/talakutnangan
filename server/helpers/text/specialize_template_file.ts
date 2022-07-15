@@ -1,7 +1,7 @@
 import { readFile } from "fs"
 import { promisify } from "util"
+import getRoot from "$!/helpers/get_root"
 import specializeTemplate from "!/helpers/text/specialize_template"
-import getRoot from "!/helpers/get_root"
 
 export default async function(templatePathFromRoot: string, variables: object): Promise<string> {
 	const completeTemplatePath = `${getRoot()}/${templatePathFromRoot}`

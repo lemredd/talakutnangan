@@ -1,4 +1,4 @@
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import UserManager from "%/managers/user"
 
 import App from "~/set-ups/app"

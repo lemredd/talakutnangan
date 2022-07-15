@@ -1,15 +1,28 @@
 import { renderToString } from "@vue/server-renderer"
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
-import { createApp } from "./app"
-import logoUrl from "@assets/logo_bg_transparent.svg"
-import type { PageContext } from "./types"
+
 import type { PageContextBuiltIn } from "vite-plugin-ssr"
+import type { PageContext } from "#/types"
+
+import { createApp } from "#/app"
+import ErrorPage from "#/_error.page.vue"
+import logoUrl from "@assets/logo_bg_transparent.svg"
 
 export { render }
+
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ["pageProps", "urlPathname", "routeParams", "state", "_", "render"]
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
+	// Modify the page to show for errors
+	if (pageContext.pageProps.parsedUnitError) {
+		pageContext.Page = ErrorPage
+		pageContext.pageProps = {
+			is404: false,
+			...pageContext.pageProps
+		}
+	}
+
 	const app = createApp(pageContext)
 	const appHtml = await renderToString(app)
 
@@ -33,10 +46,22 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 			</body>
 		</html>`
 
-	return {
+	const responseDocument = {
 		documentHtml,
 		pageContext: {
 			// We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
 		},
 	}
+
+	if (pageContext.pageProps.parsedUnitError) {
+		const rawStatus = pageContext.pageProps.parsedUnitError.status
+		const parsedStatus = Number(rawStatus)
+		if(!Number.isNaN(parsedStatus) && parsedStatus >= 400 && parsedStatus < 600) {
+			responseDocument.pageContext = {
+				errorStatus: parsedStatus
+			}
+		}
+	}
+
+	return responseDocument
 }
