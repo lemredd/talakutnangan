@@ -161,6 +161,28 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				icon: "account_circle"
 			}
 		]
+	},
+	{
+		mustBeGuest: false,
+		permissionCombinations: [],
+		perimissionGroup: null,
+		links: [
+			{
+				name: "Notifications",
+				path: "/notifications",
+				icon: "notifications"
+			},
+			{
+				name: "Forum",
+				path: "/forum",
+				icon: "forum"
+			},
+			{
+				name: "User Settings",
+				path: "/settings",
+				icon: "account_circle"
+			}
+		]
 	}
 ]
 
@@ -178,7 +200,7 @@ const linksSpecifiers = [
 	{
 		role: "student_or_employee",
 		links: [
-			{
+			{// Converted
 				name: "Notifications",
 				path: "/notifications",
 				icon: "notifications"
@@ -188,12 +210,12 @@ const linksSpecifiers = [
 				path: "/consultations",
 				icon: "chat"
 			},
-			{
+			{// Converted
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
 			},
-			{
+			{// Converted
 				name: "User Settings",
 				path: "/settings",
 				icon: "account_circle"
@@ -203,7 +225,7 @@ const linksSpecifiers = [
 	{
 		role: "user_manager",
 		links: [
-			{
+			{// Converted
 				name: "Notifications",
 				path: "/notifications",
 				icon: "notifications"
@@ -218,12 +240,12 @@ const linksSpecifiers = [
 				path: "/consultations",
 				icon: "chat"
 			},
-			{
+			{// Converted
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
 			},
-			{
+			{// Converted
 				name: "User Settings",
 				path: "/settings",
 				icon: "account_circle"
@@ -233,7 +255,7 @@ const linksSpecifiers = [
 	{
 		role: "admin",
 		links: [
-			{
+			{// Converted
 				name: "Notifications",
 				path: "/notifications",
 				icon: "notifications"
@@ -243,12 +265,12 @@ const linksSpecifiers = [
 				path: "/manage",
 				icon: "group"
 			},
-			{
+			{// Converted
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
 			},
-			{
+			{// Converted
 				name: "User Settings",
 				path: "/settings",
 				icon: "account_circle"
