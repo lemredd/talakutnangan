@@ -1,8 +1,8 @@
 <!--
 	General tasks for other members:
-	TODO: Refactor all WindiCSS inline classes using @apply directive
-	TODO: Refactor HTML to Vue Components if applicable
-	TODO: Make use of mixins if applicable
+	TODO(others): Refactor all WindiCSS inline classes using @apply directive
+	TODO(others): Refactor HTML to Vue Components if applicable
+	TODO(others): Make use of mixins if applicable
 -->
 <template>
 	<div class="consultations-container ">
@@ -12,10 +12,10 @@
 				<!-- TODO(lead/button): apply functionality -->
 				<button class="material-icons expand-or-collapse">chevron_left</button>
 
-				<!-- TODO: Apply functionality -->
+				<!-- TODO(lead/button): Apply functionality -->
 				<button class="material-icons search">search</button>
 
-				<!-- TODO: Apply functionality -->
+				<!-- TODO(lead/button): Apply functionality -->
 				<button class="material-icons add">add</button>
 			</div>
 			<div class="consultations-list">
@@ -24,17 +24,17 @@
 					<h2>There are no consultations yet...</h2>
 				</div>
 				<div v-for="consultation in consultations" @click="pickConsultation(consultation.id)" class="consultation p-2 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] hover:bg-gray-300 justify-between">
-					<!-- TODO: should contain profile picture?  -->
+					<!-- TODO(others): should contain profile picture?  -->
 
 					<h3 class="consultation-title col-span-full font-400">{{ consultation.title }}</h3>
 
 					<small class="last-chat span">
-						<!-- TODO: must limit length -->
+						<!-- TODO(others): must limit length -->
 						{{ consultation.chats ? consultation.chats[consultation.chats.length-1] : "Start by saying hello!" }}
 					</small>
 
 					<div class="last-chat-time-sent">
-						<!-- TODO: Replace with real value soon -->
+						<!-- TODO(lead): Replace with real value soon -->
 						HH:MM
 					</div>
 				</div>
@@ -49,14 +49,14 @@
 					{{ selectedConsultation.title }}
 				</div>
 				<div class="selected-consultation-user-status row-start-2">
-					<!-- TODO: must base on user active status -->
+					<!-- TODO(lead): must base on user active status -->
 					User is online
 				</div>
 				<div class="controls row-span-full self-center">
-					<!-- TODO: Apply functionality -->
+					<!-- TODO(lead/button): Apply functionality -->
 					<button class="material-icons">video_camera_back</button>
 
-					<!-- TODO: Apply functionality -->
+					<!-- TODO(lead/button): Apply functionality -->
 					<button class="material-icons">more_horiz</button>
 				</div>
 			</div>
@@ -67,32 +67,32 @@
 						<li>Ticket: {{ selectedConsultation.ticket }}</li>
 						<li>Status: {{ selectedConsultation.status }}</li>
 
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<li><a href="#">View printable form (PDF)</a></li>
 					</ul>
 				</div>
 
 				<div class="chat-entry" v-for="chat in selectedConsultation.chats">
-				<!-- TODO_others: properly place chat entries -->
+				<!-- TODO(others): properly place chat entries -->
 					{{ chat }}
 				</div>
 			</div>
 			<div class="user-controls border-t p-3 flex">
 					<div class="left-controls">
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">more_horiz</button>
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">photo_camera</button>
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">image</button>
 					</div>
 					<div class="message-box flex-1 border">
 						<input type="text">
 					</div>
 					<div class="right-controls">
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">sentiment_satisfied</button>
-						<!-- TODO: Apply functionality -->
+						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">send</button>
 					</div>
 				</div>
