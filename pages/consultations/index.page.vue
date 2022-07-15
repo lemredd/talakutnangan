@@ -73,10 +73,8 @@ footer {
 		overflow-y: auto;
 
 		&.left {
-			width: min-content;
-		}
-		&.right {
 			flex: 1;
+			width: min-content;
 		}
 	}
 }
