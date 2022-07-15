@@ -145,7 +145,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	},
 	{
 		mustBeGuest: false,
-		kinds: null,
+		kinds: [],
 		permissionCombinations: [],
 		permissionGroup: null,
 		links: [
