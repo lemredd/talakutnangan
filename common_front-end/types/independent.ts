@@ -4,7 +4,7 @@
  * cannot be shareable since they are only used within the client.
  */
 
-import type { Serializable } from "$/types/database"
+import type { Serializable, UserKind } from "$/types/database"
 import type PermissionGroup from "$/permissions/base"
 
 /**
@@ -24,6 +24,7 @@ export interface UserProfile extends Serializable {
 	data: Serializable & {
 		type: "user",
 		id: number,
+		kind: UserKind,
 		role: Roles
 	}
 }
@@ -54,6 +55,12 @@ export interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 	 * If true, there should be no authenticated user
 	 */
 	mustBeGuest: boolean,
+
+	/**
+	 * If null, user may be unauthenticated
+	 * If string, will check if the
+	 */
+	kind: UserKind|null,
 
 	/**
 	 * If null, user may be unauthenticated
