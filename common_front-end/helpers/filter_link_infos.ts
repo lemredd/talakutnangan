@@ -44,7 +44,7 @@ export default function<T, U extends PermissionGroup<any, T>>(
 			&& linkInfo.permissionGroup !== null
 			&& linkInfo.permissionCombinations !== null
 			&& linkInfo.permissionGroup.hasOneRoleAllowed(
-				userProfile.data.role.data,
+				userProfile.data.roles.data,
 				linkInfo.permissionCombinations
 			)
 		const mustShowByAuthenticatedOnly = isAuthenticatedOnly !== hasMetCertainKind

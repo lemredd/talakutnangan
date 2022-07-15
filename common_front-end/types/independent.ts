@@ -25,7 +25,7 @@ export interface UserProfile extends Serializable {
 		type: "user",
 		id: number,
 		kind: UserKind,
-		role: Roles
+		roles: Roles
 	}
 }
 
