@@ -99,7 +99,10 @@ body.unscrollable {
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
-import { PageProps } from "#/types"
+
+import type { PageProps } from "#/types"
+import type PermissionGroup from "$/permissions/base"
+
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -114,6 +117,25 @@ type Props = {
 const { role } = defineProps<Props>()
 
 // Role
+interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
+	/**
+	 * If true, there should be no authenticated user
+	 */
+	mustBeGuest: boolean,
+
+	/**
+	 * If null, user may be unauthenticated.
+	 * If array, requires user to be authenticated and the link is allowed under certain permissions.
+	 */
+	permissionCombinations: T[][]|null,
+
+	/**
+	 * If null, user may be unauthenticated.
+	 * If class instance, indicates the group where the permission combinations belong.
+	 */
+	perimissionGroup: U|null
+}
+
 const isRoleGuest = role === "guest"
 const areRoleLinksShown = ref(false)
 const linksSpecifiers = [
