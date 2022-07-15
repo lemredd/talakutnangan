@@ -45,7 +45,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -124,7 +124,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -166,7 +166,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -240,7 +240,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -287,7 +287,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -371,7 +371,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -420,7 +420,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",
@@ -492,7 +492,7 @@ describe("Helper: Filter Link Infos", () => {
 						type: "user",
 						id: 1,
 						kind: "student",
-						role: {
+						roles: {
 							data: [
 								{
 									type: "role",

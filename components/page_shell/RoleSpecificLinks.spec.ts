@@ -19,7 +19,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 									type: "user",
 									id: 1,
 									kind: "student",
-									role: {
+									roles: {
 										data: []
 									}
 								}
@@ -82,7 +82,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 									type: "user",
 									id: 1,
 									kind: "student",
-									role: {
+									roles: {
 										data: []
 									}
 								}
