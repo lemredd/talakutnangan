@@ -8,7 +8,7 @@
 
 			<template #default>
 				<div class="role-links flex flex-col">
-					<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+					<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
 						</span>
@@ -25,7 +25,7 @@
 	</div>
 
 	<div class="links desktop">
-		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+		<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
@@ -100,11 +100,11 @@ body.unscrollable {
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
 
-import type { PageProps } from "#/types"
-import type { ConditionalLinkInfo } from "$@/types/independent"
+import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
+import filterLinkInfo from "$@/helpers/filter_link_infos"
 import { user } from "$/permissions/permission_list"
-import { Permissions as UserPermission } from "$/permissions/user_permissions"
+import RequestEnvironment from "$/helpers/request_environment"
 import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
@@ -113,15 +113,15 @@ import {
 	IMPORT_USERS,
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
+
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
-import RequestEnvironment from "$/helpers/request_environment"
 
 const emit = defineEmits(["toggle"])
+const pageContext = inject("pageContext") as DeserializedPageContext
 
 // Props
 type Props = {
-	pageProps: PageProps,
 	role: string
 }
 const { role } = defineProps<Props>()
@@ -201,101 +201,10 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	}
 ]
 
-const linksSpecifiers = [
-	{
-		role: "guest", // Converted
-		links: [
-			{
-				name: "login",
-				path: "/log_in",
-				icon: "account_circle"
-			}
-		]
-	},
-	{
-		role: "student_or_employee",
-		links: [
-			{// Converted
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
-			{// Converted
-				name: "Consultations",
-				path: "/consultations",
-				icon: "chat"
-			},
-			{// Converted
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
-			},
-			{// Converted
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
-			}
-		]
-	},
-	{
-		role: "user_manager",
-		links: [
-			{// Converted
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
-			{// Converted
-				name: "Manage Users",
-				path: "/manage",
-				icon: "group"
-			},
-			{// Converted
-				name: "Consultations",
-				path: "/consultations",
-				icon: "chat"
-			},
-			{// Converted
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
-			},
-			{// Converted
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
-			}
-		]
-	},
-	{
-		role: "admin",
-		links: [
-			{// Converted
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
-			{// Converted
-				name: "Manage Users",
-				path: "/manage",
-				icon: "group"
-			},
-			{// Converted
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
-			},
-			{// Converted
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
-			}
-		]
-	}
-]
-const determineRoleLinks = computed(function()  {
-	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
+const roleLinks = computed(function()  {
+	return filterLinkInfo(pageContext, linkInfos)
 })
+
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
