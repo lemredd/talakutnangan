@@ -65,7 +65,7 @@ export interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 	 * If null, user may be unauthenticated
 	 * If class instance, indicates the group where the permission combinations belong
 	 */
-	perimissionGroup: U|null,
+	permissionGroup: U|null,
 
 	/**
 	 * Array of links if it passes the conditions above

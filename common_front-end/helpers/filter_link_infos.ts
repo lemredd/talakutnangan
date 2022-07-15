@@ -31,10 +31,10 @@ export default function<T, U extends PermissionGroup<any, T>>(
 			!linkInfo.mustBeGuest
 			&& userProfile != null
 			&& (
-				linkInfo.perimissionGroup == null
+				linkInfo.permissionGroup == null
 				|| (
 					linkInfo.permissionCombinations !== null
-					&& linkInfo.perimissionGroup.hasOneRoleAllowed(
+					&& linkInfo.permissionGroup.hasOneRoleAllowed(
 						userProfile.data.role.data,
 						linkInfo.permissionCombinations
 					)
