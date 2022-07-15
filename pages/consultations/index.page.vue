@@ -67,8 +67,17 @@ footer {
 		overflow-y: auto;
 
 		&.left {
+			min-width: 100%;
+			border-right: 1px solid hsla(0,0%,0%,0.1);
+			.material-icons {
+				&.expand-or-collapse {
+					display: none;
+				}
+			}
+		}
+		&.right {
 			flex: 1;
-			width: min-content;
+			display: none;
 		}
 	}
 }
