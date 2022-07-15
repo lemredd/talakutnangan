@@ -103,6 +103,16 @@ import { computed, inject, ref, Ref } from "vue"
 import type { PageProps } from "#/types"
 import type { ConditionalLinkInfo } from "$@/types/independent"
 
+import { user } from "$/permissions/permission_list"
+import { Permissions as UserPermission } from "$/permissions/user_permissions"
+import {
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+	IMPORT_USERS,
+	RESET_PASSWORD
+} from "$/permissions/user_combinations"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -144,7 +154,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				path: "/notifications",
 				icon: "notifications"
 			},
-			{
+			{// TODO: Make permission combination for posts
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
@@ -166,6 +176,26 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
+			}
+		]
+	},
+	{
+		mustBeGuest: false,
+		kinds: null,
+		permissionCombinations: [
+			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+			IMPORT_USERS,
+			RESET_PASSWORD
+		],
+		permissionGroup: user,
+		links: [
+			{
+				name: "Manage Users",
+				path: "/manage",
+				icon: "group"
 			}
 		]
 	}
@@ -215,7 +245,7 @@ const linksSpecifiers = [
 				path: "/notifications",
 				icon: "notifications"
 			},
-			{
+			{// Converted
 				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
@@ -245,7 +275,7 @@ const linksSpecifiers = [
 				path: "/notifications",
 				icon: "notifications"
 			},
-			{
+			{// Converted
 				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
