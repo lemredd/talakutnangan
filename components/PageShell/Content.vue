@@ -8,24 +8,25 @@
 
 <style scoped lang="scss">
 @import "@styles/variables.scss";
+@import "@styles/mixins.scss";
 
 .content {
-		margin-top: $nav-height;
-		padding: 20px;
-		min-height: calc(100vh - $nav-height);
+	@include useContentBaseHeight;
+	margin-top: $nav-height;
+	padding: 20px;
 
-		&.login-content {
-			margin-top: 0;
-			padding: 0;
-			.container {
-				max-width: none;
-			}
+	&.login-content {
+		margin-top: 0;
+		padding: 0;
+		.container {
+			max-width: none;
+		}
 
-			footer {
-				display: none;
-			}
+		footer {
+			display: none;
 		}
 	}
+}
 </style>
 
 <script setup lang="ts">

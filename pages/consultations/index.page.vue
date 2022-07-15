@@ -63,18 +63,20 @@ footer {
 	display: none !important;
 }
 </style>
+
 <style scoped lang="scss">
+@import "@styles/mixins.scss";
+
 .consultations-container {
 	section {
-		height: calc(100vh - 20px - 56px);
+		@include useContentBaseHeight;
 		overflow-y: auto;
 
 		&.left {
-			flex: 1;
-
 			width: min-content;
 		}
 		&.right {
+			flex: 1;
 		}
 	}
 }
