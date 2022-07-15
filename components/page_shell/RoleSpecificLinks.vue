@@ -117,6 +117,12 @@ type Props = {
 const { role } = defineProps<Props>()
 
 // Role
+interface LinkInfo {
+	name: string,
+	path: string,
+	icon: string
+}
+
 interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 	/**
 	 * If true, there should be no authenticated user
@@ -124,16 +130,21 @@ interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 	mustBeGuest: boolean,
 
 	/**
-	 * If null, user may be unauthenticated.
-	 * If array, requires user to be authenticated and the link is allowed under certain permissions.
+	 * If null, user may be unauthenticated
+	 * If array, requires user to be authenticated and the link is allowed under certain permissions
 	 */
 	permissionCombinations: T[][]|null,
 
 	/**
-	 * If null, user may be unauthenticated.
-	 * If class instance, indicates the group where the permission combinations belong.
+	 * If null, user may be unauthenticated
+	 * If class instance, indicates the group where the permission combinations belong
 	 */
-	perimissionGroup: U|null
+	perimissionGroup: U|null,
+
+	/**
+	 * Array of links if it passes the conditions above
+	 */
+	links: LinkInfo[]
 }
 
 const isRoleGuest = role === "guest"
@@ -142,7 +153,8 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		mustBeGuest: true,
 		permissionCombinations: null,
-		perimissionGroup: null
+		perimissionGroup: null,
+		links: []
 	}
 ]
 
