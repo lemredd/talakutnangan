@@ -82,13 +82,16 @@ footer {
 	}
 }
 
-.r {
-	margin-right:130px;
-}
-
-.img{
-	position:relative;
-	margin-top: 200px;;
+@media screen and (min-width: $mobileViewport) {
+	.expand-or-collapse {
+		display: inline !important;
+	}
+	.left {
+		min-width: 40% !important;
+	}
+	.right {
+		display: initial !important;
+	}
 }
 </style>
 
