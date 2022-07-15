@@ -99,6 +99,7 @@ body.unscrollable {
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
+import { PageProps } from "#/types"
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -107,6 +108,7 @@ const emit = defineEmits(["toggle"])
 
 // Props
 type Props = {
+	pageProps: PageProps,
 	role: string
 }
 const { role } = defineProps<Props>()
