@@ -8,13 +8,13 @@ import type { Serializable } from "$/types/database"
 import type PermissionGroup from "$/permissions/base"
 
 /**
- * Shape of serialized role
+ * Shape of serialized roles
  */
-interface Role extends Serializable {
-	data: Serializable & {
+interface Roles extends Serializable {
+	data: (Serializable & {
 		type: "role",
 		id: number
-	}
+	})[]
 }
 
 /**
@@ -24,7 +24,7 @@ export interface UserProfile extends Serializable {
 	data: Serializable & {
 		type: "user",
 		id: number,
-		role: Role[]
+		role: Roles
 	}
 }
 
