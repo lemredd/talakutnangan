@@ -9,9 +9,14 @@
 		<section class="consultations-picker left">
 			<div class="consultations-list-header p-3">
 				<h2 class="flex-1">Consultations</h2>
-				<button class="material-icons expand-or-collapse">chevron_left</button> <!-- TODO: apply functionality -->
-				<button class="material-icons search">search</button> <!-- TODO: Apply functionality -->
-				<button class="material-icons add">add</button> <!-- TODO: Apply functionality -->
+				<!-- TODO(lead/button): apply functionality -->
+				<button class="material-icons expand-or-collapse">chevron_left</button>
+
+				<!-- TODO: Apply functionality -->
+				<button class="material-icons search">search</button>
+
+				<!-- TODO: Apply functionality -->
+				<button class="material-icons add">add</button>
 			</div>
 			<div class="consultations-list">
 				<div class="mx-auto max-w-[max-content] no-consultations" v-if="!consultations.length">
@@ -20,31 +25,39 @@
 				</div>
 				<div v-for="consultation in consultations" @click="pickConsultation(consultation.id)" class="consultation p-2 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] hover:bg-gray-300 justify-between">
 					<!-- TODO: should contain profile picture?  -->
+
 					<h3 class="consultation-title col-span-full font-400">{{ consultation.title }}</h3>
+
 					<small class="last-chat span">
-						{{ consultation.chats ? consultation.chats[consultation.chats.length-1] : "Start by saying hello!" }}
 						<!-- TODO: must limit length -->
+						{{ consultation.chats ? consultation.chats[consultation.chats.length-1] : "Start by saying hello!" }}
 					</small>
+
 					<div class="last-chat-time-sent">
-						HH:MM
 						<!-- TODO: Replace with real value soon -->
+						HH:MM
 					</div>
 				</div>
 			</div>
 		</section>
 
 		<section class="selected-consultation flex flex-col right">
+			<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
+
 			<div class="selected-consultation-header border-b p-3 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] justify-between">
 				<div class="selected-consultation-title">
 					{{ selectedConsultation.title }}
 				</div>
 				<div class="selected-consultation-user-status row-start-2">
-					User is online
 					<!-- TODO: must base on user active status -->
+					User is online
 				</div>
 				<div class="controls row-span-full self-center">
-					<button class="material-icons">video_camera_back</button> <!-- TODO: Apply functionality -->
-					<button class="material-icons">more_horiz</button> <!-- TODO: Apply functionality -->
+					<!-- TODO: Apply functionality -->
+					<button class="material-icons">video_camera_back</button>
+
+					<!-- TODO: Apply functionality -->
+					<button class="material-icons">more_horiz</button>
 				</div>
 			</div>
 			<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
@@ -53,30 +66,36 @@
 					<ul class="selected-consultation-additional-details bg-gray-300 p-5">
 						<li>Ticket: {{ selectedConsultation.ticket }}</li>
 						<li>Status: {{ selectedConsultation.status }}</li>
-						<li><a href="#">View printable form (PDF)</a></li> <!-- TODO: Apply functionality -->
+
+						<!-- TODO: Apply functionality -->
+						<li><a href="#">View printable form (PDF)</a></li>
 					</ul>
 				</div>
 
 				<div class="chat-entry" v-for="chat in selectedConsultation.chats">
+				<!-- TODO_others: properly place chat entries -->
 					{{ chat }}
 				</div>
-				<!-- TODO_others: properly place chat entries -->
 			</div>
 			<div class="user-controls border-t p-3 flex">
 					<div class="left-controls">
-						<button class="material-icons">more_horiz</button> <!-- TODO: Apply functionality -->
-						<button class="material-icons">photo_camera</button> <!-- TODO: Apply functionality -->
-						<button class="material-icons">image</button> <!-- TODO: Apply functionality -->
+						<!-- TODO: Apply functionality -->
+						<button class="material-icons">more_horiz</button>
+						<!-- TODO: Apply functionality -->
+						<button class="material-icons">photo_camera</button>
+						<!-- TODO: Apply functionality -->
+						<button class="material-icons">image</button>
 					</div>
 					<div class="message-box flex-1 border">
 						<input type="text">
 					</div>
 					<div class="right-controls">
-						<button class="material-icons">sentiment_satisfied</button> <!-- TODO: Apply functionality -->
-						<button class="material-icons">send</button> <!-- TODO: Apply functionality -->
+						<!-- TODO: Apply functionality -->
+						<button class="material-icons">sentiment_satisfied</button>
+						<!-- TODO: Apply functionality -->
+						<button class="material-icons">send</button>
 					</div>
 				</div>
-			<!-- TODO_others(mobile): should view once consultation is clicked in picker (by route) -->
 		</section>
 	</div>
 </template>
@@ -141,7 +160,7 @@ import { computed, ref } from "vue"
 let input = ref("")
 
 type Consultation = {
-	// TODO: type will change soon
+	// TODO(lead/types): type will change soon
 	id: number
 	studentId: number
 	employeeId: number
@@ -200,7 +219,55 @@ const consultations = ref<Consultation[]>([
 		],
 		isGroup: false,
 		status: "ongoing"
-	}
+	},
+	{
+		id: 1,
+		studentId: 0,
+		employeeId: 0,
+		ticket: 0,
+		title: "Sample Consultation2",
+		chats: [
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat",
+			"sample chat"
+		],
+		isGroup: false,
+		status: "ongoing"
+	},
 ])
 const selectedConsultationId = ref<number>(0)
 const selectedConsultation = computed(function() {
