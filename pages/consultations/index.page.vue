@@ -1,3 +1,9 @@
+<!--
+	General tasks for other members:
+	TODO: Refactor all WindiCSS inline classes using @apply directive
+	TODO: Refactor HTML to Vue Components if applicable
+	TODO: Make use of mixins if applicable
+-->
 <template>
 	<div class="consultations-container flex">
 		<section class="left">
