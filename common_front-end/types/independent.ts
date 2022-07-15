@@ -4,7 +4,38 @@
  * cannot be shareable since they are only used within the client.
  */
 
+import type { Serializable } from "$/types/database"
 import type PermissionGroup from "$/permissions/base"
+
+/**
+ * Shape of serialized role
+ */
+interface Role extends Serializable {
+	data: Serializable & {
+		type: "role",
+		id: number
+	}
+}
+
+/**
+ * Shape of serialized user profile if authenticated
+ */
+export interface UserProfile extends Serializable {
+	data: Serializable & {
+		type: "user",
+		id: number,
+		role: Role[]
+	}
+}
+
+/**
+ * Shape of expected page context parameter of common front-end functions
+ */
+export interface DeserializedPageContext extends Serializable {
+	pageProps: {
+		userProfile: UserProfile|null
+	}
+}
 
 /**
  * Shape of link info
