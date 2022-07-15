@@ -5,7 +5,7 @@
 	TODO: Make use of mixins if applicable
 -->
 <template>
-	<div class="consultations-container flex">
+	<div class="consultations-container ">
 				<div class="p-3 md:justify-end md:flex" >
 						<p class="r">Consultations</p>
 						<button class="material-icons flex">arrow_back_ios</button>
