@@ -122,7 +122,7 @@ const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		mustBeGuest: true,
-		kind: null,
+		kinds: null,
 		permissionCombinations: null,
 		permissionGroup: null,
 		links: [
@@ -135,7 +135,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	},
 	{
 		mustBeGuest: false,
-		kind: null,
+		kinds: null,
 		permissionCombinations: [],
 		permissionGroup: null,
 		links: [
@@ -158,7 +158,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	},
 	{
 		mustBeGuest: false,
-		kind: "student",
+		kinds: [ "student", "reachable_employee" ],
 		permissionCombinations: [],
 		permissionGroup: null,
 		links: [

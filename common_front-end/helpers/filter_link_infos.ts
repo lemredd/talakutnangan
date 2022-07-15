@@ -35,8 +35,8 @@ export default function<T, U extends PermissionGroup<any, T>>(
 			&& userProfile !== null
 			&& (
 				(
-					linkInfo.kind !== null
-					&& linkInfo.kind === userProfile.data.kind
+					linkInfo.kinds !== null
+					&& linkInfo.kinds.includes(userProfile.data.kind)
 				)
 				|| linkInfo.permissionGroup === null
 				|| (

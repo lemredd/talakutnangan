@@ -58,9 +58,9 @@ export interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 
 	/**
 	 * If null, user may be unauthenticated
-	 * If string, will check if the
+	 * If array, user must be one of the specified kinds
 	 */
-	kind: UserKind|null,
+	kinds: UserKind[]|null,
 
 	/**
 	 * If null, user may be unauthenticated

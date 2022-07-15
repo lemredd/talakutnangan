@@ -14,7 +14,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -61,7 +61,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -93,7 +93,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: true,
-				kind: null,
+				kinds: null,
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -140,7 +140,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: true,
-				kind: null,
+				kinds: null,
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -182,7 +182,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: "student",
+				kinds: [ "student" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -229,7 +229,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: "reachable_employee",
+				kinds: [ "reachable_employee" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -256,7 +256,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: "student",
+				kinds: [ "student" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -314,7 +314,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: [ [ "a" ] ],
 				permissionGroup,
 				links: [
@@ -363,7 +363,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: [ [ "b" ] ],
 				permissionGroup,
 				links: [
@@ -391,7 +391,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: [ [ "c" ] ],
 				permissionGroup,
 				links: [
@@ -435,7 +435,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: [ [ "a" ] ],
 				permissionGroup,
 				links: [
@@ -448,7 +448,7 @@ describe("Helper: Filter Link Infos", () => {
 			},
 			{
 				mustBeGuest: false,
-				kind: null,
+				kinds: null,
 				permissionCombinations: [ [ "b" ] ],
 				permissionGroup,
 				links: [
