@@ -15,23 +15,30 @@ export default function<T, U extends PermissionGroup<any, T>>(
 		 * C = condition states that user must be authenticated
 		 * D = condition states that user must be allowed by permission group
 		 * E = user have permissions
+		 * F = condition states that user must be a certain kind
+		 * G = user is a certain kind
 		 *
 		 * 1. ¬B ∧ ¬C				// Any user is allowed
 		 * 2. A ∧ B					// User must be guest
 		 * 3. ¬A ∧ C ∧ ¬D			// User must be authenticated only
 		 * 4. ¬A ∧ C ∧ D ∧ E		// User must be allowed by permission group
-		 * 5.	// Additon of #1, #2, #3, #4
-		 *    (¬B ∧ ¬C) ∨ (A ∧ B) ∨ (¬A ∧ C ∧ ¬D) ∨ (¬A ∧ C ∧ D ∧ E)
-		 * 6. // Distributive Law
-		 *    (¬B ∧ ¬C) ∨ (A ∧ B) ∨ (¬A ∧ C ∧ (¬D ∨ (D ∧ E)))
-		 * 6. // Rearrange according to most used operation
-		 *    (¬A ∧ C ∧ (¬D ∨ (D ∧ E))) ∨ (A ∧ B) ∨ (¬B ∧ ¬C)
+		 * 5. ¬A ∧ C ∧ F ∧ G			// User must be a certain kind
+		 * 6.	// Additon of #1, #2, #3, #4, #5
+		 *    (¬B ∧ ¬C) ∨ (A ∧ B) ∨ (¬A ∧ C ∧ ¬D) ∨ (¬A ∧ C ∧ D ∧ E) ∨ (¬A ∧ C ∧ F ∧ G)
+		 * 7. // Distributive Law
+		 *    (¬B ∧ ¬C) ∨ (A ∧ B) ∨ (¬A ∧ C ∧ (¬D ∨ (D ∧ E) ∨ (F ∧ G)))
+		 * 8. // Rearrange according to most used operation
+		 *    (¬A ∧ C ∧ ((F ∧ G) ∨ ¬D ∨ (D ∧ E))) ∨ (A ∧ B) ∨ (¬B ∧ ¬C)
 		 */
 		return (
 			!linkInfo.mustBeGuest
-			&& userProfile != null
+			&& userProfile !== null
 			&& (
-				linkInfo.permissionGroup == null
+				(
+					linkInfo.kind !== null
+					&& linkInfo.kind === userProfile.data.kind
+				)
+				|| linkInfo.permissionGroup === null
 				|| (
 					linkInfo.permissionCombinations !== null
 					&& linkInfo.permissionGroup.hasOneRoleAllowed(
@@ -41,8 +48,8 @@ export default function<T, U extends PermissionGroup<any, T>>(
 				)
 			)
 		)
-		|| (!linkInfo.mustBeGuest && linkInfo.permissionCombinations == null)
-		|| (linkInfo.mustBeGuest && userProfile == null)
+		|| (!linkInfo.mustBeGuest && linkInfo.permissionCombinations === null)
+		|| (linkInfo.mustBeGuest && userProfile === null)
 	})
 
 	return filteredLinkInfos.reduce<LinkInfo[]>((previousLinkInfo, currentlinkInfo) => [
