@@ -27,7 +27,7 @@
 @import "@styles/variables.scss";
 
 form {
-	max-width: $mobile-viewport;
+	max-width: $mobileViewport;
 
 	.input-header {
 		font-size: 1.25em;
