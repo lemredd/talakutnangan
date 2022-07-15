@@ -154,13 +154,19 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		mustBeGuest: true,
 		permissionCombinations: null,
 		perimissionGroup: null,
-		links: []
+		links: [
+			{
+				name: "Log in",
+				path: "/log_in",
+				icon: "account_circle"
+			}
+		]
 	}
 ]
 
 const linksSpecifiers = [
 	{
-		role: "guest",
+		role: "guest", // Converted
 		links: [
 			{
 				name: "login",
