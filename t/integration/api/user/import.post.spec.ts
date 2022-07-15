@@ -13,7 +13,7 @@ import Route from "!/app/routes/api/user/import.post"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
-describe("POST /api/user/import", () => {
+describe.skip("POST /api/user/import", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
