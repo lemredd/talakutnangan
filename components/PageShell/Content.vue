@@ -12,7 +12,7 @@
 
 .content {
 	@include useContentBaseHeight;
-	margin-top: $nav-height;
+	margin-top: $navHeight;
 	padding: 20px;
 
 	&.login-content {

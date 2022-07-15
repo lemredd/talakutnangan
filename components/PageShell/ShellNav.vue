@@ -64,7 +64,7 @@
 
 	padding: 0 .75em;
 	border-bottom: 1px solid hsla(0,0,0%, 0.1);
-	height: $nav-height;
+	height: $navHeight;
 
 	.container {
 		@apply grid grid-cols-[1fr,repeat(3,min-content)];
@@ -87,7 +87,7 @@
 	display: none;
 }
 
-@media screen and (min-width: $mobile-viewport) {
+@media screen and (min-width: $mobileViewport) {
 	.user-settings {
 		@apply self-center;
 
