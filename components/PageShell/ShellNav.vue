@@ -63,7 +63,6 @@
 	background-color: white;
 
 	padding: 0 .75em;
-	box-shadow: $box-shadow;
 	height: $nav-height;
 
 	.container {
