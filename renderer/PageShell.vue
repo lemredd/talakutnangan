@@ -10,8 +10,8 @@
 
 <script lang="ts" setup>
 import { onMounted, provide, ref, watch } from "vue"
-import ShellNav from "@/PageShell/ShellNav.vue"
-import Content from "@/PageShell/Content.vue"
+import ShellNav from "@/page_shell/ShellNav.vue"
+import Content from "@/page_shell/Content.vue"
 import Footer from "@/Footer.vue"
 import { usePageContext } from "#/usePageContext"
 
