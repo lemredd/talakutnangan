@@ -1,0 +1,6 @@
+$viewportHeight: 100vh;
+$shellNavHeight: 56px;
+
+@mixin getTruePaddingStart {
+	height: calc($viewportHeight - $shellNavHeight)
+}
