@@ -138,6 +138,14 @@ interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 
 const isRoleGuest = role === "guest"
 const areRoleLinksShown = ref(false)
+const linkInfos: ConditionalLinkInfo<any, any>[] = [
+	{
+		mustBeGuest: true,
+		permissionCombinations: null,
+		perimissionGroup: null
+	}
+]
+
 const linksSpecifiers = [
 	{
 		role: "guest",
