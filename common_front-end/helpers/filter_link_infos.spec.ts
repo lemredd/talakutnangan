@@ -158,6 +158,80 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
+	it("must show general authenticated link for authenticated users", async () => {
+		const context: DeserializedPageContext = {
+			pageProps: {
+				userProfile: {
+					data: {
+						type: "user",
+						id: 1,
+						kind: "student",
+						role: {
+							data: [
+								{
+									type: "role",
+									id: 2,
+									name: "B"
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+		const linkInfos: ConditionalLinkInfo<any, any>[] = [
+			{
+				mustBeGuest: false,
+				kinds: [],
+				permissionCombinations: [],
+				permissionGroup: null,
+				links: [
+					{
+						"icon": "a",
+						"name": "A",
+						"path": "/a"
+					}
+				]
+			}
+		]
+
+		const filteredLinkInfos = filterLinkInfos(context, linkInfos)
+
+		expect(filteredLinkInfos).toHaveLength(1)
+		expect(filteredLinkInfos[0]).toStrictEqual({
+			"icon": "a",
+			"name": "A",
+			"path": "/a"
+		})
+	})
+
+	it("must hide general authenticated link for guest users", async () => {
+		const context: DeserializedPageContext = {
+			pageProps: {
+				userProfile: null
+			}
+		}
+		const linkInfos: ConditionalLinkInfo<any, any>[] = [
+			{
+				mustBeGuest: false,
+				kinds: [],
+				permissionCombinations: [],
+				permissionGroup: null,
+				links: [
+					{
+						"icon": "a",
+						"name": "A",
+						"path": "/a"
+					}
+				]
+			}
+		]
+
+		const filteredLinkInfos = filterLinkInfos(context, linkInfos)
+
+		expect(filteredLinkInfos).toHaveLength(0)
+	})
+
 	it("must show kind link for authenticated users", async () => {
 		const context: DeserializedPageContext = {
 			pageProps: {
