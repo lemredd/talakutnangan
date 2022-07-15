@@ -19,28 +19,23 @@
 					<h2>There are no consultations yet...</h2>
 				</div>
 				<div v-for="consultation in consultations" class="consultation p-2 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] hover:bg-gray-300 justify-between">
+					<!-- TODO: should contain profile picture?  -->
+					<h3 class="consultation-title col-span-full font-400">{{ consultation.title }}</h3>
+					<small class="last-chat span">
+						{{ consultation.chats ? consultation.chats[consultation.chats.length-1] : "Start by saying hello!" }}
+						<!-- TODO: must limit length -->
+					</small>
+					<div class="last-chat-time-sent">
+						HH:MM
+						<!-- TODO: Replace with real value soon -->
+					</div>
 				</div>
 			</div>
 		</section>
 
 		<section class="selected-consultation right">
-			<p>Sample</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
-			<br><p>The overflow property controls what happens to content that is too big to fit into an area.</p>
+			placeholder
+			<!-- TODO(mobile): should view once consultation is clicked in picker (by route) -->
 		</section>
 	</div>
 </template>
@@ -85,15 +80,36 @@ footer {
 </style>
 
 <script setup lang="ts">
+import SadIcon from "./sadicon.png"
+import { computed, ref } from "vue"
+let input = ref("")
 import { ref } from "vue";
 let input = ref("");
 const consult = [
 	{
 
-	}
-];
-function data() {
-	return consult;
+type Consultation = {
+	// TODO: type will change soon
+	id: number
+	studentId: number
+	employeeId: number
+	ticket: number
+	title: string
+	chats?: string[]
+	isGroup: boolean
+	members?: number[]
+	status: string
 }
-import SadIcon from "./sadicon.png"
+const consultations = ref<Consultation[]>([
+	{
+		id: 0,
+		studentId: 0,
+		employeeId: 0,
+		ticket: 0,
+		title: "Sample Consultation",
+		isGroup: false,
+		status: "ongoing"
+	}
+])
+}
 </script>
