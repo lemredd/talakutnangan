@@ -1,6 +1,5 @@
-$viewportHeight: 100vh;
-$shellNavHeight: 56px;
+@import "./variables.scss";
 
 @mixin useContentBaseHeight {
-	height: calc($viewportHeight - $shellNavHeight)
+	height: calc($maxViewportHeight - $navHeight)
 }
