@@ -1,5 +1,5 @@
 <template>
-	<UsersManager :users="users" />
+	<UsersManager :data="users" :has-filter="true" />
 </template>
 
 <style>
@@ -9,7 +9,7 @@
 import { onBeforeMount, onMounted, provide, ref } from "vue"
 import { deserialise } from "kitsu-core"
 
-import UsersManager from "@/user_management/UsersManager.vue"
+import UsersManager from "@/user_management/DataManager.vue"
 import type { ManagerKind } from "@/user_management/types"
 
 const managerKind = "admin" as ManagerKind

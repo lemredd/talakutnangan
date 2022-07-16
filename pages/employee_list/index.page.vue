@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-        <UsersManager :users="users" />
+        <UsersManager :data="users" :has-filter="true" />
 </template>
 
 <style>
@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ManagerKind } from "@/user_management/types";
-import UsersManager from "@/user_management/UsersManager.vue";
+import UsersManager from "@/user_management/DataManager.vue";
 import { onBeforeMount, provide, ref } from "vue";
 import { users } from "./data"
 
@@ -26,5 +26,3 @@ onBeforeMount(function() {
 provide("filterList", jobTitles)
 
 </script>
-
-

@@ -1,11 +1,11 @@
 <template>
 	<h1 class="">Institute Name</h1>
-	<UsersManager :users="users"/>
+	<UsersManager :data="users" :has-filter="true"/>
 
 </template>
 
 <script setup lang="ts">
-import UsersManager from "@/user_management/UsersManager.vue";
+import UsersManager from "@/user_management/DataManager.vue";
 import { ManagerKind } from "@/user_management/types";
 import { users } from "./data"
 import { onBeforeMount, provide, ref } from "vue";
