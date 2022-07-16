@@ -13,14 +13,5 @@ export default async function(encryptedHex: string): Promise<string> {
 	const key = await generateKey(password, salt, 16)
 	const cipher = createDecipheriv(algorithm, key as Buffer, Buffer.alloc(16, 0))
 
-	return await new Promise<string>(resolve => {
-		cipher.setEncoding("hex")
-
-		let decryptedText = ""
-		cipher.on("data", decryptedData => decryptedText += decryptedData);
-		cipher.on("end", () => resolve(decryptedText));
-
-		cipher.write(encryptedHex, "hex")
-		cipher.end()
-	})
+	return cipher.update(encryptedHex, "hex", "utf8") + cipher.final("utf8")
 }
