@@ -3,7 +3,7 @@ import URLMaker from "./url_maker"
 
 describe("Database: API Link Creator", () => {
 	it("can make base URL without custom port", () => {
-		URLMaker.initialize("http", "localhost", 0, "/api");
+		URLMaker.initialize("http", "localhost", 0, "/api")
 
 		const baseURL = URLMaker.makeBaseURL()
 
@@ -11,7 +11,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make base URL with custom port", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const baseURL = URLMaker.makeBaseURL()
 
@@ -19,7 +19,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make base path", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const baseURL = URLMaker.makeBaseModelPath("user")
 
@@ -27,7 +27,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make initial page links", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const document = URLMaker.addPaginationLinks({}, "user", 1, 3)
 
@@ -42,7 +42,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make middle page links", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const document = URLMaker.addPaginationLinks({}, "user", 2, 3)
 
@@ -57,7 +57,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make last page links", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/api");
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const document = URLMaker.addPaginationLinks({}, "user", 3, 3)
 
@@ -72,7 +72,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make encrypted path", async () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const data = JSON.stringify({
 			email: "admin@example.com"
 		})
@@ -83,7 +83,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can make encrypted URL", async () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const data = JSON.stringify({
 			email: "admin@example.com"
 		})
@@ -94,7 +94,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can retain double slashes after protocol", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const part = "http://"
 
 		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
@@ -103,7 +103,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can remove double slashes after domain", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const part = "http://localhost//"
 
 		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
@@ -112,7 +112,7 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can remove double slashes within path", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const part = "http://localhost/a//b//c"
 
 		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
@@ -121,11 +121,27 @@ describe("Database: API Link Creator", () => {
 	})
 
 	it("can remove triple slashes within path", () => {
-		URLMaker.initialize("http", "localhost", 16000, "/");
+		URLMaker.initialize("http", "localhost", 16000, "/")
 		const part = "http://localhost/a//b///c"
 
 		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
 
 		expect(resolvedPart).toBe("http://localhost/a/b/c")
+	})
+
+	it("can resolve port 80", () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+
+		const resolvedPart = URLMaker.getResolvedPort()
+
+		expect(resolvedPart).toBe("")
+	})
+
+	it("can resolve port 443", () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+
+		const resolvedPart = URLMaker.getResolvedPort()
+
+		expect(resolvedPart).toBe("")
 	})
 })
