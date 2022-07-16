@@ -1,3 +1,4 @@
+import encrypt from "$!/auth/encrypt"
 import URLMaker from "./url_maker"
 
 describe("Database: API Link Creator", () => {
@@ -68,5 +69,27 @@ describe("Database: API Link Creator", () => {
 				next: null
 			}
 		})
+	})
+
+	it("can make encrypted path", async () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const data = JSON.stringify({
+			email: "admin@example.com"
+		})
+
+		const path = await URLMaker.makeEncryptedPath("/user/verify", data)
+
+		expect(path).toBe(`/user/verify/${await encrypt(data)}`)
+	})
+
+	it("can make encrypted URL", async () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const data = JSON.stringify({
+			email: "admin@example.com"
+		})
+
+		const path = await URLMaker.makeEncryptedURL("/user/verify", data)
+
+		expect(path).toBe(`http://localhost:16000/user/verify/${await encrypt(data)}`)
 	})
 })
