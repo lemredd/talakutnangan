@@ -82,6 +82,7 @@ export default class extends MultipartController {
 		const affectedCount = await manager.update(+id, updateData)
 
 		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
+		response.end()
 	}
 
 	get postJobs(): Middleware[] {
