@@ -1,4 +1,6 @@
 import encrypt from "$!/auth/encrypt"
+import DecryptionError from "$!/errors/decryption"
+
 import URLMaker from "./url_maker"
 
 describe("Database: API Link Creator", () => {
@@ -165,5 +167,99 @@ describe("Database: API Link Creator", () => {
 				{ data }
 			])
 		)}`)
+	})
+
+	it("can decrypt URL data", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const data = "Hello World!"
+		const encryptedURL = `http://localhost/encrypted/${await encrypt(data)}`
+
+		const decryptedData = await URLMaker.decryptURLData(encryptedURL)
+
+		expect(decryptedData).toBe(data)
+	})
+
+	it("cannot decrypt invalid URL data", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const data = "Hello World!"
+		const encryptedURL = `http://localhost/encrypted/${await encrypt(data)}-${data}`
+
+		expect(URLMaker.decryptURLData(encryptedURL)).rejects.toThrow(DecryptionError)
+	})
+
+	it("cannot decrypt missing URL data", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const data = "Hello World!"
+		const encryptedURL = `http://localhost/`
+
+		expect(URLMaker.decryptURLData(encryptedURL)).rejects.toThrow(DecryptionError)
+	})
+
+	it("can check temporary URL", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const currentTime = new Date().getTime()
+		const path = "/temporary"
+		const data = "Hello World!"
+		const expireMillisecondDuration = 1000
+		const temporaryURL = await URLMaker.makeTemporaryURL(
+			path,
+			{ data },
+			expireMillisecondDuration,
+			currentTime
+		)
+
+		const URLInfo = await URLMaker.checkTemporaryURL(temporaryURL, currentTime + 500)
+
+		expect(URLInfo).toStrictEqual({
+			hasExpired: false,
+			data: { data }
+		})
+	})
+
+	it("can check expired temporary URL", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const currentTime = new Date().getTime()
+		const path = "/temporary"
+		const data = "Hello World!"
+		const expireMillisecondDuration = 1000
+		const temporaryURL = await URLMaker.makeTemporaryURL(
+			path,
+			{ data },
+			expireMillisecondDuration,
+			currentTime
+		)
+
+		const URLInfo = await URLMaker.checkTemporaryURL(temporaryURL, currentTime + 1500)
+
+		expect(URLInfo).toStrictEqual({
+			hasExpired: true,
+			data: { data }
+		})
+	})
+
+	it("cannot check unparsable temporary URL", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const currentTime = new Date().getTime()
+		const path = "/temporary"
+		const data = "Hello World!"
+		const temporaryURL = await URLMaker.makeEncryptedURL(
+			path,
+			data
+		)
+
+		expect(URLMaker.checkTemporaryURL(temporaryURL, currentTime)).rejects.toThrow(DecryptionError)
+	})
+
+	it("cannot check invalid temporary URL", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const currentTime = new Date().getTime()
+		const path = "/temporary"
+		const data = "Hello World!"
+		const temporaryURL = await URLMaker.makeEncryptedURL(
+			path,
+			JSON.stringify({ data })
+		)
+
+		expect(URLMaker.checkTemporaryURL(temporaryURL, currentTime)).rejects.toThrow(DecryptionError)
 	})
 })
