@@ -1,5 +1,11 @@
+import { URL } from "url"
 import type { Serializable } from "$/types/database"
+import type { TemporaryURLInfo } from "$!/types/independent"
+
+import decrypt from "$!/auth/decrypt"
 import encrypt from "$!/auth/encrypt"
+import DecryptionError from "$!/errors/decryption"
+
 export default class {
 	private static protocol: string
 	private static hostname: string
@@ -78,6 +84,44 @@ export default class {
 				])
 			)
 		)
+	}
+
+	static async decryptURLData(encryptedURL: string): Promise<string> {
+		const URLInfo = new URL(encryptedURL)
+		const encryptedPath = URLInfo.pathname
+		const encryptedData = encryptedPath.split("/").pop() || ""
+
+		try {
+			return await decrypt(encryptedData)
+		} catch(error) {
+			throw new DecryptionError("URL is invalid")
+		}
+	}
+
+	static async checkTemporaryURL(
+		encryptedURL: string,
+		currentTime: number|undefined = new Date().getTime()
+	): Promise<TemporaryURLInfo> {
+		const decryptedData = await this.decryptURLData(encryptedURL)
+
+		try {
+			const parsedData = JSON.parse(decryptedData)
+
+			if (
+				parsedData instanceof Array
+				&& parsedData.length === 2
+				&& typeof parsedData[0] === "number"
+			) {
+				return {
+					hasExpired: parsedData[0] < currentTime,
+					data: parsedData[1]
+				}
+			} else {
+				throw new Error()
+			}
+		} catch(error) {
+			throw new DecryptionError("URL data is invalid")
+		}
 	}
 
 	static removeRepeatingSlashes(URLPart: string): string {
