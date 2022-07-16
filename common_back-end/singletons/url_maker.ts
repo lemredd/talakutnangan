@@ -1,3 +1,4 @@
+import type { Serializable } from "$/types/database"
 import encrypt from "$!/auth/encrypt"
 export default class {
 	private static protocol: string
@@ -59,6 +60,23 @@ export default class {
 	static async makeEncryptedURL(path: string, data: string): Promise<string> {
 		return this.removeRepeatingSlashes(
 			`${this.makeBaseURL()}/${await this.makeEncryptedPath(path, data)}`
+		)
+	}
+
+	static async makeTemporaryURL(
+		path: string,
+		data: Serializable,
+		millisecondDuration: number,
+		currentTime: number|undefined = new Date().getTime()
+	) : Promise<string> {
+		return this.removeRepeatingSlashes(
+			await this.makeEncryptedURL(
+				path,
+				JSON.stringify([
+					currentTime + millisecondDuration,
+					data
+				])
+			)
 		)
 	}
 
