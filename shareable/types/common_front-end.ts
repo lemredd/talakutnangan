@@ -13,6 +13,7 @@
 	 data: (Serializable & {
 		 type: "role",
 		 id: number
+		 userFlags: number
 	 })[]
  }
 
