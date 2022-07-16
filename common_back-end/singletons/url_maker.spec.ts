@@ -144,4 +144,26 @@ describe("Database: API Link Creator", () => {
 
 		expect(resolvedPart).toBe("")
 	})
+
+	it("can make temporary URL", async () => {
+		URLMaker.initialize("http", "localhost", 80, "/")
+		const currentTime = new Date().getTime()
+		const path = "/user/verify"
+		const data = "Hello World!"
+		const expireMillisecondDuration = 1000
+
+		const temporaryURL = await URLMaker.makeTemporaryURL(
+			path,
+			{ data },
+			expireMillisecondDuration,
+			currentTime
+		)
+
+		expect(temporaryURL).toBe(`http://localhost/user/verify/${await encrypt(
+			JSON.stringify([
+				currentTime + expireMillisecondDuration,
+				{ data }
+			])
+		)}`)
+	})
 })
