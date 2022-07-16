@@ -1,10 +1,10 @@
-import { promisify } from "node:util"
+import { promisify } from "util"
 
 export default async function(data: string): Promise<string> {
 	const {
 		scrypt,
 		createCipheriv
-	} = await import("node:crypto")
+	} = await import("crypto")
 
 	const algorithm = process.env.SECURITY_ENCRYPTION_ALGORITHM || "aes-128-cbc"
 	const salt = process.env.SECURITY_ENCRYPTION_SALT || "01234567890123456789012345678901"
