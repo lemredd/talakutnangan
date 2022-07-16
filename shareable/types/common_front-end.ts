@@ -25,6 +25,8 @@
 		 type: "user",
 		 id: number,
 		 kind: UserKind,
+		 name: string,
+		 email: string,
 		 roles: Roles
 	 }
  }
