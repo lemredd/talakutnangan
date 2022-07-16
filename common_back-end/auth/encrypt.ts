@@ -11,7 +11,7 @@ export default async function(data: string): Promise<string> {
 	const password = process.env.SECURITY_ENCRYPTION_PASSWORD || "01234567890123456789012345678901"
 	const generateKey = promisify(scrypt)
 	const key = await generateKey(password, salt, 16)
-	const cipher = createCipheriv(algorithm, key as Buffer, null)
+	const cipher = createCipheriv(algorithm, key as Buffer, Buffer.alloc(16, 0))
 
 	return await new Promise<string>(resolve => {
 		cipher.setEncoding("hex")
