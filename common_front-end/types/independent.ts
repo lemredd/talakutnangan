@@ -5,29 +5,8 @@
  */
 
 import type { Serializable, UserKind } from "$/types/database"
+import type { UserProfile } from "$/types/common_front-end"
 import type PermissionGroup from "$/permissions/base"
-
-/**
- * Shape of serialized roles
- */
-interface Roles extends Serializable {
-	data: (Serializable & {
-		type: "role",
-		id: number
-	})[]
-}
-
-/**
- * Shape of serialized user profile if authenticated
- */
-export interface UserProfile extends Serializable {
-	data: Serializable & {
-		type: "user",
-		id: number,
-		kind: UserKind,
-		roles: Roles
-	}
-}
 
 /**
  * Shape of expected page context parameter of common front-end functions
