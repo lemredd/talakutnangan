@@ -8,7 +8,7 @@ import Transport from "!/helpers/email/transport"
 
 import EmailVerification from "./email_verification"
 
-describe.skip("Middleware: Email Verification Sender", () => {
+describe("Middleware: Email Verification Sender", () => {
 	const requester  = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
 
 	it("can send to single user", async () => {
