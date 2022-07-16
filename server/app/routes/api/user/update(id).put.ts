@@ -1,12 +1,15 @@
 import { Serializable } from "$/types/database"
 import type { UserProfile } from "$/types/common_front-end"
+import type { EmailVerificationArguments } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import MultipartController from "!/common_controllers/multipart_controller"
 import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
@@ -46,7 +49,7 @@ export default class extends MultipartController {
 	}
 
 	async handle(
-		request: AuthenticatedIDRequest & PreprocessedRequest<{ verifyEmail: string }>,
+		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
 		response: Response
 	): Promise<void> {
 		const manager = new UserManager()
@@ -68,13 +71,22 @@ export default class extends MultipartController {
 		const oldEmail = userData.data.email
 
 		if (oldEmail !== email) {
-			request.nextMiddlewareArguments.verifyEmail = email
+			request.nextMiddlewareArguments.emailsToContact = [ email ]
 			updateData.emailVerifiedAt = null
+		} else {
+			request.nextMiddlewareArguments.emailsToContact = []
 		}
+
 		if (signature) updateData.signature = signature.buffer
 
 		const affectedCount = await manager.update(+id, updateData)
 
 		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
+	}
+
+	get postJobs(): Middleware[] {
+		return [
+			CommonMiddlewareList.emailVerification
+		]
 	}
 }
