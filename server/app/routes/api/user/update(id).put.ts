@@ -1,8 +1,12 @@
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import { Serializable } from "$/types/database"
+import type { UserProfile } from "$/types/common_front-end"
+import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Validation from "!/bases/validation"
+import deserialize from "$/helpers/deserialize"
+import AuthorizationError from "$!/errors/authorization"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import MultipartController from "!/common_controllers/multipart_controller"
 import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
@@ -37,16 +41,40 @@ export default class extends MultipartController {
 			name: [ "required", "string" ],
 			email: [ "required", "string", "email" ],
 			// TODO: Make buffer validator handle multiple MIME types
-			signature: [ "required", "buffer:image/png" ]
+			signature: [ "nullable", "buffer:image/png" ]
 		}
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
+	async handle(
+		request: AuthenticatedIDRequest & PreprocessedRequest<{ verifyEmail: string }>,
+		response: Response
+	): Promise<void> {
 		const manager = new UserManager()
 		const { id } = request.params
+		const { name, email, signature } = request.body
+		const userData = deserialize(request.user) as UserProfile
+		const updateData: Serializable = { name, email }
 
-		// TODO: Update user details
+		if (
+			!permissionGroup.hasOneRoleAllowed(
+				userData.data.roles.data,
+				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
+			)
+			&& userData.id !== id
+		) {
+			throw new AuthorizationError("User is not permitted to edit other users")
+		}
 
-		response.status(this.status.NOT_IMPLEMENTED)
+		const oldEmail = userData.data.email
+
+		if (oldEmail !== email) {
+			request.nextMiddlewareArguments.verifyEmail = email
+			updateData.emailVerifiedAt = null
+		}
+		if (signature) updateData.signature = signature.buffer
+
+		const affectedCount = await manager.update(+id, updateData)
+
+		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 	}
 }
