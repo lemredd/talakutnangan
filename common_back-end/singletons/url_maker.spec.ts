@@ -92,4 +92,40 @@ describe("Database: API Link Creator", () => {
 
 		expect(path).toBe(`http://localhost:16000/user/verify/${await encrypt(data)}`)
 	})
+
+	it("can retain double slashes after protocol", () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const part = "http://"
+
+		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
+
+		expect(resolvedPart).toBe(part)
+	})
+
+	it("can remove double slashes after domain", () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const part = "http://localhost//"
+
+		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
+
+		expect(resolvedPart).toBe("http://localhost/")
+	})
+
+	it("can remove double slashes within path", () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const part = "http://localhost/a//b//c"
+
+		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
+
+		expect(resolvedPart).toBe("http://localhost/a/b/c")
+	})
+
+	it("can remove triple slashes within path", () => {
+		URLMaker.initialize("http", "localhost", 16000, "/");
+		const part = "http://localhost/a//b///c"
+
+		const resolvedPart = URLMaker.removeRepeatingSlashes(part)
+
+		expect(resolvedPart).toBe("http://localhost/a/b/c")
+	})
 })
