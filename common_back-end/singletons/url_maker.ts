@@ -53,12 +53,17 @@ export default class {
 	static async makeEncryptedPath(path: string, data: string): Promise<string> {
 		const port = this.getResolvedPort()
 
-		return `${path}/${await encrypt(data)}`
+		return this.removeRepeatingSlashes(`${path}/${await encrypt(data)}`)
 	}
 
 	static async makeEncryptedURL(path: string, data: string): Promise<string> {
-		return `${this.makeBaseURL()}/${await this.makeEncryptedPath(path, data)}`
-			.replace(/\/\/\//g, "/")
+		return this.removeRepeatingSlashes(
+			`${this.makeBaseURL()}/${await this.makeEncryptedPath(path, data)}`
+		)
+	}
+
+	static removeRepeatingSlashes(URLPart: string): string {
+		return URLPart.replace(/([^:\/])\/\/+/g, "$1/")
 	}
 
 	static destroy(): void {
