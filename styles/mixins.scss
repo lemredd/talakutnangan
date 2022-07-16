@@ -1,0 +1,5 @@
+@import "./variables.scss";
+
+@mixin useContentBaseHeight {
+	height: calc($maxViewportHeight - $navHeight)
+}

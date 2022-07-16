@@ -4,11 +4,12 @@ import Serializer from "%/transformers/serializer"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
+import AuthorizationError from "$!/errors/authorization"
 import UserPermissions from "$/permissions/user_permissions"
 
 import PermissionBasedPolicy from "./permission-based_policy"
 
-describe("Middleware: Kind-Based Policy", () => {
+describe("Middleware: Permission-Based Policy", () => {
 	const requester  = new MockRequester()
 	const transformer = new UserTransformer()
 	const permissions = new UserPermissions()
@@ -63,7 +64,11 @@ describe("Middleware: Kind-Based Policy", () => {
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
-		requester.expectFailure(requester.status.UNAUTHORIZED)
+		requester.expectNext([
+			[
+				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
+			]
+		])
 	})
 
 	it("can deny guest", async () => {
@@ -77,6 +82,10 @@ describe("Middleware: Kind-Based Policy", () => {
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
-		requester.expectFailure(requester.status.UNAUTHORIZED)
+		requester.expectNext([
+			[
+				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
+			]
+		])
 	})
 })

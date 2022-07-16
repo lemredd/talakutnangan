@@ -4,6 +4,7 @@ import express  from "express"
 import type { RequestHandler } from "!/types/dependent"
 
 import Router from "!/bases/router"
+import catchAllErrors from "!/app/catch_all_errors"
 import createViteDevServer from "!/vite_dev/create_server"
 import manageAuthentication from "!/app/auth/manage_authentication"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
@@ -36,6 +37,9 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	}
 
 	app.use(viteDevRouter)
+
+	// @ts-ignore
+	app.use(catchAllErrors)
 
 	return app
 }

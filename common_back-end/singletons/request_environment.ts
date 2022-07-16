@@ -1,6 +1,5 @@
+import getRoot from "$!/helpers/get_root"
 import BaseRequestEnvironment from "$/helpers/request_environment"
-
-import getRoot from "!/helpers/get_root"
 
 /**
  * Contains the environment information that can be used by the request handlers.

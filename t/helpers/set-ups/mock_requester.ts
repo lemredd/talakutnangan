@@ -5,6 +5,9 @@ import type { MockResponse } from "!/types/test"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import RequestEnvironment from "$/helpers/request_environment"
 
+/**
+ * A set-up class used for testing the middlewares.
+ */
 export default class<T extends Request> extends RequestEnvironment {
 	private request: T
 	private response: Response
@@ -39,8 +42,22 @@ export default class<T extends Request> extends RequestEnvironment {
 		}
 	}
 
+	customizeResponse(properties: { [key:string]: any }): void {
+		for (const key in properties) {
+			if (Object.prototype.hasOwnProperty.call(properties, key)) {
+				const value = properties[key];
+				// @ts-ignore
+				this.response[key] = value
+			}
+		}
+	}
+
 	async runMiddleware(middleware: Function): Promise<void> {
 		await middleware(this.request, this.response, this.next)
+	}
+
+	async runErrorHandler(handle: Function, error: Error = new Error()): Promise<void> {
+		await handle(error, this.request, this.response, this.next)
 	}
 
 	expectSuccess(): any {
@@ -50,12 +67,38 @@ export default class<T extends Request> extends RequestEnvironment {
 	}
 
 	expectFailure(status: number): any {
-		const mockResponse = this.response as unknown as MockResponse
-		expect(mockResponse.status).toHaveBeenCalled()
-		expect(mockResponse.status.mock.calls[0]).toEqual([ status ])
-		expect(mockResponse.json).toHaveBeenCalled()
+		this.expectResponse({
+			status: (statusMethod: jest.Mock<any, any>) => {
+				expect(statusMethod).toBeCalled()
+				expect(statusMethod.mock.calls[0]).toEqual([ status ])
+			},
+			json: (jsonMethod: jest.Mock<any, any>) => {
+				expect(jsonMethod).toBeCalled()
+			}
+		})
 
+		const mockResponse = this.response as unknown as MockResponse
 		return mockResponse.json.mock.calls[0][0]
+	}
+
+	expectResponse(properties: { [key:string]: (_: any) => void }): void {
+		for (const key in properties) {
+			if (Object.prototype.hasOwnProperty.call(properties, key)) {
+				const check = properties[key];
+				// @ts-ignore
+				check(this.response[key])
+			}
+		}
+	}
+
+	expectNext(expectedParameterCheckers: any[][]): void {
+		expect(this.next).toHaveBeenCalled()
+
+		expectedParameterCheckers.forEach((parameterCheckers, i) => {
+			parameterCheckers.forEach((check, j) => {
+				check((this.next as jest.Mock<any, any>).mock.calls[i][j])
+			})
+		})
 	}
 
 	reset() {

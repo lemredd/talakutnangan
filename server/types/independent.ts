@@ -24,3 +24,8 @@ export interface NewUserNotificationArguments {
 		password: string
 	}[]
 }
+
+// Media types
+
+export const HTML_MEDIA_TYPE = "text/html"
+export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"

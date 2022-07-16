@@ -160,9 +160,9 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class PolicyA extends Policy {
-			mayAllow(request: Request): boolean {
+			async authorize(request: Request): Promise<void> {
 				middlewareFunction()
-				return true
+				return
 			}
 		}
 

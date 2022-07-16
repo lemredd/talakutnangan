@@ -13,6 +13,7 @@
 		"paths": {
 			"%/*": [ "./database/*" ],
 			"!/*": [ "./server/*" ],
+			"$!/*": [ "./common_back-end/*" ],
 			"~/*": [ "./t/helpers/*" ],
 			"#/*": [ "./renderer/*" ],
 			"@/*": [ "./components/*" ],

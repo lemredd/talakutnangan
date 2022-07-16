@@ -2,6 +2,7 @@ import { deserialise } from "kitsu-core"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import PermissionGroup from "$/permissions/base"
+import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 /**
@@ -22,11 +23,12 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 		this.permissionCombinations = permissionCombinations
 	}
 
-	mayAllow(request: AuthenticatedRequest): boolean {
+	async authorize(request: AuthenticatedRequest): Promise<void> {
+		await super.authorize(request)
+
 		const user = deserialise(request.user)
 		const roles = user?.data?.roles?.data
-		return super.mayAllow(request)
-			&& this.permissionCombinations
+		const isPermitted = this.permissionCombinations
 				.reduce((previousPermittedCombination: boolean, combination: U[]) => {
 					// Use logical OR to match one of the roles of the user
 					return previousPermittedCombination || roles.reduce((
@@ -38,5 +40,9 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 							|| this.permissionGroup.mayAllow(role, ...combination)
 					}, false)
 			}, false)
+
+		if (!isPermitted) {
+			throw new AuthorizationError("None of the roles of the user can invoke the action.")
+		}
 	}
 }

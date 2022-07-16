@@ -1,8 +1,10 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 import { CREATE } from "$/permissions/department_combinations"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!/app/routes/api/department/create.post"
@@ -49,6 +51,7 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				acronym: department.acronym,
 				fullName: department.fullName + "1",
@@ -76,6 +79,7 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				acronym: department.acronym+randomData.acronym,
 				fullName: department.fullName,
@@ -97,6 +101,7 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				acronym: department.acronym,
 				fullName: department.fullName,
@@ -118,6 +123,7 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				acronym: department.acronym,
 				fullName: department.fullName,
@@ -132,6 +138,7 @@ describe("POST /api/department/create", () => {
 
 		const response = await App.request
 			.post("/api/department/create")
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				acronym: department.acronym,
 				fullName: department.fullName,

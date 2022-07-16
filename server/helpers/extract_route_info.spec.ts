@@ -1,5 +1,6 @@
+import getRoot from "$!/helpers/get_root"
+
 import extractRouteInfo from "./extract_route_info"
-import getRoot from "!/helpers/get_root"
 
 describe("Helpers: Extract route info", () => {
 	it("can extract API route", () => {

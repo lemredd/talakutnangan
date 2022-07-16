@@ -7,8 +7,15 @@
 		<h1>500 Internal Server Error</h1>
 		<p>Something went wrong.</p>
 	</div>
+	<p>
+		JSON: {{ JSON.stringify(pageContext.pageProps) }}
+	</p>
 </template>
 
 <script lang="ts" setup>
-defineProps(['is404'])
+import { usePageContext } from "#/usePageContext"
+
+defineProps(["is404"])
+
+const pageContext = usePageContext()
 </script>

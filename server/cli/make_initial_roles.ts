@@ -1,6 +1,6 @@
 import { writeFile } from "fs"
 import { promisify } from "util"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import TagPermissions from "$/permissions/tag_permissions"
 import RolePermissions from "$/permissions/role_permissions"
 import PostPermissions from "$/permissions/post_permissions"

@@ -1,8 +1,10 @@
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 import { UPDATE } from "$/permissions/department_combinations"
-import RequestEnvironment from "!/helpers/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!/app/routes/api/department/update.put"
@@ -23,6 +25,7 @@ describe("PUT /api/department/update", () => {
 		const response = await App.request
 			.put("/api/department/update")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				id: department.id,
 				acronym: newDepartmentDetails.acronym,
@@ -47,6 +50,7 @@ describe("PUT /api/department/update", () => {
 		const response = await App.request
 			.put("/api/department/update")
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				id: department.id,
 				acronym: newDepartmentDetails.acronym,
@@ -63,6 +67,7 @@ describe("PUT /api/department/update", () => {
 
 		const response = await App.request
 			.put("/api/department/update")
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				id: department.id,
 				acronym: newDepartmentDetails.acronym,

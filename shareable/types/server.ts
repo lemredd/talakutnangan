@@ -124,3 +124,14 @@ export const READ_OVERALL_SCOPE		= 0x0030;
 export const WRITE_OWN_SCOPE			= 0x0040;
 export const WRITE_DEPARTMENT_SCOPE	= 0x0080;
 export const WRITE_OVERALL_SCOPE		= 0x00C0;
+
+/**
+ * Errors output by the server
+ */
+export interface UnitError {
+	status: number,
+	code: string,
+	title: string,
+	detail: string,
+	meta?: Serializable
+}
