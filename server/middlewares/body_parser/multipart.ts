@@ -1,7 +1,7 @@
 import { Buffer } from "buffer"
 import busboy from "busboy"
 import { parse } from "qs"
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Middleware from "!/bases/middleware"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 

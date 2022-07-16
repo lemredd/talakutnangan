@@ -1,7 +1,7 @@
 import type { Criteria } from "$/types/database"
 import type { FindOptions } from "%/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 
 import Condition from "%/managers/helpers/condition"
 

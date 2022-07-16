@@ -1,6 +1,6 @@
 import { PreprocessedRequest, Response } from "!/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Role from "%/models/role"

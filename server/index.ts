@@ -5,7 +5,7 @@ import { Server as HTTPServer } from "node:http"
 
 import { SourceType } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import createWSServer from "!/ws/create_server"
 import Router from "!/app/routes/router"
 import createAppHandler from "!/app/create_handler"

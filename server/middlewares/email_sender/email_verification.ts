@@ -1,7 +1,7 @@
 import type { EmailVerificationArguments } from "!/types/independent"
 import type { PreprocessedRequest, Response, NextFunction } from "!/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Middleware from "!/bases/middleware"
 import Transport from "!/helpers/email/transport"
 

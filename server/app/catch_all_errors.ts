@@ -3,7 +3,7 @@ import { UnitError } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
 import URLMaker from "$!/singletons/url_maker"
 import RequestEnvironment from "$/helpers/request_environment"

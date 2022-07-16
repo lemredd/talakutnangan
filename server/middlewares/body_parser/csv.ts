@@ -3,7 +3,7 @@ import { parse } from "csv-parse"
 
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Middleware from "!/bases/middleware"
 import convertToCamelCase from "$/helpers/convert_to_camel_case"
 

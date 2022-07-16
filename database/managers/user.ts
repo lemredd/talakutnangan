@@ -16,7 +16,7 @@ import type {
 	CommonConstraints
 } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"

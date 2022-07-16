@@ -1,6 +1,6 @@
 import { SourceType } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Database from "%/data_source/database"
 import URLMaker from "$!/singletons/url_maker"
 import Transport from "!/helpers/email/transport"
