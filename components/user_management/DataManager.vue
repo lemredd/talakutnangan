@@ -7,7 +7,8 @@
 				input-classes="!py-0 pl-1 !border-none !w-100" />
 			<button class="material-icons">search</button>
 		</div>
-		<Filter v-model:filter="selectedFilter"/>
+		<Filter v-if="hasFilter" v-model:filter="selectedFilter"/>
+		<slot v-else></slot>
 	</div>
 	<UsersList :search-filter="searchFilter" :filtered-list="filteredList"/>
 
@@ -32,15 +33,16 @@ import type { ManagerKind, User } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import UsersList from "./users_manager/UsersList.vue"
 
-const { users } = defineProps<{
-	users: User[]
+const { data, hasFilter } = defineProps<{
+	data: User[],
+	hasFilter?: boolean
 }>()
 
 let searchFilter = ref("");
 
 const filteredList = computed(function() {
-	const filteredBySearchResult = users.filter((user) =>
-		user.name.toLowerCase().includes(searchFilter.value.toLowerCase())
+	const filteredBySearchResult = data.filter((data) =>
+		data.name.toLowerCase().includes(searchFilter.value.toLowerCase())
 	);
 
 	const filteredByRole = filterByRole(filteredBySearchResult)
