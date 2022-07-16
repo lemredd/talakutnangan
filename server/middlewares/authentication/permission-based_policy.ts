@@ -28,18 +28,7 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 
 		const user = deserialise(request.user)
 		const roles = user?.data?.roles?.data
-		const isPermitted = this.permissionCombinations
-				.reduce((previousPermittedCombination: boolean, combination: U[]) => {
-					// Use logical OR to match one of the roles of the user
-					return previousPermittedCombination || roles.reduce((
-						previousPermittedRole: boolean,
-						role: T
-					) => {
-						// Use logical OR to match one of the permission combinations
-						return previousPermittedRole
-							|| this.permissionGroup.mayAllow(role, ...combination)
-					}, false)
-			}, false)
+		const isPermitted = this.permissionGroup.hasOneRoleAllowed(roles, this.permissionCombinations)
 
 		if (!isPermitted) {
 			throw new AuthorizationError("None of the roles of the user can invoke the action.")

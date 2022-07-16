@@ -10,10 +10,11 @@
 
 <script lang="ts" setup>
 import { onMounted, provide, ref, watch } from "vue"
-import ShellNav from "@/PageShell/ShellNav.vue"
-import Content from "@/PageShell/Content.vue"
-import Footer from "@/Footer.vue"
 import { usePageContext } from "#/usePageContext"
+import deserializedPageProps from "$@/helpers/deserialize_page_props"
+import ShellNav from "@/page_shell/ShellNav.vue"
+import Content from "@/page_shell/Content.vue"
+import Footer from "@/Footer.vue"
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
@@ -33,7 +34,7 @@ watch(bodyClasses, newSource => {
 	body.value!.classList.remove(...body.value!.classList.values())
 	body.value!.classList.add(...newSource)
 })
-provide("pageContext", pageContext)
+provide("pageContext", deserializedPageProps(pageContext))
 provide("bodyClasses", bodyClasses)
 </script>
 

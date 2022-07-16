@@ -49,7 +49,7 @@ export default class extends DevController {
 				Log.success("controller", "created test admin role")
 			}
 
-			const previousUser = await User.findOne({
+			let previousUser = await User.findOne({
 				where: (new Condition()).equal("email", testAdminEmail).build()
 			})
 
@@ -60,13 +60,15 @@ export default class extends DevController {
 
 				Log.success("controller", "created test admin")
 
-				await AttachedRole.build({
-					userID: user.id,
-					roleID: testAdminRole.id
-				})
-
-				Log.success("controller", "attached test admin role to test admin")
+				previousUser = user
 			}
+
+			await AttachedRole.upsert({
+				userID: previousUser.id,
+				roleID: testAdminRole.id
+			})
+
+			Log.success("controller", "attached test admin role to test admin")
 
 			request.body = {
 				email: testAdminEmail,
