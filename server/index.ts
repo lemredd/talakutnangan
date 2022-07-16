@@ -22,7 +22,7 @@ async function startServer() {
 	const httpServer = new HTTPServer(app)
 	const _wsServer = createWSServer(httpServer)
 
-	const port = process.env.WEB_PORT || 3000
+	const port = process.env.WEB_PORT || process.env.PORT || 3000
 	httpServer.listen(port)
 	Log.success("server", `HTTP server running at http://localhost:${port}`)
 }
