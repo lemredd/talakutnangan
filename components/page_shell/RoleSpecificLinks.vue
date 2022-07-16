@@ -8,7 +8,7 @@
 
 			<template #default>
 				<div class="role-links flex flex-col">
-					<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+					<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
 						</span>
@@ -25,7 +25,7 @@
 	</div>
 
 	<div class="links desktop">
-		<Link v-for="link in determineRoleLinks.links" :key="link.name" :href="link.path">
+		<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
@@ -99,11 +99,26 @@ body.unscrollable {
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
+
+import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
+
+import filterLinkInfo from "$@/helpers/filter_link_infos"
+import { user } from "$/permissions/permission_list"
+import RequestEnvironment from "$/helpers/request_environment"
+import {
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+	IMPORT_USERS,
+	RESET_PASSWORD
+} from "$/permissions/user_combinations"
+
 import Link from "@/Link.vue"
 import RoleLinksList from "@/Dropdown.vue"
-import RequestEnvironment from "$/helpers/request_environment"
 
 const emit = defineEmits(["toggle"])
+const pageContext = inject("pageContext") as DeserializedPageContext
 
 // Props
 type Props = {
@@ -114,31 +129,32 @@ const { role } = defineProps<Props>()
 // Role
 const isRoleGuest = role === "guest"
 const areRoleLinksShown = ref(false)
-const linksSpecifiers = [
+const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
-		role: "guest",
+		mustBeGuest: true,
+		kinds: null,
+		permissionCombinations: null,
+		permissionGroup: null,
 		links: [
 			{
-				name: "login",
+				name: "Log in",
 				path: "/log_in",
 				icon: "account_circle"
 			}
 		]
 	},
 	{
-		role: "student_or_employee",
+		mustBeGuest: false,
+		kinds: [],
+		permissionCombinations: [],
+		permissionGroup: null,
 		links: [
 			{
 				name: "Notifications",
 				path: "/notifications",
 				icon: "notifications"
 			},
-			{
-				name: "Consultations",
-				path: "/consultations",
-				icon: "chat"
-			},
-			{
+			{// TODO: Make permission combination for posts
 				name: "Forum",
 				path: "/forum",
 				icon: "forum"
@@ -151,64 +167,44 @@ const linksSpecifiers = [
 		]
 	},
 	{
-		role: "user_manager",
+		mustBeGuest: false,
+		kinds: [ "student", "reachable_employee" ],
+		permissionCombinations: [],
+		permissionGroup: null,
 		links: [
-			{
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
-			{
-				name: "Manage Users",
-				path: "/manage",
-				icon: "group"
-			},
 			{
 				name: "Consultations",
 				path: "/consultations",
 				icon: "chat"
-			},
-			{
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
-			},
-			{
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
 			}
 		]
 	},
 	{
-		role: "admin",
+		mustBeGuest: false,
+		kinds: null,
+		permissionCombinations: [
+			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+			IMPORT_USERS,
+			RESET_PASSWORD
+		],
+		permissionGroup: user,
 		links: [
-			{
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
 			{
 				name: "Manage Users",
 				path: "/manage",
 				icon: "group"
-			},
-			{
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
-			},
-			{
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
 			}
 		]
 	}
 ]
-const determineRoleLinks = computed(function()  {
-	return linksSpecifiers.filter(specifier => specifier.role === role)[0]
+
+const roleLinks = computed(function()  {
+	return filterLinkInfo(pageContext, linkInfos)
 })
+
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {

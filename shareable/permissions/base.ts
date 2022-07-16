@@ -46,4 +46,24 @@ export default abstract class<T extends { [key: string]: number }, U> {
 				}, info.flag)
 		}, 0)
 	}
+
+	/**
+	 * Returns true if there is at least one role allowed.
+	 *
+	 * @param roles Roles available to a certain user.
+	 * @param permissionCombinations Possible permission that may a role.
+	 */
+	hasOneRoleAllowed(roles: T[], permissionCombinations: U[][]): boolean {
+		return permissionCombinations
+			.reduce((previousPermittedCombination: boolean, combination: U[]) => {
+				// Use logical OR to match one of the permission combinations
+				return previousPermittedCombination || roles.reduce((
+					previousPermittedRole: boolean,
+					role: T
+				) => {
+					// Use logical OR to match one of the roles
+					return previousPermittedRole || this.mayAllow(role, ...combination)
+				}, false)
+		}, false)
+	}
 }

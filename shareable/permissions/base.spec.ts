@@ -114,4 +114,49 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(mask).toBe(0x7)
 	})
+
+	it("can allow at least one role", async () => {
+		const permissionGroup = new GroupC()
+		const roles = [
+			{ name: "A", groupC: permissionGroup.generateMask("e", "f") }
+		]
+		const permissionCombinations: AvailablePermissionsC[][] = [
+			[ "e", "f" ]
+		]
+
+		const isAllowed = permissionGroup.hasOneRoleAllowed(roles, permissionCombinations)
+
+		expect(isAllowed).toBeTruthy()
+	})
+
+	it("can allow at least one role with different combination", async () => {
+		const permissionGroup = new GroupC()
+		const roles = [
+			{ name: "A", groupC: permissionGroup.generateMask("e", "f") },
+			{ name: "A", groupC: permissionGroup.generateMask("f", "g") }
+		]
+		const permissionCombinations: AvailablePermissionsC[][] = [
+			[ "e", "g" ],
+			[ "f", "g" ]
+		]
+
+		const isAllowed = permissionGroup.hasOneRoleAllowed(roles, permissionCombinations)
+
+		expect(isAllowed).toBeTruthy()
+	})
+
+	it("can deny if no permitted role exists", async () => {
+		const permissionGroup = new GroupC()
+		const roles = [
+			{ name: "A", groupC: permissionGroup.generateMask("e", "f") },
+			{ name: "A", groupC: permissionGroup.generateMask("f", "g") }
+		]
+		const permissionCombinations: AvailablePermissionsC[][] = [
+			[ "e", "g" ]
+		]
+
+		const isAllowed = permissionGroup.hasOneRoleAllowed(roles, permissionCombinations)
+
+		expect(isAllowed).toBeFalsy()
+	})
 })

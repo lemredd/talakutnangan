@@ -11,6 +11,7 @@ on:
     branches:
       - master
     paths:
+      - 'common_front-end/**'
       - 'components/**'
       - 'pages/**'
 
