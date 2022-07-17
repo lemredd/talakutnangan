@@ -1,4 +1,4 @@
-# Reset Password
+# Password Reset
 
 Hello {{ name }} ({{ email }}), your password has been reset by the admin in [Talakutnangan]({{ homePageURL }}).
 
