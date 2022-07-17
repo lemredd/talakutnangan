@@ -8,7 +8,7 @@ import type { Serializable } from "$/types/database"
 /**
  * Shape to expect for the info returned after checking the temporary URL
  */
-export interface TemporaryURLInfo {
+export interface TemporaryURLInfo extends Serializable {
 	hasExpired: boolean,
 	data: Serializable
 }
