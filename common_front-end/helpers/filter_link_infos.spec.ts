@@ -44,13 +44,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -123,13 +126,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -165,13 +171,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -239,13 +248,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -286,13 +298,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -370,6 +385,8 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
@@ -377,7 +394,8 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									groupA: permissionGroup.generateMask("a")
+									userFlags: 0,
+									groupA: permissionGroup.generateMask("a"),
 								}
 							]
 						}
@@ -419,6 +437,8 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
@@ -426,6 +446,7 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
+									userFlags: 0,
 									groupA: permissionGroup.generateMask("a")
 								}
 							]
@@ -491,6 +512,8 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
+						name: "",
+						email: "",
 						kind: "student",
 						roles: {
 							data: [
@@ -498,6 +521,7 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
+									userFlags: 0,
 									groupA: permissionGroup.generateMask("a", "b")
 								}
 							]
