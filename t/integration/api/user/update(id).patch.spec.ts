@@ -19,17 +19,13 @@ describe("PATCH /api/user/update/:id", () => {
 	})
 
 	it("can be accessed by student and update own e-mail", async () => {
-		console.log("making role\n\n\n")
 		const studentRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 			.insertOne()
 
-		console.log("making student\n\n\n")
 		const { user: student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		console.log("making new student\n\n\n")
 		const newStudent = await (new UserFactory()).makeOne()
 
-		console.log("waiting response")
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
 			.field("name", student.name)
@@ -37,7 +33,6 @@ describe("PATCH /api/user/update/:id", () => {
 			.set("Cookie", cookie)
 			.accept(JSON_API_MEDIA_TYPE)
 
-		console.log("checking response")
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ where: { id: student.id }})
