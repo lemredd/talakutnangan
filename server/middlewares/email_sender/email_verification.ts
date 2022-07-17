@@ -20,29 +20,24 @@ export default class extends Middleware {
 
 		Log.trace("middleware", "sending verification e-mail messages to recipients")
 
-		const emailTransmissions = recipients.map(recipient => {
-			return new Promise(resolve => {
-				URLMaker.makeTemporaryURL("/user/verify", {
-					email: recipient
-				}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
-				.then(resolve)
-			}).then(emailVerificationURL => {
-				return Transport.sendMail(
-					[ recipient ],
-					subject,
-					"email_verification.md",
-					{
-						email: recipient,
-						homePageURL: URLMaker.makeBaseURL(),
-						emailVerificationURL
-					}
-				)
-			})
-		})
+		const emailTransmissions = recipients.map(async recipient => await Transport.sendMail(
+				[ recipient ],
+				subject,
+				"email_verification.md",
+				{
+					email: recipient,
+					homePageURL: URLMaker.makeBaseURL(),
+					emailVerificationURL: await URLMaker.makeTemporaryURL("/user/verify", {
+						email: recipient
+					}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
+				}
+			)
+		)
 
 		for (const transmission of emailTransmissions) {
 			try {
-				await transmission
+				const sentInfo = await transmission
+				console.log(sentInfo)
 			} catch(error) {
 				Log.error("middleware", error as Error)
 
