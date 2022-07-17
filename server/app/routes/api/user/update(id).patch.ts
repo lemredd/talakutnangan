@@ -53,7 +53,7 @@ export default class extends MultipartController {
 		response: Response
 	): Promise<void> {
 		const manager = new UserManager()
-		const { id } = request.params
+		const  id = +request.params.id
 		const { name, email, signature = undefined } = request.body
 		const userData = deserialize(request.user) as UserProfile
 		const updateData: Serializable = { name, email }
@@ -63,12 +63,13 @@ export default class extends MultipartController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& userData.data.id !== +id
+			&& userData.data.id !== id
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
 
-		const oldEmail = userData.data.email
+		const oldUser = deserialize(await manager.findWithID(id)) as UserProfile
+		const oldEmail = oldUser.data.email
 
 		if (oldEmail !== email) {
 			request.nextMiddlewareArguments = {
@@ -83,7 +84,7 @@ export default class extends MultipartController {
 
 		if (signature) updateData.signature = signature.buffer
 
-		const affectedCount = await manager.update(+id, updateData)
+		const affectedCount = await manager.update(id, updateData)
 
 		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
 		response.end()
