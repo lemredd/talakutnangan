@@ -8,10 +8,11 @@ import User from "%/models/user"
 import compare from "$!/auth/compare"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import Transport from "!/helpers/email/transport"
 import StudentDetail from "%/models/student_detail"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
-import { user as permissionGroup } from "$/permissions/permission_list"
 import Route from "!/app/routes/api/user/reset_password(id).patch"
+import { user as permissionGroup } from "$/permissions/permission_list"
 
 describe("PATCH /api/user/reset_password/:id", () => {
 	beforeAll(async () => {
@@ -35,11 +36,27 @@ describe("PATCH /api/user/reset_password/:id", () => {
 			.set("Cookie", cookie)
 			.accept(JSON_API_MEDIA_TYPE)
 
-		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ where: { id: student.id } })
 		expect(compare(studentNumber, updatedStudent!.password)).resolves.toBeTruthy()
+
+		await flushPromises() // Middleware intermediate runs
+		await flushPromises() // E-mail template read
+		await flushPromises() // E-mail message transmission
+		const previousMessages = Transport.consumePreviousMessages()
+		expect(previousMessages).toHaveLength(1)
+		expect(previousMessages[0]).toHaveProperty("message")
+		expect(previousMessages[0]).toHaveProperty(
+			"message.subject",
+			"Password Reset in Talakutnangan"
+		)
+		expect(previousMessages[0].message.text).toContain(updatedStudent!.name)
+		expect(previousMessages[0].message.text).toContain(updatedStudent!.email)
+		expect(previousMessages[0].message.text).toContain(studentNumber)
+		expect(previousMessages[0].message.html).toContain(updatedStudent!.name)
+		expect(previousMessages[0].message.html).toContain(updatedStudent!.email)
+		expect(previousMessages[0].message.html).toContain(studentNumber)
 	})
 
 	it("cannot be accessed by not permitted users", async () => {
