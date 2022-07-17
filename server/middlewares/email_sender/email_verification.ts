@@ -20,14 +20,14 @@ export default class extends Middleware {
 
 		Log.trace("middleware", "sending verification e-mail messages to recipients")
 
-		const emailTransmissions = recipients.map(recipient => Transport.sendMail(
+		const emailTransmissions = recipients.map(async recipient => await Transport.sendMail(
 			[ recipient ],
 			subject,
 			"email_verification.md",
 			{
 				email: recipient,
 				homePageURL: URLMaker.makeBaseURL(),
-				emailVerificationURL: URLMaker.makeTemporaryURL("/user/verify", {
+				emailVerificationURL: await URLMaker.makeTemporaryURL("/user/verify", {
 					email: recipient
 				}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
 			}
