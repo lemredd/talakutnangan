@@ -38,7 +38,7 @@ interface ProfileData extends Serializable {
 export interface StudentProfileData extends ProfileData {
 	kind: "student",
 	studentDetail: {
-		studentNumber: number
+		studentNumber: string
 	}
 }
 
