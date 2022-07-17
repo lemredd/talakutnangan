@@ -53,7 +53,7 @@ describe("PATCH /api/user/update/:id", () => {
 		expect(previousMessages).toHaveLength(1)
 		expect(previousMessages[0]).toHaveProperty("message")
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toContain(updatedStudent!.name)
+		expect(previousMessages[0].message.text).toContain(updatedStudent!.email)
 		expect(previousMessages[0].message.text).toContain("/user/verify")
 	})
 
