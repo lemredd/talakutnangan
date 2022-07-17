@@ -6,7 +6,7 @@ import type { UserProfile } from "$/types/common_front-end"
  */
 export default function(userProfile: UserProfile): string {
 	if (userProfile.data.kind === "student") {
-		return userProfile.data.studentDetail.studentNumber
+		return userProfile.data.studentDetail.data.studentNumber
 	} else {
 		return userProfile.data.email.split("@")[0]
 	}

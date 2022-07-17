@@ -38,14 +38,18 @@ interface ProfileData extends Serializable {
 export interface StudentProfileData extends ProfileData {
 	kind: "student",
 	studentDetail: {
-		studentNumber: string
+		data: {
+			studentNumber: string
+		}
 	}
 }
 
 interface EmployeeSchedule extends Serializable {
-	scheduleStart: number,
-	scheduleEnd: number,
-	dayName: Day
+	data: {
+		scheduleStart: number,
+		scheduleEnd: number,
+		dayName: Day
+	}
 }
 
 /**
@@ -53,7 +57,9 @@ interface EmployeeSchedule extends Serializable {
  */
 export interface ReachableEmployeeProfileData extends ProfileData {
 	kind: "reachable_employee",
-	employeeSchedules: EmployeeSchedule[]
+	employeeSchedules: {
+		data: EmployeeSchedule[]
+	}
 }
 
 /**
