@@ -38,7 +38,7 @@ describe("POST /api/user/import", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body.data).toHaveLength(3)
-		expect(response.body.included).toHaveLength(4)
+		expect(response.body.included).toHaveLength(7)
 
 		await flushPromises() // Policy middleware runs
 		await flushPromises() // Middleware intermediate runs
