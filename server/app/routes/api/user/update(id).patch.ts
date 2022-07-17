@@ -43,8 +43,8 @@ export default class extends MultipartController {
 			// TODO: Make validator for names
 			name: [ "required", "string" ],
 			email: [ "required", "string", "email" ],
-			// TODO: Make buffer validator handle multiple MIME types
-			signature: [ "nullable", "buffer:image/png" ]
+			// TODO: Make buffer validator handle multiple MIME types and null
+			// signature: [ "nullable", "buffer:image/png" ]
 		}
 	}
 
@@ -54,7 +54,7 @@ export default class extends MultipartController {
 	): Promise<void> {
 		const manager = new UserManager()
 		const { id } = request.params
-		const { name, email, signature } = request.body
+		const { name, email, signature = undefined } = request.body
 		const userData = deserialize(request.user) as UserProfile
 		const updateData: Serializable = { name, email }
 
