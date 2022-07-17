@@ -73,7 +73,12 @@ export default class extends MultipartController {
 
 		if (oldEmail !== email) {
 			request.nextMiddlewareArguments = {
-				emailsToContact: [ email ]
+				emailsToContact: [
+					{
+						id,
+						email
+					}
+				]
 			}
 			updateData.emailVerifiedAt = null
 		} else {
