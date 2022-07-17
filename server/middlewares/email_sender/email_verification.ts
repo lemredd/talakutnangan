@@ -37,7 +37,7 @@ export default class extends Middleware {
 		for (const transmission of emailTransmissions) {
 			try {
 				const sentInfo = await transmission
-				console.log(sentInfo)
+				Log.trace("middleware", `Sent email verification to ${sentInfo.envelope.to[0]}`)
 			} catch(error) {
 				Log.error("middleware", error as Error)
 
