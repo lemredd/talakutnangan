@@ -46,7 +46,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -128,7 +128,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -173,7 +173,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -250,7 +250,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -268,7 +268,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kinds: [ "student" ],
+				kinds: [ "unreachable_employee" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -300,7 +300,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -345,7 +345,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kinds: [ "student" ],
+				kinds: [ "unreachable_employee" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -387,7 +387,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -439,7 +439,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
@@ -514,7 +514,7 @@ describe("Helper: Filter Link Infos", () => {
 						id: 1,
 						name: "",
 						email: "",
-						kind: "student",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
