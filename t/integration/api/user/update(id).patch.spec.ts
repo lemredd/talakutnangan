@@ -60,6 +60,28 @@ describe("PATCH /api/user/update/:id", () => {
 		expect(previousMessages[0].message.text).toContain("/user/verify")
 	})
 
+	it("can be accessed by student and retain email verification after update", async () => {
+		const studentRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+			.insertOne()
+
+		const { user: student, cookie } = await App.makeAuthenticatedCookie(studentRole)
+		const newStudent = await (new UserFactory()).makeOne()
+
+		const response = await App.request
+			.patch(`/api/user/update/${student.id}`)
+			.field("name", newStudent.name)
+			.field("email", student.email)
+			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
+
+		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
+
+		const updatedStudent = await User.findOne({ where: { id: student.id }})
+		expect(updatedStudent!.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
+		expect(updatedStudent!.name).toBe(newStudent.name)
+	})
+
 	it("can be accessed by department head and update others e-mail", async () => {
 		const headRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
