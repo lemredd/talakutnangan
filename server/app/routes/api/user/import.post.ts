@@ -8,7 +8,7 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"

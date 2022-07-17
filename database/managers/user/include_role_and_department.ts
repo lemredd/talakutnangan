@@ -1,6 +1,6 @@
 import type { FindOptions } from "%/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 
 import Role from "%/models/role"
 import Department from "%/models/department"

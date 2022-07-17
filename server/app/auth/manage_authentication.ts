@@ -3,7 +3,7 @@ import { Strategy as LocalStrategy } from "passport-local"
 
 import type { Serializable } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
 
 export default async function() {

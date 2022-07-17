@@ -16,7 +16,7 @@ import type {
 	CommonConstraints
 } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"
@@ -29,8 +29,8 @@ import EmployeeSchedule from "%/models/employee_schedule"
 import BaseManager from "%/managers/base"
 import UserTransformer from "%/transformers/user"
 
-import hash from "!/helpers/auth/hash"
-import compare from "!/helpers/auth/compare"
+import hash from "$!/auth/hash"
+import compare from "$!/auth/compare"
 import limit from "%/managers/helpers/limit"
 import offset from "%/managers/helpers/offset"
 import Condition from "%/managers/helpers/condition"

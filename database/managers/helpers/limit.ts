@@ -1,6 +1,6 @@
 import type { FindOptions, Model } from "%/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 
 /**
  * Limits the number of models to retrieve from database.
