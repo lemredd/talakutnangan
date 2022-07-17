@@ -26,10 +26,15 @@ export default abstract class extends ControllerLike {
 		_response: Response,
 		next: NextFunction
 	): Promise<void> {
-		request.pageProps = {
-			userProfile: request.isAuthenticated() ? request.user! : null,
-			...await this.getPageProps(request)
+		try {
+			request.pageProps = {
+				userProfile: request.isAuthenticated() ? request.user! : null,
+				...await this.getPageProps(request)
+			}
+
+			next()
+		} catch(error) {
+			next(error)
 		}
-		next()
 	}
 }
