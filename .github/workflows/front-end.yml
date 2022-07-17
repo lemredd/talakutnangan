@@ -33,4 +33,5 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run test:unit:front
+    - run: ./execute.ps1 -test unit:front
+      shell: pwsh
