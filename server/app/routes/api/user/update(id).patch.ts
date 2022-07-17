@@ -71,10 +71,14 @@ export default class extends MultipartController {
 		const oldEmail = userData.data.email
 
 		if (oldEmail !== email) {
-			request.nextMiddlewareArguments.emailsToContact = [ email ]
+			request.nextMiddlewareArguments = {
+				emailsToContact: [ email ]
+			}
 			updateData.emailVerifiedAt = null
 		} else {
-			request.nextMiddlewareArguments.emailsToContact = []
+			request.nextMiddlewareArguments = {
+				emailsToContact: []
+			}
 		}
 
 		if (signature) updateData.signature = signature.buffer
