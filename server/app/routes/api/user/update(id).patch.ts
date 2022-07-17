@@ -63,7 +63,7 @@ export default class extends MultipartController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& userData.id !== id
+			&& userData.data.id !== +id
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
