@@ -14,7 +14,7 @@ export default async function(sourceType: SourceType) {
 
 	const protocol = process.env.WEB_PROTOCOL || "http"
 	const hostname = process.env.WEB_HOST || "localhost"
-	const port = parseInt(process.env.WEB_PORT || process.env.PORT || "3000")
+	const port = parseInt(process.env.WEB_PORT || "3000")
 	const basePath = process.env.WEB_BASE_PATH || "/"
 	URLMaker.initialize(protocol, hostname, port, basePath)
 

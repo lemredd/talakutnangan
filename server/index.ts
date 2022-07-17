@@ -6,8 +6,9 @@ import { Server as HTTPServer } from "node:http"
 import { SourceType } from "$/types/database"
 
 import Log from "$!/singletons/log"
-import createWSServer from "!/ws/create_server"
 import Router from "!/app/routes/router"
+import URLMaker from "$!/singletons/url_maker"
+import createWSServer from "!/ws/create_server"
 import createAppHandler from "!/app/create_handler"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
@@ -22,7 +23,7 @@ async function startServer() {
 	const httpServer = new HTTPServer(app)
 	const _wsServer = createWSServer(httpServer)
 
-	const port = process.env.WEB_PORT || process.env.PORT || 3000
+	const port = process.env.PORT || 3000
 	httpServer.listen(port)
-	Log.success("server", `HTTP server running at http://localhost:${port}`)
+	Log.success("server", `HTTP server running at ${URLMaker.makeBaseURL()}`)
 }
