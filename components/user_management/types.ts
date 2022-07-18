@@ -6,4 +6,10 @@ export type User = {
 	jobTitle?: string
 }
 
+export type Department = {
+	id: number
+	name: string
+	users: number
+}
+
 export type ManagerKind = "secretary" | "dean" | "service" | "admin"
