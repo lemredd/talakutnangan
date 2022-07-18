@@ -15,11 +15,18 @@ import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
 import Condition from "%/managers/helpers/condition"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
+import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
  */
 export default abstract class Manager<T extends Model, U> {
+	private transactionManager: TransactionManager
+
+	constructor(transactionManager: TransactionManager = new TransactionManager()) {
+		this.transactionManager = transactionManager
+	}
+
 	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
 
 	abstract get model(): ModelCtor<T>
