@@ -1,7 +1,6 @@
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
 import { READ_OWN } from "$/permissions/user_combinations"
 import QueryController from "!/common_controllers/query_controller"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -18,7 +17,7 @@ export default class extends QueryController {
 		return {}
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<void> {
 		response.status(this.status.OK)
 	}
 }
