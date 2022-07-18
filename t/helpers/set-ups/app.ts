@@ -35,15 +35,15 @@ export default class {
 
 	static async makeAuthenticatedCookie(
 		role: Role|null = null,
-		factoryModificationCallback: ((factory: UserFactory) => void)|null = null
+		factoryModificationCallback: ((factory: UserFactory) => UserFactory)|null = null
 	) {
 		if (role === null) {
 			role = await new RoleFactory().insertOne()
 		}
 
-		const userFactory = new UserFactory().attach(role)
+		let userFactory = new UserFactory().attach(role)
 		if (factoryModificationCallback !== null) {
-			factoryModificationCallback(userFactory)
+			userFactory = factoryModificationCallback(userFactory)
 		}
 		const user = await userFactory.insertOne()
 
