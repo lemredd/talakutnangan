@@ -8,6 +8,16 @@ Executes custom ommands for ease of use
 .PARAMETER Help
 Outputs the help info of the command
 
+.PARAMETER Push
+Pushes the current branch to remote.
+
+.PARAMETER Pull
+Pulls the all branches from remote and prunes remotely-deleted branches.
+
+.PARAMETER Remote
+Only works if one of `-Push` or `-Pull` switches is on.
+Specifies which remote to ush or pull.
+
 .PARAMETER Test
 Switch to runs tests.
 
@@ -16,7 +26,7 @@ Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
 .PARAMETER Watch
-Only required if `-Test` switch is on.
+Only works if `-Test` switch is on.
 This watches the files included on specified tests.
 
 .INPUTS
@@ -45,6 +55,18 @@ Param(
 	[Parameter(ParameterSetName="Help", Position=0)]
 	[switch]
 	$Help,
+
+	[Parameter(ParameterSetName="Repo", Position=0)]
+	[switch]
+	$Push,
+
+	[Parameter(ParameterSetName="Repo", Position=0)]
+	[switch]
+	$Pull,
+
+	[Parameter(ParameterSetName="Repo", Position=1)]
+	[string]
+	$Remote = "origin",
 
 	[Parameter(ParameterSetName="Test", Position=0)]
 	[switch]
