@@ -27,5 +27,7 @@
 		"t/integration/.*\\.spec\\.ts"
 	],
 
-	"testEnvironment": "node"
+	"testEnvironment": "node",
+
+	"testTimeout": 10000
 }
