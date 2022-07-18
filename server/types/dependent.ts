@@ -24,9 +24,6 @@ export interface Request extends BaseRequest {
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
-
-	// Added due to need to test e-mail verification
-	emailsToContact: string[]
 }
 
 export interface AuthenticatedRequest extends Request {
