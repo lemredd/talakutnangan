@@ -73,7 +73,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 		Log.trace("manager", "prepared query to find user with certain credential")
 
-		const foundUser = await User.findOne(findOptions)
+		const foundUser = await this.model.findOne(findOptions)
 
 		Log.trace("manager", "done finding for user")
 
@@ -166,7 +166,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			Log.trace("manager", "specialized the data structure for student bulk creation")
 
 			// Create the students in bulk
-			const users = await User.bulkCreate(normalizedProfiles, {
+			const users = await this.model.bulkCreate(normalizedProfiles, {
 				include: [
 					{
 						model: AttachedRole,
@@ -215,7 +215,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
 
 			// Create the reachable employees in bulk
-			const users = await User.bulkCreate(normalizedProfiles, {
+			const users = await this.model.bulkCreate(normalizedProfiles, {
 				include: [
 					{
 						model: AttachedRole,
@@ -250,7 +250,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async verify(email: string): Promise<number> {
-		const [ affectedCount ] = await User.update({
+		const [ affectedCount ] = await this.model.update({
 			emailVerifiedAt: new Date()
 		}, {
 			where: {
@@ -271,7 +271,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		// TODO: use the student number or random password
 		const hashedPassword = await hash(rawPassword)
 
-		const [ affectedCount ] = await User.update({
+		const [ affectedCount ] = await this.model.update({
 			password: hashedPassword
 		}, {
 			where: {
