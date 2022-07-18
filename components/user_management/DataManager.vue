@@ -16,8 +16,7 @@
 
 <style lang="scss">
 .controls-bar {
-	@apply dark:bg-dark-100 bg-light-600 grid gap-y-4 sm:grid-cols-2;
-	padding: .5em;
+	@apply dark:bg-dark-100 bg-light-600 grid gap-y-4 sm:grid-cols-[repeat(2,minmax(0,max-content))] justify-between;
 
 	.search-bar {
 		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
