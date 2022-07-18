@@ -251,12 +251,12 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return {}
 	}
 
-	async verify(email: string): Promise<number> {
+	async verify(id: number): Promise<number> {
 		const [ affectedCount ] = await User.update({
 			emailVerifiedAt: new Date()
 		}, {
 			where: {
-				email,
+				id,
 				emailVerifiedAt: { [Op.is]: null }
 			}
 		})
