@@ -8,7 +8,7 @@ import Transport from "!/helpers/email/transport"
 
 import NewUserNotification from "./new_user_notification"
 
-describe.skip("Middleware: New User Notifier", () => {
+describe("Middleware: New User Notifier", () => {
 	const requester  = new MockRequester<PreprocessedRequest<NewUserNotificationArguments>>()
 
 	it("can notify to multiple users", async () => {
