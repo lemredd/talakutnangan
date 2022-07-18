@@ -73,7 +73,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 		Log.trace("manager", "prepared query to find user with certain credential")
 
-		const foundUser = await this.model.findOne(findOptions)
+		const foundUser = await this.model.findOne({
+			...findOptions,
+			...this.transaction.lockedTransactionObject
+		})
 
 		Log.trace("manager", "done finding for user")
 
@@ -177,7 +180,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						as: "studentDetail"
 					}
 				]
-			})
+			}, this.transaction.transactionObject)
 
 			Log.success("manager", "created students in bulk")
 
@@ -226,7 +229,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						as: "employeeSchedules"
 					}
 				]
-			})
+			}, this.transaction.transactionObject)
 
 			Log.success("manager", "created reachable employees in bulk")
 
@@ -256,7 +259,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			where: {
 				email,
 				emailVerifiedAt: { [Op.is]: null }
-			}
+			},
+			...this.transaction.transactionObject
 		})
 
 		return affectedCount
@@ -268,7 +272,6 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	 * @param rawPassword New password to put in the database.
 	 */
 	async resetPassword(id: number, rawPassword: string): Promise<boolean> {
-		// TODO: use the student number or random password
 		const hashedPassword = await hash(rawPassword)
 
 		const [ affectedCount ] = await this.model.update({
@@ -276,7 +279,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		}, {
 			where: {
 				id
-			}
+			},
+			...this.transaction.transactionObject
 		})
 
 		return affectedCount > 0
