@@ -21,6 +21,7 @@
 	padding-bottom: 1em;
 
 	display: flex;
+	flex-direction: column;
 
 	.tab-button {
 		display: inline;
@@ -34,6 +35,12 @@
 				background: none;
 			}
 		}
+	}
+}
+
+@media (min-width: 640px) {
+	.tabs {
+		flex-direction: row;
 	}
 }
 </style>
