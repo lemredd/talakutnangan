@@ -12,6 +12,7 @@ import type {
 } from "express"
 import type { Session } from "express-session"
 import type { Serializable } from "$/types/database"
+import TransactionManager from "%/managers/helpers/transaction_manager"
 
 // @ts-ignore
 export interface Request extends BaseRequest {
@@ -24,6 +25,9 @@ export interface Request extends BaseRequest {
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
+
+	// Added to manage the transactions
+	transaction: TransactionManager
 }
 
 export interface AuthenticatedRequest extends Request {
