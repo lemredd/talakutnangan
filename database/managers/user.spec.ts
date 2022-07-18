@@ -213,7 +213,7 @@ describe("Database: User Update Operations", () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
 
-		const verifiedUserCount = await manager.verify(user.email)
+		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
 		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()
