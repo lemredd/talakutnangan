@@ -11,6 +11,7 @@ import UserFactory from "~/factories/user"
 import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
+import TransactionManager from "%/managers/helpers/transaction_manager"
 
 import BaseManager from "./base"
 
@@ -47,8 +48,11 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get transformer(): MockUserTransformer { return new MockUserTransformer() }
 
-	constructor(customReadPipe: Pipe<FindAndCountOptions<User>, any>|null = null) {
-		super()
+	constructor(
+		customReadPipe: Pipe<FindAndCountOptions<User>, any>|null = null,
+		transaction: TransactionManager = new TransactionManager()
+	) {
+		super(transaction)
 		this.customReadPipe = customReadPipe
 	}
 }
@@ -61,6 +65,21 @@ describe("Database: Base Read Operations", () => {
 
 		const foundUser = await manager.findWithID(id)
 
+		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
+	})
+
+	it("can search base with ID through transaction", async () => {
+		const transaction = new TransactionManager()
+		const manager = new MockUserManager(null, transaction)
+		const base = await (new UserFactory()).insertOne()
+		const id = base.id
+
+		await transaction.initialize()
+		const foundUser = await manager.findWithID(id)
+		const transactionObject = transaction.lockedTransactionObject
+		await transaction.destroySuccessfully()
+
+		expect(transactionObject).toHaveProperty("lock", true)
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
@@ -118,6 +137,20 @@ describe("Database: Base Create Operations", () => {
 
 		expect(createdDepartment).toHaveProperty("data.attributes.email", base.email)
 	})
+
+	it("can create base through transaction", async () => {
+		const transaction = new TransactionManager()
+		const manager = new MockUserManager(null, transaction)
+		const base = await (new UserFactory()).makeOne()
+
+		await transaction.initialize()
+		const createdDepartment = await manager.create(base.toJSON())
+		const transactionObject = transaction.transactionObject
+		await transaction.destroySuccessfully()
+
+		expect(transactionObject).toHaveProperty("transaction")
+		expect(createdDepartment).toHaveProperty("data.attributes.email", base.email)
+	})
 })
 
 describe("Database: Base Update Operations", () => {
@@ -130,6 +163,28 @@ describe("Database: Base Update Operations", () => {
 			name: newName
 		})
 
+		expect(updateCount).toBe(1)
+		expect((
+			await User.findOne({
+				where: { id: base.id }
+			})
+		)!.name).not.toBe(base.name)
+	})
+
+	it("can update base through transaction", async () => {
+		const transaction = new TransactionManager()
+		const manager = new MockUserManager(null, transaction)
+		const base = await (new UserFactory()).insertOne()
+		const newName = base.name+"1"
+
+		await transaction.initialize()
+		const updateCount = await manager.update(base.id, {
+			name: newName
+		})
+		const transactionObject = transaction.transactionObject
+		await transaction.destroySuccessfully()
+
+		expect(transactionObject).toHaveProperty("transaction")
 		expect(updateCount).toBe(1)
 		expect((
 			await User.findOne({
@@ -162,6 +217,45 @@ describe("Database: Base Archive and Restore Operations", () => {
 
 		await manager.restore(base.id)
 
+		expect((
+			await User.findOne({
+				where: { id: base.id }
+			})
+		)!.deletedAt).toBeNull()
+	})
+
+	it("archive base through transaction", async () => {
+		const transaction = new TransactionManager()
+		const manager = new MockUserManager(null, transaction)
+		const base = await (new UserFactory()).insertOne()
+
+		await transaction.initialize()
+		const deleteCount = await manager.archive(base.id)
+		const transactionObject = transaction.transactionObject
+		await transaction.destroySuccessfully()
+
+		expect(transactionObject).toHaveProperty("transaction")
+		expect(deleteCount).toBe(1)
+		expect((
+			await User.findOne({
+				where: { id: base.id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+	})
+
+	it("restore base through transaction", async () => {
+		const transaction = new TransactionManager()
+		const manager = new MockUserManager(null, transaction)
+		const base = await (new UserFactory()).insertOne()
+		await base.destroy({force: false})
+
+		await transaction.initialize()
+		await manager.restore(base.id)
+		const transactionObject = transaction.transactionObject
+		await transaction.destroySuccessfully()
+
+		expect(transactionObject).toHaveProperty("transaction")
 		expect((
 			await User.findOne({
 				where: { id: base.id }
