@@ -33,12 +33,19 @@ export default class {
 		return this.#request
 	}
 
-	static async makeAuthenticatedCookie(role: Role|null = null) {
+	static async makeAuthenticatedCookie(
+		role: Role|null = null,
+		factoryModificationCallback: ((factory: UserFactory) => void)|null = null
+	) {
 		if (role === null) {
 			role = await new RoleFactory().insertOne()
 		}
 
-		const user = await (new UserFactory().attach(role)).insertOne()
+		const userFactory = new UserFactory().attach(role)
+		if (factoryModificationCallback !== null) {
+			factoryModificationCallback(userFactory)
+		}
+		const user = await userFactory.insertOne()
 
 		const response = await this.#request
 			.post("/api/user/log_in")
