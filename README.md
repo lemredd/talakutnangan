@@ -137,7 +137,9 @@ There is a custom script in this repository to aid the development. Here are som
 
 ### Contributors
 - Angelo Magtoto
+- Ardrin Gregorio
 - Jarlem Red De Peralta
+- John Jerome Pertez
 - Kenneth Trecy Tobias
 
 [specification]: https://www.conventionalcommits.org/en/v1.0.0/
