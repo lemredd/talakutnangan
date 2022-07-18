@@ -179,8 +179,9 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						model: StudentDetail,
 						as: "studentDetail"
 					}
-				]
-			}, this.transaction.transactionObject)
+				],
+				...this.transaction.transactionObject
+			})
 
 			Log.success("manager", "created students in bulk")
 
@@ -228,8 +229,9 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						model: EmployeeSchedule,
 						as: "employeeSchedules"
 					}
-				]
-			}, this.transaction.transactionObject)
+				],
+				...this.transaction.transactionObject
+			})
 
 			Log.success("manager", "created reachable employees in bulk")
 
