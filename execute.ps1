@@ -124,3 +124,8 @@ if ($Push) {
 	$currentBranch = & git branch --show-current
 	& git push -u $($Remote) $($currentBranch)
 }
+
+if ($Pull) {
+	$currentBranch = & git branch --show-current
+	& git pull --prune $($Remote) $($currentBranch)
+}
