@@ -13,7 +13,7 @@ import Route from "!/app/routes/api/user/import.post"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
-describe.skip("POST /api/user/import", () => {
+describe("POST /api/user/import", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -38,7 +38,7 @@ describe.skip("POST /api/user/import", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body.data).toHaveLength(3)
-		expect(response.body.included).toHaveLength(4)
+		expect(response.body.included).toHaveLength(7)
 
 		await flushPromises() // Policy middleware runs
 		await flushPromises() // Middleware intermediate runs

@@ -9,6 +9,7 @@ import Transformer from "%/transformers/base"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import DepartmentTransformer from "%/transformers/department"
+import StudentDetailTransformer from "%/transformers/student_detail"
 
 export default class extends Transformer<User, void> {
 	constructor() {
@@ -16,7 +17,8 @@ export default class extends Transformer<User, void> {
 		this.type = "user"
 		this.relationships = {
 			roles: this.roles,
-			department: this.department
+			department: this.department,
+			studentDetail: this.studentDetail
 		}
 	}
 
@@ -41,5 +43,13 @@ export default class extends Transformer<User, void> {
 
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(model.roles, new RoleTransformer(), options)
+	}
+
+	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			model.studentDetail || null,
+			new StudentDetailTransformer(),
+			options
+		)
 	}
 }

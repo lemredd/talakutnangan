@@ -10,7 +10,7 @@ import type { UserKind } from "$/types/database"
  * Shape of middleware arguments for e-mail verification.
  */
 export interface EmailVerificationArguments {
-	emailsToContact: string[]
+	emailsToContact: ({ id: number, email: string })[]
 }
 
 /**
@@ -23,6 +23,17 @@ export interface NewUserNotificationArguments {
 		kind: UserKind,
 		password: string
 	}[]
+}
+
+/**
+ * Shape of middleware arguments for notifying users about password reset.
+ */
+ export interface PasswordResetArguments {
+	emailToContact: {
+		name: string,
+		email: string,
+		password: string
+	}
 }
 
 // Media types
