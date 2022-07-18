@@ -31,6 +31,17 @@ export default class {
 		}
 	}
 
+	get lockedTransactionObject(): { lock?: boolean, transaction?: Transaction } {
+		if (this.transaction === null) {
+			return {}
+		} else {
+			return {
+				lock: true,
+				...this.transactionObject
+			}
+		}
+	}
+
 	async destroySuccessfully() {
 		if (this.transaction !== null) {
 			await this.transaction.commit()
