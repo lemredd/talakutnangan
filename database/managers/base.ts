@@ -21,10 +21,10 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
  * A base class for model managers which contains methods for CRUD operations.
  */
 export default abstract class Manager<T extends Model, U> {
-	private transactionManager: TransactionManager
+	private transaction: TransactionManager
 
-	constructor(transactionManager: TransactionManager = new TransactionManager()) {
-		this.transactionManager = transactionManager
+	constructor(transaction: TransactionManager = new TransactionManager()) {
+		this.transaction = transaction
 	}
 
 	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
@@ -43,7 +43,10 @@ export default abstract class Manager<T extends Model, U> {
 		const whereOptions: FindOptions<T> = { where: condition.build() }
 		const findOptions = runThroughPipeline(whereOptions, {}, this.singleReadPipeline)
 
-		const model = await this.model.findOne(findOptions)
+		const model = await this.model.findOne({
+			...findOptions,
+			...this.transaction.lockedTransactionObject
+		})
 
 		Log.success("manager", "done searching for a model using ID")
 
@@ -53,7 +56,10 @@ export default abstract class Manager<T extends Model, U> {
 	async list(query: object): Promise<Serializable> {
 		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
-		const rows = await this.model.findAll(options)
+		const rows = await this.model.findAll({
+			...options,
+			...this.transaction.lockedTransactionObject
+		})
 
 		Log.success("manager", "done listing models according to constraints")
 
@@ -61,7 +67,7 @@ export default abstract class Manager<T extends Model, U> {
 	}
 
 	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
-		const model = await this.model.create(details)
+		const model = await this.model.create(details, this.transaction.transactionObject)
 
 		Log.success("manager", "done creating a model")
 
@@ -70,7 +76,8 @@ export default abstract class Manager<T extends Model, U> {
 
 	async update(id: number, details: U & Attributes<T>): Promise<number> {
 		const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
-			where: { id }
+			where: { id },
+			...this.transaction.transactionObject
 		})
 
 		Log.success("manager", "done updating a model")
@@ -80,7 +87,8 @@ export default abstract class Manager<T extends Model, U> {
 
 	async archive(id: number): Promise<number> {
 		const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
-			where: { id }
+			where: { id },
+			...this.transaction.transactionObject
 		})
 
 		Log.success("manager", "done archiving a model")
@@ -90,7 +98,8 @@ export default abstract class Manager<T extends Model, U> {
 
 	async restore(id: number): Promise<void> {
 		await this.model.restore(<RestoreOptions<T>>{
-			where: { id }
+			where: { id },
+			...this.transaction.transactionObject
 		})
 
 		Log.success("manager", "done restoring a model")
