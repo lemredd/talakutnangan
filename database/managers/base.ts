@@ -10,7 +10,7 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
 import Condition from "%/managers/helpers/condition"

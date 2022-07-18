@@ -3,7 +3,7 @@ import RoleSpecificLinks from "./RoleSpecificLinks.vue"
 import { ref } from "vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
-	it("should specify the right link/s for a non-guest role", async () => {
+	it("should specify the right link/s for authenticated user", async () => {
 		const wrapper = mount(RoleSpecificLinks, {
 			shallow: true,
 			global: {
@@ -11,8 +11,22 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
-
+					bodyClasses: ref<string[]>(["dark"]),
+					pageContext: {
+						pageProps: {
+							userProfile: {
+								data: {
+									type: "user",
+									id: 1,
+									kind: "student",
+									roles: {
+										data: []
+									}
+								}
+							},
+							parsedUnitError: {}
+						}
+					}
 				}
 			},
 			props: {
@@ -25,7 +39,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		expect(linkHref).toBe("/notifications")
 	})
 
-	it("should specify the right link/s for a guest role", async () => {
+	it("should specify the right link/s for a guest user", async () => {
 		const wrapper = mount(RoleSpecificLinks, {
 			shallow: true,
 			global: {
@@ -33,7 +47,13 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
+					bodyClasses: ref<string[]>(["dark"]),
+					pageContext: {
+						pageProps: {
+							userProfile: null,
+							parsedUnitError: {}
+						}
+					}
 				}
 			},
 			props: {
@@ -54,7 +74,22 @@ describe("Component: Page Shell/Role Specific Links", () => {
 					RoleLinksList: false
 				},
 				provide: {
-					bodyClasses: ref<string[]>(["dark"])
+					bodyClasses: ref<string[]>(["dark"]),
+					pageContext: {
+						pageProps: {
+							userProfile: {
+								data: {
+									type: "user",
+									id: 1,
+									kind: "student",
+									roles: {
+										data: []
+									}
+								}
+							},
+							parsedUnitError: {}
+						}
+					}
 				}
 			},
 			props: {

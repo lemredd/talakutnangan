@@ -7,7 +7,7 @@ import type { GeneratedData } from "~/types/dependent"
 
 import User from "%/models/user"
 import Role from "%/models/role"
-import hash from "!/helpers/auth/hash"
+import hash from "$!/auth/hash"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"

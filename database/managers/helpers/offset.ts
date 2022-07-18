@@ -1,6 +1,6 @@
 import type { FindOptions, Model } from "%/types/dependent"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 
 /**
  * Skips any number of model to retrieve from database.

@@ -15,6 +15,7 @@
 			"!/*": [ "./server/*" ],
 			"$!/*": [ "./common_back-end/*" ],
 			"~/*": [ "./t/helpers/*" ],
+			"$@/*": [ "./common_front-end/*" ],
 			"#/*": [ "./renderer/*" ],
 			"@/*": [ "./components/*" ],
 			"$/*": [ "./shareable/*" ],

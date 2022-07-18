@@ -2,7 +2,7 @@ import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
 import type { SourceType } from "$/types/database"
 
-import Log from "!/helpers/log"
+import Log from "$!/singletons/log"
 import Role from "%/models/role"
 import User from "%/models/user"
 import Department from "%/models/department"
