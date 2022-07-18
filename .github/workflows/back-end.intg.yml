@@ -61,4 +61,5 @@ jobs:
     - run: npm run migrate:up
     - run: npm run seed:up:all
     - run: npm run build
-    - run: npm run test:intg:back
+    - run: ./execute.ps1 -test intg:back
+      shell: pwsh

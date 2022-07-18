@@ -7,6 +7,7 @@ import type {
 	RawBulkDataForStudent,
 	RawBulkDataForEmployee
 } from "%/types/independent"
+import extractEmailUsername from "!/helpers/extract_email_username"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -61,12 +62,12 @@ export default class extends MultipartController {
 		Log.trace("controller", "made user manager")
 
 		body.importedCSV = body.importedCSV!.map(data => {
+			// ! If there is a change below, update `!/helpers/make_default_password` too.
 			if (body.kind! === "student") {
 				data.password = (data as RawBulkDataForStudent).studentNumber
 			} else {
-				// TODO: Check for unreachable employees
-				// TODO: Think of a way to produce password for employees
-				data.password = (data as RawBulkDataForEmployee).email
+				const email = (data as RawBulkDataForEmployee).email
+				data.password = extractEmailUsername(email)
 			}
 			return data
 		})

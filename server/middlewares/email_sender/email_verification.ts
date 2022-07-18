@@ -3,6 +3,7 @@ import type { PreprocessedRequest, Response, NextFunction } from "!/types/depend
 
 import Log from "$!/singletons/log"
 import Middleware from "!/bases/middleware"
+import URLMaker from "$!/singletons/url_maker"
 import Transport from "!/helpers/email/transport"
 
 /**
@@ -19,26 +20,33 @@ export default class extends Middleware {
 
 		Log.trace("middleware", "sending verification e-mail messages to recipients")
 
-		await Promise.all(recipients.map(recipient => Transport.sendMail(
-			[ recipient ],
-			subject,
-			"email_verification.md",
-			{
-				email: recipient,
-				homePageURL: `${request.protocol}://${request.hostname}`,
-				emailVerificationURL:
-					`${request.protocol}://${request.hostname}/user/verify?to=${recipient}`
-			}
-		)))
-			.then(info => {
-				Log.success("middleware", "e-mail messages were sent")
+		const emailTransmissions = recipients.map(async recipient => await Transport.sendMail(
+				[ recipient.email ],
+				subject,
+				"email_verification.md",
+				{
+					email: recipient.email,
+					homePageURL: URLMaker.makeBaseURL(),
+					emailVerificationURL: await URLMaker.makeTemporaryURL("/user/verify", {
+						id: recipient.id
+					}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
+				}
+			)
+		)
 
-				next()
-			})
-			.catch(error => {
-				Log.error("middleware", error)
+		for (const transmission of emailTransmissions) {
+			try {
+				const sentInfo = await transmission
+				Log.trace("middleware", `Sent email verification to ${sentInfo.envelope.to[0]}`)
+			} catch(error) {
+				Log.error("middleware", error as Error)
 
 				next(error)
-			})
+			}
+		}
+
+		Log.success("middleware", "e-mail messages were sent")
+
+		next()
 	}
 }

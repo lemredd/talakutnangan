@@ -37,6 +37,7 @@ import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
+import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
 
 export default class UserManager extends BaseManager<User, RawUser> {
 	get model(): ModelCtor<User> { return User }
@@ -48,7 +49,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		CommonConstraints & { criteria: Criteria }
 	>[] {
 		return [
-			includeRoleAndDepartment
+			includeRoleAndDepartment,
+			includeExclusiveDetails
 		]
 	}
 
@@ -249,12 +251,12 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return {}
 	}
 
-	async verify(email: string): Promise<number> {
+	async verify(id: number): Promise<number> {
 		const [ affectedCount ] = await User.update({
 			emailVerifiedAt: new Date()
 		}, {
 			where: {
-				email,
+				id,
 				emailVerifiedAt: { [Op.is]: null }
 			}
 		})

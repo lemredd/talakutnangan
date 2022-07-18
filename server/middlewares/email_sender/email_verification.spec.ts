@@ -8,16 +8,19 @@ import Transport from "!/helpers/email/transport"
 
 import EmailVerification from "./email_verification"
 
-describe.skip("Middleware: Email Verification Sender", () => {
+describe("Middleware: Email Verification Sender", () => {
 	const requester  = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
 
 	it("can send to single user", async () => {
 		const sender = new EmailVerification()
 		requester.customizeRequest({
-			protocol: "http",
-			hostname: "localhost",
 			nextMiddlewareArguments: {
-				emailsToContact: [ "sample@example.com" ]
+				emailsToContact: [
+					{
+						id: 1,
+						email: "sample@example.com"
+					}
+				]
 			}
 		})
 
@@ -28,12 +31,10 @@ describe.skip("Middleware: Email Verification Sender", () => {
 		expect(previousMessages).toHaveLength(1)
 		expect(previousMessages[0]).toHaveProperty("message")
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toContain(
-			"http://localhost/user/verify?to=sample@example.com"
-		)
-		expect(previousMessages[0].message.html).toContain(
-			"http://localhost/user/verify?to=sample@example.com"
-		)
+		expect(previousMessages[0].message.text).toContain("/user/verify")
+		expect(previousMessages[0].message.text).toContain("sample@example.com")
+		expect(previousMessages[0].message.html).toContain("/user/verify")
+		expect(previousMessages[0].message.html).toContain("sample@example.com")
 	})
 
 	it("can send to multiple users", async () => {
@@ -42,7 +43,16 @@ describe.skip("Middleware: Email Verification Sender", () => {
 			protocol: "http",
 			hostname: "localhost",
 			nextMiddlewareArguments: {
-				emailsToContact: [ "sampleA@example.com", "sampleB@example.net" ]
+				emailsToContact: [
+					{
+						id: 2,
+						email: "sampleA@example.com"
+					},
+					{
+						id: 3,
+						email: "sampleB@example.net"
+					}
+				]
 			}
 		})
 
@@ -51,19 +61,23 @@ describe.skip("Middleware: Email Verification Sender", () => {
 		requester.expectSuccess()
 		const previousMessages = Transport.consumePreviousMessages()
 		expect(previousMessages).toHaveLength(2)
-		expect(previousMessages[0]).toHaveProperty("message")
-		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toContain(
-			"http://localhost/user/verify?to=sampleA@example.com"
+		const sampleAIndex = previousMessages.findIndex(
+			message => message.envelope.to.includes("sampleA@example.com")
 		)
-		expect(previousMessages[0].message.html).toContain(
-			"http://localhost/user/verify?to=sampleA@example.com"
+		const sampleBIndex = previousMessages.findIndex(
+			message => message.envelope.to.includes("sampleB@example.net")
 		)
-		expect(previousMessages[1].message.text).toContain(
-			"http://localhost/user/verify?to=sampleB@example.net"
-		)
-		expect(previousMessages[1].message.html).toContain(
-			"http://localhost/user/verify?to=sampleB@example.net"
-		)
+		expect(previousMessages[sampleAIndex]).toHaveProperty("message")
+		expect(previousMessages[sampleAIndex]).toHaveProperty("message.subject", "Email Verification")
+		expect(previousMessages[sampleAIndex].message.text).toContain("/user/verify")
+		expect(previousMessages[sampleAIndex].message.text).toContain("sampleA@example.com")
+		expect(previousMessages[sampleAIndex].message.html).toContain("/user/verify")
+		expect(previousMessages[sampleAIndex].message.html).toContain("sampleA@example.com")
+		expect(previousMessages[sampleBIndex]).toHaveProperty("message")
+		expect(previousMessages[sampleBIndex]).toHaveProperty("message.subject", "Email Verification")
+		expect(previousMessages[sampleBIndex].message.text).toContain("/user/verify")
+		expect(previousMessages[sampleBIndex].message.text).toContain("sampleB@example.net")
+		expect(previousMessages[sampleBIndex].message.html).toContain("/user/verify")
+		expect(previousMessages[sampleBIndex].message.html).toContain("sampleB@example.net")
 	})
 })
