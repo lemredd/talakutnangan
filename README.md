@@ -124,6 +124,17 @@ appropriate.
 ### Further Reading
 There is also a good [article] to read about the Conventional Commits.
 
+## Development
+There is a custom script in this repository to aid the development. Here are some of the custom commands:
+- `./execute -help`. Show the full information about the script. Run this command to know other commands.
+- `./execute -test [-suitename <suitename>]`. Run certain tests indicated by a configuration. Suite
+  name can be `unit:front` to run the front-end tests, `unit:back` to run common back-end tests, or
+  others.
+- `./execute -test [-suitename <suitename>] -watch`. Same as above yet it watches the files related
+  to the tests.
+
+## Notes
+
 ### Contributors
 - Angelo Magtoto
 - Jarlem Red De Peralta
