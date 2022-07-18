@@ -121,5 +121,6 @@ if ($Test) {
 }
 
 if ($Push) {
-	Write-Output $Remote
+	$currentBranch = & git branch --show-current
+	& git push -u $($Remote) $($currentBranch)
 }
