@@ -21,7 +21,7 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
  * A base class for model managers which contains methods for CRUD operations.
  */
 export default abstract class Manager<T extends Model, U> {
-	private transaction: TransactionManager
+	protected transaction: TransactionManager
 
 	constructor(transaction: TransactionManager = new TransactionManager()) {
 		this.transaction = transaction
