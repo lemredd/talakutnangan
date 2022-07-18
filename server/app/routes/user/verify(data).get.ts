@@ -20,7 +20,7 @@ export default class extends PageMiddleware {
 			const manager = new UserManager()
 			const userID = info.data.id as number
 
-			await manager.update(userID, { emailVerifiedAt: new Date() })
+			await manager.verify(userID)
 
 			Log.success("controller", "email verified")
 		}
