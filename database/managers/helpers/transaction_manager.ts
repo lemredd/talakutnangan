@@ -6,31 +6,39 @@ import Database from "%/data_source/database"
  * Manages the transaction to be implementation-agnostic
  */
 export default class {
-	private currentTransaction: Transaction|null = null
+	private transaction: Transaction|null = null
 
 	async initialize() {
-		if (this.currentTransaction === null) {
+		if (this.transaction === null) {
 			// For informred decision, please read:
 			// https://medium.com/nerd-for-tech/understanding-database-isolation-levels-c4ebcd55c6b9
-			this.currentTransaction = await Database.dataSource.currentTransaction({
+			this.transaction = await Database.dataSource.transaction({
 				isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED
 			})
 		}
 	}
 
-	get transaction(): Transaction { return this.currentTransaction }
+	get transactionObject(): { transaction?: Transaction } {
+		if (this.transaction === null) {
+			return {}
+		} else {
+			return {
+				transaction: this.transaction
+			}
+		}
+	}
 
 	async destroySuccessfully() {
-		if (this.currentTransaction !== null) {
-			await this.currentTransaction.commit()
-			this.currentTransaction = null
+		if (this.transaction !== null) {
+			await this.transaction.commit()
+			this.transaction = null
 		}
 	}
 
 	async destroyIneffectually() {
-		if (this.currentTransaction !== null) {
-			await this.currentTransaction.rollback()
-			this.currentTransaction = null
+		if (this.transaction !== null) {
+			await this.transaction.rollback()
+			this.transaction = null
 		}
 	}
 }
