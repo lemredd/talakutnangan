@@ -6,7 +6,11 @@ Custom commands for the project
 Executes custom ommands for ease of use
 
 .PARAMETER Help
-Outputs the help info of the command
+Outputs the detailed help info of the command
+
+.PARAMETER Examples
+Only works if `-Help` switch is on.
+Includes examples in the help info.
 
 .PARAMETER Push
 Pushes the current branch to remote.
@@ -38,7 +42,7 @@ Depends on the command ran.
 .EXAMPLE
 PS> ./execute -help
 
-Show the full help.
+Show the detailed help.
 
 .EXAMPLE
 PS> ./execute -test unit:front -watch
@@ -55,6 +59,10 @@ Param(
 	[Parameter(ParameterSetName="Help", Position=0)]
 	[switch]
 	$Help,
+
+	[Parameter(ParameterSetName="Help", Position=1)]
+	[switch]
+	$Examples,
 
 	[Parameter(ParameterSetName="Repo", Position=0)]
 	[switch]
@@ -89,7 +97,10 @@ Param(
 )
 
 if ($Help) {
-	Get-Help $PSCommandPath -full
+	Get-Help $PSCommandPath -detailed
+	if ($Examples) {
+		Get-Help $PSCommandPath -examples
+	}
 }
 
 if ($Test) {
