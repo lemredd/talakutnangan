@@ -4,7 +4,7 @@
 			<TextualField
 				type="email"
 				v-model="searchFilter"
-				input-classes="!py-0 pl-1 !border-none !w-100" />
+				input-classes="!py-0 pl-1 !border-none" />
 			<button class="material-icons">search</button>
 		</div>
 		<Filter v-if="hasFilter" v-model:filter="selectedFilter"/>
