@@ -6,8 +6,8 @@ import type { RequestHandler } from "!/types/dependent"
 import Router from "!/bases/router"
 import catchAllErrors from "!/app/catch_all_errors"
 import createViteDevServer from "!/vite_dev/create_server"
+import makeGlobalPostJobs from "!/app/make_global_post_jobs"
 import manageAuthentication from "!/app/auth/manage_authentication"
-import registerGlobalPostJobs from "!/app/register_global_post_jobs"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
 import registerCustomValidators from "!/app/auth/register_custom_validators"
 
@@ -20,6 +20,11 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	await manageAuthentication()
 	await registerCustomValidators()
 
+	const globalPostJobs = await makeGlobalPostJobs()
+	const rawGlobalPostJobs = globalPostJobs
+		.filter(postJob => postJob !== null)
+		.map(postJob => postJob!.intermediate!.bind(postJob))
+
 	const allRouteInformation = customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
 		const { method, path } = information
@@ -31,13 +36,17 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 		const rawPostJobs = postJobs
 			.filter(postJob => postJob !== null)
 			.map(postJob => postJob!.intermediate!.bind(postJob))
-		const rawHandlers = [ ...rawMiddlewares, controller, ...rawPostJobs, endHandler ]
+		const rawHandlers = [
+			...rawMiddlewares,
+			controller,
+			...rawPostJobs,
+			...rawGlobalPostJobs,
+			endHandler
+		]
 			.filter(middleware => middleware !== null)
 
 		app[method](path, ...(<RequestHandler[]><unknown>rawHandlers))
 	}
-
-	await registerGlobalPostJobs(app)
 
 	app.use(viteDevRouter)
 
