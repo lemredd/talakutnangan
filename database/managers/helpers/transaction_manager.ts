@@ -1,5 +1,6 @@
 import { Transaction } from "sequelize"
 
+import Log from "$!/singletons/log"
 import Database from "%/data_source/database"
 
 /**
@@ -15,6 +16,8 @@ export default class {
 			this.transaction = await Database.dataSource.transaction({
 				isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED
 			})
+
+			Log.success("transaction", "initialized database transaction")
 		}
 	}
 
@@ -32,6 +35,8 @@ export default class {
 		if (this.transaction !== null) {
 			await this.transaction.commit()
 			this.transaction = null
+
+			Log.success("transaction", "committed the database changes")
 		}
 	}
 
@@ -39,6 +44,8 @@ export default class {
 		if (this.transaction !== null) {
 			await this.transaction.rollback()
 			this.transaction = null
+
+			Log.success("transaction", "rolled back the database changes")
 		}
 	}
 }
