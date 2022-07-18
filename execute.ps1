@@ -64,15 +64,16 @@ Param(
 	[switch]
 	$Examples,
 
-	[Parameter(ParameterSetName="Repo", Position=0)]
+	[Parameter(ParameterSetName="PushRepo", Position=0)]
 	[switch]
 	$Push,
 
-	[Parameter(ParameterSetName="Repo", Position=0)]
+	[Parameter(ParameterSetName="PullRepo", Position=0)]
 	[switch]
 	$Pull,
 
-	[Parameter(ParameterSetName="Repo", Position=1)]
+	[Parameter(ParameterSetName="PushRepo", Position=1)]
+	[Parameter(ParameterSetName="PullRepo", Position=1)]
 	[string]
 	$Remote = "origin",
 
@@ -117,4 +118,8 @@ if ($Test) {
 	}
 
 	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+}
+
+if ($Push) {
+	Write-Output $Remote
 }
