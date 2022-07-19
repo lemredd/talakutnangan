@@ -1,3 +1,4 @@
+import type { UnitError, SourcePointer, SourceParameter } from "$/types/server"
 import BaseError from "$!/errors/base"
 import RequestEnvironment from "$/helpers/request_environment"
 
@@ -8,11 +9,28 @@ export default class ValidationError extends BaseError {
 	static CODE: string = "3"
 	static STATUS: number = RequestEnvironment.status.BAD_REQUEST
 
-	constructor(source: string, message: string = "Input should be valid") {
+	private source: SourcePointer|SourceParameter|null
+
+	constructor(
+		source: SourcePointer|SourceParameter|null,
+		message: string = "Input should be valid"
+	) {
 		super(
 			ValidationError.CODE,
 			ValidationError.STATUS,
 			"Validation Error",
-			message)
+			message
+		)
+		this.source = source
+	}
+
+	toJSON(): UnitError {
+		const unitError = super.toJSON()
+
+		if (this.source) {
+			unitError.source = this.source
+		}
+
+		return unitError
 	}
 }
