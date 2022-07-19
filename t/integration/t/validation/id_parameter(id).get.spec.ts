@@ -12,7 +12,7 @@ describe("GET /t/validation/id_parameter/:id", () => {
 	})
 
 	it("can validate if ID is present", async () => {
-		const user = await new UserFactory().makeOne()
+		const user = await new UserFactory().insertOne()
 
 		const response = await App.request
 			.get(`/t/validation/id_parameter/${user.id}`)
@@ -26,7 +26,7 @@ describe("GET /t/validation/id_parameter/:id", () => {
 			.get("/t/validation/id_parameter/sample")
 			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 	})
 
 	it("cannot validate if ID is absent", async () => {
