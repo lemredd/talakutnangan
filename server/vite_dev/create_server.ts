@@ -1,7 +1,9 @@
 import { Buffer } from "buffer"
+import serveStaticFiles from "sirv"
+import { Router as createRouter } from "express"
 import { createPageRenderer } from "vite-plugin-ssr"
+
 import type { Express as ExpressApp } from "express"
-import { static as serveStaticFiles, Router as createRouter } from "express"
 
 import { PageRequest } from "!/types/hybrid"
 import { Environment } from "$/types/server"
@@ -36,7 +38,7 @@ export default async function(app: ExpressApp) {
 	}
 
 	if (pageRenderer === null) {
-		pageRenderer = createPageRenderer({ viteDevServer, isProduction, root })
+		pageRenderer = createPageRenderer({ viteDevServer })
 	}
 
 	const renderPage = pageRenderer

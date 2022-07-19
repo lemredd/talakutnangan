@@ -58,29 +58,4 @@ describe("PATCH /api/user/reset_password/:id", () => {
 		expect(previousMessages[0].message.html).toContain(updatedStudent!.email)
 		expect(previousMessages[0].message.html).toContain(studentNumber)
 	})
-
-	it("cannot be accessed by not permitted users", async () => {
-		const otherRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask("view"))
-			.insertOne()
-		const { user: other, cookie } = await App.makeAuthenticatedCookie(otherRole)
-		const student = await (new UserFactory()).insertOne()
-
-		const response = await App.request
-			.patch(`/api/user/reset_password/${student.id}`)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const student = await (new UserFactory()).insertOne()
-
-		const response = await App.request
-			.patch(`/api/user/reset_password/${student.id}`)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })
