@@ -1,11 +1,13 @@
 import { extend } from "node-input-validator"
 import buffer from "!/app/auth/buffer"
+import exists from "!/app/auth/exists"
 import acronym from "!/app/auth/acronym"
 
 export default async function() {
 	const customValidators: { [key: string]: (..._a: any[]) => Promise<boolean>|boolean }  = {
 		acronym,
-		buffer
+		buffer,
+		exists
 	}
 
 	for (const name in customValidators) {
