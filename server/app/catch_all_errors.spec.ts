@@ -10,9 +10,32 @@ import catchAllErrors from "./catch_all_errors"
 describe("Server: Catching all errors", () => {
 	const requester = new MockRequester()
 
+	it("can destroy transaction", async () => {
+		const customDestroyMethod = jest.fn()
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: customDestroyMethod
+			}
+		})
+		requester.customizeResponse({
+			writableEnded: true,
+			end: jest.fn()
+		})
+
+		await requester.runErrorHandler(catchAllErrors)
+
+		requester.expectSuccess()
+		expect(customDestroyMethod).toBeCalledTimes(1)
+	})
+
 	it("can only end response once if others previously ended the response", async () => {
 		const customEndMethod = jest.fn()
 		customEndMethod()
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
 		requester.customizeResponse({
 			writableEnded: true,
 			end: customEndMethod
@@ -28,6 +51,11 @@ describe("Server: Catching all errors", () => {
 	})
 
 	it("can only automatically end response for header-sent only responses", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
 		requester.customizeResponse({
 			writableEnded: false,
 			headersSent: true
@@ -46,6 +74,11 @@ describe("Server: Catching all errors", () => {
 	})
 
 	it("redirect to root if it can accept HTML media type", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
 		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === HTML_MEDIA_TYPE)
 		})
@@ -72,6 +105,11 @@ describe("Server: Catching all errors", () => {
 	})
 
 	it("redirect to custom redirect URL if it can accept HTML media type", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
 		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === HTML_MEDIA_TYPE)
 		})
@@ -101,6 +139,11 @@ describe("Server: Catching all errors", () => {
 
 	it("can output common error if it only accepts JSON:API media type", async () => {
 		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
+		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})
 
@@ -126,6 +169,11 @@ describe("Server: Catching all errors", () => {
 	})
 
 	it("can output custom error if it only accepts JSON:API media type", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
 		requester.customizeRequest({
 			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
 		})

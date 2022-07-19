@@ -1,15 +1,20 @@
 import passport from "passport"
-import express from "express"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Middleware from "!/bases/middleware";
 
 export default class LocalLogIn extends Middleware {
 	private static authenticate = passport.authenticate("local", {
-		failureRedirect: "/api/user/log_in_failure"
+		failureMessage: true
 	})
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		LocalLogIn.authenticate(request, response, next)
+		await new Promise<void>(async (resolve, reject) => {
+			LocalLogIn.authenticate(request, response, resolve)
+			// Error since resolve was not called
+			await request.transaction.destroyIneffectually()
+			// TODO: Investigate why going to next error handler does not work
+			// reject(new Error())
+		}).then(next).catch(next)
 	}
 }

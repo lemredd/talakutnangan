@@ -75,7 +75,10 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 		Log.trace("manager", "prepared query to find user with certain credential")
 
-		const foundUser = await User.findOne(findOptions)
+		const foundUser = await this.model.findOne({
+			...findOptions,
+			...this.transaction.lockedTransactionObject
+		})
 
 		Log.trace("manager", "done finding for user")
 
@@ -168,7 +171,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			Log.trace("manager", "specialized the data structure for student bulk creation")
 
 			// Create the students in bulk
-			const users = await User.bulkCreate(normalizedProfiles, {
+			const users = await this.model.bulkCreate(normalizedProfiles, {
 				include: [
 					{
 						model: AttachedRole,
@@ -178,7 +181,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						model: StudentDetail,
 						as: "studentDetail"
 					}
-				]
+				],
+				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "created students in bulk")
@@ -217,7 +221,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 			Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
 
 			// Create the reachable employees in bulk
-			const users = await User.bulkCreate(normalizedProfiles, {
+			const users = await this.model.bulkCreate(normalizedProfiles, {
 				include: [
 					{
 						model: AttachedRole,
@@ -227,7 +231,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 						model: EmployeeSchedule,
 						as: "employeeSchedules"
 					}
-				]
+				],
+				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "created reachable employees in bulk")
@@ -252,13 +257,14 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async verify(id: number): Promise<number> {
-		const [ affectedCount ] = await User.update({
+		const [ affectedCount ] = await this.model.update({
 			emailVerifiedAt: new Date()
 		}, {
 			where: {
 				id,
 				emailVerifiedAt: { [Op.is]: null }
-			}
+			},
+			...this.transaction.transactionObject
 		})
 
 		return affectedCount
@@ -270,15 +276,15 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	 * @param rawPassword New password to put in the database.
 	 */
 	async resetPassword(id: number, rawPassword: string): Promise<boolean> {
-		// TODO: use the student number or random password
 		const hashedPassword = await hash(rawPassword)
 
-		const [ affectedCount ] = await User.update({
+		const [ affectedCount ] = await this.model.update({
 			password: hashedPassword
 		}, {
 			where: {
 				id
-			}
+			},
+			...this.transaction.transactionObject
 		})
 
 		return affectedCount > 0
