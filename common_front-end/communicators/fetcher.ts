@@ -30,10 +30,10 @@ export default class extends RequestEnvironment {
 				status: response.status
 			}
 		})
-		.catch(response => {
+		.catch(error => {
 			return {
-				body: response.data,
-				status: response.status
+				body: error.response.data,
+				status: error.response.status
 			}
 		})
 	}
