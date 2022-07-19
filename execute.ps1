@@ -57,6 +57,7 @@ Param(
 		"unit:back",
 		"unit:server",
 		"unit:database",
+		"intg:front",
 		"intg:back"
 	)]
 	[string]
