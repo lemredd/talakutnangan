@@ -68,6 +68,15 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
+	it("can search base on specific column", async () => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+
+		const foundUser = await manager.findOneOnColumn("name", base.name)
+
+		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
+	})
+
 	it("can search base with ID through transaction", async () => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
@@ -103,6 +112,14 @@ describe("Database: Base Read Operations", () => {
 		const id = 0
 
 		const foundUser = await manager.findWithID(id)
+
+		expect(foundUser.data).toBeNull()
+	})
+
+	it("cannot find non-existing base with custom column", async () => {
+		const manager = new MockUserManager()
+
+		const foundUser = await manager.findOneOnColumn("name", "Hello")
 
 		expect(foundUser.data).toBeNull()
 	})
