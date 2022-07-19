@@ -33,27 +33,33 @@ import Filter from "./users_manager/Filter.vue"
 import UsersList from "./users_manager/UsersList.vue"
 
 const { data, hasFilter } = defineProps<{
-	data: User[],
+	data: User[] | Department[] | any,
 	hasFilter?: boolean
 }>()
 
 let searchFilter = ref("");
 
 const filteredList = computed(function() {
-	const filteredBySearchResult = data.filter((data) =>
-		data.name.toLowerCase().includes(searchFilter.value.toLowerCase())
+	const filteredBySearchResult = data.filter((dataToFilter: any) =>
+		dataToFilter.name.toLowerCase().includes(searchFilter.value.toLowerCase())
 	);
 
-	const filteredByRole = filterByRole(filteredBySearchResult)
-	return filteredByRole
+	if (hasFilter) {
+		const filteredByRole = filterByRole(filteredBySearchResult)
+		return filteredByRole
+	}
+
+	return filteredBySearchResult
 })
 
 const selectedFilter = ref("all")
 function filterByRole(usersList: {[key:string]: any}[]) {
-	const managerKind = inject("managerKind") as ManagerKind
+	if (hasFilter) {
+		const managerKind = inject("managerKind") as ManagerKind
 
-	if (selectedFilter.value === "all") return usersList
-	if (managerKind === "service") return usersList.filter(user => user.jobTitle === selectedFilter.value)
-	return usersList.filter(user => user.role === selectedFilter.value)
+		if (selectedFilter.value === "all") return usersList
+		if (managerKind === "service") return usersList.filter(user => user.jobTitle === selectedFilter.value)
+		return usersList.filter(user => user.role === selectedFilter.value)
+	}
 }
 </script>
