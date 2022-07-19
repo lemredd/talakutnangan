@@ -10,5 +10,5 @@ export default async function(
 	{ value, args }: { value: any, args: any[] },
 	validator: Validator
 ): Promise<boolean> {
-	return await exists({ value, args }, validator)
+	return !(await exists({ value, args }, validator)) || value === undefined
 }
