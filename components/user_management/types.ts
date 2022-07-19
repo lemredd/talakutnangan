@@ -1,3 +1,5 @@
+// TODO: Types are incomplete or inaccurate. Will change soon
+
 export type User = {
 	id: number
 	email: string
