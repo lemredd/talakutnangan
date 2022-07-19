@@ -16,7 +16,8 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/server.set_up.ts"
+		"./t/helpers/set-ups/server.set_up.ts",
+		"./t/helpers/set-ups/fetcher.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
