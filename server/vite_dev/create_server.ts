@@ -1,7 +1,7 @@
 import { Buffer } from "buffer"
 import serveStaticFiles from "sirv"
 import { Router as createRouter } from "express"
-import { createPageRenderer } from "vite-plugin-ssr"
+import { renderPage } from "vite-plugin-ssr"
 
 import type { Express as ExpressApp } from "express"
 
@@ -11,11 +11,6 @@ import { Response, NextFunction } from "!/types/dependent"
 
 import getRoot from "$!/helpers/get_root"
 import getEnvironment from "$/helpers/get_environment"
-import { renderPage } from "vite-plugin-ssr/dist/cjs/node/renderPage"
-
-type PageRenderer = typeof renderPage
-
-let pageRenderer: PageRenderer|null = null
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
@@ -24,24 +19,16 @@ export default async function(app: ExpressApp) {
 		|| getEnvironment() === Environment.IntegrationTest
 	)
 
-	let viteDevServer
-
 	if (isProduction) {
 		app.use(serveStaticFiles(`${root}/dist/client`))
 	} else {
 		const vite = require("vite")
-		viteDevServer = await vite.createServer({
+		const viteDevServer = await vite.createServer({
 			root,
 			server: { middlewareMode: "ssr" },
 		})
 		app.use(viteDevServer.middlewares)
 	}
-
-	if (pageRenderer === null) {
-		pageRenderer = createPageRenderer({ viteDevServer })
-	}
-
-	const renderPage = pageRenderer
 
 	const router = createRouter()
 	// @ts-ignore
