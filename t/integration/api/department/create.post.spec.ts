@@ -30,10 +30,27 @@ describe("POST /api/department/create", () => {
 				mayAdmit: department.mayAdmit
 			})
 
-		console.log("passed input", {
-			acronym: department.acronym,
-			fullName: department.fullName
-		})
+		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.body.data.attributes.acronym).toBe(department.acronym)
+		expect(response.body.data.attributes.fullName).toBe(department.fullName)
+		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
+	})
+
+	it("can pass inputs with all-uppercase name", async () => {
+		const adminRole = await new RoleFactory()
+			.departmentFlags(permissionGroup.generateMask(...CREATE))
+			.insertOne()
+		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const department = await (new DepartmentFactory().name(() => "Abc Def GHIJ")).makeOne()
+
+		const response = await App.request
+			.post("/api/department/create")
+			.set("Cookie", cookie)
+			.send({
+				acronym: department.acronym,
+				fullName: department.fullName,
+				mayAdmit: department.mayAdmit
+			})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
@@ -64,8 +81,8 @@ describe("POST /api/department/create", () => {
 		})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body).toHaveLength(1)
-		expect(response.body).toHaveProperty([0, "field"], "fullName")
+		expect(response.body.errors).toHaveLength(1)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "fullName")
 	})
 
 	it("cannot accept invalid full name (as suggested by #211)", async () => {
@@ -88,8 +105,8 @@ describe("POST /api/department/create", () => {
 			})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body).toHaveLength(1)
-		expect(response.body).toHaveProperty([0, "field"], "fullName")
+		expect(response.body.errors).toHaveLength(1)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "fullName")
 	})
 
 	it("cannot accept invalid acronym", async () => {
@@ -111,8 +128,8 @@ describe("POST /api/department/create", () => {
 			})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body).toHaveLength(1)
-		expect(response.body).toHaveProperty([0, "field"], "acronym")
+		expect(response.body.errors).toHaveLength(1)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "acronym")
 	})
 
 	it("cannot accept invalid value if it should be admitted", async () => {
@@ -133,7 +150,7 @@ describe("POST /api/department/create", () => {
 			})
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body).toHaveLength(1)
-		expect(response.body).toHaveProperty([0, "field"], "mayAdmit")
+		expect(response.body.errors).toHaveLength(1)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "mayAdmit")
 	})
 })
