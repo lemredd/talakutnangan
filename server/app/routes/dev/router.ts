@@ -1,4 +1,5 @@
 import Router from "!/bases/router"
+import GetServerInfoRoute from "!/app/routes/dev/server_info.get"
 import GetLogInAsAdminRoute from "!/app/routes/dev/log_in_as_admin.get"
 import GetSampleUserListRoute from "!/app/routes/dev/sample_user_list.get"
 import GetEmailVerificationRoute from "!/app/routes/dev/email_verification.get"
@@ -11,6 +12,7 @@ export default class extends Router {
 		super()
 
 		this.useControllers([
+			new GetServerInfoRoute(),
 			new GetLogInAsAdminRoute(),
 			new GetSampleUserListRoute(),
 			new GetSampleServerErrorRoute(),
