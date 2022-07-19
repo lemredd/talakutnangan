@@ -101,12 +101,14 @@ describe("Database: User Create Operations", () => {
 		expect(await AttachedRole.count()).toBe(6)
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(2)
-		expect(userData.included).toHaveLength(5)
+		expect(userData.included).toHaveLength(7)
 		expect(userData.included).toHaveProperty([ 0, "type" ], "role")
 		expect(userData.included).toHaveProperty([ 1, "type" ], "role")
 		expect(userData.included).toHaveProperty([ 2, "type" ], "role")
 		expect(userData.included).toHaveProperty([ 3, "type" ], "department")
 		expect(userData.included).toHaveProperty([ 4, "type" ], "department")
+		expect(userData.included).toHaveProperty([ 5, "type" ], "student_detail")
+		expect(userData.included).toHaveProperty([ 6, "type" ], "student_detail")
 	})
 
 	it("can create reachable employees in bulk", async () => {
@@ -211,7 +213,7 @@ describe("Database: User Update Operations", () => {
 		const manager = new UserManager()
 		const user = await ((new UserFactory()).notVerified()).insertOne()
 
-		const verifiedUserCount = await manager.verify(user.email)
+		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
 		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()

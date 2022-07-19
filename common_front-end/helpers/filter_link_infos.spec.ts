@@ -44,13 +44,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -123,13 +126,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -165,13 +171,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -239,13 +248,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -256,7 +268,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kinds: [ "student" ],
+				kinds: [ "unreachable_employee" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -286,13 +298,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
-									name: "B"
+									name: "B",
+									userFlags: 0
 								}
 							]
 						}
@@ -330,7 +345,7 @@ describe("Helper: Filter Link Infos", () => {
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				mustBeGuest: false,
-				kinds: [ "student" ],
+				kinds: [ "unreachable_employee" ],
 				permissionCombinations: null,
 				permissionGroup: null,
 				links: [
@@ -370,14 +385,17 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
 									name: "B",
-									groupA: permissionGroup.generateMask("a")
+									userFlags: 0,
+									groupA: permissionGroup.generateMask("a"),
 								}
 							]
 						}
@@ -419,13 +437,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
 									name: "B",
+									userFlags: 0,
 									groupA: permissionGroup.generateMask("a")
 								}
 							]
@@ -491,13 +512,16 @@ describe("Helper: Filter Link Infos", () => {
 					data: {
 						type: "user",
 						id: 1,
-						kind: "student",
+						name: "",
+						email: "",
+						kind: "unreachable_employee",
 						roles: {
 							data: [
 								{
 									type: "role",
 									id: 2,
 									name: "B",
+									userFlags: 0,
 									groupA: permissionGroup.generateMask("a", "b")
 								}
 							]

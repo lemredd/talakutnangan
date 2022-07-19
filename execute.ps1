@@ -54,6 +54,7 @@ Param(
 	[ValidateSet(
 		"unit:share",
 		"unit:front",
+		"unit:back",
 		"unit:server",
 		"unit:database",
 		"intg:back"

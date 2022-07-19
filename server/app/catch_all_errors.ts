@@ -15,7 +15,14 @@ import RequestEnvironment from "$/helpers/request_environment"
  * @param response Response given to the client.
  * @param next Function to call other middlewares or error handlers.
  */
-export default function(error: Error, request: Request, response: Response, next: NextFunction) {
+export default async function(
+	error: Error,
+	request: Request,
+	response: Response,
+	next: NextFunction
+) {
+	await request.transaction.destroyIneffectually()
+
 	if (response.writableEnded) {
 		Log.errorMessage("middleware", `Cannot write the error at "${request.path}"`)
 	} else {
@@ -64,4 +71,6 @@ export default function(error: Error, request: Request, response: Response, next
 
 		response.end()
 	}
+
+	next()
 }

@@ -31,7 +31,8 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run test:unit:share
+    - run: ./execute.ps1 -test unit:share
+      shell: pwsh
 
   common_back_unit_tests:
     runs-on: ubuntu-latest
@@ -50,4 +51,5 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run test:unit:back
+    - run: ./execute.ps1 -test unit:back
+      shell: pwsh

@@ -33,7 +33,7 @@ describe("POST /api/user/log_in", () => {
 			})
 
 		// TODO: Output the validation error in better format
-		expect(response.statusCode).toBe(RequestEnvironment.status.MOVED_TEMPORARILY)
+		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
 
 	it("cannot be accessed by authenticated users", async () => {

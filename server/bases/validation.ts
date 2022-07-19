@@ -19,6 +19,8 @@ export default abstract class extends Middleware {
 		const errors = await this.validate(this.getSubject(request))
 		if (errors.length > 0) {
 			response.status(this.status.BAD_REQUEST).json(errors)
+			// TODO: Throw validation error
+			next()
 		} else {
 			next()
 		}
