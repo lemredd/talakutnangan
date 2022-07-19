@@ -3,7 +3,7 @@ import type { Validator } from "node-input-validator"
 /**
  * Function to validate if the value exists in the database.
  *
- * Accepts table name and column name to check if the value exists to that area.
+ * Accepts manager class and column name to check if the value exists to that area.
  */
 export default async function(
 	{ value, args }: { value: any, args: any[] },
