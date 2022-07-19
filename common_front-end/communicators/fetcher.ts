@@ -15,7 +15,7 @@ export default class extends RequestEnvironment {
 	static initialize() {
 		if (this.isOnTest) {
 			this.instance = axios.create({
-				url: "http://localhost:16000/"
+				baseURL: "http://localhost:16000/"
 			})
 		}
 	}
