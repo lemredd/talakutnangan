@@ -1,0 +1,31 @@
+{
+	"preset": "ts-jest",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts"
+	],
+
+	"moduleNameMapper": {
+		"\\$/(.*)": "<rootDir>/shareable/$1",
+		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"\\$@/(.*)": "<rootDir>/common_front-end/$1",
+		"%/(.*)": "<rootDir>/database/$1",
+		"!/(.*)": "<rootDir>/server/$1",
+		"~/(.*)": "<rootDir>/t/helpers/$1"
+	},
+
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/singletons.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
+	],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"t/integration/communicators/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "node"
+}
