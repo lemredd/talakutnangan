@@ -1,8 +1,8 @@
 <template>
-	<div class="user-row" v-for="user in filteredList" :key="user.name">
-		<span class="user-name">{{ user.name }}</span>
-		<span class="user-email">{{ user.email }}</span>
-		<span :class="`user-${roleOrJobTitleClasses}`">{{ isListForServiceEmployees ? user.jobTitle : user.role }}</span>
+	<div class="data-row" v-for="data in filteredList" :key="data.name">
+		<span class="user-name">{{ data.name }}</span>
+		<span class="user-email">{{ data.email }}</span>
+		<span :class="`user-${roleOrJobTitleClasses}`">{{ isListForServiceEmployees ? data.jobTitle : data.role }}</span>
 		<div class="btns">
 			<button class="btn1">Update</button>
 		</div>
@@ -14,20 +14,20 @@
 </template>
 
 <style scoped lang="scss">
-.user-row {
+.data-row {
 	@apply dark:text-light-100 flex flex-col gap-2 sm:items-center sm:flex-row sm:justify-between;
 	margin: .5rem;
 	border-bottom-width: 1px;
 	padding-bottom: .5rem;
 	font-size: 1.5rem;
 
-	.user-name {
+	.data-name {
 		font-size: 1.125rem;
 		@screen sm {
 			width: 20%;
 		}
 	}
-	.user-email, .user-role, .user-job-title {
+	.data-email, .data-role, .data-job-title {
 		font-size: 0.75rem;
 	}
 
@@ -38,15 +38,21 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject } from "vue"
+import { computed, inject, onUpdated, ref } from "vue"
 import { ManagerKind, User } from "../types";
 
 const { searchFilter, filteredList } = defineProps<{
 	searchFilter: string,
-	filteredList: {[key: string]: any}[]
+	filteredList: any
 }>()
 
 const managerKind = inject("managerKind") as ManagerKind
 const isListForServiceEmployees =  managerKind === "service"
 const roleOrJobTitleClasses = computed(() =>( isListForServiceEmployees ? "job-title" : "role"))
+
+const dataProperties = ref<any>(null)
+
+onUpdated(() => {
+	console.log(filteredList)
+})
 </script>
