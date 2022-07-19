@@ -18,6 +18,8 @@ describe("POST /api/user/import", () => {
 	})
 
 	it("can upload valid student details", async () => {
+		jest.setTimeout(10000)
+
 		const adminRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
 			.insertOne()
@@ -47,7 +49,9 @@ describe("POST /api/user/import", () => {
 		await flushPromises() // E-mail message transmission to first user
 		await flushPromises() // E-mail message transmission to second user
 		await flushPromises() // E-mail message transmission to third user
-		await flushPromises() // Waiting for all transmissions to finish
+
+		// Waiting for all transmissions to finish
+		await new Promise(resolve => setTimeout(resolve, 1000))
 
 		const previousMessages = Transport.consumePreviousMessages()
 		expect(previousMessages).toHaveLength(3)
