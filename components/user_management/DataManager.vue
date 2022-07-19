@@ -10,7 +10,7 @@
 		<Filter v-if="hasFilter" v-model:filter="selectedFilter"/>
 		<slot v-else></slot>
 	</div>
-	<UsersList :search-filter="searchFilter" :filtered-list="filteredList"/>
+	<DataList :search-filter="searchFilter" :filtered-list="filteredList"/>
 
 </template>
 
@@ -28,9 +28,9 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue"
 import TextualField from "@/fields/Textual.vue"
-import type { ManagerKind, User } from "./types"
+import type { ManagerKind, User, Department } from "./types"
 import Filter from "./users_manager/Filter.vue"
-import UsersList from "./users_manager/UsersList.vue"
+import DataList from "./users_manager/DataList.vue"
 
 const { data, hasFilter } = defineProps<{
 	data: User[] | Department[] | any,
