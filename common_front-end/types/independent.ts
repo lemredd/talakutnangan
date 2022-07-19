@@ -66,3 +66,14 @@ export interface LogInDetails extends Serializable {
 	username: string,
 	password: string
 }
+
+/**
+ * Shape of expected response from fetcher
+ */
+export interface Response extends Serializable {
+	body: {
+		data?: Serializable,
+		meta?: Serializable
+	},
+	status: number
+}
