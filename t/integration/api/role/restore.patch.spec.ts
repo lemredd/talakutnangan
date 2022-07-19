@@ -34,27 +34,4 @@ describe("PATCH /api/role/restore/:id", () => {
 
 	it.todo("cannot restore non-existing")
 	it.todo("cannot restore existing")
-
-	it("cannot be accessed without correct permission", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
-		const role = await (new RoleFactory()).insertOne()
-		await role.destroy()
-
-		const response = await App.request
-			.patch(`/api/role/restore/${role.id}`)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const role = await (new RoleFactory()).insertOne()
-
-		const response = await App.request
-			.patch(`/api/role/restore/${role.id}`)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

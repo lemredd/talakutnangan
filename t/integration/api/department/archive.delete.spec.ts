@@ -33,30 +33,4 @@ describe("DELETE /api/department/archive/:id", () => {
 
 	it.todo("cannot delete non-existing")
 	it.todo("cannot redelete")
-
-	it("cannot be accessed without correct permission", async () => {
-		const anyRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask("view"))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(anyRole)
-		const department = await (new DepartmentFactory()).insertOne()
-		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-		.delete(`/api/department/archive/${department.id}`)
-		.set("Cookie", cookie)
-		.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const department = await (new DepartmentFactory()).insertOne()
-
-		const response = await App.request
-			.delete(`/api/department/archive/${department.id}`)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

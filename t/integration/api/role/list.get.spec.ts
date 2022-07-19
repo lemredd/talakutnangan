@@ -30,16 +30,4 @@ describe("GET /api/role/list", () => {
 		expect(response.body).toHaveProperty("data.2.attributes.name", roles[1].name)
 		expect(response.body).toHaveProperty("data.3.attributes.name", roles[2].name)
 	})
-
-	it("cannot be accessed without correct permission", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
-		const _roles = await (new RoleFactory()).insertOne()
-
-		const response = await App.request
-			.get("/api/role/list")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

@@ -33,16 +33,4 @@ describe("GET /api/deparment/list", () => {
 		expect(response.body).toHaveProperty("data.2.attributes.fullName", departments[1].fullName)
 		expect(response.body).toHaveProperty("data.3.attributes.fullName", departments[2].fullName)
 	})
-
-	it("cannot be accessed without correct permission", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
-		const departments = await (new DepartmentFactory()).insertOne()
-
-		const response = await App.request
-			.get("/api/department/list")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })
