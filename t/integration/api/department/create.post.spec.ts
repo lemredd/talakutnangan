@@ -68,6 +68,30 @@ describe("POST /api/department/create", () => {
 		expect(response.body).toHaveProperty([0, "field"], "fullName")
 	})
 
+	it("cannot accept invalid full name (as suggested by #211)", async () => {
+		const adminRole = await new RoleFactory()
+			.departmentFlags(permissionGroup.generateMask(...CREATE))
+			.insertOne()
+		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const department = await new DepartmentFactory()
+			.name(() => "Hacking Lavender Throughway1")
+			.makeOne()
+
+		const response = await App.request
+			.post("/api/department/create")
+			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
+			.send({
+				acronym: department.acronym,
+				fullName: department.fullName + "1",
+				mayAdmit: department.mayAdmit
+			})
+
+		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
+		expect(response.body).toHaveLength(1)
+		expect(response.body).toHaveProperty([0, "field"], "fullName")
+	})
+
 	it("cannot accept invalid acronym", async () => {
 		const adminRole = await new RoleFactory()
 			.departmentFlags(permissionGroup.generateMask(...CREATE))
