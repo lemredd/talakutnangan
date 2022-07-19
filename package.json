@@ -45,7 +45,6 @@
 		"@types/jest": "^27.5.1",
 		"@types/supertest": "^2.0.12",
 		"@vue/test-utils": "^2.0.0-rc.18",
-		"axios": "^0.27.2",
 		"babel-jest": "^26",
 		"chalk": "^4",
 		"changelogen": "^0.1.1",
