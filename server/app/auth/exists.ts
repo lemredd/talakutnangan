@@ -5,10 +5,10 @@ import type { Validator } from "node-input-validator"
  *
  * Accepts table name and column name to check if the value exists to that area.
  */
-export default function(
+export default async function(
 	{ value, args }: { value: any, args: any[] },
 	validator: Validator
-): boolean {
+): Promise<boolean> {
 	if (value === undefined) {
 		if (args.length < 2) {
 			throw new Error("Number of arguments passed to `exists` rule is insufficient")
@@ -20,7 +20,7 @@ export default function(
 		try {
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
-			const foundModel = manager.findOneOnColumn(columnName, value)
+			const foundModel = await manager.findOneOnColumn(columnName, value)
 
 			// TODO: Store found model in cache
 			return foundModel.data
