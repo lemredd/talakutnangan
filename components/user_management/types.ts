@@ -14,4 +14,10 @@ export type Department = {
 	users: number
 }
 
+export type Role = {
+	id: number
+	name: string
+	users: number
+}
+
 export type ManagerKind = "secretary" | "dean" | "service" | "admin"
