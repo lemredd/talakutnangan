@@ -1,5 +1,5 @@
 import flushPromises from "flush-promises"
-
+import { JSON_API_MEDIA_TYPE } from "!/types/independent"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import "~/set-ups/email.set_up"
@@ -87,10 +87,11 @@ describe("POST /api/user/import", () => {
 			.field("roles[]", [ role.name ])
 			.field("importedCSV", path)
 			.set("Cookie", cookie)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body).toHaveLength(1)
-		expect(response.body).toHaveProperty([ 0, "field" ], "importedCSV")
+		expect(response.body.errors).toHaveLength(1)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "importedCSV")
 	})
 
 	it.todo("can upload invalid student details")
