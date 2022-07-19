@@ -1,8 +1,17 @@
 import "reflect-metadata"
 import "dotenv/config"
+import { Server as HTTPServer } from "http"
 
 import startServer from "!/start_server"
 
+let server: HTTPServer|null = null
+
 beforeAll(async () => {
-	await startServer()
+	server = await startServer()
+})
+
+beforeAll(async () => {
+	if (server !== null) {
+		server.close()
+	}
 })
