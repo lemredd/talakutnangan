@@ -32,26 +32,4 @@ describe("DELETE /api/role/archive/:id", () => {
 
 	it.todo("cannot delete non-existing")
 	it.todo("cannot redelete")
-
-	it("cannot be accessed without correct permission", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
-		const role = await (new RoleFactory()).insertOne()
-
-		const response = await App.request
-			.delete(`/api/role/archive/${role.id}`)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const role = await (new RoleFactory()).insertOne()
-
-		const response = await App.request
-			.delete(`/api/role/archive/${role.id}`)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

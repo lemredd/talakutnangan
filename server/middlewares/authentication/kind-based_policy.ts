@@ -22,7 +22,10 @@ export default class extends AuthenticationBasedPolicy {
 
 	async authorize(request: AuthenticatedRequest): Promise<void> {
 		await super.authorize(request)
-		if(request.user.kind !== this.kind) {
+
+		// TODO: Deserialize the user for better access
+		// @ts-ignore
+		if(request.user.data!.attributes!.kind !== this.kind) {
 			throw new AuthorizationError("Correct user kind can invoke the action.")
 		}
 	}

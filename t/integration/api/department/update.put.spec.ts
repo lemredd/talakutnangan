@@ -38,43 +38,4 @@ describe("PUT /api/department/update", () => {
 
 	it.todo("cannot accept invalid values")
 	it.todo("cannot update missing model")
-
-	it("cannot be accessed without correct permission", async () => {
-		const anyRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask("view"))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(anyRole)
-		const department = await (new DepartmentFactory()).insertOne()
-		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.put("/api/department/update")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				id: department.id,
-				acronym: newDepartmentDetails.acronym,
-				fullName: newDepartmentDetails.fullName,
-				mayAdmit: newDepartmentDetails.mayAdmit
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const department = await (new DepartmentFactory()).insertOne()
-		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.put("/api/department/update")
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				id: department.id,
-				acronym: newDepartmentDetails.acronym,
-				fullName: newDepartmentDetails.fullName,
-				mayAdmit: newDepartmentDetails.mayAdmit
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })
