@@ -9,7 +9,7 @@ export default async function(
 	{ value, args }: { value: any, args: any[] },
 	validator: Validator
 ): Promise<boolean> {
-	if (value === undefined) {
+	if (value !== undefined) {
 		if (args.length < 2) {
 			throw new Error("Number of arguments passed to `exists` rule is insufficient")
 		}
