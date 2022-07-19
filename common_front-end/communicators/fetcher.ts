@@ -1,11 +1,11 @@
 import type { Axios } from "axios"
 import axios from "axios"
 
+import type { Serializable } from "$/types/database"
 import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "!/types/independent"
 
 import RequestEnvironment from "$!/singletons/request_environment"
-
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the
