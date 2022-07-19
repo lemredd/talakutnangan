@@ -1,4 +1,4 @@
-import { Server as HTTPServer } from "node:http"
+import { Server as HTTPServer } from "http"
 
 import { SourceType } from "$/types/database"
 
@@ -9,7 +9,7 @@ import createWSServer from "!/ws/create_server"
 import createAppHandler from "!/app/create_handler"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
-export default async function startServer() {
+export default async function startServer(): Promise<HTTPServer> {
 	await initializeSingletons(process.env.DATABASE_TYPE as SourceType)
 
 	const customRouter = new Router()
@@ -21,4 +21,6 @@ export default async function startServer() {
 	const port = process.env.PORT || 3000
 	httpServer.listen(port)
 	Log.success("server", `HTTP server running at ${URLMaker.makeBaseURL()}`)
+
+	return httpServer
 }
