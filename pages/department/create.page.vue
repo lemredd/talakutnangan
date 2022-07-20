@@ -2,15 +2,15 @@
 	<form @submit.prevent="createDepartment">
 		<label class="block">
 			Full name:
-			<input class="border-solid" type="text" v-model="fullName"/>
+			<input class="border-solid" type="text" id="full-name" v-model="fullName"/>
 		</label>
 		<label class="block">
 			Acronym:
-			<input class="border-solid" type="text" v-model="acronym"/>
+			<input class="border-solid" type="text" id="acronym" v-model="acronym"/>
 		</label>
 		<label class="block">
 			May admit students:
-			<input type="checkbox" v-model="mayAdmit"/>
+			<input type="checkbox" id="may-admit" v-model="mayAdmit"/>
 		</label>
 		<input type="submit" value="Create department"/>
 	</form>
