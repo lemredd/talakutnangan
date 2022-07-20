@@ -19,27 +19,30 @@ export default class extends JSONController {
 	get bodyValidationRules(): object {
 		// TODO: Think of the minimum length of full name.
 		return {
-			fullName: [
+			"data": [ "required", "object" ],
+			"data.type": [ "required", "string", "equals:department" ],
+			"data.attributes": [ "required", "object" ],
+			"data.attributes.fullName": [
 				"required",
 				"string",
 				"minLength:10",
 				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$"
 			],
-			acronym: [
+			"data.attributes.acronym": [
 				"required",
 				"string",
 				"minLength:2",
 				"regex:([A-Z][a-z]*)+",
-				"acronym:fullName"
+				"acronym:data.attributes.fullName"
 			],
-			mayAdmit: [ "required", "boolean" ]
+			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new DepartmentManager()
-		const departmentInfo = await manager.create(request.body)
+		const departmentInfo = await manager.create(request.body.data.attributes)
 
-		response.status(this.status.OK).json(departmentInfo)
+		response.status(this.status.NO_CONTENT)
 	}
 }
