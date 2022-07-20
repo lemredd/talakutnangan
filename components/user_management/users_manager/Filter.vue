@@ -27,7 +27,8 @@
 }
 </style>
 
-<script setup lang="ts">import { computed, inject, Ref } from 'vue'
+<script setup lang="ts">
+import { computed, inject, Ref } from 'vue'
 import { ManagerKind } from '../types'
 
 defineProps<{
