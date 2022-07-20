@@ -11,5 +11,7 @@
 <script setup lang = ts>
 import TextualField from "@/fields/Textual.vue"
 import { inject, Ref } from "vue";
+
+// TODO: forward injection to textualfield
 const searchFilter=inject("searchFilterText") as Ref<string>
 </script>
