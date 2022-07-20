@@ -1,5 +1,5 @@
 import flushPromises from "flush-promises"
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import "~/set-ups/email.set_up"

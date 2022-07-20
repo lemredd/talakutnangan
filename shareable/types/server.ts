@@ -150,3 +150,8 @@ export interface SourcePointer extends Serializable {
 export interface SourceParameter extends Serializable {
 	parameter: string
 }
+
+
+// Media types used in the application
+export const HTML_MEDIA_TYPE = "text/html"
+export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"

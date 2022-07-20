@@ -1,4 +1,4 @@
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$!/singletons/request_environment"
 import App from "~/set-ups/app"

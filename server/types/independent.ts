@@ -28,15 +28,10 @@ export interface NewUserNotificationArguments {
 /**
  * Shape of middleware arguments for notifying users about password reset.
  */
- export interface PasswordResetArguments {
+export interface PasswordResetArguments {
 	emailToContact: {
 		name: string,
 		email: string,
 		password: string
 	}
 }
-
-// Media types
-
-export const HTML_MEDIA_TYPE = "text/html"
-export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"

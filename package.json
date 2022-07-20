@@ -53,6 +53,7 @@
 		"data-uri-to-buffer": "^3.0.1",
 		"flush-promises": "^1.0.2",
 		"jest": "^27.5.1",
+		"jest-fetch-mock": "^3.0.3",
 		"mysql2": "^2.3.3",
 		"nodemon": "^2.0.16",
 		"sass": "^1.50.1",
