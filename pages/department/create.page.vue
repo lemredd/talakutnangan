@@ -1,5 +1,5 @@
 <template>
-	<form>
+	<form @submit.prevent="createDepartment">
 		<label class="block">
 			Full name:
 			<input class="border-solid" type="text" v-model="fullName"/>
@@ -12,6 +12,7 @@
 			May admit students:
 			<input type="checkbox" v-model="mayAdmit"/>
 		</label>
+		<input type="submit" value="Create department"/>
 	</form>
 </template>
 
@@ -28,4 +29,8 @@ const pageContext = inject("pageContext") as DeserializedPageContext
 const fullName = ref("")
 const acronym = ref("")
 const mayAdmit = ref(false)
+
+function createDepartment() {
+
+}
 </script>
