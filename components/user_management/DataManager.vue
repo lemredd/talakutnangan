@@ -1,17 +1,10 @@
 <template>
 	<div class="controls-bar">
-		<!-- TODO: make search bar a component -->
-		<div class="search-bar">
-			<TextualField
-				type="email"
-				v-model="searchFilter"
-				input-classes="!py-0 pl-1 !border-none" />
-			<button class="material-icons">search</button>
-		</div>
+		<SearchFilter/>
 		<Filter v-if="hasDropdownFilter" v-model:filter="selectedFilter"/>
 		<slot v-else></slot>
 	</div>
-	<DataList :search-filter="searchFilter" :filtered-list="filteredList" />
+	<DataList :search-filter="searchFilterText" :filtered-list="filteredList" />
 
 </template>
 
@@ -27,10 +20,10 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import { computed, inject, provide, ref } from "vue"
 import type { ManagerKind, User, Department } from "./types"
 import Filter from "./users_manager/Filter.vue"
+import SearchFilter from "./users_manager/SearchBar.vue"
 import DataList from "./users_manager/DataList.vue"
 
 /*
@@ -45,11 +38,11 @@ const { data, hasDropdownFilter } = defineProps<{
 	hasDropdownFilter?: boolean
 }>()
 
-let searchFilter = ref("");
+const searchFilterText = ref("");
 
 const filteredList = computed(function() {
 	const filteredBySearchResult = data.filter((dataToFilter: any) =>
-		dataToFilter.name.toLowerCase().includes(searchFilter.value.toLowerCase())
+		dataToFilter.name.toLowerCase().includes(searchFilterText.value.toLowerCase())
 	);
 
 	if (hasDropdownFilter) {
@@ -70,4 +63,5 @@ function filterByRole(usersList: {[key:string]: any}[]) {
 		return usersList.filter(user => user.role === selectedFilter.value)
 	}
 }
+provide("searchFilterText", searchFilterText)
 </script>
