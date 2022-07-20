@@ -35,7 +35,7 @@ export default class extends Middleware {
 			next()
 		})
 		.catch(error => {
-			Log.error("middleware", error)
+			Log.error("middleware", error as Error)
 
 			next(error)
 		})

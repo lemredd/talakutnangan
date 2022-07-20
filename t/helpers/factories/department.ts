@@ -7,14 +7,14 @@ import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 
 export default class DepartmentFactory extends BaseFactory<Department> {
-	#name = () => faker.random.words(3)
+	#name = () => faker.random.words(4)
 	#mayAdmit = true
 
 	get model(): ModelCtor<Department> { return Department }
 
 	async generate(): GeneratedData<Department> {
 		const departmentName = this.#name()
-			.split(" ")
+			.split(/\s/)
 			.map(name => name.slice(0, 1).toLocaleUpperCase() + name.slice(1))
 			.join(" ")
 		return {

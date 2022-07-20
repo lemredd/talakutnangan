@@ -19,24 +19,26 @@ export default class extends Middleware {
 
 		Log.trace("middleware", "sending e-mail notifications to new users")
 
-		await Promise.all(recipients.map(recipient => Transport.sendMail(
-			[ recipient.email ],
-			subject,
-			"new_user.md",
-			{
-				homePageURL: `${request.protocol}://${request.hostname}`,
-				...recipient
+		try {
+			for (const recipient of recipients) {
+				await Transport.sendMail(
+					[ recipient.email ],
+					subject,
+					"new_user.md",
+					{
+						homePageURL: `${request.protocol}://${request.hostname}`,
+						...recipient
+					}
+				)
 			}
-		)))
-			.then(info => {
-				Log.success("middleware", "new users were e-mailed")
 
-				next()
-			})
-			.catch(error => {
-				Log.error("middleware", error)
+			Log.success("middleware", "new users were e-mailed")
 
-				next(error)
-			})
+			next()
+		} catch(error) {
+			Log.error("middleware", error as Error)
+
+			next(error)
+		}
 	}
 }
