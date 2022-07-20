@@ -45,14 +45,6 @@ describe("Communicator: Fetcher", () => {
 		expect(request).toHaveProperty("url", "/api/user/list")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.json()).resolves.toStrictEqual({
-			data: {
-				type: "user",
-				attributes: {
-					name: "A"
-				}
-			}
-		})
 		expect(response).toHaveProperty("body.data.0.type")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 	})
