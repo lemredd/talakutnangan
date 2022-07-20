@@ -1,4 +1,3 @@
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
@@ -29,26 +28,5 @@ describe("GET /api/user/list", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.attributes.email", admin.email)
 		expect(response.body).toHaveProperty("data.1.attributes.email", student.email)
-	})
-
-	it("cannot be accessed by an unauthorized user", async () => {
-		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(READ_ANYONE_ON_ALL_DEPARTMENTS[0]))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const student = await ((new UserFactory()).beStudent()).insertOne()
-
-		const response = await App.request
-			.get("/api/user/list")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by a guest user", async () => {
-		const response = await App.request.get("/api/user/list").accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
 	})
 })

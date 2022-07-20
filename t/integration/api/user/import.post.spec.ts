@@ -1,5 +1,4 @@
 import flushPromises from "flush-promises"
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$!/singletons/request_environment"
 
@@ -95,23 +94,4 @@ describe("POST /api/user/import", () => {
 	})
 
 	it.todo("can upload invalid student details")
-
-	it("cannot be accessed without complete permission", async () => {
-		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask("create"))
-			.insertOne()
-		const sampleRole = await (new RoleFactory()).insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
-
-		const response = await App.request
-			.post("/api/user/import")
-			.field("kind", "student")
-			.field("roles[]", [ sampleRole.name ])
-			.attach("importedCSV", path)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

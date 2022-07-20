@@ -6,7 +6,21 @@ Custom commands for the project
 Executes custom ommands for ease of use
 
 .PARAMETER Help
-Outputs the help info of the command
+Outputs the detailed help info of the command
+
+.PARAMETER Examples
+Only works if `-Help` switch is on.
+Includes examples in the help info.
+
+.PARAMETER Push
+Pushes the current branch to remote.
+
+.PARAMETER Pull
+Pulls the all branches from remote and prunes remotely-deleted branches.
+
+.PARAMETER Remote
+Only works if one of `-Push` or `-Pull` switches is on.
+Specifies which remote to ush or pull.
 
 .PARAMETER Test
 Switch to runs tests.
@@ -16,7 +30,7 @@ Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
 .PARAMETER Watch
-Only required if `-Test` switch is on.
+Only works if `-Test` switch is on.
 This watches the files included on specified tests.
 
 .INPUTS
@@ -28,7 +42,7 @@ Depends on the command ran.
 .EXAMPLE
 PS> ./execute -help
 
-Show the full help.
+Show the detailed help.
 
 .EXAMPLE
 PS> ./execute -test unit:front -watch
@@ -45,6 +59,23 @@ Param(
 	[Parameter(ParameterSetName="Help", Position=0)]
 	[switch]
 	$Help,
+
+	[Parameter(ParameterSetName="Help", Position=1)]
+	[switch]
+	$Examples,
+
+	[Parameter(ParameterSetName="PushRepo", Position=0)]
+	[switch]
+	$Push,
+
+	[Parameter(ParameterSetName="PullRepo", Position=0)]
+	[switch]
+	$Pull,
+
+	[Parameter(ParameterSetName="PushRepo", Position=1)]
+	[Parameter(ParameterSetName="PullRepo", Position=1)]
+	[string]
+	$Remote = "origin",
 
 	[Parameter(ParameterSetName="Test", Position=0)]
 	[switch]
@@ -70,7 +101,10 @@ Param(
 )
 
 if ($Help) {
-	Get-Help $PSCommandPath -full
+	Get-Help $PSCommandPath -detailed
+	if ($Examples) {
+		Get-Help $PSCommandPath -examples
+	}
 }
 
 if ($Test) {
@@ -87,4 +121,14 @@ if ($Test) {
 	}
 
 	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+}
+
+if ($Push) {
+	$currentBranch = & git branch --show-current
+	& git push -u $($Remote) $($currentBranch)
+}
+
+if ($Pull) {
+	$currentBranch = & git branch --show-current
+	& git pull --prune $($Remote) $($currentBranch)
 }

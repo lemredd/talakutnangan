@@ -43,40 +43,4 @@ describe("PUT /api/role/update", () => {
 
 	it.todo("cannot accept invalid values")
 	it.todo("cannot update missing model")
-
-	it("cannot be accessed without correct permission", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
-		const _roles = await (new RoleFactory()).insertOne()
-
-		const response = await App.request
-			.put("/api/role/update")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const role = await (new RoleFactory()).insertOne()
-		const newRoleDetails = await (new RoleFactory()).makeOne()
-
-		const response = await App.request
-			.put("/api/role/update")
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				id: role.id,
-				name: role.name,
-				departmentFlags:   role.departmentFlags,
-				roleFlags:         role.roleFlags,
-				semesterFlags:     role.semesterFlags,
-				tagFlags:          role.tagFlags,
-				postFlags:         role.postFlags,
-				commentFlags:      role.commentFlags,
-				profanityFlags:    role.profanityFlags,
-				userFlags:         role.userFlags,
-				auditTrailFlags:   role.auditTrailFlags
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })

@@ -112,39 +112,4 @@ describe("POST /api/department/create", () => {
 		expect(response.body).toHaveLength(1)
 		expect(response.body).toHaveProperty([0, "field"], "mayAdmit")
 	})
-
-	it("cannot create without correct permission", async () => {
-		const anyRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask("view"))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(anyRole)
-		const department = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: "123"
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
-
-	it("cannot be accessed by guest users", async () => {
-		const department = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
-	})
 })
