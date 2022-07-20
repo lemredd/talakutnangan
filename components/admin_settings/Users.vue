@@ -1,5 +1,5 @@
 <template>
-	<UsersManager :data="users" :has-filter="true" />
+	<UsersManager :data="users" :has-dropdown-filter="true" />
 </template>
 
 <style>

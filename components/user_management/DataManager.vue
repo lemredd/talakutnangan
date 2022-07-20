@@ -8,7 +8,7 @@
 				input-classes="!py-0 pl-1 !border-none" />
 			<button class="material-icons">search</button>
 		</div>
-		<Filter v-if="hasFilter" v-model:filter="selectedFilter"/>
+		<Filter v-if="hasDropdownFilter" v-model:filter="selectedFilter"/>
 		<slot v-else></slot>
 	</div>
 	<DataList :search-filter="searchFilter" :filtered-list="filteredList" />
@@ -36,14 +36,13 @@ import DataList from "./users_manager/DataList.vue"
 /*
 	General TODOs
 	TODO(lead): unuse type `any` / specify types
-	TODO: use type guarding instead of depending on "hasFilter" prop
-	TODO: rename "hasFilter" to more appropriate one
+	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
 */
 
-const { data, hasFilter } = defineProps<{
+const { data, hasDropdownFilter } = defineProps<{
 
 	data: User[] | Department[] | any,
-	hasFilter?: boolean
+	hasDropdownFilter?: boolean
 }>()
 
 let searchFilter = ref("");
@@ -53,7 +52,7 @@ const filteredList = computed(function() {
 		dataToFilter.name.toLowerCase().includes(searchFilter.value.toLowerCase())
 	);
 
-	if (hasFilter) {
+	if (hasDropdownFilter) {
 		const filteredByRole = filterByRole(filteredBySearchResult)
 		return filteredByRole
 	}
@@ -63,7 +62,7 @@ const filteredList = computed(function() {
 
 const selectedFilter = ref("all")
 function filterByRole(usersList: {[key:string]: any}[]) {
-	if (hasFilter) {
+	if (hasDropdownFilter) {
 		const managerKind = inject("managerKind") as ManagerKind
 
 		if (selectedFilter.value === "all") return usersList
