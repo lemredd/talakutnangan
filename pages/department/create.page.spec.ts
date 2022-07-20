@@ -1,5 +1,6 @@
 import { shallowMount, VueWrapper } from "@vue/test-utils"
 import RequestEnvironment from "$/helpers/request_environment"
+import { UnitError } from "$/types/server"
 import Page from "./create.page.vue"
 
 describe("Page: /department/create", () => {
@@ -21,6 +22,7 @@ describe("Page: /department/create", () => {
 		await acronym.setValue("HW")
 		await mayAdmit.setValue(true)
 		await submit.trigger("submit")
+
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department/create")
@@ -29,6 +31,53 @@ describe("Page: /department/create", () => {
 				type: "department",
 				attributes: {
 					fullName: "Hello World",
+					acronym: "HW",
+					mayAdmit: true
+				}
+			}
+		})
+	})
+
+	it.skip("cannot create department with invalid values", async () => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			errors: [
+				{
+					status: RequestEnvironment.status.BAD_REQUEST,
+					code: "3",
+					title: "Validation Error",
+					detail: "Name of department is too short",
+					source: {
+						pointer: "/data/attributes/fullName"
+					}
+				}
+			] as UnitError[]
+		}), { status: RequestEnvironment.status.BAD_REQUEST })
+		const wrapper = shallowMount(Page, {
+			global: {
+				provide: {
+					pageContext: {}
+				}
+			}
+		})
+		const fullName = wrapper.find("#full-name")
+		const acronym = wrapper.find("#acronym")
+		const mayAdmit = wrapper.find("#may-admit")
+		const submit = wrapper.find("input[type=submit]")
+
+		await fullName.setValue("Hello Worl")
+		await acronym.setValue("HW")
+		await mayAdmit.setValue(true)
+		await submit.trigger("submit")
+
+		// TODO: Test the showing of error messages in the UI
+		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/department/create")
+		expect(request.json()).resolves.toStrictEqual({
+			data: {
+				type: "department",
+				attributes: {
+					fullName: "Hello Worl",
 					acronym: "HW",
 					mayAdmit: true
 				}
