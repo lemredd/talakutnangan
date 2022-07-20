@@ -13,15 +13,26 @@ export default class extends RequestEnvironment {
 		// ! Kept in case of set-up in the future
 	}
 
-	static getJSON(basePath: string): Promise<Response> {
-		return fetch(basePath, {
+	static getJSON(path: string): Promise<Response> {
+		return this.requestJSON(new Request(path, {
 			method: "GET",
+			headers: this.makeJSONHeaders()
+		}))
+	}
+
+	static postJSON(path: string, data: Serializable): Promise<Response> {
+		return this.requestJSON(new Request(path, {
+			method: "POST",
 			headers: {
 				"Content-Type": JSON_API_MEDIA_TYPE,
 				"Accept": JSON_API_MEDIA_TYPE
-			}
-		})
-		.then(async response => {
+			},
+			body: JSON.stringify(data)
+		}))
+	}
+
+	private static async requestJSON(request: Request): Promise<Response> {
+		return await fetch(request).then(async response => {
 			return {
 				status: response.status,
 				body: await response.json()
@@ -29,20 +40,10 @@ export default class extends RequestEnvironment {
 		})
 	}
 
-	static postJSON(basePath: string, data: Serializable): Promise<Response> {
-		return fetch(basePath, {
-			method: "POST",
-			headers: {
-				"Content-Type": JSON_API_MEDIA_TYPE,
-				"Accept": JSON_API_MEDIA_TYPE
-			},
-			body: JSON.stringify(data)
-		})
-		.then(async response => {
-			return {
-				status: response.status,
-				body: await response.json()
-			}
+	private static makeJSONHeaders(): Headers {
+		return new Headers({
+			"Content-Type": JSON_API_MEDIA_TYPE,
+			"Accept": JSON_API_MEDIA_TYPE
 		})
 	}
 }
