@@ -1,7 +1,7 @@
 import RequestEnvironment from "$/helpers/request_environment"
-import logIn from "./log_in"
+import UserFetcher from "./user"
 
-describe("Communicator: Log in", () => {
+describe("Communicator: UserFetcher", () => {
 	it("can log in", async () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			meta: {
@@ -11,7 +11,7 @@ describe("Communicator: Log in", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await logIn({ email: "sample@example.com", password: "1234" })
+		const response = await UserFetcher.logIn({ email: "sample@example.com", password: "1234" })
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
