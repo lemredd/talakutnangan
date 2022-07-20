@@ -63,7 +63,7 @@ export interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
  * Shape of expected log in details
  */
 export interface LogInDetails extends Serializable {
-	username: string,
+	email: string,
 	password: string
 }
 
