@@ -1,5 +1,6 @@
 <template>
 	<div class="controls-bar">
+		<!-- TODO: make search bar a component -->
 		<div class="search-bar">
 			<TextualField
 				type="email"
@@ -36,6 +37,7 @@ import DataList from "./users_manager/DataList.vue"
 	General TODOs
 	TODO(lead): unuse type `any` / specify types
 	TODO: use type guarding instead of depending on "hasFilter" prop
+	TODO: rename "hasFilter" to more appropriate one
 */
 
 const { data, hasFilter } = defineProps<{
