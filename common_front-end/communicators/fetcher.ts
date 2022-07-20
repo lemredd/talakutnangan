@@ -1,6 +1,3 @@
-import type { Axios } from "axios"
-import axios from "axios"
-
 import type { Serializable } from "$/types/database"
 import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "!/types/independent"
@@ -12,53 +9,39 @@ import RequestEnvironment from "$!/singletons/request_environment"
  * client-side code.
  */
 export default class extends RequestEnvironment {
-	private static instance: Axios = axios.create()
-
 	static initialize() {
-		if (this.isOnTest) {
-			this.instance = axios.create({
-				baseURL: "http://localhost:16000/"
-			})
-		}
+		// ! Kept in case of set-up in the future
 	}
 
-	static getJSON(baseURL: string): Promise<Response> {
-		return this.instance.request({
-			url: baseURL
-		})
-		.then(response => {
-			return {
-				body: response.data,
-				status: response.status
+	static getJSON(basePath: string): Promise<Response> {
+		return fetch(basePath, {
+			method: "GET",
+			headers: {
+				"Content-Type": JSON_API_MEDIA_TYPE,
+				"Accept": JSON_API_MEDIA_TYPE
 			}
 		})
-		.catch(error => {
+		.then(async response => {
 			return {
-				body: error.response.data,
-				status: error.response.status
+				status: response.status,
+				body: await response.json()
 			}
 		})
 	}
 
 	static postJSON(basePath: string, data: Serializable): Promise<Response> {
-		return this.instance.request({
-			url: basePath,
+		return fetch(basePath, {
+			method: "POST",
 			headers: {
 				"Content-Type": JSON_API_MEDIA_TYPE,
 				"Accept": JSON_API_MEDIA_TYPE
 			},
-			data
+			body: JSON.stringify(data)
 		})
-		.then(response => {
+		.then(async response => {
 			return {
-				body: response.data,
-				status: response.status
-			}
-		})
-		.catch(error => {
-			return {
-				body: error.response.data,
-				status: error.response.status
+				status: response.status,
+				body: await response.json()
 			}
 		})
 	}
