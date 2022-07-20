@@ -11,39 +11,41 @@ import specializedPath from "$@/helpers/specialize_path"
  */
 export default class extends RequestEnvironment {
 	private static basePath: string = ""
+	private static type: string = ""
 
-	static initialize(basePath: string) {
+	static initialize(basePath: string, type: string = "") {
 		this.basePath = basePath
+		this.type = type
 	}
 
-	static create(type: string, attributes: Serializable): Promise<Response> {
-		return this.postJSON(`${type}/create`, {
+	static create(attributes: Serializable): Promise<Response> {
+		return this.postJSON(`${this.type}/create`, {
 			data: {
-				type,
+				type: this.type,
 				attributes
 			}
 		})
 	}
 
-	static update(type: string, id: number, attributes: Serializable): Promise<Response> {
-		return this.patchJSON(`${type}/update/:id`, { id }, {
+	static update(id: number, attributes: Serializable): Promise<Response> {
+		return this.patchJSON(`${this.type}/update/:id`, { id }, {
 			data: {
-				type,
+				type: this.type,
 				id,
 				attributes
 			}
 		})
 	}
 
-	static archive(type: string, IDs: number[]): Promise<Response> {
-		return this.deleteJSON(`${type}/archive`, {}, {
-			data: IDs.map(id => ({ type, id }))
+	static archive(IDs: number[]): Promise<Response> {
+		return this.deleteJSON(`${this.type}/archive`, {}, {
+			data: IDs.map(id => ({ type: this.type, id }))
 		})
 	}
 
-	static restore(type: string, IDs: number[]): Promise<Response> {
-		return this.patchJSON(`${type}/restore`, {}, {
-			data: IDs.map(id => ({ type, id }))
+	static restore(IDs: number[]): Promise<Response> {
+		return this.patchJSON(`${this.type}/restore`, {}, {
+			data: IDs.map(id => ({ type: this.type, id }))
 		})
 	}
 
