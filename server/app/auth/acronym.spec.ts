@@ -16,7 +16,7 @@ describe("Validator: Acronym", () => {
 		expect(isValid).toBeTruthy()
 	})
 
-	it("can invalidate normal acronym", () => {
+	it("cannot validate normal acronym", () => {
 		const validator = {
 			inputs: {
 				source: "Abc Defgh"
@@ -44,7 +44,17 @@ describe("Validator: Acronym", () => {
 		expect(isValid).toBeTruthy()
 	})
 
-	it("can invalidate special acronym", () => {
+	it("cannot validate with missing acronym value", () => {
+		const validator = {
+			inputs: {}
+		}
+		const value = "AcDf"
+		const args = [ "source" ]
+
+		expect(() => acronym({ value, args }, validator as Validator)).toThrow()
+	})
+
+	it("cannot validate special acronym", () => {
 		const validator = {
 			inputs: {
 				source: "Abc Defgh"
@@ -112,7 +122,7 @@ describe("Validator: Acronym", () => {
 		expect(() => acronym({ value, args }, validator as Validator)).toThrow()
 	})
 
-	it("can invalidate uneven word-letter ratio of source and acronym", () => {
+	it("cannot validate uneven word-letter ratio of source and acronym", () => {
 		const validator = {
 			inputs: {
 				source: "abc Def"
