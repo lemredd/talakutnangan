@@ -66,7 +66,7 @@ export default class extends RequestEnvironment {
 
 	private static async requestJSON(path: string, request: RequestInit): Promise<Response> {
 		const completePath = `${this.basePath}/${path}`
-		return await fetch(completePath, request).then(async response => {
+		return await fetch(new Request(completePath, request)).then(async response => {
 			return {
 				status: response.status,
 				body: await response.json()
