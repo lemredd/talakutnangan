@@ -23,4 +23,15 @@ describe("Communicator: Fetcher", () => {
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 	})
+
+	it("can retrieve JSON from server by PATCH", async () => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			data: { type: "department", "attributes": {} },
+		}), { status: RequestEnvironment.status.OK })
+
+		const response = await Fetcher.getJSON("/api/sample")
+
+		expect(response).toHaveProperty("body.data")
+		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
 })
