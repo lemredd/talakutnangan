@@ -1,5 +1,6 @@
 import { Buffer } from "buffer"
 import BaseError from "$!/errors/base"
+import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
 import MockRequester from "~/set-ups/mock_requester"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -87,6 +88,40 @@ describe("Server: Catching all errors", () => {
 			RequestEnvironment.status.BAD_REQUEST,
 			"title",
 			"message")
+
+		await requester.runErrorHandler(catchAllErrors, error)
+
+		requester.expectResponse({
+			redirect: (redirectMethod: jest.Mock<any, any>) => {
+				expect(redirectMethod).toHaveBeenCalled()
+				expect(redirectMethod.mock.calls[0][0]).toContain(URLMaker.makeBaseURL())
+				expect(redirectMethod.mock.calls[0][0]).toContain(
+					Buffer.from(JSON.stringify(error.toJSON())).toString("base64url")
+				)
+			},
+			end: (endMethod: jest.Mock<any, any>) => {
+				expect(endMethod).toHaveBeenCalledTimes(1)
+			}
+		})
+	})
+
+	it("redirect to root if it can accept HTML media type and there multiple errors", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
+		requester.customizeRequest({
+			accepts: jest.fn(mediaType => mediaType === HTML_MEDIA_TYPE)
+		})
+		const error = new ErrorBag([
+			new BaseError(
+				"0",
+				RequestEnvironment.status.BAD_REQUEST,
+				"title",
+				"message"
+			)
+		])
 
 		await requester.runErrorHandler(catchAllErrors, error)
 
@@ -200,6 +235,47 @@ describe("Server: Catching all errors", () => {
 					errors: [
 						error.toJSON()
 					]
+				})
+			},
+			end: (endMethod: jest.Mock<any, any>) => {
+				expect(endMethod).toHaveBeenCalledTimes(1)
+			}
+		})
+	})
+
+	it("can output multiple custom errors if it only accepts JSON:API media type", async () => {
+		requester.customizeRequest({
+			transaction: {
+				destroyIneffectually: jest.fn()
+			}
+		})
+		requester.customizeRequest({
+			accepts: jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
+		})
+		const error = new ErrorBag([
+			new BaseError(
+				"0",
+				RequestEnvironment.status.UNAUTHORIZED,
+				"title",
+				"message"
+			)
+		])
+
+		await requester.runErrorHandler(catchAllErrors, error)
+
+		requester.expectResponse({
+			status: (statusMethod: jest.Mock<any, any>) => {
+				expect(statusMethod).toHaveBeenCalled()
+				expect(statusMethod.mock.calls[0][0]).toBe(RequestEnvironment.status.BAD_REQUEST)
+			},
+			type: (typeMethod: jest.Mock<any, any>) => {
+				expect(typeMethod).toHaveBeenCalled()
+				expect(typeMethod.mock.calls[0][0]).toBe(JSON_API_MEDIA_TYPE)
+			},
+			send: (sendMethod: jest.Mock<any, any>) => {
+				expect(sendMethod).toHaveBeenCalled()
+				expect(sendMethod.mock.calls[0][0]).toStrictEqual({
+					errors: error.toJSON()
 				})
 			},
 			end: (endMethod: jest.Mock<any, any>) => {

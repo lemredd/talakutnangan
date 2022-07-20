@@ -33,7 +33,9 @@ export default class extends MultipartController {
 
 	get validations(): Validation[] {
 		return [
-			new IDParameterValidation(),
+			new IDParameterValidation([
+				[ "id", UserManager ]
+			]),
 			...super.validations
 		]
 	}

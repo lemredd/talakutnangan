@@ -17,7 +17,7 @@ export default class DepartmentFactory extends BaseFactory<Department> {
 
 	async generate(): GeneratedData<Department> {
 		const departmentName = this.#name()
-			.split(" ")
+			.split(/\s/)
 			.map(name => name.slice(0, 1).toLocaleUpperCase() + name.slice(1))
 			.join(" ")
 		return {

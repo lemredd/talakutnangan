@@ -134,6 +134,21 @@ export interface UnitError {
 	title: string,
 	detail: string,
 	meta?: Serializable
+	source?: SourcePointer|SourceParameter
+}
+
+/**
+ * Source of error in the sent resource
+ */
+export interface SourcePointer extends Serializable {
+	pointer: string
+}
+
+/**
+ * Source of error in the parameter
+ */
+export interface SourceParameter extends Serializable {
+	parameter: string
 }
 
 

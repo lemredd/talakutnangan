@@ -67,4 +67,14 @@ describe("Validator: Buffer", () => {
 
 		expect(() => buffer({ value, args }, validator as Validator)).toThrow()
 	})
+
+	it("should skip on null values", () => {
+		const validator = {}
+		const value = null
+		const args = [ "text/plain", "1" ]
+
+		const isValid = buffer({ value, args }, validator as Validator)
+
+		expect(isValid).toBeTruthy()
+	})
 })
