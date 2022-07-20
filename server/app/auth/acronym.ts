@@ -1,4 +1,5 @@
 import type { Validator } from "node-input-validator"
+import get from "lodash.get"
 
 /**
  * Function to validate the input acronyms.
@@ -11,8 +12,8 @@ export default function({ value, args }: { value: string, args: string[] }, vali
 		throw new Error("Missing source field to validate the acronym.")
 	}
 
-	const fieldName = args[0]
-	const source: string = validator.inputs[fieldName]
+	const fieldPath = args[0]
+	const source: string = get(validator.inputs, fieldPath)
 
 	if (source) {
 		const separatedSource = source
