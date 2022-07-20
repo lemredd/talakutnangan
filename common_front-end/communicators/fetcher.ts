@@ -35,6 +35,18 @@ export default class extends RequestEnvironment {
 		})
 	}
 
+	static archive(type: string, IDs: number[]): Promise<Response> {
+		return this.deleteJSON(`${type}/archive`, {}, {
+			data: IDs.map(id => ({ type, id }))
+		})
+	}
+
+	static restore(type: string, IDs: number[]): Promise<Response> {
+		return this.patchJSON(`${type}/restore`, {}, {
+			data: IDs.map(id => ({ type, id }))
+		})
+	}
+
 	static getJSON(path: string): Promise<Response> {
 		return this.requestJSON(path, {
 			method: "GET",
@@ -59,6 +71,20 @@ export default class extends RequestEnvironment {
 
 		return this.requestJSON(path, {
 			method: "PATCH",
+			headers: this.makeJSONHeaders(),
+			body: JSON.stringify(data)
+		})
+	}
+
+	static deleteJSON(
+		pathTemplate: string,
+		IDs: { [key:string]: number },
+		data: Serializable
+	): Promise<Response> {
+		const path = specializedPath(pathTemplate, IDs)
+
+		return this.requestJSON(path, {
+			method: "DELETE",
 			headers: this.makeJSONHeaders(),
 			body: JSON.stringify(data)
 		})
