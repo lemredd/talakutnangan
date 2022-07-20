@@ -12,9 +12,9 @@
 		"\\$@/(.*)": "<rootDir>/common_front-end/$1"
 	},
 
-	"transform": {
-		"^.+\\.vue": "vue-jest"
-	},
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/fetch.set_up.ts"
+	],
 
 	"transformIgnorePatterns": [],
 
