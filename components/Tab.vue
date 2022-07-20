@@ -1,48 +1,64 @@
 <template>
 <ul class="tabs">
 	<li
-		v-for="(_, tab) in tabs"
-		:key="tab"
-		:class="['tab-button', { 'active': currentTab === tab }]"
-		@click="setCurrentTab(tab)">
-		{{ tab }}
+	v-for="(_, tab) in tabs"
+	:key="tab"
+	:class="['tab-button', { 'active': currentTab === tab }]"
+	>
+		<Link
+		@click.capture="setCurrentTab(tab)"
+		:href="`/admin_settings/${tab}`">
+			{{ (tab as string).charAt(0).toUpperCase() + (tab as string).substring(1) }}
+		</Link>
 	</li>
 </ul>
 <component :is="tabs[currentTab]" class="tab"></component>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .tabs {
 	border-bottom: 1px solid #888;
 	padding-bottom: 1em;
 
 	display: flex;
+	flex-direction: column;
 
 	.tab-button {
+		display: inline;
 		border-radius: 5px;
-		cursor: pointer;
-		padding: 0.25em 2em;
+		padding: 0.25em 1em;
 
 		&.active {
-			background-color: white;
-			color: black;
+			@apply dark:bg-white dark:text-dark-300 bg-dark-300 text-white flex;
+			.link.active {
+				@apply text-white p-0;
+				background: none;
+			}
 		}
+	}
+}
+
+@media (min-width: 640px) {
+	.tabs {
+		flex-direction: row;
 	}
 }
 </style>
 
 <script setup lang="ts">
-import { defineComponent, inject, Ref, ref } from "vue"
+import { defineComponent, inject, ref } from "vue"
+import Link from "@/Link.vue"
 
+const url = inject("url") as string
 const { tabs } = defineProps<{
 	tabs: {
 		[key: string]: ReturnType<typeof defineComponent>
 	}
 }>()
 
-const currentTab = ref(Object.keys(tabs)[0])
+const currentTab = ref(url)
 
 function setCurrentTab(tab: ReturnType<typeof defineComponent>) {
-	currentTab.value = tab
+	currentTab.value = tab.toLowerCase()
 }
 </script>

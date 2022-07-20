@@ -1,10 +1,11 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container grid grid-cols-2 grid-rows-2">
-		<label class="input-header col-span-full">
+	<div :class="{ 'default': !editable }" class="input-container">
+		<label v-if="label" class="input-header">
 			{{ label }}
 		</label>
 		<input
 			class="bg-transparent"
+			:class=inputClasses
 			:type="type"
 			:value="modelValue"
 			@input="emitUpdate"
@@ -12,14 +13,14 @@
 			:disabled="disabled || editable"
 			ref="inputField"
 			/>
-			<button
-				type="button"
-				v-if="editable"
-				class="material-icons justify-self-end"
-				@click="verify ? verifyBeforeSubmit() : editField($event)"
-				>
-				edit
-			</button>
+		<button
+			type="button"
+			v-if="editable"
+			class="material-icons"
+			@click="verify ? verifyBeforeSubmit() : editField()"
+			>
+			edit
+		</button>
 	</div>
 
 	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
@@ -27,7 +28,7 @@
 			<h1>Update your {{ type }}</h1>
 		</template>
 		<template #default>
-			<div v-if="type === 'email' || type === 'password'" class="verification flex flex-col">
+			<div v-if="type === 'email' || type === 'password'" class="verification">
 				<label for="password-confirm" class="text-black">
 					<input type="password" placeholder="enter your password" id="password-confirm">
 				</label>
@@ -45,7 +46,11 @@
 
 <style scoped lang="scss">
 .input-container {
-	padding: 1.5em 0;
+	@apply grid gap-4 grid-cols-2 grid-rows-2;
+
+	label {
+		@apply col-span-full;
+	}
 
 	&.default {
 		display: block;
@@ -56,9 +61,13 @@
 		padding-bottom: .25em;
 		width: 100%;
 	}
+	.material-icons {
+		@apply justify-self-end;
+	}
 }
 
 .verification {
+	@apply flex flex-col;
 
 	label {
 		padding: .5em 1em;
@@ -81,15 +90,17 @@ const {
 	required = true,
 	disabled,
 	editable,
-	verify
+	verify,
+	inputClasses
 	} = defineProps<{
-	label: string
+	label?: string
 	type: Textual
 	modelValue: string
 	required?: boolean
 	disabled?: boolean
 	editable?: boolean
 	verify?: boolean
+	inputClasses?: string
 }>()
 const emit = defineEmits<{
 	(e: "update:modelValue", modelValue: string ): void
@@ -102,7 +113,7 @@ function emitUpdate(event: Event) {
 	emit("update:modelValue", (event.target as HTMLInputElement).value)
 }
 
-function editField(e: Event) {
+function editField() {
 	inputField.value!.disabled = !inputField.value!.disabled
 }
 

@@ -17,7 +17,7 @@ export default class extends DevController {
 		const role = await new RoleFactory().makeOne()
 		department.id = 1
 		role.id = 1
-		const list = (await new UserFactory().in(department).makeMany(25)).map((user, i) => {
+		const list = (await new UserFactory().in(department).makeMany(15)).map((user, i) => {
 			user.id = i + 1
 			user.department = department
 			user.roles = [ role ]
