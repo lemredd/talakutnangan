@@ -11,7 +11,7 @@ import specializedPath from "$@/helpers/specialize_path"
  */
 export default class extends RequestEnvironment {
 	private static basePath: string = ""
-	private static type: string = ""
+	protected static type: string = ""
 
 	static initialize(basePath: string, type: string = "") {
 		this.basePath = basePath
