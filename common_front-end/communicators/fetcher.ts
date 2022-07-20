@@ -10,7 +10,7 @@ import specializedPath from "$@/helpers/specialize_path"
  * client-side code.
  */
 export default class extends RequestEnvironment {
-	private static basePath: string = "/"
+	private static basePath: string = ""
 
 	static initialize(basePath: string) {
 		this.basePath = basePath
@@ -36,21 +36,18 @@ export default class extends RequestEnvironment {
 	}
 
 	static getJSON(path: string): Promise<Response> {
-		return this.requestJSON(new Request(path, {
+		return this.requestJSON(path, {
 			method: "GET",
 			headers: this.makeJSONHeaders()
-		}))
+		})
 	}
 
 	static postJSON(path: string, data: Serializable): Promise<Response> {
-		return this.requestJSON(new Request(path, {
+		return this.requestJSON(path, {
 			method: "POST",
-			headers: {
-				"Content-Type": JSON_API_MEDIA_TYPE,
-				"Accept": JSON_API_MEDIA_TYPE
-			},
+			headers: this.makeJSONHeaders(),
 			body: JSON.stringify(data)
-		}))
+		})
 	}
 
 	static patchJSON(
@@ -60,18 +57,16 @@ export default class extends RequestEnvironment {
 	): Promise<Response> {
 		const path = specializedPath(pathTemplate, IDs)
 
-		return this.requestJSON(new Request(path, {
+		return this.requestJSON(path, {
 			method: "PATCH",
-			headers: {
-				"Content-Type": JSON_API_MEDIA_TYPE,
-				"Accept": JSON_API_MEDIA_TYPE
-			},
+			headers: this.makeJSONHeaders(),
 			body: JSON.stringify(data)
-		}))
+		})
 	}
 
-	private static async requestJSON(request: Request): Promise<Response> {
-		return await fetch(request).then(async response => {
+	private static async requestJSON(path: string, request: RequestInit): Promise<Response> {
+		const completePath = `${this.basePath}/${path}`
+		return await fetch(completePath, request).then(async response => {
 			return {
 				status: response.status,
 				body: await response.json()
