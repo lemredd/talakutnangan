@@ -10,8 +10,10 @@ import specializedPath from "$@/helpers/specialize_path"
  * client-side code.
  */
 export default class extends RequestEnvironment {
-	static initialize() {
-		// ! Kept in case of set-up in the future
+	private static basePath: string = "/"
+
+	static initialize(basePath: string) {
+		this.basePath = basePath
 	}
 
 	static create(type: string, attributes: Serializable): Promise<Response> {
