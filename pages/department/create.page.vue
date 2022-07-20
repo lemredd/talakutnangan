@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
-
+import DepartmentFetcher from "$@/communicators/department"
 import type { DeserializedPageContext } from "$@/types/independent"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
@@ -30,7 +30,20 @@ const fullName = ref("")
 const acronym = ref("")
 const mayAdmit = ref(false)
 
-function createDepartment() {
+DepartmentFetcher.initialize("/api")
 
+function createDepartment() {
+	DepartmentFetcher.create({
+		fullName: fullName.value,
+		acronym: acronym.value,
+		mayAdmit: mayAdmit.value
+	})
+	.then(({ body, status }) => {
+		console.log(body, status)
+
+		if (status >= 400) {
+			// Output error
+		}
+	})
 }
 </script>
