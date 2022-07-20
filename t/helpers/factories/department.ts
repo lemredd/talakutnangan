@@ -7,7 +7,10 @@ import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 
 export default class DepartmentFactory extends BaseFactory<Department> {
-	#name = () => faker.random.words(3)
+	#name = () => faker.name.firstName()
+		+" "+faker.name.firstName()
+		+" "+faker.name.middleName()
+		+" "+faker.name.lastName()
 	#mayAdmit = true
 
 	get model(): ModelCtor<Department> { return Department }
