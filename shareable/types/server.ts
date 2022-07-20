@@ -135,3 +135,8 @@ export interface UnitError {
 	detail: string,
 	meta?: Serializable
 }
+
+
+// Media types used in the application
+export const HTML_MEDIA_TYPE = "text/html"
+export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"

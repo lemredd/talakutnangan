@@ -1,7 +1,7 @@
 import { Buffer } from "buffer"
 import { UnitError } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
-import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
