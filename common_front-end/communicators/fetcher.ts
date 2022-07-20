@@ -24,9 +24,10 @@ export default class extends RequestEnvironment {
 	}
 
 	static update(type: string, id: number, attributes: Serializable): Promise<Response> {
-		return this.patchJSON(`${type}/update/:id`, { id } {
+		return this.patchJSON(`${type}/update/:id`, { id }, {
 			data: {
 				type,
+				id,
 				attributes
 			}
 		})
