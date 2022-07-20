@@ -41,7 +41,7 @@ describe("Communicator: Fetcher", () => {
 		const response = await Fetcher.list({})
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
-		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("method", "GET")
 		expect(request).toHaveProperty("url", "/api/user/list")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
