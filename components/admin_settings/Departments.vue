@@ -5,9 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { provide, ref } from "vue"
 import DeptManager from "@/user_management/DataManager.vue"
-import type { Department } from "@/user_management/types"
+import type { Department, ManagerKind } from "@/user_management/types"
+
+const managerKind = "admin" as ManagerKind
+provide("managerKind", managerKind)
 
 // TODO: use actual depts from db soon
 const departments = ref<Department[]>([

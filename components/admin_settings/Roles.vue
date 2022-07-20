@@ -5,9 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { provide, ref } from "vue"
 import RolesManager from "@/user_management/DataManager.vue"
-import type { Role } from "@/user_management/types"
+import type { Role, ManagerKind } from "@/user_management/types"
+
+const managerKind = "admin" as ManagerKind
+provide("managerKind", managerKind)
 
 // TODO: use actual roles from db soon
 const roles = ref<Role[]>([
