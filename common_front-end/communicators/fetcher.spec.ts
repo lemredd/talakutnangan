@@ -9,7 +9,8 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await Fetcher.create("user", { name: "A" })
+		Fetcher.initialize("/api", "user")
+		const response = await Fetcher.create({ name: "A" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -34,7 +35,8 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await Fetcher.update("user", 1, { name: "A" })
+		Fetcher.initialize("/api", "user")
+		const response = await Fetcher.update(1, { name: "A" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -60,7 +62,8 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await Fetcher.archive("user", [ 1 ])
+		Fetcher.initialize("/api", "user")
+		const response = await Fetcher.archive([ 1 ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -82,7 +85,8 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await Fetcher.restore("user", [ 2 ])
+		Fetcher.initialize("/api", "user")
+		const response = await Fetcher.restore([ 2 ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
