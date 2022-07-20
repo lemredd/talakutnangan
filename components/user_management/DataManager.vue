@@ -34,7 +34,8 @@ import DataList from "./users_manager/DataList.vue"
 
 /*
 	General TODOs
-	TODO(lead): unuse type `any`
+	TODO(lead): unuse type `any` / specify types
+	TODO: use type guarding instead of depending on "hasFilter" prop
 */
 
 const { data, hasFilter } = defineProps<{
