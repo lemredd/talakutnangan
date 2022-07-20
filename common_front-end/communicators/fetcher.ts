@@ -14,6 +14,24 @@ export default class extends RequestEnvironment {
 		// ! Kept in case of set-up in the future
 	}
 
+	static create(type: string, attributes: Serializable): Promise<Response> {
+		return this.postJSON(`${type}/create`, {
+			data: {
+				type,
+				attributes
+			}
+		})
+	}
+
+	static update(type: string, id: number, attributes: Serializable): Promise<Response> {
+		return this.patchJSON(`${type}/update/:id`, { id } {
+			data: {
+				type,
+				attributes
+			}
+		})
+	}
+
 	static getJSON(path: string): Promise<Response> {
 		return this.requestJSON(new Request(path, {
 			method: "GET",
