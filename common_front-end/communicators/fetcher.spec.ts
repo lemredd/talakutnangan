@@ -29,6 +29,34 @@ describe("Communicator: Fetcher", () => {
 		})
 	})
 
+	it("can list all resources", async () => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			data: [
+				{ type: "user", "attributes": {} }
+			]
+		}),
+		{ status: RequestEnvironment.status.OK })
+
+		Fetcher.initialize("/api", "user")
+		const response = await Fetcher.list({})
+
+		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/user/list")
+		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(request.json()).resolves.toStrictEqual({
+			data: {
+				type: "user",
+				attributes: {
+					name: "A"
+				}
+			}
+		})
+		expect(response).toHaveProperty("body.data.0.type")
+		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
+
 	it("can update resource", async () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			data: { type: "user", "attributes": {} },
