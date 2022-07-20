@@ -38,9 +38,18 @@ export default abstract class Manager<T extends Model, U> {
 	}
 
 	async findWithID(id: number): Promise<Serializable> {
+		const foundModel = await this.findOneOnColumn("id", id)
+
+		Log.success("manager", "done searching for a model using ID")
+
+		return foundModel
+	}
+
+	async findOneOnColumn(columnName: string, value: any): Promise<Serializable> {
 		const condition = new Condition()
-		condition.equal("id", id)
+		condition.equal(columnName, value)
 		const whereOptions: FindOptions<T> = { where: condition.build() }
+
 		const findOptions = runThroughPipeline(whereOptions, {}, this.singleReadPipeline)
 
 		const model = await this.model.findOne({
@@ -48,7 +57,7 @@ export default abstract class Manager<T extends Model, U> {
 			...this.transaction.lockedTransactionObject
 		})
 
-		Log.success("manager", "done searching for a model using ID")
+		Log.success("manager", "done searching for a model on a certain column")
 
 		return this.serialize(model)
 	}

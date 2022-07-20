@@ -1,8 +1,10 @@
 import { Validator } from "node-input-validator"
 
-import { ValidationError } from "$/types/server"
+import { SourceParameter, SourcePointer } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
+import ErrorBag from "$!/errors/error_bag"
+import ValidationError from "$!/errors/validation"
 import Middleware from "!/bases/middleware"
 
 export default abstract class extends Middleware {
@@ -16,26 +18,35 @@ export default abstract class extends Middleware {
 	abstract getSubject(request: Request): object
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		const errors = await this.validate(this.getSubject(request))
-		if (errors.length > 0) {
-			response.status(this.status.BAD_REQUEST).json(errors)
-			// TODO: Throw validation error
+		try {
+			await this.validate(this.getSubject(request))
 			next()
-		} else {
-			next()
+		} catch(error) {
+			next(error)
 		}
 	}
 
-	async validate(body: object): Promise<ValidationError[]> {
+	async validate(body: object): Promise<void> {
 		const validator = new Validator(body, this.validationRules)
 
 		await validator.check()
 
 		const rawErrors = validator.getErrors()
 
-		return Object.keys(rawErrors).sort().map(field => ({
+		const errorInfos = Object.keys(rawErrors).sort().map(field => ({
 			field,
 			message: rawErrors[field].message
 		}))
+
+		if (errorInfos.length > 0) {
+			throw new ErrorBag(errorInfos.map(info => new ValidationError({
+				[this.sourceType]: info.field
+			} as SourceParameter|SourcePointer, info.message)))
+		}
 	}
+
+	/**
+	 * Type of source where the validation error comes from.
+	 */
+	get sourceType(): "pointer"|"parameter" { return "pointer" }
 }
