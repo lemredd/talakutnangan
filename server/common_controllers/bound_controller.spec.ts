@@ -2,6 +2,8 @@ import { Request, Response } from "!/types/dependent"
 
 import MockRequester from "~/set-ups/mock_requester"
 
+import ErrorBag from "$!/errors/error_bag"
+
 import BoundController from "./bound_controller"
 
 abstract class BaseTestController extends BoundController {
@@ -56,8 +58,17 @@ describe("Controller: Bound Controller Special Validation", () => {
 
 		await requester.runMiddleware(validationMiddleware!.intermediate.bind(validationMiddleware))
 
-		const errorJSONBody = requester.expectFailure(requester.status.BAD_REQUEST)
-		expect(errorJSONBody).toHaveProperty([0, "field"], "id")
+		requester.expectNext([
+			[
+				(error: any) => {
+					expect(error).toBeInstanceOf(ErrorBag)
+					const unitErrors = error.toJSON()
+					expect(unitErrors).toHaveLength(1)
+					// TODO: Think of way to override single bound
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "id")
+				}
+			]
+		])
 	})
 
 	it("does validation middleware works properly with invalid multiple values", async () => {
@@ -83,8 +94,17 @@ describe("Controller: Bound Controller Special Validation", () => {
 
 		await requester.runMiddleware(validationMiddleware!.intermediate.bind(validationMiddleware))
 
-		const errorJSONBody = requester.expectFailure(requester.status.BAD_REQUEST)
-		expect(errorJSONBody).toHaveProperty([0, "field"], "commentID")
-		expect(errorJSONBody).toHaveProperty([1, "field"], "id")
+		requester.expectNext([
+			[
+				(error: any) => {
+					expect(error).toBeInstanceOf(ErrorBag)
+					const unitErrors = error.toJSON()
+					expect(unitErrors).toHaveLength(2)
+					// TODO: Think of way to override multiple bound
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "commentID")
+					expect(unitErrors[1]).toHaveProperty("source.pointer", "id")
+				}
+			]
+		])
 	})
 })

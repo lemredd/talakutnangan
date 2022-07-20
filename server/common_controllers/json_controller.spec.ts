@@ -4,6 +4,8 @@ import { Request, Response } from "!/types/dependent"
 
 import MockRequester from "~/set-ups/mock_requester"
 
+import ErrorBag from "$!/errors/error_bag"
+
 import JSONController from "./json_controller"
 
 describe("Back-end: JSON Controller Special Validation", () => {
@@ -60,8 +62,16 @@ describe("Back-end: JSON Controller Special Validation", () => {
 
 		await requester.runMiddleware(validationMiddleware!.intermediate.bind(validationMiddleware))
 
-		const errorJSONBody = requester.expectFailure(requester.status.BAD_REQUEST)
-		expect(errorJSONBody).toHaveProperty([0, "field"], "email")
+		requester.expectNext([
+			[
+				(error: any) => {
+					expect(error).toBeInstanceOf(ErrorBag)
+					const unitErrors = error.toJSON()
+					expect(unitErrors).toHaveLength(1)
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "email")
+				}
+			]
+		])
 	})
 
 	it("does validation middleware works properly with invalid multiple values", async () => {
@@ -87,8 +97,16 @@ describe("Back-end: JSON Controller Special Validation", () => {
 
 		await requester.runMiddleware(validationMiddleware!.intermediate.bind(validationMiddleware))
 
-		const errorJSONBody = requester.expectFailure(requester.status.BAD_REQUEST)
-		expect(errorJSONBody).toHaveProperty([0, "field"], "email")
-		expect(errorJSONBody).toHaveProperty([1, "field"], "username")
+		requester.expectNext([
+			[
+				(error: any) => {
+					expect(error).toBeInstanceOf(ErrorBag)
+					const unitErrors = error.toJSON()
+					expect(unitErrors).toHaveLength(2)
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "email")
+					expect(unitErrors[1]).toHaveProperty("source.pointer", "username")
+				}
+			]
+		])
 	})
 })
