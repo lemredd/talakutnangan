@@ -21,27 +21,30 @@
 
 <script setup lang="ts">
 import { computed, inject, provide, ref } from "vue"
-import type { ManagerKind, User, Department } from "./types"
+import type { ManagerKind, User, Department, Role } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import SearchFilter from "./users_manager/SearchBar.vue"
 import DataList from "./users_manager/DataList.vue"
 
 /*
 	General TODOs
-	TODO(lead): unuse type `any` / specify types
 	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
 */
 
 const { data, hasDropdownFilter } = defineProps<{
 
-	data: User[] | Department[] | any,
+	data: User[] | Department[] | Role[],
 	hasDropdownFilter?: boolean
 }>()
 
 const searchFilterText = ref("");
 
+function passedData(): (User|Department|Role)[] {
+	return data
+}
+
 const filteredList = computed(function() {
-	const filteredBySearchResult = data.filter((dataToFilter: any) =>
+	const filteredBySearchResult = passedData().filter((dataToFilter: User | Department | Role) =>
 		dataToFilter.name.toLowerCase().includes(searchFilterText.value.toLowerCase())
 	);
 
