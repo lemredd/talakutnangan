@@ -48,6 +48,19 @@
 				<input type="checkbox" name="" id="dark-mode-toggle" v-model="isDarkModeEnabled" @click="toggleDarkMode">
 			</label>
 		</div>
+		<div class ="p-5">
+			<h3 class="display-name text-lg col-span-full">Consultation Schedules</h3>
+			<h3 class="display-name text-lg col-span-full">Day</h3>
+			<label for="start">From: 
+			<input type="time" id="appt" name="appt"
+       		min="09:00" max="18:00" required>
+			</label>
+			<label for="start">To: 
+			<input type="time" id="appt" name="appt"
+       		min="09:00" max="18:00" required>
+			</label>
+			
+		</div>
 	</form>
 </template>
 
