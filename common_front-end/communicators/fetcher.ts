@@ -2,7 +2,7 @@ import type { Serializable } from "$/types/database"
 import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import RequestEnvironment from "$!/singletons/request_environment"
+import RequestEnvironment from "$/helpers/request_environment"
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the
