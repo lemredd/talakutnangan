@@ -1,9 +1,9 @@
 <template>
 	<!-- TODO(lead): generalize data properties. Current setup only reads type `User` properties -->
 	<div class="data-row" v-for="data in filteredList" :key="data.name">
-		<span class="user-name">{{ data.name }}</span>
-		<span class="user-email">{{ data.email }}</span>
-		<span :class="`user-${roleOrJobTitleClasses}`">{{ isListForServiceEmployees ? data.jobTitle : data.role }}</span>
+		<span class="data-name">{{ data.name }}</span>
+		<span class="data-email">{{ data.email }}</span>
+		<span :class="`data-${roleOrJobTitleClasses}`">{{ isListForServiceEmployees ? data.jobTitle : data.role }}</span>
 		<div class="btns">
 			<button class="btn1">Update</button>
 		</div>
