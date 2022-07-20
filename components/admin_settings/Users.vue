@@ -25,7 +25,7 @@ interface RawUser {
 const users = ref<RawUser[]>([])
 const roles = ref<string[]>([])
 onMounted(() => {
-	// fetch("/api/user/list")
+	// TODO: fetch("/api/user/list") soon
 	fetch("/dev/sample_user_list")
 	.then(response => response.json())
 	.then(response => {

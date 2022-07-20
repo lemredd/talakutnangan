@@ -10,7 +10,7 @@
 		<Filter v-if="hasFilter" v-model:filter="selectedFilter"/>
 		<slot v-else></slot>
 	</div>
-	<DataList :search-filter="searchFilter" :filtered-list="filteredList"/>
+	<DataList :search-filter="searchFilter" :filtered-list="filteredList" />
 
 </template>
 
@@ -32,7 +32,13 @@ import type { ManagerKind, User, Department } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import DataList from "./users_manager/DataList.vue"
 
+/*
+	General TODOs
+	TODO(lead): unuse type `any`
+*/
+
 const { data, hasFilter } = defineProps<{
+
 	data: User[] | Department[] | any,
 	hasFilter?: boolean
 }>()
