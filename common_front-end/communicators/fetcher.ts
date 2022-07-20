@@ -27,6 +27,10 @@ export default class extends RequestEnvironment {
 		})
 	}
 
+	static list(parameters: Serializable): Promise<Response> {
+		return this.getJSON(`${this.type}/list`)
+	}
+
 	static update(id: number, attributes: Serializable): Promise<Response> {
 		return this.patchJSON(`${this.type}/update/:id`, { id }, {
 			data: {
