@@ -16,6 +16,22 @@ describe("Validator: Acronym", () => {
 		expect(isValid).toBeTruthy()
 	})
 
+	it("can validate normal acronym from nested attribute", () => {
+		const validator = {
+			inputs: {
+				source: {
+					value: "Abc Defgh"
+				}
+			}
+		}
+		const value = "AD"
+		const args = [ "source.value" ]
+
+		const isValid = acronym({ value, args }, validator as Validator)
+
+		expect(isValid).toBeTruthy()
+	})
+
 	it("cannot validate normal acronym", () => {
 		const validator = {
 			inputs: {
