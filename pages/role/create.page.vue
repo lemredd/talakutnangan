@@ -1,23 +1,29 @@
+<!-- 
+	TODO: use windi css apply directive
+	todo: properly transform all required attributes
+	todo: use applicable components
+ -->
 <template>
 	<form @submit.prevent="createRole">
-		<label class="block">
-			Role name:
-			<input class="border-solid" type="text" id="full-name" v-model="roleName"/>
-		</label>
+		<TextualField
+				label="Display Name"
+				type="text"
+				v-model="roleName"
+			/>
 		<div class="post-flags">
 			<h2>Post Flags</h2>
-			<label class="block" v-for="permissionName in postPermissionNames">
+			<label class="attrib-label" v-for="permissionName in postPermissionNames">
 				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
-				<input class="border-solid" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
+				<input class="flag-attrib" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
 
 			</label>
 		</div>
 
 		<div class="semester-flags">
 			<h2>Semester Flags</h2>
-			<label class="block" v-for="permissionName in semesterPermissionNames">
+			<label class="attrib-label" v-for="permissionName in semesterPermissionNames">
 				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
-				<input class="border-solid" type="checkbox" :value="permissionName" @change="updateSemesterFlags" v-model="semesterRawFlags"/>
+				<input class="flag-attrib" type="checkbox" :value="permissionName" @change="updateSemesterFlags" v-model="semesterRawFlags"/>
 
 			</label>
 		</div>
@@ -26,7 +32,14 @@
 	</form>
 </template>
 
-<style>
+<style scoped lang = scss >
+.attrib-label {
+	@apply block;
+}
+
+.flag-attrib{
+	@apply border-solid;
+}
 </style>
 
 <script setup lang="ts">
@@ -34,6 +47,7 @@ import { computed, inject, ref } from "vue"
 import RoleFetcher from "$@/communicators/role"
 import type { DeserializedPageContext } from "$@/types/independent"
 import { post, semester } from "$/permissions/permission_list"
+import TextualField from "@/fields/Textual.vue"
 
 import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
 import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
