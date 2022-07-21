@@ -16,7 +16,7 @@ import PermissionGroup from "$/permissions/base"
 const semesterColumnName = "semesterFlags"
 
 type SemesterFlags = { [semesterColumnName]: number }
-type Permissions = OperationPermission
+export type Permissions = OperationPermission
 
 /**
  * Permission group for semester.
