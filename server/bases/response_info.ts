@@ -11,11 +11,26 @@ import RequestEnvironment from "$/helpers/request_environment"
  */
 export default class ResponseInfo {
 	private status: number
+	private type: string
 	private body: Serializable|null
 
-	constructor(status: number, body: Serializable|null) {
+	constructor(status: number, body: Serializable|null);
+	constructor(status: number, type: string, body: Serializable|null);
+	constructor(
+		status: number,
+		raw_body_or_type: string|Serializable|null,
+		raw_body?: Serializable|null
+	) {
+		let type = JSON_API_MEDIA_TYPE
+		let body = raw_body_or_type
+
+		if (raw_body) {
+			type = raw_body_or_type as string
+			body = raw_body as Serializable|null
+		}
 		this.status = status
-		this.body = body
+		this.type = type
+		this.body = body as Serializable|null
 	}
 
 	sendThrough(response: Response): void {
