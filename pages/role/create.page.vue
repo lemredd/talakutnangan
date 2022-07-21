@@ -7,7 +7,7 @@
 		<div class="post-flags">
 			<h2>Post Flags</h2>
 			<label class="block" v-for="permissionName in postPermissionNames">
-				<span>Can {{permissionName}} </span>
+				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
 				<input class="border-solid" type="checkbox" :value="permissionName" @change="updateFlags" v-model="postRawFlags"/>
 
 			</label>
