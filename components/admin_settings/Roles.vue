@@ -9,6 +9,7 @@ import { ref } from "vue"
 import RolesManager from "@/user_management/DataManager.vue"
 import type { Role } from "@/user_management/types"
 
+// TODO: use actual roles from db soon
 const roles = ref<Role[]>([
 	{
 		id: 0,

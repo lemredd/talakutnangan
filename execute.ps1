@@ -12,6 +12,21 @@ Outputs the detailed help info of the command
 Only works if `-Help` switch is on.
 Includes examples in the help info.
 
+.PARAMETER Server
+Starts the development server if other flags passed and restarts if there are file changes.
+
+.PARAMETER Normal
+Works only if `-Server` is on.
+Starts the server normally.
+
+.PARAMETER Prod
+Works only if `-Server` is on.
+Starts the server for production purposes.
+
+.PARAMETER Routes
+Works only if `-Server` is on.
+Lists the routes available in the server.
+
 .PARAMETER Push
 Pushes the current branch to remote.
 
@@ -20,7 +35,7 @@ Pulls the all branches from remote and prunes remotely-deleted branches.
 
 .PARAMETER Remote
 Only works if one of `-Push` or `-Pull` switches is on.
-Specifies which remote to ush or pull.
+Specifies which remote to push or pull.
 
 .PARAMETER Test
 Switch to runs tests.
@@ -64,6 +79,22 @@ Param(
 	[switch]
 	$Examples,
 
+	[Parameter(ParameterSetName="Server", Position=0)]
+	[switch]
+	$Server,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Normal,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Prod,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Routes,
+
 	[Parameter(ParameterSetName="PushRepo", Position=0)]
 	[switch]
 	$Push,
@@ -75,7 +106,7 @@ Param(
 	[Parameter(ParameterSetName="PushRepo", Position=1)]
 	[Parameter(ParameterSetName="PullRepo", Position=1)]
 	[string]
-	$Remote = "origin",
+	$Remote = "",
 
 	[Parameter(ParameterSetName="Test", Position=0)]
 	[switch]
@@ -107,6 +138,19 @@ if ($Help) {
 	}
 }
 
+if ($Server) {
+	if ($Normal) {
+		& npx ts-node ./server
+	} elseif ($Prod) {
+		& cross-env NODE_ENV=production npx ts-node ./server
+	} elseif ($Routes) {
+		& npx ts-node ./server/cli/list_routes.ts
+	} else {
+		$command = "powershell ./execute -Server -Normal"
+		& npx nodemon --watch server --ext ts --ignore "*.spec.ts" --exec "$command"
+	}
+}
+
 if ($Test) {
 	$type, $name = $SuiteName.Split(":")
 
@@ -125,10 +169,17 @@ if ($Test) {
 
 if ($Push) {
 	$currentBranch = & git branch --show-current
+	if ($Remote -eq "") {
+		$Remote = "origin"
+	}
 	& git push -u $($Remote) $($currentBranch)
 }
 
 if ($Pull) {
 	$currentBranch = & git branch --show-current
-	& git pull --prune $($Remote) $($currentBranch)
+	if ($Remote -eq "") {
+		& git pull --prune
+	} else {
+		& git pull --prune $($Remote) $($currentBranch)
+	}
 }
