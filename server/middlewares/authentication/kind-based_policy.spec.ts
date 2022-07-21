@@ -29,7 +29,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	})
 
 	it("can allow reachable employees only as expected", async () => {
-		const rawUser = await (new UserFactory()).beUnreachableEmployee().insertOne()
+		const rawUser = await (new UserFactory()).beReachableEmployee().insertOne()
 		const serializedUser = Serializer.serialize(
 			rawUser,
 			new UserTransformer(),
@@ -47,7 +47,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	})
 
 	it("can allow students only as expected", async () => {
-		const rawUser = await (new UserFactory()).beUnreachableEmployee().insertOne()
+		const rawUser = await (new UserFactory()).beStudent().insertOne()
 		const serializedUser = Serializer.serialize(
 			rawUser,
 			new UserTransformer(),
@@ -65,7 +65,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	})
 
 	it("can deny students if reachable employees are expected", async () => {
-		const rawUser = await (new UserFactory()).beUnreachableEmployee().insertOne()
+		const rawUser = await (new UserFactory()).beStudent().insertOne()
 		const serializedUser = Serializer.serialize(
 			rawUser,
 			new UserTransformer(),
