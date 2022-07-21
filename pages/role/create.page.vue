@@ -11,6 +11,14 @@
 				<input class="border-solid" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
 
 			</label>
+		</div>
+
+		<div class="semester-flags">
+			<h2>Semester Flags</h2>
+			<label class="block" v-for="permissionName in semesterPermissionNames">
+				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
+				<input class="border-solid" type="checkbox" :value="permissionName" @change="updateSemesterFlags" v-model="semesterRawFlags"/>
+
 			</label>
 		</div>
 
@@ -54,9 +62,24 @@ function updatePostFlags() {
 	postRawFlags.value = [...postPermissionDependencies]
 }
 
+const semesterRawFlags = ref<SemesterPermissions[]>([])
+const semesterFlags = computed(function (): number {
+	return semester.generateMask(...semesterRawFlags.value)
 })
+const semesterPermissionNames = Array.from(semester.permissions.keys())
+function updateSemesterFlags() {
+	const semesterPermissionDependencies = new Set([...postRawFlags.value])
 
+	semester.permissions.forEach((info, permissionName) => {
+		if (semesterPermissionDependencies.has(permissionName)) {
+			info.permissionDependencies.forEach(n => {
+				semesterPermissionDependencies.add(n)
+			})
+		}
+	})
 
+	semesterRawFlags.value = [...semesterPermissionDependencies] as SemesterPermissions[]
+}
 
 const tagFlags = ref<number>(0)
 const commentFlags = ref<number>(0)
