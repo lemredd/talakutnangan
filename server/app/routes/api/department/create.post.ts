@@ -26,14 +26,16 @@ export default class extends JSONController {
 				"required",
 				"string",
 				"minLength:10",
-				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$"
+				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
+				[ "notExists", DepartmentManager, "fullName" ]
 			],
 			"data.attributes.acronym": [
 				"required",
 				"string",
 				"minLength:2",
 				"regex:([A-Z][a-z]*)+",
-				"acronym:data.attributes.fullName"
+				"acronym:data.attributes.fullName",
+				[ "notExists", DepartmentManager, "acronym" ]
 			],
 			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
