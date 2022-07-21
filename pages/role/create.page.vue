@@ -98,6 +98,13 @@ RoleFetcher.initialize("/api")
 function createRole() {
 	RoleFetcher.create({
 		name: roleName.value,
+		postFlags: postFlags.value,
+		semesterFlags: semesterFlags.value,
+		tagFlags: tagFlags.value,
+		commentFlags: commentFlags.value,
+		profanityFlags: profanityFlags.value,
+		userFlags: userFlags.value,
+		auditTrailFlags: auditTrailFlags.value
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)
