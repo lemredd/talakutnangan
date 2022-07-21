@@ -9,7 +9,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 /**
  * Base class to represent the returned response from controller handles.
  */
-export class ResponseInfo {
+export default class ResponseInfo {
 	private status: number
 	private body: Serializable|null
 
