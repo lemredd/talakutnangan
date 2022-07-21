@@ -6,32 +6,34 @@ import { JSON_API_MEDIA_TYPE } from "!/types/independent"
 import Log from "$!/singletons/log"
 import RequestEnvironment from "$/helpers/request_environment"
 
+type Body = string|Serializable|null
+
 /**
  * Base class to represent the returned response from controller handles.
  */
 export default class ResponseInfo {
 	private status: number
 	private type: string
-	private body: Serializable|null
+	private body: Body
 
-	constructor(status: number, body: Serializable|null);
-	constructor(status: number, type: string, body: Serializable|null);
+	constructor(status: number, body: Body);
+	constructor(status: number, type: string, body: Body);
 	constructor(
 		status: number,
-		raw_body_or_type: string|Serializable|null,
-		raw_body?: Serializable|null
+		raw_body_or_type: string|Body,
+		raw_body?: Body
 	) {
 		let type = JSON_API_MEDIA_TYPE
 		let body = raw_body_or_type
 
 		if (raw_body) {
 			type = raw_body_or_type as string
-			body = raw_body as Serializable|null
+			body = raw_body as Body
 		}
 
 		this.status = status
 		this.type = type
-		this.body = body as Serializable|null
+		this.body = body as Body
 	}
 
 	sendThrough(response: Response): void {
