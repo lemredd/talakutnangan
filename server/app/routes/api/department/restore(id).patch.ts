@@ -2,6 +2,7 @@ import { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import ModelBoundController from "!/common_controllers/model_bound_controller"
@@ -17,12 +18,13 @@ export default class extends ModelBoundController {
 		])
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response): Promise<void> {
+	async handle(request: AuthenticatedIDRequest, response: Response)
+	: Promise<NoContentResponseInfo> {
 		const { id } = request.params
 		const manager = new DepartmentManager()
 		await manager.restore(+id)
 
-		response.status(this.status.NO_CONTENT)
+		return new NoContentResponseInfo()
 	}
 
 	get manager(): new() => DepartmentManager {
