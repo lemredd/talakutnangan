@@ -5,6 +5,7 @@ import Validation from "!/bases/validation"
 
 import DepartmentManager from "%/managers/department"
 import { UPDATE } from "$/permissions/department_combinations"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import JSONController from "!/common_controllers/json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
@@ -54,11 +55,11 @@ export default class extends JSONController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager()
-		const { id, ...attributes } = request.body
-		const affectedCount = await manager.update(id, attributes)
+		const id = +request.params.id
+		const affectedCount = await manager.update(id, request.body.data.attributes)
 
-		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
+		return new NoContentResponseInfo()
 	}
 }
