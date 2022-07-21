@@ -169,6 +169,9 @@ if ($Test) {
 
 if ($Push) {
 	$currentBranch = & git branch --show-current
+	if ($Remote -eq "") {
+		$Remote = "origin"
+	}
 	& git push -u $($Remote) $($currentBranch)
 }
 
