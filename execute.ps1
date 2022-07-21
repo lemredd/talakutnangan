@@ -35,7 +35,7 @@ Pulls the all branches from remote and prunes remotely-deleted branches.
 
 .PARAMETER Remote
 Only works if one of `-Push` or `-Pull` switches is on.
-Specifies which remote to ush or pull.
+Specifies which remote to push or pull.
 
 .PARAMETER Test
 Switch to runs tests.
@@ -106,7 +106,7 @@ Param(
 	[Parameter(ParameterSetName="PushRepo", Position=1)]
 	[Parameter(ParameterSetName="PullRepo", Position=1)]
 	[string]
-	$Remote = "origin",
+	$Remote = "",
 
 	[Parameter(ParameterSetName="Test", Position=0)]
 	[switch]
@@ -174,5 +174,9 @@ if ($Push) {
 
 if ($Pull) {
 	$currentBranch = & git branch --show-current
-	& git pull --prune $($Remote) $($currentBranch)
+	if ($Remote -eq "") {
+		& git pull --prune
+	} else {
+		& git pull --prune $($Remote) $($currentBranch)
+	}
 }
