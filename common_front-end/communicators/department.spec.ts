@@ -4,7 +4,17 @@ import DepartmentFetcher from "./department"
 
 describe("Communicator: Department", () => {
 	it("can create resource", async () => {
-		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			data: {
+				type: "department",
+				id: 1,
+				attributes: {
+					fullName: "A",
+					acronym: "A",
+					mayAdmit: true
+				}
+			}
+		}), { status: RequestEnvironment.status.CREATED })
 
 		const response = await DepartmentFetcher.create({
 			fullName: "A",
@@ -25,8 +35,18 @@ describe("Communicator: Department", () => {
 				}
 			}
 		})
-		expect(response).toHaveProperty("body", {})
-		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
+		expect(response).toHaveProperty("body", {
+			data: {
+				type: "department",
+				id: 1,
+				attributes: {
+					fullName: "A",
+					acronym: "A",
+					mayAdmit: true
+				}
+			}
+		})
+		expect(response).toHaveProperty("status", RequestEnvironment.status.CREATED)
 	})
 
 	it("can list all resources", async () => {
@@ -56,7 +76,7 @@ describe("Communicator: Department", () => {
 	})
 
 	it("can update resource", async () => {
-		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
 		const response = await DepartmentFetcher.update(1, { name: "A" })
 
@@ -74,12 +94,12 @@ describe("Communicator: Department", () => {
 				}
 			}
 		})
-		expect(response).toHaveProperty("body", {})
+		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
 
 	it("can archive resource", async () => {
-		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
 		const response = await DepartmentFetcher.archive([ 1 ])
 
@@ -93,12 +113,12 @@ describe("Communicator: Department", () => {
 				{ type: "department", id: 1 }
 			]
 		})
-		expect(response).toHaveProperty("body", {})
+		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
 
 	it("can restore resource", async () => {
-		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
 		const response = await DepartmentFetcher.restore([ 2 ])
 
@@ -112,7 +132,7 @@ describe("Communicator: Department", () => {
 				{ type: "department", id: 2 }
 			]
 		})
-		expect(response).toHaveProperty("body", {})
+		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
 })
