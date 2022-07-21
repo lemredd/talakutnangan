@@ -11,18 +11,7 @@
 				<input class="border-solid" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
 
 			</label>
-			<!-- <label class="block">
-				Can View Posts:
-				<input class="border-solid" type="checkbox" id="view-post-flag" v-model="postRawFlags"/>
 			</label>
-			<label class="block">
-				Can Write Posts:
-				<input class="border-solid" type="checkbox" id="post-flags" v-model="postRawFlags"/>
-			</label>
-			<label class="block">
-				Can Write Posts:
-				<input class="border-solid" type="checkbox" id="post-flags" v-model="postRawFlags"/>
-			</label> -->
 		</div>
 
 		<input type="submit" value="Create Role"/>
@@ -33,12 +22,14 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, watch } from "vue"
+import { computed, inject, ref } from "vue"
 import RoleFetcher from "$@/communicators/role"
 import type { DeserializedPageContext } from "$@/types/independent"
-import { post } from "$/permissions/permission_list"
-import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
+import { post, semester } from "$/permissions/permission_list"
 
+import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
+import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
+import camelToSentence from "$@/helpers/camel_to_sentence"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
 
@@ -49,15 +40,12 @@ const postFlags = computed(function (): number {
 	return post.generateMask(...postRawFlags.value)
 })
 const postPermissionNames = Array.from(post.permissions.keys())
-
-// console.info(postPermissionNames)
 function updatePostFlags() {
 	const postPermissionDependencies = new Set([...postRawFlags.value])
 
 	post.permissions.forEach((info, permissionName) => {
 		if (postPermissionDependencies.has(permissionName)) {
 			info.permissionDependencies.forEach(n => {
-				console.info("Is dependency?", n, postPermissionDependencies.has(n))
 				postPermissionDependencies.add(n)
 			})
 		}
@@ -66,26 +54,10 @@ function updatePostFlags() {
 	postRawFlags.value = [...postPermissionDependencies]
 }
 
-watch(postRawFlags, () => {
-	// const postPermissionDependencies = new Set([...postRawFlags.value])
-	// const originalPermissions = new Set([...postRawFlags.value])
-
-	// post.permissions.forEach((info, permissionName) => {
-	// 	if (postPermissionDependencies.has(permissionName)) {
-	// 		info.permissionDependencies.forEach(n => {
-	// 			console.info("Is dependency?", n, postPermissionDependencies.has(n))
-	// 			postPermissionDependencies.add(n)
-	// 		})
-	// 	}
-	// })
-
-	// postRawFlags.value = [...postPermissionDependencies]
 })
-watch(postFlags, () => console.log(postFlags.value))
 
 
 
-const semesterFlags = ref<number>(0)
 const tagFlags = ref<number>(0)
 const commentFlags = ref<number>(0)
 const profanityFlags = ref<number>(0)
