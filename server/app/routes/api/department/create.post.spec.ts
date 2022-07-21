@@ -21,9 +21,14 @@ describe("Controller: POST /api/department/create", () => {
 		const department = await (new DepartmentFactory()).makeOne()
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName,
+						mayAdmit: department.mayAdmit
+					}
+				}
 			}
 		})
 
@@ -59,9 +64,14 @@ describe("Controller: POST /api/department/create", () => {
 		const department = await (new DepartmentFactory()).makeOne()
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym,
-				fullName: department.fullName+"1",
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName+"1",
+						mayAdmit: department.mayAdmit
+					}
+				}
 			}
 		})
 
@@ -82,9 +92,14 @@ describe("Controller: POST /api/department/create", () => {
 			.makeOne()
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym,
-				fullName: department.fullName+"1",
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName+"1",
+						mayAdmit: department.mayAdmit
+					}
+				}
 			}
 		})
 
@@ -92,7 +107,7 @@ describe("Controller: POST /api/department/create", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "fullName")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fullName")
 	})
 
 	it("cannot accept invalid acronym", async () => {
@@ -104,9 +119,14 @@ describe("Controller: POST /api/department/create", () => {
 		const randomData = await (new DepartmentFactory()).makeOne() // Used for generate random data
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym+randomData.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym+randomData.acronym,
+						fullName: department.fullName,
+						mayAdmit: department.mayAdmit
+					}
+				}
 			}
 		})
 
@@ -114,7 +134,7 @@ describe("Controller: POST /api/department/create", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "acronym")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.acronym")
 	})
 
 	it("cannot accept invalid value if it should be admitted", async () => {
@@ -125,9 +145,14 @@ describe("Controller: POST /api/department/create", () => {
 		const department = await (new DepartmentFactory()).makeOne()
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: "123"
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName,
+						mayAdmit: "123"
+					}
+				}
 			}
 		})
 
@@ -135,6 +160,6 @@ describe("Controller: POST /api/department/create", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "mayAdmit")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.mayAdmit")
 	})
 })
