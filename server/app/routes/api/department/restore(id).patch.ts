@@ -7,6 +7,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 import ModelBoundController from "!/common_controllers/model_bound_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
+// TODO: Make a controller to check for existence of archived model
 export default class extends ModelBoundController {
 	get filePath(): string { return __filename }
 
@@ -22,5 +23,9 @@ export default class extends ModelBoundController {
 		await manager.restore(+id)
 
 		response.status(this.status.NO_CONTENT)
+	}
+
+	get manager(): new() => DepartmentManager {
+		return DepartmentManager
 	}
 }
