@@ -25,6 +25,7 @@ export default class extends JSONController {
 				[ "id", DepartmentManager ]
 			]),
 			...super.validations
+			// TODO: Validate if parameter ID and body ID are the same
 		]
 	}
 
@@ -32,6 +33,7 @@ export default class extends JSONController {
 		return {
 			"data": [ "required", "object" ],
 			"data.type": [ "required", "string", "equals:department" ],
+			"data.id": [ "required", "numeric" ],
 			"data.attributes": [ "required", "object" ],
 			"data.attributes.fullName": [
 				"required",
