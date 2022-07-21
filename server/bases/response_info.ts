@@ -43,7 +43,9 @@ export default class ResponseInfo {
 			&& this.body === null
 		) {
 			const URL = response.req.url
-			const message = `There should be a response body in "${URL}" as it returns ${this.status}`
+			const method = response.req.method
+			const message = `There should be a response body in "${method} ${URL}"`
+				+ ` as it returns ${this.status}`
 			Log.errorMessage("response", message)
 		}
 
