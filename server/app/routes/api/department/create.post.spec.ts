@@ -45,9 +45,14 @@ describe("Controller: POST /api/department/create", () => {
 		const department = await (new DepartmentFactory().name(() => "Abc Def GHIJ")).makeOne()
 		requester.customizeRequest({
 			body: {
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName,
+						mayAdmit: department.mayAdmit
+					}
+				}
 			}
 		})
 
@@ -79,7 +84,7 @@ describe("Controller: POST /api/department/create", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "fullName")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fullName")
 	})
 
 	it("cannot accept invalid full name (as suggested by #211)", async () => {
