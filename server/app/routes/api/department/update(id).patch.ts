@@ -1,10 +1,13 @@
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
+import Validation from "!/bases/validation"
+
 import DepartmentManager from "%/managers/department"
 import { UPDATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
+import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends JSONController {
@@ -16,23 +19,35 @@ export default class extends JSONController {
 		])
 	}
 
+	get validations(): Validation[] {
+		return [
+			new IDParameterValidation([
+				[ "id", DepartmentManager ]
+			]),
+			...super.validations
+		]
+	}
+
 	get bodyValidationRules(): object {
-		// TODO: Think of the minimum length of full name.
 		return {
-			fullName: [
+			"data": [ "required", "object" ],
+			"data.type": [ "required", "string", "equals:department" ],
+			"data.attributes": [ "required", "object" ],
+			"data.attributes.fullName": [
 				"required",
 				"string",
 				"minLength:10",
-				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$"
+				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
+				[ "notExists", DepartmentManager, "fullName" ]
 			],
-			acronym: [
+			"data.attributes.acronym": [
 				"required",
 				"string",
 				"minLength:2",
 				"regex:([A-Z][a-z]*)+",
-				"acronym:fullName"
+				"acronym:data.attributes.fullName"
 			],
-			mayAdmit: [ "required", "boolean" ]
+			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
 	}
 
