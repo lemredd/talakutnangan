@@ -12,6 +12,21 @@ Outputs the detailed help info of the command
 Only works if `-Help` switch is on.
 Includes examples in the help info.
 
+.PARAMETER Server
+Starts the development server if other flags passed and restarts if there are file changes.
+
+.PARAMETER Normal
+Works only if `-Server` is on.
+Starts the server normally.
+
+.PARAMETER Prod
+Works only if `-Server` is on.
+Starts the server for production purposes.
+
+.PARAMETER Routes
+Works only if `-Server` is on.
+Lists the routes available in the server.
+
 .PARAMETER Push
 Pushes the current branch to remote.
 
@@ -64,6 +79,22 @@ Param(
 	[switch]
 	$Examples,
 
+	[Parameter(ParameterSetName="Server", Position=0)]
+	[switch]
+	$Server,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Normal,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Prod,
+
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$Routes,
+
 	[Parameter(ParameterSetName="PushRepo", Position=0)]
 	[switch]
 	$Push,
@@ -104,6 +135,19 @@ if ($Help) {
 	Get-Help $PSCommandPath -detailed
 	if ($Examples) {
 		Get-Help $PSCommandPath -examples
+	}
+}
+
+if ($Server) {
+	if ($Normal) {
+		& npx ts-node ./server
+	} elseif ($Prod) {
+		& cross-env NODE_ENV=production npx ts-node ./server
+	} elseif ($Routes) {
+		& npx ts-node ./server/cli/list_routes.ts
+	} else {
+		$command = "powershell ./execute -Server -Normal"
+		& npx nodemon --watch server --ext ts --ignore "*.spec.ts" --exec "$command"
 	}
 }
 

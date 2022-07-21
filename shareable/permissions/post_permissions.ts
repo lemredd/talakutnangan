@@ -22,7 +22,7 @@ import PermissionGroup from "$/permissions/base"
 const postColumnName = "postFlags"
 
 type PostFlags = { [postColumnName]: number }
-type Permissions =
+export type Permissions =
 	| OperationPermission
 	| Exclude<LevelPermission, "readOwnScope">
 	| "tag"

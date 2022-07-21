@@ -16,7 +16,7 @@ import PermissionGroup from "$/permissions/base"
 const tagColumnName = "tagFlags"
 
 type TagFlags = { [tagColumnName]: number }
-type Permissions = OperationPermission
+export type Permissions = OperationPermission
 
 /**
  * Permission group for tag.
