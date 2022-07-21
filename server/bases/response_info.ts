@@ -28,6 +28,7 @@ export default class ResponseInfo {
 			type = raw_body_or_type as string
 			body = raw_body as Serializable|null
 		}
+
 		this.status = status
 		this.type = type
 		this.body = body as Serializable|null
@@ -45,9 +46,9 @@ export default class ResponseInfo {
 		}
 
 		response.status(this.status)
+		response.type(this.type)
 
 		if (this.body === null) {
-			response.type(JSON_API_MEDIA_TYPE)
 			response.send(this.body)
 		}
 	}
