@@ -40,14 +40,15 @@ export default class extends JSONController {
 				"string",
 				"minLength:10",
 				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
-				[ "notExists", DepartmentManager, "fullName" ]
+				[ "unique", DepartmentManager, "fullName", "data.id" ]
 			],
 			"data.attributes.acronym": [
 				"required",
 				"string",
 				"minLength:2",
 				"regex:([A-Z][a-z]*)+",
-				"acronym:data.attributes.fullName"
+				"acronym:data.attributes.fullName",
+				[ "unique", DepartmentManager, "acronym", "data.id" ]
 			],
 			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
