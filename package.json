@@ -11,7 +11,6 @@
 	"private": true,
 	"types": "module",
 	"scripts": {
-		"list:routes": "ts-node ./server/cli/list_routes.ts",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
