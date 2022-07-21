@@ -1,7 +1,7 @@
 import { Response } from "!/types/dependent"
 
 import type { Serializable } from "$/types/database"
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"
 import RequestEnvironment from "$/helpers/request_environment"
