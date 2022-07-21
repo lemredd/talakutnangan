@@ -85,9 +85,11 @@ Param(
 	[ValidateSet(
 		"unit:share",
 		"unit:front",
+		"unit:ui",
 		"unit:back",
 		"unit:server",
 		"unit:database",
+		"intg:front",
 		"intg:back"
 	)]
 	[string]

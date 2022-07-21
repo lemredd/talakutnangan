@@ -13,6 +13,7 @@ import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 export default async function(customRoutes: Router): Promise<express.Express> {
 	const app = express()
+	app.set("trust proxy", true)
 
 	const viteDevRouter = await createViteDevServer(app)
 
