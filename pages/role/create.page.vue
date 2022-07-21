@@ -8,7 +8,7 @@
 			<h2>Post Flags</h2>
 			<label class="block" v-for="permissionName in postPermissionNames">
 				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
-				<input class="border-solid" type="checkbox" :value="permissionName" @change="updateFlags" v-model="postRawFlags"/>
+				<input class="border-solid" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
 
 			</label>
 			<!-- <label class="block">
@@ -51,7 +51,7 @@ const postFlags = computed(function (): number {
 const postPermissionNames = Array.from(post.permissions.keys())
 
 // console.info(postPermissionNames)
-function updateFlags(e: Event) {
+function updatePostFlags() {
 	const postPermissionDependencies = new Set([...postRawFlags.value])
 
 	post.permissions.forEach((info, permissionName) => {
