@@ -42,4 +42,4 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:ui
       shell: pwsh
-      timeout: 3
+      timeout-minutes: 3

@@ -38,7 +38,7 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:share
       shell: pwsh
-      timeout: 3
+      timeout-minutes: 3
 
   common_back_unit_tests:
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:back
       shell: pwsh
-      timeout: 3
+      timeout-minutes: 3
 
   common_front_unit_tests:
     runs-on: ubuntu-latest
@@ -80,4 +80,4 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:front
       shell: pwsh
-      timeout: 3
+      timeout-minutes: 3
