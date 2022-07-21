@@ -11,11 +11,8 @@
 	"private": true,
 	"types": "module",
 	"scripts": {
-		"dev": "nodemon --watch server --ext ts --ignore \"*.spec.ts\" --exec \"npm run server\"",
-		"list:routes": "ts-node ./server/cli/list_routes.ts",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && vite build --ssr",
-		"server": "ts-node ./server",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
 		"migrate:initial": "sequelize-cli db:create && npm run migrate:up",
@@ -26,17 +23,7 @@
 		"seed:make": "npx sequelize-cli seed:generate --name",
 		"seed:up:all": "npx sequelize-cli db:seed:all",
 		"seed:down": "npx sequelize-cli db:seed:undo",
-		"seed:redo:all": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all",
-		"test:unit:front": "cross-env NODE_ENV=unit_test jest -c jest.front.config.json",
-		"test:unit:server": "cross-env NODE_ENV=unit_test jest -c jest.server.config.json",
-		"test:unit:database": "cross-env NODE_ENV=unit_test jest -c jest.database.config.json",
-		"test:unit:share": "cross-env NODE_ENV=unit_test jest -c jest.share.config.json",
-		"test:intg:back": "cross-env NODE_ENV=intg_test jest -c jest.back.intg.config.json --detectOpenHandles",
-		"test:unit:front:w": "npm run test:unit:front -- --watch",
-		"test:unit:server:w": "npm run test:unit:server -- --watch",
-		"test:unit:database:w": "npm run test:unit:database -- --watch",
-		"test:unit:share:w": "npm run test:unit:share -- --watch",
-		"test:intg:back:w": "npm run test:intg:back -- --watch"
+		"seed:redo:all": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all"
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
