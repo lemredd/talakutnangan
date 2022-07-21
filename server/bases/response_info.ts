@@ -48,7 +48,7 @@ export default class ResponseInfo {
 		response.status(this.status)
 		response.type(this.type)
 
-		if (this.body === null) {
+		if (this.body !== null) {
 			response.send(this.body)
 		}
 	}
