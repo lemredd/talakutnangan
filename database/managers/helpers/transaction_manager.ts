@@ -22,17 +22,17 @@ export default class {
 	}
 
 	get transactionObject(): { transaction?: Transaction } {
-		if (this.transaction === null || !this.isPermitted) {
+		if (this.hasDestroyed || !this.isPermitted) {
 			return {}
 		} else {
 			return {
-				transaction: this.transaction
+				transaction: this.transaction!
 			}
 		}
 	}
 
 	get lockedTransactionObject(): { lock?: boolean, transaction?: Transaction } {
-		if (this.transaction === null || !this.isPermitted) {
+		if (this.hasDestroyed || !this.isPermitted) {
 			return {}
 		} else {
 			return {
@@ -43,8 +43,8 @@ export default class {
 	}
 
 	async destroySuccessfully() {
-		if (this.transaction !== null && this.isPermitted) {
-			await this.transaction.commit()
+		if (this.mayDestroy) {
+			await this.transaction!.commit()
 			this.transaction = null
 
 			Log.success("transaction", "committed the database changes")
@@ -52,12 +52,24 @@ export default class {
 	}
 
 	async destroyIneffectually() {
-		if (this.transaction !== null && this.isPermitted) {
-			await this.transaction.rollback()
+		if (this.mayDestroy) {
+			await this.transaction!.rollback()
 			this.transaction = null
 
 			Log.success("transaction", "rolled back the database changes")
 		}
+	}
+
+	get hasDestroyed(): boolean {
+		return this.transaction === null
+	}
+
+	private get mayDestroy(): boolean {
+		return !this.hasDestroyed && this.isPermitted
+	}
+
+	private get mustReturnEmptyObject(): boolean {
+		return this.hasDestroyed || !this.isPermitted
 	}
 
 	private get isPermitted(): boolean {
