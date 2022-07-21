@@ -29,8 +29,7 @@ describe("DELETE /api/department/archive/:id", () => {
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(response.body).toStrictEqual({})
-		expect(await Department.findOne({ where: { id: department.id } } )).toBeNull()
+		expect((await Department.findOne({ where: { id: department.id } } ))!).toBeNull()
 	})
 
 	it.todo("cannot delete non-existing")
