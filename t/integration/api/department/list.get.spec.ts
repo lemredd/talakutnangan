@@ -25,6 +25,8 @@ describe("GET /api/deparment/list", () => {
 		const response = await App.request
 			.get("/api/department/list")
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.type", "department")

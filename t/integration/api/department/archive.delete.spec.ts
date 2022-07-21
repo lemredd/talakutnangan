@@ -25,6 +25,8 @@ describe("DELETE /api/department/archive/:id", () => {
 		const response = await App.request
 			.delete(`/api/department/archive/${department.id}`)
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect(response.body).toStrictEqual({})

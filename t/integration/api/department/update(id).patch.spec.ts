@@ -25,7 +25,6 @@ describe("PATCH /api/department/update/:id", () => {
 		const response = await App.request
 			.patch(`/api/department/update/${department.id}`)
 			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				data: {
 					type: "department",
@@ -37,6 +36,8 @@ describe("PATCH /api/department/update/:id", () => {
 					}
 				}
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})

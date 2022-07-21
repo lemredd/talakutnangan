@@ -26,6 +26,8 @@ describe("DELETE /api/department/restore/:id", () => {
 		const response = await App.request
 			.patch(`/api/department/restore/${department.id}`)
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect(response.body).toStrictEqual({})

@@ -35,6 +35,8 @@ describe("POST /api/role/create", () => {
 				userFlags:         role.userFlags,
 				auditTrailFlags:   role.auditTrailFlags
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.name).toBe(role.name)

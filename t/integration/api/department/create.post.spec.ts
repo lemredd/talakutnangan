@@ -29,6 +29,8 @@ describe("POST /api/department/create", () => {
 				fullName: department.fullName,
 				mayAdmit: department.mayAdmit
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
@@ -53,6 +55,8 @@ describe("POST /api/department/create", () => {
 				fullName: department.fullName + "1",
 				mayAdmit: "123"
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body.errors).toHaveLength(3)
