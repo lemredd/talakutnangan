@@ -60,6 +60,10 @@ export default class<T extends Request> extends RequestEnvironment {
 		await handle(error, this.request, this.response, this.next)
 	}
 
+	async runResponder(handle: Function): Promise<void> {
+		await handle(this.response)
+	}
+
 	expectSuccess(): any {
 		expect(this.next).toHaveBeenCalled()
 
