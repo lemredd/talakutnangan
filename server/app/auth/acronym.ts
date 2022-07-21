@@ -1,4 +1,5 @@
 import type { Validator } from "node-input-validator"
+import get from "lodash.get"
 
 /**
  * Function to validate the input acronyms.
@@ -11,24 +12,28 @@ export default function({ value, args }: { value: string, args: string[] }, vali
 		throw new Error("Missing source field to validate the acronym.")
 	}
 
-	const fieldName = args[0]
-	const source: string = validator.inputs[fieldName]
+	const fieldPath = args[0]
+	const source: string = get(validator.inputs, fieldPath)
 
-	const separatedSource = source
-		.split(" ")
-		.filter(word => word.slice(0, 1) === word.slice(0, 1).toLocaleUpperCase())
-	const acronymSubstrings = value
-		.split("")
-		.reduce<string[]>((previousSubstrings, currentCharacter) => {
-			if(currentCharacter === currentCharacter.toLocaleUpperCase()) {
-				return [ ...previousSubstrings, currentCharacter ]
-			} else {
-				const lastString = previousSubstrings.pop() || ""
-				return [ ...previousSubstrings, lastString+currentCharacter ]
-			}
-		}, [])
+	if (source) {
+		const separatedSource = source
+			.split(" ")
+			.filter(word => word.slice(0, 1) === word.slice(0, 1).toLocaleUpperCase())
+		const acronymSubstrings = value
+			.split("")
+			.reduce<string[]>((previousSubstrings, currentCharacter) => {
+				if(currentCharacter === currentCharacter.toLocaleUpperCase()) {
+					return [ ...previousSubstrings, currentCharacter ]
+				} else {
+					const lastString = previousSubstrings.pop() || ""
+					return [ ...previousSubstrings, lastString+currentCharacter ]
+				}
+			}, [])
 
-	return separatedSource.reduce<boolean>((previousValidation, currentSource, i) => {
-		return previousValidation && currentSource.startsWith(acronymSubstrings[i])
-	}, separatedSource.length === acronymSubstrings.length)
+		return separatedSource.reduce<boolean>((previousValidation, currentSource, i) => {
+			return previousValidation && currentSource.startsWith(acronymSubstrings[i])
+		}, separatedSource.length === acronymSubstrings.length)
+	} else {
+		throw new Error("Missing source value to validate the acronym")
+	}
 }
