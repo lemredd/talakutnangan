@@ -101,7 +101,7 @@ export default class extends RequestEnvironment {
 		return await fetch(new Request(completePath, request)).then(async response => {
 			return {
 				status: response.status,
-				body: await response.json()
+				body: response.status === this.status.NO_CONTENT ? null : await response.json()
 			}
 		})
 	}
