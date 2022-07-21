@@ -7,6 +7,7 @@ on:
       - 'common_front-end/**'
       - 'components/**'
       - 'pages/**'
+      - 't/helpers/**'
       - '.github/workflows/front-end.yml'
   pull_request:
     types:
@@ -18,6 +19,7 @@ on:
       - 'common_front-end/**'
       - 'components/**'
       - 'pages/**'
+      - 't/helpers/**'
       - '.github/workflows/front-end.yml'
 
 jobs:
