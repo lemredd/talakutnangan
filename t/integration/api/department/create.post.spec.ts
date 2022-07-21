@@ -25,9 +25,14 @@ describe("POST /api/department/create", () => {
 			.post("/api/department/create")
 			.set("Cookie", cookie)
 			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName,
+						mayAdmit: department.mayAdmit
+					}
+				}
 			})
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
@@ -49,19 +54,23 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
 			.send({
-				acronym: department.acronym+randomData.acronym,
-				fullName: department.fullName + "1",
-				mayAdmit: "123"
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym+randomData.acronym,
+						fullName: department.fullName + "1",
+						mayAdmit: "123"
+					}
+				}
 			})
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body.errors).toHaveLength(3)
-		expect(response.body).toHaveProperty("errors.0.source.pointer", "fullName")
-		expect(response.body).toHaveProperty("errors.1.source.pointer", "acronym")
-		expect(response.body).toHaveProperty("errors.2.source.pointer", "mayAdmit")
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "data.attributes.acronym")
+		expect(response.body).toHaveProperty("errors.1.source.pointer", "data.attributes.fullName")
+		expect(response.body).toHaveProperty("errors.2.source.pointer", "data.attributes.mayAdmit")
 	})
 })
