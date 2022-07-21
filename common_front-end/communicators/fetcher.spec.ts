@@ -188,4 +188,13 @@ describe("Communicator: Fetcher", () => {
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({ hello: "world" })
 	})
+
+	it("can have null body if server replied with no content", async () => {
+		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
+
+		const response = await Fetcher.postJSON("sample", { hello: "world" })
+
+		expect(response).toHaveProperty("body", null)
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
+	})
 })
