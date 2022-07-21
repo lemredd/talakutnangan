@@ -30,7 +30,7 @@ describe("POST /api/department/create", () => {
 				mayAdmit: department.mayAdmit
 			})
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
 		expect(response.body.data.attributes.fullName).toBe(department.fullName)
 		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
@@ -52,7 +52,7 @@ describe("POST /api/department/create", () => {
 				mayAdmit: department.mayAdmit
 			})
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
 		expect(response.body.data.attributes.fullName).toBe(department.fullName)
 		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
