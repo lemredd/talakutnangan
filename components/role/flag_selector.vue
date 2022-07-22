@@ -1,6 +1,6 @@
 <template>
-<div class="post-flags">
-			<h2>Post Flags</h2>
+<div class="flags">
+			<h2 class="text-red-400">{{ header }} Flags</h2>
 			<Checkbox v-for="permissionName in permissionNames"
 				:label="camelToSentence(permissionName).toLowerCase()"
 				:value="permissionName"
@@ -9,7 +9,8 @@
 		</div>
 </template>
 
-<style>
+<style scoped lang="scss">
+
 </style>
 
 <script setup lang="ts">
@@ -41,9 +42,11 @@ type Permissions =
 	| AuditTrailPermissions
 
 const {
+	header,
 	basePermissionGroup,
 	flags
 } = defineProps<{
+	header: string
 	basePermissionGroup: BasePermissionGroup<any, any>
 	flags: number
 }>()

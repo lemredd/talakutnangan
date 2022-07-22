@@ -10,12 +10,30 @@
 				type="text"
 				v-model="roleName" />
 
-		<FlagSelector :base-permission-group="post" v-model:flags="postFlags" />
-		<FlagSelector :base-permission-group="semester" v-model:flags="semesterFlags" />
-		<FlagSelector :base-permission-group="tag" v-model:flags="tagFlags" />
-		<FlagSelector :base-permission-group="comment" v-model:flags="commentFlags" />
-		<FlagSelector :base-permission-group="profanity" v-model:flags="profanityFlags" />
-		<FlagSelector :base-permission-group="user" v-model:flags="userFlags" />
+		<FlagSelector
+			header="Post"
+			:base-permission-group="post"
+			v-model:flags="postFlags" />
+		<FlagSelector
+			header="Semester"
+			:base-permission-group="semester"
+			v-model:flags="semesterFlags" />
+		<FlagSelector
+			header="Tag"
+			:base-permission-group="tag"
+			v-model:flags="tagFlags" />
+		<FlagSelector
+			header="Comment"
+			:base-permission-group="comment"
+			v-model:flags="commentFlags" />
+		<FlagSelector
+			header="Profanity"
+			:base-permission-group="profanity"
+			v-model:flags="profanityFlags" />
+		<FlagSelector
+			header="User"
+			:base-permission-group="user"
+			v-model:flags="userFlags" />
 
 		<input type="submit" value="Create Role"/>
 	</form>
