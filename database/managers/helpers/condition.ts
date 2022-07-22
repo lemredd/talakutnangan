@@ -2,7 +2,11 @@ import type { WhereOptions } from "%/types/dependent"
 import { Op } from "sequelize"
 
 export default class Condition<T = any> {
-	private currentCondition: { [key: string|symbol]: any } = {}
+	private currentCondition: { [key: string|symbol]: any }
+
+	constructor(currentCondition: { [key: string|symbol]: any } = {}) {
+		this.currentCondition = currentCondition
+	}
 
 	not(column: string, value: any): Condition {
 		this.currentCondition[column] = { [Op.not]: value }

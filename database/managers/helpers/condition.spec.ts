@@ -3,6 +3,14 @@ import { Op } from "sequelize"
 import Condition from "./condition"
 
 describe("Database: Condition Builder", () => {
+	it("can retain built condition", () => {
+		const builtCondition = { sample: { [Op.eq]: 3 } }
+
+		const condition = new Condition(builtCondition)
+
+		expect(condition).toStrictEqual(builtCondition)
+	})
+
 	it("can make 'not' operation", () => {
 		const condition = new Condition()
 
