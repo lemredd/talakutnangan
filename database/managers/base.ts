@@ -51,13 +51,14 @@ export default abstract class Manager<T extends Model, U> {
 		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any): Promise<Serializable> {
+	async findOneOnColumn(columnName: string, value: any, constraints: object = {})
+	: Promise<Serializable> {
 		try {
 			const condition = new Condition()
 			condition.equal(columnName, value)
 			const whereOptions: FindOptions<T> = { where: condition.build() }
 
-			const findOptions = runThroughPipeline(whereOptions, {}, this.singleReadPipeline)
+			const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
 
 			const model = await this.model.findOne({
 				...findOptions,
