@@ -279,4 +279,31 @@ describe("Database: Base Archive and Restore Operations", () => {
 			})
 		)!.deletedAt).toBeNull()
 	})
+
+	it("archive multiple bases", async () => {
+		const manager = new MockUserManager()
+		const bases = await (new UserFactory()).insertMany(3)
+
+		const deleteCount = await manager.archiveBatch(bases.map(base => base.id))
+
+		expect(deleteCount).toBe(3)
+		expect((
+			await User.findOne({
+				where: { id: bases[0].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[1].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[2].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+	})
 })

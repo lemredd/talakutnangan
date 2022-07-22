@@ -105,6 +105,17 @@ export default abstract class Manager<T extends Model, U> {
 		return destroyCount
 	}
 
+	async archiveBatch(IDs: number[]): Promise<number> {
+		const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
+			where: { id: IDs },
+			...this.transaction.transactionObject
+		})
+
+		Log.success("manager", "done archiving models")
+
+		return destroyCount
+	}
+
 	async restore(id: number): Promise<void> {
 		await this.model.restore(<RestoreOptions<T>>{
 			where: { id },
