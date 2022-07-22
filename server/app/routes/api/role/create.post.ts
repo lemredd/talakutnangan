@@ -20,22 +20,25 @@ export default class extends JSONController {
 		// TODO: Add more constraints in role fields
 		// TODO: Check if `min` and `max` rules can accept hex argument instead of decimal.
 		return {
-			name:					[ "required", "string" ],
-			departmentFlags:	[ "required", "numeric" ],
-			roleFlags:			[ "required", "numeric" ],
-			semesterFlags:		[ "required", "numeric" ],
-			tagFlags:			[ "required", "numeric" ],
-			postFlags:			[ "required", "numeric" ],
-			commentFlags:		[ "required", "numeric" ],
-			profanityFlags:	[ "required", "numeric" ],
-			userFlags:			[ "required", "numeric" ],
-			auditTrailFlags:	[ "required", "numeric" ]
+			"data": [ "required", "object" ],
+			"data.type": [ "required", "string", "equals:role" ],
+			"data.attributes": [ "required", "object" ],
+			"data.attributes.name":					[ "required", "string" ],
+			"data.attributes.semesterFlags":		[ "required", "numeric" ],
+			"data.attributes.tagFlags":			[ "required", "numeric" ],
+			"data.attributes.postFlags":			[ "required", "numeric" ],
+			"data.attributes.commentFlags":		[ "required", "numeric" ],
+			"data.attributes.profanityFlags":	[ "required", "numeric" ],
+			"data.attributes.userFlags":			[ "required", "numeric" ],
+			"data.attributes.auditTrailFlags":	[ "required", "numeric" ]
 		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new RoleManager()
-		const roleInfo = await manager.create(request.body)
+		request.body.data.attributes.departmentFlags = 1
+		request.body.data.attributes.roleFlags = 1
+		const roleInfo = await manager.create(request.body.data.attributes)
 
 		response.status(this.status.CREATED).json(roleInfo)
 	}

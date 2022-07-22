@@ -1,6 +1,8 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
+
 import Role from "%/models/role"
 import Router from "!/bases/router"
 import RoleFactory from "~/factories/role"
@@ -8,6 +10,7 @@ import UserFactory from "~/factories/user"
 import createAppHandler from "!/app/create_handler"
 import Controller from "!/bases/controller-likes/controller"
 import LogInController from "!/app/routes/api/user/log_in.post"
+import RequestEnvironment from "$!/singletons/request_environment"
 
 export default class {
 	static #app: Express
@@ -49,10 +52,14 @@ export default class {
 
 		const response = await this.#request
 			.post("/api/user/log_in")
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				email: user.email,
 				password: user.password
 			})
+
+		expect(response.status).toBe(RequestEnvironment.status.OK)
 
 		return {
 			user,
