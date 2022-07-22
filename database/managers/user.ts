@@ -31,8 +31,6 @@ import UserTransformer from "%/transformers/user"
 
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
-import limit from "%/managers/helpers/limit"
-import offset from "%/managers/helpers/offset"
 import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
@@ -50,7 +48,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	>[] {
 		return [
 			includeRoleAndDepartment,
-			includeExclusiveDetails
+			includeExclusiveDetails,
+			...super.singleReadPipeline
 		]
 	}
 
@@ -61,9 +60,8 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		return [
 			searchName,
 			siftByCriteria,
-			offset,
-			limit,
-			includeRoleAndDepartment
+			includeRoleAndDepartment,
+			...super.listPipeline
 		]
 	}
 
