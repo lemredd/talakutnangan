@@ -33,15 +33,29 @@
 import { computed, inject, ref } from "vue"
 import RoleFetcher from "$@/communicators/role"
 import type { DeserializedPageContext } from "$@/types/independent"
-import { post, semester } from "$/permissions/permission_list"
-
-import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
+import {
+	tag,
+	user,
+	post,
+	comment,
+	semester,
+	profanity,
+	auditTrail
+} from "$/permissions/permission_list"
+import type { Permissions as TagPermissions } from "$/permissions/tag_permissions"
+import type { Permissions as UserPermissions } from "$/permissions/user_permissions"
 import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
+import type { Permissions as CommentPermissions } from "$/permissions/comment_permissions"
+import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
+import type { Permissions as ProfanityPermissions } from "$/permissions/profanity_permissions"
+import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail_permissions"
 import camelToSentence from "$@/helpers/camel_to_sentence"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
+
+
 
 const postRawFlags = ref<PostPermissions[]>([])
 const postFlags = computed(function (): number {
@@ -59,7 +73,7 @@ function updatePostFlags() {
 		}
 	})
 
-	postRawFlags.value = [...postPermissionDependencies]
+	postRawFlags.value = [...postPermissionDependencies] as PostPermissions[]
 }
 
 const semesterRawFlags = ref<SemesterPermissions[]>([])
