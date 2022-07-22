@@ -25,6 +25,18 @@ export interface RawUser {
 	admittedAt?: Date|null,
 	signature?: Buffer|null
 }
+/**
+ * Used to receive raw posts. //title, desc, badword, user id, role id
+ */
+
+export interface RawPost {
+	user?: string,
+	title?: string,
+	desc?: string
+	badWordExist?: boolean,
+	userID?: User,
+	roleID?: Role,
+}
 
 export const rawCriteria = [ "incomplete", "complete", "all" ] as const
 
@@ -86,6 +98,7 @@ export interface Serializable {
 export interface Role extends RawRole, Serializable {}
 
 import { days } from "$/types/database.native"
+import User from "%/models/user"
 
 const rawDays = [ ...days ] as const
 export type Day = typeof rawDays[number]
