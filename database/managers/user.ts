@@ -68,206 +68,222 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	}
 
 	async findWithCredentials(email: string, password: string): Promise<Serializable|null> {
-		const condition = new Condition()
-		condition.equal("email", email)
-		const whereOptions: FindOptions<User> = { where: condition.build() }
-		const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
+		try {
+			const condition = new Condition()
+			condition.equal("email", email)
+			const whereOptions: FindOptions<User> = { where: condition.build() }
+			const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
 
-		Log.trace("manager", "prepared query to find user with certain credential")
+			Log.trace("manager", "prepared query to find user with certain credential")
 
-		const foundUser = await this.model.findOne({
-			...findOptions,
-			...this.transaction.lockedTransactionObject
-		})
+			const foundUser = await this.model.findOne({
+				...findOptions,
+				...this.transaction.lockedTransactionObject
+			})
 
-		Log.trace("manager", "done finding for user")
+			Log.trace("manager", "done finding for user")
 
-		if (foundUser !== null && await compare(password, foundUser.password)) {
-			Log.success("manager", "found a matching user")
-			return this.serialize(foundUser)
-		} else {
-			Log.errorMessage("manager", "matching user not found")
-			return null
+			if (foundUser !== null && await compare(password, foundUser.password)) {
+				Log.success("manager", "found a matching user")
+				return this.serialize(foundUser)
+			} else {
+				Log.errorMessage("manager", "matching user not found")
+				return null
+			}
+		} catch(error) {
+			throw this.makeBaseError(error)
 		}
 	}
 
 	async create(details: RawUser): Promise<Serializable> {
-		details.password = await hash(details.password!)
-		return await super.create({ ...details })
+		try {
+			details.password = await hash(details.password!)
+			return await super.create({ ...details })
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
-		// Get the department name firsts
-		const departmentNames = bulkData.importedCSV.map(data => data.department)
+		try {
+			// Get the department name firsts
+			const departmentNames = bulkData.importedCSV.map(data => data.department)
 
-		Log.trace("manager", "prepared names for searching IDs: "+departmentNames.join(","))
+			Log.trace("manager", "prepared names for searching IDs: "+departmentNames.join(","))
 
-		// Find the IDs of the departments
-		const departmentWhereConditions: Condition[] = departmentNames.reduce((
-			conditions: Condition[],
-			name: string
-		) => {
-			const condition = new Condition()
-			condition.equal("acronym", name)
-			return [ ...conditions, condition ]
-		}, [])
-		const departmentFindOptions = {
-			where: (new Condition()).or(...departmentWhereConditions).build()
-		}
-		const departments = await Department.findAll(departmentFindOptions)
-		const departmentIDs: { [key: string]: number } = departments.reduce(
-			(previousMappings, department) => {
-				return { ...previousMappings, [department.acronym]: department.id }
-			}, {})
-		const departmentModels: { [key: string]: Department } = departments.reduce(
-			(previousMappings, department) => {
-				return { ...previousMappings, [`${department.id}`]: department }
-			}, {})
-
-		Log.trace("manager", "found department IDs")
-
-		// Find the IDs of the roles
-		const roleWhereConditions: Condition[] = bulkData.roles.reduce((
-			conditions: Condition[],
-			name: string
-		) => {
-			const condition = new Condition()
-			condition.equal("name", name)
-			return [ ...conditions, condition ]
-		}, [])
-		const roles = await Role.findAll({
-			where: (new Condition()).or(...roleWhereConditions).build()
-		})
-		const rolesToAttach = roles.reduce<{ roleID: number }[]>((previousRoles, role) => {
-			return [ ...previousRoles, { roleID: role.id } ]
-		}, [])
-
-		Log.trace("manager", "prepared roles to attach")
-
-		// Preprocess the bulk data
-		type ProcessedData = ProcessedDataForStudent | ProcessedDataForEmployee
-		const incompleteProfiles: ProcessedData[] = await Promise.all(bulkData.importedCSV.map(async data => {
-			const { password, department, ...securedData } = data
-			return {
-				...securedData,
-				kind: bulkData.kind,
-				password: await hash(password),
-				departmentID: departmentIDs[department],
-				attachedRoles: rolesToAttach
-			} as ProcessedData
-		}))
-
-		Log.trace("manager", "processed the data into general structure for bulk creation")
-
-		if (bulkData.kind === "student") {
-			// Prepare for bulk student creation
-			const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
-				incompleteProfile: ProcessedDataForStudent
+			// Find the IDs of the departments
+			const departmentWhereConditions: Condition[] = departmentNames.reduce((
+				conditions: Condition[],
+				name: string
 			) => {
-				const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
-				return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
-			})
-
-			Log.trace("manager", "specialized the data structure for student bulk creation")
-
-			// Create the students in bulk
-			const users = await this.model.bulkCreate(normalizedProfiles, {
-				include: [
-					{
-						model: AttachedRole,
-						as: "attachedRoles"
-					},
-					{
-						model: StudentDetail,
-						as: "studentDetail"
-					}
-				],
-				...this.transaction.transactionObject
-			})
-
-			Log.success("manager", "created students in bulk")
-
-			const completeUserInfo = users.map(user => {
-				user.department = departmentModels[`${user.departmentID}`]
-				user.roles = roles
-				return user
-			})
-
-			return this.serialize(completeUserInfo)
-		} else if (bulkData.kind === "reachable_employee") {
-			// Prepare for bulk reachable employee creation
-			const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
-				previousSchedule: RawEmployeeSchedule[],
-				dayName: Day
-			) => {
-				if (dayName !== "saturday" && dayName !== "sunday") {
-					const scheduleStart = 60*60*8 // Start at 8am
-					const scheduleEnd = 60*60*(12+5) // End at 5pm
-					return [ ...previousSchedule, {
-						scheduleStart,
-						scheduleEnd,
-						dayName
-					}]
-				} else {
-					return previousSchedule
-				}
+				const condition = new Condition()
+				condition.equal("acronym", name)
+				return [ ...conditions, condition ]
 			}, [])
-			const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
-				incompleteProfile: ProcessedDataForEmployee
+			const departmentFindOptions = {
+				where: (new Condition()).or(...departmentWhereConditions).build()
+			}
+			const departments = await Department.findAll(departmentFindOptions)
+			const departmentIDs: { [key: string]: number } = departments.reduce(
+				(previousMappings, department) => {
+					return { ...previousMappings, [department.acronym]: department.id }
+				}, {})
+			const departmentModels: { [key: string]: Department } = departments.reduce(
+				(previousMappings, department) => {
+					return { ...previousMappings, [`${department.id}`]: department }
+				}, {})
+
+			Log.trace("manager", "found department IDs")
+
+			// Find the IDs of the roles
+			const roleWhereConditions: Condition[] = bulkData.roles.reduce((
+				conditions: Condition[],
+				name: string
 			) => {
-				return { ...incompleteProfile, employeeSchedules }
+				const condition = new Condition()
+				condition.equal("name", name)
+				return [ ...conditions, condition ]
+			}, [])
+			const roles = await Role.findAll({
+				where: (new Condition()).or(...roleWhereConditions).build()
 			})
+			const rolesToAttach = roles.reduce<{ roleID: number }[]>((previousRoles, role) => {
+				return [ ...previousRoles, { roleID: role.id } ]
+			}, [])
 
-			Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
+			Log.trace("manager", "prepared roles to attach")
 
-			// Create the reachable employees in bulk
-			const users = await this.model.bulkCreate(normalizedProfiles, {
-				include: [
-					{
-						model: AttachedRole,
-						as: "attachedRoles"
-					},
-					{
-						model: EmployeeSchedule,
-						as: "employeeSchedules"
+			// Preprocess the bulk data
+			type ProcessedData = ProcessedDataForStudent | ProcessedDataForEmployee
+			const incompleteProfiles: ProcessedData[] = await Promise.all(bulkData.importedCSV.map(async data => {
+				const { password, department, ...securedData } = data
+				return {
+					...securedData,
+					kind: bulkData.kind,
+					password: await hash(password),
+					departmentID: departmentIDs[department],
+					attachedRoles: rolesToAttach
+				} as ProcessedData
+			}))
+
+			Log.trace("manager", "processed the data into general structure for bulk creation")
+
+			if (bulkData.kind === "student") {
+				// Prepare for bulk student creation
+				const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
+					incompleteProfile: ProcessedDataForStudent
+				) => {
+					const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
+					return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
+				})
+
+				Log.trace("manager", "specialized the data structure for student bulk creation")
+
+				// Create the students in bulk
+				const users = await this.model.bulkCreate(normalizedProfiles, {
+					include: [
+						{
+							model: AttachedRole,
+							as: "attachedRoles"
+						},
+						{
+							model: StudentDetail,
+							as: "studentDetail"
+						}
+					],
+					...this.transaction.transactionObject
+				})
+
+				Log.success("manager", "created students in bulk")
+
+				const completeUserInfo = users.map(user => {
+					user.department = departmentModels[`${user.departmentID}`]
+					user.roles = roles
+					return user
+				})
+
+				return this.serialize(completeUserInfo)
+			} else if (bulkData.kind === "reachable_employee") {
+				// Prepare for bulk reachable employee creation
+				const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
+					previousSchedule: RawEmployeeSchedule[],
+					dayName: Day
+				) => {
+					if (dayName !== "saturday" && dayName !== "sunday") {
+						const scheduleStart = 60*60*8 // Start at 8am
+						const scheduleEnd = 60*60*(12+5) // End at 5pm
+						return [ ...previousSchedule, {
+							scheduleStart,
+							scheduleEnd,
+							dayName
+						}]
+					} else {
+						return previousSchedule
 					}
-				],
-				...this.transaction.transactionObject
-			})
+				}, [])
+				const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
+					incompleteProfile: ProcessedDataForEmployee
+				) => {
+					return { ...incompleteProfile, employeeSchedules }
+				})
 
-			Log.success("manager", "created reachable employees in bulk")
+				Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
 
-			const completeUserInfo = users.map(user => {
-				user.department = departmentModels[`${user.departmentID}`]
-				user.roles = roles
-				return user
-			})
+				// Create the reachable employees in bulk
+				const users = await this.model.bulkCreate(normalizedProfiles, {
+					include: [
+						{
+							model: AttachedRole,
+							as: "attachedRoles"
+						},
+						{
+							model: EmployeeSchedule,
+							as: "employeeSchedules"
+						}
+					],
+					...this.transaction.transactionObject
+				})
 
-			Log.trace(
-				"manager",
-				"exiting user manager -> bulk create method with serialized reachable employee info")
+				Log.success("manager", "created reachable employees in bulk")
 
-			return this.serialize(completeUserInfo)
-		} else {
-			// TODO: Possibly throw error to prevent bulk creation of unreachable employees or make a
-			// route
+				const completeUserInfo = users.map(user => {
+					user.department = departmentModels[`${user.departmentID}`]
+					user.roles = roles
+					return user
+				})
+
+				Log.trace(
+					"manager",
+					"exiting user manager -> bulk create method with serialized reachable employee info")
+
+				return this.serialize(completeUserInfo)
+			} else {
+				// TODO: Possibly throw error to prevent bulk creation of unreachable employees or make a
+				// route
+			}
+
+			return {}
+		} catch(error) {
+			throw this.makeBaseError(error)
 		}
-
-		return {}
 	}
 
 	async verify(id: number): Promise<number> {
-		const [ affectedCount ] = await this.model.update({
-			emailVerifiedAt: new Date()
-		}, {
-			where: {
-				id,
-				emailVerifiedAt: { [Op.is]: null }
-			},
-			...this.transaction.transactionObject
-		})
+		try {
+			const [ affectedCount ] = await this.model.update({
+				emailVerifiedAt: new Date()
+			}, {
+				where: {
+					id,
+					emailVerifiedAt: { [Op.is]: null }
+				},
+				...this.transaction.transactionObject
+			})
 
-		return affectedCount
+			return affectedCount
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	/**
@@ -276,17 +292,21 @@ export default class UserManager extends BaseManager<User, RawUser> {
 	 * @param rawPassword New password to put in the database.
 	 */
 	async resetPassword(id: number, rawPassword: string): Promise<boolean> {
-		const hashedPassword = await hash(rawPassword)
+		try {
+			const hashedPassword = await hash(rawPassword)
 
-		const [ affectedCount ] = await this.model.update({
-			password: hashedPassword
-		}, {
-			where: {
-				id
-			},
-			...this.transaction.transactionObject
-		})
+			const [ affectedCount ] = await this.model.update({
+				password: hashedPassword
+			}, {
+				where: {
+					id
+				},
+				...this.transaction.transactionObject
+			})
 
-		return affectedCount > 0
+			return affectedCount > 0
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 }
