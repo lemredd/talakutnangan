@@ -1,14 +1,9 @@
-<!--
-	TODO: use windi css apply directive
-	todo: properly transform all required attributes
-	todo: use applicable components
- -->
 <template>
 	<form @submit.prevent="createRole">
 		<TextualField
-				label="Display Name"
-				type="text"
-				v-model="roleName" />
+			label="Display Name"
+			type="text"
+			v-model="roleName" />
 
 		<FlagSelector
 			header="Post"
@@ -61,7 +56,7 @@ import {
 	semester,
 	profanity
 } from "$/permissions/permission_list"
-import TextualField from "@/fields/text.vue"
+import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
