@@ -8,7 +8,7 @@ describe("Database: Condition Builder", () => {
 
 		const condition = new Condition(builtCondition)
 
-		expect(condition).toStrictEqual(builtCondition)
+		expect(condition.build()).toStrictEqual(builtCondition)
 	})
 
 	it("can make 'not' operation", () => {
