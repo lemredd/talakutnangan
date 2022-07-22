@@ -10,23 +10,12 @@
 				type="text"
 				v-model="roleName" />
 
-		<div class="post-flags">
-			<h2>Post Flags</h2>
-			<Checkbox v-for="permissionName in postPermissionNames"
-				:label="camelToSentence(permissionName).toLowerCase()"
-				:value="permissionName"
-				@change="updatePostFlags"
-				v-model="postRawFlags" />
-		</div>
-
-		<div class="semester-flags">
-			<h2>Semester Flags</h2>
-			<label class="attrib-label" v-for="permissionName in semesterPermissionNames">
-				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
-				<input class="flag-attrib" type="checkbox" :value="permissionName" @change="updateSemesterFlags" v-model="semesterRawFlags"/>
-
-			</label>
-		</div>
+		<FlagSelector :base-permission-group="post" v-model:flags="postFlags" />
+		<FlagSelector :base-permission-group="semester" v-model:flags="semesterFlags" />
+		<FlagSelector :base-permission-group="tag" v-model:flags="tagFlags" />
+		<FlagSelector :base-permission-group="comment" v-model:flags="commentFlags" />
+		<FlagSelector :base-permission-group="profanity" v-model:flags="profanityFlags" />
+		<FlagSelector :base-permission-group="user" v-model:flags="userFlags" />
 
 		<input type="submit" value="Create Role"/>
 	</form>
@@ -43,7 +32,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { inject, ref } from "vue"
 import RoleFetcher from "$@/communicators/role"
 import type { DeserializedPageContext } from "$@/types/independent"
 import {
@@ -52,68 +41,21 @@ import {
 	post,
 	comment,
 	semester,
-	profanity,
-	auditTrail
+	profanity
 } from "$/permissions/permission_list"
-import type { Permissions as TagPermissions } from "$/permissions/tag_permissions"
-import type { Permissions as UserPermissions } from "$/permissions/user_permissions"
-import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
-import type { Permissions as CommentPermissions } from "$/permissions/comment_permissions"
-import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
-import type { Permissions as ProfanityPermissions } from "$/permissions/profanity_permissions"
-import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail_permissions"
 import TextualField from "@/fields/text.vue"
-import Checkbox from "@/fields/checkbox.vue"
-import camelToSentence from "$@/helpers/camel_to_sentence"
+import FlagSelector from "@/role/flag_selector.vue"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
 
-const postRawFlags = ref<Set<PostPermissions>>(new Set())
-const postFlags = computed(function (): number {
-	return post.generateMask(...postRawFlags.value)
-})
-const postPermissionNames = Array.from(post.permissions.keys())
-function updatePostFlags() {
-	const postPermissionDependencies = new Set([...postRawFlags.value])
-
-	post.permissions.forEach((info, permissionName) => {
-		if (postPermissionDependencies.has(permissionName)) {
-			info.permissionDependencies.forEach(n => {
-				postPermissionDependencies.add(n)
-			})
-		}
-	})
-
-	postRawFlags.value = new Set([...postPermissionDependencies])
-}
-
-const semesterRawFlags = ref<SemesterPermissions[]>([])
-const semesterFlags = computed(function (): number {
-	return semester.generateMask(...semesterRawFlags.value)
-})
-const semesterPermissionNames = Array.from(semester.permissions.keys())
-function updateSemesterFlags() {
-	const semesterPermissionDependencies = new Set([...postRawFlags.value])
-
-	semester.permissions.forEach((info, permissionName) => {
-		if (semesterPermissionDependencies.has(permissionName)) {
-			info.permissionDependencies.forEach(n => {
-				semesterPermissionDependencies.add(n)
-			})
-		}
-	})
-
-	semesterRawFlags.value = [...semesterPermissionDependencies] as SemesterPermissions[]
-}
-
+const postFlags = ref<number>(0)
+const semesterFlags = ref<number>(0)
 const tagFlags = ref<number>(0)
 const commentFlags = ref<number>(0)
 const profanityFlags = ref<number>(0)
 const userFlags = ref<number>(0)
-const auditTrailFlags = ref<number>(0)
-
 
 RoleFetcher.initialize("/api")
 
@@ -125,8 +67,7 @@ function createRole() {
 		tagFlags: tagFlags.value,
 		commentFlags: commentFlags.value,
 		profanityFlags: profanityFlags.value,
-		userFlags: userFlags.value,
-		auditTrailFlags: auditTrailFlags.value
+		userFlags: userFlags.value
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)
