@@ -11,8 +11,7 @@
 	"moduleNameMapper": {
 		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"\\$/(.*)": "<rootDir>/shareable/$1",
-		"\\$@/(.*)": "<rootDir>/common_front-end/$1",
-		"\\@/(.*)": "<rootDir>/components/$1"
+		"\\$@/(.*)": "<rootDir>/common_front-end/$1"
 	},
 
 	"setupFilesAfterEnv": [
@@ -23,8 +22,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"common_front-end/.*\\.spec\\.ts",
-		"components/.*\\.spec\\.ts"
+		"common_front-end/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"
