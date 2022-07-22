@@ -8,15 +8,15 @@
 		<TextualField
 				label="Display Name"
 				type="text"
-				v-model="roleName"
-			/>
+				v-model="roleName" />
+
 		<div class="post-flags">
 			<h2>Post Flags</h2>
-			<label class="attrib-label" v-for="permissionName in postPermissionNames">
-				<span>Can {{camelToSentence(permissionName).toLowerCase() }} </span>
-				<input class="flag-attrib" type="checkbox" :value="permissionName" @change="updatePostFlags" v-model="postRawFlags"/>
-
-			</label>
+			<Checkbox v-for="permissionName in postPermissionNames"
+				:label="camelToSentence(permissionName).toLowerCase()"
+				:value="permissionName"
+				@change="updatePostFlags"
+				v-model="postRawFlags" />
 		</div>
 
 		<div class="semester-flags">
@@ -32,7 +32,7 @@
 	</form>
 </template>
 
-<style scoped lang = scss >
+<style scoped lang="scss">
 .attrib-label {
 	@apply block;
 }
@@ -62,13 +62,15 @@ import type { Permissions as CommentPermissions } from "$/permissions/comment_pe
 import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
 import type { Permissions as ProfanityPermissions } from "$/permissions/profanity_permissions"
 import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail_permissions"
+import TextualField from "@/fields/text.vue"
+import Checkbox from "@/fields/checkbox.vue"
 import camelToSentence from "$@/helpers/camel_to_sentence"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
 
-const postRawFlags = ref<PostPermissions[]>([])
+const postRawFlags = ref<Set<PostPermissions>>(new Set())
 const postFlags = computed(function (): number {
 	return post.generateMask(...postRawFlags.value)
 })
@@ -84,7 +86,7 @@ function updatePostFlags() {
 		}
 	})
 
-	postRawFlags.value = [...postPermissionDependencies] as PostPermissions[]
+	postRawFlags.value = new Set([...postPermissionDependencies])
 }
 
 const semesterRawFlags = ref<SemesterPermissions[]>([])
