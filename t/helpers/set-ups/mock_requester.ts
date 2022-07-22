@@ -60,25 +60,23 @@ export default class<T extends Request> extends RequestEnvironment {
 		await handle(error, this.request, this.response, this.next)
 	}
 
+	async runResponder(handle: Function): Promise<void> {
+		await handle(this.response)
+	}
+
 	expectSuccess(): any {
 		expect(this.next).toHaveBeenCalled()
+		expect((this.next as jest.Mock<any, any>).mock.calls[0]).not.toHaveLength(1)
 
 		return this.request
 	}
 
-	expectFailure(status: number): any {
-		this.expectResponse({
-			status: (statusMethod: jest.Mock<any, any>) => {
-				expect(statusMethod).toBeCalled()
-				expect(statusMethod.mock.calls[0]).toEqual([ status ])
-			},
-			json: (jsonMethod: jest.Mock<any, any>) => {
-				expect(jsonMethod).toBeCalled()
-			}
-		})
+	expectFailure(error: any): any {
+		expect(this.next).toHaveBeenCalled()
+		expect((this.next as jest.Mock<any, any>).mock.calls[0]).toHaveLength(1)
+		expect((this.next as jest.Mock<any, any>).mock.calls[0][0]).toBeInstanceOf(error)
 
-		const mockResponse = this.response as unknown as MockResponse
-		return mockResponse.json.mock.calls[0][0]
+		return (this.next as jest.Mock<any, any>).mock.calls[0][0]
 	}
 
 	expectResponse(properties: { [key:string]: (_: any) => void }): void {

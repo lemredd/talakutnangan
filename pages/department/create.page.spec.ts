@@ -5,7 +5,7 @@ import Page from "./create.page.vue"
 
 describe("Page: /department/create", () => {
 	it("can create department", async () => {
-		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Page, {
 			global: {
 				provide: {

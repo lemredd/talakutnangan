@@ -3,40 +3,26 @@ name: Web Front-end Tests
 on:
   push:
     paths:
+      - 'shareable/**'
       - 'common_front-end/**'
       - 'components/**'
       - 'pages/**'
+      - 't/helpers/**'
+      - '.github/workflows/front-end.yml'
   pull_request:
     types:
       - reopened
     branches:
       - master
     paths:
+      - 'shareable/**'
       - 'common_front-end/**'
       - 'components/**'
       - 'pages/**'
+      - 't/helpers/**'
+      - '.github/workflows/front-end.yml'
 
 jobs:
-  common_unit_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-        restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
-    - run: npm install
-    - run: ./execute.ps1 -test unit:front
-      shell: pwsh
-
   ui_unit_tests:
     runs-on: ubuntu-latest
     steps:
@@ -56,3 +42,4 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:ui
       shell: pwsh
+      timeout-minutes: 3

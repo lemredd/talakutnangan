@@ -10,5 +10,8 @@ export default async function(
 	{ value, args }: { value: any, args: any[] },
 	validator: Validator
 ): Promise<boolean> {
+	if (args.length < 2) {
+		throw new Error("Number of arguments passed to `notExists` rule is insufficient")
+	}
 	return !(await exists({ value, args }, validator)) || value === undefined
 }

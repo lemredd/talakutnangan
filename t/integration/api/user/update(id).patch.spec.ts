@@ -31,6 +31,7 @@ describe("PATCH /api/user/update/:id", () => {
 			.field("name", student.name)
 			.field("email", newStudent.email)
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
@@ -70,6 +71,7 @@ describe("PATCH /api/user/update/:id", () => {
 			.field("name", newStudent.name)
 			.field("email", student.email)
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)

@@ -1,6 +1,8 @@
 {
 	"preset": "ts-jest",
 
+	"cacheDirectory": "t/cache/unit_database",
+
 	"moduleFileExtensions": [
 		"js",
 		"ts"

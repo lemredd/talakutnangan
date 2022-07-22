@@ -3,7 +3,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 import { UnitError } from "$/types/server"
 import Page from "./create.page.vue"
 
-describe("Page: /department/create", () => {
+describe.skip("Page: /department/create", () => {
 	it("can create department", async () => {
 		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Page, {

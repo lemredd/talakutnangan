@@ -19,6 +19,8 @@ describe("POST /api/user/log_in", () => {
 				email: user.email,
 				password: user.password
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("token")
@@ -31,6 +33,8 @@ describe("POST /api/user/log_in", () => {
 				email: "sample@gmail.com",
 				password: "12345678"
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		// TODO: Output the validation error in better format
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
@@ -45,6 +49,7 @@ describe("POST /api/user/log_in", () => {
 				email: user.email,
 				password: user.password
 			})
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)

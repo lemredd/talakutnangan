@@ -24,17 +24,22 @@ describe("POST /api/role/create", () => {
 			.post("/api/role/create")
 			.set("Cookie", cookie)
 			.send({
-				name: role.name,
-				departmentFlags:   role.departmentFlags,
-				roleFlags:         role.roleFlags,
-				semesterFlags:     role.semesterFlags,
-				tagFlags:          role.tagFlags,
-				postFlags:         role.postFlags,
-				commentFlags:      role.commentFlags,
-				profanityFlags:    role.profanityFlags,
-				userFlags:         role.userFlags,
-				auditTrailFlags:   role.auditTrailFlags
+				data: {
+					type: "role",
+					attributes: {
+						name: role.name,
+						semesterFlags:     role.semesterFlags,
+						tagFlags:          role.tagFlags,
+						postFlags:         role.postFlags,
+						commentFlags:      role.commentFlags,
+						profanityFlags:    role.profanityFlags,
+						userFlags:         role.userFlags,
+						auditTrailFlags:   role.auditTrailFlags
+					}
+				}
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.name).toBe(role.name)
