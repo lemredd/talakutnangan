@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import TextualField from "@/fields/text.vue"
 
 const email = ref("sample@example.com")
 const password = ref("12345678")

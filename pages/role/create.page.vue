@@ -68,8 +68,6 @@ const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
 
-
-
 const postRawFlags = ref<PostPermissions[]>([])
 const postFlags = computed(function (): number {
 	return post.generateMask(...postRawFlags.value)
