@@ -29,19 +29,20 @@ export default abstract class extends Middleware {
 	async validate(body: object): Promise<void> {
 		const validator = new Validator(body, this.validationRules)
 
-		await validator.check()
+		if (await validator.fails()) {
+			const errorInfos = Object.keys(validator.errors).sort().map(field => ({
+				field,
+				message: validator.errors[field].message
+			}))
 
-		const rawErrors = validator.getErrors()
-
-		const errorInfos = Object.keys(rawErrors).sort().map(field => ({
-			field,
-			message: rawErrors[field].message
-		}))
-
-		if (errorInfos.length > 0) {
-			throw new ErrorBag(errorInfos.map(info => new ValidationError({
-				[this.sourceType]: info.field
-			} as SourceParameter|SourcePointer, info.message)))
+			throw new ErrorBag(
+				errorInfos.map((info: any) => new ValidationError(
+					{
+						[this.sourceType]: info.field
+					} as SourceParameter|SourcePointer,
+					info.message
+				))
+			)
 		}
 	}
 
