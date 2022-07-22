@@ -1,11 +1,13 @@
 import { Validator } from "node-input-validator"
 
+import type { ValidationRules } from "!/types/independent"
 import { SourceParameter, SourcePointer } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
 import ErrorBag from "$!/errors/error_bag"
-import ValidationError from "$!/errors/validation"
 import Middleware from "!/bases/middleware"
+import ValidationError from "$!/errors/validation"
+import generateProperRules from "!/helpers/generate_proper_rules"
 
 export default abstract class extends Middleware {
 	private validationRules: object
@@ -27,7 +29,10 @@ export default abstract class extends Middleware {
 	}
 
 	async validate(body: object): Promise<void> {
-		const validator = new Validator(body, this.validationRules)
+		const validator = new Validator(
+			body,
+			generateProperRules(body, this.validationRules as ValidationRules)
+		)
 
 		if (await validator.fails()) {
 			const errorInfos = Object.keys(validator.errors).sort().map(field => ({
