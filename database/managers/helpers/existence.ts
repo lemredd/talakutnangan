@@ -36,7 +36,6 @@ export default function<T extends Model>(
 				break
 		}
 
-		console.log(newState)
 		Log.trace("pipeline", "applied existsence filter on query")
 	}
 
