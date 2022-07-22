@@ -47,11 +47,13 @@
 
 <script setup lang="ts">
 import { defineComponent, inject, ref } from "vue"
-import { usePageContext } from "#/usePageContext"
 import Link from "@/Link.vue"
 
+const pageContext = inject("pageContext") as any
+
+
 const url = inject("url") as string
-const fullUrl = usePageContext().urlPathname
+const fullUrl = pageContext.urlPathname
 console.log(fullUrl)
 const { tabs } = defineProps<{
 	tabs: {
