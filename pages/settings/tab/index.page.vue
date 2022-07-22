@@ -27,6 +27,11 @@ import { provide, ref } from "vue"
 import Tab from "@/Tab.vue"
 import Account from "@/settings/Account.vue"
 import Profile from "@/settings/Profile.vue"
+import { usePageContext } from "#/usePageContext"
+import deserializedPageProps from "$@/helpers/deserialize_page_props"
+const pageContext = usePageContext()
+provide("pageContext", pageContext)
+
 
 const tabs = {
 	Account,
@@ -51,4 +56,5 @@ const userInfo = ref({
 })
 
 provide("userInfo", userInfo)
+provide("url", pageContext.routeParams!.tab)
 </script>

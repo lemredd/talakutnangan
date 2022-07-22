@@ -7,12 +7,12 @@
 	>
 		<Link
 		@click.capture="setCurrentTab(tab)"
-		:href="`/admin_settings/${tab}`">
+		:href="`${fullUrl}/${tab}`">
 			{{ (tab as string).charAt(0).toUpperCase() + (tab as string).substring(1) }}
 		</Link>
 	</li>
 </ul>
-<component :is="tabs[currentTab]" class="tab"></component>
+<component :is="tabs[currentTab]"></component>
 </template>
 
 <style lang="scss">
@@ -49,7 +49,12 @@
 import { defineComponent, inject, ref } from "vue"
 import Link from "@/Link.vue"
 
+const pageContext = inject("pageContext") as any
+
+
 const url = inject("url") as string
+const fullUrl = pageContext.urlPathname
+console.log(fullUrl)
 const { tabs } = defineProps<{
 	tabs: {
 		[key: string]: ReturnType<typeof defineComponent>
