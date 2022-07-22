@@ -10,17 +10,16 @@ export default async function(
 	validator: Validator
 ): Promise<boolean> {
 	if (value !== undefined) {
-		if (args.length < 2) {
+		if (args.length < 1) {
 			throw new Error("Number of arguments passed to `archived` rule is insufficient")
 		}
 
 		const rawManager = args[0]
-		const columnName = args[1]
 
 		try {
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
-			const foundModel = await manager.findOneOnColumn(columnName, value, {
+			const foundModel = await manager.findWithID(value, {
 				filter: { existence: "archived" }
 			})
 
