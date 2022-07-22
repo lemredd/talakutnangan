@@ -68,4 +68,22 @@ describe("Database: Condition Builder", () => {
 			]
 		})
 	})
+
+	it("can make 'and' operation", () => {
+		const condition = new Condition()
+		const subconditionA = (new Condition()).is("columnA", null)
+		const subconditionB = (new Condition()).equal("columnB", 1)
+
+		const builtCondition = condition.and(
+			subconditionA,
+			subconditionB
+		).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{ columnA: { [Op.is]: null } },
+				{ columnB: { [Op.eq]: 1 } }
+			]
+		})
+	})
 })

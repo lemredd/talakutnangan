@@ -41,5 +41,10 @@ export default class Condition<T = any> {
 		return this
 	}
 
+	and(...conditions: Condition[]): Condition {
+		this.currentCondition[Op.and] = conditions.map(condition => condition.build())
+		return this
+	}
+
 	build(): WhereOptions<T> { return { ...this.currentCondition } }
 }
