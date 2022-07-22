@@ -10,7 +10,6 @@
 			:checked="modelValue.has(value)"
 			:value="value"
 			@input="emitUpdate"
-			:required="required"
 			:disabled="disabled"
 			ref="inputField"
 			/>
