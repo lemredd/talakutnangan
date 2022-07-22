@@ -125,6 +125,15 @@ export default abstract class Manager<T extends Model, U> {
 		Log.success("manager", "done restoring a model")
 	}
 
+	async restoreBatch(IDs: number[]): Promise<void> {
+		await this.model.restore(<RestoreOptions<T>>{
+			where: { id: IDs },
+			...this.transaction.transactionObject
+		})
+
+		Log.success("manager", "done restoring models")
+	}
+
 	protected serialize(models: T|T[]|null): Serializable {
 		return Serializer.serialize(
 			models,

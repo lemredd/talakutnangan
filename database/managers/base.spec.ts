@@ -212,7 +212,7 @@ describe("Database: Base Update Operations", () => {
 })
 
 describe("Database: Base Archive and Restore Operations", () => {
-	it("archive base", async () => {
+	it("can archive base", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
 
@@ -227,10 +227,10 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("restore base", async () => {
+	it("can restore base", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
-		await base.destroy({force: false})
+		await base.destroy({ force: false })
 
 		await manager.restore(base.id)
 
@@ -241,7 +241,7 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)!.deletedAt).toBeNull()
 	})
 
-	it("archive base through transaction", async () => {
+	it("can archive base through transaction", async () => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
 		const base = await (new UserFactory()).insertOne()
@@ -261,11 +261,11 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("restore base through transaction", async () => {
+	it("can restore base through transaction", async () => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
 		const base = await (new UserFactory()).insertOne()
-		await base.destroy({force: false})
+		await base.destroy({ force: false })
 
 		await transaction.initialize()
 		await manager.restore(base.id)
@@ -280,7 +280,7 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)!.deletedAt).toBeNull()
 	})
 
-	it("archive multiple bases", async () => {
+	it("can archive multiple bases", async () => {
 		const manager = new MockUserManager()
 		const bases = await (new UserFactory()).insertMany(3)
 
@@ -306,4 +306,31 @@ describe("Database: Base Archive and Restore Operations", () => {
 			})
 		)?.deletedAt).not.toBeNull()
 	})
+
+	it("can restore multiple bases", async () => {
+		const manager = new MockUserManager()
+		const bases = await (new UserFactory()).insertMany(3)
+		await bases[0].destroy({ force: false })
+		await bases[1].destroy({ force: false })
+		await bases[2].destroy({ force: false })
+
+		await manager.restoreBatch(bases.map(base => base.id))
+
+		expect((
+			await User.findOne({
+				where: { id: bases[0].id }
+			})
+		)!.deletedAt).toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[1].id }
+			})
+		)!.deletedAt).toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[2].id }
+			})
+		)!.deletedAt).toBeNull()
+	})
+
 })
