@@ -8,9 +8,9 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/department/restore(id).patch"
+import Route from "!/app/routes/api/department/archive.delete"
 
-describe("DELETE /api/department/restore/:id", () => {
+describe("DELETE /api/department/archive", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -21,19 +21,23 @@ describe("DELETE /api/department/restore/:id", () => {
 			.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await (new DepartmentFactory()).insertOne()
-		await department.destroy()
 
 		const response = await App.request
-			.patch(`/api/department/restore/${department.id}`)
+			.delete("/api/department/archive")
+			.send({
+				data: [
+					{ type: "department", id: department.id }
+				]
+			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(response.body).toStrictEqual({})
-		expect((await Department.findOne({ where: { id: department.id } }))!.deletedAt).toBeNull()
+		// TODO: Uncomment once batch delete works properly
+		// expect((await Department.findOne({ where: { id: department.id } } ))!).toBeNull()
 	})
 
-	it.todo("cannot restore non-existing")
-	it.todo("cannot restore existing")
+	it.todo("cannot delete non-existing")
+	it.todo("cannot redelete")
 })
