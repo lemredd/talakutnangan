@@ -7,9 +7,11 @@ import type {
 } from "%/types/dependent"
 
 import User from "%/models/user"
+import Database from "~/set-ups/database"
 import UserFactory from "~/factories/user"
 import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
+import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
@@ -332,5 +334,17 @@ describe("Database: Base Archive and Restore Operations", () => {
 			})
 		)!.deletedAt).toBeNull()
 	})
+})
 
+describe("Database: Error handling down errors", () => {
+	beforeEach(async () => {
+		await Database.destroy()
+	})
+
+	it("can handle down errors", async () => {
+		const manager = new MockUserManager()
+		const id = 0
+
+		expect(manager.findWithID(id)).rejects.toThrow(DatabaseError)
+	})
 })
