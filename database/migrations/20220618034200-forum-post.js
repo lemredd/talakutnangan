@@ -2,12 +2,24 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable("Posts", {
-			//id, user id, role id, title, desc, bad word
+			//title, desc, badword, user id, role id
 			id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
 				type: Sequelize.INTEGER
+			},
+			title: {
+				allowNull: false,
+				type: Sequelize.STRING
+			},
+			desc: {
+				allowNull: false,
+				type: Sequelize.STRING
+			},
+			badWordExist: {
+				allowNull: false,
+				type: Sequelize.BOOLEAN
 			},
 			userID: {
 				allowNull: false,
@@ -28,18 +40,6 @@ module.exports = {
 				},
 				onDelete: "cascade",
 				onUpdate: "cascade"
-			},
-			title: {
-				allowNull: false,
-				type: Sequelize.STRING
-			},
-			desc: {
-				allowNull: false,
-				type: Sequelize.STRING
-			},
-			badWordExist: {
-				allowNull: false,
-				type: Sequelize.BOOLEAN
 			},
 			//
 			createdAt: {

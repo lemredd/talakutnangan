@@ -16,7 +16,7 @@ import Role from "%/models/role"
 	timestamps: true,
 	paranoid: true
 })
-//id, user id, role id, title, desc, bad word
+//title, desc, badword, user id, role id
 export default class Post extends Model {
 
 	@Column({
