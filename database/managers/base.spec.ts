@@ -10,6 +10,7 @@ import User from "%/models/user"
 import Database from "~/set-ups/database"
 import UserFactory from "~/factories/user"
 import limit from "%/managers/helpers/limit"
+import existence from "%/managers/helpers/existence"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
@@ -28,7 +29,8 @@ class MockUserTransformer extends Transformer<User, void> {
 			"id",
 			"name",
 			"email",
-			"kind"
+			"kind",
+			"deletedAt"
 		])
 
 		return safeObject
@@ -40,6 +42,7 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
 		return [
+			existence,
 			this.customReadPipe
 		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
 	}
@@ -144,6 +147,64 @@ describe("Database: Base Read Operations", () => {
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(5)
+	})
+
+	it("can find on one column with existing", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "exists"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toHaveProperty("type", "user")
+	})
+
+	it("cannot find on one column with existing if destroyed already", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+		await base.destroy({ force: false })
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "exists"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toBeNull()
+	})
+
+	it("can find on one column with archived", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+		await base.destroy({ force: false })
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "archived"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toHaveProperty("type", "user")
+	})
+
+	it("cannot find on one column with archived if still exists", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "archived"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toBeNull()
 	})
 })
 
