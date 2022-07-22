@@ -1,8 +1,3 @@
-<!--
-	TODO: use windi css apply directive
-	todo: properly transform all required attributes
-	todo: use applicable components
- -->
 <template>
 	<form @submit.prevent="createRole">
 		<TextualField
