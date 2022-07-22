@@ -32,11 +32,17 @@ export default abstract class Manager<T extends Model, U> {
 		this.transaction = transaction
 	}
 
-	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
-
 	abstract get model(): ModelCtor<T>
 
 	abstract get transformer(): Transformer<T, void>
+
+	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
+		return [
+			existence,
+			offset,
+			limit
+		]
+	}
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
