@@ -89,3 +89,10 @@ import { days } from "$/types/database.native"
 
 const rawDays = [ ...days ] as const
 export type Day = typeof rawDays[number]
+
+/**
+ * Shape of expected common filter
+ */
+export interface Filter extends Serializable {
+	existence: "exists" | "archived" | "all"
+}
