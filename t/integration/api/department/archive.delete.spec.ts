@@ -36,7 +36,4 @@ describe("DELETE /api/department/archive", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect((await Department.findOne({ where: { id: department.id } } ))!).toBeNull()
 	})
-
-	it.todo("cannot delete non-existing")
-	it.todo("cannot redelete")
 })

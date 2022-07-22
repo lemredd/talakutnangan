@@ -37,7 +37,4 @@ describe("DELETE /api/department/restore", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect((await Department.findOne({ where: { id: department.id } }))!.deletedAt).toBeNull()
 	})
-
-	it.todo("cannot restore non-existing")
-	it.todo("cannot restore existing")
 })
