@@ -15,6 +15,9 @@ import BaseError from "$!/errors/base"
 import DatabaseError from "$!/errors/database"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
+import limit from "%/managers/helpers/limit"
+import offset from "%/managers/helpers/offset"
+import existence from "%/managers/helpers/existence"
 import Condition from "%/managers/helpers/condition"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import TransactionManager from "%/managers/helpers/transaction_manager"
@@ -36,7 +39,11 @@ export default abstract class Manager<T extends Model, U> {
 	abstract get transformer(): Transformer<T, void>
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
-		return []
+		return [
+			existence,
+			offset,
+			limit
+		]
 	}
 
 	async findWithID(id: number, constraints: object = {}): Promise<Serializable> {
