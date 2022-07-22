@@ -1,3 +1,4 @@
+import { deserialise } from "kitsu-core"
 import type { UserKind } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
@@ -23,9 +24,10 @@ export default class extends AuthenticationBasedPolicy {
 	async authorize(request: AuthenticatedRequest): Promise<void> {
 		await super.authorize(request)
 
-		// TODO: Deserialize the user for better access
+		const user = deserialise(request.user)
+		const kind = user?.data?.kind
 		// @ts-ignore
-		if(request.user.data!.attributes!.kind !== this.kind) {
+		if(kind !== this.kind) {
 			throw new AuthorizationError("Correct user kind can invoke the action.")
 		}
 	}

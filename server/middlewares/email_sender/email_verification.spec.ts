@@ -12,6 +12,8 @@ describe("Middleware: Email Verification Sender", () => {
 	const requester  = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
 
 	it("can send to single user", async () => {
+		jest.setTimeout(7500)
+
 		const sender = new EmailVerification()
 		requester.customizeRequest({
 			nextMiddlewareArguments: {
@@ -38,6 +40,8 @@ describe("Middleware: Email Verification Sender", () => {
 	})
 
 	it("can send to multiple users", async () => {
+		jest.setTimeout(7500)
+
 		const sender = new EmailVerification()
 		requester.customizeRequest({
 			protocol: "http",

@@ -19,7 +19,7 @@ import PermissionGroup from "$/permissions/base"
 const profanityColumnName = "profanityFlags"
 
 type ProfanityFlags = { [profanityColumnName]: number }
-type Permissions =
+export type Permissions =
 	| OperationPermission
 	| Extract<LevelPermission, "readOverallScope" | "writeOverallScope">
 

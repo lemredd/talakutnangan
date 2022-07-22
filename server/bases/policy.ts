@@ -11,6 +11,6 @@ export default abstract class extends Middleware {
 	abstract authorize(request: Request): Promise<void>
 
 	async intermediate(request: Request, _response: Response, next: NextFunction): Promise<void> {
-		return await this.authorize(request).then(next).catch(next)
+		return await this.authorize(request).then(() => next()).catch(next)
 	}
 }

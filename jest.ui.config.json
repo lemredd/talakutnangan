@@ -1,0 +1,36 @@
+{
+	"preset": "ts-jest",
+
+	"cacheDirectory": "t/cache/unit_ui",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts",
+		"vue"
+	],
+
+	"moduleNameMapper": {
+		"~/(.*)": "<rootDir>/t/helpers/$1",
+		"\\$/(.*)": "<rootDir>/shareable/$1",
+		"\\$@/(.*)": "<rootDir>/common_front-end/$1",
+		"#/(.*)": "<rootDir>/renderer/$1",
+		"@/(.*)": "<rootDir>/components/$1"
+	},
+
+	"transform": {
+		"^.+\\.vue": "@vue/vue3-jest"
+	},
+
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/fetch.set_up.ts"
+	],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"components/.*\\.spec\\.ts",
+		"pages/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "jsdom"
+}

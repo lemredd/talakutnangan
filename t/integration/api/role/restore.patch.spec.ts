@@ -1,4 +1,4 @@
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 import Role from "%/models/role"
@@ -26,6 +26,8 @@ describe("PATCH /api/role/restore/:id", () => {
 		const response = await App.request
 			.patch(`/api/role/restore/${role.id}`)
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect(response.body).toStrictEqual({})

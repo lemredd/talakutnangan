@@ -1,4 +1,4 @@
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
@@ -23,6 +23,8 @@ describe("GET /api/role/list", () => {
 		const response = await App.request
 			.get("/api/role/list")
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.attributes.name", adminRole.name)

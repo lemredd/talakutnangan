@@ -1,9 +1,9 @@
 import Router from "!/bases/router"
 import GetList from "!/app/routes/api/department/list.get"
-import PutUpdate from "!/app/routes/api/department/update.put"
 import PostCreate from "!/app/routes/api/department/create.post"
-import PatchRestore from "!/app/routes/api/department/restore(id).patch"
-import DeleteArchive from "!/app/routes/api/department/archive(id).delete"
+import PatchUpdate from "!/app/routes/api/department/update(id).patch"
+import PatchRestore from "!/app/routes/api/department/restore.patch"
+import DeleteArchive from "!/app/routes/api/department/archive.delete"
 
 export default class extends Router {
 	constructor() {
@@ -11,8 +11,8 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetList(),
-			new PutUpdate(),
 			new PostCreate(),
+			new PatchUpdate(),
 			new PatchRestore(),
 			new DeleteArchive()
 		])

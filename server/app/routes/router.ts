@@ -5,6 +5,7 @@ import DevRouter from "!/app/routes/dev/router"
 import APIRouter from "!/app/routes/api/router"
 import ChatRouter from "!/app/routes/chat/router"
 import UserRouter from "!/app/routes/user/router"
+import DepartmentRouter from "!/app/routes/department/router"
 import { Environment } from "$/types/server"
 
 export default class extends Router {
@@ -16,7 +17,8 @@ export default class extends Router {
 		this.useRouters([
 			new APIRouter(),
 			new UserRouter(),
-			new ChatRouter()
+			new ChatRouter(),
+			new DepartmentRouter()
 		])
 
 		this.useController(new GetIndex())

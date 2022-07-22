@@ -1,4 +1,4 @@
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
@@ -25,91 +25,25 @@ describe("POST /api/department/create", () => {
 			.post("/api/department/create")
 			.set("Cookie", cookie)
 			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym,
+						fullName: department.fullName,
+						mayAdmit: department.mayAdmit
+					}
+				}
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
 		expect(response.body.data.attributes.fullName).toBe(department.fullName)
 		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
 	})
 
-	it("can pass inputs with all-uppercase name", async () => {
-		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await (new DepartmentFactory().name(() => "Abc Def GHIJ")).makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.set("Cookie", cookie)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
-		expect(response.body.data.attributes.acronym).toBe(department.acronym)
-		expect(response.body.data.attributes.fullName).toBe(department.fullName)
-		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
-	})
-
-	it("cannot accept invalid full name", async () => {
-		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName + "1",
-				mayAdmit: department.mayAdmit
-			})
-
-		console.log("invalid input", {
-			acronym: department.acronym,
-			fullName: department.fullName + "1"
-		})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body.errors).toHaveLength(1)
-		expect(response.body).toHaveProperty("errors.0.source.pointer", "fullName")
-	})
-
-	it("cannot accept invalid full name (as suggested by #211)", async () => {
-		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await new DepartmentFactory()
-			.name(() => "Hacking Lavender Throughway1")
-			.makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName + "1",
-				mayAdmit: department.mayAdmit
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body.errors).toHaveLength(1)
-		expect(response.body).toHaveProperty("errors.0.source.pointer", "fullName")
-	})
-
-	it("cannot accept invalid acronym", async () => {
+	it("cannot accept invalid info", async () => {
 		const adminRole = await new RoleFactory()
 			.departmentFlags(permissionGroup.generateMask(...CREATE))
 			.insertOne()
@@ -120,37 +54,23 @@ describe("POST /api/department/create", () => {
 		const response = await App.request
 			.post("/api/department/create")
 			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
 			.send({
-				acronym: department.acronym+randomData.acronym,
-				fullName: department.fullName,
-				mayAdmit: department.mayAdmit
+				data: {
+					type: "department",
+					attributes: {
+						acronym: department.acronym+randomData.acronym,
+						fullName: department.fullName + "1",
+						mayAdmit: "123"
+					}
+				}
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body.errors).toHaveLength(1)
-		expect(response.body).toHaveProperty("errors.0.source.pointer", "acronym")
-	})
-
-	it("cannot accept invalid value if it should be admitted", async () => {
-		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await (new DepartmentFactory()).makeOne()
-
-		const response = await App.request
-			.post("/api/department/create")
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				acronym: department.acronym,
-				fullName: department.fullName,
-				mayAdmit: "123"
-			})
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
-		expect(response.body.errors).toHaveLength(1)
-		expect(response.body).toHaveProperty("errors.0.source.pointer", "mayAdmit")
+		expect(response.body.errors).toHaveLength(3)
+		expect(response.body).toHaveProperty("errors.0.source.pointer", "data.attributes.acronym")
+		expect(response.body).toHaveProperty("errors.1.source.pointer", "data.attributes.fullName")
+		expect(response.body).toHaveProperty("errors.2.source.pointer", "data.attributes.mayAdmit")
 	})
 })

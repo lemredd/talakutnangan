@@ -4,7 +4,7 @@ import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
 import MockRequester from "~/set-ups/mock_requester"
 import RequestEnvironment from "$/helpers/request_environment"
-import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import catchAllErrors from "./catch_all_errors"
 

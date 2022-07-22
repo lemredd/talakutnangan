@@ -1,4 +1,4 @@
-import { JSON_API_MEDIA_TYPE } from "!/types/independent"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
@@ -37,6 +37,8 @@ describe("PUT /api/role/update", () => {
 				userFlags:         role.userFlags,
 				auditTrailFlags:   role.auditTrailFlags
 			})
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})

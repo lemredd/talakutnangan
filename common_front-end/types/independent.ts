@@ -58,3 +58,22 @@ export interface ConditionalLinkInfo<T, U extends PermissionGroup<any, T>> {
 	 */
 	links: LinkInfo[]
 }
+
+/**
+ * Shape of expected log in details
+ */
+export interface LogInDetails extends Serializable {
+	email: string,
+	password: string
+}
+
+/**
+ * Shape of expected response from fetcher
+ */
+export interface Response extends Serializable {
+	body: {
+		data?: Serializable,
+		meta?: Serializable
+	},
+	status: number
+}

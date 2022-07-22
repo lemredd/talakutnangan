@@ -2,6 +2,7 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
+import CreatedResponseInfo from "!/response_infos/created"
 import { CREATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -19,27 +20,32 @@ export default class extends JSONController {
 	get bodyValidationRules(): object {
 		// TODO: Think of the minimum length of full name.
 		return {
-			fullName: [
+			"data": [ "required", "object" ],
+			"data.type": [ "required", "string", "equals:department" ],
+			"data.attributes": [ "required", "object" ],
+			"data.attributes.fullName": [
 				"required",
 				"string",
 				"minLength:10",
-				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$"
+				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
+				[ "notExists", DepartmentManager, "fullName" ]
 			],
-			acronym: [
+			"data.attributes.acronym": [
 				"required",
 				"string",
 				"minLength:2",
 				"regex:([A-Z][a-z]*)+",
-				"acronym:fullName"
+				"acronym:data.attributes.fullName",
+				[ "notExists", DepartmentManager, "acronym" ]
 			],
-			mayAdmit: [ "required", "boolean" ]
+			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<CreatedResponseInfo> {
 		const manager = new DepartmentManager()
-		const departmentInfo = await manager.create(request.body)
+		const departmentInfo = await manager.create(request.body.data.attributes)
 
-		response.status(this.status.OK).json(departmentInfo)
+		return new CreatedResponseInfo(departmentInfo)
 	}
 }

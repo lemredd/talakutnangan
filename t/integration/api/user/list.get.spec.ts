@@ -1,8 +1,9 @@
-import RequestEnvironment from "$!/singletons/request_environment"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import RequestEnvironment from "$!/singletons/request_environment"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
@@ -24,6 +25,8 @@ describe("GET /api/user/list", () => {
 			.get("/api/user/list")
 			.query({ criteria: "complete" })
 			.set("Cookie", cookie)
+			.type(JSON_API_MEDIA_TYPE)
+			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.attributes.email", admin.email)
