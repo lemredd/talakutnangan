@@ -39,9 +39,9 @@ export default abstract class Manager<T extends Model, U> {
 		return []
 	}
 
-	async findWithID(id: number): Promise<Serializable> {
+	async findWithID(id: number, constraints: object = {}): Promise<Serializable> {
 		try {
-			const foundModel = await this.findOneOnColumn("id", id)
+			const foundModel = await this.findOneOnColumn("id", id, constraints)
 
 			Log.success("manager", "done searching for a model using ID")
 
