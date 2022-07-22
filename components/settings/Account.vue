@@ -41,7 +41,7 @@ form {
 </style>
 
 <script setup lang="ts">
-import TextualField from "@/fields/text.vue"
+import TextualField from "@/fields/textual.vue"
 import { inject, Ref } from "vue"
 
 const userInfo = inject("userInfo") as Ref<{ [key: string]: any }>

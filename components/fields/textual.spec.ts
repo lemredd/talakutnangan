@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils"
 import { faker } from "@faker-js/faker"
-import TextualField from "@/fields/text.vue"
+import TextualField from "@/fields/textual.vue"
 
 describe("Component: fields/Textual", () => {
 	it("can update", async () => {

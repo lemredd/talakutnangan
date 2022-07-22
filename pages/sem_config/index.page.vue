@@ -42,7 +42,7 @@ main {
 
 <script setup lang="ts">
 import { ref } from "vue"
-import TextualField from "@/fields/text.vue"
+import TextualField from "@/fields/textual.vue"
 
 const sd= ref("Start date")
 const ed = ref("End date")
