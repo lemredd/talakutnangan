@@ -24,7 +24,7 @@ export default async function(
 			})
 
 			// TODO: Store found model in cache
-			return foundModel.data
+			return Boolean(foundModel.data)
 		} catch(error) {
 			throw new Error("Manager cannot be instantiated")
 		}
