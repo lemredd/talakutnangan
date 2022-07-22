@@ -19,12 +19,11 @@ export default class extends JSONController {
 	}
 
 	get bodyValidationRules(): object {
-		// TODO: Make a validator to check for archive models
 		return {
 			"data": [ "required", "array" ],
 			"data.*": [ "required", "object" ],
 			"data.*.type": [ "required", "string", "equals:department" ],
-			"data.*.id": [ "required", "numeric" ]
+			"data.*.id": [ "required", "numeric", [ "archived", DepartmentManager ] ]
 		}
 	}
 
