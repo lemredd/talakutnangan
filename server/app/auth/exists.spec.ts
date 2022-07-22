@@ -15,6 +15,18 @@ describe("Validator: Exists", () => {
 		expect(isValid).toBeTruthy()
 	})
 
+	it("cannot validate non-existence", async () => {
+		const user = await (new UserFactory()).insertOne()
+		const validator = {}
+		const value = user.name
+		const args = [ UserManager, "name" ]
+		await user.destroy({ force: false })
+
+		const isValid = await exists({ value, args }, validator as Validator)
+
+		expect(isValid).toBeFalsy()
+	})
+
 	it("cannot validate absence", async () => {
 		const validator = {}
 		const value = "Hello world!"
