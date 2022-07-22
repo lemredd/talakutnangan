@@ -2,6 +2,7 @@ import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
 import DepartmentFactory from "~/factories/department"
 import registerCustomValidators from "!/app/auth/register_custom_validators"
+
 import Controller from "./restore.patch"
 
 const BODY_VALIDATION_INDEX = 0
