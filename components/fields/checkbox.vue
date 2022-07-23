@@ -9,7 +9,7 @@
 			:class=inputClasses
 			:checked="modelValue.has(value)"
 			:value="value"
-			@input="emitUpdate"
+			@change="emitUpdate"
 			:disabled="disabled"
 			ref="inputField"
 			/>
