@@ -2,7 +2,11 @@ import type { WhereOptions } from "%/types/dependent"
 import { Op } from "sequelize"
 
 export default class Condition<T = any> {
-	private currentCondition: { [key: string|symbol]: any } = {}
+	private currentCondition: { [key: string|symbol]: any }
+
+	constructor(currentCondition: { [key: string|symbol]: any } = {}) {
+		this.currentCondition = currentCondition
+	}
 
 	not(column: string, value: any): Condition {
 		this.currentCondition[column] = { [Op.not]: value }
@@ -34,6 +38,11 @@ export default class Condition<T = any> {
 
 	or(...conditions: Condition[]): Condition {
 		this.currentCondition[Op.or] = conditions.map(condition => condition.build())
+		return this
+	}
+
+	and(...conditions: Condition[]): Condition {
+		this.currentCondition[Op.and] = conditions.map(condition => condition.build())
 		return this
 	}
 
