@@ -5,6 +5,17 @@ import type { GeneratedData } from "~/types/dependent"
 
 import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
+import {
+	tag,
+	role,
+	user,
+	post,
+	comment,
+	semester,
+	profanity,
+	department,
+	auditTrail
+} from "$/permissions/permission_list"
 
 export default class RoleFactory extends BaseFactory<Role> {
 	#name: () => string = () => faker.name.findName()
@@ -83,5 +94,18 @@ export default class RoleFactory extends BaseFactory<Role> {
 	auditTrailFlags(flags: number): RoleFactory {
 		this.#auditTrailFlags = flags
 		return this
+	}
+
+	super(): RoleFactory {
+		return this
+			.tagFlags(tag.generateSuperMask())
+			.roleFlags(role.generateSuperMask())
+			.userFlags(user.generateSuperMask())
+			.postFlags(post.generateSuperMask())
+			.commentFlags(comment.generateSuperMask())
+			.semesterFlags(semester.generateSuperMask())
+			.profanityFlags(profanity.generateSuperMask())
+			.departmentFlags(department.generateSuperMask())
+			.auditTrailFlags(auditTrail.generateSuperMask())
 	}
 }
