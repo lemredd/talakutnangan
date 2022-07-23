@@ -42,9 +42,11 @@ export default abstract class extends Middleware {
 
 			throw new ErrorBag(
 				errorInfos.map((info: any) => new ValidationError(
-					{
-						[this.sourceType]: info.field
-					} as SourceParameter|SourcePointer,
+					this.sourceType === null
+						? null
+						: {
+							[this.sourceType]: info.field
+						} as SourceParameter|SourcePointer,
 					info.message
 				))
 			)
@@ -54,5 +56,5 @@ export default abstract class extends Middleware {
 	/**
 	 * Type of source where the validation error comes from.
 	 */
-	get sourceType(): "pointer"|"parameter" { return "pointer" }
+	get sourceType(): "pointer"|"parameter"|null { return "pointer" }
 }
