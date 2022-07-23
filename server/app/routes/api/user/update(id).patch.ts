@@ -9,10 +9,12 @@ import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import MultipartController from "!/common_controllers/multipart_controller"
 import IDParameterValidation from "!/middlewares/validation/id_parameter"
+import MultipartController from "!/common_controllers/multipart_controller"
+import MatchedIDParameterValidation from "!/middlewares/validation/matched_id_parameter"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
 	UPDATE_OWN_DATA,
@@ -36,7 +38,8 @@ export default class extends MultipartController {
 			new IDParameterValidation([
 				[ "id", UserManager ]
 			]),
-			...super.validations
+			...super.validations,
+			new MatchedIDParameterValidation()
 		]
 	}
 
@@ -45,15 +48,15 @@ export default class extends MultipartController {
 			// TODO: Make validator for names
 			name: [ "required", "string" ],
 			email: [ "required", "string", "email" ],
-			// TODO: Make buffer validator handle multiple MIME types and null
-			// signature: [ "nullable", "buffer:image/png" ]
+			// TODO: Think of maximum size of picture
+			signature: [ "nullable", [ "buffer", "image/png", 1024 * 1024 * 10 ] ]
 		}
 	}
 
 	async handle(
 		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
 		response: Response
-	): Promise<void> {
+	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager()
 		const  id = +request.params.id
 		const { name, email, signature = undefined } = request.body
@@ -91,10 +94,9 @@ export default class extends MultipartController {
 
 		if (signature) updateData.signature = signature.buffer
 
-		const affectedCount = await manager.update(id, updateData)
+		await manager.update(id, updateData)
 
-		response.status(affectedCount > 0? this.status.NO_CONTENT : this.status.NOT_MODIFIED)
-		response.end()
+		return new NoContentResponseInfo()
 	}
 
 	get postJobs(): Middleware[] {
