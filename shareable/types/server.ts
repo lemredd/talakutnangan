@@ -155,4 +155,5 @@ export interface SourceParameter extends Serializable {
 // Media types used in the application
 export const HTML_MEDIA_TYPE = "text/html"
 export const JSON_MEDIA_TYPE = "application/json"
+export const MULTIPART_MEDIA_TYPE = "multipart/form-data"
 export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"
