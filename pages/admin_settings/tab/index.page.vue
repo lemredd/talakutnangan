@@ -21,7 +21,7 @@ header {
 </style>
 
 <script setup lang="ts">
-import Tab from "@/Tab.vue"
+import Tab from "@/tab.vue"
 import Users from "@/admin_settings/Users.vue"
 import Roles from "@/admin_settings/Roles.vue"
 import Departments from "@/admin_settings/Departments.vue"

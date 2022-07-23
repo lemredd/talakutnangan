@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils"
-import Tab from "./Tab.vue"
+import Tab from "./tab.vue"
 
 const Tab1 = {
 	name: "Tab1",
