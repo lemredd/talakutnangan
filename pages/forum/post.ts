@@ -15,14 +15,14 @@ export var dummyUserDemo =
 ];
 
 //Create post start
-//To create a post, the needed variables are
+//To create a post, the needed arguments are
 // - ID - 1
 // - Username - 2
 // - Post title - 3
 // - Post description - 4
-// - Empty voters object - 5
-// - Empty down voters object - 6
-export function createPost(id: number, user: string, title: string, desc: string, voters:[], downVoters: [])
+// - Empty voters array - 5
+// - Empty down voters array - 6
+export function createPost(id: number, user: string, title: string, desc: string, voters:[], downVoters: [], isMenuShown: boolean, isEditShown: boolean, isPostShown: boolean)
 {
     var postCreate = 
     {
@@ -40,8 +40,10 @@ export function createPost(id: number, user: string, title: string, desc: string
         {
             return voters.length;
         },
+        isMenuShown,
+        isEditShown,
+        isPostShown
     };
-    
     posts.value.push(postCreate);
 }
 //Create post end
@@ -72,7 +74,7 @@ export function getSecludedPost(post: Post, secludedPosts: Post[], i: number)
         else
         {
             secludedPosts.push(post);
-            alert("Please correct your post!")
+            alert("Post not posted! Please correct your post!")
         }
     }
 }

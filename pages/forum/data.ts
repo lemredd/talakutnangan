@@ -1,4 +1,7 @@
+import { ref, Ref } from "vue";
+
 export type Post = {
+[x: string]: any;
     id: number
     user: string
     title: string
@@ -7,12 +10,15 @@ export type Post = {
     voters: string[]
     downVoters: string[]
     voteCount: () => number
+    isMenuShown: boolean
+    isEditShown: boolean
+    isPostShown: boolean
     
 };
 
-var secludedPosts: Post[];
+var secludedPosts: Post[] = [];
 
-var posts: Post[];
+var posts: Post[] = [];
 
 export function getPosts(): Post[]
 {

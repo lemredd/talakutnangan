@@ -11,12 +11,15 @@ const Tab2 = {
 }
 
 describe("Component: Tab", () => {
-	it("Should have first tab initially active", () => {
+	it("Should have first tab initially activ", () => {
 		const wrapper = mount(Tab, {
 			shallow: true,
 			global: {
 				provide: {
-					url: "Tab1"
+					url: "Tab1",
+					pageContext: {
+						urlPathname: "/sample"
+					}
 				}
 			},
 			props: {
@@ -36,7 +39,10 @@ describe("Component: Tab", () => {
 			shallow: true,
 			global: {
 				provide: {
-					url: "Tab2"
+					url: "Tab2",
+					pageContext: {
+						urlPathname: "/sample"
+					}
 				}
 			},
 			props: {

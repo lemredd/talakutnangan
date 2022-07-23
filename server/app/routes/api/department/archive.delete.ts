@@ -29,8 +29,8 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager()
 
-		// TODO: make a batch archive method
-		// const deleteCount = await manager.archive(+id)
+		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
+		await manager.archiveBatch(IDs)
 
 		return new NoContentResponseInfo()
 	}
