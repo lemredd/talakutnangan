@@ -8,7 +8,7 @@ export default class extends Validation {
 			"params.id": [ "required", "numeric" ],
 			"body": [ "required" ],
 			"body.data": [ "required", "object" ],
-			"body.data.id": [ "required", "numeric", "same:params.id" ]
+			"body.data.id": [ "required", "numeric", [ "sameID", "params.id" ] ]
 		})
 	}
 

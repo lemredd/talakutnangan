@@ -10,7 +10,7 @@ describe("Middleware: Matched ID parameter validation", () => {
 		const middleware = new Validation()
 		requester.customizeRequest({
 			params: {
-				id: 1
+				id: "1"
 			},
 			body: {
 				data: {
@@ -28,7 +28,7 @@ describe("Middleware: Matched ID parameter validation", () => {
 		const middleware = new Validation()
 		requester.customizeRequest({
 			params: {
-				id: 1
+				id: "1"
 			},
 			body: {
 				data: {
