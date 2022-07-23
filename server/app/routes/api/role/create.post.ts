@@ -30,7 +30,7 @@ export default class extends JSONController {
 			"data":										[ "required", "object" ],
 			"data.type":								[ "required", "string", "equals:role" ],
 			"data.attributes":						[ "required", "object" ],
-			"data.attributes.name":					[ "required", "string" ],
+			"data.attributes.name":					[ "required", "string", "alphaDash" ],
 			"data.attributes.semesterFlags":	[
 				"required",
 				"numeric",
