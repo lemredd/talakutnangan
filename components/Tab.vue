@@ -1,18 +1,12 @@
 <template>
 <ul class="tabs">
-	<li
-	v-for="(_, tab) in tabs"
-	:key="tab"
-	:class="['tab-button', { 'active': currentTab === tab }]"
-	>
+	<li v-for="tab in tabs" class="tab-button" :class="{ 'active': fullUrl!.includes(tab.toLowerCase()) }">
 		<Link
-		@click.capture="setCurrentTab(tab)"
-		:href="`${fullUrl}/${tab}`">
-			{{ (tab as string).charAt(0).toUpperCase() + (tab as string).substring(1) }}
+			:href="`${parentUrl}/${tab.toLowerCase()}`">
+			{{ tab }}
 		</Link>
 	</li>
 </ul>
-<component :is="tabs[currentTab]"></component>
 </template>
 
 <style lang="scss">
@@ -48,22 +42,16 @@
 <script setup lang="ts">
 import { defineComponent, inject, ref } from "vue"
 import Link from "@/Link.vue"
+import { PageContext } from "#/types"
 
-const pageContext = inject("pageContext") as any
+const pageContext = inject("pageContext") as PageContext
 
-
-const url = inject("url") as string
 const fullUrl = pageContext.urlPathname
-console.log(fullUrl)
+const parentUrl = pageContext.urlPathname!.charAt(0) + pageContext.urlPathname!.substring(1, pageContext.urlPathname!.substring(1).indexOf("/") + 1)
+
+console.log(parentUrl)
 const { tabs } = defineProps<{
-	tabs: {
-		[key: string]: ReturnType<typeof defineComponent>
-	}
+	tabs: string[]
 }>()
 
-const currentTab = ref(url)
-
-function setCurrentTab(tab: ReturnType<typeof defineComponent>) {
-	currentTab.value = tab.toLowerCase()
-}
 </script>
