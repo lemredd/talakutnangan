@@ -27,7 +27,7 @@ export default class extends DevController {
 		response.end()
 
 		const to = process.env.EMAIL_USER!
-		const subject = "Email Verification"
+		const subject = "Sample email"
 
 		Transport.sendMail([ to ], subject, emailTemplatePath, variables)
 			.then(info => {
