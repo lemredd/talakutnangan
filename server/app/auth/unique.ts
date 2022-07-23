@@ -1,5 +1,5 @@
 import type { Validator } from "node-input-validator"
-import get from "lodash.get"
+import accessDeepPath from "!/helpers/access_deep_path"
 
 import type { BaseManagerClass } from "!/types/independent"
 
@@ -25,7 +25,7 @@ export default async function(
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
 			const foundModel = await manager.findOneOnColumn(columnName, value)
-			const id = get(validator.inputs, IDPath)
+			const id = accessDeepPath(validator.inputs, IDPath)
 
 			// TODO: Store found model in cache
 			return foundModel.data === null || (foundModel.data as any).id === id
