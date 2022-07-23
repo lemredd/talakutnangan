@@ -17,7 +17,7 @@ export default class extends Controller {
 
 	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
 		return await new Promise<NoContentResponseInfo>(resolve => {
-			request.logout((error: Error): void => {
+			request.logout((error: any): void => {
 				if (error) throw error
 				// TODO: regenerate XSRF-Token or session
 

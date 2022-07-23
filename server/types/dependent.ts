@@ -24,7 +24,7 @@ export interface Request extends BaseRequest {
 	// Added due to `passport` package
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
-	logout: (callback: (error: Error) => void) => void
+	logout: (done: (error: any) => void) => void
 
 	// Added to manage the transactions
 	transaction: TransactionManager
