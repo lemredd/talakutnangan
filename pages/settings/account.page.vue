@@ -43,7 +43,7 @@ form {
 
 <script setup lang="ts">
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "./settings_header.vue"
+import SettingsHeader from "../../components/settings/settings_header.vue"
 import { inject, Ref } from "vue"
 
 </script>

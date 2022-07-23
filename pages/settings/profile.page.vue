@@ -102,7 +102,7 @@ form {
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "./settings_header.vue"
+import SettingsHeader from "../../components/settings/settings_header.vue"
 
 
 // const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
