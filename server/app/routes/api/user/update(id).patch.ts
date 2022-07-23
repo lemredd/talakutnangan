@@ -70,8 +70,8 @@ export default class extends MultipartController {
 		response: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager()
-		const  id = +request.params.id
-		const { name, email, signature = undefined } = request.body
+		const id = +request.body.data
+		const { name, email, signature = undefined } = request.body.data.attributes
 		const userData = deserialize(request.user) as UserProfile
 		const updateData: Serializable = { name, email }
 
