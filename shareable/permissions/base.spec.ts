@@ -167,4 +167,13 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(isAllowed).toBeFalsy()
 	})
+
+	it("can generate permitted names", async () => {
+		const permissionGroup = new GroupC()
+		const flags = permissionGroup.generateMask("e", "f")
+
+		const permissionNames = permissionGroup.deserialize(flags)
+
+		expect(permissionNames).toStrictEqual([ "e", "f" ])
+	})
 })

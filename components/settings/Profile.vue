@@ -100,7 +100,7 @@ form {
 
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import TextualField from "@/fields/textual.vue"
 
 const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
 const profileInfo = userInfo.value.profile

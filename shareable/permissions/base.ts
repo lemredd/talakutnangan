@@ -25,7 +25,7 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	 */
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
 		const mask = this.generateMask(...permissionNames)
-		return (role[this.name] & mask) === mask
+		return this.doesMatch(role[this.name], mask)
 	}
 
 	/**
@@ -55,6 +55,22 @@ export default abstract class<T extends { [key: string]: number }, U> {
 			return previousMask | permissionInfo.flag
 		}, 0)
 	}
+  
+
+	/**
+	 * Deserialize the flag into permission names.
+	 */
+	deserialize(flags: number): U[] {
+		const permissions = this.permissions
+		const names: U[] = []
+		for(const [ key, value ] of permissions.entries()) {
+			if (this.doesMatch(flags, value.flag)) {
+				names.push(key)
+			}
+		}
+
+		return names
+	}
 
 	/**
 	 * Returns true if there is at least one role allowed.
@@ -74,5 +90,9 @@ export default abstract class<T extends { [key: string]: number }, U> {
 					return previousPermittedRole || this.mayAllow(role, ...combination)
 				}, false)
 		}, false)
+	}
+
+	private doesMatch(flags: number, targetFlag: number): boolean {
+		return (flags & targetFlag) === targetFlag
 	}
 }

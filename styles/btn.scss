@@ -1,0 +1,12 @@
+@import "./variables.scss";
+
+.btn {
+	padding: .5em 1em;
+	text-transform: uppercase;
+	font-size: small;
+
+	&.btn-primary {
+		background-color: $color-primary;
+		color: white;
+	}
+}
