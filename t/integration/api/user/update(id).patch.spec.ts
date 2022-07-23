@@ -87,11 +87,10 @@ describe("PATCH /api/user/update/:id", () => {
 
 	it("can be accessed by student and retain email verification after update", async () => {
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
-		.insertOne()
+			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+			.insertOne()
 
 		const { user: student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		const newStudent = await new UserFactory().makeOne()
 		const signaturePath = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
@@ -100,7 +99,7 @@ describe("PATCH /api/user/update/:id", () => {
 			.field("data[id]", student.id)
 			.field("data[attributes][name]", student.name)
 			.field("data[attributes][email]", student.email)
-			.field("data[attributes][signature]", signaturePath)
+			.attach("data[attributes][signature]", signaturePath)
 			.set("Cookie", cookie)
 			.type(MULTIPART_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
