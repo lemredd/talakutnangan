@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import TextualField from "@/fields/textual.vue"
 import type { ManagerKind, User, Department } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import DataList from "./users_manager/DataList.vue"

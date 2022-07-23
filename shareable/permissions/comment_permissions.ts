@@ -22,7 +22,7 @@ import PermissionGroup from "$/permissions/base"
 const commentColumnName = "commentFlags"
 
 type CommentFlags = { [commentColumnName]: number }
-type Permissions =
+export type Permissions =
 	| OperationPermission
 	| Exclude<LevelPermission, "readOwnScope">
 	| "vote"
