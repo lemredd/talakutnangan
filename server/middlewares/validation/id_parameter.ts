@@ -1,8 +1,8 @@
 import { Request } from "!/types/dependent"
-import BaseManager from "%/managers/base"
+import type { BaseManagerClass } from "!/types/independent"
 import RouteParameterValidation from "!/middlewares/validation/route_parameter"
 
-type ParameterInfo = [ string, new() => BaseManager<any, any> ]
+type ParameterInfo = [ string, BaseManagerClass ]
 
 export default class extends RouteParameterValidation {
 	constructor(IDs: ParameterInfo[]) {

@@ -5,6 +5,7 @@
  */
 
 import type { UserKind } from "$/types/database"
+import BaseManager from "%/managers/base"
 
 /**
  * Shape of middleware arguments for e-mail verification.
@@ -40,3 +41,8 @@ export interface PasswordResetArguments {
  * Expected shape of the validation rules used mostly in controllers.
  */
 export type ValidationRules = { [key:string]: any[] }
+
+/**
+ * Useful when passing a base manager to other functions/methods
+ */
+export type BaseManagerClass = new() => BaseManager<any, any>

@@ -1,7 +1,7 @@
 import type { Validator } from "node-input-validator"
 import get from "lodash.get"
 
-import BaseManager from "%/managers/base"
+import type { BaseManagerClass } from "!/types/independent"
 
 /**
  * Function to validate if the value is/will be unique in the database.
@@ -17,7 +17,7 @@ export default async function(
 			throw new Error("Number of arguments passed to `unique` rule is insufficient")
 		}
 
-		const rawManager: new() => BaseManager<any,any> = args[0]
+		const rawManager: BaseManagerClass = args[0]
 		const columnName = args[1]
 		const IDPath = args[2]
 

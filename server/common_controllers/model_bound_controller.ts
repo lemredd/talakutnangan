@@ -1,5 +1,6 @@
+import type { BaseManagerClass } from "!/types/independent"
+
 import Log from "$!/singletons/log"
-import BaseManager from "%/managers/base"
 import Validation from "!/bases/validation"
 import BoundController from "!/common_controllers/bound_controller"
 import RouteParamterValidation from "!/middlewares/validation/route_parameter"
@@ -33,7 +34,7 @@ export default abstract class extends BoundController {
 		}
 	}
 
-	get manager(): (new() => BaseManager<any, any>)|null {
+	get manager(): BaseManagerClass|null {
 		return null
 	}
 }
