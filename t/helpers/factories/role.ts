@@ -96,7 +96,7 @@ export default class RoleFactory extends BaseFactory<Role> {
 		return this
 	}
 
-	super(): RoleFactory {
+	superRole(): RoleFactory {
 		return this
 			.tagFlags(tag.generateSuperMask())
 			.roleFlags(role.generateSuperMask())
