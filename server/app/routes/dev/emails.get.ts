@@ -19,7 +19,7 @@ export default class extends DevController {
 		}
 		const rawVerification = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedVerification = convertMarkdownToHTML(rawVerification)
-		const encapsulatedFragment = encapsulateFragment("Sample email", "", parsedVerification)
+		const encapsulatedFragment = await encapsulateFragment("Sample email", "", parsedVerification)
 
 		response.status(this.status.OK)
 		response.header("Content-Type", "text/html")
