@@ -41,7 +41,4 @@ describe("PATCH /api/department/update/:id", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})
-
-	it.todo("cannot accept invalid values")
-	it.todo("cannot update missing model")
 })

@@ -35,3 +35,8 @@ export interface PasswordResetArguments {
 		password: string
 	}
 }
+
+/**
+ * Expected shape of the validation rules used mostly in controllers.
+ */
+export type ValidationRules = { [key:string]: any[] }

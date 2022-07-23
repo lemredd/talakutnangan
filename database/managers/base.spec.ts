@@ -7,9 +7,12 @@ import type {
 } from "%/types/dependent"
 
 import User from "%/models/user"
+import Database from "~/set-ups/database"
 import UserFactory from "~/factories/user"
 import limit from "%/managers/helpers/limit"
+import existence from "%/managers/helpers/existence"
 import Transformer from "%/transformers/base"
+import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
@@ -26,7 +29,8 @@ class MockUserTransformer extends Transformer<User, void> {
 			"id",
 			"name",
 			"email",
-			"kind"
+			"kind",
+			"deletedAt"
 		])
 
 		return safeObject
@@ -38,6 +42,7 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
 		return [
+			existence,
 			this.customReadPipe
 		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
 	}
@@ -143,6 +148,64 @@ describe("Database: Base Read Operations", () => {
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(5)
 	})
+
+	it("can find on one column with existing", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "exists"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toHaveProperty("type", "user")
+	})
+
+	it("cannot find on one column with existing if destroyed already", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+		await base.destroy({ force: false })
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "exists"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toBeNull()
+	})
+
+	it("can find on one column with archived", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+		await base.destroy({ force: false })
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "archived"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toHaveProperty("type", "user")
+	})
+
+	it("cannot find on one column with archived if still exists", async() => {
+		const manager = new MockUserManager()
+		const base = await (new UserFactory()).insertOne()
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "archived"
+			}
+		})
+
+		expect(user).toHaveProperty("data")
+		expect(user.data).toBeNull()
+	})
 })
 
 describe("Database: Base Create Operations", () => {
@@ -212,7 +275,7 @@ describe("Database: Base Update Operations", () => {
 })
 
 describe("Database: Base Archive and Restore Operations", () => {
-	it("archive base", async () => {
+	it("can archive base", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
 
@@ -227,10 +290,10 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("restore base", async () => {
+	it("can restore base", async () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
-		await base.destroy({force: false})
+		await base.destroy({ force: false })
 
 		await manager.restore(base.id)
 
@@ -241,7 +304,7 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)!.deletedAt).toBeNull()
 	})
 
-	it("archive base through transaction", async () => {
+	it("can archive base through transaction", async () => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
 		const base = await (new UserFactory()).insertOne()
@@ -261,11 +324,11 @@ describe("Database: Base Archive and Restore Operations", () => {
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("restore base through transaction", async () => {
+	it("can restore base through transaction", async () => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
 		const base = await (new UserFactory()).insertOne()
-		await base.destroy({force: false})
+		await base.destroy({ force: false })
 
 		await transaction.initialize()
 		await manager.restore(base.id)
@@ -278,5 +341,71 @@ describe("Database: Base Archive and Restore Operations", () => {
 				where: { id: base.id }
 			})
 		)!.deletedAt).toBeNull()
+	})
+
+	it("can archive multiple bases", async () => {
+		const manager = new MockUserManager()
+		const bases = await (new UserFactory()).insertMany(3)
+
+		const deleteCount = await manager.archiveBatch(bases.map(base => base.id))
+
+		expect(deleteCount).toBe(3)
+		expect((
+			await User.findOne({
+				where: { id: bases[0].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[1].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[2].id },
+				paranoid: true
+			})
+		)?.deletedAt).not.toBeNull()
+	})
+
+	it("can restore multiple bases", async () => {
+		const manager = new MockUserManager()
+		const bases = await (new UserFactory()).insertMany(3)
+		await bases[0].destroy({ force: false })
+		await bases[1].destroy({ force: false })
+		await bases[2].destroy({ force: false })
+
+		await manager.restoreBatch(bases.map(base => base.id))
+
+		expect((
+			await User.findOne({
+				where: { id: bases[0].id }
+			})
+		)!.deletedAt).toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[1].id }
+			})
+		)!.deletedAt).toBeNull()
+		expect((
+			await User.findOne({
+				where: { id: bases[2].id }
+			})
+		)!.deletedAt).toBeNull()
+	})
+})
+
+describe("Database: Error handling down errors", () => {
+	beforeEach(async () => {
+		await Database.destroy()
+	})
+
+	it("can handle down errors", async () => {
+		const manager = new MockUserManager()
+		const id = 0
+
+		expect(manager.findWithID(id)).rejects.toThrow(DatabaseError)
 	})
 })

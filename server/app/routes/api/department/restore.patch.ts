@@ -19,20 +19,19 @@ export default class extends JSONController {
 	}
 
 	get bodyValidationRules(): object {
-		// TODO: Make a validator to check for archive models
 		return {
 			"data": [ "required", "array" ],
 			"data.*": [ "required", "object" ],
 			"data.*.type": [ "required", "string", "equals:department" ],
-			"data.*.id": [ "required", "numeric" ]
+			"data.*.id": [ "required", "numeric", [ "archived", DepartmentManager ] ]
 		}
 	}
 
 	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager()
 
-		// TODO: make a batch restore method
-		// await manager.restore(+id)
+		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
+		await manager.restoreBatch(IDs)
 
 		return new NoContentResponseInfo()
 	}

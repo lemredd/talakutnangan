@@ -34,8 +34,9 @@ export default class<T extends Request> extends RequestEnvironment {
 		for (const key in properties) {
 			if (Object.prototype.hasOwnProperty.call(properties, key)) {
 				const value = properties[key];
-				// this.oldProperties[key] = value
 
+				// @ts-ignore
+				this.oldProperties[key] = this.request[key]
 				// @ts-ignore
 				this.request[key] = value
 			}
