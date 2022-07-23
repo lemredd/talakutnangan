@@ -16,10 +16,13 @@ export default class extends Controller {
 	get validations(): Validation[] { return [] }
 
 	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
-		request.logout()
+		return await new Promise<NoContentResponseInfo>(resolve => {
+			request.logout((error: Error): void => {
+				if (error) throw error
+				// TODO: regenerate XSRF-Token or session
 
-		// TODO: regenerate XSRF-Token or session
-
-		return new NoContentResponseInfo()
+				resolve(new NoContentResponseInfo())
+			})
+		})
 	}
 }
