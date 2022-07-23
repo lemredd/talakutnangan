@@ -1,10 +1,10 @@
+<!--
+	TODO: Refactor all WindiCSS inline classes using @apply directive
+ -->
 <template>
 	<div class="input-container">
-		<label v-if="label" class="input-header">
-			{{ label }}
-		</label>
 		<input
-			class="bg-transparent"
+			class="bg-transparent mr-2"
 			type="checkbox"
 			:class=inputClasses
 			:checked="modelValue.has(value)"
@@ -13,6 +13,9 @@
 			:disabled="disabled"
 			ref="inputField"
 			/>
+		<label v-if="label" class="input-header">
+			{{ label }}
+		</label>
 	</div>
 </template>
 

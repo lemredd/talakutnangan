@@ -1,16 +1,25 @@
+<!--
+	TODO: Refactor all WindiCSS inline classes using @apply directive
+ -->
 <template>
-<div class="flags">
-			<h2 class="text-red-400">{{ header }} Flags</h2>
-			<Checkbox v-for="permissionName in permissionNames"
-				:label="camelToSentence(permissionName).toLowerCase()"
-				:value="permissionName"
-				@change="updateFlags"
-				v-model="rawFlags" />
-		</div>
+<ul class="flags my-3">
+	<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">{{ header }} Flags</h2>
+	<li class="ml-5" v-for="permissionName in permissionNames">
+		<Checkbox
+			:label="camelToSentence(permissionName).toLowerCase()"
+			:value="permissionName"
+			@change="updateFlags"
+			v-model="rawFlags" />
+	</li>
+</ul>
 </template>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
 
+.flag-header {
+	color: $color-primary;
+}
 </style>
 
 <script setup lang="ts">

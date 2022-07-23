@@ -1,7 +1,7 @@
 <template>
 	<form @submit.prevent="createRole">
 		<TextualField
-				label="Display Name"
+				label="Role Name"
 				type="text"
 				v-model="roleName" />
 
@@ -29,12 +29,17 @@
 			header="User"
 			:base-permission-group="user"
 			v-model:flags="userFlags" />
+		<FlagSelector
+			header="Audit Trail"
+			:base-permission-group="auditTrail"
+			v-model:flags="auditTrailFlags" />
 
-		<input type="submit" value="Create Role"/>
+		<input class="btn btn-primary" type="submit" value="Create Role"/>
 	</form>
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 .attrib-label {
 	@apply block;
 }
@@ -54,7 +59,8 @@ import {
 	post,
 	comment,
 	semester,
-	profanity
+	profanity,
+	auditTrail
 } from "$/permissions/permission_list"
 import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
@@ -69,6 +75,7 @@ const tagFlags = ref<number>(0)
 const commentFlags = ref<number>(0)
 const profanityFlags = ref<number>(0)
 const userFlags = ref<number>(0)
+const auditTrailFlags = ref<number>(0)
 
 RoleFetcher.initialize("/api")
 
@@ -80,7 +87,8 @@ function createRole() {
 		tagFlags: tagFlags.value,
 		commentFlags: commentFlags.value,
 		profanityFlags: profanityFlags.value,
-		userFlags: userFlags.value
+		userFlags: userFlags.value,
+		auditTrailFlags: auditTrailFlags.value
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)
