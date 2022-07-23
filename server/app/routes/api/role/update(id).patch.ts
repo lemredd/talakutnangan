@@ -1,9 +1,11 @@
 import { Request, Response } from "!/types/dependent"
+import { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import { CREATE } from "$/permissions/role_combinations"
-import JSONController from "!/common_controllers/json_controller"
+import { UPDATE } from "$/permissions/role_combinations"
+import NoContentResponseInfo from "!/response_infos/no_content"
+import BoundJSONController from "!/common_controllers/bound_json_controller"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
@@ -16,24 +18,26 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
-export default class extends JSONController {
+export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			CREATE
+			UPDATE
 		])
 	}
 
 	get bodyValidationRules(): object {
 		return {
-			"data":										[ "required", "object" ],
-			"data.type":								[ "required", "string", "equals:role" ],
-			"data.attributes":						[ "required", "object" ],
-			"data.attributes.name":					[
+			"data":						[ "required", "object" ],
+			"data.type":				[ "required", "string", "equals:role" ],
+			"data.id":					[ "required", "numeric" ],
+			"data.attributes":		[ "required", "object" ],
+			"data.attributes.name":	[
 				"required",
 				"string",
-				"regex:^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$"
+				"regex:^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$",
+				[ "unique", RoleManager, "name", "data.id" ]
 			],
 			"data.attributes.semesterFlags":	[
 				"required",
@@ -80,12 +84,33 @@ export default class extends JSONController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
-		const manager = new RoleManager()
-		request.body.data.attributes.departmentFlags = 1
-		request.body.data.attributes.roleFlags = 1
-		const roleInfo = await manager.create(request.body.data.attributes)
+	get manager(): BaseManagerClass { return RoleManager }
 
-		response.status(this.status.CREATED).json(roleInfo)
+	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+		const manager = new RoleManager()
+		const { id, attributes } = request.body.data
+		const {
+			name,
+			tag,
+			user,
+			post,
+			comment,
+			semester,
+			profanity,
+			auditTrail
+		} = attributes
+
+		await manager.update(id, {
+			name,
+			tag,
+			user,
+			post,
+			comment,
+			semester,
+			profanity,
+			auditTrail
+		})
+
+		return new NoContentResponseInfo()
 	}
 }

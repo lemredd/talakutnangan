@@ -12,7 +12,7 @@ import AuthorizationError from "$!/errors/authorization"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import MultipartController from "!/common_controllers/multipart_controller"
-import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
+import IDParameterValidation from "!/middlewares/validation/id_parameter"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
 	UPDATE_OWN_DATA,

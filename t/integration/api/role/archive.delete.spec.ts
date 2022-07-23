@@ -7,7 +7,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/archive(id).delete"
+import Route from "!/app/routes/api/role/archive.delete"
 
 describe("DELETE /api/role/archive/:id", () => {
 	beforeAll(async () => {
@@ -22,16 +22,17 @@ describe("DELETE /api/role/archive/:id", () => {
 		const role = await (new RoleFactory()).insertOne()
 
 		const response = await App.request
-			.delete(`/api/role/archive/${role.id}`)
+			.delete("/api/role/archive")
+			.send({
+				data: [
+					{ type: "role", id: role.id }
+				]
+			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(response.body).toStrictEqual({})
 		expect(await Role.findOne({ where: { id: role.id } })).toBeNull()
 	})
-
-	it.todo("cannot delete non-existing")
-	it.todo("cannot redelete")
 })

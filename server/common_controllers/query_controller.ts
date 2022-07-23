@@ -1,6 +1,6 @@
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
-import QueryValidation from "!/middlewares/authorization/query_validation"
+import QueryValidation from "!/middlewares/validation/query"
 
 /**
  * Specialized controller class which accept query as their input.

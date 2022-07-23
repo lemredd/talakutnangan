@@ -48,7 +48,17 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	}
 
 	/**
-	 *
+	 * Generates mask where all permissions are enabled.
+	 */
+	 generateSuperMask(): number {
+		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => {
+			return previousMask | permissionInfo.flag
+		}, 0)
+	}
+  
+
+	/**
+	 * Deserialize the flag into permission names.
 	 */
 	deserialize(flags: number): U[] {
 		const permissions = this.permissions

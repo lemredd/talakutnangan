@@ -5,6 +5,7 @@ import acronym from "!/app/auth/acronym"
 import notExists from "!/app/auth/not_exists"
 import unique from "!/app/auth/unique"
 import archived from "!/app/auth/archived"
+import sameID from "!/app/auth/same_id"
 
 export default async function() {
 	const customValidators: { [key: string]: (..._a: any[]) => Promise<boolean>|boolean }  = {
@@ -13,7 +14,8 @@ export default async function() {
 		exists,
 		notExists,
 		unique,
-		archived
+		archived,
+		sameID
 	}
 
 	for (const name in customValidators) {

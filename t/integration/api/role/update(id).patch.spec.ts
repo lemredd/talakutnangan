@@ -6,7 +6,7 @@ import { UPDATE } from "$/permissions/role_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/update.put"
+import Route from "!/app/routes/api/role/update(id).patch"
 
 describe("PUT /api/role/update", () => {
 	beforeAll(async () => {
@@ -19,30 +19,30 @@ describe("PUT /api/role/update", () => {
 			.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const role = await (new RoleFactory()).insertOne()
-		const newRoleDetails = await (new RoleFactory()).makeOne()
+		const newRole = await (new RoleFactory()).makeOne()
 
 		const response = await App.request
-			.put("/api/role/update")
+			.patch(`/api/role/update/${role.id}`)
 			.set("Cookie", cookie)
 			.send({
-				id: role.id,
-				name: role.name,
-				departmentFlags:   role.departmentFlags,
-				roleFlags:         role.roleFlags,
-				semesterFlags:     role.semesterFlags,
-				tagFlags:          role.tagFlags,
-				postFlags:         role.postFlags,
-				commentFlags:      role.commentFlags,
-				profanityFlags:    role.profanityFlags,
-				userFlags:         role.userFlags,
-				auditTrailFlags:   role.auditTrailFlags
+				data: {
+					type: "role",
+					id: role.id,
+					attributes: {
+						name:					newRole.name,
+						semesterFlags:    newRole.semesterFlags,
+						tagFlags:         newRole.tagFlags,
+						postFlags:        newRole.postFlags,
+						commentFlags:     newRole.commentFlags,
+						profanityFlags:   newRole.profanityFlags,
+						userFlags:        newRole.userFlags,
+						auditTrailFlags:  newRole.auditTrailFlags
+					}
+				}
 			})
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})
-
-	it.todo("cannot accept invalid values")
-	it.todo("cannot update missing model")
 })
