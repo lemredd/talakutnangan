@@ -48,6 +48,15 @@ export default abstract class<T extends { [key: string]: number }, U> {
 	}
 
 	/**
+	 * Generates mask where all permissions are enabled.
+	 */
+	 generateSuperMask(): number {
+		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => {
+			return previousMask | permissionInfo.flag
+		}, 0)
+	}
+
+	/**
 	 * Returns true if there is at least one role allowed.
 	 *
 	 * @param roles Roles available to a certain user.
