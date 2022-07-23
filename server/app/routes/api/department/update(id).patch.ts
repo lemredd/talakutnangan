@@ -8,7 +8,7 @@ import { UPDATE } from "$/permissions/department_combinations"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import JSONController from "!/common_controllers/json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import IDParameterValidation from "!/middlewares/authorization/id_parameter_validation"
+import IDParameterValidation from "!/middlewares/validation/id_parameter"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 export default class extends JSONController {
