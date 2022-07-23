@@ -15,7 +15,7 @@ export default abstract class extends JSONController {
 			new IDParameterValidation([
 				[ "id", this.manager ]
 			]),
-			...this.validations,
+			...super.validations,
 			new MatchedIDParameterValidation()
 		]
 	}
