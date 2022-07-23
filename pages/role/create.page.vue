@@ -56,7 +56,7 @@ import {
 	semester,
 	profanity
 } from "$/permissions/permission_list"
-import TextualField from "@/fields/text.vue"
+import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
