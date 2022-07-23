@@ -54,8 +54,7 @@ const {
 const rawFlags = ref(new Set(basePermissionGroup.deserialize(flags)))
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
 function updateFlags() {
-	console.log("Updating flags...")
-	const permissionsWithDependencies = new Set([...rawFlags.value])
+	const permissionsWithDependencies = new Set(Array.from(rawFlags.value))
 
 	basePermissionGroup.permissions.forEach((info, permissionName) => {
 		if (permissionsWithDependencies.has(permissionName)) {
@@ -64,9 +63,12 @@ function updateFlags() {
 			})
 		}
 	})
-	console.log(basePermissionGroup.generateMask(...permissionsWithDependencies))
 	rawFlags.value = permissionsWithDependencies
-	emit("update:flags", basePermissionGroup.generateMask(...permissionsWithDependencies))
+	const generatedMask = basePermissionGroup.generateMask(
+		...Array.from(permissionsWithDependencies)
+	)
+
+	emit("update:flags", generatedMask)
 }
 
 const emit = defineEmits<{
