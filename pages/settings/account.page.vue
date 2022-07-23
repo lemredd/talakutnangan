@@ -1,6 +1,6 @@
 <template>
 <SettingsHeader />
-<!-- <form @submit.prevent class="text-dark-200 dark:text-light-100 flex flex-col">
+<form @submit.prevent class="text-dark-200 dark:text-light-100 flex flex-col">
 		<TextualField
 			label="E-mail"
 			type="email"
@@ -21,7 +21,7 @@
 		<h3 class="input-header">Roles</h3>
 		<span class="role bg-white text-black">{{ accountInfo.role }}</span>
 	</div>
-</form> -->
+</form>
 </template>
 
 <style lang="scss">
@@ -43,7 +43,13 @@ form {
 
 <script setup lang="ts">
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "../../components/settings/settings_header.vue"
-import { inject, Ref } from "vue"
+import SettingsHeader from "@/settings/settings_header.vue"
 
+const accountInfo = {
+	email: "email@example.com",
+	password: "password",
+	role: "student",
+	studentNumber: "1920-9999",
+	institute: "INS"
+}
 </script>

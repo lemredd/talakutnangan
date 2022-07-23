@@ -1,6 +1,6 @@
 <template>
 <SettingsHeader />
-	<!-- <form @submit.prevent class="flex flex-col">
+	<form @submit.prevent class="flex flex-col">
 		<div>
 			<TextualField
 				label="Display Name"
@@ -62,7 +62,7 @@
 			</label>
 
 		</div>
-	</form> -->
+	</form>
 </template>
 
 <style scoped lang="scss">
@@ -102,31 +102,37 @@ form {
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "../../components/settings/settings_header.vue"
+import SettingsHeader from "@/settings/settings_header.vue"
 
+
+const profileInfo = {
+	displayName: "Sample Name",
+	profilePic: null as any,
+	signature: null as any
+}
 
 // const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
 // const profileInfo = userInfo.value.profile
 
-// const bodyClasses = inject("bodyClasses") as Ref<string[]>
-// const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
-// function toggleDarkMode() {
-// 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
-// 	if (!mutatedBodyClasses.has("dark")) {
-// 		mutatedBodyClasses.add("dark")
-// 	} else {
-// 		mutatedBodyClasses.delete("dark")
-// 	}
+const bodyClasses = inject("bodyClasses") as Ref<string[]>
+const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
+function toggleDarkMode() {
+	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
+	if (!mutatedBodyClasses.has("dark")) {
+		mutatedBodyClasses.add("dark")
+	} else {
+		mutatedBodyClasses.delete("dark")
+	}
 
-// 	bodyClasses.value = [...mutatedBodyClasses]
-// }
+	bodyClasses.value = [...mutatedBodyClasses]
+}
 
-// function loadImage(e: Event, type: string) {
-// 	const target = e.target as HTMLInputElement
-// 	const [file] = target.files!
-// 	const fileObjectURL = URL.createObjectURL(file)
+function loadImage(e: Event, type: string) {
+	const target = e.target as HTMLInputElement
+	const [file] = target.files!
+	const fileObjectURL = URL.createObjectURL(file)
 
-// 	if (type === "signature") profileInfo.signature = fileObjectURL
-// 	if (type === "profilePic") profileInfo.profilePic = fileObjectURL
-// }
+	if (type === "signature") profileInfo.signature = fileObjectURL
+	if (type === "profilePic") profileInfo.profilePic = fileObjectURL
+}
 </script>
