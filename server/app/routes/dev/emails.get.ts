@@ -4,12 +4,14 @@ import Transport from "!/helpers/email/transport"
 import DevController from "!/common_controllers/dev_controller"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"
+import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
 
 export default class extends DevController {
 	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const emailTemplatePath = "email_verification.md"
+		const { email } = request.query
+		const emailTemplatePath = `${email}.md`
 		const variables = {
 			email: process.env.EMAIL_USER,
 			homePageURL: `${request.protocol}://${request.hostname}`,
@@ -17,10 +19,11 @@ export default class extends DevController {
 		}
 		const rawVerification = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedVerification = convertMarkdownToHTML(rawVerification)
+		const encapsulatedFragment = encapsulateFragment("Sample email", "", parsedVerification)
 
 		response.status(this.status.OK)
 		response.header("Content-Type", "text/html")
-		response.send(parsedVerification)
+		response.send(encapsulatedFragment)
 		response.end()
 
 		const to = process.env.EMAIL_USER!
