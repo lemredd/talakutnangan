@@ -18,7 +18,7 @@ import {
 } from "$/permissions/permission_list"
 
 export default class RoleFactory extends BaseFactory<Role> {
-	#name: () => string = () => faker.name.findName()
+	#name: () => string = () => faker.name.jobTitle()
 	#departmentFlags: number = 0
 	#roleFlags: number = 0
 	#semesterFlags: number = 0
