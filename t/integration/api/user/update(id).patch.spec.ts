@@ -1,5 +1,5 @@
 import flushPromises from "flush-promises"
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import { MULTIPART_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import "~/set-ups/email.set_up"
@@ -28,10 +28,12 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("name", student.name)
-			.field("email", newStudent.email)
+			.field("data[type]", "user")
+			.field("data[id]", student.id)
+			.field("data[attributes][name]", student.name)
+			.field("data[attributes][email]", newStudent.email)
 			.set("Cookie", cookie)
-			.type(JSON_API_MEDIA_TYPE)
+			.type(MULTIPART_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
@@ -68,10 +70,12 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("name", newStudent.name)
-			.field("email", student.email)
+			.field("data[type]", "user")
+			.field("data[id]", student.id)
+			.field("data[attributes][name]", student.name)
+			.field("data[attributes][email]", newStudent.email)
 			.set("Cookie", cookie)
-			.type(JSON_API_MEDIA_TYPE)
+			.type(MULTIPART_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
