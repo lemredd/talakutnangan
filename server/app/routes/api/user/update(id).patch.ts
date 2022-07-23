@@ -45,11 +45,23 @@ export default class extends MultipartController {
 
 	get bodyValidationRules(): object {
 		return {
+			"data":				[ "required", "object" ],
+			"data.type":		[ "required", "string", "equals:role" ],
+			"data.id":			[ "required", "numeric" ],
+			"data.attributes":[ "required", "object" ],
 			// TODO: Make validator for names
-			name: [ "required", "string" ],
-			email: [ "required", "string", "email" ],
+			"data.attributes.name": [ "required", "string" ],
+			"data.attributes.email": [
+				"required",
+				"string",
+				"email",
+				[ "unique", UserManager, "email"]
+			],
 			// TODO: Think of maximum size of picture
-			signature: [ "nullable", [ "buffer", "image/png", 1024 * 1024 * 10 ] ]
+			"data.attributes.signature": [
+				"nullable",
+				[ "buffer", "image/png", 1024 * 1024 * 10 ]
+			]
 		}
 	}
 
