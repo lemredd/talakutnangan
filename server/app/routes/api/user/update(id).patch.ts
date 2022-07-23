@@ -46,7 +46,7 @@ export default class extends MultipartController {
 	get bodyValidationRules(): object {
 		return {
 			"data":				[ "required", "object" ],
-			"data.type":		[ "required", "string", "equals:role" ],
+			"data.type":		[ "required", "string", "equals:user" ],
 			"data.id":			[ "required", "numeric" ],
 			"data.attributes":[ "required", "object" ],
 			// TODO: Make validator for names
