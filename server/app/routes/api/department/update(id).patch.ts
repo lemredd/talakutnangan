@@ -1,33 +1,21 @@
 import { Request, Response } from "!/types/dependent"
+import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
-import Validation from "!/bases/validation"
-
 import DepartmentManager from "%/managers/department"
 import { UPDATE } from "$/permissions/department_combinations"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import JSONController from "!/common_controllers/json_controller"
+import BoundJSONController from "!/common_controllers/bound_json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import IDParameterValidation from "!/middlewares/validation/id_parameter"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-export default class extends JSONController {
+export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			UPDATE
 		])
-	}
-
-	get validations(): Validation[] {
-		return [
-			new IDParameterValidation([
-				[ "id", DepartmentManager ]
-			]),
-			...super.validations
-			// TODO: Validate if parameter ID and body ID are the same
-		]
 	}
 
 	get bodyValidationRules(): object {
@@ -54,6 +42,8 @@ export default class extends JSONController {
 			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
 	}
+
+	get manager(): BaseManagerClass { return DepartmentManager }
 
 	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager()
