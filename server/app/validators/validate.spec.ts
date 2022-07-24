@@ -19,4 +19,24 @@ describe.skip("Validator: Validate", () => {
 
 		expect(error).rejects.toHaveProperty("0.field", "hello")
 	})
+
+	it("can accept multiple valid info", async () => {
+		const descriptor = { hello: new EqualString("world"), foo: new EqualString("bar") }
+		const input = { hello: "world", foo: "bar" }
+
+		const validatedInfo = await validate(descriptor, input)
+
+		expect(validatedInfo).toStrictEqual(validatedInfo)
+	})
+
+	it("cannot accept multiple invalid info", async () => {
+		const descriptor = { hello: new EqualString("world"), foo: new EqualString("bar") }
+		const input = { hello: "world!", foo: "baz" }
+
+		const error = validate(descriptor, input)
+
+		expect(error).rejects.toHaveLength(2)
+		expect(error).rejects.toHaveProperty("0.field", "hello")
+		expect(error).rejects.toHaveProperty("1.field", "foo")
+	})
 })
