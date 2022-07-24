@@ -1,7 +1,8 @@
 import { Validator } from "node-input-validator"
 
+import type { DescriptorMaker } from "!/types/hybrid"
+import type { ValidationRules } from "!/types/independent"
 import type { SourceParameter, SourcePointer } from "$/types/server"
-import type { ValidationRules, Descriptor } from "!/types/independent"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -13,9 +14,9 @@ import BaseValidator from "!/app/validators/base/base"
 import generateProperRules from "!/helpers/generate_proper_rules"
 
 export default abstract class extends Middleware {
-	private validationRules: object|Descriptor
+	private validationRules: object|DescriptorMaker
 
-	constructor(validationRules: object|Descriptor) {
+	constructor(validationRules: object|DescriptorMaker) {
 		super()
 		this.validationRules = validationRules
 	}
@@ -24,18 +25,19 @@ export default abstract class extends Middleware {
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		try {
-			await this.validate(this.getSubject(request))
+			await this.validate(this.getSubject(request), request)
 			next()
 		} catch(error) {
 			next(error)
 		}
 	}
 
-	async validate(body: object): Promise<void> {
+	async validate(body: object, request: Request): Promise<void> {
 		let errorInfos: any = null
-		if (Object.values(this.validationRules)[0] instanceof BaseValidator) {
+		if (this.validationRules instanceof Function) {
 			try {
-				await validate(this.validationRules as Descriptor, body)
+				const validationRules = this.validationRules(request)
+				await validate(validationRules, body)
 			} catch(error) {
 				errorInfos = error
 			}
