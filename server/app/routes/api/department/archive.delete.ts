@@ -13,6 +13,7 @@ import PermissionBasedPolicy from "!/middlewares/authentication/permission-based
 
 import Exists from "!/app/validators/manager/exists"
 import ArrayValidator from "!/app/validators/base/array"
+import ObjectValidator from "!/app/validators/base/object"
 import EqualString from "!/app/validators/comparison/equal_string"
 
 export default class extends JSONController {
@@ -35,10 +36,12 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(): DescriptorMaker {
 		return (request: AuthenticatedRequest): Descriptor => ({
-			data: new ArrayValidator({
-				type: new EqualString("department"),
-				exists: new Exists(DepartmentManager, "id")
-			})
+			data: new ArrayValidator(
+				new ObjectValidator({
+					type: new EqualString("department"),
+					id: new Exists(DepartmentManager, "id")
+				})
+			)
 		})
 	}
 

@@ -1,20 +1,41 @@
-import type { Pipe } from "$/types/database"
-import type { Descriptor } from "!/types/independent"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
-import Validator from "!/app/validators/base/object"
+import type { ValidationConstraints } from "!/types/independent"
+import Validator from "!/app/validators/base/base"
+import ObjectValidator from "!/app/validators/base/object"
 
 export default class extends Validator {
-	constructor(fields: Descriptor) {
-		super(fields, "array")
+	private fields: Validator
+
+	constructor(fields: Validator) {
+		super("array")
+		this.fields = fields
 	}
 
-	protected get fieldName(): string { return "defaultField" }
+	get compiledObject(): ValidationConstraints {
+		const { data, meta } = super.compiledObject
+		const { data: fieldData, meta: fieldMeta } = this.fields.compiledObject
 
-	protected transformAll(values: any, transformers: Pipe<any, {}>[]): any {
-		if (values instanceof Array) {
-			return values.map(value => runThroughPipeline(value, {}, transformers))
+		data["defaultField"] = fieldData
+
+		const pipedTransformers = function(value: any) {
+			let transformedValues = value
+
+			if (meta.transformer !== undefined) {
+				transformedValues = meta.transformer(transformedValues)
+			}
+
+			if (fieldMeta.transformer !== undefined && transformedValues instanceof Array) {
+				const transformer = fieldMeta.transformer
+				transformedValues = transformedValues.map(transformer as (value: any) => any)
+			}
+
+			return transformedValues
 		}
 
-		return values
+		return {
+			data,
+			meta: {
+				transformer: pipedTransformers
+			}
+		}
 	}
 }

@@ -1,4 +1,5 @@
 import BaseValidator from "!/app/validators/base/base"
+import ObjectValidator from "!/app/validators/base/object"
 
 import ArrayValidator from "./array"
 
@@ -7,14 +8,16 @@ class Validator extends BaseValidator {}
 describe("Validator: Array Validator", () => {
 	it("can make normal data", async () => {
 		const fieldA = new Validator("typeA")
-		const validator = new ArrayValidator({ fieldA })
+		const validator = new ArrayValidator(new ObjectValidator({ fieldA }))
 
 		const compiledObject = validator.compiledObject
 
 		expect(compiledObject).toHaveProperty("data.required", true)
 		expect(compiledObject).toHaveProperty("data.type", "array")
-		expect(compiledObject).toHaveProperty("data.defaultField.fieldA.required", true)
-		expect(compiledObject).toHaveProperty("data.defaultField.fieldA.type", "typeA")
+		expect(compiledObject).toHaveProperty("data.defaultField.required", true)
+		expect(compiledObject).toHaveProperty("data.defaultField.type", "object")
+		expect(compiledObject).toHaveProperty("data.defaultField.fields.fieldA.required", true)
+		expect(compiledObject).toHaveProperty("data.defaultField.fields.fieldA.type", "typeA")
 		expect(compiledObject).toHaveProperty("meta.transformer")
 	})
 
@@ -22,7 +25,7 @@ describe("Validator: Array Validator", () => {
 		const innerMostTranformer = jest.fn()
 		const fieldA = new Validator("typeB")
 		fieldA.transformBy(innerMostTranformer)
-		const validator = new ArrayValidator({ fieldA })
+		const validator = new ArrayValidator(new ObjectValidator({ fieldA }))
 		const compiledObject = validator.compiledObject
 
 		compiledObject.meta.transformer!([ { fieldA: "world" } ])
@@ -35,7 +38,7 @@ describe("Validator: Array Validator", () => {
 		const innerMostTranformer = jest.fn()
 		const fieldA = new Validator("typeC")
 		fieldA.transformBy(innerMostTranformer)
-		const validator = new ArrayValidator({ fieldA })
+		const validator = new ArrayValidator(new ObjectValidator({ fieldA }))
 		const compiledObject = validator.compiledObject
 
 		compiledObject.meta.transformer!([ { fieldA: "world" }, { fieldA: "bar" } ])
@@ -49,7 +52,7 @@ describe("Validator: Array Validator", () => {
 		const innerMostTranformer = jest.fn()
 		const fieldA = new Validator("typeC")
 		fieldA.transformBy(innerMostTranformer)
-		const validator = new ArrayValidator({ fieldA })
+		const validator = new ArrayValidator(new ObjectValidator({ fieldA }))
 		const compiledObject = validator.compiledObject
 
 		compiledObject.meta.transformer!(23)
