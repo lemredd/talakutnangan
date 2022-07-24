@@ -35,6 +35,7 @@ export default abstract class extends Middleware {
 	async validate(body: object, request: Request): Promise<void> {
 		let errorInfos: any = null
 		if (this.validationRules instanceof Function) {
+			Log.success("migration", "Validating using new method in "+request.url)
 			try {
 				const validationRules = this.validationRules(request)
 				await validate(validationRules, body)
@@ -42,10 +43,7 @@ export default abstract class extends Middleware {
 				errorInfos = error
 			}
 		} else {
-			Log.warn(
-				"migration",
-				"Validating using old method with "+JSON.stringify(this.validationRules)
-			)
+			Log.warn("migration", "Validating using old method in "+request.url)
 			const validator = new Validator(
 				body,
 				generateProperRules(body, this.validationRules as ValidationRules)
