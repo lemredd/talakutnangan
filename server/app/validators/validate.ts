@@ -1,5 +1,6 @@
-import type { ValidationConstraints, Request } from "!/types/dependent"
 import type { ErrorPointer, FieldRules } from "!/types/independent"
+import type { ValidationConstraints, Request } from "!/types/dependent"
+
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default async function(fields: FieldRules, request: Request, input: { [key:string]: any })
@@ -18,7 +19,7 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 					...rules.constraints
 				}
 				const sanitizedInput = await runThroughPipeline(
-					input[field],
+					Promise.resolve(input[field]),
 					constraints,
 					rules.pipes
 				)
