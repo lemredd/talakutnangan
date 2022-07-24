@@ -117,3 +117,32 @@ export interface Rules {
 export interface FieldRules {
 	[key:string]: Rules
 }
+
+/**
+ * Useful for general safe object
+ */
+export type GeneralObject<T = any> = { [key: string]: T }
+
+/**
+ * Shape of validation info
+ */
+export interface ValidationConstraints {
+	data: GeneralObject,
+	meta: MetaValidationConstraints
+}
+
+/**
+ * Shape of validation constraints that are not part of main info.
+ *
+ * They are usually used internally.
+ */
+export interface MetaValidationConstraints {
+	transformer?: Function
+}
+
+import BaseValidator from "!/app/validators/base/base"
+
+/**
+ * Shape of descriptor for validation.
+ */
+export type Descriptor = { [key:string]: BaseValidator }
