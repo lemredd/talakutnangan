@@ -9,12 +9,12 @@ export default async function(
 ): Promise<any> {
 	const value = await currentState
 
-	if (!constraints.same || (value === constraints.same)) {
+	if (value === constraints.same) {
 		return value
 	} else {
 		throw {
 			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be a string.`
+			messageMaker: (field: string) => `Field "${field}" must be "${constraints.same}".`
 		}
 	}
 }
