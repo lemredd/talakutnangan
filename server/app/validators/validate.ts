@@ -26,7 +26,7 @@ export default async function(descriptor: { [key:string]: Validator }, input: ob
 
 	try {
 		const validator = new Schema(properDescriptor)
-		return await validator.validate(input)
+		return await validator.validate(input, { first: true, firstFields: true })
 	} catch(errorObject) {
 		const errors = (errorObject as any).errors as ValidationError[]
 
