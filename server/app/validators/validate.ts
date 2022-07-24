@@ -1,10 +1,10 @@
 import Schema from "async-validator"
 import type { RuleData, ValidationError } from "!/types/dependent"
-import type { MetaValidationConstraints } from "!/types/independent"
+import type { MetaValidationConstraints, Descriptor } from "!/types/independent"
 
 import Validator from "!/app/validators/base/base"
 
-export default async function(descriptor: { [key:string]: Validator }, input: object)
+export default async function(descriptor: Descriptor, input: object)
 : Promise<object> {
 	const properDescriptor: { [key:string]: RuleData } = {}
 

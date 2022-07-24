@@ -1,8 +1,8 @@
 import { Validator } from "node-input-validator"
 
-import type { ValidationRules } from "!/types/independent"
-import { SourceParameter, SourcePointer } from "$/types/server"
-import { Request, Response, NextFunction } from "!/types/dependent"
+import type { SourceParameter, SourcePointer } from "$/types/server"
+import type { ValidationRules, Descriptor } from "!/types/independent"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import ErrorBag from "$!/errors/error_bag"
@@ -13,9 +13,9 @@ import BaseValidator from "!/app/validators/base/base"
 import generateProperRules from "!/helpers/generate_proper_rules"
 
 export default abstract class extends Middleware {
-	private validationRules: object|{ [key:string]: BaseValidator }
+	private validationRules: object|Descriptor
 
-	constructor(validationRules: object|{ [key:string]: BaseValidator }) {
+	constructor(validationRules: object|Descriptor) {
 		super()
 		this.validationRules = validationRules
 	}
@@ -35,7 +35,7 @@ export default abstract class extends Middleware {
 		let errorInfos: any = null
 		if (Object.values(this.validationRules)[0] instanceof BaseValidator) {
 			try {
-				await validate(this.validationRules as { [key:string]: BaseValidator }, body)
+				await validate(this.validationRules as Descriptor, body)
 			} catch(error) {
 				errorInfos = error
 			}

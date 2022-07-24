@@ -68,3 +68,10 @@ export interface ValidationConstraints {
 export interface MetaValidationConstraints {
 	transformer?: Function
 }
+
+import BaseValidator from "!/app/validators/base/base"
+
+/**
+ * Shape of descriptor for validation.
+ */
+export type Descriptor = { [key:string]: BaseValidator }
