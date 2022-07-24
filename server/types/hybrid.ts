@@ -47,4 +47,4 @@ import type { Descriptor } from "!/types/independent"
 /**
  * Interface of function to create the descriptor.
  */
-export type DescriptorMaker = (request: Request) => Descriptor
+export type DescriptorMaker<T = any> = (request: T) => Descriptor
