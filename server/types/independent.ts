@@ -63,12 +63,14 @@ export interface UsableErrorPointer {
 	message: string
 }
 
-export interface SameRuleConstraints { same?: any }
+export interface SameRuleConstraints { same: any }
+
+export interface ArrayRuleConstraints { array: Rules }
 
 /**
  * Union of rule contraints
  */
-export type RuleContraints = SameRuleConstraints
+export type RuleContraints = Partial<SameRuleConstraints & ArrayRuleConstraints>
 
 /**
  * Shape of validation constraints
