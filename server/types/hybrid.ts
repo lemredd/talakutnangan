@@ -41,3 +41,10 @@ export interface UsableRoute {
 }
 
 export type RequestWithRegistration = Request & WithRegistration
+
+import type { Descriptor } from "!/types/independent"
+
+/**
+ * Interface of function to create the descriptor.
+ */
+export type DescriptorMaker = (request: Request) => Descriptor
