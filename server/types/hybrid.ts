@@ -42,9 +42,9 @@ export interface UsableRoute {
 
 export type RequestWithRegistration = Request & WithRegistration
 
-import type { Descriptor } from "!/types/independent"
+import type { FieldRules } from "!/types/independent"
 
 /**
- * Interface of function to create the descriptor.
+ * Interface of function to create the rules.
  */
-export type DescriptorMaker<T = any> = (request: T) => Descriptor
+export type FieldRulesMaker<T = any> = (request: T) => FieldRules

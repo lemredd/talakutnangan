@@ -113,7 +113,7 @@ export interface ValidationState {
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
+	pipes: Pipe<Promise<ValidationState>, ValidationConstraints & any>[],
 	constraints: RuleContraints
 }
 

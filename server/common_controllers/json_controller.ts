@@ -1,4 +1,4 @@
-import type { DescriptorMaker } from "!/types/hybrid"
+import type { FieldRulesMaker } from "!/types/hybrid"
 
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
@@ -23,7 +23,7 @@ export default abstract class extends Controller {
 		]
 	}
 
-	makeBodyRuleGenerator(): DescriptorMaker|null { return null }
+	makeBodyRuleGenerator(): FieldRulesMaker|null { return null }
 
 	abstract get bodyValidationRules(): object;
 }

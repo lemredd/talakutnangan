@@ -1,6 +1,6 @@
 import { Validator } from "node-input-validator"
 
-import type { DescriptorMaker } from "!/types/hybrid"
+import type { FieldRulesMaker } from "!/types/hybrid"
 import type { ValidationRules } from "!/types/independent"
 import type { SourceParameter, SourcePointer } from "$/types/server"
 import type { Request, Response, NextFunction } from "!/types/dependent"
@@ -10,13 +10,12 @@ import ErrorBag from "$!/errors/error_bag"
 import Middleware from "!/bases/middleware"
 import validate from "!/app/validators/validate"
 import ValidationError from "$!/errors/validation"
-import BaseValidator from "!/app/validators/base/base"
 import generateProperRules from "!/helpers/generate_proper_rules"
 
 export default abstract class extends Middleware {
-	private validationRules: object|DescriptorMaker
+	private validationRules: object|FieldRulesMaker
 
-	constructor(validationRules: object|DescriptorMaker) {
+	constructor(validationRules: object|FieldRulesMaker) {
 		super()
 		this.validationRules = validationRules
 	}
@@ -38,7 +37,7 @@ export default abstract class extends Middleware {
 			Log.success("migration", "Validating using new method in "+request.url)
 			try {
 				const validationRules = this.validationRules(request)
-				await validate(validationRules, body)
+				await validate(validationRules, request, body)
 			} catch(error) {
 				errorInfos = error
 			}
