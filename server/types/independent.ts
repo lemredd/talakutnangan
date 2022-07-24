@@ -65,7 +65,13 @@ export interface UsableErrorPointer {
 
 export interface SameRuleConstraints { same: any }
 
-export interface ArrayRuleConstraints { array: Rules }
+export interface ArrayRuleConstraints {
+	array: {
+		rules: Rules,
+		minimum?: number,
+		maximum?: number
+	}
+}
 
 /**
  * Union of rule contraints

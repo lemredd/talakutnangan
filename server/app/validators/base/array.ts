@@ -17,11 +17,27 @@ export default async function(
 		const errors: (ErrorPointer|Error)[] = []
 		const expectedSanitizeLength = value.length
 
+		if (constraints.array.minimum && expectedSanitizeLength < constraints.array.minimum) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) =>
+					`Field "${field}" must have more than ${constraints.array.minimum}.`
+			}
+		}
+
+		if (constraints.array.maximum && constraints.array.maximum > expectedSanitizeLength) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) =>
+					`Field "${field}" must have more than ${constraints.array.maximum}.`
+			}
+		}
+
 		for (let i = 0; i < expectedSanitizeLength; ++i ) {
 			const subvalue = value[i]
 			try {
 				const sanitizedInput = await validate({
-					i: constraints.array
+					i: constraints.array.rules
 				}, constraints.request, {
 					i: subvalue
 				})
