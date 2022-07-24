@@ -61,3 +61,12 @@ export interface IDParameter extends Parameters {
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 	params: IDParameter
 }
+
+/**
+ * Shape of validation state
+ */
+export interface ValidationState<T extends BaseRequest = Request> {
+	request: T,
+	field: string,
+	value: any
+}

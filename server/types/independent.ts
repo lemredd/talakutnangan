@@ -46,3 +46,11 @@ export type ValidationRules = { [key:string]: any[] }
  * Useful when passing a base manager to other functions/methods
  */
 export type BaseManagerClass = new() => BaseManager<any, any>
+
+/**
+ * Shape of validation
+ */
+ export interface ErrorPointer {
+	field: string,
+	messageMaker: (field: string, value: any) => string
+}
