@@ -9,6 +9,10 @@ export default class extends Validator {
 	}
 
 	protected transformAll(values: any, transformers: Pipe<any, {}>[]): any {
-		return (values as any[]).map(value => runThroughPipeline(value, {}, transformers))
+		if (values instanceof Array) {
+			return values.map(value => runThroughPipeline(value, {}, transformers))
+		}
+
+		return values
 	}
 }
