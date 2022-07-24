@@ -124,14 +124,6 @@ export interface FieldRules {
 export type GeneralObject<T = any> = { [key: string]: T }
 
 /**
- * Shape of validation info
- */
-export interface ValidationConstraints {
-	data: GeneralObject,
-	meta: MetaValidationConstraints
-}
-
-/**
  * Shape of validation constraints that are not part of main info.
  *
  * They are usually used internally.
