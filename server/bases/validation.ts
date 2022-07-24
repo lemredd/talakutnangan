@@ -4,15 +4,18 @@ import type { ValidationRules } from "!/types/independent"
 import { SourceParameter, SourcePointer } from "$/types/server"
 import { Request, Response, NextFunction } from "!/types/dependent"
 
+import Log from "$!/singletons/log"
 import ErrorBag from "$!/errors/error_bag"
 import Middleware from "!/bases/middleware"
+import validate from "!/app/validators/validate"
 import ValidationError from "$!/errors/validation"
+import BaseValidator from "!/app/validators/base/base"
 import generateProperRules from "!/helpers/generate_proper_rules"
 
 export default abstract class extends Middleware {
-	private validationRules: object
+	private validationRules: object|{ [key:string]: BaseValidator }
 
-	constructor(validationRules: object) {
+	constructor(validationRules: object|{ [key:string]: BaseValidator }) {
 		super()
 		this.validationRules = validationRules
 	}
@@ -29,17 +32,32 @@ export default abstract class extends Middleware {
 	}
 
 	async validate(body: object): Promise<void> {
-		const validator = new Validator(
-			body,
-			generateProperRules(body, this.validationRules as ValidationRules)
-		)
+		let errorInfos: any = null
+		if (Object.values(this.validationRules)[0] instanceof BaseValidator) {
+			try {
+				await validate(this.validationRules as { [key:string]: BaseValidator }, body)
+			} catch(error) {
+				errorInfos = error
+			}
+		} else {
+			Log.warn(
+				"middleware",
+				"Validating using old method with "+JSON.stringify(this.validationRules)
+			)
+			const validator = new Validator(
+				body,
+				generateProperRules(body, this.validationRules as ValidationRules)
+			)
 
-		if (await validator.fails()) {
-			const errorInfos = Object.keys(validator.errors).sort().map(field => ({
-				field,
-				message: validator.errors[field].message
-			}))
+			if (await validator.fails()) {
+				errorInfos = Object.keys(validator.errors).sort().map(field => ({
+					field,
+					message: validator.errors[field].message
+				}))
+			}
+		}
 
+		if (errorInfos !== null) {
 			throw new ErrorBag(
 				errorInfos.map((info: any) => new ValidationError(
 					this.sourceType === null
