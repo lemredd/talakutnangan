@@ -3,8 +3,19 @@ import UserFactory from "~/factories/user"
 import Validator from "./exists"
 
 describe("Validator: Exists Validator", () => {
-	it("can make normal data", async () => {
-		const validator = new Validator(UserManager, "name")
+	it("can make string data", async () => {
+		const validator = new Validator("string", UserManager, "name")
+
+		const compiledObject = validator.compiledObject
+
+		expect(compiledObject).toHaveProperty("data.required", true)
+		expect(compiledObject).toHaveProperty("data.type", "string")
+		expect(compiledObject).toHaveProperty("data.asyncValidator")
+		expect(compiledObject).toHaveProperty("meta.transformer")
+	})
+
+	it("can make integer data", async () => {
+		const validator = new Validator("integer", UserManager, "id")
 
 		const compiledObject = validator.compiledObject
 
@@ -16,7 +27,7 @@ describe("Validator: Exists Validator", () => {
 
 	it("can accept valid value", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const validator = new Validator(UserManager, "name")
+		const validator = new Validator("string", UserManager, "name")
 		const compiledObject = validator.compiledObject
 		const callback = jest.fn()
 
@@ -27,7 +38,7 @@ describe("Validator: Exists Validator", () => {
 	})
 
 	it("cannot accept invalid value", async () => {
-		const validator = new Validator(UserManager, "name")
+		const validator = new Validator("string", UserManager, "name")
 		const compiledObject = validator.compiledObject
 		const callback = jest.fn()
 
