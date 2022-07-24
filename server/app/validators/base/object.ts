@@ -1,7 +1,10 @@
 import type { Pipe } from "$/types/database"
+import type { RuleData } from "!/types/dependent"
 import type { GeneralObject, Descriptor, ValidationConstraints } from "!/types/independent"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
+
+import validate from "!/app/validators/validate"
 import Validator from "!/app/validators/base/base"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default class ObjectValidator extends Validator {
 	private fields: Descriptor
@@ -28,7 +31,9 @@ export default class ObjectValidator extends Validator {
 			}
 		}
 
-		data[this.fieldName] = fieldData
+		(data as RuleData).asyncValidator = async (rule, value, callback, source, options) => {
+			await validate(this.fields, value, options).then(() => callback()).catch(callback)
+		}
 
 		const pipedTransformers = (value: any) => {
 			let transformedValue = value

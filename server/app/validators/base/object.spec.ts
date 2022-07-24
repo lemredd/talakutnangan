@@ -13,8 +13,7 @@ describe("Validator: Object Validator", () => {
 
 		expect(compiledObject).toHaveProperty("data.required", true)
 		expect(compiledObject).toHaveProperty("data.type", "object")
-		expect(compiledObject).toHaveProperty("data.fields.fieldA.required", true)
-		expect(compiledObject).toHaveProperty("data.fields.fieldA.type", "typeA")
+		expect(compiledObject).toHaveProperty("data.asyncValidator")
 		expect(compiledObject).toHaveProperty("meta.transformer")
 	})
 

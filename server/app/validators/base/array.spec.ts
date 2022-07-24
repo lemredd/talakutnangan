@@ -16,8 +16,7 @@ describe("Validator: Array Validator", () => {
 		expect(compiledObject).toHaveProperty("data.type", "array")
 		expect(compiledObject).toHaveProperty("data.defaultField.required", true)
 		expect(compiledObject).toHaveProperty("data.defaultField.type", "object")
-		expect(compiledObject).toHaveProperty("data.defaultField.fields.fieldA.required", true)
-		expect(compiledObject).toHaveProperty("data.defaultField.fields.fieldA.type", "typeA")
+		expect(compiledObject).toHaveProperty("data.defaultField.asyncValidator")
 		expect(compiledObject).toHaveProperty("meta.transformer")
 	})
 
