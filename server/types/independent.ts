@@ -95,10 +95,19 @@ export type RuleContraints = Partial<
 }
 
 /**
+ * Shape of validation state
+ */
+export interface ValidationState {
+	value: any,
+	// If true, other rules should be skipped.
+	maySkip: boolean
+}
+
+/**
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<any, ValidationConstraints>[],
+	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
 	constraints: RuleContraints
 }
 
