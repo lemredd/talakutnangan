@@ -1,3 +1,6 @@
+import UserManager from "%/managers/user"
+import UserFactory from "~/factories/user"
+import Exists from "!/app/validators/manager/exists"
 import ArrayValidator from "!/app/validators/base/array"
 import ObjectValidator from "!/app/validators/base/object"
 import EqualString from "!/app/validators/comparison/equal_string"
@@ -43,11 +46,12 @@ describe("Validator: Validate", () => {
 	})
 
 	it("can accept valid nested info", async () => {
+		const user = await (new UserFactory()).insertOne()
 		const descriptor = {
 			data: new ArrayValidator(
 				new ObjectValidator({
-					type: new EqualString("department"),
-					id: new EqualString("0"),
+					type: new EqualString("user"),
+					id: new Exists("integer", UserManager, "id"),
 				})
 			)
 		}
@@ -55,7 +59,7 @@ describe("Validator: Validate", () => {
 			data: [
 				{
 					type: "department",
-					id: "0"
+					id: user.id
 				}
 			]
 		}
