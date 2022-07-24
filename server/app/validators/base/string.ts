@@ -1,11 +1,12 @@
-import type { Pipe } from "$/types/database"
 import type { RuleData } from "!/types/dependent"
 import type { GeneralObject, MetaValidationConstraints } from "!/types/independent"
 
 import Validator from "!/app/validators/base/base"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
+import addProperCaster from "!/app/validators/base/add_proper_caster"
 
 export default class StringValidator extends Validator {
+	static CASTER = (value: any) => String(value).trim()
+
 	private lengthLimit: [number, number]|null = null
 
 	constructor() {
@@ -30,21 +31,6 @@ export default class StringValidator extends Validator {
 	}
 
 	protected get metaObject(): MetaValidationConstraints {
-		const meta = super.metaObject
-		const properCaster = (value: any) => String(value).trim()
-
-		if (meta.transformer) {
-			const customTransformer = meta.transformer! as Pipe<any, {}>
-			meta.transformer = (value: any) => {
-				return runThroughPipeline(value, {}, [
-					properCaster,
-					customTransformer
-				])
-			}
-		} else {
-			meta.transformer = properCaster
-		}
-
-		return meta
+		return addProperCaster(super.metaObject, StringValidator.CASTER)
 	}
 }
