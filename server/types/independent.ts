@@ -64,6 +64,13 @@ export type RuleContraints = {}
  * Shape of validation rules
  */
 export interface Rules {
-	rules: Pipe<any, RuleContraints>[],
+	fields: Pipe<any, RuleContraints>[],
 	constraints: RuleContraints
+}
+
+/**
+ * Shape of validation rules for all fields
+ */
+export interface FieldRules {
+	[key:string]: Pipe<any, RuleContraints>[]
 }
