@@ -1,5 +1,6 @@
 
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
+import type { FieldRules } from "!/types/independent"
 import type { MockResponse } from "!/types/test"
 
 import type { Request, Response, NextFunction } from "!/types/dependent"
@@ -63,6 +64,10 @@ export default class<T extends Request> extends RequestEnvironment {
 
 	async runResponder(handle: Function): Promise<void> {
 		await handle(this.response)
+	}
+
+	async runValidator(handle: Function, rules: FieldRules, input: object): Promise<object> {
+		return await handle(rules, this.request, input) as object
 	}
 
 	expectSuccess(): any {
