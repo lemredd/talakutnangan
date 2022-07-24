@@ -41,7 +41,7 @@ export default abstract class extends Middleware {
 			}
 		} else {
 			Log.warn(
-				"middleware",
+				"migration",
 				"Validating using old method with "+JSON.stringify(this.validationRules)
 			)
 			const validator = new Validator(
