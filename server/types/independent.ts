@@ -72,5 +72,5 @@ export interface Rules {
  * Shape of validation rules for all fields
  */
 export interface FieldRules {
-	[key:string]: Pipe<any, RuleContraints>[]
+	[key:string]: Rules
 }
