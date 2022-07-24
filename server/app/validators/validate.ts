@@ -1,6 +1,7 @@
 import type { Request } from "!/types/dependent"
 import type { ErrorPointer, FieldRules, ValidationConstraints } from "!/types/independent"
 
+import unifyErrors from "!/app/validators/unify_errors"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default async function(fields: FieldRules, request: Request, input: { [key:string]: any })
@@ -34,19 +35,7 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 					flattendedErrors.push(error as ErrorPointer)
 				}
 
-				flattendedErrors.forEach(error => {
-					if (error instanceof Error) {
-						errors.push({
-							field,
-							messageMaker: (
-								field: string,
-								value: any
-							): string => `Unexpected error happened while validating ${field}`
-						})
-					} else {
-						errors.push(error as ErrorPointer)
-					}
-				})
+				errors.push(...unifyErrors(field, flattendedErrors))
 			}
 		}
 	}

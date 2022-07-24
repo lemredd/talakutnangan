@@ -1,6 +1,7 @@
 import type { ValidationConstraints, ErrorPointer, ArrayRuleConstraints } from "!/types/independent"
 
 import validate from "!/app/validators/validate"
+import unifyErrors from "!/app/validators/unify_errors"
 
 /**
  * Validator to check if data is an array
@@ -36,22 +37,7 @@ export default async function(
 		}
 
 		if (errors.length > 0) {
-			throw errors.map(error => {
-				if (error instanceof Error) {
-					errors.push({
-						field: constraints.field,
-						messageMaker: (
-							field: string,
-							value: any
-						): string => `Unexpected error happened while validating ${field}`
-					})
-				} else {
-					return {
-						field: `${constraints.field}.${error.field}`,
-						messageMaker: error.messageMaker
-					}
-				}
-			})
+			throw unifyErrors(constraints.field, errors)
 		} else {
 			return sanitizedInputs
 		}
