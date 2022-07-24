@@ -73,6 +73,10 @@ export interface ArrayRuleConstraints {
 	}
 }
 
+export interface ObjectRuleConstraints {
+	object: FieldRules
+}
+
 /**
  * Union of rule contraints
  */
