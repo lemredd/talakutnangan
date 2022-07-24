@@ -1,4 +1,8 @@
-import type { GeneralObject, ValidationConstraints } from "!/types/independent"
+import type {
+	GeneralObject,
+	ValidationConstraints,
+	MetaValidationConstraints
+} from "!/types/independent"
 
 export default abstract class Validator {
 	private required: boolean = true
@@ -26,16 +30,20 @@ export default abstract class Validator {
 		}
 	}
 
-	get compiledObject(): ValidationConstraints {
-		const meta: GeneralObject = {}
+	protected get metaObject(): MetaValidationConstraints {
+		const meta: MetaValidationConstraints = {}
 
 		if (this.transformer) {
 			meta.transformer = this.transformer
 		}
 
+		return meta
+	}
+
+	get compiledObject(): ValidationConstraints {
 		return {
 			data: this.dataObject,
-			meta
+			meta: this.metaObject
 		}
 	}
 }
