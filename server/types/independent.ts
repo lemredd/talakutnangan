@@ -50,9 +50,17 @@ export type BaseManagerClass = new() => BaseManager<any, any>
 /**
  * Shape of validation
  */
- export interface ErrorPointer {
+export interface ErrorPointer {
 	field: string,
 	messageMaker: (field: string, value: any) => string
+}
+
+/**
+ * Shape of validation
+ */
+export interface UsableErrorPointer {
+	field: string,
+	message: string
 }
 
 /**
