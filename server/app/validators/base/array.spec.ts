@@ -4,7 +4,7 @@ import ArrayValidator from "./array"
 
 class Validator extends BaseValidator {}
 
-describe("Validator: Object Validator", () => {
+describe("Validator: Array Validator", () => {
 	it("can make normal data", async () => {
 		const fieldA = new Validator("typeA")
 		const validator = new ArrayValidator({ fieldA })
@@ -12,7 +12,7 @@ describe("Validator: Object Validator", () => {
 		const compiledObject = validator.compiledObject
 
 		expect(compiledObject).toHaveProperty("data.required", true)
-		expect(compiledObject).toHaveProperty("data.type", "object")
+		expect(compiledObject).toHaveProperty("data.type", "array")
 		expect(compiledObject).toHaveProperty("data.defaultField.fieldA.required", true)
 		expect(compiledObject).toHaveProperty("data.defaultField.fieldA.type", "typeA")
 		expect(compiledObject).toHaveProperty("meta.transformer")
