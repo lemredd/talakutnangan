@@ -1,8 +1,10 @@
+import type { DescriptorMaker } from "!/types/hybrid"
+
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
+import BodyValidation from "!/middlewares/validation/body"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import BodyValidation from "!/middlewares/validation/body"
 
 /**
  * Specialized controller class which accept JSON as their request body.
@@ -14,9 +16,14 @@ export default abstract class extends Controller {
 
 	get validations(): Validation[] {
 		return [
-			new BodyValidation(this.bodyValidationRules)
+			new BodyValidation(
+				this.makeBodyRuleGenerator()
+				|| this.bodyValidationRules
+			)
 		]
 	}
+
+	makeBodyRuleGenerator(): DescriptorMaker|null { return null }
 
 	abstract get bodyValidationRules(): object;
 }
