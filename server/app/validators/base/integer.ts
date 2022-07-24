@@ -2,7 +2,7 @@ import type { Pipe } from "$/types/database"
 import type { RuleData } from "!/types/dependent"
 import type { GeneralObject, MetaValidationConstraints } from "!/types/independent"
 
-import Validator from "!/app/validators/validator"
+import Validator from "!/app/validators/base/base"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default class IntegerValidator extends Validator {

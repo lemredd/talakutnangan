@@ -1,6 +1,6 @@
 import type { GeneralObject, ValidationConstraints } from "!/types/independent"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
-import Validator from "!/app/validators/validator"
+import Validator from "!/app/validators/base/base"
 
 export default class extends Validator {
 	private fields: { [key:string]: Validator }

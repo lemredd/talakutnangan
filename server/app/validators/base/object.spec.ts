@@ -1,6 +1,6 @@
-import BaseValidator from "!/app/validators/validator"
+import BaseValidator from "!/app/validators/base/base"
 
-import ObjectValidator from "./object_validator"
+import ObjectValidator from "./object"
 
 class Validator extends BaseValidator {}
 

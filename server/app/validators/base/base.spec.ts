@@ -1,4 +1,4 @@
-import BaseValidator from "./validator"
+import BaseValidator from "./base"
 
 class Validator extends BaseValidator {}
 

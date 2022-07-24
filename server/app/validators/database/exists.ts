@@ -1,13 +1,7 @@
-import type { Pipe } from "$/types/database"
 import type { RuleData } from "!/types/dependent"
-import type {
-	GeneralObject,
-	MetaValidationConstraints,
-	BaseManagerClass
-} from "!/types/independent"
+import type { GeneralObject, BaseManagerClass } from "!/types/independent"
 
-import IntegerValidator from "!/app/validators/integer_validator"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
+import IntegerValidator from "!/app/validators/base/integer"
 
 export default class ExistsValidator extends IntegerValidator {
 	private managerClass: BaseManagerClass

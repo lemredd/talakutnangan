@@ -1,7 +1,7 @@
 import type { RuleData } from "!/types/dependent"
 import type { GeneralObject } from "!/types/independent"
 
-import StringValidator from "!/app/validators/string_validator"
+import StringValidator from "!/app/validators/base/string"
 
 export default class EqualStringValidator extends StringValidator {
 	private target: string
