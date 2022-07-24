@@ -39,7 +39,7 @@ export default class extends JSONController {
 			data: new ArrayValidator(
 				new ObjectValidator({
 					type: new EqualString("department"),
-					id: new Exists(DepartmentManager, "id")
+					id: new Exists("integer", DepartmentManager, "id")
 				})
 			)
 		})
