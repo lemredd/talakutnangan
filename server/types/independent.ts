@@ -57,7 +57,14 @@ export type GeneralObject<T = any> = { [key: string]: T }
  */
 export interface ValidationConstraints {
 	data: GeneralObject,
-	meta: {
-		transformer?: Function
-	}
+	meta: MetaValidationConstraints
+}
+
+/**
+ * Shape of validation constraints that are not part of main info.
+ *
+ * They are usually used internally.
+ */
+export interface MetaValidationConstraints {
+	transformer?: Function
 }
