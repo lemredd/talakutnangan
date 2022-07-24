@@ -1,5 +1,5 @@
-import { DescriptorMaker } from "!/types/hybrid"
-import { Descriptor } from "!/types/independent"
+import { FieldRulesMaker } from "!/types/hybrid"
+import { FieldRules } from "!/types/independent"
 import { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -11,10 +11,13 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import Exists from "!/app/validators/manager/exists"
-import ArrayValidator from "!/app/validators/base/array"
-import ObjectValidator from "!/app/validators/base/object"
-import EqualString from "!/app/validators/comparison/equal_string"
+import array from "!/app/validators/base/array"
+import object from "!/app/validators/base/object"
+import string from "!/app/validators/base/string"
+import integer from "!/app/validators/base/integer"
+import same from "!/app/validators/comparison/same"
+import exists from "!/app/validators/manager/exists"
+import required from "!/app/validators/base/required"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -34,14 +37,36 @@ export default class extends JSONController {
 		}
 	}
 
-	makeBodyRuleGenerator(): DescriptorMaker {
-		return (request: AuthenticatedRequest): Descriptor => ({
-			data: new ArrayValidator(
-				new ObjectValidator({
-					type: new EqualString("department"),
-					id: new Exists("integer", DepartmentManager, "id")
-				})
-			)
+	makeBodyRuleGenerator(): FieldRulesMaker {
+		return (request: AuthenticatedRequest): FieldRules => ({
+			data: {
+				pipes: [ required, array ],
+				constraints: {
+					array: {
+						rules: {
+							pipes: [ required, object ],
+							constraints: {
+								object: {
+									type: {
+										pipes: [ required, string, same ],
+										constraints: {
+											same: "department"
+										}
+									},
+									id: {
+										pipes: [ required, integer, exists ],
+										constraints: {
+											manager: DepartmentManager,
+											columnName: "id"
+										}
+									}
+								}
+							}
+						},
+						minimum: 1
+					}
+				}
+			}
 		})
 	}
 
