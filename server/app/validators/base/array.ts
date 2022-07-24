@@ -8,6 +8,8 @@ export default class extends Validator {
 		super(fields, "array")
 	}
 
+	protected get fieldName(): string { return "defaultField" }
+
 	protected transformAll(values: any, transformers: Pipe<any, {}>[]): any {
 		if (values instanceof Array) {
 			return values.map(value => runThroughPipeline(value, {}, transformers))

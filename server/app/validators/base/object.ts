@@ -28,7 +28,7 @@ export default class ObjectValidator extends Validator {
 			}
 		}
 
-		data["fields"] = fieldData
+		data[this.fieldName] = fieldData
 
 		const pipedTransformers = (value: any) => {
 			let transformedValue = value
@@ -62,6 +62,8 @@ export default class ObjectValidator extends Validator {
 			}
 		}
 	}
+
+	protected get fieldName(): string { return "fields" }
 
 	protected transformAll(value: any, transformers: Pipe<any, {}>[]): any {
 		return runThroughPipeline(value, {}, transformers)

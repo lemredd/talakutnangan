@@ -38,10 +38,22 @@ describe("Validator: Array Validator", () => {
 		const validator = new ArrayValidator({ fieldA })
 		const compiledObject = validator.compiledObject
 
-		compiledObject.meta.transformer!([ { fieldA: "world" }, { foo: "bar" } ])
+		compiledObject.meta.transformer!([ { fieldA: "world" }, { fieldA: "bar" } ])
 
 		expect(innerMostTranformer).toHaveBeenCalled()
 		expect(innerMostTranformer.mock.calls[0]).toEqual([ "world" ])
 		expect(innerMostTranformer.mock.calls[1]).toEqual([ "bar" ])
+	})
+
+	it("can transformer ignore invalid types", async () => {
+		const innerMostTranformer = jest.fn()
+		const fieldA = new Validator("typeC")
+		fieldA.transformBy(innerMostTranformer)
+		const validator = new ArrayValidator({ fieldA })
+		const compiledObject = validator.compiledObject
+
+		compiledObject.meta.transformer!(23)
+
+		expect(innerMostTranformer).not.toHaveBeenCalled()
 	})
 })
