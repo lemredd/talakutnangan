@@ -1,6 +1,6 @@
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
-import Validator from "./exists"
+import Validator from "./not_exists"
 
 describe("Validator: Not Exists Validator", () => {
 	it("can make normal data", async () => {
