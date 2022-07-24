@@ -1,4 +1,4 @@
-import type { ValidationConstraints } from "!/types/dependent"
+import type { ValidationConstraints } from "!/types/independent"
 
 import isString from "lodash.isstring"
 

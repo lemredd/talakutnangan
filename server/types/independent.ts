@@ -66,13 +66,21 @@ export interface UsableErrorPointer {
 /**
  * Union of rule contraints
  */
-export type RuleContraints = {}
+export type RuleContraints = any
+
+/**
+ * Shape of validation constraints
+ */
+ export interface ValidationConstraints<T = any> extends RuleContraints {
+	request: T,
+	field: string
+}
 
 /**
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<any, RuleContraints>[],
+	pipes: Pipe<any, ValidationConstraints>[],
 	constraints: RuleContraints
 }
 

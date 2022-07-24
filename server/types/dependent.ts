@@ -61,11 +61,3 @@ export interface IDParameter extends Parameters {
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 	params: IDParameter
 }
-
-/**
- * Shape of validation constraints
- */
-export interface ValidationConstraints<T = any> {
-	request: T,
-	field: string
-}
