@@ -17,7 +17,9 @@ export default async function(
 		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = value.length
 
-		if (constraints.array.minimum && expectedSanitizeLength < constraints.array.minimum) {
+		if (
+			constraints.array.minimum !== undefined
+			&& expectedSanitizeLength < constraints.array.minimum) {
 			throw {
 				field: constraints.field,
 				messageMaker: (field: string) =>
@@ -25,7 +27,9 @@ export default async function(
 			}
 		}
 
-		if (constraints.array.maximum && constraints.array.maximum > expectedSanitizeLength) {
+		if (
+			constraints.array.maximum !== undefined
+			&& constraints.array.maximum < expectedSanitizeLength) {
 			throw {
 				field: constraints.field,
 				messageMaker: (field: string) =>

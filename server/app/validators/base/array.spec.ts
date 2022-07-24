@@ -39,7 +39,7 @@ describe("Validator pipe: array", () => {
 		expect(error).rejects.toHaveProperty("field", "hello")
 	})
 
-	it("cannot accept greate input", async () => {
+	it("cannot accept greater input", async () => {
 		const value = Promise.resolve([ 2 ])
 		const constraints = {
 			request: null,
