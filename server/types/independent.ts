@@ -4,7 +4,7 @@
  * cannot be shareable since they are only used within the server.
  */
 
-import type { UserKind } from "$/types/database"
+import type { UserKind, Pipe } from "$/types/database"
 import BaseManager from "%/managers/base"
 
 /**
@@ -53,4 +53,17 @@ export type BaseManagerClass = new() => BaseManager<any, any>
  export interface ErrorPointer {
 	field: string,
 	messageMaker: (field: string, value: any) => string
+}
+
+/**
+ * Union of rule contraints
+ */
+export type RuleContraints = {}
+
+/**
+ * Shape of validation rules
+ */
+export interface Rules {
+	rules: Pipe<any, RuleContraints>[],
+	constraints: RuleContraints
 }
