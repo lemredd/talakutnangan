@@ -1,53 +1,54 @@
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
-import Validator from "./not_exists"
+import makeInitialState from "!/app/validators/make_initial_state"
+import notExists from "./not_exists"
 
-describe("Validator: Not Exists Validator", () => {
-	it("can make normal data", async () => {
-		const validator = new Validator(UserManager, "name")
-
-		const compiledObject = validator.compiledObject
-
-		expect(compiledObject).toHaveProperty("data.required", true)
-		expect(compiledObject).toHaveProperty("data.type", "integer")
-		expect(compiledObject).toHaveProperty("data.asyncValidator")
-		expect(compiledObject).toHaveProperty("meta.transformer")
-	})
-
-	it("can accept valid value", async () => {
+describe("Validator: notExists", () => {
+	it("can accept valid input", async () => {
 		const user = "hello"
-		const validator = new Validator(UserManager, "name")
-		const compiledObject = validator.compiledObject
-		const callback = jest.fn()
+		const value = Promise.resolve(makeInitialState(user))
+		const constraints = {
+			request: null,
+			field: "hello",
+			manager: UserManager,
+			columnName: "name"
+		}
 
-		await compiledObject.data.asyncValidator!(null, user, callback)
+		const sanitizeValue = (await notExists(value, constraints)).value
 
-		expect(callback).toHaveBeenCalled()
-		expect(callback.mock.calls[0]).toEqual([])
+		expect(sanitizeValue).toEqual(user)
 	})
 
 	it("cannot accept archived value", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const validator = new Validator(UserManager, "name")
-		const compiledObject = validator.compiledObject
-		const callback = jest.fn()
+		const value = Promise.resolve(makeInitialState(user.name))
+		const constraints = {
+			request: null,
+			field: "hello",
+			manager: UserManager,
+			columnName: "name"
+		}
 		await user.destroy({ force: false })
 
-		await compiledObject.data.asyncValidator!(null, user.name, callback)
+		const error = notExists(value, constraints)
 
-		expect(callback).toHaveBeenCalled()
-		expect(callback.mock.calls[0]).not.toEqual([])
+		expect(error).rejects.toHaveProperty("field", "hello")
+		expect(error).rejects.toHaveProperty("messageMaker")
 	})
 
 	it("cannot accept invalid value", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const validator = new Validator(UserManager, "name")
-		const compiledObject = validator.compiledObject
-		const callback = jest.fn()
+		const value = Promise.resolve(makeInitialState(user.name))
+		const constraints = {
+			request: null,
+			field: "hello",
+			manager: UserManager,
+			columnName: "name"
+		}
 
-		await compiledObject.data.asyncValidator!(null, user.name, callback)
+		const error = notExists(value, constraints)
 
-		expect(callback).toHaveBeenCalled()
-		expect(callback.mock.calls[0]).not.toEqual([])
+		expect(error).rejects.toHaveProperty("field", "hello")
+		expect(error).rejects.toHaveProperty("messageMaker")
 	})
 })

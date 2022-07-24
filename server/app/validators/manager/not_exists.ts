@@ -1,39 +1,36 @@
-import type { RuleData } from "!/types/dependent"
-import type { GeneralObject, BaseManagerClass } from "!/types/independent"
+import type {
+	ValidationState,
+	ValidationConstraints,
+	ManagerBasedRuleConstraints
+} from "!/types/independent"
 
-import IntegerValidator from "!/app/validators/base/integer"
+/**
+ * Validator to check if data does not belong to an existing model in the database
+ */
+ export default async function(
+	currentState: Promise<ValidationState>,
+	constraints: ValidationConstraints & ManagerBasedRuleConstraints
+): Promise<ValidationState> {
+	const state = await currentState
 
-export default class extends IntegerValidator {
-	private managerClass: BaseManagerClass
-	private columnName: string
+	if(state.maySkip) return state
 
-	constructor(managerClass: BaseManagerClass, columnName: string) {
-		super()
-		this.managerClass = managerClass
-		this.columnName = columnName
-	}
-
-	protected get dataObject(): GeneralObject {
-		const data = super.dataObject as RuleData
-
-		data.asyncValidator = async (rule, value, callback) => {
-			// TODO: Get transaction manager from cache
-			const manager = new this.managerClass()
-			const foundModel = await manager.findOneOnColumn(this.columnName, value, {
-				filter: {
-					existence: "all"
-				}
-			})
-
-			console.log(rule, "\n\n\n\n\n\n\n")
-			// TODO: Store found model in cache
-			if (foundModel.data === null) {
-				callback()
-			} else {
-				callback("The item does exists in the database")
-			}
+	// TODO: Get transaction manager from cache
+	const manager = new constraints.manager()
+	const foundModel = await manager.findOneOnColumn(constraints.columnName, state.value, {
+		filter: {
+			existence: "all"
 		}
+	})
 
-		return data
+	// TODO: Store found model in cache
+	if (foundModel.data === null) {
+		return state
+	} else {
+		throw {
+			field: constraints.field,
+			messageMaker: (field: string, value: string) =>
+				`The ${value} in field "${field}" does exists in the database".`
+		}
 	}
 }

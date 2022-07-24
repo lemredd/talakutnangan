@@ -1,56 +1,36 @@
-import type { RuleData } from "!/types/dependent"
 import type {
-	GeneralObject,
-	BaseManagerClass,
-	MetaValidationConstraints
+	ValidationState,
+	ValidationConstraints,
+	ManagerBasedRuleConstraints
 } from "!/types/independent"
 
-import Validator from "!/app/validators/base/base"
-import StringValidator from "!/app/validators/base/string"
-import IntegerValidator from "!/app/validators/base/integer"
-import addProperCaster from "!/app/validators/base/add_proper_caster"
+/**
+ * Validator to check if data belongs to an existing model in the database
+ */
+ export default async function(
+	currentState: Promise<ValidationState>,
+	constraints: ValidationConstraints & ManagerBasedRuleConstraints
+): Promise<ValidationState> {
+	const state = await currentState
 
-export default class ExistsValidator extends Validator {
-	private managerClass: BaseManagerClass
-	private columnName: string
-	private expectedType: "string"|"integer"
+	if(state.maySkip) return state
 
-	constructor(type: "string"|"integer", managerClass: BaseManagerClass, columnName: string) {
-		super(type)
-		this.expectedType = type
-		this.managerClass = managerClass
-		this.columnName = columnName
-	}
-
-	protected get dataObject(): GeneralObject {
-		const data = super.dataObject as RuleData
-
-		data.asyncValidator = async (rule, value, callback) => {
-			// TODO: Get transaction manager from cache
-			const manager = new this.managerClass()
-			const foundModel = await manager.findOneOnColumn(this.columnName, value, {
-				filter: {
-					existence: "exists"
-				}
-			})
-
-			// TODO: Store found model in cache
-			if (foundModel.data === null) {
-				callback("The item does not exists in the database")
-			} else {
-				callback()
-			}
+	// TODO: Get transaction manager from cache
+	const manager = new constraints.manager()
+	const foundModel = await manager.findOneOnColumn(constraints.columnName, state.value, {
+		filter: {
+			existence: "exists"
 		}
+	})
 
-		return data
-	}
-
-	protected get metaObject(): MetaValidationConstraints {
-		return addProperCaster(
-			super.metaObject,
-			this.expectedType === "string"
-				? StringValidator.CASTER
-				: IntegerValidator.CASTER
-		)
+	// TODO: Store found model in cache
+	if (foundModel.data === null) {
+		throw {
+			field: constraints.field,
+			messageMaker: (field: string, value: string) =>
+				`The ${value} in field "${field}" does not exists in the database".`
+		}
+	} else {
+		return state
 	}
 }
