@@ -46,3 +46,18 @@ export type ValidationRules = { [key:string]: any[] }
  * Useful when passing a base manager to other functions/methods
  */
 export type BaseManagerClass = new() => BaseManager<any, any>
+
+/**
+ * Useful for general safe object
+ */
+export type GeneralObject<T = any> = { [key: string]: T }
+
+/**
+ * Shape of validation info
+ */
+export interface ValidationConstraints {
+	data: GeneralObject,
+	meta: {
+		transformer?: Function
+	}
+}
