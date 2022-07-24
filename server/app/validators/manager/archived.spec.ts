@@ -21,7 +21,7 @@ describe("Validator: Archived Validator", () => {
 		const callback = jest.fn()
 		user.destroy({ force: false })
 
-		await compiledObject.data.asyncValidator!(null, user, callback)
+		await compiledObject.data.asyncValidator!(null, user.name, callback)
 
 		expect(callback).toHaveBeenCalled()
 		expect(callback.mock.calls[0]).toEqual([])
