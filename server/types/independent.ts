@@ -64,7 +64,7 @@ export type RuleContraints = {}
  * Shape of validation rules
  */
 export interface Rules {
-	fields: Pipe<any, RuleContraints>[],
+	pipes: Pipe<any, RuleContraints>[],
 	constraints: RuleContraints
 }
 
