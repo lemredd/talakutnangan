@@ -37,6 +37,19 @@ describe("Validator: Exists Validator", () => {
 		expect(callback.mock.calls[0]).toEqual([])
 	})
 
+	it("cannot accept archived value", async () => {
+		const user = await (new UserFactory()).insertOne()
+		const validator = new Validator("string", UserManager, "name")
+		const compiledObject = validator.compiledObject
+		const callback = jest.fn()
+		user.destroy({ force: false })
+
+		await compiledObject.data.asyncValidator!(null, user.name, callback)
+
+		expect(callback).toHaveBeenCalled()
+		expect(callback.mock.calls[0]).not.toEqual([])
+	})
+
 	it("cannot accept invalid value", async () => {
 		const validator = new Validator("string", UserManager, "name")
 		const compiledObject = validator.compiledObject
