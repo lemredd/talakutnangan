@@ -20,6 +20,15 @@ describe("Validator: String Validator", () => {
 		expect(value).toEqual("1000")
 	})
 
+	it("can run trimmer", async () => {
+		const validator = new Validator()
+		const compiledObject = validator.compiledObject
+
+		const value = compiledObject.meta.transformer!(" 150 ")
+
+		expect(value).toEqual("150")
+	})
+
 	it("can run custom transformer", async () => {
 		const customTranformer = jest.fn().mockReturnValue("75")
 		const validator = new Validator().transformBy(customTranformer)

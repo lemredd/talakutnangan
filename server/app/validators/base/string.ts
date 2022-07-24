@@ -31,7 +31,7 @@ export default class StringValidator extends Validator {
 
 	protected get metaObject(): MetaValidationConstraints {
 		const meta = super.metaObject
-		const properCaster = (value: any) => String(value)
+		const properCaster = (value: any) => String(value).trim()
 
 		if (meta.transformer) {
 			const customTransformer = meta.transformer! as Pipe<any, {}>
