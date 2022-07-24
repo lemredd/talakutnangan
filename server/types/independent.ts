@@ -77,6 +77,11 @@ export interface ObjectRuleConstraints {
 	object: FieldRules
 }
 
+export interface ManagerBasedRuleConstraints {
+	manager: BaseManagerClass,
+	columnName: string
+}
+
 /**
  * Union of rule contraints
  */
@@ -84,6 +89,7 @@ export type RuleContraints = Partial<
 	& SameRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
+	& ManagerBasedRuleConstraints
 >
 
 /**
