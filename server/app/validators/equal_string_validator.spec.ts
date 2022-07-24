@@ -28,7 +28,7 @@ describe("Validator: Equal String Validator", () => {
 		const compiledObject = validator.compiledObject
 		const callback = jest.fn()
 
-		await compiledObject.data.asyncValidator!(null, "42", callback)
+		await compiledObject.data.asyncValidator!(null, "43", callback)
 
 		expect(callback).toHaveBeenCalled()
 		expect(callback.mock.calls[0]).not.toEqual([])
