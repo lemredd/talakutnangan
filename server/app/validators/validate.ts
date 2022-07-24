@@ -2,6 +2,7 @@ import type { Request } from "!/types/dependent"
 import type { ErrorPointer, FieldRules, ValidationConstraints } from "!/types/independent"
 
 import unifyErrors from "!/app/validators/unify_errors"
+import accessDeepPath from "!/helpers/access_deep_path"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default async function(fields: FieldRules, request: Request, input: { [key:string]: any })
@@ -43,7 +44,7 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 	if (errors.length > 0) {
 		throw errors.map(error => ({
 			field: error.field,
-			message: error.messageMaker(error.field, input[error.field])
+			message: error.messageMaker(error.field, accessDeepPath(input, error.field))
 		}))
 	}
 

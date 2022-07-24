@@ -14,7 +14,7 @@ export default async function(
 
 	if (Array.isArray(value)) {
 		const sanitizedInputs = []
-		const errors: (ErrorPointer|Error)[] = []
+		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = value.length
 
 		if (constraints.array.minimum && expectedSanitizeLength < constraints.array.minimum) {
@@ -37,23 +37,28 @@ export default async function(
 			const subvalue = value[i]
 			try {
 				const sanitizedInput = await validate({
-					i: constraints.array.rules
+					[i]: constraints.array.rules
 				}, constraints.request, {
-					i: subvalue
-				})
+					[i]: subvalue
+				}) as { [key:number]: any }
 
-				sanitizedInputs.push(sanitizedInput)
+				sanitizedInputs.push(sanitizedInput[i])
 			} catch(error) {
+				let flattendedErrors = []
 				if (Array.isArray(error)) {
-					errors.push(...error)
+					flattendedErrors.push(...error)
 				} else {
-					errors.push(error as ErrorPointer|Error)
+					flattendedErrors.push(error as ErrorPointer|Error)
 				}
+				errors.push(...unifyErrors(i+"", flattendedErrors))
 			}
 		}
 
 		if (errors.length > 0) {
-			throw unifyErrors(constraints.field, errors)
+			throw errors.map(error => ({
+				field: `${constraints.field}.${error.field}`,
+				messageMaker: error.messageMaker
+			}))
 		} else {
 			return sanitizedInputs
 		}

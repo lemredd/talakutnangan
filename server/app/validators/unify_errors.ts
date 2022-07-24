@@ -4,7 +4,7 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 	return errors.map(error => {
 		if (error instanceof Error) {
 			return {
-				field: field,
+				field,
 				messageMaker: (
 					field: string,
 					value: any
@@ -12,7 +12,7 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 			}
 		} else {
 			return {
-				field: `${field}.${error.field}`,
+				field: error.field,
 				messageMaker: error.messageMaker
 			}
 		}
