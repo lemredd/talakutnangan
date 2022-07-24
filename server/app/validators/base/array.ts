@@ -4,10 +4,8 @@ import runThroughPipeline from "$/helpers/run_through_pipeline"
 import Validator from "!/app/validators/base/object"
 
 export default class extends Validator {
-	protected static TYPE_VALIDATOR: string = "array"
-
 	constructor(fields: Descriptor) {
-		super(fields)
+		super(fields, "array")
 	}
 
 	protected transformAll(values: any, transformers: Pipe<any, {}>[]): any {

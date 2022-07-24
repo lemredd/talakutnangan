@@ -4,12 +4,10 @@ import runThroughPipeline from "$/helpers/run_through_pipeline"
 import Validator from "!/app/validators/base/base"
 
 export default class ObjectValidator extends Validator {
-	protected static TYPE_VALIDATOR: string = "object"
-
 	private fields: Descriptor
 
-	constructor(fields: Descriptor) {
-		super(ObjectValidator.TYPE_VALIDATOR)
+	constructor(fields: Descriptor, typeValidator = "object") {
+		super(typeValidator)
 		this.fields = fields
 	}
 
