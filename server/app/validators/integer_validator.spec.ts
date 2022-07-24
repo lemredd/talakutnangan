@@ -1,6 +1,6 @@
 import Validator from "./integer_validator"
 
-describe("Validator: Base Validator", () => {
+describe("Validator: Integer Validator", () => {
 	it("can make normal data", async () => {
 		const validator = new Validator()
 

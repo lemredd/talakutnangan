@@ -4,7 +4,7 @@ import ObjectValidator from "./object_validator"
 
 class Validator extends BaseValidator {}
 
-describe("Validator: Base Validator", () => {
+describe("Validator: Object Validator", () => {
 	it("can make normal data", async () => {
 		const fieldA = new Validator("typeA")
 		const validator = new ObjectValidator({ fieldA })
