@@ -65,7 +65,7 @@ export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 /**
  * Shape of validation state
  */
-export interface ValidationState<T extends BaseRequest = Request> {
+export interface ValidationState<T = any> {
 	request: T,
 	field: string,
 	value: any
