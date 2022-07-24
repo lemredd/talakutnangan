@@ -1,5 +1,5 @@
-import type { ErrorPointer, FieldRules } from "!/types/independent"
-import type { ValidationConstraints, Request } from "!/types/dependent"
+import type { Request } from "!/types/dependent"
+import type { ErrorPointer, FieldRules, ValidationConstraints } from "!/types/independent"
 
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
