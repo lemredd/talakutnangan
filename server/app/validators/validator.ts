@@ -19,6 +19,13 @@ export default abstract class Validator {
 		return this
 	}
 
+	protected get dataObject(): GeneralObject {
+		return {
+			required: this.required,
+			type: this.type
+		}
+	}
+
 	get compiledObject(): ValidationConstraints {
 		const meta: GeneralObject = {}
 
@@ -27,10 +34,7 @@ export default abstract class Validator {
 		}
 
 		return {
-			data: {
-				required: this.required,
-				type: this.type
-			},
+			data: this.dataObject,
 			meta
 		}
 	}
