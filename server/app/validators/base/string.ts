@@ -1,4 +1,4 @@
-import type { ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/independent"
 
 import isString from "lodash.isstring"
 
@@ -6,13 +6,15 @@ import isString from "lodash.isstring"
  * Validator to check if data is a valid string
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	if (isString(value)) {
-		return value
+	if(state.maySkip) return state
+
+	if (isString(state.value)) {
+		return state
 	} else {
 		throw {
 			field: constraints.field,

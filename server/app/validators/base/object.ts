@@ -1,5 +1,6 @@
 import type {
 	ErrorPointer,
+	ValidationState,
 	ValidationConstraints,
 	ObjectRuleConstraints
 } from "!/types/independent"
@@ -12,16 +13,19 @@ import unifyErrors from "!/app/validators/unify_errors"
  * Validator to check if data is an array
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints & ObjectRuleConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	if (isPlainObject(value)) {
+	if(state.maySkip) return state
+
+	if (isPlainObject(state.value)) {
 		const sanitizedInputs: { [key:string]: any } = {}
 
 		try {
-			return await validate(constraints.object, constraints.request, value)
+			state.value = await validate(constraints.object, constraints.request, state.value)
+			return state
 		} catch(error) {
 			const flattendedErrors: (ErrorPointer|Error)[] = []
 			if (Array.isArray(error)) {
@@ -32,12 +36,10 @@ export default async function(
 
 			const errors = unifyErrors("", flattendedErrors)
 
-			if (errors.length > 0) {
-				throw errors.map(error => ({
-					field: `${constraints.field}.${error.field}`,
-					messageMaker: error.messageMaker
-				}))
-			}
+			throw errors.map(error => ({
+				field: `${constraints.field}.${error.field}`,
+				messageMaker: error.messageMaker
+			}))
 		}
 	} else {
 		throw {

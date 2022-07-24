@@ -16,7 +16,7 @@ describe("Validator pipe: array", () => {
 			}
 		}
 
-		const sanitizeValue = await array(value, constraints)
+		const sanitizeValue = (await array(value, constraints)).value
 
 		expect(sanitizeValue).toEqual([ 2, 3 ])
 	})

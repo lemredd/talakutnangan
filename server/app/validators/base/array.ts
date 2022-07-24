@@ -1,4 +1,9 @@
-import type { ValidationConstraints, ErrorPointer, ArrayRuleConstraints } from "!/types/independent"
+import type {
+	ValidationState,
+	ValidationConstraints,
+	ErrorPointer,
+	ArrayRuleConstraints
+} from "!/types/independent"
 
 import validate from "!/app/validators/validate"
 import unifyErrors from "!/app/validators/unify_errors"
@@ -7,15 +12,17 @@ import unifyErrors from "!/app/validators/unify_errors"
  * Validator to check if data is an array
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints & ArrayRuleConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	if (Array.isArray(value)) {
+	if(state.maySkip) return state
+
+	if (Array.isArray(state.value)) {
 		const sanitizedInputs = []
 		const errors: ErrorPointer[] = []
-		const expectedSanitizeLength = value.length
+		const expectedSanitizeLength = state.value.length
 
 		if (
 			constraints.array.minimum !== undefined
@@ -38,7 +45,7 @@ export default async function(
 		}
 
 		for (let i = 0; i < expectedSanitizeLength; ++i ) {
-			const subvalue = value[i]
+			const subvalue = state.value[i]
 			try {
 				const sanitizedInput = await validate({
 					[i]: constraints.array.rules
@@ -64,7 +71,7 @@ export default async function(
 				messageMaker: error.messageMaker
 			}))
 		} else {
-			return sanitizedInputs
+			return { value: sanitizedInputs, maySkip: false }
 		}
 	} else {
 		throw {

@@ -6,7 +6,7 @@ describe("Validator pipe: integer", () => {
 		const value = Promise.resolve(makeInitialState(2))
 		const constraints = { request: null, field: "hello" }
 
-		const sanitizeValue = await integer(value, constraints)
+		const sanitizeValue = (await integer(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(2)
 	})

@@ -1,16 +1,18 @@
-import type { ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/independent"
 
 /**
  * Validator to require the data
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	if (value) {
-		return value
+	if(state.maySkip) return state
+
+	if (state.value) {
+		return state
 	} else {
 		throw {
 			field: constraints.field,

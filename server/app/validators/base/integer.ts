@@ -1,18 +1,20 @@
-import type { ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/independent"
 
 /**
  * Validator to check if data is a valid integer
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	const parsedValue = Number(value)
+	if(state.maySkip) return state
 
-	if (Number.isInteger(parsedValue)) {
-		return parsedValue
+	state.value = Number(state.value)
+
+	if (Number.isInteger(state.value)) {
+		return state
 	} else {
 		throw {
 			field: constraints.field,

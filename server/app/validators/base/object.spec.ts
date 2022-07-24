@@ -20,7 +20,7 @@ describe("Validator pipe: object", () => {
 			}
 		}
 
-		const sanitizeValue = await object(value, constraints)
+		const sanitizeValue = (await object(value, constraints)).value
 
 		expect(sanitizeValue).toStrictEqual({ hello: "world", foo: "bar" })
 	})

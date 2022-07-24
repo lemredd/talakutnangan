@@ -1,16 +1,22 @@
-import type { ValidationConstraints, SameRuleConstraints } from "!/types/independent"
+import type {
+	ValidationState,
+	ValidationConstraints,
+	SameRuleConstraints
+} from "!/types/independent"
 
 /**
  * Validator to check if data is the same as the data passed
  */
 export default async function(
-	currentState: Promise<any>,
+	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints & SameRuleConstraints
-): Promise<any> {
-	const value = await currentState
+): Promise<ValidationState> {
+	const state = await currentState
 
-	if (value === constraints.same) {
-		return value
+	if(state.maySkip) return state
+
+	if (state.value === constraints.same) {
+		return state
 	} else {
 		throw {
 			field: constraints.field,
