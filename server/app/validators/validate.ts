@@ -26,17 +26,27 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 
 				sanitizedInputs[field] = sanitizedInput
 			} catch(error) {
-				if (error instanceof Error) {
-					errors.push({
-						field,
-						messageMaker: (
-							field: string,
-							value: any
-						): string => `Unexpected error happened while validating ${field}`
-					})
+				const flattendedErrors: (ErrorPointer|Error)[] = []
+
+				if (Array.isArray(error)) {
+					flattendedErrors.push(...error)
 				} else {
-					errors.push(error as ErrorPointer)
+					flattendedErrors.push(error as ErrorPointer)
 				}
+
+				flattendedErrors.forEach(error => {
+					if (error instanceof Error) {
+						errors.push({
+							field,
+							messageMaker: (
+								field: string,
+								value: any
+							): string => `Unexpected error happened while validating ${field}`
+						})
+					} else {
+						errors.push(error as ErrorPointer)
+					}
+				})
 			}
 		}
 	}
