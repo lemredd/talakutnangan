@@ -1,12 +1,15 @@
-import type { GeneralObject, ValidationConstraints } from "!/types/independent"
+import type { Pipe } from "$/types/database"
+import type { GeneralObject, Descriptor, ValidationConstraints } from "!/types/independent"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import Validator from "!/app/validators/base/base"
 
-export default class extends Validator {
-	private fields: { [key:string]: Validator }
+export default class ObjectValidator extends Validator {
+	protected static TYPE_VALIDATOR: string = "object"
 
-	constructor(fields: { [key:string]: Validator }) {
-		super("object")
+	private fields: Descriptor
+
+	constructor(fields: Descriptor) {
+		super(ObjectValidator.TYPE_VALIDATOR)
 		this.fields = fields
 	}
 
@@ -29,7 +32,7 @@ export default class extends Validator {
 
 		data["fields"] = fieldData
 
-		const pipedTransformers = function(value: any) {
+		const pipedTransformers = (value: any) => {
 			let transformedValue = value
 
 			if (meta.transformer !== undefined) {
@@ -50,7 +53,8 @@ export default class extends Validator {
 					}
 				}
 			})
-			return runThroughPipeline(transformedValue, {}, linkedTransformers)
+
+			return this.transformAll(transformedValue, linkedTransformers)
 		}
 
 		return {
@@ -59,5 +63,9 @@ export default class extends Validator {
 				transformer: pipedTransformers
 			}
 		}
+	}
+
+	protected transformAll(value: any, transformers: Pipe<any, {}>[]): any {
+		return runThroughPipeline(value, {}, transformers)
 	}
 }
