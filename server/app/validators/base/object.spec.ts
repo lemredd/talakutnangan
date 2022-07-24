@@ -1,9 +1,10 @@
 import string from "!/app/validators/base/string"
+import makeInitialState from "!/app/validators/make_initial_state"
 import object from "./object"
 
 describe("Validator pipe: object", () => {
 	it("can accept valid input", async () => {
-		const value = Promise.resolve({ hello: "world", foo: "bar" })
+		const value = Promise.resolve(makeInitialState({ hello: "world", foo: "bar" }))
 		const constraints = {
 			request: null,
 			field: "hello",
@@ -25,7 +26,7 @@ describe("Validator pipe: object", () => {
 	})
 
 	it("cannot accept invalid input", async () => {
-		const value = Promise.resolve({ hello: 2, foo: 2 })
+		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
 		const constraints = {
 			request: null,
 			field: "hi",

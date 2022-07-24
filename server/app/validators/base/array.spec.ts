@@ -1,9 +1,10 @@
 import integer from "!/app/validators/base/integer"
+import makeInitialState from "!/app/validators/make_initial_state"
 import array from "./array"
 
 describe("Validator pipe: array", () => {
 	it("can accept valid input", async () => {
-		const value = Promise.resolve([ 2, 3 ])
+		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
 			request: null,
 			field: "hello",
@@ -21,7 +22,7 @@ describe("Validator pipe: array", () => {
 	})
 
 	it("cannot accept few input", async () => {
-		const value = Promise.resolve([ 2 ])
+		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
 			field: "hello",
@@ -40,7 +41,7 @@ describe("Validator pipe: array", () => {
 	})
 
 	it("cannot accept greater input", async () => {
-		const value = Promise.resolve([ 2 ])
+		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
 			field: "hello",
@@ -59,7 +60,7 @@ describe("Validator pipe: array", () => {
 	})
 
 	it("cannot accept invalid input", async () => {
-		const value = Promise.resolve([ 2, "abc" ])
+		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
 		const constraints = {
 			request: null,
 			field: "hello",

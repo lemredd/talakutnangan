@@ -4,6 +4,7 @@ import type { ErrorPointer, FieldRules, ValidationConstraints } from "!/types/in
 import unifyErrors from "!/app/validators/unify_errors"
 import accessDeepPath from "!/helpers/access_deep_path"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
+import makeInitialState from "!/app/validators/make_initial_state"
 
 export default async function(fields: FieldRules, request: Request, input: { [key:string]: any })
 : Promise<object> {
@@ -21,12 +22,12 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 					...rules.constraints
 				}
 				const sanitizedInput = await runThroughPipeline(
-					Promise.resolve(input[field]),
+					Promise.resolve(makeInitialState(input[field])),
 					constraints,
 					rules.pipes
 				)
 
-				sanitizedInputs[field] = sanitizedInput
+				sanitizedInputs[field] = sanitizedInput.value
 			} catch(error) {
 				const flattendedErrors: (ErrorPointer|Error)[] = []
 
