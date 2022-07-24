@@ -31,7 +31,7 @@ describe("Validator: Not Exists Validator", () => {
 		const validator = new Validator(UserManager, "name")
 		const compiledObject = validator.compiledObject
 		const callback = jest.fn()
-		user.destroy({ force: false })
+		await user.destroy({ force: false })
 
 		await compiledObject.data.asyncValidator!(null, user.name, callback)
 
