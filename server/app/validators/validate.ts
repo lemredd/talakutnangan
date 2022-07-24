@@ -2,10 +2,12 @@ import Schema from "async-validator"
 import type { RuleData, ValidationError } from "!/types/dependent"
 import type { MetaValidationConstraints, Descriptor } from "!/types/independent"
 
-import Validator from "!/app/validators/base/base"
-
-export default async function(descriptor: Descriptor, input: object)
-: Promise<object> {
+export default async function(
+	descriptor: Descriptor,
+	input: object,
+	options: object = {},
+	mustBeRaw: boolean = false
+): Promise<object> {
 	const properDescriptor: { [key:string]: RuleData } = {}
 
 	for (const field in descriptor) {
@@ -26,10 +28,11 @@ export default async function(descriptor: Descriptor, input: object)
 
 	try {
 		const validator = new Schema(properDescriptor)
-		return await validator.validate(input, { first: true, firstFields: true })
+		return await validator.validate(input, options)
 	} catch(errorObject) {
 		const errors = (errorObject as any).errors as ValidationError[]
 
-		throw errors.map(error => ({ field: error.field, message: error.message }))
+		if (mustBeRaw) throw errorObject
+		else throw errors?.map(error => ({ field: error.field, message: error.message }))
 	}
 }
