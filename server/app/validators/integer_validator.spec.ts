@@ -31,4 +31,16 @@ describe("Validator: Base Validator", () => {
 		expect(customTranformer.mock.calls[0]).toEqual([ 3, {} ])
 		expect(value).toEqual(2)
 	})
+
+	it("can limit the range", async () => {
+		const validator = new Validator().inclusiveRange(0, 5)
+
+		const compiledObject = validator.compiledObject
+
+		expect(compiledObject).toHaveProperty("data.required", true)
+		expect(compiledObject).toHaveProperty("data.type", "integer")
+		expect(compiledObject).toHaveProperty("data.min", 0)
+		expect(compiledObject).toHaveProperty("data.max", 5)
+		expect(compiledObject).toHaveProperty("meta.transformer")
+	})
 })
