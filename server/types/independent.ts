@@ -80,7 +80,11 @@ export interface ObjectRuleConstraints {
 /**
  * Union of rule contraints
  */
-export type RuleContraints = Partial<SameRuleConstraints & ArrayRuleConstraints>
+export type RuleContraints = Partial<
+	& SameRuleConstraints
+	& ArrayRuleConstraints
+	& ObjectRuleConstraints
+>
 
 /**
  * Shape of validation constraints
