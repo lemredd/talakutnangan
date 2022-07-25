@@ -1,23 +1,24 @@
 import type {
 	ValidationState,
 	ValidationConstraints,
-	ManagerBasedRuleConstraints
+	UniqueRuleConstraints
 } from "!/types/independent"
 
+import accessDeepPath from "!/helpers/access_deep_path"
 import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**
- * Validator to check if data belongs to an archived model in the database
+ * Validator to check if data unique/will be unique in the database
  */
  export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
+	constraints: ValidationConstraints & Partial<UniqueRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
 
-	if (constraints.manager === undefined) {
+	if (constraints.manager === undefined || constraints.unique === undefined) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -25,18 +26,20 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 	const manager = new constraints.manager.className()
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
-			existence: "archived"
+			existence: "all"
 		}
 	})
 
+	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
+
 	// TODO: Store found model in cache
-	if (foundModel.data === null) {
+	if (foundModel.data === null || (foundModel.data as any).id === id) {
+		return state
+	} else {
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" is not archived in the database".`
+				`The ${value} in field "${field}" is not unique in the database".`
 		}
-	} else {
-		return state
 	}
 }

@@ -84,6 +84,25 @@ export interface ManagerBasedRuleConstraints {
 	}
 }
 
+export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
+	unique: {
+		IDPath: string
+	}
+}
+
+export interface AcronymRuleConstraints {
+	acronym: {
+		spelledOutPath: string
+	}
+}
+
+export interface BufferRuleConstraints {
+	buffer: {
+		allowedMimeTypes: string[],
+		maxSize: number
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -92,6 +111,9 @@ export type RuleContraints = Partial<
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
+	& UniqueRuleConstraints
+	& AcronymRuleConstraints
+	& BufferRuleConstraints
 >
 
 /**
@@ -99,6 +121,7 @@ export type RuleContraints = Partial<
  */
  export interface ValidationConstraints<T = any> extends RuleContraints {
 	request: T,
+	source: any,
 	field: string
 }
 
@@ -115,7 +138,7 @@ export interface ValidationState {
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints & any>[],
+	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
 	constraints: RuleContraints
 }
 

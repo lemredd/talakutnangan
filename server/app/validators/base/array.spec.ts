@@ -7,6 +7,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -21,10 +22,33 @@ describe("Validator pipe: array", () => {
 		expect(sanitizeValue).toEqual([ 2, 3 ])
 	})
 
+	it("can pass original source", async () => {
+		const value = Promise.resolve(makeInitialState([ 4, 5, 6 ]))
+		const source = Symbol("source")
+		const customPipe = jest.fn(value => value)
+		const constraints = {
+			request: null,
+			source,
+			field: "hello",
+			array: {
+				rules: {
+					pipes: [ customPipe ],
+					constraints: {}
+				}
+			}
+		}
+
+		await array(value, constraints)
+
+		expect(customPipe).toHaveBeenCalled()
+		expect(customPipe.mock.calls[0]).toHaveProperty("1.source", source)
+	})
+
 	it("cannot accept few input", async () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -44,6 +68,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -63,6 +88,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {

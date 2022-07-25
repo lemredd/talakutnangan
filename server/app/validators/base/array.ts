@@ -13,13 +13,21 @@ import unifyErrors from "!/app/validators/unify_errors"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & ArrayRuleConstraints
+	constraints: ValidationConstraints & Partial<ArrayRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
 
 	if (Array.isArray(state.value)) {
+		if (constraints.array === undefined) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) =>
+					`Developer forgot to add contraints in object for field ${field}.`
+			}
+		}
+
 		const sanitizedInputs = []
 		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = state.value.length
@@ -30,7 +38,7 @@ export default async function(
 			throw {
 				field: constraints.field,
 				messageMaker: (field: string) =>
-					`Field "${field}" must have more than ${constraints.array.minimum}.`
+					`Field "${field}" must have more than ${constraints.array!.minimum}.`
 			}
 		}
 
@@ -40,7 +48,7 @@ export default async function(
 			throw {
 				field: constraints.field,
 				messageMaker: (field: string) =>
-					`Field "${field}" must have more than ${constraints.array.maximum}.`
+					`Field "${field}" must have more than ${constraints.array!.maximum}.`
 			}
 		}
 
@@ -51,7 +59,7 @@ export default async function(
 					[i]: constraints.array.rules
 				}, constraints.request, {
 					[i]: subvalue
-				}) as { [key:number]: any }
+				}, constraints.source) as { [key:number]: any }
 
 				sanitizedInputs.push(sanitizedInput[i])
 			} catch(error) {

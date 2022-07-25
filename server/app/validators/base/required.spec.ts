@@ -4,7 +4,7 @@ import required from "./required"
 describe("Validator pipe: required", () => {
 	it("can accept valid input", async () => {
 		const value = Promise.resolve(makeInitialState("world"))
-		const constraints = { request: null, field: "hello" }
+		const constraints = { request: null, source: null, field: "hello" }
 
 		const sanitizeValue = (await required(value, constraints)).value
 
@@ -13,7 +13,7 @@ describe("Validator pipe: required", () => {
 
 	it("cannot accept invalid input", async () => {
 		const value = Promise.resolve(makeInitialState(undefined))
-		const constraints = { request: null, field: "hello" }
+		const constraints = { request: null, source: null, field: "hello" }
 
 		const error = required(value, constraints)
 
