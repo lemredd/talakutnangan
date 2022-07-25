@@ -10,7 +10,7 @@ import TransactionInitializer from "!/middlewares/miscellaneous/transaction_init
 export default async function(app: ExpressApp) {
 	const middlewares = [
 		new Compression(),
-		// new TransactionInitializer(),
+		new TransactionInitializer(),
 		new Session(),
 		new AuthenticationInitializer(),
 		new AuthenticationSession()
