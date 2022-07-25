@@ -107,7 +107,7 @@ export type Day = typeof rawDays[number]
  * Shape of expected common filter
  */
 export type Filter = ExistenceFilter
-export type UserFilter = Filter & DepartmentFilter & RoleFilter & KindFilter
+export type UserFilter = Filter & DepartmentFilter & RoleFilter & KindFilter & CriteriaFilter
 
 export interface ExistenceFilter extends Serializable {
 	filter: {
@@ -130,5 +130,11 @@ export interface RoleFilter extends Serializable {
 export interface KindFilter extends Serializable {
 	filter: {
 		kind: "*"|UserKind
+	}
+}
+
+export interface CriteriaFilter extends Serializable {
+	filter: {
+		criteria: "*"|"incomplete"|"verified"|"unverified"
 	}
 }
