@@ -90,6 +90,12 @@ export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
 	}
 }
 
+export interface AcronymRuleConstraints {
+	acronym: {
+		spelledOutPath: string
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -99,6 +105,7 @@ export type RuleContraints = Partial<
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
 	& UniqueRuleConstraints
+	& AcronymRuleConstraints
 >
 
 /**
