@@ -9,11 +9,19 @@ import type {
  */
  export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & ManagerBasedRuleConstraints
+	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
+
+	if (constraints.manager === undefined) {
+		throw {
+			field: constraints.field,
+			messageMaker: (field: string) =>
+				`Developer forgot to add contraints in object for field ${field}.`
+		}
+	}
 
 	// TODO: Get transaction manager from cache
 	const manager = new constraints.manager.className()

@@ -14,13 +14,21 @@ import unifyErrors from "!/app/validators/unify_errors"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & ObjectRuleConstraints
+	constraints: ValidationConstraints & Partial<ObjectRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
 
 	if (isPlainObject(state.value)) {
+		if (constraints.object === undefined) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) =>
+					`Developer forgot to add contraints in object for field ${field}.`
+			}
+		}
+
 		const sanitizedInputs: { [key:string]: any } = {}
 
 		try {

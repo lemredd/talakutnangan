@@ -9,7 +9,7 @@ import type {
  */
  export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & ManagerBasedRuleConstraints
+	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
