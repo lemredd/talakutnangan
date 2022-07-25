@@ -22,7 +22,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"common_front-end/.*\\.spec\\.ts"
+		"./common_front-end/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

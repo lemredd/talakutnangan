@@ -85,6 +85,14 @@ describe("Back-end: Base Permission Group", () => {
 		expect(mask).toBe(0x3)
 	})
 
+	it("can generate super mask", async () => {
+		const permissionGroup = new GroupB()
+
+		const mask = permissionGroup.generateSuperMask()
+
+		expect(mask).toBe(0x3)
+	})
+
 	type GroupNameC = { "groupC": number }
 	type AvailablePermissionsC = "e" | "f" | "g"
 
@@ -158,5 +166,14 @@ describe("Back-end: Base Permission Group", () => {
 		const isAllowed = permissionGroup.hasOneRoleAllowed(roles, permissionCombinations)
 
 		expect(isAllowed).toBeFalsy()
+	})
+
+	it("can generate permitted names", async () => {
+		const permissionGroup = new GroupC()
+		const flags = permissionGroup.generateMask("e", "f")
+
+		const permissionNames = permissionGroup.deserialize(flags)
+
+		expect(permissionNames).toStrictEqual([ "e", "f" ])
 	})
 })

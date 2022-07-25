@@ -3,6 +3,7 @@ import type { AuthenticatedRequest, Response }  from "!/types/dependent"
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default class extends Controller {
@@ -14,11 +15,15 @@ export default class extends Controller {
 
 	get validations(): Validation[] { return [] }
 
-	async handle(request: AuthenticatedRequest, response: Response): Promise<void> {
-		request.logout()
+	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
+		return await new Promise<NoContentResponseInfo>(resolve => {
+			// @ts-ignore
+			request.logout((error: Error): void => {
+				if (error) throw error
+				// TODO: regenerate XSRF-Token or session
 
-		// TODO: regenerate XSRF-Token or session
-
-		response.redirect("/")
+				resolve(new NoContentResponseInfo())
+			})
+		})
 	}
 }

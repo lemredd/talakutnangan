@@ -3,6 +3,14 @@ import { Op } from "sequelize"
 import Condition from "./condition"
 
 describe("Database: Condition Builder", () => {
+	it("can retain built condition", () => {
+		const builtCondition = { sample: { [Op.eq]: 3 } }
+
+		const condition = new Condition(builtCondition)
+
+		expect(condition.build()).toStrictEqual(builtCondition)
+	})
+
 	it("can make 'not' operation", () => {
 		const condition = new Condition()
 
@@ -57,6 +65,24 @@ describe("Database: Condition Builder", () => {
 			[Op.or]: [
 				{ columnA: { [Op.is]: null } },
 				{ columnB: { [Op.not]: null } }
+			]
+		})
+	})
+
+	it("can make 'and' operation", () => {
+		const condition = new Condition()
+		const subconditionA = (new Condition()).is("columnA", null)
+		const subconditionB = (new Condition()).equal("columnB", 1)
+
+		const builtCondition = condition.and(
+			subconditionA,
+			subconditionB
+		).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{ columnA: { [Op.is]: null } },
+				{ columnB: { [Op.eq]: 1 } }
 			]
 		})
 	})

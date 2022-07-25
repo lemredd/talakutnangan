@@ -1,5 +1,5 @@
 import type { Validator } from "node-input-validator"
-import get from "lodash.get"
+import accessDeepPath from "!/helpers/access_deep_path"
 
 /**
  * Function to validate the input acronyms.
@@ -13,7 +13,7 @@ export default function({ value, args }: { value: string, args: string[] }, vali
 	}
 
 	const fieldPath = args[0]
-	const source: string = get(validator.inputs, fieldPath)
+	const source: string = accessDeepPath(validator.inputs, fieldPath)
 
 	if (source) {
 		const separatedSource = source

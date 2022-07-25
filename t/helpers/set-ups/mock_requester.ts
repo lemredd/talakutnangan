@@ -1,5 +1,6 @@
 
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
+import type { FieldRules } from "!/types/independent"
 import type { MockResponse } from "!/types/test"
 
 import type { Request, Response, NextFunction } from "!/types/dependent"
@@ -34,8 +35,9 @@ export default class<T extends Request> extends RequestEnvironment {
 		for (const key in properties) {
 			if (Object.prototype.hasOwnProperty.call(properties, key)) {
 				const value = properties[key];
-				// this.oldProperties[key] = value
 
+				// @ts-ignore
+				this.oldProperties[key] = this.request[key]
 				// @ts-ignore
 				this.request[key] = value
 			}
@@ -62,6 +64,10 @@ export default class<T extends Request> extends RequestEnvironment {
 
 	async runResponder(handle: Function): Promise<void> {
 		await handle(this.response)
+	}
+
+	async runValidator(handle: Function, rules: FieldRules, input: object): Promise<object> {
+		return await handle(rules, this.request, input) as object
 	}
 
 	expectSuccess(): any {

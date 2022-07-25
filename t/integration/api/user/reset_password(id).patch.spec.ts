@@ -33,6 +33,12 @@ describe("PATCH /api/user/reset_password/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/reset_password/${student.id}`)
+			.send({
+				data: {
+					type: "user",
+					id: student.id
+				}
+			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)

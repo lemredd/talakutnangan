@@ -34,10 +34,6 @@ describe("DELETE /api/department/archive", () => {
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		// TODO: Uncomment once batch delete works properly
-		// expect((await Department.findOne({ where: { id: department.id } } ))!).toBeNull()
+		expect((await Department.findOne({ where: { id: department.id } } ))!).toBeNull()
 	})
-
-	it.todo("cannot delete non-existing")
-	it.todo("cannot redelete")
 })

@@ -11,8 +11,13 @@ import type {
 	FindAndCountOptions
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
+import BaseError from "$!/errors/base"
+import DatabaseError from "$!/errors/database"
 import Transformer from "%/transformers/base"
 import Serializer from "%/transformers/serializer"
+import limit from "%/managers/helpers/limit"
+import offset from "%/managers/helpers/offset"
+import existence from "%/managers/helpers/existence"
 import Condition from "%/managers/helpers/condition"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import TransactionManager from "%/managers/helpers/transaction_manager"
@@ -27,91 +32,158 @@ export default abstract class Manager<T extends Model, U> {
 		this.transaction = transaction
 	}
 
-	abstract get listPipeline(): Pipe<FindAndCountOptions<T>, any>[]
-
 	abstract get model(): ModelCtor<T>
 
 	abstract get transformer(): Transformer<T, void>
 
+	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
+		return [
+			existence,
+			offset,
+			limit
+		]
+	}
+
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
-		return []
+		return [
+			existence,
+			offset,
+			limit
+		]
 	}
 
-	async findWithID(id: number): Promise<Serializable> {
-		const foundModel = await this.findOneOnColumn("id", id)
+	async findWithID(id: number, constraints: object = {}): Promise<Serializable> {
+		try {
+			const foundModel = await this.findOneOnColumn("id", id, constraints)
 
-		Log.success("manager", "done searching for a model using ID")
+			Log.success("manager", "done searching for a model using ID")
 
-		return foundModel
+			return foundModel
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any): Promise<Serializable> {
-		const condition = new Condition()
-		condition.equal(columnName, value)
-		const whereOptions: FindOptions<T> = { where: condition.build() }
+	async findOneOnColumn(columnName: string, value: any, constraints: object = {})
+	: Promise<Serializable> {
+		try {
+			const condition = new Condition()
+			condition.equal(columnName, value)
+			const whereOptions: FindOptions<T> = { where: condition.build() }
 
-		const findOptions = runThroughPipeline(whereOptions, {}, this.singleReadPipeline)
+			const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
 
-		const model = await this.model.findOne({
-			...findOptions,
-			...this.transaction.lockedTransactionObject
-		})
+			const model = await this.model.findOne({
+				...findOptions,
+				...this.transaction.lockedTransactionObject
+			})
 
-		Log.success("manager", "done searching for a model on a certain column")
+			Log.success("manager", "done searching for a model on a certain column")
 
-		return this.serialize(model)
+			return this.serialize(model)
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async list(query: object): Promise<Serializable> {
-		const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
+		try {
+			const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
-		const rows = await this.model.findAll({
-			...options,
-			...this.transaction.lockedTransactionObject
-		})
+			const rows = await this.model.findAll({
+				...options,
+				...this.transaction.lockedTransactionObject
+			})
 
-		Log.success("manager", "done listing models according to constraints")
+			Log.success("manager", "done listing models according to constraints")
 
-		return this.serialize(rows)
+			return this.serialize(rows)
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
-		const model = await this.model.create(details, this.transaction.transactionObject)
+		try {
+			const model = await this.model.create(details, this.transaction.transactionObject)
 
-		Log.success("manager", "done creating a model")
+			Log.success("manager", "done creating a model")
 
-		return this.serialize(model)
+			return this.serialize(model)
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async update(id: number, details: U & Attributes<T>): Promise<number> {
-		const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
-			where: { id },
-			...this.transaction.transactionObject
-		})
+		try {
+			const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
+				where: { id },
+				...this.transaction.transactionObject
+			})
 
-		Log.success("manager", "done updating a model")
+			Log.success("manager", "done updating a model")
 
-		return affectedCount
+			return affectedCount
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async archive(id: number): Promise<number> {
-		const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
-			where: { id },
-			...this.transaction.transactionObject
-		})
+		try {
+			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
+				where: { id },
+				...this.transaction.transactionObject
+			})
 
-		Log.success("manager", "done archiving a model")
+			Log.success("manager", "done archiving a model")
 
-		return destroyCount
+			return destroyCount
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async archiveBatch(IDs: number[]): Promise<number> {
+		try {
+			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
+				where: { id: IDs },
+				...this.transaction.transactionObject
+			})
+
+			Log.success("manager", "done archiving models")
+
+			return destroyCount
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async restore(id: number): Promise<void> {
-		await this.model.restore(<RestoreOptions<T>>{
-			where: { id },
-			...this.transaction.transactionObject
-		})
+		try {
+			await this.model.restore(<RestoreOptions<T>>{
+				where: { id },
+				...this.transaction.transactionObject
+			})
 
-		Log.success("manager", "done restoring a model")
+			Log.success("manager", "done restoring a model")
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async restoreBatch(IDs: number[]): Promise<void> {
+		try {
+			await this.model.restore(<RestoreOptions<T>>{
+				where: { id: IDs },
+				...this.transaction.transactionObject
+			})
+
+			Log.success("manager", "done restoring models")
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	protected serialize(models: T|T[]|null): Serializable {
@@ -120,5 +192,13 @@ export default abstract class Manager<T extends Model, U> {
 			this.transformer,
 			{}
 		)
+	}
+
+	protected makeBaseError(error: any): BaseError {
+		if (error instanceof BaseError) {
+			return error
+		} else {
+			return new DatabaseError()
+		}
 	}
 }

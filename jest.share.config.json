@@ -15,7 +15,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"shareable/.*\\.spec\\.ts"
+		"./shareable/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

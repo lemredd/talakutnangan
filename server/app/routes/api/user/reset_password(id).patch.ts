@@ -1,19 +1,21 @@
 import type { UserProfile } from "$/types/common_front-end"
-import type { PasswordResetArguments } from "!/types/independent"
+import type { PasswordResetArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"
+import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
-import makeDefaultPassword from "!/helpers/make_default_password"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
+import makeDefaultPassword from "!/helpers/make_default_password"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import ModelBoundController from "!/common_controllers/model_bound_controller"
+import BoundJSONController from "!/common_controllers/bound_json_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
-export default class extends ModelBoundController {
+export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -22,19 +24,27 @@ export default class extends ModelBoundController {
 		])
 	}
 
+	get bodyValidationRules(): object {
+		return {
+			"data": [ "required", "object" ],
+			"data.type": [ "required", "string", "equals:user" ],
+			"data.id": [ "required", "numeric" ]
+		}
+	}
+
+	get manager(): BaseManagerClass { return UserManager }
+
 	async handle(
 		request: AuthenticatedIDRequest & PreprocessedRequest<PasswordResetArguments>,
 		response: Response
-	): Promise<void> {
+	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager()
-		const id = +request.params.id
+		const id = request.body.data.id
 		const userProfile = deserialize(await manager.findWithID(id)) as UserProfile
 		const newPassword = makeDefaultPassword(userProfile)
-		const isSuccess = await manager.resetPassword(+id, newPassword)
+		const isSuccess = await manager.resetPassword(id, newPassword)
 
 		if (isSuccess) {
-			response.status(this.status.NO_CONTENT)
-
 			request.nextMiddlewareArguments = {
 				emailToContact: {
 					email: userProfile.data.email,
@@ -42,13 +52,10 @@ export default class extends ModelBoundController {
 					password: newPassword
 				}
 			}
+
+			return new NoContentResponseInfo()
 		} else {
-			// TODO: Throw error
-			response.status(this.status.INTERNAL_SERVER_ERROR).json({
-				"errors": [
-					"User was not found or there is a problem with the database."
-				]
-			})
+			throw new DatabaseError("There is a problem with the database. Cannot reset the password.")
 		}
 	}
 
