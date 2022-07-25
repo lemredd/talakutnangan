@@ -4,6 +4,8 @@ import type {
 	ManagerBasedRuleConstraints
 } from "!/types/independent"
 
+import makeDeveloperError from "!/app/validators/make_developer_error"
+
 /**
  * Validator to check if data belongs to an existing model in the database
  */
@@ -16,11 +18,7 @@ import type {
 	if(state.maySkip) return state
 
 	if (constraints.manager === undefined) {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) =>
-				`Developer forgot to add contraints in object for field ${field}.`
-		}
+		throw makeDeveloperError(constraints.field)
 	}
 
 	// TODO: Get transaction manager from cache

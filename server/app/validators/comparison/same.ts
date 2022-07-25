@@ -4,6 +4,8 @@ import type {
 	SameRuleConstraints
 } from "!/types/independent"
 
+import makeDeveloperError from "!/app/validators/make_developer_error"
+
 /**
  * Validator to check if data is the same as the data passed
  */
@@ -14,6 +16,10 @@ export default async function(
 	const state = await currentState
 
 	if(state.maySkip) return state
+
+	if (constraints.same === undefined) {
+		throw makeDeveloperError(constraints.field)
+	}
 
 	if (state.value === constraints.same) {
 		return state

@@ -4,6 +4,8 @@ import type {
 	ManagerBasedRuleConstraints
 } from "!/types/independent"
 
+import makeDeveloperError from "!/app/validators/make_developer_error"
+
 /**
  * Validator to check if data does not belong to an existing model in the database
  */
@@ -14,6 +16,10 @@ import type {
 	const state = await currentState
 
 	if(state.maySkip) return state
+
+	if (constraints.manager === undefined) {
+		throw makeDeveloperError(constraints.field)
+	}
 
 	// TODO: Get transaction manager from cache
 	const manager = new constraints.manager.className()
