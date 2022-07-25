@@ -38,12 +38,16 @@ export default async function(
 			}
 		}, [])
 
-	if (state.value === constraints.acronym) {
+	const isAcronym = separatedSource.reduce<boolean>((previousValidation, currentSource, i) => {
+		return previousValidation && currentSource.startsWith(acronymSubstrings[i])
+	}, separatedSource.length === acronymSubstrings.length)
+
+	if (isAcronym) {
 		return state
 	} else {
 		throw {
 			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be "${constraints.same}".`
+			messageMaker: (field: string) => `Field "${field}" must be the proper acronym.`
 		}
 	}
 }
