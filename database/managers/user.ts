@@ -1,4 +1,3 @@
-import { Op } from "sequelize"
 import { days } from "$/types/database.native"
 import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
 import type {
@@ -10,10 +9,9 @@ import type {
 import type {
 	Day,
 	Pipe,
-	Criteria,
 	RawUser,
-	Serializable,
-	CommonConstraints
+	UserFilter,
+	Serializable
 } from "$/types/database"
 
 import Log from "$!/singletons/log"
@@ -32,8 +30,11 @@ import UserTransformer from "%/transformers/user"
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
 import Condition from "%/managers/helpers/condition"
+import siftByRole from "%/managers/user/sift_by_role"
+import siftByKind from "%/managers/user/sift_by_kind"
 import searchName from "%/managers/helpers/search_name"
 import siftByCriteria from "%/managers/user/sift_by_criteria"
+import siftByDepartment from "%/managers/user/sift_by_department"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
 
@@ -42,10 +43,7 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get singleReadPipeline(): Pipe<
-		FindAndCountOptions<User>,
-		CommonConstraints & { criteria: Criteria }
-	>[] {
+	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, UserFilter>[] {
 		return [
 			includeRoleAndDepartment,
 			includeExclusiveDetails,
@@ -53,13 +51,13 @@ export default class UserManager extends BaseManager<User, RawUser> {
 		]
 	}
 
-	get listPipeline(): Pipe<
-		FindAndCountOptions<User>,
-		CommonConstraints & { criteria: Criteria }
-	>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<User>, UserFilter>[] {
 		return [
 			searchName,
+			siftByRole,
+			siftByKind,
 			siftByCriteria,
+			siftByDepartment,
 			includeRoleAndDepartment,
 			...super.listPipeline
 		]
@@ -268,13 +266,16 @@ export default class UserManager extends BaseManager<User, RawUser> {
 
 	async verify(id: number): Promise<number> {
 		try {
+			const condition = new Condition()
+			condition.and(
+				new Condition().equal("id", id),
+				new Condition().not("emailVerifiedAt", null)
+			)
+
 			const [ affectedCount ] = await this.model.update({
 				emailVerifiedAt: new Date()
 			}, {
-				where: {
-					id,
-					emailVerifiedAt: { [Op.is]: null }
-				},
+				where: condition.build(),
 				...this.transaction.transactionObject
 			})
 
