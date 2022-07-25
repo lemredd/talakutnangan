@@ -1,13 +1,3 @@
-import type { RawUser, Pipe } from "$/types/database"
-import type {
-	ModelCtor,
-	FindAndCountOptions,
-	TransformerOptions,
-	AttributesObject
-} from "%/types/dependent"
-import { Op } from "sequelize"
-
-
 import User from "%/models/user"
 import Department from "%/models/department"
 import UserFactory from "~/factories/user"
