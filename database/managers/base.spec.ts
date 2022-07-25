@@ -10,10 +10,10 @@ import User from "%/models/user"
 import Database from "~/set-ups/database"
 import UserFactory from "~/factories/user"
 import limit from "%/managers/helpers/limit"
-import existence from "%/managers/helpers/existence"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
+import siftByExistence from "%/managers/helpers/sift_by_existence"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
 import BaseManager from "./base"
@@ -42,7 +42,7 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
 		return [
-			existence,
+			siftByExistence,
 			this.customReadPipe
 		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
 	}
@@ -155,7 +155,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				existence: "exists"
+				siftByExistence: "exists"
 			}
 		})
 
@@ -170,7 +170,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				existence: "exists"
+				siftByExistence: "exists"
 			}
 		})
 
@@ -185,7 +185,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				existence: "archived"
+				siftByExistence: "archived"
 			}
 		})
 
@@ -199,7 +199,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				existence: "archived"
+				siftByExistence: "archived"
 			}
 		})
 
