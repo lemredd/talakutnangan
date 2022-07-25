@@ -28,8 +28,8 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"components/.*\\.spec\\.ts",
-		"pages/.*\\.spec\\.ts"
+		"./components/.*\\.spec\\.ts",
+		"./pages/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "jsdom"
