@@ -107,6 +107,7 @@ export type Day = typeof rawDays[number]
  * Shape of expected common filter
  */
 export type Filter = ExistenceFilter
+export type UserFilter = Filter & DepartmentFilter & RoleFilter
 
 export interface ExistenceFilter extends Serializable {
 	filter: {
