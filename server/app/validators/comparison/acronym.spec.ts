@@ -63,7 +63,7 @@ describe("Validator pipe: acronym", () => {
 
 		const sanitizeValue = (await acronym(value, constraints)).value
 
-		expect(sanitizeValue).toEqual("ÉÑ")
+		expect(sanitizeValue).toEqual("AbDe")
 	})
 
 	it("cannot accept invalid input", async () => {
