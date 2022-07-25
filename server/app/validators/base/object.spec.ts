@@ -26,6 +26,35 @@ describe("Validator pipe: object", () => {
 		expect(sanitizeValue).toStrictEqual({ hello: "world", foo: "bar" })
 	})
 
+	it("can pass original source", async () => {
+		const value = Promise.resolve(makeInitialState({ hello: "world", foo: "bar" }))
+		const source = Symbol("source")
+		const customPipeA = jest.fn(value => value)
+		const customPipeB = jest.fn(value => value)
+		const constraints = {
+			request: null,
+			source,
+			field: "hello",
+			object: {
+				hello: {
+					pipes: [ customPipeA ],
+					constraints: {}
+				},
+				foo: {
+					pipes: [ customPipeB ],
+					constraints: {}
+				}
+			}
+		}
+
+		await object(value, constraints)
+
+		expect(customPipeA).toHaveBeenCalled()
+		expect(customPipeA.mock.calls[0]).toHaveProperty("1.source", source)
+		expect(customPipeB).toHaveBeenCalled()
+		expect(customPipeB.mock.calls[0]).toHaveProperty("1.source", source)
+	})
+
 	it("cannot accept invalid input", async () => {
 		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
 		const constraints = {
