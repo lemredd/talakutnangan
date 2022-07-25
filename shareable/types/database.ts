@@ -109,3 +109,7 @@ export type Day = typeof rawDays[number]
 export interface Filter extends Serializable {
 	existence: "exists" | "archived" | "all"
 }
+
+export interface DepartmentFilter extends Serializable {
+	department: "*"|string
+}
