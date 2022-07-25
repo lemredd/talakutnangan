@@ -10,8 +10,10 @@ describe("Validator: exists", () => {
 		const constraints = {
 			request: null,
 			field: "hello",
-			manager: UserManager,
-			columnName: "name"
+			manager: {
+				className: UserManager,
+				columnName: "name"
+			}
 		}
 
 		const sanitizeValue = (await exists(value, constraints)).value
@@ -25,8 +27,10 @@ describe("Validator: exists", () => {
 		const constraints = {
 			request: null,
 			field: "hello",
-			manager: UserManager,
-			columnName: "name"
+			manager: {
+				className: UserManager,
+				columnName: "name"
+			}
 		}
 		await user.destroy({ force: false })
 
@@ -42,8 +46,10 @@ describe("Validator: exists", () => {
 		const constraints = {
 			request: null,
 			field: "hello",
-			manager: UserManager,
-			columnName: "name"
+			manager: {
+				className: UserManager,
+				columnName: "name"
+			}
 		}
 
 		const error = exists(value, constraints)

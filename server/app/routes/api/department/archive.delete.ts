@@ -56,8 +56,10 @@ export default class extends JSONController {
 									id: {
 										pipes: [ required, integer, exists ],
 										constraints: {
-											manager: DepartmentManager,
-											columnName: "id"
+											manager: {
+												className: DepartmentManager,
+												columnName: "id"
+											}
 										}
 									}
 								}

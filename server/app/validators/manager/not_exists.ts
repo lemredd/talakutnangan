@@ -16,8 +16,8 @@ import type {
 	if(state.maySkip) return state
 
 	// TODO: Get transaction manager from cache
-	const manager = new constraints.manager()
-	const foundModel = await manager.findOneOnColumn(constraints.columnName, state.value, {
+	const manager = new constraints.manager.className()
+	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
 			existence: "all"
 		}

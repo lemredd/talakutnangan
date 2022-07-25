@@ -78,8 +78,10 @@ export interface ObjectRuleConstraints {
 }
 
 export interface ManagerBasedRuleConstraints {
-	manager: BaseManagerClass,
-	columnName: string
+	manager: {
+		className: BaseManagerClass,
+		columnName: string
+	}
 }
 
 /**
