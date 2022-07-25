@@ -30,7 +30,8 @@ describe("Validator: unique", () => {
 
 	it("cannot accept existing value", async () => {
 		const user = await (new UserFactory()).insertOne()
-		const value = Promise.resolve(makeInitialState(user.name))
+		const newUser = await (new UserFactory()).insertOne()
+		const value = Promise.resolve(makeInitialState(newUser.name))
 		const constraints = {
 			request: null,
 			source: {
@@ -54,6 +55,7 @@ describe("Validator: unique", () => {
 
 	it("cannot accept archived value", async () => {
 		const user = await (new UserFactory()).insertOne()
+		const newUser = await (new UserFactory()).insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
 			request: null,
@@ -69,7 +71,7 @@ describe("Validator: unique", () => {
 				IDPath: "id"
 			}
 		}
-		await user.destroy({ force: false })
+		await newUser.destroy({ force: false })
 
 		const error = unique(value, constraints)
 
