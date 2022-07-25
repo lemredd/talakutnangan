@@ -7,6 +7,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -25,6 +26,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -44,6 +46,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {
@@ -63,6 +66,7 @@ describe("Validator pipe: array", () => {
 		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			array: {
 				rules: {

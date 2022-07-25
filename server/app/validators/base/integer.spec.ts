@@ -4,7 +4,7 @@ import integer from "./integer"
 describe("Validator pipe: integer", () => {
 	it("can accept valid input", async () => {
 		const value = Promise.resolve(makeInitialState(2))
-		const constraints = { request: null, field: "hello" }
+		const constraints = { request: null, source: null, field: "hello" }
 
 		const sanitizeValue = (await integer(value, constraints)).value
 
@@ -13,7 +13,7 @@ describe("Validator pipe: integer", () => {
 
 	it("cannot accept invalid input", async () => {
 		const value = Promise.resolve(makeInitialState("hello"))
-		const constraints = { request: null, field: "hello" }
+		const constraints = { request: null, source: null, field: "hello" }
 
 		const error = integer(value, constraints)
 

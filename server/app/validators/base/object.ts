@@ -24,7 +24,12 @@ export default async function(
 		const sanitizedInputs: { [key:string]: any } = {}
 
 		try {
-			state.value = await validate(constraints.object, constraints.request, state.value)
+			state.value = await validate(
+				constraints.object,
+				constraints.request,
+				state.value,
+				constraints.source
+			)
 			return state
 		} catch(error) {
 			const flattendedErrors: (ErrorPointer|Error)[] = []

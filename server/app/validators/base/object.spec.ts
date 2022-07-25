@@ -7,6 +7,7 @@ describe("Validator pipe: object", () => {
 		const value = Promise.resolve(makeInitialState({ hello: "world", foo: "bar" }))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hello",
 			object: {
 				hello: {
@@ -29,6 +30,7 @@ describe("Validator pipe: object", () => {
 		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
 		const constraints = {
 			request: null,
+			source: null,
 			field: "hi",
 			object: {
 				hello: {

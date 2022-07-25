@@ -51,7 +51,7 @@ export default async function(
 					[i]: constraints.array.rules
 				}, constraints.request, {
 					[i]: subvalue
-				}) as { [key:number]: any }
+				}, constraints.source) as { [key:number]: any }
 
 				sanitizedInputs.push(sanitizedInput[i])
 			} catch(error) {

@@ -1,13 +1,22 @@
 import type { Request } from "!/types/dependent"
-import type { ErrorPointer, FieldRules, ValidationConstraints } from "!/types/independent"
+import type {
+	GeneralObject,
+	ErrorPointer,
+	FieldRules,
+	ValidationConstraints
+} from "!/types/independent"
 
 import unifyErrors from "!/app/validators/unify_errors"
 import accessDeepPath from "!/helpers/access_deep_path"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import makeInitialState from "!/app/validators/make_initial_state"
 
-export default async function(fields: FieldRules, request: Request, input: { [key:string]: any })
-: Promise<object> {
+export default async function(
+	fields: FieldRules,
+	request: Request,
+	input: GeneralObject,
+	originalInput: GeneralObject = input
+): Promise<object> {
 	const sanitizedInputs: { [key:string]: any } = {}
 	const errors: ErrorPointer[] = []
 
@@ -18,6 +27,7 @@ export default async function(fields: FieldRules, request: Request, input: { [ke
 			try {
 				const constraints: ValidationConstraints = {
 					request,
+					source: originalInput,
 					field,
 					...rules.constraints
 				}
