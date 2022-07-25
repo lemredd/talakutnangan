@@ -96,6 +96,13 @@ export interface AcronymRuleConstraints {
 	}
 }
 
+export interface BufferRuleConstraints {
+	buffer: {
+		allowedMimeTypes: string[],
+		maxSize: number
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -106,6 +113,7 @@ export type RuleContraints = Partial<
 	& ManagerBasedRuleConstraints
 	& UniqueRuleConstraints
 	& AcronymRuleConstraints
+	& BufferRuleConstraints
 >
 
 /**
