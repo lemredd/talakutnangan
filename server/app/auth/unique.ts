@@ -25,10 +25,12 @@ export default async function(
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
 			const foundModel = await manager.findOneOnColumn(columnName, value)
-			const id = accessDeepPath(validator.inputs, IDPath)
+			const id = +accessDeepPath(validator.inputs, IDPath)
 
 			// TODO: Store found model in cache
-			return foundModel.data === null || (foundModel.data as any).id === id
+			return foundModel.data === null || (
+				!Number.isNaN(id) && (foundModel.data as any).id === id
+			)
 		} catch(error) {
 			throw new Error("Manager cannot be instantiated")
 		}
