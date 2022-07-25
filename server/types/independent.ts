@@ -84,13 +84,11 @@ export interface ManagerBasedRuleConstraints {
 	}
 }
 
-interface UniqueRuleSpecialConstraints {
-	manager: {
-		IDPath?: string
+export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
+	unique: {
+		IDPath: string
 	}
 }
-
-export type UniqueRuleConstraints = ManagerBasedRuleConstraints & UniqueRuleSpecialConstraints
 
 /**
  * Union of rule contraints
