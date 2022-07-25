@@ -84,6 +84,14 @@ export interface ManagerBasedRuleConstraints {
 	}
 }
 
+interface UniqueRuleSpecialConstraints {
+	manager: {
+		IDPath?: string
+	}
+}
+
+export type UniqueRuleConstraints = ManagerBasedRuleConstraints & UniqueRuleSpecialConstraints
+
 /**
  * Union of rule contraints
  */
@@ -92,6 +100,7 @@ export type RuleContraints = Partial<
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
+	& UniqueRuleConstraints
 >
 
 /**
