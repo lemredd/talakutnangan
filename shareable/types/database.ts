@@ -111,7 +111,7 @@ export type UserFilter = Filter & DepartmentFilter & RoleFilter
 
 export interface ExistenceFilter extends Serializable {
 	filter: {
-		existence: "exists" | "archived" | "all"
+		existence: "exists" | "archived" | "*"
 	}
 }
 
