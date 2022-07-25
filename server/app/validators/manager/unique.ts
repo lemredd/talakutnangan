@@ -39,7 +39,7 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" does not exists in the database".`
+				`The ${value} in field "${field}" is not unique in the database".`
 		}
 	}
 }
