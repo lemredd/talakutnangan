@@ -20,7 +20,7 @@ describe("Database Pipe: Sift by department", () => {
 		const department = await new DepartmentFactory().insertOne()
 		const user = await new UserFactory().in(department).insertOne()
 
-		const options = siftByDepartment({}, { department: "*" })
+		const options = siftByDepartment({}, { filter: { department: "*" } })
 		const foundUsers = await User.findAll(options)
 
 		expect(options).not.toHaveProperty("include")
@@ -33,7 +33,9 @@ describe("Database Pipe: Sift by department", () => {
 		const user = await new UserFactory().in(department).insertOne()
 
 		const options = siftByDepartment({}, {
-			department: department.fullName
+			filter: {
+				department: department.fullName
+			}
 		})
 		const foundUsers = await User.findAll(options)
 
@@ -48,7 +50,9 @@ describe("Database Pipe: Sift by department", () => {
 		const user = await new UserFactory().in(department).insertOne()
 
 		const options = siftByDepartment({ include: [Department] }, {
-			department: department.fullName
+			filter: {
+				department: department.fullName
+			}
 		})
 		const foundUsers = await User.findAll(options)
 
@@ -64,7 +68,9 @@ describe("Database Pipe: Sift by department", () => {
 		const user = await new UserFactory().in(departmentA).insertOne()
 
 		const options = siftByDepartment({}, {
-			department: departmentB.fullName
+			filter: {
+				department: departmentB.fullName
+			}
 		})
 		const foundUsers = await User.findAll(options)
 

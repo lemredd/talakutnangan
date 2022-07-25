@@ -111,5 +111,7 @@ export interface Filter extends Serializable {
 }
 
 export interface DepartmentFilter extends Serializable {
-	department: "*"|string
+	filter: {
+		department: "*"|string
+	}
 }

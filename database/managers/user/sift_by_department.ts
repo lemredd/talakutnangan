@@ -11,33 +11,31 @@ import Condition from "%/managers/helpers/condition"
  */
 export default function<T>(
 	currentState: FindOptions<T>,
-	constraints: Partial<DepartmentFilter>
+	constraints: DepartmentFilter
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (constraints.department !== undefined) {
-		switch(constraints.department) {
-			case "*":
-				// do nothing
-				break
-			default:
-				const condition = new Condition()
-				condition.equal("fullName", constraints.department)
+	switch(constraints.filter.department) {
+		case "*":
+			// do nothing
+			break
+		default:
+			const condition = new Condition()
+			condition.equal("fullName", constraints.filter.department)
 
-				if (newState.include === undefined) {
-					newState.include = []
-				}
+			if (newState.include === undefined) {
+				newState.include = []
+			}
 
-				(newState.include as any[])!.push({
-					model: Department,
-					required: true,
-					where: condition.build()
-				})
-				break
-		}
-
-		Log.trace("pipeline", "sift by department")
+			(newState.include as any[])!.push({
+				model: Department,
+				required: true,
+				where: condition.build()
+			})
+			break
 	}
+
+	Log.trace("pipeline", "sift by department")
 
 	return newState
 }
