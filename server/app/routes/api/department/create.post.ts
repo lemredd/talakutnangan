@@ -1,4 +1,5 @@
-import { Request, Response } from "!/types/dependent"
+import {AuthenticatedRequest, Request, Response } from "!/types/dependent"
+import { FieldRules } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
@@ -7,6 +8,17 @@ import { CREATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import { FieldRulesMaker } from "!/types/hybrid"
+import object from "!/app/validators/base/object"
+import required from "!/app/validators/base/required"
+import same from "!/app/validators/comparison/same"
+import string from "!/app/validators/base/string"
+import length from "!/app/validators/comparison/length"
+import regex from "!/app/validators/comparison/regex"
+import notExists from "!/app/validators/manager/not_exists"
+import acronym from "!/app/validators/comparison/acronym"
+import boolean from "!/app/validators/base/boolean"
+
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -40,6 +52,52 @@ export default class extends JSONController {
 			],
 			"data.attributes.mayAdmit": [ "required", "boolean" ]
 		}
+	}
+
+	makeBodyRuleGenerator(): FieldRulesMaker {
+		return (request: AuthenticatedRequest): FieldRules => ({
+			data: {
+				pipes: [ required, object ],
+				constraints: {
+					object: {
+						type: {
+							pipes: [ required, string, same ],
+							constraints: {
+								same: "department"
+							}
+						},
+						attributes: {
+							pipes: [ required, object ],
+							constraints: {
+								object: {
+									fullName: {
+										pipes: [ required, string, length, regex, notExists ],
+										constraints: {
+											length: { minimum: 10, maximum: 255 },
+											regex: { match: /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/ },
+											manager: { className: DepartmentManager , columnName: "fullName" }
+										}
+									},
+									acronym: {
+										pipes: [ required, string, length, regex, acronym, notExists ],
+										constraints: {
+											length: { minimum: 2, maximum: 255 },
+											regex: { match: /([A-Z][a-z]*)+/ },
+											acronym: { spelledOutPath: "data.attributes.fullName" },
+											manager: { className: DepartmentManager , columnName: "fullName" }
+										}
+									},
+									mayAdmit: {
+										pipes: [ required, boolean ],
+										constraints: {}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		})
 	}
 
 	async handle(request: Request, response: Response): Promise<CreatedResponseInfo> {
