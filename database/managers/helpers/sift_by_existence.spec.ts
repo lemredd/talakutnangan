@@ -43,4 +43,28 @@ describe("Database Pipe: Sift by existence", () => {
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", archivedUser.id)
 	})
+
+	it("cannot find existing if all were archived", async () => {
+		const user = await new UserFactory().insertOne()
+		const archivedUser = await new UserFactory().insertOne()
+		await archivedUser.destroy()
+		await user.destroy()
+
+		const options = siftByExistence({}, { filter: { existence: "exists" } })
+		const foundUsers = await User.findAll(options)
+
+		expect(options).toHaveProperty("paranoid", true)
+		expect(foundUsers).toHaveLength(0)
+	})
+
+	it("cannot find archived if all are existing", async () => {
+		const user = await new UserFactory().insertOne()
+		const archivedUser = await new UserFactory().insertOne()
+
+		const options = siftByExistence({}, { filter: { existence: "archived" } })
+		const foundUsers = await User.findAll(options)
+
+		expect(options).toHaveProperty("paranoid", true)
+		expect(foundUsers).toHaveLength(0)
+	})
 })
