@@ -70,11 +70,11 @@ describe("Validator pipe: object", () => {
 			}
 		}
 
-		const sanitizedInput = await object(value, constraints)
+		const sanitizedInput = (await object(value, constraints)).value
 
 		expect(customPipe).toHaveBeenCalled()
 		expect(customPipe.mock.calls[0][0]).resolves.toStrictEqual({
-			mayState: false, value: undefined
+			maySkip: false, value: undefined
 		})
 		expect(sanitizedInput).toStrictEqual({ hello: "world" })
 	})
