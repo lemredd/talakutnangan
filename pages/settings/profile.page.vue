@@ -100,10 +100,9 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, Ref, ref } from "vue"
+import { inject, Ref, ref, provide } from "vue"
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
-
 
 const profileInfo = {
 	displayName: "Sample Name",
@@ -135,4 +134,6 @@ function loadImage(e: Event, type: string) {
 	if (type === "signature") profileInfo.signature = fileObjectURL
 	if (type === "profilePic") profileInfo.profilePic = fileObjectURL
 }
+
+provide("tabs", ["Account", "Profile"])
 </script>

@@ -43,12 +43,8 @@ import Link from "@/link.vue"
 import { PageContext } from "#/types"
 
 const pageContext = inject("pageContext") as PageContext
+const tabs = inject("tabs") as string[]
 
 const fullUrl = pageContext.urlPathname
 const parentUrl = pageContext.urlPathname!.charAt(0) + pageContext.urlPathname!.substring(1, pageContext.urlPathname!.substring(1).indexOf("/") + 1)
-
-const { tabs } = defineProps<{
-	tabs: string[]
-}>()
-
 </script>

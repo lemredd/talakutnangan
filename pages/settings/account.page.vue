@@ -42,6 +42,7 @@ form {
 </style>
 
 <script setup lang="ts">
+import { provide } from "vue"
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 
@@ -52,4 +53,6 @@ const accountInfo = {
 	studentNumber: "1920-9999",
 	institute: "INS"
 }
+
+provide("tabs", ["Account", "Profile"])
 </script>

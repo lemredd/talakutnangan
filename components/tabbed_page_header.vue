@@ -5,7 +5,7 @@
 	</header>
 
 	<main>
-		<Tab :tabs="tabs" />
+		<Tab />
 	</main>
 </div>
 </template>
@@ -26,13 +26,8 @@ header {
 import { provide, ref } from "vue"
 import Tab from "@/tab.vue"
 import { usePageContext } from "#/usePageContext"
-import deserializedPageProps from "$@/helpers/deserialize_page_props"
 const pageContext = usePageContext()
 provide("pageContext", pageContext)
-
-const tabs = ref([
-	"Account", "Profile"
-])
 
 const roles = ["student", "employee"]
 const role = roles[0]
