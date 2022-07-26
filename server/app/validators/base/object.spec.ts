@@ -10,14 +10,8 @@ describe("Validator pipe: object", () => {
 			source: null,
 			field: "hello",
 			object: {
-				hello: {
-					pipes: [ string ],
-					constraints: {}
-				},
-				foo: {
-					pipes: [ string ],
-					constraints: {}
-				}
+				hello: [ string ],
+				foo: [ string ]
 			}
 		}
 
@@ -36,14 +30,8 @@ describe("Validator pipe: object", () => {
 			source,
 			field: "hello",
 			object: {
-				hello: {
-					pipes: [ customPipeA ],
-					constraints: {}
-				},
-				foo: {
-					pipes: [ customPipeB ],
-					constraints: {}
-				}
+				hello: [ customPipeA ],
+				foo: [ customPipeB ]
 			}
 		}
 
@@ -62,14 +50,8 @@ describe("Validator pipe: object", () => {
 			source: null,
 			field: "hi",
 			object: {
-				hello: {
-					pipes: [ string ],
-					constraints: {}
-				},
-				foo: {
-					pipes: [ string ],
-					constraints: {}
-				}
+				hello: [ string ],
+				foo: [ string ]
 			}
 		}
 

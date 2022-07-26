@@ -75,7 +75,7 @@ export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface ArrayRuleConstraints {
 	array: {
-		rules: Rules,
+		rules: Rule[],
 		minimum?: number,
 		maximum?: number
 	}
@@ -146,19 +146,18 @@ export interface ValidationState {
 	maySkip: boolean
 }
 
+export type StaticRule = Pipe<Promise<ValidationState>, ValidationConstraints>
+export type DynamicRule = [ StaticRule, RuleContraints ]
+
 /**
  * Shape of validation rules
  */
-export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
-	constraints: RuleContraints
-}
-
+export type Rule = StaticRule | DynamicRule
 /**
  * Shape of validation rules for all fields
  */
 export interface FieldRules {
-	[key:string]: Rules
+	[key:string]: Rule[]
 }
 
 /**
