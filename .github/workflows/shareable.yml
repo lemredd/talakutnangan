@@ -5,6 +5,7 @@ on:
     paths:
       - 'shareable/**'
       - '.github/workflows/shareable.yml'
+      - 'jest.share.config.json'
   pull_request:
     types:
       - reopened
@@ -13,6 +14,7 @@ on:
     paths:
       - 'shareable/**'
       - '.github/workflows/shareable.yml'
+      - 'jest.share.config.json'
 
 jobs:
   unit_tests:

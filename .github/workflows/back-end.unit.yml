@@ -9,6 +9,7 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -21,6 +22,7 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back_ci.config.json'
 
 jobs:
   unit_tests:

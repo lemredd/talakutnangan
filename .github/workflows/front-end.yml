@@ -9,6 +9,7 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+      - 'jest.front_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -21,6 +22,7 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+      - 'jest.front_ci.config.json'
 
 jobs:
   unit_tests:
