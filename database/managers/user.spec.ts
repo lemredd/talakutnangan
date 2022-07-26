@@ -220,6 +220,6 @@ describe("Database: User Update Operations", () => {
 		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
-		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()
+		expect((await User.findOne({ where: { id: user.id } }))!.emailVerifiedAt).not.toBeNull()
 	})
 })
