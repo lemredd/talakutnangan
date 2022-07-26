@@ -11,7 +11,7 @@ export default async function(
 
 	if(state.maySkip) return state
 
-	if (state.value) {
+	if (state.value !== undefined && state.value !== null) {
 		return state
 	} else {
 		throw {
