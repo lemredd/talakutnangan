@@ -17,11 +17,9 @@ describe("Component: Tab", () => {
 				provide: {
 					pageContext: {
 						urlPathname: "/tabbed_page/tab1"
-					}
+					},
+					tabs: [Tab1.name, Tab2.name]
 				}
-			},
-			props: {
-				tabs: [Tab1.name, Tab2.name]
 			}
 		})
 
