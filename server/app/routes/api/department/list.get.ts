@@ -30,23 +30,26 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => ({
-			filter: {
-				pipes: [ nullable, object ],
-				constraints: {
-					nullable: { defaultValue: {} },
-					object: {
-						existence: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "*" },
-								oneOf: { values: [ "*", "exists", "archived" ] }
+		return (request: Request): FieldRules => {
+			console.log(request.query)
+			return ({
+				filter: {
+					pipes: [ nullable, object ],
+					constraints: {
+						nullable: { defaultValue: {} },
+						object: {
+							existence: {
+								pipes: [ nullable, string, oneOf ],
+								constraints: {
+									nullable: { defaultValue: "*" },
+									oneOf: { values: [ "*", "exists", "archived" ] }
+								}
 							}
 						}
 					}
 				}
-			}
-		})
+			})
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
