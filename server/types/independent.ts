@@ -63,6 +63,8 @@ export interface UsableErrorPointer {
 	message: string
 }
 
+export interface NullableConstraints { nullable?: { defaultValue: any } }
+
 export interface SameRuleConstraints { same: any }
 
 export interface ArrayRuleConstraints {
@@ -107,6 +109,7 @@ export interface BufferRuleConstraints {
  * Union of rule contraints
  */
 export type RuleContraints = Partial<
+	& NullableConstraints
 	& SameRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
