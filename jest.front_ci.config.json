@@ -15,6 +15,10 @@
 		"@/(.*)": "<rootDir>/components/$1"
 	},
 
+	"transform": {
+		"^.+\\.vue": "@vue/vue3-jest"
+	},
+
 	"setupFilesAfterEnv": [
 		"./t/helpers/set-ups/fetch.set_up.ts",
 		"./t/helpers/set-ups/fetcher.set_up.ts"
