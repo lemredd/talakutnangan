@@ -38,7 +38,7 @@ import siftByDepartment from "%/managers/user/sift_by_department"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
 
-export default class UserManager extends BaseManager<User, RawUser> {
+export default class UserManager extends BaseManager<User, RawUser, UserFilter> {
 	get model(): ModelCtor<User> { return User }
 
 	get transformer(): UserTransformer { return new UserTransformer() }

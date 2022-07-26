@@ -169,29 +169,12 @@ describe("Database: User Read Operations", () => {
 
 		const users = await manager.list({
 			filter: {
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "*",
 				criteria: "incomplete",
 				existence: "exists"
-			},
-			page: 0
-		})
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(1)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(2)
-	})
-
-	it("can list users with complete profile", async () => {
-		const manager = new UserManager()
-		const completeUserProfile = await (new UserFactory()).insertOne()
-		// Create dummy incomplete profile
-		await (new UserFactory()).hasNoSignature().insertOne()
-		const role = await (new RoleFactory()).insertOne()
-		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({
-			filter: {
-				criteria: "complete"
 			},
 			page: 0
 		})
@@ -212,7 +195,12 @@ describe("Database: User Read Operations", () => {
 
 		const users = await manager.list({
 			filter: {
-				criteria: "all"
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "*",
+				criteria: "*",
+				existence: "exists"
 			},
 			page: 0
 		})
