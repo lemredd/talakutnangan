@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils"
-import Link from "./Link.vue"
+import Link from "./link.vue"
 
 
 
