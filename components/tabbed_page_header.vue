@@ -1,7 +1,7 @@
 <template>
 <div>
 	<header>
-		<h1>User Settings</h1>
+		<h1>{{ title }}</h1>
 	</header>
 
 	<main>
@@ -46,6 +46,8 @@ const userInfo = ref({
 		prefersDarkMode: true
 	}
 })
+
+const { title } = defineProps<{ title: string }>()
 
 provide("userInfo", userInfo)
 provide("url", pageContext.routeParams!.tab)
