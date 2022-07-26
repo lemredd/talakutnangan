@@ -18,6 +18,7 @@ import integer from "!/app/validators/base/integer"
 import same from "!/app/validators/comparison/same"
 import exists from "!/app/validators/manager/exists"
 import required from "!/app/validators/base/required"
+import length from "!/app/validators/comparison/length"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -54,7 +55,11 @@ export default class extends JSONController {
 							} ] ]
 						}
 					} ] ],
-					minimum: 1
+				}
+			} ], [ length, {
+				length: {
+					minimum: 1,
+					maximum: 24 // This is possible to change in the future
 				}
 			} ] ]
 		})
