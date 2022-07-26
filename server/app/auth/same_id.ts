@@ -19,7 +19,8 @@ export default async function(
 
 		const IDPath = args[0]
 		const parameterID = +accessDeepPath(validator.inputs, IDPath)
-		return !Number.isNaN(parameterID) && parameterID === value
+		const castedValue = +value
+		return !Number.isNaN(parameterID) && !Number.isNaN(castedValue) && parameterID === castedValue
 	} else {
 		// Skip the validation if the field does not exists
 		return true

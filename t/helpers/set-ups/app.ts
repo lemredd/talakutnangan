@@ -1,7 +1,7 @@
 import supertest from "supertest"
 import type { Express } from "express"
 
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import { JSON_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Role from "%/models/role"
 import Router from "!/bases/router"
@@ -52,7 +52,7 @@ export default class {
 
 		const response = await this.#request
 			.post("/api/user/log_in")
-			.type(JSON_API_MEDIA_TYPE)
+			.type(JSON_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 			.send({
 				email: user.email,
