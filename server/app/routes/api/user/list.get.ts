@@ -43,35 +43,53 @@ export default class extends QueryController {
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
 		return (request: Request): FieldRules => ({
-			filter: [
-				[ nullable, { nullable: { defaultValue: {} } } ],
-				[ object, {
+			filter: {
+				pipes: [ nullable, object ],
+				constraints: {
+					nullable: { defaultValue: {} },
 					object: {
-						slug: [ [ nullable, { nullable: { defaultValue: "" } } ], string ],
-						department: [ [ nullable, { nullable: { defaultValue: "*" } } ], string ],
-						role: [ [ nullable, { nullable: { defaultValue: "*" } } ], string ],
-						kind: [
-							[ nullable, { nullable: { defaultValue: "*" } } ],
-							string,
-							[ oneOf, { oneOf: { values: [ "*", ...UserKindValues ] } } ]
-						],
-						criteria: [
-							[ nullable, { nullable: { defaultValue: "*" } } ],
-							string,
-							[ oneOf, { oneOf: {
-								values: [ "*", "incomplete", "verified", "unverified" ]
-							} } ]
-						],
-						existence: [
-							[ nullable, { nullable: { defaultValue: "exists" } } ],
-							string,
-							[ oneOf, { oneOf: {
-								values: [ "*", "exists", "archived" ]
-							} } ]
-						]
+						slug: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "" }
+							}
+						},
+						department: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "*" }
+							}
+						},
+						role: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "*" }
+							}
+						},
+						kind: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", ...UserKindValues ] }
+							}
+						},
+						criteria: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", "incomplete", "verified", "unverified" ] }
+							}
+						},
+						existence: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", "exists", "archived" ] }
+							}
+						}
 					}
-				} ]
-			]
+				}
+			}
 		})
 	}
 
