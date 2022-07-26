@@ -57,7 +57,7 @@ describe("Validator pipe: object", () => {
 
 	it("can refresh values", async () => {
 		const value = Promise.resolve(makeInitialState({}))
-		const customPipe = jest.fn().mockResolvedValue("world")
+		const customPipe = jest.fn().mockResolvedValue(makeInitialState("world"))
 		const constraints = {
 			request: null,
 			source: null,
