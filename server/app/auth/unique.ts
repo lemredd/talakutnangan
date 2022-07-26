@@ -26,7 +26,7 @@ export default async function(
 			const manager = new rawManager()
 			const foundModel = await manager.findOneOnColumn(columnName, value, {
 				filter: {
-					existence: "all"
+					existence: "*"
 				}
 			})
 			const id = +accessDeepPath(validator.inputs, IDPath)
