@@ -15,7 +15,11 @@
 		"#/(.*)": "<rootDir>/renderer/$1"
 	},
 
-	"setupFilesAfterEnv": [],
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/singletons.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
+	],
 
 	"transformIgnorePatterns": [],
 
