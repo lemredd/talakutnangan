@@ -73,7 +73,11 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
 
-		const foundUser = await manager.findOneOnColumn("name", base.name)
+		const foundUser = await manager.findOneOnColumn("name", base.name, {
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
@@ -120,7 +124,11 @@ describe("Database: Base Read Operations", () => {
 	it("cannot find non-existing base with custom column", async () => {
 		const manager = new MockUserManager()
 
-		const foundUser = await manager.findOneOnColumn("name", "Hello")
+		const foundUser = await manager.findOneOnColumn("name", "Hello", {
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(foundUser.data).toBeNull()
 	})
