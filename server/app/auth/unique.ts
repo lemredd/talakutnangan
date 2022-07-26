@@ -32,7 +32,7 @@ export default async function(
 				!Number.isNaN(id) && (foundModel.data as any).id === id
 			)
 		} catch(error) {
-			throw new Error("Manager cannot be instantiated")
+			throw new Error("Manager cannot be instantiated in unique rule")
 		}
 	} else {
 		// Skip the validation if the field does not exists
