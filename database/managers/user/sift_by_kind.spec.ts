@@ -27,7 +27,7 @@ describe("Database Pipe: Sift by kind", () => {
 		const options = siftByKind({}, { filter: { kind: "reachable_employee" } })
 		const foundUsers = await User.findAll(options)
 
-		expect(options).not.toHaveProperty("where.kind")
+		expect(options).toHaveProperty("where.kind")
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", reachableEmployee.id)
 	})
