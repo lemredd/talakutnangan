@@ -102,7 +102,7 @@ form {
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "@/settings/settings_header.vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
 
 
 const profileInfo = {

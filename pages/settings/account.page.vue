@@ -43,7 +43,7 @@ form {
 
 <script setup lang="ts">
 import TextualField from "@/fields/textual.vue"
-import SettingsHeader from "@/settings/settings_header.vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
 
 const accountInfo = {
 	email: "email@example.com",
