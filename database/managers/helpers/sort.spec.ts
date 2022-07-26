@@ -24,7 +24,7 @@ describe("Database Pipe: Sift by existence", () => {
 			return a.name.localeCompare(b.name)
 		})
 
-		const options = sort({}, { sort: [ "name" ] })
+		const options = sort({}, { sort: [ "-name" ] })
 		const foundUsers = await User.findAll(options)
 
 		expect(options).toHaveProperty("order.0.0", "name")
