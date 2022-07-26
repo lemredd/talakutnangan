@@ -28,11 +28,7 @@ import Departments from "@/admin_settings/Departments.vue"
 import { usePageContext } from "#/usePageContext"
 import { provide } from "vue"
 
-const tabs = {
-	users: Users,
-	roles: Roles,
-	departments: Departments
-}
+const tabs = ["Users", "Roles", "Departments"]
 
 provide("url", usePageContext().routeParams!.tab)
 </script>
