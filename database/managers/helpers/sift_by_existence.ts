@@ -18,6 +18,7 @@ export default function<T extends Model>(
 			newState.paranoid = false
 			break
 		case "archived":
+			if (newState.where === undefined) newState.where = {}
 			const initialCondition = new Condition(newState.where)
 			const existCondition = new Condition()
 			existCondition.not("deletedAt", null)
