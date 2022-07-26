@@ -44,6 +44,10 @@ Switch to runs tests.
 Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
+.PARAMETER Regex
+Only works if `-Test` switch is on.
+Limits the files to test base from regular expression.
+
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
@@ -129,6 +133,10 @@ Param(
 	$SuiteName,
 
 	[Parameter(ParameterSetName="Test", Position=2)]
+	[string]
+	$Regex = "",
+
+	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
 	$Watch
 )
@@ -161,12 +169,17 @@ if ($Test) {
 		$configuration = "jest.$($name).config.json"
 	}
 
+	$regexFlag = ""
+	if ($Regex -ne "") {
+		$watchFlag = "--testRegex $($Regex)"
+	}
+
 	$watchFlag = ""
 	if ($Watch) {
 		$watchFlag = "--watch"
 	}
 
-	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($regexFlag) $($watchFlag)
 }
 
 if ($Push) {
