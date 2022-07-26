@@ -269,7 +269,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			const condition = new Condition()
 			condition.and(
 				new Condition().equal("id", id),
-				new Condition().not("emailVerifiedAt", null)
+				new Condition().is("emailVerifiedAt", null)
 			)
 
 			const [ affectedCount ] = await this.model.update({
