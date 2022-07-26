@@ -33,6 +33,6 @@ describe("Validator pipe: nullable", () => {
 
 		const sanitizeValue = (await nullable(value, constraints)).value
 
-		expect(sanitizeValue).toEqual("value")
+		expect(sanitizeValue).toEqual("world")
 	})
 })
