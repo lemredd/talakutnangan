@@ -11,50 +11,21 @@ const Tab2 = {
 }
 
 describe("Component: Tab", () => {
-	it("Should have first tab initially activ", () => {
+	it("Should have first tab initially active", () => {
 		const wrapper = mount(Tab, {
-			shallow: true,
 			global: {
 				provide: {
-					url: "Tab1",
 					pageContext: {
-						urlPathname: "/sample"
+						urlPathname: "/tabbed_page/tab1"
 					}
 				}
 			},
 			props: {
-				tabs: {
-					Tab1,
-					Tab2
-				}
+				tabs: [Tab1.name, Tab2.name]
 			}
 		})
 
-		const tabButtons = wrapper.findAll(".tab-button")
-		expect(tabButtons[0].classes()).toContain("active")
-	})
-
-	it("Should be active on click", async () => {
-		const wrapper = mount(Tab, {
-			shallow: true,
-			global: {
-				provide: {
-					url: "Tab2",
-					pageContext: {
-						urlPathname: "/sample"
-					}
-				}
-			},
-			props: {
-				tabs: {
-					Tab1,
-					Tab2
-				}
-			}
-		})
-
-		const tabButtons = wrapper.findAll(".tab-button")
-		await tabButtons[tabButtons.length - 1].trigger("click")
-		expect(tabButtons[tabButtons.length - 1].classes()).toContain("active")
+		const firstLink = wrapper.find(".link")
+		expect(firstLink.classes()).toContain("active")
 	})
 })
