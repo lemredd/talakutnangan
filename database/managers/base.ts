@@ -26,10 +26,11 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
 /**
  * A base class for model managers which contains methods for CRUD operations.
  */
-export default abstract class Manager<T extends Model, U> {
+export default abstract class Manager<T extends Model, U> extends RequestEnvironment {
 	protected transaction: TransactionManager
 
 	constructor(transaction: TransactionManager = new TransactionManager()) {
+		super()
 		this.transaction = transaction
 	}
 
@@ -198,7 +199,7 @@ export default abstract class Manager<T extends Model, U> {
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
-		} else if (error instanceof Error && RequestEnvironment.isNotOnProduction) {
+		} else if (error instanceof Error && this.isNotOnProduction) {
 			return new DatabaseError(error.message)
 		} else {
 			return new DatabaseError()
