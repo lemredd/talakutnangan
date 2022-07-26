@@ -13,6 +13,7 @@ import type {
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
+import sort from "%/managers/helpers/sort"
 import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
 import offset from "%/managers/helpers/offset"
@@ -48,7 +49,8 @@ extends RequestEnvironment {
 		return [
 			siftByExistence,
 			offset,
-			limit
+			limit,
+			sort
 		]
 	}
 
@@ -67,6 +69,8 @@ extends RequestEnvironment {
 				if (constraints.filter === undefined) constraints.filter = {}
 				if (constraints.filter.existence === undefined)
 					constraints.filter.existence = "exists"
+				// @ts-ignore
+				if (constraints.sort === undefined) constraints.sort = []
 			}
 
 			const foundModel = await this.findOneOnColumn("id", id, constraints)
