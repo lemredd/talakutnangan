@@ -32,26 +32,6 @@ export default async function(
 		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = state.value.length
 
-		if (
-			constraints.array.minimum !== undefined
-			&& expectedSanitizeLength < constraints.array.minimum) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) =>
-					`Field "${field}" must have more than ${constraints.array!.minimum}.`
-			}
-		}
-
-		if (
-			constraints.array.maximum !== undefined
-			&& constraints.array.maximum < expectedSanitizeLength) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) =>
-					`Field "${field}" must have more than ${constraints.array!.maximum}.`
-			}
-		}
-
 		for (let i = 0; i < expectedSanitizeLength; ++i ) {
 			const subvalue = state.value[i]
 			try {
