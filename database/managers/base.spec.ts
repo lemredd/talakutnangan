@@ -40,7 +40,8 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
 		return [
-			this.customReadPipe
+			this.customReadPipe,
+			...super.singleReadPipeline
 		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
 	}
 
