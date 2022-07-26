@@ -24,7 +24,11 @@ export default async function(
 		try {
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
-			const foundModel = await manager.findOneOnColumn(columnName, value)
+			const foundModel = await manager.findOneOnColumn(columnName, value, {
+				filter: {
+					existence: "all"
+				}
+			})
 			const id = +accessDeepPath(validator.inputs, IDPath)
 
 			// TODO: Store found model in cache
