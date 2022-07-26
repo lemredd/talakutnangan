@@ -73,6 +73,8 @@ export interface SameRuleConstraints { same: any }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
+export interface RegexRuleConstraints { regex: { match: RegExp } }
+
 export interface ArrayRuleConstraints {
 	array: {
 		rules: Rule[],
@@ -126,6 +128,7 @@ export type RuleContraints = Partial<
 	& UniqueRuleConstraints
 	& AcronymRuleConstraints
 	& BufferRuleConstraints
+	& RegexRuleConstraints
 >
 
 /**
