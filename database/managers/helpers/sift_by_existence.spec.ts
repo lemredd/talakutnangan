@@ -64,7 +64,7 @@ describe("Database Pipe: Sift by existence", () => {
 		const options = siftByExistence({}, { filter: { existence: "archived" } })
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("paranoid", true)
+		expect(options).toHaveProperty("paranoid", false)
 		expect(foundUsers).toHaveLength(0)
 	})
 })
