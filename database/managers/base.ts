@@ -12,12 +12,13 @@ import type {
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
-import DatabaseError from "$!/errors/database"
-import Transformer from "%/transformers/base"
-import Serializer from "%/transformers/serializer"
 import limit from "%/managers/helpers/limit"
+import Transformer from "%/transformers/base"
 import offset from "%/managers/helpers/offset"
+import DatabaseError from "$!/errors/database"
+import Serializer from "%/transformers/serializer"
 import Condition from "%/managers/helpers/condition"
+import RequestEnvironment from "$/helpers/request_environment"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import siftByExistence from "%/managers/helpers/sift_by_existence"
 import TransactionManager from "%/managers/helpers/transaction_manager"
@@ -197,6 +198,8 @@ export default abstract class Manager<T extends Model, U> {
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
+		} else if (error instanceof Error && RequestEnvironment.isNotOnProduction) {
+			return new DatabaseError(error.message)
 		} else {
 			return new DatabaseError()
 		}
