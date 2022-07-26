@@ -1,3 +1,4 @@
+import type { GeneralObject } from "$/types/server"
 import type { Serializable, Pipe } from "$/types/database"
 import type {
 	Model,
@@ -30,7 +31,7 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
  * `U` that represents the transformer for the model. Lastly, `V` represents the filter to be used
  * by the manager which is an object by default.
  */
-export default abstract class Manager<T extends Model, U, V extends object = object>
+export default abstract class Manager<T extends Model, U, V extends GeneralObject = GeneralObject>
 extends RequestEnvironment {
 	protected transaction: TransactionManager
 
@@ -59,8 +60,15 @@ extends RequestEnvironment {
 		]
 	}
 
-	async findWithID(id: number, constraints: V = {} as V): Promise<Serializable> {
+	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
 		try {
+			{
+				// @ts-ignore
+				if (constraints.filter === undefined) constraints.filter = {}
+				if (constraints.filter.existence === undefined)
+					constraints.filter.existence = "exists"
+			}
+
 			const foundModel = await this.findOneOnColumn("id", id, constraints)
 
 			Log.success("manager", "done searching for a model using ID")
