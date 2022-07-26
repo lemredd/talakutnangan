@@ -58,7 +58,7 @@ describe("Controller: DELETE /api/department/archive", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
+		expect(body).toHaveProperty("0.source.pointer", "data.0")
 	})
 
 	it("cannot delete non-existent resources", async () => {
@@ -83,6 +83,6 @@ describe("Controller: DELETE /api/department/archive", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
+		expect(body).toHaveProperty("0.source.pointer", "data.0")
 	})
 })

@@ -18,6 +18,22 @@ describe("Validator: Same ID", () => {
 		expect(isValid).toBeTruthy()
 	})
 
+	it("can autocast type to become valid info", async () => {
+		const validator = {
+			inputs: {
+				params: {
+					id: "4"
+				}
+			}
+		}
+		const value = "4"
+		const args = [ "params.id" ]
+
+		const isValid = await sameID({ value, args }, validator as Validator)
+
+		expect(isValid).toBeTruthy()
+	})
+
 	it("cannot accept different ID", async () => {
 		const validator = {
 			inputs: {

@@ -41,3 +41,10 @@ export interface UsableRoute {
 }
 
 export type RequestWithRegistration = Request & WithRegistration
+
+import type { FieldRules } from "!/types/independent"
+
+/**
+ * Interface of function to create the rules.
+ */
+export type FieldRulesMaker<T = any> = (request: T) => FieldRules

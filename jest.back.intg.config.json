@@ -25,8 +25,8 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"t/integration/api/.*\\.spec\\.ts",
-		"t/integration/t/.*\\.spec\\.ts"
+		"./t/integration/api/.*\\.spec\\.ts",
+		"./t/integration/t/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"
