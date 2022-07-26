@@ -1,0 +1,32 @@
+{
+	"preset": "ts-jest",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts",
+		"vue"
+	],
+
+	"moduleNameMapper": {
+		"~/(.*)": "<rootDir>/t/helpers/$1",
+		"\\$/(.*)": "<rootDir>/shareable/$1",
+		"\\$@/(.*)": "<rootDir>/common_front-end/$1",
+		"#/(.*)": "<rootDir>/renderer/$1",
+		"@/(.*)": "<rootDir>/components/$1"
+	},
+
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/fetch.set_up.ts",
+		"./t/helpers/set-ups/fetcher.set_up.ts"
+	],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"./common_front-end/.*\\.spec\\.ts",
+		"./components/.*\\.spec\\.ts",
+		"./pages/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "jsdom"
+}
