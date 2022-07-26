@@ -150,11 +150,6 @@ export interface FieldRules {
 }
 
 /**
- * Useful for general safe object
- */
-export type GeneralObject<T = any> = { [key: string]: T }
-
-/**
  * Shape of validation constraints that are not part of main info.
  *
  * They are usually used internally.
