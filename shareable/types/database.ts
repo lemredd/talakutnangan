@@ -85,8 +85,11 @@ export type Pipe<T, U> = (currentState: T, constraints: U) => T
 export interface Serializable {
 	[key: string]:
 		| string
+		| string[]
 		| number
+		| number[]
 		| boolean
+		| boolean[]
 		| null
 		| Serializable[]
 		| Serializable
