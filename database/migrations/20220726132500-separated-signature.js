@@ -26,7 +26,6 @@ module.exports = {
 					},
 					signature: {
 						type: Sequelize.BLOB,
-						allowNull: true,
 						defaultValue: null
 					},
 					createdAt: {
