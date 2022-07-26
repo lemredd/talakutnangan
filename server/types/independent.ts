@@ -75,9 +75,7 @@ export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface ArrayRuleConstraints {
 	array: {
-		rules: Rules,
-		minimum?: number,
-		maximum?: number
+		rules: Rules
 	}
 }
 
