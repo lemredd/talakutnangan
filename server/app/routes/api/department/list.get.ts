@@ -31,7 +31,6 @@ export default class extends QueryController {
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
 		return (request: Request): FieldRules => {
-			console.log(request.query)
 			return ({
 				filter: {
 					pipes: [ nullable, object ],

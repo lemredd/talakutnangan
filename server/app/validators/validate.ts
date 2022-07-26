@@ -16,7 +16,7 @@ export default async function(
 	request: Request,
 	input: GeneralObject,
 	originalInput: GeneralObject = input
-): Promise<object> {
+): Promise<GeneralObject> {
 	const sanitizedInputs: { [key:string]: any } = {}
 	const errors: ErrorPointer[] = []
 
