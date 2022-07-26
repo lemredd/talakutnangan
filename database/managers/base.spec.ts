@@ -128,7 +128,11 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		const bases = await (new UserFactory()).insertMany(5)
 
-		const users = await manager.list({})
+		const users = await manager.list({
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(bases.length)
@@ -138,7 +142,12 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		await (new UserFactory()).insertMany(10)
 
-		const users = await manager.list({ limit: 5 })
+		const users = await manager.list({
+			filter: {
+				existence: "exists"
+			},
+			limit: 5
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(5)
@@ -150,7 +159,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				siftByExistence: "exists"
+				existence: "exists"
 			}
 		})
 
@@ -165,7 +174,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				siftByExistence: "exists"
+				existence: "exists"
 			}
 		})
 
@@ -180,7 +189,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				siftByExistence: "archived"
+				existence: "archived"
 			}
 		})
 
@@ -194,7 +203,7 @@ describe("Database: Base Read Operations", () => {
 
 		const user = await manager.findOneOnColumn("name", base.name, {
 			filter: {
-				siftByExistence: "archived"
+				existence: "archived"
 			}
 		})
 
