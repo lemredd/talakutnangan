@@ -167,7 +167,13 @@ describe("Database: User Read Operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
-		const users = await manager.list({ criteria: "incomplete", page: 0 })
+		const users = await manager.list({
+			filter: {
+				criteria: "incomplete",
+				existence: "exists"
+			},
+			page: 0
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
@@ -183,7 +189,12 @@ describe("Database: User Read Operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
 
-		const users = await manager.list({ criteria: "complete", page: 0 })
+		const users = await manager.list({
+			filter: {
+				criteria: "complete"
+			},
+			page: 0
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
@@ -199,7 +210,12 @@ describe("Database: User Read Operations", () => {
 		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
 		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
-		const users = await manager.list({ criteria: "all", page: 0 })
+		const users = await manager.list({
+			filter: {
+				criteria: "all"
+			},
+			page: 0
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(2)
