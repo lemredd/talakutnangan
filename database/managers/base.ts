@@ -25,8 +25,13 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
+ *
+ * First generic argument is `T` that represents the model it controls. Second generic argument is
+ * `U` that represents the transformer for the model. Lastly, `V` represents the filter to be used
+ * by the manager which is an object by default.
  */
-export default abstract class Manager<T extends Model, U> extends RequestEnvironment {
+export default abstract class Manager<T extends Model, U, V extends object = object>
+extends RequestEnvironment {
 	protected transaction: TransactionManager
 
 	constructor(transaction: TransactionManager = new TransactionManager()) {
@@ -54,7 +59,7 @@ export default abstract class Manager<T extends Model, U> extends RequestEnviron
 		]
 	}
 
-	async findWithID(id: number, constraints: object = {}): Promise<Serializable> {
+	async findWithID(id: number, constraints: V = {} as V): Promise<Serializable> {
 		try {
 			const foundModel = await this.findOneOnColumn("id", id, constraints)
 
@@ -66,7 +71,7 @@ export default abstract class Manager<T extends Model, U> extends RequestEnviron
 		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any, constraints: object = {})
+	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
 	: Promise<Serializable> {
 		try {
 			const condition = new Condition()
@@ -88,7 +93,7 @@ export default abstract class Manager<T extends Model, U> extends RequestEnviron
 		}
 	}
 
-	async list(query: object): Promise<Serializable> {
+	async list(query: V): Promise<Serializable> {
 		try {
 			const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
