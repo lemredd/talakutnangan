@@ -13,6 +13,7 @@ describe("Database: Role read operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})
@@ -31,6 +32,7 @@ describe("Database: Role read operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})
