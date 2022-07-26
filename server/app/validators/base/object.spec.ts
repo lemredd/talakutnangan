@@ -55,6 +55,30 @@ describe("Validator pipe: object", () => {
 		expect(customPipeB.mock.calls[0]).toHaveProperty("1.source", source)
 	})
 
+	it("can refresh values", async () => {
+		const value = Promise.resolve(makeInitialState({}))
+		const customPipe = jest.fn().mockResolvedValue("world")
+		const constraints = {
+			request: null,
+			source: null,
+			field: "hello",
+			object: {
+				hello: {
+					pipes: [ customPipe ],
+					constraints: {}
+				}
+			}
+		}
+
+		const sanitizedInput = await object(value, constraints)
+
+		expect(customPipe).toHaveBeenCalled()
+		expect(customPipe.mock.calls[0][0]).resolves.toStrictEqual({
+			mayState: false, value: undefined
+		})
+		expect(sanitizedInput).toStrictEqual({ hello: "world" })
+	})
+
 	it("cannot accept invalid input", async () => {
 		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
 		const constraints = {
