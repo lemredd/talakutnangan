@@ -4,8 +4,8 @@ import type {
 	ValidationConstraints
 } from "!/types/independent"
 
-import isBoolean from "validator/es/lib/isBoolean"
-import toBoolean from "validator/es/lib/toBoolean"
+import isBoolean from "validator/lib/isBoolean"
+import toBoolean from "validator/lib/toBoolean"
 
 /**
  * Validator to check if data is a valid boolean value.
