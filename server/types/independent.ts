@@ -67,6 +67,8 @@ export interface NullableConstraints { nullable?: { defaultValue: any } }
 
 export interface SameRuleConstraints { same: any }
 
+export interface OneOfRuleConstraints { oneOf: { values: any[] } }
+
 export interface ArrayRuleConstraints {
 	array: {
 		rules: Rules,
@@ -111,6 +113,7 @@ export interface BufferRuleConstraints {
 export type RuleContraints = Partial<
 	& NullableConstraints
 	& SameRuleConstraints
+	& OneOfRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
