@@ -42,7 +42,7 @@ describe("Validator: validate", () => {
 		const sanitizeValue = await requester.runValidator(validate, rules, input)
 
 		expect(mockValidator).toHaveBeenCalled()
-		expect(mockValidator.mock.calls[0]).toEqual([ undefined ])
+		expect(mockValidator.mock.calls[0][0]).resolves.toEqual(undefined)
 	})
 
 	it("cannot accept invalid input", async () => {
