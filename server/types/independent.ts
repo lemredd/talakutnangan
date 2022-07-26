@@ -67,6 +67,8 @@ export interface NullableConstraints { nullable?: { defaultValue: any } }
 
 export interface BooleanConstraints { boolean?: { loose: boolean } }
 
+export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
+
 export interface SameRuleConstraints { same: any }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
@@ -115,6 +117,7 @@ export interface BufferRuleConstraints {
 export type RuleContraints = Partial<
 	& NullableConstraints
 	& BooleanConstraints
+	& LengthConstraints
 	& SameRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
