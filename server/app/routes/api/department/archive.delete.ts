@@ -66,10 +66,11 @@ export default class extends JSONController {
 								}
 							}
 						}
-					}, 
-          length: {
+					},
+					length: {
 						minimum: 1,
 						maximum: 24 // This is possible to change in the future
+					}
 				}
 			}
 		})
