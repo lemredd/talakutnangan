@@ -9,6 +9,9 @@ describe("Database: Department Read Operations", () => {
 
 		const roles = await manager.list({
 			fullName: incompleteName,
+			filter: {
+				existence: "exists"
+			},
 			page: 0,
 			limit: 1
 		})
@@ -24,6 +27,9 @@ describe("Database: Department Read Operations", () => {
 
 		const roles = await manager.list({
 			fullName: incorrectName,
+			filter: {
+				existence: "exists"
+			},
 			page: 0,
 			limit: 1
 		})
