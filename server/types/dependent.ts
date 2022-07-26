@@ -61,3 +61,14 @@ export interface IDParameter extends Parameters {
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 	params: IDParameter
 }
+
+import type { RuleItem, ValidateError } from "async-validator"
+/**
+ * Information about the rule
+ */
+export type RuleData = RuleItem
+
+/**
+ * Imformation about the validation error
+ */
+export type ValidationError = ValidateError

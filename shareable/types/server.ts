@@ -15,6 +15,11 @@
 }
 
 /**
+ * Useful for general safe object
+ */
+ export type GeneralObject<T = any> = { [key: string]: T }
+
+/**
  * List of methods that is supported by `express` package
  */
 export type Method = "get" | "post" | "patch" | "delete"
@@ -154,4 +159,6 @@ export interface SourceParameter extends Serializable {
 
 // Media types used in the application
 export const HTML_MEDIA_TYPE = "text/html"
+export const JSON_MEDIA_TYPE = "application/json"
+export const MULTIPART_MEDIA_TYPE = "multipart/form-data"
 export const JSON_API_MEDIA_TYPE = "application/vnd.api+json"
