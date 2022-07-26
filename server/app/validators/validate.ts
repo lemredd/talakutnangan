@@ -1,6 +1,6 @@
+import type { GeneralObject } from "$/types/server"
 import type { Request } from "!/types/dependent"
 import type {
-	GeneralObject,
 	ErrorPointer,
 	StaticRule,
 	RuleContraints,

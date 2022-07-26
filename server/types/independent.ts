@@ -63,7 +63,15 @@ export interface UsableErrorPointer {
 	message: string
 }
 
+export interface NullableConstraints { nullable?: { defaultValue: any } }
+
+export interface BooleanConstraints { boolean?: { loose: boolean } }
+
+export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
+
 export interface SameRuleConstraints { same: any }
+
+export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface ArrayRuleConstraints {
 	array: {
@@ -107,7 +115,11 @@ export interface BufferRuleConstraints {
  * Union of rule contraints
  */
 export type RuleContraints = Partial<
+	& NullableConstraints
+	& BooleanConstraints
+	& LengthConstraints
 	& SameRuleConstraints
+	& OneOfRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
@@ -147,11 +159,6 @@ export type Rule = StaticRule | DynamicRule
 export interface FieldRules {
 	[key:string]: Rule[]
 }
-
-/**
- * Useful for general safe object
- */
-export type GeneralObject<T = any> = { [key: string]: T }
 
 /**
  * Shape of validation constraints that are not part of main info.
