@@ -124,6 +124,10 @@ export interface ExistenceFilter extends Serializable {
 	}
 }
 
+export interface Sort extends Serializable {
+	sort: string[]
+}
+
 export interface SlugFilter extends Serializable {
 	filter: {
 		slug: string
