@@ -118,6 +118,8 @@ Param(
 		"unit:front",
 		"unit:ui",
 		"unit:back",
+		"unit:back_ci",
+		"unit:front_ci",
 		"unit:server",
 		"unit:database",
 		"intg:front",
