@@ -65,6 +65,8 @@ export interface UsableErrorPointer {
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
+export interface BooleanConstraints { boolean?: { loose: boolean } }
+
 export interface SameRuleConstraints { same: any }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
@@ -112,6 +114,7 @@ export interface BufferRuleConstraints {
  */
 export type RuleContraints = Partial<
 	& NullableConstraints
+	& BooleanConstraints
 	& SameRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
