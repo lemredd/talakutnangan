@@ -1,13 +1,21 @@
 <template>
+	<AdminSettingsHeader title="Admin Settings" />
+
 	<RolesManager :data="roles" >
 		<button class="material-icons">add</button>
 	</RolesManager>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { provide, ref } from "vue"
+
+import type { ManagerKind, Role } from "@/user_management/types"
+
 import RolesManager from "@/user_management/DataManager.vue"
-import type { Role } from "@/user_management/types"
+import AdminSettingsHeader from "@/tabbed_page_header.vue"
+
+provide("managerKind", "admin" as ManagerKind)
+provide("tabs", ["Users", "Roles", "Departments"])
 
 // TODO: use actual roles from db soon
 const roles = ref<Role[]>([

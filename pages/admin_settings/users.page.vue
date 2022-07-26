@@ -1,4 +1,5 @@
 <template>
+	<AdminSettingsHeader title="Admin Settings" />
 	<UsersManager :data="users" :has-dropdown-filter="true" />
 </template>
 
@@ -6,14 +7,18 @@
 </style>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted, provide, ref } from "vue"
+import { onMounted, provide, ref } from "vue"
 import { deserialise } from "kitsu-core"
 
-import UsersManager from "@/user_management/DataManager.vue"
 import type { ManagerKind } from "@/user_management/types"
+
+import UsersManager from "@/user_management/DataManager.vue"
+import AdminSettingsHeader from "@/tabbed_page_header.vue"
 
 const managerKind = "admin" as ManagerKind
 provide("managerKind", managerKind)
+provide("tabs", ["Users", "Roles", "Departments"])
+
 
 interface RawUser {
 	id: number,
