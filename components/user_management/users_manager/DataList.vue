@@ -1,9 +1,8 @@
 <template>
-	<!-- TODO(lead): generalize data properties. Current setup only reads type `User` properties -->
 	<div class="data-row" v-for="data in filteredList" :key="data.name">
-		<span class="user-name">{{ data.name }}</span>
-		<span class="user-email">{{ data.email }}</span>
-		<span :class="`user-${roleOrJobTitleClasses}`">{{ isListForServiceEmployees ? data.jobTitle : data.role }}</span>
+		<span class="data-property" v-for="property in dataProperties">
+			{{data[property]}}
+		</span>
 		<div class="btns">
 			<button class="btn1">Update</button>
 		</div>
@@ -51,9 +50,16 @@ const managerKind = inject("managerKind") as ManagerKind
 const isListForServiceEmployees =  managerKind === "service"
 const roleOrJobTitleClasses = computed(() =>( isListForServiceEmployees ? "job-title" : "role"))
 
-const dataProperties = ref<any>(null)
+const dataProperties = ref<string[]>([])
 
+filteredList.forEach((element:any) => {
+	const non_id_properties = new Set<string>([])
+	Object.keys(element).forEach(key => {
+		non_id_properties.add(key)	
+	});
+	dataProperties.value = [...non_id_properties]
+});
 onUpdated(() => {
-	console.log(filteredList)
+	// will be used once all data are retrieved from database
 })
 </script>
