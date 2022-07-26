@@ -17,8 +17,14 @@ describe("Database Pipe: Sift by slug", () => {
 	})
 
 	it("can find on specific using name", async () => {
-		const user = await new UserFactory().name(() => "alice").insertOne()
-		const otherUser = await new UserFactory().name(() => "bob").insertOne()
+		const user = await new UserFactory()
+			.name(() => "alice")
+			.email(() => "zzzz@example.com")
+			.insertOne()
+		const otherUser = await new UserFactory()
+			.name(() => "bob")
+			.email(() => "yyyy@example.com")
+			.insertOne()
 		const slug = "ali"
 
 		const options = siftBySlug({}, { filter: { slug } })
@@ -30,9 +36,15 @@ describe("Database Pipe: Sift by slug", () => {
 	})
 
 	it("can find on specific using email", async () => {
-		const user = await new UserFactory().email(() => "alice@example.com").insertOne()
-		const otherUser = await new UserFactory().email(() => "bob@example.com").insertOne()
-		const slug = "bob@example"
+		const user = await new UserFactory()
+			.name(() => "alice")
+			.email(() => "zzzz@example.com")
+			.insertOne()
+		const otherUser = await new UserFactory()
+			.name(() => "bob")
+			.email(() => "yyyy@example.com")
+			.insertOne()
+		const slug = "yyy"
 
 		const options = siftBySlug({}, { filter: { slug } })
 		const foundUsers = await User.findAll(options)
