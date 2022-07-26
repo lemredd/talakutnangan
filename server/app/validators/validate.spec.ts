@@ -14,8 +14,14 @@ describe("Validator: validate", () => {
 			foo: 42
 		}
 		const rules: FieldRules = {
-			hello: [ required, string ],
-			foo: [ required, integer ]
+			hello: {
+				pipes: [ required, string ],
+				constraints: {}
+			},
+			foo: {
+				pipes: [ required, integer ],
+				constraints: {}
+			}
 		}
 
 		const sanitizeValue = await requester.runValidator(validate, rules, input)
@@ -29,8 +35,14 @@ describe("Validator: validate", () => {
 			foo: 42
 		}
 		const rules: FieldRules = {
-			hello: [ required, integer ],
-			foo: [ required, string ]
+			hello: {
+				pipes: [ required, integer ],
+				constraints: {}
+			},
+			foo: {
+				pipes: [ required, string ],
+				constraints: {}
+			}
 		}
 
 		const errors = requester.runValidator(validate, rules, input)

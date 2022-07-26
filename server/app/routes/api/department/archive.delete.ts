@@ -39,24 +39,36 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(): FieldRulesMaker {
 		return (request: AuthenticatedRequest): FieldRules => ({
-			data: [ required, [ array, {
-				array: {
-					rules: [ required, [ object, {
-						object: {
-							type: [ required, string, [ same, {
-								same: "department"
-							} ] ],
-							id: [ required, integer, [ exists, {
-								manager: {
-									className: DepartmentManager,
-									columnName: "id"
+			data: {
+				pipes: [ required, array ],
+				constraints: {
+					array: {
+						rules: {
+							pipes: [ required, object ],
+							constraints: {
+								object: {
+									type: {
+										pipes: [ required, string, same ],
+										constraints: {
+											same: "department"
+										}
+									},
+									id: {
+										pipes: [ required, integer, exists ],
+										constraints: {
+											manager: {
+												className: DepartmentManager,
+												columnName: "id"
+											}
+										}
+									}
 								}
-							} ] ]
-						}
-					} ] ],
-					minimum: 1
+							}
+						},
+						minimum: 1
+					}
 				}
-			} ] ]
+			}
 		})
 	}
 
