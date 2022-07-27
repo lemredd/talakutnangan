@@ -205,6 +205,16 @@ extends RequestEnvironment {
 		}
 	}
 
+	get sortableColumns(): string[] {
+		return this.exposableColumns
+			.flatMap(column => [ column, `-${column}` ])
+			.sort()
+	}
+
+	protected get exposableColumns(): string[] {
+		return (this.model.getAttributes() as GeneralObject).keys()
+	}
+
 	protected serialize(models: T|T[]|null): Serializable {
 		return Serializer.serialize(
 			models,

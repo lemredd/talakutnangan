@@ -56,6 +56,10 @@ class MockUserManager extends BaseManager<User, RawUser> {
 		super(transaction)
 		this.customReadPipe = customReadPipe
 	}
+
+	protected get exposableColumns(): string[] {
+		return [ "id", "name", "email" ]
+	}
 }
 
 describe("Database: Base Read Operations", () => {
@@ -428,5 +432,22 @@ describe("Database: Error handling down errors", () => {
 		const id = 0
 
 		expect(manager.findWithID(id)).rejects.toThrow(DatabaseError)
+	})
+})
+
+describe("Database: Miscellaneous operations", () => {
+	it("can get sortable columns", async () => {
+		const manager = new MockUserManager()
+
+		const sortableColumns = manager.sortableColumns
+
+		expect(sortableColumns).toEqual([
+			"-email",
+			"-id",
+			"-name",
+			"email",
+			"id",
+			"name"
+		])
 	})
 })
