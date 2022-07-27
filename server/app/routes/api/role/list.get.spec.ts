@@ -6,7 +6,7 @@ import Controller from "./list.get"
 
 const QUERY_VALIDATION_INDEX = 0
 
-describe("Controller: GET /api/department/list", () => {
+describe("Controller: GET /api/role/list", () => {
 	const requester = new MockRequester()
 
 	beforeAll(() => {

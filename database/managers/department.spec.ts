@@ -12,6 +12,7 @@ describe("Database: Department Read Operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})
@@ -30,6 +31,7 @@ describe("Database: Department Read Operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})
