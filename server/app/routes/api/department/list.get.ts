@@ -13,6 +13,7 @@ import object from "!/app/validators/base/object"
 import string from "!/app/validators/base/string"
 import nullable from "!/app/validators/base/nullable"
 import oneOf from "!/app/validators/comparison/one-of"
+import stringArray from "!/app/validators/hybrid/string_array"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -42,6 +43,30 @@ export default class extends QueryController {
 								constraints: {
 									nullable: { defaultValue: "*" },
 									oneOf: { values: [ "*", "exists", "archived" ] }
+								}
+							}
+						}
+					}
+				},
+				sort: {
+					pipes: [ nullable, stringArray ],
+					constraints: {
+						nullable: { defaultValue: "" },
+						array: {
+							rules: {
+								// TODO: Ensure there are `-` are only prefix. the rest are alphanumeric
+								pipes: [ string, oneOf ],
+								constraints: {
+									oneOf: {
+										values: [
+											"id",
+											"fullName",
+											"acronym",
+											"createdAt",
+											"updatedAt",
+											"deletedAt"
+										]
+									}
 								}
 							}
 						}
