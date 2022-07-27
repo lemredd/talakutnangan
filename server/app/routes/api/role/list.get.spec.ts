@@ -1,11 +1,10 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
-import RoleFactory from "~/factories/role"
 import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 import Controller from "./list.get"
 
-const BODY_VALIDATION_INDEX = 0
+const QUERY_VALIDATION_INDEX = 0
 
 describe("Controller: GET /api/role/list", () => {
 	const requester = new MockRequester()
@@ -17,10 +16,8 @@ describe("Controller: GET /api/role/list", () => {
 	it("can accept valid info", async () => {
 		const controller = new Controller()
 		const validations = controller.validations
-		const bodyValidation = validations[BODY_VALIDATION_INDEX]
-		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await (new RoleFactory()).insertOne()
-		await role.destroy({ force: false })
+		const queryValidation = validations[QUERY_VALIDATION_INDEX]
+		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
 		requester.customizeRequest({
 			query: {
 				filter: {
@@ -29,8 +26,28 @@ describe("Controller: GET /api/role/list", () => {
 			}
 		})
 
-		await requester.runMiddleware(bodyValidationFunction)
+		await requester.runMiddleware(queryValidationFunction)
 
 		requester.expectSuccess()
+	})
+
+	it("cannot accept invalid info", async () => {
+		const controller = new Controller()
+		const validations = controller.validations
+		const queryValidation = validations[QUERY_VALIDATION_INDEX]
+		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
+		requester.customizeRequest({
+			query: {
+				filter: {
+					existence: "hello"
+				}
+			}
+		})
+
+		await requester.runMiddleware(queryValidationFunction)
+
+		const body = requester.expectFailure(ErrorBag).toJSON()
+		expect(body).toHaveLength(1)
+		expect(body).toHaveProperty("0.source.parameter", "filter.existence")
 	})
 })
