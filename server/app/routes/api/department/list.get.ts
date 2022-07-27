@@ -31,42 +31,39 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => {
-			return ({
-				filter: {
-					pipes: [ nullable, object ],
-					constraints: {
-						nullable: { defaultValue: {} },
-						object: {
-							existence: {
-								pipes: [ nullable, string, oneOf ],
-								constraints: {
-									nullable: { defaultValue: "*" },
-									oneOf: { values: [ "*", "exists", "archived" ] }
-								}
+		return (request: Request): FieldRules => ({
+			filter: {
+				pipes: [ nullable, object ],
+				constraints: {
+					nullable: { defaultValue: {} },
+					object: {
+						existence: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", "exists", "archived" ] }
 							}
 						}
 					}
-				},
-				sort: {
-					pipes: [ nullable, stringArray ],
-					constraints: {
-						nullable: { defaultValue: "" },
-						array: {
-							rules: {
-								// TODO: Ensure there are `-` are only prefix. the rest are alphanumeric
-								pipes: [ string, oneOf ],
-								constraints: {
-									oneOf: {
-										values: new DepartmentManager().sortableColumns
-									}
+				}
+			},
+			sort: {
+				pipes: [ nullable, stringArray ],
+				constraints: {
+					nullable: { defaultValue: "id" },
+					array: {
+						rules: {
+							pipes: [ string, oneOf ],
+							constraints: {
+								oneOf: {
+									values: new DepartmentManager().sortableColumns
 								}
 							}
 						}
 					}
 				}
-			})
-		}
+			}
+		})
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
