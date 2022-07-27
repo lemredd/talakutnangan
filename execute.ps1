@@ -134,7 +134,7 @@ Param(
 
 	[Parameter(ParameterSetName="Test", Position=2)]
 	[string]
-	$Path = "",
+	$Regex = "",
 
 	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
@@ -170,7 +170,7 @@ if ($Test) {
 	}
 
 	$regexFlag = '""'
-	if ($Regex) {
+	if ($Regex -ne "") {
 		$regexFlag = '"'+$Regex+'"'
 	}
 
@@ -179,8 +179,13 @@ if ($Test) {
 		$watchFlag = "--watch"
 	}
 
-	Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)"
-	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)
+	if ($regexFlag -eq '""') {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+	} else {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)
+	}
 }
 
 if ($Push) {
