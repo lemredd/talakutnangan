@@ -69,6 +69,8 @@ export interface BooleanConstraints { boolean?: { loose: boolean } }
 
 export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
 
+export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
+
 export interface SameRuleConstraints { same: any }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
@@ -116,6 +118,7 @@ export type RuleContraints = Partial<
 	& NullableConstraints
 	& BooleanConstraints
 	& LengthConstraints
+	& RangeConstraints
 	& SameRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
