@@ -1,10 +1,18 @@
 <template>
 	<div class="controls-bar">
 		<SearchFilter/>
-		<Filter v-if="hasDropdownFilter" v-model:filter="selectedFilter"/>
-		<slot v-else></slot>
+		<!-- <Filter v-if="hasDropdownFilter" v-model:filter="selectedFilter"/>
+		<slot v-else></slot> -->
+		<div v-if="hasDropdownFilter" class="dropdown-filter-container">
+			<label for="dropdown-filter">Dropdown Filter</label>
+			<select name="dropdown-filter" id="dropdown-filter" @input="filterByDropdown">
+				<option v-for="filterItem in availableFilters" :value="filterItem">
+					{{ filterItem }}
+				</option>
+			</select>
+		</div>
 	</div>
-	<DataList :search-filter="searchFilterText" :filtered-list="filteredList" />
+	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
 
 </template>
 
@@ -26,6 +34,7 @@ import Filter from "./users_manager/Filter.vue"
 import SearchFilter from "./users_manager/SearchBar.vue"
 import ResourceList from "./users_manager/DataList.vue"
 import { deserialise } from "kitsu-core"
+import uniq from "lodash.uniq"
 
 /*
 	General TODOs
@@ -57,7 +66,41 @@ const filteredList = computed(function() {
 	return filteredBySearchResult
 })
 
+function isResourceItemTypeUser(resourceItem: any): resourceItem is User {
+	return (resourceItem as User).email !== undefined
+}
+function getUserRoleName(user: User) {
+	return user.roles!.data[0].name
+}
+
 const selectedFilter = ref("all")
+const availableFilters = ref<string[]>(["all"])
+onUpdated(() => {
+	console.log("resource successfully loaded")
+	if (resource.some(isResourceItemTypeUser)) {
+		resource.map((resourceItem) => {
+			const user = resourceItem as User
+			const role = getUserRoleName(user)
+
+			availableFilters.value.push(role)
+		})
+	}
+
+	availableFilters.value = uniq(availableFilters.value)
+})
+
+function filterByDropdown(e: Event) {
+	const target = e.target as HTMLSelectElement
+	if (resource.some(isResourceItemTypeUser)) {
+		const filteredByDropdown = (resource as User[]).filter(user => {
+			getUserRoleName(user) === target.value
+		})
+
+		console.log("Selected Filter", target.value)
+		console.log("Filtered List", filteredByDropdown)
+	}
+}
+
 function filterByRole(usersList: {[key:string]: any}[]) {
 	if (hasDropdownFilter) {
 		const managerKind = inject("managerKind") as ManagerKind
@@ -67,5 +110,6 @@ function filterByRole(usersList: {[key:string]: any}[]) {
 		return usersList.filter(user => user.role === selectedFilter.value)
 	}
 }
+watch(selectedFilter, () => console.log(selectedFilter.value))
 provide("searchFilterText", searchFilterText)
 </script>
