@@ -5,4 +5,6 @@ export default class extends Validation {
 	getSubject(request: Request): object {
 		return request.query
 	}
+
+	get sourceType(): "pointer"|"parameter"|null { return "parameter" }
 }
