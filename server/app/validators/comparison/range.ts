@@ -37,7 +37,7 @@ export default async function(
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string) =>
-				`Field "${field}" must be lower than or equal to ${constraints.range!.maximum}.`
+				`Field "${field}" must be less than or equal to ${constraints.range!.maximum}.`
 		}
 	}
 
