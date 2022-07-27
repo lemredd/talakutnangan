@@ -1,6 +1,6 @@
 <template>
 	<h1 class="">Institute Name</h1>
-	<UsersManager :data="users" :has-dropdown-filter="true"/>
+	<UsersManager :resource="users" :has-dropdown-filter="true"/>
 
 </template>
 

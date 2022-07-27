@@ -1,7 +1,7 @@
 <template>
 	<AdminSettingsHeader title="Admin Settings" />
 
-	<DeptManager :data="departments" >
+	<DeptManager :resource="departments" >
 		<button class="material-icons">add</button>
 	</DeptManager>
 </template>

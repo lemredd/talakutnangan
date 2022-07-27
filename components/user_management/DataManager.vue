@@ -20,32 +20,33 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, provide, ref } from "vue"
+import { computed, inject, onUpdated, provide, ref, watch } from "vue"
 import type { ManagerKind, User, Department, Role } from "./types"
 import Filter from "./users_manager/Filter.vue"
 import SearchFilter from "./users_manager/SearchBar.vue"
-import DataList from "./users_manager/DataList.vue"
+import ResourceList from "./users_manager/DataList.vue"
+import { deserialise } from "kitsu-core"
 
 /*
 	General TODOs
 	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
 */
 
-const { data, hasDropdownFilter } = defineProps<{
+const { resource, hasDropdownFilter } = defineProps<{
 
-	data: User[] | Department[] | Role[],
+	resource: User[] | Department[] | Role[],
 	hasDropdownFilter?: boolean
 }>()
 
 const searchFilterText = ref("");
 
-function passedData(): (User|Department|Role)[] {
-	return data
+function passedResource(): (User|Department|Role)[] {
+	return resource
 }
 
 const filteredList = computed(function() {
-	const filteredBySearchResult = passedData().filter((dataToFilter: User | Department | Role) =>
-		dataToFilter.name.toLowerCase().includes(searchFilterText.value.toLowerCase())
+	const filteredBySearchResult = passedResource().filter((resourceToFilter: User | Department | Role) =>
+		resourceToFilter.name.toLowerCase().includes(searchFilterText.value.toLowerCase())
 	);
 
 	if (hasDropdownFilter) {

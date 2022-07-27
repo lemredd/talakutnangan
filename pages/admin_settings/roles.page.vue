@@ -1,7 +1,7 @@
 <template>
 	<AdminSettingsHeader title="Admin Settings" />
 
-	<RolesManager :data="roles" >
+	<RolesManager :resource="roles" >
 		<button class="material-icons">add</button>
 	</RolesManager>
 </template>

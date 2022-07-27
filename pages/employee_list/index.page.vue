@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-        <UsersManager :data="users" :has-dropdown-filter="true" />
+        <UsersManager :resource="users" :has-dropdown-filter="true" />
 </template>
 
 <style>

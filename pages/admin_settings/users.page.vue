@@ -1,6 +1,6 @@
 <template>
 	<AdminSettingsHeader title="Admin Settings" />
-	<UsersManager :data="users" :has-dropdown-filter="true" />
+	<UsersManager :resource="users" :has-dropdown-filter="true" />
 </template>
 
 <style>
