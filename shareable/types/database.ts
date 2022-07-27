@@ -38,10 +38,6 @@ export interface RawPost {
 	roleID?: Role,
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ] as const
-
-export type Criteria = typeof rawCriteria[number]
-
 /**
  * Used to receive raw validated department details.
  */
@@ -115,7 +111,6 @@ export type UserFilter =
 	& DepartmentFilter
 	& RoleFilter
 	& KindFilter
-	& CriteriaFilter
 	& SlugFilter
 
 export interface ExistenceFilter extends Serializable {
@@ -149,11 +144,5 @@ export interface RoleFilter extends Serializable {
 export interface KindFilter extends Serializable {
 	filter: {
 		kind: "*"|UserKind
-	}
-}
-
-export interface CriteriaFilter extends Serializable {
-	filter: {
-		criteria: "*"|"incomplete"|"verified"|"unverified"
 	}
 }
