@@ -100,6 +100,11 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 		}
 	}
 
+	protected get exposableColumns(): string[] {
+		const excludedColumns = new Set([ "password", "departmentID" ])
+		return super.exposableColumns.filter(columnName => !excludedColumns.has(columnName))
+	}
+
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
 			// Get the department name firsts
