@@ -2,7 +2,7 @@ import User from "%/models/user"
 import UserFactory from "~/factories/user"
 import sort from "./sort"
 
-describe("Database Pipe: Sift by existence", () => {
+describe("Database Pipe: Sort", () => {
 	it("can sort in ascending order", async () => {
 		const users = await (await new UserFactory().insertMany(3)).sort((a, b) => {
 			return a.name.localeCompare(b.name)
