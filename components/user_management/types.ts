@@ -4,7 +4,9 @@ export type User = {
 	id: number
 	email: string
 	name: string
-	role?: string
+	roles?: {
+		[key:string]: any
+	}
 	jobTitle?: string
 }
 
