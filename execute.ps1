@@ -169,7 +169,7 @@ if ($Test) {
 		$configuration = "jest.$($name).config.json"
 	}
 
-	$regexFlag = '".*"'
+	$regexFlag = '""'
 	if ($Regex) {
 		$regexFlag = '"'+$Regex+'"'
 	}
