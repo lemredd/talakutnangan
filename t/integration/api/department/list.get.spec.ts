@@ -28,6 +28,7 @@ describe("GET /api/deparment/list", () => {
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
+		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.type", "department")
 		expect(response.body).toHaveProperty("data.0.id", admin.departmentID)

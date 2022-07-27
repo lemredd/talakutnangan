@@ -1,5 +1,7 @@
-import { rawCriteria, Criteria } from "$/types/database"
-import { Request, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/independent"
+import type { FieldRulesMaker } from "!/types/hybrid"
+import type { Request, Response } from "!/types/dependent"
+import { rawCriteria, Criteria, UserKindValues, UserFilter } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -10,6 +12,11 @@ import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
+
+import object from "!/app/validators/base/object"
+import string from "!/app/validators/base/string"
+import nullable from "!/app/validators/base/nullable"
+import oneOf from "!/app/validators/comparison/one-of"
 
 interface WithQuery {
 	query: {
@@ -33,10 +40,63 @@ export default class extends QueryController {
 		}
 	}
 
+	makeQueryRuleGenerator(): FieldRulesMaker {
+		// TODO: make a validator to skip "*" character
+		return (request: Request): FieldRules => ({
+			filter: {
+				pipes: [ nullable, object ],
+				constraints: {
+					nullable: { defaultValue: {} },
+					object: {
+						slug: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "" }
+							}
+						},
+						department: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "*" }
+							}
+						},
+						role: {
+							pipes: [ nullable, string ],
+							constraints: {
+								nullable: { defaultValue: "*" }
+							}
+						},
+						kind: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", ...UserKindValues ] }
+							}
+						},
+						criteria: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", "incomplete", "verified", "unverified" ] }
+							}
+						},
+						existence: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "*" },
+								oneOf: { values: [ "*", "exists", "archived" ] }
+							}
+						}
+					}
+				}
+			}
+		})
+	}
+
 	async handle(request: Request & WithQuery, response: Response): Promise<void> {
 		const { criteria = null } = request.query
 		const manager = new UserManager()
-		const users = await manager.list({ criteria })
+		const users = await manager.list(request.query as UserFilter)
 
 		// TODO: Hide the signatures of users
 		response.status(this.status.OK).json(users)
