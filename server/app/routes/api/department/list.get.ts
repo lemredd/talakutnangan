@@ -58,14 +58,7 @@ export default class extends QueryController {
 								pipes: [ string, oneOf ],
 								constraints: {
 									oneOf: {
-										values: [
-											"id",
-											"fullName",
-											"acronym",
-											"createdAt",
-											"updatedAt",
-											"deletedAt"
-										]
+										values: new DepartmentManager().sortableColumns
 									}
 								}
 							}
