@@ -38,7 +38,7 @@ Only works if one of `-Push` or `-Pull` switches is on.
 Specifies which remote to push or pull.
 
 .PARAMETER Test
-Switch to runs tests.
+Switch to run tests.
 
 .PARAMETER SuiteName
 Only required if `-Test` switch is on.
@@ -51,6 +51,21 @@ Limits the files to test base from regular expression.
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
+
+.PARAMETER Database
+Switch to run database operations.
+
+.PARAMETER Initialize
+Switch to migrate all database tables for the first time.
+
+.PARAMETER Upgrade
+Switch to migrate all database tables.
+
+.PARAMETER Downgrade
+Switch to undo some migration of tables.
+
+.PARAMETER Reset
+Switch to redo all migration of tables from the start.
 
 .INPUTS
 All inputs are done through arguments.
@@ -138,7 +153,27 @@ Param(
 
 	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
-	$Watch
+	$Watch,
+
+	[Parameter(ParameterSetName="Database", Position=0)]
+	[switch]
+	$Database,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Initialize,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Upgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Downgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Reset
 )
 
 if ($Help) {
@@ -208,5 +243,25 @@ if ($Pull) {
 		& git pull --prune
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+	}
+}
+
+if ($Database) {
+	if ($Initialize) {
+		& npx sequelize-cli db:create
+		& ./execute -Database -Upgrade
+	}
+
+	if ($Upgrade) {
+		& npx sequelize-cli db:migrate
+	}
+
+	if ($Downgrade) {
+		& npx sequelize-cli db:migrate:undo
+	}
+
+	if ($Reset) {
+		& npx sequelize-cli db:drop
+		& ./execute -Database -Initialize
 	}
 }

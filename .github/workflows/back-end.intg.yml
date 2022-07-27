@@ -70,7 +70,8 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run migrate:up
+    - run: ./execute.ps1 -database -upgrade
+      shell: pwsh
     - run: npm run seed:up:all
     - run: npm run build
     - run: ./execute.ps1 -test intg:back
