@@ -54,8 +54,7 @@ extends RequestEnvironment {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
-			siftByExistence,
-			page
+			siftByExistence
 		]
 	}
 
