@@ -13,10 +13,9 @@ import type {
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
+import page from "%/managers/helpers/page"
 import sort from "%/managers/helpers/sort"
-import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
-import offset from "%/managers/helpers/offset"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 import Condition from "%/managers/helpers/condition"
@@ -48,8 +47,7 @@ extends RequestEnvironment {
 	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
 			siftByExistence,
-			offset,
-			limit,
+			page,
 			sort
 		]
 	}
@@ -57,8 +55,7 @@ extends RequestEnvironment {
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
 			siftByExistence,
-			offset,
-			limit
+			page
 		]
 	}
 
