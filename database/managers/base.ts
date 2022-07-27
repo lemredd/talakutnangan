@@ -212,7 +212,16 @@ extends RequestEnvironment {
 	}
 
 	protected get exposableColumns(): string[] {
-		return (this.model.getAttributes() as GeneralObject).keys()
+		const attributeInfo = (this.model.getAttributes() as GeneralObject)
+		const attributeNames = []
+
+		for (const name in attributeInfo) {
+			if (Object.prototype.hasOwnProperty.call(attributeInfo, name)) {
+				attributeNames.push(name)
+			}
+		}
+
+		return attributeNames
 	}
 
 	protected serialize(models: T|T[]|null): Serializable {
