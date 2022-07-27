@@ -1,9 +1,10 @@
 import { Validator } from "node-input-validator"
 
 import type { FieldRulesMaker } from "!/types/hybrid"
-import type { ValidationRules } from "!/types/independent"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import type { GeneralObject, SourceParameter, SourcePointer } from "$/types/server"
+import type { ValidationRules, ErrorPointer, SourceType } from "!/types/independent"
+import accessDeepPath from "!/helpers/access_deep_path"
 
 import Log from "$!/singletons/log"
 import ErrorBag from "$!/errors/error_bag"
@@ -53,7 +54,10 @@ export default abstract class extends Middleware {
 					}
 				}
 			} catch(error) {
-				errorInfos = error
+				errorInfos = (error as ErrorPointer[]).map(error => ({
+					field: error.field,
+					message: error.messageMaker(error.field, accessDeepPath(body, error.field))
+				}))
 			}
 		} else {
 			Log.warn("migration", "Validating using old method in "+request.url)
@@ -87,5 +91,5 @@ export default abstract class extends Middleware {
 	/**
 	 * Type of source where the validation error comes from.
 	 */
-	get sourceType(): "pointer"|"parameter"|null { return "pointer" }
+	get sourceType(): SourceType { return "pointer" }
 }

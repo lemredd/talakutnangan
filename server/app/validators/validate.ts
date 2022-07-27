@@ -7,7 +7,6 @@ import type {
 } from "!/types/independent"
 
 import unifyErrors from "!/app/validators/unify_errors"
-import accessDeepPath from "!/helpers/access_deep_path"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import makeInitialState from "!/app/validators/make_initial_state"
 
@@ -51,10 +50,7 @@ export default async function(
 	}
 
 	if (errors.length > 0) {
-		throw errors.map(error => ({
-			field: error.field,
-			message: error.messageMaker(error.field, accessDeepPath(input, error.field))
-		}))
+		throw errors
 	}
 
 	return sanitizedInputs

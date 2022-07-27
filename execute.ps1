@@ -209,17 +209,23 @@ if ($Test) {
 		$regexFlag = '"'+$Regex+'"'
 	}
 
-	$watchFlag = ""
-	if ($Watch) {
-		$watchFlag = "--watch"
+	if ($regexFlag -eq '""') {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}
+	} else {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)
 	}
 
-	if ($regexFlag -eq '""') {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
-	} else {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) $($watchFlag)
+	# Above operations refreshed the cache directory so it is safe to watch now
+	if ($Watch) {
+		if ($regexFlag -eq '""') {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch
+		} else {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch
+		}
 	}
 }
 

@@ -18,6 +18,8 @@ import string from "!/app/validators/base/string"
 import nullable from "!/app/validators/base/nullable"
 import oneOf from "!/app/validators/comparison/one-of"
 
+import makeListRules from "!/app/rule_sets/make_list"
+
 interface WithQuery {
 	query: {
 		criteria?: Criteria
@@ -42,52 +44,37 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => ({
-			filter: {
-				pipes: [ nullable, object ],
+		return (request: Request): FieldRules => makeListRules(UserManager, {
+			slug: {
+				pipes: [ nullable, string ],
 				constraints: {
-					nullable: { defaultValue: {} },
-					object: {
-						slug: {
-							pipes: [ nullable, string ],
-							constraints: {
-								nullable: { defaultValue: "" }
-							}
-						},
-						department: {
-							pipes: [ nullable, string ],
-							constraints: {
-								nullable: { defaultValue: "*" }
-							}
-						},
-						role: {
-							pipes: [ nullable, string ],
-							constraints: {
-								nullable: { defaultValue: "*" }
-							}
-						},
-						kind: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "*" },
-								oneOf: { values: [ "*", ...UserKindValues ] }
-							}
-						},
-						criteria: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "*" },
-								oneOf: { values: [ "*", "incomplete", "verified", "unverified" ] }
-							}
-						},
-						existence: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "*" },
-								oneOf: { values: [ "*", "exists", "archived" ] }
-							}
-						}
-					}
+					nullable: { defaultValue: "" }
+				}
+			},
+			department: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "*" }
+				}
+			},
+			role: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "*" }
+				}
+			},
+			kind: {
+				pipes: [ nullable, string, oneOf ],
+				constraints: {
+					nullable: { defaultValue: "*" },
+					oneOf: { values: [ "*", ...UserKindValues ] }
+				}
+			},
+			criteria: {
+				pipes: [ nullable, string, oneOf ],
+				constraints: {
+					nullable: { defaultValue: "*" },
+					oneOf: { values: [ "*", "incomplete", "verified", "unverified" ] }
 				}
 			}
 		})

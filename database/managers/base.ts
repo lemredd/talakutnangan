@@ -13,6 +13,7 @@ import type {
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
+import sort from "%/managers/helpers/sort"
 import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
 import offset from "%/managers/helpers/offset"
@@ -48,7 +49,8 @@ extends RequestEnvironment {
 		return [
 			siftByExistence,
 			offset,
-			limit
+			limit,
+			sort
 		]
 	}
 
@@ -67,6 +69,8 @@ extends RequestEnvironment {
 				if (constraints.filter === undefined) constraints.filter = {}
 				if (constraints.filter.existence === undefined)
 					constraints.filter.existence = "exists"
+				// @ts-ignore
+				if (constraints.sort === undefined) constraints.sort = []
 			}
 
 			const foundModel = await this.findOneOnColumn("id", id, constraints)
@@ -199,6 +203,25 @@ extends RequestEnvironment {
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
+	}
+
+	get sortableColumns(): string[] {
+		return this.exposableColumns
+			.flatMap(column => [ column, `-${column}` ])
+			.sort()
+	}
+
+	protected get exposableColumns(): string[] {
+		const attributeInfo = (this.model.getAttributes() as GeneralObject)
+		const attributeNames = []
+
+		for (const name in attributeInfo) {
+			if (Object.prototype.hasOwnProperty.call(attributeInfo, name)) {
+				attributeNames.push(name)
+			}
+		}
+
+		return attributeNames
 	}
 
 	protected serialize(models: T|T[]|null): Serializable {
