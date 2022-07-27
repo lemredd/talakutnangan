@@ -7,9 +7,9 @@ import type {
 import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**
- * Validator to check if th value is within the specific length.
+ * Validator to check if the value is within the specific length.
  *
- * Only works if the value is guaranteed to be string or array.
+ * Comparison is inclusive. Only works if the value is guaranteed to be string or array.
  */
 export default async function(
 	currentState: Promise<ValidationState>,
@@ -31,7 +31,9 @@ export default async function(
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string) =>
-				`Field "${field}" must have more than ${constraints.length!.minimum}.`
+				`Field "${field}" must be more than or equal to ${
+					constraints.length!.minimum
+				} character(s).`
 		}
 	}
 
@@ -41,7 +43,9 @@ export default async function(
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string) =>
-				`Field "${field}" must have more than ${constraints.length!.maximum}.`
+				`Field "${field}" must be less than or equal to ${
+					constraints.length!.maximum
+				} character(s).`
 		}
 	}
 

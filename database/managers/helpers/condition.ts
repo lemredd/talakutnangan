@@ -37,14 +37,40 @@ export default class Condition<T = any> {
 	}
 
 	or(...conditions: Condition[]): Condition {
-		this.currentCondition[Op.or] = conditions.map(condition => condition.build())
+		const simplifiedConditions = this.simplifyConditions(conditions)
+
+		if (simplifiedConditions.length === 1) {
+			this.currentCondition = simplifiedConditions[0]
+		} else if (simplifiedConditions.length > 1) {
+			this.currentCondition[Op.or] = conditions.map(condition => condition.build())
+		}
+
 		return this
 	}
 
 	and(...conditions: Condition[]): Condition {
-		this.currentCondition[Op.and] = conditions.map(condition => condition.build())
+		const simplifiedConditions = this.simplifyConditions(conditions)
+
+		if (simplifiedConditions.length === 1) {
+			this.currentCondition = simplifiedConditions[0]
+		} else if (simplifiedConditions.length > 1) {
+			this.currentCondition[Op.and] = conditions.map(condition => condition.build())
+		}
+
 		return this
 	}
 
 	build(): WhereOptions<T> { return { ...this.currentCondition } }
+
+	private simplifyConditions(conditions: Condition[]): { [key: string|symbol]: any }[] {
+		return conditions.map(condition => condition.build()).filter(object => {
+			for (const key in object) {
+				if (Object.prototype.hasOwnProperty.call(object, key)) {
+					return true
+				}
+			}
+
+			return false
+		})
+	}
 }

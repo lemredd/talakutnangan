@@ -8,6 +8,7 @@ import type {
 import isPlainObject from "lodash.isplainobject"
 import validate from "!/app/validators/validate"
 import unifyErrors from "!/app/validators/unify_errors"
+import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**
  * Validator to check if data is an array
@@ -22,11 +23,7 @@ export default async function(
 
 	if (isPlainObject(state.value)) {
 		if (constraints.object === undefined) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) =>
-					`Developer forgot to add contraints in object for field ${field}.`
-			}
+			throw makeDeveloperError(constraints.field)
 		}
 
 		const sanitizedInputs: { [key:string]: any } = {}

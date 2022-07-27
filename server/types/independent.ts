@@ -69,15 +69,15 @@ export interface BooleanConstraints { boolean?: { loose: boolean } }
 
 export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
 
+export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
+
 export interface SameRuleConstraints { same: any }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface ArrayRuleConstraints {
 	array: {
-		rules: Rules,
-		minimum?: number,
-		maximum?: number
+		rules: Rules
 	}
 }
 
@@ -118,6 +118,7 @@ export type RuleContraints = Partial<
 	& NullableConstraints
 	& BooleanConstraints
 	& LengthConstraints
+	& RangeConstraints
 	& SameRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
@@ -169,3 +170,8 @@ export interface FieldRules {
 export interface MetaValidationConstraints {
 	transformer?: Function
 }
+
+/**
+ * Indicates the error source types usually used for validation errors.
+ */
+export type SourceType = "parameter"|"pointer"|null
