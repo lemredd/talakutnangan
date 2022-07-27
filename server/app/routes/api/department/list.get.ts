@@ -9,11 +9,7 @@ import QueryController from "!/common_controllers/query_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import nullable from "!/app/validators/base/nullable"
-import oneOf from "!/app/validators/comparison/one-of"
-import stringArray from "!/app/validators/hybrid/string_array"
+import makeListRules from "!/app/rule_sets/make_list"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -31,39 +27,7 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
 		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => ({
-			filter: {
-				pipes: [ nullable, object ],
-				constraints: {
-					nullable: { defaultValue: {} },
-					object: {
-						existence: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "*" },
-								oneOf: { values: [ "*", "exists", "archived" ] }
-							}
-						}
-					}
-				}
-			},
-			sort: {
-				pipes: [ nullable, stringArray ],
-				constraints: {
-					nullable: { defaultValue: "id" },
-					array: {
-						rules: {
-							pipes: [ string, oneOf ],
-							constraints: {
-								oneOf: {
-									values: new DepartmentManager().sortableColumns
-								}
-							}
-						}
-					}
-				}
-			}
-		})
+		return (request: Request): FieldRules => makeListRules(DepartmentManager, {})
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
