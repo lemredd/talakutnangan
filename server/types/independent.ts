@@ -63,11 +63,19 @@ export interface UsableErrorPointer {
 	message: string
 }
 
+export interface NullableConstraints { nullable?: { defaultValue: any } }
+
+export interface BooleanConstraints { boolean?: { loose: boolean } }
+
+export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
+
 export interface SameRuleConstraints { same: any }
+
+export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface ArrayRuleConstraints {
 	array: {
-		rules: Rules,
+		rules: Rule[],
 		minimum?: number,
 		maximum?: number
 	}
@@ -107,7 +115,11 @@ export interface BufferRuleConstraints {
  * Union of rule contraints
  */
 export type RuleContraints = Partial<
+	& NullableConstraints
+	& BooleanConstraints
+	& LengthConstraints
 	& SameRuleConstraints
+	& OneOfRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
@@ -134,25 +146,19 @@ export interface ValidationState {
 	maySkip: boolean
 }
 
+export type StaticRule = Pipe<Promise<ValidationState>, ValidationConstraints>
+export type DynamicRule = [ StaticRule, RuleContraints ]
+
 /**
  * Shape of validation rules
  */
-export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
-	constraints: RuleContraints
-}
-
+export type Rule = StaticRule | DynamicRule
 /**
  * Shape of validation rules for all fields
  */
 export interface FieldRules {
-	[key:string]: Rules
+	[key:string]: Rule[]
 }
-
-/**
- * Useful for general safe object
- */
-export type GeneralObject<T = any> = { [key: string]: T }
 
 /**
  * Shape of validation constraints that are not part of main info.

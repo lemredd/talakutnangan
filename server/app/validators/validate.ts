@@ -1,7 +1,9 @@
+import type { GeneralObject } from "$/types/server"
 import type { Request } from "!/types/dependent"
 import type {
-	GeneralObject,
 	ErrorPointer,
+	StaticRule,
+	RuleContraints,
 	FieldRules,
 	ValidationConstraints
 } from "!/types/independent"
@@ -25,16 +27,31 @@ export default async function(
 			const rules = fields[field]
 
 			try {
+				let ruleConstraints: RuleContraints = {}
+				const pipes: StaticRule[] = []
+
+				rules.forEach(rule => {
+					if (rule instanceof Array) {
+						pipes.push(rule[0])
+						ruleConstraints = {
+							...rule[1],
+							...ruleConstraints
+						}
+					} else {
+						pipes.push(rule)
+					}
+				})
+
 				const constraints: ValidationConstraints = {
 					request,
 					source: originalInput,
 					field,
-					...rules.constraints
+					...ruleConstraints
 				}
 				const sanitizedInput = await runThroughPipeline(
 					Promise.resolve(makeInitialState(input[field])),
 					constraints,
-					rules.pipes
+					pipes
 				)
 
 				sanitizedInputs[field] = sanitizedInput.value
