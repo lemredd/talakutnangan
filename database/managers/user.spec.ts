@@ -225,3 +225,35 @@ describe("Database: User Update Operations", () => {
 		expect((await User.findOne({ where: { id: user.id } }))!.emailVerifiedAt).not.toBeNull()
 	})
 })
+
+describe("Database: Miscellaneous operations", () => {
+	it("can get sortable columns", async () => {
+		// Include in test to alert in case there are new columns to decide whether to expose or not
+		const manager = new UserManager()
+
+		const sortableColumns = manager.sortableColumns
+
+		expect(sortableColumns).toStrictEqual([
+			"-admittedAt",
+			"-createdAt",
+			"-deletedAt",
+			"-email",
+			"-emailVerifiedAt",
+			"-id",
+			"-kind",
+			"-name",
+			"-signature",
+			"-updatedAt",
+			"admittedAt",
+			"createdAt",
+			"deletedAt",
+			"email",
+			"emailVerifiedAt",
+			"id",
+			"kind",
+			"name",
+			"signature",
+			"updatedAt"
+		])
+	})
+})
