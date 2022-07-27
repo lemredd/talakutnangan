@@ -33,7 +33,6 @@ import Condition from "%/managers/helpers/condition"
 import siftByRole from "%/managers/user/sift_by_role"
 import siftByKind from "%/managers/user/sift_by_kind"
 import searchName from "%/managers/helpers/search_name"
-import siftByCriteria from "%/managers/user/sift_by_criteria"
 import siftByDepartment from "%/managers/user/sift_by_department"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
@@ -56,7 +55,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			searchName,
 			siftByRole,
 			siftByKind,
-			siftByCriteria,
 			siftByDepartment,
 			includeRoleAndDepartment,
 			...super.listPipeline

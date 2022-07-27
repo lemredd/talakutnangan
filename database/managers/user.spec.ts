@@ -159,63 +159,6 @@ describe("Database: User Create Operations", () => {
 	})
 })
 
-describe("Database: User Read Operations", () => {
-	it("can list users with incomplete profile", async () => {
-		const manager = new UserManager()
-		const incompleteUserProfile = await new UserFactory().insertOne()
-		// Create dummy complete profile to see if it would return two records or not
-		await new SignatureFactory().user(() => new UserFactory().insertOne()).insertOne()
-		const role = await new RoleFactory().insertOne()
-		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({
-			filter: {
-				slug: "",
-				department: "*",
-				role: "*",
-				kind: "*",
-				criteria: "incomplete",
-				existence: "exists"
-			},
-			sort: [],
-			page: 0
-		})
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(1)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(2)
-	})
-
-	it("can list all users", async () => {
-		const manager = new UserManager()
-		const completeUserProfile = await new UserFactory().insertOne()
-		await new SignatureFactory().user(() => Promise.resolve(completeUserProfile)).insertOne()
-		const incompleteUserProfile =await new UserFactory().insertOne()
-		const role = await new RoleFactory().insertOne()
-		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
-		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({
-			filter: {
-				slug: "",
-				department: "*",
-				role: "*",
-				kind: "*",
-				criteria: "*",
-				existence: "exists"
-			},
-			sort: [],
-			page: 0
-		})
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(2)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(3)
-	})
-})
-
 describe("Database: User Update Operations", () => {
 	it("can verify user", async () => {
 		const manager = new UserManager()
