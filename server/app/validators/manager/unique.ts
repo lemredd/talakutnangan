@@ -26,13 +26,11 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 	const manager = new constraints.manager.className()
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
-			existence: "all"
+			existence: "*"
 		}
 	})
 
 	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
-
-	console.log("unique 1", state.value, "at", id, foundModel.data === null, (foundModel.data as any)?.id === id)
 
 	// TODO: Store found model in cache
 	if (foundModel.data === null || (foundModel.data as any).id === id) {

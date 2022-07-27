@@ -10,8 +10,14 @@ describe("Validator pipe: object", () => {
 			source: null,
 			field: "hello",
 			object: {
-				hello: [ string ],
-				foo: [ string ]
+				hello: {
+					pipes: [ string ],
+					constraints: {}
+				},
+				foo: {
+					pipes: [ string ],
+					constraints: {}
+				}
 			}
 		}
 
@@ -30,8 +36,14 @@ describe("Validator pipe: object", () => {
 			source,
 			field: "hello",
 			object: {
-				hello: [ customPipeA ],
-				foo: [ customPipeB ]
+				hello: {
+					pipes: [ customPipeA ],
+					constraints: {}
+				},
+				foo: {
+					pipes: [ customPipeB ],
+					constraints: {}
+				}
 			}
 		}
 
@@ -43,6 +55,30 @@ describe("Validator pipe: object", () => {
 		expect(customPipeB.mock.calls[0]).toHaveProperty("1.source", source)
 	})
 
+	it("can refresh values", async () => {
+		const value = Promise.resolve(makeInitialState({}))
+		const customPipe = jest.fn().mockResolvedValue(makeInitialState("world"))
+		const constraints = {
+			request: null,
+			source: null,
+			field: "hello",
+			object: {
+				hello: {
+					pipes: [ customPipe ],
+					constraints: {}
+				}
+			}
+		}
+
+		const sanitizedInput = (await object(value, constraints)).value
+
+		expect(customPipe).toHaveBeenCalled()
+		expect(customPipe.mock.calls[0][0]).resolves.toStrictEqual({
+			maySkip: false, value: undefined
+		})
+		expect(sanitizedInput).toStrictEqual({ hello: "world" })
+	})
+
 	it("cannot accept invalid input", async () => {
 		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
 		const constraints = {
@@ -50,8 +86,14 @@ describe("Validator pipe: object", () => {
 			source: null,
 			field: "hi",
 			object: {
-				hello: [ string ],
-				foo: [ string ]
+				hello: {
+					pipes: [ string ],
+					constraints: {}
+				},
+				foo: {
+					pipes: [ string ],
+					constraints: {}
+				}
 			}
 		}
 

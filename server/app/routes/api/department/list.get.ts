@@ -1,3 +1,5 @@
+import type { FieldRules } from "!/types/independent"
+import type { FieldRulesMaker } from "!/types/hybrid"
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -6,6 +8,11 @@ import { READ } from "$/permissions/department_combinations"
 import QueryController from "!/common_controllers/query_controller"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+
+import object from "!/app/validators/base/object"
+import string from "!/app/validators/base/string"
+import nullable from "!/app/validators/base/nullable"
+import oneOf from "!/app/validators/comparison/one-of"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -19,6 +26,29 @@ export default class extends QueryController {
 	get queryValidationRules(): object {
 		// TODO: Validate common query
 		return {}
+	}
+
+	makeQueryRuleGenerator(): FieldRulesMaker {
+		// TODO: make a validator to skip "*" character
+		return (request: Request): FieldRules => {
+			return ({
+				filter: {
+					pipes: [ nullable, object ],
+					constraints: {
+						nullable: { defaultValue: {} },
+						object: {
+							existence: {
+								pipes: [ nullable, string, oneOf ],
+								constraints: {
+									nullable: { defaultValue: "*" },
+									oneOf: { values: [ "*", "exists", "archived" ] }
+								}
+							}
+						}
+					}
+				}
+			})
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

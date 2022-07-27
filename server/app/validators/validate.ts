@@ -2,8 +2,6 @@ import type { GeneralObject } from "$/types/server"
 import type { Request } from "!/types/dependent"
 import type {
 	ErrorPointer,
-	StaticRule,
-	RuleContraints,
 	FieldRules,
 	ValidationConstraints
 } from "!/types/independent"
@@ -18,54 +16,37 @@ export default async function(
 	request: Request,
 	input: GeneralObject,
 	originalInput: GeneralObject = input
-): Promise<object> {
+): Promise<GeneralObject> {
 	const sanitizedInputs: { [key:string]: any } = {}
 	const errors: ErrorPointer[] = []
 
 	for (const field in fields) {
-		if (Object.prototype.hasOwnProperty.call(fields, field)) {
-			const rules = fields[field]
+		const rules = fields[field]
 
-			try {
-				let ruleConstraints: RuleContraints = {}
-				const pipes: StaticRule[] = []
-
-				rules.forEach(rule => {
-					if (rule instanceof Array) {
-						pipes.push(rule[0])
-						ruleConstraints = {
-							...rule[1],
-							...ruleConstraints
-						}
-					} else {
-						pipes.push(rule)
-					}
-				})
-
-				const constraints: ValidationConstraints = {
-					request,
-					source: originalInput,
-					field,
-					...ruleConstraints
-				}
-				const sanitizedInput = await runThroughPipeline(
-					Promise.resolve(makeInitialState(input[field])),
-					constraints,
-					pipes
-				)
-
-				sanitizedInputs[field] = sanitizedInput.value
-			} catch(error) {
-				const flattendedErrors: (ErrorPointer|Error)[] = []
-
-				if (Array.isArray(error)) {
-					flattendedErrors.push(...error)
-				} else {
-					flattendedErrors.push(error as ErrorPointer)
-				}
-
-				errors.push(...unifyErrors(field, flattendedErrors))
+		try {
+			const constraints: ValidationConstraints = {
+				request,
+				source: originalInput,
+				field,
+				...rules.constraints
 			}
+			const sanitizedInput = await runThroughPipeline(
+				Promise.resolve(makeInitialState(input[field])),
+				constraints,
+				rules.pipes
+			)
+
+			sanitizedInputs[field] = sanitizedInput.value
+		} catch(error) {
+			const flattendedErrors: (ErrorPointer|Error)[] = []
+
+			if (Array.isArray(error)) {
+				flattendedErrors.push(...error)
+			} else {
+				flattendedErrors.push(error as ErrorPointer)
+			}
+
+			errors.push(...unifyErrors(field, flattendedErrors))
 		}
 	}
 

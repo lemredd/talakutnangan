@@ -14,13 +14,35 @@ describe("Validator: validate", () => {
 			foo: 42
 		}
 		const rules: FieldRules = {
-			hello: [ required, string ],
-			foo: [ required, integer ]
+			hello: {
+				pipes: [ required, string ],
+				constraints: {}
+			},
+			foo: {
+				pipes: [ required, integer ],
+				constraints: {}
+			}
 		}
 
 		const sanitizeValue = await requester.runValidator(validate, rules, input)
 
 		expect(sanitizeValue).toStrictEqual(input)
+	})
+
+	it("can check missing inputs", async () => {
+		const mockValidator = jest.fn(value => value)
+		const input = {}
+		const rules: FieldRules = {
+			hello: {
+				pipes: [ mockValidator ],
+				constraints: {}
+			}
+		}
+
+		const sanitizeValue = await requester.runValidator(validate, rules, input)
+
+		expect(mockValidator).toHaveBeenCalled()
+		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({ maySkip: false, value: undefined })
 	})
 
 	it("cannot accept invalid input", async () => {
@@ -29,8 +51,14 @@ describe("Validator: validate", () => {
 			foo: 42
 		}
 		const rules: FieldRules = {
-			hello: [ required, integer ],
-			foo: [ required, string ]
+			hello: {
+				pipes: [ required, integer ],
+				constraints: {}
+			},
+			foo: {
+				pipes: [ required, string ],
+				constraints: {}
+			}
 		}
 
 		const errors = requester.runValidator(validate, rules, input)
