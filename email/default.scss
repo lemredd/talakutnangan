@@ -1,11 +1,55 @@
-body {
-	@apply flex flex-row flex-wrap justify-center align-center;
-}
 
 body > div {
 	flex: 1 0 100%;
 	margin: 1em 0.5em;
 }
 
+.box-column {
+	margin: auto;
+	width: 60%;
+	border: 3px solid black;
+	padding: 10px;
+  }
 
-h1 { text-align: center; }
+p {
+	text-align: center;
+	@apply flex justify-center;
+	display: inline-block;
+}
+
+.button{
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 5px 5px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	width: 100px;
+	cursor: pointer;
+  }
+
+button{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.note {
+	text-align: left;
+	padding: 10px;
+	width: 100px;
+}
+
+.notes {
+	text-align: left;
+	width: 620px;
+}
+
+h1 { 
+	text-align: center; 
+}
+
+
+
+
