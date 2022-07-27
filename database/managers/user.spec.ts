@@ -167,23 +167,18 @@ describe("Database: User Read Operations", () => {
 		const role = await (new RoleFactory()).insertOne()
 		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
-		const users = await manager.list({ criteria: "incomplete", page: 0 })
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(1)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(2)
-	})
-
-	it("can list users with complete profile", async () => {
-		const manager = new UserManager()
-		const completeUserProfile = await (new UserFactory()).insertOne()
-		// Create dummy incomplete profile
-		await (new UserFactory()).hasNoSignature().insertOne()
-		const role = await (new RoleFactory()).insertOne()
-		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({ criteria: "complete", page: 0 })
+		const users = await manager.list({
+			filter: {
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "*",
+				criteria: "incomplete",
+				existence: "exists"
+			},
+			sort: [],
+			page: 0
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
@@ -199,7 +194,18 @@ describe("Database: User Read Operations", () => {
 		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
 		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
 
-		const users = await manager.list({ criteria: "all", page: 0 })
+		const users = await manager.list({
+			filter: {
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "*",
+				criteria: "*",
+				existence: "exists"
+			},
+			sort: [],
+			page: 0
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(2)
@@ -216,6 +222,38 @@ describe("Database: User Update Operations", () => {
 		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
-		expect((await manager.findWithID(user.id))!.emailVerifiedAt).not.toBeNull()
+		expect((await User.findOne({ where: { id: user.id } }))!.emailVerifiedAt).not.toBeNull()
+	})
+})
+
+describe("Database: Miscellaneous operations", () => {
+	it("can get sortable columns", async () => {
+		// Include in test to alert in case there are new columns to decide whether to expose or not
+		const manager = new UserManager()
+
+		const sortableColumns = manager.sortableColumns
+
+		expect(sortableColumns).toStrictEqual([
+			"-admittedAt",
+			"-createdAt",
+			"-deletedAt",
+			"-email",
+			"-emailVerifiedAt",
+			"-id",
+			"-kind",
+			"-name",
+			"-signature",
+			"-updatedAt",
+			"admittedAt",
+			"createdAt",
+			"deletedAt",
+			"email",
+			"emailVerifiedAt",
+			"id",
+			"kind",
+			"name",
+			"signature",
+			"updatedAt"
+		])
 	})
 })

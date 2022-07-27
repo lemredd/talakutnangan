@@ -85,8 +85,11 @@ export type Pipe<T, U> = (currentState: T, constraints: U) => T
 export interface Serializable {
 	[key: string]:
 		| string
+		| string[]
 		| number
+		| number[]
 		| boolean
+		| boolean[]
 		| null
 		| Serializable[]
 		| Serializable
@@ -106,6 +109,51 @@ export type Day = typeof rawDays[number]
 /**
  * Shape of expected common filter
  */
-export interface Filter extends Serializable {
-	existence: "exists" | "archived" | "all"
+export type Filter = ExistenceFilter
+export type UserFilter =
+	& Filter
+	& DepartmentFilter
+	& RoleFilter
+	& KindFilter
+	& CriteriaFilter
+	& SlugFilter
+
+export interface ExistenceFilter extends Serializable {
+	filter: {
+		existence: "exists" | "archived" | "*"
+	}
+}
+
+export interface Sort extends Serializable {
+	sort: string[]
+}
+
+export interface SlugFilter extends Serializable {
+	filter: {
+		slug: string
+	}
+}
+
+export interface DepartmentFilter extends Serializable {
+	filter: {
+		department: "*"|string
+	}
+}
+
+export interface RoleFilter extends Serializable {
+	filter: {
+		role: "*"|string
+	}
+}
+
+export interface KindFilter extends Serializable {
+	filter: {
+		kind: "*"|UserKind
+	}
+}
+
+export interface CriteriaFilter extends Serializable {
+	filter: {
+		criteria: "*"|"incomplete"|"verified"|"unverified"
+	}
 }

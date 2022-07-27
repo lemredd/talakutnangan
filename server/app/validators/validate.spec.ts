@@ -29,6 +29,22 @@ describe("Validator: validate", () => {
 		expect(sanitizeValue).toStrictEqual(input)
 	})
 
+	it("can check missing inputs", async () => {
+		const mockValidator = jest.fn(value => value)
+		const input = {}
+		const rules: FieldRules = {
+			hello: {
+				pipes: [ mockValidator ],
+				constraints: {}
+			}
+		}
+
+		const sanitizeValue = await requester.runValidator(validate, rules, input)
+
+		expect(mockValidator).toHaveBeenCalled()
+		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({ maySkip: false, value: undefined })
+	})
+
 	it("cannot accept invalid input", async () => {
 		const input = {
 			hello: "world",
