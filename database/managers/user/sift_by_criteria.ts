@@ -1,4 +1,4 @@
-import type { Criteria } from "$/types/database"
+import type { CriteriaFilter } from "$/types/database"
 import type { FindOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -10,36 +10,41 @@ import Condition from "%/managers/helpers/condition"
  */
 export default function<T>(
 	currentState: FindOptions<T>,
-	constraints: { criteria?: Criteria, [key: string]: any }
+	constraints: CriteriaFilter
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (constraints.criteria !== undefined) {
-		const condition = new Condition()
+	const condition = new Condition()
 
-		switch(constraints.criteria) {
-			case "incomplete":
-				condition.or(
-					(new Condition()).is("emailVerifiedAt", null),
-					(new Condition()).is("signature", null)
-				)
-				break
-			case "complete":
-				condition.not("emailVerifiedAt", null)
-				condition.not("signature", null)
-				break
-			case "all":
-			default:
-				break
-		}
-
-		newState.where = {
-			...newState.where,
-			...condition.build()
-		}
-
-		Log.trace("pipeline", "applied criteria filter")
+	switch(constraints.filter.criteria) {
+		case "incomplete":
+			condition.or(
+				(new Condition()).is("emailVerifiedAt", null),
+				(new Condition()).is("signature", null)
+			)
+			break
+		case "unverified":
+			condition.is("emailVerifiedAt", null)
+			break
+		case "verified":
+			condition.not("emailVerifiedAt", null)
+			condition.not("signature", null)
+			break
+		case "*":
+		default:
+			break
 	}
+
+	if (newState.where === undefined) {
+		newState.where = {}
+	}
+
+	newState.where = {
+		...newState.where,
+		...condition.build()
+	}
+
+	Log.trace("pipeline", "sift by criteria")
 
 	return newState
 }

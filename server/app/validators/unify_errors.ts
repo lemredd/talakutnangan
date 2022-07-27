@@ -11,10 +11,7 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 				): string => `Unexpected error happened while validating ${field}`
 			}
 		} else {
-			return {
-				field: error.field,
-				messageMaker: error.messageMaker
-			}
+			return error
 		}
 	})
 }
