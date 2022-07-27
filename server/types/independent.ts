@@ -167,3 +167,8 @@ export interface FieldRules {
 export interface MetaValidationConstraints {
 	transformer?: Function
 }
+
+/**
+ * Indicates the error source types usually used for validation errors.
+ */
+export type SourceType = "parameter"|"pointer"|null

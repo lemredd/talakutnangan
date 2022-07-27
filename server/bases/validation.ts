@@ -1,9 +1,9 @@
 import { Validator } from "node-input-validator"
 
 import type { FieldRulesMaker } from "!/types/hybrid"
-import type { ValidationRules, ErrorPointer } from "!/types/independent"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import type { GeneralObject, SourceParameter, SourcePointer } from "$/types/server"
+import type { ValidationRules, ErrorPointer, SourceType } from "!/types/independent"
 import accessDeepPath from "!/helpers/access_deep_path"
 
 import Log from "$!/singletons/log"
@@ -91,5 +91,5 @@ export default abstract class extends Middleware {
 	/**
 	 * Type of source where the validation error comes from.
 	 */
-	get sourceType(): "pointer"|"parameter"|null { return "pointer" }
+	get sourceType(): SourceType { return "pointer" }
 }

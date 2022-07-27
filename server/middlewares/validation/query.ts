@@ -1,4 +1,5 @@
-import { Request } from "!/types/dependent"
+import type { Request } from "!/types/dependent"
+import type { SourceType } from "!/types/independent"
 import Validation from "!/bases/validation"
 
 export default class extends Validation {
@@ -6,5 +7,5 @@ export default class extends Validation {
 		return request.query
 	}
 
-	get sourceType(): "pointer"|"parameter"|null { return "parameter" }
+	get sourceType(): SourceType { return "parameter" }
 }
