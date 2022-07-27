@@ -176,6 +176,7 @@ describe("Database: User Read Operations", () => {
 				criteria: "incomplete",
 				existence: "exists"
 			},
+			sort: [],
 			page: 0
 		})
 
@@ -202,6 +203,7 @@ describe("Database: User Read Operations", () => {
 				criteria: "*",
 				existence: "exists"
 			},
+			sort: [],
 			page: 0
 		})
 
