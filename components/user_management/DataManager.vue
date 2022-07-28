@@ -92,9 +92,7 @@ onUpdated(() => {
 function filterByDropdown(e: Event) {
 	const target = e.target as HTMLSelectElement
 	if (resource.some(isResourceItemTypeUser)) {
-		const filteredByDropdown = (resource as User[]).filter(user => {
-			getUserRoleName(user) === target.value
-		})
+		const filteredByDropdown = (resource as User[]).filter(user => (getUserRoleName(user) === target.value))
 
 		console.log("Selected Filter", target.value)
 		console.log("Filtered List", filteredByDropdown)
