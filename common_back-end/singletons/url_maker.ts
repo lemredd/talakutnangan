@@ -5,6 +5,7 @@ import type { TemporaryURLInfo } from "$!/types/independent"
 import decrypt from "$!/auth/decrypt"
 import encrypt from "$!/auth/encrypt"
 import DecryptionError from "$!/errors/decryption"
+import specializePath from "$/helpers/specialize_path"
 
 export default class {
 	private static protocol: string
@@ -55,6 +56,12 @@ export default class {
 		const port = this.getResolvedPort()
 
 		return `${this.protocol}://${this.hostname}${port}${this.basePath}`
+	}
+
+	static makeURLFromPath(templatePath: string, variables: object = {}): string {
+		return this.removeRepeatingSlashes(`${this.makeBaseURL()}/${
+			specializePath(templatePath, variables)
+		}`)
 	}
 
 	static async makeEncryptedPath(path: string, data: string): Promise<string> {
