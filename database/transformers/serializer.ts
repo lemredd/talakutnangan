@@ -9,12 +9,12 @@ import {
 import type { Serializable } from "$/types/database"
 
 export default class Serializer {
-	private static build<T extends Model>(
+	private static build<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
-	): ContextBuilder<T, void> {
-		let builder = transform<T, void>()
+	): ContextBuilder<T, U> {
+		let builder = transform<T, U>()
 			.withInput(model as unknown as T)
 			.withTransformer(transformer)
 
@@ -25,9 +25,9 @@ export default class Serializer {
 		return builder
 	}
 
-	static serialize<T extends Model>(
+	static serialize<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
 	): Serializable {
 		const builder = Serializer.build(model, transformer, options)
@@ -35,14 +35,14 @@ export default class Serializer {
 		return builder.serialize() as Serializable
 	}
 
-	static makeContext<T extends Model>(
+	static makeContext<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
 	): RelationshipTransformerInfo<void, unknown> {
 		const builder = Serializer.build(model, transformer, options)
 
-		return builder.withIncluded(true).toContext() as RelationshipTransformerInfo<void, unknown>
+		return builder.withIncluded(true).toContext() as unknown as RelationshipTransformerInfo<void, unknown>
 	}
 
 	static whitelist<T extends Model>(model: T|T[]|null, attributes: string[]) {
