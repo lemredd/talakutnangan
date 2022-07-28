@@ -177,7 +177,10 @@ describe("Database: User Read Operations", () => {
 				existence: "exists"
 			},
 			sort: [],
-			page: 0
+			page: {
+				offset: 0,
+				limit: 3
+			}
 		})
 
 		expect(users).toHaveProperty("data")
@@ -204,7 +207,10 @@ describe("Database: User Read Operations", () => {
 				existence: "exists"
 			},
 			sort: [],
-			page: 0
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(users).toHaveProperty("data")
