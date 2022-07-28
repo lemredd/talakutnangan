@@ -187,7 +187,6 @@ describe("Database: Miscellaneous operations", () => {
 			"-id",
 			"-kind",
 			"-name",
-			"-signature",
 			"-updatedAt",
 			"admittedAt",
 			"createdAt",
@@ -197,7 +196,6 @@ describe("Database: Miscellaneous operations", () => {
 			"id",
 			"kind",
 			"name",
-			"signature",
 			"updatedAt"
 		])
 	})
