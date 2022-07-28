@@ -16,11 +16,6 @@ on:
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
-  pull_request:
-    types:
-      - reopened
-    branches:
-      - master
   pull_request_target:
     types:
       - opened
