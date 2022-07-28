@@ -17,7 +17,7 @@ export default class extends Transformer<Signature, { raw: boolean }> {
 
 		const safeObject = Serializer.whitelist(model, [ "id" ])
 
-		if (options.extra.raw) {
+		if (!options.extra.raw) {
 			if (model instanceof Array) {
 				safeObject.data = (safeObject.data as any[]).map(data => {
 					return {
