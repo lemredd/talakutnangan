@@ -44,8 +44,9 @@ describe("Validator pipe: nullable", () => {
 			field: "hello"
 		}
 
-		const maySkip = (await nullable(value, constraints)).maySkip
+		const state = await nullable(value, constraints)
 
-		expect(maySkip).toEqual(true)
+		expect(state.value).toBeNull()
+		expect(state.maySkip).toBeTruthy()
 	})
 })

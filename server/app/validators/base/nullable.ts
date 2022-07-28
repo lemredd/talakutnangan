@@ -20,6 +20,7 @@ export default async function(
 	if (state.value === undefined || state.value === null) {
 		if (constraints.nullable === undefined) {
 			state.maySkip = true
+			state.value = null
 		} else {
 			state.value = constraints.nullable.defaultValue
 		}
