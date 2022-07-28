@@ -15,6 +15,7 @@ export default class extends Transformer<User, void> {
 	constructor() {
 		super()
 		this.type = "user"
+		// TODO: Make URL to get the signature
 		this.relationships = {
 			roles: this.roles,
 			department: this.department,
@@ -27,12 +28,8 @@ export default class extends Transformer<User, void> {
 			"id",
 			"name",
 			"email",
-			"kind",
-			"signature"
+			"kind"
 		])
-
-		// TODO: Make URL to get the signature
-		safeObject.signature = ""
 
 		return safeObject
 	}
