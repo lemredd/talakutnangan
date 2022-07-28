@@ -147,11 +147,15 @@ describe("Database: Base Read Operations", () => {
 			sort: [ "name" ],
 			filter: {
 				existence: "exists"
+			},
+			page: {
+				offset: 0,
+				limit: 3
 			}
 		})
 
 		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(bases.length)
+		expect(users.data).toHaveLength(3)
 	})
 
 	it("can search with pipelines", async() => {
@@ -163,7 +167,10 @@ describe("Database: Base Read Operations", () => {
 			filter: {
 				existence: "exists"
 			},
-			limit: 5
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(users).toHaveProperty("data")
