@@ -68,6 +68,56 @@ describe("Database: User Authentication Operations", () => {
 	})
 })
 
+describe("Database: User read operations", () => {
+	it("can search user with matching query", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const incompleteName = user.name.slice(0, user.name.length - 2)
+
+		const users = await manager.list({
+			filter: {
+				slug: incompleteName,
+				department: "*",
+				role: "*",
+				kind: "*",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+	})
+
+	it("cannot search user with non-matching query", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const incorrectName = user.name + "133"
+
+		const users = await manager.list({
+			filter: {
+				slug: incorrectName,
+				department: "*",
+				role: "*",
+				kind: "*",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(0)
+	})
+})
+
 describe("Database: User Create Operations", () => {
 	it("can create students in bulk", async () => {
 		const roles = await new RoleFactory().insertMany(3)
