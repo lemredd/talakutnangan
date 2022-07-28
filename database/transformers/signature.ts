@@ -1,16 +1,20 @@
+import type { SignatureTransformerOptions } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 import Signature from "%/models/signature"
 import Transformer from "%/transformers/base"
 import URLMaker from "$!/singletons/url_maker"
 import Serializer from "%/transformers/serializer"
 
-export default class extends Transformer<Signature, { raw: boolean }> {
+export default class extends Transformer<Signature, SignatureTransformerOptions> {
 	constructor() {
 		super()
 		this.type = "signature"
 	}
 
-	transform(model: Signature|Signature[], options: TransformerOptions<{ raw: boolean }>): AttributesObject {
+	transform(
+		model: Signature|Signature[],
+		options: TransformerOptions<SignatureTransformerOptions>
+	): AttributesObject {
 		if (options.extra === undefined) {
 			options.extra = { raw: false }
 		}
