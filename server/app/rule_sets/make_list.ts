@@ -20,7 +20,7 @@ export default function(className: BaseManagerClass, extraFilters: FieldRules): 
 					existence: {
 						pipes: [ nullable, string, oneOf ],
 						constraints: {
-							nullable: { defaultValue: "*" },
+							nullable: { defaultValue: "exists" },
 							oneOf: { values: [ "*", "exists", "archived" ] }
 						}
 					}
