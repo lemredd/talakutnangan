@@ -6,15 +6,6 @@ on:
       - 'shareable/**'
       - '.github/workflows/shareable.yml'
       - 'jest.share.config.json'
-  pull_request:
-    types:
-      - reopened
-    branches:
-      - master
-    paths:
-      - 'shareable/**'
-      - '.github/workflows/shareable.yml'
-      - 'jest.share.config.json'
   pull_request_target:
     types:
       - opened
@@ -24,8 +15,6 @@ on:
       - master
     paths:
       - 'shareable/**'
-      - 'common_front-end/**'
-      - 'common_back-end/**'
       - '.github/workflows/shareable.yml'
       - 'jest.share.config.json'
 
