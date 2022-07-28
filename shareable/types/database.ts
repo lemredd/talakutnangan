@@ -103,9 +103,20 @@ const rawDays = [ ...days ] as const
 export type Day = typeof rawDays[number]
 
 /**
- * Shape of expected common filter
+ * Expected shape of the common page options
+ */
+export interface Page {
+	page: {
+		offset: number,
+		limit: number
+	}
+}
+
+/**
+ * Shape of expected common filter options
  */
 export type Filter = ExistenceFilter
+
 export type UserFilter =
 	& Filter
 	& DepartmentFilter
@@ -119,6 +130,9 @@ export interface ExistenceFilter extends Serializable {
 	}
 }
 
+/**
+ * Expected shape of the common sort options
+ */
 export interface Sort extends Serializable {
 	sort: string[]
 }
