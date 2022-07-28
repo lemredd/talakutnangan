@@ -28,15 +28,7 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 					id: user.id,
 					attributes: {
 						name: newUser.name,
-						email: newUser.email,
-						signature: {
-							buffer: user.signature,
-							info: {
-								filename: "signature.png",
-								encoding: "utf-8",
-								mimeType: "image/png"
-							}
-						}
+						email: newUser.email
 					}
 				}
 			}
@@ -61,15 +53,7 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 					id: user.id,
 					attributes: {
 						name: newUser.name,
-						email: "random",
-						signature: {
-							buffer: newUser.signature,
-							info: {
-								filename: "signature.png",
-								encoding: "utf-8",
-								mimeType: "image/png"
-							}
-						}
+						email: "random"
 					}
 				}
 			}
