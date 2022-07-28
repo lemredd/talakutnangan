@@ -58,7 +58,7 @@ export default function(className: BaseManagerClass, extraFilters: FieldRules): 
 					limit: {
 						pipes: [ nullable, integer, range ],
 						constraints: {
-							nullable: { defaultValue: 1 },
+							nullable: { defaultValue: process.env.DATABASE_MAX_SELECT || 10 },
 							range: { minimum: 1 }
 						}
 					}
