@@ -13,7 +13,7 @@ import User from "%/models/user"
 	timestamps: true,
 	paranoid: true
 })
-export default class StudentDetail extends Model {
+export default class Signature extends Model {
 	@ForeignKey(() => User)
 	@Column({
 		allowNull: false
