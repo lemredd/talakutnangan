@@ -10,9 +10,11 @@ on:
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back_ci.config.json'
-  pull_request:
+  pull_request_target:
     types:
+      - opened
       - reopened
+      - review_requested
     branches:
       - master
     paths:

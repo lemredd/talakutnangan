@@ -14,8 +14,10 @@ describe("Database: Role read operations", () => {
 				existence: "exists"
 			},
 			sort: [],
-			page: 0,
-			limit: 1
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")
@@ -33,8 +35,10 @@ describe("Database: Role read operations", () => {
 				existence: "exists"
 			},
 			sort: [],
-			page: 0,
-			limit: 1
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")
