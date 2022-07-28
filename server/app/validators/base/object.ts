@@ -54,7 +54,7 @@ export default async function(
 	} else {
 		throw {
 			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be an array.`
+			messageMaker: (field: string) => `Field "${field}" must be an object.`
 		}
 	}
 }

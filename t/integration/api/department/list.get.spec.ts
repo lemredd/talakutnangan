@@ -27,7 +27,8 @@ describe("GET /api/deparment/list", () => {
 		})
 
 		const response = await App.request
-			.get("/api/department/list?sort=id")
+			.get("/api/department/list")
+			.query({ sort: "id" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
@@ -51,7 +52,8 @@ describe("GET /api/deparment/list", () => {
 		})
 
 		const response = await App.request
-			.get("/api/department/list?sort=-fullName")
+			.get("/api/department/list")
+			.query({ sort: "-fullName" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
