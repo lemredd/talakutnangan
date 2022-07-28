@@ -46,6 +46,7 @@ export default function(className: BaseManagerClass, extraFilters: FieldRules): 
 		page: {
 			pipes: [ nullable, object ],
 			constraints: {
+				nullable: { defaultValue: {} },
 				object: {
 					offset: {
 						pipes: [ nullable, integer, range ],
