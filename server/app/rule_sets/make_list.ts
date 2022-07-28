@@ -58,7 +58,7 @@ export default function(className: BaseManagerClass, extraFilters: FieldRules): 
 					limit: {
 						pipes: [ nullable, integer, range ],
 						constraints: {
-							nullable: { defaultValue: 0 },
+							nullable: { defaultValue: 1 },
 							range: { minimum: 1 }
 						}
 					}
