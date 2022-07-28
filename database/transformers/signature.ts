@@ -7,7 +7,7 @@ import Serializer from "%/transformers/serializer"
 export default class extends Transformer<Signature, { raw: boolean }> {
 	constructor() {
 		super()
-		this.type = "role"
+		this.type = "signature"
 	}
 
 	transform(model: Signature|Signature[], options: TransformerOptions<{ raw: boolean }>): AttributesObject {
