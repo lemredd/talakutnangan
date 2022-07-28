@@ -14,6 +14,7 @@
 <style scoped lang="scss">
 .controls {
 	@apply flex items-center justify-between;
+	margin-top: 1em;
 
 	button {
 		@apply dark:bg-dark-100;

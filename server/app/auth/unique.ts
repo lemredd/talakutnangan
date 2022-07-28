@@ -24,7 +24,11 @@ export default async function(
 		try {
 			// TODO: Get transaction manager from cache
 			const manager = new rawManager()
-			const foundModel = await manager.findOneOnColumn(columnName, value)
+			const foundModel = await manager.findOneOnColumn(columnName, value, {
+				filter: {
+					existence: "*"
+				}
+			})
 			const id = +accessDeepPath(validator.inputs, IDPath)
 
 			// TODO: Store found model in cache
@@ -32,7 +36,7 @@ export default async function(
 				!Number.isNaN(id) && (foundModel.data as any).id === id
 			)
 		} catch(error) {
-			throw new Error("Manager cannot be instantiated")
+			throw new Error("Manager cannot be instantiated in unique rule")
 		}
 	} else {
 		// Skip the validation if the field does not exists

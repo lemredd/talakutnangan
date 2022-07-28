@@ -16,9 +16,16 @@ export default class RequestEnvironment {
 		return environment === Environment.UnitTest || environment === Environment.IntegrationTest
 	}
 
+	static get isNotOnProduction(): boolean {
+		const environment = this.environment
+		return environment !== Environment.Production
+	}
+
 	get environment(): Environment { return getEnvironment() }
 
 	get status() { return StatusCodes }
 
 	get isOnTest(): boolean { return RequestEnvironment.isOnTest }
+
+	get isNotOnProduction(): boolean { return RequestEnvironment.isNotOnProduction }
 }

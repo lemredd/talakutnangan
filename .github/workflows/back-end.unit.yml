@@ -9,6 +9,7 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -21,6 +22,7 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back_ci.config.json'
   pull_request_target:
     types:
       - opened
@@ -35,9 +37,10 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back_ci.config.json'
 
 jobs:
-  server_unit_tests:
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -54,27 +57,6 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:server
-      shell: pwsh
-      timeout-minutes: 3
-
-  database_unit_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-        restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
-    - run: npm install
-    - run: ./execute.ps1 -test unit:database
+    - run: ./execute.ps1 -test unit:back_ci
       shell: pwsh
       timeout-minutes: 3

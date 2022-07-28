@@ -9,6 +9,7 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+      - 'jest.front_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -21,6 +22,7 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+      - 'jest.front_ci.config.json'
   pull_request_target:
     types:
       - opened
@@ -35,9 +37,10 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+      - 'jest.front_ci.config.json'
 
 jobs:
-  ui_unit_tests:
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -54,6 +57,6 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:ui
+    - run: ./execute.ps1 -test unit:front_ci
       shell: pwsh
       timeout-minutes: 3

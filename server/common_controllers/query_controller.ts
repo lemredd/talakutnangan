@@ -1,3 +1,5 @@
+import type { FieldRulesMaker } from "!/types/hybrid"
+
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
 import QueryValidation from "!/middlewares/validation/query"
@@ -10,9 +12,14 @@ export default abstract class extends Controller {
 
 	get validations(): Validation[] {
 		return [
-			new QueryValidation(this.queryValidationRules)
+			new QueryValidation(
+				this.makeQueryRuleGenerator()
+				|| this.queryValidationRules
+			)
 		]
 	}
+
+	makeQueryRuleGenerator(): FieldRulesMaker|null { return null }
 
 	abstract get queryValidationRules(): object;
 }

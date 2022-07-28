@@ -25,8 +25,9 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 	const manager = new constraints.manager.className()
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
-			existence: "all"
-		}
+			existence: "*"
+		},
+		sort: []
 	})
 
 	// TODO: Store found model in cache

@@ -9,8 +9,6 @@ import type {
 import User from "%/models/user"
 import Database from "~/set-ups/database"
 import UserFactory from "~/factories/user"
-import limit from "%/managers/helpers/limit"
-import existence from "%/managers/helpers/existence"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
@@ -42,12 +40,10 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, any>[] {
 		return [
-			existence,
-			this.customReadPipe
+			this.customReadPipe,
+			...super.singleReadPipeline
 		].filter(pipe => pipe !== null) as Pipe<FindAndCountOptions<User>, any>[]
 	}
-
-	get listPipeline(): Pipe<FindAndCountOptions<User>, any>[] { return [ limit ] }
 
 	get model(): ModelCtor<User> { return User }
 
@@ -59,6 +55,10 @@ class MockUserManager extends BaseManager<User, RawUser> {
 	) {
 		super(transaction)
 		this.customReadPipe = customReadPipe
+	}
+
+	protected get exposableColumns(): string[] {
+		return [ "id", "name", "email" ]
 	}
 }
 
@@ -77,7 +77,12 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		const base = await (new UserFactory()).insertOne()
 
-		const foundUser = await manager.findOneOnColumn("name", base.name)
+		const foundUser = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
@@ -124,7 +129,12 @@ describe("Database: Base Read Operations", () => {
 	it("cannot find non-existing base with custom column", async () => {
 		const manager = new MockUserManager()
 
-		const foundUser = await manager.findOneOnColumn("name", "Hello")
+		const foundUser = await manager.findOneOnColumn("name", "Hello", {
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(foundUser.data).toBeNull()
 	})
@@ -133,7 +143,12 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		const bases = await (new UserFactory()).insertMany(5)
 
-		const users = await manager.list({})
+		const users = await manager.list({
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			}
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(bases.length)
@@ -143,7 +158,13 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		await (new UserFactory()).insertMany(10)
 
-		const users = await manager.list({ limit: 5 })
+		const users = await manager.list({
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			},
+			limit: 5
+		})
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(5)
@@ -154,6 +175,7 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -169,6 +191,7 @@ describe("Database: Base Read Operations", () => {
 		await base.destroy({ force: false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -184,6 +207,7 @@ describe("Database: Base Read Operations", () => {
 		await base.destroy({ force: false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
 			filter: {
 				existence: "archived"
 			}
@@ -198,6 +222,7 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
 			filter: {
 				existence: "archived"
 			}
@@ -407,5 +432,22 @@ describe("Database: Error handling down errors", () => {
 		const id = 0
 
 		expect(manager.findWithID(id)).rejects.toThrow(DatabaseError)
+	})
+})
+
+describe("Database: Miscellaneous operations", () => {
+	it("can get sortable columns", async () => {
+		const manager = new MockUserManager()
+
+		const sortableColumns = manager.sortableColumns
+
+		expect(sortableColumns).toEqual([
+			"-email",
+			"-id",
+			"-name",
+			"email",
+			"id",
+			"name"
+		])
 	})
 })
