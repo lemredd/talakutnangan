@@ -43,7 +43,7 @@ describe("GET /api/user/list", () => {
 
 		const response = await App.request
 			.get("/api/user/list")
-			.query({ filter: { existence: "exists" } })
+			.query({ filter: { existence: "exists", kind: "student" } })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
