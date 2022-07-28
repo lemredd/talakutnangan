@@ -16,25 +16,6 @@ on:
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
-  pull_request:
-    types:
-      - reopened
-    branches:
-      - master
-    paths:
-      - 'shareable/**'
-      - 'common_front-end/**'
-      - 'common_back-end/**'
-      - 'database/**'
-      - 'server/**'
-      - 't/helpers/**'
-      - 't/integration/api/**'
-      - 't/integration/t/**'
-      - 'renderer/**'
-      - 'pages/**'
-      - 'components/**'
-      - '.github/workflows/back-end.intg.yml'
-      - 'jest.back.intg.config.json'
   pull_request_target:
     types:
       - opened

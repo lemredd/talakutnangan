@@ -10,19 +10,6 @@ on:
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
       - 'jest.front_ci.config.json'
-  pull_request:
-    types:
-      - reopened
-    branches:
-      - master
-    paths:
-      - 'shareable/**'
-      - 'common_front-end/**'
-      - 'components/**'
-      - 'pages/**'
-      - 't/helpers/**'
-      - '.github/workflows/front-end.yml'
-      - 'jest.front_ci.config.json'
   pull_request_target:
     types:
       - opened

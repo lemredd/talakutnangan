@@ -10,19 +10,6 @@ on:
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back_ci.config.json'
-  pull_request:
-    types:
-      - reopened
-    branches:
-      - master
-    paths:
-      - 'shareable/**'
-      - 'common_back-end/**'
-      - 'database/**'
-      - 'server/**'
-      - 't/helpers/**'
-      - '.github/workflows/back-end.unit.yml'
-      - 'jest.back_ci.config.json'
   pull_request_target:
     types:
       - opened
