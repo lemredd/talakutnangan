@@ -33,6 +33,26 @@ on:
       - 'pages/**'
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - review_requested
+    branches:
+      - master
+    paths:
+      - 'shareable/**'
+      - 'common_front-end/**'
+      - 'common_back-end/**'
+      - 'database/**'
+      - 'server/**'
+      - 't/helpers/**'
+      - 't/integration/api/**'
+      - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+      - '.github/workflows/back-end.intg.yml'
 
 env:
   EMAIL_HOST: ${{ secrets.EMAIL_HOST }}

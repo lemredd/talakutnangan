@@ -21,6 +21,20 @@ on:
       - 'server/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - review_requested
+    branches:
+      - master
+    paths:
+      - 'shareable/**'
+      - 'common_back-end/**'
+      - 'database/**'
+      - 'server/**'
+      - 't/helpers/**'
+      - '.github/workflows/back-end.unit.yml'
 
 jobs:
   server_unit_tests:

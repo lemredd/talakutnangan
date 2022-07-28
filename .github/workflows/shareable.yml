@@ -17,6 +17,18 @@ on:
       - 'common_front-end/**'
       - 'common_back-end/**'
       - '.github/workflows/shareable.yml'
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - review_requested
+    branches:
+      - master
+    paths:
+      - 'shareable/**'
+      - 'common_front-end/**'
+      - 'common_back-end/**'
+      - '.github/workflows/shareable.yml'
 
 jobs:
   shareable_unit_tests:

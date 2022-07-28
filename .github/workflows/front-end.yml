@@ -21,6 +21,20 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - review_requested
+    branches:
+      - master
+    paths:
+      - 'shareable/**'
+      - 'common_front-end/**'
+      - 'components/**'
+      - 'pages/**'
+      - 't/helpers/**'
+      - '.github/workflows/front-end.yml'
 
 jobs:
   ui_unit_tests:
