@@ -116,6 +116,29 @@ describe("Database: User read operations", () => {
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(0)
 	})
+
+	it("can get unreachable employees", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).beUnreachableEmployee().insertOne()
+
+		const users = await manager.list({
+			filter: {
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "unreachable_employee",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+	})
 })
 
 describe("Database: User Create Operations", () => {
