@@ -1,19 +1,19 @@
-import type { RawRole } from "$/types/database"
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneralObject } from "$/types/server"
+import type { RawSignature } from "$/types/database"
 import type { SignatureTransformerOptions } from "%/types/independent"
 
-import Role from "%/models/signature"
 import BaseManager from "%/managers/base"
-import Signature from "%/transformers/signature"
+import Signature from "%/models/signature"
+import SignatureTransformer from "%/transformers/signature"
 
 export default class extends BaseManager<
-	Role,
-	RawRole,
+	Signature,
+	RawSignature,
 	GeneralObject,
 	SignatureTransformerOptions
 > {
-	get model(): ModelCtor<Role> { return Role }
+	get model(): ModelCtor<Signature> { return Signature }
 
-	get transformer(): Signature { return new Signature() }
+	get transformer(): SignatureTransformer { return new SignatureTransformer() }
 }
