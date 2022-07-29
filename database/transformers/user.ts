@@ -117,7 +117,7 @@ export default class extends Transformer<User, void> {
 				if (model.studentDetail !== null) {
 					addPasswordStatus(model as User, transformedData)
 				} else if(!RequestEnvironment.isOnTest && RequestEnvironment.isNotOnProduction) {
-					throw new DatabaseError(`Student account (${
+					throw new DatabaseError(`Student account (user id: ${
 						model.id
 					}) has no student detail to base the default password`)
 				}
