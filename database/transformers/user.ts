@@ -8,6 +8,7 @@ import User from "%/models/user"
 import Transformer from "%/transformers/base"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
+import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
 import StudentDetailTransformer from "%/transformers/student_detail"
 
@@ -18,7 +19,8 @@ export default class extends Transformer<User, void> {
 		this.relationships = {
 			roles: this.roles,
 			department: this.department,
-			studentDetail: this.studentDetail
+			studentDetail: this.studentDetail,
+			signature: this.signature
 		}
 	}
 
@@ -27,12 +29,8 @@ export default class extends Transformer<User, void> {
 			"id",
 			"name",
 			"email",
-			"kind",
-			"signature"
+			"kind"
 		])
-
-		// TODO: Make URL to get the signature
-		safeObject.signature = ""
 
 		return safeObject
 	}
@@ -43,6 +41,10 @@ export default class extends Transformer<User, void> {
 
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(model.roles, new RoleTransformer(), options)
+	}
+
+	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(model.signature || null, new SignatureTransformer(), options)
 	}
 
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {

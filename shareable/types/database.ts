@@ -38,10 +38,6 @@ export interface RawPost {
 	roleID?: Role,
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ] as const
-
-export type Criteria = typeof rawCriteria[number]
-
 /**
  * Used to receive raw validated department details.
  */
@@ -126,7 +122,6 @@ export type UserFilter =
 	& DepartmentFilter
 	& RoleFilter
 	& KindFilter
-	& CriteriaFilter
 	& SlugFilter
 
 export interface ExistenceFilter extends Serializable {

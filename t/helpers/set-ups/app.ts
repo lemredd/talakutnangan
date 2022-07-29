@@ -44,7 +44,7 @@ export default class {
 			role = await new RoleFactory().insertOne()
 		}
 
-		let userFactory = new UserFactory().attach(role)
+		let userFactory = new UserFactory().attach(role).beUnreachableEmployee()
 		if (factoryModificationCallback !== null) {
 			userFactory = factoryModificationCallback(userFactory)
 		}

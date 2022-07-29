@@ -7,14 +7,15 @@ import RoleFactory from "~/factories/role"
 import compare from "$!/auth/compare"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
+import SignatureFactory from "~/factories/signature"
 import DepartmentFactory from "~/factories/department"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 describe("Database: User Authentication Operations", () => {
 	it("can find user using credentials", async () => {
-		const role = await (new RoleFactory()).insertOne()
+		const role = await new RoleFactory().insertOne()
 		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		await AttachedRole.create({ userID: user.id, roleID: role.id })
 		const { email, password } = user
 
@@ -30,7 +31,7 @@ describe("Database: User Authentication Operations", () => {
 
 	it("cannot search user with incorrect credentials", async () => {
 		const manager = new UserManager()
-		const user = await (new UserFactory()).makeOne()
+		const user = await new UserFactory().makeOne()
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
@@ -40,7 +41,7 @@ describe("Database: User Authentication Operations", () => {
 
 	it("can reset password of existing user", async () => {
 		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		const newPassword = "12345678"
 
 		const isResetSuccess = await manager.resetPassword(user.id, newPassword)
@@ -54,7 +55,7 @@ describe("Database: User Authentication Operations", () => {
 
 	it("can reset password of non-existing user", async () => {
 		const manager = new UserManager()
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		const newPassword = "12345678"
 
 		const isResetSuccess = await manager.resetPassword(user.id+1, newPassword)
@@ -67,12 +68,85 @@ describe("Database: User Authentication Operations", () => {
 	})
 })
 
+describe("Database: User read operations", () => {
+	it("can search user with matching query", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const incompleteName = user.name.slice(0, user.name.length - 2)
+
+		const users = await manager.list({
+			filter: {
+				slug: incompleteName,
+				department: "*",
+				role: "*",
+				kind: "*",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+	})
+
+	it("cannot search user with non-matching query", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).insertOne()
+		const incorrectName = user.name + "133"
+
+		const users = await manager.list({
+			filter: {
+				slug: incorrectName,
+				department: "*",
+				role: "*",
+				kind: "*",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(0)
+	})
+
+	it("can get unreachable employees", async () => {
+		const manager = new UserManager()
+		const user = await (new UserFactory()).beUnreachableEmployee().insertOne()
+
+		const users = await manager.list({
+			filter: {
+				slug: "",
+				department: "*",
+				role: "*",
+				kind: "unreachable_employee",
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+	})
+})
+
 describe("Database: User Create Operations", () => {
 	it("can create students in bulk", async () => {
-		const roles = await (new RoleFactory()).insertMany(3)
+		const roles = await new RoleFactory().insertMany(3)
 		const departments = await (new DepartmentFactory()).insertMany(2)
-		const fakeUserA = await ((new UserFactory()).in(departments[0])).makeOne()
-		const fakeUserB = await ((new UserFactory()).in(departments[1])).makeOne()
+		const fakeUserA = await (new UserFactory().in(departments[0])).makeOne()
+		const fakeUserB = await (new UserFactory().in(departments[1])).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForStudents = {
 			kind: "student",
@@ -112,11 +186,11 @@ describe("Database: User Create Operations", () => {
 	})
 
 	it("can create reachable employees in bulk", async () => {
-		const roles = await (new RoleFactory()).insertMany(2)
+		const roles = await new RoleFactory().insertMany(2)
 		const departments = await (new DepartmentFactory()).insertMany(3)
-		const fakeUserA = await ((new UserFactory()).in(departments[0])).makeOne()
-		const fakeUserB = await ((new UserFactory()).in(departments[1])).makeOne()
-		const fakeUserC = await ((new UserFactory()).in(departments[2])).makeOne()
+		const fakeUserA = await (new UserFactory().in(departments[0])).makeOne()
+		const fakeUserB = await (new UserFactory().in(departments[1])).makeOne()
+		const fakeUserC = await (new UserFactory().in(departments[2])).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
 			kind: "reachable_employee",
@@ -158,72 +232,10 @@ describe("Database: User Create Operations", () => {
 	})
 })
 
-describe("Database: User Read Operations", () => {
-	it("can list users with incomplete profile", async () => {
-		const manager = new UserManager()
-		const incompleteUserProfile = await (new UserFactory()).hasNoSignature().insertOne()
-		// Create dummy complete profile to see if it would return two records or not
-		await (new UserFactory()).insertOne()
-		const role = await (new RoleFactory()).insertOne()
-		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({
-			filter: {
-				slug: "",
-				department: "*",
-				role: "*",
-				kind: "*",
-				criteria: "incomplete",
-				existence: "exists"
-			},
-			sort: [],
-			page: {
-				offset: 0,
-				limit: 3
-			}
-		})
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(1)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(2)
-	})
-
-	it("can list all users", async () => {
-		const manager = new UserManager()
-		const completeUserProfile = await (new UserFactory()).insertOne()
-		const incompleteUserProfile =await (new UserFactory()).hasNoSignature().insertOne()
-		const role = await (new RoleFactory()).insertOne()
-		await AttachedRole.create({ userID: completeUserProfile.id, roleID: role.id })
-		await AttachedRole.create({ userID: incompleteUserProfile.id, roleID: role.id })
-
-		const users = await manager.list({
-			filter: {
-				slug: "",
-				department: "*",
-				role: "*",
-				kind: "*",
-				criteria: "*",
-				existence: "exists"
-			},
-			sort: [],
-			page: {
-				offset: 0,
-				limit: 5
-			}
-		})
-
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(2)
-		expect(users).toHaveProperty("included")
-		expect(users.included).toHaveLength(3)
-	})
-})
-
 describe("Database: User Update Operations", () => {
 	it("can verify user", async () => {
 		const manager = new UserManager()
-		const user = await ((new UserFactory()).notVerified()).insertOne()
+		const user = await (new UserFactory().notVerified()).insertOne()
 
 		const verifiedUserCount = await manager.verify(user.id)
 
@@ -248,7 +260,6 @@ describe("Database: Miscellaneous operations", () => {
 			"-id",
 			"-kind",
 			"-name",
-			"-signature",
 			"-updatedAt",
 			"admittedAt",
 			"createdAt",
@@ -258,7 +269,6 @@ describe("Database: Miscellaneous operations", () => {
 			"id",
 			"kind",
 			"name",
-			"signature",
 			"updatedAt"
 		])
 	})

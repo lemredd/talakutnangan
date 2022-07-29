@@ -30,10 +30,9 @@ import UserTransformer from "%/transformers/user"
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
 import Condition from "%/managers/helpers/condition"
+import siftBySlug from "%/managers/user/sift_by_slug"
 import siftByRole from "%/managers/user/sift_by_role"
 import siftByKind from "%/managers/user/sift_by_kind"
-import searchName from "%/managers/helpers/search_name"
-import siftByCriteria from "%/managers/user/sift_by_criteria"
 import siftByDepartment from "%/managers/user/sift_by_department"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
@@ -53,10 +52,9 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 
 	get listPipeline(): Pipe<FindAndCountOptions<User>, UserFilter>[] {
 		return [
-			searchName,
+			siftBySlug,
 			siftByRole,
 			siftByKind,
-			siftByCriteria,
 			siftByDepartment,
 			includeRoleAndDepartment,
 			...super.listPipeline
