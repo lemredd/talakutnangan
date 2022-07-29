@@ -1,5 +1,6 @@
 import type { Serializable } from "$/types/database"
 import type { Response } from "$@/types/independent"
+import type { CommonQueryParameters } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$/helpers/request_environment"
@@ -9,7 +10,7 @@ import specializedPath from "$@/helpers/specialize_path"
  * General class to isolate the third-party library used for communicate from the rest of the
  * client-side code.
  */
-export default class extends RequestEnvironment {
+export default class Fetcher<T extends CommonQueryParameters = CommonQueryParameters> extends RequestEnvironment {
 	private static basePath: string = ""
 	protected static type: string = ""
 
@@ -27,7 +28,7 @@ export default class extends RequestEnvironment {
 		})
 	}
 
-	static list(parameters: Serializable): Promise<Response> {
+	static list(parameters: CommonQueryParameters): Promise<Response> {
 		return this.getJSON(`${this.type}/list`)
 	}
 
