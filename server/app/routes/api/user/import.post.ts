@@ -7,7 +7,7 @@ import type {
 	RawBulkDataForStudent,
 	RawBulkDataForEmployee
 } from "%/types/independent"
-import extractEmailUsername from "!/helpers/extract_email_username"
+import extractEmailUsername from "$!/helpers/extract_email_username"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
