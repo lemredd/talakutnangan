@@ -1,15 +1,21 @@
+import type { UserProfile } from "$/types/common_front-end"
+import type { Serializable } from "$/types/database"
 import type {
 	AttributesObject,
 	TransformerOptions,
 	RelationshipTransformerInfo
 } from "%/types/dependent"
 
+import cloneDeep from "lodash.clonedeep"
+
 import User from "%/models/user"
 import Transformer from "%/transformers/base"
+import deserialize from "$/helpers/deserialize"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
+import makeDefaultPassword from "$!/helpers/make_default_password"
 import StudentDetailTransformer from "%/transformers/student_detail"
 
 export default class extends Transformer<User, void> {
@@ -85,5 +91,25 @@ export default class extends Transformer<User, void> {
 			this.subtransformers["signature"].transformer as SignatureTransformer,
 			options
 		)
+	}
+
+	finalizeTransform(model: User|User[], transformedData: Serializable): Serializable {
+		const postTransformedData = super.finalizeTransform(model, transformedData)
+		const addPasswordStatus = (model: User, data: Serializable) => {
+			const userProfile = deserialize(cloneDeep(data)) as UserProfile
+			const defaultPassword = makeDefaultPassword(userProfile)
+			const hasDefaultPassword = model.password === defaultPassword
+
+			data.meta = {
+				hasDefaultPassword
+			}
+		}
+
+		// Only add password status for individual resource
+		if (!(postTransformedData.data instanceof Array)) {
+			addPasswordStatus(model as User, transformedData)
+		}
+
+		return postTransformedData
 	}
 }
