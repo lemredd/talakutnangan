@@ -171,3 +171,8 @@ export interface CriteriaFilter extends Serializable {
 		criteria: "*"|"incomplete"|"verified"|"unverified"
 	}
 }
+
+export type CommonQueryParameters =
+	& Page
+	& Sort
+	& Filter
