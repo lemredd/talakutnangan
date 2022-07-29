@@ -4,6 +4,9 @@ import type { Serializable } from "$/types/database"
 import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
+	/**
+	 * The key should be the type of resource being transformed
+	 */
 	protected subtransformers: GeneralObject<Transformer<any, any>> = {}
 
 	finalizeTransform(transformedData: Serializable): Serializable {

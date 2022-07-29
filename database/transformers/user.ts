@@ -26,7 +26,7 @@ export default class extends Transformer<User, void> {
 
 		this.subtransformers = {
 			department: new DepartmentTransformer(),
-			roles: new RoleTransformer(),
+			role: new RoleTransformer(),
 			studentDetail: new StudentDetailTransformer(),
 			signature: new SignatureTransformer(),
 		}
@@ -54,7 +54,7 @@ export default class extends Transformer<User, void> {
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.roles,
-			this.subtransformers.roles as RoleTransformer,
+			this.subtransformers.role as RoleTransformer,
 			options
 		)
 	}
