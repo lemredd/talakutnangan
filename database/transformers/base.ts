@@ -1,3 +1,9 @@
-import { Transformer } from "jsonapi-fractal"
+import type { Serializable } from "$/types/database"
 
-export default Transformer
+import { Transformer as BaseTransformer } from "jsonapi-fractal"
+
+export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
+	finalizeTransform(transformedData: Serializable): Serializable {
+		return transformedData
+	}
+}
