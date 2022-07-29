@@ -18,10 +18,22 @@ export default class extends Transformer<User, void> {
 		this.type = "user"
 
 		this.subtransformers = {
-			department: new DepartmentTransformer(),
-			role: new RoleTransformer(),
-			"student_detail": new StudentDetailTransformer(),
-			signature: new SignatureTransformer(),
+			department: {
+				attribute: "department",
+				transformer: new DepartmentTransformer()
+			},
+			role: {
+				attribute: "role",
+				transformer: new RoleTransformer()
+			},
+			"student_detail": {
+				attribute: "studentDetail",
+				transformer: new StudentDetailTransformer()
+			},
+			signature: {
+				attribute: "signature",
+				transformer: new SignatureTransformer()
+			}
 		}
 
 		this.relationships = {
@@ -46,7 +58,7 @@ export default class extends Transformer<User, void> {
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.department,
-			this.subtransformers["department"] as DepartmentTransformer,
+			this.subtransformers["department"].transformer as DepartmentTransformer,
 			options
 		)
 	}
@@ -54,7 +66,7 @@ export default class extends Transformer<User, void> {
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.roles,
-			this.subtransformers["role"] as RoleTransformer,
+			this.subtransformers["role"].transformer as RoleTransformer,
 			options
 		)
 	}
@@ -62,7 +74,7 @@ export default class extends Transformer<User, void> {
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.studentDetail || null,
-			this.subtransformers["student_detail"] as StudentDetailTransformer,
+			this.subtransformers["student_detail"].transformer as StudentDetailTransformer,
 			options
 		)
 	}
@@ -70,7 +82,7 @@ export default class extends Transformer<User, void> {
 	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.signature || null,
-			this.subtransformers["signature"] as SignatureTransformer,
+			this.subtransformers["signature"].transformer as SignatureTransformer,
 			options
 		)
 	}
