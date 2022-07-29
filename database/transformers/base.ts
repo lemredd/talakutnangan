@@ -9,14 +9,15 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	 */
 	protected subtransformers: GeneralObject<Transformer<any, any>> = {}
 
-	finalizeTransform(transformedData: Serializable): Serializable {
+	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
 		if (transformedData.included !== undefined) {
 			transformedData.included = (transformedData.included as GeneralObject[]).map(data => {
 				const transformer = this.subtransformers[data.type]
 				if (transformer === undefined) {
 					return data
 				} else {
-					return transformer.finalizeTransform({ data } as Serializable).data as Serializable
+					// TODO: make another hash to get the attributes properly
+					return transformer.finalizeTransform(null, { data } as Serializable).data as Serializable
 				}
 			})
 		}

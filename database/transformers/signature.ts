@@ -32,8 +32,8 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 		return safeObject
 	}
 
-	finalizeTransform(resource: Serializable): Serializable {
-		resource = super.finalizeTransform(resource)
+	finalizeTransform(model: Signature|Signature[], resource: Serializable): Serializable {
+		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
 			const templatePath = "/api/signature/:id"

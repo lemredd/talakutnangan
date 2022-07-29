@@ -32,8 +32,9 @@ export default class Serializer {
 		options?: object
 	): Serializable {
 		const builder = Serializer.build(model, transformer, options)
+		const resources = builder.serialize() as Serializable
 
-		return transformer.finalizeTransform(builder.serialize() as Serializable)
+		return transformer.finalizeTransform(model, resources)
 	}
 
 	static makeContext<T extends Model, U = void>(
