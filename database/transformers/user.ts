@@ -10,11 +10,13 @@ import cloneDeep from "lodash.clonedeep"
 
 import User from "%/models/user"
 import Transformer from "%/transformers/base"
+import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
+import RequestEnvironment from "$/helpers/request_environment"
 import makeDefaultPassword from "$!/helpers/make_default_password"
 import StudentDetailTransformer from "%/transformers/student_detail"
 
@@ -106,11 +108,21 @@ export default class extends Transformer<User, void> {
 		}
 
 		// Only add password status for individual resource
-		if (!(postTransformedData.data instanceof Array)) {
-			addPasswordStatus(model as User, transformedData)
-		} else {
+		if (model instanceof Array) {
 			transformedData.meta = {
 				hasDefaultPassword: null
+			}
+		} else {
+			if (model.kind === "student") {
+				if (model.studentDetail !== null) {
+					addPasswordStatus(model as User, transformedData)
+				} else if(!RequestEnvironment.isOnTest && RequestEnvironment.isNotOnProduction) {
+					throw new DatabaseError(`Student account (${
+						model.id
+					}) has no student detail to base the default password`)
+				}
+			} else {
+				addPasswordStatus(model as User, transformedData)
 			}
 		}
 
