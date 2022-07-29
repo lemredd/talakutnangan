@@ -95,7 +95,7 @@ export default class extends Transformer<User, void> {
 		)
 	}
 
-	finalizeTransform(model: User|User[], transformedData: Serializable): Serializable {
+	finalizeTransform(model: User|User[]|null, transformedData: Serializable): Serializable {
 		const postTransformedData = super.finalizeTransform(model, transformedData)
 		const addPasswordStatus = (model: User, data: Serializable) => {
 			const userProfile = deserialize(cloneDeep(data)) as UserProfile
@@ -108,7 +108,7 @@ export default class extends Transformer<User, void> {
 		}
 
 		// Only add password status for individual resource
-		if (model instanceof Array) {
+		if (model instanceof Array || model === null) {
 			transformedData.meta = {
 				hasDefaultPassword: null
 			}

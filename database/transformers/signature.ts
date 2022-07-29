@@ -32,7 +32,7 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 		return safeObject
 	}
 
-	finalizeTransform(model: Signature|Signature[], resource: Serializable): Serializable {
+	finalizeTransform(model: Signature|Signature[]|null, resource: Serializable): Serializable {
 		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
