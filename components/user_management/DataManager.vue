@@ -1,16 +1,7 @@
 <template>
 	<div class="controls-bar">
 		<SearchFilter/>
-		<!-- <Filter v-if="hasDropdownFilter" v-model:filter="selectedFilter"/>
-		<slot v-else></slot> -->
-		<div v-if="hasDropdownFilter" class="dropdown-filter-container">
-			<label for="dropdown-filter">Dropdown Filter</label>
-			<select name="dropdown-filter" id="dropdown-filter" @input="filterByDropdown">
-				<option v-for="filterItem in availableFilters" :value="filterItem">
-					{{ filterItem }}
-				</option>
-			</select>
-		</div>
+		<Filter/>
 	</div>
 	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
 

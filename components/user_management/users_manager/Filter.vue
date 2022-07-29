@@ -1,15 +1,12 @@
 <template>
-<div class="dropdown-filter">
-	<label for="select-filter">{{ filterLabel }}: </label>
-	<select
-		@input="emitUpdatedFilter"
-		:value="filter"
-		id="select-filter"
-		class="select-filter">
-		<option selected value="all">All</option>
-		<option v-for="filterItem in filterList" :value="filterItem">{{ filterItem }}</option>
-	</select>
-</div>
+<div class="dropdown-filter-container">
+			<label for="dropdown-filter">Dropdown Filter</label>
+			<select name="dropdown-filter" id="dropdown-filter">
+				<option v-for="filterItem in availableFilters" :value="filterItem">
+					{{ filterItem }}
+				</option>
+			</select>
+		</div>
 </template>
 
 <style scoped lang="scss">
@@ -28,32 +25,15 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, Ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { ManagerKind } from '../types'
 
-defineProps<{
-	filter: string
-}>()
-const filterList = inject("filterList") as Ref<string[]>
-const emit = defineEmits<{
-	(e: "update:filter", updatedFilter: string): void
-}>()
+const selectedFilter = ref("all")
+const availableFilters = ref<string[]>(["all"])
 
-const managerKind = inject("managerKind") as ManagerKind
-const filterLabel = computed(function() {
-	switch(managerKind) {
-		case "secretary":
-			return "Status"
-		case "service":
-			return "Job Title"
-		default:
-			return "Role"
-	}
-
+onMounted(() => {
+	fetch("/api/role/list")
+	.then(res => res.json())
+	.then(console.log)
 })
-
-function emitUpdatedFilter(event: Event) {
-	const target = event.target as HTMLSelectElement
-	emit("update:filter", target.value)
-}
 </script>
