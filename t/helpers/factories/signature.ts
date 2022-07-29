@@ -19,7 +19,7 @@ export default class SignatureFactory extends BaseFactory<Signature> {
 	async generate(): GeneratedData<Signature> {
 		return {
 			userID: (await this.#user()).id,
-			signature: this.#signature
+			signature: this.#signature()
 		}
 	}
 
