@@ -16,7 +16,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	}> = {}
 
 	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
-		if (transformedData.included !== undefined) {
+		if (model !== null && transformedData.included !== undefined) {
 			transformedData.included = (transformedData.included as GeneralObject[]).map(data => {
 				const transformerInfo = this.subtransformers[data.type]
 				const transformer = transformerInfo.transformer
@@ -32,12 +32,12 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 							if (possibleRelatedModel instanceof Array) {
 								for (const possibleRelatedUnitModel of possibleRelatedModel) {
-									if (possibleRelatedUnitModel.id === data.id) {
+									if (possibleRelatedUnitModel?.id === data.id) {
 										relatedModel = possibleRelatedUnitModel
 										break
 									}
 								}
-							} else if (possibleRelatedModel.id === data.id) {
+							} else if (possibleRelatedModel?.id === data.id) {
 								relatedModel = possibleRelatedModel
 								break
 							}
