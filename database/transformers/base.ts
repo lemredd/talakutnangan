@@ -16,7 +16,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 				if (transformer === undefined) {
 					return data
 				} else {
-					return transformer.finalizeTransform(data as Serializable)
+					return transformer.finalizeTransform({ data } as Serializable).data as Serializable
 				}
 			})
 		}
