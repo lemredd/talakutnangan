@@ -13,9 +13,11 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		if (transformedData.included !== undefined) {
 			transformedData.included = (transformedData.included as GeneralObject[]).map(data => {
 				const transformer = this.subtransformers[data.type]
-				const resource = data as Serializable
-
-				return transformer.finalizeTransform(resource)
+				if (transformer === undefined) {
+					return data
+				} else {
+					return transformer.finalizeTransform(data as Serializable)
+				}
 			})
 		}
 
