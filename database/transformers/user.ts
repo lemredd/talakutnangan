@@ -16,11 +16,19 @@ export default class extends Transformer<User, void> {
 	constructor() {
 		super()
 		this.type = "user"
+
 		this.relationships = {
 			roles: this.roles,
 			department: this.department,
 			studentDetail: this.studentDetail,
 			signature: this.signature
+		}
+
+		this.subtransformers = {
+			department: new DepartmentTransformer(),
+			roles: new RoleTransformer(),
+			studentDetail: new StudentDetailTransformer(),
+			signature: new SignatureTransformer(),
 		}
 	}
 
@@ -36,21 +44,33 @@ export default class extends Transformer<User, void> {
 	}
 
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(model.department, new DepartmentTransformer(), options)
+		return Serializer.makeContext(
+			model.department,
+			this.subtransformers.department as DepartmentTransformer,
+			options
+		)
 	}
 
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(model.roles, new RoleTransformer(), options)
-	}
-
-	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(model.signature || null, new SignatureTransformer(), options)
+		return Serializer.makeContext(
+			model.roles,
+			this.subtransformers.roles as RoleTransformer,
+			options
+		)
 	}
 
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.studentDetail || null,
-			new StudentDetailTransformer(),
+			this.subtransformers.studentDetail as StudentDetailTransformer,
+			options
+		)
+	}
+
+	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			model.signature || null,
+			this.subtransformers.signature as SignatureTransformer,
 			options
 		)
 	}
