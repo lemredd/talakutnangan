@@ -85,3 +85,10 @@ export interface RawEmployeeSchedule {
 	scheduleEnd: number,
 	dayName: Day
 }
+
+/**
+ * Used to indicate if the signature should be included in the serialized structure of signature.
+ */
+export interface SignatureTransformerOptions {
+	raw: boolean
+}

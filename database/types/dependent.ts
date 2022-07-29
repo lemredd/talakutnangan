@@ -35,5 +35,5 @@ export type Attributes<T extends BaseModel> = BaseAttributes<T>
 export type CreationAttributes<T extends BaseModel> = BaseCreationAttributes<T>
 export type Context<T> = BaseContext<T>
 export type AttributesObject = BaseAttributesObject
-export type TransformerOptions = Options<void>
+export type TransformerOptions<T = void> = Options<T>
 export type RelationshipTransformerInfo = BaseRelationshipTransformerInfo<void, unknown>
