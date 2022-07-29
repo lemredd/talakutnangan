@@ -108,6 +108,10 @@ export default class extends Transformer<User, void> {
 		// Only add password status for individual resource
 		if (!(postTransformedData.data instanceof Array)) {
 			addPasswordStatus(model as User, transformedData)
+		} else {
+			transformedData.meta = {
+				hasDefaultPassword: null
+			}
 		}
 
 		return postTransformedData

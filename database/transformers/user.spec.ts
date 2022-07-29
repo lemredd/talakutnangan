@@ -58,7 +58,7 @@ describe("Transformer: User", () => {
 
 		expect(object).toHaveProperty("data.0.type", "user")
 		expect(object).toHaveProperty("data.0.id", models[0].id)
-		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
+		expect(object).toHaveProperty("meta.hasDefaultPassword", null)
 		expect(object).toHaveProperty(
 			"included.2.links.self",
 			`http://localhost:16000/api/signature/${signatureA.id}`
