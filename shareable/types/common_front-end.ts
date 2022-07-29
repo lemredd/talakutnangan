@@ -14,17 +14,17 @@ interface Roles extends Serializable {
 		type: "role",
 		id: number
 		userFlags: number
-	})[],
-	meta: {
-		hasDefaultPassword: boolean|null
-	}
+	})[]
 }
 
 /**
  * Shape of serialized user profile if authenticated
  */
 export interface UserProfile extends Serializable {
-	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData
+	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData,
+	meta: {
+		hasDefaultPassword: boolean|null
+	}
 }
 
 interface ProfileData extends Serializable {
