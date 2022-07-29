@@ -12,13 +12,20 @@ import type { ManagerKind } from "@/user_management/types"
 import type { UserProfile } from "$/types/common_front-end"
 
 import UsersManager from "@/user_management/DataManager.vue"
+import RoleFetcher from "$@/communicators/role"
+import DepartmentFetcher from "$@/communicators/department"
 
 provide("managerKind", "dean" as ManagerKind)
 provide("tabs", ["Users", "Roles", "Departments"])
 
+// Fetcher Initializers
+RoleFetcher.initialize("/api")
+DepartmentFetcher.initialize("/api")
+
 const users = ref<UserProfile[]>([])
 const roles = ref<string[]>([])
 onMounted(() => {
+
 	// TODO: fetch("/api/user/list") soon
 	fetch("/dev/sample_user_list")
 	.then(response => response.json())

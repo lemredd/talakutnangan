@@ -14,11 +14,16 @@ import type { ManagerKind } from "@/user_management/types"
 
 import UsersManager from "@/user_management/DataManager.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import RoleFetcher from "$@/communicators/role"
+import DepartmentFetcher from "$@/communicators/department"
+
 
 const managerKind = "admin" as ManagerKind
 provide("managerKind", managerKind)
 provide("tabs", ["Users", "Roles", "Departments"])
 
+RoleFetcher.initialize("/api")
+DepartmentFetcher.initialize("/api")
 
 interface RawUser {
 	id: number,
