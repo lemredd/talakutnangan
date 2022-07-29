@@ -9,32 +9,25 @@ import { onMounted, provide, ref } from "vue"
 import { deserialise } from "kitsu-core"
 
 import type { ManagerKind } from "@/user_management/types"
+import type { UserProfile } from "$/types/common_front-end"
 
 import UsersManager from "@/user_management/DataManager.vue"
 
 provide("managerKind", "dean" as ManagerKind)
 provide("tabs", ["Users", "Roles", "Departments"])
 
-
-interface RawUser {
-	id: number,
-	name: string,
-	email: string,
-	kind: string,
-	signature: string
-}
-const users = ref<RawUser[]>([])
+const users = ref<UserProfile[]>([])
 const roles = ref<string[]>([])
 onMounted(() => {
 	// TODO: fetch("/api/user/list") soon
 	fetch("/dev/sample_user_list")
 	.then(response => response.json())
 	.then(response => {
-		const deserializedData = deserialise(response).data
+		const deserializedData = deserialise(response).data as UserProfile[]
 		const rolesNoDuplicate = new Set([...roles.value])
 		users.value = deserializedData
 
-		users.value.forEach((user: RawUser | any) => user.roles.data.forEach((role: any) => rolesNoDuplicate.add(role.name)))
+		users.value.forEach((user: UserProfile | any) => user.roles.data.forEach((role: any) => rolesNoDuplicate.add(role.name)))
 		roles.value = [...rolesNoDuplicate]
 	})
 })
