@@ -14,7 +14,10 @@ interface Roles extends Serializable {
 		type: "role",
 		id: number
 		userFlags: number
-	})[]
+	})[],
+	meta: {
+		hasDefaultPassword: boolean|null
+	}
 }
 
 /**
