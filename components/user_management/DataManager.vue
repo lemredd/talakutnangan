@@ -1,7 +1,10 @@
 <template>
 	<div class="controls-bar">
 		<SearchFilter/>
-		<Filter/>
+		<div v-if="isResourceTypeUser" class="filters">
+			<Filter by="Role"/>
+			<Filter v-if="managerKind === 'admin'" by="Department"/>
+		</div>
 	</div>
 	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
 
@@ -38,7 +41,9 @@ const { resource, hasDropdownFilter } = defineProps<{
 	hasDropdownFilter?: boolean
 }>()
 
+const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
 const searchFilterText = ref("");
+const managerKind = inject("managerKind") as ManagerKind
 
 function passedResource(): (UserProfile|Department|Role)[] {
 	return resource
@@ -52,7 +57,8 @@ const filteredList = computed(function() {
 	return filteredBySearchResult
 })
 
-function isResourceItemTypeUser(resourceItem: any): resourceItem is UserProfile {
+function usersResourceEnsurer(resourceItem: any): resourceItem is UserProfile {
+
 	return (resourceItem as UserProfile).email !== undefined
 }
 
