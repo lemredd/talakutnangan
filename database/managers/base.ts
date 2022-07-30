@@ -11,19 +11,23 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+
 import Log from "$!/singletons/log"
+import CacheClient from "$!/helpers/cache_client"
+import encodeToBase64 from "$!/helpers/encode_to_base64"
+import RequestEnvironment from "$/helpers/request_environment"
+import TransactionManager from "%/managers/helpers/transaction_manager"
+
 import BaseError from "$!/errors/base"
-import page from "%/managers/helpers/page"
-import sort from "%/managers/helpers/sort"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
-import CacheClient from "$!/helpers/cache_client"
 import Serializer from "%/transformers/serializer"
+
+import page from "%/managers/helpers/page"
+import sort from "%/managers/helpers/sort"
 import Condition from "%/managers/helpers/condition"
-import RequestEnvironment from "$/helpers/request_environment"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import siftByExistence from "%/managers/helpers/sift_by_existence"
-import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
@@ -92,8 +96,8 @@ extends RequestEnvironment {
 	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
 	: Promise<Serializable> {
 		try {
-			const uniquePairSubstring = `column_${columnName}_value_${JSON.stringify(value)}`
-			const uniqueConstraintSubstring = `constraints_${JSON.stringify(constraints)}`
+			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`
+			const uniqueConstraintSubstring = `constraints_${encodeToBase64(constraints)}`
 			const uniqueFindSubstring = `find_one_on_column__${
 				uniquePairSubstring
 			}__${
