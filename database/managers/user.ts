@@ -110,8 +110,8 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
-			const departmentManager = new DepartmentManager(this.transaction)
-			const roleManager = new RoleManager(this.transaction)
+			const departmentManager = new DepartmentManager(this.transaction, this.cache)
+			const roleManager = new RoleManager(this.transaction, this.cache)
 
 			// Get the department name firsts
 			const departmentNames = bulkData.importedCSV.map(data => data.department)
