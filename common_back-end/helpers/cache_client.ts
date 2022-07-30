@@ -9,6 +9,10 @@ export default class {
 		this.clientKey = clientKey
 	}
 
+	destroy() {
+		CacheManager.destroyClient(this.clientKey)
+	}
+
 	getCache(path: string): any|null {
 		return accessDeepPath(CacheManager.getCache(this.clientKey), path, null)
 	}

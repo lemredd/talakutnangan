@@ -14,6 +14,10 @@ export default class {
 		return new CacheClient(clientKey)
 	}
 
+	static destroyClient(clientKey: Symbol): void {
+		this.cache.delete(clientKey)
+	}
+
 	static getCache(clientKey: Symbol): GeneralObject {
 		return this.cache.get(clientKey) || {}
 	}
