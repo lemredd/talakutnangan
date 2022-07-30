@@ -4,12 +4,16 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import { READ } from "$/permissions/role_combinations"
 import QueryController from "!/common_controllers/query_controller"
+
+import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
+import object from "!/app/validators/base/object"
+import boolean from "!/app/validators/base/boolean"
 import makeListRules from "!/app/rule_sets/make_list"
+import nullable from "!/app/validators/base/nullable"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -26,12 +30,28 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
-		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => makeListRules(RoleManager, {})
+		return (request: Request): FieldRules => makeListRules(RoleManager, {}, {
+			meta: {
+				pipes: [ nullable, object ],
+				constraints: {
+					nullable: { defaultValue: {} },
+					object: {
+						countUsers: {
+							pipes: [ nullable, boolean ],
+							constraints: {
+								nullable: { defaultValue: true },
+								boolean: {
+									loose: true
+								}
+							}
+						}
+					}
+				}
+			}
+		})
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		// TODO: Add limit to the constraints
 		const constraints = { ...request.query }
 
 		const manager = new RoleManager()
