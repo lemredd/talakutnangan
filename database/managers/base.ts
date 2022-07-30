@@ -33,13 +33,18 @@ import siftByExistence from "%/managers/helpers/sift_by_existence"
  * A base class for model managers which contains methods for CRUD operations.
  *
  * First generic argument is `T` that represents the model it controls. Second generic argument is
- * `U` that represents the transformer for the model. Lastly, `V` represents the filter to be used
- * by the manager which is an object by default.
+ * `U` that represents the transformer for the model. Third, `V` represents the filter to be used by
+ * the manager which is an object by default. Fourth, W which indicates extra options for the
+ * transformer if there are.
  */
-export default abstract class Manager<T extends Model, U, V extends GeneralObject = GeneralObject>
-extends RequestEnvironment {
-	protected cache: CacheClient
+export default abstract class Manager<
+	T extends Model,
+	U,
+	V extends GeneralObject = GeneralObject,
+	W = void
+> extends RequestEnvironment {
 	protected transaction: TransactionManager
+	protected cache: CacheClient
 
 	constructor(
 		transaction: TransactionManager = new TransactionManager(),
@@ -52,7 +57,7 @@ extends RequestEnvironment {
 
 	abstract get model(): ModelCtor<T>
 
-	abstract get transformer(): Transformer<T, void>
+	abstract get transformer(): Transformer<T, W>
 
 	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
@@ -254,19 +259,19 @@ extends RequestEnvironment {
 		return attributeNames
 	}
 
-	protected serialize(models: T|T[]|null): Serializable {
+	protected serialize<U = Serializable>(models: T|T[]|null): U {
 		return Serializer.serialize(
 			models,
 			this.transformer,
 			{}
-		)
+		) as unknown as U
 	}
 
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
 		} else if (error instanceof Error && this.isNotOnProduction) {
-			return new DatabaseError(error.message)
+			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
 		} else {
 			return new DatabaseError()
 		}

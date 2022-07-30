@@ -6,6 +6,7 @@ import Log from "$!/singletons/log"
 import Role from "%/models/role"
 import User from "%/models/user"
 import Department from "%/models/department"
+import Signature from "%/models/signature"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import createConfiguration from "%/configuration/create"
@@ -21,6 +22,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		models: [
 			Role,
 			User,
+			Signature,
 			Department,
 			AttachedRole,
 			StudentDetail,

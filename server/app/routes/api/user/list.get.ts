@@ -1,7 +1,7 @@
 import type { FieldRules } from "!/types/independent"
 import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
-import { rawCriteria, Criteria, UserKindValues, UserFilter } from "$/types/database"
+import { UserKindValues, UserFilter } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -13,18 +13,11 @@ import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import object from "!/app/validators/base/object"
 import string from "!/app/validators/base/string"
 import nullable from "!/app/validators/base/nullable"
 import oneOf from "!/app/validators/comparison/one-of"
 
 import makeListRules from "!/app/rule_sets/make_list"
-
-interface WithQuery {
-	query: {
-		criteria?: Criteria
-	}
-}
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -37,9 +30,7 @@ export default class extends QueryController {
 	}
 
 	get queryValidationRules(): object {
-		return {
-			criteria: [ "required", [ "in", ...rawCriteria ] ]
-		}
+		return {}
 	}
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
@@ -69,19 +60,11 @@ export default class extends QueryController {
 					nullable: { defaultValue: "*" },
 					oneOf: { values: [ "*", ...UserKindValues ] }
 				}
-			},
-			criteria: {
-				pipes: [ nullable, string, oneOf ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					oneOf: { values: [ "*", "incomplete", "verified", "unverified" ] }
-				}
 			}
 		})
 	}
 
-	async handle(request: Request & WithQuery, response: Response): Promise<void> {
-		const { criteria = null } = request.query
+	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new UserManager(request.transaction, request.cache)
 		const users = await manager.list(request.query as UserFilter)
 

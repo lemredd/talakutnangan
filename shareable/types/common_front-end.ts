@@ -21,7 +21,10 @@ interface Roles extends Serializable {
  * Shape of serialized user profile if authenticated
  */
 export interface UserProfile extends Serializable {
-	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData
+	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData,
+	meta: {
+		hasDefaultPassword: boolean|null
+	}
 }
 
 interface ProfileData extends Serializable {

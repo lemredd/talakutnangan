@@ -7,7 +7,7 @@ import type {
 	RawBulkDataForStudent,
 	RawBulkDataForEmployee
 } from "%/types/independent"
-import extractEmailUsername from "!/helpers/extract_email_username"
+import extractEmailUsername from "$!/helpers/extract_email_username"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -62,7 +62,7 @@ export default class extends MultipartController {
 		Log.trace("controller", "made user manager")
 
 		body.importedCSV = body.importedCSV!.map(data => {
-			// ! If there is a change below, update `!/helpers/make_default_password` too.
+			// ! If there is a change below, update `$!/helpers/make_default_password` too.
 			if (body.kind! === "student") {
 				data.password = (data as RawBulkDataForStudent).studentNumber
 			} else {

@@ -5,8 +5,8 @@ import type {
 	ObjectRuleConstraints
 } from "!/types/independent"
 
-import isPlainObject from "lodash.isplainobject"
 import validate from "!/app/validators/validate"
+import isPlainObject from "$!/helpers/is_plain_object"
 import unifyErrors from "!/app/validators/unify_errors"
 import makeDeveloperError from "!/app/validators/make_developer_error"
 
