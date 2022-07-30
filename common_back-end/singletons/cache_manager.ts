@@ -17,4 +17,10 @@ export default class {
 	static getCache(clientKey: Symbol): GeneralObject {
 		return this.cache.get(clientKey) || {}
 	}
+
+	static setCache(clientKey: Symbol, newCache: GeneralObject): void {
+		if (this.cache.get(clientKey)) {
+			this.cache.set(clientKey, newCache)
+		}
+	}
 }
