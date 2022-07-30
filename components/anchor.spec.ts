@@ -6,7 +6,7 @@ import Anchor from "./anchor.vue"
 describe("Component: Link", () => {
 	it("Should be active based on current path", async () => {
 		const path = "/"
-		const wrapper = mount(Link, {
+		const wrapper = mount(Anchor, {
 			attrs: {
 				href: path
 			},
@@ -24,7 +24,7 @@ describe("Component: Link", () => {
 
 	it("Should not be active if path mismatches", async () => {
 		const path = "/"
-		const wrapper = mount(Link, {
+		const wrapper = mount(Anchor, {
 			attrs: {
 				href: "/about"
 			},
