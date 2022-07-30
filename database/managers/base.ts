@@ -120,7 +120,7 @@ export default abstract class Manager<
 
 				const model = await this.model.findOne({
 					...findOptions,
-					...this.transaction.lockedTransactionObject
+					...this.transaction.transactionObject
 				})
 
 				Log.success("manager", "done searching for a model on a certain column")
@@ -146,7 +146,7 @@ export default abstract class Manager<
 
 			const rows = await this.model.findAll({
 				...options,
-				...this.transaction.lockedTransactionObject
+				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done listing models according to constraints")
