@@ -64,6 +64,10 @@ extends RequestEnvironment {
 		]
 	}
 
+	get cachePath(): string {
+		return `database.${this.model.tableName}`
+	}
+
 	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
 		try {
 			{
@@ -88,20 +92,40 @@ extends RequestEnvironment {
 	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
 	: Promise<Serializable> {
 		try {
-			const condition = new Condition()
-			condition.equal(columnName, value)
-			const whereOptions: FindOptions<T> = { where: condition.build() }
+			const uniquePairSubstring = `column_${columnName}_value_${JSON.stringify(value)}`
+			const uniqueConstraintSubstring = `constraints_${JSON.stringify(constraints)}`
+			const uniqueFindSubstring = `find_one_on_column__${
+				uniquePairSubstring
+			}__${
+				uniqueConstraintSubstring
+			}__`
+			const uniquePath = `${this.cachePath}.${uniqueFindSubstring}`
+			let cachedModel = this.cache.getCache(uniquePath)
 
-			const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
+			if (cachedModel === null) {
+				const condition = new Condition()
+				condition.equal(columnName, value)
+				const whereOptions: FindOptions<T> = { where: condition.build() }
 
-			const model = await this.model.findOne({
-				...findOptions,
-				...this.transaction.lockedTransactionObject
-			})
+				const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
 
-			Log.success("manager", "done searching for a model on a certain column")
+				const model = await this.model.findOne({
+					...findOptions,
+					...this.transaction.lockedTransactionObject
+				})
 
-			return this.serialize(model)
+				Log.success("manager", "done searching for a model on a certain column")
+
+				cachedModel = this.serialize(model)
+
+				this.cache.setCache(uniquePath, cachedModel)
+
+				Log.success("manager", "cached serialized model")
+			}
+
+			Log.success("manager", "used cached serialized model")
+
+			return cachedModel
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
