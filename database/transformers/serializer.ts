@@ -1,12 +1,13 @@
+import type { Serializable } from "$/types/database"
+
 import { Model } from "sequelize-typescript"
 import {
-	Transformer,
 	transform,
 	whitelist,
 	ContextBuilder,
 	RelationshipTransformerInfo
 } from "jsonapi-fractal"
-import type { Serializable } from "$/types/database"
+import Transformer from "%/transformers/base"
 
 export default class Serializer {
 	private static build<T extends Model, U = void>(
@@ -31,8 +32,9 @@ export default class Serializer {
 		options?: object
 	): Serializable {
 		const builder = Serializer.build(model, transformer, options)
+		const resources = builder.serialize() as Serializable
 
-		return builder.serialize() as Serializable
+		return transformer.finalizeTransform(model, resources)
 	}
 
 	static makeContext<T extends Model, U = void>(
