@@ -187,40 +187,11 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			Log.trace("manager", "processed the data into general structure for bulk creation")
 
 			if (bulkData.kind === "student") {
-				// Prepare for bulk student creation
-				const normalizedProfiles = (incompleteProfiles as ProcessedDataForStudent[]).map((
-					incompleteProfile: ProcessedDataForStudent
-				) => {
-					const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
-					return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
-				})
-
-				Log.trace("manager", "specialized the data structure for student bulk creation")
-
-				// Create the students in bulk
-				const users = await this.model.bulkCreate(normalizedProfiles, {
-					include: [
-						{
-							model: AttachedRole,
-							as: "attachedRoles"
-						},
-						{
-							model: StudentDetail,
-							as: "studentDetail"
-						}
-					],
-					...this.transaction.transactionObject
-				})
-
-				Log.success("manager", "created students in bulk")
-
-				const completeUserInfo = users.map(user => {
-					user.department = departmentModels[`${user.departmentID}`]
-					user.roles = roles
-					return user
-				})
-
-				return this.serialize(completeUserInfo)
+				return this.createStudents(
+					incompleteProfiles as ProcessedDataForStudent[],
+					departmentModels,
+					roles
+				)
 			} else if (bulkData.kind === "reachable_employee") {
 				// Prepare for bulk reachable employee creation
 				const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
@@ -363,5 +334,46 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
+	}
+
+	private async createStudents(
+		incompleteProfiles: ProcessedDataForStudent[],
+		departmentModels: { [key:string]: Department },
+		roles: Role[]
+	): Promise<Serializable> {
+		// Prepare for bulk student creation
+		const normalizedProfiles = incompleteProfiles.map((
+			incompleteProfile: ProcessedDataForStudent
+		) => {
+			const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
+			return { ...incompleteNormalizedProfile, studentDetail: { studentNumber } }
+		})
+
+		Log.trace("manager", "specialized the data structure for student bulk creation")
+
+		// Create the students in bulk
+		const users = await this.model.bulkCreate(normalizedProfiles, {
+			include: [
+				{
+					model: AttachedRole,
+					as: "attachedRoles"
+				},
+				{
+					model: StudentDetail,
+					as: "studentDetail"
+				}
+			],
+			...this.transaction.transactionObject
+		})
+
+		Log.success("manager", "created students in bulk")
+
+		const completeUserInfo = users.map(user => {
+			user.department = departmentModels[`${user.departmentID}`]
+			user.roles = roles
+			return user
+		})
+
+		return this.serialize(completeUserInfo)
 	}
 }
