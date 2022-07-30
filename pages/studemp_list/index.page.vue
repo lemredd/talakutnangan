@@ -15,7 +15,6 @@ import UsersManager from "@/resource_management/resource_manager.vue"
 import RoleFetcher from "$@/communicators/role"
 
 provide("managerKind", new Manager("dean"))
-provide("tabs", ["Users", "Roles", "Departments"])
 
 // Fetcher Initializers
 RoleFetcher.initialize("/api")
