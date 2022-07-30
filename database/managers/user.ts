@@ -193,59 +193,11 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 					roles
 				)
 			} else if (bulkData.kind === "reachable_employee") {
-				// Prepare for bulk reachable employee creation
-				const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
-					previousSchedule: RawEmployeeSchedule[],
-					dayName: Day
-				) => {
-					if (dayName !== "saturday" && dayName !== "sunday") {
-						const scheduleStart = 60*60*8 // Start at 8am
-						const scheduleEnd = 60*60*(12+5) // End at 5pm
-						return [ ...previousSchedule, {
-							scheduleStart,
-							scheduleEnd,
-							dayName
-						}]
-					} else {
-						return previousSchedule
-					}
-				}, [])
-				const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
-					incompleteProfile: ProcessedDataForEmployee
-				) => {
-					return { ...incompleteProfile, employeeSchedules }
-				})
-
-				Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
-
-				// Create the reachable employees in bulk
-				const users = await this.model.bulkCreate(normalizedProfiles, {
-					include: [
-						{
-							model: AttachedRole,
-							as: "attachedRoles"
-						},
-						{
-							model: EmployeeSchedule,
-							as: "employeeSchedules"
-						}
-					],
-					...this.transaction.transactionObject
-				})
-
-				Log.success("manager", "created reachable employees in bulk")
-
-				const completeUserInfo = users.map(user => {
-					user.department = departmentModels[`${user.departmentID}`]
-					user.roles = roles
-					return user
-				})
-
-				Log.trace(
-					"manager",
-					"exiting user manager -> bulk create method with serialized reachable employee info")
-
-				return this.serialize(completeUserInfo)
+				return this.createReachableEmployees(
+					incompleteProfiles as ProcessedDataForEmployee[],
+					departmentModels,
+					roles
+				)
 			} else if (bulkData.kind === "unreachable_employee") {
 				// Unreachable employee profiles do not need other preprocessing
 				const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
@@ -373,6 +325,67 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			user.roles = roles
 			return user
 		})
+
+		return this.serialize(completeUserInfo)
+	}
+
+
+	private async createReachableEmployees(
+		incompleteProfiles: ProcessedDataForEmployee[],
+		departmentModels: { [key:string]: Department },
+		roles: Role[]
+	): Promise<Serializable> {
+		// Prepare for bulk reachable employee creation
+		const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
+			previousSchedule: RawEmployeeSchedule[],
+			dayName: Day
+		) => {
+			if (dayName !== "saturday" && dayName !== "sunday") {
+				const scheduleStart = 60*60*8 // Start at 8am
+				const scheduleEnd = 60*60*(12+5) // End at 5pm
+				return [ ...previousSchedule, {
+					scheduleStart,
+					scheduleEnd,
+					dayName
+				}]
+			} else {
+				return previousSchedule
+			}
+		}, [])
+		const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
+			incompleteProfile: ProcessedDataForEmployee
+		) => {
+			return { ...incompleteProfile, employeeSchedules }
+		})
+
+		Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
+
+		// Create the reachable employees in bulk
+		const users = await this.model.bulkCreate(normalizedProfiles, {
+			include: [
+				{
+					model: AttachedRole,
+					as: "attachedRoles"
+				},
+				{
+					model: EmployeeSchedule,
+					as: "employeeSchedules"
+				}
+			],
+			...this.transaction.transactionObject
+		})
+
+		Log.success("manager", "created reachable employees in bulk")
+
+		const completeUserInfo = users.map(user => {
+			user.department = departmentModels[`${user.departmentID}`]
+			user.roles = roles
+			return user
+		})
+
+		Log.trace(
+			"manager",
+			"exiting user manager -> bulk create method with serialized reachable employee info")
 
 		return this.serialize(completeUserInfo)
 	}
