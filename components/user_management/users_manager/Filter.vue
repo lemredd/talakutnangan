@@ -28,8 +28,8 @@ import { inject, onMounted, ref } from 'vue'
 import { deserialise } from 'kitsu-core'
 
 import type { RawRole, RawDepartment } from '$/types/database'
-import type { ManagerKind } from '../types'
 
+import Manager from "../manager"
 import RoleFetcher from "$@/communicators/role"
 import DepartmentFetcher from "$@/communicators/department"
 
@@ -38,18 +38,24 @@ const { by } = defineProps<{
 }>()
 
 const selectedFilter = ref("all")
-const availableFilters = ref(["all"])
+const availableFilters = ref(["All"])
 const filterLabel = ref(by)
-const managerKind = inject("managerKind") as ManagerKind
+const managerKind = inject("managerKind") as Manager
 
 function siftViewableRoles() {
 	// TODO: add other manager kinds
-	if (managerKind === "dean") {
-		availableFilters.value = availableFilters.value.filter((f) => {
+	if (managerKind.isInstituteLimited()) {
+		availableFilters.value = availableFilters.value.filter((f: string) => {
 			const removeAdminRoles = !f.toLowerCase().includes("admin")
 			const removeServiceRoles = !f.toLowerCase().includes("service")
 
 			return removeAdminRoles && removeServiceRoles
+		})
+	}
+
+	if (managerKind.isStudentServiceLimited()) {
+		availableFilters.value = availableFilters.value.filter((f: string) => {
+			return f.toLowerCase().includes("service") || f.toLowerCase().includes("all")
 		})
 	}
 }
