@@ -199,42 +199,11 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 					roles
 				)
 			} else if (bulkData.kind === "unreachable_employee") {
-				// Unreachable employee profiles do not need other preprocessing
-				const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
-					incompleteProfile: ProcessedDataForEmployee
-				) => {
-					return { ...incompleteProfile }
-				})
-
-				Log.trace(
-					"manager",
-					"specialized the data structure for unreachable employee bulk creation")
-
-				// Create the reachable employees in bulk
-				const users = await this.model.bulkCreate(normalizedProfiles, {
-					include: [
-						{
-							model: AttachedRole,
-							as: "attachedRoles"
-						}
-					],
-					...this.transaction.transactionObject
-				})
-
-				Log.success("manager", "created unreachable employees in bulk")
-
-				const completeUserInfo = users.map(user => {
-					user.department = departmentModels[`${user.departmentID}`]
-					user.roles = roles
-					return user
-				})
-
-				Log.trace(
-					"manager",
-					"exiting user manager -> bulk create method with serialized unreachable employee info")
-
-
-				return this.serialize(completeUserInfo)
+				return this.createUnreachableEmployees(
+					incompleteProfiles as ProcessedDataForEmployee[],
+					departmentModels,
+					roles
+				)
 			}
 
 			return {}
@@ -386,6 +355,49 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 		Log.trace(
 			"manager",
 			"exiting user manager -> bulk create method with serialized reachable employee info")
+
+		return this.serialize(completeUserInfo)
+	}
+
+	private async createUnreachableEmployees(
+		incompleteProfiles: ProcessedDataForEmployee[],
+		departmentModels: { [key:string]: Department },
+		roles: Role[]
+	): Promise<Serializable> {
+		// Unreachable employee profiles do not need other preprocessing
+		const normalizedProfiles = incompleteProfiles.map((
+			incompleteProfile: ProcessedDataForEmployee
+		) => {
+			return { ...incompleteProfile }
+		})
+
+		Log.trace(
+			"manager",
+			"specialized the data structure for unreachable employee bulk creation")
+
+		// Create the reachable employees in bulk
+		const users = await this.model.bulkCreate(normalizedProfiles, {
+			include: [
+				{
+					model: AttachedRole,
+					as: "attachedRoles"
+				}
+			],
+			...this.transaction.transactionObject
+		})
+
+		Log.success("manager", "created unreachable employees in bulk")
+
+		const completeUserInfo = users.map(user => {
+			user.department = departmentModels[`${user.departmentID}`]
+			user.roles = roles
+			return user
+		})
+
+		Log.trace(
+			"manager",
+			"exiting user manager -> bulk create method with serialized unreachable employee info")
+
 
 		return this.serialize(completeUserInfo)
 	}
