@@ -11,12 +11,17 @@
 </template>
 
 <style lang="scss">
+// TODO: Fix filter styles
 .controls-bar {
-	@apply dark:bg-dark-100 bg-light-600 grid gap-y-4 sm:grid-cols-[repeat(2,minmax(0,max-content))] justify-between;
+	@apply dark:bg-dark-100 bg-light-600 gap-y-4 justify-between;
 
 	.search-bar {
 		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
 		padding: .25em;
+	}
+
+	.filters {
+		@apply flex justify-between;
 	}
 }
 </style>

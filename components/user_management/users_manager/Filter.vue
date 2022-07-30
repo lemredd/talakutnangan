@@ -11,8 +11,7 @@
 
 <style scoped lang="scss">
 .dropdown-filter-container {
-	@apply grid grid-cols-2 gap-2 sm:justify-self-end;
-
+	@apply flex justify-between;
 	label {
 		@apply sm:justify-self-end self-center;
 	}
@@ -56,7 +55,7 @@ function siftViewableRoles() {
 }
 
 function siftViewableDepartments() {
-	// TODO: Deans must only view their own institute
+	// TODO: department-limited managers (Dean, Secretary, and Service Head) must only view their own departments
 }
 
 function listRoles() {
