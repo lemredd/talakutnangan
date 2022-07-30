@@ -56,7 +56,7 @@ export default class extends MultipartController {
 	): Promise<void> {
 		Log.trace("controller", "entered POST /api/user/import")
 
-		const manager = new UserManager()
+		const manager = new UserManager(request.transaction, request.cache)
 		const body: Partial<RawBulkData> = request.body
 
 		Log.trace("controller", "made user manager")

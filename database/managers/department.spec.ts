@@ -7,7 +7,7 @@ describe("Database: Department Read Operations", () => {
 		const department = await (new DepartmentFactory()).insertOne()
 		const incompleteName = department.fullName.slice(1)
 
-		const roles = await manager.list({
+		const departments = await manager.list({
 			fullName: incompleteName,
 			filter: {
 				existence: "exists"
@@ -19,8 +19,13 @@ describe("Database: Department Read Operations", () => {
 			}
 		})
 
-		expect(roles).toHaveProperty("data")
-		expect(roles.data).toHaveLength(1)
+		expect(departments).toHaveProperty("data")
+		expect(departments.data).toHaveLength(1)
+		expect(departments).toHaveProperty("data.0.type", "department")
+		expect(departments).toHaveProperty("data.0.id", department.id)
+		expect(departments).toHaveProperty("data.0.attributes.acronym", department.acronym)
+		expect(departments).toHaveProperty("data.0.attributes.fullName", department.fullName)
+		expect(departments).toHaveProperty("data.0.attributes.mayAdmit", department.mayAdmit)
 	})
 
 	it("cannot search department with non-matching query", async () => {
@@ -28,7 +33,7 @@ describe("Database: Department Read Operations", () => {
 		const department = await (new DepartmentFactory()).insertOne()
 		const incorrectName = department.fullName + "1"
 
-		const roles = await manager.list({
+		const departments = await manager.list({
 			fullName: incorrectName,
 			filter: {
 				existence: "exists"
@@ -40,7 +45,7 @@ describe("Database: Department Read Operations", () => {
 			}
 		})
 
-		expect(roles).toHaveProperty("data")
-		expect(roles.data).toHaveLength(0)
+		expect(departments).toHaveProperty("data")
+		expect(departments.data).toHaveLength(0)
 	})
 })

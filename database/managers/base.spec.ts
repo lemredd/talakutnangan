@@ -5,6 +5,7 @@ import type {
 	TransformerOptions,
 	AttributesObject
 } from "%/types/dependent"
+import type CacheClient from "$!/helpers/cache_client"
 
 import User from "%/models/user"
 import Database from "~/set-ups/database"
@@ -51,9 +52,13 @@ class MockUserManager extends BaseManager<User, RawUser> {
 
 	constructor(
 		customReadPipe: Pipe<FindAndCountOptions<User>, any>|null = null,
-		transaction: TransactionManager = new TransactionManager()
+		transaction: TransactionManager = new TransactionManager(),
+		cache: CacheClient = new (jest.fn(() => ({
+			getCache: jest.fn(() => null),
+			setCache: jest.fn()
+		}))) as unknown as CacheClient
 	) {
-		super(transaction)
+		super(transaction, cache)
 		this.customReadPipe = customReadPipe
 	}
 
@@ -237,6 +242,37 @@ describe("Database: Base Read Operations", () => {
 
 		expect(user).toHaveProperty("data")
 		expect(user.data).toBeNull()
+	})
+
+	it("can find on one column with existing that is cached", async() => {
+		let cachedModel: any = null
+		const getCache = jest.fn(value => cachedModel)
+		const setCache = jest.fn((path, value) => { cachedModel = value })
+		const cache = jest.fn(() => ({
+			getCache,
+			setCache
+		}))
+		const manager = new MockUserManager(null, undefined, new cache() as unknown as CacheClient)
+		const base = await (new UserFactory()).insertOne()
+
+		const user = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			}
+		})
+		const sameUser = await manager.findOneOnColumn("name", base.name, {
+			sort: [ "name" ],
+			filter: {
+				existence: "exists"
+			}
+		})
+
+		expect(getCache).toHaveBeenCalledTimes(2)
+		expect(setCache).toHaveBeenCalledTimes(1)
+		expect(user).toHaveProperty("data")
+		expect(user.data).toHaveProperty("type", "user")
+		expect(user).toStrictEqual(sameUser)
 	})
 })
 

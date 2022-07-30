@@ -7,6 +7,7 @@ import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
 import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
+import encodeToBase64 from "$!/helpers/encode_to_base64"
 import RequestEnvironment from "$/helpers/request_environment"
 
 /**
@@ -43,7 +44,7 @@ export default async function(
 				unitError = error.toJSON()
 			}
 
-			const getEncodedError = Buffer.from(JSON.stringify(unitError)).toString("base64url")
+			const getEncodedError = encodeToBase64(unitError)
 
 			response.redirect(`${redirectURL}?error=${getEncodedError}`)
 		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
