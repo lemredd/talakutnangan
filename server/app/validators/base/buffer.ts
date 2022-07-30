@@ -4,7 +4,7 @@ import type {
 	BufferRuleConstraints
 } from "!/types/independent"
 
-import isPlainObject from "lodash.isplainobject"
+import isPlainObject from "$!/helpers/is_plain_object"
 import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**

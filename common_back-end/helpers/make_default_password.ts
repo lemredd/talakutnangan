@@ -1,5 +1,5 @@
 import type { UserProfile } from "$/types/common_front-end"
-import extractEmailUsername from "!/helpers/extract_email_username"
+import extractEmailUsername from "$!/helpers/extract_email_username"
 
 /**
  * Helper function to generate default password.

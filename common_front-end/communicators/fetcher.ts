@@ -3,9 +3,9 @@ import type { Response } from "$@/types/independent"
 import type { CommonQueryParameters } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import specializedPath from "$@/helpers/specialize_path"
 import stringifyQuery from "$@/communicators/stringify_query"
 import RequestEnvironment from "$/helpers/request_environment"
+import specializedPath from "$/helpers/specialize_path"
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the

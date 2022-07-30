@@ -237,7 +237,7 @@ export default abstract class Manager<
 		if (error instanceof BaseError) {
 			return error
 		} else if (error instanceof Error && this.isNotOnProduction) {
-			return new DatabaseError(error.message)
+			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
 		} else {
 			return new DatabaseError()
 		}

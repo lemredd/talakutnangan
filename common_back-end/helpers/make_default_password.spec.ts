@@ -24,6 +24,9 @@ describe("Helpers: Make default password", () => {
 					}
 				}
 			},
+			meta: {
+				hasDefaultPassword: false
+			}
 		}
 
 		const password = makeDefaultPassword(userProfile)
@@ -46,6 +49,9 @@ describe("Helpers: Make default password", () => {
 					data: []
 				}
 			},
+			meta: {
+				hasDefaultPassword: false
+			}
 		}
 
 		const password = makeDefaultPassword(userProfile)
@@ -65,6 +71,9 @@ describe("Helpers: Make default password", () => {
 					data: []
 				}
 			},
+			meta: {
+				hasDefaultPassword: false
+			}
 		}
 
 		const password = makeDefaultPassword(userProfile)
