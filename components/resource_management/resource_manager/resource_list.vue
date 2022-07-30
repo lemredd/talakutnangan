@@ -63,18 +63,18 @@ const resourceProperties = ref<string[]>([])
 
 
 // TODO: will be removed once all data are retrieved from database
-filteredList.forEach((element:any) => {
-	const non_id_properties = new Set<string>([])
-	Object.keys(element).forEach(key => {
-		non_id_properties.add(key)
-	});
-	resourceProperties.value = [...non_id_properties]
-});
+// filteredList.forEach((element:any) => {
+// 	const non_id_properties = new Set<string>([])
+// 	Object.keys(element).forEach(key => {
+// 		non_id_properties.add(key)
+// 	});
+// 	resourceProperties.value = [...non_id_properties]
+// });
 
 onUpdated(() => {
 	// displays retrieved data from database properly
 	resourceType.value = filteredList[0].type
-	console.log(resourceType.value)
+
 	filteredList.forEach((element:any) => {
 		const non_id_properties = new Set<string>([])
 		Object.keys(element).forEach(key => {

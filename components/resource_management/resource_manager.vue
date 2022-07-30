@@ -2,8 +2,8 @@
 	<div class="controls-bar">
 		<SearchFilter/>
 		<div v-if="isResourceTypeUser" class="filters">
-			<Filter by="Role"/>
-			<Filter v-if="managerKind === 'admin'" by="Department"/>
+			<DropdownFilter by="Role"/>
+			<DropdownFilter v-if="managerKind === 'admin'" by="Department"/>
 		</div>
 	</div>
 	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
@@ -30,7 +30,7 @@
 import { computed, inject, onUpdated, provide, ref, watch } from "vue"
 import type { ManagerKind, Department, Role } from "./types"
 import type { UserProfile } from "$/types/common_front-end"
-import Filter from "./resource_manager/filter.vue"
+import DropdownFilter from "./resource_manager/dropdown_filter.vue"
 import SearchFilter from "./resource_manager/search_bar.vue"
 import ResourceList from "./resource_manager/resource_list.vue"
 import { deserialise } from "kitsu-core"
@@ -63,13 +63,11 @@ const filteredList = computed(function() {
 })
 
 function usersResourceEnsurer(resourceItem: any): resourceItem is UserProfile {
-
-	return (resourceItem as UserProfile).email !== undefined
+	return (resourceItem as UserProfile).type === "user"
 }
 
 const selectedFilter = ref("all")
 const availableFilters = ref<string[]>(["all"])
 
-watch(selectedFilter, () => console.log(selectedFilter.value))
 provide("searchFilterText", searchFilterText)
 </script>

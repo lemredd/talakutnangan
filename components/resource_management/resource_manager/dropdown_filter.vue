@@ -64,8 +64,8 @@ function siftViewableDepartments() {
 	// TODO: department-limited managers (Dean, Secretary, and Service Head) must only view their own departments
 }
 
-function listRoles() {
-	RoleFetcher.list({
+async function listRoles() {
+	await RoleFetcher.list({
 		filter: {
 			existence: "exists"
 		},
@@ -104,10 +104,10 @@ function listDepartments() {
 	})
 }
 
-onMounted(() => {
+onMounted(async () => {
 	switch (by) {
 		case "Role":
-			listRoles()
+			await listRoles()
 		break
 
 		case "Department":
