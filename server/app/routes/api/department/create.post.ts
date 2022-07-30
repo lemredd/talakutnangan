@@ -43,7 +43,7 @@ export default class extends JSONController {
 	}
 
 	async handle(request: Request, response: Response): Promise<CreatedResponseInfo> {
-		const manager = new DepartmentManager()
+		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departmentInfo = await manager.create(request.body.data.attributes)
 
 		return new CreatedResponseInfo(departmentInfo)

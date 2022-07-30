@@ -34,7 +34,7 @@ export default class extends QueryController {
 		// TODO: Add limit to the constraints
 		const constraints = { ...request.query }
 
-		const manager = new RoleManager()
+		const manager = new RoleManager(request.transaction, request.cache)
 		const roles = await manager.list(constraints)
 
 		response.status(this.status.OK).json(roles)

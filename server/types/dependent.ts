@@ -12,6 +12,7 @@ import type {
 } from "express"
 import type { Session } from "express-session"
 import type { Serializable } from "$/types/database"
+import CacheClient from "$!/helpers/cache_client"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
 // @ts-ignore
@@ -28,6 +29,9 @@ export interface Request extends BaseRequest {
 
 	// Added to manage the transactions
 	transaction: TransactionManager
+
+	// Added to manage the cache
+	cache: CacheClient
 }
 
 export interface AuthenticatedRequest extends Request {
