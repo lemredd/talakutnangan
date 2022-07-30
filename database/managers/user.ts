@@ -256,9 +256,43 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 					"exiting user manager -> bulk create method with serialized reachable employee info")
 
 				return this.serialize(completeUserInfo)
-			} else {
-				// TODO: Possibly throw error to prevent bulk creation of unreachable employees or make a
-				// route
+			} else if (bulkData.kind === "unreachable_employee") {
+				// Unreachable employee profiles do not need other preprocessing
+				const normalizedProfiles = (incompleteProfiles as ProcessedDataForEmployee[]).map((
+					incompleteProfile: ProcessedDataForEmployee
+				) => {
+					return { ...incompleteProfile }
+				})
+
+				Log.trace(
+					"manager",
+					"specialized the data structure for unreachable employee bulk creation")
+
+				// Create the reachable employees in bulk
+				const users = await this.model.bulkCreate(normalizedProfiles, {
+					include: [
+						{
+							model: AttachedRole,
+							as: "attachedRoles"
+						}
+					],
+					...this.transaction.transactionObject
+				})
+
+				Log.success("manager", "created unreachable employees in bulk")
+
+				const completeUserInfo = users.map(user => {
+					user.department = departmentModels[`${user.departmentID}`]
+					user.roles = roles
+					return user
+				})
+
+				Log.trace(
+					"manager",
+					"exiting user manager -> bulk create method with serialized unreachable employee info")
+
+
+				return this.serialize(completeUserInfo)
 			}
 
 			return {}
