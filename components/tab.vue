@@ -1,10 +1,10 @@
 <template>
 <ul class="tabs">
 	<li v-for="tab in tabs" class="tab-button">
-		<Link
+		<Anchor
 			:href="`${parentUrl}/${tab.toLowerCase()}`">
 			{{ tab }}
-		</Link>
+		</Anchor>
 	</li>
 </ul>
 </template>
