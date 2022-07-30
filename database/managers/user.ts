@@ -1,5 +1,6 @@
 import { days } from "$/types/database.native"
-import { DeserializedDepartment } from "$/types/common_front-end"
+import { GeneralObject } from "$/types/server"
+import { DeserializedDepartment, DeserializedRole } from "$/types/common_front-end"
 import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
 import type {
 	RawBulkData,
@@ -110,6 +111,8 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
 			const departmentManager = new DepartmentManager(this.transaction)
+			const roleManager = new RoleManager(this.transaction)
+
 			// Get the department name firsts
 			const departmentNames = bulkData.importedCSV.map(data => data.department)
 
@@ -147,17 +150,21 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			Log.trace("manager", "found department IDs")
 
 			// Find the IDs of the roles
-			const roleWhereConditions: Condition[] = bulkData.roles.reduce((
-				conditions: Condition[],
-				name: string
-			) => {
-				const condition = new Condition()
-				condition.equal("name", name)
-				return [ ...conditions, condition ]
-			}, [])
-			const roles = await Role.findAll({
-				where: (new Condition()).or(...roleWhereConditions).build()
-			})
+			const roleNames = bulkData.roles
+			const roles: Role[] = []
+			for (const roleName of roleNames) {
+				const rawRole = await roleManager.findOneOnColumn(
+					"name",
+					roleName, {
+						filter: {
+							existence: "exists"
+						}
+					}
+				)
+				const deserializedRole = deserialize(rawRole) as DeserializedRole
+				const { type, ...roleAttributes } = deserializedRole.data
+				roles.push(Role.build(roleAttributes as GeneralObject))
+			}
 			const rolesToAttach = roles.reduce<{ roleID: number }[]>((previousRoles, role) => {
 				return [ ...previousRoles, { roleID: role.id } ]
 			}, [])
