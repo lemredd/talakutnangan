@@ -72,15 +72,24 @@ export interface UnreachableEmployeeProfileData extends ProfileData {
 	kind: "unreachable_employee"
 }
 
+import type { RawDepartment, RawRole } from "$/types/database"
+
 /**
  * Shape of deserialized department
  */
 export interface DeserializedDepartment extends Serializable {
 	data: {
 		type: "department",
-		id: number,
-		acronym: string,
-		fullName: string,
-		mayAdmit: boolean
-	}
+		id: number
+	} & RawDepartment & Serializable
+}
+
+/**
+ * Shape of deserialized role
+ */
+export interface DeserializedRole extends Serializable {
+	data: {
+		type: "role",
+		id: number
+	} & RawRole & Serializable
 }
