@@ -6,11 +6,11 @@ Put your additions and compatible changes here...
 
 ## PR Quality
 - Is pull requester confidently has no/applied changes affected by breaking changes of previous PRs?
-  No/Yes
+  Yes/No
 - Has breaking changes? None/Yes
 
 ## Merge Instructions
-- PRs to merge first: None / lemredd/talakutnangan#xx
+- PRs to merge first: None / #xxx
 - Will have additional commits? None/Yes
 - Must be merged ASAP? No/Yes
 - In case of merge conflicts, who will resolve them? Pull requester/Reviewer/Whoever caught it first

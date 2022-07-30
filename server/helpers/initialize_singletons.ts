@@ -4,6 +4,7 @@ import Log from "$!/singletons/log"
 import Database from "%/data_source/database"
 import URLMaker from "$!/singletons/url_maker"
 import Transport from "!/helpers/email/transport"
+import CacheManager from "$!/singletons/cache_manager"
 import RequestEnvironment from "$/helpers/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -11,6 +12,10 @@ export default async function(sourceType: SourceType) {
 	Log.initialize()
 
 	Log.trace("app", "initialized logger")
+
+	CacheManager.initialize()
+
+	Log.trace("app", "initialized cache manager")
 
 	const protocol = process.env.WEB_PROTOCOL || "http"
 	const hostname = process.env.WEB_HOST || "localhost"
