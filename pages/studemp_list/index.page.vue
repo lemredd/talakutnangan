@@ -10,8 +10,8 @@ import { deserialise } from "kitsu-core"
 
 import type { UserProfile } from "$/types/common_front-end"
 
-import Manager from "@/user_management/manager"
-import UsersManager from "@/user_management/DataManager.vue"
+import Manager from "@/resource_management/manager"
+import UsersManager from "@/resource_management/resource_manager.vue"
 import RoleFetcher from "$@/communicators/role"
 
 provide("managerKind", new Manager("dean"))

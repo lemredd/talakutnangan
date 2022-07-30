@@ -9,9 +9,9 @@
 <script setup lang="ts">
 import { provide, ref } from "vue"
 
-import type { Department, ManagerKind } from "@/user_management/types"
+import type { Department, ManagerKind } from "@/resource_management/types"
 
-import DeptManager from "@/user_management/DataManager.vue"
+import DeptManager from "@/resource_management/resource_manager.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 
 provide("managerKind", "admin" as ManagerKind)

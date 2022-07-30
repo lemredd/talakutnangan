@@ -10,12 +10,12 @@
 import { onMounted, provide, ref } from "vue"
 import { deserialise } from "kitsu-core"
 
-import Manager from "@/user_management/manager"
+import Manager from "@/resource_management/manager"
 
 
 import type { UserProfile } from "$/types/common_front-end"
 
-import UsersManager from "@/user_management/DataManager.vue"
+import UsersManager from "@/resource_management/resource_manager.vue"
 import RoleFetcher from "$@/communicators/role"
 
 

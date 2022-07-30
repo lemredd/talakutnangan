@@ -30,9 +30,9 @@
 import { computed, inject, onUpdated, provide, ref, watch } from "vue"
 import type { ManagerKind, Department, Role } from "./types"
 import type { UserProfile } from "$/types/common_front-end"
-import Filter from "./users_manager/Filter.vue"
-import SearchFilter from "./users_manager/SearchBar.vue"
-import ResourceList from "./users_manager/DataList.vue"
+import Filter from "./resource_manager/filter.vue"
+import SearchFilter from "./resource_manager/search_bar.vue"
+import ResourceList from "./resource_manager/resource_list.vue"
 import { deserialise } from "kitsu-core"
 import uniq from "lodash.uniq"
 
