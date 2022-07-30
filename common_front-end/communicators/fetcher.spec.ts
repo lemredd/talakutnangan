@@ -1,5 +1,7 @@
-import RequestEnvironment from "$/helpers/request_environment"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import type { CommonQueryParameters } from "$/types/database"
+import stringifyQuery from "$@/communicators/stringify_query"
+import RequestEnvironment from "$/helpers/request_environment"
 import Fetcher from "./fetcher"
 
 describe("Communicator: Fetcher", () => {
@@ -38,11 +40,24 @@ describe("Communicator: Fetcher", () => {
 		{ status: RequestEnvironment.status.OK })
 
 		Fetcher.initialize("/api", "user")
-		const response = await Fetcher.list({})
+		const queryObject: CommonQueryParameters = {
+			filter: {
+				existence: "exists"
+			},
+			sort: [ "id", "name" ],
+			page: {
+				offset: 0,
+				limit: 5
+			}
+		}
+		const response = await Fetcher.list(queryObject)
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/user/list")
+		expect(request).toHaveProperty("url", "/api/user/list?"+stringifyQuery({
+			...queryObject,
+			sort: queryObject.sort.join(",")
+		}))
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(response).toHaveProperty("body.data.0.type")
