@@ -73,6 +73,17 @@ describe("Database: API Link Creator", () => {
 		})
 	})
 
+	it("can make URL from path template", () => {
+		URLMaker.initialize("http", "localhost", 16000, "/")
+		const data = {
+			id: 1
+		}
+
+		const URL = URLMaker.makeURLFromPath("/signature/:id", data)
+
+		expect(URL).toBe("http://localhost:16000/signature/1")
+	})
+
 	it("can make encrypted path", async () => {
 		URLMaker.initialize("http", "localhost", 16000, "/")
 		const data = JSON.stringify({

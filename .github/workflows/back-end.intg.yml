@@ -15,9 +15,12 @@ on:
       - 'pages/**'
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
-  pull_request:
+      - 'jest.back.intg.config.json'
+  pull_request_target:
     types:
+      - opened
       - reopened
+      - review_requested
     branches:
       - master
     paths:
@@ -33,6 +36,7 @@ on:
       - 'pages/**'
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
+      - 'jest.back.intg.config.json'
 
 env:
   EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
@@ -68,7 +72,8 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run migrate:up
+    - run: ./execute.ps1 -database -upgrade
+      shell: pwsh
     - run: npm run seed:up:all
     - run: npm run build
     - run: ./execute.ps1 -test intg:back

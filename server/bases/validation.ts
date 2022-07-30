@@ -1,9 +1,10 @@
 import { Validator } from "node-input-validator"
 
 import type { FieldRulesMaker } from "!/types/hybrid"
-import type { ValidationRules } from "!/types/independent"
-import type { SourceParameter, SourcePointer } from "$/types/server"
 import type { Request, Response, NextFunction } from "!/types/dependent"
+import type { GeneralObject, SourceParameter, SourcePointer } from "$/types/server"
+import type { ValidationRules, ErrorPointer, SourceType } from "!/types/independent"
+import accessDeepPath from "!/helpers/access_deep_path"
 
 import Log from "$!/singletons/log"
 import ErrorBag from "$!/errors/error_bag"
@@ -31,15 +32,32 @@ export default abstract class extends Middleware {
 		}
 	}
 
-	async validate(body: object, request: Request): Promise<void> {
+	async validate(body: GeneralObject, request: Request): Promise<void> {
 		let errorInfos: any = null
 		if (this.validationRules instanceof Function) {
 			Log.success("migration", "Validating using new method in "+request.url)
 			try {
 				const validationRules = this.validationRules(request)
-				await validate(validationRules, request, body)
+				const sanitizedInputs = await validate(validationRules, request, body)
+
+				// Clear the body
+				for (const field in body) {
+					if (Object.prototype.hasOwnProperty.call(body, field)) {
+						delete body[field]
+					}
+				}
+
+				// Inject the body with sanitized inputs
+				for (const field in sanitizedInputs) {
+					if (Object.prototype.hasOwnProperty.call(sanitizedInputs, field)) {
+						body[field] = sanitizedInputs[field]
+					}
+				}
 			} catch(error) {
-				errorInfos = error
+				errorInfos = (error as ErrorPointer[]).map(error => ({
+					field: error.field,
+					message: error.messageMaker(error.field, accessDeepPath(body, error.field))
+				}))
 			}
 		} else {
 			Log.warn("migration", "Validating using old method in "+request.url)
@@ -73,5 +91,5 @@ export default abstract class extends Middleware {
 	/**
 	 * Type of source where the validation error comes from.
 	 */
-	get sourceType(): "pointer"|"parameter"|null { return "pointer" }
+	get sourceType(): SourceType { return "pointer" }
 }

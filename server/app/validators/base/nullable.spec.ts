@@ -35,4 +35,18 @@ describe("Validator pipe: nullable", () => {
 
 		expect(sanitizeValue).toEqual("world")
 	})
+
+	it("can skip if there is no default value", async () => {
+		const value = Promise.resolve(makeInitialState(null))
+		const constraints = {
+			request: null,
+			source: null,
+			field: "hello"
+		}
+
+		const state = await nullable(value, constraints)
+
+		expect(state.value).toBeNull()
+		expect(state.maySkip).toBeTruthy()
+	})
 })

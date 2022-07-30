@@ -1,5 +1,7 @@
-import { rawCriteria, Criteria } from "$/types/database"
-import { Request, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/independent"
+import type { FieldRulesMaker } from "!/types/hybrid"
+import type { Request, Response } from "!/types/dependent"
+import { UserKindValues, UserFilter } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -11,11 +13,11 @@ import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-interface WithQuery {
-	query: {
-		criteria?: Criteria
-	}
-}
+import string from "!/app/validators/base/string"
+import nullable from "!/app/validators/base/nullable"
+import oneOf from "!/app/validators/comparison/one-of"
+
+import makeListRules from "!/app/rule_sets/make_list"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -28,15 +30,43 @@ export default class extends QueryController {
 	}
 
 	get queryValidationRules(): object {
-		return {
-			criteria: [ "required", [ "in", ...rawCriteria ] ]
-		}
+		return {}
 	}
 
-	async handle(request: Request & WithQuery, response: Response): Promise<void> {
-		const { criteria = null } = request.query
+	makeQueryRuleGenerator(): FieldRulesMaker {
+		// TODO: make a validator to skip "*" character
+		return (request: Request): FieldRules => makeListRules(UserManager, {
+			slug: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "" }
+				}
+			},
+			department: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "*" }
+				}
+			},
+			role: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "*" }
+				}
+			},
+			kind: {
+				pipes: [ nullable, string, oneOf ],
+				constraints: {
+					nullable: { defaultValue: "*" },
+					oneOf: { values: [ "*", ...UserKindValues ] }
+				}
+			}
+		})
+	}
+
+	async handle(request: Request, response: Response): Promise<void> {
 		const manager = new UserManager()
-		const users = await manager.list({ criteria })
+		const users = await manager.list(request.query as UserFilter)
 
 		// TODO: Hide the signatures of users
 		response.status(this.status.OK).json(users)

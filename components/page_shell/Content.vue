@@ -11,6 +11,7 @@
 @import "@styles/mixins.scss";
 
 .content {
+	@include useContentBaseHeight;
 	margin-top: $navHeight;
 	padding: 20px;
 

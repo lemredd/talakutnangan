@@ -10,8 +10,14 @@ describe("Database: Role read operations", () => {
 
 		const roles = await manager.list({
 			name: incompleteName,
-			page: 0,
-			limit: 1
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")
@@ -25,8 +31,14 @@ describe("Database: Role read operations", () => {
 
 		const roles = await manager.list({
 			name: incorrectName,
-			page: 0,
-			limit: 1
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")

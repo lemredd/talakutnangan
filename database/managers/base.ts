@@ -1,3 +1,4 @@
+import type { GeneralObject } from "$/types/server"
 import type { Serializable, Pipe } from "$/types/database"
 import type {
 	Model,
@@ -12,48 +13,67 @@ import type {
 } from "%/types/dependent"
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
-import DatabaseError from "$!/errors/database"
+import page from "%/managers/helpers/page"
+import sort from "%/managers/helpers/sort"
 import Transformer from "%/transformers/base"
+import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
-import limit from "%/managers/helpers/limit"
-import offset from "%/managers/helpers/offset"
-import existence from "%/managers/helpers/existence"
 import Condition from "%/managers/helpers/condition"
+import RequestEnvironment from "$/helpers/request_environment"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
+import siftByExistence from "%/managers/helpers/sift_by_existence"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
+ *
+ * First generic argument is `T` that represents the model it controls. Second generic argument is
+ * `U` that represents the transformer for the model. Third, `V` represents the filter to be used by
+ * the manager which is an object by default. Fourth, W which indicates extra options for the
+ * transformer if there are.
  */
-export default abstract class Manager<T extends Model, U> {
+export default abstract class Manager<
+	T extends Model,
+	U,
+	V extends GeneralObject = GeneralObject,
+	W = void
+> extends RequestEnvironment {
 	protected transaction: TransactionManager
 
 	constructor(transaction: TransactionManager = new TransactionManager()) {
+		super()
 		this.transaction = transaction
 	}
 
 	abstract get model(): ModelCtor<T>
 
-	abstract get transformer(): Transformer<T, void>
+	abstract get transformer(): Transformer<T, W>
 
 	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
-			existence,
-			offset,
-			limit
+			siftByExistence,
+			page,
+			sort
 		]
 	}
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
-			existence,
-			offset,
-			limit
+			siftByExistence
 		]
 	}
 
-	async findWithID(id: number, constraints: object = {}): Promise<Serializable> {
+	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
 		try {
+			{
+				// @ts-ignore
+				if (constraints.filter === undefined) constraints.filter = {}
+				if (constraints.filter.existence === undefined)
+					constraints.filter.existence = "exists"
+				// @ts-ignore
+				if (constraints.sort === undefined) constraints.sort = []
+			}
+
 			const foundModel = await this.findOneOnColumn("id", id, constraints)
 
 			Log.success("manager", "done searching for a model using ID")
@@ -64,7 +84,7 @@ export default abstract class Manager<T extends Model, U> {
 		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any, constraints: object = {})
+	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
 	: Promise<Serializable> {
 		try {
 			const condition = new Condition()
@@ -86,7 +106,7 @@ export default abstract class Manager<T extends Model, U> {
 		}
 	}
 
-	async list(query: object): Promise<Serializable> {
+	async list(query: V): Promise<Serializable> {
 		try {
 			const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
 
@@ -186,17 +206,38 @@ export default abstract class Manager<T extends Model, U> {
 		}
 	}
 
-	protected serialize(models: T|T[]|null): Serializable {
+	get sortableColumns(): string[] {
+		return this.exposableColumns
+			.flatMap(column => [ column, `-${column}` ])
+			.sort()
+	}
+
+	protected get exposableColumns(): string[] {
+		const attributeInfo = (this.model.getAttributes() as GeneralObject)
+		const attributeNames = []
+
+		for (const name in attributeInfo) {
+			if (Object.prototype.hasOwnProperty.call(attributeInfo, name)) {
+				attributeNames.push(name)
+			}
+		}
+
+		return attributeNames
+	}
+
+	protected serialize<U = Serializable>(models: T|T[]|null): U {
 		return Serializer.serialize(
 			models,
 			this.transformer,
 			{}
-		)
+		) as unknown as U
 	}
 
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
+		} else if (error instanceof Error && this.isNotOnProduction) {
+			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
 		} else {
 			return new DatabaseError()
 		}

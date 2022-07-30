@@ -5,9 +5,10 @@ import type {
 	ObjectRuleConstraints
 } from "!/types/independent"
 
-import isPlainObject from "lodash.isplainobject"
 import validate from "!/app/validators/validate"
+import isPlainObject from "$!/helpers/is_plain_object"
 import unifyErrors from "!/app/validators/unify_errors"
+import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**
  * Validator to check if data is an array
@@ -22,11 +23,7 @@ export default async function(
 
 	if (isPlainObject(state.value)) {
 		if (constraints.object === undefined) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) =>
-					`Developer forgot to add contraints in object for field ${field}.`
-			}
+			throw makeDeveloperError(constraints.field)
 		}
 
 		const sanitizedInputs: { [key:string]: any } = {}
@@ -57,7 +54,7 @@ export default async function(
 	} else {
 		throw {
 			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be an array.`
+			messageMaker: (field: string) => `Field "${field}" must be an object.`
 		}
 	}
 }

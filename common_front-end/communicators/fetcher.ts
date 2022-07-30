@@ -3,7 +3,7 @@ import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$/helpers/request_environment"
-import specializedPath from "$@/helpers/specialize_path"
+import specializedPath from "$/helpers/specialize_path"
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the

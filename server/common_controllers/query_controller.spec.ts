@@ -64,7 +64,7 @@ describe("Back-end: Query Controller Special Validation", () => {
 					expect(error).toBeInstanceOf(ErrorBag)
 					const unitErrors = error.toJSON()
 					expect(unitErrors).toHaveLength(1)
-					expect(unitErrors[0]).toHaveProperty("source.pointer", "order")
+					expect(unitErrors[0]).toHaveProperty("source.parameter", "order")
 				}
 			]
 		])
@@ -99,8 +99,8 @@ describe("Back-end: Query Controller Special Validation", () => {
 					expect(error).toBeInstanceOf(ErrorBag)
 					const unitErrors = error.toJSON()
 					expect(unitErrors).toHaveLength(2)
-					expect(unitErrors[0]).toHaveProperty("source.pointer", "limit")
-					expect(unitErrors[1]).toHaveProperty("source.pointer", "order")
+					expect(unitErrors[0]).toHaveProperty("source.parameter", "limit")
+					expect(unitErrors[1]).toHaveProperty("source.parameter", "order")
 				}
 			]
 		])

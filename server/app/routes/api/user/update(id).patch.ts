@@ -66,11 +66,6 @@ export default class extends MultipartController {
 				"string",
 				"email",
 				[ "unique", UserManager, "email", "data.id" ]
-			],
-			// TODO: Think of maximum size of picture
-			"data.attributes.signature": [
-				"nullable",
-				[ "buffer", "image/png", 1024 * 1024 * 10 ]
 			]
 		}
 	}
