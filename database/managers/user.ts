@@ -118,7 +118,14 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 			// Find the IDs of the departments
 			const departments: Department[] = []
 			for (const departmentName of departmentNames) {
-				const rawDepartment = await departmentManager.findOneOnColumn("acronym", departmentName)
+				const rawDepartment = await departmentManager.findOneOnColumn(
+					"acronym",
+					departmentName, {
+						filter: {
+							existence: "exists"
+						}
+					}
+				)
 				const deserializedDepartment = deserialize(rawDepartment) as DeserializedDepartment
 				departments.push(Department.build({
 					id: deserializedDepartment.data.id,
