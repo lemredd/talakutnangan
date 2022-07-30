@@ -69,7 +69,7 @@ export default class extends MultipartController {
 		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
 		response: Response
 	): Promise<NoContentResponseInfo> {
-		const manager = new UserManager()
+		const manager = new UserManager(request.transaction, request.cache)
 		const id = +request.body.data.id
 		const { name, email, signature = undefined } = request.body.data.attributes
 		const userData = deserialize(request.user) as UserProfile
