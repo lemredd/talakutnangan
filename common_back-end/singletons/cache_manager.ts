@@ -11,7 +11,11 @@ export default class {
 		this.cache = new Map()
 	}
 
-	static createClient(): CacheClient {
+	static destroy() {
+		this.cache.clear()
+	}
+
+	static initializeClient(): CacheClient {
 		const clientKey = Symbol("cache client key")
 		this.cache.set(clientKey, {})
 		return new CacheClient(clientKey)

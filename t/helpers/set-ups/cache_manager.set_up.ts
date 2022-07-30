@@ -1,5 +1,9 @@
 import CacheManager from "$!/singletons/cache_manager"
 
-beforeAll(() => {
+beforeEach(() => {
 	CacheManager.initialize()
-});
+})
+
+afterEach(() => {
+	CacheManager.destroy()
+})
