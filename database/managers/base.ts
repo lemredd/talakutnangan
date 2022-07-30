@@ -17,6 +17,7 @@ import page from "%/managers/helpers/page"
 import sort from "%/managers/helpers/sort"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
+import CacheClient from "$!/helpers/cache_client"
 import Serializer from "%/transformers/serializer"
 import Condition from "%/managers/helpers/condition"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -33,11 +34,16 @@ import TransactionManager from "%/managers/helpers/transaction_manager"
  */
 export default abstract class Manager<T extends Model, U, V extends GeneralObject = GeneralObject>
 extends RequestEnvironment {
+	protected cache: CacheClient
 	protected transaction: TransactionManager
 
-	constructor(transaction: TransactionManager = new TransactionManager()) {
+	constructor(
+		transaction: TransactionManager = new TransactionManager(),
+		cache: CacheClient = new CacheClient(Symbol("unknown client"))
+	) {
 		super()
 		this.transaction = transaction
+		this.cache = cache
 	}
 
 	abstract get model(): ModelCtor<T>
