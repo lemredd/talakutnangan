@@ -1,6 +1,9 @@
 import type { GeneralObject } from "$/types/server"
 import CacheClient from "$!/helpers/cache_client"
 
+/**
+ * Manager class that handles the cache of all requests.
+ */
 export default class {
 	private static cache: Map<Symbol, GeneralObject>
 
@@ -26,5 +29,14 @@ export default class {
 		if (this.cache.get(clientKey)) {
 			this.cache.set(clientKey, newCache)
 		}
+	}
+
+	/**
+	 * Used for testing purposes.
+	 *
+	 * The value should not be seen the client side.
+	 */
+	static get clientCount(): number {
+		return this.cache.size
 	}
 }
