@@ -114,7 +114,7 @@ import {
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
 
-import Link from "@/link.vue"
+import Anchor from "@/anchor.vue"
 import RoleLinksList from "@/Dropdown.vue"
 
 const emit = defineEmits(["toggle"])

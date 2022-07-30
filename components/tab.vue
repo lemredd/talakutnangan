@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { defineComponent, inject, ref } from "vue"
-import Link from "@/link.vue"
+import Anchor from "@/anchor.vue"
 import { PageContext } from "#/types"
 
 const pageContext = inject("pageContext") as PageContext
