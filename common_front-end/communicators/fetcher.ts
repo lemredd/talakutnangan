@@ -3,14 +3,15 @@ import type { Response } from "$@/types/independent"
 import type { CommonQueryParameters } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import RequestEnvironment from "$/helpers/request_environment"
 import specializedPath from "$@/helpers/specialize_path"
+import stringifyQuery from "$@/communicators/stringify_query"
+import RequestEnvironment from "$/helpers/request_environment"
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the
  * client-side code.
  */
-export default class Fetcher<T extends CommonQueryParameters = CommonQueryParameters> extends RequestEnvironment {
+export default class Fetcher extends RequestEnvironment {
 	private static basePath: string = ""
 	protected static type: string = ""
 
@@ -28,8 +29,13 @@ export default class Fetcher<T extends CommonQueryParameters = CommonQueryParame
 		})
 	}
 
-	static list(parameters: CommonQueryParameters): Promise<Response> {
-		return this.getJSON(`${this.type}/list`)
+	static list<T extends CommonQueryParameters = CommonQueryParameters>(parameters: T)
+	: Promise<Response> {
+		const commaDelimitedSort = {
+			...parameters,
+			sort: parameters.sort.join(",")
+		}
+		return this.getJSON(`${this.type}/list?${stringifyQuery(commaDelimitedSort)}`)
 	}
 
 	static update(id: number, attributes: Serializable): Promise<Response> {
