@@ -1,4 +1,5 @@
 import { days } from "$/types/database.native"
+import { DeserializedDepartment } from "$/types/common_front-end"
 import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
 import type {
 	RawBulkData,
@@ -15,6 +16,7 @@ import type {
 } from "$/types/database"
 
 import Log from "$!/singletons/log"
+import deserialize from "$/helpers/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"
@@ -25,6 +27,8 @@ import StudentDetail from "%/models/student_detail"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 import BaseManager from "%/managers/base"
+import RoleManager from "%/managers/role"
+import DepartmentManager from "%/managers/department"
 import UserTransformer from "%/transformers/user"
 
 import hash from "$!/auth/hash"
@@ -105,24 +109,25 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
+			const departmentManager = new DepartmentManager(this.transaction)
 			// Get the department name firsts
 			const departmentNames = bulkData.importedCSV.map(data => data.department)
 
 			Log.trace("manager", "prepared names for searching IDs: "+departmentNames.join(","))
 
 			// Find the IDs of the departments
-			const departmentWhereConditions: Condition[] = departmentNames.reduce((
-				conditions: Condition[],
-				name: string
-			) => {
-				const condition = new Condition()
-				condition.equal("acronym", name)
-				return [ ...conditions, condition ]
-			}, [])
-			const departmentFindOptions = {
-				where: (new Condition()).or(...departmentWhereConditions).build()
+			const departments: Department[] = []
+			for (const departmentName of departmentNames) {
+				const rawDepartment = await departmentManager.findOneOnColumn("acronym", departmentName)
+				const deserializedDepartment = deserialize(rawDepartment) as DeserializedDepartment
+				departments.push(Department.build({
+					id: deserializedDepartment.data.id,
+					fullName: deserializedDepartment.data.fullName,
+					acronym: deserializedDepartment.data.acronym,
+					mayAdmit: deserializedDepartment.data.mayAdmit
+				}))
 			}
-			const departments = await Department.findAll(departmentFindOptions)
+			// Associate department info for faster access later
 			const departmentIDs: { [key: string]: number } = departments.reduce(
 				(previousMappings, department) => {
 					return { ...previousMappings, [department.acronym]: department.id }

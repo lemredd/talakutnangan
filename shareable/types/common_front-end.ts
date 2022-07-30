@@ -75,7 +75,7 @@ export interface UnreachableEmployeeProfileData extends ProfileData {
 /**
  * Shape of deserialized department
  */
- export interface DeserializedDepartment extends Serializable {
+export interface DeserializedDepartment extends Serializable {
 	data: {
 		type: "department",
 		id: number,
