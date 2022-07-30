@@ -1,5 +1,6 @@
 <template>
 	<div class="search-bar">
+			<!-- TODO: separate component from textual_field -->
 			<TextualField
 				type="email"
 				v-model="searchFilter"
