@@ -1,3 +1,5 @@
+import type { FieldRules } from "!/types/independent"
+import type { FieldRulesMaker } from "!/types/hybrid"
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -6,6 +8,8 @@ import { READ } from "$/permissions/role_combinations"
 import QueryController from "!/common_controllers/query_controller"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+
+import makeListRules from "!/app/rule_sets/make_list"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -19,6 +23,11 @@ export default class extends QueryController {
 	get queryValidationRules(): object {
 		// TODO: Validate common query
 		return {}
+	}
+
+	makeQueryRuleGenerator(): FieldRulesMaker {
+		// TODO: make a validator to skip "*" character
+		return (request: Request): FieldRules => makeListRules(RoleManager, {})
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

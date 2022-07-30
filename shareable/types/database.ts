@@ -38,10 +38,6 @@ export interface RawPost {
 	roleID?: Role,
 }
 
-export const rawCriteria = [ "incomplete", "complete", "all" ] as const
-
-export type Criteria = typeof rawCriteria[number]
-
 /**
  * Used to receive raw validated department details.
  */
@@ -67,6 +63,14 @@ export interface RawRole {
 	auditTrailFlags: number
 }
 
+/**
+ * Used to receive raw signature details.
+ */
+export interface RawSignature {
+	userID: string,
+	signature: Buffer
+}
+
 export type List<T> = Promise<{
 	records: T[],
 	count: number
@@ -85,8 +89,11 @@ export type Pipe<T, U> = (currentState: T, constraints: U) => T
 export interface Serializable {
 	[key: string]:
 		| string
+		| string[]
 		| number
+		| number[]
 		| boolean
+		| boolean[]
 		| null
 		| Serializable[]
 		| Serializable
@@ -104,8 +111,60 @@ const rawDays = [ ...days ] as const
 export type Day = typeof rawDays[number]
 
 /**
- * Shape of expected common filter
+ * Expected shape of the common page options
  */
-export interface Filter extends Serializable {
-	existence: "exists" | "archived" | "all"
+export interface Page {
+	page: {
+		offset: number,
+		limit: number
+	}
+}
+
+/**
+ * Shape of expected common filter options
+ */
+export type Filter = ExistenceFilter
+
+export type UserFilter =
+	& Filter
+	& DepartmentFilter
+	& RoleFilter
+	& KindFilter
+	& SlugFilter
+
+export interface ExistenceFilter extends Serializable {
+	filter: {
+		existence: "exists" | "archived" | "*"
+	}
+}
+
+/**
+ * Expected shape of the common sort options
+ */
+export interface Sort extends Serializable {
+	sort: string[]
+}
+
+export interface SlugFilter extends Serializable {
+	filter: {
+		slug: string
+	}
+}
+
+export interface DepartmentFilter extends Serializable {
+	filter: {
+		department: "*"|string
+	}
+}
+
+export interface RoleFilter extends Serializable {
+	filter: {
+		role: "*"|string
+	}
+}
+
+export interface KindFilter extends Serializable {
+	filter: {
+		kind: "*"|UserKind
+	}
 }

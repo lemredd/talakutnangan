@@ -9,8 +9,14 @@ describe("Database: Department Read Operations", () => {
 
 		const roles = await manager.list({
 			fullName: incompleteName,
-			page: 0,
-			limit: 1
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")
@@ -24,8 +30,14 @@ describe("Database: Department Read Operations", () => {
 
 		const roles = await manager.list({
 			fullName: incorrectName,
-			page: 0,
-			limit: 1
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
+			page: {
+				offset: 0,
+				limit: 5
+			}
 		})
 
 		expect(roles).toHaveProperty("data")

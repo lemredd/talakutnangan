@@ -44,9 +44,28 @@ Switch to runs tests.
 Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
+.PARAMETER Path
+Only works if `-Test` switch is on.
+Limits the files to test base from regular expression.
+
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
+
+.PARAMETER Database
+Switch to run database operations.
+
+.PARAMETER Initialize
+Switch to migrate all database tables for the first time.
+
+.PARAMETER Upgrade
+Switch to migrate all database tables.
+
+.PARAMETER Downgrade
+Switch to undo some migration of tables.
+
+.PARAMETER Reset
+Switch to redo all migration of tables from the start.
 
 .INPUTS
 All inputs are done through arguments.
@@ -118,6 +137,8 @@ Param(
 		"unit:front",
 		"unit:ui",
 		"unit:back",
+		"unit:back_ci",
+		"unit:front_ci",
 		"unit:server",
 		"unit:database",
 		"intg:front",
@@ -127,8 +148,32 @@ Param(
 	$SuiteName,
 
 	[Parameter(ParameterSetName="Test", Position=2)]
+	[string]
+	$Regex = "",
+
+	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
-	$Watch
+	$Watch,
+
+	[Parameter(ParameterSetName="Database", Position=0)]
+	[switch]
+	$Database,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Initialize,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Upgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Downgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Reset
 )
 
 if ($Help) {
@@ -159,12 +204,29 @@ if ($Test) {
 		$configuration = "jest.$($name).config.json"
 	}
 
-	$watchFlag = ""
-	if ($Watch) {
-		$watchFlag = "--watch"
+	$regexFlag = '""'
+	if ($Regex -ne "") {
+		$regexFlag = '"'+$Regex+'"'
 	}
 
-	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+	if ($regexFlag -eq '""') {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
+	} else {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
+	}
+
+	# Above operations refreshed the cache directory so it is safe to watch now
+	if ($Watch) {
+		if ($regexFlag -eq '""') {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
+		} else {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
+		}
+	}
 }
 
 if ($Push) {
@@ -181,5 +243,25 @@ if ($Pull) {
 		& git pull --prune
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+	}
+}
+
+if ($Database) {
+	if ($Initialize) {
+		& npx sequelize-cli db:create
+		& ./execute -Database -Upgrade
+	}
+
+	if ($Upgrade) {
+		& npx sequelize-cli db:migrate
+	}
+
+	if ($Downgrade) {
+		& npx sequelize-cli db:migrate:undo
+	}
+
+	if ($Reset) {
+		& npx sequelize-cli db:drop
+		& ./execute -Database -Initialize
 	}
 }

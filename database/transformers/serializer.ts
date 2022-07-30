@@ -1,20 +1,21 @@
+import type { Serializable } from "$/types/database"
+
 import { Model } from "sequelize-typescript"
 import {
-	Transformer,
 	transform,
 	whitelist,
 	ContextBuilder,
 	RelationshipTransformerInfo
 } from "jsonapi-fractal"
-import type { Serializable } from "$/types/database"
+import Transformer from "%/transformers/base"
 
 export default class Serializer {
-	private static build<T extends Model>(
+	private static build<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
-	): ContextBuilder<T, void> {
-		let builder = transform<T, void>()
+	): ContextBuilder<T, U> {
+		let builder = transform<T, U>()
 			.withInput(model as unknown as T)
 			.withTransformer(transformer)
 
@@ -25,24 +26,25 @@ export default class Serializer {
 		return builder
 	}
 
-	static serialize<T extends Model>(
+	static serialize<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
 	): Serializable {
 		const builder = Serializer.build(model, transformer, options)
+		const resources = builder.serialize() as Serializable
 
-		return builder.serialize() as Serializable
+		return transformer.finalizeTransform(model, resources)
 	}
 
-	static makeContext<T extends Model>(
+	static makeContext<T extends Model, U = void>(
 		model: T|T[]|null,
-		transformer: Transformer<T, void>,
+		transformer: Transformer<T, U>,
 		options?: object
 	): RelationshipTransformerInfo<void, unknown> {
 		const builder = Serializer.build(model, transformer, options)
 
-		return builder.withIncluded(true).toContext() as RelationshipTransformerInfo<void, unknown>
+		return builder.withIncluded(true).toContext() as unknown as RelationshipTransformerInfo<void, unknown>
 	}
 
 	static whitelist<T extends Model>(model: T|T[]|null, attributes: string[]) {

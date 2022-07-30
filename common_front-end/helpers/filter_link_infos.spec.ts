@@ -57,6 +57,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -139,6 +142,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -184,6 +190,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -261,6 +270,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -311,6 +323,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -399,6 +414,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -451,6 +469,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -526,6 +547,9 @@ describe("Helper: Filter Link Infos", () => {
 								}
 							]
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}

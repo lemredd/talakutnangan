@@ -1,5 +1,3 @@
-import dataURIToBuffer from "data-uri-to-buffer"
-import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
 import type { ModelCtor } from "%/types/dependent"
@@ -19,7 +17,6 @@ export default class UserFactory extends BaseFactory<User> {
 	roles: Role[] = []
 
 	#password = "password"
-	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
 	#mustBeVerified = true
 	#department: Department|null = null
@@ -38,7 +35,6 @@ export default class UserFactory extends BaseFactory<User> {
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
 			admittedAt: null,
 			kind: this.#kind,
-			signature: this.#signature,
 			departmentID: this.#department.id,
 			deletedAt: null
 		}
@@ -116,11 +112,6 @@ export default class UserFactory extends BaseFactory<User> {
 
 	beUnreachableEmployee(): UserFactory {
 		this.#kind = "unreachable_employee"
-		return this
-	}
-
-	hasNoSignature(): UserFactory {
-		this.#signature = null
 		return this
 	}
 
