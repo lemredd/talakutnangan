@@ -168,3 +168,13 @@ export interface KindFilter extends Serializable {
 		kind: "*"|UserKind
 	}
 }
+
+/**
+ * Expected shape of meta option indicating if the number of users associated to the entity should
+ * be counted.
+ */
+export interface CountUser extends Serializable {
+	meta: {
+		countUser: boolean
+	}
+}
