@@ -1,4 +1,5 @@
 import type { GeneralObject } from "$/types/server"
+import Log from "$!/singletons/log"
 import CacheClient from "$!/helpers/cache_client"
 
 /**
@@ -18,11 +19,16 @@ export default class {
 	static initializeClient(): CacheClient {
 		const clientKey = Symbol("cache client key")
 		this.cache.set(clientKey, {})
+
+		Log.success("cache", "initialized cache client")
+
 		return new CacheClient(clientKey)
 	}
 
 	static destroyClient(clientKey: Symbol): void {
 		this.cache.delete(clientKey)
+
+		Log.success("cache", "destroyed cache client")
 	}
 
 	static getCache(clientKey: Symbol): GeneralObject {
