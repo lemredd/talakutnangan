@@ -8,7 +8,7 @@ export default class {
 		this.cache = new Map()
 	}
 
-	static makeClient(): CacheClient {
+	static createClient(): CacheClient {
 		const clientKey = Symbol("cache client key")
 		this.cache.set(clientKey, {})
 		return new CacheClient(clientKey)
