@@ -71,7 +71,7 @@ export default class extends BaseManager<Role, RawRole> {
 						type: "role",
 						id: countInfo.id,
 						meta: {
-							userCount: countInfo.count
+							userCount: +countInfo.count
 						}
 					})
 				})
