@@ -22,6 +22,10 @@ export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Seria
 	data: T
 }
 
+export interface MetaDocument<T extends Serializable> extends Serializable {
+	meta: T
+}
+
 export interface ResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
