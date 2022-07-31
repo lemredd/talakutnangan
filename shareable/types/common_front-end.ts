@@ -6,6 +6,7 @@
 
 import type { Serializable, Day } from "$/types/database"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 
 /**
@@ -31,11 +32,7 @@ interface ProfileData extends Serializable {
  */
 export interface StudentProfileData extends ProfileData {
 	kind: "student",
-	studentDetail: {
-		data: {
-			studentNumber: string
-		}
-	}
+	studentDetail: DeserializedStudentDetailDocument
 }
 
 /**
