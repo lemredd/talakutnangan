@@ -13,11 +13,20 @@ import specializedPath from "$/helpers/specialize_path"
  */
 export default class Fetcher extends RequestEnvironment {
 	private static basePath: string = ""
-	protected static type: string = ""
+	private static type: string = ""
 
 	static initialize(basePath: string, type: string = "") {
 		this.basePath = basePath
 		this.type = type
+	}
+
+	protected basePath: string = ""
+	protected type: string = ""
+
+	constructor() {
+		super()
+		this.basePath = Fetcher.basePath
+		this.type = Fetcher.type
 	}
 
 	static create(attributes: Serializable): Promise<Response> {
