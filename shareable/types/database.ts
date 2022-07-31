@@ -18,19 +18,6 @@ export type UserKind = typeof UserKindValues[number]
 export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
 
 /**
- * Used to receive raw posts. //title, desc, badword, user id, role id
- */
-
-export interface RawPost {
-	user?: string,
-	title?: string,
-	desc?: string
-	badWordExist?: boolean,
-	userID?: User,
-	roleID?: Role,
-}
-
-/**
  * Used to receive raw signature details.
  */
 export interface RawSignature {
