@@ -24,14 +24,8 @@
 </style>
 
 <script setup lang="ts">
-import type {
-	RoleAttributes,
-	DeserializedCompleteRoleDataListDocument
-} from "$/types/documents/role"
-import type {
-	DepartmentAttributes,
-	DeserializedCompleteDepartmentDataListDocument
-} from "$/types/documents/department"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { inject, onMounted, ref } from "vue"
 import deserialize from "$/helpers/deserialize"
@@ -85,8 +79,8 @@ async function listRoles() {
 	})
 	.then(response => {
 		const { body } = response
-		const deserializedData = deserialize(body) as DeserializedCompleteRoleDataListDocument
-		deserializedData.data.map((role: RoleAttributes) => {
+		const deserializedData = deserialize(body) as DeserializedRoleListDocument
+		deserializedData.data.map(role => {
 			availableFilters.value.push(role.name)
 		})
 
@@ -107,8 +101,8 @@ function listDepartments() {
 	})
 	.then(response => {
 		const { body } = response
-		const deserializedData = deserialize(body) as DeserializedCompleteDepartmentDataListDocument
-		deserializedData.data.map((department: DepartmentAttributes) => {
+		const deserializedData = deserialize(body) as DeserializedDepartmentListDocument
+		deserializedData.data.map(department => {
 			availableFilters.value.push(department.fullName)
 		})
 	})

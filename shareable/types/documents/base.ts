@@ -22,25 +22,25 @@ export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Seria
 	data: T
 }
 
-export interface CompleteDataDocument<
+export interface ResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
 > extends DataDocument<V> {}
 
-export interface CompleteDataListDocument<
+export interface ResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
 > extends DataDocument<V[]> {}
 
-export interface DeserializedCompleteDataDocument<
+export interface DeserializedResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
 > extends DataDocument<V> {}
 
-export interface DeserializedCompleteDataListDocument<
+export interface DeserializedResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>

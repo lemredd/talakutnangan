@@ -3,10 +3,10 @@ import type {
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
-	CompleteDataDocument,
-	CompleteDataListDocument,
-	DeserializedCompleteDataDocument,
-	DeserializedCompleteDataListDocument
+	ResourceDocument,
+	ResourceListDocument,
+	DeserializedResourceDocument,
+	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
 export interface DepartmentResourceIdentifier extends ResourceIdentifier {
@@ -29,26 +29,25 @@ export interface DeserializedDepartmentResource extends DeserializedResource<
 	DepartmentAttributes
 > {}
 
-export interface CompleteDepartmentDataDocument extends CompleteDataDocument<
+export interface DepartmentDocument extends ResourceDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
 > {}
 
-export interface CompleteDepartmentDataListDocument extends CompleteDataListDocument<
+export interface DepartmentListDocument extends ResourceListDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
 > {}
 
-export interface DeserializedCompleteDepartmentDataDocument extends DeserializedCompleteDataDocument<
+export interface DeserializedDepartmentDocument extends DeserializedResourceDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DeserializedDepartmentResource
 > {}
 
-export interface DeserializedCompleteDepartmentDataListDocument
-extends DeserializedCompleteDataListDocument<
+export interface DeserializedDepartmentListDocument extends DeserializedResourceListDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DeserializedDepartmentResource

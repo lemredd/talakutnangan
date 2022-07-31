@@ -3,10 +3,10 @@ import type {
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
-	CompleteDataDocument,
-	CompleteDataListDocument,
-	DeserializedCompleteDataDocument,
-	DeserializedCompleteDataListDocument
+	ResourceDocument,
+	ResourceListDocument,
+	DeserializedResourceDocument,
+	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
 export interface RoleResourceIdentifier extends ResourceIdentifier {
@@ -33,26 +33,25 @@ export interface DeserializedRoleResource extends DeserializedResource<
 	RoleAttributes
 > {}
 
-export interface CompleteRoleDataDocument extends CompleteDataDocument<
+export interface RoleDocument extends ResourceDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
 > {}
 
-export interface CompleteRoleDataListDocument extends CompleteDataListDocument<
+export interface RoleListDocument extends ResourceListDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
 > {}
 
-export interface DeserializedCompleteRoleDataDocument extends DeserializedCompleteDataDocument<
+export interface DeserializedRoleDocument extends DeserializedResourceDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	DeserializedRoleResource
 > {}
 
-export interface DeserializedCompleteRoleDataListDocument
-extends DeserializedCompleteDataListDocument<
+export interface DeserializedRoleListDocument extends DeserializedResourceListDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	DeserializedRoleResource
