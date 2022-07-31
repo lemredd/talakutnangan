@@ -59,6 +59,17 @@ describe("Database: Role read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
+	it("can count single role with zero users", async () => {
+		const manager = new RoleManager()
+		const role = await new RoleFactory().insertOne()
+
+		const counts = await manager.countUsers([ role.id ])
+
+		expect(counts).toHaveProperty("data.0.id", role.id)
+		expect(counts).toHaveProperty("data.0.type", "role")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
+	})
+
 	it("can count multiple roles", async () => {
 		const manager = new RoleManager()
 		const roleA = await new RoleFactory().insertOne()
