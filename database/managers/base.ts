@@ -125,7 +125,7 @@ export default abstract class Manager<
 
 				Log.success("manager", "done searching for a model on a certain column")
 
-				cachedModel = this.serialize(model)
+				cachedModel = this.serialize(model, { constraints })
 
 				this.cache.setCache(uniquePath, cachedModel)
 
@@ -140,18 +140,22 @@ export default abstract class Manager<
 		}
 	}
 
-	async list(query: V): Promise<Serializable> {
+	async list(constraints: V): Promise<Serializable> {
 		try {
-			const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
+			const options: FindAndCountOptions<T> = runThroughPipeline(
+				{},
+				constraints,
+				this.listPipeline
+			)
 
-			const rows = await this.model.findAll({
+			const { count, rows } = await this.model.findAndCountAll({
 				...options,
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done listing models according to constraints")
 
-			return this.serialize(rows)
+			return this.serialize(rows, { count, constraints })
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
@@ -259,11 +263,11 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<U = Serializable>(models: T|T[]|null): U {
+	protected serialize<U = Serializable>(models: T|T[]|null, options: GeneralObject = {}): U {
 		return Serializer.serialize(
 			models,
 			this.transformer,
-			{}
+			options
 		) as unknown as U
 	}
 

@@ -72,6 +72,7 @@ export interface Serializable {
 		| null
 		| Serializable[]
 		| Serializable
+		| undefined
 }
 
 import type { RoleAttributes } from "$/types/documents/role"

@@ -10,7 +10,10 @@ import type {
 } from "$/types/documents/base"
 
 export interface RoleResourceIdentifier extends ResourceIdentifier {
-	type: "role"
+	type: "role",
+	meta?: {
+		userCount: number
+	}
 }
 
 export interface RoleAttributes extends Attributes {

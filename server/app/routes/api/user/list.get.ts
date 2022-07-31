@@ -5,7 +5,9 @@ import { UserKindValues, UserFilter } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import ListResponse from "!/response_infos/list"
 import QueryController from "!/common_controllers/query_controller"
+
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
@@ -64,11 +66,10 @@ export default class extends QueryController {
 		})
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const manager = new UserManager(request.transaction, request.cache)
 		const users = await manager.list(request.query as UserFilter)
 
-		// TODO: Hide the signatures of users
-		response.status(this.status.OK).json(users)
+		return new ListResponse(users)
 	}
 }
