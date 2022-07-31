@@ -2,6 +2,7 @@ import {
 	Table,
 	Model,
 	Column,
+	HasMany,
 	BelongsToMany
 } from "sequelize-typescript"
 import User from "%/models/user"
@@ -63,6 +64,11 @@ export default class Role extends Model {
 	})
 	auditTrailFlags!: number
 
+	@HasMany(() => AttachedRole)
+	attachedRoles!: AttachedRole[]
+
 	@BelongsToMany(() => User, () => AttachedRole)
 	users!: User[]
+
+	// userCount?:number
 }
