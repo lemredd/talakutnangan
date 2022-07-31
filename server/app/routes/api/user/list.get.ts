@@ -65,6 +65,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
+		const { criteria = null } = request.query
 		const manager = new UserManager()
 		const users = await manager.list(request.query as UserFilter)
 

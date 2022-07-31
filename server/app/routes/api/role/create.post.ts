@@ -21,7 +21,7 @@ import object from "!/app/validators/base/object"
 import required from "!/app/validators/base/required"
 import same from "!/app/validators/comparison/same"
 import string from "!/app/validators/base/string"
-import length from "!/app/validators/comparison/length"
+import range from "!/app/validators/comparison/range"
 import regex from "!/app/validators/comparison/regex"
 import integer from "!/app/validators/base/integer"
 
@@ -113,45 +113,45 @@ export default class extends JSONController {
 										}
 									},
 									semesterFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: semester.generateSuperMask() }
+											range: { minimum: 0, maximum: semester.generateSuperMask() }
 										}
 									},
 									tagFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: tag.generateSuperMask() }
+											range: { minimum: 0, maximum: tag.generateSuperMask() }
 										}
 									},
 									postFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: post.generateSuperMask() }
+											range: { minimum: 0, maximum: post.generateSuperMask() }
 										}
 									},
 									commentFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: comment.generateSuperMask() }
+											range: { minimum: 0, maximum: comment.generateSuperMask() }
 										}
 									},
 									profanityFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: profanity.generateSuperMask() }
+											range: { minimum: 0, maximum: profanity.generateSuperMask() }
 										}
 									},
 									userFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: user.generateSuperMask() }
+											range: { minimum: 0, maximum: user.generateSuperMask() }
 										}
 									},
 									auditTrailFlags: {
-										pipes: [required, integer, length],
+										pipes: [required, integer, range],
 										constraints: {
-											length: { minimum: 0, maximum: auditTrail.generateSuperMask() }
+											range: { minimum: 0, maximum: auditTrail.generateSuperMask() }
 										}
 									},
 								}

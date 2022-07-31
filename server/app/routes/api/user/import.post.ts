@@ -1,7 +1,7 @@
 import { UserKindValues, UserKind } from "$/types/database"
 import type { OptionalMiddleware } from "$/types/server"
 import type { PreprocessedRequest, Response } from "!/types/dependent"
-import type { NewUserNotificationArguments } from "!/types/independent"
+import type { FieldRules, NewUserNotificationArguments } from "!/types/independent"
 import type {
 	RawBulkData,
 	RawBulkDataForStudent,
@@ -20,6 +20,10 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import BodyValidation from "!/middlewares/validation/body"
 import MultipartController from "!/common_controllers/multipart_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import { FieldRulesMaker } from "!/types/hybrid"
+import required from "!/app/validators/base/required"
+import array from "!/app/validators/base/array"
+import oneOf from "!/app/validators/comparison/one-of"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -48,6 +52,27 @@ export default class extends MultipartController {
 			roles: [ "required", "array" ],
 			kind: [ "required", [ "in", ...UserKindValues] ]
 		}
+	}
+
+	makeBodyRulesGenerator(): FieldRulesMaker {
+		return (request: Request): FieldRules => ({
+			importCSV: {
+				pipes: [ required ],
+				constraints: { }
+			},
+			roles: {
+				pipes: [ required, array ],
+				constraints: { }
+			},
+			kind: {
+				pipes: [ required, oneOf ],
+				constraints: {
+					oneOf: {
+						values: [ UserKindValues ]
+					}
+				}
+			}
+		})
 	}
 
 	async handle(
