@@ -17,11 +17,6 @@ export type UserKind = typeof UserKindValues[number]
  */
 export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
 
-export type List<T> = Promise<{
-	records: T[],
-	count: number
-}>
-
 export type CommonConstraints = {
 	page?: number,
 	[key: string]: any
