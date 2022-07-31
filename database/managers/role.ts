@@ -1,5 +1,6 @@
 import type { ModelCtor } from "%/types/dependent"
 import type { Serializable } from "$/types/general"
+import type { RoleQueryFilter } from "$/types/query"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"
 
 import Role from "%/models/role"
@@ -9,7 +10,7 @@ import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
 
-export default class extends BaseManager<Role, RoleAttributes> {
+export default class extends BaseManager<Role, RoleAttributes, RoleQueryFilter> {
 	get model(): ModelCtor<Role> { return Role }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
