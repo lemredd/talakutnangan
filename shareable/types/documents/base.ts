@@ -3,47 +3,47 @@ import type { UnitError, GeneralObject } from "$/types/server"
 
 export interface PrimaryData extends Serializable {}
 
-export interface ResourceIdentifierObject extends PrimaryData {
+export interface ResourceIdentifier extends PrimaryData {
 	type: string,
 	id: number
 }
 
 export interface Attributes extends GeneralObject {}
 
-export type ResourceObject<T extends ResourceIdentifierObject> = T & {
+export type Resource<T extends ResourceIdentifier> = T & {
 	attributes: Attributes
 }
 
-export type DeserializedResourceObject<T extends ResourceIdentifierObject, U extends Attributes> =
+export type DeserializedResource<T extends ResourceIdentifier, U extends Attributes> =
 	& T
 	& U
 
 export interface CompleteDataDocument<
-	T extends ResourceIdentifierObject,
-	U extends ResourceObject<T>
+	T extends ResourceIdentifier,
+	U extends Resource<T>
 > extends Serializable {
 	data: U
 }
 
 export interface CompleteDataListDocument<
-	T extends ResourceIdentifierObject,
-	U extends ResourceObject<T>
+	T extends ResourceIdentifier,
+	U extends Resource<T>
 > extends Serializable {
 	data: U[]
 }
 
 export interface DeserializedCompleteDataDocument<
-	T extends ResourceIdentifierObject,
+	T extends ResourceIdentifier,
 	U extends Attributes,
-	V extends DeserializedResourceObject<T, U>
+	V extends DeserializedResource<T, U>
 > extends Serializable {
 	data: V
 }
 
 export interface DeserializedCompleteDataListDocument<
-	T extends ResourceIdentifierObject,
+	T extends ResourceIdentifier,
 	U extends Attributes,
-	V extends DeserializedResourceObject<T, U>
+	V extends DeserializedResource<T, U>
 > extends Serializable {
 	data: V[]
 }

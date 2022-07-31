@@ -1,10 +1,10 @@
 import type {
 	Attributes,
-	ResourceIdentifierObject,
-	DeserializedResourceObject
+	ResourceIdentifier,
+	DeserializedResource
 } from "$/types/documents/base"
 
-export interface RoleResourceIdentifierObject extends ResourceIdentifierObject {
+export interface RoleResourceIdentifier extends ResourceIdentifier {
 	type: "role"
 }
 
@@ -21,7 +21,7 @@ export interface RoleAttributes extends Attributes {
 	auditTrailFlags: number
 }
 
-export interface DeserializeRoleResourceObject extends DeserializedResourceObject<
-	RoleResourceIdentifierObject,
+export interface DeserializeRoleResource extends DeserializedResource<
+	RoleResourceIdentifier,
 	RoleAttributes
 > {}
