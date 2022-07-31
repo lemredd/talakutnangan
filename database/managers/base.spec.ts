@@ -1,4 +1,5 @@
-import type { RawUser, Pipe } from "$/types/database"
+import type { Pipe } from "$/types/database"
+import type { RawUser } from "$!/types/independent"
 import type {
 	ModelCtor,
 	FindAndCountOptions,

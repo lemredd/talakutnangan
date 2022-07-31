@@ -1,4 +1,5 @@
 import { days } from "$/types/database.native"
+import type { RawUser } from "$!/types/independent"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
@@ -12,7 +13,6 @@ import type {
 import type {
 	Day,
 	Pipe,
-	RawUser,
 	UserFilter
 } from "$/types/database"
 

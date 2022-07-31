@@ -4,6 +4,7 @@
  * 	types that are common in the back-end but not in general.
  */
 import type { Serializable } from "$/types/general"
+import type { UserKindValues } from "$/types/database"
 
 /**
  * Shape to expect for the info returned after checking the temporary URL
@@ -11,4 +12,14 @@ import type { Serializable } from "$/types/general"
 export interface TemporaryURLInfo extends Serializable {
 	hasExpired: boolean,
 	data: Serializable
+}
+
+export interface RawUser {
+	name?: string,
+	email?: string,
+	password?: string,
+	kind?: UserKind,
+	emailVerifiedAt?: Date|null,
+	admittedAt?: Date|null,
+	signature?: Buffer|null
 }
