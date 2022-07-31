@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { DeserializedPageContext } from "$@/types/independent"
 
 import deserialize from "$/helpers/deserialize"

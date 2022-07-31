@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	AttributesObject,

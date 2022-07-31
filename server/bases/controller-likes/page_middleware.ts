@@ -1,6 +1,6 @@
-import { PageRequest } from "!/types/hybrid"
-import { Serializable } from "$/types/database"
-import { Request, Response, NextFunction } from "!/types/dependent"
+import type { PageRequest } from "!/types/hybrid"
+import type { Serializable } from "$/types/general"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Validation from "!/bases/validation"
 import ControllerLike from "!/bases/controller-like"

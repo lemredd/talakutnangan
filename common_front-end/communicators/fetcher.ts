@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import type { CommonQueryParameters } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"

@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { CommonConstraints, Pipe } from "$/types/database"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"

@@ -11,7 +11,7 @@ import type {
 	RequestHandler as BaseRequestHandler
 } from "express"
 import type { Session } from "express-session"
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import CacheClient from "$!/helpers/cache_client"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 

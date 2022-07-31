@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"

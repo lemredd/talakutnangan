@@ -1,5 +1,5 @@
 import { URL } from "url"
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { TemporaryURLInfo } from "$!/types/independent"
 
 import decrypt from "$!/auth/decrypt"

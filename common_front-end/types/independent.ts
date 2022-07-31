@@ -4,7 +4,8 @@
  * cannot be shareable since they are only used within the client.
  */
 
-import type { Serializable, UserKind } from "$/types/database"
+import type { UserKind } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type PermissionGroup from "$/permissions/base"
 

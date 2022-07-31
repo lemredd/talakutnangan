@@ -3,6 +3,7 @@
  * @description This module contains types originally used in database and do not depend from other
  * packages. However, they can be used by other parts of the repository.
  */
+import type { Serializable } from "$/types/general"
 
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
@@ -57,23 +58,6 @@ export type CommonConstraints = {
 }
 
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
-
-/**
- * Used to indicate that a variable is serializable into a specific data format.
- */
-export interface Serializable {
-	[key: string]:
-		| string
-		| string[]
-		| number
-		| number[]
-		| boolean
-		| boolean[]
-		| null
-		| Serializable[]
-		| Serializable
-		| undefined
-}
 
 import type { RoleAttributes } from "$/types/documents/role"
 

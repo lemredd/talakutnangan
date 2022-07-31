@@ -78,7 +78,7 @@ import type Middleware from "!/bases/middleware"
  */
 export type OptionalMiddleware = Middleware | null
 
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 
 export interface PageProps extends Serializable {
 	// Added to pass data from server to client
