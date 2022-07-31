@@ -1,9 +1,10 @@
+import { CommonQueryParameters } from "$/types/query"
+
 import { mount } from "@vue/test-utils"
 
 import ResourceList from "./resource_list.vue"
 import RequestEnvironment from "$/helpers/request_environment"
 import UserFetcher from "$@/communicators/user"
-import { CommonQueryParameters } from "$/types/database"
 import { deserialise } from "kitsu-core"
 import Manager from "../manager"
 
