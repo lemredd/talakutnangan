@@ -14,6 +14,7 @@ import object from "!/app/validators/base/object"
 import boolean from "!/app/validators/base/boolean"
 import makeListRules from "!/app/rule_sets/make_list"
 import nullable from "!/app/validators/base/nullable"
+import string from "!/app/validators/base/string"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -30,7 +31,14 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => makeListRules(RoleManager, {}, {
+		return (request: Request): FieldRules => makeListRules(RoleManager, {
+			department: {
+				pipes: [ nullable, string ],
+				constraints: {
+					nullable: { defaultValue: "*" }
+				}
+			}
+		}, {
 			meta: {
 				pipes: [ nullable, object ],
 				constraints: {
