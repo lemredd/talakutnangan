@@ -6,6 +6,12 @@
 
 import type { UserKind, Pipe } from "$/types/database"
 import BaseManager from "%/managers/base"
+import type Middleware from "!/bases/middleware"
+
+/**
+ * Used to indicate which middlewares to use in a route.
+ */
+export type OptionalMiddleware = Middleware | null
 
 /**
  * Shape of middleware arguments for e-mail verification.

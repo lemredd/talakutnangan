@@ -1,6 +1,7 @@
-import { EndHandler } from "!/types/hybrid"
-import { Request, Response, NextFunction } from "!/types/dependent"
-import { RouteInformation, OptionalMiddleware } from "$/types/server"
+import type { EndHandler } from "!/types/hybrid"
+import type { RouteInformation } from "$/types/server"
+import type { OptionalMiddleware } from "!/types/independent"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"

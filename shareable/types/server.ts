@@ -50,13 +50,6 @@ export interface WithRegistration {
 	}
 }
 
-import type Middleware from "!/bases/middleware"
-
-/**
- * Used to indicate which middlewares to use in a route.
- */
-export type OptionalMiddleware = Middleware | null
-
 import type { Serializable } from "$/types/general"
 
 export interface PageProps extends Serializable {

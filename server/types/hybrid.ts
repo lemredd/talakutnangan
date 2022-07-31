@@ -3,11 +3,11 @@
  * @description This module contains types that depend on both independent and dependent types.
  */
 
+import type { OptionalMiddleware } from "!/types/independent"
 import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
 import type {
 	RouteInformation,
 	WithRegistration,
-	OptionalMiddleware,
 	PageProps
 } from "$/types/server"
 
