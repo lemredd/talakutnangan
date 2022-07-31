@@ -40,14 +40,6 @@ export interface RouteInformation {
 }
 
 /**
- * Used to return as an output by validation methods in non-GET controllers
- */
-export interface ValidationError {
-	field: string,
-	message: string
-}
-
-/**
  * Type to combine with `Request` type to do registration
  */
 export interface WithRegistration {
