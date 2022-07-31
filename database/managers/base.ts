@@ -1,5 +1,5 @@
-import type { GeneralObject } from "$/types/general"
-import type { Serializable, Pipe } from "$/types/database"
+import type { Pipe } from "$/types/database"
+import type { GeneralObject, Serializable } from "$/types/general"
 import type {
 	Model,
 	ModelCtor,

@@ -1,7 +1,7 @@
 import type { FieldRules } from "!/types/independent"
 import type { FieldRulesMaker } from "!/types/hybrid"
-import { Request, Response } from "!/types/dependent"
-import type { RoleResourceIdentifierObject } from "$/types/database"
+import type { Request, Response } from "!/types/dependent"
+import type { RoleResourceIdentifier } from "$/types/documents/role"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
@@ -71,7 +71,7 @@ export default class extends JSONController {
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const IDs = (request.body.data as RoleResourceIdentifierObject[]).map(object => {
+		const IDs = (request.body.data as RoleResourceIdentifier[]).map(object => {
 			return object.id
 		})
 

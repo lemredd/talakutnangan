@@ -7,7 +7,7 @@
 /**
  * Used to indicate the type of current environment where the script is running.
  */
- export enum Environment {
+export enum Environment {
 	Production,
 	Development,
 	UnitTest,

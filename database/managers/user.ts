@@ -1,5 +1,5 @@
 import { days } from "$/types/database.native"
-import { GeneralObject } from "$/types/server"
+import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
@@ -13,8 +13,7 @@ import type {
 	Day,
 	Pipe,
 	RawUser,
-	UserFilter,
-	Serializable
+	UserFilter
 } from "$/types/database"
 
 import Log from "$!/singletons/log"
