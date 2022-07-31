@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
-import DepartmentFetcher from "$@/communicators/department"
+import DepartmentFetcher from "$@/fetchers/department"
 import type { DeserializedPageContext } from "$@/types/independent"
 
 const pageContext = inject("pageContext") as DeserializedPageContext

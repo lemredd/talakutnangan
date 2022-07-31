@@ -32,8 +32,8 @@ import deserialize from "$/helpers/deserialize"
 
 
 import Manager from "../manager"
-import RoleFetcher from "$@/communicators/role"
-import DepartmentFetcher from "$@/communicators/department"
+import RoleFetcher from "$@/fetchers/role"
+import DepartmentFetcher from "$@/fetchers/department"
 
 const { by } = defineProps<{
 	by: string

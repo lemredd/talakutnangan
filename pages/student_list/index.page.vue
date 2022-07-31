@@ -14,7 +14,7 @@ import type { ManagerKind } from "@/resource_management/types"
 
 import UsersManager from "@/resource_management/resource_manager.vue"
 import { UserProfile } from "$/types/common_front-end"
-import RoleFetcher from "$@/communicators/role"
+import RoleFetcher from "$@/fetchers/role"
 
 const managerKind = "secretary" as ManagerKind
 provide("managerKind", managerKind)

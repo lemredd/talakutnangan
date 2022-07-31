@@ -3,7 +3,7 @@ import type { CommonQueryParameters } from "$/types/query"
 import { mount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/helpers/request_environment"
-import UserFetcher from "$@/communicators/user"
+import UserFetcher from "$@/fetchers/user"
 import { deserialise } from "kitsu-core"
 import ResourceManager from "./resource_manager.vue"
 

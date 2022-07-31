@@ -1,6 +1,6 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { CommonQueryParameters } from "$/types/query"
-import stringifyQuery from "$@/communicators/stringify_query"
+import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/helpers/request_environment"
 import Fetcher from "./fetcher"
 

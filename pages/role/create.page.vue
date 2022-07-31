@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { inject, ref } from "vue"
-import RoleFetcher from "$@/communicators/role"
+import RoleFetcher from "$@/fetchers/role"
 import type { DeserializedPageContext } from "$@/types/independent"
 import {
 	tag,

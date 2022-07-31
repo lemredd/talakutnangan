@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils"
 
 import ResourceList from "./resource_list.vue"
 import RequestEnvironment from "$/helpers/request_environment"
-import UserFetcher from "$@/communicators/user"
+import UserFetcher from "$@/fetchers/user"
 import { deserialise } from "kitsu-core"
 import Manager from "../manager"
 

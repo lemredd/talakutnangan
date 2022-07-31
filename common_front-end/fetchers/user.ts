@@ -1,6 +1,6 @@
 import type { LogInDetails } from "$@/types/independent"
 import type { Response } from "$@/types/independent"
-import Fetcher from "$@/communicators/fetcher"
+import Fetcher from "$@/fetchers/fetcher"
 
 export default class extends Fetcher {
 	static initialize(basePath: string) {
