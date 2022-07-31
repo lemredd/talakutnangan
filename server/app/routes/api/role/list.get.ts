@@ -43,7 +43,7 @@ export default class extends QueryController {
 	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new RoleManager()
+		const manager = new RoleManager(request.transaction, request.cache)
 		const roles = await manager.list(constraints)
 
 		return new ListResponse(roles)
