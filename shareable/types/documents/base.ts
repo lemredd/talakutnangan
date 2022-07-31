@@ -19,17 +19,33 @@ export type DserializedResourceObject<T extends ResourceIdentifierObject, U exte
 	& U
 
 export interface CompleteDataDocument<
-	U extends ResourceIdentifierObject,
-	T extends ResourceObject<U>
+	T extends ResourceIdentifierObject,
+	U extends ResourceObject<T>
 > extends Serializable {
-	data: T
+	data: U
 }
 
 export interface CompleteDataListDocument<
-	U extends ResourceIdentifierObject,
-	T extends ResourceObject<U>
+	T extends ResourceIdentifierObject,
+	U extends ResourceObject<T>
 > extends Serializable {
-	data: T[]
+	data: U[]
+}
+
+export interface DeserializedCompleteDataDocument<
+	T extends ResourceIdentifierObject,
+	U extends Attributes,
+	V extends DserializedResourceObject<T, U>
+> extends Serializable {
+	data: V
+}
+
+export interface DeserializedCompleteDataListDocument<
+	T extends ResourceIdentifierObject,
+	U extends Attributes,
+	V extends DserializedResourceObject<T, U>
+> extends Serializable {
+	data: V[]
 }
 
 export interface ErrorDocument {
