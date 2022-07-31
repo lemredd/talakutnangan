@@ -59,13 +59,6 @@ export type CommonConstraints = {
 
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
 
-import type { RoleAttributes } from "$/types/documents/role"
-
-/**
- * Used as part of user profile data to be returned to client.
- */
-export interface Role extends RoleAttributes, Serializable {}
-
 import { days } from "$/types/database.native"
 import User from "%/models/user"
 
