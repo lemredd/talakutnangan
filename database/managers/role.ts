@@ -49,7 +49,7 @@ export default class extends BaseManager<Role, RawRole> {
 				type: "role",
 				id: role.id,
 				meta: {
-					userCount: counts[i].count
+					userCount: role.attachedRoles.length === 0 ? 0 : counts[i].count
 				}
 			})
 		})
