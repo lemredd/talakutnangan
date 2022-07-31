@@ -4,8 +4,9 @@
  * cannot be shareable since they are only used within the client.
  */
 
-import type { Serializable, UserKind } from "$/types/database"
-import type { UserProfile } from "$/types/common_front-end"
+import type { UserKind } from "$/types/database"
+import type { Serializable } from "$/types/general"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type PermissionGroup from "$/permissions/base"
 
 /**
@@ -13,7 +14,7 @@ import type PermissionGroup from "$/permissions/base"
  */
 export interface DeserializedPageContext extends Serializable {
 	pageProps: {
-		userProfile: UserProfile|null
+		userProfile: DeserializedUserProfile|null
 	}
 }
 

@@ -3,7 +3,7 @@ import type {
 	PermissionInfo,
 	LevelPermission,
 	OperationPermission
-} from "$/types/server"
+} from "$/types/permission"
 
 import {
 	VIEW,
@@ -16,7 +16,7 @@ import {
 	READ_OVERALL_SCOPE,
 	READ_DEPARTMENT_SCOPE,
 	WRITE_DEPARTMENT_SCOPE
-} from "$/types/server"
+} from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
 

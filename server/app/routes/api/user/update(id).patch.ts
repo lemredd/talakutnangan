@@ -1,5 +1,5 @@
-import { Serializable } from "$/types/database"
-import type { UserProfile } from "$/types/common_front-end"
+import type { Serializable } from "$/types/general"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
@@ -67,7 +67,7 @@ export default class extends MultipartController {
 		const manager = new UserManager(request.transaction, request.cache)
 		const id = +request.body.data.id
 		const { name, email, signature = undefined } = request.body.data.attributes
-		const userData = deserialize(request.user) as UserProfile
+		const userData = deserialize(request.user) as DeserializedUserProfile
 		const updateData: Serializable = { name, email }
 
 		if (
@@ -80,7 +80,7 @@ export default class extends MultipartController {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
 
-		const oldUser = deserialize(await manager.findWithID(id)) as UserProfile
+		const oldUser = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const oldEmail = oldUser.data.email
 
 		if (oldEmail !== email) {

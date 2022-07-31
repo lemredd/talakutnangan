@@ -11,7 +11,7 @@ import type {
 	RequestHandler as BaseRequestHandler
 } from "express"
 import type { Session } from "express-session"
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import CacheClient from "$!/helpers/cache_client"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
@@ -65,14 +65,3 @@ export interface IDParameter extends Parameters {
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 	params: IDParameter
 }
-
-import type { RuleItem, ValidateError } from "async-validator"
-/**
- * Information about the rule
- */
-export type RuleData = RuleItem
-
-/**
- * Imformation about the validation error
- */
-export type ValidationError = ValidateError

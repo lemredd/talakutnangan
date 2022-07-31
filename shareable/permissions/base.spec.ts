@@ -1,4 +1,4 @@
-import type { PermissionMap, PermissionInfo } from "$/types/server"
+import type { PermissionMap, PermissionInfo } from "$/types/permission"
 
 import BasePermissionGroup from "./base"
 

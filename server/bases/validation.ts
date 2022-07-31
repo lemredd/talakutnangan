@@ -1,8 +1,9 @@
 import { Validator } from "node-input-validator"
 
+import type { GeneralObject } from "$/types/general"
 import type { FieldRulesMaker } from "!/types/hybrid"
+import type { SourceParameter, SourcePointer } from "$/types/server"
 import type { Request, Response, NextFunction } from "!/types/dependent"
-import type { GeneralObject, SourceParameter, SourcePointer } from "$/types/server"
 import type { ValidationRules, ErrorPointer, SourceType } from "!/types/independent"
 import accessDeepPath from "$!/helpers/access_deep_path"
 

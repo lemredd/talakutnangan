@@ -1,14 +1,9 @@
-import type {
-	UserProfile,
-	StudentProfileData,
-	ReachableEmployeeProfileData,
-	UnreachableEmployeeProfileData
-} from "$/types/common_front-end"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import makeDefaultPassword from "./make_default_password"
 
 describe("Helpers: Make default password", () => {
 	it("can generate for student", () => {
-		const userProfile: UserProfile = {
+		const userProfile: DeserializedUserProfile = {
 			data: {
 				type: "user",
 				id: 1,
@@ -20,6 +15,8 @@ describe("Helpers: Make default password", () => {
 				},
 				studentDetail: {
 					data: {
+						id: 1,
+						type: "student_detail",
 						studentNumber: "0000-000"
 					}
 				}
@@ -35,7 +32,7 @@ describe("Helpers: Make default password", () => {
 	})
 
 	it("can generate for reachable employee", () => {
-		const userProfile: UserProfile = {
+		const userProfile: DeserializedUserProfile = {
 			data: {
 				type: "user",
 				id: 1,
@@ -60,7 +57,7 @@ describe("Helpers: Make default password", () => {
 	})
 
 	it("can generate for unreachable employee", () => {
-		const userProfile: UserProfile = {
+		const userProfile: DeserializedUserProfile = {
 			data: {
 				type: "user",
 				id: 1,

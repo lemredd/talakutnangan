@@ -11,5 +11,7 @@ beforeAll(async () => {
 		consola.mockTypes(() => () => {})
 	}
 
+	jest.setTimeout(7500)
+
 	await initializeSingletons(getDataSourceType())
 })

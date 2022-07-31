@@ -1,9 +1,11 @@
+import type { CommonQueryParameters } from "$/types/query"
+
 import { mount } from "@vue/test-utils"
-import ResourceManager from "./resource_manager.vue"
+
 import RequestEnvironment from "$/helpers/request_environment"
 import UserFetcher from "$@/communicators/user"
-import { CommonQueryParameters } from "$/types/database"
 import { deserialise } from "kitsu-core"
+import ResourceManager from "./resource_manager.vue"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {

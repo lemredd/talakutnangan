@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import Log from "$!/singletons/log"
 import CacheClient from "$!/helpers/cache_client"
 

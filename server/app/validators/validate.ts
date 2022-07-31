@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import type { Request } from "!/types/dependent"
 import type {
 	ErrorPointer,

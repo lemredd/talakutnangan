@@ -1,7 +1,7 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
-import type { CommonQueryParameters } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import type { CommonQueryParameters } from "$/types/query"
 
 import stringifyQuery from "$@/communicators/stringify_query"
 import RequestEnvironment from "$/helpers/request_environment"

@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type { PageProps as BasePageProps, UnitError } from "$/types/server"
 
 export interface PageProps extends BasePageProps {

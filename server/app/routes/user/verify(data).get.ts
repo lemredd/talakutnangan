@@ -1,5 +1,5 @@
-import { Request } from "!/types/dependent"
-import { Serializable } from "$/types/database"
+import type { Request } from "!/types/dependent"
+import type { Serializable } from "$/types/general"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"

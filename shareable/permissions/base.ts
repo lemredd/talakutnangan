@@ -1,4 +1,5 @@
-import type { PermissionMap, PermissionInfo } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
+import type { PermissionMap, PermissionInfo } from "$/types/permission"
 
 /**
  * Base class for permission groups.
@@ -6,7 +7,7 @@ import type { PermissionMap, PermissionInfo } from "$/types/server"
  * This is safe to use in client-side. Useful to check if a certain operation is safe to be
  * executed.
  */
-export default abstract class<T extends { [key: string]: number }, U> {
+export default abstract class<T extends GeneralObject<number>, U> {
 	/**
 	 * Name of the permission group
 	 */
@@ -55,7 +56,7 @@ export default abstract class<T extends { [key: string]: number }, U> {
 			return previousMask | permissionInfo.flag
 		}, 0)
 	}
-  
+
 
 	/**
 	 * Deserialize the flag into permission names.

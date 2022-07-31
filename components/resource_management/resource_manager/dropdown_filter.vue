@@ -24,10 +24,12 @@
 </style>
 
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
-import { deserialise } from 'kitsu-core'
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
-import type { RawRole, RawDepartment } from '$/types/database'
+import { inject, onMounted, ref } from "vue"
+import deserialize from "$/helpers/deserialize"
+
 
 import Manager from "../manager"
 import RoleFetcher from "$@/communicators/role"
@@ -76,8 +78,9 @@ async function listRoles() {
 		sort: ["name"]
 	})
 	.then(response => {
-		const deserializedData = deserialise(response.body).data
-		deserializedData.map((role: RawRole) => {
+		const { body } = response
+		const deserializedData = deserialize(body) as DeserializedRoleListDocument
+		deserializedData.data.map(role => {
 			availableFilters.value.push(role.name)
 		})
 
@@ -97,8 +100,9 @@ function listDepartments() {
 		sort: ["name"]
 	})
 	.then(response => {
-		const deserializedData = deserialise(response.body).data
-		deserializedData.map((department: RawDepartment) => {
+		const { body } = response
+		const deserializedData = deserialize(body) as DeserializedDepartmentListDocument
+		deserializedData.data.map(department => {
 			availableFilters.value.push(department.fullName)
 		})
 	})

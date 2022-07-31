@@ -1,5 +1,6 @@
-import { RouteInformation, OptionalMiddleware } from "$/types/server"
-import { RouteHandlers, EndHandler } from "!/types/hybrid"
+import type { RouteInformation } from "$/types/server"
+import type { OptionalMiddleware } from "!/types/independent"
+import type { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"

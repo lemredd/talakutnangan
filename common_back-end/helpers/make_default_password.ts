@@ -1,4 +1,4 @@
-import type { UserProfile } from "$/types/common_front-end"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import extractEmailUsername from "$!/helpers/extract_email_username"
 
 /**
@@ -8,7 +8,7 @@ import extractEmailUsername from "$!/helpers/extract_email_username"
  *
  * @param userProfile Profile of the user where to derive the password.
  */
-export default function(userProfile: UserProfile): string {
+export default function(userProfile: DeserializedUserProfile): string {
 	if (userProfile.data.kind === "student") {
 		return userProfile.data.studentDetail.data.studentNumber
 	} else {

@@ -1,12 +1,5 @@
-import type {
-	PermissionMap,
-	PermissionInfo,
-	OperationPermission,
-} from "$/types/server"
-
-import {
-	VIEW
-} from "$/types/server"
+import type { PermissionMap, PermissionInfo, OperationPermission } from "$/types/permission"
+import { VIEW } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
 

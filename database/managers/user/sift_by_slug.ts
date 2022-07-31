@@ -1,4 +1,4 @@
-import type { SlugFilter } from "$/types/database"
+import type { SlugFilter } from "$/types/query"
 import type { FindOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
