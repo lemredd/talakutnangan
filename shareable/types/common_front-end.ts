@@ -6,15 +6,13 @@
 
 import type { Serializable, Day } from "$/types/database"
 
+import type { RoleAttributes, DeserializeRoleResourceObject } from "$/types/documents/role"
+
 /**
  * Shape of serialized roles
  */
 interface Roles extends Serializable {
-	data: (Serializable & {
-		type: "role",
-		id: number
-		userFlags: number
-	})[]
+	data: DeserializeRoleResourceObject[]
 }
 
 /**
@@ -73,7 +71,6 @@ export interface UnreachableEmployeeProfileData extends ProfileData {
 }
 
 import type { RawDepartment } from "$/types/database"
-import type { RoleAttributes } from "$/types/documents/role"
 
 /**
  * Shape of deserialized department
