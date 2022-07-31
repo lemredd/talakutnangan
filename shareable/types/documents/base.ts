@@ -1,5 +1,5 @@
 import type { Serializable } from "$/types/database"
-import type { UnitError } from "$/types/server"
+import type { UnitError, GeneralObject } from "$/types/server"
 
 export interface PrimaryData extends Serializable {}
 
@@ -8,7 +8,7 @@ export interface ResourceIdentifierObject extends PrimaryData {
 	id: number
 }
 
-export interface Attributes extends Serializable {}
+export interface Attributes extends GeneralObject {}
 
 export type ResourceObject<T extends ResourceIdentifierObject> = T & {
 	attributes: Attributes
