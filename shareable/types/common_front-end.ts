@@ -6,6 +6,7 @@
 
 import type { Serializable, Day } from "$/types/database"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 
 /**
  * Shape of deserialized user profile if authenticated
@@ -37,22 +38,12 @@ export interface StudentProfileData extends ProfileData {
 	}
 }
 
-interface EmployeeSchedule extends Serializable {
-	data: {
-		scheduleStart: number,
-		scheduleEnd: number,
-		dayName: Day
-	}
-}
-
 /**
  * Shape of profile data for reachable employees
  */
 export interface ReachableEmployeeProfileData extends ProfileData {
 	kind: "reachable_employee",
-	employeeSchedules: {
-		data: EmployeeSchedule[]
-	}
+	employeeSchedules: DeserializedEmployeeScheduleListDocument
 }
 
 /**
