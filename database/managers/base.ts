@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import type { Serializable, Pipe } from "$/types/database"
 import type {
 	Model,

@@ -1,5 +1,6 @@
+import type { UnitError } from "$/types/server"
 import type { Serializable } from "$/types/database"
-import type { UnitError, GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 
 export interface PrimaryData extends Serializable {}
 

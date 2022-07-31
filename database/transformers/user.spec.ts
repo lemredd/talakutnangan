@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import UserFactory from "~/factories/user"
 import SignatureFactory from "~/factories/signature"
 import StudentDetailFactory from "~/factories/student_detail"

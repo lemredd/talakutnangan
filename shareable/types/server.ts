@@ -15,11 +15,6 @@
 }
 
 /**
- * Useful for general safe object
- */
- export type GeneralObject<T = any> = { [key: string]: T }
-
-/**
  * List of methods that is supported by `express` package
  */
 export type Method = "get" | "post" | "patch" | "delete"

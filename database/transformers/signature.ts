@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import type { Serializable } from "$/types/database"
 import type { SignatureTransformerOptions } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"

@@ -1,5 +1,5 @@
 import type { ModelCtor } from "%/types/dependent"
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import type { RawSignature } from "$/types/database"
 import type { SignatureTransformerOptions } from "%/types/independent"
 

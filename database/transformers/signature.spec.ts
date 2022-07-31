@@ -1,4 +1,4 @@
-import type { GeneralObject } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 import Factory from "~/factories/signature"
 import URLMaker from "$!/singletons/url_maker"
 import Serializer from "%/transformers/serializer"
