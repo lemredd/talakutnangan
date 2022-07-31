@@ -8,9 +8,10 @@ import type {
 } from "$/types/database"
 
 import Role from "%/models/role"
-import AttachedRole from "%/models/attached_role"
 import BaseManager from "%/managers/base"
+import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
+import Condition from "%/managers/helpers/condition"
 import searchName from "%/managers/helpers/search_name"
 
 export default class extends BaseManager<Role, RawRole> {
@@ -28,9 +29,16 @@ export default class extends BaseManager<Role, RawRole> {
 	async countUsers(roleIDs: number[]): Promise<Serializable> {
 		const { count: counts, rows } = await Role.findAndCountAll({
 			attributes: [ "id" ],
-			group: "id",
+			where: new Condition().or(
+				...roleIDs.map(roleID => new Condition().equal("id", roleID))
+			).build(),
+			group: [ "id", "attachedRoles.roleID" ],
 			include: [
-				AttachedRole
+				{
+					model: AttachedRole,
+					as: "attachedRoles",
+					required: false
+				}
 			]
 		})
 
