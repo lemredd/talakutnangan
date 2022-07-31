@@ -4,6 +4,7 @@
  * packages. However, they can be used by other parts of the repository.
  */
 import type { Serializable } from "$/types/general"
+import { days } from "$/types/database.native"
 
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
@@ -19,29 +20,16 @@ export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" 
 
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
 
-import { days } from "$/types/database.native"
-import User from "%/models/user"
-
 const rawDays = [ ...days ] as const
 export type Day = typeof rawDays[number]
 
 /**
- * Expected shape of the common page options
- */
-export interface Page {
-	page: {
-		offset: number,
-		limit: number
-	}
-}
-
-/**
  * Shape of expected common filter options
  */
-export type Filter = ExistenceFilter
+export type CommonFilter = ExistenceFilter
 
 export type UserFilter =
-	& Filter
+	& CommonFilter
 	& DepartmentFilter
 	& RoleFilter
 	& KindFilter
@@ -51,13 +39,6 @@ export interface ExistenceFilter extends Serializable {
 	filter: {
 		existence: "exists" | "archived" | "*"
 	}
-}
-
-/**
- * Expected shape of the common sort options
- */
-export interface Sort extends Serializable {
-	sort: string[]
 }
 
 export interface SlugFilter extends Serializable {
@@ -90,7 +71,24 @@ export interface CriteriaFilter extends Serializable {
 	}
 }
 
+/**
+ * Expected shape of the common sort options
+ */
+export interface Sort extends Serializable {
+	sort: string[]
+}
+
+/**
+ * Expected shape of the common page options
+ */
+export interface Page {
+	page: {
+		offset: number,
+		limit: number
+	}
+}
+
 export type CommonQueryParameters =
 	& Page
 	& Sort
-	& Filter
+	& CommonFilter
