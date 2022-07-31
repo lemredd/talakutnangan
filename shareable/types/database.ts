@@ -17,11 +17,6 @@ export type UserKind = typeof UserKindValues[number]
  */
 export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
 
-export type CommonConstraints = {
-	page?: number,
-	[key: string]: any
-}
-
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
 
 import { days } from "$/types/database.native"
