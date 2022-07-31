@@ -19,7 +19,11 @@ export type DserializedResourceObject<T extends ResourceIdentifierObject, U exte
 	& U
 
 export interface DataDocument<T extends PrimaryData> extends Serializable {
-	data: T | T[]
+	data: T
+}
+
+export interface DataListDocument<T extends PrimaryData> extends Serializable {
+	data: T[]
 }
 
 export interface ErrorDocument {
