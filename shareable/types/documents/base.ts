@@ -14,7 +14,7 @@ export type ResourceObject<T extends ResourceIdentifierObject> = T & {
 	attributes: Attributes
 }
 
-export type DserializedResourceObject<T extends ResourceIdentifierObject, U extends Attributes> =
+export type DeserializedResourceObject<T extends ResourceIdentifierObject, U extends Attributes> =
 	& T
 	& U
 
@@ -35,7 +35,7 @@ export interface CompleteDataListDocument<
 export interface DeserializedCompleteDataDocument<
 	T extends ResourceIdentifierObject,
 	U extends Attributes,
-	V extends DserializedResourceObject<T, U>
+	V extends DeserializedResourceObject<T, U>
 > extends Serializable {
 	data: V
 }
@@ -43,7 +43,7 @@ export interface DeserializedCompleteDataDocument<
 export interface DeserializedCompleteDataListDocument<
 	T extends ResourceIdentifierObject,
 	U extends Attributes,
-	V extends DserializedResourceObject<T, U>
+	V extends DeserializedResourceObject<T, U>
 > extends Serializable {
 	data: V[]
 }
