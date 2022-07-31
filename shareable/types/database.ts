@@ -97,6 +97,7 @@ export interface Serializable {
 		| null
 		| Serializable[]
 		| Serializable
+		| undefined
 }
 
 /**
@@ -176,5 +177,13 @@ export interface KindFilter extends Serializable {
 export interface CountUser extends Serializable {
 	meta: {
 		countUser: boolean
+	}
+}
+
+export interface RoleResourceIdentifierObject extends Serializable {
+	type: "role",
+	id: number,
+	meta?: {
+		userCount: number
 	}
 }
