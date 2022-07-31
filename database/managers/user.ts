@@ -1,6 +1,6 @@
 import { days } from "$/types/database.native"
 import type { Day, Pipe } from "$/types/database"
-import type { UserFilter } from "$/types/query"
+import type { UserQueryFilter } from "$/types/query"
 import type { RawUser } from "$!/types/independent"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -39,12 +39,12 @@ import siftByDepartment from "%/managers/user/sift_by_department"
 import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
 import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
 
-export default class UserManager extends BaseManager<User, RawUser, UserFilter> {
+export default class UserManager extends BaseManager<User, RawUser, UserQueryFilter> {
 	get model(): ModelCtor<User> { return User }
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, UserFilter>[] {
+	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, UserQueryFilter>[] {
 		return [
 			includeRoleAndDepartment,
 			includeExclusiveDetails,
@@ -52,7 +52,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 		]
 	}
 
-	get listPipeline(): Pipe<FindAndCountOptions<User>, UserFilter>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<User>, UserQueryFilter>[] {
 		return [
 			siftBySlug,
 			siftByRole,
@@ -154,6 +154,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 					"name",
 					roleName, {
 						filter: {
+							department: "*",
 							existence: "exists"
 						}
 					}

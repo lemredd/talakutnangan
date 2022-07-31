@@ -6,7 +6,7 @@ import type { Serializable } from "$/types/general"
  */
  export type CommonFilter = ExistenceFilter
 
- export type UserFilter =
+ export type UserQueryFilter =
 	 & CommonFilter
 	 & DepartmentFilter
 	 & RoleFilter

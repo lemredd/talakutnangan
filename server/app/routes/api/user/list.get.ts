@@ -1,5 +1,5 @@
-import type { UserFilter } from "$/types/query"
 import { UserKindValues } from "$/types/database"
+import type { UserQueryFilter } from "$/types/query"
 import type { FieldRules } from "!/types/independent"
 import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
@@ -69,7 +69,7 @@ export default class extends QueryController {
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const users = await manager.list(request.query as UserFilter)
+		const users = await manager.list(request.query as UserQueryFilter)
 
 		return new ListResponse(users)
 	}
