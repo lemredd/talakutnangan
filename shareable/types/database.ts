@@ -17,14 +17,6 @@ export type UserKind = typeof UserKindValues[number]
  */
 export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" | "unit_test"
 
-/**
- * Used to receive raw signature details.
- */
-export interface RawSignature {
-	userID: string,
-	signature: Buffer
-}
-
 export type List<T> = Promise<{
 	records: T[],
 	count: number

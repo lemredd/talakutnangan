@@ -23,3 +23,8 @@ export interface RawUser {
 	admittedAt?: Date|null,
 	signature?: Buffer|null
 }
+
+export interface RawSignature {
+	userID: string,
+	signature: Buffer
+}
