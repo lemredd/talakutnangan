@@ -53,7 +53,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -138,7 +146,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -186,7 +202,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -266,7 +290,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -319,7 +351,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -382,7 +422,7 @@ describe("Helper: Filter Link Infos", () => {
 	type AvailablePermissionsC = "a" | "b" | "c"
 
 	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsC> {
-		get name(): string { return "groupA" }
+		get name(): string { return "userFlags" }
 		get permissions(): PermissionMap<AvailablePermissionsC> {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
 				[ "a", { flag: 0x1, permissionDependencies: [] } ],
@@ -409,8 +449,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a"),
+									userFlags: permissionGroup.generateMask("a"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -464,8 +511,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a")
+									userFlags: permissionGroup.generateMask("a"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
@@ -542,8 +596,15 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a", "b")
+									userFlags: permissionGroup.generateMask("a", "b"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
 						}
