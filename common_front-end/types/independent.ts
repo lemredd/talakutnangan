@@ -5,7 +5,7 @@
  */
 
 import type { Serializable, UserKind } from "$/types/database"
-import type { UserProfile } from "$/types/common_front-end"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type PermissionGroup from "$/permissions/base"
 
 /**
@@ -13,7 +13,7 @@ import type PermissionGroup from "$/permissions/base"
  */
 export interface DeserializedPageContext extends Serializable {
 	pageProps: {
-		userProfile: UserProfile|null
+		userProfile: DeserializedUserProfile|null
 	}
 }
 

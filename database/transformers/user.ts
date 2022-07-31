@@ -1,5 +1,5 @@
-import type { UserProfile } from "$/types/common_front-end"
 import type { Serializable } from "$/types/database"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	AttributesObject,
 	TransformerOptions,
@@ -98,7 +98,7 @@ export default class extends Transformer<User, void> {
 	finalizeTransform(model: User|User[]|null, transformedData: Serializable): Serializable {
 		const postTransformedData = super.finalizeTransform(model, transformedData)
 		const addPasswordStatus = (model: User, data: Serializable) => {
-			const userProfile = deserialize(cloneDeep(data)) as UserProfile
+			const userProfile = deserialize(cloneDeep(data)) as DeserializedUserProfile
 			const defaultPassword = makeDefaultPassword(userProfile)
 			const hasDefaultPassword = model.password === defaultPassword
 
