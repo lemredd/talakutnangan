@@ -1,6 +1,5 @@
+import type { ModelCtor } from "%/types/dependent"
 import type { Serializable } from "$/types/general"
-import type { CommonConstraints, Pipe } from "$/types/database"
-import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"
 
 import Role from "%/models/role"
@@ -14,12 +13,6 @@ export default class extends BaseManager<Role, RoleAttributes> {
 	get model(): ModelCtor<Role> { return Role }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
-
-	get listPipeline(): Pipe<FindAndCountOptions<Role>, CommonConstraints>[] {
-		return [
-			...super.listPipeline
-		]
-	}
 
 	async countUsers(roleIDs: number[]): Promise<Serializable> {
 		try {
