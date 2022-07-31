@@ -1,7 +1,6 @@
+import type { Page } from "$/types/query"
 import type { FindOptions, Model } from "%/types/dependent"
 
-import type { Page } from "$/types/database"
-import Condition from "%/managers/helpers/condition"
 import Log from "$!/singletons/log"
 
 /**

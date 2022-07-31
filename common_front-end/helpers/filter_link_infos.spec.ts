@@ -1,4 +1,4 @@
-import type { PermissionMap, PermissionInfo } from "$/types/server"
+import type { PermissionMap, PermissionInfo } from "$/types/permission"
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
 import BasePermissionGroup from "$/permissions/base"
