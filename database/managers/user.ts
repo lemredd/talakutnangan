@@ -1,4 +1,6 @@
 import { days } from "$/types/database.native"
+import type { Day, Pipe } from "$/types/database"
+import type { UserFilter } from "$/types/query"
 import type { RawUser } from "$!/types/independent"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -10,11 +12,6 @@ import type {
 	ProcessedDataForEmployee,
 	RawEmployeeSchedule
 } from "%/types/independent"
-import type {
-	Day,
-	Pipe,
-	UserFilter
-} from "$/types/database"
 
 import Log from "$!/singletons/log"
 import deserialize from "$/helpers/deserialize"

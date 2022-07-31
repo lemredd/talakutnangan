@@ -1,10 +1,9 @@
-import type { RoleFilter } from "$/types/database"
+import type { RoleFilter } from "$/types/query"
 import type { FindOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import Role from "%/models/role"
-import AttachedRole from "%/models/attached_role"
 import Condition from "%/managers/helpers/condition"
 
 /**

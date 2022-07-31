@@ -1,5 +1,5 @@
-import type { DepartmentFilter } from "$/types/database"
 import type { FindOptions } from "%/types/dependent"
+import type { DepartmentFilter } from "$/types/query"
 
 import Log from "$!/singletons/log"
 

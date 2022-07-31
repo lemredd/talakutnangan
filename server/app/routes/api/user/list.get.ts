@@ -1,7 +1,8 @@
+import type { UserFilter } from "$/types/query"
+import { UserKindValues } from "$/types/database"
 import type { FieldRules } from "!/types/independent"
 import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
-import { UserKindValues, UserFilter } from "$/types/database"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"

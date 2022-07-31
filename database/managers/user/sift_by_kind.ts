@@ -1,4 +1,4 @@
-import type { KindFilter } from "$/types/database"
+import type { KindFilter } from "$/types/query"
 import type { FindOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
