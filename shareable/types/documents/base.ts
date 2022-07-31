@@ -18,35 +18,31 @@ export type DeserializedResource<T extends ResourceIdentifier, U extends Attribu
 	& T
 	& U
 
+export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Serializable {
+	data: T
+}
+
 export interface CompleteDataDocument<
 	T extends ResourceIdentifier,
 	U extends Resource<T>
-> extends Serializable {
-	data: U
-}
+> extends DataDocument<U> {}
 
 export interface CompleteDataListDocument<
 	T extends ResourceIdentifier,
 	U extends Resource<T>
-> extends Serializable {
-	data: U[]
-}
+> extends DataDocument<U[]> {}
 
 export interface DeserializedCompleteDataDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
-> extends Serializable {
-	data: V
-}
+> extends DataDocument<V> {}
 
 export interface DeserializedCompleteDataListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
-> extends Serializable {
-	data: V[]
-}
+> extends DataDocument<V[]> {}
 
 export interface ErrorDocument {
 	errors: UnitError[]
