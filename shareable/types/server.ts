@@ -39,17 +39,6 @@ export interface RouteInformation {
 	description: string|null
 }
 
-/**
- * Type to combine with `Request` type to do registration
- */
-export interface WithRegistration {
-	body: {
-		email: string,
-		password: string,
-		kind?: "unreachable employee" | "reachable employee" | "student"
-	}
-}
-
 import type { Serializable } from "$/types/general"
 
 export interface PageProps extends Serializable {

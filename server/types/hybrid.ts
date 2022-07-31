@@ -5,11 +5,7 @@
 
 import type { OptionalMiddleware } from "!/types/independent"
 import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
-import type {
-	RouteInformation,
-	WithRegistration,
-	PageProps
-} from "$/types/server"
+import type { RouteInformation, PageProps } from "$/types/server"
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client
@@ -39,8 +35,6 @@ export interface UsableRoute {
 	information: RouteInformation,
 	handlers: RouteHandlers
 }
-
-export type RequestWithRegistration = Request & WithRegistration
 
 import type { FieldRules } from "!/types/independent"
 
