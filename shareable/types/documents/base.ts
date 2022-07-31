@@ -18,11 +18,17 @@ export type DserializedResourceObject<T extends ResourceIdentifierObject, U exte
 	& T
 	& U
 
-export interface DataDocument<T extends PrimaryData> extends Serializable {
+export interface CompleteDataDocument<
+	U extends ResourceIdentifierObject,
+	T extends ResourceObject<U>
+> extends Serializable {
 	data: T
 }
 
-export interface DataListDocument<T extends PrimaryData> extends Serializable {
+export interface CompleteDataListDocument<
+	U extends ResourceIdentifierObject,
+	T extends ResourceObject<U>
+> extends Serializable {
 	data: T[]
 }
 
