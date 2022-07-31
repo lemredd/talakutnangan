@@ -168,3 +168,14 @@ export interface KindFilter extends Serializable {
 		kind: "*"|UserKind
 	}
 }
+
+export interface CriteriaFilter extends Serializable {
+	filter: {
+		criteria: "*"|"incomplete"|"verified"|"unverified"
+	}
+}
+
+export type CommonQueryParameters =
+	& Page
+	& Sort
+	& Filter

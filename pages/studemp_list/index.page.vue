@@ -1,25 +1,33 @@
 <template>
 	<h1 class="">Institute Name</h1>
-	<UsersManager :data="users" :has-dropdown-filter="true"/>
+	<UsersManager :resource="users" :has-dropdown-filter="true"/>
 
 </template>
 
 <script setup lang="ts">
-import UsersManager from "@/user_management/DataManager.vue";
-import { ManagerKind } from "@/user_management/types";
-import { users } from "./data"
-import { onBeforeMount, provide, ref } from "vue";
+import { onMounted, provide, ref } from "vue"
+import { deserialise } from "kitsu-core"
 
-const managerKind = "dean" as ManagerKind
-provide("managerKind", managerKind)
+import type { UserProfile } from "$/types/common_front-end"
 
-const roles = ref<string[]>([])
+import Manager from "@/resource_management/manager"
+import UsersManager from "@/resource_management/resource_manager.vue"
+import RoleFetcher from "$@/communicators/role"
 
-onBeforeMount(function() {
-    const rolesNoDuplicate = new Set([...roles.value])
-    users.forEach(user => rolesNoDuplicate.add(user.role))
+provide("managerKind", new Manager("dean"))
 
-    roles.value = [...rolesNoDuplicate]
+// Fetcher Initializers
+RoleFetcher.initialize("/api")
+
+const users = ref<UserProfile[]>([])
+onMounted(() => {
+
+	// TODO: fetch("/api/user/list") soon
+	fetch("/dev/sample_user_list")
+	.then(response => response.json())
+	.then(response => {
+		const deserializedData = deserialise(response).data as UserProfile[]
+		users.value = deserializedData
+	})
 })
-provide("filterList", roles)
 </script>

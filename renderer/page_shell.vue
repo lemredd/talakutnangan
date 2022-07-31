@@ -12,7 +12,7 @@
 import { onMounted, provide, ref, watch } from "vue"
 import { usePageContext } from "#/usePageContext"
 import deserializedPageProps from "$@/helpers/deserialize_page_props"
-import ShellNav from "@/page_shell/ShellNav.vue"
+import ShellNav from "@/page_shell/shell_nav.vue"
 import Content from "@/page_shell/Content.vue"
 import Footer from "@/Footer.vue"
 

@@ -9,8 +9,8 @@ a {
 	padding: 3px 10px;
 }
 a.active {
-	background-color: #eee;
-	color: #222;
+	@apply dark:bg-[#eee] dark:text-[#222] bg-dark-300 text-white;
+
 }
 </style>
 <script lang="ts" setup>

@@ -157,7 +157,7 @@
 
 <script setup lang="ts">
 import { inject } from "vue"
-import RoleSpecificLinks from "./RoleSpecificLinks.vue"
+import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
 import Dropdown from "@/Dropdown.vue"
 
 const isLoggingIn = inject("isLoggingIn") as boolean

@@ -1,4 +1,5 @@
 <template>
+<SettingsHeader />
 <form @submit.prevent class="text-dark-200 dark:text-light-100 flex flex-col">
 		<TextualField
 			label="E-mail"
@@ -41,9 +42,17 @@ form {
 </style>
 
 <script setup lang="ts">
+import { provide } from "vue"
 import TextualField from "@/fields/textual.vue"
-import { inject, Ref } from "vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
 
-const userInfo = inject("userInfo") as Ref<{ [key: string]: any }>
-const accountInfo = userInfo.value.account
+const accountInfo = {
+	email: "email@example.com",
+	password: "password",
+	role: "student",
+	studentNumber: "1920-9999",
+	institute: "INS"
+}
+
+provide("tabs", ["Account", "Profile"])
 </script>

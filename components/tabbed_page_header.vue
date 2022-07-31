@@ -1,11 +1,11 @@
 <template>
 <div>
 	<header>
-		<h1>User Settings</h1>
+		<h1>{{ title }}</h1>
 	</header>
 
 	<main>
-		<Tab :tabs="tabs" />
+		<Tab />
 	</main>
 </div>
 </template>
@@ -24,19 +24,11 @@ header {
 
 <script setup lang="ts">
 import { provide, ref } from "vue"
-import Tab from "@/Tab.vue"
-import Account from "@/settings/Account.vue"
-import Profile from "@/settings/Profile.vue"
+import Tab from "@/tab.vue"
 import { usePageContext } from "#/usePageContext"
-import deserializedPageProps from "$@/helpers/deserialize_page_props"
 const pageContext = usePageContext()
 provide("pageContext", pageContext)
 
-
-const tabs = {
-	Account,
-	Profile
-}
 const roles = ["student", "employee"]
 const role = roles[0]
 const userInfo = ref({
@@ -54,6 +46,8 @@ const userInfo = ref({
 		prefersDarkMode: true
 	}
 })
+
+const { title } = defineProps<{ title: string }>()
 
 provide("userInfo", userInfo)
 provide("url", pageContext.routeParams!.tab)

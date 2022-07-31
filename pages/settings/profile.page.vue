@@ -1,4 +1,5 @@
 <template>
+<SettingsHeader />
 	<form @submit.prevent class="flex flex-col">
 		<div>
 			<TextualField
@@ -51,15 +52,15 @@
 		<div class ="p-5">
 			<h3 class="display-name text-lg col-span-full">Consultation Schedules</h3>
 			<h3 class="display-name text-lg col-span-full">Day</h3>
-			<label for="start">From: 
+			<label for="start">From:
 			<input type="time" id="appt" name="appt"
        		min="09:00" max="18:00" required>
 			</label>
-			<label for="start">To: 
+			<label for="start">To:
 			<input type="time" id="appt" name="appt"
        		min="09:00" max="18:00" required>
 			</label>
-			
+
 		</div>
 	</form>
 </template>
@@ -99,11 +100,18 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, Ref, ref } from "vue"
+import { inject, Ref, ref, provide } from "vue"
 import TextualField from "@/fields/textual.vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
 
-const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
-const profileInfo = userInfo.value.profile
+const profileInfo = {
+	displayName: "Sample Name",
+	profilePic: null as any,
+	signature: null as any
+}
+
+// const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
+// const profileInfo = userInfo.value.profile
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
@@ -126,4 +134,6 @@ function loadImage(e: Event, type: string) {
 	if (type === "signature") profileInfo.signature = fileObjectURL
 	if (type === "profilePic") profileInfo.profilePic = fileObjectURL
 }
+
+provide("tabs", ["Account", "Profile"])
 </script>
