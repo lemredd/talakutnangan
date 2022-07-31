@@ -1,13 +1,13 @@
-import type { LogInDetails } from "$@/types/independent"
-import type { Response } from "$@/types/independent"
+import type { UserAttributes } from "$/types/documents/user"
+import type { Response, LogInDetails } from "$@/types/independent"
 import Fetcher from "$@/fetchers/fetcher"
 
-export default class extends Fetcher {
+export default class extends Fetcher<UserAttributes> {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "user")
 	}
 
-	static async logIn(details: LogInDetails): Promise<Response> {
+	async logIn(details: LogInDetails): Promise<Response> {
 		return await Fetcher.postJSON(`${this.type}/log_in`, details)
 	}
 }

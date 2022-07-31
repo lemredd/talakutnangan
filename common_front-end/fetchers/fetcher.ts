@@ -1,6 +1,7 @@
 import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import type { Attributes } from "$/types/documents/base"
 import type { CommonQueryParameters } from "$/types/query"
 
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -11,7 +12,7 @@ import specializedPath from "$/helpers/specialize_path"
  * General class to isolate the third-party library used for communicate from the rest of the
  * client-side code.
  */
-export default class Fetcher extends RequestEnvironment {
+export default class Fetcher<T extends Attributes> extends RequestEnvironment {
 	private static basePath: string = ""
 	private static type: string = ""
 
