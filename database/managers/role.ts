@@ -9,6 +9,7 @@ import type {
 
 import Role from "%/models/role"
 import BaseManager from "%/managers/base"
+import trimRight from "$/helpers/trim_right"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
@@ -27,33 +28,58 @@ export default class extends BaseManager<Role, RawRole> {
 	}
 
 	async countUsers(roleIDs: number[]): Promise<Serializable> {
-		const { count: counts, rows } = await Role.findAndCountAll({
-			attributes: [ "id" ],
-			where: new Condition().or(
-				...roleIDs.map(roleID => new Condition().equal("id", roleID))
-			).build(),
-			group: [ "id", "attachedRoles.roleID" ],
-			include: [
-				{
-					model: AttachedRole,
-					as: "attachedRoles",
-					required: false
-				}
-			]
-		})
+		try {
+			const [ counts, metadata ] = await Role.sequelize!.query(
+				// @ts-ignore
+				Role.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					Role.tableName,
+					{
+						attributes: [
+							"id",
+							[
+								Role.sequelize!.literal(`(${
+									trimRight(
+										// @ts-ignore
+										AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+											AttachedRole.tableName,
+											{
+												attributes: [ AttachedRole.sequelize!.fn("count", "*") ],
+												where: new Condition().equal(
+													"roleID",
+													AttachedRole.sequelize!.col(`${Role.tableName}.id`)
+												).build()
+											}
+										),
+										";"
+									)
+								})`),
+								"count"
+							]
+						],
+						where: new Condition().or(
+							...roleIDs.map(roleID => new Condition().equal("id", roleID))
+						).build()
+					}
+				)
+			)
 
-		const identifierObjects: RoleResourceIdentifierObject[] = []
+			const identifierObjects: RoleResourceIdentifierObject[] = []
 
-		rows.forEach((role, i) => {
-			identifierObjects.push({
-				type: "role",
-				id: role.id,
-				meta: {
-					userCount: role.attachedRoles.length === 0 ? 0 : counts[i].count
-				}
-			})
-		})
+			{
+				(counts as { id: number, count: number }[]).forEach((countInfo, i) => {
+					identifierObjects.push({
+						type: "role",
+						id: countInfo.id,
+						meta: {
+							userCount: countInfo.count
+						}
+					})
+				})
+			}
 
-		return { data: identifierObjects }
+			return { data: identifierObjects }
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 }
