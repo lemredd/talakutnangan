@@ -48,22 +48,6 @@ export interface RawDepartment {
 }
 
 /**
- * Used to receive raw validated role details.
- */
-export interface RawRole {
-	name: string,
-	departmentFlags: number,
-	roleFlags: number,
-	semesterFlags: number,
-	tagFlags: number,
-	postFlags: number,
-	commentFlags: number,
-	profanityFlags: number,
-	userFlags: number,
-	auditTrailFlags: number
-}
-
-/**
  * Used to receive raw signature details.
  */
 export interface RawSignature {
@@ -99,10 +83,12 @@ export interface Serializable {
 		| Serializable
 }
 
+import type { RoleAttributes } from "$/types/documents/role"
+
 /**
  * Used as part of user profile data to be returned to client.
  */
-export interface Role extends RawRole, Serializable {}
+export interface Role extends RoleAttributes, Serializable {}
 
 import { days } from "$/types/database.native"
 import User from "%/models/user"
