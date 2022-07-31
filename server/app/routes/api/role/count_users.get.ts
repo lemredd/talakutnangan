@@ -75,7 +75,7 @@ export default class extends JSONController {
 			return object.id
 		})
 
-		const manager = new RoleManager()
+		const manager = new RoleManager(request.transaction, request.cache)
 		const rolesWithUserCount = await manager.countUsers(IDs)
 
 		return new ListResponse(rolesWithUserCount)
