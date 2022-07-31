@@ -39,15 +39,6 @@ export interface RawPost {
 }
 
 /**
- * Used to receive raw validated department details.
- */
-export interface RawDepartment {
-	fullName: string,
-	acronym: string,
-	mayAdmit: boolean
-}
-
-/**
  * Used to receive raw signature details.
  */
 export interface RawSignature {

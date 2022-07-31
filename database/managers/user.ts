@@ -1,7 +1,8 @@
 import { days } from "$/types/database.native"
 import { GeneralObject } from "$/types/server"
-import { DeserializedDepartment, DeserializedRole } from "$/types/common_front-end"
+import type { DeserializedCompleteRoleDataDocument } from "$/types/documents/role"
 import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
+import type { DeserializedCompleteDepartmentDataDocument } from "$/types/documents/department"
 import type {
 	RawBulkData,
 	ProcessedDataForStudent,
@@ -129,7 +130,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 						}
 					}
 				)
-				const deserializedDepartment = deserialize(rawDepartment) as DeserializedDepartment
+				const deserializedDepartment = deserialize(rawDepartment) as DeserializedCompleteDepartmentDataDocument
 				departments.push(Department.build({
 					id: deserializedDepartment.data.id,
 					fullName: deserializedDepartment.data.fullName,
@@ -161,7 +162,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserFilter> 
 						}
 					}
 				)
-				const deserializedRole = deserialize(rawRole) as DeserializedRole
+				const deserializedRole = deserialize(rawRole) as DeserializedCompleteRoleDataDocument
 				const { type, ...roleAttributes } = deserializedRole.data
 				roles.push(Role.build(roleAttributes as GeneralObject))
 			}

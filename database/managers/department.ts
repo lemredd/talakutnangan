@@ -1,12 +1,13 @@
+import type { CommonConstraints, Pipe } from "$/types/database"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { CommonConstraints, RawDepartment, Pipe } from "$/types/database"
+import type { DepartmentAttributes } from "$/types/documents/department"
 
 import BaseManager from "%/managers/base"
 import Department from "%/models/department"
 import DepartmentTransformer from "%/transformers/department"
 import searchFullname from "%/managers/department/search_fullname"
 
-export default class  extends BaseManager<Department, RawDepartment> {
+export default class  extends BaseManager<Department, DepartmentAttributes> {
 	get model(): ModelCtor<Department> { return Department }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }

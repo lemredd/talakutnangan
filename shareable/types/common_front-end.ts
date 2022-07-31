@@ -5,11 +5,7 @@
  */
 
 import type { Serializable, Day } from "$/types/database"
-
-import type {
-	RoleAttributes,
-	DeserializedCompleteRoleDataListDocument
-} from "$/types/documents/role"
+import type { DeserializedCompleteRoleDataListDocument } from "$/types/documents/role"
 
 /**
  * Shape of deserialized user profile if authenticated
@@ -64,26 +60,4 @@ export interface ReachableEmployeeProfileData extends ProfileData {
  */
 export interface UnreachableEmployeeProfileData extends ProfileData {
 	kind: "unreachable_employee"
-}
-
-import type { RawDepartment } from "$/types/database"
-
-/**
- * Shape of deserialized department
- */
-export interface DeserializedDepartment extends Serializable {
-	data: {
-		type: "department",
-		id: number
-	} & RawDepartment & Serializable
-}
-
-/**
- * Shape of deserialized role
- */
-export interface DeserializedRole extends Serializable {
-	data: {
-		type: "role",
-		id: number
-	} & RoleAttributes & Serializable
 }
