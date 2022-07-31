@@ -5,7 +5,6 @@ import type { DepartmentAttributes } from "$/types/documents/department"
 import BaseManager from "%/managers/base"
 import Department from "%/models/department"
 import DepartmentTransformer from "%/transformers/department"
-import searchFullname from "%/managers/department/search_fullname"
 
 export default class  extends BaseManager<Department, DepartmentAttributes> {
 	get model(): ModelCtor<Department> { return Department }
@@ -14,7 +13,6 @@ export default class  extends BaseManager<Department, DepartmentAttributes> {
 
 	get listPipeline(): Pipe<FindAndCountOptions<Department>, CommonConstraints>[] {
 		return [
-			searchFullname,
 			...super.listPipeline
 		]
 	}

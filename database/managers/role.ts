@@ -9,7 +9,6 @@ import trimRight from "$/helpers/trim_right"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
-import searchName from "%/managers/helpers/search_name"
 
 export default class extends BaseManager<Role, RoleAttributes> {
 	get model(): ModelCtor<Role> { return Role }
@@ -18,7 +17,6 @@ export default class extends BaseManager<Role, RoleAttributes> {
 
 	get listPipeline(): Pipe<FindAndCountOptions<Role>, CommonConstraints>[] {
 		return [
-			searchName,
 			...super.listPipeline
 		]
 	}
