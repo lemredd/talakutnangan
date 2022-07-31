@@ -38,24 +38,6 @@ export default class extends QueryController {
 					nullable: { defaultValue: "*" }
 				}
 			}
-		}, {
-			meta: {
-				pipes: [ nullable, object ],
-				constraints: {
-					nullable: { defaultValue: {} },
-					object: {
-						countUsers: {
-							pipes: [ nullable, boolean ],
-							constraints: {
-								nullable: { defaultValue: true },
-								boolean: {
-									loose: true
-								}
-							}
-						}
-					}
-				}
-			}
 		})
 	}
 
