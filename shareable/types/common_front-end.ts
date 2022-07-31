@@ -6,14 +6,10 @@
 
 import type { Serializable, Day } from "$/types/database"
 
-import type { RoleAttributes, DeserializeRoleResource } from "$/types/documents/role"
-
-/**
- * Shape of serialized roles
- */
-interface Roles extends Serializable {
-	data: DeserializeRoleResource[]
-}
+import type {
+	RoleAttributes,
+	DeserializedCompleteRoleDataListDocument
+} from "$/types/documents/role"
 
 /**
  * Shape of deserialized user profile if authenticated
@@ -30,7 +26,7 @@ interface ProfileData extends Serializable {
 	id: number,
 	name: string,
 	email: string,
-	roles: Roles
+	roles: DeserializedCompleteRoleDataListDocument
 }
 
 /**

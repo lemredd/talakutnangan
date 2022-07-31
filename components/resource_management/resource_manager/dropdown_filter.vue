@@ -25,7 +25,10 @@
 
 <script setup lang="ts">
 import type { RawDepartment } from "$/types/database"
-import type { RoleAttributes } from "$/types/documents/role"
+import type {
+	RoleAttributes,
+	DeserializedCompleteRoleDataListDocument
+} from "$/types/documents/role"
 
 import { inject, onMounted, ref } from "vue"
 import deserialize from "$/helpers/deserialize"
@@ -78,8 +81,9 @@ async function listRoles() {
 		sort: ["name"]
 	})
 	.then(response => {
-		const deserializedData = deserialize(response.body).data
-		deserializedData.map((role: RoleAttributes) => {
+		const { body } = response
+		const deserializedData = deserialize(body) as DeserializedCompleteRoleDataListDocument
+		deserializedData.data.map((role: RoleAttributes) => {
 			availableFilters.value.push(role.name)
 		})
 

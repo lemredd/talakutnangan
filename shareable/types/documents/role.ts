@@ -1,7 +1,12 @@
 import type {
+	Resource,
 	Attributes,
 	ResourceIdentifier,
-	DeserializedResource
+	DeserializedResource,
+	CompleteDataDocument,
+	CompleteDataListDocument,
+	DeserializedCompleteDataDocument,
+	DeserializedCompleteDataListDocument
 } from "$/types/documents/base"
 
 export interface RoleResourceIdentifier extends ResourceIdentifier {
@@ -21,7 +26,34 @@ export interface RoleAttributes extends Attributes {
 	auditTrailFlags: number
 }
 
-export interface DeserializeRoleResource extends DeserializedResource<
+export interface RoleResource extends Resource<RoleResourceIdentifier, RoleAttributes> {}
+
+export interface DeserializedRoleResource extends DeserializedResource<
 	RoleResourceIdentifier,
 	RoleAttributes
+> {}
+
+export interface CompleteRoleDataDocument extends CompleteDataDocument<
+	RoleResourceIdentifier,
+	RoleAttributes,
+	RoleResource
+> {}
+
+export interface CompleteRoleDataListDocument extends CompleteDataListDocument<
+	RoleResourceIdentifier,
+	RoleAttributes,
+	RoleResource
+> {}
+
+export interface DeserializedCompleteRoleDataDocument extends DeserializedCompleteDataDocument<
+	RoleResourceIdentifier,
+	RoleAttributes,
+	DeserializedRoleResource
+> {}
+
+export interface DeserializedCompleteRoleDataListDocument
+extends DeserializedCompleteDataListDocument<
+	RoleResourceIdentifier,
+	RoleAttributes,
+	DeserializedRoleResource
 > {}
