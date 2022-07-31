@@ -10,12 +10,16 @@
 import { onMounted, provide, ref } from "vue"
 import { deserialise } from "kitsu-core"
 
-import UsersManager from "@/resource_management/resource_manager.vue"
 import type { ManagerKind } from "@/resource_management/types"
+
+import UsersManager from "@/resource_management/resource_manager.vue"
 import { UserProfile } from "$/types/common_front-end"
+import RoleFetcher from "$@/communicators/role"
 
 const managerKind = "secretary" as ManagerKind
 provide("managerKind", managerKind)
+
+RoleFetcher.initialize("/api")
 
 const users = ref<UserProfile[]>([])
 onMounted(() => {

@@ -28,7 +28,7 @@
 	font-size: 1.5rem;
 
 	.resource-properties {
-		@apply flex flex-col;
+		@apply flex flex-col w-[max-content];
 		font-size: 1.125rem;
 
 		& span:not(:first-of-type) {
