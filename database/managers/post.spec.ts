@@ -1,4 +1,4 @@
-import PostManager from "./post"
+// import PostManager from "./post"
 // import PostFactory from "~/factories/post"
 
 describe("Database: Department Read Operations", () => {
