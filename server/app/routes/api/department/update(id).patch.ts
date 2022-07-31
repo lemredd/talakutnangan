@@ -46,7 +46,7 @@ export default class extends BoundJSONController {
 	get manager(): BaseManagerClass { return DepartmentManager }
 
 	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
-		const manager = new DepartmentManager()
+		const manager = new DepartmentManager(request.transaction, request.cache)
 		const id = +request.params.id
 		const affectedCount = await manager.update(id, request.body.data.attributes)
 

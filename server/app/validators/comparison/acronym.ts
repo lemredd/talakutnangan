@@ -4,7 +4,7 @@ import type {
 	AcronymRuleConstraints
 } from "!/types/independent"
 
-import accessDeepPath from "!/helpers/access_deep_path"
+import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/app/validators/make_developer_error"
 
 /**

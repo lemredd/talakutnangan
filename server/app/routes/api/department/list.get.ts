@@ -34,7 +34,7 @@ export default class extends QueryController {
 		// TODO: Add limit to the constraints
 		const constraints = { ...request.query }
 
-		const manager = new DepartmentManager()
+		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departments = await manager.list(constraints)
 
 		response.status(this.status.OK).json(departments)

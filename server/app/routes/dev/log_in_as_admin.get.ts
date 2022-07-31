@@ -56,6 +56,7 @@ export default class extends DevController {
 			if (previousUser === null) {
 				const user = await new UserFactory()
 					.email(() => testAdminEmail)
+					.beUnreachableEmployee()
 					.insertOne()
 
 				Log.success("controller", "created test admin")

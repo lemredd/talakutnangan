@@ -9,7 +9,7 @@ import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
-import makeDefaultPassword from "!/helpers/make_default_password"
+import makeDefaultPassword from "$!/helpers/make_default_password"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import BoundJSONController from "!/common_controllers/bound_json_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
@@ -38,7 +38,7 @@ export default class extends BoundJSONController {
 		request: AuthenticatedIDRequest & PreprocessedRequest<PasswordResetArguments>,
 		response: Response
 	): Promise<NoContentResponseInfo> {
-		const manager = new UserManager()
+		const manager = new UserManager(request.transaction, request.cache)
 		const id = request.body.data.id
 		const userProfile = deserialize(await manager.findWithID(id)) as UserProfile
 		const newPassword = makeDefaultPassword(userProfile)

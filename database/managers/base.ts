@@ -11,18 +11,23 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+
 import Log from "$!/singletons/log"
+import CacheClient from "$!/helpers/cache_client"
+import encodeToBase64 from "$!/helpers/encode_to_base64"
+import RequestEnvironment from "$/helpers/request_environment"
+import TransactionManager from "%/managers/helpers/transaction_manager"
+
 import BaseError from "$!/errors/base"
-import page from "%/managers/helpers/page"
-import sort from "%/managers/helpers/sort"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
+
+import page from "%/managers/helpers/page"
+import sort from "%/managers/helpers/sort"
 import Condition from "%/managers/helpers/condition"
-import RequestEnvironment from "$/helpers/request_environment"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import siftByExistence from "%/managers/helpers/sift_by_existence"
-import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
@@ -39,10 +44,15 @@ export default abstract class Manager<
 	W = void
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
+	protected cache: CacheClient
 
-	constructor(transaction: TransactionManager = new TransactionManager()) {
+	constructor(
+		transaction: TransactionManager = new TransactionManager(),
+		cache: CacheClient = new CacheClient(Symbol("unknown client"))
+	) {
 		super()
 		this.transaction = transaction
+		this.cache = cache
 	}
 
 	abstract get model(): ModelCtor<T>
@@ -61,6 +71,10 @@ export default abstract class Manager<
 		return [
 			siftByExistence
 		]
+	}
+
+	get cachePath(): string {
+		return `database.${this.model.tableName}`
 	}
 
 	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
@@ -87,20 +101,40 @@ export default abstract class Manager<
 	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
 	: Promise<Serializable> {
 		try {
-			const condition = new Condition()
-			condition.equal(columnName, value)
-			const whereOptions: FindOptions<T> = { where: condition.build() }
+			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`
+			const uniqueConstraintSubstring = `constraints_${encodeToBase64(constraints)}`
+			const uniqueFindSubstring = `find_one_on_column__${
+				uniquePairSubstring
+			}__${
+				uniqueConstraintSubstring
+			}__`
+			const uniquePath = `${this.cachePath}.${uniqueFindSubstring}`
+			let cachedModel = this.cache.getCache(uniquePath)
 
-			const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
+			if (cachedModel === null) {
+				const condition = new Condition()
+				condition.equal(columnName, value)
+				const whereOptions: FindOptions<T> = { where: condition.build() }
 
-			const model = await this.model.findOne({
-				...findOptions,
-				...this.transaction.lockedTransactionObject
-			})
+				const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
 
-			Log.success("manager", "done searching for a model on a certain column")
+				const model = await this.model.findOne({
+					...findOptions,
+					...this.transaction.transactionObject
+				})
 
-			return this.serialize(model)
+				Log.success("manager", "done searching for a model on a certain column")
+
+				cachedModel = this.serialize(model)
+
+				this.cache.setCache(uniquePath, cachedModel)
+
+				Log.success("manager", "cached serialized model")
+			}
+
+			Log.success("manager", "used cached serialized model")
+
+			return cachedModel
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
@@ -112,7 +146,7 @@ export default abstract class Manager<
 
 			const rows = await this.model.findAll({
 				...options,
-				...this.transaction.lockedTransactionObject
+				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done listing models according to constraints")
@@ -237,7 +271,7 @@ export default abstract class Manager<
 		if (error instanceof BaseError) {
 			return error
 		} else if (error instanceof Error && this.isNotOnProduction) {
-			return new DatabaseError(error.message)
+			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
 		} else {
 			return new DatabaseError()
 		}

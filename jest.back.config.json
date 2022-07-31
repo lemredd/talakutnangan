@@ -14,7 +14,10 @@
 		"~/(.*)": "<rootDir>/t/helpers/$1"
 	},
 
-	"setupFilesAfterEnv": [],
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/cache_manager.set_up.ts"
+	],
 
 	"transformIgnorePatterns": [],
 

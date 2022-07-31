@@ -8,12 +8,12 @@
 
 			<template #default>
 				<div class="role-links flex flex-col">
-					<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
+					<Anchor v-for="link in roleLinks" :key="link.name" :href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
 						</span>
 						<span class="link-name">{{ link.name }}</span>
-					</Link>
+					</Anchor>
 
 				</div>
 				<a role="button" href="/logout" id="logout-btn" class="flex items-center">
@@ -25,11 +25,11 @@
 	</div>
 
 	<div class="links desktop">
-		<Link v-for="link in roleLinks" :key="link.name" :href="link.path">
+		<Anchor v-for="link in roleLinks" :key="link.name" :href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
-		</Link>
+		</Anchor>
 	</div>
 </template>
 
@@ -114,7 +114,7 @@ import {
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
 
-import Link from "@/link.vue"
+import Anchor from "@/anchor.vue"
 import RoleLinksList from "@/Dropdown.vue"
 
 const emit = defineEmits(["toggle"])

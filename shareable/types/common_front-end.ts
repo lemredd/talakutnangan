@@ -18,10 +18,13 @@ interface Roles extends Serializable {
 }
 
 /**
- * Shape of serialized user profile if authenticated
+ * Shape of deserialized user profile if authenticated
  */
 export interface UserProfile extends Serializable {
-	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData
+	data: StudentProfileData | ReachableEmployeeProfileData | UnreachableEmployeeProfileData,
+	meta: {
+		hasDefaultPassword: boolean|null
+	}
 }
 
 interface ProfileData extends Serializable {
@@ -67,4 +70,26 @@ export interface ReachableEmployeeProfileData extends ProfileData {
  */
 export interface UnreachableEmployeeProfileData extends ProfileData {
 	kind: "unreachable_employee"
+}
+
+import type { RawDepartment, RawRole } from "$/types/database"
+
+/**
+ * Shape of deserialized department
+ */
+export interface DeserializedDepartment extends Serializable {
+	data: {
+		type: "department",
+		id: number
+	} & RawDepartment & Serializable
+}
+
+/**
+ * Shape of deserialized role
+ */
+export interface DeserializedRole extends Serializable {
+	data: {
+		type: "role",
+		id: number
+	} & RawRole & Serializable
 }

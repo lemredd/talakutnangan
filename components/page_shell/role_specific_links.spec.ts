@@ -33,7 +33,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				role: "student_or_employee"
 			}
 		})
-		const link = wrapper.find("link-stub:first-of-type")
+		const link = wrapper.find("anchor-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
 		expect(linkHref).toBe("/notifications")
@@ -60,7 +60,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 				role: "guest"
 			}
 		})
-		const link = wrapper.find("link-stub:first-of-type")
+		const link = wrapper.find("anchor-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
 		expect(linkHref).toBe("/log_in")
@@ -97,7 +97,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 			}
 		})
 
-		const desktopLinks = wrapper.findAll("link-stub")
+		const desktopLinks = wrapper.findAll("anchor-stub")
 		expect(desktopLinks.length).toBeGreaterThan(1)
 	})
 })

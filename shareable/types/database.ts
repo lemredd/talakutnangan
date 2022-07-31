@@ -63,6 +63,14 @@ export interface RawRole {
 	auditTrailFlags: number
 }
 
+/**
+ * Used to receive raw signature details.
+ */
+export interface RawSignature {
+	userID: string,
+	signature: Buffer
+}
+
 export type List<T> = Promise<{
 	records: T[],
 	count: number

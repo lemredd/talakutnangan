@@ -1,10 +1,10 @@
 <template>
 <ul class="tabs">
 	<li v-for="tab in tabs" class="tab-button">
-		<Link
+		<Anchor
 			:href="`${parentUrl}/${tab.toLowerCase()}`">
 			{{ tab }}
-		</Link>
+		</Anchor>
 	</li>
 </ul>
 </template>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { defineComponent, inject, ref } from "vue"
-import Link from "@/link.vue"
+import Anchor from "@/anchor.vue"
 import { PageContext } from "#/types"
 
 const pageContext = inject("pageContext") as PageContext
