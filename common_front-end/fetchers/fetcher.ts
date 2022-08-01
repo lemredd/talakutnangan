@@ -16,8 +16,8 @@ export default class Fetcher<
 	T extends Attributes,
 	U extends CommonQueryParameters = CommonQueryParameters
 > extends RequestEnvironment {
-	private static basePath: string = ""
-	private static type: string = ""
+	protected static basePath: string = ""
+	protected static type: string = ""
 
 	static initialize(basePath: string, type: string = "") {
 		this.basePath = basePath
@@ -27,10 +27,10 @@ export default class Fetcher<
 	protected basePath: string = ""
 	protected type: string = ""
 
-	constructor() {
+	constructor(basePath: string = Fetcher.basePath, type: string = Fetcher.type) {
 		super()
-		this.basePath = Fetcher.basePath
-		this.type = Fetcher.type
+		this.basePath = basePath
+		this.type = type
 	}
 
 	create(attributes: T): Promise<Response> {
