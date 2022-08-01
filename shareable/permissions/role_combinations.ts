@@ -1,4 +1,4 @@
-import { Permissions } from "$/permissions/role_permissions"
+import { Permissions } from "$/permissions/role"
 
 export const READ: Permissions[] = [
 	"view"
