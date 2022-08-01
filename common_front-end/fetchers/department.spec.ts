@@ -18,7 +18,8 @@ describe("Communicator: Department", () => {
 			}
 		}), { status: RequestEnvironment.status.CREATED })
 
-		const response = await DepartmentFetcher.create({
+		const fetcher = new DepartmentFetcher()
+		const response = await fetcher.create({
 			fullName: "A",
 			acronym: "A",
 			mayAdmit: true
@@ -76,7 +77,8 @@ describe("Communicator: Department", () => {
 				limit: 5
 			}
 		}
-		const response = await DepartmentFetcher.list(queryObject)
+		const fetcher = new DepartmentFetcher()
+		const response = await fetcher.list(queryObject)
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "GET")
@@ -93,7 +95,12 @@ describe("Communicator: Department", () => {
 	it("can update resource", async () => {
 		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
-		const response = await DepartmentFetcher.update(1, { name: "A" })
+		const fetcher = new DepartmentFetcher()
+		const response = await fetcher.update(1, {
+			fullName: "A",
+			acronym: "A",
+			mayAdmit: true
+		})
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "PATCH")
@@ -105,7 +112,9 @@ describe("Communicator: Department", () => {
 				type: "department",
 				id: 1,
 				attributes: {
-					name: "A"
+					fullName: "A",
+					acronym: "A",
+					mayAdmit: true
 				}
 			}
 		})
@@ -116,7 +125,8 @@ describe("Communicator: Department", () => {
 	it("can archive resource", async () => {
 		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
-		const response = await DepartmentFetcher.archive([ 1 ])
+		const fetcher = new DepartmentFetcher()
+		const response = await fetcher.archive([ 1 ])
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "DELETE")
@@ -135,7 +145,8 @@ describe("Communicator: Department", () => {
 	it("can restore resource", async () => {
 		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
-		const response = await DepartmentFetcher.restore([ 2 ])
+		const fetcher = new DepartmentFetcher()
+		const response = await fetcher.restore([ 2 ])
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "PATCH")
