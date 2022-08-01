@@ -109,7 +109,7 @@ export default class extends JSONController {
 									name: {
 										pipes: [ required, string, regex ],
 										constraints: {
-											regex: { match: /regex:^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/ }
+											regex: { match: /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/ }
 										}
 									},
 									semesterFlags: {
