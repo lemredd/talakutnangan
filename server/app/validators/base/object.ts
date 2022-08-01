@@ -1,9 +1,9 @@
+import type { ErrorPointer } from "!/types/independent"
 import type {
-	ErrorPointer,
 	ValidationState,
 	ValidationConstraints,
 	ObjectRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import validate from "!/app/validators/validate"
 import isPlainObject from "$!/helpers/is_plain_object"

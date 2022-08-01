@@ -2,7 +2,7 @@ import type {
 	ValidationState,
 	ValidationConstraints,
 	RegexRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import makeDeveloperError from "!/app/validators/make_developer_error"
 

@@ -2,7 +2,7 @@ import type {
 	ValidationState,
 	ValidationConstraints,
 	AcronymRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/app/validators/make_developer_error"

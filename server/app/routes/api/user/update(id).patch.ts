@@ -2,7 +2,7 @@ import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
-import { FieldRules } from "!/types/independent"
+import { FieldRules } from "!/types/validation"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"

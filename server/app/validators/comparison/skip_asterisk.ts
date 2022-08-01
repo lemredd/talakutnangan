@@ -1,4 +1,4 @@
-import type { ValidationState, ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
 /**
  * Validator to check if the value is an asterisk to skip other validators.

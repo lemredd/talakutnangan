@@ -1,4 +1,4 @@
-import type { ValidationState, ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
 /**
  * Validator to require the data

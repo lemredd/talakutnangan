@@ -2,7 +2,7 @@ import type {
 	BooleanConstraints,
 	ValidationState,
 	ValidationConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import isBoolean from "validator/lib/isBoolean"
 import toBoolean from "validator/lib/toBoolean"

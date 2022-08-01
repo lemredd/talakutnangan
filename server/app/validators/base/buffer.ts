@@ -2,7 +2,7 @@ import type {
 	ValidationState,
 	ValidationConstraints,
 	BufferRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import isPlainObject from "$!/helpers/is_plain_object"
 import makeDeveloperError from "!/app/validators/make_developer_error"

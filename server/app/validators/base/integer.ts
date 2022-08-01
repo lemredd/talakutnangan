@@ -1,4 +1,4 @@
-import type { ValidationState, ValidationConstraints } from "!/types/independent"
+import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
 /**
  * Validator to check if data is a valid integer

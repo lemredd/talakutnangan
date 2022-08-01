@@ -1,5 +1,5 @@
 import { FieldRulesMaker } from "!/types/hybrid"
-import { FieldRules } from "!/types/independent"
+import { FieldRules } from "!/types/validation"
 import { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"

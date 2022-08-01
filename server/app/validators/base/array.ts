@@ -1,9 +1,9 @@
+import type { ErrorPointer } from "!/types/independent"
 import type {
 	ValidationState,
 	ValidationConstraints,
-	ErrorPointer,
 	ArrayRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import validate from "!/app/validators/validate"
 import unifyErrors from "!/app/validators/unify_errors"

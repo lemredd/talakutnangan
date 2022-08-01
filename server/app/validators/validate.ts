@@ -1,10 +1,7 @@
-import type { GeneralObject } from "$/types/general"
 import type { Request } from "!/types/dependent"
-import type {
-	ErrorPointer,
-	FieldRules,
-	ValidationConstraints
-} from "!/types/independent"
+import type { GeneralObject } from "$/types/general"
+import type { ErrorPointer } from "!/types/independent"
+import type { FieldRules, ValidationConstraints } from "!/types/validation"
 
 import unifyErrors from "!/app/validators/unify_errors"
 import runThroughPipeline from "$/helpers/run_through_pipeline"

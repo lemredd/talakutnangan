@@ -1,5 +1,5 @@
 import { Request, Response } from "!/types/dependent"
-import { FieldRules } from "!/types/independent"
+import { FieldRules } from "!/types/validation"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"

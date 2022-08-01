@@ -2,7 +2,7 @@ import type {
 	NullableConstraints,
 	ValidationState,
 	ValidationConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 /**
  * Validator to allow data to be nullable.

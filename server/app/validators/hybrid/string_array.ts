@@ -2,7 +2,7 @@ import type {
 	ValidationState,
 	ValidationConstraints,
 	ArrayRuleConstraints
-} from "!/types/independent"
+} from "!/types/validation"
 
 import string from "!/app/validators/base/string"
 import array from "!/app/validators/base/array"

@@ -10,7 +10,7 @@ import PermissionBasedPolicy from "!/middlewares/authentication/permission-based
 import { FieldRulesMaker } from "!/types/hybrid"
 import required from "!/app/validators/base/required"
 import array from "!/app/validators/base/array"
-import { FieldRules } from "!/types/independent"
+import { FieldRules } from "!/types/validation"
 import object from "!/app/validators/base/object"
 import string from "!/app/validators/base/string"
 import same from "!/app/validators/comparison/same"
