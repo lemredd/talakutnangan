@@ -2,6 +2,7 @@ import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
+import { FieldRules } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -21,6 +22,15 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
+
+import object from "!/app/validators/base/object"
+import required from "!/app/validators/base/required"
+import same from "!/app/validators/comparison/same"
+import string from "!/app/validators/base/string"
+import { FieldRulesMaker } from "!/types/hybrid"
+import integer from "!/app/validators/base/integer"
+import unique from "!/app/validators/manager/unique"
+import nullable from "!/app/validators/base/nullable"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -58,6 +68,60 @@ export default class extends MultipartController {
 				[ "unique", UserManager, "email", "data.id" ]
 			]
 		}
+	}
+
+	makeBodyRuleGenerator(): FieldRulesMaker {
+		return (request: AuthenticatedIDRequest): FieldRules => ({
+			data: {
+				pipes: [ required, object ],
+				constraints: {
+					object: {
+						type: {
+							pipes: [ required, string, same ],
+							constraints: {
+								same: "user"
+							}
+						},
+						id: {
+							pipes: [ required, integer ],
+							constraints: {}
+						},
+						attributes: {
+							pipes: [ required, object],
+							constraints: {
+								object: {
+									name: {
+										pipes: [ required, string ],
+										constraints: {}
+									},
+									email: {
+										pipes: [ required, string, unique],
+										constraints: {
+											manager: {
+												className: UserManager,
+												columnName: "email"
+											},
+											unique: {
+												IDPath: "data.id"
+											}
+										}
+									},
+									signature: {
+										pipes: [ nullable ],
+										constraints: {
+											buffer: {
+												allowedMimeTypes: [ "image/png" ],
+												maxSize: 1024 * 1024 * 10
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		})
 	}
 
 	async handle(

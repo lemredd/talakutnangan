@@ -1,6 +1,7 @@
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { PasswordResetArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
+import { FieldRules } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -14,6 +15,13 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import BoundJSONController from "!/common_controllers/bound_json_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
+import { FieldRulesMaker } from "!/types/hybrid"
+
+import object from "!/app/validators/base/object"
+import required from "!/app/validators/base/required"
+import same from "!/app/validators/comparison/same"
+import string from "!/app/validators/base/string"
+import integer from "!/app/validators/base/integer"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -30,6 +38,28 @@ export default class extends BoundJSONController {
 			"data.type": [ "required", "string", "equals:user" ],
 			"data.id": [ "required", "numeric" ]
 		}
+	}
+
+	makeBodyRuleGenerator(): FieldRulesMaker {
+		return (request: AuthenticatedIDRequest): FieldRules => ({
+			data: {
+				pipes: [ required, object],
+				constraints: {
+					object: {
+						type: {
+							pipes: [ required, string, same ],
+							constraints: {
+								same: "user"
+							}
+						},
+						id: {
+							pipes: [ required, integer ],
+							constraints: {}
+						}
+					}
+				}
+			}
+		})
 	}
 
 	get manager(): BaseManagerClass { return UserManager }
