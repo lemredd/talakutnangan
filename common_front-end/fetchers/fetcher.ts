@@ -134,6 +134,21 @@ export default class Fetcher<
 		})
 	}
 
+	protected handleResponse<D extends (Z|A|null)>(
+		response: Promise<Response<T, U, V, W, X|Y|B|null>>
+	): Promise<Response<T, U, V, W, D>> {
+		return response.then(({ body, status }) => {
+			if(status >= 200 || status <= 299) {
+				return {
+					body: deserialize(body) as D,
+					status
+				}
+			} else {
+				throw { body, status }
+			}
+		})
+	}
+
 	private async requestJSON(path: string, request: RequestInit)
 	: Promise<Response<any, any, any, any, any>> {
 		const completePath = `${this.basePath}/${path}`
