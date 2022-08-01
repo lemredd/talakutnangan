@@ -96,7 +96,7 @@ jobs:
       uses: LASER-Yi/workflow-status@v0.0.2
       with:
         token: ${{ secrets.KENNETH_PAT }}
-        workflow: .github/workflows/back-end.intg.yml
+        workflow: Web Back-end Integration Tests
         event: push
         repo: ${{ github.event.pull_request.head.repo.full_name }}
         branch: ${{ github.event.pull_request.head.ref }}
