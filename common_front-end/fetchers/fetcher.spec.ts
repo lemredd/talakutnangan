@@ -11,7 +11,7 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.create({ name: "A" })
 
 		expect(response).toHaveProperty("body.data")
@@ -49,7 +49,7 @@ describe("Communicator: Fetcher", () => {
 				limit: 5
 			}
 		}
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.list(queryObject)
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
@@ -70,7 +70,7 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.update(1, { name: "A" })
 
 		expect(response).toHaveProperty("body.data")
@@ -97,7 +97,7 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.archive([ 1 ])
 
 		expect(response).toHaveProperty("body.data")
@@ -120,7 +120,7 @@ describe("Communicator: Fetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.restore([ 2 ])
 
 		expect(response).toHaveProperty("body.data")
@@ -142,7 +142,7 @@ describe("Communicator: Fetcher", () => {
 			data: { type: "user", "attributes": {} },
 		}), { status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.getJSON("sample")
 
 		expect(response).toHaveProperty("body.data")
@@ -159,7 +159,7 @@ describe("Communicator: Fetcher", () => {
 			data: { type: "role", "attributes": {} },
 		}), { status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.postJSON("sample", { hello: "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -177,7 +177,7 @@ describe("Communicator: Fetcher", () => {
 			data: { type: "department", "attributes": {} },
 		}), { status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.patchJSON("sample/:id", { id: 1 }, { hello: "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -195,7 +195,7 @@ describe("Communicator: Fetcher", () => {
 			data: { type: "department", "attributes": {} },
 		}), { status: RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.deleteJSON("sample/:id", { id: 1 }, { hello: "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -211,7 +211,7 @@ describe("Communicator: Fetcher", () => {
 	it("can have null body if server replied with no content", async () => {
 		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 
-		const fetcher = new Fetcher()
+		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.postJSON("sample", { hello: "world" })
 
 		expect(response).toHaveProperty("body", null)

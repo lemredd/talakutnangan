@@ -57,11 +57,9 @@ describe("Communicator: Department", () => {
 			data: [
 				{
 					type: "department",
-					attributes: {
-						fullName: "A",
-						acronym: "A",
-						mayAdmit: true
-					}
+					fullName: "A",
+					acronym: "A",
+					mayAdmit: true
 				}
 			]
 		}),
@@ -111,11 +109,9 @@ describe("Communicator: Department", () => {
 			data: {
 				type: "department",
 				id: 1,
-				attributes: {
-					fullName: "A",
-					acronym: "A",
-					mayAdmit: true
-				}
+				fullName: "A",
+				acronym: "A",
+				mayAdmit: true
 			}
 		})
 		expect(response).toHaveProperty("body", null)
