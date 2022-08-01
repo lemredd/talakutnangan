@@ -138,8 +138,10 @@ describe("Controller: POST /api/department/create", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
+
 		expect(body).toHaveLength(1)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.acronym")
+
 	})
 
 	it("cannot accept invalid value if it should be admitted", async () => {

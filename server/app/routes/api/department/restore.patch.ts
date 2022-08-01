@@ -7,6 +7,15 @@ import JSONController from "!/common_controllers/json_controller"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import { FieldRulesMaker } from "!/types/hybrid"
+import required from "!/app/validators/base/required"
+import array from "!/app/validators/base/array"
+import { FieldRules } from "!/types/independent"
+import object from "!/app/validators/base/object"
+import string from "!/app/validators/base/string"
+import same from "!/app/validators/comparison/same"
+import integer from "!/app/validators/base/integer"
+import archived from "!/app/validators/manager/archived"
 
 // TODO: Make a controller to check for existence of archived model
 export default class extends JSONController {
@@ -25,6 +34,40 @@ export default class extends JSONController {
 			"data.*.type": [ "required", "string", "equals:department" ],
 			"data.*.id": [ "required", "numeric", [ "archived", DepartmentManager ] ]
 		}
+	}
+
+	makeBodyRuleGenerator(): FieldRulesMaker {
+		return (request: AuthenticatedRequest): FieldRules => ({
+			data: {
+				pipes: [required, array],
+				constraints: {
+					array: {
+						rules: {
+							pipes: [required, object ],
+							constraints: {
+								object: {
+									type: {
+										pipes: [required, string, same],
+										constraints: {
+											same: "department"
+										}
+									},
+									id: {
+										pipes: [required, integer, archived],
+										constraints: {
+											manager: {
+												className: DepartmentManager,
+												columnName: "id"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		})
 	}
 
 	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
