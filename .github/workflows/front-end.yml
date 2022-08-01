@@ -71,13 +71,13 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
         token: ${{ matrix.token }}
     - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
       if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+      uses: actions/setup-node@v2
       with:
         node-version: 16.x
     - name: Cache node modules
-      uses: actions/cache@v3
       if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+      uses: actions/cache@v3
       with:
         path: ./node_modules
         key: ${{ runner.os }}_${{ hashFiles('package.json') }}
