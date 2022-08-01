@@ -40,9 +40,10 @@ function createDepartment() {
 		mayAdmit: mayAdmit.value
 	})
 	.then(({ body, status }) => {
-		if (status >= 400) {
-			// Output error
-		}
+
+	})
+	.catch(({ body, status }) => {
+		// Output error
 	})
 }
 </script>
