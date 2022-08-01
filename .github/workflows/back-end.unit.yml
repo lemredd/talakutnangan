@@ -55,13 +55,15 @@ jobs:
 
   pulled_unit_tests:
     if: ${{ github.event_name == 'pull_request' }}
+    env:
+      PAT: ${{ secrets.PAT }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         username: [ KennethTrecy ]
         include:
           - username: KennethTrecy
-            token: ${{ secrets.PAT }}
+            token: ${{ env.PAT }}
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pull requested source
