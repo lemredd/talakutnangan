@@ -27,18 +27,12 @@ on:
       - 'jest.front_ci.config.json'
 
 jobs:
-  unit_tests:
+  pushed_unit_tests:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
-    - name: Checking out from the pull requested source
-      uses: actions/checkout@v3
-      if: ${{ github.event_name == 'pull_request' }}
-      with:
-        repository: ${{ github.event.pull_request.head.repo.full_name }}
-        ref: ${{ github.event.pull_request.head.ref }}
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
-      if: ${{ github.event_name == 'push' }}
       with:
         repository: ${{ github.event.push.repository.full_name }}
         ref: ${{ github.event.push.after }}
@@ -56,5 +50,43 @@ jobs:
           ${{ runner.os }}_
     - run: npm install
     - run: ./execute.ps1 -test unit:front_ci
+      shell: pwsh
+      timeout-minutes: 3
+
+  pulled_unit_tests:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        username: [ KennethTrecy ]
+        include:
+          - username: KennethTrecy
+            token: ${{ secrets.PAT }}
+    steps:
+    - name: Checking out from the pull requested source
+      uses: actions/checkout@v3
+      if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.pull_request.head.ref }}
+        token: ${{ matrix.token }}
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+      with:
+        node-version: 16.x
+    - name: Cache node modules
+      uses: actions/cache@v3
+      if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_
+    - run: npm install
+      if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
+    - run: ./execute.ps1 -test unit:front_ci
+      if: ${{ startsWith(github.event.pull_request.head.repo.full_name, matrix.username) }}
       shell: pwsh
       timeout-minutes: 3
