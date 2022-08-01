@@ -42,11 +42,9 @@ describe("Communicator: Department", () => {
 			data: {
 				type: "department",
 				id: 1,
-				attributes: {
-					fullName: "A",
-					acronym: "A",
-					mayAdmit: true
-				}
+				fullName: "A",
+				acronym: "A",
+				mayAdmit: true
 			}
 		})
 		expect(response).toHaveProperty("status", RequestEnvironment.status.CREATED)
@@ -109,9 +107,11 @@ describe("Communicator: Department", () => {
 			data: {
 				type: "department",
 				id: 1,
-				fullName: "A",
-				acronym: "A",
-				mayAdmit: true
+				attributes: {
+					fullName: "A",
+					acronym: "A",
+					mayAdmit: true
+				}
 			}
 		})
 		expect(response).toHaveProperty("body", null)
