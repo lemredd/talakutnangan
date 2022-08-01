@@ -6,7 +6,7 @@ on:
       - 'shareable/**'
       - '.github/workflows/shareable.yml'
       - 'jest.share.config.json'
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
@@ -48,29 +48,23 @@ jobs:
   pulled_unit_tests:
     if: |
       ${{
-        github.event_name == 'pull_request'
-        && github.event.pull_request.head.repo.full_name == github.repository
+        github.event_name == 'pull_request_target'
+        && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
       }}
     runs-on: ubuntu-latest
     steps:
-    - name: Checking out from the pull requested source
-      uses: actions/checkout@v3
+    - name: Check remote tests
+      id: check_remote_tests
+      uses: LASER-Yi/workflow-status@v0.0.2
       with:
-        repository: ${{ github.event.pull_request.head.repo.full_name }}
-        ref: ${{ github.event.pull_request.head.ref }}
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-        restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
-    - run: npm install
-    - run: ./execute.ps1 -test unit:share
-      shell: pwsh
-      timeout-minutes: 3
+        token: ${{ secrets.KENNETH_PAT }}
+        workflow: shareable.yml
+        event: push
+        repo: ${{ github.event.pull_request.head.repo.full_name }}
+        branch: ${{ github.event.pull_request.head.ref }}
+    - name: Err if remote tests are not successful or still running
+      if: ${{ steps.check_remote_tests.outputs.conclusion != 'success' }}
+      run: echo 1
+    - name: Output success if remote tests are successful
+      if: ${{ steps.check_remote_tests.outputs.conclusion == 'success' }}
+      run: echo 0
