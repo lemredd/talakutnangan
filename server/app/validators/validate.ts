@@ -50,7 +50,9 @@ export default async function(
 	}
 
 	if (errors.length > 0) {
-		throw errors
+		throw errors.sort((errorA, errorB) => {
+			return errorA.field.localeCompare(errorB.field)
+		})
 	}
 
 	return sanitizedInputs

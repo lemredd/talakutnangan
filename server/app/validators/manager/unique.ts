@@ -10,7 +10,7 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 /**
  * Validator to check if data unique/will be unique in the database
  */
- export default async function(
+export default async function(
 	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints & Partial<UniqueRuleConstraints>
 ): Promise<ValidationState> {
