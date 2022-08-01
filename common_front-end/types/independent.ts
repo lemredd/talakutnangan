@@ -6,8 +6,18 @@
 
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type PermissionGroup from "$/permissions/base"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+import type {
+	ResourceIdentifier,
+	Attributes,
+	Resource,
+	DeserializedResource,
+	ResourceDocument,
+	ResourceListDocument,
+	DeserializedResourceDocument,
+	DeserializedResourceListDocument
+} from "$/types/documents/base"
 
 /**
  * Shape of expected page context parameter of common front-end functions
@@ -68,13 +78,28 @@ export interface LogInDetails extends Serializable {
 	password: string
 }
 
+type PossibleResponseTypes<
+	T extends ResourceIdentifier,
+	U extends Attributes,
+	V extends Resource<T, U>,
+	W extends DeserializedResource<T, U>
+> =
+	| ResourceDocument<T, U, V>
+	| ResourceListDocument<T, U, V>
+	| DeserializedResourceDocument<T, U, W>
+	| DeserializedResourceListDocument<T, U, W>
+	| Serializable
+
 /**
  * Shape of expected response from fetcher
  */
-export interface Response extends Serializable {
-	body: {
-		data?: Serializable,
-		meta?: Serializable
-	},
+export interface Response<
+	T extends ResourceIdentifier,
+	U extends Attributes,
+	V extends Resource<T, U>,
+	W extends DeserializedResource<T, U>,
+	X extends PossibleResponseTypes<T, U, V, W> = PossibleResponseTypes<T, U, V, W>
+> extends Serializable {
+	body: X,
 	status: number
 }
