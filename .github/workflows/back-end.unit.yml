@@ -10,7 +10,7 @@ on:
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back_ci.config.json'
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - reopened
@@ -32,7 +32,7 @@ jobs:
     steps:
     - name: Checking out from the pull requested source
       uses: actions/checkout@v3
-      if: ${{ github.event_name == 'pull_request_target' }}
+      if: ${{ github.event_name == 'pull_request' }}
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         ref: ${{ github.event.pull_request.head.ref }}
