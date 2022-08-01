@@ -46,19 +46,17 @@ jobs:
       timeout-minutes: 3
 
   pulled_unit_tests:
-    if: |
-      ${{
-        github.event_name == 'pull_request_target'
-        && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-      }}
+    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
     runs-on: ubuntu-latest
     steps:
+    - name: Starting to check the remote
+      run: echo ${{ github.event.pull_request.head.repo.full_name }}
     - name: Check remote tests
       id: check_remote_tests
       uses: LASER-Yi/workflow-status@v0.0.2
       with:
         token: ${{ secrets.KENNETH_PAT }}
-        workflow: shareable.yml
+        workflow: ./.github/workflows/shareable.yml
         event: push
         repo: ${{ github.event.pull_request.head.repo.full_name }}
         branch: ${{ github.event.pull_request.head.ref }}
