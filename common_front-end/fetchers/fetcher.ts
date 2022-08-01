@@ -13,9 +13,10 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
+import deserialize from "$/helpers/deserialize"
 import stringifyQuery from "$@/fetchers/stringify_query"
-import RequestEnvironment from "$/helpers/request_environment"
 import specializedPath from "$/helpers/specialize_path"
+import RequestEnvironment from "$/helpers/request_environment"
 
 /**
  * General class to isolate the third-party library used for communicate from the rest of the
@@ -50,45 +51,55 @@ export default class Fetcher<
 		this.type = type
 	}
 
-	create(attributes: T): Promise<Response<T, U, V, W, X>> {
-		return this.postJSON(`${this.type}/create`, {
-			data: {
-				type: this.type,
-				attributes
-			}
-		}) as Promise<Response<T, U, V, W, X>>
+	create(attributes: T): Promise<Response<T, U, V, W, Z>> {
+		return this.handleResponse(
+			this.postJSON(`${this.type}/create`, {
+				data: {
+					type: this.type,
+					attributes
+				}
+			})
+		)
 	}
 
-	list(parameters: C): Promise<Response<T, U, V, W, Y>> {
+	list(parameters: C): Promise<Response<T, U, V, W, A>> {
 		const commaDelimitedSort = {
 			...parameters,
 			sort: parameters.sort.join(",")
 		}
-		return this.getJSON(
-			`${this.type}/list?${stringifyQuery(commaDelimitedSort)}`
-		) as Promise<Response<T, U, V, W, Y>>
+		return this.handleResponse(
+			this.getJSON(
+				`${this.type}/list?${stringifyQuery(commaDelimitedSort)}`
+			)
+		)
 	}
 
 	update(id: number, attributes: T): Promise<Response<T, U, V, W, null>> {
-		return this.patchJSON(`${this.type}/update/:id`, { id }, {
-			data: {
-				type: this.type,
-				id,
-				attributes
-			}
-		}) as Promise<Response<T, U, V, W, null>>
+		return this.handleResponse(
+			this.patchJSON(`${this.type}/update/:id`, { id }, {
+				data: {
+					type: this.type,
+					id,
+					attributes
+				}
+			})
+		)
 	}
 
 	archive(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
-		return this.deleteJSON(`${this.type}/archive`, {}, {
-			data: IDs.map(id => ({ type: this.type, id }))
-		}) as Promise<Response<T, U, V, W, null>>
+		return this.handleResponse(
+			this.deleteJSON(`${this.type}/archive`, {}, {
+				data: IDs.map(id => ({ type: this.type, id }))
+			})
+		)
 	}
 
 	restore(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
-		return this.patchJSON(`${this.type}/restore`, {}, {
-			data: IDs.map(id => ({ type: this.type, id }))
-		}) as Promise<Response<T, U, V, W, null>>
+		return this.handleResponse(
+			this.patchJSON(`${this.type}/restore`, {}, {
+				data: IDs.map(id => ({ type: this.type, id }))
+			})
+		)
 	}
 
 	getJSON(path: string): Promise<Response<T, U, V, W, X|Y|B|null>> {
@@ -134,7 +145,7 @@ export default class Fetcher<
 		})
 	}
 
-	protected handleResponse<D extends (Z|A|null)>(
+	protected handleResponse<D extends Z|A|null>(
 		response: Promise<Response<T, U, V, W, X|Y|B|null>>
 	): Promise<Response<T, U, V, W, D>> {
 		return response.then(({ body, status }) => {
