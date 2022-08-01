@@ -8,6 +8,6 @@ export default class extends Fetcher<UserAttributes> {
 	}
 
 	async logIn(details: LogInDetails): Promise<Response> {
-		return await Fetcher.postJSON(`${this.type}/log_in`, details)
+		return await this.postJSON(`${this.type}/log_in`, details)
 	}
 }
