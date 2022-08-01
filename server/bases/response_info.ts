@@ -1,6 +1,6 @@
 import { Response } from "!/types/dependent"
 
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"

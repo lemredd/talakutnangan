@@ -1,1 +1,0 @@
-export default "/admin_settings/:tab"

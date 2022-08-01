@@ -1,7 +1,7 @@
-import { v4 } from "uuid"
+import type { OptionalMiddleware } from "!/types/independent"
+import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
-import { OptionalMiddleware } from "$/types/server"
-import { AuthenticatedRequest, Response } from "!/types/dependent"
+import { v4 } from "uuid"
 
 import Policy from "!/bases/policy"
 import JSONController from "!/common_controllers/json_controller"

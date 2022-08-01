@@ -9,7 +9,11 @@ import range from "!/app/validators/comparison/range"
 import oneOf from "!/app/validators/comparison/one-of"
 import stringArray from "!/app/validators/hybrid/string_array"
 
-export default function(className: BaseManagerClass, extraFilters: FieldRules): FieldRules {
+export default function(
+	className: BaseManagerClass,
+	extraFilters: FieldRules,
+	extraQueries: FieldRules = {}
+): FieldRules {
 	return {
 		filter: {
 			pipes: [ nullable, object ],
@@ -64,6 +68,7 @@ export default function(className: BaseManagerClass, extraFilters: FieldRules): 
 					}
 				}
 			}
-		}
+		},
+		...extraQueries
 	}
 }

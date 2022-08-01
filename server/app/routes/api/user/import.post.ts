@@ -1,5 +1,5 @@
 import { UserKindValues, UserKind } from "$/types/database"
-import type { OptionalMiddleware } from "$/types/server"
+import type { OptionalMiddleware } from "!/types/independent"
 import type { PreprocessedRequest, Response } from "!/types/dependent"
 import type { FieldRules, NewUserNotificationArguments } from "!/types/independent"
 import type {
@@ -81,7 +81,7 @@ export default class extends MultipartController {
 	): Promise<void> {
 		Log.trace("controller", "entered POST /api/user/import")
 
-		const manager = new UserManager()
+		const manager = new UserManager(request.transaction, request.cache)
 		const body: Partial<RawBulkData> = request.body
 
 		Log.trace("controller", "made user manager")

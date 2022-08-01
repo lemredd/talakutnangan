@@ -1,4 +1,4 @@
-import type { UserProfile } from "$/types/common_front-end"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { PasswordResetArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 import { FieldRules } from "!/types/independent"
@@ -68,9 +68,9 @@ export default class extends BoundJSONController {
 		request: AuthenticatedIDRequest & PreprocessedRequest<PasswordResetArguments>,
 		response: Response
 	): Promise<NoContentResponseInfo> {
-		const manager = new UserManager()
+		const manager = new UserManager(request.transaction, request.cache)
 		const id = request.body.data.id
-		const userProfile = deserialize(await manager.findWithID(id)) as UserProfile
+		const userProfile = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const newPassword = makeDefaultPassword(userProfile)
 		const isSuccess = await manager.resetPassword(id, newPassword)
 

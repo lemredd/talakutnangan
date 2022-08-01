@@ -196,7 +196,7 @@ export default class extends BoundJSONController {
 	get manager(): BaseManagerClass { return RoleManager }
 
 	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
-		const manager = new RoleManager()
+		const manager = new RoleManager(request.transaction, request.cache)
 		const { id, attributes } = request.body.data
 		const {
 			name,

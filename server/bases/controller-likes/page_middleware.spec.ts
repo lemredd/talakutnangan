@@ -1,6 +1,6 @@
-import { Request } from "!/types/dependent"
-import { PageRequest } from "!/types/hybrid"
-import type { Serializable } from "$/types/database"
+import type { Request } from "!/types/dependent"
+import type { PageRequest } from "!/types/hybrid"
+import type { Serializable } from "$/types/general"
 
 import Policy from "!/bases/policy"
 import UserFactory from "~/factories/user"

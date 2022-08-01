@@ -3,9 +3,11 @@ import type { FieldRulesMaker } from "!/types/hybrid"
 import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
+import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
-import { READ } from "$/permissions/department_combinations"
 import QueryController from "!/common_controllers/query_controller"
+
+import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
@@ -26,17 +28,15 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(): FieldRulesMaker {
-		// TODO: make a validator to skip "*" character
 		return (request: Request): FieldRules => makeListRules(DepartmentManager, {})
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
-		// TODO: Add limit to the constraints
+	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new DepartmentManager()
+		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departments = await manager.list(constraints)
 
-		response.status(this.status.OK).json(departments)
+		return new ListResponse(departments)
 	}
 }

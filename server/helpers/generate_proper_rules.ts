@@ -1,5 +1,5 @@
 import type { ValidationRules } from "!/types/independent"
-import accessDeepPath from "!/helpers/access_deep_path"
+import accessDeepPath from "$!/helpers/access_deep_path"
 
 /**
  * Transforms the some keys with integer so deeply nested values can be validated.

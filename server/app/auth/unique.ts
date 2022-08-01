@@ -1,5 +1,5 @@
 import type { Validator } from "node-input-validator"
-import accessDeepPath from "!/helpers/access_deep_path"
+import accessDeepPath from "$!/helpers/access_deep_path"
 
 import type { BaseManagerClass } from "!/types/independent"
 

@@ -13,6 +13,8 @@
 		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"\\$/(.*)": "<rootDir>/shareable/$1",
 		"\\$@/(.*)": "<rootDir>/common_front-end/$1",
+		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"%/(.*)": "<rootDir>/database/$1",
 		"#/(.*)": "<rootDir>/renderer/$1",
 		"@/(.*)": "<rootDir>/components/$1"
 	},
@@ -22,7 +24,9 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/fetch.set_up.ts"
+		"./t/helpers/set-ups/fetch.set_up.ts",
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],

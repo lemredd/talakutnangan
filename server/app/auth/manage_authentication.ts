@@ -1,7 +1,7 @@
+import type { Serializable } from "$/types/general"
+
 import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
-
-import type { Serializable } from "$/types/database"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"

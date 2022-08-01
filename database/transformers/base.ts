@@ -1,5 +1,4 @@
-import type { GeneralObject } from "$/types/server"
-import type { Serializable } from "$/types/database"
+import type { GeneralObject, Serializable } from "$/types/general"
 
 import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
