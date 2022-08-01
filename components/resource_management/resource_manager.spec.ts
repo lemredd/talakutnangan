@@ -2,41 +2,29 @@ import type { CommonQueryParameters } from "$/types/query"
 
 import { mount } from "@vue/test-utils"
 
-import RequestEnvironment from "$/helpers/request_environment"
-import UserFetcher from "$@/fetchers/user"
-import { deserialise } from "kitsu-core"
+import UserFactory from "~/factories/user"
+import deserialize from "$/helpers/deserialize"
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
 import ResourceManager from "./resource_manager.vue"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
 		async function listUsers() {
-			fetchMock.mockResponseOnce(JSON.stringify({
-				data: [
-					{ type: "user", name: "KID A" }
-				]
-			}),
-			{ status: RequestEnvironment.status.OK })
+			const users = await new UserFactory().makeMany(5)
+			const serializedUsers = Serializer.serialize(
+				users,
+				new UserTransformer(),
+				{}
+			)
 
-			UserFetcher.initialize("/api")
-			const queryObject: CommonQueryParameters = {
-				filter: {
-					existence: "exists"
-				},
-				sort: [ "id", "name" ],
-				page: {
-					offset: 0,
-					limit: 5
-				}
-			}
-			const response = await UserFetcher.list(queryObject)
-
-			return deserialise(response.body).data
+			return deserialize(serializedUsers)!.data
 		}
 
 		it("Should identify if resource type is of user profile", async () => {
 			const sampleUserList = await listUsers()
 
-			const wrapper = mount(ResourceManager, {
+			const wrapper = mount(ResourceManager as object, {
 				shallow: true,
 				props: {
 					resource: sampleUserList
@@ -52,5 +40,4 @@ describe("UI Component: Resource Manager", () => {
 			expect(filters.exists()).toBeTruthy()
 		})
 	})
-
 })
