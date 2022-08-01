@@ -67,7 +67,7 @@ function siftViewableDepartments() {
 }
 
 async function listRoles() {
-	await RoleFetcher.list({
+	await new RoleFetcher().list({
 		filter: {
 			existence: "exists"
 		},
@@ -89,7 +89,7 @@ async function listRoles() {
 }
 
 function listDepartments() {
-	DepartmentFetcher.list({
+	new DepartmentFetcher().list({
 		filter: {
 			existence: "exists"
 		},

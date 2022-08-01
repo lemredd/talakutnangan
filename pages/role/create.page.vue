@@ -80,7 +80,7 @@ const auditTrailFlags = ref<number>(0)
 RoleFetcher.initialize("/api")
 
 function createRole() {
-	RoleFetcher.create({
+	new RoleFetcher().create({
 		name: roleName.value,
 		postFlags: postFlags.value,
 		semesterFlags: semesterFlags.value,
@@ -88,7 +88,9 @@ function createRole() {
 		commentFlags: commentFlags.value,
 		profanityFlags: profanityFlags.value,
 		userFlags: userFlags.value,
-		auditTrailFlags: auditTrailFlags.value
+		auditTrailFlags: auditTrailFlags.value,
+		departmentFlags: 1,
+		roleFlags: 1
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)
