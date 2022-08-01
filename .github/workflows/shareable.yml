@@ -56,7 +56,7 @@ jobs:
       uses: LASER-Yi/workflow-status@v0.0.2
       with:
         token: ${{ secrets.KENNETH_PAT }}
-        workflow: ./.github/workflows/shareable.yml
+        workflow: .github/workflows/shareable.yml
         event: push
         repo: ${{ github.event.pull_request.head.repo.full_name }}
         branch: ${{ github.event.pull_request.head.ref }}
