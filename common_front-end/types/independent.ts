@@ -98,7 +98,7 @@ export interface Response<
 	U extends Attributes,
 	V extends Resource<T, U>,
 	W extends DeserializedResource<T, U>,
-	X extends PossibleResponseTypes<T, U, V, W> = PossibleResponseTypes<T, U, V, W>
+	X extends PossibleResponseTypes<T, U, V, W>|null = PossibleResponseTypes<T, U, V, W>
 > extends Serializable {
 	body: X,
 	status: number
