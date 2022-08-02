@@ -24,12 +24,12 @@ describe("Database Pipe: Sift by role", () => {
 
 		const options = siftByRole({}, {
 			filter: {
-				role: role.name
+				role: role.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where.name")
+		expect(options).toHaveProperty("include.0.where.id")
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", user.id)
 		expect(foundUsers).toHaveProperty("0.roles.0.id", role.id)
@@ -41,7 +41,7 @@ describe("Database Pipe: Sift by role", () => {
 
 		const options = siftByRole({ include: [Role] }, {
 			filter: {
-				role: role.name
+				role: role.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
@@ -59,12 +59,12 @@ describe("Database Pipe: Sift by role", () => {
 
 		const options = siftByRole({}, {
 			filter: {
-				role: roleB.name
+				role: roleB.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where.name")
+		expect(options).toHaveProperty("include.0.where.id")
 		expect(foundUsers).toHaveLength(0)
 	})
 })
