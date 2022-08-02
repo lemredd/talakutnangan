@@ -3,9 +3,9 @@ import type { FieldRules } from "!/types/validation"
 
 import Validation from "!/bases/validation"
 import object from "!/app/validators/base/object"
+import same from "!/app/validators/comparison/same"
 import integer from "!/app/validators/base/integer"
 import required from "!/app/validators/base/required"
-import same from "!/app/validators/comparison/same"
 
 export default class extends Validation {
 	constructor() {
@@ -32,7 +32,6 @@ export default class extends Validation {
 									id: {
 										pipes: [ required, integer, same ],
 										constraints: {
-											// TODO: Make this into object and used the referenced value
 											same: {
 												pointer: "params.id"
 											}
