@@ -7,7 +7,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/restore(id).patch"
+import Route from "!/app/routes/api/role/restore.patch"
 
 describe("PATCH /api/role/restore/:id", () => {
 	beforeAll(async () => {
@@ -20,20 +20,20 @@ describe("PATCH /api/role/restore/:id", () => {
 			.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const role = await (new RoleFactory()).insertOne()
-		const id = role.id
 		await role.destroy()
 
 		const response = await App.request
-			.patch(`/api/role/restore/${role.id}`)
+			.patch("/api/role/restore")
+			.send({
+				data: [
+					{ type: "role", id: role.id }
+				]
+			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(response.body).toStrictEqual({})
-		expect((await Role.findOne({ where: { id } }))!.deletedAt).toBeNull()
+		expect((await Role.findOne({ where: { id: role.id } }))!.deletedAt).toBeNull()
 	})
-
-	it.todo("cannot restore non-existing")
-	it.todo("cannot restore existing")
 })

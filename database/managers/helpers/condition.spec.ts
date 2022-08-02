@@ -53,8 +53,8 @@ describe("Database: Condition Builder", () => {
 
 	it("can make 'or' operation", () => {
 		const condition = new Condition()
-		const subconditionA = (new Condition()).is("columnA", null)
-		const subconditionB = (new Condition()).not("columnB", null)
+		const subconditionA = new Condition().is("columnA", null)
+		const subconditionB = new Condition().not("columnB", null)
 
 		const builtCondition = condition.or(
 			subconditionA,
@@ -69,10 +69,23 @@ describe("Database: Condition Builder", () => {
 		})
 	})
 
+	it("can make simplified 'or' operation", () => {
+		const condition = new Condition()
+		const subconditionA = new Condition().is("columnA", null)
+		const subconditionB = new Condition()
+
+		const builtCondition = condition.or(
+			subconditionA,
+			subconditionB
+		).build()
+
+		expect(builtCondition).toStrictEqual({ columnA: { [Op.is]: null } })
+	})
+
 	it("can make 'and' operation", () => {
 		const condition = new Condition()
-		const subconditionA = (new Condition()).is("columnA", null)
-		const subconditionB = (new Condition()).equal("columnB", 1)
+		const subconditionA = new Condition().is("columnA", null)
+		const subconditionB = new Condition().equal("columnB", 1)
 
 		const builtCondition = condition.and(
 			subconditionA,
@@ -85,5 +98,18 @@ describe("Database: Condition Builder", () => {
 				{ columnB: { [Op.eq]: 1 } }
 			]
 		})
+	})
+
+	it("can make simplified 'and' operation", () => {
+		const condition = new Condition()
+		const subconditionA = new Condition().is("columnA", null)
+		const subconditionB = new Condition()
+
+		const builtCondition = condition.and(
+			subconditionA,
+			subconditionB
+		).build()
+
+		expect(builtCondition).toStrictEqual({ columnA: { [Op.is]: null } })
 	})
 })

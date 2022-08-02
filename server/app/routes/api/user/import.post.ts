@@ -17,7 +17,7 @@ import CSVParser from "!/middlewares/body_parser/csv"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import BodyValidation from "!/middlewares/authorization/body_validation"
+import BodyValidation from "!/middlewares/validation/body"
 import MultipartController from "!/common_controllers/multipart_controller"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 

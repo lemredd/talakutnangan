@@ -14,6 +14,7 @@
 <style scoped lang="scss">
 .controls {
 	@apply flex items-center justify-between;
+	margin-top: 1em;
 
 	button {
 		@apply dark:bg-dark-100;
@@ -27,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import TextualField from "@/fields/Textual.vue"
+import TextualField from "@/fields/textual.vue"
 
 const email = ref("sample@example.com")
 const password = ref("12345678")

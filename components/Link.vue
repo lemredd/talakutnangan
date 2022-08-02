@@ -3,7 +3,7 @@
 		<slot />
 	</a>
 </template>
-<style scoped>
+<style scoped lang="scss">
 a {
 	@apply flex items-center;
 	padding: 3px 10px;

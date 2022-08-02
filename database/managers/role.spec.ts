@@ -10,6 +10,10 @@ describe("Database: Role read operations", () => {
 
 		const roles = await manager.list({
 			name: incompleteName,
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})
@@ -25,6 +29,10 @@ describe("Database: Role read operations", () => {
 
 		const roles = await manager.list({
 			name: incorrectName,
+			filter: {
+				existence: "exists"
+			},
+			sort: [],
 			page: 0,
 			limit: 1
 		})

@@ -1,6 +1,6 @@
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
-import RouteParamterValidation from "!/middlewares/authorization/route_parameter_validation"
+import RouteParamterValidation from "!/middlewares/validation/route_parameter"
 
 /**
  * Specialized controller class which is binded to route parameter(s).

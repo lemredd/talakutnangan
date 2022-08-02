@@ -2,7 +2,7 @@ import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import BodyValidation from "!/middlewares/authorization/body_validation"
+import BodyValidation from "!/middlewares/validation/body"
 
 /**
  * Specialized controller class which multipart form.

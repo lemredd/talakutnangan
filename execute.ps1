@@ -44,6 +44,10 @@ Switch to runs tests.
 Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
+.PARAMETER Path
+Only works if `-Test` switch is on.
+Limits the files to test base from regular expression.
+
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
@@ -118,6 +122,8 @@ Param(
 		"unit:front",
 		"unit:ui",
 		"unit:back",
+		"unit:back_ci",
+		"unit:front_ci",
 		"unit:server",
 		"unit:database",
 		"intg:front",
@@ -127,6 +133,10 @@ Param(
 	$SuiteName,
 
 	[Parameter(ParameterSetName="Test", Position=2)]
+	[string]
+	$Regex = "",
+
+	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
 	$Watch
 )
@@ -159,12 +169,29 @@ if ($Test) {
 		$configuration = "jest.$($name).config.json"
 	}
 
-	$watchFlag = ""
-	if ($Watch) {
-		$watchFlag = "--watch"
+	$regexFlag = '""'
+	if ($Regex -ne "") {
+		$regexFlag = '"'+$Regex+'"'
 	}
 
-	& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag)
+	if ($regexFlag -eq '""') {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}
+	} else {
+		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)
+	}
+
+	# Above operations refreshed the cache directory so it is safe to watch now
+	if ($Watch) {
+		if ($regexFlag -eq '""') {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch
+		} else {
+			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch
+		}
+	}
 }
 
 if ($Push) {

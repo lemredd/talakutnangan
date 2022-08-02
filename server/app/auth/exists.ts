@@ -29,7 +29,7 @@ export default async function(
 			// TODO: Store found model in cache
 			return foundModel.data !== null
 		} catch(error) {
-			throw new Error("Manager cannot be instantiated")
+			throw new Error("Manager cannot be instantiated in non-exists/exists rule")
 		}
 	} else {
 		// Skip the validation if the field does not exists

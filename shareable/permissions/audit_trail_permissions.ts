@@ -13,7 +13,7 @@ import PermissionGroup from "$/permissions/base"
 const auditTrailColumnName = "auditTrailFlags"
 
 type AuditTrailFlags = { [auditTrailColumnName]: number }
-type Permissions = OperationPermission
+export type Permissions = OperationPermission
 
 /**
  * Permission group for audit trails.

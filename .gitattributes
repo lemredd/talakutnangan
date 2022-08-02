@@ -1,4 +1,5 @@
 .env					text eol=lf
+.env.*				text eol=lf
 *.md					text eol=lf
 .git*					text eol=lf
 *.json				text eol=lf
@@ -10,3 +11,7 @@ LICENSE*				text eol=lf
 *.vue					text eol=lf
 *.css					text eol=lf
 *.html				text eol=lf
+*.ps1					text eol=lf
+*.yml					text eol=lf
+.sequelizerc		text eol=lf
+execute				text eol=lf
