@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
-import type { FieldRulesMaker } from "!/types/hybrid"
-import { Request, Response } from "!/types/dependent"
+import type { Request, Response } from "!/types/dependent"
+import type { CommonQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
@@ -30,7 +30,7 @@ export default class extends QueryController {
 		const constraints = { ...request.query }
 
 		const manager = new DepartmentManager(request.transaction, request.cache)
-		const departments = await manager.list(constraints)
+		const departments = await manager.list(constraints as CommonQueryParameters)
 
 		return new ListResponse(departments)
 	}
