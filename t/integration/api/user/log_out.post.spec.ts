@@ -3,7 +3,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
 
-import Route from "!/app/routes/api/user/log_out.post"
+import Route from "!%/api/user/log_out.post"
 
 describe("POST /api/user/log_out", () => {
 	beforeAll(async () => {

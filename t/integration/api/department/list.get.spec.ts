@@ -8,7 +8,7 @@ import { READ } from "$/permissions/department_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/department/list.get"
+import Route from "!%/api/department/list.get"
 
 describe("GET /api/deparment/list", () => {
 	beforeAll(async () => {

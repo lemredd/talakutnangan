@@ -1,8 +1,9 @@
-import type { FieldRulesMaker } from "!/types/hybrid"
+import type { Request } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
 
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import BodyValidation from "!/middlewares/validation/body"
+import BodyValidation from "!/validation/body"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -17,13 +18,10 @@ export default abstract class extends Controller {
 	get validations(): Validation[] {
 		return [
 			new BodyValidation(
-				this.makeBodyRuleGenerator()
-				|| this.bodyValidationRules
+				this.makeBodyRuleGenerator.bind(this)
 			)
 		]
 	}
 
-	makeBodyRuleGenerator(): FieldRulesMaker|null { return null }
-
-	abstract get bodyValidationRules(): object;
+	abstract makeBodyRuleGenerator(request: Request): FieldRules
 }

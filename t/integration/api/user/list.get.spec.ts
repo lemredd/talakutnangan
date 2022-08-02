@@ -7,7 +7,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
-import Route from "!/app/routes/api/user/list.get"
+import Route from "!%/api/user/list.get"
 
 describe("GET /api/user/list", () => {
 	beforeAll(async () => {

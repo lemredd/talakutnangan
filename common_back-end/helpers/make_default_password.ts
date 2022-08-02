@@ -4,7 +4,7 @@ import extractEmailUsername from "$!/helpers/extract_email_username"
 /**
  * Helper function to generate default password.
  *
- * ! If there is a change below, update `!/app/routes/api/user/import.post` too.
+ * ! If there is a change below, update `!%/api/user/import.post` too.
  *
  * @param userProfile Profile of the user where to derive the password.
  */

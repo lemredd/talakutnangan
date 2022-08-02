@@ -4,7 +4,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 
-import Route from "!/app/routes/t/validation/id_parameter(id).get"
+import Route from "!%/t/validation/id_parameter(id).get"
 
 describe("GET /t/validation/id_parameter/:id", () => {
 	beforeAll(async () => {

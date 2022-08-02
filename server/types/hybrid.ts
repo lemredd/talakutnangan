@@ -36,7 +36,7 @@ export interface UsableRoute {
 	handlers: RouteHandlers
 }
 
-import type { FieldRules } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 
 /**
  * Interface of function to create the rules.

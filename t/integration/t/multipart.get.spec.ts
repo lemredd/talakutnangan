@@ -2,7 +2,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
 
-import Route from "!/app/routes/t/multipart.post"
+import Route from "!%/t/multipart.post"
 
 describe("GET /t/multipart", () => {
 	beforeAll(async () => {
