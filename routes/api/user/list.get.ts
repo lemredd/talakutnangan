@@ -8,7 +8,7 @@ import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
-import QueryController from "!/common_controllers/query_controller"
+import QueryController from "!/controllers/query_controller"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"

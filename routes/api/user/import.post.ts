@@ -17,7 +17,7 @@ import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import MultipartController from "!/common_controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart_controller"
 
 import BodyValidation from "!/validation/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"

@@ -10,7 +10,7 @@ import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import makeDefaultPassword from "$!/helpers/make_default_password"
-import BoundJSONController from "!/common_controllers/bound_json_controller"
+import BoundJSONController from "!/controllers/bound_json_controller"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
 import { RESET_PASSWORD } from "$/permissions/user_combinations"

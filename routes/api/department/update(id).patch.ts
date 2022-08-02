@@ -5,7 +5,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import BoundJSONController from "!/common_controllers/bound_json_controller"
+import BoundJSONController from "!/controllers/bound_json_controller"
 
 import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"

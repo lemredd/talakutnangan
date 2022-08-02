@@ -5,7 +5,7 @@ import type { RoleResourceIdentifier } from "$/types/documents/role"
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
-import JSONController from "!/common_controllers/json_controller"
+import JSONController from "!/controllers/json_controller"
 
 import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"

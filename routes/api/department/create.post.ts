@@ -4,7 +4,7 @@ import type { Request, Response } from "!/types/dependent"
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
-import JSONController from "!/common_controllers/json_controller"
+import JSONController from "!/controllers/json_controller"
 
 import { CREATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
