@@ -20,7 +20,7 @@ import nullable from "!/validators/base/nullable"
 import oneOf from "!/validators/comparison/one-of"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
 
-import makeListRules from "!/app/rule_sets/make_list"
+import makeListRules from "!/rule_sets/make_list"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }

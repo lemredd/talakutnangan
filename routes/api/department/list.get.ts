@@ -11,7 +11,7 @@ import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import makeListRules from "!/app/rule_sets/make_list"
+import makeListRules from "!/rule_sets/make_list"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }

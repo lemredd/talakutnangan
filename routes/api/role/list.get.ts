@@ -11,7 +11,7 @@ import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import makeListRules from "!/app/rule_sets/make_list"
+import makeListRules from "!/rule_sets/make_list"
 import nullable from "!/validators/base/nullable"
 import string from "!/validators/base/string"
 
