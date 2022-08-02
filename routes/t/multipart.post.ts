@@ -26,7 +26,13 @@ export default class extends MultipartController {
 			roles: {
 				pipes: [ nullable, array ],
 				constraints: {
-					nullable: { defaultValue: [] }
+					nullable: { defaultValue: [] },
+					array: {
+						rules: {
+							pipes: [ nullable ],
+							constraints: {}
+						}
+					}
 				}
 			}
 		}
