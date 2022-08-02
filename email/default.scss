@@ -1,53 +1,62 @@
-
-body > div {
+body {
 	flex: 1 0 100%;
-	margin: 1em 0.5em;
+	margin: 10em 0.5em;
+	background-color: #ebf4f5
 }
+
 
 .box-column {
 	margin: auto;
-	width: 60%;
-	border: 3px solid black;
-	padding: 10px;
+	width: 100%;
+	max-width: 640px;
+	padding: 20px;
+	border-radius: 25px;
+	background-color: white;
   }
 
-p {
+.content{
 	text-align: center;
-	@apply flex justify-center;
-	display: inline-block;
+	padding: 10px;
+
+	.home-page-url::before {
+		content: " ";
+	}
 }
 
-.button{
-	background-color: #4CAF50;
+.buttons{
 	border: none;
-	color: white;
 	padding: 5px 5px;
+
+	width: 100px;
+	height: max-content;
+
+	background-color: #4CAF50;
+	color: white;
+	cursor: pointer;
+	font-size: 16px;
 	text-align: center;
 	text-decoration: none;
-	font-size: 16px;
-	width: 100px;
-	cursor: pointer;
   }
 
-button{
-	display: flex;
-	justify-content: center;
-	align-items: center;
+.line{
+	@apply flex justify-center items-center;
+
+	margin-bottom: 1em;
+	border-bottom: 2px solid #b0a5a5;
+	padding-bottom: 1em;
 }
 
 .note {
 	text-align: left;
 	padding: 10px;
-	width: 100px;
-}
-
-.notes {
-	text-align: left;
-	width: 620px;
+	color: #b0a5a5;
 }
 
 h1 { 
-	text-align: center; 
+	text-align: center;
+	font-family:Impact; 
+	padding: 20px;
+	font-size: 200%;
 }
 
 
