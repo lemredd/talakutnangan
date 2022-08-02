@@ -25,6 +25,7 @@
 <script setup lang="ts">
 // Third Parties
 import { computed, ref } from "vue"
+import uniq from "lodash.uniq"
 
 // Types
 import type { Permissions as TagPermissions } from "$/permissions/tag"
@@ -39,7 +40,6 @@ import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_t
 import BasePermissionGroup from "$/permissions/base"
 import camelToSentence from "$@/helpers/camel_to_sentence"
 import Checkbox from "@/fields/checkbox.vue"
-
 
 type Permissions =
 	| TagPermissions
@@ -60,19 +60,19 @@ const {
 	flags: number
 }>()
 
-const rawFlags = ref(new Set(basePermissionGroup.deserialize(flags)))
+const rawFlags = ref(basePermissionGroup.deserialize(flags))
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
 function updateFlags() {
-	const permissionsWithDependencies = new Set(Array.from(rawFlags.value))
+	const permissionsWithDependencies = Array.from(rawFlags.value)
 
 	basePermissionGroup.permissions.forEach((info, permissionName) => {
-		if (permissionsWithDependencies.has(permissionName)) {
+		if (permissionsWithDependencies.includes(permissionName)) {
 			info.permissionDependencies.forEach(n => {
-				permissionsWithDependencies.add(n)
+				permissionsWithDependencies.push(n)
 			})
 		}
 	})
-	rawFlags.value = permissionsWithDependencies
+	rawFlags.value = uniq(permissionsWithDependencies)
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(permissionsWithDependencies)
 	)

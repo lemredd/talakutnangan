@@ -7,7 +7,7 @@
 			class="bg-transparent mr-2"
 			type="checkbox"
 			:class=inputClasses
-			:checked="modelValue.has(value)"
+			:checked="modelValue.includes(value)"
 			:value="value"
 			@change="emitUpdate"
 			:disabled="disabled"
@@ -23,6 +23,8 @@
 </style>
 
 <script setup lang="ts">
+import uniq from "lodash.uniq"
+
 const {
 	label,
 	modelValue,
@@ -32,7 +34,7 @@ const {
 	inputClasses
 	} = defineProps<{
 	label?: string
-	modelValue: Set<string>
+	modelValue: string[]
 	value: string
 	required?: boolean
 	disabled?: boolean
@@ -40,18 +42,18 @@ const {
 }>()
 
 const emit = defineEmits<{
-	(e: "update:modelValue", modelValue: Set<string> ): void
+	(e: "update:modelValue", modelValue: string[] ): void
 }>()
 
 
 function emitUpdate(event: Event) {
-	const modelValueCopy = new Set([...modelValue])
+	const modelValueCopy = modelValue
 	const eventTarget = (event.target as HTMLInputElement).value as string
-	if (modelValueCopy.has(eventTarget)) {
-		modelValueCopy.delete(eventTarget)
+	if (modelValueCopy.includes(eventTarget)) {
+		delete modelValueCopy[modelValueCopy.indexOf(eventTarget)]
 	} else {
-		modelValueCopy.add(eventTarget)
+		modelValueCopy.push(eventTarget)
 	}
-	emit("update:modelValue", modelValueCopy)
+	emit("update:modelValue", uniq(modelValueCopy))
 }
 </script>
