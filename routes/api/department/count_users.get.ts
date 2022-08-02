@@ -67,14 +67,14 @@ export default class extends JSONController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const IDs = (request.body.data as DepartmentResourceIdentifier[]).map(object => {
 			return object.id
 		})
 
 		const manager = new DepartmentManager(request.transaction, request.cache)
-		//const departmentWithUserCount = await manager.countUsers(IDs)
+		const departmentWithUserCount = await manager.countUsers(IDs)
 
-		//return new ListResponse(departmentWithUserCount)
+		return new ListResponse(departmentWithUserCount)
 	}
 }
