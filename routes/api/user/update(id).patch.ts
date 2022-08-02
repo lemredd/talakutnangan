@@ -96,15 +96,6 @@ export default class extends MultipartController {
 												IDPath: "data.id"
 											}
 										}
-									},
-									signature: {
-										pipes: [ nullable ],
-										constraints: {
-											buffer: {
-												allowedMimeTypes: [ "image/png" ],
-												maxSize: 1024 * 1024 * 10
-											}
-										}
 									}
 								}
 							}
