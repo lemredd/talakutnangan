@@ -64,7 +64,7 @@ describe("Validator: validate", () => {
 		const errors = requester.runValidator(validate, rules, input)
 
 		expect(errors).rejects.toHaveLength(2)
-		expect(errors).rejects.toHaveProperty("0.field", "hello")
-		expect(errors).rejects.toHaveProperty("1.field", "foo")
+		expect(errors).rejects.toHaveProperty("0.field", "foo")
+		expect(errors).rejects.toHaveProperty("1.field", "hello")
 	})
 })

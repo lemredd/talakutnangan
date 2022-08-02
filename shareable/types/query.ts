@@ -6,17 +6,6 @@ import type { Serializable } from "$/types/general"
  */
  export type CommonFilter = ExistenceFilter
 
- export type UserQueryFilter =
-	 & CommonFilter
-	 & DepartmentFilter
-	 & RoleFilter
-	 & KindFilter
-	 & SlugFilter
-
-export type RoleQueryFilter =
-	 & CommonFilter
-	 & DepartmentFilter
-
  export interface ExistenceFilter extends Serializable {
 	 filter: {
 		 existence: "exists" | "archived" | "*"
@@ -74,3 +63,14 @@ export type RoleQueryFilter =
 	 & Page
 	 & Sort
 	 & CommonFilter
+
+ export type UserQueryParameters =
+	& CommonQueryParameters
+	& DepartmentFilter
+	& RoleFilter
+	& KindFilter
+	& SlugFilter
+
+export type RoleQueryParameters =
+	& CommonQueryParameters
+	& DepartmentFilter

@@ -100,7 +100,7 @@ describe("Validator pipe: object", () => {
 		const error = object(value, constraints)
 
 		expect(error).rejects.toHaveLength(2)
-		expect(error).rejects.toHaveProperty("0.field", "hi.hello")
-		expect(error).rejects.toHaveProperty("1.field", "hi.foo")
+		expect(error).rejects.toHaveProperty("0.field", "hi.foo")
+		expect(error).rejects.toHaveProperty("1.field", "hi.hello")
 	})
 })

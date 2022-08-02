@@ -5,7 +5,7 @@ import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
-import UserPermissions from "$/permissions/user_permissions"
+import UserPermissions from "$/permissions/user"
 
 import PermissionBasedPolicy from "./permission-based_policy"
 

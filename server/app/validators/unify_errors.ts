@@ -1,4 +1,5 @@
 import type { ErrorPointer } from "!/types/independent"
+import RequestEnvironment from "$/helpers/request_environment"
 
 export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPointer[] {
 	return errors.map(error => {
@@ -8,7 +9,13 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 				messageMaker: (
 					field: string,
 					value: any
-				): string => `Unexpected error happened while validating ${field}`
+				): string => {
+					let message = `Unexpected error happened while validating ${field}.`
+					if (RequestEnvironment.isOnTest) {
+						message += `Message: ${error.message} ${error.stack})`
+					}
+					return message
+				}
 			}
 		} else {
 			return error

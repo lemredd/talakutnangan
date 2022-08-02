@@ -16,7 +16,7 @@ import Manager from "@/resource_management/manager"
 import type { UserProfile } from "$/types/common_front-end"
 
 import UsersManager from "@/resource_management/resource_manager.vue"
-import RoleFetcher from "$@/communicators/role"
+import RoleFetcher from "$@/fetchers/role"
 
 
 RoleFetcher.initialize("/api")

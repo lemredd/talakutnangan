@@ -27,22 +27,29 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onUpdated, provide, ref, watch } from "vue"
-import type { ManagerKind, Department, Role } from "./types"
-import type { UserProfile } from "$/types/common_front-end"
-import DropdownFilter from "./resource_manager/dropdown_filter.vue"
-import SearchFilter from "./resource_manager/search_bar.vue"
-import ResourceList from "./resource_manager/resource_list.vue"
-import { deserialise } from "kitsu-core"
-import uniq from "lodash.uniq"
+import type { ManagerKind } from "@/resource_management/types"
+import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
+
+import { computed, inject, provide, ref } from "vue"
+
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
+import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
+import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
 
 /*
 	General TODOs
 	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
 */
 
+type PossibleResources =
+	| DeserializedUserResource
+	| DeserializedDepartmentResource
+	| DeserializedRoleResource
+
 const { resource, hasDropdownFilter } = defineProps<{
-	resource: UserProfile[] | Department[] | Role[],
+	resource: PossibleResources[],
 	hasDropdownFilter?: boolean
 }>()
 
@@ -50,24 +57,24 @@ const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
 const searchFilterText = ref("");
 const managerKind = inject("managerKind") as ManagerKind
 
-function passedResource(): (UserProfile|Department|Role)[] {
-	return resource
-}
-
 const filteredList = computed(function() {
-	const filteredBySearchResult = passedResource().filter((resourceToFilter: UserProfile | Department | Role) =>
-		(resourceToFilter!.name as string).toLowerCase().includes(searchFilterText.value.toLowerCase())
-	);
+	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
+		let name = ""
+		if (resourceToFilter.type === "department") {
+			name = resourceToFilter.fullName
+		} else {
+			name = resourceToFilter.name
+		}
+
+		name.toLowerCase().includes(searchFilterText.value.toLowerCase())
+	})
 
 	return filteredBySearchResult
 })
 
-function usersResourceEnsurer(resourceItem: any): resourceItem is UserProfile {
-	return (resourceItem as UserProfile).type === "user"
+function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
+	return (resourceItem as DeserializedUserResource).type === "user"
 }
-
-const selectedFilter = ref("all")
-const availableFilters = ref<string[]>(["all"])
 
 provide("searchFilterText", searchFilterText)
 </script>

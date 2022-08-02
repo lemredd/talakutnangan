@@ -1,5 +1,5 @@
-import type { RoleQueryFilter } from "$/types/query"
 import type { FieldRules } from "!/types/validation"
+import type { RoleQueryParameters } from "$/types/query"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -36,7 +36,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const constraints = { ...request.query } as RoleQueryFilter
+		const constraints = { ...request.query } as RoleQueryParameters
 
 		const manager = new RoleManager(request.transaction, request.cache)
 		const roles = await manager.list(constraints)

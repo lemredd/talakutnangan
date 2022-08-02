@@ -9,7 +9,7 @@ import makeDeveloperError from "!/app/validators/make_developer_error"
 /**
  * Validator to check if data belongs to an existing model in the database
  */
- export default async function(
+export default async function(
 	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
 ): Promise<ValidationState> {
