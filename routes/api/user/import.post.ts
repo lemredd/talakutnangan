@@ -13,6 +13,7 @@ import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -24,7 +25,9 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 import array from "!/validators/base/array"
+import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
+import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 
@@ -64,7 +67,19 @@ export default class extends MultipartController {
 			},
 			roles: {
 				pipes: [ required, array ],
-				constraints: { }
+				constraints: {
+					array: {
+						rules: {
+							pipes: [ string, exists ],
+							constraints: {
+								manager: {
+									className: RoleManager,
+									columnName: "name"
+								}
+							}
+						}
+					}
+				}
 			},
 			kind: {
 				pipes: [ required, oneOf ],
