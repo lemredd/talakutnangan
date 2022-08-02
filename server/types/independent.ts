@@ -7,6 +7,8 @@
 import type { UserKind } from "$/types/database"
 import type Middleware from "!/bases/middleware"
 import BaseManager from "%/managers/base"
+import CacheClient from "$!/helpers/cache_client"
+import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * Used to indicate which middlewares to use in a route.
@@ -46,7 +48,10 @@ export interface PasswordResetArguments {
 /**
  * Useful when passing a base manager to other functions/methods
  */
-export type BaseManagerClass = new() => BaseManager<any, any>
+export type BaseManagerClass = new(
+	transaction: TransactionManager,
+	cache: CacheClient
+) => BaseManager<any, any>
 
 /**
  * Shape of validation
