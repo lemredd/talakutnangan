@@ -38,7 +38,7 @@ describe("Back-end Base: Validation", () => {
 		}
 
 		requester.customizeRequest({
-			query: {
+			body: {
 				order: "ascending"
 			}
 		})
@@ -66,7 +66,7 @@ describe("Back-end Base: Validation", () => {
 			}
 		}
 		requester.customizeRequest({
-			query: {
+			body: {
 				order: "acending"
 			}
 		})
@@ -108,7 +108,7 @@ describe("Back-end Base: Validation", () => {
 		}
 
 		requester.customizeRequest({
-			query: {
+			body: {
 				order: "decending",
 				limit: "a2"
 			}
