@@ -3,7 +3,7 @@ import Checkbox from "./checkbox.vue"
 
 describe("Component: fields/checkbox", () => {
 	it("can update", async () => {
-		const values = new Set<string>()
+		const values = [] as string[]
 		const checkboxValue = "view"
 		const wrapper = mount(Checkbox, {
 			props: {
@@ -18,7 +18,7 @@ describe("Component: fields/checkbox", () => {
 
 		const updates = wrapper.emitted("update:modelValue")
 		expect(updates).toHaveLength(1)
-		const updatedValues = (updates![0] as [Set<string>])
-		expect(updatedValues[0].has(checkboxValue)).toBeTruthy()
+		const updatedValues = (updates![0] as string[])
+		expect(updatedValues[0].includes(checkboxValue)).toBeTruthy()
 	})
 })
