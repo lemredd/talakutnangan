@@ -230,7 +230,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 				return Promise.resolve()
 			}
 
-			get validations(): Validation[] { return [ new ValidationA({}) ] }
+			get validations(): Validation[] { return [ new ValidationA(() => ({})) ] }
 		}
 
 		const handlers = (new ControllerI()).handlers
