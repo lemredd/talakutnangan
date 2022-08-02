@@ -1,11 +1,12 @@
 import Router from "!/bases/router"
-import GetVerify from "!/app/routes/user/verify(data).get"
+import GetCreateRoute from "!%/department/create.get"
 
 export default class extends Router {
-
 	constructor() {
 		super()
 
-		this.useController(new GetVerify())
+		this.useControllers([
+			new GetCreateRoute()
+		])
 	}
 }

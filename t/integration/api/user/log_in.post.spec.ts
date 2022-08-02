@@ -3,7 +3,7 @@ import { JSON_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
-import Route from "!/app/routes/api/user/log_in.post"
+import Route from "!%/api/user/log_in.post"
 
 describe("POST /api/user/log_in", () => {
 	beforeAll(async () => {

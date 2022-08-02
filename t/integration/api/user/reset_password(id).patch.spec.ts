@@ -11,7 +11,7 @@ import UserFactory from "~/factories/user"
 import Transport from "!/helpers/email/transport"
 import StudentDetail from "%/models/student_detail"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
-import Route from "!/app/routes/api/user/reset_password(id).patch"
+import Route from "!%/api/user/reset_password(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 describe("PATCH /api/user/reset_password/:id", () => {

@@ -1,12 +1,14 @@
 import Router from "!/bases/router"
-import GetIDParameterRoute from "!/app/routes/t/validation/id_parameter(id).get"
+import GetJoin from "!%/chat/join.get"
+import GetRoom from "!%/chat/room(uuid).get"
 
 export default class extends Router {
 	constructor() {
 		super()
 
 		this.useControllers([
-			new GetIDParameterRoute()
+			new GetJoin(),
+			new GetRoom()
 		])
 	}
 }

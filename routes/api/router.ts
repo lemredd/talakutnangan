@@ -1,7 +1,7 @@
 import Router from "!/bases/router"
-import UserRouter from "!/app/routes/api/user/router"
-import RoleRouter from "!/app/routes/api/role/router"
-import DepartmentRouter from "!/app/routes/api/department/router"
+import UserRouter from "!%/api/user/router"
+import RoleRouter from "!%/api/role/router"
+import DepartmentRouter from "!%/api/department/router"
 
 export default class extends Router {
 	constructor() {

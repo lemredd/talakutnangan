@@ -8,7 +8,7 @@ import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 
 import Transport from "!/helpers/email/transport"
-import Route from "!/app/routes/api/user/import.post"
+import Route from "!%/api/user/import.post"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 

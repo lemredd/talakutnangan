@@ -7,7 +7,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/archive.delete"
+import Route from "!%/api/role/archive.delete"
 
 describe("DELETE /api/role/archive/:id", () => {
 	beforeAll(async () => {

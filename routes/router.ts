@@ -1,11 +1,11 @@
 import Router from "!/bases/router"
-import GetIndex from "!/app/routes/index.get"
-import TestRouter from "!/app/routes/t/router"
-import DevRouter from "!/app/routes/dev/router"
-import APIRouter from "!/app/routes/api/router"
-import ChatRouter from "!/app/routes/chat/router"
-import UserRouter from "!/app/routes/user/router"
-import DepartmentRouter from "!/app/routes/department/router"
+import GetIndex from "!%/index.get"
+import TestRouter from "!%/t/router"
+import DevRouter from "!%/dev/router"
+import APIRouter from "!%/api/router"
+import ChatRouter from "!%/chat/router"
+import UserRouter from "!%/user/router"
+import DepartmentRouter from "!%/department/router"
 import { Environment } from "$/types/server"
 
 export default class extends Router {

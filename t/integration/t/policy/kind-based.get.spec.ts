@@ -4,7 +4,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 
-import Route from "!/app/routes/t/policy/kind-based.get"
+import Route from "!%/t/policy/kind-based.get"
 
 describe("GET /t/policy/kind-based", () => {
 	beforeAll(async () => {

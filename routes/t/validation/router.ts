@@ -1,12 +1,12 @@
 import Router from "!/bases/router"
-import GetCreateRoute from "!/app/routes/department/create.get"
+import GetIDParameterRoute from "!%/t/validation/id_parameter(id).get"
 
 export default class extends Router {
 	constructor() {
 		super()
 
 		this.useControllers([
-			new GetCreateRoute()
+			new GetIDParameterRoute()
 		])
 	}
 }

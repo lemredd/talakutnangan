@@ -7,7 +7,7 @@ import { CREATE } from "$/permissions/department_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/department/create.post"
+import Route from "!%/api/department/create.post"
 
 describe("POST /api/department/create", () => {
 	beforeAll(async () => {
