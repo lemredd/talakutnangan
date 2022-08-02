@@ -1,6 +1,5 @@
 import type { RoleQueryFilter } from "$/types/query"
 import type { FieldRules } from "!/types/validation"
-import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -25,13 +24,8 @@ export default class extends QueryController {
 		])
 	}
 
-	get queryValidationRules(): object {
-		// TODO: Validate common query
-		return {}
-	}
-
-	makeQueryRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => makeListRules(RoleManager, {
+	makeQueryRuleGenerator(request: Request): FieldRules {
+		return makeListRules(RoleManager, {
 			department: {
 				pipes: [ nullable, string ],
 				constraints: {

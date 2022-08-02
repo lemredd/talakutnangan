@@ -1,3 +1,4 @@
+import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -11,7 +12,7 @@ export default class extends QueryController {
 		return CommonMiddlewareList.studentOnlyPolicy
 	}
 
-	get queryValidationRules(): object {
+	makeQueryRuleGenerator(request: Request): FieldRules {
 		return {}
 	}
 

@@ -22,13 +22,8 @@ export default class extends QueryController {
 		])
 	}
 
-	get queryValidationRules(): object {
-		// TODO: Validate common query
-		return {}
-	}
-
-	makeQueryRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => makeListRules(DepartmentManager, {})
+	makeQueryRuleGenerator(request: Request): FieldRules {
+		return makeListRules(DepartmentManager, {})
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {

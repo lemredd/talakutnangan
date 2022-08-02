@@ -1,7 +1,6 @@
 import { UserKindValues } from "$/types/database"
 import type { UserQueryFilter } from "$/types/query"
 import type { FieldRules } from "!/types/validation"
-import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -19,6 +18,7 @@ import {
 import string from "!/app/validators/base/string"
 import nullable from "!/app/validators/base/nullable"
 import oneOf from "!/app/validators/comparison/one-of"
+import skipAsterisk from "!/app/validators/comparison/skip_asterisk"
 
 import makeListRules from "!/app/rule_sets/make_list"
 
@@ -32,13 +32,8 @@ export default class extends QueryController {
 		])
 	}
 
-	get queryValidationRules(): object {
-		return {}
-	}
-
-	makeQueryRuleGenerator(): FieldRulesMaker {
-		// TODO: make a validator to skip "*" character
-		return (request: Request): FieldRules => makeListRules(UserManager, {
+	makeQueryRuleGenerator(request: Request): FieldRules {
+		return makeListRules(UserManager, {
 			slug: {
 				pipes: [ nullable, string ],
 				constraints: {
@@ -58,14 +53,15 @@ export default class extends QueryController {
 				}
 			},
 			kind: {
-				pipes: [ nullable, string, oneOf ],
+				pipes: [ nullable, string, skipAsterisk, oneOf ],
 				constraints: {
 					nullable: { defaultValue: "*" },
-					oneOf: { values: [ "*", ...UserKindValues ] }
+					oneOf: { values: [ ...UserKindValues ] }
 				}
 			}
 		})
 	}
+
 	async handle(request: Request, response: Response): Promise<ListResponse> {
 		const manager = new UserManager(request.transaction, request.cache)
 		const users = await manager.list(request.query as UserQueryFilter)

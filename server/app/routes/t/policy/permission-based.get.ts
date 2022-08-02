@@ -1,8 +1,10 @@
 import type { Request, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
 
 import Policy from "!/bases/policy"
-import { READ_OWN } from "$/permissions/user_combinations"
 import QueryController from "!/common_controllers/query_controller"
+
+import { READ_OWN } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
@@ -13,7 +15,7 @@ export default class extends QueryController {
 		return new PermissionBasedPolicy(permissionGroup, [ READ_OWN ])
 	}
 
-	get queryValidationRules(): object {
+	makeQueryRuleGenerator(request: Request): FieldRules {
 		return {}
 	}
 
