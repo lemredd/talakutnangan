@@ -20,7 +20,10 @@ import type { Serializable } from "$/types/general"
 
  export interface DepartmentFilter extends Serializable {
 	 filter: {
-		 department: "*"|string
+		/**
+		 * ID of the department to filter on.
+		 */
+		 department: "*"|number
 	 }
  }
 
