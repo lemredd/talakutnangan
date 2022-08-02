@@ -35,6 +35,10 @@ export default class  extends BaseManager<Department, DepartmentAttributes, Comm
 											User.tableName,
 											{
 												attributes: [ User.sequelize!.fn("count", "*") ],
+												where: new Condition().equal(
+													"departmentID",
+													User.sequelize!.col(`${Department.tableName}.id`)
+												).build()
 											}
 										),
 										";"
@@ -44,7 +48,7 @@ export default class  extends BaseManager<Department, DepartmentAttributes, Comm
 							]
 						],
 						where: new Condition().or(
-							...departmentIDs.map(roleID => new Condition().equal("id", roleID))
+							...departmentIDs.map(departmentID => new Condition().equal("id", departmentID))
 						).build()
 					}
 				)
