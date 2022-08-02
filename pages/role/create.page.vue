@@ -1,5 +1,6 @@
 <template>
 	<form @submit.prevent="createRole">
+		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
 				label="Role Name"
 				type="text"
