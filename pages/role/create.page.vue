@@ -1,14 +1,11 @@
 <template>
 	<form @submit.prevent="createRole">
+		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
 				label="Role Name"
 				type="text"
 				v-model="roleName" />
 
-		<FlagSelector
-			header="Post"
-			:base-permission-group="post"
-			v-model:flags="postFlags" />
 		<FlagSelector
 			header="Semester"
 			:base-permission-group="semester"
@@ -17,6 +14,10 @@
 			header="Tag"
 			:base-permission-group="tag"
 			v-model:flags="tagFlags" />
+		<FlagSelector
+			header="Post"
+			:base-permission-group="post"
+			v-model:flags="postFlags" />
 		<FlagSelector
 			header="Comment"
 			:base-permission-group="comment"
