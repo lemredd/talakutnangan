@@ -31,6 +31,7 @@ import integer from "!/app/validators/base/integer"
 import unique from "!/app/validators/manager/unique"
 import nullable from "!/app/validators/base/nullable"
 import required from "!/app/validators/base/required"
+import regex from "!/app/validators/comparison/regex"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -76,12 +77,17 @@ export default class extends MultipartController {
 							constraints: {
 								object: {
 									name: {
+										// TODO: Validate the name
 										pipes: [ required, string ],
 										constraints: {}
 									},
 									email: {
-										pipes: [ required, string, unique],
+										// TODO: Make email validator
+										pipes: [ required, string, regex, unique ],
 										constraints: {
+											regex: {
+												match: /.+@.+/
+											},
 											manager: {
 												className: UserManager,
 												columnName: "email"
