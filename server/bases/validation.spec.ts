@@ -1,4 +1,4 @@
-import type { Request, Response } from "!/types/dependent"
+import type { Request } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 
 import MockRequester from "~/set-ups/mock_requester"
@@ -10,7 +10,7 @@ import oneOf from "!/app/validators/comparison/one-of"
 
 import Base from "./validation"
 
-describe("Back-end: Query Controller Special Validation", () => {
+describe("Back-end Base: Validation", () => {
 	const requester  = new MockRequester()
 
 	abstract class TestBase extends Base {
@@ -79,7 +79,7 @@ describe("Back-end: Query Controller Special Validation", () => {
 					expect(error).toBeInstanceOf(ErrorBag)
 					const unitErrors = error.toJSON()
 					expect(unitErrors).toHaveLength(1)
-					expect(unitErrors[0]).toHaveProperty("source.parameter", "order")
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "order")
 				}
 			]
 		])
@@ -122,8 +122,8 @@ describe("Back-end: Query Controller Special Validation", () => {
 					expect(error).toBeInstanceOf(ErrorBag)
 					const unitErrors = error.toJSON()
 					expect(unitErrors).toHaveLength(2)
-					expect(unitErrors[0]).toHaveProperty("source.parameter", "limit")
-					expect(unitErrors[1]).toHaveProperty("source.parameter", "order")
+					expect(unitErrors[0]).toHaveProperty("source.pointer", "limit")
+					expect(unitErrors[1]).toHaveProperty("source.pointer", "order")
 				}
 			]
 		])
