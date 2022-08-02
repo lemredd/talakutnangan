@@ -45,7 +45,9 @@ export default class extends JSONController {
 						type: {
 							pipes: [ required, string, same ],
 							constraints: {
-								same: "role"
+								same: {
+									value: "role"
+								}
 							}
 						},
 						attributes: {

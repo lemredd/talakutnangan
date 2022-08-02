@@ -33,7 +33,9 @@ export default class extends Validation {
 										pipes: [ required, integer, same ],
 										constraints: {
 											// TODO: Make this into object and used the referenced value
-											same: "params.id"
+											same: {
+												value: "params.id"
+											}
 										}
 									}
 								}

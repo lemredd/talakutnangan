@@ -49,7 +49,9 @@ export default class extends BoundJSONController {
 						type: {
 							pipes: [ required, string, same ],
 							constraints: {
-								same: "user"
+								same: {
+									value: "user"
+								}
 							}
 						},
 						id: {

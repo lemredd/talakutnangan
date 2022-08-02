@@ -21,12 +21,12 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	if (state.value === constraints.same) {
+	if (state.value === constraints.same.value) {
 		return state
 	} else {
 		throw {
 			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be "${constraints.same}".`
+			messageMaker: (field: string) => `Field "${field}" must be "${constraints.same?.value}".`
 		}
 	}
 }

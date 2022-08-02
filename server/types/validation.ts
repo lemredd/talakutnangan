@@ -9,7 +9,11 @@ export interface LengthConstraints { length: { minimum?: number, maximum?: numbe
 
 export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
 
-export interface SameRuleConstraints { same: any }
+export interface SameRuleConstraints {
+	same: {
+		value: any
+	}
+}
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 

@@ -62,7 +62,9 @@ export default class extends MultipartController {
 						type: {
 							pipes: [ required, string, same ],
 							constraints: {
-								same: "user"
+								same: {
+									value: "user"
+								}
 							}
 						},
 						id: {
