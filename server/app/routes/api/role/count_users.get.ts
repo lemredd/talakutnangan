@@ -1,5 +1,4 @@
 import type { FieldRules } from "!/types/validation"
-import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
 import type { RoleResourceIdentifier } from "$/types/documents/role"
 
@@ -12,13 +11,13 @@ import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import length from "!/app/validators/comparison/length"
-import same from "!/app/validators/comparison/same"
 import array from "!/app/validators/base/array"
 import object from "!/app/validators/base/object"
 import string from "!/app/validators/base/string"
 import integer from "!/app/validators/base/integer"
+import same from "!/app/validators/comparison/same"
 import exists from "!/app/validators/manager/exists"
+import length from "!/app/validators/comparison/length"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -29,12 +28,8 @@ export default class extends JSONController {
 		])
 	}
 
-	get bodyValidationRules(): object {
-		return {}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => ({
+	makeBodyRuleGenerator(request: Request): FieldRules {
+		return {
 			data: {
 				pipes: [ array, length ],
 				constraints: {
@@ -67,7 +62,7 @@ export default class extends JSONController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {

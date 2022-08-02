@@ -1,23 +1,24 @@
-import {AuthenticatedRequest, Request, Response } from "!/types/dependent"
-import { FieldRules } from "!/types/validation"
+import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
-import { CREATE } from "$/permissions/department_combinations"
 import JSONController from "!/common_controllers/json_controller"
+
+import { CREATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
-import { FieldRulesMaker } from "!/types/hybrid"
+
 import object from "!/app/validators/base/object"
-import required from "!/app/validators/base/required"
-import same from "!/app/validators/comparison/same"
 import string from "!/app/validators/base/string"
-import length from "!/app/validators/comparison/length"
+import same from "!/app/validators/comparison/same"
+import boolean from "!/app/validators/base/boolean"
 import regex from "!/app/validators/comparison/regex"
+import required from "!/app/validators/base/required"
+import length from "!/app/validators/comparison/length"
 import notExists from "!/app/validators/manager/not_exists"
 import acronym from "!/app/validators/comparison/acronym"
-import boolean from "!/app/validators/base/boolean"
 
 
 export default class extends JSONController {
@@ -29,33 +30,8 @@ export default class extends JSONController {
 		])
 	}
 
-	get bodyValidationRules(): object {
-		// TODO: Think of the minimum length of full name.
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			"data": [ "required", "object" ],
-			"data.type": [ "required", "string", "equals:department" ],
-			"data.attributes": [ "required", "object" ],
-			"data.attributes.fullName": [
-				"required",
-				"string",
-				"minLength:10",
-				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
-				[ "notExists", DepartmentManager, "fullName" ]
-			],
-			"data.attributes.acronym": [
-				"required",
-				"string",
-				"minLength:2",
-				"regex:([A-Z][a-z]*)+",
-				"acronym:data.attributes.fullName",
-				[ "notExists", DepartmentManager, "acronym" ]
-			],
-			"data.attributes.mayAdmit": [ "required", "boolean" ]
-		}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: AuthenticatedRequest): FieldRules => ({
 			data: {
 				pipes: [ required, object ],
 				constraints: {
@@ -97,7 +73,7 @@ export default class extends JSONController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<CreatedResponseInfo> {

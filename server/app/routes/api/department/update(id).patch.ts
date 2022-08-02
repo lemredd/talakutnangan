@@ -11,7 +11,6 @@ import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import { FieldRulesMaker } from "!/types/hybrid"
 import required from "!/app/validators/base/required"
 import object from "!/app/validators/base/object"
 import same from "!/app/validators/comparison/same"
@@ -32,33 +31,8 @@ export default class extends BoundJSONController {
 		])
 	}
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			"data": [ "required", "object" ],
-			"data.type": [ "required", "string", "equals:department" ],
-			"data.id": [ "required", "numeric" ],
-			"data.attributes": [ "required", "object" ],
-			"data.attributes.fullName": [
-				"required",
-				"string",
-				"minLength:10",
-				"regex:([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$",
-				[ "unique", DepartmentManager, "fullName", "data.id" ]
-			],
-			"data.attributes.acronym": [
-				"required",
-				"string",
-				"minLength:2",
-				"regex:([A-Z][a-z]*)+",
-				"acronym:data.attributes.fullName",
-				[ "unique", DepartmentManager, "acronym", "data.id" ]
-			],
-			"data.attributes.mayAdmit": [ "required", "boolean" ]
-		}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => ({
 			data: {
 				pipes: [ required, object ],
 				constraints: {
@@ -106,7 +80,7 @@ export default class extends BoundJSONController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	get manager(): BaseManagerClass { return DepartmentManager }

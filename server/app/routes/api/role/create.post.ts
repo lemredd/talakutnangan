@@ -1,10 +1,11 @@
-import { Request, Response } from "!/types/dependent"
-import { FieldRules } from "!/types/validation"
+import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import { CREATE } from "$/permissions/role_combinations"
 import JSONController from "!/common_controllers/json_controller"
+
+import { CREATE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
@@ -16,14 +17,14 @@ import {
 	profanity,
 	auditTrail
 } from "$/permissions/permission_list"
-import { FieldRulesMaker } from "!/types/hybrid"
+
 import object from "!/app/validators/base/object"
-import required from "!/app/validators/base/required"
-import same from "!/app/validators/comparison/same"
 import string from "!/app/validators/base/string"
+import same from "!/app/validators/comparison/same"
+import integer from "!/app/validators/base/integer"
 import range from "!/app/validators/comparison/range"
 import regex from "!/app/validators/comparison/regex"
-import integer from "!/app/validators/base/integer"
+import required from "!/app/validators/base/required"
 
 
 export default class extends JSONController {
@@ -35,63 +36,8 @@ export default class extends JSONController {
 		])
 	}
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			"data":										[ "required", "object" ],
-			"data.type":								[ "required", "string", "equals:role" ],
-			"data.attributes":						[ "required", "object" ],
-			"data.attributes.name":					[
-				"required",
-				"string",
-				"regex:^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$"
-			],
-			"data.attributes.semesterFlags":	[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", semester.generateSuperMask() ]
-			],
-			"data.attributes.tagFlags": [
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", tag.generateSuperMask() ]
-			],
-			"data.attributes.postFlags":		[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", post.generateSuperMask() ]
-			],
-			"data.attributes.commentFlags":	[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", comment.generateSuperMask() ]
-			],
-			"data.attributes.profanityFlags":[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", profanity.generateSuperMask() ]
-			],
-			"data.attributes.userFlags":		[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", user.generateSuperMask() ]
-			],
-			"data.attributes.auditTrailFlags":[
-				"required",
-				"numeric",
-				[ "min", 0 ],
-				[ "max", auditTrail.generateSuperMask() ]
-			]
-		}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => ({
 			data: {
 				pipes: [ required, object ],
 				constraints: {
@@ -160,7 +106,7 @@ export default class extends JSONController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

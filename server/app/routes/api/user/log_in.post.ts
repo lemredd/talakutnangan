@@ -1,22 +1,43 @@
-import type { OptionalMiddleware } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import { v4 } from "uuid"
 
 import Policy from "!/bases/policy"
+import UserManager from "%/managers/user"
 import JSONController from "!/common_controllers/json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
+
+import string from "!/app/validators/base/string"
+import exists from "!/app/validators/manager/exists"
+import required from "!/app/validators/base/required"
+import length from "!/app/validators/comparison/length"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy { return CommonMiddlewareList.guestOnlyPolicy }
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: AuthenticatedRequest): FieldRules {
 		return {
-			email: [ "required", "string", "email", "maxLength:255" ],
-			password: [ "required", "string", "minLength:8" ]
+			email: {
+				pipes: [ required, string, length, exists ],
+				constraints: {
+					length: { minimum: 3, maximum: 255 },
+					manager: {
+						className: UserManager,
+						columnName: "email"
+					}
+				}
+			},
+			password: {
+				pipes: [ required, string, length ],
+				constraints: {
+					length: { minimum: 8, maximum: 255 }
+				}
+			}
 		}
 	}
 

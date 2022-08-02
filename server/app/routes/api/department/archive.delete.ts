@@ -1,6 +1,5 @@
-import { FieldRulesMaker } from "!/types/hybrid"
-import { FieldRules } from "!/types/validation"
-import { AuthenticatedRequest, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
@@ -29,17 +28,8 @@ export default class extends JSONController {
 		])
 	}
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			"data": [ "required", "array" ],
-			"data.*": [ "required", "object" ],
-			"data.*.type": [ "required", "string", "equals:department" ],
-			"data.*.id": [ "required", "numeric", [ "exists", DepartmentManager, "id" ] ]
-		}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: AuthenticatedRequest): FieldRules => ({
 			data: {
 				pipes: [ required, array, length ],
 				constraints: {
@@ -73,10 +63,10 @@ export default class extends JSONController {
 					}
 				}
 			}
-		})
+		}
 	}
 
-	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
