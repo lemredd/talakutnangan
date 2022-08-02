@@ -29,7 +29,6 @@ import string from "!/app/validators/base/string"
 import same from "!/app/validators/comparison/same"
 import integer from "!/app/validators/base/integer"
 import unique from "!/app/validators/manager/unique"
-import nullable from "!/app/validators/base/nullable"
 import required from "!/app/validators/base/required"
 import regex from "!/app/validators/comparison/regex"
 
