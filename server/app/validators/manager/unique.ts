@@ -31,10 +31,10 @@ export default async function(
 		sort: []
 	})
 
-	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
+	const id = +accessDeepPath(constraints.source, constraints.unique.IDPath)
 
 	// TODO: Store found model in cache
-	if (foundModel.data === null || (foundModel.data as any).id === id) {
+	if (foundModel.data === null || (!Number.isNaN(id) && (foundModel.data as any).id === id)) {
 		return state
 	} else {
 		throw {
