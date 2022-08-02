@@ -51,9 +51,8 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { ref } from "vue"
 import RoleFetcher from "$@/fetchers/role"
-import type { DeserializedPageContext } from "$@/types/independent"
 import {
 	tag,
 	user,
@@ -65,8 +64,7 @@ import {
 } from "$/permissions/permission_list"
 import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-
-const pageContext = inject("pageContext") as DeserializedPageContext
+import { RoleAttributes } from "$/types/documents/role"
 
 const roleName = ref("")
 
@@ -92,7 +90,7 @@ function createRole() {
 		auditTrailFlags: auditTrailFlags.value,
 		departmentFlags: 1,
 		roleFlags: 1
-	})
+	} as RoleAttributes)
 	.then(({ body, status }) => {
 		console.log(body, status)
 
