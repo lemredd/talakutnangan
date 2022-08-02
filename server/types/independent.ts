@@ -44,11 +44,6 @@ export interface PasswordResetArguments {
 }
 
 /**
- * Expected shape of the validation rules used mostly in controllers.
- */
-export type ValidationRules = { [key:string]: any[] }
-
-/**
  * Useful when passing a base manager to other functions/methods
  */
 export type BaseManagerClass = new() => BaseManager<any, any>
