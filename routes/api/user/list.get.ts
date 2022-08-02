@@ -6,6 +6,7 @@ import type { Request, Response } from "!/types/dependent"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import ListResponse from "!/response_infos/list"
+import DepartmentManager from "%/managers/department"
 import QueryController from "!/common_controllers/query_controller"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -16,6 +17,8 @@ import {
 } from "$/permissions/user_combinations"
 
 import string from "!/validators/base/string"
+import integer from "!/validators/base/integer"
+import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
 import oneOf from "!/validators/comparison/one-of"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
@@ -41,9 +44,13 @@ export default class extends QueryController {
 				}
 			},
 			department: {
-				pipes: [ nullable, string ],
+				pipes: [ nullable, skipAsterisk, integer, exists ],
 				constraints: {
-					nullable: { defaultValue: "*" }
+					nullable: { defaultValue: "*" },
+					manager: {
+						className: DepartmentManager,
+						columnName: "id"
+					}
 				}
 			},
 			role: {
