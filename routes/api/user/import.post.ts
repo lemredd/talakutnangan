@@ -53,6 +53,30 @@ export default class extends MultipartController {
 							maxSize
 						}
 					}
+				},
+				roles: {
+					pipes: [ required, array ],
+					constraints: {
+						array: {
+							rules: {
+								pipes: [ string, exists ],
+								constraints: {
+									manager: {
+										className: RoleManager,
+										columnName: "name"
+									}
+								}
+							}
+						}
+					}
+				},
+				kind: {
+					pipes: [ required, string, oneOf ],
+					constraints: {
+						oneOf: {
+							values: [ ...UserKindValues ]
+						}
+					}
 				}
 			})),
 			new CSVParser("importedCSV")
@@ -61,33 +85,17 @@ export default class extends MultipartController {
 
 	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			importCSV: {
+			importedCSV: {
 				pipes: [ required ],
 				constraints: { }
 			},
 			roles: {
-				pipes: [ required, array ],
-				constraints: {
-					array: {
-						rules: {
-							pipes: [ string, exists ],
-							constraints: {
-								manager: {
-									className: RoleManager,
-									columnName: "name"
-								}
-							}
-						}
-					}
-				}
+				pipes: [ required ],
+				constraints: {}
 			},
 			kind: {
-				pipes: [ required, oneOf ],
-				constraints: {
-					oneOf: {
-						values: [ UserKindValues ]
-					}
-				}
+				pipes: [ required ],
+				constraints: {}
 			}
 		}
 	}
