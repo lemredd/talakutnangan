@@ -1,20 +1,14 @@
-import { Buffer } from "buffer"
-import { Request, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import MultipartController from "!/common_controllers/multipart_controller"
-
- export interface WithImport {
-	body: {
-		importedCSV: Buffer
-	}
-}
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
 	get policy(): null { return null }
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {}
 	}
 

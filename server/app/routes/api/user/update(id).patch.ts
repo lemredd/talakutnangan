@@ -1,8 +1,8 @@
 import type { Serializable } from "$/types/general"
+import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
-import { FieldRules } from "!/types/validation"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -12,10 +12,11 @@ import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import { user as permissionGroup } from "$/permissions/permission_list"
 import IDParameterValidation from "!/middlewares/validation/id_parameter"
 import MultipartController from "!/common_controllers/multipart_controller"
 import MatchedIDParameterValidation from "!/middlewares/validation/matched_id_parameter"
+
+import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 import {
 	UPDATE_OWN_DATA,
@@ -24,13 +25,12 @@ import {
 } from "$/permissions/user_combinations"
 
 import object from "!/app/validators/base/object"
-import required from "!/app/validators/base/required"
-import same from "!/app/validators/comparison/same"
 import string from "!/app/validators/base/string"
-import { FieldRulesMaker } from "!/types/hybrid"
+import same from "!/app/validators/comparison/same"
 import integer from "!/app/validators/base/integer"
 import unique from "!/app/validators/manager/unique"
 import nullable from "!/app/validators/base/nullable"
+import required from "!/app/validators/base/required"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -53,25 +53,8 @@ export default class extends MultipartController {
 		]
 	}
 
-	get bodyValidationRules(): object {
+	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
 		return {
-			"data":				[ "required", "object" ],
-			"data.type":		[ "required", "string", "equals:user" ],
-			"data.id":			[ "required", "numeric" ],
-			"data.attributes":[ "required", "object" ],
-			// TODO: Make validator for names
-			"data.attributes.name": [ "required", "string" ],
-			"data.attributes.email": [
-				"required",
-				"string",
-				"email",
-				[ "unique", UserManager, "email", "data.id" ]
-			]
-		}
-	}
-
-	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: AuthenticatedIDRequest): FieldRules => ({
 			data: {
 				pipes: [ required, object ],
 				constraints: {
@@ -121,7 +104,7 @@ export default class extends MultipartController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	async handle(

@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import { UserKindValues, UserKind } from "$/types/database"
-import type { PreprocessedRequest, Response } from "!/types/dependent"
+import type { PreprocessedRequest, Request, Response } from "!/types/dependent"
 import type { OptionalMiddleware, NewUserNotificationArguments } from "!/types/independent"
 import type {
 	RawBulkData,
@@ -18,14 +18,14 @@ import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import MultipartController from "!/common_controllers/multipart_controller"
 
-import { user as permissionGroup } from "$/permissions/permission_list"
 import BodyValidation from "!/middlewares/validation/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import { FieldRulesMaker } from "!/types/hybrid"
-import required from "!/app/validators/base/required"
 import array from "!/app/validators/base/array"
+import buffer from "!/app/validators/base/buffer"
+import required from "!/app/validators/base/required"
 import oneOf from "!/app/validators/comparison/one-of"
 
 export default class extends MultipartController {
@@ -41,24 +41,23 @@ export default class extends MultipartController {
 		// TODO: Think of the maximum size of the CSV file. currently accepting 1MB.
 		const maxSize = 1*1000
 		return [
-			new BodyValidation({
-				importedCSV: [ "required", `buffer:text/csv,${maxSize}` ]
-			}),
+			new BodyValidation((request: Request): FieldRules => ({
+				importedCSV: {
+					pipes: [ required, buffer ],
+					constraints: {
+						buffer: {
+							allowedMimeTypes: [ "text/csv" ],
+							maxSize
+						}
+					}
+				}
+			})),
 			new CSVParser("importedCSV")
 		]
 	}
 
-	get bodyValidationRules(): object {
-		// TODO: Validate nested properties of imported CSV
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			importedCSV: [ "required" ],
-			roles: [ "required", "array" ],
-			kind: [ "required", [ "in", ...UserKindValues] ]
-		}
-	}
-
-	makeBodyRulesGenerator(): FieldRulesMaker {
-		return (request: Request): FieldRules => ({
 			importCSV: {
 				pipes: [ required ],
 				constraints: { }
@@ -75,7 +74,7 @@ export default class extends MultipartController {
 					}
 				}
 			}
-		})
+		}
 	}
 
 	async handle(
