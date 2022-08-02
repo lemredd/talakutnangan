@@ -34,7 +34,7 @@ export default class extends Validation {
 										constraints: {
 											// TODO: Make this into object and used the referenced value
 											same: {
-												value: "params.id"
+												pointer: "params.id"
 											}
 										}
 									}

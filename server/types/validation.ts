@@ -11,7 +11,8 @@ export interface RangeConstraints { range: { minimum?: number, maximum?: number 
 
 export interface SameRuleConstraints {
 	same: {
-		value: any
+		value?: any,
+		pointer?: string
 	}
 }
 
