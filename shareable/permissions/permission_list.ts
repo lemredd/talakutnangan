@@ -1,12 +1,12 @@
-import TagPermissions from "$/permissions/tag_permissions"
-import RolePermissions from "$/permissions/role_permissions"
-import UserPermissions from "$/permissions/user_permissions"
-import PostPermissions from "$/permissions/post_permissions"
-import CommentPermissions from "$/permissions/comment_permissions"
-import SemesterPermissions from "$/permissions/semester_permissions"
-import ProfanityPermissions from "$/permissions/profanity_permissions"
-import DepartmentPermissions from "$/permissions/department_permissions"
-import AuditTrailPermissions from "$/permissions/audit_trail_permissions"
+import TagPermissions from "$/permissions/tag"
+import RolePermissions from "$/permissions/role"
+import UserPermissions from "$/permissions/user"
+import PostPermissions from "$/permissions/post"
+import CommentPermissions from "$/permissions/comment"
+import SemesterPermissions from "$/permissions/semester"
+import ProfanityPermissions from "$/permissions/profanity"
+import DepartmentPermissions from "$/permissions/department"
+import AuditTrailPermissions from "$/permissions/audit_trail"
 
 export const tag = new TagPermissions()
 export const role = new RolePermissions()

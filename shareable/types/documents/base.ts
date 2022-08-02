@@ -32,6 +32,12 @@ export interface ResourceDocument<
 	V extends Resource<T, U>
 > extends DataDocument<V> {}
 
+export interface RawResourceDocument<
+	T extends ResourceIdentifier,
+	U extends Attributes,
+	V extends Resource<T, U>
+> extends DataDocument<Omit<V, "id">> {}
+
 export interface ResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,

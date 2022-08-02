@@ -23,7 +23,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"./t/integration/communicators/.*\\.spec\\.ts"
+		"./t/integration/fetchers/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

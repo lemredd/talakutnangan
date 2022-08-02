@@ -27,13 +27,13 @@
 import { computed, ref } from "vue"
 
 // Types
-import type { Permissions as TagPermissions } from "$/permissions/tag_permissions"
-import type { Permissions as UserPermissions } from "$/permissions/user_permissions"
-import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
-import type { Permissions as CommentPermissions } from "$/permissions/comment_permissions"
-import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
-import type { Permissions as ProfanityPermissions } from "$/permissions/profanity_permissions"
-import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail_permissions"
+import type { Permissions as TagPermissions } from "$/permissions/tag"
+import type { Permissions as UserPermissions } from "$/permissions/user"
+import type { Permissions as PostPermissions } from "$/permissions/post"
+import type { Permissions as CommentPermissions } from "$/permissions/comment"
+import type { Permissions as SemesterPermissions } from "$/permissions/semester"
+import type { Permissions as ProfanityPermissions } from "$/permissions/profanity"
+import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail"
 
 // Developer defined internals
 import BasePermissionGroup from "$/permissions/base"

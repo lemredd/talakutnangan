@@ -11,7 +11,8 @@ describe("Communicator: UserFetcher", () => {
 		}),
 		{ status: RequestEnvironment.status.OK })
 
-		const response = await UserFetcher.logIn({ email: "sample@example.com", password: "1234" })
+		const fetcher = new UserFetcher()
+		const response = await fetcher.logIn({ email: "sample@example.com", password: "1234" })
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")

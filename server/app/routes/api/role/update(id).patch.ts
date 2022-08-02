@@ -111,7 +111,7 @@ export default class extends BoundJSONController {
 							pipes: [ required, integer ],
 							constraints: {}
 						},
-						attriibutes: {
+						attributes: {
 							pipes: [ required, object ],
 							constraints: {
 								object: {
@@ -176,7 +176,7 @@ export default class extends BoundJSONController {
 											}
 										}
 									},
-									auditTrailsFlags: {
+									auditTrailFlags: {
 										pipes: [ required, integer, range ],
 										constraints: {
 											range: {

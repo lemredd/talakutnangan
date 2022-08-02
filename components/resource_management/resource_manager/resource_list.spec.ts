@@ -1,43 +1,27 @@
-import { CommonQueryParameters } from "$/types/query"
-
 import { mount } from "@vue/test-utils"
 
+import UserFactory from "~/factories/user"
+import deserialize from "$/helpers/deserialize"
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
+import Manager from "@/resource_management/manager"
 import ResourceList from "./resource_list.vue"
-import RequestEnvironment from "$/helpers/request_environment"
-import UserFetcher from "$@/communicators/user"
-import { deserialise } from "kitsu-core"
-import Manager from "../manager"
 
 describe("Component: Resource List", () => {
 	describe("User List", () => {
 		async function listUsers() {
-			fetchMock.mockResponseOnce(JSON.stringify({
-				data: [
-					{ type: "user", name: "KID A" }
-				]
-			}),
-			{ status: RequestEnvironment.status.OK })
+			const users = await new UserFactory().makeMany(5)
+			const serializedUsers = Serializer.serialize(
+				users,
+				new UserTransformer(),
+				{}
+			)
 
-			UserFetcher.initialize("/api")
-			const queryObject: CommonQueryParameters = {
-				filter: {
-					existence: "exists"
-				},
-				sort: [ "id", "name" ],
-				page: {
-					offset: 0,
-					limit: 5
-				}
-			}
-			const response = await UserFetcher.list(queryObject)
-
-			return deserialise(response.body).data
+			return deserialize(serializedUsers)!.data
 		}
 
 		it("Should list users properly", async () => {
 			const sampleUserList = await listUsers()
-
-			console.log(sampleUserList)
 
 			const wrapper = mount(ResourceList, {
 				global: {

@@ -1,14 +1,15 @@
-import { AuthenticatedRequest,  Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
-import { FieldRules } from "!/types/independent"
+import type { Request, Response } from "!/types/dependent"
+import type { FieldRules, BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
-import { UPDATE } from "$/permissions/department_combinations"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import BoundJSONController from "!/common_controllers/bound_json_controller"
+
+import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+
 import { FieldRulesMaker } from "!/types/hybrid"
 import required from "!/app/validators/base/required"
 import object from "!/app/validators/base/object"
@@ -56,7 +57,7 @@ export default class extends BoundJSONController {
 	}
 
 	makeBodyRuleGenerator(): FieldRulesMaker {
-		return (request: AuthenticatedRequest): FieldRules => ({
+		return (request: Request): FieldRules => ({
 			data: {
 				pipes: [ required, object ],
 				constraints: {
@@ -80,7 +81,7 @@ export default class extends BoundJSONController {
 										constraints: {
 											length: { minimum: 10, maximum: 255 },
 											regex: { match: /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/ },
-											manager: { className: DepartmentManager, columnName: "fulName" },
+											manager: { className: DepartmentManager, columnName: "fullName" },
 											unique: { IDPath: "data.id" }
 										}
 									},
@@ -90,7 +91,7 @@ export default class extends BoundJSONController {
 											length: { minimum: 2, maximum: 255 },
 											regex: { match: /([A-Z][a-z]*)+/ },
 											acronym: { spelledOutPath: "data.attributes.fullName" },
-											manager: { className: DepartmentManager , columnName: "fullName" },
+											manager: { className: DepartmentManager , columnName: "acronym" },
 											unique: { IDPath: "data.id" }
 										}
 									},

@@ -1,6 +1,6 @@
-import Fetcher from "$@/communicators/fetcher"
-import UserFetcher from "$@/communicators/user"
-import DepartmentFetcher from "$@/communicators/department"
+import Fetcher from "$@/fetchers/fetcher"
+import UserFetcher from "$@/fetchers/user"
+import DepartmentFetcher from "$@/fetchers/department"
 
 beforeEach(() => {
 	Fetcher.initialize("/api")

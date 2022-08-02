@@ -1,4 +1,4 @@
-import type { RoleQueryFilter } from "$/types/query"
+import type { RoleQueryParameters } from "$/types/query"
 import type { FieldRules } from "!/types/independent"
 import type { FieldRulesMaker } from "!/types/hybrid"
 import type { Request, Response } from "!/types/dependent"
@@ -42,7 +42,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const constraints = { ...request.query } as RoleQueryFilter
+		const constraints = { ...request.query } as RoleQueryParameters
 
 		const manager = new RoleManager(request.transaction, request.cache)
 		const roles = await manager.list(constraints)
