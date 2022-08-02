@@ -1,3 +1,4 @@
+import type { Request } from "!/types/dependent"
 import type {
 	ValidationState,
 	ValidationConstraints,
@@ -22,8 +23,10 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	// TODO: Get transaction manager from cache
-	const manager = new constraints.manager.className()
+	const manager = new constraints.manager.className(
+		constraints.request.transaction,
+		constraints.request.cache
+	)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
 			existence: "*"
@@ -33,7 +36,6 @@ export default async function(
 
 	const id = +accessDeepPath(constraints.source, constraints.unique.IDPath)
 
-	// TODO: Store found model in cache
 	if (foundModel.data === null || (!Number.isNaN(id) && (foundModel.data as any).id === id)) {
 		return state
 	} else {

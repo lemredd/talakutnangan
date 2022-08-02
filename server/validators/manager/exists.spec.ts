@@ -1,3 +1,5 @@
+import type { Request } from "!/types/dependent"
+
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
@@ -8,7 +10,7 @@ describe("Validator: exists", () => {
 		const user = await (new UserFactory()).insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			request: null,
+			request: {} as Request,
 			source: null,
 			field: "hello",
 			manager: {
@@ -26,7 +28,7 @@ describe("Validator: exists", () => {
 		const user = await (new UserFactory()).insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			request: null,
+			request: {} as Request,
 			source: null,
 			field: "hello",
 			manager: {
@@ -46,7 +48,7 @@ describe("Validator: exists", () => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
 		const constraints = {
-			request: null,
+			request: {} as Request,
 			source: null,
 			field: "hello",
 			manager: {
