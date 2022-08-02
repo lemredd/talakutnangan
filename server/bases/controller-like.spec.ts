@@ -42,7 +42,7 @@ describe("Back-end Base: ControllerLike Non-Request", () => {
 
 	it("can make route information", () => {
 		class ControllerB extends BaseTestController {
-			get filePath(): string { return `${this.root}/server/app/routes/a/b/index.get.ts` }
+			get filePath(): string { return `${this.root}/routes/a/b/index.get.ts` }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
