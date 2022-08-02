@@ -47,6 +47,9 @@ export default class extends Validation {
 	}
 
 	getSubject(request: Request): object {
-		return request
+		return {
+			params: request.params,
+			body: request.body
+		}
 	}
 }

@@ -15,12 +15,16 @@ describe("Middleware: Matched ID parameter validation", () => {
 				data: {
 					id: 1
 				}
-			}
+			},
+			ensureThisPropertyExists: true
 		})
 
 		await requester.runMiddleware(middleware.intermediate.bind(middleware))
 
-		requester.expectSuccess()
+		const request = requester.expectSuccess()
+		expect(request).toHaveProperty("params.id", "1")
+		expect(request).toHaveProperty("body.data.id", 1)
+		expect(request).toHaveProperty("ensureThisPropertyExists", true)
 	})
 
 	it("cannot accept different IDs", async () => {
