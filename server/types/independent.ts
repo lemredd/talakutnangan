@@ -49,8 +49,8 @@ export interface PasswordResetArguments {
  * Useful when passing a base manager to other functions/methods
  */
 export type BaseManagerClass = new(
-	transaction: TransactionManager,
-	cache: CacheClient
+	transaction?: TransactionManager,
+	cache?: CacheClient
 ) => BaseManager<any, any>
 
 /**
