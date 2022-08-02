@@ -12,8 +12,8 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
 import makeListRules from "!/app/rule_sets/make_list"
-import nullable from "!/app/validators/base/nullable"
-import string from "!/app/validators/base/string"
+import nullable from "!/validators/base/nullable"
+import string from "!/validators/base/string"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }

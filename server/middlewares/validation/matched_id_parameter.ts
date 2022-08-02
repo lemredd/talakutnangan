@@ -2,10 +2,10 @@ import type { Request } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 
 import Validation from "!/bases/validation"
-import object from "!/app/validators/base/object"
-import same from "!/app/validators/comparison/same"
-import integer from "!/app/validators/base/integer"
-import required from "!/app/validators/base/required"
+import object from "!/validators/base/object"
+import same from "!/validators/comparison/same"
+import integer from "!/validators/base/integer"
+import required from "!/validators/base/required"
 
 export default class extends Validation {
 	constructor() {

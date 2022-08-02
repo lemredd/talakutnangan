@@ -4,8 +4,8 @@ import type { Request, Response } from "!/types/dependent"
 import { faker } from "@faker-js/faker"
 import MockRequester from "~/set-ups/mock_requester"
 
-import required from "!/app/validators/base/required"
-import regex from "!/app/validators/comparison/regex"
+import required from "!/validators/base/required"
+import regex from "!/validators/comparison/regex"
 
 import JSONController from "./json_controller"
 

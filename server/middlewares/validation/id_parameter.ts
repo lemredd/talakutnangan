@@ -3,9 +3,9 @@ import type { FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import RouteParameterValidation from "!/middlewares/validation/route_parameter"
 
-import integer from "!/app/validators/base/integer"
-import exists from "!/app/validators/manager/exists"
-import required from "!/app/validators/base/required"
+import integer from "!/validators/base/integer"
+import exists from "!/validators/manager/exists"
+import required from "!/validators/base/required"
 
 type ParameterInfo = [ string, BaseManagerClass ]
 

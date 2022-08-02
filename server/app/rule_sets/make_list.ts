@@ -1,13 +1,13 @@
 import type { BaseManagerClass } from "!/types/independent"
 import type { FieldRules } from "!/types/validation"
 
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import integer from "!/app/validators/base/integer"
-import nullable from "!/app/validators/base/nullable"
-import range from "!/app/validators/comparison/range"
-import oneOf from "!/app/validators/comparison/one-of"
-import stringArray from "!/app/validators/hybrid/string_array"
+import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import integer from "!/validators/base/integer"
+import nullable from "!/validators/base/nullable"
+import range from "!/validators/comparison/range"
+import oneOf from "!/validators/comparison/one-of"
+import stringArray from "!/validators/hybrid/string_array"
 
 export default function(
 	className: BaseManagerClass,

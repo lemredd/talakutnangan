@@ -23,10 +23,10 @@ import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import array from "!/app/validators/base/array"
-import buffer from "!/app/validators/base/buffer"
-import required from "!/app/validators/base/required"
-import oneOf from "!/app/validators/comparison/one-of"
+import array from "!/validators/base/array"
+import buffer from "!/validators/base/buffer"
+import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }

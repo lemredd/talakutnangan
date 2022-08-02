@@ -15,10 +15,10 @@ import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import string from "!/app/validators/base/string"
-import nullable from "!/app/validators/base/nullable"
-import oneOf from "!/app/validators/comparison/one-of"
-import skipAsterisk from "!/app/validators/comparison/skip_asterisk"
+import string from "!/validators/base/string"
+import nullable from "!/validators/base/nullable"
+import oneOf from "!/validators/comparison/one-of"
+import skipAsterisk from "!/validators/comparison/skip_asterisk"
 
 import makeListRules from "!/app/rule_sets/make_list"
 

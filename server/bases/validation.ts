@@ -8,7 +8,7 @@ import type { Request, Response, NextFunction } from "!/types/dependent"
 import Log from "$!/singletons/log"
 import ErrorBag from "$!/errors/error_bag"
 import Middleware from "!/bases/middleware"
-import validate from "!/app/validators/validate"
+import validate from "!/validators/validate"
 import ValidationError from "$!/errors/validation"
 import accessDeepPath from "$!/helpers/access_deep_path"
 

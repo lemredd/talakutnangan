@@ -17,11 +17,11 @@ import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import same from "!/app/validators/comparison/same"
-import integer from "!/app/validators/base/integer"
-import required from "!/app/validators/base/required"
+import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import same from "!/validators/comparison/same"
+import integer from "!/validators/base/integer"
+import required from "!/validators/base/required"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }

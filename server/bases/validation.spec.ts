@@ -4,9 +4,9 @@ import type { FieldRules } from "!/types/validation"
 import MockRequester from "~/set-ups/mock_requester"
 import ErrorBag from "$!/errors/error_bag"
 
-import integer from "!/app/validators/base/integer"
-import required from "!/app/validators/base/required"
-import oneOf from "!/app/validators/comparison/one-of"
+import integer from "!/validators/base/integer"
+import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 
 import Base from "./validation"
 

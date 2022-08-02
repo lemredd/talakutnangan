@@ -11,13 +11,13 @@ import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
 
-import array from "!/app/validators/base/array"
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import integer from "!/app/validators/base/integer"
-import same from "!/app/validators/comparison/same"
-import exists from "!/app/validators/manager/exists"
-import length from "!/app/validators/comparison/length"
+import array from "!/validators/base/array"
+import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import integer from "!/validators/base/integer"
+import same from "!/validators/comparison/same"
+import exists from "!/validators/manager/exists"
+import length from "!/validators/comparison/length"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }

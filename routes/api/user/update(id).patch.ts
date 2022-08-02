@@ -24,13 +24,13 @@ import {
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import same from "!/app/validators/comparison/same"
-import integer from "!/app/validators/base/integer"
-import unique from "!/app/validators/manager/unique"
-import required from "!/app/validators/base/required"
-import regex from "!/app/validators/comparison/regex"
+import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import same from "!/validators/comparison/same"
+import integer from "!/validators/base/integer"
+import unique from "!/validators/manager/unique"
+import required from "!/validators/base/required"
+import regex from "!/validators/comparison/regex"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }

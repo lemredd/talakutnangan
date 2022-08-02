@@ -10,10 +10,10 @@ import JSONController from "!/common_controllers/json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
-import string from "!/app/validators/base/string"
-import exists from "!/app/validators/manager/exists"
-import required from "!/app/validators/base/required"
-import length from "!/app/validators/comparison/length"
+import string from "!/validators/base/string"
+import exists from "!/validators/manager/exists"
+import required from "!/validators/base/required"
+import length from "!/validators/comparison/length"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }

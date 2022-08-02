@@ -1,9 +1,9 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
-import array from "!/app/validators/base/array"
-import buffer from "!/app/validators/base/buffer"
-import nullable from "!/app/validators/base/nullable"
+import array from "!/validators/base/array"
+import buffer from "!/validators/base/buffer"
+import nullable from "!/validators/base/nullable"
 
 import MultipartController from "!/common_controllers/multipart_controller"
 

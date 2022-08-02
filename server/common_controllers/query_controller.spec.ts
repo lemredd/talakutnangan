@@ -3,8 +3,8 @@ import type { FieldRules } from "!/types/validation"
 
 import MockRequester from "~/set-ups/mock_requester"
 
-import required from "!/app/validators/base/required"
-import oneOf from "!/app/validators/comparison/one-of"
+import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 
 import QueryController from "./query_controller"
 

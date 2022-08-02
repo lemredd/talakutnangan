@@ -20,14 +20,14 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
-import object from "!/app/validators/base/object"
-import string from "!/app/validators/base/string"
-import integer from "!/app/validators/base/integer"
-import same from "!/app/validators/comparison/same"
-import unique from "!/app/validators/manager/unique"
-import range from "!/app/validators/comparison/range"
-import regex from "!/app/validators/comparison/regex"
-import required from "!/app/validators/base/required"
+import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import integer from "!/validators/base/integer"
+import same from "!/validators/comparison/same"
+import unique from "!/validators/manager/unique"
+import range from "!/validators/comparison/range"
+import regex from "!/validators/comparison/regex"
+import required from "!/validators/base/required"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
