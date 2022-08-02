@@ -8,46 +8,34 @@
 
 <script setup lang="ts">
 import { onMounted, provide, ref } from "vue"
-import { deserialise } from "kitsu-core"
 
-import type { ManagerKind } from "@/resource_management/types"
 
+import type { DeserializedUserResource } from "$/types/documents/user"
+
+import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import deserialize from "$/helpers/deserialize"
 
-
-const managerKind = "admin" as ManagerKind
-provide("managerKind", managerKind)
+provide("managerKind", new Manager("admin"))
 provide("tabs", ["Users", "Roles", "Departments"])
 
 RoleFetcher.initialize("/api")
 DepartmentFetcher.initialize("/api")
 
-interface RawUser {
-	id: number,
-	name: string,
-	email: string,
-	kind: string,
-	signature: string
-}
-const users = ref<RawUser[]>([])
-const roles = ref<string[]>([])
+const users = ref<DeserializedUserResource[]>([])
 onMounted(() => {
 	// TODO: fetch("/api/user/list") soon
 	fetch("/dev/sample_user_list")
 	.then(response => response.json())
 	.then(response => {
-		const deserializedData = deserialise(response).data
-		const rolesNoDuplicate = new Set([...roles.value])
+		const deserializedData = deserialize(response)!.data as DeserializedUserResource[]
 		users.value = deserializedData
 
-		users.value.forEach((user: RawUser | any) => user.roles.data.forEach((role: any) => rolesNoDuplicate.add(role.name)))
-		roles.value = [...rolesNoDuplicate]
 		// Check the console for other available info from server
-		console.log(deserializedData)
+		console.log(users.value)
 	})
 })
-provide("filterList", roles.value)
 </script>

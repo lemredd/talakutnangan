@@ -3,7 +3,7 @@
 		<SearchFilter/>
 		<div v-if="isResourceTypeUser" class="filters">
 			<DropdownFilter by="Role"/>
-			<DropdownFilter v-if="managerKind === 'admin'" by="Department"/>
+			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
 		</div>
 	</div>
 	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
@@ -37,6 +37,7 @@ import { computed, inject, provide, ref } from "vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
+import manager from "./manager"
 
 /*
 	General TODOs
@@ -55,7 +56,7 @@ const { resource, hasDropdownFilter } = defineProps<{
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
 const searchFilterText = ref("");
-const managerKind = inject("managerKind") as ManagerKind
+const managerKind = inject("managerKind") as manager
 
 const filteredList = computed(function() {
 	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
