@@ -36,7 +36,7 @@ describe("POST /api/user/log_in", () => {
 			.type(JSON_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.UNAUTHORIZED)
+		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 	})
 
 	it("cannot be accessed by authenticated users", async () => {
