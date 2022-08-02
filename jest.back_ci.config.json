@@ -11,7 +11,7 @@
 		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
 		"%/(.*)": "<rootDir>/database/$1",
 		"!/(.*)": "<rootDir>/server/$1",
-		"!%/(.*)": "<rootDir>/server/$1",
+		"!%/(.*)": "<rootDir>/routes/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
 		"#/(.*)": "<rootDir>/renderer/$1"
 	},
