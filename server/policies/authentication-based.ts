@@ -1,6 +1,7 @@
 import type { Request } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
+import URLMaker from "$!/singletons/url_maker"
 import AuthorizationError from "$!/errors/authorization"
 
 /**
@@ -26,8 +27,11 @@ export default class extends Policy {
 				? "The user must be logged in to invoke the action."
 				: "The user must be logged out to invoke the action."
 
-			// TODO: Add redirect URL
-			throw new AuthorizationError(reason)
+			const link = this.targetAuthenticationState
+				? URLMaker.makeURLFromPath("/log_in")
+				: URLMaker.makeURLFromPath("/")
+
+			throw new AuthorizationError(reason, link)
 		}
 	}
 }
