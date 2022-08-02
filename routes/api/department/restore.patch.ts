@@ -8,7 +8,7 @@ import JSONController from "!/common_controllers/json_controller"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
 import object from "!/validators/base/object"

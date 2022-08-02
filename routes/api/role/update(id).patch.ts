@@ -9,7 +9,7 @@ import BoundJSONController from "!/common_controllers/bound_json_controller"
 
 import { UPDATE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 import {
 	tag,
 	user,

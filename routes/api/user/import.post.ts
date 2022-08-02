@@ -22,7 +22,7 @@ import MultipartController from "!/common_controllers/multipart_controller"
 import BodyValidation from "!/validation/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
 import string from "!/validators/base/string"

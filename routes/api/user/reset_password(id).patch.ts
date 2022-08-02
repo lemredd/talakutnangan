@@ -15,7 +15,7 @@ import PasswordResetNotification from "!/middlewares/email_sender/password_reset
 
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"

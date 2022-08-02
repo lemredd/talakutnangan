@@ -11,7 +11,7 @@ import DepartmentManager from "%/managers/department"
 import QueryController from "!/common_controllers/query_controller"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS

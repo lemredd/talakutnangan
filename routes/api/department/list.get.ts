@@ -9,7 +9,7 @@ import QueryController from "!/common_controllers/query_controller"
 
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import makeListRules from "!/rule_sets/make_list"
 

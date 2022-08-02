@@ -6,7 +6,7 @@ import QueryController from "!/common_controllers/query_controller"
 
 import { READ_OWN } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
