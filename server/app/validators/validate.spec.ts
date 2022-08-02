@@ -1,4 +1,4 @@
-import type { FieldRules } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 import MockRequester from "~/set-ups/mock_requester"
 import required from "!/app/validators/base/required"
 import string from "!/app/validators/base/string"

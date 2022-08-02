@@ -1,5 +1,5 @@
 import type { BaseManagerClass } from "!/types/independent"
-import type { FieldRules } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 
 import object from "!/app/validators/base/object"
 import string from "!/app/validators/base/string"

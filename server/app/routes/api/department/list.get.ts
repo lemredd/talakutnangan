@@ -1,4 +1,4 @@
-import type { FieldRules } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 import type { FieldRulesMaker } from "!/types/hybrid"
 import { Request, Response } from "!/types/dependent"
 
