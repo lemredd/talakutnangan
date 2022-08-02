@@ -1,7 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 import Controller from "./restore.patch"
 
@@ -9,10 +8,6 @@ const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: PATCH /api/role/restore", () => {
 	const requester = new MockRequester()
-
-	beforeAll(() => {
-		registerCustomValidators()
-	})
 
 	it("can accept valid info", async () => {
 		const controller = new Controller()

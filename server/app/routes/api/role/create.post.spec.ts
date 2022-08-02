@@ -1,17 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
 import RoleFactory from "~/factories/role"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: POST /api/role/create", () => {
 	const requester = new MockRequester()
-
-	beforeAll(() => {
-		registerCustomValidators()
-	})
 
 	it("can accept valid info", async () => {
 		const controller = new Controller()

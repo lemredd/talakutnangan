@@ -1,14 +1,9 @@
 import ErrorBag from "$!/errors/error_bag"
 import Validation from "./matched_id_parameter"
 import MockRequester from "~/set-ups/mock_requester"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 describe("Middleware: Matched ID parameter validation", () => {
 	const requester  = new MockRequester()
-
-	beforeAll(() => {
-		registerCustomValidators()
-	})
 
 	it("can accept valid info", async () => {
 		const middleware = new Validation()

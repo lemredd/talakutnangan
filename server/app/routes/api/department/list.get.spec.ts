@@ -1,6 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 import Controller from "./list.get"
 
@@ -8,10 +7,6 @@ const QUERY_VALIDATION_INDEX = 0
 
 describe("Controller: GET /api/department/list", () => {
 	const requester = new MockRequester()
-
-	beforeAll(() => {
-		registerCustomValidators()
-	})
 
 	it("can accept valid info", async () => {
 		const controller = new Controller()
