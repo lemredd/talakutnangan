@@ -9,6 +9,7 @@ import trimRight from "$/helpers/trim_right"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
+import siftByDepartment from "%/queries/role/sift_by_department"
 
 export default class extends BaseManager<Role, RoleAttributes, RoleQueryParameters> {
 	get model(): ModelCtor<Role> { return Role }
