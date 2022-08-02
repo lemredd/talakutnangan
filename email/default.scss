@@ -1,11 +1,64 @@
 body {
-	@apply flex flex-row flex-wrap justify-center align-center;
-}
-
-body > div {
 	flex: 1 0 100%;
-	margin: 1em 0.5em;
+	margin: 10em 0.5em;
+	background-color: #ebf4f5
 }
 
 
-h1 { text-align: center; }
+.box-column {
+	margin: auto;
+	width: 100%;
+	max-width: 640px;
+	padding: 20px;
+	border-radius: 25px;
+	background-color: white;
+  }
+
+.content{
+	text-align: center;
+	padding: 10px;
+
+	.home-page-url::before {
+		content: " ";
+	}
+}
+
+.buttons{
+	border: none;
+	padding: 5px 5px;
+
+	width: 100px;
+	height: max-content;
+
+	background-color: #4CAF50;
+	color: white;
+	cursor: pointer;
+	font-size: 16px;
+	text-align: center;
+	text-decoration: none;
+  }
+
+.line{
+	@apply flex justify-center items-center;
+
+	margin-bottom: 1em;
+	border-bottom: 2px solid #b0a5a5;
+	padding-bottom: 1em;
+}
+
+.note {
+	text-align: left;
+	padding: 10px;
+	color: #b0a5a5;
+}
+
+h1 { 
+	text-align: center;
+	font-family:Impact; 
+	padding: 20px;
+	font-size: 200%;
+}
+
+
+
+
