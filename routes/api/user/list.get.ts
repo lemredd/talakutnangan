@@ -5,6 +5,7 @@ import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
 import QueryController from "!/common_controllers/query_controller"
@@ -54,9 +55,13 @@ export default class extends QueryController {
 				}
 			},
 			role: {
-				pipes: [ nullable, string ],
+				pipes: [ nullable, skipAsterisk, integer, exists ],
 				constraints: {
-					nullable: { defaultValue: "*" }
+					nullable: { defaultValue: "*" },
+					manager: {
+						className: RoleManager,
+						columnName: "id"
+					}
 				}
 			},
 			kind: {
