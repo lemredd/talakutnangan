@@ -32,8 +32,8 @@ import deserialize from "$/helpers/deserialize"
 
 
 import Manager from "../manager"
-import RoleFetcher from "$@/communicators/role"
-import DepartmentFetcher from "$@/communicators/department"
+import RoleFetcher from "$@/fetchers/role"
+import DepartmentFetcher from "$@/fetchers/department"
 
 const { by } = defineProps<{
 	by: string
@@ -67,7 +67,7 @@ function siftViewableDepartments() {
 }
 
 async function listRoles() {
-	await RoleFetcher.list({
+	await new RoleFetcher().list({
 		filter: {
 			existence: "exists"
 		},
@@ -89,7 +89,7 @@ async function listRoles() {
 }
 
 function listDepartments() {
-	DepartmentFetcher.list({
+	new DepartmentFetcher().list({
 		filter: {
 			existence: "exists"
 		},

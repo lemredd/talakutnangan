@@ -20,8 +20,8 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from "vue"
-import DepartmentFetcher from "$@/communicators/department"
+import { inject, ref } from "vue"
+import DepartmentFetcher from "$@/fetchers/department"
 import type { DeserializedPageContext } from "$@/types/independent"
 
 const pageContext = inject("pageContext") as DeserializedPageContext
@@ -31,19 +31,19 @@ const acronym = ref("")
 const mayAdmit = ref(false)
 
 DepartmentFetcher.initialize("/api")
+const fetcher = new DepartmentFetcher()
 
 function createDepartment() {
-	DepartmentFetcher.create({
+	fetcher.create({
 		fullName: fullName.value,
 		acronym: acronym.value,
 		mayAdmit: mayAdmit.value
 	})
 	.then(({ body, status }) => {
-		console.log(body, status)
 
-		if (status >= 400) {
-			// Output error
-		}
+	})
+	.catch(({ body, status }) => {
+		// Output error
 	})
 }
 </script>

@@ -1,0 +1,34 @@
+{
+	"preset": "ts-jest",
+
+	"cacheDirectory": "t/cache/unit_routes",
+
+	"moduleFileExtensions": [
+		"js",
+		"ts"
+	],
+
+	"moduleNameMapper": {
+		"\\$/(.*)": "<rootDir>/shareable/$1",
+		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"!%/(.*)": "<rootDir>/routes/$1",
+		"%/(.*)": "<rootDir>/database/$1",
+		"!/(.*)": "<rootDir>/server/$1",
+		"~/(.*)": "<rootDir>/t/helpers/$1",
+		"#/(.*)": "<rootDir>/renderer/$1"
+	},
+
+	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/singletons.set_up.ts",
+		"./t/helpers/set-ups/cache_manager.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
+	],
+
+	"transformIgnorePatterns": [],
+
+	"testRegex": [
+		"./routes/.*\\.spec\\.ts"
+	],
+
+	"testEnvironment": "node"
+}

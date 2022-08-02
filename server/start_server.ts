@@ -2,8 +2,8 @@ import { Server as HTTPServer } from "http"
 
 import { SourceType } from "$/types/database"
 
+import Router from "!%/router"
 import Log from "$!/singletons/log"
-import Router from "!/app/routes/router"
 import URLMaker from "$!/singletons/url_maker"
 import createWSServer from "!/ws/create_server"
 import createAppHandler from "!/app/create_handler"

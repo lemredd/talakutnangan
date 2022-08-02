@@ -2,7 +2,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/set-ups/app"
 
-import Route from "!/app/routes/t/authorization_error.get"
+import Route from "!%/t/authorization_error.get"
 
 describe("GET /t/authorization_error", () => {
 	beforeAll(async () => {

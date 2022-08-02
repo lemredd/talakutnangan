@@ -9,6 +9,7 @@
 	"moduleNameMapper": {
 		"\\$/(.*)": "<rootDir>/shareable/$1",
 		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"!%/(.*)": "<rootDir>/routes/$1",
 		"%/(.*)": "<rootDir>/database/$1",
 		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
@@ -27,7 +28,8 @@
 	"testRegex": [
 		"common_back-end/.*\\.spec\\.ts",
 		"./database/.*\\.spec\\.ts",
-		"./server/.*\\.spec\\.ts"
+		"./server/.*\\.spec\\.ts",
+		"./routes/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

@@ -14,8 +14,8 @@ import type { ManagerKind } from "@/resource_management/types"
 
 import UsersManager from "@/resource_management/resource_manager.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
-import RoleFetcher from "$@/communicators/role"
-import DepartmentFetcher from "$@/communicators/department"
+import RoleFetcher from "$@/fetchers/role"
+import DepartmentFetcher from "$@/fetchers/department"
 
 
 const managerKind = "admin" as ManagerKind

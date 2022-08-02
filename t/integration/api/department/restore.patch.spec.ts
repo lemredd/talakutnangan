@@ -8,7 +8,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/department/restore.patch"
+import Route from "!%/api/department/restore.patch"
 
 describe("DELETE /api/department/restore", () => {
 	beforeAll(async () => {

@@ -6,7 +6,7 @@ import { READ } from "$/permissions/role_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/count_users.get"
+import Route from "!%/api/role/count_users.get"
 
 describe("GET /api/role/count_users", () => {
 	beforeAll(async () => {
