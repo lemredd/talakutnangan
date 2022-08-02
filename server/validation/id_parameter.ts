@@ -1,7 +1,7 @@
 import type { Request } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
-import RouteParameterValidation from "!/middlewares/validation/route_parameter"
+import RouteParameterValidation from "!/validation/route_parameter"
 
 import integer from "!/validators/base/integer"
 import exists from "!/validators/manager/exists"
