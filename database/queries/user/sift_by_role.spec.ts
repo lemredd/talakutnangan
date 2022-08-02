@@ -46,7 +46,7 @@ describe("Database Pipe: Sift by role", () => {
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.1.where.name")
+		expect(options).toHaveProperty("include.1.where.id")
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", user.id)
 		expect(foundUsers).toHaveProperty("0.roles.0.id", role.id)
