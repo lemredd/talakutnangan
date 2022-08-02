@@ -22,7 +22,7 @@ describe("Back-end: JSON Controller Special Validation", () => {
 		const controller = new class extends BaseTestController {
 			makeBodyRuleGenerator(request: Request): FieldRules {
 				return {
-					order: {
+					email: {
 						pipes: [ required, regex ],
 						constraints: {
 							regex: {
