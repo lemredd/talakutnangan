@@ -1,12 +1,16 @@
-# New User
+<div class="box-column">
+<h1>New User</h1>
 
-Hello {{ name }}, your e-mail address ({{ email }}) have been registered as a {{ kind }} in
-[Talakutnangan]({{ homePageURL }}).
+<p class="content">
+    Hello {{ name }}, your e-mail address ({{ email }}) have been registered as a {{ kind }} in <a class="home-page-url" href="{{ homePageURL }}">Talakutnangan.</a>
+</p>
 
-Please log in using the following password:
-```
-{{ password }}
-```
+<p class ="content">Please log in using the following password:</p>
 
-## Note
-Upon logging in, do not share the password and change the default password.
+<div class="line">
+<p class="pass">{{ password }}</p>
+</div>
+
+<p class="note">Note</p>
+<p class="note">Upon logging in, do not share the password and change the default password.</p>
+</div>
