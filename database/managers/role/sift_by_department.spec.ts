@@ -1,5 +1,4 @@
 import Role from "%/models/role"
-import Department from "%/models/department"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
@@ -27,12 +26,12 @@ describe("Database Pipe: Sift by department", () => {
 
 		const options = siftByDepartment({}, {
 			filter: {
-				department: department.fullName
+				department: department.id
 			}
 		})
 		const foundRoles = await Role.findAll(options)
 
-		expect(options).toHaveProperty("include.0.include.0.where.fullName")
+		expect(options).toHaveProperty("include.0.include.0.where.id")
 		expect(foundRoles).toHaveLength(1)
 		expect(foundRoles).toHaveProperty("0.id", role.id)
 	})
@@ -45,12 +44,12 @@ describe("Database Pipe: Sift by department", () => {
 
 		const options = siftByDepartment({}, {
 			filter: {
-				department: departmentB.fullName
+				department: departmentB.id
 			}
 		})
 		const foundRoles = await Role.findAll(options)
 
-		expect(options).toHaveProperty("include.0.include.0.where.fullName")
+		expect(options).toHaveProperty("include.0.include.0.where.id")
 		expect(foundRoles).toHaveLength(0)
 	})
 })
