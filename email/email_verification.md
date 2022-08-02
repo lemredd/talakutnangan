@@ -1,4 +1,3 @@
-<template>
 <div class="box-column">
 <h1>Email Verification</h1>
 
@@ -15,5 +14,3 @@
 <p class="note">Note</p>
 <p class="note">If the button above does not work properly, visit {{ emailVerificationURL }}</p>
 </div>
-
-</template>
