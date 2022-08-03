@@ -5,8 +5,7 @@
 			type="text"
 			id="search-filter"
 			class="search-filter"
-			:value="textFilter"
-			@input="updateTextFilter">
+			v-model="searchFilterText">
 		<button class="material-icons">search</button>
 	</div>
 </template>
@@ -31,19 +30,32 @@
 
 <script setup lang = ts>
 import { PossibleResources } from "$@/types/independent";
-import { inject, Ref, ref } from "vue"
+import { computed, onUpdated, ref } from "vue"
 
-const resource = inject("resource") as Ref<PossibleResources[]>
-
-const { textFilter } = defineProps<{
-	textFilter: string
+const { resource } = defineProps<{
+	resource: PossibleResources[]
 }>()
+const searchFilterText = ref("")
+
 const emit = defineEmits<{
-	(e: "update:textFilter", textFilter: string ): void
+	(e: "filterResourceBySearch", resource: PossibleResources[] ): void
 }>()
 
-function updateTextFilter(event: Event) {
-	const input = event.target as HTMLInputElement
-	emit("update:textFilter", input.value)
-}
+const filteredList = computed(() => {
+	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
+		let name = ""
+
+		if (resourceToFilter.type === "department") name = resourceToFilter.fullName
+		else name = resourceToFilter.name
+
+		return name.toLowerCase().includes(searchFilterText.value.toLowerCase())
+	})
+
+	return filteredBySearchResult
+})
+
+
+onUpdated(() => {
+	emit("filterResourceBySearch", filteredList.value)
+})
 </script>

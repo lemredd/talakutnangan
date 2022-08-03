@@ -19,7 +19,7 @@
 		</div>
 	</div>
 
-	<div class="no-results" v-if="searchFilter && !filteredList.length">
+	<div class="no-results" v-if="!filteredList.length">
 		<p>No results found!</p>
 	</div>
 </template>
@@ -71,14 +71,16 @@ const resourceProperties = ref<string[]>([])
 
 onUpdated(() => {
 	// displays retrieved data from database properly
-	resourceType.value = filteredList[0].type
+	if (filteredList.length) {
+		resourceType.value = filteredList[0].type
 
-	filteredList.forEach((element:any) => {
-		const non_id_properties = new Set<string>([])
-		Object.keys(element).forEach(key => {
-			non_id_properties.add(key)
+		filteredList.forEach((element:any) => {
+			const non_id_properties = new Set<string>([])
+			Object.keys(element).forEach(key => {
+				non_id_properties.add(key)
+			});
+			resourceProperties.value = [...non_id_properties]
 		});
-		resourceProperties.value = [...non_id_properties]
-	});
+	}
 })
 </script>

@@ -30,7 +30,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, provide, ref } from "vue"
+import { computed, inject } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource } from "$/types/documents/user"
@@ -38,14 +38,8 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
 import manager from "./manager"
 
-/*
-	General TODOs
-	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
-*/
-
-const { resource, hasDropdownFilter } = defineProps<{
-	resource: PossibleResources[],
-	hasDropdownFilter?: boolean
+const { resource } = defineProps<{
+	resource: PossibleResources[]
 }>()
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
