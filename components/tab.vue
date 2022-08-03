@@ -38,7 +38,7 @@
 </style>
 
 <script setup lang="ts">
-import { defineComponent, inject, ref } from "vue"
+import { inject } from "vue"
 import Anchor from "@/anchor.vue"
 import { PageContext } from "#/types"
 
@@ -46,5 +46,12 @@ const pageContext = inject("pageContext") as PageContext
 const tabs = inject("tabs") as string[]
 
 const fullUrl = pageContext.urlPathname
-const parentUrl = pageContext.urlPathname!.charAt(0) + pageContext.urlPathname!.substring(1, pageContext.urlPathname!.substring(1).indexOf("/") + 1)
+const splittedUrl = fullUrl!.split("/")
+splittedUrl.shift()
+const currentTab = splittedUrl[splittedUrl.length - 1]
+
+let parentUrl = ""
+splittedUrl.forEach(word => {
+	if (word !== currentTab) parentUrl += `/${word}`
+})
 </script>
