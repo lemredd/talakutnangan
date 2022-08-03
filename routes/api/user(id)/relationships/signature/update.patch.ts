@@ -8,7 +8,7 @@ import UserManager from "%/managers/user"
 import Validation from "!/bases/validation"
 import deserialize from "$/helpers/deserialize"
 import SignatureManager from "%/managers/signature"
-import NoContentResponseInfo from "!/response_infos/no_content"
+import OkResponseInfo from "!/response_infos/ok"
 import MultipartController from "!/controllers/multipart_controller"
 
 import {
@@ -91,15 +91,15 @@ export default class extends MultipartController {
 	}
 
 	async handle(request: AuthenticatedIDRequest, response: Response)
-	: Promise<NoContentResponseInfo> {
+	: Promise<OkResponseInfo> {
 		const manager = new SignatureManager(request.transaction, request.cache)
 		const { signature } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
 
-		await manager.attach(userID, signature)
+		const newSignature = await manager.attach(userID, signature)
 		Log.success("controller", "successfully uploaded the signature")
 
-		return new NoContentResponseInfo()
+		return new OkResponseInfo(newSignature)
 	}
 }
