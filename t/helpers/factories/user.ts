@@ -1,17 +1,33 @@
-import { faker } from "@faker-js/faker"
-
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
+import type {
+	UserResourceIdentifier,
+	UserAttributes,
+	DeserializedUserResource,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+} from "$/types/documents/user"
+
+import { faker } from "@faker-js/faker"
 
 import User from "%/models/user"
 import Role from "%/models/role"
 import hash from "$!/auth/hash"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
+import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
 
-export default class UserFactory extends BaseFactory<User> {
+
+export default class UserFactory extends BaseFactory<
+	User,
+	UserResourceIdentifier,
+	UserAttributes,
+	DeserializedUserResource,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+> {
 	nameGenerator = () => faker.name.findName()
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
@@ -22,6 +38,8 @@ export default class UserFactory extends BaseFactory<User> {
 	#department: Department|null = null
 
 	get model(): ModelCtor<User> { return User }
+
+	get transformer(): UserTransformer { return new UserTransformer() }
 
 	async generate(): GeneratedData<User> {
 		if (this.#department === null) {
