@@ -7,34 +7,40 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue"
-import { deserialise } from "kitsu-core"
+import type { PageContext } from "#/types"
+import type { DeserializedUserResource } from "$/types/documents/user"
 
-import Manager from "@/resource_management/manager"
+import { onMounted, provide, ref, inject } from "vue"
 
-
-import type { UserProfile } from "$/types/common_front-end"
-
-import UsersManager from "@/resource_management/resource_manager.vue"
 import RoleFetcher from "$@/fetchers/role"
+import UserFetcher from "$@/fetchers/user"
+import Manager from "@/resource_management/manager"
+import UsersManager from "@/resource_management/resource_manager.vue"
 
+const pageContext = inject("pageContext") as PageContext
 
 RoleFetcher.initialize("/api")
-provide("managerKind", new Manager("service"))
-const jobTitles = ref<string[]>([])
+UserFetcher.initialize("/api")
 
-// Fetcher Initializers
-RoleFetcher.initialize("/api")
+provide("managerKind", new Manager(pageContext.pageProps.userProfile!))
 
-const users = ref<UserProfile[]>([])
+const users = ref<DeserializedUserResource[]>([])
 onMounted(() => {
-
-	// TODO: fetch("/api/user/list") soon
-	fetch("/dev/sample_user_list")
-	.then(response => response.json())
-	.then(response => {
-		const deserializedData = deserialise(response).data as UserProfile[]
-		users.value = deserializedData
+	new UserFetcher().list({
+		filter: {
+			slug: "",
+			department: pageContext.pageProps.userProfile!.data.department.data.id,
+			role: "*",
+			kind: "*",
+			existence: "exists"
+		},
+		sort: [ "name" ],
+		page: {
+			offset: 0,
+			limit: 10
+		}
+	}).then(({ body: deserializedUserList }) => {
+		users.value = deserializedUserList.data
 	})
 })
 
