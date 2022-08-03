@@ -1,16 +1,16 @@
 <template>
     <h1 class="text-2xl m-2 ">Employees</h1>
-        <UsersManager :resource="users" :has-dropdown-filter="true" />
+        <UsersManager :resource="users" />
 </template>
 
 <style>
 </style>
 
 <script setup lang="ts">
-import type { PageContext } from "#/types"
-import type { DeserializedUserResource } from "$/types/documents/user"
-
 import { onMounted, provide, ref, inject } from "vue"
+
+import type { PageContext } from "#/types"
+import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
 import RoleFetcher from "$@/fetchers/role"
 import UserFetcher from "$@/fetchers/user"
@@ -22,14 +22,17 @@ const pageContext = inject("pageContext") as PageContext
 RoleFetcher.initialize("/api")
 UserFetcher.initialize("/api")
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile!))
+provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 
 const users = ref<DeserializedUserResource[]>([])
 onMounted(() => {
+	const currentUserProfile = (pageContext.pageProps.userProfile! as DeserializedUserProfile).data
+	const currentUserDepartment = currentUserProfile!.department.data.id
+
 	new UserFetcher().list({
 		filter: {
 			slug: "",
-			department: pageContext.pageProps.userProfile!.data.department.data.id,
+			department: currentUserDepartment,
 			role: "*",
 			kind: "*",
 			existence: "exists"
