@@ -33,6 +33,6 @@ export default class extends BaseManager<
 			throw this.makeBaseError(error)
 		}
 
-		return await this.create({ userID, signature }, { raw: true })
+		return await this.create({ userID, signature }, {}, { raw: true })
 	}
 }
