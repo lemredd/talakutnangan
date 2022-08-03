@@ -3,10 +3,10 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import { mount } from "@vue/test-utils"
 import flushPromises from "flush-promises"
 
+import DepartmentFactory from "~/factories/department"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Manager from "@/resource_management/manager"
-import DepartmentFactory from "~/factories/department"
 import RequestEnvironment from "$/helpers/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
