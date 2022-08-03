@@ -1,6 +1,8 @@
 <template>
 	<div class="controls-bar">
-		<SearchFilter/>
+		<slot name="search-filter">
+			<!-- purpose: place search filter component properly in the UI -->
+		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
 			<DropdownFilter by="Role"/>
 			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
@@ -33,36 +35,23 @@ import { computed, inject, provide, ref } from "vue"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
-import Manager from "./manager"
+import manager from "./manager"
 
-const { resource } = defineProps<{
+/*
+	General TODOs
+	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
+*/
+
+const { resource, hasDropdownFilter } = defineProps<{
 	resource: PossibleResources[],
+	hasDropdownFilter?: boolean
 }>()
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
-const searchFilterText = ref("");
-const managerKind = inject("managerKind") as Manager
-
-const filteredList = computed(function() {
-	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
-		let name = ""
-		if (resourceToFilter.type === "department") {
-			name = resourceToFilter.fullName
-		} else {
-			name = resourceToFilter.name
-		}
-
-		name.toLowerCase().includes(searchFilterText.value.toLowerCase())
-	})
-
-	return filteredBySearchResult
-})
+const managerKind = inject("managerKind") as manager
 
 function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
 	return (resourceItem as DeserializedUserResource).type === "user"
 }
-
-provide("searchFilterText", searchFilterText)
 </script>

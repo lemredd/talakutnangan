@@ -1,17 +1,49 @@
 <template>
 	<div class="search-bar">
-			<!-- TODO: separate component from textual_field -->
-			<TextualField
-				type="email"
-				v-model="searchFilter"
-				input-classes="!py-0 pl-1 !border-none" />
-			<button class="material-icons">search</button>
-		</div>
+		<!-- TODO: separate component from textual_field -->
+		<input
+			type="text"
+			id="search-filter"
+			class="search-filter"
+			:value="textFilter"
+			@input="updateTextFilter">
+		<button class="material-icons">search</button>
+	</div>
 </template>
 
-<script setup lang = ts>
-import TextualField from "@/fields/textual.vue"
-import { inject, Ref } from "vue";
+<style scoped lang="scss">
+.search-bar {
+	margin-bottom: 1em;
+	padding: 0.5em 1em;
 
-const searchFilter=inject("searchFilterText") as Ref<string>
+	.search-filter {
+		@apply border-b-gray-900;
+
+		width: 100%;
+		background-color: transparent;
+
+		&:focus {
+			outline: none;
+		}
+	}
+}
+</style>
+
+<script setup lang = ts>
+import { PossibleResources } from "$@/types/independent";
+import { inject, Ref, ref } from "vue"
+
+const resource = inject("resource") as Ref<PossibleResources[]>
+
+const { textFilter } = defineProps<{
+	textFilter: string
+}>()
+const emit = defineEmits<{
+	(e: "update:textFilter", textFilter: string ): void
+}>()
+
+function updateTextFilter(event: Event) {
+	const input = event.target as HTMLInputElement
+	emit("update:textFilter", input.value)
+}
 </script>
