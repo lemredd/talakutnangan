@@ -1,5 +1,6 @@
 import type { Serializable } from "$/types/general"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 import type {
@@ -42,6 +43,7 @@ export type UserAttributes =
 	| UnreachableEmployeesAttributes
 
 interface DeserializedGeneralUserAttributes extends GeneralUserAttributes {
+	department: DeserializedDepartmentDocument,
 	roles: DeserializedRoleListDocument
 }
 

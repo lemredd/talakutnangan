@@ -1,32 +1,32 @@
+import type { DeserializedUserProfile } from "$/types/documents/user"
+
 import { mount } from "@vue/test-utils"
 
 import UserFactory from "~/factories/user"
-import deserialize from "$/helpers/deserialize"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
+import RoleFactory from "~/factories/role"
 import Manager from "@/resource_management/manager"
+import DepartmentFactory from "~/factories/department"
+
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+
 import ResourceList from "./resource_list.vue"
 
 describe("Component: Resource List", () => {
 	describe("User List", () => {
-		async function listUsers() {
-			const users = await new UserFactory().makeMany(5)
-			const serializedUsers = Serializer.serialize(
-				users,
-				new UserTransformer(),
-				{}
-			)
-
-			return deserialize(serializedUsers)!.data
-		}
-
 		it("Should list users properly", async () => {
-			const sampleUserList = await listUsers()
+			const sampleUserList = await new UserFactory().deserializedMany(5)
+
+			const department = await new DepartmentFactory().mayAdmit().insertOne()
+			const deanRole = await new RoleFactory()
+				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+				.insertOne()
+			const user = await new UserFactory().in(department).attach(deanRole).deserializedOne()
 
 			const wrapper = mount(ResourceList, {
 				global: {
 					provide: {
-						managerKind: new Manager("dean")
+						managerKind: new Manager(user as DeserializedUserProfile)
 					}
 				},
 				props: {

@@ -64,6 +64,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -157,6 +166,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -213,6 +231,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -301,6 +328,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -362,6 +398,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -460,6 +505,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -522,6 +576,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
@@ -607,6 +670,15 @@ describe("Helper: Filter Link Infos", () => {
 									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
 					},
 					meta: {
