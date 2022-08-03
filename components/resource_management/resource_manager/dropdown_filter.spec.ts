@@ -5,17 +5,14 @@ import flushPromises from "flush-promises"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import RoleTransformer from "%/transformers/role"
+import Manager from "@/resource_management/manager"
 import DepartmentFactory from "~/factories/department"
 import RequestEnvironment from "$/helpers/request_environment"
-
-import DropdownFilter from "./dropdown_filter.vue"
-import Serializer from "%/transformers/serializer"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
-import Manager from "../manager"
+import DropdownFilter from "./dropdown_filter.vue"
 
 describe("UI Component: Dropdown Filter", () => {
 	describe("Role Filters", () => {
