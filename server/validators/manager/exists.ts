@@ -1,3 +1,4 @@
+import type { Request } from "!/types/dependent"
 import type {
 	ValidationState,
 	ValidationConstraints,
@@ -11,7 +12,7 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
+	constraints: ValidationConstraints<Request> & Partial<ManagerBasedRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
@@ -21,8 +22,10 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	// TODO: Get transaction manager from cache
-	const manager = new constraints.manager.className()
+	const manager = new constraints.manager.className(
+		constraints.request.transaction,
+		constraints.request.cache
+	)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
 			existence: "exists"

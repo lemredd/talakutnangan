@@ -1,7 +1,7 @@
 import MockRequester from "~/set-ups/mock_requester"
 
 import AuthorizationError from "$!/errors/authorization"
-import AuthenticationBasedPolicy from "./authentication-based_policy"
+import AuthenticationBasedPolicy from "./authentication-based"
 
 describe("Middleware: Authenticated-Based Policy", () => {
 	const requester  = new MockRequester()

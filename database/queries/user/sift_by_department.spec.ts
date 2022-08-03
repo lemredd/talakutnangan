@@ -24,12 +24,12 @@ describe("Database Pipe: Sift by department", () => {
 
 		const options = siftByDepartment({}, {
 			filter: {
-				department: department.fullName
+				department: department.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where.fullName")
+		expect(options).toHaveProperty("include.0.where.id")
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", user.id)
 		expect(foundUsers).toHaveProperty("0.department.id", department.id)
@@ -41,12 +41,12 @@ describe("Database Pipe: Sift by department", () => {
 
 		const options = siftByDepartment({ include: [Department] }, {
 			filter: {
-				department: department.fullName
+				department: department.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.1.where.fullName")
+		expect(options).toHaveProperty("include.1.where.id")
 		expect(foundUsers).toHaveLength(1)
 		expect(foundUsers).toHaveProperty("0.id", user.id)
 		expect(foundUsers).toHaveProperty("0.department.id", department.id)
@@ -59,12 +59,12 @@ describe("Database Pipe: Sift by department", () => {
 
 		const options = siftByDepartment({}, {
 			filter: {
-				department: departmentB.fullName
+				department: departmentB.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where.fullName")
+		expect(options).toHaveProperty("include.0.where.id")
 		expect(foundUsers).toHaveLength(0)
 	})
 })

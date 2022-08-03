@@ -7,7 +7,7 @@ import MockRequester from "~/set-ups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 import UserPermissions from "$/permissions/user"
 
-import PermissionBasedPolicy from "./permission-based_policy"
+import PermissionBasedPolicy from "./permission-based"
 
 describe("Middleware: Permission-Based Policy", () => {
 	const requester  = new MockRequester()

@@ -11,7 +11,7 @@ import UserFactory from "~/factories/user"
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
-import DevController from "!/common_controllers/dev_controller"
+import DevController from "!/controllers/dev_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 interface OwnArguments {

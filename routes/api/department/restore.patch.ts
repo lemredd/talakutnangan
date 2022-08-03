@@ -4,11 +4,11 @@ import type { Request, Response } from "!/types/dependent"
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import JSONController from "!/common_controllers/json_controller"
+import JSONController from "!/controllers/json_controller"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
 import object from "!/validators/base/object"

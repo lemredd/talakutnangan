@@ -21,7 +21,7 @@ export default function<T>(
 			break
 		default:
 			const condition = new Condition()
-			condition.equal("name", constraints.filter.role)
+			condition.equal("id", constraints.filter.role)
 
 			if (newState.include === undefined) {
 				newState.include = []

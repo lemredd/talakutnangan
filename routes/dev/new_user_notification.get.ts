@@ -1,6 +1,6 @@
 import { Request, Response } from "!/types/dependent"
 
-import DevController from "!/common_controllers/dev_controller"
+import DevController from "!/controllers/dev_controller"
 import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"

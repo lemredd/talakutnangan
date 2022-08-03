@@ -5,7 +5,7 @@ import array from "!/validators/base/array"
 import buffer from "!/validators/base/buffer"
 import nullable from "!/validators/base/nullable"
 
-import MultipartController from "!/common_controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart_controller"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }

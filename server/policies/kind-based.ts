@@ -3,7 +3,7 @@ import type { UserKind } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import AuthorizationError from "$!/errors/authorization"
-import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
+import AuthenticationBasedPolicy from "!/policies/authentication-based"
 
 /**
  * Creates middleware to only allow certain kind of user.

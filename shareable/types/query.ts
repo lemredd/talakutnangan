@@ -20,13 +20,19 @@ import type { Serializable } from "$/types/general"
 
  export interface DepartmentFilter extends Serializable {
 	 filter: {
-		 department: "*"|string
+		/**
+		 * ID of the department to filter on
+		 */
+		 department: "*"|number
 	 }
  }
 
  export interface RoleFilter extends Serializable {
 	 filter: {
-		 role: "*"|string
+		/**
+		 * ID of the role to filter on
+		 */
+		 role: "*"|number
 	 }
  }
 

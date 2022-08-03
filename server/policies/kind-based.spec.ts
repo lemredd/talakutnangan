@@ -5,7 +5,7 @@ import AuthorizationError from "$!/errors/authorization"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 
-import KindBasedPolicy from "./kind-based_policy"
+import KindBasedPolicy from "./kind-based"
 
 describe("Middleware: Kind-Based Policy", () => {
 	const requester  = new MockRequester()
