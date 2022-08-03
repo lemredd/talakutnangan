@@ -93,11 +93,11 @@ export default class extends MultipartController {
 	async handle(request: AuthenticatedIDRequest, response: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new SignatureManager(request.transaction, request.cache)
-		const id = +request.body.data.id
 		const { signature } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
+		const userID = userData.data.id
 
-		await manager.create(id, { userID: userData.data.id, signature })
+		await manager.attach(userID, signature)
 		Log.success("controller", "successfully uploaded the signature")
 
 		return new NoContentResponseInfo()
