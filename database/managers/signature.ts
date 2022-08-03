@@ -1,8 +1,9 @@
 import type { ModelCtor } from "%/types/dependent"
-import type { GeneralObject } from "$/types/general"
 import type { RawSignature } from "$!/types/independent"
+import type { GeneralObject, Serializable } from "$/types/general"
 import type { SignatureTransformerOptions } from "%/types/independent"
 
+import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
 import Signature from "%/models/signature"
 import SignatureTransformer from "%/transformers/signature"
@@ -16,4 +17,22 @@ export default class extends BaseManager<
 	get model(): ModelCtor<Signature> { return Signature }
 
 	get transformer(): SignatureTransformer { return new SignatureTransformer() }
+
+	async attach(userID: number, signature: Buffer)
+	: Promise<Serializable> {
+		try {
+			await this.model.destroy({
+				where: {
+					userID
+				},
+				...this.transaction.transactionObject
+			})
+
+			Log.success("manager", "done archiving previous signature")
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
+
+		return await this.create({ userID, signature }, { raw: true })
+	}
 }
