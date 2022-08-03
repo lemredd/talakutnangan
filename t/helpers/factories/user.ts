@@ -60,6 +60,8 @@ export default class UserFactory extends BaseFactory<
 
 	async makeOne() {
 		const user = await super.makeOne()
+		user.roles = this.roles
+		user.department = this.#department!
 		user.password = this.#password
 		return user
 	}
@@ -74,6 +76,7 @@ export default class UserFactory extends BaseFactory<
 			}
 		}))
 		user.roles = this.roles
+		user.department = this.#department!
 
 		return user
 	}
