@@ -1,7 +1,7 @@
 import { Request, Response } from "!/types/dependent"
 
 import AuthorizationError from "$!/errors/authorization"
-import DevController from "!/common_controllers/dev_controller"
+import DevController from "!/controllers/dev_controller"
 
 export default class extends DevController {
 	get filePath(): string { return __filename }

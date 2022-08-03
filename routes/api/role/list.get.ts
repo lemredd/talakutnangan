@@ -5,15 +5,18 @@ import type { Request, Response } from "!/types/dependent"
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
-import QueryController from "!/common_controllers/query_controller"
+import DepartmentManager from "%/managers/department"
+import QueryController from "!/controllers/query_controller"
 
 import { READ } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
-import makeListRules from "!/rule_sets/make_list"
+import integer from "!/validators/base/integer"
+import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
-import string from "!/validators/base/string"
+import makeListRules from "!/rule_sets/make_list"
+import skipAsterisk from "!/validators/comparison/skip_asterisk"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -27,9 +30,13 @@ export default class extends QueryController {
 	makeQueryRuleGenerator(request: Request): FieldRules {
 		return makeListRules(RoleManager, {
 			department: {
-				pipes: [ nullable, string ],
+				pipes: [ nullable, skipAsterisk, integer, exists ],
 				constraints: {
-					nullable: { defaultValue: "*" }
+					nullable: { defaultValue: "*" },
+					manager: {
+						className: DepartmentManager,
+						columnName: "id"
+					}
 				}
 			}
 		})

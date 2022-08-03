@@ -13,11 +13,11 @@ import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import IDParameterValidation from "!/validation/id_parameter"
-import MultipartController from "!/common_controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart_controller"
 import MatchedIDParameterValidation from "!/validation/matched_id_parameter"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 import {
 	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,

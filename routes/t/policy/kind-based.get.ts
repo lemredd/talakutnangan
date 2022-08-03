@@ -2,7 +2,7 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import QueryController from "!/common_controllers/query_controller"
+import QueryController from "!/controllers/query_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default class extends QueryController {

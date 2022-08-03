@@ -5,11 +5,11 @@ import type { DepartmentResourceIdentifier } from "$/types/documents/department"
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import ListResponse from "!/response_infos/list"
-import JSONController from "!/common_controllers/json_controller"
+import JSONController from "!/controllers/json_controller"
 
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/middlewares/authentication/permission-based_policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
 import object from "!/validators/base/object"

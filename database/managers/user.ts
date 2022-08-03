@@ -32,12 +32,12 @@ import UserTransformer from "%/transformers/user"
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
 import Condition from "%/managers/helpers/condition"
-import siftBySlug from "%/managers/user/sift_by_slug"
-import siftByRole from "%/managers/user/sift_by_role"
-import siftByKind from "%/managers/user/sift_by_kind"
-import siftByDepartment from "%/managers/user/sift_by_department"
-import includeRoleAndDepartment from "%/managers/user/include_role_and_department"
-import includeExclusiveDetails from "%/managers/user/include_exclusive_details"
+import siftBySlug from "%/queries/user/sift_by_slug"
+import siftByRole from "%/queries/user/sift_by_role"
+import siftByKind from "%/queries/user/sift_by_kind"
+import siftByDepartment from "%/queries/user/sift_by_department"
+import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
+import includeExclusiveDetails from "%/queries/user/include_exclusive_details"
 
 export default class UserManager extends BaseManager<User, RawUser, UserQueryParameters> {
 	get model(): ModelCtor<User> { return User }

@@ -3,11 +3,12 @@ import type { DepartmentFilter } from "$/types/query"
 
 import Log from "$!/singletons/log"
 
+import User from "%/models/user"
 import Department from "%/models/department"
 import Condition from "%/managers/helpers/condition"
 
 /**
- * Sift user model which belong to a certain department.
+ * Sift role models which the associated user belongs to a certain department.
  */
 export default function<T>(
 	currentState: FindOptions<T>,
@@ -21,16 +22,22 @@ export default function<T>(
 			break
 		default:
 			const condition = new Condition()
-			condition.equal("fullName", constraints.filter.department)
+			condition.equal("id", constraints.filter.department)
 
 			if (newState.include === undefined) {
 				newState.include = []
 			}
 
 			(newState.include as any[])!.push({
-				model: Department,
+				model: User,
 				required: true,
-				where: condition.build()
+				include: [
+					{
+						model: Department,
+						required: true,
+						where: condition.build()
+					}
+				]
 			})
 			break
 	}

@@ -23,11 +23,11 @@ import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 
-import page from "%/managers/helpers/page"
-import sort from "%/managers/helpers/sort"
+import page from "%/queries/base/page"
+import sort from "%/queries/base/sort"
 import Condition from "%/managers/helpers/condition"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
-import siftByExistence from "%/managers/helpers/sift_by_existence"
+import siftByExistence from "%/queries/base/sift_by_existence"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
