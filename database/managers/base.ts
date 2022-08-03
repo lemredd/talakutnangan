@@ -161,13 +161,16 @@ export default abstract class Manager<
 		}
 	}
 
-	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
+	async create(
+		details: U & CreationAttributes<T>,
+		constraints: V = {} as V
+	): Promise<Serializable> {
 		try {
 			const model = await this.model.create(details, this.transaction.transactionObject)
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model)
+			return this.serialize(model, { constraints })
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
