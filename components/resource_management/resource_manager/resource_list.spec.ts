@@ -35,7 +35,8 @@ describe("Component: Resource List", () => {
 				}
 			})
 
-			console.log("wrapper", wrapper.html())
+			const resourceRows = wrapper.findAll(".resource-row")
+			expect(resourceRows.length).toBe(5)
 		})
 	})
 })

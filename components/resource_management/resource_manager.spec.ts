@@ -7,6 +7,7 @@ import deserialize from "$/helpers/deserialize"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import ResourceManager from "./resource_manager.vue"
+import Manager from "./manager"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
@@ -31,7 +32,7 @@ describe("UI Component: Resource Manager", () => {
 				},
 				global: {
 					provide: {
-						managerKind: "admin"
+						managerKind: new Manager("admin")
 					}
 				}
 			})
