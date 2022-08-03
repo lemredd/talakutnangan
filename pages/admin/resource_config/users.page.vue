@@ -6,7 +6,7 @@
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<UsersList :search-filter="searchFilter" :filtered-list="filteredList" />
+		<UsersList :filtered-list="filteredList" />
 	</UsersManager>
 </template>
 
@@ -21,8 +21,8 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import Manager from "@/resource_management/manager"
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import UsersManager from "@/resource_management/resource_manager.vue"
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 
 import RoleFetcher from "$@/fetchers/role"
@@ -50,11 +50,6 @@ onMounted(() => {
 	.then(response => {
 		const deserializedData = deserialize(response)!.data as DeserializedUserResource[]
 		users.value = deserializedData
-
-		// Check the console for other available info from server
-		// console.log(users.value)
 	})
 })
-
-provide("resource", users)
 </script>

@@ -2,32 +2,39 @@
 	<AdminSettingsHeader title="Admin Settings" />
 
 	<DeptManager :resource="departments" >
-		<DeptList :search-filter="searchFilter" :filtered-list="departments" />
+		<template #search-filter>
+			<SearchFilter :resource="departments" @filter-resource-by-search="getFilteredList"/>
+		</template>
 
+		<DeptList :filtered-list="filteredList" />
 	</DeptManager>
 </template>
 
 <script setup lang="ts">
 import { onMounted, provide, ref } from "vue"
 
+import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
+import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import Manager from "@/resource_management/manager"
 import DeptManager from "@/resource_management/resource_manager.vue"
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import DeptList from "@/resource_management/resource_manager/resource_list.vue"
-import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import DepartmentFetcher from "$@/fetchers/department"
 import deserialize from "$/helpers/deserialize"
-
 
 provide("managerKind", new Manager("admin"))
 provide("tabs", ["Users", "Roles", "Departments"])
 
 DepartmentFetcher.initialize("/api")
 
-// TODO: use actual depts from db soon
-const searchFilter = ref("")
 const departments = ref<DeserializedDepartmentResource[]>([])
+const filteredList = ref<DeserializedDepartmentResource[]>([])
+
+function getFilteredList(resource: PossibleResources[]) {
+	filteredList.value = resource as DeserializedDepartmentResource[]
+}
 
 onMounted(async () => {
 	await new DepartmentFetcher().list({

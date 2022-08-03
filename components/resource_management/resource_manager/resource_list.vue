@@ -1,5 +1,5 @@
 <template>
-	<div class="resource-row" v-for="resource in filteredList" :key="resource.name">
+	<div class="resource-row" v-for="resource in filteredList" :key="resource.id">
 
 		<div class="resource-properties" v-if="resourceType === 'user'">
 			<span>{{ resource.name }}</span>
@@ -59,8 +59,7 @@ import type { PossibleResources } from "$@/types/independent"
 
 import Manager from "@/resource_management/manager"
 
-const { searchFilter, filteredList } = defineProps<{
-	searchFilter: string,
+const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
 }>()
 

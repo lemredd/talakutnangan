@@ -2,7 +2,10 @@
 	<AdminSettingsHeader title="Admin Settings" />
 
 	<RolesManager :resource="roles">
-		<RolesList :search-filter="searchFilter" :filtered-list="roles" />
+		<template #search-filter>
+			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
+		</template>
+		<RolesList :filtered-list="filteredList" />
 
 	</RolesManager>
 
@@ -11,23 +14,28 @@
 <script setup lang="ts">
 import { onMounted, provide, ref } from "vue"
 
+import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import Manager from "@/resource_management/manager"
 import RolesManager from "@/resource_management/resource_manager.vue"
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 import RoleFetcher from "$@/fetchers/role"
 import deserialize from "$/helpers/deserialize"
-import Manager from "@/resource_management/manager"
-
 
 provide("managerKind", new Manager("admin"))
 provide("tabs", ["Users", "Roles", "Departments"])
 
 RoleFetcher.initialize("/api")
 
-const searchFilter = ref("")
 const roles = ref<DeserializedRoleResource[]>([])
+const filteredList = ref<DeserializedRoleResource[]>([])
+
+function getFilteredList(resource: PossibleResources[]) {
+	filteredList.value = resource as DeserializedRoleResource[]
+}
 
 onMounted(async () => {
 	await new RoleFetcher().list({
