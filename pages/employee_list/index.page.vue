@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import type { PageContext } from "#/types"
-import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
 import { onMounted, provide, ref, inject } from "vue"
 
@@ -22,14 +22,17 @@ const pageContext = inject("pageContext") as PageContext
 RoleFetcher.initialize("/api")
 UserFetcher.initialize("/api")
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile!))
+provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 
 const users = ref<DeserializedUserResource[]>([])
 onMounted(() => {
+	const currentUserProfile = pageContext.pageProps.userProfile as DeserializedUserProfile
+	const currentUserDepartment = currentUserProfile.data.department.data.id
+
 	new UserFetcher().list({
 		filter: {
 			slug: "",
-			department: pageContext.pageProps.userProfile!.data.department.data.id,
+			department: currentUserDepartment,
 			role: "*",
 			kind: "*",
 			existence: "exists"

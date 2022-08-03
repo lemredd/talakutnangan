@@ -12,10 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue"
+import { inject, onMounted, provide, ref } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { PageContext } from "#/types"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import Manager from "@/resource_management/manager"
@@ -25,7 +27,9 @@ import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 import RoleFetcher from "$@/fetchers/role"
 import deserialize from "$/helpers/deserialize"
 
-provide("managerKind", new Manager("admin"))
+const pageContext = inject("pageContext") as PageContext
+
+provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 provide("tabs", ["Users", "Roles", "Departments"])
 
 RoleFetcher.initialize("/api")

@@ -5,18 +5,23 @@
 </template>
 
 <script setup lang="ts">
-import type { DeserializedUserResource } from "$/types/documents/user"
+import { inject, onMounted, provide, ref } from "vue"
 
-import { onMounted, provide, ref } from "vue"
+import type { DeserializedUserResource } from "$/types/documents/user"
+import type { PageContext } from "#/types"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import RoleFetcher from "$@/fetchers/role"
+import UserFetcher from "$@/fetchers/user"
 
-provide("managerKind", new Manager("dean"))
+const pageContext = inject("pageContext") as PageContext
+provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 
 // Fetcher Initializers
+UserFetcher.initialize("/api")
 RoleFetcher.initialize("/api")
 
 const users = ref<DeserializedUserResource[]>([])
