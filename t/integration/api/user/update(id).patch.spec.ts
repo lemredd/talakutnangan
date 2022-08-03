@@ -9,7 +9,7 @@ import RoleFactory from "~/factories/role"
 
 import User from "%/models/user"
 import Transport from "!/helpers/email/transport"
-import Route from "!/app/routes/api/user/update(id).patch"
+import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 

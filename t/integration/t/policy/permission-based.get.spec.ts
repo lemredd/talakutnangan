@@ -6,7 +6,7 @@ import RoleFactory from "~/factories/role"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_OWN } from "$/permissions/user_combinations"
 
-import Route from "!/app/routes/t/policy/permission-based.get"
+import Route from "!%/t/policy/permission-based.get"
 
 describe("GET /t/policy/permission-based", () => {
 	beforeAll(async () => {

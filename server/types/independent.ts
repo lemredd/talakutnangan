@@ -4,9 +4,11 @@
  * cannot be shareable since they are only used within the server.
  */
 
-import type { UserKind, Pipe } from "$/types/database"
-import BaseManager from "%/managers/base"
+import type { UserKind } from "$/types/database"
 import type Middleware from "!/bases/middleware"
+import BaseManager from "%/managers/base"
+import CacheClient from "$!/helpers/cache_client"
+import TransactionManager from "%/managers/helpers/transaction_manager"
 
 /**
  * Used to indicate which middlewares to use in a route.
@@ -44,14 +46,12 @@ export interface PasswordResetArguments {
 }
 
 /**
- * Expected shape of the validation rules used mostly in controllers.
- */
-export type ValidationRules = { [key:string]: any[] }
-
-/**
  * Useful when passing a base manager to other functions/methods
  */
-export type BaseManagerClass = new() => BaseManager<any, any>
+export type BaseManagerClass = new(
+	transaction?: TransactionManager,
+	cache?: CacheClient
+) => BaseManager<any, any>
 
 /**
  * Shape of validation
@@ -67,117 +67,6 @@ export interface ErrorPointer {
 export interface UsableErrorPointer {
 	field: string,
 	message: string
-}
-
-export interface NullableConstraints { nullable?: { defaultValue: any } }
-
-export interface BooleanConstraints { boolean?: { loose: boolean } }
-
-export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
-
-export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
-
-export interface SameRuleConstraints { same: any }
-
-export interface OneOfRuleConstraints { oneOf: { values: any[] } }
-
-export interface RegexRuleConstraints { regex: { match: RegExp } }
-
-export interface ArrayRuleConstraints {
-	array: {
-		rules: Rules
-	}
-}
-
-export interface ObjectRuleConstraints {
-	object: FieldRules
-}
-
-export interface ManagerBasedRuleConstraints {
-	manager: {
-		className: BaseManagerClass,
-		columnName: string
-	}
-}
-
-export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
-	unique: {
-		IDPath: string
-	}
-}
-
-export interface AcronymRuleConstraints {
-	acronym: {
-		spelledOutPath: string
-	}
-}
-
-export interface BufferRuleConstraints {
-	buffer: {
-		allowedMimeTypes: string[],
-		maxSize: number
-	}
-}
-
-/**
- * Union of rule contraints
- */
-export type RuleContraints = Partial<
-	& NullableConstraints
-	& BooleanConstraints
-	& LengthConstraints
-	& RangeConstraints
-	& SameRuleConstraints
-	& OneOfRuleConstraints
-	& ArrayRuleConstraints
-	& ObjectRuleConstraints
-	& ManagerBasedRuleConstraints
-	& UniqueRuleConstraints
-	& AcronymRuleConstraints
-	& BufferRuleConstraints
-	& RegexRuleConstraints
->
-
-/**
- * Shape of validation constraints
- */
- export interface ValidationConstraints<T = any> extends RuleContraints {
-	request: T,
-	source: any,
-	field: string
-}
-
-/**
- * Shape of validation state
- */
-export interface ValidationState {
-	value: any,
-	// If true, other rules should be skipped.
-	maySkip: boolean
-}
-
-/**
- * Shape of validation rules
- */
-export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
-	constraints: RuleContraints
-}
-
-/**
- * Shape of validation rules for all fields
- */
-export interface FieldRules {
-	[key:string]: Rules
-}
-
-/**
- * Shape of validation constraints that are not part of main info.
- *
- * They are usually used internally.
- */
-export interface MetaValidationConstraints {
-	transformer?: Function
 }
 
 /**

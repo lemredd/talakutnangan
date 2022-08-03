@@ -1,6 +1,6 @@
 
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
-import type { FieldRules } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
 import type { MockResponse } from "!/types/test"
 
 import type { Request, Response, NextFunction } from "!/types/dependent"

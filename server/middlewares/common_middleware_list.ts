@@ -1,9 +1,9 @@
+import KindBasedPolicy from "!/policies/kind-based"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import MultipartParser from "!/middlewares/body_parser/multipart"
-import KindBasedPolicy from "!/middlewares/authentication/kind-based_policy"
+import AuthenticationBasedPolicy from "!/policies/authentication-based"
 import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
-import AuthenticationBasedPolicy from "!/middlewares/authentication/authentication-based_policy"
 
 export default class CommonMiddlewareList {
 	static guestOnlyPolicy: AuthenticationBasedPolicy

@@ -1,9 +1,16 @@
-# Email Verification
+<div class="box-column">
+<h1>Email Verification</h1>
 
-Your e-mail ({{ email }}) has been registered in [Talakutnangan]({{ homePageURL }}).
+<p class="content">
+    Your e-mail ({{ email }}) has been registered in <a class="home-page-url" href="{{ homePageURL }}">Talakutnangan.</a>
+</p>
 
-Please click the button below to verify:
-<a class="verify" href="{{ emailVerificationURL }}">Verify e-mail</a>
-
-## Note
-If the button above does not work properly, visit {{ emailVerificationURL }}
+<p class ="content">Please click the button below to verify:</p>
+<div class="line">
+    <div class="buttons">
+        <button type="button" href="{{ emailVerificationURL }}">Verify e-mail</button>
+    </div>
+</div>
+<p class="note">Note</p>
+<p class="note">If the button above does not work properly, visit {{ emailVerificationURL }}</p>
+</div>

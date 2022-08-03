@@ -3,7 +3,7 @@ import { Purpose, Method, RouteInformation } from "$/types/server"
 
 import getRoot from "$!/helpers/get_root"
 
-export default function(currentPath: string, routeRoot = resolve(getRoot(), "server/app/routes"))
+export default function(currentPath: string, routeRoot = resolve(getRoot(), "routes"))
 	: Partial<RouteInformation> {
 	const relativePath = relative(routeRoot, currentPath)
 	const pathExpression = /^(api|dev)?(.*?[\w\(\)]+?)\.(\w+?)\.ts$/

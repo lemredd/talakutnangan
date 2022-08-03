@@ -10,7 +10,10 @@ import type {
 } from "$/types/documents/base"
 
 export interface DepartmentResourceIdentifier extends ResourceIdentifier {
-	type: "department"
+	type: "department",
+	meta?: {
+		userCount: number
+	}
 }
 
 export interface DepartmentAttributes extends Attributes {

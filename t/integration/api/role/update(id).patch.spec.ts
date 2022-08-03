@@ -6,7 +6,7 @@ import { UPDATE } from "$/permissions/role_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/update(id).patch"
+import Route from "!%/api/role/update(id).patch"
 
 describe("PUT /api/role/update", () => {
 	beforeAll(async () => {
