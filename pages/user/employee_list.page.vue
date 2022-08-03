@@ -14,21 +14,24 @@ import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/
 
 import RoleFetcher from "$@/fetchers/role"
 import UserFetcher from "$@/fetchers/user"
+import DepartmentFetcher from "$@/fetchers/department"
 import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
+
 
 const pageContext = inject("pageContext") as PageContext
 
 RoleFetcher.initialize("/api")
 UserFetcher.initialize("/api")
+DepartmentFetcher.initialize("/api")
 
 provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 
 const users = ref<DeserializedUserResource[]>([])
+
 onMounted(() => {
 	const currentUserProfile = (pageContext.pageProps.userProfile! as DeserializedUserProfile).data
 	const currentUserDepartment = currentUserProfile!.department.data.id
-
 	new UserFetcher().list({
 		filter: {
 			slug: "",
