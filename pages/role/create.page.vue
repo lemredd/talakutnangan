@@ -64,7 +64,6 @@ import {
 } from "$/permissions/permission_list"
 import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-import { RoleAttributes } from "$/types/documents/role"
 
 const roleName = ref("")
 
@@ -90,12 +89,12 @@ function createRole() {
 		auditTrailFlags: auditTrailFlags.value,
 		departmentFlags: 1,
 		roleFlags: 1
-	} as RoleAttributes)
+	})
 	.then(({ body, status }) => {
 		console.log(body, status)
 
 		if (status >= 400) {
-			// Output error
+			// TODO: Output error in UI
 		}
 	})
 }
