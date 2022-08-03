@@ -1,5 +1,3 @@
-import { faker } from "@faker-js/faker"
-
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 import type {
@@ -9,6 +7,8 @@ import type {
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 } from "$/types/documents/department"
+
+import { faker } from "@faker-js/faker"
 
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
