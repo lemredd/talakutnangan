@@ -6,8 +6,9 @@
 			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
 		</div>
 	</div>
-	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
+	<slot>
 
+	</slot>
 </template>
 
 <style lang="scss">
@@ -27,36 +28,22 @@
 </style>
 
 <script setup lang="ts">
-import type { ManagerKind } from "@/resource_management/types"
-import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
-
 import { computed, inject, provide, ref } from "vue"
 
+import type { PossibleResources } from "$@/types/independent"
+import type { DeserializedUserResource } from "$/types/documents/user"
+
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
-import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
-import manager from "./manager"
+import Manager from "./manager"
 
-/*
-	General TODOs
-	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
-*/
-
-type PossibleResources =
-	| DeserializedUserResource
-	| DeserializedDepartmentResource
-	| DeserializedRoleResource
-
-const { resource, hasDropdownFilter } = defineProps<{
+const { resource } = defineProps<{
 	resource: PossibleResources[],
-	hasDropdownFilter?: boolean
 }>()
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
 const searchFilterText = ref("");
-const managerKind = inject("managerKind") as manager
+const managerKind = inject("managerKind") as Manager
 
 const filteredList = computed(function() {
 	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {

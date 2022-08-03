@@ -1,7 +1,10 @@
 <template>
 	<AdminSettingsHeader title="Admin Settings" />
 
-	<RolesManager :resource="roles" />
+	<RolesManager :resource="roles">
+		<RolesList :search-filter="searchFilter" :filtered-list="roles" />
+
+	</RolesManager>
 
 </template>
 
@@ -10,8 +13,9 @@ import { onMounted, provide, ref } from "vue"
 
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
-import RolesManager from "@/resource_management/resource_manager.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import RolesManager from "@/resource_management/resource_manager.vue"
+import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 import RoleFetcher from "$@/fetchers/role"
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
@@ -22,7 +26,7 @@ provide("tabs", ["Users", "Roles", "Departments"])
 
 RoleFetcher.initialize("/api")
 
-// TODO: use actual roles from db soon
+const searchFilter = ref("")
 const roles = ref<DeserializedRoleResource[]>([])
 
 onMounted(async () => {
@@ -41,7 +45,6 @@ onMounted(async () => {
 		const { body } = response
 		const deserializedData = deserialize(body)!.data as DeserializedRoleResource[]
 		roles.value = deserializedData
-		console.log(deserializedData)
 	})
 })
 </script>
