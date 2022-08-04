@@ -10,6 +10,17 @@ import AttachedRole from "%/models/attached_role"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import {
+	tag,
+	user,
+	post,
+	comment,
+	semester,
+	profanity,
+	auditTrail,
+	department,
+	role
+} from "$/permissions/permission_list"
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
@@ -41,15 +52,38 @@ export default class extends DevController {
 			if (testDeanRole === null) {
 				testDeanRole = await new RoleFactory()
 					.name(() => testRole)
-					.departmentFlags(0xFFF)
-					.roleFlags(0x1)
-					.semesterFlags(0x1)
-					.tagFlags(0xFFF)
-					.postFlags(0xFFF)
-					.commentFlags(0xFFF)
-					.profanityFlags(0xFFF)
-					.userFlags(0xFFF)
-					.auditTrailFlags(0xFFF)
+					.departmentFlags(department.generateMask("view"))
+					.roleFlags(role.generateMask("view"))
+					.semesterFlags(semester.generateMask("view"))
+					.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+					.postFlags(post.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope",
+						"tag"
+					))
+					.commentFlags(comment.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope",
+						"vote"
+					))
+					.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+					.userFlags(user.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope"
+					))
+					.auditTrailFlags(0)
 					.insertOne()
 
 				Log.success("controller", "created test dean role")
