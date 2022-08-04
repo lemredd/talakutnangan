@@ -96,7 +96,7 @@ export interface ValidationState {
  */
 export interface Rules {
 	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
-	constraints: RuleContraints
+	constraints?: RuleContraints
 }
 
 /**
