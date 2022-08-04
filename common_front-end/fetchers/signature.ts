@@ -16,7 +16,7 @@ import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 import Fetcher from "$@/fetchers/fetcher"
 import specializedPath from "$/helpers/specialize_path"
 
-export default class UserFetcher extends Fetcher<
+export default class SignatureFetcher extends Fetcher<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource,
@@ -29,11 +29,11 @@ export default class UserFetcher extends Fetcher<
 	CommonQueryParameters
 > {
 	static initialize(basePath: string) {
-		super.initialize(basePath, "user")
+		super.initialize(basePath, "signature")
 	}
 
 	constructor() {
-		super(UserFetcher.basePath, UserFetcher.type)
+		super(SignatureFetcher.basePath, SignatureFetcher.type)
 	}
 
 	async renew(userID: number, details: FormData): Promise<Response<
@@ -41,9 +41,9 @@ export default class UserFetcher extends Fetcher<
 		SignatureAttributes,
 		SignatureResource,
 		DeserializedSignatureResource,
-		Serializable
+		DeserializedSignatureDocument
 	>> {
-		const pathTemplate = "/api/user/:id/relationships/signature/update"
+		const pathTemplate = `user/:id/relationships/${this.type}/update`
 		const path = specializedPath(pathTemplate, { id: userID })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
@@ -54,7 +54,7 @@ export default class UserFetcher extends Fetcher<
 			SignatureAttributes,
 			SignatureResource,
 			DeserializedSignatureResource,
-			Serializable
+			DeserializedSignatureDocument
 		>
 	}
 }
