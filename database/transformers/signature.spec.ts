@@ -13,7 +13,7 @@ describe("Transformer: Signature", () => {
 		const model = await new Factory().insertOne()
 		const transformer = new Transformer()
 
-		const object = Serializer.serialize(model, transformer, { extra: { raw: true } })
+		const object = Serializer.serialize(model, transformer, { raw: true })
 
 		expect(object).toHaveProperty("data.type", "signature")
 		expect(object).toHaveProperty("data.id", model.id)
