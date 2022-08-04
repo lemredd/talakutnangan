@@ -206,7 +206,7 @@ export default class Fetcher<
 		})
 	}
 
-	private makeJSONHeaders(): Headers {
+	protected makeJSONHeaders(): Headers {
 		return new Headers({
 			"Content-Type": JSON_API_MEDIA_TYPE,
 			"Accept": JSON_API_MEDIA_TYPE
