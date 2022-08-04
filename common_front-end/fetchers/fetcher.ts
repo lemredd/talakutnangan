@@ -145,6 +145,41 @@ export default class Fetcher<
 		})
 	}
 
+	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "GET",
+			headers
+		})
+	}
+
+	postTo(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "POST",
+			headers,
+			body
+		})
+	}
+
+	patchThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "PATCH",
+			headers,
+			body
+		})
+	}
+
+	deleteThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "DELETE",
+			headers,
+			body
+		})
+	}
+
 	protected handleResponse<D extends Z|A|null>(
 		response: Promise<Response<T, U, V, W, X|Y|B|null>>
 	): Promise<Response<T, U, V, W, D>> {
