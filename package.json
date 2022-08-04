@@ -80,7 +80,6 @@
 		"dotenv": "^16.0.1",
 		"express": "^4.17.3",
 		"express-session": "^1.17.3",
-		"file-type": "^17.1.6",
 		"html-minifier": "^4.0.0",
 		"http-status-codes": "^2.2.0",
 		"jsonapi-fractal": "^2.1.0",
