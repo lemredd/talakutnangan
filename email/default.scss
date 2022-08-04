@@ -1,7 +1,7 @@
 body {
 	flex: 1 0 100%;
 	margin: 10em 0.5em;
-	background-color: #ebf4f5
+	background-color: #ebf4f5;
 }
 
 
@@ -30,7 +30,7 @@ body {
 	width: 100px;
 	height: max-content;
 
-	background-color: #4CAF50;
+	background-color: $color-primary;
 	color: white;
 	cursor: pointer;
 	font-size: 16px;
@@ -52,13 +52,9 @@ body {
 	color: #b0a5a5;
 }
 
-h1 { 
+h1 {
 	text-align: center;
-	font-family:Impact; 
+	font-family:Impact;
 	padding: 20px;
 	font-size: 200%;
 }
-
-
-
-
