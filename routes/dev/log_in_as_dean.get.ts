@@ -97,6 +97,7 @@ export default class extends DevController {
 			Log.success("controller", "making for dean dept")
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
+					.name(() => testDepartment)
 					.insertOne()
 
 				Log.success("controller", "created test institute department")
@@ -111,6 +112,7 @@ export default class extends DevController {
 				const user = await new UserFactory()
 					.email(() => testDeanEmail)
 					.beReachableEmployee()
+					.in(testInstituteDepartment)
 					.insertOne()
 
 				Log.success("controller", "created test dean")

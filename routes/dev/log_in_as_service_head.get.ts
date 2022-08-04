@@ -39,7 +39,7 @@ export default class extends DevController {
 		} else {
 			const testEmail = "service_head@example.net"
 			const testRoleName = "test_service_head"
-			const testDepartmentName = "Test department"
+			const testDepartmentName = "Test Department"
 
 			Log.success("controller", "searching for role")
 			let testRole = await Role.findOne({
@@ -122,6 +122,7 @@ export default class extends DevController {
 				const user = await new UserFactory()
 					.email(() => testEmail)
 					.beReachableEmployee()
+					.in(testServiceDepartment)
 					.insertOne()
 
 				Log.success("controller", "created test user")

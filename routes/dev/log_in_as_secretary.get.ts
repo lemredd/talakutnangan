@@ -100,7 +100,7 @@ export default class extends DevController {
 				where: (new Condition()).equal("fullName", testDepartmentName).build()
 			})
 
-			Log.success("controller", "making for  dept")
+			Log.success("controller", "making for dept")
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
 					.name(() => testDepartmentName)
@@ -119,6 +119,7 @@ export default class extends DevController {
 				const user = await new UserFactory()
 					.email(() => testEmail)
 					.beReachableEmployee()
+					.in(testInstituteDepartment)
 					.insertOne()
 
 				Log.success("controller", "created test user")
