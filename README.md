@@ -135,6 +135,15 @@ There is a custom script in this repository to aid the development. Here are som
 - `./execute -test [-suitename <suitename>] -watch`. Same as above yet it watches the files related
   to the tests.
 
+### Pair Programming
+When doing pair programming, it is recommended to attach the [co-authors]. Below are examples of
+what to add at the end of the messages.
+- *Co-authored-by: Angelo Magtoto <19201.magtoto.angelo.l@gmail.com>*
+- *Co-authored-by: AteKitty07 <kiritogregorio@gmail.com>*
+- *Co-authored-by: IKnightSKyl <johnjeromepertez@yahoo.com>*
+- *Co-authored-by: Jarlem Red de Peralta <lmoa.jhdp@gmail.com>*
+- *Co-authored-by: Kenneth Trecy Tobias <19201.tobias.kennethtrecy.c@gmail.com>*
+
 ## Notes
 
 ### Contributors
@@ -154,3 +163,4 @@ There is a custom script in this repository to aid the development. Here are som
 [PostgreSQL]: https://www.postgresql.org/download/windows/
 [v14.3]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 [installer]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+[co-authors]: https://github.blog/2018-01-29-commit-together-with-co-authors/
