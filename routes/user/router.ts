@@ -1,6 +1,7 @@
 import Router from "!/bases/router"
 import GetVerify from "!%/user/verify(data).get"
-import GetEmployeeList from "!%/user/employee_list.get"
+import GetStudentsList from "!%/user/students_list.get"
+import GetEmployeeList from "!%/user/employees_list.get"
 import GetInstituteUsersList from "!%/user/institute_users.get"
 
 export default class extends Router {
@@ -10,6 +11,7 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetVerify(),
+			new GetStudentsList(),
 			new GetEmployeeList(),
 			new GetInstituteUsersList()
 		])
