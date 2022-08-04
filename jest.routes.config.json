@@ -3,9 +3,18 @@
 
 	"cacheDirectory": "t/cache/unit_routes",
 
+	"extensionsToTreatAsEsm": [".ts"],
+
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
+
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {

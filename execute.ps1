@@ -48,6 +48,10 @@ It contains the name of test suite to run.
 Only works if `-Test` switch is on.
 Limits the files to test base from regular expression.
 
+.PARAMETER Clear
+Only works if `-Test` switch is on.
+Clears the cache of the specific suite.
+
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
@@ -154,6 +158,10 @@ Param(
 
 	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
+	$Clear,
+
+	[Parameter(ParameterSetName="Test", Position=4)]
+	[switch]
 	$Watch,
 
 	[Parameter(ParameterSetName="Database", Position=0)]
@@ -210,21 +218,33 @@ if ($Test) {
 		$regexFlag = '"'+$Regex+'"'
 	}
 
+	if ($Clear) {
+		$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+
+		Get-Item $cacheDirectory/* | ForEach-Object $_ {
+			if ($_.Name -ne ".gitignore") {
+				$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
+				Write-Output "Deleting $NodeToDelete"
+				Remove-Item $NodeToDelete -Recurse
+			}
+		}
+	}
+
 	if ($regexFlag -eq '""') {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
+		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
 		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
 	} else {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
 		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
 	}
 
 	# Above operations refreshed the cache directory so it is safe to watch now
 	if ($Watch) {
 		if ($regexFlag -eq '""') {
-			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
 			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
 		} else {
-			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
 			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
 		}
 	}

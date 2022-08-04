@@ -13,7 +13,7 @@ describe("Transformer: Signature", () => {
 		const model = await new Factory().insertOne()
 		const transformer = new Transformer()
 
-		const object = Serializer.serialize(model, transformer, { extra: { raw: true } })
+		const object = Serializer.serialize(model, transformer, { raw: true })
 
 		expect(object).toHaveProperty("data.type", "signature")
 		expect(object).toHaveProperty("data.id", model.id)
@@ -31,7 +31,7 @@ describe("Transformer: Signature", () => {
 		expect(object).toHaveProperty("data.id", model.id)
 		expect(object).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/signature/"+model.id
+			"http://localhost:16000/api/signature/read/"+model.id
 		)
 	})
 
@@ -45,13 +45,13 @@ describe("Transformer: Signature", () => {
 		expect(object).toHaveProperty("data.0.id", models[0].id)
 		expect(object).toHaveProperty(
 			"data.0.links.self",
-			"http://localhost:16000/api/signature/"+models[0].id
+			"http://localhost:16000/api/signature/read/"+models[0].id
 		)
 		expect(object).toHaveProperty("data.1.type", "signature")
 		expect(object).toHaveProperty("data.1.id", models[1].id)
 		expect(object).toHaveProperty(
 			"data.1.links.self",
-			"http://localhost:16000/api/signature/"+models[1].id
+			"http://localhost:16000/api/signature/read/"+models[1].id
 		)
 	})
 })
