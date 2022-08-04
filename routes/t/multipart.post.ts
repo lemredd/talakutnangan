@@ -2,6 +2,7 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import array from "!/validators/base/array"
+import object from "!/validators/base/object"
 import buffer from "!/validators/base/buffer"
 import nullable from "!/validators/base/nullable"
 
@@ -15,11 +16,27 @@ export default class extends MultipartController {
 	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
 			importedCSV: {
-				pipes: [ buffer ],
+				pipes: [ nullable, buffer ],
 				constraints: {
 					buffer: {
 						allowedMimeTypes: [ "text/csv" ],
 						maxSize: 1024 * 1024 * 10 // 10 MB
+					}
+				}
+			},
+			nestedImportedCSV: {
+				pipes: [ nullable, object ],
+				constraints: {
+					object: {
+						file: {
+							pipes: [ buffer ],
+							constraints: {
+								buffer: {
+									allowedMimeTypes: [ "text/csv" ],
+									maxSize: 1024 * 1024 * 10 // 10 MB
+								}
+							}
+						}
 					}
 				}
 			},

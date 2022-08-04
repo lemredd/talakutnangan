@@ -44,6 +44,11 @@ export default abstract class extends Middleware {
 	get postParseMiddlewares(): OptionalMiddleware[] { return [] }
 
 	/**
+	 * Lists middlewares to run after validation.
+	 */
+	get postValidationMiddlewares(): OptionalMiddleware[] { return [] }
+
+	/**
 	 * Returns the middlewares to be used before that main handler will execute.
 	 */
 	get middlewares(): OptionalMiddleware[] {
@@ -51,7 +56,8 @@ export default abstract class extends Middleware {
 			this.policy,
 			this.bodyParser,
 			...this.postParseMiddlewares,
-			...this.validations
+			...this.validations,
+			...this.postValidationMiddlewares
 		]
 	}
 

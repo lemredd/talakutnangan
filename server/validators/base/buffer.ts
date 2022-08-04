@@ -28,12 +28,28 @@ export default async function(
 		&& isPlainObject(value)
 		&& "buffer" in value
 		&& value.buffer instanceof Buffer
-		&& (value.buffer as Buffer).byteLength <= constraints.buffer.maxSize
 		&& "info" in value
 		&& typeof value.info === "object"
 		&& value.info?.mimeType !== undefined
-		&& constraints.buffer.allowedMimeTypes.includes(value.info.mimeType)
 	) {
+		if (!((value.buffer as Buffer).byteLength <= constraints.buffer.maxSize)) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) => `Field "${field}" must be less than ${
+					constraints.buffer?.maxSize
+				} bytes.`
+			}
+		}
+
+		if (!(constraints.buffer.allowedMimeTypes.includes(value.info.mimeType))) {
+			throw {
+				field: constraints.field,
+				messageMaker: (field: string) => `Field "${field}" must be one of the media types: ${
+					constraints.buffer?.allowedMimeTypes.join(", ")
+				}.`
+			}
+		}
+
 		return state
 	} else {
 		throw {

@@ -77,7 +77,11 @@ export default abstract class Manager<
 		return `database.${this.model.tableName}`
 	}
 
-	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
+	async findWithID(
+		id: number,
+		constraints: V = ({} as V),
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
 			{
 				// @ts-ignore
@@ -88,7 +92,7 @@ export default abstract class Manager<
 				if (constraints.sort === undefined) constraints.sort = []
 			}
 
-			const foundModel = await this.findOneOnColumn("id", id, constraints)
+			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
 
 			Log.success("manager", "done searching for a model using ID")
 
@@ -98,8 +102,12 @@ export default abstract class Manager<
 		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
-	: Promise<Serializable> {
+	async findOneOnColumn(
+		columnName: string,
+		value: any,
+		constraints: V = {} as V,
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
 			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`
 			const uniqueConstraintSubstring = `constraints_${encodeToBase64(constraints)}`
@@ -125,7 +133,7 @@ export default abstract class Manager<
 
 				Log.success("manager", "done searching for a model on a certain column")
 
-				cachedModel = this.serialize(model, { constraints })
+				cachedModel = this.serialize(model, transformerOptions)
 
 				this.cache.setCache(uniquePath, cachedModel)
 
@@ -140,7 +148,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async list(constraints: V): Promise<Serializable> {
+	async list(constraints: V, transformerOptions: W = {} as W): Promise<Serializable> {
 		try {
 			const options: FindAndCountOptions<T> = runThroughPipeline(
 				{},
@@ -155,19 +163,23 @@ export default abstract class Manager<
 
 			Log.success("manager", "done listing models according to constraints")
 
-			return this.serialize(rows, { count, constraints })
+			return this.serialize(rows, transformerOptions)
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
 	}
 
-	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
+	async create(
+		details: U & CreationAttributes<T>,
+		constraints: V = {} as V,
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
 			const model = await this.model.create(details, this.transaction.transactionObject)
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model)
+			return this.serialize(model, transformerOptions)
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
@@ -263,11 +275,11 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<U = Serializable>(models: T|T[]|null, options: GeneralObject = {}): U {
+	protected serialize<U = Serializable>(models: T|T[]|null, options: W = {} as W): U {
 		return Serializer.serialize(
 			models,
 			this.transformer,
-			options
+			options as GeneralObject
 		) as unknown as U
 	}
 

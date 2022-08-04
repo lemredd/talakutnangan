@@ -103,18 +103,11 @@ export default class Fetcher<
 	}
 
 	getJSON(path: string): Promise<Response<T, U, V, W, X|Y|B|null>> {
-		return this.requestJSON(path, {
-			method: "GET",
-			headers: this.makeJSONHeaders()
-		})
+		return this.getFrom(path, this.makeJSONHeaders())
 	}
 
 	postJSON(path: string, data: Serializable): Promise<Response<T, U, V, W, X|Y|B|null>> {
-		return this.requestJSON(path, {
-			method: "POST",
-			headers: this.makeJSONHeaders(),
-			body: JSON.stringify(data)
-		})
+		return this.postTo(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
 	patchJSON(
@@ -124,11 +117,7 @@ export default class Fetcher<
 	): Promise<Response<T, U, V, W, X|Y|B|null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
-		return this.requestJSON(path, {
-			method: "PATCH",
-			headers: this.makeJSONHeaders(),
-			body: JSON.stringify(data)
-		})
+		return this.patchThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
 	deleteJSON(
@@ -138,10 +127,41 @@ export default class Fetcher<
 	): Promise<Response<T, U, V, W, X|Y|B|null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
+		return this.deleteThrough(path, JSON.stringify(data), this.makeJSONHeaders())
+	}
+
+	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "GET",
+			headers
+		})
+	}
+
+	postTo(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "POST",
+			headers,
+			body
+		})
+	}
+
+	patchThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
+		return this.requestJSON(path, {
+			method: "PATCH",
+			headers,
+			body
+		})
+	}
+
+	deleteThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
+	: Promise<Response<T, U, V, W, X|Y|B|null>> {
 		return this.requestJSON(path, {
 			method: "DELETE",
-			headers: this.makeJSONHeaders(),
-			body: JSON.stringify(data)
+			headers,
+			body
 		})
 	}
 
@@ -171,9 +191,9 @@ export default class Fetcher<
 		})
 	}
 
-	private makeJSONHeaders(): Headers {
+	protected makeJSONHeaders(contentType: string = JSON_API_MEDIA_TYPE): Headers {
 		return new Headers({
-			"Content-Type": JSON_API_MEDIA_TYPE,
+			"Content-Type": contentType,
 			"Accept": JSON_API_MEDIA_TYPE
 		})
 	}
