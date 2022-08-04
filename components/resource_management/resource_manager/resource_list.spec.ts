@@ -31,11 +31,12 @@ describe("Component: Resource List", () => {
 				},
 				props: {
 					searchFilter: "",
-					filteredList: sampleUserList
+					filteredList: sampleUserList.data
 				}
 			})
 
-			console.log("wrapper", wrapper.html())
+			const resourceRows = wrapper.findAll(".resource-row")
+			expect(resourceRows.length).toBe(5)
 		})
 	})
 })

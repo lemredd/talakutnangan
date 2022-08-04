@@ -51,9 +51,8 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { ref } from "vue"
 import RoleFetcher from "$@/fetchers/role"
-import type { DeserializedPageContext } from "$@/types/independent"
 import {
 	tag,
 	user,
@@ -65,8 +64,6 @@ import {
 } from "$/permissions/permission_list"
 import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-
-const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
 
@@ -97,7 +94,7 @@ function createRole() {
 		console.log(body, status)
 
 		if (status >= 400) {
-			// Output error
+			// TODO: Output error in UI
 		}
 	})
 }

@@ -18,7 +18,9 @@ import type {
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
-
+import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 /**
  * Shape of expected page context parameter of common front-end functions
  */
@@ -103,3 +105,8 @@ export interface Response<
 	body: X,
 	status: number
 }
+
+export type PossibleResources =
+	| DeserializedUserResource
+	| DeserializedDepartmentResource
+	| DeserializedRoleResource

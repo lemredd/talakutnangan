@@ -1,20 +1,25 @@
 <template>
-	<div class="resource-row" v-for="resource in filteredList" :key="resource.name">
+	<div class="resource-row" v-for="resource in filteredList" :key="resource.id">
+
 		<div class="resource-properties" v-if="resourceType === 'user'">
 			<span>{{ resource.name }}</span>
 			<span>{{ resource.email }}</span>
 			<span>{{ resource.roles.data[0].name }}</span>
 		</div>
-		<div class="resource-properties" v-else>
+		<div class="resource-properties" v-else-if="resourceType === 'role'">
 			<span>{{ resource.name }}</span>
-			<span>{{ resource.users }} users</span>
+			<span>{{ resource }} users</span>
+		</div>
+		<div class="resource-properties" v-else>
+			<span>{{ resource.fullName }}</span>
+			<span>{{ resource }} users</span>
 		</div>
 		<div class="btns">
 			<button class="btn1">Update</button>
 		</div>
 	</div>
 
-	<div class="no-results" v-if="searchFilter && !filteredList.length">
+	<div class="no-results" v-if="!filteredList.length">
 		<p>No results found!</p>
 	</div>
 </template>
@@ -48,39 +53,33 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onUpdated, ref } from "vue"
-import { ManagerKind, User } from "../types";
+import { inject, onUpdated, ref } from "vue"
 
-const { searchFilter, filteredList } = defineProps<{
-	searchFilter: string,
-	filteredList: any
+import type { PossibleResources } from "$@/types/independent"
+
+import Manager from "@/resource_management/manager"
+
+const { filteredList } = defineProps<{
+	filteredList: PossibleResources[]
 }>()
 
-const managerKind = inject("managerKind") as ManagerKind
+const managerKind = inject("managerKind") as Manager
 const resourceType = ref("")
 
 const resourceProperties = ref<string[]>([])
 
-
-// TODO: will be removed once all data are retrieved from database
-// filteredList.forEach((element:any) => {
-// 	const non_id_properties = new Set<string>([])
-// 	Object.keys(element).forEach(key => {
-// 		non_id_properties.add(key)
-// 	});
-// 	resourceProperties.value = [...non_id_properties]
-// });
-
 onUpdated(() => {
 	// displays retrieved data from database properly
-	resourceType.value = filteredList[0].type
+	if (filteredList.length) {
+		resourceType.value = filteredList[0].type
 
-	filteredList.forEach((element:any) => {
-		const non_id_properties = new Set<string>([])
-		Object.keys(element).forEach(key => {
-			non_id_properties.add(key)
+		filteredList.forEach((element:any) => {
+			const non_id_properties = new Set<string>([])
+			Object.keys(element).forEach(key => {
+				non_id_properties.add(key)
+			});
+			resourceProperties.value = [...non_id_properties]
 		});
-		resourceProperties.value = [...non_id_properties]
-	});
+	}
 })
 </script>

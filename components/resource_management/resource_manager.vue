@@ -1,13 +1,16 @@
 <template>
 	<div class="controls-bar">
-		<SearchFilter/>
+		<slot name="search-filter">
+			<!-- purpose: place search filter component properly in the UI -->
+		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
 			<DropdownFilter by="Role"/>
-			<DropdownFilter v-if="managerKind === 'admin'" by="Department"/>
+			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
 		</div>
 	</div>
-	<ResourceList :search-filter="searchFilterText" :filtered-list="filteredList" />
+	<slot>
 
+	</slot>
 </template>
 
 <style lang="scss">
@@ -27,54 +30,22 @@
 </style>
 
 <script setup lang="ts">
-import type { ManagerKind } from "@/resource_management/types"
+import { computed, inject } from "vue"
+
+import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
-import { computed, inject, provide, ref } from "vue"
-
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
-import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
+import manager from "./manager"
 
-/*
-	General TODOs
-	TODO: use type guarding instead of depending on "hasDropdownFilter" prop
-*/
-
-type PossibleResources =
-	| DeserializedUserResource
-	| DeserializedDepartmentResource
-	| DeserializedRoleResource
-
-const { resource, hasDropdownFilter } = defineProps<{
-	resource: PossibleResources[],
-	hasDropdownFilter?: boolean
+const { resource } = defineProps<{
+	resource: PossibleResources[]
 }>()
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
-const searchFilterText = ref("");
-const managerKind = inject("managerKind") as ManagerKind
-
-const filteredList = computed(function() {
-	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
-		let name = ""
-		if (resourceToFilter.type === "department") {
-			name = resourceToFilter.fullName
-		} else {
-			name = resourceToFilter.name
-		}
-
-		name.toLowerCase().includes(searchFilterText.value.toLowerCase())
-	})
-
-	return filteredBySearchResult
-})
+const managerKind = inject("managerKind") as manager
 
 function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
 	return (resourceItem as DeserializedUserResource).type === "user"
 }
-
-provide("searchFilterText", searchFilterText)
 </script>

@@ -30,7 +30,6 @@ import type { DeserializedDepartmentListDocument } from "$/types/documents/depar
 import { inject, onMounted, ref } from "vue"
 import deserialize from "$/helpers/deserialize"
 
-
 import Manager from "../manager"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
@@ -69,7 +68,8 @@ function siftViewableDepartments() {
 async function listRoles() {
 	await new RoleFetcher().list({
 		filter: {
-			existence: "exists"
+			existence: "exists",
+			department: "*"
 		},
 		page: {
 			limit: 10,
@@ -97,7 +97,7 @@ function listDepartments() {
 			limit: 10,
 			offset: 0
 		},
-		sort: ["name"]
+		sort: ["fullName"]
 	})
 	.then(response => {
 		const { body } = response
