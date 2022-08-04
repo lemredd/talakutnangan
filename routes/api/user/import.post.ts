@@ -58,13 +58,11 @@ export default class extends MultipartController {
 					pipes: [ required, array ],
 					constraints: {
 						array: {
-							rules: {
-								pipes: [ string, exists ],
-								constraints: {
-									manager: {
-										className: RoleManager,
-										columnName: "name"
-									}
+							pipes: [ string, exists ],
+							constraints: {
+								manager: {
+									className: RoleManager,
+									columnName: "name"
 								}
 							}
 						}
