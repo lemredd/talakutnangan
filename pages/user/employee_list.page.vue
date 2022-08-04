@@ -2,6 +2,7 @@
 	<h1 class="text-2xl m-2 ">Employees</h1>
 	<UsersManager :resource="users">
 		<template #search-filter>
+			<!-- TODO: search filter rearrangement - declare outside of template -->
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 

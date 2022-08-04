@@ -1,6 +1,7 @@
 <template>
 	<div class="controls-bar">
 		<slot name="search-filter">
+			<!-- TODO: search filter rearrangement - unuse slot -->
 			<!-- purpose: place search filter component properly in the UI -->
 		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
@@ -14,11 +15,11 @@
 </template>
 
 <style lang="scss">
-// TODO: Fix filter styles
 .controls-bar {
 	@apply dark:bg-dark-100 bg-light-600 gap-y-4 justify-between;
 
 	.search-bar {
+		// TODO: search filter rearrangement - utilize flex order and transfer styles to component
 		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
 		padding: .25em;
 	}
