@@ -15,7 +15,10 @@ export default class extends DevController {
 		const variables = {
 			email: process.env.EMAIL_USER,
 			homePageURL: `${request.protocol}://${request.hostname}`,
-			emailVerificationURL: `${request.protocol}://${request.hostname}/user/verification`
+			emailVerificationURL: `${request.protocol}://${request.hostname}/user/verification`,
+			password: "12345678",
+			name: "Sample Name",
+			kind: "Student"
 		}
 		const rawVerification = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedVerification = convertMarkdownToHTML(rawVerification)
