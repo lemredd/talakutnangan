@@ -43,10 +43,10 @@ export default class extends Controller {
 	async handle(request: AuthenticatedIDRequest, response: Response)
 	: Promise<OkResponseInfo> {
 		const manager = new SignatureManager(request.transaction, request.cache)
-		const { id } = request.query
+		const { id } = request.params
 
 		const signatureDocument = await manager.findWithID(
-			+id!,
+			+id,
 			{},
 			{ raw: true }
 		) as SignatureDocument
