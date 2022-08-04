@@ -1,11 +1,19 @@
 {
 	"preset": "ts-jest",
 
+	"extensionsToTreatAsEsm": [".ts"],
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
+
 	"cacheDirectory": "t/cache/unit_routes",
 
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {
