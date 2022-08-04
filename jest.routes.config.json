@@ -1,14 +1,15 @@
 {
 	"preset": "ts-jest",
 
+	"cacheDirectory": "t/cache/unit_routes",
+
 	"extensionsToTreatAsEsm": [".ts"],
+
 	"globals": {
 	  "ts-jest": {
 		 "useESM": true
 	  }
 	},
-
-	"cacheDirectory": "t/cache/unit_routes",
 
 	"moduleFileExtensions": [
 		"js",

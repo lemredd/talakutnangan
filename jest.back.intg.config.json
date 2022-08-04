@@ -3,9 +3,18 @@
 
 	"cacheDirectory": "t/cache/intg_back",
 
+	"extensionsToTreatAsEsm": [".ts"],
+
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
+
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {
