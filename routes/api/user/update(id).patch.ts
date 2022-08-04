@@ -27,6 +27,7 @@ import same from "!/validators/comparison/same"
 import integer from "!/validators/base/integer"
 import unique from "!/validators/manager/unique"
 import required from "!/validators/base/required"
+import email from "!/validators/comparison/email"
 import regex from "!/validators/comparison/regex"
 
 export default class extends BoundJSONController {
@@ -69,11 +70,8 @@ export default class extends BoundJSONController {
 									},
 									email: {
 										// TODO: Make email validator
-										pipes: [ required, string, regex, unique ],
+										pipes: [ required, string, email, unique ],
 										constraints: {
-											regex: {
-												match: /.+@.+/
-											},
 											manager: {
 												className: UserManager,
 												columnName: "email"
