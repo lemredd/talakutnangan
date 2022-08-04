@@ -15,6 +15,7 @@ import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
+import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import MultipartController from "!/controllers/multipart_controller"
@@ -25,11 +26,14 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
+import length from "!/validators/comparison/length"
+import notExists from "!/validators/manager/not_exists"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -82,10 +86,51 @@ export default class extends MultipartController {
 	}
 
 	makeBodyRuleGenerator(request: Request): FieldRules {
+		// TODO: Make validator to validate name
 		return {
 			importedCSV: {
-				pipes: [ required ],
-				constraints: { }
+				pipes: [ required, array, length ],
+				constraints: {
+					array: {
+						pipes: [ required, object ],
+						constraints: {
+							object: {
+								name: {
+									pipes: [ required, string, notExists ],
+									constraints: {
+										manager: {
+											className: UserManager,
+											columnName: "name"
+										}
+									}
+								},
+								email: {
+									pipes: [ required, string, notExists ],
+									constraints: {
+										manager: {
+											className: UserManager,
+											columnName: "email"
+										}
+									}
+								},
+								department: {
+									// TODO: Add validator to match if department may admit
+									pipes: [ required, string, exists ],
+									constraints: {
+										manager: {
+											className: DepartmentManager,
+											columnName: "acronym"
+										}
+									}
+								}
+							}
+						}
+					},
+					length: {
+						minimum: 1,
+						maximum: 200
+					}
+				}
 			},
 			roles: {
 				pipes: [ required ],
