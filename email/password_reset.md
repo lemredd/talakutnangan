@@ -1,11 +1,16 @@
-# Password Reset
+<div class="box-column">
+<h1>Password Reset</h1>
 
-Hello {{ name }} ({{ email }}), your password has been reset by the admin in [Talakutnangan]({{ homePageURL }}).
+<p class="content">
+    Hello {{ name }} ({{ email }}), your password has been reset by the admin in <a class="home-page-url" href="{{ homePageURL }}">Talakutnangan.</a>
+</p>
 
-Please log in using the following password:
-```
-{{ password }}
-```
+<p class ="content">Please log in using the following password:</p>
 
-## Note
-Do not share the password and change the default password as soon as possible.
+<div class="line">
+    <p class="pass">{{ password }}</p>
+</div>
+
+<p class="note">Note</p>
+<p class="note">Do not share the password and change the default password as soon as possible.</p>
+</div>
