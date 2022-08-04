@@ -1,20 +1,17 @@
 import type { Serializable } from "$/types/general"
 import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { EmailVerificationArguments } from "!/types/independent"
+import type { EmailVerificationArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"
-import Validation from "!/bases/validation"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
+import BoundJSONController from "!/controllers/bound_json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import IDParameterValidation from "!/validation/id_parameter"
-import MultipartController from "!/controllers/multipart_controller"
-import MatchedIDParameterValidation from "!/validation/matched_id_parameter"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -32,7 +29,7 @@ import unique from "!/validators/manager/unique"
 import required from "!/validators/base/required"
 import regex from "!/validators/comparison/regex"
 
-export default class extends MultipartController {
+export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -41,16 +38,6 @@ export default class extends MultipartController {
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 		])
-	}
-
-	get validations(): Validation[] {
-		return [
-			new IDParameterValidation([
-				[ "id", UserManager ]
-			]),
-			...super.validations,
-			new MatchedIDParameterValidation()
-		]
 	}
 
 	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
@@ -104,6 +91,8 @@ export default class extends MultipartController {
 			}
 		}
 	}
+
+	get manager(): BaseManagerClass { return UserManager }
 
 	async handle(
 		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
