@@ -1,5 +1,5 @@
 {
-	 "folders": [
+	"folders": [
 		// { "name": "root", 							"path": "." },
 		// { "name": "shareable",						"path": "shareable" },
 		// { "name": "shareable helpers",			"path": "shareable/helpers" },
@@ -40,11 +40,14 @@
 		// { "name": "rule sets",						"path": "server/rule_sets" },
 		// { "name": "controllers",					"path": "server/controllers" },
 		// { "name": "response information",		"path": "server/response_infos" },
-		// { "name": "routes",							"path": "server/app/routes" },
+		// { "name": "routes",							"path": "routes" },
+		// { "name": "API routes",						"path": "routes/api" },
+		// { "name": "Development routes",			"path": "routes/dev" },
+		// { "name": "Test routes",					"path": "routes/t" },
 		// { "name": "test utilities",				"path": "t/helpers" },
 		// { "name": "integration tests",			"path": "t/integration" }
-	 ],
-	 "settings": {
+	],
+	"settings": {
 		"editor.tabSize": 3,
 		"editor.insertSpaces": false,
 		"editor.detectIndentation": false,
@@ -53,5 +56,15 @@
 		"files.insertFinalNewline": true,
 		"files.trimFinalNewlines": true,
 		"files.trimTrailingWhitespace": true,
+		"files.exclude": {
+			"**/.DS_Store": true,
+			"**/.git": true,
+			"**/.hg": true,
+			"**/.svn": true,
+			"**/CVS": true,
+			"**/Thumbs.db": true,
+			"**/dist": true,
+			"**/node_modules": true
+		}
 	}
 }
