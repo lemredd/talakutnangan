@@ -1,7 +1,3 @@
-import { MULTIPART_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
-
-import "~/set-ups/email.set_up"
-
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import SignatureFactory from "~/factories/signature"

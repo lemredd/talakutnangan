@@ -1,7 +1,5 @@
 import { MULTIPART_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import "~/set-ups/email.set_up"
-
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
 import URLMaker from "$!/singletons/url_maker"
@@ -17,10 +15,10 @@ describe("PATCH /api/user/:id/relationships/signature/update", () => {
 		await App.create(new Route())
 	})
 
-	it("can upload valid student details", async () => {
+	it("can update signature", async () => {
 		jest.setTimeout(10000)
 
-		URLMaker.initialize("http", "localhost", 16000, "/api")
+		URLMaker.initialize("http", "localhost", 16000, "/")
 
 		const studentRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
