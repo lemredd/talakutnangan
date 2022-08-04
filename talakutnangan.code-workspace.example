@@ -48,6 +48,8 @@
 		// { "name": "integration tests",			"path": "t/integration" }
 	],
 	"settings": {
+		"scss.lint.unknownAtRules": "ignore",
+
 		"editor.tabSize": 3,
 		"editor.insertSpaces": false,
 		"editor.detectIndentation": false,
