@@ -35,7 +35,7 @@ describe("PATCH /api/user/update/:id", () => {
 					id: student.id,
 					attributes: {
 						name: student.name,
-						email: student.email
+						email: newStudent.email
 					}
 				}
 			})
@@ -76,12 +76,18 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("data[type]", "user")
-			.field("data[id]", student.id)
-			.field("data[attributes][name]", newStudent.name)
-			.field("data[attributes][email]", student.email)
 			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
+			.send({
+				data: {
+					type: "user",
+					id: student.id,
+					attributes: {
+						name: newStudent.name,
+						email: student.email
+					}
+				}
+			})
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		console.log(response.body)
