@@ -16,7 +16,7 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import IDParameterValidation from "!/validation/id_parameter"
+import IDParameterValidation from "!/validations/id_parameter"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"

@@ -3,7 +3,7 @@ import type { Request, Response } from "!/types/dependent"
 import Validation from "!/bases/validation"
 import UserManager from "%/managers/user"
 import Controller from "!/bases/controller-likes/controller"
-import IDParameterValidation from "!/validation/id_parameter"
+import IDParameterValidation from "!/validations/id_parameter"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
