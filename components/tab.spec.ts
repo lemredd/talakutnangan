@@ -24,7 +24,6 @@ describe("Component: Tab", () => {
 		})
 
 		const firstLink = wrapper.find(".link")
-		console.log(firstLink.html())
 		expect(firstLink.classes()).toContain("active")
 	})
 })

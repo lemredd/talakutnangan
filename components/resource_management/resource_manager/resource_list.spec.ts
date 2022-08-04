@@ -31,7 +31,7 @@ describe("Component: Resource List", () => {
 				},
 				props: {
 					searchFilter: "",
-					filteredList: sampleUserList
+					filteredList: sampleUserList.data
 				}
 			})
 
