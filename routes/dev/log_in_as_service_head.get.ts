@@ -100,13 +100,14 @@ export default class extends DevController {
 			}
 
 			Log.success("controller", "searching for  dept")
-			let testInstituteDepartment = await Department.findOne({
+			let testServiceDepartment = await Department.findOne({
 				where: (new Condition()).equal("fullName", testDepartmentName).build()
 			})
 
 			Log.success("controller", "making for  dept")
-			if (testInstituteDepartment === null) {
-				testInstituteDepartment = await new DepartmentFactory()
+			if (testServiceDepartment === null) {
+				testServiceDepartment = await new DepartmentFactory()
+					.name(() => testDepartmentName)
 					.insertOne()
 
 				Log.success("controller", "created test department")

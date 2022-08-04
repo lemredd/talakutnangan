@@ -39,7 +39,7 @@ export default class extends DevController {
 		} else {
 			const testEmail = "secretary@example.net"
 			const testRoleName = "test_secretary"
-			const testDepartmentName = "Test department"
+			const testDepartmentName = "Test Department"
 
 			Log.success("controller", "searching for role")
 			let testRole = await Role.findOne({
@@ -103,6 +103,8 @@ export default class extends DevController {
 			Log.success("controller", "making for  dept")
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
+					.name(() => testDepartmentName)
+					.mayAdmit()
 					.insertOne()
 
 				Log.success("controller", "created test department")
