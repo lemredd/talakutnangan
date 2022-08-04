@@ -1,9 +1,10 @@
+import type { Express as ExpressApp } from "express"
+
 import { Buffer } from "buffer"
 import serveStaticFiles from "sirv"
+import { createServer } from "vite"
 import { Router as createRouter } from "express"
 import { renderPage } from "vite-plugin-ssr"
-
-import type { Express as ExpressApp } from "express"
 
 import { PageRequest } from "!/types/hybrid"
 import { Environment } from "$/types/server"
@@ -23,8 +24,7 @@ export default async function(app: ExpressApp) {
 	if (isProduction) {
 		app.use(serveStaticFiles(`${root}/dist/client`))
 	} else {
-		const vite = require("vite")
-		const viteDevServer = await vite.createServer({
+		const viteDevServer = await createServer({
 			root,
 			server: { middlewareMode: "ssr" },
 		})
