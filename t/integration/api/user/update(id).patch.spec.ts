@@ -28,12 +28,18 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("data[type]", "user")
-			.field("data[id]", student.id)
-			.field("data[attributes][name]", student.name)
-			.field("data[attributes][email]", newStudent.email)
 			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
+			.send({
+				data: {
+					type: "user",
+					id: student.id,
+					attributes: {
+						name: student.name,
+						email: student.email
+					}
+				}
+			})
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
