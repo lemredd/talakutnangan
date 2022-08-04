@@ -1,5 +1,5 @@
 <template>
-	<h1 class="">Institute Name</h1>
+	<h1 class="">{{ currentUserDepartment.fullName }}</h1>
 	<UsersManager :resource="users">
 		<template #search-filter>
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
@@ -41,14 +41,14 @@ function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedUserResource[]
 }
 
-onMounted(() => {
 const currentUserProfile = (pageContext.pageProps.userProfile! as DeserializedUserProfile).data
-	const currentUserDepartment = currentUserProfile!.department.data.id
+const currentUserDepartment = currentUserProfile!.department.data
 
+onMounted(() => {
 	new UserFetcher().list({
 		filter: {
 			slug: "",
-			department: currentUserDepartment,
+			department: currentUserDepartment.id,
 			role: "*",
 			kind: "*",
 			existence: "exists"
