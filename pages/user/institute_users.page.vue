@@ -20,9 +20,11 @@ import type { PossibleResources } from "$@/types/independent"
 
 import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
+import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RoleFetcher from "$@/fetchers/role"
 import UserFetcher from "$@/fetchers/user"
+import DepartmentFetcher from "$@/fetchers/department"
 
 const pageContext = inject("pageContext") as PageContext
 provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
@@ -30,6 +32,7 @@ provide("managerKind", new Manager(pageContext.pageProps.userProfile! as Deseria
 // Fetcher Initializers
 UserFetcher.initialize("/api")
 RoleFetcher.initialize("/api")
+DepartmentFetcher.initialize("/api")
 
 const users = ref<DeserializedUserResource[]>([])
 const filteredList = ref<DeserializedUserResource[]>([])
