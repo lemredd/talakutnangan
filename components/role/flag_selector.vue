@@ -24,31 +24,14 @@
 
 <script setup lang="ts">
 // Third Parties
-import { computed, ref } from "vue"
-
-// Types
-import type { Permissions as TagPermissions } from "$/permissions/tag_permissions"
-import type { Permissions as UserPermissions } from "$/permissions/user_permissions"
-import type { Permissions as PostPermissions } from "$/permissions/post_permissions"
-import type { Permissions as CommentPermissions } from "$/permissions/comment_permissions"
-import type { Permissions as SemesterPermissions } from "$/permissions/semester_permissions"
-import type { Permissions as ProfanityPermissions } from "$/permissions/profanity_permissions"
-import type { Permissions as AuditTrailPermissions } from "$/permissions/audit_trail_permissions"
+import { ref } from "vue"
+import uniq from "lodash.uniq"
 
 // Developer defined internals
 import BasePermissionGroup from "$/permissions/base"
 import camelToSentence from "$@/helpers/camel_to_sentence"
 import Checkbox from "@/fields/checkbox.vue"
-
-
-type Permissions =
-	| TagPermissions
-	| UserPermissions
-	| PostPermissions
-	| CommentPermissions
-	| SemesterPermissions
-	| ProfanityPermissions
-	| AuditTrailPermissions
+import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
 	header,
@@ -60,23 +43,16 @@ const {
 	flags: number
 }>()
 
-const rawFlags = ref(new Set(basePermissionGroup.deserialize(flags)))
+const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
+
 function updateFlags() {
-	const permissionsWithDependencies = new Set(Array.from(rawFlags.value))
+	includePermissionDependencies(basePermissionGroup, rawFlags)
 
-	basePermissionGroup.permissions.forEach((info, permissionName) => {
-		if (permissionsWithDependencies.has(permissionName)) {
-			info.permissionDependencies.forEach(n => {
-				permissionsWithDependencies.add(n)
-			})
-		}
-	})
-	rawFlags.value = permissionsWithDependencies
+	rawFlags.value = uniq(rawFlags.value)
 	const generatedMask = basePermissionGroup.generateMask(
-		...Array.from(permissionsWithDependencies)
+		...Array.from(rawFlags.value)
 	)
-
 	emit("update:flags", generatedMask)
 }
 

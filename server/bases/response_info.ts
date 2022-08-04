@@ -1,12 +1,12 @@
 import { Response } from "!/types/dependent"
 
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"
 import RequestEnvironment from "$/helpers/request_environment"
 
-type Body = string|Serializable|null
+type Body = string|Serializable|Buffer|null
 
 /**
  * Base class to represent the returned response from controller handles.

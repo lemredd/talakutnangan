@@ -1,30 +1,45 @@
-import dataURIToBuffer from "data-uri-to-buffer"
-import type { MimeBuffer } from "data-uri-to-buffer"
-import { faker } from "@faker-js/faker"
-
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
+import type {
+	UserResourceIdentifier,
+	UserAttributes,
+	DeserializedUserResource,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+} from "$/types/documents/user"
+
+import { faker } from "@faker-js/faker"
 
 import User from "%/models/user"
 import Role from "%/models/role"
 import hash from "$!/auth/hash"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
+import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
 
-export default class UserFactory extends BaseFactory<User> {
+
+export default class UserFactory extends BaseFactory<
+	User,
+	UserResourceIdentifier,
+	UserAttributes,
+	DeserializedUserResource,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+> {
 	nameGenerator = () => faker.name.findName()
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
 
 	#password = "password"
-	#signature: MimeBuffer|null = dataURIToBuffer(faker.image.dataUri())
 	#kind = "student"
 	#mustBeVerified = true
 	#department: Department|null = null
 
 	get model(): ModelCtor<User> { return User }
+
+	get transformer(): UserTransformer { return new UserTransformer() }
 
 	async generate(): GeneratedData<User> {
 		if (this.#department === null) {
@@ -38,7 +53,6 @@ export default class UserFactory extends BaseFactory<User> {
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
 			admittedAt: null,
 			kind: this.#kind,
-			signature: this.#signature,
 			departmentID: this.#department.id,
 			deletedAt: null
 		}
@@ -46,6 +60,8 @@ export default class UserFactory extends BaseFactory<User> {
 
 	async makeOne() {
 		const user = await super.makeOne()
+		user.roles = this.roles
+		user.department = this.#department!
 		user.password = this.#password
 		return user
 	}
@@ -60,6 +76,7 @@ export default class UserFactory extends BaseFactory<User> {
 			}
 		}))
 		user.roles = this.roles
+		user.department = this.#department!
 
 		return user
 	}
@@ -116,11 +133,6 @@ export default class UserFactory extends BaseFactory<User> {
 
 	beUnreachableEmployee(): UserFactory {
 		this.#kind = "unreachable_employee"
-		return this
-	}
-
-	hasNoSignature(): UserFactory {
-		this.#signature = null
 		return this
 	}
 

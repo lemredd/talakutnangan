@@ -4,16 +4,29 @@
  * cannot be shareable since they are only used within the client.
  */
 
-import type { Serializable, UserKind } from "$/types/database"
-import type { UserProfile } from "$/types/common_front-end"
+import type { UserKind } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
-
+import type { DeserializedUserProfile } from "$/types/documents/user"
+import type {
+	ResourceIdentifier,
+	Attributes,
+	Resource,
+	DeserializedResource,
+	ResourceDocument,
+	ResourceListDocument,
+	DeserializedResourceDocument,
+	DeserializedResourceListDocument
+} from "$/types/documents/base"
+import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 /**
  * Shape of expected page context parameter of common front-end functions
  */
 export interface DeserializedPageContext extends Serializable {
 	pageProps: {
-		userProfile: UserProfile|null
+		userProfile: DeserializedUserProfile|null
 	}
 }
 
@@ -67,13 +80,33 @@ export interface LogInDetails extends Serializable {
 	password: string
 }
 
+type PossibleResponseTypes<
+	T extends ResourceIdentifier,
+	U extends Attributes,
+	V extends Resource<T, U>,
+	W extends DeserializedResource<T, U>
+> =
+	| ResourceDocument<T, U, V>
+	| ResourceListDocument<T, U, V>
+	| DeserializedResourceDocument<T, U, W>
+	| DeserializedResourceListDocument<T, U, W>
+	| Serializable
+
 /**
  * Shape of expected response from fetcher
  */
-export interface Response extends Serializable {
-	body: {
-		data?: Serializable,
-		meta?: Serializable
-	},
+export interface Response<
+	T extends ResourceIdentifier,
+	U extends Attributes,
+	V extends Resource<T, U>,
+	W extends DeserializedResource<T, U>,
+	X extends PossibleResponseTypes<T, U, V, W>|null = PossibleResponseTypes<T, U, V, W>
+> extends Serializable {
+	body: X,
 	status: number
 }
+
+export type PossibleResources =
+	| DeserializedUserResource
+	| DeserializedDepartmentResource
+	| DeserializedRoleResource

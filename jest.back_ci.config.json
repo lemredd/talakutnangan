@@ -1,14 +1,24 @@
 {
 	"preset": "ts-jest",
 
+	"extensionsToTreatAsEsm": [".ts"],
+
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
+
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {
 		"\\$/(.*)": "<rootDir>/shareable/$1",
 		"\\$!/(.*)": "<rootDir>/common_back-end/$1",
+		"!%/(.*)": "<rootDir>/routes/$1",
 		"%/(.*)": "<rootDir>/database/$1",
 		"!/(.*)": "<rootDir>/server/$1",
 		"~/(.*)": "<rootDir>/t/helpers/$1",
@@ -17,6 +27,7 @@
 
 	"setupFilesAfterEnv": [
 		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/cache_manager.set_up.ts",
 		"./t/helpers/set-ups/singletons.set_up.ts",
 		"./t/helpers/set-ups/database.set_up.ts"
 	],
@@ -26,7 +37,8 @@
 	"testRegex": [
 		"common_back-end/.*\\.spec\\.ts",
 		"./database/.*\\.spec\\.ts",
-		"./server/.*\\.spec\\.ts"
+		"./server/.*\\.spec\\.ts",
+		"./routes/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"

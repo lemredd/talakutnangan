@@ -1,6 +1,8 @@
-import { shallowMount, VueWrapper } from "@vue/test-utils"
-import RequestEnvironment from "$/helpers/request_environment"
 import { UnitError } from "$/types/server"
+
+import { shallowMount } from "@vue/test-utils"
+import RequestEnvironment from "$/helpers/request_environment"
+
 import Page from "./create.page.vue"
 
 describe("Page: /department/create", () => {

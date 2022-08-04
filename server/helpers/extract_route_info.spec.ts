@@ -68,7 +68,7 @@ describe("Helpers: Extract route info", () => {
 	})
 
 	it("can extract with real path properly", () => {
-		const currentPath = `${getRoot()}/server/app/routes/api/user/log_in.post.ts`
+		const currentPath = `${getRoot()}/routes/api/user/log_in.post.ts`
 
 		const { method, path, purpose } = extractRouteInfo(currentPath)
 

@@ -1,10 +1,18 @@
-import { faker } from "@faker-js/faker"
-
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
+import type {
+	RoleResourceIdentifier,
+	RoleAttributes,
+	DeserializedRoleResource,
+	DeserializedRoleDocument,
+	DeserializedRoleListDocument
+} from "$/types/documents/role"
+
+import { faker } from "@faker-js/faker"
 
 import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
+import RoleTransformer from "%/transformers/role"
 import {
 	tag,
 	role,
@@ -17,7 +25,14 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
-export default class RoleFactory extends BaseFactory<Role> {
+export default class RoleFactory extends BaseFactory<
+	Role,
+	RoleResourceIdentifier,
+	RoleAttributes,
+	DeserializedRoleResource,
+	DeserializedRoleDocument,
+	DeserializedRoleListDocument
+> {
 	#name: () => string = () => faker.name.jobTitle()
 	#departmentFlags: number = 0
 	#roleFlags: number = 0
@@ -30,6 +45,8 @@ export default class RoleFactory extends BaseFactory<Role> {
 	#auditTrailFlags: number = 0
 
 	get model(): ModelCtor<Role> { return Role }
+
+	get transformer(): RoleTransformer { return new RoleTransformer() }
 
 	async generate(): GeneratedData<Role> {
 		return {

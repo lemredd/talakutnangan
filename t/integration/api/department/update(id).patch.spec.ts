@@ -7,7 +7,7 @@ import { UPDATE } from "$/permissions/department_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/department/update(id).patch"
+import Route from "!%/api/department/update(id).patch"
 
 describe("PATCH /api/department/update/:id", () => {
 	beforeAll(async () => {

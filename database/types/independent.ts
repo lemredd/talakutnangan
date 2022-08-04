@@ -41,7 +41,7 @@ export interface RawBulkDataForStudents {
  * Shape to expect for creating employees in bulk
  */
 export interface RawBulkDataForEmployees {
-	kind: "reachable_employee",
+	kind: "reachable_employee" | "unreachable_employee",
 	roles: string[]
 	importedCSV: RawBulkDataForEmployee[]
 }
@@ -70,7 +70,7 @@ export interface ProcessedDataForStudent extends Omit<RawBulkDataForStudent, "de
  * Assumes password has been hashed
  */
 export interface ProcessedDataForEmployee extends Omit<RawBulkDataForEmployee, "department"> {
-	kind: "reachable_employee",
+	kind: "reachable_employee" | "unreachable_employee",
 	departmentID: number,
 	attachedRoles: ({
 		roleID: number
@@ -84,4 +84,11 @@ export interface RawEmployeeSchedule {
 	scheduleStart: number,
 	scheduleEnd: number,
 	dayName: Day
+}
+
+/**
+ * Used to indicate if the signature should be included in the serialized structure of signature.
+ */
+export interface SignatureTransformerOptions {
+	raw: boolean
 }

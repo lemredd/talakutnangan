@@ -9,7 +9,7 @@ import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import createAppHandler from "!/app/create_handler"
 import Controller from "!/bases/controller-likes/controller"
-import LogInController from "!/app/routes/api/user/log_in.post"
+import LogInController from "!%/api/user/log_in.post"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 export default class {
@@ -44,7 +44,7 @@ export default class {
 			role = await new RoleFactory().insertOne()
 		}
 
-		let userFactory = new UserFactory().attach(role)
+		let userFactory = new UserFactory().attach(role).beUnreachableEmployee()
 		if (factoryModificationCallback !== null) {
 			userFactory = factoryModificationCallback(userFactory)
 		}

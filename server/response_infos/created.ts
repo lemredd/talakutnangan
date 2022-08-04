@@ -1,6 +1,6 @@
 import ResponseInfo from "!/bases/response_info"
 
-import type { Serializable } from "$/types/database"
+import type { Serializable } from "$/types/general"
 import RequestEnvironment from "$/helpers/request_environment"
 
 export default class extends ResponseInfo {

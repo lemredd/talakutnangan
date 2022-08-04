@@ -3,6 +3,8 @@ import { createTestAccount } from "nodemailer"
 import Transport from "!/helpers/email/transport"
 
 beforeAll((done) => {
+	jest.setTimeout(7500)
+
 	createTestAccount((_error, account) => {
 		Transport.initialize(
 			"smtp.ethereal.email",

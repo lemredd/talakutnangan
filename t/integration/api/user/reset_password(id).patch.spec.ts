@@ -11,7 +11,7 @@ import UserFactory from "~/factories/user"
 import Transport from "!/helpers/email/transport"
 import StudentDetail from "%/models/student_detail"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
-import Route from "!/app/routes/api/user/reset_password(id).patch"
+import Route from "!%/api/user/reset_password(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 describe("PATCH /api/user/reset_password/:id", () => {
@@ -43,6 +43,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
+		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ where: { id: student.id } })

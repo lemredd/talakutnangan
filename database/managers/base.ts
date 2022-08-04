@@ -1,5 +1,5 @@
-import type { GeneralObject } from "$/types/server"
-import type { Serializable, Pipe } from "$/types/database"
+import type { Pipe } from "$/types/database"
+import type { GeneralObject, Serializable } from "$/types/general"
 import type {
 	Model,
 	ModelCtor,
@@ -11,58 +11,77 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+
 import Log from "$!/singletons/log"
+import CacheClient from "$!/helpers/cache_client"
+import encodeToBase64 from "$!/helpers/encode_to_base64"
+import RequestEnvironment from "$/helpers/request_environment"
+import TransactionManager from "%/managers/helpers/transaction_manager"
+
 import BaseError from "$!/errors/base"
-import sort from "%/managers/helpers/sort"
-import limit from "%/managers/helpers/limit"
 import Transformer from "%/transformers/base"
-import offset from "%/managers/helpers/offset"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
+
+import page from "%/queries/base/page"
+import sort from "%/queries/base/sort"
 import Condition from "%/managers/helpers/condition"
-import RequestEnvironment from "$/helpers/request_environment"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
-import siftByExistence from "%/managers/helpers/sift_by_existence"
-import TransactionManager from "%/managers/helpers/transaction_manager"
+import siftByExistence from "%/queries/base/sift_by_existence"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
  *
  * First generic argument is `T` that represents the model it controls. Second generic argument is
- * `U` that represents the transformer for the model. Lastly, `V` represents the filter to be used
- * by the manager which is an object by default.
+ * `U` that represents the transformer for the model. Third, `V` represents the filter to be used by
+ * the manager which is an object by default. Fourth, W which indicates extra options for the
+ * transformer if there are.
  */
-export default abstract class Manager<T extends Model, U, V extends GeneralObject = GeneralObject>
-extends RequestEnvironment {
+export default abstract class Manager<
+	T extends Model,
+	U,
+	V extends GeneralObject = GeneralObject,
+	W = void
+> extends RequestEnvironment {
 	protected transaction: TransactionManager
+	protected cache: CacheClient
 
-	constructor(transaction: TransactionManager = new TransactionManager()) {
+	constructor(
+		transaction: TransactionManager = new TransactionManager(),
+		cache: CacheClient = new CacheClient(Symbol("unknown client"))
+	) {
 		super()
 		this.transaction = transaction
+		this.cache = cache
 	}
 
 	abstract get model(): ModelCtor<T>
 
-	abstract get transformer(): Transformer<T, void>
+	abstract get transformer(): Transformer<T, W>
 
 	get listPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
 			siftByExistence,
-			offset,
-			limit,
+			page,
 			sort
 		]
 	}
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<T>, any>[] {
 		return [
-			siftByExistence,
-			offset,
-			limit
+			siftByExistence
 		]
 	}
 
-	async findWithID(id: number, constraints: V = ({} as V)): Promise<Serializable> {
+	get cachePath(): string {
+		return `database.${this.model.tableName}`
+	}
+
+	async findWithID(
+		id: number,
+		constraints: V = ({} as V),
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
 			{
 				// @ts-ignore
@@ -73,7 +92,7 @@ extends RequestEnvironment {
 				if (constraints.sort === undefined) constraints.sort = []
 			}
 
-			const foundModel = await this.findOneOnColumn("id", id, constraints)
+			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
 
 			Log.success("manager", "done searching for a model using ID")
 
@@ -83,52 +102,84 @@ extends RequestEnvironment {
 		}
 	}
 
-	async findOneOnColumn(columnName: string, value: any, constraints: V = {} as V)
-	: Promise<Serializable> {
+	async findOneOnColumn(
+		columnName: string,
+		value: any,
+		constraints: V = {} as V,
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
-			const condition = new Condition()
-			condition.equal(columnName, value)
-			const whereOptions: FindOptions<T> = { where: condition.build() }
+			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`
+			const uniqueConstraintSubstring = `constraints_${encodeToBase64(constraints)}`
+			const uniqueFindSubstring = `find_one_on_column__${
+				uniquePairSubstring
+			}__${
+				uniqueConstraintSubstring
+			}__`
+			const uniquePath = `${this.cachePath}.${uniqueFindSubstring}`
+			let cachedModel = this.cache.getCache(uniquePath)
 
-			const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
+			if (cachedModel === null) {
+				const condition = new Condition()
+				condition.equal(columnName, value)
+				const whereOptions: FindOptions<T> = { where: condition.build() }
 
-			const model = await this.model.findOne({
-				...findOptions,
-				...this.transaction.lockedTransactionObject
-			})
+				const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
 
-			Log.success("manager", "done searching for a model on a certain column")
+				const model = await this.model.findOne({
+					...findOptions,
+					...this.transaction.transactionObject
+				})
 
-			return this.serialize(model)
+				Log.success("manager", "done searching for a model on a certain column")
+
+				cachedModel = this.serialize(model, transformerOptions)
+
+				this.cache.setCache(uniquePath, cachedModel)
+
+				Log.success("manager", "cached serialized model")
+			}
+
+			Log.success("manager", "used cached serialized model")
+
+			return cachedModel
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
 	}
 
-	async list(query: V): Promise<Serializable> {
+	async list(constraints: V, transformerOptions: W = {} as W): Promise<Serializable> {
 		try {
-			const options: FindAndCountOptions<T> = runThroughPipeline({}, query, this.listPipeline)
+			const options: FindAndCountOptions<T> = runThroughPipeline(
+				{},
+				constraints,
+				this.listPipeline
+			)
 
-			const rows = await this.model.findAll({
+			const { count, rows } = await this.model.findAndCountAll({
 				...options,
-				...this.transaction.lockedTransactionObject
+				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done listing models according to constraints")
 
-			return this.serialize(rows)
+			return this.serialize(rows, transformerOptions)
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
 	}
 
-	async create(details: U & CreationAttributes<T>): Promise<Serializable> {
+	async create(
+		details: U & CreationAttributes<T>,
+		constraints: V = {} as V,
+		transformerOptions: W = {} as W
+	): Promise<Serializable> {
 		try {
 			const model = await this.model.create(details, this.transaction.transactionObject)
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model)
+			return this.serialize(model, transformerOptions)
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
@@ -224,19 +275,19 @@ extends RequestEnvironment {
 		return attributeNames
 	}
 
-	protected serialize(models: T|T[]|null): Serializable {
+	protected serialize<U = Serializable>(models: T|T[]|null, options: W = {} as W): U {
 		return Serializer.serialize(
 			models,
 			this.transformer,
-			{}
-		)
+			options as GeneralObject
+		) as unknown as U
 	}
 
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
 		} else if (error instanceof Error && this.isNotOnProduction) {
-			return new DatabaseError(error.message)
+			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
 		} else {
 			return new DatabaseError()
 		}

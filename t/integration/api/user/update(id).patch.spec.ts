@@ -9,7 +9,7 @@ import RoleFactory from "~/factories/role"
 
 import User from "%/models/user"
 import Transport from "!/helpers/email/transport"
-import Route from "!/app/routes/api/user/update(id).patch"
+import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 
@@ -28,12 +28,18 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("data[type]", "user")
-			.field("data[id]", student.id)
-			.field("data[attributes][name]", student.name)
-			.field("data[attributes][email]", newStudent.email)
 			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
+			.send({
+				data: {
+					type: "user",
+					id: student.id,
+					attributes: {
+						name: student.name,
+						email: newStudent.email
+					}
+				}
+			})
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
@@ -70,44 +76,25 @@ describe("PATCH /api/user/update/:id", () => {
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
-			.field("data[type]", "user")
-			.field("data[id]", student.id)
-			.field("data[attributes][name]", newStudent.name)
-			.field("data[attributes][email]", student.email)
 			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
+			.send({
+				data: {
+					type: "user",
+					id: student.id,
+					attributes: {
+						name: newStudent.name,
+						email: student.email
+					}
+				}
+			})
+			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
+		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ where: { id: student.id }})
 		expect(updatedStudent!.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
 		expect(updatedStudent!.name).toBe(newStudent.name)
-	})
-
-	it("can be accessed by student and retain email verification after update", async () => {
-		const studentRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
-			.insertOne()
-
-		const { user: student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		const signaturePath = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
-
-		const response = await App.request
-			.patch(`/api/user/update/${student.id}`)
-			.field("data[type]", "user")
-			.field("data[id]", student.id)
-			.field("data[attributes][name]", student.name)
-			.field("data[attributes][email]", student.email)
-			.attach("data[attributes][signature]", signaturePath)
-			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
-
-		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-
-		const updatedStudent = await User.findOne({ where: { id: student.id }})
-		expect(updatedStudent!.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
-		expect(updatedStudent!.signature).not.toBe(student.signature)
 	})
 })

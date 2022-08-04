@@ -8,6 +8,7 @@ on:
       - 'common_back-end/**'
       - 'database/**'
       - 'server/**'
+      - 'routes/**'
       - 't/helpers/**'
       - 't/integration/api/**'
       - 't/integration/t/**'
@@ -16,9 +17,11 @@ on:
       - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
-  pull_request:
+  pull_request_target:
     types:
+      - opened
       - reopened
+      - review_requested
     branches:
       - master
     paths:
@@ -27,6 +30,7 @@ on:
       - 'common_back-end/**'
       - 'database/**'
       - 'server/**'
+      - 'routes/**'
       - 't/helpers/**'
       - 't/integration/api/**'
       - 't/integration/t/**'
@@ -43,10 +47,15 @@ env:
   EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
 jobs:
-  integration_tests:
+  pushed_integration_tests:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checking out from the pushed source
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.push.repository.full_name }}
+        ref: ${{ github.event.push.after }}
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2
       with:
@@ -70,9 +79,17 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run migrate:up
+    - run: ./execute.ps1 -database -upgrade
+      shell: pwsh
     - run: npm run seed:up:all
     - run: npm run build
     - run: ./execute.ps1 -test intg:back
       shell: pwsh
       timeout-minutes: 3
+
+  pulled_integration_tests:
+    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Output success just to show the conclusion of tests in fork
+      run: echo 0

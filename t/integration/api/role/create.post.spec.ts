@@ -6,7 +6,7 @@ import { CREATE } from "$/permissions/role_combinations"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!/app/routes/api/role/create.post"
+import Route from "!%/api/role/create.post"
 
 describe("POST /api/role/create", () => {
 	beforeAll(async () => {

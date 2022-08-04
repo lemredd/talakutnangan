@@ -13,6 +13,7 @@ import {
 import { UserKind, UserKindValues } from "$/types/database"
 
 import Role from "%/models/role"
+import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -61,13 +62,6 @@ export default class User extends Model {
 	})
 	admittedAt!: Date|null
 
-	@AllowNull
-	@Column({
-		type: DataType.BLOB("medium"),
-		defaultValue: null
-	})
-	signature!: Buffer|null
-
 	@ForeignKey(() => Department)
 	@Column({
 		allowNull: false
@@ -82,6 +76,9 @@ export default class User extends Model {
 
 	@HasMany(() => AttachedRole, "userID")
 	attachedRoles!: AttachedRole[]
+
+	@HasOne(() => Signature)
+	signature?: Signature
 
 	@HasOne(() => StudentDetail)
 	studentDetail?: StudentDetail

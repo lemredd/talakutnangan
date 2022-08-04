@@ -1,14 +1,11 @@
 <template>
 	<form @submit.prevent="createRole">
+		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
 				label="Role Name"
 				type="text"
 				v-model="roleName" />
 
-		<FlagSelector
-			header="Post"
-			:base-permission-group="post"
-			v-model:flags="postFlags" />
 		<FlagSelector
 			header="Semester"
 			:base-permission-group="semester"
@@ -17,6 +14,10 @@
 			header="Tag"
 			:base-permission-group="tag"
 			v-model:flags="tagFlags" />
+		<FlagSelector
+			header="Post"
+			:base-permission-group="post"
+			v-model:flags="postFlags" />
 		<FlagSelector
 			header="Comment"
 			:base-permission-group="comment"
@@ -50,9 +51,8 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
-import RoleFetcher from "$@/communicators/role"
-import type { DeserializedPageContext } from "$@/types/independent"
+import { ref } from "vue"
+import RoleFetcher from "$@/fetchers/role"
 import {
 	tag,
 	user,
@@ -64,8 +64,6 @@ import {
 } from "$/permissions/permission_list"
 import TextualField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-
-const pageContext = inject("pageContext") as DeserializedPageContext
 
 const roleName = ref("")
 
@@ -80,7 +78,7 @@ const auditTrailFlags = ref<number>(0)
 RoleFetcher.initialize("/api")
 
 function createRole() {
-	RoleFetcher.create({
+	new RoleFetcher().create({
 		name: roleName.value,
 		postFlags: postFlags.value,
 		semesterFlags: semesterFlags.value,
@@ -88,13 +86,15 @@ function createRole() {
 		commentFlags: commentFlags.value,
 		profanityFlags: profanityFlags.value,
 		userFlags: userFlags.value,
-		auditTrailFlags: auditTrailFlags.value
+		auditTrailFlags: auditTrailFlags.value,
+		departmentFlags: 1,
+		roleFlags: 1
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)
 
 		if (status >= 400) {
-			// Output error
+			// TODO: Output error in UI
 		}
 	})
 }

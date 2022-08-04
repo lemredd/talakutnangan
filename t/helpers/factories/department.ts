@@ -1,12 +1,27 @@
-import { faker } from "@faker-js/faker"
-
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
+import type {
+	DepartmentResourceIdentifier,
+	DepartmentAttributes,
+	DeserializedDepartmentResource,
+	DeserializedDepartmentDocument,
+	DeserializedDepartmentListDocument
+} from "$/types/documents/department"
+
+import { faker } from "@faker-js/faker"
 
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
+import DepartmentTransformer from "%/transformers/department"
 
-export default class DepartmentFactory extends BaseFactory<Department> {
+export default class DepartmentFactory extends BaseFactory<
+	Department,
+	DepartmentResourceIdentifier,
+	DepartmentAttributes,
+	DeserializedDepartmentResource,
+	DeserializedDepartmentDocument,
+	DeserializedDepartmentListDocument
+> {
 	#name = () => faker.name.firstName()
 		+" "+faker.name.firstName()
 		+" "+faker.name.middleName()
@@ -14,6 +29,8 @@ export default class DepartmentFactory extends BaseFactory<Department> {
 	#mayAdmit = true
 
 	get model(): ModelCtor<Department> { return Department }
+
+	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
 
 	async generate(): GeneratedData<Department> {
 		const departmentName = this.#name()

@@ -1,42 +1,50 @@
-import DepartmentManager from "./department"
 import DepartmentFactory from "~/factories/department"
+import UserFactory from "~/factories/user"
 
-describe("Database: Department Read Operations", () => {
-	it("can search department with matching query", async () => {
-		const manager = new DepartmentManager()
-		const department = await (new DepartmentFactory()).insertOne()
-		const incompleteName = department.fullName.slice(1)
+import DeparmentManager from "./department"
 
-		const roles = await manager.list({
-			fullName: incompleteName,
-			filter: {
-				existence: "exists"
-			},
-			sort: [],
-			page: 0,
-			limit: 1
-		})
+describe("Database: Department read operations", () => {
+	it("can count single department", async () => {
+		const manager = new DeparmentManager()
+		const department = await new DepartmentFactory().insertOne()
+		await new UserFactory().in(department).insertOne()
+		await new UserFactory().in(department).insertOne()
 
-		expect(roles).toHaveProperty("data")
-		expect(roles.data).toHaveLength(1)
+		const counts = await manager.countUsers([ department.id ])
+
+		expect(counts).toHaveProperty("data.0.id", department.id)
+		expect(counts).toHaveProperty("data.0.type", "department")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
-	it("cannot search department with non-matching query", async () => {
-		const manager = new DepartmentManager()
-		const department = await (new DepartmentFactory()).insertOne()
-		const incorrectName = department.fullName + "1"
+	it("can count single department with zero users", async () => {
+		const manager = new DeparmentManager()
+		const department = await new DepartmentFactory().insertOne()
 
-		const roles = await manager.list({
-			fullName: incorrectName,
-			filter: {
-				existence: "exists"
-			},
-			sort: [],
-			page: 0,
-			limit: 1
-		})
+		const counts = await manager.countUsers([ department.id ])
 
-		expect(roles).toHaveProperty("data")
-		expect(roles.data).toHaveLength(0)
+		expect(counts).toHaveProperty("data.0.id", department.id)
+		expect(counts).toHaveProperty("data.0.type", "department")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
+	})
+
+	it("can count multiple departments", async () => {
+		const manager = new DeparmentManager()
+		const departmentA = await new DepartmentFactory().insertOne()
+		const departmentB = await new DepartmentFactory().insertOne()
+		await new UserFactory().in(departmentA).insertOne()
+		await new UserFactory().in(departmentA).insertOne()
+		await new UserFactory().in(departmentA).insertOne()
+		await new UserFactory().in(departmentB).insertOne()
+		await new UserFactory().in(departmentB).insertOne()
+
+		const counts = await manager.countUsers([ departmentA.id, departmentB.id ])
+
+		expect(counts).toHaveProperty("data.0.id", departmentA.id)
+		expect(counts).toHaveProperty("data.0.type", "department")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 3)
+		expect(counts).toHaveProperty("data.1.id", departmentB.id)
+		expect(counts).toHaveProperty("data.1.type", "department")
+		expect(counts).toHaveProperty("data.1.meta.userCount", 2)
 	})
 })

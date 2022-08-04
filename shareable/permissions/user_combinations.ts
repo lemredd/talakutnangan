@@ -1,4 +1,4 @@
-import { Permissions } from "$/permissions/user_permissions"
+import { Permissions } from "$/permissions/user"
 
 export const READ_OWN: Permissions[] = [
 	"view",

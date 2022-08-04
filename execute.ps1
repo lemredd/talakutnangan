@@ -48,9 +48,28 @@ It contains the name of test suite to run.
 Only works if `-Test` switch is on.
 Limits the files to test base from regular expression.
 
+.PARAMETER Clear
+Only works if `-Test` switch is on.
+Clears the cache of the specific suite.
+
 .PARAMETER Watch
 Only works if `-Test` switch is on.
 This watches the files included on specified tests.
+
+.PARAMETER Database
+Switch to run database operations.
+
+.PARAMETER Initialize
+Switch to migrate all database tables for the first time.
+
+.PARAMETER Upgrade
+Switch to migrate all database tables.
+
+.PARAMETER Downgrade
+Switch to undo some migration of tables.
+
+.PARAMETER Reset
+Switch to redo all migration of tables from the start.
 
 .INPUTS
 All inputs are done through arguments.
@@ -125,6 +144,7 @@ Param(
 		"unit:back_ci",
 		"unit:front_ci",
 		"unit:server",
+		"unit:routes",
 		"unit:database",
 		"intg:front",
 		"intg:back"
@@ -138,7 +158,31 @@ Param(
 
 	[Parameter(ParameterSetName="Test", Position=3)]
 	[switch]
-	$Watch
+	$Clear,
+
+	[Parameter(ParameterSetName="Test", Position=4)]
+	[switch]
+	$Watch,
+
+	[Parameter(ParameterSetName="Database", Position=0)]
+	[switch]
+	$Database,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Initialize,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Upgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Downgrade,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Reset
 )
 
 if ($Help) {
@@ -174,22 +218,34 @@ if ($Test) {
 		$regexFlag = '"'+$Regex+'"'
 	}
 
+	if ($Clear) {
+		$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+
+		Get-Item $cacheDirectory/* | ForEach-Object $_ {
+			if ($_.Name -ne ".gitignore") {
+				$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
+				Write-Output "Deleting $NodeToDelete"
+				Remove-Item $NodeToDelete -Recurse
+			}
+		}
+	}
+
 	if ($regexFlag -eq '""') {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration}
+		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
 	} else {
-		Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag)
+		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
 	}
 
 	# Above operations refreshed the cache directory so it is safe to watch now
 	if ($Watch) {
 		if ($regexFlag -eq '""') {
-			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
 		} else {
-			Write-output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
 		}
 	}
 }
@@ -208,5 +264,25 @@ if ($Pull) {
 		& git pull --prune
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+	}
+}
+
+if ($Database) {
+	if ($Initialize) {
+		& npx sequelize-cli db:create
+		& ./execute -Database -Upgrade
+	}
+
+	if ($Upgrade) {
+		& npx sequelize-cli db:migrate
+	}
+
+	if ($Downgrade) {
+		& npx sequelize-cli db:migrate:undo
+	}
+
+	if ($Reset) {
+		& npx sequelize-cli db:drop
+		& ./execute -Database -Initialize
 	}
 }

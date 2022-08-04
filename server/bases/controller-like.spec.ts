@@ -1,6 +1,7 @@
-import { EndHandler } from "!/types/hybrid"
-import { Request, Response, NextFunction } from "!/types/dependent"
-import { RouteInformation, OptionalMiddleware } from "$/types/server"
+import type { EndHandler } from "!/types/hybrid"
+import type { RouteInformation } from "$/types/server"
+import type { OptionalMiddleware } from "!/types/independent"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
@@ -41,7 +42,7 @@ describe("Back-end Base: ControllerLike Non-Request", () => {
 
 	it("can make route information", () => {
 		class ControllerB extends BaseTestController {
-			get filePath(): string { return `${this.root}/server/app/routes/a/b/index.get.ts` }
+			get filePath(): string { return `${this.root}/routes/a/b/index.get.ts` }
 
 			async intermediate(request: Request, response: Response, next: NextFunction)
 				: Promise<void> {
@@ -229,7 +230,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 				return Promise.resolve()
 			}
 
-			get validations(): Validation[] { return [ new ValidationA({}) ] }
+			get validations(): Validation[] { return [ new ValidationA(() => ({})) ] }
 		}
 
 		const handlers = (new ControllerI()).handlers
@@ -241,8 +242,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		expect(middlewareFunction).toHaveBeenCalled()
 	})
 
-
-	it("can use post parser middleares", async () => {
+	it("can use post parser middlewares", async () => {
 		const middlewareFunction = jest.fn()
 
 		class PostBodyParserA extends Middleware {
@@ -261,6 +261,37 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 
 			get postParseMiddlewares(): OptionalMiddleware[] {
 				return [ new PostBodyParserA() ]
+			}
+		}
+
+		const handlers = (new ControllerJ()).handlers
+		const { middlewares } = handlers
+		const targetMiddleware = middlewares[2]!
+
+		await requester.runMiddleware(targetMiddleware.intermediate.bind(targetMiddleware))
+
+		expect(middlewareFunction).toHaveBeenCalled()
+	})
+
+	it("can use post validation middlewares", async () => {
+		const middlewareFunction = jest.fn()
+
+		class PostValidationA extends Middleware {
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
+				middlewareFunction()
+				return Promise.resolve()
+			}
+		}
+
+		class ControllerJ extends BaseTestController {
+			async intermediate(request: Request, response: Response, next: NextFunction)
+				: Promise<void> {
+				return Promise.resolve()
+			}
+
+			get postValidationMiddlewares(): OptionalMiddleware[] {
+				return [ new PostValidationA() ]
 			}
 		}
 

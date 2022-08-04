@@ -1,5 +1,6 @@
-import { RouteInformation, OptionalMiddleware } from "$/types/server"
-import { RouteHandlers, EndHandler } from "!/types/hybrid"
+import type { RouteInformation } from "$/types/server"
+import type { OptionalMiddleware } from "!/types/independent"
+import type { RouteHandlers, EndHandler } from "!/types/hybrid"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
@@ -43,6 +44,11 @@ export default abstract class extends Middleware {
 	get postParseMiddlewares(): OptionalMiddleware[] { return [] }
 
 	/**
+	 * Lists middlewares to run after validation.
+	 */
+	get postValidationMiddlewares(): OptionalMiddleware[] { return [] }
+
+	/**
 	 * Returns the middlewares to be used before that main handler will execute.
 	 */
 	get middlewares(): OptionalMiddleware[] {
@@ -50,7 +56,8 @@ export default abstract class extends Middleware {
 			this.policy,
 			this.bodyParser,
 			...this.postParseMiddlewares,
-			...this.validations
+			...this.validations,
+			...this.postValidationMiddlewares
 		]
 	}
 

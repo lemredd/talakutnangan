@@ -1,20 +1,76 @@
-import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { CommonConstraints, RawDepartment, Pipe } from "$/types/database"
+import type { ModelCtor } from "%/types/dependent"
+import type { Serializable } from "$/types/general"
+import type { CommonQueryParameters } from "$/types/query"
+import type {
+	DepartmentAttributes,
+	DepartmentResourceIdentifier
+} from "$/types/documents/department"
 
+import User from "%/models/user"
 import BaseManager from "%/managers/base"
+import trimRight from "$/helpers/trim_right"
 import Department from "%/models/department"
+import Condition from "%/managers/helpers/condition"
 import DepartmentTransformer from "%/transformers/department"
-import searchFullname from "%/managers/department/search_fullname"
 
-export default class  extends BaseManager<Department, RawDepartment> {
+export default class  extends BaseManager<Department, DepartmentAttributes, CommonQueryParameters> {
 	get model(): ModelCtor<Department> { return Department }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<Department>, CommonConstraints>[] {
-		return [
-			searchFullname,
-			...super.listPipeline
-		]
+	async countUsers(departmentIDs: number[]): Promise<Serializable> {
+		try {
+			const [ counts, metadata ] = await Department.sequelize!.query(
+				// @ts-ignore
+				Department.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					Department.tableName,
+					{
+						attributes: [
+							"id",
+							[
+								Department.sequelize!.literal(`(${
+									trimRight(
+										// @ts-ignore
+										User.sequelize.getQueryInterface().queryGenerator.selectQuery(
+											User.tableName,
+											{
+												attributes: [ User.sequelize!.fn("count", "*") ],
+												where: new Condition().equal(
+													"departmentID",
+													User.sequelize!.col(`${Department.tableName}.id`)
+												).build()
+											}
+										),
+										";"
+									)
+								})`),
+								"count"
+							]
+						],
+						where: new Condition().or(
+							...departmentIDs.map(departmentID => new Condition().equal("id", departmentID))
+						).build()
+					}
+				)
+			)
+
+			const identifierObjects: DepartmentResourceIdentifier[] = []
+
+			{
+				(counts as { id: number, count: number }[]).forEach((countInfo, i) => {
+					identifierObjects.push({
+						type: "department",
+						id: countInfo.id,
+						meta: {
+							userCount: +countInfo.count
+						}
+					})
+				})
+			}
+
+			return { data: identifierObjects }
+		} catch(error) {
+			throw this.makeBaseError(error)
+		}
 	}
 }

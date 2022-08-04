@@ -1,4 +1,4 @@
-import type { PermissionMap, PermissionInfo } from "$/types/server"
+import type { PermissionMap, PermissionInfo } from "$/types/permission"
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
 import BasePermissionGroup from "$/permissions/base"
@@ -53,10 +53,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -135,10 +155,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -180,10 +220,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -257,10 +317,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -307,10 +387,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0
+									userFlags: 0,
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -367,7 +467,7 @@ describe("Helper: Filter Link Infos", () => {
 	type AvailablePermissionsC = "a" | "b" | "c"
 
 	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsC> {
-		get name(): string { return "groupA" }
+		get name(): string { return "userFlags" }
 		get permissions(): PermissionMap<AvailablePermissionsC> {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
 				[ "a", { flag: 0x1, permissionDependencies: [] } ],
@@ -394,11 +494,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a"),
+									userFlags: permissionGroup.generateMask("a"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -446,11 +565,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a")
+									userFlags: permissionGroup.generateMask("a"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}
@@ -521,11 +659,30 @@ describe("Helper: Filter Link Infos", () => {
 									type: "role",
 									id: 2,
 									name: "B",
-									userFlags: 0,
-									groupA: permissionGroup.generateMask("a", "b")
+									userFlags: permissionGroup.generateMask("a", "b"),
+									departmentFlags: 0,
+									auditTrailFlags: 0,
+									commentFlags: 0,
+									postFlags: 0,
+									profanityFlags: 0,
+									roleFlags: 0,
+									semesterFlags: 0,
+									tagFlags: 0
 								}
 							]
+						},
+						department: {
+							data: {
+								type: "department",
+								id: 1,
+								acronym: "A",
+								fullName: "A",
+								mayAdmit: true
+							}
 						}
+					},
+					meta: {
+						hasDefaultPassword: false
 					}
 				}
 			}

@@ -7,9 +7,8 @@ import Router from "!/bases/router"
 import catchAllErrors from "!/app/catch_all_errors"
 import createViteDevServer from "!/vite_dev/create_server"
 import makeGlobalPostJobs from "!/app/make_global_post_jobs"
-import manageAuthentication from "!/app/auth/manage_authentication"
+import manageAuthentication from "!/app/manage_authentication"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
-import registerCustomValidators from "!/app/auth/register_custom_validators"
 
 export default async function(customRoutes: Router): Promise<express.Express> {
 	const app = express()
@@ -19,7 +18,6 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 
 	await registerGlobalMiddlewares(app)
 	await manageAuthentication()
-	await registerCustomValidators()
 
 	const globalPostJobs = await makeGlobalPostJobs()
 	const rawGlobalPostJobs = globalPostJobs
