@@ -1,14 +1,12 @@
 import { MULTIPART_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import flushPromises from "flush-promises"
 import "~/set-ups/email.set_up"
 
 import App from "~/set-ups/app"
 import RoleFactory from "~/factories/role"
-import UserFactory from "~/factories/user"
+import URLMaker from "$!/singletons/url_maker"
 import RequestEnvironment from "$!/singletons/request_environment"
 
-import Transport from "!/helpers/email/transport"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
@@ -21,6 +19,8 @@ describe("PATCH /api/user/:id/relationships/signature/update", () => {
 
 	it("can upload valid student details", async () => {
 		jest.setTimeout(10000)
+
+		URLMaker.initialize("http", "localhost", 16000, "/api")
 
 		const studentRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
@@ -38,7 +38,12 @@ describe("PATCH /api/user/:id/relationships/signature/update", () => {
 			.type(MULTIPART_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)
 
-			console.log(response.body, "\n\n\n\\n\n\n\n\n\n")
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.body).toHaveProperty("data.type", "signature")
+		expect(response.body).toHaveProperty("data.id")
+		expect(response.body).toHaveProperty(
+			"data.links.self",
+			"http://localhost:16000/api/signature/"+response.body.data.id
+		)
 	})
 })
