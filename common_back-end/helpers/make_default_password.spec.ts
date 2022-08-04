@@ -19,6 +19,15 @@ describe("Helpers: Make default password", () => {
 						type: "student_detail",
 						studentNumber: "0000-000"
 					}
+				},
+				department: {
+					data: {
+						id: 1,
+						type: "department",
+						mayAdmit: true,
+						acronym: "A",
+						fullName: "A"
+					}
 				}
 			},
 			meta: {
@@ -44,6 +53,15 @@ describe("Helpers: Make default password", () => {
 				},
 				employeeSchedules: {
 					data: []
+				},
+				department: {
+					data: {
+						id: 1,
+						type: "department",
+						mayAdmit: true,
+						acronym: "A",
+						fullName: "A"
+					}
 				}
 			},
 			meta: {
@@ -66,6 +84,15 @@ describe("Helpers: Make default password", () => {
 				kind: "unreachable_employee",
 				roles: {
 					data: []
+				},
+				department: {
+					data: {
+						id: 1,
+						type: "department",
+						mayAdmit: true,
+						acronym: "A",
+						fullName: "A"
+					}
 				}
 			},
 			meta: {
