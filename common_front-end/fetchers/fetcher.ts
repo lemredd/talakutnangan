@@ -62,6 +62,14 @@ export default class Fetcher<
 		)
 	}
 
+	read(id: number): Promise<Response<T, U, V, W, Z>> {
+		const path = specializedPath(`${this.type}/read/:id`, { id })
+
+		return this.handleResponse(
+			this.getJSON(path)
+		)
+	}
+
 	list(parameters: C): Promise<Response<T, U, V, W, A>> {
 		const commaDelimitedSort = {
 			...parameters,

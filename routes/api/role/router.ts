@@ -1,5 +1,6 @@
 import Router from "!/bases/router"
 import GetList from "!%/api/role/list.get"
+import GetRead from "!%/api/role/read(id).get"
 import PostCreate from "!%/api/role/create.post"
 import PatchRestore from "!%/api/role/restore.patch"
 import PatchUpdate from "!%/api/role/update(id).patch"
@@ -12,6 +13,7 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetList(),
+			new GetRead(),
 			new PostCreate(),
 			new PatchUpdate(),
 			new PatchRestore(),
