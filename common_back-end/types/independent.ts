@@ -25,6 +25,6 @@ export interface RawUser {
 }
 
 export interface RawSignature {
-	userID: string,
+	userID: number,
 	signature: Buffer
 }

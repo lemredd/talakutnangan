@@ -35,7 +35,7 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
-			const templatePath = "/api/signature/:id"
+			const templatePath = "/api/signature/read/:id"
 
 			if (resource.data instanceof Array) {
 				resource.data = (resource.data as GeneralObject[]).map(data => {

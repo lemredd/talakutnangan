@@ -13,15 +13,15 @@ export interface SignatureResourceIdentifier extends ResourceIdentifier {
 	type: "signature",
 }
 
-export interface SignatureAttributes extends Attributes {
-	signature?: string
+export interface SignatureAttributes<T = string> extends Attributes {
+	signature?: T
 }
 
-export interface SignatureResource extends Resource<
+export interface SignatureResource<T = string> extends Resource<
 	SignatureResourceIdentifier,
-	SignatureAttributes
+	SignatureAttributes<T>
 > {
-	links: {
+	links?: {
 		self: string
 	}
 }
@@ -31,10 +31,10 @@ export interface DeserializedSignatureResource extends DeserializedResource<
 	SignatureAttributes
 > {}
 
-export interface SignatureDocument extends ResourceDocument<
+export interface SignatureDocument<T = Buffer> extends ResourceDocument<
 	SignatureResourceIdentifier,
-	SignatureAttributes,
-	SignatureResource
+	SignatureAttributes<T>,
+	SignatureResource<T>
 > {}
 
 export interface SignatureListDocument extends ResourceListDocument<

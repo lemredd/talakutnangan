@@ -1,9 +1,13 @@
+import type { Request, Response, NextFunction } from "!/types/dependent"
 import { Buffer } from "buffer"
+
 import busboy from "busboy"
 import { parse } from "qs"
+
 import Log from "$!/singletons/log"
 import Middleware from "!/bases/middleware"
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import mergeDeeply from "$!/helpers/merge_deeply"
+import setDeepPath from "$!/helpers/set_deep_path"
 
 /**
  * Used to parse the forms that have attached files.
@@ -21,7 +25,7 @@ export default class FormBodyParser extends Middleware {
 				rawBuffer.push(...data)
 			})
 			.on("close", () => {
-				bufferedFiles[name] = { buffer: Buffer.from(rawBuffer), info }
+				setDeepPath(bufferedFiles, name, { buffer: Buffer.from(rawBuffer), info })
 				Log.trace("middleware", `parsed "${name}" file data in multipart body parser`)
 			})
 		})
@@ -35,10 +39,7 @@ export default class FormBodyParser extends Middleware {
 			const parsedFormQuery = parse(formQueries.join("&"))
 			Log.trace("middleware", "parsed fields in multipart body parser")
 
-			request.body = {
-				...bufferedFiles,
-				...parsedFormQuery
-			}
+			request.body = mergeDeeply(parsedFormQuery, bufferedFiles)
 
 			Log.success("middleware", "merged fields and files as one body in multipart body parser")
 

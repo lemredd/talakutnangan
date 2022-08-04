@@ -20,7 +20,7 @@ export default class Serializer {
 			.withTransformer(transformer)
 
 		if (options !== undefined) {
-			builder = builder.withOptions(options)
+			builder = builder.withOptions({ extra: options as unknown as U })
 		}
 
 		return builder

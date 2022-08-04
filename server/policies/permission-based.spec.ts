@@ -30,6 +30,25 @@ describe("Middleware: Permission-Based Policy", () => {
 		requester.expectSuccess()
 	})
 
+	it("can execute extra checks", async () => {
+		const extraCheck = jest.fn()
+		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const user = await (new UserFactory().attach(role)).insertOne()
+		const pageGuard = new PermissionBasedPolicy(permissions, [
+			[ "view" ]
+		], extraCheck)
+		requester.customizeRequest({
+			user: Serializer.serialize(user, transformer, {}),
+			isAuthenticated: jest.fn().mockReturnValue(true)
+		})
+
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+
+		const request = requester.expectSuccess()
+		expect(extraCheck).toHaveBeenCalled()
+		expect(extraCheck.mock.calls[0][0]).toStrictEqual(request)
+	})
+
 	it("can allow users with permission on different combination", async () => {
 		const role = await new RoleFactory().userFlags(permissions.generateMask(
 			"view",

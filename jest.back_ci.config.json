@@ -1,9 +1,18 @@
 {
 	"preset": "ts-jest",
 
+	"extensionsToTreatAsEsm": [".ts"],
+
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
+
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {
