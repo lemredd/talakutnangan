@@ -18,11 +18,6 @@ import convertToCamelCase from "$/helpers/convert_to_camel_case"
  * Assumes the fields to be converted exists.
  */
 export default class CSVParser extends Middleware {
-	private parser = parse({
-		columns: headers => headers.map((header: string) => convertToCamelCase(header)),
-		bom: true
-	})
-
 	private rawFields: string[]
 
 	constructor(...rawFields: string[]) {
@@ -33,6 +28,11 @@ export default class CSVParser extends Middleware {
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		try {
 			for (const field of this.rawFields) {
+				const parser = parse({
+					columns: headers => headers.map((header: string) => convertToCamelCase(header)),
+					bom: true
+				})
+
 				const buffer: Buffer = accessDeepPath(request.body, `${field}.buffer`)
 
 				setDeepPath(request.body, field, await new Promise<GeneralObject<string>[]>(
@@ -41,7 +41,7 @@ export default class CSVParser extends Middleware {
 						const reader = () => {
 							Log.trace("middleware", `reading the rows in the CSV file in "${field}" field`)
 							let row;
-							while((row = this.parser.read()) !== null) {
+							while((row = parser.read()) !== null) {
 								rows.push(row)
 							}
 						}
@@ -64,15 +64,15 @@ export default class CSVParser extends Middleware {
 							resolve(rows)
 						}
 						const unlisten = () => {
-							this.parser.off("readable", reader)
-							this.parser.off("error", thrower)
-							this.parser.off("end", closer)
+							parser.off("readable", reader)
+							parser.off("error", thrower)
+							parser.off("end", closer)
 						}
-						this.parser.on("readable", reader)
-						this.parser.on("error", thrower)
-						this.parser.on("end", closer)
-						this.parser.write(buffer)
-						this.parser.end()
+						parser.on("readable", reader)
+						parser.on("error", thrower)
+						parser.on("end", closer)
+						parser.write(buffer)
+						parser.end()
 					}
 				))
 
