@@ -1,6 +1,6 @@
 <template>
 	<div class="suspensible">
-		<div class="loaded" v-if="asyncResource">
+		<div class="loaded" v-if="isLoaded">
 			<slot></slot>
 		</div>
 
@@ -14,9 +14,9 @@
 </style>
 
 <script setup lang="ts">
-import type { PossibleResources } from "$@/types/independent"
 
-const { asyncResource } = defineProps<{
-	asyncResource: PossibleResources | PossibleResources[]
+const { isLoaded } = defineProps<{
+	isLoaded: boolean
 }>()
+// watch(computed(() => asyncResource), () => console.log("loaded reosurce:", asyncResource, "\n\n\n\n"))
 </script>

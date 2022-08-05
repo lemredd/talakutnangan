@@ -21,7 +21,7 @@ describe("UI Component: Suspensible", () => {
 
 		const wrapper = mount(Suspensible, {
 			props: {
-				asyncResource: response.body.data
+				isLoaded: response.body.data !== null
 			}
 		})
 
