@@ -248,6 +248,9 @@ export default class extends MultipartController {
 				const email = (data as RawBulkDataForEmployee).email
 				data.password = extractEmailUsername(email)
 			}
+
+			data.prefersDark = false
+
 			return data
 		})
 
