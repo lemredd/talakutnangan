@@ -151,6 +151,7 @@ describe("Database: Base Read Operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [ "name" ],
 			page: {
 				offset: 0,
 				limit: 3
@@ -169,6 +170,7 @@ describe("Database: Base Read Operations", () => {
 			filter: {
 				existence: "exists"
 			},
+			sort: [ "name" ],
 			page: {
 				offset: 0,
 				limit: 5
