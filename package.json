@@ -16,9 +16,6 @@
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
 		"migrate:up": "npx sequelize-cli db:migrate",
-		"seed:make": "npx sequelize-cli seed:generate --name",
-		"seed:up:all": "npx sequelize-cli db:seed:all",
-		"seed:down": "npx sequelize-cli db:seed:undo",
 		"seed:redo:all": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all"
 	},
 	"devDependencies": {

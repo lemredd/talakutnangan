@@ -71,6 +71,15 @@ Switch to undo some migration of tables.
 .PARAMETER Reset
 Switch to redo all migration of tables from the start.
 
+.PARAMETER Seed
+Seeds the database with new values.
+
+.PARAMETER Unseed
+Removes seeded values from last seeding.
+
+.PARAMETER Reseed
+Redo the seeding of the database.
+
 .INPUTS
 All inputs are done through arguments.
 
@@ -182,7 +191,19 @@ Param(
 
 	[Parameter(ParameterSetName="Database", Position=1)]
 	[switch]
-	$Reset
+	$Reset,
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Seed
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Unseed
+
+	[Parameter(ParameterSetName="Database", Position=1)]
+	[switch]
+	$Reseed
 )
 
 if ($Help) {
@@ -294,5 +315,18 @@ if ($Database) {
 	if ($Reset) {
 		& npx sequelize-cli db:drop
 		& ./execute -Database -Initialize
+	}
+
+	if ($Seed) {
+		& npx sequelize-cli db:seed:all
+	}
+
+	if ($Unseed) {
+		& npx sequelize-cli db:seed:undo
+	}
+
+	if ($Reseed) {
+		& npx sequelize-cli db:seed:undo:all
+		& npx sequelize-cli db:seed:all
 	}
 }
