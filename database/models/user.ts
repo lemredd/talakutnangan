@@ -55,6 +55,12 @@ export default class User extends Model {
 	})
 	emailVerifiedAt!: Date|null
 
+	@Column({
+		allowNull: false,
+		type: DataType.BOOLEAN
+	})
+	prefersDark!: boolean
+
 	@AllowNull
 	@Column({
 		type: DataType.DATE,
