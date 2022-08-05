@@ -149,7 +149,7 @@ export default class extends MultipartController {
 					}
 				}
 			})),
-			new CSVParser("importedCSV")
+			new CSVParser("meta.importedCSV")
 		]
 	}
 
