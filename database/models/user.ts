@@ -61,13 +61,6 @@ export default class User extends Model {
 	})
 	prefersDark!: boolean
 
-	@AllowNull
-	@Column({
-		type: DataType.DATE,
-		defaultValue: null
-	})
-	admittedAt!: Date|null
-
 	@ForeignKey(() => Department)
 	@Column({
 		allowNull: false
