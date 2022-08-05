@@ -60,25 +60,35 @@ This watches the files included on specified tests.
 Switch to run database operations.
 
 .PARAMETER Initialize
+Only works if `-Database` switch is on.
 Switch to migrate all database tables for the first time.
 
 .PARAMETER Upgrade
+Only works if `-Database` switch is on.
 Switch to migrate all database tables.
 
 .PARAMETER Downgrade
+Only works if `-Database` switch is on.
 Switch to undo some migration of tables.
 
 .PARAMETER Reset
+Only works if `-Database` switch is on.
 Switch to redo all migration of tables from the start.
 
 .PARAMETER Seed
+Only works if `-Database` switch is on.
 Seeds the database with new values.
 
 .PARAMETER Unseed
+Only works if `-Database` switch is on.
 Removes seeded values from last seeding.
 
 .PARAMETER Reseed
+Only works if `-Database` switch is on.
 Redo the seeding of the database.
+
+.PARAMETER Log
+Generates changelog.
 
 .INPUTS
 All inputs are done through arguments.
@@ -195,15 +205,19 @@ Param(
 
 	[Parameter(ParameterSetName="Database", Position=1)]
 	[switch]
-	$Seed
+	$Seed,
 
 	[Parameter(ParameterSetName="Database", Position=1)]
 	[switch]
-	$Unseed
+	$Unseed,
 
 	[Parameter(ParameterSetName="Database", Position=1)]
 	[switch]
-	$Reseed
+	$Reseed,
+
+	[Parameter(ParameterSetName="Log", Position=0)]
+	[switch]
+	$Log
 )
 
 if ($Help) {
@@ -329,4 +343,56 @@ if ($Database) {
 		& npx sequelize-cli db:seed:undo:all
 		& npx sequelize-cli db:seed:all
 	}
+}
+
+if ($Log) {
+	$packageConfiguration = Get-Content package.json | ConvertFrom-Json
+	$version = $packageConfiguration.version.trimEnd("-dev")
+	$previousVersion = [int32]($version.Split(".")[1]) - 1
+	$nextVersion = [int32]($version.Split(".")[1]) + 1
+	$packageConfiguration.version = "0.$([string]$nextVersion).0-dev"
+	$packageConfiguration = ConvertTo-Json $packageConfiguration
+	$packageConfiguration = $packageConfiguration.replace("  ", "	")
+	Set-Content -Path package.json -Value $packageConfiguration
+
+	$contents = & npx changelogen
+	$contents = $contents.Trim("`n")
+	$contents = $contents -Split "`n"
+	$cleanedContents = @("# Changelog", "", "## v$version")
+
+	$lastLine = "###"
+
+	foreach($line in $contents) {
+		$line = $line.
+			Trim().
+			Replace("≡ƒÜÇ", "🚀").
+			Replace("ΓÜá∩╕Å", "⚠️").
+			Replace("≡ƒ⌐╣", "🩹").
+			Replace("≡ƒÆà", "💅").
+			Replace("≡ƒôû", "📖").
+			Replace("≡ƒÅí", "🏡").
+			Replace("Γ£à", "✅").
+			Replace("≡ƒÄ¿", "🎨").
+			Replace("≡ƒñû", "🤖").
+			Replace("≡ƒùÆ∩╕Å", "🗒️").
+			Replace("≡ƒö⌐", "🔩").
+			Replace("≡ƒîÉ", "🌐").
+			Replace("≡ƒöª", "🔦").
+			Replace("≡ƒªá", "🦠").
+			Replace("≡ƒò╖", "🕷")
+		if (($line -eq "") -and $lastLine.StartsWith("###")) {
+			$lastLine = $line
+		} elseif (($line -eq "" -and $lastLine -ne "") -or $line.StartsWith("-")) {
+			$lastLine = $line
+			$cleanedContents += $line
+		} elseif ($line.StartsWith("###")) {
+			$lastLine = $line
+			$cleanedContents += $line
+		}
+	}
+
+	$cleanedContents = $cleanedContents -join "`n"
+
+	Rename-Item -Path ./changelogs/CHANGELOG.md -NewName CHANGELOG_v0.$($previousVersion).md
+	Set-Content -Path changelogs/CHANGELOG.md -Value $cleanedContents
 }
