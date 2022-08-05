@@ -47,7 +47,11 @@ export default class extends Controller {
 
 		const signatureDocument = await manager.findWithID(
 			+id,
-			{},
+			{
+				filter: {
+					existence: "*"
+				}
+			},
 			{ raw: true }
 		) as SignatureDocument
 
