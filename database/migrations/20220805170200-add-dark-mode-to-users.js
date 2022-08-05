@@ -8,7 +8,8 @@ module.exports = {
 					"prefersDark",
 					{
 						type: Sequelize.BOOLEAN,
-						allowNull: false
+						allowNull: false,
+						defaultValue: false
 					},
 					{ transaction }
 				);
