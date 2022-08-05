@@ -14,7 +14,7 @@ module.exports = {
 						allowNull: false,
 						type: Sequelize.BIGINT,
 						references: {
-							model: "AttachedRoles",
+							model: "AttachedRole",
 							key: "id"
 						},
 						onDelete: "cascade",
