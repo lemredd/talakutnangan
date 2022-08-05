@@ -35,7 +35,8 @@ describe("PATCH /api/user/update/:id", () => {
 					id: student.id,
 					attributes: {
 						name: student.name,
-						email: newStudent.email
+						email: newStudent.email,
+						prefersDark: newStudent.prefersDark
 					}
 				}
 			})
@@ -72,7 +73,7 @@ describe("PATCH /api/user/update/:id", () => {
 			.insertOne()
 
 		const { user: student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		const newStudent = await new UserFactory().makeOne()
+		const newStudent = await new UserFactory().prefersDark(() => true).makeOne()
 
 		const response = await App.request
 			.patch(`/api/user/update/${student.id}`)
@@ -83,7 +84,8 @@ describe("PATCH /api/user/update/:id", () => {
 					id: student.id,
 					attributes: {
 						name: newStudent.name,
-						email: student.email
+						email: student.email,
+						prefersDark: newStudent.prefersDark
 					}
 				}
 			})
@@ -96,5 +98,6 @@ describe("PATCH /api/user/update/:id", () => {
 		const updatedStudent = await User.findOne({ where: { id: student.id }})
 		expect(updatedStudent!.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
 		expect(updatedStudent!.name).toBe(newStudent.name)
+		expect(updatedStudent!.prefersDark).toBe(newStudent.prefersDark)
 	})
 })
