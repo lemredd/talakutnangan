@@ -1,12 +1,9 @@
 <template>
-	<div v-if="isRolePresent">
-		<div class="role-name">
+	<Suspensible :is-loaded="isRolePresent">
+		<div class="role-name" v-if="role">
 			<h1>{{ role.name }}</h1>
 		</div>
-	</div>
-	<div v-else>
-		Loading...
-	</div>
+	</Suspensible>
 </template>
 
 <style>
@@ -16,25 +13,24 @@
 import { onMounted, inject, ref, computed } from "vue"
 
 import type { PageContext } from "#/types"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { DeserializedRoleDocument, DeserializedRoleResource } from "$/types/documents/role"
 
 import RoleFetcher from "$@/fetchers/role"
 import deserialize from "$/helpers/deserialize"
+import Suspensible from "@/suspensible.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const roleId = pageContext.routeParams!.id
 
-console.log("role id", roleId)
-
 RoleFetcher.initialize("/api")
 
-const role = ref()
+const role = ref<null | DeserializedRoleResource>(null)
 const isRolePresent = computed(() => {
-	return role.value !== undefined
+	return role.value !== null
 })
 
 onMounted(async () => {
-	await new RoleFetcher().read(10)
+	await new RoleFetcher().read(+roleId)
 	.then(response => {
 		const { body } = response
 		const deserializedData = (deserialize(body)! as DeserializedRoleDocument).data
