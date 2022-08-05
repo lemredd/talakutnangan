@@ -259,11 +259,24 @@ if ($Push) {
 }
 
 if ($Pull) {
+	$outputFile = "hidden_cache_remote.txt"
+	$command = ""
+	$possibleOutput = ""
 	$currentBranch = & git branch --show-current
+
 	if ($Remote -eq "") {
 		& git pull --prune
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+	}
+
+	$possibleBranches = & git branch -l --format='%(refname:lstrip=2)'
+	$possibleBranches = $possibleBranches -Split "`n"
+
+	foreach($branch in $possibleBranches) {
+		if ($branch -ne "master") {
+			& git branch -d $branches.trim()
+		}
 	}
 }
 
