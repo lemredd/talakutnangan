@@ -3,7 +3,7 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.createTable("Consultation", {
+				await queryInterface.createTable("Consultations", {
 					id: {
 						allowNull: false,
 						autoIncrement: true,
@@ -14,7 +14,7 @@ module.exports = {
 						allowNull: false,
 						type: Sequelize.BIGINT,
 						references: {
-							model: "AttachedRole",
+							model: "AttachedRoles",
 							key: "id"
 						},
 						onDelete: "cascade",
@@ -61,6 +61,6 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable("Consultation");
+		await queryInterface.dropTable("Consultations");
 	}
 };
