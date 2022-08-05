@@ -70,7 +70,6 @@
 		"@vitejs/plugin-vue": "^3.0.1",
 		"@vue/compiler-sfc": "^3.2.31",
 		"@vue/server-renderer": "^3.2.31",
-		"async-validator": "^4.2.5",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.0",
 		"busboy": "^1.6.0",
@@ -135,7 +134,7 @@
 			"email": "kiritogregorio@gmail.com"
 		},
 		{
-			"name": "IKnightSKyI",
+			"name": "IKnightSKyl",
 			"email": "johnjeromepertez@yahoo.com"
 		},
 		{

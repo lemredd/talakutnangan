@@ -108,6 +108,7 @@ export default class extends DevController {
 			if (testServiceDepartment === null) {
 				testServiceDepartment = await new DepartmentFactory()
 					.name(() => testDepartmentName)
+					.mayNotAdmit()
 					.insertOne()
 
 				Log.success("controller", "created test department")

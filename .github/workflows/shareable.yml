@@ -19,15 +19,11 @@ on:
       - 'jest.share.config.json'
 
 jobs:
-  pushed_unit_tests:
-    if: ${{ github.event_name == 'push' }}
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
-      with:
-        repository: ${{ github.event.push.repository.full_name }}
-        ref: ${{ github.event.push.after }}
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2
       with:

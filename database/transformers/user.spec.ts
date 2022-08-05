@@ -24,12 +24,11 @@ describe("Transformer: User", () => {
 		const transformer = new Transformer()
 
 		const object = Serializer.serialize(model, transformer, {})
-
 		expect(object).toHaveProperty("data.type", "user")
 		expect(object).toHaveProperty("data.id", model.id)
 		expect(object).toHaveProperty("meta.hasDefaultPassword", true)
 		expect(object).toHaveProperty(
-			"included.1.links.self",
+			"included.2.links.self",
 			`http://localhost:16000/api/signature/read/${signature.id}`
 		)
 	})
