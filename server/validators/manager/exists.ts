@@ -29,8 +29,7 @@ export default async function(
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
 			existence: "exists"
-		},
-		sort: []
+		}
 	})
 
 	// TODO: Store found model in cache

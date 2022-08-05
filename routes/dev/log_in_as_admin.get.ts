@@ -8,11 +8,13 @@ import AttachedRole from "%/models/attached_role"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import DepartmentFactory from "~/factories/department"
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
 import DevController from "!/controllers/dev_controller"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
+import Department from "%/models/department"
 
 interface OwnArguments {
 	hasPreprocessed?: boolean
@@ -27,6 +29,7 @@ export default class extends DevController {
 		} else {
 			const testAdminEmail = "admin@example.net"
 			const testRole = "test_admin"
+			const testDepartmentName = "Test Department"
 
 			let testAdminRole = await Role.findOne({
 				where: (new Condition()).equal("name", testRole).build()
@@ -49,6 +52,22 @@ export default class extends DevController {
 				Log.success("controller", "created test admin role")
 			}
 
+			Log.success("controller", "searching for  dept")
+			let testDepartment = await Department.findOne({
+				where: (new Condition()).equal("fullName", testDepartmentName).build()
+			})
+
+			Log.success("controller", "making for  dept")
+			if (testDepartment === null) {
+				testDepartment = await new DepartmentFactory()
+					.name(() => testDepartmentName)
+					.mayNotAdmit()
+					.insertOne()
+
+				Log.success("controller", "created test department")
+			}
+
+
 			let previousUser = await User.findOne({
 				where: (new Condition()).equal("email", testAdminEmail).build()
 			})
@@ -57,6 +76,7 @@ export default class extends DevController {
 				const user = await new UserFactory()
 					.email(() => testAdminEmail)
 					.beUnreachableEmployee()
+
 					.insertOne()
 
 				Log.success("controller", "created test admin")

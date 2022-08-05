@@ -21,9 +21,7 @@ export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 export interface RegexRuleConstraints { regex: { match: RegExp } }
 
 export interface ArrayRuleConstraints {
-	array: {
-		rules: Rules
-	}
+	array: Rules
 }
 
 export interface ObjectRuleConstraints {
@@ -98,7 +96,7 @@ export interface ValidationState {
  */
 export interface Rules {
 	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
-	constraints: RuleContraints
+	constraints?: RuleContraints
 }
 
 /**

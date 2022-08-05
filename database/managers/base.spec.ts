@@ -84,7 +84,6 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const foundUser = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -136,7 +135,6 @@ describe("Database: Base Read Operations", () => {
 		const manager = new MockUserManager()
 
 		const foundUser = await manager.findOneOnColumn("name", "Hello", {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -150,10 +148,10 @@ describe("Database: Base Read Operations", () => {
 		const bases = await (new UserFactory()).insertMany(5)
 
 		const users = await manager.list({
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			},
+			sort: [ "name" ],
 			page: {
 				offset: 0,
 				limit: 3
@@ -169,10 +167,10 @@ describe("Database: Base Read Operations", () => {
 		await (new UserFactory()).insertMany(10)
 
 		const users = await manager.list({
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			},
+			sort: [ "name" ],
 			page: {
 				offset: 0,
 				limit: 5
@@ -188,7 +186,6 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -204,7 +201,6 @@ describe("Database: Base Read Operations", () => {
 		await base.destroy({ force: false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
@@ -220,7 +216,6 @@ describe("Database: Base Read Operations", () => {
 		await base.destroy({ force: false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "archived"
 			}
@@ -235,7 +230,6 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "archived"
 			}
@@ -257,13 +251,11 @@ describe("Database: Base Read Operations", () => {
 		const base = await (new UserFactory()).insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}
 		})
 		const sameUser = await manager.findOneOnColumn("name", base.name, {
-			sort: [ "name" ],
 			filter: {
 				existence: "exists"
 			}

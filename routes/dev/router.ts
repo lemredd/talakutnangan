@@ -1,7 +1,10 @@
 import Router from "!/bases/router"
 import GetEmailsRoute from "!%/dev/emails.get"
 import GetServerInfoRoute from "!%/dev/server_info.get"
+import GetLogInAsDeanRoute from "!%/dev/log_in_as_dean.get"
 import GetLogInAsAdminRoute from "!%/dev/log_in_as_admin.get"
+import GetLogInAsSecretaryRoute from "!%/dev/log_in_as_secretary.get"
+import GetLogInAsServiceHeadRoute from "!%/dev/log_in_as_service_head.get"
 import GetSampleUserListRoute from "!%/dev/sample_user_list.get"
 import GetSampleServerErrorRoute from "!%/dev/sample_server_error.get"
 import GetMakeUnverifiedUserRoute from "!%/dev/make_unverified_user.get"
@@ -14,7 +17,10 @@ export default class extends Router {
 		this.useControllers([
 			new GetEmailsRoute(),
 			new GetServerInfoRoute(),
+			new GetLogInAsDeanRoute(),
 			new GetLogInAsAdminRoute(),
+			new GetLogInAsSecretaryRoute(),
+			new GetLogInAsServiceHeadRoute(),
 			new GetSampleUserListRoute(),
 			new GetSampleServerErrorRoute(),
 			new GetMakeUnverifiedUserRoute(),
