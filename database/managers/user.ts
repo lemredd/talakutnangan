@@ -123,11 +123,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 					departmentName, {
 						filter: {
 							existence: "exists"
-						},
-						sort: [ "id" ],
-						page: {
-							offset: 0,
-							limit: 1
 						}
 					}
 				)
@@ -159,12 +154,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 						filter: {
 							department: "*",
 							existence: "exists"
-						},
-						page: {
-							offset: 0,
-							limit: 1
-						},
-						sort: [ "name" ]
+						}
 					}
 				)
 				const deserializedRole = deserialize(rawRole) as DeserializedRoleDocument
