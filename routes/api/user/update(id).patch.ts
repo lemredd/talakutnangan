@@ -99,9 +99,9 @@ export default class extends BoundJSONController {
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
 		const id = +request.body.data.id
-		const { name, email, signature = undefined } = request.body.data.attributes
+		const { email } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
-		const updateData: Serializable = { name, email }
+		const updateData: Serializable = request.body.data.attributes
 
 		if (
 			!permissionGroup.hasOneRoleAllowed(
@@ -131,8 +131,6 @@ export default class extends BoundJSONController {
 				emailsToContact: []
 			}
 		}
-
-		if (signature) updateData.signature = signature.buffer
 
 		await manager.update(id, updateData)
 
