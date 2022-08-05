@@ -13,7 +13,6 @@ module.exports = {
 					},
 					{ transaction }
 				);
-
 			} catch (err) {
 				await transaction.rollback();
 				throw err;
@@ -21,6 +20,13 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.removeColumn("Users", "prefersDark");
+		await queryInterface.sequelize.transaction(async transaction => {
+			try {
+				await queryInterface.removeColumn("Users", "prefersDark", { transaction });
+			} catch (err) {
+				await transaction.rollback();
+				throw err;
+			}
+		});
 	}
 };
