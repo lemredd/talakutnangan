@@ -298,7 +298,6 @@ describe("Database: Miscellaneous operations", () => {
 		const sortableColumns = manager.sortableColumns
 
 		expect(sortableColumns).toStrictEqual([
-			"-admittedAt",
 			"-createdAt",
 			"-deletedAt",
 			"-email",
@@ -307,7 +306,6 @@ describe("Database: Miscellaneous operations", () => {
 			"-kind",
 			"-name",
 			"-updatedAt",
-			"admittedAt",
 			"createdAt",
 			"deletedAt",
 			"email",
