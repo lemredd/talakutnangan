@@ -34,6 +34,8 @@ import integer from "!/validators/base/integer"
 import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
 import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import notExists from "!/validators/manager/not_exists"
@@ -196,6 +198,14 @@ export default class extends MultipartController {
 													manager: {
 														className: DepartmentManager,
 														columnName: "acronym"
+													}
+												}
+											},
+											studentNumber: {
+												pipes: [ nullable, string, regex ],
+												constraints: {
+													regex: {
+														match: /^\d+-\d+$/
 													}
 												}
 											}
