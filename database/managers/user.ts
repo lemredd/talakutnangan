@@ -152,12 +152,10 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 			Log.trace("manager", "found department IDs")
 
 			// Find the IDs of the roles
-			const roleNames = bulkData.roles
+			const roleIDs = bulkData.roles
 			const roles: Role[] = []
-			for (const roleName of roleNames) {
-				const rawRole = await roleManager.findOneOnColumn(
-					"name",
-					roleName, {
+			for (const roleID of roleIDs) {
+				const rawRole = await roleManager.findWithID(roleID, {
 						filter: {
 							department: "*",
 							existence: "exists"

@@ -150,7 +150,7 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForStudents = {
 			kind: "student",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
@@ -194,7 +194,7 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
 			kind: "reachable_employee",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
@@ -240,7 +240,7 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
 			kind: "unreachable_employee",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,

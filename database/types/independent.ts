@@ -34,7 +34,7 @@ export interface RawBulkDataForEmployee extends CommonRawBulkData {}
  */
 export interface RawBulkDataForStudents {
 	kind: "student",
-	roles: string[]
+	roles: number[]
 	importedCSV: RawBulkDataForStudent[]
 }
 
@@ -43,7 +43,7 @@ export interface RawBulkDataForStudents {
  */
 export interface RawBulkDataForEmployees {
 	kind: "reachable_employee" | "unreachable_employee",
-	roles: string[]
+	roles: number[]
 	importedCSV: RawBulkDataForEmployee[]
 }
 
