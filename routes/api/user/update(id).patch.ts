@@ -25,10 +25,10 @@ import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import same from "!/validators/comparison/same"
 import integer from "!/validators/base/integer"
+import boolean from "!/validators/base/boolean"
 import unique from "!/validators/manager/unique"
 import required from "!/validators/base/required"
 import email from "!/validators/comparison/email"
-import regex from "!/validators/comparison/regex"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -56,8 +56,7 @@ export default class extends BoundJSONController {
 							}
 						},
 						id: {
-							pipes: [ required, integer ],
-							constraints: {}
+							pipes: [ required, integer ]
 						},
 						attributes: {
 							pipes: [ required, object],
@@ -69,7 +68,6 @@ export default class extends BoundJSONController {
 										constraints: {}
 									},
 									email: {
-										// TODO: Make email validator
 										pipes: [ required, string, email, unique ],
 										constraints: {
 											manager: {
@@ -80,6 +78,9 @@ export default class extends BoundJSONController {
 												IDPath: "data.id"
 											}
 										}
+									},
+									prefersDark: {
+										pipes: [ required, boolean ]
 									}
 								}
 							}
