@@ -5,11 +5,12 @@
  */
 
 import type { Day } from "$/types/database"
+import type { Serializable } from "$/types/general"
 
 /**
  * Common shape to expect for creating profiles in bulk
  */
-export interface CommonRawBulkData {
+export interface CommonRawBulkData extends Serializable {
 	name: string,
 	email: string,
 	department: string,
@@ -33,7 +34,7 @@ export interface RawBulkDataForEmployee extends CommonRawBulkData {}
  */
 export interface RawBulkDataForStudents {
 	kind: "student",
-	roles: string[]
+	roles: number[]
 	importedCSV: RawBulkDataForStudent[]
 }
 
@@ -42,7 +43,7 @@ export interface RawBulkDataForStudents {
  */
 export interface RawBulkDataForEmployees {
 	kind: "reachable_employee" | "unreachable_employee",
-	roles: string[]
+	roles: number[]
 	importedCSV: RawBulkDataForEmployee[]
 }
 

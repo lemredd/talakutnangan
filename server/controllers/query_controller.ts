@@ -3,7 +3,7 @@ import type { FieldRules } from "!/types/validation"
 
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
-import QueryValidation from "!/validation/query"
+import QueryValidation from "!/validations/query"
 
 /**
  * Specialized controller class which accept query as their input.

@@ -3,7 +3,7 @@ import type { FieldRules } from "!/types/validation"
 
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import BodyValidation from "!/validation/body"
+import BodyValidation from "!/validations/body"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 

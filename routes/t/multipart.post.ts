@@ -45,10 +45,8 @@ export default class extends MultipartController {
 				constraints: {
 					nullable: { defaultValue: [] },
 					array: {
-						rules: {
-							pipes: [ nullable ],
-							constraints: {}
-						}
+						pipes: [ nullable ],
+						constraints: {}
 					}
 				}
 			}
