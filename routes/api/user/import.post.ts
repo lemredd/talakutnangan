@@ -29,6 +29,8 @@ import array from "!/validators/base/array"
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
+import integer from "!/validators/base/integer"
+import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
@@ -49,34 +51,100 @@ export default class extends MultipartController {
 		const maxSize = 1*1000
 		return [
 			new BodyValidation((request: Request): FieldRules => ({
-				importedCSV: {
-					pipes: [ required, buffer ],
+				data: {
+					pipes: [ required, object ],
 					constraints: {
-						buffer: {
-							allowedMimeTypes: [ "text/csv" ],
-							maxSize
-						}
-					}
-				},
-				roles: {
-					pipes: [ required, array ],
-					constraints: {
-						array: {
-							pipes: [ string, exists ],
-							constraints: {
-								manager: {
-									className: RoleManager,
-									columnName: "name"
+						object: {
+							type: {
+								pipes: [ required, string, same ],
+								constraints: {
+									same: {
+										value: "user"
+									}
+								}
+							},
+							attributes: {
+								pipes: [ required, object ],
+								constraints: {
+									object: {
+										kind: {
+											pipes: [ required, string, oneOf ],
+											constraints: {
+												oneOf: {
+													values: [ ...UserKindValues ]
+												}
+											}
+										}
+									}
+								}
+							},
+							relationships: {
+								pipes: [ required, object ],
+								constraints: {
+									object: {
+										roles: {
+											pipes: [ required, object ],
+											constraints: {
+												object: {
+													data: {
+														pipes: [ required, array, length ],
+														constraints: {
+															array: {
+																pipes: [ required, object ],
+																constraints: {
+																	object: {
+																		type: {
+																			pipes: [ required, string, same ],
+																			constraints: {
+																				same: {
+																					value: "user"
+																				}
+																			}
+																		},
+																		id: {
+																			pipes: [
+																				required,
+																				string,
+																				integer,
+																				exists
+																			],
+																			constraints: {
+																				manager: {
+																					className: RoleManager,
+																					columnName: "id"
+																				}
+																			}
+																		}
+																	}
+																}
+															},
+															length: {
+																minimum: 1
+															}
+														}
+													}
+												}
+											}
+										}
+									}
 								}
 							}
 						}
 					}
 				},
-				kind: {
-					pipes: [ required, string, oneOf ],
+				meta: {
+					pipes: [ required, object ],
 					constraints: {
-						oneOf: {
-							values: [ ...UserKindValues ]
+						object: {
+							importedCSV: {
+								pipes: [ required, buffer ],
+								constraints: {
+									buffer: {
+										allowedMimeTypes: [ "text/csv" ],
+										maxSize
+									}
+								}
+							}
 						}
 					}
 				}
@@ -88,57 +156,59 @@ export default class extends MultipartController {
 	makeBodyRuleGenerator(request: Request): FieldRules {
 		// TODO: Make validator to validate name
 		return {
-			importedCSV: {
-				pipes: [ required, array, length ],
+			data: {
+				pipes: [ required ]
+			},
+			meta: {
+				pipes: [ required, object ],
 				constraints: {
-					array: {
-						pipes: [ required, object ],
-						constraints: {
-							object: {
-								name: {
-									pipes: [ required, string, notExists ],
+					object: {
+						importedCSV: {
+							pipes: [ required, array, length ],
+							constraints: {
+								array: {
+									pipes: [ required, object ],
 									constraints: {
-										manager: {
-											className: UserManager,
-											columnName: "name"
+										object: {
+											name: {
+												pipes: [ required, string, notExists ],
+												constraints: {
+													manager: {
+														className: UserManager,
+														columnName: "name"
+													}
+												}
+											},
+											email: {
+												pipes: [ required, string, notExists ],
+												constraints: {
+													manager: {
+														className: UserManager,
+														columnName: "email"
+													}
+												}
+											},
+											department: {
+												// TODO: Add validator to match if department may admit
+												pipes: [ required, string, exists ],
+												constraints: {
+													manager: {
+														className: DepartmentManager,
+														columnName: "acronym"
+													}
+												}
+											}
 										}
 									}
 								},
-								email: {
-									pipes: [ required, string, notExists ],
-									constraints: {
-										manager: {
-											className: UserManager,
-											columnName: "email"
-										}
-									}
-								},
-								department: {
-									// TODO: Add validator to match if department may admit
-									pipes: [ required, string, exists ],
-									constraints: {
-										manager: {
-											className: DepartmentManager,
-											columnName: "acronym"
-										}
-									}
+								length: {
+									minimum: 1,
+									maximum: 200
 								}
 							}
 						}
-					},
-					length: {
-						minimum: 1,
-						maximum: 200
 					}
 				}
-			},
-			roles: {
-				pipes: [ required ],
-				constraints: {}
-			},
-			kind: {
-				pipes: [ required ],
-				constraints: {}
 			}
 		}
 	}
