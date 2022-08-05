@@ -6,7 +6,10 @@ import type {
 	SignatureAttributes,
 	DeserializedSignatureResource,
 	DeserializedSignatureDocument,
-	DeserializedSignatureListDocument
+	DeserializedSignatureListDocument,
+	SignatureResource,
+	SignatureDocument,
+	SignatureListDocument
 } from "$/types/documents/signature"
 
 import dataURIToBuffer from "data-uri-to-buffer"
@@ -23,7 +26,10 @@ export default class SignatureFactory extends BaseFactory<
 	Signature,
 	SignatureResourceIdentifier,
 	SignatureAttributes,
+	SignatureResource,
 	DeserializedSignatureResource,
+	SignatureDocument<string>,
+	SignatureListDocument,
 	DeserializedSignatureDocument,
 	DeserializedSignatureListDocument,
 	SignatureTransformerOptions

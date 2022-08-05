@@ -5,7 +5,10 @@ import type {
 	UserAttributes,
 	DeserializedUserResource,
 	DeserializedUserDocument,
-	DeserializedUserListDocument
+	DeserializedUserListDocument,
+	UserResource,
+	UserDocument,
+	UserListDocument
 } from "$/types/documents/user"
 
 import { faker } from "@faker-js/faker"
@@ -24,7 +27,10 @@ export default class UserFactory extends BaseFactory<
 	User,
 	UserResourceIdentifier,
 	UserAttributes,
+	UserResource,
 	DeserializedUserResource,
+	UserDocument,
+	UserListDocument,
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 > {
