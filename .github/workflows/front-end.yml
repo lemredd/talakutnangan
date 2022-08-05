@@ -10,7 +10,7 @@ on:
       - 't/helpers/**'
       - '.github/workflows/front-end.yml'
       - 'jest.front_ci.config.json'
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - reopened
@@ -27,15 +27,11 @@ on:
       - 'jest.front_ci.config.json'
 
 jobs:
-  pushed_unit_tests:
-    if: ${{ github.event_name == 'push' }}
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
-      with:
-        repository: ${{ github.event.push.repository.full_name }}
-        ref: ${{ github.event.push.after }}
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2
       with:
@@ -52,10 +48,3 @@ jobs:
     - run: ./execute.ps1 -test unit:front_ci
       shell: pwsh
       timeout-minutes: 3
-
-  pulled_unit_tests:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Output success just to show the conclusion of tests in fork
-      run: echo 0
