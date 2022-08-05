@@ -101,7 +101,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 	}
 
 	protected get exposableColumns(): string[] {
-		const excludedColumns = new Set([ "password", "departmentID" ])
+		const excludedColumns = new Set([ "password", "departmentID", "prefersDark" ])
 		return super.exposableColumns.filter(columnName => !excludedColumns.has(columnName))
 	}
 
