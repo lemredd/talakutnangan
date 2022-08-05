@@ -1,5 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import { UserKindValues, UserKind } from "$/types/database"
+import type { ImportUserDocument } from "!/types/documents/user"
 import type { PreprocessedRequest, Request, Response } from "!/types/dependent"
 import type { OptionalMiddleware, NewUserNotificationArguments } from "!/types/independent"
 import type {
@@ -220,7 +221,12 @@ export default class extends MultipartController {
 		Log.trace("controller", "entered POST /api/user/import")
 
 		const manager = new UserManager(request.transaction, request.cache)
-		const body: Partial<RawBulkData> = request.body
+		const importedBody = request.body as unknown as ImportUserDocument
+		const body: Partial<RawBulkData> = {}
+
+		body.kind = importedBody.data.attributes.kind
+		body.roles = importedBody.data.relationships.roles.data.map(identifier => identifier.id)
+		body.importedCSV = importedBody.meta.importedCSV
 
 		Log.trace("controller", "made user manager")
 
