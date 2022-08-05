@@ -1,4 +1,5 @@
 import MockRequester from "~/set-ups/mock_requester"
+import ParserError from "$!/errors/parser"
 
 import CSVParser from "./csv"
 
@@ -47,6 +48,6 @@ describe("Middleware: CSV Form Data Transformation", () => {
 
 		await requester.runMiddleware(parser.intermediate.bind(parser))
 
-		requester.expectFailure(Error)
+		requester.expectFailure(ParserError)
 	})
 })
