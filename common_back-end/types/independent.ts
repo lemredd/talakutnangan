@@ -28,3 +28,8 @@ export interface RawSignature {
 	userID: number,
 	signature: Buffer
 }
+
+export interface RawProfilePicture {
+	userID: number,
+	file: Buffer
+}
