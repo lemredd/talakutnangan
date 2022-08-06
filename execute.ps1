@@ -307,7 +307,7 @@ if ($Pull) {
 
 	foreach($branch in $possibleBranches) {
 		if ($branch -ne "master") {
-			& git branch -d $branches.trim()
+			& git branch -d $branch.trim()
 		}
 	}
 }
