@@ -11,13 +11,11 @@
 	"private": true,
 	"types": "module",
 	"scripts": {
-		"prod": "npm run build && npm run server:prod",
+		"prod": "npm run build && npm run migrate:up && npm run server:prod",
 		"build": "vite build",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
-		"seed:make": "npx sequelize-cli seed:generate --name",
-		"seed:up:all": "npx sequelize-cli db:seed:all",
-		"seed:down": "npx sequelize-cli db:seed:undo",
+		"migrate:up": "npx sequelize-cli db:migrate",
 		"seed:redo:all": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all"
 	},
 	"devDependencies": {
