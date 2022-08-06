@@ -35,7 +35,8 @@ describe("Component: Role/Flag Selector", () => {
 		const readAccessLevelFlags = wrapper.find("#read-scope")
 		await readAccessLevelFlags.setValue("readDepartmentScope")
 
-		const updates = wrapper.emitted()
-		console.log(updates![0], "\n\n\n\n")
+		const updates = wrapper.emitted("update:flags")
+		const expectedFlagValue = post.generateMask("readDepartmentScope")
+		expect(updates![0]).toEqual([ expectedFlagValue ])
 	})
 })
