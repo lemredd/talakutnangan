@@ -9,17 +9,13 @@ import type {
 	DeserializedProfilePictureListDocument
 } from "$/types/documents/profile_picture"
 
-import dataURIToBuffer from "data-uri-to-buffer"
-import type { MimeBuffer } from "data-uri-to-buffer"
-import { faker } from "@faker-js/faker"
-
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
-import BaseFactory from "~/factories/base"
+import FileLikeFactory from "~/factories/file-like"
 import ProfilePicture from "%/models/profile_picture"
 import ProfilePictureTransformer from "%/transformers/profile_picture"
 
-export default class ProfilePictureFactory extends BaseFactory<
+export default class ProfilePictureFactory extends FileLikeFactory<
 	ProfilePicture,
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes,
@@ -29,7 +25,6 @@ export default class ProfilePictureFactory extends BaseFactory<
 	ProfilePictureTransformerOptions
 > {
 	#user: () => Promise<User>  =  () => new UserFactory().insertOne()
-	#profilePicture: () => MimeBuffer|null = () => dataURIToBuffer(faker.image.dataUri())
 
 	get model(): ModelCtor<ProfilePicture> { return ProfilePicture }
 
@@ -38,13 +33,8 @@ export default class ProfilePictureFactory extends BaseFactory<
 	async generate(): GeneratedData<ProfilePicture> {
 		return {
 			userID: (await this.#user()).id,
-			file: this.#profilePicture()
+			file: this.fileContentsGenerator()
 		}
-	}
-
-	fileContents(generator: () => MimeBuffer|null): ProfilePictureFactory {
-		this.#profilePicture = generator
-		return this
 	}
 
 	user(generator: () => Promise<User>): ProfilePictureFactory {
