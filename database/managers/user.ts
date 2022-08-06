@@ -26,8 +26,9 @@ import EmployeeSchedule from "%/models/employee_schedule"
 
 import BaseManager from "%/managers/base"
 import RoleManager from "%/managers/role"
-import DepartmentManager from "%/managers/department"
 import UserTransformer from "%/transformers/user"
+import DepartmentManager from "%/managers/department"
+import UserProfileTransformer from "%/transformers/user_profile"
 
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
@@ -81,7 +82,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 			if (foundUser !== null && await compare(password, foundUser.password)) {
 				Log.success("manager", "found a matching user")
-				return this.serialize(foundUser)
+				return this.serialize(foundUser, void(0), new UserProfileTransformer())
 			} else {
 				Log.errorMessage("manager", "matching user not found")
 				return null
@@ -101,7 +102,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 	}
 
 	protected get exposableColumns(): string[] {
-		const excludedColumns = new Set([ "password", "departmentID" ])
+		const excludedColumns = new Set([ "password", "departmentID", "prefersDark" ])
 		return super.exposableColumns.filter(columnName => !excludedColumns.has(columnName))
 	}
 
@@ -123,11 +124,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 					departmentName, {
 						filter: {
 							existence: "exists"
-						},
-						sort: [ "id" ],
-						page: {
-							offset: 0,
-							limit: 1
 						}
 					}
 				)
@@ -152,21 +148,14 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 			Log.trace("manager", "found department IDs")
 
 			// Find the IDs of the roles
-			const roleNames = bulkData.roles
+			const roleIDs = bulkData.roles
 			const roles: Role[] = []
-			for (const roleName of roleNames) {
-				const rawRole = await roleManager.findOneOnColumn(
-					"name",
-					roleName, {
+			for (const roleID of roleIDs) {
+				const rawRole = await roleManager.findWithID(roleID, {
 						filter: {
 							department: "*",
 							existence: "exists"
-						},
-						page: {
-							offset: 0,
-							limit: 1
-						},
-						sort: [ "name" ]
+						}
 					}
 				)
 				const deserializedRole = deserialize(rawRole) as DeserializedRoleDocument

@@ -10,10 +10,8 @@ describe("Validator pipe: array", () => {
 			source: null,
 			field: "hello",
 			array: {
-				rules: {
-					pipes: [ integer ],
-					constraints: {}
-				}
+				pipes: [ integer ],
+				constraints: {}
 			}
 		}
 
@@ -31,10 +29,8 @@ describe("Validator pipe: array", () => {
 			source,
 			field: "hello",
 			array: {
-				rules: {
-					pipes: [ customPipe ],
-					constraints: {}
-				}
+				pipes: [ customPipe ],
+				constraints: {}
 			}
 		}
 
@@ -51,10 +47,8 @@ describe("Validator pipe: array", () => {
 			source: null,
 			field: "hello",
 			array: {
-				rules: {
-					pipes: [ integer ],
-					constraints: {}
-				}
+				pipes: [ integer ],
+				constraints: {}
 			}
 		}
 

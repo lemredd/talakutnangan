@@ -14,8 +14,8 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
-		const newUser = await (new UserFactory()).makeOne()
+		const user = await new UserFactory().insertOne()
+		const newUser = await new UserFactory().makeOne()
 		requester.customizeRequest({
 			body: {
 				data: {
@@ -23,7 +23,8 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 					id: user.id,
 					attributes: {
 						name: newUser.name,
-						email: newUser.email
+						email: newUser.email,
+						prefersDark: newUser.prefersDark
 					}
 				}
 			}
@@ -39,8 +40,8 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
-		const newUser = await (new UserFactory()).makeOne()
+		const user = await new UserFactory().insertOne()
+		const newUser = await new UserFactory().makeOne()
 		requester.customizeRequest({
 			body: {
 				data: {
@@ -48,7 +49,8 @@ describe("Controller: PATCH /api/user/update/:id", () => {
 					id: user.id,
 					attributes: {
 						name: newUser.name,
-						email: "random"
+						email: "random",
+						prefersDark: newUser.prefersDark
 					}
 				}
 			}

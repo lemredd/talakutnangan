@@ -1,11 +1,17 @@
-name: Shareable Tests
+name: Web Front-end Integration Tests
 
 on:
   push:
     paths:
       - 'shareable/**'
-      - '.github/workflows/shareable.yml'
-      - 'jest.share.config.json'
+      - 'common_front-end/**'
+      - 't/helpers/**'
+      - 't/integration/api/**'
+      - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+      - '.github/workflows/front-end.intg.yml'
   pull_request:
     types:
       - reopened
@@ -13,11 +19,17 @@ on:
       - master
     paths:
       - 'shareable/**'
-      - '.github/workflows/shareable.yml'
-      - 'jest.share.config.json'
+      - 'common_front-end/**'
+      - 't/helpers/**'
+      - 't/integration/api/**'
+      - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+      - '.github/workflows/front-end.intg.yml'
 
 jobs:
-  unit_tests:
+  compilation_tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
@@ -26,6 +38,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 16.x
+    - name: Use .env.ci as the environment file for front-end
+      run: mv .env.ci .env
     - name: Cache node modules
       uses: actions/cache@v3
       with:
@@ -35,6 +49,4 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:share
-      shell: pwsh
-      timeout-minutes: 3
+    - run: npm run build
