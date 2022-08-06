@@ -1,0 +1,52 @@
+name: Web Front-end Integration Tests
+
+on:
+  push:
+    paths:
+      - 'shareable/**'
+      - 'common_front-end/**'
+      - 't/helpers/**'
+      - 't/integration/api/**'
+      - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+      - '.github/workflows/front-end.intg.yml'
+  pull_request:
+    types:
+      - reopened
+    branches:
+      - master
+    paths:
+      - 'shareable/**'
+      - 'common_front-end/**'
+      - 't/helpers/**'
+      - 't/integration/api/**'
+      - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
+      - '.github/workflows/front-end.intg.yml'
+
+jobs:
+  compilation_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checking out from the pushed source
+      uses: actions/checkout@v3
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    - name: Use .env.ci as the environment file for front-end
+      run: mv .env.ci .env
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_
+    - run: npm install
+    - run: npm run build
