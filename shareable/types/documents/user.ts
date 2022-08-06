@@ -116,7 +116,7 @@ export interface DeserializedUserListDocument extends DeserializedResourceListDo
 > {}
 
 interface GeneralUserProfileMetaProperties extends Serializable {
-	hasDefaultPassword: boolean|null
+	hasDefaultPassword?: boolean
 }
 
 export interface DeserializedUserProfile
