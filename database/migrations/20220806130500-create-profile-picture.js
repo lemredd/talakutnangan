@@ -22,8 +22,7 @@ module.exports = {
 					},
 					fileContents: {
 						type: Sequelize.BLOB,
-						allowNull: true,
-						defaultValue: null
+						allowNull: false
 					},
 					createdAt: {
 						allowNull: false,
