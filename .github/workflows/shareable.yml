@@ -6,11 +6,9 @@ on:
       - 'shareable/**'
       - '.github/workflows/shareable.yml'
       - 'jest.share.config.json'
-  pull_request_target:
+  pull_request:
     types:
-      - opened
       - reopened
-      - review_requested
     branches:
       - master
     paths:
@@ -40,10 +38,3 @@ jobs:
     - run: ./execute.ps1 -test unit:share
       shell: pwsh
       timeout-minutes: 3
-
-  pulled_unit_tests:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Output success just to show the conclusion of tests in fork
-      run: echo 0
