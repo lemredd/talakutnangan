@@ -17,24 +17,11 @@
 	</div>
 
 	<div class="access-level-flags" v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length">
-		<div class="read-scope">
-			<label for="read-scope">Read Access Level</label>
-			<select name="read-scope" id="read-scope" @change="updateReadAccessLevel">
-				<option
-					v-for="permissionName in readScopedPermissionNames" :value="permissionName">
-						{{ camelToSentence(permissionName).toLocaleLowerCase() }}
-				</option>
-			</select>
-		</div>
-		<div class="write-scope">
-			<label for="write-scope">Write Access Level</label>
-			<select name="write-scope" id="write-scope">
-				<option
-					v-for="permissionName in writeScopedPermissionNames" :value="permissionName">
-						{{ camelToSentence(permissionName).toLocaleLowerCase() }}
-				</option>
-			</select>
-		</div>
+		<AccessLevelSelector
+			label="Read Access Level" :options="readScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)" />
+		<AccessLevelSelector
+			label="Write Access Level" :options="writeScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)" />
+
 	</div>
 </ul>
 </template>
@@ -57,9 +44,10 @@ import { ref, watch } from "vue"
 import uniq from "lodash.uniq"
 
 // Developer defined internals
+import Checkbox from "@/fields/checkbox.vue"
+import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import BasePermissionGroup from "$/permissions/base"
 import camelToSentence from "$@/helpers/camel_to_sentence"
-import Checkbox from "@/fields/checkbox.vue"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -96,10 +84,11 @@ function updateFlags() {
 	)
 	emit("update:flags", generatedMask)
 }
-function updateReadAccessLevel(e: Event) {
+
+function updateAccessLevel(e: Event, accessPermissionNames: string[]) {
 	const value = (e.target as HTMLSelectElement).value
 	rawFlags.value.map(rawFlag => {
-		if (readScopedPermissionNames.includes(rawFlag)) {
+		if (accessPermissionNames.includes(rawFlag)) {
 			delete rawFlags.value[rawFlags.value.indexOf(rawFlag)]
 		}
 	})
