@@ -75,7 +75,8 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -database -upgrade
       shell: pwsh
-    - run: npm run seed:up:all
+    - run: ./execute.ps1 -database -reseed
+      shell: pwsh
     - run: npm run build
     - run: ./execute.ps1 -test intg:back
       shell: pwsh
