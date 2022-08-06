@@ -14,7 +14,8 @@ export interface CommonRawBulkData extends Serializable {
 	name: string,
 	email: string,
 	department: string,
-	password: string
+	password: string,
+	prefersDark: false
 }
 
 /**

@@ -273,10 +273,14 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<U = Serializable>(models: T|T[]|null, options: W = {} as W): U {
+	protected serialize<U = Serializable>(
+		models: T|T[]|null,
+		options: W = {} as W,
+		transformer: Transformer<T, W> = this.transformer
+	): U {
 		return Serializer.serialize(
 			models,
-			this.transformer,
+			transformer,
 			options as GeneralObject
 		) as unknown as U
 	}

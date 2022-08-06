@@ -43,7 +43,7 @@ export default async function(
 		before: "$",
 		after: ";"
 	})
-	console.log("combined", specializedPrecombinedRawStyles)
+
 	const rawHTML = makeRawHTML(title, specializedPrecombinedRawStyles, fragment)
 
 	// Please see: https://windicss.org/integrations/javascript.html

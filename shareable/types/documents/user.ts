@@ -22,7 +22,8 @@ export interface UserResourceIdentifier extends ResourceIdentifier {
 
 interface GeneralUserAttributes extends Attributes {
 	name: string,
-	email: string
+	email: string,
+	prefersDark?: boolean
 }
 
 export interface StudentAttributes extends GeneralUserAttributes {
@@ -115,7 +116,7 @@ export interface DeserializedUserListDocument extends DeserializedResourceListDo
 > {}
 
 interface GeneralUserProfileMetaProperties extends Serializable {
-	hasDefaultPassword: boolean|null
+	hasDefaultPassword?: boolean
 }
 
 export interface DeserializedUserProfile

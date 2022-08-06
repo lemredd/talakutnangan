@@ -10,6 +10,7 @@ describe("Helpers: Make default password", () => {
 				name: "",
 				email: "",
 				kind: "student",
+				prefersDark: false,
 				roles: {
 					data: []
 				},
@@ -48,6 +49,7 @@ describe("Helpers: Make default password", () => {
 				name: "",
 				email: "hello.world@example.com",
 				kind: "reachable_employee",
+				prefersDark: false,
 				roles: {
 					data: []
 				},
@@ -82,6 +84,7 @@ describe("Helpers: Make default password", () => {
 				name: "",
 				email: "foo.bar@example.com",
 				kind: "unreachable_employee",
+				prefersDark: false,
 				roles: {
 					data: []
 				},
