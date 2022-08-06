@@ -11,7 +11,7 @@ describe("Database: Profile picture update operations", () => {
 
 		await new ProfilePictureFactory().user(async () => user).insertOne()
 
-		const affectedCount= await manager.updateContents(user.id, newProfilePicture.file)
+		const affectedCount = await manager.updateContents(user.id, newProfilePicture.fileContents)
 
 		expect(affectedCount).toBe(1)
 	})
