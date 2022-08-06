@@ -29,7 +29,7 @@ export default class ProfilePictureFactory extends BaseFactory<
 	ProfilePictureTransformerOptions
 > {
 	#user: () => Promise<User>  =  () => new UserFactory().insertOne()
-	#profile_picture: () => MimeBuffer = () => dataURIToBuffer(faker.image.dataUri())
+	#profilePicture: () => MimeBuffer|null = () => dataURIToBuffer(faker.image.dataUri())
 
 	get model(): ModelCtor<ProfilePicture> { return ProfilePicture }
 
@@ -38,12 +38,12 @@ export default class ProfilePictureFactory extends BaseFactory<
 	async generate(): GeneratedData<ProfilePicture> {
 		return {
 			userID: (await this.#user()).id,
-			file: this.#profile_picture()
+			file: this.#profilePicture()
 		}
 	}
 
-	profile_picture(generator: () => MimeBuffer): ProfilePictureFactory {
-		this.#profile_picture = generator
+	fileContents(generator: () => MimeBuffer|null): ProfilePictureFactory {
+		this.#profilePicture = generator
 		return this
 	}
 
