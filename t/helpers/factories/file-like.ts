@@ -23,11 +23,11 @@ export default abstract class FileLikeFactory extends BaseFactory<
 	DeserializedFileLikeListDocument,
 	FileLikeTransformerOptions
 > {
-	protected fileContentsGenerator: () => MimeBuffer|null = () => dataURIToBuffer(
+	protected fileContentsGenerator: () => MimeBuffer = () => dataURIToBuffer(
 		faker.image.dataUri()
 	)
 
-	fileContents(generator: () => MimeBuffer|null): FileLikeFactory {
+	fileContents(generator: () => MimeBuffer): FileLikeFactory {
 		this.fileContentsGenerator = generator
 		return this
 	}

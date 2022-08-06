@@ -7,10 +7,8 @@ import {
 } from "sequelize-typescript"
 
 export default abstract class extends Model {
-	@AllowNull
 	@Column({
-		type: DataType.BLOB("medium"),
-		defaultValue: null
+		type: DataType.BLOB("medium")
 	})
-	fileContents!: Buffer|null
+	fileContents!: Buffer
 }
