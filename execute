@@ -1,1 +1,1 @@
-powershell ./execute.ps1 "$@"
+pwsh ./execute.ps1 "$@"
