@@ -6,11 +6,7 @@ import {
 	AllowNull
 } from "sequelize-typescript"
 
-@Table({
-	timestamps: true,
-	paranoid: true
-})
-export default class extends Model {
+export default abstract class extends Model {
 	@AllowNull
 	@Column({
 		type: DataType.BLOB("medium"),
