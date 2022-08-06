@@ -4,13 +4,38 @@
 <template>
 <ul class="flags my-3">
 	<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">{{ header }} Flags</h2>
-	<li class="ml-5" v-for="permissionName in permissionNames">
-		<Checkbox
-			:label="camelToSentence(permissionName).toLowerCase()"
-			:value="permissionName"
-			@change="updateFlags"
-			v-model="rawFlags" />
-	</li>
+
+	<div class="operational-flags">
+		<span>Operations: </span>
+		<li class="ml-5" v-for="permissionName in operationalPermissionNames">
+			<Checkbox
+				:label="camelToSentence(permissionName).toLowerCase()"
+				:value="permissionName"
+				@change="updateFlags"
+				v-model="rawFlags" />
+		</li>
+	</div>
+
+	<div class="access-level-flags" v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length">
+		<div class="read-scope">
+			<label for="read-scope">Read Access Level</label>
+			<select name="read-scope" id="read-scope">
+				<option
+					v-for="permissionName in readScopedPermissionNames" :value="permissionName">
+						{{ camelToSentence(permissionName).toLocaleLowerCase() }}
+				</option>
+			</select>
+		</div>
+		<div class="write-scope">
+			<label for="write-scope">Write Access Level</label>
+			<select name="write-scope" id="write-scope">
+				<option
+					v-for="permissionName in writeScopedPermissionNames" :value="permissionName">
+						{{ camelToSentence(permissionName).toLocaleLowerCase() }}
+				</option>
+			</select>
+		</div>
+	</div>
 </ul>
 </template>
 
@@ -19,6 +44,10 @@
 
 .flag-header {
 	color: $color-primary;
+}
+
+.operational-flags {
+	@apply flex flex-col md:flex-row;
 }
 </style>
 
@@ -45,6 +74,20 @@ const {
 
 const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
+const operationalPermissionNames = permissionNames.filter((permissionName) => {
+	return !permissionName.toLocaleLowerCase().includes("scope")
+})
+const readScopedPermissionNames = permissionNames.filter((permissionName) => {
+	const name = permissionName.toLocaleLowerCase()
+	return name.includes("scope") && name.includes("read")
+})
+const writeScopedPermissionNames = permissionNames.filter((permissionName) => {
+	const name = permissionName.toLocaleLowerCase()
+	return name.includes("scope") && name.includes("write")
+})
+
+console.log("scoped", readScopedPermissionNames)
+console.log("scoped", writeScopedPermissionNames)
 
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
@@ -59,5 +102,4 @@ function updateFlags() {
 const emit = defineEmits<{
 	(e: "update:flags", flags: number): void
 }>()
-
 </script>
