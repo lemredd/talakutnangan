@@ -48,7 +48,7 @@ export type UserAttributes =
 interface DeserializedGeneralUserAttributes extends GeneralUserAttributes {
 	department: DeserializedDepartmentDocument,
 	roles: DeserializedRoleListDocument,
-	profilePicture: DeserializedProfilePictureDocument,
+	profilePicture?: DeserializedProfilePictureDocument,
 	signature?: DeserializedSignatureDocument
 }
 
