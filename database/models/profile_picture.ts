@@ -1,32 +1,23 @@
 import {
 	Table,
-	Model,
 	Column,
-	DataType,
 	BelongsTo,
-	AllowNull,
 	ForeignKey
 } from "sequelize-typescript"
 
 import User from "%/models/user"
+import FileLike from "%/models/file-like"
 
 @Table({
 	timestamps: true,
 	paranoid: true
 })
-export default class ProfilePicture extends Model {
+export default class ProfilePicture extends FileLike {
 	@ForeignKey(() => User)
 	@Column({
 		allowNull: false
 	})
 	userID!: number
-
-	@AllowNull
-	@Column({
-		type: DataType.BLOB("medium"),
-		defaultValue: null
-	})
-	file!: Buffer|null
 
 	@BelongsTo(() => User)
 	user!: User
