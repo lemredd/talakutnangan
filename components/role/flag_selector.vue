@@ -19,7 +19,7 @@
 	<div class="access-level-flags" v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length">
 		<div class="read-scope">
 			<label for="read-scope">Read Access Level</label>
-			<select name="read-scope" id="read-scope">
+			<select name="read-scope" id="read-scope" @change="updateReadAccessLevel">
 				<option
 					v-for="permissionName in readScopedPermissionNames" :value="permissionName">
 						{{ camelToSentence(permissionName).toLocaleLowerCase() }}
@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 // Third Parties
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import uniq from "lodash.uniq"
 
 // Developer defined internals
@@ -86,18 +86,34 @@ const writeScopedPermissionNames = permissionNames.filter((permissionName) => {
 	return name.includes("scope") && name.includes("write")
 })
 
-console.log("scoped", readScopedPermissionNames)
-console.log("scoped", writeScopedPermissionNames)
-
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
 
 	rawFlags.value = uniq(rawFlags.value)
+	.filter(Boolean) // Removes falsy values
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(rawFlags.value)
 	)
 	emit("update:flags", generatedMask)
 }
+function updateReadAccessLevel(e: Event) {
+	const value = (e.target as HTMLSelectElement).value
+	rawFlags.value.map(rawFlag => {
+		if (readScopedPermissionNames.includes(rawFlag)) {
+			delete rawFlags.value[rawFlags.value.indexOf(rawFlag)]
+		}
+	})
+	rawFlags.value.push(value)
+	rawFlags.value = rawFlags.value.filter(Boolean)
+
+	const generatedMask = basePermissionGroup.generateMask(
+		...Array.from(rawFlags.value)
+	)
+
+	emit("update:flags", generatedMask)
+}
+
+watch(rawFlags, () => console.log(rawFlags.value))
 
 const emit = defineEmits<{
 	(e: "update:flags", flags: number): void
