@@ -21,7 +21,6 @@
 			label="Read Access Level" :options="readScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)" />
 		<AccessLevelSelector
 			label="Write Access Level" :options="writeScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)" />
-
 	</div>
 </ul>
 </template>
@@ -48,6 +47,7 @@ import Checkbox from "@/fields/checkbox.vue"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import BasePermissionGroup from "$/permissions/base"
 import camelToSentence from "$@/helpers/camel_to_sentence"
+import sanitizeArray from "$@/helpers/sanitize_array"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -77,8 +77,7 @@ const writeScopedPermissionNames = permissionNames.filter((permissionName) => {
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
 
-	rawFlags.value = uniq(rawFlags.value)
-	.filter(Boolean) // Removes falsy values
+	rawFlags.value = sanitizeArray(uniq(rawFlags.value))
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(rawFlags.value)
 	)
@@ -93,7 +92,7 @@ function updateAccessLevel(e: Event, accessPermissionNames: string[]) {
 		}
 	})
 	rawFlags.value.push(value)
-	rawFlags.value = rawFlags.value.filter(Boolean)
+	rawFlags.value = sanitizeArray(rawFlags.value)
 
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(rawFlags.value)
