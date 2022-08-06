@@ -33,7 +33,7 @@ export default async function(
 			const subvalue = state.value[i]
 			try {
 				const sanitizedInput = await validate({
-					[i]: constraints.array.rules
+					[i]: constraints.array
 				}, constraints.request, {
 					[i]: subvalue
 				}, constraints.source) as { [key:number]: any }

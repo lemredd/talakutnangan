@@ -36,12 +36,10 @@ export default function(
 			constraints: {
 				nullable: { defaultValue: "id" },
 				array: {
-					rules: {
-						pipes: [ string, oneOf ],
-						constraints: {
-							oneOf: {
-								values: new className().sortableColumns
-							}
+					pipes: [ string, oneOf ],
+					constraints: {
+						oneOf: {
+							values: new className().sortableColumns
 						}
 					}
 				}

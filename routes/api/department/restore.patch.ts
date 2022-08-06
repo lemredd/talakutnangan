@@ -33,25 +33,23 @@ export default class extends JSONController {
 				pipes: [required, array],
 				constraints: {
 					array: {
-						rules: {
-							pipes: [required, object ],
-							constraints: {
-								object: {
-									type: {
-										pipes: [required, string, same],
-										constraints: {
-											same: {
-												value: "department"
-											}
+						pipes: [required, object ],
+						constraints: {
+							object: {
+								type: {
+									pipes: [required, string, same],
+									constraints: {
+										same: {
+											value: "department"
 										}
-									},
-									id: {
-										pipes: [required, integer, archived],
-										constraints: {
-											manager: {
-												className: DepartmentManager,
-												columnName: "id"
-											}
+									}
+								},
+								id: {
+									pipes: [required, integer, archived],
+									constraints: {
+										manager: {
+											className: DepartmentManager,
+											columnName: "id"
 										}
 									}
 								}

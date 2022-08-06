@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'shareable/**'
-      - 'common_front-end/**'
       - 'common_back-end/**'
       - 'database/**'
       - 'server/**'
@@ -12,9 +11,6 @@ on:
       - 't/helpers/**'
       - 't/integration/api/**'
       - 't/integration/t/**'
-      - 'renderer/**'
-      - 'pages/**'
-      - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
   pull_request:
@@ -75,7 +71,8 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -database -upgrade
       shell: pwsh
-    - run: npm run seed:up:all
+    - run: ./execute.ps1 -database -reseed
+      shell: pwsh
     - run: npm run build
     - run: ./execute.ps1 -test intg:back
       shell: pwsh

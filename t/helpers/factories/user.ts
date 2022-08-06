@@ -35,6 +35,7 @@ export default class UserFactory extends BaseFactory<
 	DeserializedUserListDocument
 > {
 	nameGenerator = () => faker.name.findName()
+	prefersDarkGenerator = () => false
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
 
@@ -57,8 +58,8 @@ export default class UserFactory extends BaseFactory<
 			email: this.emailGenerator(),
 			password: await hash(this.#password),
 			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
-			admittedAt: null,
 			kind: this.#kind,
+			prefersDark: this.prefersDarkGenerator(),
 			departmentID: this.#department.id,
 			deletedAt: null
 		}
@@ -119,6 +120,11 @@ export default class UserFactory extends BaseFactory<
 
 	email(generator: () => string): UserFactory {
 		this.emailGenerator = generator
+		return this
+	}
+
+	prefersDark(generator: () => boolean): UserFactory {
+		this.prefersDarkGenerator = generator
 		return this
 	}
 

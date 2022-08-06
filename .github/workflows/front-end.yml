@@ -12,9 +12,7 @@ on:
       - 'jest.front_ci.config.json'
   pull_request:
     types:
-      - opened
       - reopened
-      - review_requested
     branches:
       - master
     paths:

@@ -26,7 +26,8 @@ describe("Transformer: User", () => {
 		const object = Serializer.serialize(model, transformer, {})
 		expect(object).toHaveProperty("data.type", "user")
 		expect(object).toHaveProperty("data.id", model.id)
-		expect(object).toHaveProperty("meta.hasDefaultPassword", true)
+		expect(object).not.toHaveProperty("data.attributes.prefersDark")
+		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
 			"included.2.links.self",
 			`http://localhost:16000/api/signature/read/${signature.id}`
@@ -57,7 +58,8 @@ describe("Transformer: User", () => {
 
 		expect(object).toHaveProperty("data.0.type", "user")
 		expect(object).toHaveProperty("data.0.id", models[0].id)
-		expect(object).toHaveProperty("meta.hasDefaultPassword", null)
+		expect(object).not.toHaveProperty("data.attributes.prefersDark")
+		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
 			"included.2.links.self",
 			`http://localhost:16000/api/signature/read/${signatureA.id}`

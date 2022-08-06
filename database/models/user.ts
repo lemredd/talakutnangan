@@ -55,12 +55,11 @@ export default class User extends Model {
 	})
 	emailVerifiedAt!: Date|null
 
-	@AllowNull
 	@Column({
-		type: DataType.DATE,
-		defaultValue: null
+		allowNull: false,
+		type: DataType.BOOLEAN
 	})
-	admittedAt!: Date|null
+	prefersDark!: boolean
 
 	@ForeignKey(() => Department)
 	@Column({
