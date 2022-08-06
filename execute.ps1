@@ -235,7 +235,7 @@ if ($Server) {
 	} elseif ($Routes) {
 		& npx ts-node ./server/cli/list_routes.ts
 	} else {
-		$command = "powershell ./execute -Server -Normal"
+		$command = "pwsh ./execute -Server -Normal"
 		& npx nodemon --watch server --watch routes --watch database --watch common_back-end --ext ts --ignore "*.spec.ts" --exec "$command"
 	}
 }
