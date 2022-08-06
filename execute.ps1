@@ -349,8 +349,7 @@ if ($Log) {
 	$packageConfiguration = Get-Content package.json | ConvertFrom-Json
 	$version = $packageConfiguration.version.trimEnd("-dev")
 	$previousVersion = [int32]($version.Split(".")[1]) - 1
-	$nextVersion = [int32]($version.Split(".")[1]) + 1
-	$packageConfiguration.version = "0.$([string]$nextVersion).0-dev"
+	$packageConfiguration.version = "$([string]$version)"
 	$packageConfiguration = ConvertTo-Json $packageConfiguration
 	$packageConfiguration = $packageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $packageConfiguration
@@ -358,7 +357,7 @@ if ($Log) {
 	$contents = & npx changelogen
 	$contents = $contents.Trim("`n")
 	$contents = $contents -Split "`n"
-	$cleanedContents = @("# Changelog", "", "## v$version")
+	$cleanedContents = @("# Changelog", "", "## v$version", "")
 
 	$lastLine = "###"
 
@@ -375,6 +374,9 @@ if ($Log) {
 			Replace("≡ƒÄ¿", "🎨").
 			Replace("≡ƒñû", "🤖").
 			Replace("≡ƒùÆ∩╕Å", "🗒️").
+			Replace("Γ¥ñ∩╕Å", "❤️").
+			Replace("≡ƒæô", "👓").
+			Replace("≡ƒîè", "🌊").
 			Replace("≡ƒö⌐", "🔩").
 			Replace("≡ƒîÉ", "🌐").
 			Replace("≡ƒöª", "🔦").
