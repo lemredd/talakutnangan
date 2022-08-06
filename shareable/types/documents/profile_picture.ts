@@ -1,6 +1,6 @@
+import type { FileLikeAttributes, FileLikeResourceLinks } from "$/types/documents/file-like"
 import type {
 	Resource,
-	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
 	ResourceDocument,
@@ -13,18 +13,12 @@ export interface ProfilePictureResourceIdentifier extends ResourceIdentifier {
 	type: "profile_picture",
 }
 
-export interface ProfilePictureAttributes<T = string> extends Attributes {
-	file?: T
-}
+export interface ProfilePictureAttributes<T = string> extends FileLikeAttributes<T> {}
 
 export interface ProfilePictureResource<T = string> extends Resource<
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes<T>
-> {
-	links?: {
-		self: string
-	}
-}
+>, FileLikeResourceLinks {}
 
 export interface DeserializedProfilePictureResource extends DeserializedResource<
 	ProfilePictureResourceIdentifier,
