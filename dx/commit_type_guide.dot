@@ -19,13 +19,12 @@ digraph {
 		refactor_code [ label = "Refactors\ncode?" ]
 		affects_html_structure [ label = "Reformats\nHTML template?" ]
 		optimize_code [ label = "Optimizes\ncode?" ]
+		does_enhance [ label = "Enhances\ncode?" ]
 		affects_style [ label = "Affect the\nvisual design\nstyle only?" ]
-		does_enhance [ label = "Enhances\nmechanism?" ]
 		affects_user [
 			label = "Felt by the\n(normal/developer) user\n(usually pages or API routes)?"
 		]
 		affects_types [ label = "Affects\ntype files?" ]
-		affects_internals [ label = "Affects internal\n(component/back-end)?" ]
 		affects_shared [ label = "Affect the\nshared code only?" ]
 	}
 
@@ -63,11 +62,10 @@ digraph {
 		refactor_code -> affects_html_structure
 		affects_html_structure -> rfrmt
 		optimize_code -> perf
-		affects_style -> style
 		does_enhance -> affects_user
-		affects_user -> feat
+		affects_user -> affects_style
+		affects_style -> style
 		affects_types -> types
-		affects_internals -> affects_shared
 		affects_shared -> share
 	}
 
@@ -84,10 +82,10 @@ digraph {
 		squash_bug -> refactor_code
 		affects_html_structure -> optimize_code
 		optimize_code -> refactor
-		refactor_code -> affects_style
-		affects_style -> does_enhance
+		refactor_code -> does_enhance
+		affects_style -> feat
 		affects_user -> affects_types
-		affects_types -> affects_internals
+		affects_types -> affects_shared
 		affects_shared -> intrn
 	}
 }
