@@ -89,6 +89,14 @@ export interface RawEmployeeSchedule {
 }
 
 /**
+ * Used to indicate if the file-like entity should be included in the serialized structure of
+ * file-like model.
+ */
+export interface FileLikeTransformerOptions {
+	raw: boolean
+}
+
+/**
  * Used to indicate if the signature should be included in the serialized structure of signature
  * model.
  */
