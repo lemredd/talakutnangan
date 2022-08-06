@@ -23,7 +23,7 @@ export interface UserResourceIdentifier extends ResourceIdentifier {
 interface GeneralUserAttributes extends Attributes {
 	name: string,
 	email: string,
-	prefersDark: boolean
+	prefersDark?: boolean
 }
 
 export interface StudentAttributes extends GeneralUserAttributes {
