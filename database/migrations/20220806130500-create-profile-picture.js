@@ -37,6 +37,13 @@ module.exports = {
 						type: Sequelize.DATE
 					}
 				});
+
+				await queryInterface.addConstraint("ProfilePictures", {
+					fields: [ "userID" ],
+					type: "unique",
+					name: "unique_key_userID_constraint",
+					transaction
+				});
 			} catch (err) {
 				await transaction.rollback();
 				throw err;
