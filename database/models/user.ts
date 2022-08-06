@@ -17,6 +17,7 @@ import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
+import ProfilePicture from "%/models/profile_picture"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 @Table({
@@ -78,6 +79,9 @@ export default class User extends Model {
 
 	@HasOne(() => Signature)
 	signature?: Signature
+
+	@HasOne(() => ProfilePicture)
+	profilePicture!: ProfilePicture
 
 	@HasOne(() => StudentDetail)
 	studentDetail?: StudentDetail
