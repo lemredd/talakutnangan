@@ -20,7 +20,7 @@ module.exports = {
 						onDelete: "cascade",
 						onUpdate: "cascade"
 					},
-					file: {
+					fileContents: {
 						type: Sequelize.BLOB,
 						allowNull: true,
 						defaultValue: null
