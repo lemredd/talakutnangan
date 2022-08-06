@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 // Third Parties
-import { ref, watch } from "vue"
+import { ref } from "vue"
 import uniq from "lodash.uniq"
 
 // Developer defined internals
@@ -100,8 +100,6 @@ function updateAccessLevel(e: Event, accessPermissionNames: string[]) {
 
 	emit("update:flags", generatedMask)
 }
-
-watch(rawFlags, () => console.log(rawFlags.value))
 
 const emit = defineEmits<{
 	(e: "update:flags", flags: number): void
