@@ -1,11 +1,12 @@
 import Router from "!/bases/router"
 import GetIndex from "!%/index.get"
-import TestRouter from "!%/t/router"
 import DevRouter from "!%/dev/router"
 import APIRouter from "!%/api/router"
+import TestRouter from "!%/t/router"
 import ChatRouter from "!%/chat/router"
 import UserRouter from "!%/user/router"
 import DepartmentRouter from "!%/department/router"
+import UserSettingsRouter from "!%/settings/router"
 import { Environment } from "$/types/server"
 
 export default class extends Router {
@@ -18,7 +19,8 @@ export default class extends Router {
 			new APIRouter(),
 			new UserRouter(),
 			new ChatRouter(),
-			new DepartmentRouter()
+			new DepartmentRouter(),
+			new UserSettingsRouter()
 		])
 
 		this.useController(new GetIndex())
