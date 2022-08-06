@@ -2,6 +2,7 @@
 	<div class="read-scope">
 		<label for="read-scope">{{ label }}</label>
 		<select id="read-scope" @change="$emit('selectedOptionChanged', $event)">
+			<option value="" selected></option>
 			<option
 				v-for="option in options" :value="option">
 					{{
