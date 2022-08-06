@@ -1,5 +1,6 @@
 import type { Serializable } from "$/types/general"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedSignatureDocument } from "$/types/documents/signature"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
 import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
@@ -47,7 +48,8 @@ export type UserAttributes =
 interface DeserializedGeneralUserAttributes extends GeneralUserAttributes {
 	department: DeserializedDepartmentDocument,
 	roles: DeserializedRoleListDocument,
-	profilePicture: DeserializedProfilePictureDocument
+	profilePicture: DeserializedProfilePictureDocument,
+	signature?: DeserializedSignatureDocument
 }
 
 interface DeserializedStudentAttributes
