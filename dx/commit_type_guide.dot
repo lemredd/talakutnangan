@@ -1,4 +1,4 @@
-// Command to compile: dot -T png dx/type-scope_guide.dot -o dx/type-scope_guide.png
+// Command to compile: dot -T png dx/commit_type_guide.dot -o dx/commit_type_guide.png
 digraph {
 	node [ shape="record" ]
 
@@ -26,6 +26,7 @@ digraph {
 		]
 		affects_types [ label = "Affects\ntype files?" ]
 		affects_internals [ label = "Affects internal\n(component/back-end)?" ]
+		affects_shared [ label = "Affect the\nshared code only?" ]
 	}
 
 	config [ label = "{config|Configuration}" ]
@@ -43,6 +44,7 @@ digraph {
 	feat [ label = "{feat|Feature}" ]
 	types [ label = "{types|Types}" ]
 	intrn [ label = "{intrn|Internal}" ]
+	share [ label = "{share|Share}" ]
 
 	{
 		edge [ label = "Y" ]
@@ -65,7 +67,8 @@ digraph {
 		does_enhance -> affects_user
 		affects_user -> feat
 		affects_types -> types
-		affects_internals -> intrn
+		affects_internals -> affects_shared
+		affects_shared -> share
 	}
 
 	{
@@ -85,5 +88,6 @@ digraph {
 		affects_style -> does_enhance
 		affects_user -> affects_types
 		affects_types -> affects_internals
+		affects_shared -> intrn
 	}
 }
