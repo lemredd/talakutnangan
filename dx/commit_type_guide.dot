@@ -6,10 +6,10 @@ digraph {
 		node [ shape = "diamond" ]
 		affects_application [ label = "Affects the\napplication mechanism\nin general?" ]
 		is_directory_only [ label = "Located in\ndirectories only?" ]
-		affects_tooling [ label = "Affect the\nJSON/.env files or other tools?" ]
-		affects_config [ label = "Affect the\nJSON/.env*/.git*/*.ts files?" ]
+		affects_tooling [ label = "Affect the\nJSON/.env files\nor other tools?" ]
+		affects_config [ label = "Affect the\nJSON/.env*/.git*/*.ts\nfiles?" ]
 		affects_readme [ label = "Affect the\nREADME?" ]
-		affects_workflow_or_template [ label = "Affect the\nfiles in\n.github directory only?" ]
+		affects_workflow_or_template [ label = "Affect the\nfiles in .github\ndirectory only?" ]
 		affects_tests [ label = "Affect the\ntests only?" ]
 		affects_unit_tests [ label = "Affect the\n*.spec.ts only?" ]
 		affects_intg_tests [ label = "Affect the\nt/integration directory only?" ]
@@ -24,7 +24,7 @@ digraph {
 		affects_user [
 			label = "Felt by the\n(normal/developer) user\n(usually pages or API routes)?"
 		]
-		affects_types [ label = "Affects\ntype files?" ]
+		affects_types [ label = "Affects\ntypes?" ]
 		affects_shared [ label = "Affect the\nshared code only?" ]
 	}
 
