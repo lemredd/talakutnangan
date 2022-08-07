@@ -35,43 +35,6 @@ export default class extends CreateController {
 		]
 	}
 
-	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "profile_picture"
-								}
-							}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									fileContents: {
-										pipes: [ nullable, buffer ],
-										constraints: {
-											buffer: {
-												// TODO: Think of maximum size of picture
-												allowedMimeTypes: [ "image/png" ],
-												maxSize: 1024 * 1024 * 10 // 10 MB
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	async handle(request: AuthenticatedIDRequest, response: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new ProfilePictureManager(request.transaction, request.cache)
