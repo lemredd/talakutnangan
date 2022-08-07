@@ -55,11 +55,11 @@ export default class extends Controller {
 			{ raw: true }
 		) as ProfilePictureDocument
 
-		const profile_picture = profilePictureDocument.data.attributes.file as unknown as Buffer
-		const type = await sniffMediaType(profile_picture)
+		const profilePicture = profilePictureDocument.data.attributes.fileContents!
+		const type = await sniffMediaType(profilePicture)
 
 		Log.success("controller", "successfully got the profile picture")
 
-		return new OkResponseInfo(profile_picture, type)
+		return new OkResponseInfo(profilePicture, type)
 	}
 }
