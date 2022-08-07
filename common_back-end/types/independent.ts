@@ -31,5 +31,5 @@ export interface RawSignature {
 
 export interface RawProfilePicture {
 	userID: number,
-	file: Buffer
+	fileContents: Buffer
 }
