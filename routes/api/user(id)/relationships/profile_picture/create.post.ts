@@ -1,5 +1,4 @@
 import type { FieldRules } from "!/types/validation"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -19,7 +18,6 @@ import {
 } from "$/permissions/user_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
