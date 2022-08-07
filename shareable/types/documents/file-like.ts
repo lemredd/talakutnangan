@@ -1,7 +1,7 @@
 import type { Attributes } from "$/types/documents/base"
 
 export interface FileLikeAttributes<T = string> extends Attributes {
-	file?: T
+	fileContents?: T
 }
 
 export interface FileLikeResourceLinks {
