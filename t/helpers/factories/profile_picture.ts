@@ -33,7 +33,7 @@ export default class ProfilePictureFactory extends FileLikeFactory<
 	async generate(): GeneratedData<ProfilePicture> {
 		return {
 			userID: (await this.#user()).id,
-			file: this.fileContentsGenerator()
+			fileContents: this.fileContentsGenerator()
 		}
 	}
 
