@@ -21,7 +21,7 @@ describe("Controller: PATCH /api/user/:id/profile_picture/update", () => {
 					type: "profile_picture",
 					attributes: {
 						profilePicture: {
-							buffer: profilePicture.file,
+							buffer: profilePicture.fileContents,
 							info: {
 								mimeType: "image/png"
 							}
@@ -48,7 +48,7 @@ describe("Controller: PATCH /api/user/:id/profile_picture/update", () => {
 					type: "profile_picture",
 					attributes: {
 						profilePicture: {
-							buffer: profilePicture.file,
+							buffer: profilePicture.fileContents,
 							info: {
 								mimeType: "image/xxx"
 							}
