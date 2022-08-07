@@ -7,9 +7,12 @@ import Transformer from "%/transformers/base"
 import URLMaker from "$!/singletons/url_maker"
 import Serializer from "%/transformers/serializer"
 
-export default abstract class extends Transformer<FileLike, FileLikeTransformerOptions> {
+export default abstract class<
+	T extends FileLike,
+	U extends FileLikeTransformerOptions
+> extends Transformer<T, U> {
 	transform(
-		model: FileLike|FileLike[],
+		model: T|T[],
 		options: TransformerOptions<FileLikeTransformerOptions>
 	): AttributesObject {
 		if (options.extra === undefined) {
@@ -27,7 +30,7 @@ export default abstract class extends Transformer<FileLike, FileLikeTransformerO
 		return safeObject
 	}
 
-	finalizeTransform(model: FileLike|FileLike[]|null, resource: Serializable): Serializable {
+	finalizeTransform(model: T|T[]|null, resource: Serializable): Serializable {
 		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
