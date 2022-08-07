@@ -16,7 +16,7 @@ describe("Transformer: Profile picture", () => {
 
 		expect(object).toHaveProperty("data.type", "profile_picture")
 		expect(object).toHaveProperty("data.id", model.id)
-		expect(object).toHaveProperty("data.attributes.file")
+		expect(object).toHaveProperty("data.attributes.fileContents")
 		expect(object).not.toHaveProperty("data.links.self")
 	})
 
