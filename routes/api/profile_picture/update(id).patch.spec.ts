@@ -2,7 +2,7 @@ import ErrorBag from "$!/errors/error_bag"
 import ProfilePictureFactory from "~/factories/profile_picture"
 import MockRequester from "~/set-ups/mock_requester"
 
-import Controller from "./update.patch"
+import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
@@ -20,7 +20,7 @@ describe("Controller: PATCH /api/user/:id/profile_picture/update", () => {
 				data: {
 					type: "profile_picture",
 					attributes: {
-						profilePicture: {
+						fileContents: {
 							buffer: profilePicture.fileContents,
 							info: {
 								mimeType: "image/png"
@@ -47,7 +47,7 @@ describe("Controller: PATCH /api/user/:id/profile_picture/update", () => {
 				data: {
 					type: "profile_picture",
 					attributes: {
-						profilePicture: {
+						fileContents: {
 							buffer: profilePicture.fileContents,
 							info: {
 								mimeType: "image/xxx"
@@ -62,6 +62,6 @@ describe("Controller: PATCH /api/user/:id/profile_picture/update", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.attributes.profilePicture")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fileContents")
 	})
 })
