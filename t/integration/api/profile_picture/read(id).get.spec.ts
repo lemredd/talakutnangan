@@ -29,6 +29,6 @@ describe("GET /api/profile_picture/read/:id", () => {
 			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
-		expect(response.body).toStrictEqual(profilePicture.file)
+		expect(response.body).toStrictEqual(profilePicture.fileContents)
 	})
 })
