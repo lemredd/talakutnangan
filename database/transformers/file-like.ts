@@ -38,7 +38,7 @@ export default abstract class<
 
 			if (resource.data instanceof Array) {
 				resource.data = (resource.data as GeneralObject[]).map(data => {
-					if (data.attributes.file === undefined) {
+					if (data.attributes.fileContents === undefined) {
 						data.links = {
 							self: URLMaker.makeURLFromPath(templatePath, {
 								id: data.id
@@ -48,7 +48,7 @@ export default abstract class<
 					return data
 				})
 			} else {
-				if ((resource.data as GeneralObject).attributes.file === undefined) {
+				if ((resource.data as GeneralObject).attributes.fileContents === undefined) {
 					(resource.data as Serializable).links = {
 						self: URLMaker.makeURLFromPath(templatePath, {
 							id: (resource.data as GeneralObject).id
