@@ -18,7 +18,7 @@ export default class extends BaseManager<
 
 	get transformer(): ProfilePictureTransformer { return new ProfilePictureTransformer() }
 
-	async updateContents(userID: number, fileContents: Buffer|null): Promise<number> {
+	async updateContents(userID: number, fileContents: Buffer): Promise<number> {
 		try {
 			const [ affectedCount ] = await this.model.update({ fileContents }, {
 				where: {
