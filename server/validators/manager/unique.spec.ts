@@ -2,10 +2,13 @@ import type { Request } from "!/types/dependent"
 
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 import makeInitialState from "!/validators/make_initial_state"
 import unique from "./unique"
 
 describe("Validator: unique", () => {
+	setUpDatabase()
+
 	it("can accept valid input", async () => {
 		const user = await (new UserFactory()).insertOne()
 		const newUser = await (new UserFactory()).makeOne()

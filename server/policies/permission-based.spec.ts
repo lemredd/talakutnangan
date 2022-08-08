@@ -1,15 +1,17 @@
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import MockRequester from "~/set-ups/mock_requester"
-import AuthorizationError from "$!/errors/authorization"
 import UserPermissions from "$/permissions/user"
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
+import MockRequester from "~/set-ups/mock_requester"
+import setUpDatabase from "~/set-ups/database.set_up"
+import AuthorizationError from "$!/errors/authorization"
 
 import PermissionBasedPolicy from "./permission-based"
 
 describe("Middleware: Permission-Based Policy", () => {
+	setUpDatabase()
+
 	const requester  = new MockRequester()
 	const transformer = new UserTransformer()
 	const permissions = new UserPermissions()

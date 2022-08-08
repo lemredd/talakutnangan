@@ -1,8 +1,8 @@
 import type { FieldRules } from "!/types/validation"
-import MockRequester from "~/set-ups/mock_requester"
-import required from "!/validators/base/required"
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
+import required from "!/validators/base/required"
+import MockRequester from "~/set-ups/mock_requester"
 import validate from "./validate"
 
 describe("Validator: validate", () => {

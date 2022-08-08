@@ -2,10 +2,13 @@ import type { Request } from "!/types/dependent"
 
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 import makeInitialState from "!/validators/make_initial_state"
 import notExists from "./not_exists"
 
 describe("Validator: notExists", () => {
+	setUpDatabase()
+
 	it("can accept valid input", async () => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
