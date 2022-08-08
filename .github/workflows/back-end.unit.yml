@@ -10,7 +10,7 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
-      - 'jest.back_ci.config.json'
+      - 'jest.back.unit_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -24,7 +24,7 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
-      - 'jest.back_ci.config.json'
+      - 'jest.back.unit_ci.config.json'
 
 jobs:
   common_back-end_unit_tests:
