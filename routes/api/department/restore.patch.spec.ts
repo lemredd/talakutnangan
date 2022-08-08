@@ -1,5 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
+import setUpDatabase from "~/set-ups/database.set_up"
 import DepartmentFactory from "~/factories/department"
 
 import Controller from "./restore.patch"
@@ -7,6 +8,8 @@ import Controller from "./restore.patch"
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: PATCH /api/department/restore", () => {
+	setUpDatabase()
+
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

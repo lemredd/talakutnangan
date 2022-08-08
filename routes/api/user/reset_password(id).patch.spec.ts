@@ -1,12 +1,15 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
+import setUpDatabase from "~/set-ups/database.set_up"
 
 import Controller from "./reset_password(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
 describe("Controller: PATCH /api/user/reset_password/:id", () => {
+	setUpDatabase()
+
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

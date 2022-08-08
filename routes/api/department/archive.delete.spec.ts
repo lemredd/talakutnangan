@@ -1,5 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
+import setUpDatabase from "~/set-ups/database.set_up"
 import DepartmentFactory from "~/factories/department"
 
 import Controller from "./archive.delete"
@@ -7,6 +8,8 @@ import Controller from "./archive.delete"
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: DELETE /api/department/archive", () => {
+	setUpDatabase()
+
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {
@@ -14,7 +17,7 @@ describe("Controller: DELETE /api/department/archive", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
+		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
 			body: {
 				data: [
@@ -36,7 +39,7 @@ describe("Controller: DELETE /api/department/archive", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
+		const department = await new DepartmentFactory().insertOne()
 		await department.destroy({ force: false })
 		requester.customizeRequest({
 			body: {
@@ -61,7 +64,7 @@ describe("Controller: DELETE /api/department/archive", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
+		const department = await new DepartmentFactory().insertOne()
 		await department.destroy({ force: true })
 		requester.customizeRequest({
 			body: {

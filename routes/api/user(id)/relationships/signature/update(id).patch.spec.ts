@@ -1,12 +1,15 @@
 import ErrorBag from "$!/errors/error_bag"
 import SignatureFactory from "~/factories/signature"
 import MockRequester from "~/set-ups/mock_requester"
+import setUpDatabase from "~/set-ups/database.set_up"
 
 import Controller from "./update.patch"
 
 const BODY_VALIDATION_INDEX = 1
 
 describe("Controller: PATCH /api/user/:id/signature/update", () => {
+	setUpDatabase()
+
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {
