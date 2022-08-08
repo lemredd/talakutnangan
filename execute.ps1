@@ -299,7 +299,6 @@ if ($Test) {
 			$items = Get-ChildItem -Recurse $path
 
 			foreach($item in $items) {
-				Write-Output "Checking $item"
 				if ($item -match ".+.spec.ts$") {
 					$possibleFiles += $item
 				}
@@ -315,7 +314,16 @@ if ($Test) {
 
 		Write-Output ($possibleImports)
 
-		Set-Content -Path "$cachedPath/$type.$name.spec.ts" -Value $possibleImports
+		$compiledFile = "$cachedPath/$type.$name.spec.ts"
+		$compiledConfiguration = "$cachedPath/$type.$name.config.json"
+
+		Set-Content -Path $compiledFile -Value $possibleImports
+
+		$testConfiguration.testRegex = @($compiledFile)
+
+		$testConfiguration = ConvertTo-Json $testConfiguration
+		$testConfiguration = $testConfiguration.replace("  ", "	")
+		Set-Content -Path $compiledConfiguration -Value $testConfiguration
 	} else {
 		$regexFlag = '""'
 		if ($Regex -ne "") {
