@@ -275,10 +275,10 @@ if ($Test) {
 
 		$possiblePaths = @()
 
-		foreach($regex in $testConfiguration.testRegex) {
+		foreach($testRegex in $testConfiguration.testRegex) {
 			$usablePath = @()
 
-			$pathNames = $regex.Split("/")
+			$pathNames = $testRegex.Split("/")
 
 			foreach($pathName in $pathNames) {
 				if ($pathName -match "^[a-zA-Z-_.]+$") {
