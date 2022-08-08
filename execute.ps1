@@ -44,6 +44,10 @@ Switch to runs tests.
 Only required if `-Test` switch is on.
 It contains the name of test suite to run.
 
+.PARAMETER Compile
+Only works if `-Test` and `-SuiteName` switch is on.
+Compiles all the possible paths of the test files to a single test.
+
 .PARAMETER Path
 Only works if `-Test` switch is on.
 Limits the files to test base from regular expression.
@@ -183,6 +187,10 @@ Param(
 	[switch]
 	$Watch,
 
+	[Parameter(ParameterSetName="Test", Position=5)]
+	[switch]
+	$Compile,
+
 	[Parameter(ParameterSetName="Database", Position=0)]
 	[switch]
 	$Database,
@@ -248,37 +256,91 @@ if ($Test) {
 		$configuration = "jest.$($name).config.json"
 	}
 
-	$regexFlag = '""'
-	if ($Regex -ne "") {
-		$regexFlag = '"'+$Regex+'"'
-	}
+	if ($Compile) {
+		$testConfiguration = Get-Content $configuration | ConvertFrom-Json
 
-	if ($Clear) {
-		$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+		$cachedPath = "t/cache/compiled"
 
-		Get-Item $cacheDirectory/* | ForEach-Object $_ {
-			if ($_.Name -ne ".gitignore") {
-				$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
-				Write-Output "Deleting $NodeToDelete"
-				Remove-Item $NodeToDelete -Recurse
+		if (!(Test-Path -PathType Container $cachedPath)) {
+			New-Item -ItemType Directory -Path $cachedPath
+		}
+
+		$possiblePaths = @()
+
+		foreach($regex in $testConfiguration.testRegex) {
+			$usablePath = @()
+
+			$pathNames = $regex.Split("/")
+
+			foreach($pathName in $pathNames) {
+				if ($pathName -match "^[a-zA-Z-_.]+$") {
+					$usablePath += $pathName
+				} else {
+					break
+				}
+			}
+
+			$usablePath = $usablePath -join "/"
+			$possiblePaths += "$usablePath/*"
+		}
+
+		# Write-Output ($possiblePaths -join ", ")
+		$possibleFiles = @()
+
+		foreach($path in $possiblePaths) {
+			$items = Get-ChildItem -Recurse $path
+
+			foreach($item in $items) {
+				Write-Output "Checking $item"
+				if ($item -match ".+.spec.ts$") {
+					$possibleFiles += $item
+				}
 			}
 		}
-	}
 
-	if ($Watch) {
-		if ($regexFlag -eq '""') {
-			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
-		} else {
-			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
+		$possibleImports = ""
+
+		foreach($file in $possibleFiles) {
+			$escapedfile = ([string]$file).Replace("$PSScriptRoot", "../..").Replace("\", "/")
+			$possibleImports += "import `"$escapedfile`"`n"
 		}
-	} elseif ($regexFlag -eq '""') {
-		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
+
+		Write-Output ($possibleImports)
+
+		Set-Content -Path "$cachedPath/$type.$name.spec.ts" -Value $possibleImports
 	} else {
-		Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
-		& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
+		$regexFlag = '""'
+		if ($Regex -ne "") {
+			$regexFlag = '"'+$Regex+'"'
+		}
+
+		if ($Clear) {
+			$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+
+			Get-Item $cacheDirectory/* | ForEach-Object $_ {
+				if ($_.Name -ne ".gitignore") {
+					$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
+					Write-Output "Deleting $NodeToDelete"
+					Remove-Item $NodeToDelete -Recurse
+				}
+			}
+		}
+
+		if ($Watch) {
+			if ($regexFlag -eq '""') {
+				Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+				& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
+			} else {
+				Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+				& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
+			}
+		} elseif ($regexFlag -eq '""') {
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
+		} else {
+			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
+		}
 	}
 }
 
