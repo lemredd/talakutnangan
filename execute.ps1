@@ -324,39 +324,40 @@ if ($Test) {
 		$testConfiguration = ConvertTo-Json $testConfiguration
 		$testConfiguration = $testConfiguration.replace("  ", "	")
 		Set-Content -Path $compiledConfiguration -Value $testConfiguration
-	} else {
-		$regexFlag = '""'
-		if ($Regex -ne "") {
-			$regexFlag = '"'+$Regex+'"'
-		}
+		$configuration = $compiledConfiguration
+	}
 
-		if ($Clear) {
-			$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+	$regexFlag = '""'
+	if ($Regex -ne "") {
+		$regexFlag = '"'+$Regex+'"'
+	}
 
-			Get-Item $cacheDirectory/* | ForEach-Object $_ {
-				if ($_.Name -ne ".gitignore") {
-					$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
-					Write-Output "Deleting $NodeToDelete"
-					Remove-Item $NodeToDelete -Recurse
-				}
+	if ($Clear) {
+		$cacheDirectory = "t/cache/$($SuiteName.Replace(":", "_"))"
+
+		Get-Item $cacheDirectory/* | ForEach-Object $_ {
+			if ($_.Name -ne ".gitignore") {
+				$NodeToDelete = "./$($cacheDirectory)/$($_.Name)"
+				Write-Output "Deleting $NodeToDelete"
+				Remove-Item $NodeToDelete -Recurse
 			}
 		}
+	}
 
-		if ($Watch) {
-			if ($regexFlag -eq '""') {
-				Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
-				& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --watch --detectOpenHandles
-			} else {
-				Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
-				& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
-			}
-		} elseif ($regexFlag -eq '""') {
-			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles
+	if ($Watch) {
+		if ($regexFlag -eq '""') {
+			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --watch --detectOpenHandles
 		} else {
-			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
+			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
 		}
+	} elseif ($regexFlag -eq '""') {
+		Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles
+	} else {
+		Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+		& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
 	}
 }
 
