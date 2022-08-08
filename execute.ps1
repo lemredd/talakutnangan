@@ -170,7 +170,12 @@ Param(
 		"unit:routes",
 		"unit:database",
 		"intg:front",
-		"intg:back"
+		"intg:back",
+
+		"unit_ci:back",
+
+		"unit_ci:compiled_share",
+		"unit_ci:compiled_back"
 	)]
 	[string]
 	$SuiteName,
@@ -301,7 +306,7 @@ if ($Test) {
 		$possibleImports = ""
 
 		foreach($file in $possibleFiles) {
-			$escapedfile = ([string]$file).Replace("$PSScriptRoot", "../..").Replace("\", "/")
+			$escapedfile = ([string]$file).Replace("$PSScriptRoot", "../../..").Replace("\", "/")
 			$possibleImports += "import `"$escapedfile`"`n"
 		}
 
