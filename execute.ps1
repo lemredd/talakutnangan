@@ -255,10 +255,13 @@ if ($Server) {
 
 if ($Test) {
 	$type, $name = $SuiteName.Split(":")
+	$environment = $type
 
 	$configuration = "jest.$($name).$($type).config.json"
 	if ($type -eq "unit") {
 		$configuration = "jest.$($name).config.json"
+	} elseif ($type.StartsWith("unit")) {
+		$environment = "unit"
 	}
 
 	if ($Compile) {
@@ -333,18 +336,18 @@ if ($Test) {
 
 		if ($Watch) {
 			if ($regexFlag -eq '""') {
-				Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
-				& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --watch --detectOpenHandles
+				Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} $($watchFlag) --watch --detectOpenHandles"
+				& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --watch --detectOpenHandles
 			} else {
-				Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
-				& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
+				Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles"
+				& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --watch --detectOpenHandles
 			}
 		} elseif ($regexFlag -eq '""') {
-			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --detectOpenHandles
+			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --detectOpenHandles
 		} else {
-			Write-Output "npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
-			& npx cross-env NODE_ENV=$($type)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
+			Write-Output "npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles"
+			& npx cross-env NODE_ENV=$($environment)_test jest -c ${configuration} --testRegex $($regexFlag) --detectOpenHandles
 		}
 	}
 }
