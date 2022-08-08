@@ -1,8 +1,11 @@
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 import page from "./page"
 
-describe("Database Pipe: Page", () => {
+describe("Database Query Pipe: Page", () => {
+	setUpDatabase()
+
 	it("can page initially", async () => {
 		const users = await (await new UserFactory().insertMany(4)).sort((a, b) => {
 			return a.id === b.id ? 0 : a.id < b.id ? -1 : 1

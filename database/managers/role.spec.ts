@@ -1,9 +1,12 @@
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 
 import RoleManager from "./role"
 
 describe("Database: Role read operations", () => {
+	setUpDatabase()
+
 	it("can count single role", async () => {
 		const manager = new RoleManager()
 		const role = await new RoleFactory().insertOne()

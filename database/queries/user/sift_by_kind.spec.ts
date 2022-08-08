@@ -1,9 +1,12 @@
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 
 import siftByKind from "./sift_by_kind"
 
-describe("Database Pipe: Sift by kind", () => {
+describe("Database Query Pipe: Sift by kind", () => {
+	setUpDatabase()
+
 	it("can find all", async () => {
 		const student = await new UserFactory().beStudent().insertOne()
 		const reachableEmployee = await new UserFactory().beReachableEmployee().insertOne()

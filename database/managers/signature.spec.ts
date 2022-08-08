@@ -1,10 +1,13 @@
 import Signature from "%/models/signature"
 import UserFactory from "~/factories/user"
 import SignatureFactory from "~/factories/signature"
+import setUpDatabase from "~/set-ups/database.set_up"
 
 import SignatureManager from "./signature"
 
 describe("Database: Signature update operations", () => {
+	setUpDatabase()
+
 	it("can create signature if not yet existing", async () => {
 		const manager = new SignatureManager()
 		const signature = await new SignatureFactory().makeOne()

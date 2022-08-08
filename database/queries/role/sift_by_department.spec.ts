@@ -1,11 +1,14 @@
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 import DepartmentFactory from "~/factories/department"
 
 import siftByDepartment from "./sift_by_department"
 
-describe("Database Pipe: Sift by department", () => {
+describe("Database Query Pipe: Sift by department", () => {
+	setUpDatabase()
+
 	it("can find all", async () => {
 		const department = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory().insertOne()

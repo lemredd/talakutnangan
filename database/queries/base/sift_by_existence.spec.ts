@@ -1,8 +1,11 @@
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
+import setUpDatabase from "~/set-ups/database.set_up"
 import siftByExistence from "./sift_by_existence"
 
-describe("Database Pipe: Sift by existence", () => {
+describe("Database Query Pipe: Sift by existence", () => {
+	setUpDatabase()
+
 	it("can find all", async () => {
 		const user = await new UserFactory().insertOne()
 		const archivedUser = await new UserFactory().insertOne()
