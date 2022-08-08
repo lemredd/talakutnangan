@@ -315,7 +315,7 @@ if ($Test) {
 		Write-Output ($possibleImports)
 
 		$compiledFile = "$cachedPath/$type.$name.spec.ts"
-		$compiledConfiguration = "$cachedPath/$type.$name.config.json"
+		$compiledConfiguration = "hidden.$type.$name.config.json"
 
 		Set-Content -Path $compiledFile -Value $possibleImports
 
