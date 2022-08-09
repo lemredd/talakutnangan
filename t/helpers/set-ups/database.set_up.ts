@@ -1,16 +1,14 @@
 import "reflect-metadata"
 import Database from "./database"
 
-export default function() {
-	beforeAll((done) => {
-		Database.create().then(done)
-	})
+beforeAll(async () => {
+	await Database.create()
+});
 
-	afterAll((done) => {
-		Database.destroy().then(done)
-	});
+afterAll(async () => {
+	await Database.destroy()
+});
 
-	afterEach((done) => {
-		Database.clear().then(done)
-	})
-}
+afterEach(async () => {
+	await Database.clear()
+});
