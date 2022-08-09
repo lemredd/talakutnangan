@@ -26,14 +26,18 @@
 	},
 
 	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/cache_manager.set_up.ts",
 		"./t/helpers/set-ups/singletons.set_up.ts",
-		"./t/helpers/set-ups/cache_manager.set_up.ts"
+		"./t/helpers/set-ups/auto_database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"server/.*\\.spec\\.ts"
+		"common_back-end/.*\\.spec\\.ts",
+		"./database/.*\\.spec\\.ts",
+		"./routes/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"
