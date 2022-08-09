@@ -6,14 +6,6 @@
 			</div>
 
 			<FlagSelector
-				header="Department"
-				:base-permission-group="departmentPermissions"
-				v-model:flags="role!.departmentFlags"/>
-			<FlagSelector
-				header="Role"
-				:base-permission-group="rolePermissions"
-				v-model:flags="role!.roleFlags"/>
-			<FlagSelector
 				header="Semester"
 				:base-permission-group="semesterPermissions"
 				v-model:flags="role!.semesterFlags"/>
@@ -42,12 +34,13 @@
 				:base-permission-group="auditTrailPermissions"
 				v-model:flags="role!.auditTrailFlags"/>
 
-			<button type="submit">Submit</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 	</Suspensible>
 </template>
 
-<style>
+<style scoped lang="scss">
+@import "@styles/btn.scss";
 </style>
 
 <script setup lang="ts">
@@ -67,8 +60,6 @@ import deserialize from "$/helpers/deserialize"
 import RoleNameField from "@/fields/textual.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 import {
-	department as departmentPermissions,
-	role as rolePermissions,
 	semester as semesterPermissions,
 	tag as tagPermissions,
 	post as postPermissions,
@@ -97,6 +88,7 @@ onMounted(async () => {
 		const { body } = response
 		const deserializedData = (deserialize(body)! as DeserializedRoleDocument).data
 		role.value = deserializedData
+		console.log(deserializedData)
 
 		// TODO<permission_properties>: loop through permission properties to minimize manual rendering of FlagSelectors
 
@@ -127,5 +119,13 @@ async function updateRole() {
 	.then(({body, status}) => {
 		console.log(body, status)
 	})
+}
+
+async function archiveRole() {
+
+}
+
+async function restoreRole() {
+
 }
 </script>
