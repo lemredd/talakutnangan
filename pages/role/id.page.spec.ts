@@ -1,7 +1,17 @@
 import { mount, flushPromises } from "@vue/test-utils"
 import RoleFactory from "~/factories/role"
-import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	tag,
+	user,
+	post,
+	comment,
+	semester,
+	profanity,
+	auditTrail,
+	department,
+	role
+} from "$/permissions/permission_list"
+import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import Page from "./id.page.vue"
 import RoleFetcher from "$@/fetchers/role"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -9,7 +19,38 @@ import RequestEnvironment from "$/helpers/request_environment"
 describe("UI Page: Read resource by ID", () => {
 	it("Should load resource by ID", async () => {
 		const sampleResource = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+		.departmentFlags(department.generateMask("view"))
+					.roleFlags(role.generateMask("view"))
+					.semesterFlags(semester.generateMask("view"))
+					.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+					.postFlags(post.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope",
+						"tag"
+					))
+					.commentFlags(comment.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope",
+						"vote"
+					))
+					.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+					.userFlags(user.generateMask(
+						"view",
+						"create",
+						"update",
+						"archiveAndRestore",
+						"readDepartmentScope",
+						"writeDepartmentScope"
+					))
+					.auditTrailFlags(0)
 		.serializedOne()
 
 		fetchMock.mockResponse(JSON.stringify(sampleResource), { status: RequestEnvironment.status.OK })
