@@ -27,7 +27,7 @@ on:
       - 'jest.back.unit_ci.config.json'
 
 jobs:
-  back-end_unit_tests_with_no_database:
+  unit_tests_with_rarely_used_database:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
@@ -49,7 +49,7 @@ jobs:
       shell: pwsh
       timeout-minutes: 5
 
-  back-end_unit_tests_with_databse:
+  unit_tests_with_necessary_database:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
