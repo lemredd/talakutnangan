@@ -1,8 +1,7 @@
 import "reflect-metadata"
-import RequestEnvironment from "$/helpers/request_environment"
 import Database from "./database"
 
-export default function setUpDatabase() {
+export default function() {
 	beforeAll((done) => {
 		Database.create().then(done)
 	})
@@ -14,8 +13,4 @@ export default function setUpDatabase() {
 	afterEach((done) => {
 		Database.clear().then(done)
 	})
-}
-
-if (RequestEnvironment.isOnIntegration) {
-	setUpDatabase()
 }
