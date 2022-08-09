@@ -1,14 +1,11 @@
 import ErrorBag from "$!/errors/error_bag"
-import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
-import setUpDatabase from "~/set-ups/database.set_up"
+import RoleFactory from "~/factories/role"
 import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: POST /api/role/create", () => {
-	setUpDatabase()
-
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

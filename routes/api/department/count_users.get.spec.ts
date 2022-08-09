@@ -1,15 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
-import MockRequester from "~/set-ups/mock_requester"
-import setUpDatabase from "~/set-ups/database.set_up"
 import DepartmentFactory from "~/factories/department"
+import MockRequester from "~/set-ups/mock_requester"
 
 import Controller from "./count_users.get"
 
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: GET /api/department/count_users", () => {
-	setUpDatabase()
-
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

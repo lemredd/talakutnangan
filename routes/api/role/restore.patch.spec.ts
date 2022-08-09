@@ -1,15 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
 import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
-import setUpDatabase from "~/set-ups/database.set_up"
 
 import Controller from "./restore.patch"
 
 const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: PATCH /api/role/restore", () => {
-	setUpDatabase()
-
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

@@ -1,15 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
-import setUpDatabase from "~/set-ups/database.set_up"
 import DepartmentFactory from "~/factories/department"
-
 import Controller from "./update(id).patch"
 
+const ID_VALIDATION_INDEX = 0
 const BODY_VALIDATION_INDEX = 1
 
 describe("Controller: PATCH /api/department/update/:id", () => {
-	setUpDatabase()
-
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async () => {
