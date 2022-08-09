@@ -1,12 +1,9 @@
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
-import setUpDatabase from "~/set-ups/database.set_up"
 
 import siftBySlug from "./sift_by_slug"
 
-describe("Database Query Pipe: Sift by slug", () => {
-	setUpDatabase()
-
+describe("Database Pipe: Sift by slug", () => {
 	it("can find all", async () => {
 		const user = await new UserFactory().insertOne()
 		const slug = ""

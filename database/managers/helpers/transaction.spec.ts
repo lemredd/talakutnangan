@@ -1,10 +1,6 @@
 import TransactionManager from "./transaction_manager"
 
-import setUpDatabase from "~/set-ups/database.set_up"
-
-describe("Database: Transaction manager builder", () => {
-	setUpDatabase()
-
+describe("Database: TransactionManager Builder", () => {
 	it("can make empty object if not yet initialized", async () => {
 		const manager = new TransactionManager()
 

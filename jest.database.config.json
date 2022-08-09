@@ -17,7 +17,8 @@
 
 	"setupFilesAfterEnv": [
 		"./t/helpers/set-ups/log.set_up.ts",
-		"./t/helpers/set-ups/cache_manager.set_up.ts"
+		"./t/helpers/set-ups/cache_manager.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],

@@ -1,14 +1,12 @@
+import type { GeneralObject } from "$/types/general"
 import UserFactory from "~/factories/user"
+import SignatureFactory from "~/factories/signature"
+import StudentDetailFactory from "~/factories/student_detail"
 import URLMaker from "$!/singletons/url_maker"
 import Serializer from "%/transformers/serializer"
-import SignatureFactory from "~/factories/signature"
-import setUpDatabase from "~/set-ups/database.set_up"
-import StudentDetailFactory from "~/factories/student_detail"
 import Transformer from "./user"
 
 describe("Transformer: User", () => {
-	setUpDatabase()
-
 	beforeEach(() => {
 		URLMaker.initialize("http", "localhost", 16000, "/")
 	})

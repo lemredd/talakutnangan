@@ -2,7 +2,7 @@ import { Op } from "sequelize"
 
 import Condition from "./condition"
 
-describe("Database: Condition builder", () => {
+describe("Database: Condition Builder", () => {
 	it("can retain built condition", () => {
 		const builtCondition = { sample: { [Op.eq]: 3 } }
 
