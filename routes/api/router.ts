@@ -4,6 +4,7 @@ import RoleRouter from "!%/api/role/router"
 import UserBindedRouter from "!%/api/user(id)/router"
 import SignatureRouter from "!%/api/signature/router"
 import DepartmentRouter from "!%/api/department/router"
+import ProfilePictureRouter from "!%/api/profile_picture/router"
 
 export default class extends Router {
 	constructor() {
@@ -14,7 +15,8 @@ export default class extends Router {
 			new RoleRouter(),
 			new SignatureRouter(),
 			new DepartmentRouter(),
-			new UserBindedRouter()
+			new UserBindedRouter(),
+			new ProfilePictureRouter()
 		])
 	}
 }
