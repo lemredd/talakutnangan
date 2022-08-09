@@ -11,15 +11,14 @@ import Serializer from "%/transformers/serializer"
 
 export default class extends Transformer<AuditTrail, void> {
 	constructor() {
-		super()
-		this.type = "audit_trail"
-
-		this.subtransformers = {
+		const userTransformer =  new UserTransformer()
+		super("audit_trail", {
+			...userTransformer.subtransformers,
 			user: {
 				attribute: "user",
-				transformer: new UserTransformer()
+				transformer: userTransformer
 			}
-		}
+		})
 
 		this.relationships = {
 			user: this.user.bind(this)
