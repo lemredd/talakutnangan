@@ -8,7 +8,7 @@ on:
       - 'components/**'
       - 'pages/**'
       - 't/helpers/**'
-      - '.github/workflows/front-end.yml'
+      - '.github/workflows/front-end.unit.yml'
       - 'jest.front_ci.config.json'
   pull_request:
     types:
@@ -21,7 +21,7 @@ on:
       - 'components/**'
       - 'pages/**'
       - 't/helpers/**'
-      - '.github/workflows/front-end.yml'
+      - '.github/workflows/front-end.unit.yml'
       - 'jest.front_ci.config.json'
 
 jobs:
