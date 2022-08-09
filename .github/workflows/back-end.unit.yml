@@ -27,7 +27,7 @@ on:
       - 'jest.back.unit_ci.config.json'
 
 jobs:
-  common_back-end_unit_tests:
+  back-end_unit_tests_with_no_database:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
@@ -45,11 +45,11 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:back -compile
+    - run: ./execute.ps1 -test unit_ci:back -compile
       shell: pwsh
       timeout-minutes: 5
 
-  database_unit_tests:
+  back-end_unit_tests_with_databse:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
@@ -67,50 +67,6 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:database -compile
-      shell: pwsh
-      timeout-minutes: 5
-
-  server_unit_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checking out from the pushed source
-      uses: actions/checkout@v3
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-        restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
-    - run: npm install
-    - run: ./execute.ps1 -test unit:server -compile
-      shell: pwsh
-      timeout-minutes: 5
-
-  route_unit_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checking out from the pushed source
-      uses: actions/checkout@v3
-    - name: Testing on Node.js 16.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-        restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
-    - run: npm install
-    - run: ./execute.ps1 -test unit:routes -compile
+    - run: ./execute.ps1 -test unit_ci:back_database -compile
       shell: pwsh
       timeout-minutes: 5
