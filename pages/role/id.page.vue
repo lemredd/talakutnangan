@@ -51,11 +51,21 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, computed } from "vue"
+import {
+	onMounted,
+	inject,
+	ref,
+	computed
+} from "vue"
 
 import type { PageContext } from "#/types"
 import type { DeserializedRoleDocument, DeserializedRoleResource } from "$/types/documents/role"
 
+import RoleFetcher from "$@/fetchers/role"
+import Suspensible from "@/suspensible.vue"
+import deserialize from "$/helpers/deserialize"
+import RoleNameField from "@/fields/textual.vue"
+import FlagSelector from "@/role/flag_selector.vue"
 import {
 	department as departmentPermissions,
 	role as rolePermissions,
@@ -67,10 +77,6 @@ import {
 	user as userPermissions,
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
-import RoleFetcher from "$@/fetchers/role"
-import Suspensible from "@/suspensible.vue"
-import deserialize from "$/helpers/deserialize"
-import FlagSelector from "@/role/flag_selector.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const roleId = pageContext.routeParams!.id

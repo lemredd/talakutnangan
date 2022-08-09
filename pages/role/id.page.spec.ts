@@ -11,7 +11,6 @@ import {
 	department,
 	role
 } from "$/permissions/permission_list"
-import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import Page from "./id.page.vue"
 import RoleFetcher from "$@/fetchers/role"
 import RequestEnvironment from "$/helpers/request_environment"
