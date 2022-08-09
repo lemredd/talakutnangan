@@ -2,7 +2,7 @@
 	<Suspensible :is-loaded="isRolePresent">
 		<form @submit.prevent="updateRole">
 			<div class="role-name" v-if="role">
-				<h1>{{ role.name }}</h1>
+				<RoleNameField label="Role Name" type="text" v-model="role.name" :editable="true" />
 			</div>
 
 			<FlagSelector
