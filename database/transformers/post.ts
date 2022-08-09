@@ -5,23 +5,21 @@ import  Post from "%/models/post"
 
 export default class extends Transformer<Post, void> {
 	constructor() {
-		super()
-		this.type = "post"
+		super("post")
 	}
-    //title, desc, badword, user id, role id
 
 	transform(model: Post|Post[], options: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-            "title",
-            "desc",
-            "badWordExist",
-            "userID",
-            "roleID",
+			"title",
+			"desc",
+			"badWordExist",
+			"userID",
+			"roleID",
 		])
 
 		return safeObject
 	}
 
-    
+
 }
