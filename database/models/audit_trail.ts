@@ -15,9 +15,12 @@ import User from "%/models/user"
 	timestamps: true,
 	paranoid: true
 })
-export default class Signature extends Model {
+export default class AuditTrail extends Model {
 	@AllowNull
 	@ForeignKey(() => User)
+	@Column({
+		type: DataType.BIGINT
+	})
 	userID!: number|null
 
 	@Column({
