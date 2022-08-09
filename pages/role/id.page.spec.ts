@@ -70,7 +70,10 @@ describe("UI Page: Read resource by ID", () => {
 			}
 		})
 
-		console.log(response.body.data,"\n\n\n\n")
-		console.log(wrapper.html(),"\n\n\n\n")
+		await flushPromises()
+
+		const fetchedRoleName = wrapper.find(".role-name h1")
+		const expectedRoleName = response.body.data.name
+		expect(fetchedRoleName.html()).toContain(expectedRoleName)
 	})
 })
