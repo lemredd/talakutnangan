@@ -6,7 +6,7 @@ import PermissionGroup from "$/permissions/base"
 const auditTrailColumnName = "auditTrailFlags"
 
 type AuditTrailFlags = { [auditTrailColumnName]: number }
-export type Permissions = OperationPermission
+export type Permissions = Extract<OperationPermission, "view">
 
 /**
  * Permission group for audit trails.
