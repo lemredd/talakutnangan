@@ -34,7 +34,16 @@
 				:base-permission-group="auditTrailPermissions"
 				v-model:flags="role!.auditTrailFlags"/>
 
-			<button type="submit" class="btn btn-primary">Submit</button>
+			<div class="controls flex justify-between">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<button type="button" class="btn btn-primary" @click="archiveOrRestore">
+					{{
+						role!.deletedAt
+						? "Restore"
+						: "Archive"
+					}}
+				</button>
+			</div>
 		</form>
 	</Suspensible>
 </template>
@@ -88,7 +97,6 @@ onMounted(async () => {
 		const { body } = response
 		const deserializedData = (deserialize(body)! as DeserializedRoleDocument).data
 		role.value = deserializedData
-		console.log(deserializedData)
 
 		// TODO<permission_properties>: loop through permission properties to minimize manual rendering of FlagSelectors
 
@@ -114,18 +122,29 @@ async function updateRole() {
 		commentFlags: role.value!.commentFlags,
 		profanityFlags: role.value!.profanityFlags,
 		userFlags: role.value!.userFlags,
-		auditTrailFlags: role.value!.auditTrailFlags
+		auditTrailFlags: role.value!.auditTrailFlags,
 	})
 	.then(({body, status}) => {
 		console.log(body, status)
 	})
 }
 
-async function archiveRole() {
+function archiveOrRestore() {
+	if (role.value!.deletedAt) restoreRole()
+	else archiveRole()
+}
 
+async function archiveRole() {
+	await new RoleFetcher().archive([role.value!.id])
+	.then(({body, status}) => {
+		console.log(body, status)
+	})
 }
 
 async function restoreRole() {
-
+	await new RoleFetcher().restore([role.value!.id])
+	.then(({body, status}) => {
+		console.log(body, status)
+	})
 }
 </script>

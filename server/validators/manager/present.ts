@@ -35,7 +35,6 @@ export default async function(
 	const foundID = (foundModel.data as any)?.id+""
 	const id = accessDeepPath(constraints.source, constraints.present.IDPath)
 
-	console.log(foundID === id, 20, foundID, id)
 	if (foundID === id) {
 		return state
 	} else {
