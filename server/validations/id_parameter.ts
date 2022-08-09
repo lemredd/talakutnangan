@@ -4,7 +4,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import RouteParameterValidation from "!/validations/route_parameter"
 
 import integer from "!/validators/base/integer"
-import unique from "!/validators/manager/unique"
+import present from "!/validators/manager/present"
 import required from "!/validators/base/required"
 
 type ParameterInfo = [ string, BaseManagerClass ]
@@ -15,13 +15,13 @@ export default class extends RouteParameterValidation {
 			(previousValidationRules, info) => ({
 				...previousValidationRules,
 				[info[0]]: {
-					pipes: [ required, integer, unique ],
+					pipes: [ required, integer, present ],
 					constraints: {
 						manager: {
 							className: info[1],
 							columnName: "id"
 						},
-						unique: {
+						present: {
 							IDPath: info[0]
 						}
 					}
