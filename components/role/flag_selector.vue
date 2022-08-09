@@ -2,7 +2,7 @@
 	TODO: Refactor all WindiCSS inline classes using @apply directive
  -->
 <template>
-<ul class="flags my-3">
+<ul class="flags my-3" :id="`${header.toLocaleLowerCase()}-flags`">
 	<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">{{ header }} Flags</h2>
 
 	<div class="operational-flags">
