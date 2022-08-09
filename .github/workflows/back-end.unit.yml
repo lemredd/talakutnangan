@@ -11,6 +11,7 @@ on:
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back.unit_ci.config.json'
+      - 'jest.back_database.unit_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -25,6 +26,7 @@ on:
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back.unit_ci.config.json'
+      - 'jest.back_database.unit_ci.config.json'
 
 jobs:
   unit_tests_with_rarely_used_database:
