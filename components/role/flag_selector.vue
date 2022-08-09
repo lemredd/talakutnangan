@@ -18,8 +18,10 @@
 
 	<div class="access-level-flags" v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length">
 		<AccessLevelSelector
+			:initial-value="initialReadScopedRawFlag"
 			label="Read Access Level" :options="readScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)" />
 		<AccessLevelSelector
+			:initial-value="initialWriteScopedRawFlag"
 			label="Write Access Level" :options="writeScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)" />
 	</div>
 </ul>
@@ -39,7 +41,7 @@
 
 <script setup lang="ts">
 // Third Parties
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import uniq from "lodash.uniq"
 
 // Developer defined internals
@@ -61,6 +63,23 @@ const {
 }>()
 
 const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
+const initialReadScopedRawFlag = computed(() => {
+	const scopedRawFlags = rawFlags.value.filter(flag => {
+		const name = flag.toLocaleLowerCase()
+		return name.includes("scope") && name.includes("read")
+	})
+
+	return scopedRawFlags[scopedRawFlags.length-1]
+})
+const initialWriteScopedRawFlag = computed(() => {
+	const scopedRawFlags = rawFlags.value.filter(flag => {
+		const name = flag.toLocaleLowerCase()
+		return name.includes("scope") && name.includes("write")
+	})
+
+	return scopedRawFlags[scopedRawFlags.length-1]
+})
+
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
 const operationalPermissionNames = permissionNames.filter((permissionName) => {
 	return !permissionName.toLocaleLowerCase().includes("scope")
