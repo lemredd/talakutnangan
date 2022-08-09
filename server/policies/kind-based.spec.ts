@@ -1,15 +1,13 @@
+import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import MockRequester from "~/set-ups/mock_requester"
-import setUpDatabase from "~/set-ups/database.set_up"
 import AuthorizationError from "$!/errors/authorization"
 
 import KindBasedPolicy from "./kind-based"
 
 describe("Middleware: Kind-Based Policy", () => {
-	setUpDatabase()
-
 	const requester  = new MockRequester()
 
 	it("can allow unreachable employees only as expected", async () => {

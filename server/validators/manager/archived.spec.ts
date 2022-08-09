@@ -1,14 +1,12 @@
 import type { Request } from "!/types/dependent"
 
+import "~/set-ups/database.set_up"
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
-import setUpDatabase from "~/set-ups/database.set_up"
 import makeInitialState from "!/validators/make_initial_state"
 import archived from "./archived"
 
 describe("Validator: archived", () => {
-	setUpDatabase()
-
 	it("can accept valid input", async () => {
 		const user = await (new UserFactory()).insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
