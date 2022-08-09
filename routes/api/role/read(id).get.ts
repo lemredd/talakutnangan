@@ -59,7 +59,7 @@ export default class extends BoundJSONController {
 
 		const document = await manager.findWithID(+id, {
 			filter: {
-				existence: "exists",
+				existence: "*",
 				department: "*"
 			}
 		})
