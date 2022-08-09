@@ -29,10 +29,10 @@ export default class extends BaseManager<
 			})
 
 			Log.success("manager", "done archiving previous signature")
+
+			return await this.create({ userID, signature }, { raw: false })
 		} catch(error) {
 			throw this.makeBaseError(error)
 		}
-
-		return await this.create({ userID, signature }, {}, { raw: false })
 	}
 }
