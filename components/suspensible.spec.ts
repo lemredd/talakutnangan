@@ -1,10 +1,12 @@
 import { mount } from "@vue/test-utils"
+
+import "~/set-ups/database.set_up"
+import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
+import Suspensible from "./suspensible.vue"
+import RequestEnvironment from "$/helpers/request_environment"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
-import Suspensible from "./suspensible.vue"
-import RoleFetcher from "$@/fetchers/role"
-import RequestEnvironment from "$/helpers/request_environment"
 
 describe("UI Component: Suspensible", () => {
 	it("Should load asynchronous resource", async () => {
