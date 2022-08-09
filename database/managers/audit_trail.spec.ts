@@ -19,3 +19,24 @@ describe("Database: Audit trail read operations", () => {
 		expect(serializedModel).toHaveProperty("included.1.id", profilePicture.id)
 	})
 })
+describe("Database: Miscellaneous operations", () => {
+	it("can get sortable columns", async () => {
+		// Include in test to alert in case there are new columns to decide whether to expose or not
+		const manager = new Manager()
+
+		const sortableColumns = manager.sortableColumns
+
+		expect(sortableColumns).toStrictEqual([
+			"-actionName",
+			"-createdAt",
+			"-deletedAt",
+			"-id",
+			"-updatedAt",
+			"actionName",
+			"createdAt",
+			"deletedAt",
+			"id",
+			"updatedAt"
+		])
+	})
+})

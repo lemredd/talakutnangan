@@ -26,4 +26,9 @@ export default class  extends BaseManager<AuditTrail, AuditTrailAttributes, Comm
 			...super.listPipeline
 		]
 	}
+
+	protected get exposableColumns(): string[] {
+		const excludedColumns = new Set([ "extra", "userID" ])
+		return super.exposableColumns.filter(columnName => !excludedColumns.has(columnName))
+	}
 }
