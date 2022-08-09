@@ -21,7 +21,8 @@ export default class extends Transformer<Role, void> {
 			"commentFlags",
 			"profanityFlags",
 			"userFlags",
-			"auditTrailFlags"
+			"auditTrailFlags",
+			"deletedAt"
 		])
 
 		return safeObject
