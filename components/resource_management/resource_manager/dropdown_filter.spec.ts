@@ -1,12 +1,12 @@
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import { mount } from "@vue/test-utils"
-import flushPromises from "flush-promises"
+import { mount, flushPromises } from "@vue/test-utils"
 
-import DepartmentFactory from "~/factories/department"
+import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Manager from "@/resource_management/manager"
+import DepartmentFactory from "~/factories/department"
 import RequestEnvironment from "$/helpers/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"

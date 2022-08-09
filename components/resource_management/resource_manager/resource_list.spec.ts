@@ -2,6 +2,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import { mount } from "@vue/test-utils"
 
+import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Manager from "@/resource_management/manager"

@@ -35,9 +35,7 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"common_back-end/.*\\.spec\\.ts",
 		"./database/.*\\.spec\\.ts",
-		"./server/.*\\.spec\\.ts",
 		"./routes/.*\\.spec\\.ts"
 	],
 

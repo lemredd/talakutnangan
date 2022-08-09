@@ -1,11 +1,18 @@
 {
 	"preset": "ts-jest",
 
-	"cacheDirectory": "t/cache/unit_server",
+	"extensionsToTreatAsEsm": [".ts"],
+
+	"globals": {
+	  "ts-jest": {
+		 "useESM": true
+	  }
+	},
 
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"node"
 	],
 
 	"moduleNameMapper": {
@@ -18,6 +25,7 @@
 	},
 
 	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/log.set_up.ts",
 		"./t/helpers/set-ups/singletons.set_up.ts",
 		"./t/helpers/set-ups/cache_manager.set_up.ts"
 	],
@@ -25,7 +33,8 @@
 	"transformIgnorePatterns": [],
 
 	"testRegex": [
-		"./server/.*\\.spec\\.ts"
+		"common_back-end/.*\\.spec\\.ts",
+		"server/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "node"
