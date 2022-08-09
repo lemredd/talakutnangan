@@ -1,24 +1,17 @@
-import type { Serializable } from "$/types/general"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	AttributesObject,
 	TransformerOptions,
 	RelationshipTransformerInfo
 } from "%/types/dependent"
 
-import cloneDeep from "lodash.clonedeep"
-
 import User from "%/models/user"
 import Transformer from "%/transformers/base"
-import DatabaseError from "$!/errors/database"
-import deserialize from "$/helpers/deserialize"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
-import RequestEnvironment from "$/helpers/request_environment"
-import makeDefaultPassword from "$!/helpers/make_default_password"
 import StudentDetailTransformer from "%/transformers/student_detail"
+import ProfilePictureTransformer from "%/transformers/profile_picture"
 
 export default class extends Transformer<User, void> {
 	constructor() {
@@ -41,6 +34,10 @@ export default class extends Transformer<User, void> {
 			signature: {
 				attribute: "signature",
 				transformer: new SignatureTransformer()
+			},
+			"profile_picture": {
+				attribute: "profilePicture",
+				transformer: new ProfilePictureTransformer()
 			}
 		}
 
@@ -48,7 +45,8 @@ export default class extends Transformer<User, void> {
 			roles: this.roles.bind(this),
 			department: this.department.bind(this),
 			studentDetail: this.studentDetail.bind(this),
-			signature: this.signature.bind(this)
+			signature: this.signature.bind(this),
+			profilePicture: this.profilePicture.bind(this)
 		}
 	}
 
@@ -95,37 +93,11 @@ export default class extends Transformer<User, void> {
 		)
 	}
 
-	finalizeTransform(model: User|User[]|null, transformedData: Serializable): Serializable {
-		const postTransformedData = super.finalizeTransform(model, transformedData)
-		const addPasswordStatus = (model: User, data: Serializable) => {
-			const userProfile = deserialize(cloneDeep(data)) as DeserializedUserProfile
-			const defaultPassword = makeDefaultPassword(userProfile)
-			const hasDefaultPassword = model.password === defaultPassword
-
-			data.meta = {
-				hasDefaultPassword
-			}
-		}
-
-		// Only add password status for individual resource
-		if (model instanceof Array || model === null) {
-			transformedData.meta = {
-				hasDefaultPassword: null
-			}
-		} else {
-			try {
-				addPasswordStatus(model as User, transformedData)
-			} catch(error) {
-				if(!RequestEnvironment.isOnTest && RequestEnvironment.isNotOnProduction) {
-					throw new DatabaseError(`Student account (user id: ${
-						model.id
-					}) has no student detail to base the default password. (Other error: ${
-						(error as Error).toString()
-					})`)
-				}
-			}
-		}
-
-		return postTransformedData
+	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			model.profilePicture || null,
+			this.subtransformers["profile_picture"].transformer as ProfilePictureTransformer,
+			options
+		)
 	}
 }

@@ -150,21 +150,23 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForStudents = {
 			kind: "student",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
 					email: fakeUserA.email,
 					name: fakeUserA.name,
 					password: fakeUserA.password,
-					studentNumber: "1920-1"
+					studentNumber: "1920-1",
+					prefersDark: false
 				},
 				{
 					department: departments[1].acronym,
 					email: fakeUserB.email,
 					name: fakeUserB.name,
 					password: fakeUserB.password,
-					studentNumber: "1920-2"
+					studentNumber: "1920-2",
+					prefersDark: false
 				}
 			]
 		}
@@ -194,25 +196,28 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
 			kind: "reachable_employee",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
 					email: fakeUserA.email,
 					name: fakeUserA.name,
-					password: fakeUserA.password
+					password: fakeUserA.password,
+					prefersDark: false
 				},
 				{
 					department: departments[1].acronym,
 					email: fakeUserB.email,
 					name: fakeUserB.name,
-					password: fakeUserB.password
+					password: fakeUserB.password,
+					prefersDark: false
 				},
 				{
 					department: departments[2].acronym,
 					email: fakeUserC.email,
 					name: fakeUserC.name,
-					password: fakeUserC.password
+					password: fakeUserC.password,
+					prefersDark: false
 				}
 			]
 		}
@@ -240,25 +245,28 @@ describe("Database: User Create Operations", () => {
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
 			kind: "unreachable_employee",
-			roles: roles.map(role => role.name),
+			roles: roles.map(role => role.id),
 			importedCSV: [
 				{
 					department: departments[0].acronym,
 					email: fakeUserA.email,
 					name: fakeUserA.name,
-					password: fakeUserA.password
+					password: fakeUserA.password,
+					prefersDark: false
 				},
 				{
 					department: departments[1].acronym,
 					email: fakeUserB.email,
 					name: fakeUserB.name,
-					password: fakeUserB.password
+					password: fakeUserB.password,
+					prefersDark: false
 				},
 				{
 					department: departments[2].acronym,
 					email: fakeUserC.email,
 					name: fakeUserC.name,
-					password: fakeUserC.password
+					password: fakeUserC.password,
+					prefersDark: false
 				}
 			]
 		}
@@ -298,7 +306,6 @@ describe("Database: Miscellaneous operations", () => {
 		const sortableColumns = manager.sortableColumns
 
 		expect(sortableColumns).toStrictEqual([
-			"-admittedAt",
 			"-createdAt",
 			"-deletedAt",
 			"-email",
@@ -307,7 +314,6 @@ describe("Database: Miscellaneous operations", () => {
 			"-kind",
 			"-name",
 			"-updatedAt",
-			"admittedAt",
 			"createdAt",
 			"deletedAt",
 			"email",

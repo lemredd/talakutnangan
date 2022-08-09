@@ -9,6 +9,7 @@ import Department from "%/models/department"
 import Signature from "%/models/signature"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
+import ProfilePicture from "%/models/profile_picture"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
 
@@ -26,6 +27,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			Department,
 			AttachedRole,
 			StudentDetail,
+			ProfilePicture,
 			EmployeeSchedule
 		]
 	})

@@ -30,8 +30,7 @@ export default async function(
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
 		filter: {
 			existence: "*"
-		},
-		sort: []
+		}
 	})
 
 	const id = +accessDeepPath(constraints.source, constraints.unique.IDPath)

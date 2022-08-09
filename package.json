@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "0.10.0-dev",
+	"version": "0.11.0-dev",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
@@ -11,13 +11,11 @@
 	"private": true,
 	"types": "module",
 	"scripts": {
-		"prod": "npm run build && npm run server:prod",
+		"prod": "npm run build && npm run migrate:up && npm run server:prod",
 		"build": "vite build",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
-		"seed:make": "npx sequelize-cli seed:generate --name",
-		"seed:up:all": "npx sequelize-cli db:seed:all",
-		"seed:down": "npx sequelize-cli db:seed:undo",
+		"migrate:up": "npx sequelize-cli db:migrate",
 		"seed:redo:all": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all"
 	},
 	"devDependencies": {
@@ -134,7 +132,7 @@
 			"email": "kiritogregorio@gmail.com"
 		},
 		{
-			"name": "IKnightSKyI",
+			"name": "IKnightSKyl",
 			"email": "johnjeromepertez@yahoo.com"
 		},
 		{

@@ -10,12 +10,11 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
-      - 'jest.back_ci.config.json'
-  pull_request_target:
+      - 'jest.back.unit_ci.config.json'
+      - 'jest.back_database.unit_ci.config.json'
+  pull_request:
     types:
-      - opened
       - reopened
-      - review_requested
     branches:
       - master
     paths:
@@ -26,18 +25,15 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
-      - 'jest.back_ci.config.json'
+      - 'jest.back.unit_ci.config.json'
+      - 'jest.back_database.unit_ci.config.json'
 
 jobs:
-  pushed_unit_tests:
-    if: ${{ github.event_name == 'push' }}
+  unit_tests_with_rarely_used_database:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
-      with:
-        repository: ${{ github.event.push.repository.full_name }}
-        ref: ${{ github.event.push.after }}
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2
       with:
@@ -51,13 +47,28 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:back_ci
+    - run: ./execute.ps1 -test unit_ci:back -compile
       shell: pwsh
       timeout-minutes: 5
 
-  pulled_unit_tests:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+  unit_tests_with_necessary_database:
     runs-on: ubuntu-latest
     steps:
-    - name: Output success just to show the conclusion of tests in fork
-      run: echo 0
+    - name: Checking out from the pushed source
+      uses: actions/checkout@v3
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_
+    - run: npm install
+    - run: ./execute.ps1 -test unit_ci:back_database
+      shell: pwsh
+      timeout-minutes: 5

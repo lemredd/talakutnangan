@@ -1,0 +1,91 @@
+// Command to compile: dot -T png dx/commit_type_guide.dot -o dx/commit_type_guide.png
+digraph {
+	node [ shape="record" ]
+
+	{
+		node [ shape = "diamond" ]
+		affects_application [ label = "Affects the\napplication mechanism\nin general?" ]
+		is_directory_only [ label = "Located in\ndirectories only?" ]
+		affects_tooling [ label = "Affect the\nJSON/.env files\nor other tools?" ]
+		affects_config [ label = "Affect the\nJSON/.env*/.git*/*.ts\nfiles?" ]
+		affects_readme [ label = "Affect the\nREADME?" ]
+		affects_workflow_or_template [ label = "Affect the\nfiles in .github\ndirectory only?" ]
+		affects_tests [ label = "Affect the\ntests only?" ]
+		affects_unit_tests [ label = "Affect the\n*.spec.ts only?" ]
+		affects_intg_tests [ label = "Affect the\nt/integration directory only?" ]
+		affects_ci [ label = "Affect the\nworkflows only?" ]
+		affects_pr_template [ label = "Affect the\npull request\ntemplate?" ]
+		squash_bug [ label = "Fixes\nbug only?" ]
+		refactor_code [ label = "Refactors\ncode?" ]
+		affects_html_structure [ label = "Reformats\nHTML template?" ]
+		optimize_code [ label = "Optimizes\ncode?" ]
+		does_enhance [ label = "Enhances\ncode?" ]
+		affects_style [ label = "Affect the\nvisual design\nstyle only?" ]
+		affects_user [
+			label = "Felt by the\n(normal/developer) user\n(usually pages or API routes)?"
+		]
+		affects_types [ label = "Affects\ntypes?" ]
+		affects_shared [ label = "Affect the\nshared code only?" ]
+	}
+
+	config [ label = "{config|Configuration}" ]
+	docs [ label = "{docs|Documentation}" ]
+	ci [ label = "{ci|Continuous\nIntegration}" ]
+	dx [ label = "{dx|Developer\nExperience}" ]
+	style [ label = "{style|Visual style}" ]
+	test [ label = "{test|General\nTesting}" ]
+	unit [ label = "{unit|Unit\nTesting}" ]
+	intg [ label = "{intg|Integration\nTesting}" ]
+	fix [ label = "{fix|Fixes}" ]
+	refactor [ label = "{refactor|General\nRefactor}" ]
+	perf [ label = "{perf|Performance}" ]
+	rfrmt [ label = "{rfrmt|Reformed HTML}" ]
+	feat [ label = "{feat|Feature}" ]
+	types [ label = "{types|Types}" ]
+	intrn [ label = "{intrn|Internal}" ]
+	share [ label = "{share|Share}" ]
+
+	{
+		edge [ label = "Y" ]
+		affects_application -> squash_bug
+		is_directory_only -> affects_workflow_or_template
+		affects_workflow_or_template -> affects_ci
+		affects_tooling -> affects_config
+		affects_config -> config
+		affects_readme -> docs
+		affects_ci -> ci
+		affects_pr_template -> dx
+		affects_tests -> affects_unit_tests
+		affects_unit_tests -> unit
+		affects_intg_tests -> intg
+		squash_bug -> fix
+		refactor_code -> affects_html_structure
+		affects_html_structure -> rfrmt
+		optimize_code -> perf
+		does_enhance -> affects_user
+		affects_user -> affects_style
+		affects_style -> style
+		affects_types -> types
+		affects_shared -> share
+	}
+
+	{
+		edge [ label = "N" ]
+		affects_application -> is_directory_only
+		is_directory_only -> affects_tooling
+		affects_tooling -> affects_readme
+		affects_workflow_or_template -> affects_tests
+		affects_ci -> affects_pr_template
+		affects_config -> dx
+		affects_unit_tests -> affects_intg_tests
+		affects_intg_tests -> test
+		squash_bug -> refactor_code
+		affects_html_structure -> optimize_code
+		optimize_code -> refactor
+		refactor_code -> does_enhance
+		affects_style -> feat
+		affects_user -> affects_types
+		affects_types -> affects_shared
+		affects_shared -> intrn
+	}
+}

@@ -9,10 +9,8 @@ describe("Validator pipe: stringArray", () => {
 			source: null,
 			field: "hello",
 			array: {
-				rules: {
-					pipes: [ jest.fn(value => value) ],
-					constraints: {}
-				}
+				pipes: [ jest.fn(value => value) ],
+				constraints: {}
 			}
 		}
 
@@ -28,10 +26,8 @@ describe("Validator pipe: stringArray", () => {
 			source: null,
 			field: "hello",
 			array: {
-				rules: {
-					pipes: [ jest.fn(value => value) ],
-					constraints: {}
-				}
+				pipes: [ jest.fn(value => value) ],
+				constraints: {}
 			}
 		}
 

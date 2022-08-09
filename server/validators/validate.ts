@@ -24,7 +24,7 @@ export default async function(
 				request,
 				source: originalInput,
 				field,
-				...rules.constraints
+				...(rules.constraints ?? {})
 			}
 			const sanitizedInput = await runThroughPipeline(
 				Promise.resolve(makeInitialState(input[field])),

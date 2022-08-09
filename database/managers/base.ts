@@ -79,7 +79,7 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: number,
-		constraints: V = ({} as V),
+		constraints: Pick<V, "filter"> = ({} as Pick<V, "filter">),
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
@@ -88,8 +88,6 @@ export default abstract class Manager<
 				if (constraints.filter === undefined) constraints.filter = {}
 				if (constraints.filter.existence === undefined)
 					constraints.filter.existence = "exists"
-				// @ts-ignore
-				if (constraints.sort === undefined) constraints.sort = []
 			}
 
 			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
@@ -105,7 +103,7 @@ export default abstract class Manager<
 	async findOneOnColumn(
 		columnName: string,
 		value: any,
-		constraints: V = {} as V,
+		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
@@ -171,7 +169,6 @@ export default abstract class Manager<
 
 	async create(
 		details: U & CreationAttributes<T>,
-		constraints: V = {} as V,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
@@ -275,10 +272,14 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<U = Serializable>(models: T|T[]|null, options: W = {} as W): U {
+	protected serialize<U = Serializable>(
+		models: T|T[]|null,
+		options: W = {} as W,
+		transformer: Transformer<T, W> = this.transformer
+	): U {
 		return Serializer.serialize(
 			models,
-			this.transformer,
+			transformer,
 			options as GeneralObject
 		) as unknown as U
 	}

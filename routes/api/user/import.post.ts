@@ -1,5 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import { UserKindValues, UserKind } from "$/types/database"
+import type { ImportUserDocument } from "!/types/documents/user"
 import type { PreprocessedRequest, Request, Response } from "!/types/dependent"
 import type { OptionalMiddleware, NewUserNotificationArguments } from "!/types/independent"
 import type {
@@ -15,21 +16,29 @@ import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
+import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import MultipartController from "!/controllers/multipart_controller"
 
-import BodyValidation from "!/validation/body"
+import BodyValidation from "!/validations/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
 import array from "!/validators/base/array"
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
+import integer from "!/validators/base/integer"
+import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
 import oneOf from "!/validators/comparison/one-of"
+import length from "!/validators/comparison/length"
+import notExists from "!/validators/manager/not_exists"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -45,57 +54,172 @@ export default class extends MultipartController {
 		const maxSize = 1*1000
 		return [
 			new BodyValidation((request: Request): FieldRules => ({
-				importedCSV: {
-					pipes: [ required, buffer ],
+				data: {
+					pipes: [ required, object ],
 					constraints: {
-						buffer: {
-							allowedMimeTypes: [ "text/csv" ],
-							maxSize
-						}
-					}
-				},
-				roles: {
-					pipes: [ required, array ],
-					constraints: {
-						array: {
-							rules: {
-								pipes: [ string, exists ],
+						object: {
+							type: {
+								pipes: [ required, string, same ],
 								constraints: {
-									manager: {
-										className: RoleManager,
-										columnName: "name"
+									same: {
+										value: "user"
+									}
+								}
+							},
+							attributes: {
+								pipes: [ required, object ],
+								constraints: {
+									object: {
+										kind: {
+											pipes: [ required, string, oneOf ],
+											constraints: {
+												oneOf: {
+													values: [ ...UserKindValues ]
+												}
+											}
+										}
+									}
+								}
+							},
+							relationships: {
+								pipes: [ required, object ],
+								constraints: {
+									object: {
+										roles: {
+											pipes: [ required, object ],
+											constraints: {
+												object: {
+													data: {
+														pipes: [ required, array, length ],
+														constraints: {
+															array: {
+																pipes: [ required, object ],
+																constraints: {
+																	object: {
+																		type: {
+																			pipes: [ required, string, same ],
+																			constraints: {
+																				same: {
+																					value: "role"
+																				}
+																			}
+																		},
+																		id: {
+																			pipes: [
+																				required,
+																				string,
+																				integer,
+																				exists
+																			],
+																			constraints: {
+																				manager: {
+																					className: RoleManager,
+																					columnName: "id"
+																				}
+																			}
+																		}
+																	}
+																}
+															},
+															length: {
+																minimum: 1
+															}
+														}
+													}
+												}
+											}
+										}
 									}
 								}
 							}
 						}
 					}
 				},
-				kind: {
-					pipes: [ required, string, oneOf ],
+				meta: {
+					pipes: [ required, object ],
 					constraints: {
-						oneOf: {
-							values: [ ...UserKindValues ]
+						object: {
+							importedCSV: {
+								pipes: [ required, buffer ],
+								constraints: {
+									buffer: {
+										allowedMimeTypes: [ "text/csv" ],
+										maxSize
+									}
+								}
+							}
 						}
 					}
 				}
 			})),
-			new CSVParser("importedCSV")
+			new CSVParser("meta.importedCSV")
 		]
 	}
 
 	makeBodyRuleGenerator(request: Request): FieldRules {
+		// TODO: Make validator to validate name
 		return {
-			importedCSV: {
-				pipes: [ required ],
-				constraints: { }
+			data: {
+				pipes: [ required ]
 			},
-			roles: {
-				pipes: [ required ],
-				constraints: {}
-			},
-			kind: {
-				pipes: [ required ],
-				constraints: {}
+			meta: {
+				pipes: [ required, object ],
+				constraints: {
+					object: {
+						importedCSV: {
+							pipes: [ required, array, length ],
+							constraints: {
+								array: {
+									pipes: [ required, object ],
+									constraints: {
+										object: {
+											name: {
+												pipes: [ required, string, notExists ],
+												constraints: {
+													manager: {
+														className: UserManager,
+														columnName: "name"
+													}
+												}
+											},
+											email: {
+												pipes: [ required, string, notExists ],
+												constraints: {
+													manager: {
+														className: UserManager,
+														columnName: "email"
+													}
+												}
+											},
+											department: {
+												// TODO: Add validator to match if department may admit
+												pipes: [ required, string, exists ],
+												constraints: {
+													manager: {
+														className: DepartmentManager,
+														columnName: "acronym"
+													}
+												}
+											},
+											studentNumber: {
+												pipes: [ nullable, string, regex ],
+												constraints: {
+													regex: {
+														match: /^\d+-\d+$/
+													}
+												}
+											}
+										}
+									}
+								},
+								length: {
+									minimum: 1,
+									maximum: 200
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -107,7 +231,12 @@ export default class extends MultipartController {
 		Log.trace("controller", "entered POST /api/user/import")
 
 		const manager = new UserManager(request.transaction, request.cache)
-		const body: Partial<RawBulkData> = request.body
+		const importedBody = request.body as unknown as ImportUserDocument
+		const body: Partial<RawBulkData> = {}
+
+		body.kind = importedBody.data.attributes.kind
+		body.roles = importedBody.data.relationships.roles.data.map(identifier => identifier.id)
+		body.importedCSV = importedBody.meta.importedCSV
 
 		Log.trace("controller", "made user manager")
 
@@ -119,6 +248,9 @@ export default class extends MultipartController {
 				const email = (data as RawBulkDataForEmployee).email
 				data.password = extractEmailUsername(email)
 			}
+
+			data.prefersDark = false
+
 			return data
 		})
 

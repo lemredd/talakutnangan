@@ -1,11 +1,11 @@
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-
+import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import UserPermissions from "$/permissions/user"
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
 import MockRequester from "~/set-ups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
-import UserPermissions from "$/permissions/user"
 
 import PermissionBasedPolicy from "./permission-based"
 

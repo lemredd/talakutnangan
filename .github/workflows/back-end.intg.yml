@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'shareable/**'
-      - 'common_front-end/**'
       - 'common_back-end/**'
       - 'database/**'
       - 'server/**'
@@ -12,16 +11,11 @@ on:
       - 't/helpers/**'
       - 't/integration/api/**'
       - 't/integration/t/**'
-      - 'renderer/**'
-      - 'pages/**'
-      - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
-  pull_request_target:
+  pull_request:
     types:
-      - opened
       - reopened
-      - review_requested
     branches:
       - master
     paths:
@@ -47,15 +41,11 @@ env:
   EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
 jobs:
-  pushed_integration_tests:
-    if: ${{ github.event_name == 'push' }}
+  integration_tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
-      with:
-        repository: ${{ github.event.push.repository.full_name }}
-        ref: ${{ github.event.push.after }}
     - name: Testing on Node.js 16.x
       uses: actions/setup-node@v2
       with:
@@ -81,15 +71,9 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -database -upgrade
       shell: pwsh
-    - run: npm run seed:up:all
+    - run: ./execute.ps1 -database -reseed
+      shell: pwsh
     - run: npm run build
     - run: ./execute.ps1 -test intg:back
       shell: pwsh
       timeout-minutes: 3
-
-  pulled_integration_tests:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Output success just to show the conclusion of tests in fork
-      run: echo 0
