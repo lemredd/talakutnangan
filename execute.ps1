@@ -173,9 +173,7 @@ Param(
 		"intg:back",
 
 		"unit_ci:back",
-
-		"unit_ci:compiled_share",
-		"unit_ci:compiled_back"
+		"unit_ci:back_database"
 	)]
 	[string]
 	$SuiteName,
