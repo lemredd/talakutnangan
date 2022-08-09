@@ -69,6 +69,6 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit_ci:back_database -compile
+    - run: ./execute.ps1 -test unit_ci:back_database
       shell: pwsh
       timeout-minutes: 5
