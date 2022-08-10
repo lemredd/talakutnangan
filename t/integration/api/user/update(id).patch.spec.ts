@@ -13,7 +13,7 @@ import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 
-describe("PATCH /api/user/update/:id", () => {
+describe("PATCH /api/user/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})

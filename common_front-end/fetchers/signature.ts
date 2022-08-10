@@ -43,7 +43,7 @@ export default class SignatureFetcher extends Fetcher<
 		DeserializedSignatureResource,
 		DeserializedSignatureDocument
 	>> {
-		const pathTemplate = `user/:id/relationships/${this.type}/update`
+		const pathTemplate = `user/:id/relationships/${this.type}`
 		const path = specializedPath(pathTemplate, { id: userID })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 

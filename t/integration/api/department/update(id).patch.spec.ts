@@ -9,7 +9,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/update(id).patch"
 
-describe("PATCH /api/department/update/:id", () => {
+describe("PATCH /api/department/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})

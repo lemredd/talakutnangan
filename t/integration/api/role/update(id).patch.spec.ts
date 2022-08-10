@@ -8,7 +8,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/role/update(id).patch"
 
-describe("PUT /api/role/update", () => {
+describe("PATCH /api/role/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})

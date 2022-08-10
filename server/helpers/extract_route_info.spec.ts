@@ -98,4 +98,37 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})
+
+	it("can trim update route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/update(id).patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api/:id")
+		expect(purpose).toBe("api")
+	})
+
+	it("can trim subupdate route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user/update(id).patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api/user/:id")
+		expect(purpose).toBe("api")
+	})
+
+	it("can trim subupdate route without parameter", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user/update.patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api/user")
+		expect(purpose).toBe("api")
+	})
 })

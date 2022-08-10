@@ -10,7 +10,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/user(id)/relationships/signature/update.patch"
 
-describe("PATCH /api/user/:id/relationships/signature/update", () => {
+describe("PATCH /api/user/:id/relationships/signature", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -29,7 +29,7 @@ describe("PATCH /api/user/:id/relationships/signature/update", () => {
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
-			.patch(`/api/user/${admin.id}/relationships/signature/update`)
+			.patch(`/api/user/${admin.id}/relationships/signature`)
 			.field("data[type]", "signature")
 			.attach("data[attributes][signature]", path)
 			.set("Cookie", cookie)

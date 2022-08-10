@@ -65,7 +65,7 @@ export default class ProfilePictureFetcher extends Fetcher<
 		DeserializedProfilePictureResource,
 		DeserializedProfilePictureDocument
 	>> {
-		const pathTemplate = ":type/update/:id"
+		const pathTemplate = ":type/:id"
 		const path = specializedPath(pathTemplate, { id: profilePictureID, type: this.type })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
