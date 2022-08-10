@@ -29,7 +29,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
-			.post(`/api/user/${student.id}/relationships/profile_picture/create`)
+			.post(`/api/user/${student.id}/relationships/profile_picture`)
 			.field("data[type]", "profile_picture")
 			.attach("data[attributes][fileContents]", path)
 			.set("Cookie", cookie)
@@ -59,7 +59,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		await new ProfilePictureFactory().user(async () => student).insertOne()
 
 		const response = await App.request
-			.post(`/api/user/${student.id}/relationships/profile_picture/create`)
+			.post(`/api/user/${student.id}/relationships/profile_picture`)
 			.field("data[type]", "profile_picture")
 			.attach("data[attributes][fileContents]", path)
 			.set("Cookie", cookie)
