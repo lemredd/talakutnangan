@@ -12,7 +12,6 @@ import {
 } from "sequelize-typescript"
 import { Status, StatusValues} from "$/types/database"
 
-import User from "%/models/user"
 import Role from "%/models/role"
 //import Message from "%/models/message"
 import AttachedRole from "%/models/attached_role"
@@ -21,7 +20,7 @@ import AttachedRole from "%/models/attached_role"
 	timestamps: true,
 	paranoid: true
 })
-export default class StudentDetail extends Model {
+export default class Consultation extends Model {
 	@ForeignKey(() => Role)
 	@Column({
 		allowNull: false
