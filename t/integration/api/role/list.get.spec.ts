@@ -8,7 +8,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/role/list.get"
 
-describe("GET /api/role/list", () => {
+describe("GET /api/role", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -21,7 +21,7 @@ describe("GET /api/role/list", () => {
 		const roles = await (new RoleFactory()).insertMany(3)
 
 		const response = await App.request
-			.get("/api/role/list")
+			.get("/api/role")
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)

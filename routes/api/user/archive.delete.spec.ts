@@ -6,7 +6,7 @@ import Controller from "./archive.delete"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: DELETE /api/user/archive", () => {
+describe("Controller: DELETE /api/user", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

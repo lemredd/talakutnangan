@@ -9,7 +9,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/update(id).patch"
 
-describe("PATCH /api/department/update/:id", () => {
+describe("PATCH /api/department/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -23,7 +23,7 @@ describe("PATCH /api/department/update/:id", () => {
 		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
 
 		const response = await App.request
-			.patch(`/api/department/update/${department.id}`)
+			.patch(`/api/department/${department.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {
