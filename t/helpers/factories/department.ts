@@ -5,7 +5,10 @@ import type {
 	DepartmentAttributes,
 	DeserializedDepartmentResource,
 	DeserializedDepartmentDocument,
-	DeserializedDepartmentListDocument
+	DeserializedDepartmentListDocument,
+	DepartmentResource,
+	DepartmentDocument,
+	DepartmentListDocument
 } from "$/types/documents/department"
 
 import { faker } from "@faker-js/faker"
@@ -18,7 +21,10 @@ export default class DepartmentFactory extends BaseFactory<
 	Department,
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
+	DepartmentResource,
 	DeserializedDepartmentResource,
+	DepartmentDocument,
+	DepartmentListDocument,
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 > {

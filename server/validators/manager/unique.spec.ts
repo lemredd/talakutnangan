@@ -14,30 +14,6 @@ describe("Validator: unique", () => {
 		const constraints = {
 			request: {} as Request,
 			source: {
-				id: user.id
-			},
-			field: "hello",
-			manager: {
-				className: UserManager,
-				columnName: "name"
-			},
-			unique: {
-				IDPath: "id"
-			}
-		}
-
-		const sanitizeValue = (await unique(value, constraints)).value
-
-		expect(sanitizeValue).toEqual(newUser.name)
-	})
-
-	it("can accept valid casted input", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const newUser = await (new UserFactory()).makeOne()
-		const value = Promise.resolve(makeInitialState(newUser.name))
-		const constraints = {
-			request: {} as Request,
-			source: {
 				id: user.id+""
 			},
 			field: "hello",
@@ -62,7 +38,7 @@ describe("Validator: unique", () => {
 		const constraints = {
 			request: {} as Request,
 			source: {
-				id: user.id
+				id: user.id+""
 			},
 			field: "hello",
 			manager: {
@@ -87,7 +63,7 @@ describe("Validator: unique", () => {
 		const constraints = {
 			request: {} as Request,
 			source: {
-				id: user.id
+				id: user.id+""
 			},
 			field: "hello",
 			manager: {

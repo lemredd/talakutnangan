@@ -1,25 +1,24 @@
-import type { Request } from "!/types/dependent"
 import type {
 	ValidationState,
 	ValidationConstraints,
-	UniqueRuleConstraints
+	PresentRuleConstraints
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
- * Validator to check if data unique/will be unique in the database
+ * Validator to check if data archived or exists in the database
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<UniqueRuleConstraints>
+	constraints: ValidationConstraints & Partial<PresentRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
 
-	if (constraints.manager === undefined || constraints.unique === undefined) {
+	if (constraints.manager === undefined || constraints.present === undefined) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -33,16 +32,16 @@ export default async function(
 		}
 	})
 
-	const foundID = (foundModel.data as any)?.id
-	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
+	const foundID = (foundModel.data as any)?.id+""
+	const id = accessDeepPath(constraints.source, constraints.present.IDPath)
 
-	if (foundModel.data === null || foundID === id) {
+	if (foundID === id) {
 		return state
 	} else {
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" is not unique in the database".`
+				`The ${value} in field "${field}" is not existing or archived in the database".`
 		}
 	}
 }

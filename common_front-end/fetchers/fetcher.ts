@@ -1,7 +1,7 @@
-import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { CommonQueryParameters } from "$/types/query"
+import type { Serializable, GeneralObject } from "$/types/general"
 import type {
 	ResourceIdentifier,
 	Attributes,
@@ -62,6 +62,14 @@ export default class Fetcher<
 		)
 	}
 
+	read(id: number): Promise<Response<T, U, V, W, Z>> {
+		const path = specializedPath(`${this.type}/:id`, { id })
+
+		return this.handleResponse(
+			this.getJSON(path)
+		)
+	}
+
 	list(parameters: C): Promise<Response<T, U, V, W, A>> {
 		const commaDelimitedSort = {
 			...parameters,
@@ -86,7 +94,7 @@ export default class Fetcher<
 		)
 	}
 
-	archive(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
+	archive(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
@@ -94,7 +102,7 @@ export default class Fetcher<
 		)
 	}
 
-	restore(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
+	restore(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
