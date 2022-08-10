@@ -22,12 +22,9 @@ describe("GET /api/role/count_users", () => {
 		const response = await App.request
 			.get("/api/role/count_users")
 			.send({
-				data: [
-					{
-						type: "role",
-						id: adminRole.id
-					}
-				]
+				filter: {
+					IDs: adminRole.id
+				}
 			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
