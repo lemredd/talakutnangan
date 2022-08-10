@@ -20,7 +20,7 @@ import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { PossibleResources } from "$@/types/independent"
 
-import Suspensible from "@/Suspensible.vue"
+import Suspensible from "@/suspensible.vue"
 import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"

@@ -22,7 +22,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import RoleFetcher from "$@/fetchers/role"
-import Suspensible from "@/Suspensible.vue"
+import Suspensible from "@/suspensible.vue"
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"

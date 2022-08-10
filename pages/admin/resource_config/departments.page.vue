@@ -20,7 +20,7 @@ import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
-import Suspensible from "@/Suspensible.vue"
+import Suspensible from "@/suspensible.vue"
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
 import DepartmentFetcher from "$@/fetchers/department"
