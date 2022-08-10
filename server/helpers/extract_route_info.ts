@@ -19,7 +19,8 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 			break
 		case "api":
 			// Trim "list", or "create" suffix for API routes
-			path = path.replace(/^\/(.*?)\/?(list|create|update|archive)(\/:id)?$/, "/$1$3")
+			// ID parameter is the only parameter that can be retained if is a suffix
+			path = path.replace(/^\/(.*?)\/?(list|create|update|archive|restore)(\/:id)?$/, "/$1$3")
 			break
 	}
 

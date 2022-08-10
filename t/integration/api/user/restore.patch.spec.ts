@@ -10,7 +10,7 @@ import { ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT } from "$/permissions/user
 
 import Route from "!%/api/user/restore.patch"
 
-describe("DELETE /api/user/restore", () => {
+describe("PATCH /api/user", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -24,7 +24,7 @@ describe("DELETE /api/user/restore", () => {
 		await user.destroy()
 
 		const response = await App.request
-			.patch("/api/user/restore")
+			.patch("/api/user")
 			.send({
 				data: [
 					{ type: "user", id: user.id }

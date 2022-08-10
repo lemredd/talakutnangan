@@ -153,4 +153,26 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})
+
+	it("can trim restore route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/restore.patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api")
+		expect(purpose).toBe("api")
+	})
+
+	it("can trim subrestore route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user/restore.patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api/user")
+		expect(purpose).toBe("api")
+	})
 })

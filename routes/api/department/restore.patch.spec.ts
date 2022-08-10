@@ -6,7 +6,7 @@ import Controller from "./restore.patch"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: PATCH /api/department/restore", () => {
+describe("Controller: PATCH /api/department", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

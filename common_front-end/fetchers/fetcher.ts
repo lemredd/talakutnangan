@@ -96,7 +96,7 @@ export default class Fetcher<
 
 	restore(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}/restore`, {}, {
+			this.patchJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
 			})
 		)
