@@ -10,7 +10,7 @@ import { auditTrail as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/audit_trail/list.get"
 
-describe("GET /api/audit_trail/list", () => {
+describe("GET /api/audit_trail", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -25,7 +25,7 @@ describe("GET /api/audit_trail/list", () => {
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie(anyRole)
 
 		const response = await App.request
-			.get("/api/audit_trail/list")
+			.get("/api/audit_trail")
 			.query({ sort: "id" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
@@ -54,7 +54,7 @@ describe("GET /api/audit_trail/list", () => {
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie(anyRole)
 
 		const response = await App.request
-			.get("/api/audit_trail/list")
+			.get("/api/audit_trail")
 			.query({ sort: "-actionName" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
