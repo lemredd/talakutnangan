@@ -17,7 +17,6 @@ import Content from "@/page_shell/Content.vue"
 import Footer from "@/Footer.vue"
 
 const pageContext = usePageContext()
-console.log("from page_shell", pageContext)
 const path = pageContext.urlPathname
 const isLoggingIn = path === "/log_in"
 provide("isLoggingIn", isLoggingIn)
