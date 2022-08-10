@@ -41,7 +41,7 @@ describe("PATCH /api/user/:id/relationships/signature", () => {
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/signature/read/"+response.body.data.id
+			"http://localhost:16000/api/signature/"+response.body.data.id
 		)
 	})
 })

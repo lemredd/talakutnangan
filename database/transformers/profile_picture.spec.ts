@@ -30,7 +30,7 @@ describe("Transformer: Profile picture", () => {
 		expect(object).toHaveProperty("data.id", model.id)
 		expect(object).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/profile_picture/read/"+model.id
+			"http://localhost:16000/api/profile_picture/"+model.id
 		)
 	})
 
@@ -44,13 +44,13 @@ describe("Transformer: Profile picture", () => {
 		expect(object).toHaveProperty("data.0.id", models[0].id)
 		expect(object).toHaveProperty(
 			"data.0.links.self",
-			"http://localhost:16000/api/profile_picture/read/"+models[0].id
+			"http://localhost:16000/api/profile_picture/"+models[0].id
 		)
 		expect(object).toHaveProperty("data.1.type", "profile_picture")
 		expect(object).toHaveProperty("data.1.id", models[1].id)
 		expect(object).toHaveProperty(
 			"data.1.links.self",
-			"http://localhost:16000/api/profile_picture/read/"+models[1].id
+			"http://localhost:16000/api/profile_picture/"+models[1].id
 		)
 	})
 })

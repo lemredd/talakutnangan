@@ -41,7 +41,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/profile_picture/read/"+response.body.data.id
+			"http://localhost:16000/api/profile_picture/"+response.body.data.id
 		)
 	}, 10000)
 
