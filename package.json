@@ -45,7 +45,8 @@
 		"sequelize-cli": "^6.4.1",
 		"sqlite3": "^5.0.8",
 		"supertest": "^6.2.3",
-		"ts-jest": "^27.1.5"
+		"ts-jest": "^27.1.5",
+		"vue-eslint-parser": "^9.0.3"
 	},
 	"dependencies": {
 		"@types/bcryptjs": "^2.4.2",
