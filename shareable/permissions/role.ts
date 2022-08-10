@@ -1,7 +1,7 @@
 import type {
 	PermissionMap,
 	PermissionInfo,
-	OperationPermission,
+	OperationPermission
 } from "$/types/permission"
 
 import {
@@ -28,10 +28,14 @@ export default class extends PermissionGroup<RoleFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
-			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
+			[ "view", { "flag": VIEW,
+				"permissionDependencies": [] } ],
+			[ "create", { "flag": CREATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "update", { "flag": UPDATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ] } ]
 		])
 	}
 }

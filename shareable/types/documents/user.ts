@@ -70,54 +70,54 @@ export type DeserializedUserAttributes =
 	| DeserializedReachableEmployeesAttributes
 	| DeserializedUnreachableEmployeesAttributes
 
-export interface UserResource extends Resource<
+export type UserResource = Resource<
 	UserResourceIdentifier,
 	UserAttributes
-> {}
+>
 
-interface DeserializedStudentResource extends DeserializedResource<
+type DeserializedStudentResource = DeserializedResource<
 	UserResourceIdentifier,
 	DeserializedStudentAttributes
-> {}
+>
 
-interface DeserializedReachableEmployeesResource extends DeserializedResource<
+type DeserializedReachableEmployeesResource = DeserializedResource<
 	UserResourceIdentifier,
 	DeserializedReachableEmployeesAttributes
-> {}
+>
 
-interface DeserializedUnreachableEmployeesResource extends DeserializedResource<
+type DeserializedUnreachableEmployeesResource = DeserializedResource<
 	UserResourceIdentifier,
 	DeserializedUnreachableEmployeesAttributes
-> {}
+>
 
 export type DeserializedUserResource =
 	| DeserializedStudentResource
 	| DeserializedReachableEmployeesResource
 	| DeserializedUnreachableEmployeesResource
 
-export interface UserDocument extends ResourceDocument<
+export type UserDocument = ResourceDocument<
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource
-> {}
+>
 
-export interface UserListDocument extends ResourceListDocument<
+export type UserListDocument = ResourceListDocument<
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource
-> {}
+>
 
-export interface DeserializedUserDocument extends DeserializedResourceDocument<
+export type DeserializedUserDocument = DeserializedResourceDocument<
 	UserResourceIdentifier,
 	DeserializedUserAttributes,
 	DeserializedUserResource
-> {}
+>
 
-export interface DeserializedUserListDocument extends DeserializedResourceListDocument<
+export type DeserializedUserListDocument = DeserializedResourceListDocument<
 	UserResourceIdentifier,
 	DeserializedUserAttributes,
 	DeserializedUserResource
-> {}
+>
 
 interface GeneralUserProfileMetaProperties extends Serializable {
 	hasDefaultPassword?: boolean

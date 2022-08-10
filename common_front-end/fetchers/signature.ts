@@ -44,7 +44,7 @@ export default class SignatureFetcher extends Fetcher<
 		DeserializedSignatureDocument
 	>> {
 		const pathTemplate = `user/:id/relationships/${this.type}`
-		const path = specializedPath(pathTemplate, { id: userID })
+		const path = specializedPath(pathTemplate, { "id": userID })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(

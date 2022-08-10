@@ -34,16 +34,16 @@ export default class Fetcher<
 	B extends Serializable,
 	C extends CommonQueryParameters = CommonQueryParameters
 > extends RequestEnvironment {
-	protected static basePath: string = ""
-	protected static type: string = ""
+	protected static basePath = ""
+	protected static type = ""
 
-	static initialize(basePath: string, type: string = "") {
+	static initialize(basePath: string, type = "") {
 		this.basePath = basePath
 		this.type = type
 	}
 
-	protected basePath: string = ""
-	protected type: string = ""
+	protected basePath = ""
+	protected type = ""
 
 	constructor(basePath: string = Fetcher.basePath, type: string = Fetcher.type) {
 		super()
@@ -54,8 +54,8 @@ export default class Fetcher<
 	create(attributes: U): Promise<Response<T, U, V, W, Z>> {
 		return this.handleResponse(
 			this.postJSON(`${this.type}`, {
-				data: {
-					type: this.type,
+				"data": {
+					"type": this.type,
 					attributes
 				}
 			})
@@ -73,7 +73,7 @@ export default class Fetcher<
 	list(parameters: C): Promise<Response<T, U, V, W, A>> {
 		const commaDelimitedSort = {
 			...parameters,
-			sort: parameters.sort.join(",")
+			"sort": parameters.sort.join(",")
 		}
 		return this.handleResponse(
 			this.getJSON(
@@ -85,8 +85,8 @@ export default class Fetcher<
 	update(id: number, attributes: U): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}/:id`, { id }, {
-				data: {
-					type: this.type,
+				"data": {
+					"type": this.type,
 					id,
 					attributes
 				}
@@ -94,18 +94,20 @@ export default class Fetcher<
 		)
 	}
 
-	archive(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>>  {
+	archive(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
-				data: IDs.map(id => ({ type: this.type, id }))
+				"data": IDs.map(id => ({ "type": this.type,
+					id }))
 			})
 		)
 	}
 
-	restore(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>>  {
+	restore(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
-				data: IDs.map(id => ({ type: this.type, id }))
+				"data": IDs.map(id => ({ "type": this.type,
+					id }))
 			})
 		)
 	}
@@ -141,7 +143,7 @@ export default class Fetcher<
 	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
 	: Promise<Response<T, U, V, W, X|Y|B|null>> {
 		return this.requestJSON(path, {
-			method: "GET",
+			"method": "GET",
 			headers
 		})
 	}
@@ -149,7 +151,7 @@ export default class Fetcher<
 	postTo(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
 	: Promise<Response<T, U, V, W, X|Y|B|null>> {
 		return this.requestJSON(path, {
-			method: "POST",
+			"method": "POST",
 			headers,
 			body
 		})
@@ -158,7 +160,7 @@ export default class Fetcher<
 	patchThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
 	: Promise<Response<T, U, V, W, X|Y|B|null>> {
 		return this.requestJSON(path, {
-			method: "PATCH",
+			"method": "PATCH",
 			headers,
 			body
 		})
@@ -167,7 +169,7 @@ export default class Fetcher<
 	deleteThrough(path: string, body: string|FormData, headers: Headers = this.makeJSONHeaders())
 	: Promise<Response<T, U, V, W, X|Y|B|null>> {
 		return this.requestJSON(path, {
-			method: "DELETE",
+			"method": "DELETE",
 			headers,
 			body
 		})
@@ -177,26 +179,24 @@ export default class Fetcher<
 		response: Promise<Response<T, U, V, W, X|Y|B|null>>
 	): Promise<Response<T, U, V, W, D>> {
 		return response.then(({ body, status }) => {
-			if(status >= 200 || status <= 299) {
+			if (status >= 200 || status <= 299) {
 				return {
-					body: deserialize(body) as D,
+					"body": deserialize(body) as D,
 					status
 				}
-			} else {
-				throw { body, status }
 			}
+			throw { body,
+				status }
 		})
 	}
 
 	private async requestJSON(path: string, request: RequestInit)
 	: Promise<Response<any, any, any, any, any>> {
 		const completePath = `${this.basePath}/${path}`
-		return await fetch(new Request(completePath, request)).then(async response => {
-			return {
-				status: response.status,
-				body: response.status === this.status.NO_CONTENT ? null : await response.json()
-			}
-		})
+		return await fetch(new Request(completePath, request)).then(async response => ({
+			"status": response.status,
+			"body": response.status === this.status.NO_CONTENT ? null : await response.json()
+		}))
 	}
 
 	protected makeJSONHeaders(contentType: string = JSON_API_MEDIA_TYPE): Headers {

@@ -3,13 +3,13 @@ import { faker } from "@faker-js/faker"
 import TextualField from "@/fields/textual.vue"
 
 describe("Component: fields/Textual", () => {
-	it("can update", async () => {
+	it("can update", async() => {
 		const wrapper = mount(TextualField, {
-			props: {
-				label: "E-mail",
-				type: "email",
-				modelValue: "",
-				required: true
+			"props": {
+				"label": "E-mail",
+				"type": "email",
+				"modelValue": "",
+				"required": true
 			}
 		})
 		const field = wrapper.find("input")
@@ -22,14 +22,14 @@ describe("Component: fields/Textual", () => {
 		expect(updates![0]).toEqual([ exampleEmail ])
 	})
 
-	it("should be edit protected", async () => {
+	it("should be edit protected", async() => {
 		const wrapper = mount(TextualField, {
-			props: {
-				label: "E-mail",
-				type: "email",
-				modelValue: "",
-				editable: true,
-				required: true
+			"props": {
+				"label": "E-mail",
+				"type": "email",
+				"modelValue": "",
+				"editable": true,
+				"required": true
 			}
 		})
 
@@ -41,16 +41,16 @@ describe("Component: fields/Textual", () => {
 		expect(field.attributes("disabled")).not.toBeTruthy()
 	})
 
-	it("should verify user password", async () => {
+	it("should verify user password", async() => {
 		const wrapper = mount(TextualField, {
-			shallow: true,
-			props: {
-				label: "E-mail",
-				type: "email",
-				modelValue: "",
-				editable: true,
-				verify: true,
-				required: true
+			"shallow": true,
+			"props": {
+				"label": "E-mail",
+				"type": "email",
+				"modelValue": "",
+				"editable": true,
+				"verify": true,
+				"required": true
 			}
 		})
 		const editButton = wrapper.find("button")

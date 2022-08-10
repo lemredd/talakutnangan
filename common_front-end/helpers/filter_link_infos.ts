@@ -30,10 +30,10 @@ export default function<T, U extends PermissionGroup<any, T>>(
 		 * 8. // Rearrange according to most used operation
 		 *    (¬A ∧ C ∧ ((¬D ∧ ¬F) ⇎ (F ∧ G) ⇎ (D ∧ E))) ⇎ (A ∧ B) ⇎ (¬B ∧ ¬C)
 		 */
-		const mayNecesarilyAuthenticated = (
-			(linkInfo.permissionCombinations !== null || linkInfo.kinds !== null)
+		const mayNecesarilyAuthenticated
+			= (linkInfo.permissionCombinations !== null || linkInfo.kinds !== null)
 			&& userProfile !== null
-		)
+
 		const isAuthenticatedOnly = mayNecesarilyAuthenticated
 			&& linkInfo.kinds !== null
 			&& linkInfo.permissionCombinations !== null

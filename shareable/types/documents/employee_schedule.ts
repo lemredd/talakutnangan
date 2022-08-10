@@ -20,36 +20,36 @@ export interface EmployeeScheduleAttributes extends Attributes {
 	dayName: Day
 }
 
-export interface EmployeeScheduleResource extends Resource<
+export type EmployeeScheduleResource = Resource<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes
-> {}
+>
 
-export interface DeserializedEmployeeScheduleResource extends DeserializedResource<
+export type DeserializedEmployeeScheduleResource = DeserializedResource<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes
-> {}
+>
 
-export interface EmployeeScheduleDocument extends ResourceDocument<
+export type EmployeeScheduleDocument = ResourceDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	EmployeeScheduleResource
-> {}
+>
 
-export interface EmployeeScheduleListDocument extends ResourceListDocument<
+export type EmployeeScheduleListDocument = ResourceListDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	EmployeeScheduleResource
-> {}
+>
 
-export interface DeserializedEmployeeScheduleDocument extends DeserializedResourceDocument<
+export type DeserializedEmployeeScheduleDocument = DeserializedResourceDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	DeserializedEmployeeScheduleResource
-> {}
+>
 
-export interface DeserializedEmployeeScheduleListDocument extends DeserializedResourceListDocument<
+export type DeserializedEmployeeScheduleListDocument = DeserializedResourceListDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	DeserializedEmployeeScheduleResource
-> {}
+>

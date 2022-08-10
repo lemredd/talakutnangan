@@ -15,24 +15,27 @@ import ResourceList from "./resource_list.vue"
 
 describe("Component: Resource List", () => {
 	describe("User List", () => {
-		it("Should list users properly", async () => {
+		it("Should list users properly", async() => {
 			const sampleUserList = await new UserFactory().deserializedMany(5)
 
-			const department = await new DepartmentFactory().mayAdmit().insertOne()
+			const department = await new DepartmentFactory().mayAdmit()
+				.insertOne()
 			const deanRole = await new RoleFactory()
 				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 				.insertOne()
-			const user = await new UserFactory().in(department).attach(deanRole).deserializedOne()
+			const user = await new UserFactory().in(department)
+				.attach(deanRole)
+				.deserializedOne()
 
 			const wrapper = mount(ResourceList, {
-				global: {
-					provide: {
-						managerKind: new Manager(user as DeserializedUserProfile)
+				"global": {
+					"provide": {
+						"managerKind": new Manager(user as DeserializedUserProfile)
 					}
 				},
-				props: {
-					searchFilter: "",
-					filteredList: sampleUserList.data
+				"props": {
+					"searchFilter": "",
+					"filteredList": sampleUserList.data
 				}
 			})
 

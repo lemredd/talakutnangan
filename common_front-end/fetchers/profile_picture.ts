@@ -44,7 +44,8 @@ export default class ProfilePictureFetcher extends Fetcher<
 		DeserializedProfilePictureDocument
 	>> {
 		const pathTemplate = "user/:id/relationships/:type"
-		const path = specializedPath(pathTemplate, { id: userID, type: this.type })
+		const path = specializedPath(pathTemplate, { "id": userID,
+			"type": this.type })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(
@@ -66,7 +67,8 @@ export default class ProfilePictureFetcher extends Fetcher<
 		DeserializedProfilePictureDocument
 	>> {
 		const pathTemplate = ":type/:id"
-		const path = specializedPath(pathTemplate, { id: profilePictureID, type: this.type })
+		const path = specializedPath(pathTemplate, { "id": profilePictureID,
+			"type": this.type })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(

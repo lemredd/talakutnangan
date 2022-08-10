@@ -6,12 +6,12 @@ import RequestEnvironment from "$/helpers/request_environment"
 import Page from "./create.page.vue"
 
 describe("Page: /department", () => {
-	it("can create department", async () => {
-		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
+	it("can create department", async() => {
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Page, {
-			global: {
-				provide: {
-					pageContext: {}
+			"global": {
+				"provide": {
+					"pageContext": {}
 				}
 			}
 		})
@@ -25,39 +25,39 @@ describe("Page: /department", () => {
 		await mayAdmit.setValue(true)
 		await submit.trigger("submit")
 
-		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
+		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
-			data: {
-				type: "department",
-				attributes: {
-					fullName: "Hello World",
-					acronym: "HW",
-					mayAdmit: true
+			"data": {
+				"type": "department",
+				"attributes": {
+					"fullName": "Hello World",
+					"acronym": "HW",
+					"mayAdmit": true
 				}
 			}
 		})
 	})
 
-	it.skip("cannot create department with invalid values", async () => {
+	it.skip("cannot create department with invalid values", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			errors: [
+			"errors": [
 				{
-					status: RequestEnvironment.status.BAD_REQUEST,
-					code: "3",
-					title: "Validation Error",
-					detail: "Name of department is too short",
-					source: {
-						pointer: "/data/attributes/fullName"
+					"status": RequestEnvironment.status.BAD_REQUEST,
+					"code": "3",
+					"title": "Validation Error",
+					"detail": "Name of department is too short",
+					"source": {
+						"pointer": "/data/attributes/fullName"
 					}
 				}
 			] as UnitError[]
-		}), { status: RequestEnvironment.status.BAD_REQUEST })
+		}), { "status": RequestEnvironment.status.BAD_REQUEST })
 		const wrapper = shallowMount(Page, {
-			global: {
-				provide: {
-					pageContext: {}
+			"global": {
+				"provide": {
+					"pageContext": {}
 				}
 			}
 		})
@@ -72,16 +72,16 @@ describe("Page: /department", () => {
 		await submit.trigger("submit")
 
 		// TODO: Test the showing of error messages in the UI
-		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
+		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
-			data: {
-				type: "department",
-				attributes: {
-					fullName: "Hello Worl",
-					acronym: "HW",
-					mayAdmit: true
+			"data": {
+				"type": "department",
+				"attributes": {
+					"fullName": "Hello Worl",
+					"acronym": "HW",
+					"mayAdmit": true
 				}
 			}
 		})

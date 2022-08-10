@@ -22,36 +22,36 @@ export interface DepartmentAttributes extends Attributes {
 	mayAdmit: boolean
 }
 
-export interface DepartmentResource extends Resource<
+export type DepartmentResource = Resource<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes
-> {}
+>
 
-export interface DeserializedDepartmentResource extends DeserializedResource<
+export type DeserializedDepartmentResource = DeserializedResource<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes
-> {}
+>
 
-export interface DepartmentDocument extends ResourceDocument<
+export type DepartmentDocument = ResourceDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
-> {}
+>
 
-export interface DepartmentListDocument extends ResourceListDocument<
+export type DepartmentListDocument = ResourceListDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
-> {}
+>
 
-export interface DeserializedDepartmentDocument extends DeserializedResourceDocument<
+export type DeserializedDepartmentDocument = DeserializedResourceDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DeserializedDepartmentResource
-> {}
+>
 
-export interface DeserializedDepartmentListDocument extends DeserializedResourceListDocument<
+export type DeserializedDepartmentListDocument = DeserializedResourceListDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DeserializedDepartmentResource
-> {}
+>
