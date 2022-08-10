@@ -17,7 +17,7 @@ describe("Component/Fields: Select", () => {
 		expect(updates).toHaveProperty("selectedOptionChanged")
 	})
 
-	it("Should identify initial value", () => {
+	it("should identify initial value", () => {
 		const options = [1,2,3]
 		const wrapper = mount(Select, {
 			props: {
