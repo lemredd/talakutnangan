@@ -1,14 +1,15 @@
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import "~/set-ups/database.set_up"
+import RoleFactory from "~/factories/role"
+import UserFactory from "~/factories/user"
+import DepartmentFactory from "~/factories/department"
+
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-
-import RoleFactory from "~/factories/role"
-import UserFactory from "~/factories/user"
-import DepartmentFactory from "~/factories/department"
 
 import KindManager from "./manager"
 

@@ -41,6 +41,12 @@ export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
 	}
 }
 
+export interface PresentRuleConstraints extends ManagerBasedRuleConstraints {
+	present: {
+		IDPath: string
+	}
+}
+
 export interface AcronymRuleConstraints {
 	acronym: {
 		spelledOutPath: string
@@ -68,6 +74,7 @@ export type RuleContraints = Partial<
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
 	& UniqueRuleConstraints
+	& PresentRuleConstraints
 	& AcronymRuleConstraints
 	& BufferRuleConstraints
 	& RegexRuleConstraints

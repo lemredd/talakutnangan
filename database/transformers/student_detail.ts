@@ -6,8 +6,7 @@ import StudentDetail from "%/models/student_detail"
 
 export default class extends Transformer<StudentDetail, void> {
 	constructor() {
-		super()
-		this.type = "student_detail"
+		super("student_detail")
 	}
 
 	transform(model: StudentDetail|StudentDetail[], options: TransformerOptions): AttributesObject {

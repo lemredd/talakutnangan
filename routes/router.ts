@@ -5,6 +5,7 @@ import APIRouter from "!%/api/router"
 import TestRouter from "!%/t/router"
 import ChatRouter from "!%/chat/router"
 import UserRouter from "!%/user/router"
+import AdminResourceConfigRouter from "!%/admin/resource_config/router"
 import DepartmentRouter from "!%/department/router"
 import UserSettingsRouter from "!%/settings/router"
 import { Environment } from "$/types/server"
@@ -18,6 +19,7 @@ export default class extends Router {
 		this.useRouters([
 			new APIRouter(),
 			new UserRouter(),
+			new AdminResourceConfigRouter(),
 			new ChatRouter(),
 			new DepartmentRouter(),
 			new UserSettingsRouter()

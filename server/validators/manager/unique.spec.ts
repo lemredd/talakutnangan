@@ -1,5 +1,6 @@
 import type { Request } from "!/types/dependent"
 
+import "~/set-ups/database.set_up"
 import UserManager from "%/managers/user"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
@@ -7,30 +8,6 @@ import unique from "./unique"
 
 describe("Validator: unique", () => {
 	it("can accept valid input", async () => {
-		const user = await (new UserFactory()).insertOne()
-		const newUser = await (new UserFactory()).makeOne()
-		const value = Promise.resolve(makeInitialState(newUser.name))
-		const constraints = {
-			request: {} as Request,
-			source: {
-				id: user.id
-			},
-			field: "hello",
-			manager: {
-				className: UserManager,
-				columnName: "name"
-			},
-			unique: {
-				IDPath: "id"
-			}
-		}
-
-		const sanitizeValue = (await unique(value, constraints)).value
-
-		expect(sanitizeValue).toEqual(newUser.name)
-	})
-
-	it("can accept valid casted input", async () => {
 		const user = await (new UserFactory()).insertOne()
 		const newUser = await (new UserFactory()).makeOne()
 		const value = Promise.resolve(makeInitialState(newUser.name))
@@ -61,7 +38,7 @@ describe("Validator: unique", () => {
 		const constraints = {
 			request: {} as Request,
 			source: {
-				id: user.id
+				id: user.id+""
 			},
 			field: "hello",
 			manager: {
@@ -86,7 +63,7 @@ describe("Validator: unique", () => {
 		const constraints = {
 			request: {} as Request,
 			source: {
-				id: user.id
+				id: user.id+""
 			},
 			field: "hello",
 			manager: {

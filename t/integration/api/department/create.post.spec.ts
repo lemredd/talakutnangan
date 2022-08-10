@@ -9,7 +9,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/create.post"
 
-describe("POST /api/department/create", () => {
+describe("POST /api/department", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -22,7 +22,7 @@ describe("POST /api/department/create", () => {
 		const department = await (new DepartmentFactory()).makeOne()
 
 		const response = await App.request
-			.post("/api/department/create")
+			.post("/api/department")
 			.set("Cookie", cookie)
 			.send({
 				data: {
@@ -52,7 +52,7 @@ describe("POST /api/department/create", () => {
 		const randomData = await (new DepartmentFactory()).makeOne() // Used for generate random data
 
 		const response = await App.request
-			.post("/api/department/create")
+			.post("/api/department")
 			.set("Cookie", cookie)
 			.send({
 				data: {

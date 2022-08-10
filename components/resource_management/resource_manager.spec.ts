@@ -2,17 +2,19 @@ import { mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import DepartmentFactory from "~/factories/department"
+import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
-
 import deserialize from "$/helpers/deserialize"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
+import Manager from "@/resource_management/manager"
+import DepartmentFactory from "~/factories/department"
+
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+
 import ResourceManager from "./resource_manager.vue"
-import Manager from "./manager"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {

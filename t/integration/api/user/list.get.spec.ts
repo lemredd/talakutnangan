@@ -9,7 +9,7 @@ import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
 import Route from "!%/api/user/list.get"
 
-describe("GET /api/user/list", () => {
+describe("GET /api/user", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -22,7 +22,7 @@ describe("GET /api/user/list", () => {
 		const student = await new UserFactory().beStudent().insertOne()
 
 		const response = await App.request
-			.get("/api/user/list")
+			.get("/api/user")
 			.query({ filter: { existence: "exists" } })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
@@ -43,7 +43,7 @@ describe("GET /api/user/list", () => {
 		await student.destroy()
 
 		const response = await App.request
-			.get("/api/user/list")
+			.get("/api/user")
 			.query({ filter: { existence: "exists", kind: "student" } })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)

@@ -5,8 +5,7 @@ import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 export default class extends Transformer<Role, void> {
 	constructor() {
-		super()
-		this.type = "role"
+		super("role")
 	}
 
 	transform(model: Role|Role[], options: TransformerOptions): AttributesObject {
@@ -21,7 +20,8 @@ export default class extends Transformer<Role, void> {
 			"commentFlags",
 			"profanityFlags",
 			"userFlags",
-			"auditTrailFlags"
+			"auditTrailFlags",
+			"deletedAt"
 		])
 
 		return safeObject

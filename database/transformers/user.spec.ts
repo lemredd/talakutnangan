@@ -30,7 +30,7 @@ describe("Transformer: User", () => {
 		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
 			"included.2.links.self",
-			`http://localhost:16000/api/signature/read/${signature.id}`
+			`http://localhost:16000/api/signature/${signature.id}`
 		)
 	})
 
@@ -62,11 +62,11 @@ describe("Transformer: User", () => {
 		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
 			"included.2.links.self",
-			`http://localhost:16000/api/signature/read/${signatureA.id}`
+			`http://localhost:16000/api/signature/${signatureA.id}`
 		)
 		expect(object).toHaveProperty(
 			"included.3.links.self",
-			`http://localhost:16000/api/signature/read/${signatureB.id}`
+			`http://localhost:16000/api/signature/${signatureB.id}`
 		)
 	})
 })

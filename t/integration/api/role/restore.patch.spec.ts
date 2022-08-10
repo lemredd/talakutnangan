@@ -23,7 +23,7 @@ describe("PATCH /api/role/restore/:id", () => {
 		await role.destroy()
 
 		const response = await App.request
-			.patch("/api/role/restore")
+			.patch("/api/role")
 			.send({
 				data: [
 					{ type: "role", id: role.id }

@@ -169,7 +169,6 @@ export default abstract class Manager<
 
 	async create(
 		details: U & CreationAttributes<T>,
-		constraints: V = {} as V,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {

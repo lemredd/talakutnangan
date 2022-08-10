@@ -6,29 +6,35 @@ import type {
 	Attributes,
 	DeserializedResource,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+	Resource,
+	ResourceDocument,
+	ResourceListDocument
 } from "$/types/documents/base"
 import Transformer from "%/transformers/base"
 import deserialize from "$/helpers/deserialize"
 import Serializer from "%/transformers/serializer"
 
 /**
- * First generic argument `T` represents the model it controls. Generic argument `U`, `V`, `W`, `X`,
- * and `Y` are used for deserialization. Lastly, `Z` indicates the type of custom options for
+ * First generic argument `T` represents the model it controls. Generic argument `U`, `V`, `X`, `A`,
+ * and `B` are used for deserialization. Lastly, `C` indicates the type of custom options for
  * transformer.
  */
 export default abstract class Factory<
 	T extends Model,
 	U extends ResourceIdentifier,
 	V extends Attributes,
-	W extends DeserializedResource<U, V>,
-	X extends DeserializedResourceDocument<U, V, W>,
-	Y extends DeserializedResourceListDocument<U, V, W>,
-	Z = void
+	W extends Resource<U, V>,
+	X extends DeserializedResource<U, V>,
+	Y extends ResourceDocument<U, V, W>,
+	Z extends ResourceListDocument<U, V, W>,
+	A extends DeserializedResourceDocument<U, V, X>,
+	B extends DeserializedResourceListDocument<U, V, X>,
+	C = void
 > {
 	abstract get model(): ModelCtor<T>
 
-	abstract get transformer(): Transformer<T, Z>
+	abstract get transformer(): Transformer<T, C>
 
 	abstract generate(): GeneratedData<T>
 
@@ -62,21 +68,37 @@ export default abstract class Factory<
 		return await this.model.bulkCreate(generatedMultipleData)
 	}
 
-	async deserializedOne(options: GeneralObject = {}): Promise<X> {
+	async serializedOne(options: GeneralObject = {}): Promise<Y> {
 		const model = await this.makeOne()
-		return this.deserialize(model, options) as X
+		return this.serialize(model, options) as Y
 	}
 
-	async deserializedMany(count: number, options: GeneralObject = {}): Promise<Y> {
+	async serializedMany(count: number, options: GeneralObject = {}): Promise<Z> {
 		const model = await this.makeMany(count)
-		return this.deserialize(model, options) as Y
+		return this.serialize(model, options) as Z
 	}
 
-	protected deserialize(models: T|T[]|null, options: GeneralObject = {}): X|Y {
-		return deserialize(Serializer.serialize(
+	protected serialize(models: T|T[]|null, options: GeneralObject = {}): Y|Z {
+		return Serializer.serialize(
 			models,
 			this.transformer,
 			options
-		)) as X|Y
+		) as Y|Z
+	}
+
+	async deserializedOne(options: GeneralObject = {}): Promise<A> {
+		const model = await this.makeOne()
+		return this.deserialize(model, options) as A
+	}
+
+	async deserializedMany(count: number, options: GeneralObject = {}): Promise<B> {
+		const model = await this.makeMany(count)
+		return this.deserialize(model, options) as B
+	}
+
+	protected deserialize(models: T|T[]|null, options: GeneralObject = {}): A|B {
+		return deserialize(this.serialize(
+			models, options
+		)) as A|B
 	}
 }

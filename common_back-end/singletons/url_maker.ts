@@ -31,13 +31,13 @@ export default class {
 		document.links = document.links || {}
 		document.links = {
 			...document.links as object,
-			"first": this.makeBaseModelPath(modelPath) + `/list?page=1`,
-			"last": this.makeBaseModelPath(modelPath) + `/list?page=${lastPage}`,
+			"first": this.makeBaseModelPath(modelPath) + `?page=1`,
+			"last": this.makeBaseModelPath(modelPath) + `?page=${lastPage}`,
 			"prev": currentPage === 1 ? null : (
-				this.makeBaseModelPath(modelPath) + `/list?page=${currentPage - 1}`
+				this.makeBaseModelPath(modelPath) + `?page=${currentPage - 1}`
 			),
 			"next": currentPage === lastPage ? null : (
-				this.makeBaseModelPath(modelPath) + `/list?page=${currentPage + 1}`
+				this.makeBaseModelPath(modelPath) + `?page=${currentPage + 1}`
 			)
 		}
 

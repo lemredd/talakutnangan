@@ -1,4 +1,4 @@
-import type { Request } from "!/types/dependent"
+import type { Request, AuthenticatedIDRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import URLMaker from "$!/singletons/url_maker"
@@ -21,7 +21,7 @@ export default class extends Policy {
 		this.targetAuthenticationState = targetAuthenticationState
 	}
 
-	async authorize(request: Request): Promise<void> {
+	async authorize(request: Request | AuthenticatedIDRequest): Promise<void> {
 		if (request.isAuthenticated() !== this.targetAuthenticationState) {
 			const reason = this.targetAuthenticationState
 				? "The user must be logged in to invoke the action."

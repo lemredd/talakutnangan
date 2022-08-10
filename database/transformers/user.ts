@@ -11,13 +11,11 @@ import Serializer from "%/transformers/serializer"
 import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
 import StudentDetailTransformer from "%/transformers/student_detail"
+import ProfilePictureTransformer from "%/transformers/profile_picture"
 
 export default class extends Transformer<User, void> {
 	constructor() {
-		super()
-		this.type = "user"
-
-		this.subtransformers = {
+		super("user", {
 			department: {
 				attribute: "department",
 				transformer: new DepartmentTransformer()
@@ -33,14 +31,19 @@ export default class extends Transformer<User, void> {
 			signature: {
 				attribute: "signature",
 				transformer: new SignatureTransformer()
+			},
+			"profile_picture": {
+				attribute: "profilePicture",
+				transformer: new ProfilePictureTransformer()
 			}
-		}
+		})
 
 		this.relationships = {
 			roles: this.roles.bind(this),
 			department: this.department.bind(this),
 			studentDetail: this.studentDetail.bind(this),
-			signature: this.signature.bind(this)
+			signature: this.signature.bind(this),
+			profilePicture: this.profilePicture.bind(this)
 		}
 	}
 
@@ -83,6 +86,14 @@ export default class extends Transformer<User, void> {
 		return Serializer.makeContext(
 			model.signature || null,
 			this.subtransformers["signature"].transformer as SignatureTransformer,
+			options
+		)
+	}
+
+	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			model.profilePicture || null,
+			this.subtransformers["profile_picture"].transformer as ProfilePictureTransformer,
 			options
 		)
 	}

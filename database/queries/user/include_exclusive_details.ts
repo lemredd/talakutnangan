@@ -4,6 +4,7 @@ import Log from "$!/singletons/log"
 
 import Signature from "%/models/signature"
 import StudentDetail from "%/models/student_detail"
+import ProfilePicture from "%/models/profile_picture"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 /**
@@ -20,7 +21,7 @@ export default function<T>(
 		newState.include = []
 	}
 
-	(newState.include as any[])!.push(StudentDetail, EmployeeSchedule, Signature)
+	(newState.include as any[])!.push(StudentDetail, EmployeeSchedule, Signature, ProfilePicture)
 
 	Log.trace("pipeline", "applied exclusive details includer")
 

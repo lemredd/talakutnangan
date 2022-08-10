@@ -51,7 +51,7 @@ export interface PasswordResetArguments {
 export type BaseManagerClass = new(
 	transaction?: TransactionManager,
 	cache?: CacheClient
-) => BaseManager<any, any>
+) => BaseManager<any, any, any, any>
 
 /**
  * Shape of validation
