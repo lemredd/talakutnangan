@@ -165,7 +165,7 @@ export default class Fetcher<
 		})
 	}
 
-	protected handleResponse<D extends Z|A|null>(
+	protected handleResponse<D extends X|Y|Z|A|B|null>(
 		response: Promise<Response<T, U, V, W, X|Y|B|null>>,
 		mustBeDeserialize: boolean = true
 	): Promise<Response<T, U, V, W, D>> {
