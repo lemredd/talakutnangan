@@ -14,4 +14,17 @@ describe("Communicator: Stringify query", () => {
 
 		expect(query).toEqual(encodeURI("hello=world&foo[bar]=true&foo[baz]=fum"))
 	})
+
+	it("can stringify with nested array", async () => {
+		const queryObject = {
+			hello: [ "world", "universe" ],
+			foo: {
+				bar: [ "baz", "fuzz" ]
+			}
+		}
+
+		const query = stringifyQuery(queryObject)
+
+		expect(query).toEqual(encodeURI("hello=world,universe&foo[bar]=baz,fuzz"))
+	})
 })
