@@ -3,9 +3,9 @@ import MockRequester from "~/set-ups/mock_requester"
 import ConsultationFactory from "~/factories/consultation"
 import Controller from "./update(id).patch"
 
-const BODY_VALIDATION_INDEX = 0
+const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/consultation/update/", () => {
+describe("Controller: PATCH /api/consultation/update/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async () => {
@@ -18,6 +18,7 @@ describe("Controller: PATCH /api/consultation/update/", () => {
 			body: {
 				data: {
 					type: "consultation",
+					id: consultation.id,
 					attributes: {
 						attachedRoleID: consultation.attachedRoleID,
 						reason: consultation.reason,
@@ -29,7 +30,7 @@ describe("Controller: PATCH /api/consultation/update/", () => {
 						//TODO Consultation Requesters
 						//TODO Chat Message Activity
 						deletedAt: null
-						}
+					}
 				}
 			}
 		})
