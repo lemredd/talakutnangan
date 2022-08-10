@@ -3,7 +3,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 import { UnitError } from "$/types/server"
 import Page from "./create.page.vue"
 
-describe("Page: /role/create", () => {
+describe("Page: /role", () => {
 	it("can create role", async () => {
 		fetchMock.mockResponseOnce("{}", { status: RequestEnvironment.status.NO_CONTENT })
 		const wrapper = mount(Page, {
@@ -24,7 +24,7 @@ describe("Page: /role/create", () => {
 
 		const request = (fetch as jest.Mock<any,any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/role/create")
+		expect(request).toHaveProperty("url", "/api/role")
 
 		expect(request.json()).resolves.toStrictEqual({
 			data: {
@@ -77,7 +77,7 @@ describe("Page: /role/create", () => {
 		// TODO: Test the showing of error messages in the UI
 		const request = (fetch as jest.Mock<any,any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/role/create")
+		expect(request).toHaveProperty("url", "/api/role")
 
 		expect(request.json()).resolves.toStrictEqual({
 			data: {

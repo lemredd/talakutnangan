@@ -8,8 +8,7 @@ import Serializer from "%/transformers/serializer"
 
 export default class extends Transformer<Signature, SignatureTransformerOptions> {
 	constructor() {
-		super()
-		this.type = "signature"
+		super("signature")
 	}
 
 	transform(
@@ -35,7 +34,7 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
-			const templatePath = "/api/signature/read/:id"
+			const templatePath = "/api/signature/:id"
 
 			if (resource.data instanceof Array) {
 				resource.data = (resource.data as GeneralObject[]).map(data => {

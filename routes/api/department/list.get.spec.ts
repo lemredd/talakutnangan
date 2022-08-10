@@ -5,7 +5,7 @@ import Controller from "./list.get"
 
 const QUERY_VALIDATION_INDEX = 0
 
-describe("Controller: GET /api/department/list", () => {
+describe("Controller: GET /api/department", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

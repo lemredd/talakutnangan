@@ -10,7 +10,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/restore.patch"
 
-describe("DELETE /api/department/restore", () => {
+describe("PATCH /api/department", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -24,7 +24,7 @@ describe("DELETE /api/department/restore", () => {
 		await department.destroy()
 
 		const response = await App.request
-			.patch("/api/department/restore")
+			.patch("/api/department")
 			.send({
 				data: [
 					{ type: "department", id: department.id }

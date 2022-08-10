@@ -34,7 +34,7 @@ export default abstract class<
 		resource = super.finalizeTransform(model, resource)
 
 		if (resource.data !== undefined && resource.data !== null) {
-			const templatePath = `/api/${this.type}/read/:id`
+			const templatePath = `/api/${this.type}/:id`
 
 			if (resource.data instanceof Array) {
 				resource.data = (resource.data as GeneralObject[]).map(data => {

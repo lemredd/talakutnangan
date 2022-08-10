@@ -13,7 +13,7 @@ import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 
-describe("PATCH /api/user/update/:id", () => {
+describe("PATCH /api/user/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -27,7 +27,7 @@ describe("PATCH /api/user/update/:id", () => {
 		const newStudent = await new UserFactory().makeOne()
 
 		const response = await App.request
-			.patch(`/api/user/update/${student.id}`)
+			.patch(`/api/user/${student.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {
@@ -76,7 +76,7 @@ describe("PATCH /api/user/update/:id", () => {
 		const newStudent = await new UserFactory().prefersDark(() => true).makeOne()
 
 		const response = await App.request
-			.patch(`/api/user/update/${student.id}`)
+			.patch(`/api/user/${student.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {

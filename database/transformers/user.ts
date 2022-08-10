@@ -15,10 +15,7 @@ import ProfilePictureTransformer from "%/transformers/profile_picture"
 
 export default class extends Transformer<User, void> {
 	constructor() {
-		super()
-		this.type = "user"
-
-		this.subtransformers = {
+		super("user", {
 			department: {
 				attribute: "department",
 				transformer: new DepartmentTransformer()
@@ -39,7 +36,7 @@ export default class extends Transformer<User, void> {
 				attribute: "profilePicture",
 				transformer: new ProfilePictureTransformer()
 			}
-		}
+		})
 
 		this.relationships = {
 			roles: this.roles.bind(this),

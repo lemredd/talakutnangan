@@ -8,7 +8,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/role/create.post"
 
-describe("POST /api/role/create", () => {
+describe("POST /api/role", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -21,7 +21,7 @@ describe("POST /api/role/create", () => {
 		const role = await (new RoleFactory()).makeOne()
 
 		const response = await App.request
-			.post("/api/role/create")
+			.post("/api/role")
 			.set("Cookie", cookie)
 			.send({
 				data: {

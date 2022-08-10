@@ -5,7 +5,10 @@ import type {
 	RoleAttributes,
 	DeserializedRoleResource,
 	DeserializedRoleDocument,
-	DeserializedRoleListDocument
+	DeserializedRoleListDocument,
+	RoleResource,
+	RoleDocument,
+	RoleListDocument
 } from "$/types/documents/role"
 
 import { faker } from "@faker-js/faker"
@@ -29,7 +32,10 @@ export default class RoleFactory extends BaseFactory<
 	Role,
 	RoleResourceIdentifier,
 	RoleAttributes,
+	RoleResource,
 	DeserializedRoleResource,
+	RoleDocument,
+	RoleListDocument,
 	DeserializedRoleDocument,
 	DeserializedRoleListDocument
 > {
