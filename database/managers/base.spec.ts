@@ -20,8 +20,7 @@ import BaseManager from "./base"
 
 class MockUserTransformer extends Transformer<User, void> {
 	constructor() {
-		super()
-		this.type = "user"
+		super("user")
 	}
 
 	transform(model: User|User[], options: TransformerOptions): AttributesObject {

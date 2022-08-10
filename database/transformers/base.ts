@@ -2,6 +2,11 @@ import type { GeneralObject, Serializable } from "$/types/general"
 
 import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
+type SubtransformerList = GeneralObject<{
+	attribute: string,
+	transformer: Transformer<any, any>
+}>
+
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**
 	 * The key should be the type of resource being transformed.
@@ -9,10 +14,13 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	 * Note that the `attribute` key in the object value is a property in the model which contains
 	 * the related model.
 	 */
-	protected subtransformers: GeneralObject<{
-		attribute: string,
-		transformer: Transformer<any, any>
-	}> = {}
+	public readonly subtransformers: SubtransformerList
+
+	constructor(type: string, subtransformers: SubtransformerList = {}) {
+		super()
+		this.type = type
+		this.subtransformers = subtransformers
+	}
 
 	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
 		if (model !== null && transformedData.included !== undefined) {
