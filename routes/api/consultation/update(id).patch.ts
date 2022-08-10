@@ -3,6 +3,7 @@ import type { Request, Response } from "!/types/dependent"
 import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
+import AttachedRoleManager from "%/managers/role"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import BoundJSONController from "!/controllers/bound_json_controller"
@@ -11,16 +12,13 @@ import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
-import required from "!/validators/base/required"
 import object from "!/validators/base/object"
-import same from "!/validators/comparison/same"
 import string from "!/validators/base/string"
+import same from "!/validators/comparison/same"
 import integer from "!/validators/base/integer"
-import length from "!/validators/comparison/length"
-import regex from "!/validators/comparison/regex"
-import unique from "!/validators/manager/unique"
-import acronym from "!/validators/comparison/acronym"
-import boolean from "!/validators/base/boolean"
+import exists from "!/validators/manager/exists"
+import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -53,29 +51,32 @@ export default class extends BoundJSONController {
 							pipes: [ required, object ],
 							constraints: {
 								object: {
-									fullName: {
-										pipes: [ required, string, length, regex, unique ],
+									attachedRoleID: {
+										pipes: [ required, exists ],
 										constraints: {
-											length: { minimum: 10, maximum: 255 },
-											regex: { match: /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/ },
-											manager: { className: ConsultationManager, columnName: "fullName" },
-											unique: { IDPath: "data.id" }
+											manager: {
+												className: AttachedRoleManager,
+												columnName: "id"
+											},
 										}
 									},
-									acronym: {
-										pipes: [ required, string, length, regex, acronym, unique ],
+									reason: {
+										pipes: [ required, string ],
+										constraints: { }
+									},
+									status: {
+										pipes: [ required, oneOf ],
 										constraints: {
-											length: { minimum: 2, maximum: 255 },
-											regex: { match: /([A-Z][a-z]*)+/ },
-											acronym: { spelledOutPath: "data.attributes.fullName" },
-											manager: { className: ConsultationManager , columnName: "acronym" },
-											unique: { IDPath: "data.id" }
+											oneOf: {
+												values: [ "will_start", "ongoing", "done" ]
+											}
 										}
 									},
-									mayAdmit: {
-										pipes: [ required, boolean ],
-										constraints: {}
-									}
+									actionTaken: {
+										pipes: [ required, string ],
+										constraints: { }
+									},
+									//TODO Dates
 								}
 							}
 						}
