@@ -166,12 +166,14 @@ export default class Fetcher<
 	}
 
 	protected handleResponse<D extends Z|A|null>(
-		response: Promise<Response<T, U, V, W, X|Y|B|null>>
+		response: Promise<Response<T, U, V, W, X|Y|B|null>>,
+		mustBeDeserialize: boolean = true
 	): Promise<Response<T, U, V, W, D>> {
 		return response.then(({ body, status }) => {
 			if(status >= 200 || status <= 299) {
+				body = mustBeDeserialize ? deserialize(body): body as any
 				return {
-					body: deserialize(body) as D,
+					body: body as D,
 					status
 				}
 			} else {
