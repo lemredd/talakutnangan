@@ -1,25 +1,28 @@
 import type { FieldRules } from "!/types/validation"
+import type { RoleQueryParameters } from "$/types/query"
 import type { Request, Response } from "!/types/dependent"
 import type { RoleResourceIdentifier } from "$/types/documents/role"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
-import JSONController from "!/controllers/json_controller"
+import QueryController from "!/controllers/query_controller"
 
 import { READ } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { role as permissionGroup } from "$/permissions/permission_list"
 
-import array from "!/validators/base/array"
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
-import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
+import nullable from "!/validators/base/nullable"
+import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
+import stringArray from "!/validators/hybrid/string_array"
 
-export default class extends JSONController {
+export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -28,24 +31,24 @@ export default class extends JSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(request: Request): FieldRules {
 		return {
-			data: {
-				pipes: [ array, length ],
+			filter: {
+				pipes: [ nullable, object ],
 				constraints: {
-					array: {
-						pipes: [ object ],
-						constraints: {
-							object: {
-								type: {
-									pipes: [ string, same ],
-									constraints: {
-										same: {
-											value: "role"
-										}
-									}
-								},
-								id: {
+					nullable: { defaultValue: {} },
+					object: {
+						existence: {
+							pipes: [ nullable, string, oneOf ],
+							constraints: {
+								nullable: { defaultValue: "exists" },
+								oneOf: { values: [ "*", "exists", "archived" ] }
+							}
+						},
+						IDs: {
+							pipes: [ required, stringArray, length ],
+							constraints: {
+								array: {
 									pipes: [ integer, exists ],
 									constraints: {
 										manager: {
@@ -53,12 +56,13 @@ export default class extends JSONController {
 											columnName: "id"
 										}
 									}
+								},
+								length: {
+									minimum: 1,
+									maximum: +process.env.DATABASE_MAX_SELECT! || 10
 								}
 							}
 						}
-					},
-					length: {
-						minimum: 1
 					}
 				}
 			}
@@ -66,12 +70,11 @@ export default class extends JSONController {
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const IDs = (request.body.data as RoleResourceIdentifier[]).map(object => {
-			return object.id
-		})
+		const query = request.query as unknown as Pick<RoleQueryParameters, "filter">
 
 		const manager = new RoleManager(request.transaction, request.cache)
-		const rolesWithUserCount = await manager.countUsers(IDs)
+		const rolesWithUserCount = await manager
+			.countUsers(query.filter.IDs!) as RoleResourceIdentifier
 
 		return new ListResponse(rolesWithUserCount)
 	}
