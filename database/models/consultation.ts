@@ -32,7 +32,7 @@ export default class StudentDetail extends Model {
 		type: DataType.TEXT,
 		allowNull: false
 	})
-	reason!: Text
+	reason!: string
 
 	@Column({
 		allowNull: false,
@@ -46,7 +46,7 @@ export default class StudentDetail extends Model {
 		type: DataType.TEXT,
 		allowNull: false
 	})
-	actionTaken!: Text
+	actionTaken!: string
 
 	@Column({
 		type: DataType.DATE,
