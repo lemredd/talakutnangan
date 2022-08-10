@@ -21,7 +21,7 @@ describe("GET /api/role/count_users", () => {
 
 		const response = await App.request
 			.get("/api/role/count_users")
-			.send({
+			.query({
 				filter: {
 					IDs: adminRole.id
 				}

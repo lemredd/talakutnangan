@@ -38,13 +38,6 @@ export default class extends QueryController {
 				constraints: {
 					nullable: { defaultValue: {} },
 					object: {
-						existence: {
-							pipes: [ nullable, string, oneOf ],
-							constraints: {
-								nullable: { defaultValue: "exists" },
-								oneOf: { values: [ "*", "exists", "archived" ] }
-							}
-						},
 						IDs: {
 							pipes: [ required, stringArray, length ],
 							constraints: {
