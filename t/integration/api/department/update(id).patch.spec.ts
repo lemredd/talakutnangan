@@ -23,7 +23,7 @@ describe("PATCH /api/department/:id", () => {
 		const newDepartmentDetails = await (new DepartmentFactory()).makeOne()
 
 		const response = await App.request
-			.patch(`/api/department/update/${department.id}`)
+			.patch(`/api/department/${department.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {

@@ -100,7 +100,7 @@ describe("Communicator: Department", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", "/api/department/update/1")
+		expect(request).toHaveProperty("url", "/api/department/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({

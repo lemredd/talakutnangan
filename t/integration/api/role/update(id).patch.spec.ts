@@ -22,7 +22,7 @@ describe("PATCH /api/role/:id", () => {
 		const newRole = await (new RoleFactory()).makeOne()
 
 		const response = await App.request
-			.patch(`/api/role/update/${role.id}`)
+			.patch(`/api/role/${role.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {

@@ -76,7 +76,7 @@ export default class Fetcher<
 
 	update(id: number, attributes: U): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}/update/:id`, { id }, {
+			this.patchJSON(`${this.type}/:id`, { id }, {
 				data: {
 					type: this.type,
 					id,

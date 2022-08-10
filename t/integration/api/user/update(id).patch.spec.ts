@@ -27,7 +27,7 @@ describe("PATCH /api/user/:id", () => {
 		const newStudent = await new UserFactory().makeOne()
 
 		const response = await App.request
-			.patch(`/api/user/update/${student.id}`)
+			.patch(`/api/user/${student.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {
@@ -76,7 +76,7 @@ describe("PATCH /api/user/:id", () => {
 		const newStudent = await new UserFactory().prefersDark(() => true).makeOne()
 
 		const response = await App.request
-			.patch(`/api/user/update/${student.id}`)
+			.patch(`/api/user/${student.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {
