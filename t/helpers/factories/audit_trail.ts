@@ -8,7 +8,10 @@ import type {
 	AuditTrailAttributes,
 	DeserializedAuditTrailResource,
 	DeserializedAuditTrailDocument,
-	DeserializedAuditTrailListDocument
+	DeserializedAuditTrailListDocument,
+AuditTrailResource,
+AuditTrailDocument,
+AuditTrailListDocument
 } from "$/types/documents/audit_trail"
 
 import User from "%/models/user"
@@ -21,11 +24,14 @@ export default class AuditTrailFactory extends BaseFactory<
 	AuditTrail,
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
+	AuditTrailResource,
 	DeserializedAuditTrailResource,
+	AuditTrailDocument,
+	AuditTrailListDocument,
 	DeserializedAuditTrailDocument,
 	DeserializedAuditTrailListDocument
 > {
-	#user: () => Promise<User|null> = () => new UserFactory().insertOne()
+	#user: () => Promise<User|null> = async () => await new UserFactory().insertOne()
 	#actionName: () => string = () => {
 		return `${faker.hacker.noun().replace(" ", "_")}.${faker.hacker.verb()}`
 	}

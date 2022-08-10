@@ -9,9 +9,11 @@
 			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
 		</div>
 	</div>
-	<slot>
+	<Suspensible :is-loaded="!!resource.length">
+		<slot>
 
-	</slot>
+		</slot>
+	</Suspensible>
 </template>
 
 <style lang="scss">
@@ -36,8 +38,9 @@ import { computed, inject } from "vue"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
-import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
 import manager from "./manager"
+import Suspensible from "@/suspensible.vue"
+import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
 
 const { resource } = defineProps<{
 	resource: PossibleResources[]

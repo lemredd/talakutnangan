@@ -1,9 +1,10 @@
 <template>
 	<div :class="{ 'default': !editable }" class="input-container">
 		<label v-if="label" class="input-header">
-			{{ label }}
+			<h2>{{ label }}</h2>
 		</label>
-		<input
+		<div class="input-and-controls">
+			<input
 			class="bg-transparent"
 			:class=inputClasses
 			:type="type"
@@ -13,14 +14,15 @@
 			:disabled="disabled || editable"
 			ref="inputField"
 			/>
-		<button
-			type="button"
-			v-if="editable"
-			class="material-icons"
-			@click="verify ? verifyBeforeSubmit() : editField()"
-			>
-			edit
-		</button>
+			<button
+				type="button"
+				v-if="editable"
+				class="material-icons"
+				@click="verify ? verifyBeforeSubmit() : editField()"
+				>
+				edit
+			</button>
+		</div>
 	</div>
 
 	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
@@ -46,23 +48,35 @@
 
 <style scoped lang="scss">
 .input-container {
-	@apply grid gap-4 grid-cols-2 grid-rows-2;
+	@apply flex flex-col;
 
 	label {
-		@apply col-span-full;
+		margin-bottom: .5em;
+
+		h2 {
+			font-size: 1.5em;
+		}
 	}
 
 	&.default {
 		display: block;
 	}
 
-	input {
-		border: 1px solid #444;
-		padding-bottom: .25em;
-		width: 100%;
-	}
-	.material-icons {
-		@apply justify-self-end;
+	.input-and-controls {
+		@apply flex items-center;
+
+		input {
+			@apply flex-1;
+			padding-bottom: .25em;
+
+			&:not(:disabled) {
+				border-bottom: 1px solid hsl(0, 0%, 60%);
+				outline: none;
+			}
+		}
+		.material-icons {
+			@apply justify-self-end;
+		}
 	}
 }
 

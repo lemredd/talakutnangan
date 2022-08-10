@@ -5,23 +5,22 @@
 		<template #search-filter>
 			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
 		</template>
+
 		<RolesList :filtered-list="filteredList" />
-
 	</RolesManager>
-
 </template>
 
 <script setup lang="ts">
 import { inject, onMounted, provide, ref } from "vue"
 
-import type { PossibleResources } from "$@/types/independent"
-import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { PageContext } from "#/types"
+import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import RoleFetcher from "$@/fetchers/role"
-import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import Manager from "@/resource_management/manager"
+import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import RolesManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"

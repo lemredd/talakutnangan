@@ -33,9 +33,10 @@ export default async function(
 		}
 	})
 
-	const id = +accessDeepPath(constraints.source, constraints.unique.IDPath)
+	const foundID = (foundModel.data as any)?.id
+	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
 
-	if (foundModel.data === null || (!Number.isNaN(id) && (foundModel.data as any).id === id)) {
+	if (foundModel.data === null || foundID === id) {
 		return state
 	} else {
 		throw {

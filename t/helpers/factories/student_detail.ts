@@ -5,7 +5,10 @@ import type {
 	StudentDetailAttributes,
 	DeserializedStudentDetailResource,
 	DeserializedStudentDetailDocument,
-	DeserializedStudentDetailListDocument
+	DeserializedStudentDetailListDocument,
+	StudentDetailResource,
+	StudentDetailDocument,
+	StudentDetailListDocument
 } from "$/types/documents/student_detail"
 
 import { faker } from "@faker-js/faker"
@@ -20,11 +23,14 @@ export default class StudentDetailFactory extends BaseFactory<
 	StudentDetail,
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
+	StudentDetailResource,
 	DeserializedStudentDetailResource,
+	StudentDetailDocument,
+	StudentDetailListDocument,
 	DeserializedStudentDetailDocument,
 	DeserializedStudentDetailListDocument
 > {
-	#user: () => Promise<User>  =  () => new UserFactory().insertOne()
+	#user: () => Promise<User>  =  async () => await new UserFactory().insertOne()
 	#studentNumber: () => string = () => `${faker.random.numeric(4)}-${faker.random.numeric(4)}`
 
 	get model(): ModelCtor<StudentDetail> { return StudentDetail }

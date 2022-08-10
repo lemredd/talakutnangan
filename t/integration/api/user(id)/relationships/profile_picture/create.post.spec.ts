@@ -11,7 +11,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/user(id)/relationships/profile_picture/create.post"
 
-describe("POST /api/user/:id/relationships/profile_picture/create", () => {
+describe("POST /api/user/:id/relationships/profile_picture", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -29,7 +29,7 @@ describe("POST /api/user/:id/relationships/profile_picture/create", () => {
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
-			.post(`/api/user/${student.id}/relationships/profile_picture/create`)
+			.post(`/api/user/${student.id}/relationships/profile_picture`)
 			.field("data[type]", "profile_picture")
 			.attach("data[attributes][fileContents]", path)
 			.set("Cookie", cookie)
@@ -41,7 +41,7 @@ describe("POST /api/user/:id/relationships/profile_picture/create", () => {
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/profile_picture/read/"+response.body.data.id
+			"http://localhost:16000/api/profile_picture/"+response.body.data.id
 		)
 	}, 10000)
 
@@ -59,7 +59,7 @@ describe("POST /api/user/:id/relationships/profile_picture/create", () => {
 		await new ProfilePictureFactory().user(async () => student).insertOne()
 
 		const response = await App.request
-			.post(`/api/user/${student.id}/relationships/profile_picture/create`)
+			.post(`/api/user/${student.id}/relationships/profile_picture`)
 			.field("data[type]", "profile_picture")
 			.attach("data[attributes][fileContents]", path)
 			.set("Cookie", cookie)

@@ -9,7 +9,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/role/archive.delete"
 
-describe("DELETE /api/role/archive/:id", () => {
+describe("DELETE /api/role", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -22,7 +22,7 @@ describe("DELETE /api/role/archive/:id", () => {
 		const role = await (new RoleFactory()).insertOne()
 
 		const response = await App.request
-			.delete("/api/role/archive")
+			.delete("/api/role")
 			.send({
 				data: [
 					{ type: "role", id: role.id }

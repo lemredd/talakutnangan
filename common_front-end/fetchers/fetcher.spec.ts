@@ -18,7 +18,7 @@ describe("Communicator: Fetcher", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/user/create")
+		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
@@ -54,7 +54,7 @@ describe("Communicator: Fetcher", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/user/list?"+stringifyQuery({
+		expect(request).toHaveProperty("url", "/api/user?"+stringifyQuery({
 			...queryObject,
 			sort: queryObject.sort.join(",")
 		}))
@@ -77,7 +77,7 @@ describe("Communicator: Fetcher", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", "/api/user/update/1")
+		expect(request).toHaveProperty("url", "/api/user/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
@@ -104,7 +104,7 @@ describe("Communicator: Fetcher", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "DELETE")
-		expect(request).toHaveProperty("url", "/api/user/archive")
+		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
@@ -127,7 +127,7 @@ describe("Communicator: Fetcher", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", "/api/user/restore")
+		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({

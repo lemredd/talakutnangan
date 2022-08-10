@@ -28,7 +28,8 @@ export interface RoleAttributes extends Attributes {
 	commentFlags: number,
 	profanityFlags: number,
 	userFlags: number,
-	auditTrailFlags: number
+	auditTrailFlags: number,
+	deletedAt?: string | null
 }
 
 export interface RoleResource extends Resource<RoleResourceIdentifier, RoleAttributes> {}

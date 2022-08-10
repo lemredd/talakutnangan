@@ -11,23 +11,16 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, provide, ref } from "vue"
+import { onMounted, provide, ref } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
-import type { PageContext } from "#/types"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import Manager from "@/resource_management/manager"
 import DepartmentFetcher from "$@/fetchers/department"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import DeptManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import DeptList from "@/resource_management/resource_manager/resource_list.vue"
-
-const pageContext = inject("pageContext") as PageContext
-
-provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
 provide("tabs", ["Users", "Roles", "Departments"])
 
 DepartmentFetcher.initialize("/api")

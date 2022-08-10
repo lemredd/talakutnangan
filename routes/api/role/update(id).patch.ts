@@ -143,27 +143,8 @@ export default class extends BoundJSONController {
 	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new RoleManager(request.transaction, request.cache)
 		const { id, attributes } = request.body.data
-		const {
-			name,
-			tag,
-			user,
-			post,
-			comment,
-			semester,
-			profanity,
-			auditTrail
-		} = attributes
 
-		await manager.update(id, {
-			name,
-			tag,
-			user,
-			post,
-			comment,
-			semester,
-			profanity,
-			auditTrail
-		})
+		await manager.update(id, attributes)
 
 		return new NoContentResponseInfo()
 	}
