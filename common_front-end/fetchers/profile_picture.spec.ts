@@ -23,7 +23,7 @@ describe("Communicator: ProfilePictureFetcher", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/user/1/relationships/profile_picture/create")
+		expect(request).toHaveProperty("url", "/api/user/1/relationships/profile_picture")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty(
 			"body.data.links.self",

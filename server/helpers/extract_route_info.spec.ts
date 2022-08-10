@@ -77,24 +77,24 @@ describe("Helpers: Extract route info", () => {
 		expect(purpose).toBe("api")
 	})
 
-	it("can trim list route", () => {
+	it("can trim create route", () => {
 		const root = "/sample"
-		const currentPath = `${root}/api/list.get.ts`
+		const currentPath = `${root}/api/create.post.ts`
 
 		const { method, path, purpose } = extractRouteInfo(currentPath, root)
 
-		expect(method).toBe("get")
+		expect(method).toBe("post")
 		expect(path).toBe("/api")
 		expect(purpose).toBe("api")
 	})
 
-	it("can trim sublist route", () => {
+	it("can trim subcreate route", () => {
 		const root = "/sample"
-		const currentPath = `${root}/api/user/list.get.ts`
+		const currentPath = `${root}/api/user/create.post.ts`
 
 		const { method, path, purpose } = extractRouteInfo(currentPath, root)
 
-		expect(method).toBe("get")
+		expect(method).toBe("post")
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})

@@ -27,7 +27,7 @@ describe("Communicator: Department", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/department/create")
+		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
 			data: {
 				type: "department",

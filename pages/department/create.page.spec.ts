@@ -5,7 +5,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 
 import Page from "./create.page.vue"
 
-describe("Page: /department/create", () => {
+describe("Page: /department", () => {
 	it("can create department", async () => {
 		fetchMock.mockResponseOnce("", { status: RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Page, {
@@ -27,7 +27,7 @@ describe("Page: /department/create", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/department/create")
+		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
 			data: {
 				type: "department",
@@ -74,7 +74,7 @@ describe("Page: /department/create", () => {
 		// TODO: Test the showing of error messages in the UI
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/department/create")
+		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
 			data: {
 				type: "department",

@@ -18,8 +18,8 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 			path = path.replace(/^\/(.*?)\/?index$/, "/$1")
 			break
 		case "api":
-			// Trim "list" suffix for API routes
-			path = path.replace(/^\/(.*?)\/?list$/, "/$1")
+			// Trim "list", or "create" suffix for API routes
+			path = path.replace(/^\/(.*?)\/?(list|create)$/, "/$1")
 			break
 	}
 

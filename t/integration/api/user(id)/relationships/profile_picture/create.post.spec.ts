@@ -11,7 +11,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/user(id)/relationships/profile_picture/create.post"
 
-describe("POST /api/user/:id/relationships/profile_picture/create", () => {
+describe("POST /api/user/:id/relationships/profile_picture", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
