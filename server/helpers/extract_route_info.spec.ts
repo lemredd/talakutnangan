@@ -131,4 +131,26 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})
+
+	it("can trim archive route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/archive.delete.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("delete")
+		expect(path).toBe("/api")
+		expect(purpose).toBe("api")
+	})
+
+	it("can trim subarchive route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user/archive.delete.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("delete")
+		expect(path).toBe("/api/user")
+		expect(purpose).toBe("api")
+	})
 })

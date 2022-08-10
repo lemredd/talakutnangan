@@ -10,7 +10,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/archive.delete"
 
-describe("DELETE /api/department/archive", () => {
+describe("DELETE /api/department", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -23,7 +23,7 @@ describe("DELETE /api/department/archive", () => {
 		const department = await (new DepartmentFactory()).insertOne()
 
 		const response = await App.request
-			.delete("/api/department/archive")
+			.delete("/api/department")
 			.send({
 				data: [
 					{ type: "department", id: department.id }

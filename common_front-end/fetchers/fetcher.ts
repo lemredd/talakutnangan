@@ -88,7 +88,7 @@ export default class Fetcher<
 
 	archive(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
-			this.deleteJSON(`${this.type}/archive`, {}, {
+			this.deleteJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
 			})
 		)
