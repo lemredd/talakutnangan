@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript"
 import User from "%/models/user"
 import Role from "%/models/role"
+import Consultation from "%/models/consultation"
 
 @Table({
 	timestamps: true,
@@ -33,4 +34,7 @@ export default class AttachedRole extends Model {
 
 	@BelongsTo(() => Role)
 	role!: Role
+
+	@BelongsTo(() => Consultation)
+	consultation!: Consultation
 }
