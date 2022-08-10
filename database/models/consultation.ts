@@ -21,7 +21,7 @@ import AttachedRole from "%/models/attached_role"
 	paranoid: true
 })
 export default class Consultation extends Model {
-	@ForeignKey(() => Role)
+	@ForeignKey(() => AttachedRole)
 	@Column({
 		allowNull: false
 	})
