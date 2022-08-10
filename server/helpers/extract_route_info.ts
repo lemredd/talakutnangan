@@ -12,7 +12,20 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 	const dirtyPath = "/" + (purpose === "enhancer" ? rawPath : join(purpose, rawPath))
 	let path = dirtyPath.replace(/\\/g, "/").replace(/\((\w+)\)/g, "/:$1")
 
-	if (purpose === "enhancer") path = path.replace(/^\/(.*?)\/?index$/, "/$1")
+	switch(purpose) {
+		case "enhancer":
+			// Trim "index" suffix for enhancer routes
+			path = path.replace(/^\/(.*?)\/?index$/, "/$1")
+			break
+		case "api":
+			// Trim "list", or "create" suffix for API routes
+			// ID parameter is the only parameter that can be retained if is a suffix
+			path = path.replace(
+				/^\/(.*?)\/?(list|create|read|update|archive|restore)(\/:id)?$/,
+				"/$1$3"
+			)
+			break
+	}
 
 	return {
 		method: <Method><unknown>method,

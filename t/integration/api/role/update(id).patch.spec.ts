@@ -8,7 +8,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/role/update(id).patch"
 
-describe("PUT /api/role/update", () => {
+describe("PATCH /api/role/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -22,7 +22,7 @@ describe("PUT /api/role/update", () => {
 		const newRole = await (new RoleFactory()).makeOne()
 
 		const response = await App.request
-			.patch(`/api/role/update/${role.id}`)
+			.patch(`/api/role/${role.id}`)
 			.set("Cookie", cookie)
 			.send({
 				data: {

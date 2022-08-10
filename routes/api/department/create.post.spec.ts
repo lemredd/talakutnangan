@@ -5,7 +5,7 @@ import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: POST /api/department/create", () => {
+describe("Controller: POST /api/department", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async () => {

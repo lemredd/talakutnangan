@@ -10,7 +10,7 @@ import { ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT } from "$/permissions/user
 
 import Route from "!%/api/user/archive.delete"
 
-describe("DELETE /api/role/archive/:id", () => {
+describe("DELETE /api/user", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -23,7 +23,7 @@ describe("DELETE /api/role/archive/:id", () => {
 		const user = await (new UserFactory()).insertOne()
 
 		const response = await App.request
-			.delete("/api/user/archive")
+			.delete("/api/user")
 			.send({
 				data: [
 					{ type: "user", id: user.id }

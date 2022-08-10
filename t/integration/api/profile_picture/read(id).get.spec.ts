@@ -8,7 +8,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/profile_picture/read(id).get"
 
-describe("GET /api/profile_picture/read/:id", () => {
+describe("GET /api/profile_picture/:id", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -25,7 +25,7 @@ describe("GET /api/profile_picture/read/:id", () => {
 			})
 
 		const response = await App.request
-			.get(`/api/profile_picture/read/${profilePicture.id}`)
+			.get(`/api/profile_picture/${profilePicture.id}`)
 			.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)

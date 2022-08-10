@@ -10,7 +10,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/department/list.get"
 
-describe("GET /api/deparment/list", () => {
+describe("GET /api/deparment", () => {
 	beforeAll(async () => {
 		await App.create(new Route())
 	})
@@ -27,7 +27,7 @@ describe("GET /api/deparment/list", () => {
 		})
 
 		const response = await App.request
-			.get("/api/department/list")
+			.get("/api/department")
 			.query({ sort: "id" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
@@ -52,7 +52,7 @@ describe("GET /api/deparment/list", () => {
 		})
 
 		const response = await App.request
-			.get("/api/department/list")
+			.get("/api/department")
 			.query({ sort: "-fullName" })
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
@@ -77,7 +77,7 @@ describe("GET /api/deparment/list", () => {
 		await departments[2].destroy()
 
 		const response = await App.request
-			.get("/api/department/list?filter[existence]=archived&sort=fullName")
+			.get("/api/department?filter[existence]=archived&sort=fullName")
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
 			.accept(JSON_API_MEDIA_TYPE)

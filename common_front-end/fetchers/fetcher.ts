@@ -53,7 +53,7 @@ export default class Fetcher<
 
 	create(attributes: U): Promise<Response<T, U, V, W, Z>> {
 		return this.handleResponse(
-			this.postJSON(`${this.type}/create`, {
+			this.postJSON(`${this.type}`, {
 				data: {
 					type: this.type,
 					attributes
@@ -69,14 +69,14 @@ export default class Fetcher<
 		}
 		return this.handleResponse(
 			this.getJSON(
-				`${this.type}/list?${stringifyQuery(commaDelimitedSort)}`
+				`${this.type}?${stringifyQuery(commaDelimitedSort)}`
 			)
 		)
 	}
 
 	update(id: number, attributes: U): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}/update/:id`, { id }, {
+			this.patchJSON(`${this.type}/:id`, { id }, {
 				data: {
 					type: this.type,
 					id,
@@ -88,7 +88,7 @@ export default class Fetcher<
 
 	archive(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
-			this.deleteJSON(`${this.type}/archive`, {}, {
+			this.deleteJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
 			})
 		)
@@ -96,7 +96,7 @@ export default class Fetcher<
 
 	restore(IDs: number[]): Promise<Response<T, U, V, W, null>>  {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}/restore`, {}, {
+			this.patchJSON(`${this.type}`, {}, {
 				data: IDs.map(id => ({ type: this.type, id }))
 			})
 		)
