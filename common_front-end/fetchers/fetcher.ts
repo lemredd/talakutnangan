@@ -53,7 +53,7 @@ export default class Fetcher<
 
 	create(attributes: U): Promise<Response<T, U, V, W, Z>> {
 		return this.handleResponse(
-			this.postJSON(`${this.type}/create`, {
+			this.postJSON(`${this.type}`, {
 				data: {
 					type: this.type,
 					attributes
