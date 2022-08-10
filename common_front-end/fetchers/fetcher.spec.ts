@@ -54,7 +54,7 @@ describe("Communicator: Fetcher", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/user/list?"+stringifyQuery({
+		expect(request).toHaveProperty("url", "/api/user?"+stringifyQuery({
 			...queryObject,
 			sort: queryObject.sort.join(",")
 		}))

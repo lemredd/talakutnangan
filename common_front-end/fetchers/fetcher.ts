@@ -69,7 +69,7 @@ export default class Fetcher<
 		}
 		return this.handleResponse(
 			this.getJSON(
-				`${this.type}/list?${stringifyQuery(commaDelimitedSort)}`
+				`${this.type}?${stringifyQuery(commaDelimitedSort)}`
 			)
 		)
 	}

@@ -35,10 +35,10 @@ describe("Database: API Link Creator", () => {
 
 		expect(document).toStrictEqual({
 			links: {
-				first: "/api/user/list?page=1",
-				last: "/api/user/list?page=3",
+				first: "/api/user?page=1",
+				last: "/api/user?page=3",
 				prev: null,
-				next: "/api/user/list?page=2"
+				next: "/api/user?page=2"
 			}
 		})
 	})
@@ -50,10 +50,10 @@ describe("Database: API Link Creator", () => {
 
 		expect(document).toStrictEqual({
 			links: {
-				first: "/api/user/list?page=1",
-				last: "/api/user/list?page=3",
-				prev: "/api/user/list?page=1",
-				next: "/api/user/list?page=3"
+				first: "/api/user?page=1",
+				last: "/api/user?page=3",
+				prev: "/api/user?page=1",
+				next: "/api/user?page=3"
 			}
 		})
 	})
@@ -65,9 +65,9 @@ describe("Database: API Link Creator", () => {
 
 		expect(document).toStrictEqual({
 			links: {
-				first: "/api/user/list?page=1",
-				last: "/api/user/list?page=3",
-				prev: "/api/user/list?page=2",
+				first: "/api/user?page=1",
+				last: "/api/user?page=3",
+				prev: "/api/user?page=2",
 				next: null
 			}
 		})

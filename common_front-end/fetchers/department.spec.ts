@@ -78,7 +78,7 @@ describe("Communicator: Department", () => {
 
 		const request = (fetch as jest.Mock<any, any>).mock.calls[0][0]
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/department/list?"+stringifyQuery({
+		expect(request).toHaveProperty("url", "/api/department?"+stringifyQuery({
 			...queryObject,
 			sort: queryObject.sort.join(",")
 		}))
