@@ -3,8 +3,7 @@ import MockRequester from "~/set-ups/mock_requester"
 import ConsultationFactory from "~/factories/consultation"
 import Controller from "./update(id).patch"
 
-const ID_VALIDATION_INDEX = 0
-const BODY_VALIDATION_INDEX = 1
+const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: PATCH /api/consultation/update/", () => {
 	const requester = new MockRequester()
@@ -30,7 +29,7 @@ describe("Controller: PATCH /api/consultation/update/", () => {
 						//TODO Consultation Requesters
 						//TODO Chat Message Activity
 						deletedAt: null
-								}
+						}
 				}
 			}
 		})
