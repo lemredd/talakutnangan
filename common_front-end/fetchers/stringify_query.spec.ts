@@ -25,6 +25,10 @@ describe("Communicator: Stringify query", () => {
 
 		const query = stringifyQuery(queryObject)
 
-		expect(query).toEqual(encodeURI("hello=world,universe&foo[bar]=baz,fuzz"))
+		expect(query).toEqual(
+			`hello=${encodeURIComponent("world,universe")}&foo${
+				encodeURIComponent("[bar]")
+			}=${encodeURIComponent("baz,fuzz")}`
+		)
 	})
 })
