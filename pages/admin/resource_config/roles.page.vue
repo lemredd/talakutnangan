@@ -6,11 +6,8 @@
 			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<Suspensible :is-loaded="!!roles.length">
-			<RolesList :filtered-list="filteredList" />
-		</Suspensible>
+		<RolesList :filtered-list="filteredList" />
 	</RolesManager>
-
 </template>
 
 <script setup lang="ts">
@@ -22,7 +19,6 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import RoleFetcher from "$@/fetchers/role"
-import Suspensible from "@/suspensible.vue"
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"

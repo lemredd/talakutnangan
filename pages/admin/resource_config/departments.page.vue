@@ -6,9 +6,7 @@
 			<SearchFilter :resource="departments" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<Suspensible :is-loaded="!!departments.length">
-			<DeptList :filtered-list="filteredList" />
-		</Suspensible>
+		<DeptList :filtered-list="filteredList" />
 	</DeptManager>
 </template>
 
@@ -20,7 +18,6 @@ import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
-import Suspensible from "@/suspensible.vue"
 import deserialize from "$/helpers/deserialize"
 import Manager from "@/resource_management/manager"
 import DepartmentFetcher from "$@/fetchers/department"

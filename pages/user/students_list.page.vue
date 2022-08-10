@@ -6,9 +6,7 @@
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<Suspensible :is-loaded="!!users.length">
-			<UsersList :filtered-list="filteredList" />
-		</Suspensible>
+		<UsersList :filtered-list="filteredList" />
 	</UsersManager>
 </template>
 
