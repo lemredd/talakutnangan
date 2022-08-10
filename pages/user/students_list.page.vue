@@ -6,7 +6,9 @@
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList" />
+		<Suspensible :is-loaded="!!users.length">
+			<UsersList :filtered-list="filteredList" />
+		</Suspensible>
 	</UsersManager>
 </template>
 
@@ -20,12 +22,13 @@ import type { PageContext } from "#/types"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
+import RoleFetcher from "$@/fetchers/role"
+import UserFetcher from "$@/fetchers/user"
+import Suspensible from "@/Suspensible.vue"
 import Manager from "@/resource_management/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
-import RoleFetcher from "$@/fetchers/role"
-import UserFetcher from "$@/fetchers/user"
 
 RoleFetcher.initialize("/api")
 UserFetcher.initialize("/api")

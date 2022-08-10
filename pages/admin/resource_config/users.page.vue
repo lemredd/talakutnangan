@@ -6,7 +6,9 @@
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList" />
+		<Suspensible :is-loaded="!!users.length">
+			<UsersList :filtered-list="filteredList" />
+		</Suspensible>
 	</UsersManager>
 </template>
 
@@ -21,8 +23,9 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import Suspensible from "@/Suspensible.vue"
 import Manager from "@/resource_management/manager"
+import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
