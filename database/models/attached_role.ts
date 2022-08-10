@@ -4,6 +4,7 @@ import {
 	Column,
 	BelongsTo,
 	DataType,
+	HasMany,
 	ForeignKey
 } from "sequelize-typescript"
 import User from "%/models/user"
@@ -35,6 +36,6 @@ export default class AttachedRole extends Model {
 	@BelongsTo(() => Role)
 	role!: Role
 
-	@BelongsTo(() => Consultation)
+	@HasMany(() => Consultation)
 	consultation!: Consultation
 }

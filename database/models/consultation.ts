@@ -65,8 +65,8 @@ export default class Consultation extends Model {
 
 	// TODO Message
 
-	@BelongsToMany(() => Role, () => AttachedRole)
-	roles!: Role[]
+	@BelongsTo(() => AttachedRole)
+	attachedRole!: AttachedRole
 
 	// TODO Consultation Requesters
 
