@@ -34,7 +34,7 @@ export default class SignatureFactory extends BaseFactory<
 	DeserializedSignatureListDocument,
 	SignatureTransformerOptions
 > {
-	#user: () => Promise<User>  =  () => new UserFactory().insertOne()
+	#user: () => Promise<User>  =  async () => await new UserFactory().insertOne()
 	#signature: () => MimeBuffer = () => dataURIToBuffer(faker.image.dataUri())
 
 	get model(): ModelCtor<Signature> { return Signature }
