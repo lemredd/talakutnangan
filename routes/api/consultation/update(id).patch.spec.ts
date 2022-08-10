@@ -6,7 +6,7 @@ import Controller from "./update(id).patch"
 const ID_VALIDATION_INDEX = 0
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/consultation/update/:id", () => {
+describe("Controller: PATCH /api/consultation/update/", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async () => {
@@ -15,7 +15,6 @@ describe("Controller: PATCH /api/consultation/update/:id", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const consultation = await new ConsultationFactory().insertOne()
-		const newDepartment = await new ConsultationFactory().makeOne()
 		requester.customizeRequest({
 			body: {
 				data: {
