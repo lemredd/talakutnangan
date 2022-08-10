@@ -7,7 +7,7 @@ describe("Helper: Specialize path", () => {
 
 		const specializedPath = specializePath(pathTemplate, { id })
 
-		expect(specializedPath).toBe("/api/user/update/1")
+		expect(specializedPath).toBe("/api/user/1")
 	})
 
 	it("can bind multiple IDs", async () => {
