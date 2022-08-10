@@ -5,8 +5,7 @@ import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 export default class extends Transformer<Department, void> {
 	constructor() {
-		super()
-		this.type = "department"
+		super("department")
 	}
 
 	transform(model: Department|Department[], options: TransformerOptions): AttributesObject {

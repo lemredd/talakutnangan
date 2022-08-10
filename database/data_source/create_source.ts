@@ -5,8 +5,9 @@ import type { SourceType } from "$/types/database"
 import Log from "$!/singletons/log"
 import Role from "%/models/role"
 import User from "%/models/user"
-import Department from "%/models/department"
 import Signature from "%/models/signature"
+import Department from "%/models/department"
+import AuditTrail from "%/models/audit_trail"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
@@ -24,6 +25,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			Role,
 			User,
 			Signature,
+			AuditTrail,
 			Department,
 			AttachedRole,
 			StudentDetail,

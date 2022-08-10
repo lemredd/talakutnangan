@@ -8,8 +8,7 @@ import Serializer from "%/transformers/serializer"
 
 export default class extends Transformer<Signature, SignatureTransformerOptions> {
 	constructor() {
-		super()
-		this.type = "signature"
+		super("signature")
 	}
 
 	transform(

@@ -4,7 +4,6 @@ import FileLikeTransformer from "%/transformers/file-like"
 
 export default class extends FileLikeTransformer<ProfilePicture, ProfilePictureTransformerOptions> {
 	constructor() {
-		super()
-		this.type = "profile_picture"
+		super("profile_picture")
 	}
 }
