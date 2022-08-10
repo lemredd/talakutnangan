@@ -1,6 +1,6 @@
 import isPlainObject from "./is_plain_object"
 
-describe("Common back-end helper: isPlainObject", () => {
+describe("Helper: Is plain object", () => {
 	it("can check plain object", async () => {
 		const value = {}
 
