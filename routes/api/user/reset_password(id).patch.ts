@@ -36,7 +36,7 @@ export default class extends BoundJSONController {
 			data: {
 				pipes: [ required, object ],
 				constraints: {
-					object: makeResourceIdentifierRules("user", exists, UserManager)
+					object: makeResourceIdentifierRules("user", exists, UserManager, false)
 				}
 			}
 		}
