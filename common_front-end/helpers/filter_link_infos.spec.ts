@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { PermissionMap, PermissionInfo } from "$/types/permission"
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
@@ -5,7 +6,7 @@ import BasePermissionGroup from "$/permissions/base"
 import filterLinkInfos from "./filter_link_infos"
 
 describe("Helper: Filter Link Infos", () => {
-	it("must show free link for guest users", async() => {
+	it("must show free link for guest users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": null
@@ -37,13 +38,13 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must show free link for authenticated users", async() => {
+	it("must show free link for authenticated users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -51,7 +52,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": 0,
 									"departmentFlags": 0,
@@ -68,7 +69,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -107,7 +108,7 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must show guest link for guest users", async() => {
+	it("must show guest link for guest users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": null
@@ -139,13 +140,13 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide guest link for authenticated users", async() => {
+	it("must hide guest link for authenticated users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -153,7 +154,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": 0,
 									"departmentFlags": 0,
@@ -170,7 +171,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -204,13 +205,13 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show general authenticated link for authenticated users", async() => {
+	it("must show general authenticated link for authenticated users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -218,7 +219,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": 0,
 									"departmentFlags": 0,
@@ -235,7 +236,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -274,7 +275,7 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide general authenticated link for guest users", async() => {
+	it("must hide general authenticated link for guest users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": null
@@ -301,13 +302,13 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show kind link for authenticated users", async() => {
+	it("must show kind link for authenticated users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -315,7 +316,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": 0,
 									"departmentFlags": 0,
@@ -332,7 +333,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -371,13 +372,13 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide kind link for different-kind users", async() => {
+	it("must hide kind link for different-kind users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -385,7 +386,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": 0,
 									"departmentFlags": 0,
@@ -402,7 +403,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -436,7 +437,7 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must hide kind link for guest users", async() => {
+	it("must hide kind link for guest users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": null
@@ -480,14 +481,14 @@ describe("Helper: Filter Link Infos", () => {
 		}
 	}
 
-	it("must show allowed link for authenticated users", async() => {
+	it("must show allowed link for authenticated users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -495,7 +496,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": permissionGroup.generateMask("a"),
 									"departmentFlags": 0,
@@ -512,7 +513,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -551,14 +552,14 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide allowed link for non-permitted users", async() => {
+	it("must hide allowed link for non-permitted users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -566,7 +567,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": permissionGroup.generateMask("a"),
 									"departmentFlags": 0,
@@ -583,7 +584,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
@@ -617,7 +618,7 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must hide allowed link for guest users", async() => {
+	it("must hide allowed link for guest users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
 			"pageProps": {
@@ -645,14 +646,14 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show multiple allowed links for authenticated users", async() => {
+	it("must show multiple allowed links for authenticated users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
 			"pageProps": {
 				"userProfile": {
 					"data": {
 						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "",
 						"email": "",
 						"kind": "unreachable_employee",
@@ -660,7 +661,7 @@ describe("Helper: Filter Link Infos", () => {
 							"data": [
 								{
 									"type": "role",
-									"id": 2,
+									"id": "2",
 									"name": "B",
 									"userFlags": permissionGroup.generateMask("a", "b"),
 									"departmentFlags": 0,
@@ -677,7 +678,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"type": "department",
-								"id": 1,
+								"id": "1",
 								"acronym": "A",
 								"fullName": "A",
 								"mayAdmit": true
