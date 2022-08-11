@@ -36,7 +36,7 @@ export default class SignatureFetcher extends Fetcher<
 		super(SignatureFetcher.basePath, SignatureFetcher.type)
 	}
 
-	async renew(userID: number, details: FormData): Promise<Response<
+	async renew(userID: string, details: FormData): Promise<Response<
 		SignatureResourceIdentifier,
 		SignatureAttributes,
 		SignatureResource,
