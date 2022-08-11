@@ -1,13 +1,11 @@
-import { ref, Ref } from "vue"
-import { getPosts } from "./data"
-import { getSecludedPosts } from "./data"
+import { ref } from "vue"
+import { Post, getSecludedPosts, getPosts } from "./data"
 import { badWordExist } from "./profanityFilter"
-import type { Post } from "./data"
 
-export var posts = ref(getPosts())
-export var secludedPosts = ref(getSecludedPosts())
+export const posts = ref(getPosts())
+export const secludedPosts = ref(getSecludedPosts())
 
-export var dummyUserDemo
+export const dummyUserDemo
 = [
 	{
 		"userName": "Gregorio"
@@ -17,32 +15,42 @@ export var dummyUserDemo
 /*
  * Create post start
  * To create a post, the needed arguments are
- *  - ID - 1
- *  - Username - 2
- *  - Post title - 3
- *  - Post description - 4
- *  - Empty voters array - 5
- *  - Empty down voters array - 6
+ * - ID - 1
+ * - Username - 2
+ * - Post title - 3
+ * - Post description - 4
+ * - Empty voters array - 5
+ * - Empty down voters array - 6
  */
-export function createPost(id: number, user: string, title: string, desc: string, voters:[], downVoters: [], isMenuShown: boolean, isEditShown: boolean, isPostShown: boolean) {
+export function createPost(
+	id: number,
+	user: string,
+	title: string,
+	desc: string,
+	voters:[],
+	downVoters: [],
+	isMenuShown: boolean,
+	isEditShown: boolean,
+	isPostShown: boolean
+) {
 	const postCreate
-    = {
-    	id,
-    	user,
-    	title,
-    	desc,
-    	"badWordExist"() {
-    		return badWordExist(title) || badWordExist(desc)
-    	},
-    	voters,
-    	downVoters,
-    	"voteCount"() {
-    		return voters.length
-    	},
-    	isMenuShown,
-    	isEditShown,
-    	isPostShown
-    }
+		= {
+			id,
+			user,
+			title,
+			desc,
+			"badWordExist"() {
+				return badWordExist(title) || badWordExist(desc)
+			},
+			voters,
+			downVoters,
+			"voteCount"() {
+				return voters.length
+			},
+			isMenuShown,
+			isEditShown,
+			isPostShown
+		}
 	posts.value.push(postCreate)
 }
 // Create post end
@@ -70,9 +78,9 @@ export function getSecludedPost(post: Post, secludedPosts: Post[], i: number) {
 }
 
 /*
- *  Posts.value.forEach(function(post: any, i: any) {
- *  	getSecludedPost(post, secludedPosts.value, i)
- *  })
+ *	Posts.value.forEach(function(post: any, i: any) {
+ *		getSecludedPost(post, secludedPosts.value, i)
+ *	})
  * Post seclusion push end
  */
 
@@ -104,8 +112,9 @@ export function upVote(e: Event, post: Post) {
 	if (targetHTML.checked) {
 		post.voters.push(dummyUserDemo[0].userName)
 	} else {
-		post.voters = post.voters.filter((voter: string)
-		=> voter != dummyUserDemo[0].userName)
+		post.voters = post.voters.filter(
+			(voter: string) => voter != dummyUserDemo[0].userName
+		)
 	}
 	if (determineUserDownVoted(post) == true) {
 
@@ -124,8 +133,9 @@ export function downVote(e: Event, post: Post) {
 	if (targetHTML.checked) {
 		post.downVoters.push(dummyUserDemo[0].userName)
 	} else {
-		post.downVoters = post.downVoters.filter((downVote: string)
-		=> downVote != dummyUserDemo[0].userName)
+		post.downVoters = post.downVoters.filter(
+			(downVote: string) => downVote != dummyUserDemo[0].userName
+		)
 	}
 }
 // Upvote end
