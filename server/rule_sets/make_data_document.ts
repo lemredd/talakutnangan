@@ -3,33 +3,36 @@ import type { FieldRules, RuleContraints } from "!/types/validation"
 import array from "!/validators/base/array"
 import object from "!/validators/base/object"
 import required from "!/validators/base/required"
+import length from "!/validators/comparison/length"
 
 export default function(
 	isObject: boolean,
 	unitDataRules: FieldRules,
 	extraQueries: FieldRules = {}
 ): FieldRules {
-	const validator = isObject ? object : array
+	const validators = isObject ? [ object ] : [ array, length ]
 	const constraints: RuleContraints = isObject
-		? {
-			"object": unitDataRules
-		}
+		? { "object": unitDataRules }
 		: {
 			"array": {
 				"constraints": {
 					"object": unitDataRules
 				},
 				"pipes": [ required, object ]
+			},
+			"length": {
+				// Maximum is possible to change in the future
+				"maximum": 24,
+				"minimum": 1
 			}
 		}
 
 	return {
 		"data": {
 			"constraints": {
-				"nullable": { "defaultValue": {} },
 				...constraints
 			},
-			"pipes": [ required, validator ]
+			"pipes": [ required, ...validators ]
 		},
 		...extraQueries
 	}
