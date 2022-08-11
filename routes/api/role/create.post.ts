@@ -6,11 +6,11 @@ import RoleManager from "%/managers/role"
 import JSONController from "!/controllers/json_controller"
 
 import { CREATE } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import {
 	tag,
 	user,
+	role as permissionGroup,
 	post,
 	comment,
 	semester,
@@ -18,13 +18,12 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
-import range from "!/validators/comparison/range"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
+import makeFlagRules from "!/rule_sets/make_flag"
+import notExists from "!/validators/manager/not_exists"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 
 export default class extends JSONController {
@@ -36,79 +35,28 @@ export default class extends JSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "role"
-								}
-							}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object:{
-									name: {
-										pipes: [ required, string, regex ],
-										constraints: {
-											regex: { match: /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/ }
-										}
-									},
-									semesterFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: semester.generateSuperMask() }
-										}
-									},
-									tagFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: tag.generateSuperMask() }
-										}
-									},
-									postFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: post.generateSuperMask() }
-										}
-									},
-									commentFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: comment.generateSuperMask() }
-										}
-									},
-									profanityFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: profanity.generateSuperMask() }
-										}
-									},
-									userFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: user.generateSuperMask() }
-										}
-									},
-									auditTrailFlags: {
-										pipes: [required, integer, range],
-										constraints: {
-											range: { minimum: 0, maximum: auditTrail.generateSuperMask() }
-										}
-									},
-								}
-							}
-						},
-					}
-				}
-			}
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		const attributes: FieldRules = {
+			"name": {
+				"constraints": {
+					"manager": {
+						"className": RoleManager,
+						"columnName": "name"
+					},
+					"regex": { "match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u }
+				},
+				"pipes": [ required, string, regex, notExists ]
+			},
+			...makeFlagRules("semesterFlags", semester),
+			...makeFlagRules("tagFlags", tag),
+			...makeFlagRules("postFlags", post),
+			...makeFlagRules("commentFlags", comment),
+			...makeFlagRules("profanityFlags", profanity),
+			...makeFlagRules("userFlags", user),
+			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
+
+		return makeResourceDocumentRules("role", attributes)
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

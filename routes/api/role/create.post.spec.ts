@@ -8,25 +8,25 @@ const BODY_VALIDATION_INDEX = 0
 describe("Controller: POST /api/role", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const role = await new RoleFactory().userFlags(1).makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name,
-						tagFlags: role.tagFlags,
-						userFlags: role.userFlags,
-						postFlags: role.postFlags,
-						commentFlags: role.commentFlags,
-						semesterFlags: role.semesterFlags,
-						profanityFlags: role.profanityFlags,
-						auditTrailFlags: role.auditTrailFlags
+			"body": {
+				"data": {
+					"type": "role",
+					"attributes": {
+						"name": role.name,
+						"tagFlags": role.tagFlags,
+						"userFlags": role.userFlags,
+						"postFlags": role.postFlags,
+						"commentFlags": role.commentFlags,
+						"semesterFlags": role.semesterFlags,
+						"profanityFlags": role.profanityFlags,
+						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
 			}
@@ -37,25 +37,25 @@ describe("Controller: POST /api/role", () => {
 		requester.expectSuccess()
 	})
 
-	it("can accept weakest role", async () => {
+	it("can accept weakest role", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const role = await new RoleFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name,
-						tagFlags: role.tagFlags,
-						userFlags: role.userFlags,
-						postFlags: role.postFlags,
-						commentFlags: role.commentFlags,
-						semesterFlags: role.semesterFlags,
-						profanityFlags: role.profanityFlags,
-						auditTrailFlags: role.auditTrailFlags
+			"body": {
+				"data": {
+					"type": "role",
+					"attributes": {
+						"name": role.name,
+						"tagFlags": role.tagFlags,
+						"userFlags": role.userFlags,
+						"postFlags": role.postFlags,
+						"commentFlags": role.commentFlags,
+						"semesterFlags": role.semesterFlags,
+						"profanityFlags": role.profanityFlags,
+						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
 			}
@@ -66,25 +66,26 @@ describe("Controller: POST /api/role", () => {
 		requester.expectSuccess()
 	})
 
-	it("can accept strongest role", async () => {
+	it("can accept strongest role", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().superRole().makeOne()
+		const role = await new RoleFactory().superRole()
+		.makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name,
-						tagFlags: role.tagFlags,
-						userFlags: role.userFlags,
-						postFlags: role.postFlags,
-						commentFlags: role.commentFlags,
-						semesterFlags: role.semesterFlags,
-						profanityFlags: role.profanityFlags,
-						auditTrailFlags: role.auditTrailFlags
+			"body": {
+				"data": {
+					"type": "role",
+					"attributes": {
+						"name": role.name,
+						"tagFlags": role.tagFlags,
+						"userFlags": role.userFlags,
+						"postFlags": role.postFlags,
+						"commentFlags": role.commentFlags,
+						"semesterFlags": role.semesterFlags,
+						"profanityFlags": role.profanityFlags,
+						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
 			}
@@ -95,25 +96,26 @@ describe("Controller: POST /api/role", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid name", async () => {
+	it("cannot accept invalid name", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1).makeOne()
+		const role = await new RoleFactory().userFlags(1)
+		.makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name+"1",
-						tagFlags: role.tagFlags,
-						userFlags: role.userFlags,
-						postFlags: role.postFlags,
-						commentFlags: role.commentFlags,
-						semesterFlags: role.semesterFlags,
-						profanityFlags: role.profanityFlags,
-						auditTrailFlags: role.auditTrailFlags
+			"body": {
+				"data": {
+					"type": "role",
+					"attributes": {
+						"name": `${role.name}1`,
+						"tagFlags": role.tagFlags,
+						"userFlags": role.userFlags,
+						"postFlags": role.postFlags,
+						"commentFlags": role.commentFlags,
+						"semesterFlags": role.semesterFlags,
+						"profanityFlags": role.profanityFlags,
+						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
 			}
@@ -126,25 +128,26 @@ describe("Controller: POST /api/role", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.name")
 	})
 
-	it("cannot accept beyond permitted actions", async () => {
+	it("cannot accept beyond permitted actions", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().superRole().makeOne()
+		const role = await new RoleFactory().superRole()
+		.makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name,
-						tagFlags: role.tagFlags+1,
-						userFlags: role.userFlags+1,
-						postFlags: role.postFlags+1,
-						commentFlags: role.commentFlags+1,
-						semesterFlags: role.semesterFlags+1,
-						profanityFlags: role.profanityFlags+1,
-						auditTrailFlags: role.auditTrailFlags+1
+			"body": {
+				"data": {
+					"type": "role",
+					"attributes": {
+						"name": role.name,
+						"tagFlags": role.tagFlags + 1,
+						"userFlags": role.userFlags + 1,
+						"postFlags": role.postFlags + 1,
+						"commentFlags": role.commentFlags + 1,
+						"semesterFlags": role.semesterFlags + 1,
+						"profanityFlags": role.profanityFlags + 1,
+						"auditTrailFlags": role.auditTrailFlags + 1
 					}
 				}
 			}
