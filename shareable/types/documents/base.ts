@@ -3,9 +3,9 @@ import type { GeneralObject, Serializable } from "$/types/general"
 
 export interface PrimaryData extends Serializable {}
 
-export interface ResourceIdentifier extends PrimaryData {
+export interface ResourceIdentifier<T extends string|number = string> extends PrimaryData {
 	type: string,
-	id: number
+	id: T
 }
 
 export interface Attributes extends GeneralObject {}
@@ -14,7 +14,7 @@ export type Resource<T extends ResourceIdentifier, U extends Attributes> = T & {
 	attributes: U
 }
 
-export type DeserializedResource<T extends ResourceIdentifier, U extends Attributes> =
+export type DeserializedResource<T extends ResourceIdentifier<number>, U extends Attributes> =
 	& T
 	& U
 
@@ -45,13 +45,13 @@ export interface ResourceListDocument<
 > extends DataDocument<V[]> {}
 
 export interface DeserializedResourceDocument<
-	T extends ResourceIdentifier,
+	T extends ResourceIdentifier<number>,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
 > extends DataDocument<V> {}
 
 export interface DeserializedResourceListDocument<
-	T extends ResourceIdentifier,
+	T extends ResourceIdentifier<number>,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
 > extends DataDocument<V[]> {}
