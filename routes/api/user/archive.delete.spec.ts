@@ -14,13 +14,13 @@ describe("Controller: DELETE /api/user", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		requester.customizeRequest({
 			body: {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}
@@ -36,14 +36,14 @@ describe("Controller: DELETE /api/user", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		await user.destroy({ force: false })
 		requester.customizeRequest({
 			body: {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}
@@ -61,14 +61,14 @@ describe("Controller: DELETE /api/user", () => {
 		const validations = controller.validations
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		await user.destroy({ force: true })
 		requester.customizeRequest({
 			body: {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}
