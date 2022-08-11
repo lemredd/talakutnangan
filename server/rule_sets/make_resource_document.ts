@@ -11,6 +11,7 @@ export default function(
 	attributes: FieldRules,
 	isNew = false,
 	mustCastID = false,
+	extraDataQueries: FieldRules = {},
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return makeDataDocumentRules(true, {
@@ -21,6 +22,7 @@ export default function(
 				"object": attributes
 			},
 			"pipes": [ required, object ]
-		}
+		},
+		...extraDataQueries
 	}, extraQueries)
 }
