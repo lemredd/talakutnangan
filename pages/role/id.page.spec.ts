@@ -73,9 +73,9 @@ describe("UI Page: Read resource by ID", () => {
 
 		await flushPromises()
 
-		const fetchedRoleName = wrapper.find(".role-name input").getRootNodes()
+		const fetchedRoleName = wrapper.find(".role-name input").getRootNodes() as HTMLInputElement[]
 		const expectedRoleName = response.body.data.name
-		expect(fetchedRoleName[0] as HTMLInputElement.value).toEqual(expectedRoleName)
+		expect(fetchedRoleName[0].value).toEqual(expectedRoleName)
 	})
 
 	it.skip("Can edit role name", async() => {
@@ -135,7 +135,8 @@ describe("UI Page: Read resource by ID", () => {
 
 		const fetchedRoleName = wrapper.find(".role-name input")
 		await fetchedRoleName.setValue("Another Role Name")
-		const newRoleName = fetchedRoleName.getRootNodes()[0] as HTMLInputElement.value
+		const castFetchedRoleName = fetchedRoleName.getRootNodes()[0] as HTMLInputElement
+		const newRoleName = castFetchedRoleName.value
 		// TODO: test update submission and expect new role name to successfully push in database
 	})
 
