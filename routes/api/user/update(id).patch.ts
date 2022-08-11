@@ -83,7 +83,7 @@ export default class extends BoundJSONController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& userData.data.id !== String(id)
+			&& String(userData.data.id) !== String(id)
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
