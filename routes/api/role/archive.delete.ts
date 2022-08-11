@@ -10,14 +10,8 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
-import array from "!/validators/base/array"
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import same from "!/validators/comparison/same"
-import exists from "!/validators/manager/exists"
-import required from "!/validators/base/required"
-import length from "!/validators/comparison/length"
+import makeResourceIdentifierListDocumentRules
+	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -28,45 +22,11 @@ export default class extends JSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ required, array, length ],
-				constraints: {
-					array: {
-						pipes: [ required, object ],
-						constraints: {
-							object: {
-								type: {
-									pipes: [ required, string, same ],
-									constraints: {
-										same: {
-											value: "role"
-										}
-									}
-								},
-								id: {
-									pipes: [ required, integer, exists ],
-									constraints: {
-										manager: {
-											className: RoleManager,
-											columnName: "id"
-										}
-									}
-								}
-							}
-						}
-					},
-					length: {
-						minimum: 1,
-						maximum: 24 // This is possible to change in the future
-					}
-				}
-			}
-		}
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		return makeResourceIdentifierListDocumentRules("role", RoleManager)
 	}
 
-	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new RoleManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
