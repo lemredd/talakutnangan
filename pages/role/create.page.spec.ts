@@ -19,10 +19,11 @@ describe("Page: /role", () => {
 		const submit = wrapper.find("input[type=submit]")
 
 		await roleNameField.setValue("Role Sample")
-		viewCheckboxes.map(async(checkbox) => await checkbox.setValue(true))
+		viewCheckboxes.map(async checkbox => await checkbox.setValue(true))
 		await submit.trigger("submit")
 
-		const request = fetch as jest.Mock<any,any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/role")
 
@@ -52,7 +53,7 @@ describe("Page: /role", () => {
 					"status": RequestEnvironment.status.BAD_REQUEST,
 					"code": "3",
 					"title": "Validation Error",
-					"detail": "Field \"data.attributes.name\" must match \"/^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/\".",
+					"detail": "Field \"data.attributes.name\" must match the expression.",
 					"source": {
 						"pointer": "/data/attributes/name"
 					}
@@ -67,15 +68,15 @@ describe("Page: /role", () => {
 			}
 		})
 
-		const roleNameField = wrapper.find(".input-container input")
 		const viewCheckboxes = wrapper.findAll("input[value='view']")
 		const submit = wrapper.find("input[type=submit]")
 
-		viewCheckboxes.map(async(checkbox) => await checkbox.setValue(true))
+		viewCheckboxes.map(async checkbox => await checkbox.setValue(true))
 		await submit.trigger("submit")
 
 		// TODO: Test the showing of error messages in the UI
-		const request = fetch as jest.Mock<any,any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/role")
 

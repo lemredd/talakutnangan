@@ -25,7 +25,8 @@ describe("Page: /department", () => {
 		await mayAdmit.setValue(true)
 		await submit.trigger("submit")
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
@@ -72,7 +73,8 @@ describe("Page: /department", () => {
 		await submit.trigger("submit")
 
 		// TODO: Test the showing of error messages in the UI
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({

@@ -25,7 +25,8 @@ describe("Communicator: Department", () => {
 			"mayAdmit": true
 		})
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
@@ -51,17 +52,19 @@ describe("Communicator: Department", () => {
 	})
 
 	it("can list all resources", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": [
-				{
-					"type": "department",
-					"fullName": "A",
-					"acronym": "A",
-					"mayAdmit": true
-				}
-			]
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [
+					{
+						"type": "department",
+						"fullName": "A",
+						"acronym": "A",
+						"mayAdmit": true
+					}
+				]
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const queryObject: CommonQueryParameters = {
 			"filter": {
@@ -76,11 +79,12 @@ describe("Communicator: Department", () => {
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.list(queryObject)
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
 		expect(request).toHaveProperty("url", `/api/department?${stringifyQuery({
 			...queryObject,
-			sort: queryObject.sort.join(",")
+			"sort": queryObject.sort.join(",")
 		})}`)
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
@@ -92,13 +96,14 @@ describe("Communicator: Department", () => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const fetcher = new DepartmentFetcher()
-		const response = await fetcher.update(1, {
+		const response = await fetcher.update("1", {
 			"fullName": "A",
 			"acronym": "A",
 			"mayAdmit": true
 		})
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/department/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -122,17 +127,20 @@ describe("Communicator: Department", () => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const fetcher = new DepartmentFetcher()
-		const response = await fetcher.archive([ 1 ])
+		const response = await fetcher.archive([ "1" ])
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "DELETE")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
-				{ "type": "department",
-id: 1 }
+				{
+					"type": "department",
+					"id": 1
+				}
 			]
 		})
 		expect(response).toHaveProperty("body", null)
@@ -143,17 +151,20 @@ id: 1 }
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const fetcher = new DepartmentFetcher()
-		const response = await fetcher.restore([ 2 ])
+		const response = await fetcher.restore([ "2" ])
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
-				{ "type": "department",
-id: 2 }
+				{
+					"type": "department",
+					"id": 2
+				}
 			]
 		})
 		expect(response).toHaveProperty("body", null)
