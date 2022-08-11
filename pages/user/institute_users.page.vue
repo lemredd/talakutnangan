@@ -18,7 +18,7 @@ import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { PossibleResources } from "$@/types/independent"
 
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"

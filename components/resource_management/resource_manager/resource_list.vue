@@ -57,7 +57,7 @@ import { inject, onUpdated, ref } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]

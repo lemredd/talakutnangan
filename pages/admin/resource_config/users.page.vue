@@ -21,7 +21,7 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"

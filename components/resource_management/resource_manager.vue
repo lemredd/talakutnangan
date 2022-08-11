@@ -38,7 +38,7 @@ import { computed, inject } from "vue"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
-import manager from "./manager"
+import Manager from "$/helpers/manager"
 import Suspensible from "@/suspensible.vue"
 import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
 
@@ -47,7 +47,7 @@ const { resource } = defineProps<{
 }>()
 
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
-const managerKind = inject("managerKind") as manager
+const managerKind = inject("managerKind") as Manager
 
 function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
 	return (resourceItem as DeserializedUserResource).type === "user"
