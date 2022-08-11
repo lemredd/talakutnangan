@@ -65,6 +65,7 @@
 		"@types/showdown": "^2.0.0",
 		"@types/string-placeholder": "^1.0.1",
 		"@types/uuid": "^8.3.4",
+		"@types/validator": "^13.7.5",
 		"@vitejs/plugin-vue": "^3.0.1",
 		"@vue/compiler-sfc": "^3.2.31",
 		"@vue/server-renderer": "^3.2.31",
