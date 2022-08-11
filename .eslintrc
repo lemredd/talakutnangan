@@ -85,11 +85,11 @@ rules:
     -
       overrides:
         if: "any"
-  padded-blocks: ["error", "never"]
   object-curly-spacing: ["error", "always"]
   one-var: ["error", "never"]
   operator-linebreak: ["error", "before"]
-  prefer-named-capture-group: "warn"
+  padded-blocks: ["error", "never"]
+  prefer-named-capture-group: "off"
   semi: [ "error", "never" ]
   space-before-function-paren: ["error", "never"]
   sort-imports: "off"
