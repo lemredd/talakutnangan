@@ -32,7 +32,13 @@ rules:
   function-call-argument-newline: ["error", "consistent"]
   function-paren-newline: "off"
   generator-star-spacing: ["error", "after"]
-  indent: ["error", "tab", { "SwitchCase": 1 }]
+  indent:
+    - "error"
+    - "tab"
+    -
+      SwitchCase: 1
+      CallExpression: { "arguments": "first" }
+      MemberExpression: 0
   id-length: ["error", { "exceptions": ["i", "j", "k", "t"] }]
   lines-around-comment:
     - "warn"
@@ -147,4 +153,5 @@ rules:
   vue/no-setup-props-destructure: "off"
   "@typescript-eslint/ban-ts-comment": "off"
   "@typescript-eslint/no-explicit-any": "off"
+  "@typescript-eslint/no-non-null-assertion": "warn"
   "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^unused", "varsIgnorePattern": "^unused" } ]
