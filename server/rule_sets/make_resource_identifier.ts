@@ -1,11 +1,12 @@
 import type { FieldRules, Pipe } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 
+import makeIDRules from "!/rule_sets/make_id"
+import makeTypeRules from "!/rule_sets/make_type"
 import makeDataDocumentRules from "!/rule_sets/make_data_document"
-import makeIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 /**
- * Validates a submitted resource document.
+ * Validates a submitted resource identifier.
  *
  * Automatically casts the IDs into integer.
  *
@@ -18,12 +19,19 @@ export default function(
 	typeName: string,
 	validator: Pipe,
 	ClassName: BaseManagerClass,
-	extraIdentifierQueries: FieldRules = {},
 	extraQueries: FieldRules = {}
 ): FieldRules {
-	return makeDataDocumentRules(
-		false,
-		makeIdentifierRules(typeName, validator, ClassName, extraIdentifierQueries),
-		extraQueries
-	)
+	return {
+		...makeIDRules(true, "id", {
+			"constraints": {
+				"manager": {
+					"className": ClassName,
+					"columnName": "id"
+				}
+			},
+			"pipes": [ validator ]
+		}),
+		...makeTypeRules(typeName),
+		...extraQueries
+	}
 }
