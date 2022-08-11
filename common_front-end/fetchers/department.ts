@@ -1,5 +1,6 @@
 import type { Serializable } from "$/types/general"
-import type { CommonQueryParameters } from "$/types/query"
+import type { Response } from "$@/types/independent"
+import type { DepartmentQueryParameters } from "$/types/query"
 import type {
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
@@ -8,9 +9,12 @@ import type {
 	DepartmentDocument,
 	DepartmentListDocument,
 	DeserializedDepartmentDocument,
-	DeserializedDepartmentListDocument
+	DeserializedDepartmentListDocument,
+	DepartmentIdentifierListDocument
 } from "$/types/documents/department"
+
 import Fetcher from "$@/fetchers/fetcher"
+import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class DepartmentFetcher extends Fetcher<
 	DepartmentResourceIdentifier,
@@ -22,7 +26,7 @@ export default class DepartmentFetcher extends Fetcher<
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument,
 	Serializable,
-	CommonQueryParameters
+	DepartmentQueryParameters
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "department")
@@ -30,5 +34,30 @@ export default class DepartmentFetcher extends Fetcher<
 
 	constructor() {
 		super(DepartmentFetcher.basePath, DepartmentFetcher.type)
+	}
+
+	countUsers(IDs: number[]): Promise<Response<
+		DepartmentResourceIdentifier,
+		DepartmentAttributes,
+		DepartmentResource,
+		DeserializedDepartmentResource,
+		DepartmentIdentifierListDocument
+	>> {
+		return this.handleResponse(
+			this.getJSON(
+				`${this.type}/count_users?${stringifyQuery({
+					filter: {
+						IDs
+					}
+				})}`
+			),
+			false
+		) as Promise<Response<
+			DepartmentResourceIdentifier,
+			DepartmentAttributes,
+			DepartmentResource,
+			DeserializedDepartmentResource,
+			DepartmentIdentifierListDocument
+		>>
 	}
 }

@@ -48,6 +48,12 @@ import type { Serializable } from "$/types/general"
 	 }
  }
 
+ export interface IDsFilter extends Serializable {
+	 filter: {
+		 IDs?: number[]
+	 }
+ }
+
  /**
   * Expected shape of the common sort options
   */
@@ -80,3 +86,8 @@ import type { Serializable } from "$/types/general"
 export type RoleQueryParameters =
 	& CommonQueryParameters
 	& DepartmentFilter
+	& IDsFilter
+
+export type DepartmentQueryParameters =
+	& CommonQueryParameters
+	& IDsFilter
