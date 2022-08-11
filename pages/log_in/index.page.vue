@@ -2,6 +2,9 @@
 	<div class="login-container">
 		<div class="image"></div>
 		<div class="login-form ">
+			<div class="error" v-if="receivedError">
+				<span class="description">{{ receivedError.detail }}</span>
+			</div>
 			<h1>Login</h1>
 			<LogInForm />
 		</div>
@@ -41,6 +44,19 @@ body {
 		padding: 1em 2em;
 		z-index: 1;
 
+		// TODO(error): make into general style (error.scss)
+		.error {
+			margin: 1em 0;
+			border-radius: 3px;
+			padding: .25em 1em;
+
+			background-color: $color-primary;
+			color: white;
+			font-size: smaller;
+			text-align: center;
+			width: fit-content;
+		}
+
 		h1 {
 			font-size: 2em;
 			text-transform: uppercase;
@@ -77,6 +93,6 @@ import type { PageContext } from "#/types"
 import LogInForm from "@/LogInForm.vue"
 
 const pageContext = inject("pageContext") as PageContext
+const receivedError = pageContext.pageProps.parsedUnitError
 
-console.log(pageContext)
 </script>
