@@ -12,7 +12,7 @@ export default class extends QueryController {
 		return CommonMiddlewareList.studentOnlyPolicy
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return {}
 	}
 

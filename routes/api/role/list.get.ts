@@ -27,7 +27,7 @@ export default class extends QueryController {
 		])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(RoleManager, {
 			department: {
 				pipes: [ nullable, skipAsterisk, integer, exists ],
@@ -42,7 +42,7 @@ export default class extends QueryController {
 		})
 	}
 
-	async handle(request: Request, response: Response): Promise<ListResponse> {
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query } as RoleQueryParameters
 
 		const manager = new RoleManager(request.transaction, request.cache)

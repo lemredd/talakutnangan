@@ -22,11 +22,11 @@ export default class extends QueryController {
 		])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(AuditTrailManager, {})
 	}
 
-	async handle(request: Request, response: Response): Promise<ListResponse> {
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
 		const manager = new AuditTrailManager(request.transaction, request.cache)

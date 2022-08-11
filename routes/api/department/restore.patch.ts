@@ -61,7 +61,7 @@ export default class extends JSONController {
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)

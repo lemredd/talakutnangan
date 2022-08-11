@@ -25,7 +25,7 @@ export default class extends JSONController {
 		return makeResourceIdentifierListDocumentRules("user", archived, UserManager)
 	}
 
-	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
