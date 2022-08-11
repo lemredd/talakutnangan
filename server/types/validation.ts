@@ -1,4 +1,4 @@
-import type { Pipe } from "$/types/database"
+import type { Pipe as BasePipe } from "$/types/database"
 import type { BaseManagerClass } from "!/types/independent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
@@ -102,10 +102,15 @@ export interface ValidationState {
 }
 
 /**
+ * Shape of validation pipes
+ */
+export type Pipe = BasePipe<Promise<ValidationState>, ValidationConstraints>
+
+/**
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
+	pipes: Pipe[],
 	constraints?: RuleContraints
 }
 
