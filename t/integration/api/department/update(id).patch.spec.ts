@@ -28,7 +28,7 @@ describe("PATCH /api/department/:id", () => {
 			.send({
 				data: {
 					type: "department",
-					id: department.id,
+					id: String(department.id),
 					attributes: {
 						acronym: newDepartmentDetails.acronym,
 						fullName: newDepartmentDetails.fullName,
