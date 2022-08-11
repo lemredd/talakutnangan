@@ -12,11 +12,10 @@ import type {
 	DeserializedDepartmentListDocument,
 	DepartmentIdentifierListDocument
 } from "$/types/documents/department"
-
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
-export default class DepartmentFetcher extends Fetcher<
+export default class DepartmentFetcher extends BaseFetcher<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource,

@@ -3,34 +3,34 @@ import RoleSpecificLinks from "./role_specific_links.vue"
 import { ref } from "vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
-	it("should specify the right link/s for authenticated user", async () => {
+	it("should specify the right link/s for authenticated user", async() => {
 		const wrapper = mount(RoleSpecificLinks, {
-			shallow: true,
-			global: {
-				stubs: {
-					RoleLinksList: false
+			"shallow": true,
+			"global": {
+				"stubs": {
+					"RoleLinksList": false
 				},
-				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					pageContext: {
-						pageProps: {
-							userProfile: {
-								data: {
-									type: "user",
-									id: 1,
-									kind: "student",
-									roles: {
-										data: []
+				"provide": {
+					"bodyClasses": ref<string[]>([ "dark" ]),
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"type": "user",
+									"id": 1,
+									"kind": "student",
+									"roles": {
+										"data": []
 									}
 								}
 							},
-							parsedUnitError: {}
+							"parsedUnitError": {}
 						}
 					}
 				}
 			},
-			props: {
-				role: "student_or_employee"
+			"props": {
+				"role": "student_or_employee"
 			}
 		})
 		const link = wrapper.find("anchor-stub:first-of-type")
@@ -39,25 +39,25 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		expect(linkHref).toBe("/notifications")
 	})
 
-	it("should specify the right link/s for a guest user", async () => {
+	it("should specify the right link/s for a guest user", async() => {
 		const wrapper = mount(RoleSpecificLinks, {
-			shallow: true,
-			global: {
-				stubs: {
-					RoleLinksList: false
+			"shallow": true,
+			"global": {
+				"stubs": {
+					"RoleLinksList": false
 				},
-				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					pageContext: {
-						pageProps: {
-							userProfile: null,
-							parsedUnitError: {}
+				"provide": {
+					"bodyClasses": ref<string[]>([ "dark" ]),
+					"pageContext": {
+						"pageProps": {
+							"userProfile": null,
+							"parsedUnitError": {}
 						}
 					}
 				}
 			},
-			props: {
-				role: "guest"
+			"props": {
+				"role": "guest"
 			}
 		})
 		const link = wrapper.find("anchor-stub:first-of-type")
@@ -68,32 +68,32 @@ describe("Component: Page Shell/Role Specific Links", () => {
 
 	it("should appear different in desktop", () => {
 		const wrapper = mount(RoleSpecificLinks, {
-			shallow: true,
-			global: {
-				stubs: {
-					RoleLinksList: false
+			"shallow": true,
+			"global": {
+				"stubs": {
+					"RoleLinksList": false
 				},
-				provide: {
-					bodyClasses: ref<string[]>(["dark"]),
-					pageContext: {
-						pageProps: {
-							userProfile: {
-								data: {
-									type: "user",
-									id: 1,
-									kind: "student",
-									roles: {
-										data: []
+				"provide": {
+					"bodyClasses": ref<string[]>([ "dark" ]),
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"type": "user",
+									"id": 1,
+									"kind": "student",
+									"roles": {
+										"data": []
 									}
 								}
 							},
-							parsedUnitError: {}
+							"parsedUnitError": {}
 						}
 					}
 				}
 			},
-			props: {
-				role: "student_or_employee"
+			"props": {
+				"role": "student_or_employee"
 			}
 		})
 

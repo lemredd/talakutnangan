@@ -6,7 +6,7 @@ import includePermissionDependencies from "$@/helpers/include_permission_depende
 
 describe("Helper: Include Permission Dependencies", () => {
 	it("Should include permission dependencies", () => {
-		const rawFlags = ref<string[]>(["update"])
+		const rawFlags = ref<string[]>([ "update" ])
 		includePermissionDependencies(tag, rawFlags)
 
 		expect(rawFlags.value).toHaveLength(2)

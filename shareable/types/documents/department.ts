@@ -11,7 +11,8 @@ import type {
 	IdentifierListDocument
 } from "$/types/documents/base"
 
-export interface DepartmentResourceIdentifier extends ResourceIdentifier {
+export interface DepartmentResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "department",
 	meta?: {
 		userCount: number
@@ -24,39 +25,44 @@ export interface DepartmentAttributes extends Attributes {
 	mayAdmit: boolean
 }
 
-export interface DepartmentResource extends Resource<
+export type DepartmentResource = Resource<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes
-> {}
+>
 
-export interface DeserializedDepartmentResource extends DeserializedResource<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentResource<T extends string|number = string> = DeserializedResource<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes
-> {}
+>
 
-export interface DepartmentDocument extends ResourceDocument<
+export type DepartmentDocument = ResourceDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
-> {}
+>
 
-export interface DepartmentListDocument extends ResourceListDocument<
+export type DepartmentListDocument = ResourceListDocument<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource
-> {}
+>
 
-export interface DeserializedDepartmentDocument extends DeserializedResourceDocument<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes,
-	DeserializedDepartmentResource
-> {}
+	DeserializedDepartmentResource<T>
+>
 
-export interface DeserializedDepartmentListDocument extends DeserializedResourceListDocument<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes,
-	DeserializedDepartmentResource
-> {}
+	DeserializedDepartmentResource<T>
+>
 
 export interface DepartmentIdentifierDocument
 extends IdentifierDocument<DepartmentResourceIdentifier> {}

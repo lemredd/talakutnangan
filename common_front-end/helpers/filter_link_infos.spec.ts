@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { PermissionMap, PermissionInfo } from "$/types/permission"
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
@@ -5,19 +6,19 @@ import BasePermissionGroup from "$/permissions/base"
 import filterLinkInfos from "./filter_link_infos"
 
 describe("Helper: Filter Link Infos", () => {
-	it("must show free link for guest users", async () => {
+	it("must show free link for guest users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -37,57 +38,57 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must show free link for authenticated users", async () => {
+	it("must show free link for authenticated users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: 0,
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": 0,
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -107,19 +108,19 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must show guest link for guest users", async () => {
+	it("must show guest link for guest users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: true,
-				kinds: null,
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": true,
+				"kinds": null,
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -139,57 +140,57 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide guest link for authenticated users", async () => {
+	it("must hide guest link for authenticated users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: 0,
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": 0,
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: true,
-				kinds: null,
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": true,
+				"kinds": null,
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -204,57 +205,57 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show general authenticated link for authenticated users", async () => {
+	it("must show general authenticated link for authenticated users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: 0,
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": 0,
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: [],
-				permissionCombinations: [],
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": [],
+				"permissionCombinations": [],
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -274,19 +275,19 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide general authenticated link for guest users", async () => {
+	it("must hide general authenticated link for guest users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: [],
-				permissionCombinations: [],
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": [],
+				"permissionCombinations": [],
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -301,57 +302,57 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show kind link for authenticated users", async () => {
+	it("must show kind link for authenticated users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: 0,
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": 0,
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: [ "unreachable_employee" ],
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": [ "unreachable_employee" ],
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -371,57 +372,57 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide kind link for different-kind users", async () => {
+	it("must hide kind link for different-kind users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: 0,
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": 0,
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: [ "reachable_employee" ],
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": [ "reachable_employee" ],
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -436,19 +437,19 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must hide kind link for guest users", async () => {
+	it("must hide kind link for guest users", () => {
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: [ "unreachable_employee" ],
-				permissionCombinations: null,
-				permissionGroup: null,
-				links: [
+				"mustBeGuest": false,
+				"kinds": [ "unreachable_employee" ],
+				"permissionCombinations": null,
+				"permissionGroup": null,
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -470,65 +471,68 @@ describe("Helper: Filter Link Infos", () => {
 		get name(): string { return "userFlags" }
 		get permissions(): PermissionMap<AvailablePermissionsC> {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
-				[ "a", { flag: 0x1, permissionDependencies: [] } ],
-				[ "b", { flag: 0x2, permissionDependencies: [] } ],
-				[ "c", { flag: 0x4, permissionDependencies: [] } ]
+				[ "a", { "flag": 0x1,
+					"permissionDependencies": [] } ],
+				[ "b", { "flag": 0x2,
+					"permissionDependencies": [] } ],
+				[ "c", { "flag": 0x4,
+					"permissionDependencies": [] } ]
 			])
 		}
 	}
 
-	it("must show allowed link for authenticated users", async () => {
+	it("must show allowed link for authenticated users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: permissionGroup.generateMask("a"),
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": permissionGroup.generateMask("a"),
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: [ [ "a" ] ],
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": [ [ "a" ] ],
 				permissionGroup,
-				links: [
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -548,58 +552,58 @@ describe("Helper: Filter Link Infos", () => {
 		})
 	})
 
-	it("must hide allowed link for non-permitted users", async () => {
+	it("must hide allowed link for non-permitted users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: permissionGroup.generateMask("a"),
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": permissionGroup.generateMask("a"),
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: [ [ "b" ] ],
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": [ [ "b" ] ],
 				permissionGroup,
-				links: [
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -614,20 +618,20 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must hide allowed link for guest users", async () => {
+	it("must hide allowed link for guest users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: [ [ "c" ] ],
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": [ [ "c" ] ],
 				permissionGroup,
-				links: [
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -642,58 +646,58 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
-	it("must show multiple allowed links for authenticated users", async () => {
+	it("must show multiple allowed links for authenticated users", () => {
 		const permissionGroup = new GroupA()
 		const context: DeserializedPageContext = {
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "",
-						email: "",
-						kind: "unreachable_employee",
-						roles: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": "1",
+						"name": "",
+						"email": "",
+						"kind": "unreachable_employee",
+						"roles": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B",
-									userFlags: permissionGroup.generateMask("a", "b"),
-									departmentFlags: 0,
-									auditTrailFlags: 0,
-									commentFlags: 0,
-									postFlags: 0,
-									profanityFlags: 0,
-									roleFlags: 0,
-									semesterFlags: 0,
-									tagFlags: 0
+									"type": "role",
+									"id": "2",
+									"name": "B",
+									"userFlags": permissionGroup.generateMask("a", "b"),
+									"departmentFlags": 0,
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0
 								}
 							]
 						},
-						department: {
-							data: {
-								type: "department",
-								id: 1,
-								acronym: "A",
-								fullName: "A",
-								mayAdmit: true
+						"department": {
+							"data": {
+								"type": "department",
+								"id": "1",
+								"acronym": "A",
+								"fullName": "A",
+								"mayAdmit": true
 							}
 						}
 					},
-					meta: {
-						hasDefaultPassword: false
+					"meta": {
+						"hasDefaultPassword": false
 					}
 				}
 			}
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: [ [ "a" ] ],
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": [ [ "a" ] ],
 				permissionGroup,
-				links: [
+				"links": [
 					{
 						"icon": "a",
 						"name": "A",
@@ -702,11 +706,11 @@ describe("Helper: Filter Link Infos", () => {
 				]
 			},
 			{
-				mustBeGuest: false,
-				kinds: null,
-				permissionCombinations: [ [ "b" ] ],
+				"mustBeGuest": false,
+				"kinds": null,
+				"permissionCombinations": [ [ "b" ] ],
 				permissionGroup,
-				links: [
+				"links": [
 					{
 						"icon": "b",
 						"name": "B",

@@ -1,0 +1,163 @@
+# Base from KennethTrecy's personal configuration
+root: true
+parserOptions:
+  parser: "@typescript-eslint/parser"
+  ecmaVersion: 2020
+  sourceType: "module"
+  ecmaFeatures:
+    jsx: true
+env:
+  browser: true
+  es6: true
+  node: true
+  jest: true
+plugins: ["@typescript-eslint"]
+extends:
+  - "eslint:all"
+  - "plugin:@typescript-eslint/recommended"
+  - "plugin:vue/vue3-recommended"
+parser: "vue-eslint-parser"
+rules:
+  array-bracket-newline: ["error", "consistent"]
+  array-bracket-spacing: ["error", "always"]
+  array-element-newline: ["error", "consistent"]
+  arrow-parens: ["error", "as-needed", { "requireForBlockBody": false }]
+  brace-style: ["error", "1tbs", { "allowSingleLine": true }]
+  dot-location: ["error", "property"]
+  default-case: "warn"
+  class-methods-use-this: "off"
+  curly: ["error", "multi-line", "consistent"]
+  func-style: ["error", "declaration", { "allowArrowFunctions": true }]
+  func-names: "off"
+  function-call-argument-newline: ["error", "consistent"]
+  function-paren-newline: "off"
+  generator-star-spacing: ["error", "after"]
+  indent:
+    - "error"
+    - "tab"
+    -
+      SwitchCase: 1
+      CallExpression: { "arguments": "first" }
+      MemberExpression: 0
+  id-length: ["error", { "exceptions": ["i", "j", "k", "t"] }]
+  lines-around-comment:
+    - "warn"
+    -
+      allowClassStart: true
+      beforeBlockComment: false
+  lines-between-class-members: ["error", "always", {"exceptAfterSingleLine": true }]
+  max-len:
+    - "error"
+    - { "code": 100, "tabWidth": 3 }
+  max-lines:
+    - "warn"
+    -
+      max: 400
+      skipBlankLines: true
+      skipComments: true
+  max-lines-per-function: [ "off" ]
+  max-classes-per-file: ["error", 2]
+  max-params: ["error", 6]
+  max-statements: "off"
+  multiline-ternary: ["error", "always-multiline"]
+  new-cap:
+  - "error"
+    - { "capIsNewExceptions": ["Selector"] }
+  newline-per-chained-call: "off"
+  no-alert: "off"
+  no-duplicate-imports: "warn"
+  no-empty-function: ["error", { "allow": ["arrowFunctions"] }]
+  no-console: "off"
+  no-underscore-dangle: "off"
+  no-lonely-if: "error"
+  no-tabs: ["error", { "allowIndentationTabs": true }]
+  no-ternary: "off"
+  no-throw-literal: "warn"
+  no-plusplus: "off"
+  no-unmodified-loop-condition: "off"
+  no-unused-vars: "off"
+  no-use-before-define: "warn"
+  no-useless-constructor: "warn"
+  no-undef: "warn"
+  no-lone-blocks: "off"
+  no-magic-numbers:
+    - "warn"
+  no-mixed-operators: "off"
+  no-return-await: "off"
+  no-warning-comments: "off"
+  nonblock-statement-body-position:
+    - "error"
+    - "beside"
+    -
+      overrides:
+        if: "any"
+  object-curly-spacing: ["error", "always"]
+  one-var: ["error", "never"]
+  operator-linebreak: ["error", "before"]
+  padded-blocks: ["error", "never"]
+  prefer-named-capture-group: "off"
+  semi: [ "error", "never" ]
+  space-before-function-paren: ["error", "never"]
+  sort-imports: "off"
+  sort-keys: "off"
+  quotes:
+    - "error"
+    - "double"
+    - { "avoidEscape": true }
+  vue/html-indent:
+    - "error"
+    - "tab"
+    -
+      attribute: 1
+      baseIndent: 1
+      closeBracket: 0
+      alignAttributesVertically: true
+      ignores: []
+  vue/max-attributes-per-line:
+    - "error"
+    -
+      singleline:
+        max: 2
+      multiline:
+        max: 1
+  vue/html-closing-bracket-newline:
+    - "error"
+    -
+      singleline: "never"
+      multiline: "never"
+  vue/html-closing-bracket-spacing:
+    - "error"
+    -
+      startTag: "never"
+      endTag: "never"
+      selfClosingTag: "never"
+  vue/component-tags-order:
+    - "error"
+    -
+      order:
+        - "template"
+        - "style"
+        - "script"
+  vue/sort-keys:
+    - "warn"
+    - "asc"
+    -
+      caseSensitive: true
+      ignoreChildrenOf: ["methods"]
+      ignoreGrandchildrenOf: ["directives", "inject", "watch"]
+      minKeys: 2
+      natural: false
+  vue/html-self-closing:
+    - "error"
+    -
+      html:
+        void: "always"
+        normal: "never"
+        component: "always"
+      svg: "always"
+      math: "always"
+  vue/no-setup-props-destructure: "off"
+  "@typescript-eslint/ban-ts-comment": "off"
+  "@typescript-eslint/no-explicit-any": "off"
+  "@typescript-eslint/no-non-null-assertion": "warn"
+  "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^unused", "varsIgnorePattern": "^unused" } ]

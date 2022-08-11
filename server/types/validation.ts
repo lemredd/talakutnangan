@@ -1,9 +1,11 @@
-import type { Pipe } from "$/types/database"
+import type { Pipe as BasePipe } from "$/types/database"
 import type { BaseManagerClass } from "!/types/independent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
 export interface BooleanConstraints { boolean?: { loose: boolean } }
+
+export interface IntegerConstraints { integer?: { mustCast: boolean } }
 
 export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
 
@@ -41,12 +43,6 @@ export interface UniqueRuleConstraints extends ManagerBasedRuleConstraints {
 	}
 }
 
-export interface PresentRuleConstraints extends ManagerBasedRuleConstraints {
-	present: {
-		IDPath: string
-	}
-}
-
 export interface AcronymRuleConstraints {
 	acronym: {
 		spelledOutPath: string
@@ -66,6 +62,7 @@ export interface BufferRuleConstraints {
 export type RuleContraints = Partial<
 	& NullableConstraints
 	& BooleanConstraints
+	& IntegerConstraints
 	& LengthConstraints
 	& RangeConstraints
 	& SameRuleConstraints
@@ -74,7 +71,6 @@ export type RuleContraints = Partial<
 	& ObjectRuleConstraints
 	& ManagerBasedRuleConstraints
 	& UniqueRuleConstraints
-	& PresentRuleConstraints
 	& AcronymRuleConstraints
 	& BufferRuleConstraints
 	& RegexRuleConstraints
@@ -83,7 +79,7 @@ export type RuleContraints = Partial<
 /**
  * Shape of validation constraints
  */
- export interface ValidationConstraints<T = any> extends RuleContraints {
+export interface ValidationConstraints<T = any> extends RuleContraints {
 	request: T,
 	source: any,
 	field: string
@@ -99,10 +95,15 @@ export interface ValidationState {
 }
 
 /**
+ * Shape of validation pipes
+ */
+export type Pipe = BasePipe<Promise<ValidationState>, ValidationConstraints>
+
+/**
  * Shape of validation rules
  */
 export interface Rules {
-	pipes: Pipe<Promise<ValidationState>, ValidationConstraints>[],
+	pipes: Pipe[],
 	constraints?: RuleContraints
 }
 
@@ -111,13 +112,4 @@ export interface Rules {
  */
 export interface FieldRules {
 	[key:string]: Rules
-}
-
-/**
- * Shape of validation constraints that are not part of main info.
- *
- * They are usually used internally.
- */
-export interface MetaValidationConstraints {
-	transformer?: Function
 }

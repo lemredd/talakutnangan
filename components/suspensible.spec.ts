@@ -9,21 +9,21 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
 describe("UI Component: Suspensible", () => {
-	it("Should load asynchronous resource", async () => {
+	it("Should load asynchronous resource", async() => {
 		const sampleResource = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-		.serializedOne()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.serializedOne()
 
 		fetchMock.mockResponseOnce(JSON.stringify({
-			data: sampleResource
-		}), { status: RequestEnvironment.status.OK })
+			"data": sampleResource
+		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new RoleFetcher()
 		const response = await fetcher.read(sampleResource.data.id)
 
 		const wrapper = mount(Suspensible, {
-			props: {
-				isLoaded: response.body.data !== null
+			"props": {
+				"isLoaded": response.body.data !== null
 			}
 		})
 

@@ -2,11 +2,11 @@ import { mount } from "@vue/test-utils"
 import Select from "@/fields/dropdown_select.vue"
 
 describe("Component/Fields: Select", () => {
-	it("should emit custom event", async () => {
+	it("should emit custom event", async() => {
 		const wrapper = mount(Select, {
-			props: {
-				label: "Sample Select",
-				options: [1,2,3]
+			"props": {
+				"label": "Sample Select",
+				"options": [ 1, 2, 3 ]
 			}
 		})
 
@@ -18,19 +18,19 @@ describe("Component/Fields: Select", () => {
 	})
 
 	it("should identify initial value", () => {
-		const options = [1,2,3]
+		const options = [ 1, 2, 3 ]
 		const wrapper = mount(Select, {
-			props: {
-				label: "Sample Select",
+			"props": {
+				"label": "Sample Select",
 				options,
-				initialValue: options[1]
+				"initialValue": options[1]
 			}
 		})
 
-		const select = wrapper.find("select")
-		const identifiedInitialValue = (select.getRootNodes()[0] as HTMLSelectElement).value
-		const givenInitialValue = wrapper.props().initialValue
+		const select = wrapper.find("select").getRootNodes()[0] as HTMLSelectElement
+		const identifiedInitialValue = select.value
 
-		expect(+identifiedInitialValue).toEqual(+givenInitialValue)
+		const givenInitialValue = wrapper.props().initialValue
+		expect(Number(identifiedInitialValue)).toEqual(Number(givenInitialValue))
 	})
 })

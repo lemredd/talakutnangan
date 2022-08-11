@@ -25,11 +25,11 @@ export default abstract class Factory<
 	U extends ResourceIdentifier,
 	V extends Attributes,
 	W extends Resource<U, V>,
-	X extends DeserializedResource<U, V>,
+	X extends DeserializedResource<string, U, V>,
 	Y extends ResourceDocument<U, V, W>,
 	Z extends ResourceListDocument<U, V, W>,
-	A extends DeserializedResourceDocument<U, V, X>,
-	B extends DeserializedResourceListDocument<U, V, X>,
+	A extends DeserializedResourceDocument<string, U, V, X>,
+	B extends DeserializedResourceListDocument<string, U, V, X>,
 	C = void
 > {
 	abstract get model(): ModelCtor<T>
@@ -43,17 +43,19 @@ export default abstract class Factory<
 	}
 
 	async insertOne(): Promise<T> {
-		return await this.model.create(await this.generate())
+		const model = await this.model.create(await this.generate())
+		return model
 	}
 
 	async generateMany(count: number): MultipleGeneratedData<T> {
 		const generatedData = []
 
-		for(let i = 0; i < count; i++) {
+		for (let i = 0; i < count; i++) {
 			generatedData.push(this.generate())
 		}
 
-		return await Promise.all(generatedData)
+		const model = await Promise.all(generatedData)
+		return model
 	}
 
 	async makeMany(count: number): Promise<T[]> {
@@ -65,7 +67,8 @@ export default abstract class Factory<
 	async insertMany(count: number): Promise<T[]> {
 		const generatedMultipleData = await this.generateMany(count)
 
-		return await this.model.bulkCreate(generatedMultipleData)
+		const model = await this.model.bulkCreate(generatedMultipleData)
+		return model
 	}
 
 	async serializedOne(options: GeneralObject = {}): Promise<Y> {

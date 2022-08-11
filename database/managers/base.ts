@@ -79,15 +79,14 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: number,
-		constraints: Pick<V, "filter"> = ({} as Pick<V, "filter">),
+		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
 			{
 				// @ts-ignore
-				if (constraints.filter === undefined) constraints.filter = {}
-				if (constraints.filter.existence === undefined)
-					constraints.filter.existence = "exists"
+				if (!constraints.filter) constraints.filter = {}
+				if (!constraints.filter.existence) constraints.filter.existence = "exists"
 			}
 
 			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
@@ -95,7 +94,7 @@ export default abstract class Manager<
 			Log.success("manager", "done searching for a model using ID")
 
 			return foundModel
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -120,9 +119,13 @@ export default abstract class Manager<
 			if (cachedModel === null) {
 				const condition = new Condition()
 				condition.equal(columnName, value)
-				const whereOptions: FindOptions<T> = { where: condition.build() }
+				const whereOptions: FindOptions<T> = { "where": condition.build() }
 
-				const findOptions = runThroughPipeline(whereOptions, constraints, this.singleReadPipeline)
+				const findOptions = runThroughPipeline(
+					whereOptions,
+					constraints,
+					this.singleReadPipeline
+				)
 
 				const model = await this.model.findOne({
 					...findOptions,
@@ -141,7 +144,7 @@ export default abstract class Manager<
 			Log.success("manager", "used cached serialized model")
 
 			return cachedModel
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -154,7 +157,7 @@ export default abstract class Manager<
 				this.listPipeline
 			)
 
-			const { count, rows } = await this.model.findAndCountAll({
+			const { rows } = await this.model.findAndCountAll({
 				...options,
 				...this.transaction.transactionObject
 			})
@@ -162,7 +165,7 @@ export default abstract class Manager<
 			Log.success("manager", "done listing models according to constraints")
 
 			return this.serialize(rows, transformerOptions)
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -177,7 +180,7 @@ export default abstract class Manager<
 			Log.success("manager", "done creating a model")
 
 			return this.serialize(model, transformerOptions)
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -185,14 +188,14 @@ export default abstract class Manager<
 	async update(id: number, details: U & Attributes<T>): Promise<number> {
 		try {
 			const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
-				where: { id },
+				"where": { id },
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done updating a model")
 
 			return affectedCount
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -200,14 +203,14 @@ export default abstract class Manager<
 	async archive(id: number): Promise<number> {
 		try {
 			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
-				where: { id },
+				"where": { id },
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done archiving a model")
 
 			return destroyCount
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -215,14 +218,14 @@ export default abstract class Manager<
 	async archiveBatch(IDs: number[]): Promise<number> {
 		try {
 			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
-				where: { id: IDs },
+				"where": { "id": IDs },
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done archiving models")
 
 			return destroyCount
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -230,12 +233,12 @@ export default abstract class Manager<
 	async restore(id: number): Promise<void> {
 		try {
 			await this.model.restore(<RestoreOptions<T>>{
-				where: { id },
+				"where": { id },
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done restoring a model")
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
@@ -243,28 +246,28 @@ export default abstract class Manager<
 	async restoreBatch(IDs: number[]): Promise<void> {
 		try {
 			await this.model.restore(<RestoreOptions<T>>{
-				where: { id: IDs },
+				"where": { "id": IDs },
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done restoring models")
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
 
 	get sortableColumns(): string[] {
 		return this.exposableColumns
-			.flatMap(column => [ column, `-${column}` ])
-			.sort()
+		.flatMap(column => [ column, `-${column}` ])
+		.sort()
 	}
 
 	protected get exposableColumns(): string[] {
-		const attributeInfo = (this.model.getAttributes() as GeneralObject)
+		const attributeInfo = this.model.getAttributes() as GeneralObject
 		const attributeNames = []
 
 		for (const name in attributeInfo) {
-			if (Object.prototype.hasOwnProperty.call(attributeInfo, name)) {
+			if (Object.hasOwn(attributeInfo, name)) {
 				attributeNames.push(name)
 			}
 		}
@@ -272,25 +275,25 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<U = Serializable>(
+	protected serialize<X = Serializable>(
 		models: T|T[]|null,
 		options: W = {} as W,
 		transformer: Transformer<T, W> = this.transformer
-	): U {
+	): X {
 		return Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
-		) as unknown as U
+		) as unknown as X
 	}
 
 	protected makeBaseError(error: any): BaseError {
 		if (error instanceof BaseError) {
 			return error
 		} else if (error instanceof Error && this.isNotOnProduction) {
-			return new DatabaseError(error.message+` (Stack trace: ${error.stack}`)
-		} else {
-			return new DatabaseError()
+			return new DatabaseError(`${error.message} (Stack trace: ${error.stack}`)
 		}
+
+		return new DatabaseError()
 	}
 }

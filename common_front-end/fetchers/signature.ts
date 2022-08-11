@@ -13,10 +13,10 @@ import type {
 } from "$/types/documents/signature"
 import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
-export default class SignatureFetcher extends Fetcher<
+export default class SignatureFetcher extends BaseFetcher<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource,
@@ -36,7 +36,7 @@ export default class SignatureFetcher extends Fetcher<
 		super(SignatureFetcher.basePath, SignatureFetcher.type)
 	}
 
-	async renew(userID: number, details: FormData): Promise<Response<
+	async renew(userID: string, details: FormData): Promise<Response<
 		SignatureResourceIdentifier,
 		SignatureAttributes,
 		SignatureResource,
@@ -44,7 +44,7 @@ export default class SignatureFetcher extends Fetcher<
 		DeserializedSignatureDocument
 	>> {
 		const pathTemplate = `user/:id/relationships/${this.type}`
-		const path = specializedPath(pathTemplate, { id: userID })
+		const path = specializedPath(pathTemplate, { "id": userID })
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(

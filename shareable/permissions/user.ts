@@ -38,28 +38,36 @@ export default class extends PermissionGroup<UserFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
-			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
+			[ "view", { "flag": VIEW,
+				"permissionDependencies": [] } ],
+			[ "create", { "flag": CREATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "update", { "flag": UPDATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ] } ],
 
-			[ "readOwnScope",        { flag: READ_OWN_SCOPE, permissionDependencies: [ ] } ],
-			[ "readDepartmentScope", { flag: READ_DEPARTMENT_SCOPE, permissionDependencies: [ ] } ],
-			[ "readOverallScope",    { flag: READ_OVERALL_SCOPE, permissionDependencies: [ ] } ],
-			[ "writeOwnScope",       {
-				flag: WRITE_OWN_SCOPE,
-				permissionDependencies: [ "readOwnScope" ]
+			[ "readOwnScope", { "flag": READ_OWN_SCOPE,
+				"permissionDependencies": [ ] } ],
+			[ "readDepartmentScope", { "flag": READ_DEPARTMENT_SCOPE,
+				"permissionDependencies": [ ] } ],
+			[ "readOverallScope", { "flag": READ_OVERALL_SCOPE,
+				"permissionDependencies": [ ] } ],
+			[ "writeOwnScope", {
+				"flag": WRITE_OWN_SCOPE,
+				"permissionDependencies": [ "readOwnScope" ]
 			} ],
 			[ "writeDepartmentScope", {
-				flag: WRITE_DEPARTMENT_SCOPE,
-				permissionDependencies: [ "readDepartmentScope" ]
+				"flag": WRITE_DEPARTMENT_SCOPE,
+				"permissionDependencies": [ "readDepartmentScope" ]
 			} ],
 			[ "writeOverallScope", {
-				flag: WRITE_OVERALL_SCOPE,
-				permissionDependencies: [ "readOverallScope" ]
+				"flag": WRITE_OVERALL_SCOPE,
+				"permissionDependencies": [ "readOverallScope" ]
 			} ],
 
-			[ "resetPassword", { flag: 0x0100, permissionDependencies: [ "update" ] } ],
+			[ "resetPassword", { "flag": 0x0100,
+				"permissionDependencies": [ "update" ] } ]
 		])
 	}
 }

@@ -1,5 +1,5 @@
-import type { BaseManagerClass } from "!/types/independent"
 import type { FieldRules } from "!/types/validation"
+import type { BaseManagerClass } from "!/types/independent"
 
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
@@ -7,65 +7,53 @@ import integer from "!/validators/base/integer"
 import nullable from "!/validators/base/nullable"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import makeFilterRules from "!/rule_sets/make_filter"
 import stringArray from "!/validators/hybrid/string_array"
 
 export default function(
-	className: BaseManagerClass,
+	ClassName: BaseManagerClass,
 	extraFilters: FieldRules,
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return {
-		filter: {
-			pipes: [ nullable, object ],
-			constraints: {
-				nullable: { defaultValue: {} },
-				object: {
-					...extraFilters,
-					existence: {
-						pipes: [ nullable, string, oneOf ],
-						constraints: {
-							nullable: { defaultValue: "exists" },
-							oneOf: { values: [ "*", "exists", "archived" ] }
-						}
+		...makeFilterRules(extraFilters),
+		"page": {
+			"constraints": {
+				"nullable": { "defaultValue": {} },
+				"object": {
+					"limit": {
+						"constraints": {
+							"integer": { "mustCast": true },
+							"nullable": { "defaultValue": process.env.DATABASE_MAX_SELECT || 10 },
+							"range": { "minimum": 1 }
+						},
+						"pipes": [ nullable, integer, range ]
+					},
+					"offset": {
+						"constraints": {
+							"integer": { "mustCast": true },
+							"nullable": { "defaultValue": 0 },
+							"range": { "minimum": 0 }
+						},
+						"pipes": [ nullable, integer, range ]
 					}
 				}
-			}
+			},
+			"pipes": [ nullable, object ]
 		},
-		sort: {
-			pipes: [ nullable, stringArray ],
-			constraints: {
-				nullable: { defaultValue: "id" },
-				array: {
-					pipes: [ string, oneOf ],
-					constraints: {
-						oneOf: {
-							values: new className().sortableColumns
-						}
-					}
-				}
-			}
-		},
-		page: {
-			pipes: [ nullable, object ],
-			constraints: {
-				nullable: { defaultValue: {} },
-				object: {
-					offset: {
-						pipes: [ nullable, integer, range ],
-						constraints: {
-							nullable: { defaultValue: 0 },
-							range: { minimum: 0 }
+		"sort": {
+			"constraints": {
+				"array": {
+					"constraints": {
+						"oneOf": {
+							"values": new ClassName().sortableColumns
 						}
 					},
-					limit: {
-						pipes: [ nullable, integer, range ],
-						constraints: {
-							nullable: { defaultValue: process.env.DATABASE_MAX_SELECT || 10 },
-							range: { minimum: 1 }
-						}
-					}
-				}
-			}
+					"pipes": [ string, oneOf ]
+				},
+				"nullable": { "defaultValue": "id" }
+			},
+			"pipes": [ nullable, stringArray ]
 		},
 		...extraQueries
 	}

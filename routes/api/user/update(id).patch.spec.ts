@@ -20,7 +20,7 @@ describe("Controller: PATCH /api/user/:id", () => {
 			body: {
 				data: {
 					type: "user",
-					id: user.id,
+					id: String(user.id),
 					attributes: {
 						name: newUser.name,
 						email: newUser.email,
@@ -46,7 +46,7 @@ describe("Controller: PATCH /api/user/:id", () => {
 			body: {
 				data: {
 					type: "user",
-					id: user.id,
+					id: String(user.id),
 					attributes: {
 						name: newUser.name,
 						email: "random",

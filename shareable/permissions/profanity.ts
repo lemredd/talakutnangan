@@ -33,15 +33,20 @@ export default class extends PermissionGroup<ProfanityFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
-			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
+			[ "view", { "flag": VIEW,
+				"permissionDependencies": [] } ],
+			[ "create", { "flag": CREATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "update", { "flag": UPDATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ] } ],
 
-			[ "readOverallScope",     { flag: READ_OVERALL_SCOPE, permissionDependencies: [ ] } ],
+			[ "readOverallScope", { "flag": READ_OVERALL_SCOPE,
+				"permissionDependencies": [ ] } ],
 			[ "writeOverallScope", {
-				flag: WRITE_OVERALL_SCOPE,
-				permissionDependencies: [ "readOverallScope" ]
+				"flag": WRITE_OVERALL_SCOPE,
+				"permissionDependencies": [ "readOverallScope" ]
 			} ]
 		])
 	}

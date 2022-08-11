@@ -11,7 +11,6 @@
 	</div>
 	<Suspensible :is-loaded="!!resource.length">
 		<slot>
-
 		</slot>
 	</Suspensible>
 </template>
@@ -46,10 +45,12 @@ const { resource } = defineProps<{
 	resource: PossibleResources[]
 }>()
 
+function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
+	const deserializedResourceItem = resourceItem as DeserializedUserResource
+	return deserializedResourceItem.type === "user"
+}
+
 const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
 const managerKind = inject("managerKind") as Manager
 
-function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
-	return (resourceItem as DeserializedUserResource).type === "user"
-}
 </script>

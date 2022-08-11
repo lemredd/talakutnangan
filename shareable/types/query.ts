@@ -4,21 +4,21 @@ import type { Serializable } from "$/types/general"
 /**
  * Shape of expected common filter options
  */
- export type CommonFilter = ExistenceFilter
+export type CommonFilter = ExistenceFilter
 
- export interface ExistenceFilter extends Serializable {
+export interface ExistenceFilter extends Serializable {
 	 filter: {
 		 existence: "exists" | "archived" | "*"
 	 }
  }
 
- export interface SlugFilter extends Serializable {
+export interface SlugFilter extends Serializable {
 	 filter: {
 		 slug: string
 	 }
  }
 
- export interface DepartmentFilter extends Serializable {
+export interface DepartmentFilter extends Serializable {
 	 filter: {
 		/**
 		 * ID of the department to filter on
@@ -27,7 +27,7 @@ import type { Serializable } from "$/types/general"
 	 }
  }
 
- export interface RoleFilter extends Serializable {
+export interface RoleFilter extends Serializable {
 	 filter: {
 		/**
 		 * ID of the role to filter on
@@ -36,13 +36,13 @@ import type { Serializable } from "$/types/general"
 	 }
  }
 
- export interface KindFilter extends Serializable {
+export interface KindFilter extends Serializable {
 	 filter: {
 		 kind: "*"|UserKind
 	 }
  }
 
- export interface CriteriaFilter extends Serializable {
+export interface CriteriaFilter extends Serializable {
 	 filter: {
 		 criteria: "*"|"incomplete"|"verified"|"unverified"
 	 }
@@ -61,22 +61,22 @@ import type { Serializable } from "$/types/general"
 	 sort: string[]
  }
 
- /**
-  * Expected shape of the common page options
-  */
- export interface Page {
+/**
+ * Expected shape of the common page options
+ */
+export interface Page {
 	 page: {
 		 offset: number,
 		 limit: number
 	 }
  }
 
- export type CommonQueryParameters =
+export type CommonQueryParameters =
 	 & Page
 	 & Sort
 	 & CommonFilter
 
- export type UserQueryParameters =
+export type UserQueryParameters =
 	& CommonQueryParameters
 	& DepartmentFilter
 	& RoleFilter

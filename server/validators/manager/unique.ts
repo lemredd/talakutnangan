@@ -36,7 +36,7 @@ export default async function(
 	const foundID = (foundModel.data as any)?.id
 	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
 
-	if (foundModel.data === null || foundID === id) {
+	if (foundModel.data === null || String(foundID) === String(id)) {
 		return state
 	} else {
 		throw {

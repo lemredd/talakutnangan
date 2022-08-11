@@ -1,4 +1,3 @@
-import type { Request } from "!/types/dependent"
 import type {
 	ValidationState,
 	ValidationConstraints,
@@ -16,29 +15,31 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.manager === undefined) {
+	if (!constraints.manager) {
 		throw makeDeveloperError(constraints.field)
 	}
 
+	// eslint-disable-next-line new-cap
 	const manager = new constraints.manager.className(
 		constraints.request.transaction,
 		constraints.request.cache
 	)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
-		filter: {
-			existence: "*"
+		"filter": {
+			"existence": "*"
 		}
 	})
 
 	if (foundModel.data === null) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" does exists in the database".`
-		}
+	}
+	throw {
+		"field": constraints.field,
+		"messageMaker": (
+			field: string,
+			value: string
+		) => `The ${value} in field "${field}" does exists in the database".`
 	}
 }

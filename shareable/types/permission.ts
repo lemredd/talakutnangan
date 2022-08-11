@@ -14,32 +14,34 @@ export type PermissionMap<T> = Map<T, PermissionInfo<T>>
 /**
  * Array of permissions that dictate the CRUD operations
  */
- export const rawOperationPermissions = [ "view", "create", "update", "archiveAndRestore" ] as const
+export const rawOperationPermissions = [ "view", "create", "update", "archiveAndRestore" ] as const
 
- /**
-  * Union of raw operation permissions.
-  */
- export type OperationPermission = typeof rawOperationPermissions[number]
+/**
+ * Union of raw operation permissions.
+ */
+export type OperationPermission = typeof rawOperationPermissions[number]
 
- /**
-  * Array of permissions that dictate the administration level of read and write operations.
-  */
- export const rawLevelPermissions = [
+/**
+ * Array of permissions that dictate the administration level of read and write operations.
+ */
+export const rawLevelPermissions = [
 	 "readOwnScope",
 	 "readDepartmentScope",
 	 "readOverallScope",
 	 "writeOwnScope",
 	 "writeDepartmentScope",
 	 "writeOverallScope"
- ] as const
+] as const
 
- /**
-  * Union of raw level permissions.
-  */
- export type LevelPermission = typeof rawLevelPermissions[number]
+/**
+ * Union of raw level permissions.
+ */
+export type LevelPermission = typeof rawLevelPermissions[number]
 
- // Used to set the flag of a common permission prventing errors in the future.
- // Special flag(s) of a permission group should have flags > 0x00FF or 0b1100_0000.
+/*
+ * Used to set the flag of a common permission prventing errors in the future.
+ * Special flag(s) of a permission group should have flags > 0x00FF or 0b1100_0000.
+ */
 export const VIEW							= 0x0001
 export const CREATE						= 0x0002
 export const UPDATE						= 0x0004

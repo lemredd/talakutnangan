@@ -3,53 +3,40 @@ import type { FieldRules } from "!/types/validation"
 
 import Validation from "!/bases/validation"
 import object from "!/validators/base/object"
+import makeIDRules from "!/rule_sets/make_id"
 import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
 import required from "!/validators/base/required"
+import makeDataDocumentRules from "!/rule_sets/make_data_document"
 
 export default class extends Validation {
 	constructor() {
-		super((request: Request): FieldRules => ({
-			params: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						id: {
-							pipes: [ required, integer ],
-							constraints: {}
-						}
-					}
-				}
-			},
-			body: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						data: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									id: {
-										pipes: [ required, integer, same ],
-										constraints: {
-											same: {
-												pointer: "params.id"
-											}
-										}
-									}
-								}
+		super((unusedRequest: Request): FieldRules => ({
+			"body": {
+				"constraints": {
+					"object": makeDataDocumentRules(true, makeIDRules(true, "id", {
+						"constraints": {
+							"same": {
+								"pointer": "params.id"
 							}
-						}
-					}
-				}
+						},
+						"pipes": [ same ]
+					}))
+				},
+				"pipes": [ required, object ]
+			},
+			"params": {
+				"constraints": {
+					"object": makeIDRules()
+				},
+				"pipes": [ required, object ]
 			}
 		}))
 	}
 
 	getSubject(request: Request): object {
 		return {
-			params: request.params,
-			body: request.body
+			"body": request.body,
+			"params": request.params
 		}
 	}
 }
