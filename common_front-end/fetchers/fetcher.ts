@@ -62,7 +62,7 @@ export default class Fetcher<
 		)
 	}
 
-	read(id: number): Promise<Response<T, U, V, W, Z>> {
+	read(id: string): Promise<Response<T, U, V, W, Z>> {
 		const path = specializedPath(`${this.type}/:id`, { id })
 
 		return this.handleResponse(
@@ -82,7 +82,7 @@ export default class Fetcher<
 		)
 	}
 
-	update(id: number, attributes: U): Promise<Response<T, U, V, W, null>> {
+	update(id: string, attributes: U): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}/:id`, { id }, {
 				"data": {
@@ -94,7 +94,7 @@ export default class Fetcher<
 		)
 	}
 
-	archive(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
+	archive(IDs: string[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -106,7 +106,7 @@ export default class Fetcher<
 		)
 	}
 
-	restore(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
+	restore(IDs: string[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -128,7 +128,7 @@ export default class Fetcher<
 
 	patchJSON(
 		pathTemplate: string,
-		IDs: { [key:string]: number },
+		IDs: { [key:string]: string },
 		data: Serializable
 	): Promise<Response<T, U, V, W, X|Y|B|null>> {
 		const path = specializedPath(pathTemplate, IDs)
@@ -138,7 +138,7 @@ export default class Fetcher<
 
 	deleteJSON(
 		pathTemplate: string,
-		IDs: { [key:string]: number },
+		IDs: { [key:string]: string },
 		data: Serializable
 	): Promise<Response<T, U, V, W, X|Y|B|null>> {
 		const path = specializedPath(pathTemplate, IDs)

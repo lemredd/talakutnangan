@@ -86,7 +86,7 @@ describe("Communicator: Fetcher", () => {
 		)
 
 		const fetcher = new Fetcher("/api", "user")
-		const response = await fetcher.update(1, { "name": "A" })
+		const response = await fetcher.update("1", { "name": "A" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -99,7 +99,7 @@ describe("Communicator: Fetcher", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
 				"type": "user",
-				"id": 1,
+				"id": "1",
 				"attributes": {
 					"name": "A"
 				}
@@ -119,7 +119,7 @@ describe("Communicator: Fetcher", () => {
 		)
 
 		const fetcher = new Fetcher("/api", "user")
-		const response = await fetcher.archive([ 1 ])
+		const response = await fetcher.archive([ "1" ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -133,7 +133,7 @@ describe("Communicator: Fetcher", () => {
 			"data": [
 				{
 					"type": "user",
-					"id": 1
+					"id": "1"
 				}
 			]
 		})
@@ -151,7 +151,7 @@ describe("Communicator: Fetcher", () => {
 		)
 
 		const fetcher = new Fetcher("/api", "user")
-		const response = await fetcher.restore([ 2 ])
+		const response = await fetcher.restore([ "2" ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -163,8 +163,10 @@ describe("Communicator: Fetcher", () => {
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
-				{ "type": "user",
-					"id": 2 }
+				{
+					"type": "user",
+					"id": "2"
+				}
 			]
 		})
 	})
@@ -219,7 +221,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
-		const response = await fetcher.patchJSON("sample/:id", { "id": 1 }, { "hello": "world" })
+		const response = await fetcher.patchJSON("sample/:id", { "id": "1" }, { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -241,7 +243,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
-		const response = await fetcher.deleteJSON("sample/:id", { "id": 1 }, { "hello": "world" })
+		const response = await fetcher.deleteJSON("sample/:id", { "id": "1" }, { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
