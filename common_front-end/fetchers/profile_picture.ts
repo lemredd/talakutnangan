@@ -36,7 +36,7 @@ export default class ProfilePictureFetcher extends Fetcher<
 		super(ProfilePictureFetcher.basePath, ProfilePictureFetcher.type)
 	}
 
-	async createFile(userID: number, details: FormData): Promise<Response<
+	async createFile(userID: string, details: FormData): Promise<Response<
 		ProfilePictureResourceIdentifier,
 		ProfilePictureAttributes,
 		ProfilePictureResource,
@@ -44,8 +44,10 @@ export default class ProfilePictureFetcher extends Fetcher<
 		DeserializedProfilePictureDocument
 	>> {
 		const pathTemplate = "user/:id/relationships/:type"
-		const path = specializedPath(pathTemplate, { "id": userID,
-			"type": this.type })
+		const path = specializedPath(pathTemplate, {
+			"id": userID,
+			"type": this.type
+		})
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(
@@ -59,7 +61,7 @@ export default class ProfilePictureFetcher extends Fetcher<
 		>
 	}
 
-	async updateFile(profilePictureID: number, details: FormData): Promise<Response<
+	async updateFile(profilePictureID: string, details: FormData): Promise<Response<
 		ProfilePictureResourceIdentifier,
 		ProfilePictureAttributes,
 		ProfilePictureResource,
@@ -67,8 +69,10 @@ export default class ProfilePictureFetcher extends Fetcher<
 		DeserializedProfilePictureDocument
 	>> {
 		const pathTemplate = ":type/:id"
-		const path = specializedPath(pathTemplate, { "id": profilePictureID,
-			"type": this.type })
+		const path = specializedPath(pathTemplate, {
+			"id": profilePictureID,
+			"type": this.type
+		})
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(
