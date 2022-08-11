@@ -52,18 +52,19 @@ export default class extends BaseManager<Department, DepartmentAttributes, Commo
 						.build()
 					}
 				)
-			) as unknown as [ { id: string, count: string }[] ]
+			) as unknown as [ { id: number, count: string }[] ]
 
 			const identifierObjects: DepartmentResourceIdentifier[] = []
 			counts.forEach(countInfo => {
 				identifierObjects.push({
 					"type": "department",
-					"id": countInfo.id,
+					"id": String(countInfo.id),
 					"meta": {
 						"userCount": Number(countInfo.count)
 					}
 				})
 			})
+
 			return { "data": identifierObjects }
 		} catch (error) {
 			throw this.makeBaseError(error)

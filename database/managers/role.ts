@@ -58,18 +58,19 @@ export default class extends BaseManager<Role, RoleAttributes, RoleQueryParamete
 						.build()
 					}
 				)
-			) as unknown as [ { id: string, count: string }[] ]
+			) as unknown as [ { id: number, count: string }[] ]
 
 			const identifierObjects: RoleResourceIdentifier[] = []
 			counts.forEach(countInfo => {
 				identifierObjects.push({
 					"type": "role",
-					"id": countInfo.id,
+					"id": String(countInfo.id),
 					"meta": {
 						"userCount": Number(countInfo.count)
 					}
 				})
 			})
+
 			return { "data": identifierObjects }
 		} catch (error) {
 			throw this.makeBaseError(error)
