@@ -11,9 +11,9 @@ import type {
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 } from "$/types/documents/user"
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 
-export default class UserFetcher extends Fetcher<
+export default class UserFetcher extends BaseFetcher<
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource,

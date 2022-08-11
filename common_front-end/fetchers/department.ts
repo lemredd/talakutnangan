@@ -10,9 +10,9 @@ import type {
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 } from "$/types/documents/department"
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 
-export default class DepartmentFetcher extends Fetcher<
+export default class DepartmentFetcher extends BaseFetcher<
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
 	DepartmentResource,

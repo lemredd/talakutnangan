@@ -13,10 +13,10 @@ import type {
 } from "$/types/documents/profile_picture"
 import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
-export default class ProfilePictureFetcher extends Fetcher<
+export default class ProfilePictureFetcher extends BaseFetcher<
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes,
 	ProfilePictureResource,

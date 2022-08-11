@@ -13,10 +13,10 @@ import type {
 } from "$/types/documents/signature"
 import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
-export default class SignatureFetcher extends Fetcher<
+export default class SignatureFetcher extends BaseFetcher<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource,
