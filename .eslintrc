@@ -82,6 +82,7 @@ rules:
   no-magic-numbers:
     - "warn"
   no-mixed-operators: "off"
+  no-return-await: "off"
   no-warning-comments: "off"
   nonblock-statement-body-position:
     - "error"
