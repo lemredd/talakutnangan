@@ -25,7 +25,7 @@ describe("GET /api/role/count_users", () => {
 				data: [
 					{
 						type: "role",
-						id: adminRole.id
+						id: String(adminRole.id)
 					}
 				]
 			})
@@ -35,7 +35,7 @@ describe("GET /api/role/count_users", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.type", "role")
-		expect(response.body).toHaveProperty("data.0.id", adminRole.id)
+		expect(response.body).toHaveProperty("data.0.id", String(adminRole.id))
 		expect(response.body).toHaveProperty("data.0.meta.userCount", 1)
 		expect(response.body).not.toHaveProperty("data.1")
 	})
