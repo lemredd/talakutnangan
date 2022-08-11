@@ -8,7 +8,7 @@ import UserFactory from "~/factories/user"
 import deserialize from "$/helpers/deserialize"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 import DepartmentFactory from "~/factories/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
