@@ -69,6 +69,7 @@ rules:
   no-lonely-if: "error"
   no-tabs: ["error", { "allowIndentationTabs": true }]
   no-ternary: "off"
+  no-throw-literal: "warn"
   no-plusplus: "off"
   no-unmodified-loop-condition: "off"
   no-unused-vars: "off"
