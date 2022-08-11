@@ -23,7 +23,7 @@ export default function(
 				"object": {
 					"limit": {
 						"constraints": {
-							"integer": { "shouldCast": true },
+							"integer": { "mustCast": true },
 							"nullable": { "defaultValue": process.env.DATABASE_MAX_SELECT || 10 },
 							"range": { "minimum": 1 }
 						},
@@ -31,7 +31,7 @@ export default function(
 					},
 					"offset": {
 						"constraints": {
-							"integer": { "shouldCast": true },
+							"integer": { "mustCast": true },
 							"nullable": { "defaultValue": 0 },
 							"range": { "minimum": 0 }
 						},

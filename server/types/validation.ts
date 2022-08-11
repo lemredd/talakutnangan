@@ -5,7 +5,7 @@ export interface NullableConstraints { nullable?: { defaultValue: any } }
 
 export interface BooleanConstraints { boolean?: { loose: boolean } }
 
-export interface IntegerConstraints { integer?: { shouldCast: boolean } }
+export interface IntegerConstraints { integer?: { mustCast: boolean } }
 
 export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
 

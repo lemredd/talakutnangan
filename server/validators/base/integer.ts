@@ -18,7 +18,7 @@ export default async function(
 	const castedValue = Number(state.value)
 
 	if (Number.isInteger(castedValue)) {
-		if (constraints.integer && constraints.integer.shouldCast) {
+		if (constraints.integer && constraints.integer.mustCast) {
 			state.value = castedValue
 		}
 	} else {
