@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface StudentDetailResourceIdentifier extends ResourceIdentifier {
+export interface StudentDetailResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "student_detail"
 }
 
@@ -22,8 +23,10 @@ export type StudentDetailResource = Resource<
 	StudentDetailAttributes
 >
 
-export type DeserializedStudentDetailResource = DeserializedResource<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes
 >
 
@@ -39,14 +42,18 @@ export type StudentDetailListDocument = ResourceListDocument<
 	StudentDetailResource
 >
 
-export type DeserializedStudentDetailDocument = DeserializedResourceDocument<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes,
-	DeserializedStudentDetailResource
+	DeserializedStudentDetailResource<T>
 >
 
-export type DeserializedStudentDetailListDocument = DeserializedResourceListDocument<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes,
-	DeserializedStudentDetailResource
+	DeserializedStudentDetailResource<T>
 >

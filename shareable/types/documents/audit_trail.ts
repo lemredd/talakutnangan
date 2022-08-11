@@ -11,7 +11,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface AuditTrailResourceIdentifier extends ResourceIdentifier {
+export interface AuditTrailResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "audit_trail"
 }
 
@@ -25,8 +26,10 @@ export type AuditTrailResource = Resource<
 	AuditTrailAttributes
 >
 
-export interface DeserializedAuditTrailResource extends DeserializedResource<
-	AuditTrailResourceIdentifier,
+export interface DeserializedAuditTrailResource<T extends string|number = string>
+extends DeserializedResource<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes
 > {
 	user: DeserializedUserResource|null
@@ -44,14 +47,18 @@ export type AuditTrailListDocument = ResourceListDocument<
 	AuditTrailResource
 >
 
-export type DeserializedAuditTrailDocument = DeserializedResourceDocument<
-	AuditTrailResourceIdentifier,
+export type DeserializedAuditTrailDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes,
-	DeserializedAuditTrailResource
+	DeserializedAuditTrailResource<T>
 >
 
-export type DeserializedAuditTrailListDocument = DeserializedResourceListDocument<
-	AuditTrailResourceIdentifier,
+export type DeserializedAuditTrailListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes,
-	DeserializedAuditTrailResource
+	DeserializedAuditTrailResource<T>
 >

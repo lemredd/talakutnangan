@@ -10,66 +10,62 @@ import User from "%/models/user"
 import BaseManager from "%/managers/base"
 import trimRight from "$/helpers/trim_right"
 import Department from "%/models/department"
+import DatabaseError from "$!/errors/database"
 import Condition from "%/managers/helpers/condition"
 import DepartmentTransformer from "%/transformers/department"
 
-export default class  extends BaseManager<Department, DepartmentAttributes, CommonQueryParameters> {
+export default class extends BaseManager<Department, DepartmentAttributes, CommonQueryParameters> {
 	get model(): ModelCtor<Department> { return Department }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
 
 	async countUsers(departmentIDs: number[]): Promise<Serializable> {
 		try {
-			const [ counts, metadata ] = await Department.sequelize!.query(
-				// @ts-ignore
-				Department.sequelize.getQueryInterface().queryGenerator.selectQuery(
-					Department.tableName,
-					{
-						attributes: [
-							"id",
-							[
-								Department.sequelize!.literal(`(${
-									trimRight(
-										// @ts-ignore
-										User.sequelize.getQueryInterface().queryGenerator.selectQuery(
-											User.tableName,
-											{
-												attributes: [ User.sequelize!.fn("count", "*") ],
-												where: new Condition().equal(
-													"departmentID",
-													User.sequelize!.col(`${Department.tableName}.id`)
-												).build()
-											}
-										),
-										";"
-									)
-								})`),
-								"count"
-							]
-						],
-						where: new Condition().or(
-							...departmentIDs.map(departmentID => new Condition().equal("id", departmentID))
-						).build()
-					}
-				)
-			)
-
-			const identifierObjects: DepartmentResourceIdentifier[] = []
-
-			{
-				(counts as { id: number, count: number }[]).forEach((countInfo, i) => {
-					identifierObjects.push({
-						type: "department",
-						id: countInfo.id,
-						meta: {
-							userCount: +countInfo.count
-						}
-					})
-				})
+			if (!Department.sequelize || !User.sequelize) {
+				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
-			return { data: identifierObjects }
-		} catch(error) {
+			const subselectQuery = Department.sequelize.literal(`(${
+				trimRight(
+					// @ts-ignore
+					User.sequelize.getQueryInterface().queryGenerator.selectQuery(
+						User.tableName, {
+							"attributes": [ User.sequelize.fn("count", "*") ],
+							"where": new Condition().equal(
+								"departmentID",
+								User.sequelize.col(`${Department.tableName}.id`)
+							)
+							.build()
+						}
+					),
+					";"
+				)
+			})`)
+			const [ counts ] = await Department.sequelize.query(
+				// @ts-ignore
+				Department.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					Department.tableName, {
+						"attributes": [ "id", [ subselectQuery, "count" ] ],
+						"where": new Condition().or(
+							...departmentIDs.map(departmentID => new Condition().equal("id", departmentID))
+						)
+						.build()
+					}
+				)
+			) as unknown as [ { id: string, count: string }[] ]
+
+			const identifierObjects: DepartmentResourceIdentifier[] = []
+			counts.forEach(countInfo => {
+				identifierObjects.push({
+					"type": "department",
+					"id": countInfo.id,
+					"meta": {
+						"userCount": Number(countInfo.count)
+					}
+				})
+			})
+			return { "data": identifierObjects }
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}

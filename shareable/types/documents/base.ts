@@ -14,9 +14,13 @@ export type Resource<T extends ResourceIdentifier, U extends Attributes> = T & {
 	attributes: U
 }
 
-export type DeserializedResource<T extends ResourceIdentifier<number>, U extends Attributes> =
-	& T
+export type DeserializedResource<
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+> =
 	& U
+	& V
 
 export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Serializable {
 	data: T
@@ -45,16 +49,18 @@ export type ResourceListDocument<
 > = DataDocument<V[]>
 
 export type DeserializedResourceDocument<
-	T extends ResourceIdentifier<number>,
-	U extends Attributes,
-	V extends DeserializedResource<T, U>
-> = DataDocument<V>
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends DeserializedResource<T, U, V>
+> = DataDocument<W>
 
 export type DeserializedResourceListDocument<
-	T extends ResourceIdentifier<number>,
-	U extends Attributes,
-	V extends DeserializedResource<T, U>
-> = DataDocument<V[]>
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends DeserializedResource<T, U, V>
+> = DataDocument<W[]>
 
 export interface ErrorDocument {
 	errors: UnitError[]

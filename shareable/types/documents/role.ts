@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface RoleResourceIdentifier extends ResourceIdentifier {
+export interface RoleResourceIdentifier <T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "role",
 	meta?: {
 		userCount: number
@@ -32,8 +33,9 @@ export interface RoleAttributes extends Attributes {
 
 export type RoleResource = Resource<RoleResourceIdentifier, RoleAttributes>
 
-export type DeserializedRoleResource = DeserializedResource<
-	RoleResourceIdentifier,
+export type DeserializedRoleResource<T extends string|number = string> = DeserializedResource<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes
 >
 
@@ -49,14 +51,18 @@ export type RoleListDocument = ResourceListDocument<
 	RoleResource
 >
 
-export type DeserializedRoleDocument = DeserializedResourceDocument<
-	RoleResourceIdentifier,
+export type DeserializedRoleDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes,
-	DeserializedRoleResource
+	DeserializedRoleResource<T>
 >
 
-export type DeserializedRoleListDocument = DeserializedResourceListDocument<
-	RoleResourceIdentifier,
+export type DeserializedRoleListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes,
-	DeserializedRoleResource
+	DeserializedRoleResource<T>
 >

@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ProfilePictureResourceIdentifier extends ResourceIdentifier {
+export interface ProfilePictureResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "profile_picture",
 }
 
@@ -20,8 +21,10 @@ export interface ProfilePictureResource<T = string> extends Resource<
 	ProfilePictureAttributes<T>
 >, FileLikeResourceLinks {}
 
-export type DeserializedProfilePictureResource = DeserializedResource<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes
 >
 
@@ -37,14 +40,18 @@ export type ProfilePictureListDocument = ResourceListDocument<
 	ProfilePictureResource
 >
 
-export type DeserializedProfilePictureDocument = DeserializedResourceDocument<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes,
-	DeserializedProfilePictureResource
+	DeserializedProfilePictureResource<T>
 >
 
-export type DeserializedProfilePictureListDocument = DeserializedResourceListDocument<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes,
-	DeserializedProfilePictureResource
+	DeserializedProfilePictureResource<T>
 >

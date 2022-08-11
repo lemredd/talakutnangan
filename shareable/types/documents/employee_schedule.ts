@@ -10,7 +10,8 @@ import type {
 } from "$/types/documents/base"
 import type { Day } from "$/types/database"
 
-export interface EmployeeScheduleResourceIdentifier extends ResourceIdentifier {
+export interface EmployeeScheduleResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "employee_schedule"
 }
 
@@ -25,8 +26,10 @@ export type EmployeeScheduleResource = Resource<
 	EmployeeScheduleAttributes
 >
 
-export type DeserializedEmployeeScheduleResource = DeserializedResource<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes
 >
 
@@ -42,14 +45,18 @@ export type EmployeeScheduleListDocument = ResourceListDocument<
 	EmployeeScheduleResource
 >
 
-export type DeserializedEmployeeScheduleDocument = DeserializedResourceDocument<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes,
-	DeserializedEmployeeScheduleResource
+	DeserializedEmployeeScheduleResource<T>
 >
 
-export type DeserializedEmployeeScheduleListDocument = DeserializedResourceListDocument<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes,
-	DeserializedEmployeeScheduleResource
+	DeserializedEmployeeScheduleResource<T>
 >

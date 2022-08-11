@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface DepartmentResourceIdentifier extends ResourceIdentifier {
+export interface DepartmentResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "department",
 	meta?: {
 		userCount: number
@@ -27,8 +28,9 @@ export type DepartmentResource = Resource<
 	DepartmentAttributes
 >
 
-export type DeserializedDepartmentResource = DeserializedResource<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentResource<T extends string|number = string> = DeserializedResource<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes
 >
 
@@ -44,14 +46,18 @@ export type DepartmentListDocument = ResourceListDocument<
 	DepartmentResource
 >
 
-export type DeserializedDepartmentDocument = DeserializedResourceDocument<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes,
-	DeserializedDepartmentResource
+	DeserializedDepartmentResource<T>
 >
 
-export type DeserializedDepartmentListDocument = DeserializedResourceListDocument<
-	DepartmentResourceIdentifier,
+export type DeserializedDepartmentListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	DepartmentResourceIdentifier<T>,
 	DepartmentAttributes,
-	DeserializedDepartmentResource
+	DeserializedDepartmentResource<T>
 >
