@@ -8,6 +8,7 @@ import makeTypeRules from "!/rule_sets/make_type"
 export default function(
 	typeName: string,
 	attributes: FieldRules,
+	mustCastID = false,
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return {
@@ -15,7 +16,7 @@ export default function(
 			"constraints": {
 				"nullable": { "defaultValue": {} },
 				"object": {
-					...makeIDRules("id"),
+					...makeIDRules(mustCastID, "id"),
 					...makeTypeRules(typeName),
 					"attributes": {
 						"constraints": {
