@@ -54,6 +54,7 @@ rules:
     -
       skipBlankLines: true
       skipComments: true
+  max-lines-per-function: [ "off" ]
   max-classes-per-file: ["error", 2]
   max-params: ["error", 6]
   max-statements: "off"
