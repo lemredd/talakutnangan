@@ -61,7 +61,7 @@ rules:
   max-statements: "off"
   multiline-ternary: ["error", "always-multiline"]
   new-cap:
-  - "error"
+    - "error"
     - { "capIsNewExceptions": ["Selector"] }
   newline-per-chained-call: "off"
   no-alert: "off"
