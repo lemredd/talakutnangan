@@ -23,5 +23,5 @@ export default abstract class extends Controller {
 		]
 	}
 
-	abstract makeBodyRuleGenerator(request: Request): FieldRules
+	abstract makeBodyRuleGenerator(unusedRequest: Request): FieldRules
 }

@@ -58,7 +58,7 @@ export default class extends MultipartController {
 		]
 	}
 
-	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		return {
 			data: {
 				pipes: [ required, object ],

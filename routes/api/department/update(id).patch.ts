@@ -31,31 +31,38 @@ export default class extends BoundJSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes = {
 			"fullName": {
-				"pipes": [ required, string, length, regex, unique ],
 				"constraints": {
-					"length": { "minimum": 10,
-						"maximum": 255 },
+					"length": {
+						"maximum": 255,
+						"minimum": 10
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "fullName"
+					},
 					"regex": { "match": /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/u },
-					"manager": { "className": DepartmentManager,
-						"columnName": "fullName" },
 					"unique": { "IDPath": "data.id" }
-				}
+				},
+				"pipes": [ required, string, length, regex, unique ]
 			},
 			"acronym": {
-				"pipes": [ required, string, length, regex, acronym, unique ],
 				"constraints": {
-					"length": { "minimum": 2,
-						"maximum": 255 },
-					"regex": { "match": /([A-Z][a-z]*)+/u },
 					"acronym": { "spelledOutPath": "data.attributes.fullName" },
-					"manager": { "className": DepartmentManager,
-						"columnName": "acronym" },
+					"length": {
+						"maximum": 255,
+						"minimum": 2
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "acronym"
+					},
+					"regex": { "match": /([A-Z][a-z]*)+/u },
 					"unique": { "IDPath": "data.id" }
-				}
+				},
+				"pipes": [ required, string, length, regex, acronym, unique ]
 			},
 			"mayAdmit": {
-				"pipes": [ required, boolean ],
-				"constraints": {}
+				"pipes": [ required, boolean ]
 			}
 		}
 

@@ -114,7 +114,7 @@ export default class extends MultipartController {
 		]
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		// TODO: Make validator to validate name
 		return {
 			data: {
@@ -184,7 +184,7 @@ export default class extends MultipartController {
 
 	async handle(
 		request: PreprocessedRequest<NewUserNotificationArguments>,
-		response: Response
+		unusedResponse: Response
 	): Promise<void> {
 		Log.trace("controller", "entered POST /api/user/import")
 

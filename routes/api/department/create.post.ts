@@ -30,7 +30,7 @@ export default class extends JSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
 			data: {
 				pipes: [ required, object ],
