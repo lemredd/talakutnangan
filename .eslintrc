@@ -64,6 +64,7 @@ rules:
     - "error"
     - { "capIsNewExceptions": ["Selector"] }
   no-alert: "off"
+  no-duplicate-imports: "warn"
   no-empty-function: ["error", { "allow": ["arrowFunctions"] }]
   no-console: "off"
   no-underscore-dangle: "off"
