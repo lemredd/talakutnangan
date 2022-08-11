@@ -26,13 +26,10 @@ describe("GET /api/department/count_users", () => {
 
 		const response = await App.request
 			.get("/api/department/count_users")
-			.send({
-				data: [
-					{
-						type: "department",
-						id: String(adminDepartment.id)
-					}
-				]
+			.query({
+				filter: {
+					IDs: adminDepartment.id
+				}
 			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)

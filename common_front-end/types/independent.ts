@@ -16,7 +16,9 @@ import type {
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"
@@ -90,6 +92,8 @@ type PossibleResponseTypes<
 	| ResourceListDocument<T, U, V>
 	| DeserializedResourceDocument<T, U, W>
 	| DeserializedResourceListDocument<T, U, W>
+	| IdentifierDocument<T>
+	| IdentifierListDocument<T>
 	| Serializable
 
 /**

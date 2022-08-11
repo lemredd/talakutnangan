@@ -30,7 +30,7 @@ import type { DeserializedDepartmentListDocument } from "$/types/documents/depar
 import { inject, onMounted, ref } from "vue"
 import deserialize from "$/helpers/deserialize"
 
-import Manager from "../manager"
+import Manager from "$/helpers/manager"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 

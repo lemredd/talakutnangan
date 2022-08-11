@@ -6,7 +6,9 @@ import type {
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface DepartmentResourceIdentifier<T extends string|number = string>
@@ -61,3 +63,9 @@ export type DeserializedDepartmentListDocument<T extends string|number = string>
 	DepartmentAttributes,
 	DeserializedDepartmentResource<T>
 >
+
+export interface DepartmentIdentifierDocument
+extends IdentifierDocument<DepartmentResourceIdentifier> {}
+
+export interface DepartmentIdentifierListDocument
+extends IdentifierListDocument<DepartmentResourceIdentifier> {}

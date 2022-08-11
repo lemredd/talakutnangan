@@ -5,7 +5,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 import DepartmentFactory from "~/factories/department"
 import RequestEnvironment from "$/helpers/request_environment"
 

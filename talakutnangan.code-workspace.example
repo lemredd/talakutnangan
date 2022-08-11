@@ -36,7 +36,7 @@
 		// { "name": "app",								"path": "server/app" },
 		// { "name": "policies",						"path": "server/policies" },
 		// { "name": "validators",						"path": "server/validators" },
-		// { "name": "validation",						"path": "server/validation" },
+		// { "name": "validations",						"path": "server/validations" },
 		// { "name": "rule sets",						"path": "server/rule_sets" },
 		// { "name": "controllers",					"path": "server/controllers" },
 		// { "name": "response information",		"path": "server/response_infos" },

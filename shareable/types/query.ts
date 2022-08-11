@@ -48,10 +48,16 @@ export interface CriteriaFilter extends Serializable {
 	 }
  }
 
-/**
- * Expected shape of the common sort options
- */
-export interface Sort extends Serializable {
+ export interface IDsFilter extends Serializable {
+	 filter: {
+		 IDs?: number[]
+	 }
+ }
+
+ /**
+  * Expected shape of the common sort options
+  */
+ export interface Sort extends Serializable {
 	 sort: string[]
  }
 
@@ -80,3 +86,8 @@ export type UserQueryParameters =
 export type RoleQueryParameters =
 	& CommonQueryParameters
 	& DepartmentFilter
+	& IDsFilter
+
+export type DepartmentQueryParameters =
+	& CommonQueryParameters
+	& IDsFilter

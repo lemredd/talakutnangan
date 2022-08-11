@@ -1,5 +1,5 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
-import type { CommonQueryParameters } from "$/types/query"
+import type { DepartmentQueryParameters } from "$/types/query"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/helpers/request_environment"
 import DepartmentFetcher from "./department"
@@ -66,9 +66,10 @@ describe("Communicator: Department", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const queryObject: CommonQueryParameters = {
-			"filter": {
-				"existence": "exists"
+		const queryObject: DepartmentQueryParameters = {
+			filter: {
+				existence: "exists",
+				IDs: []
 			},
 			"sort": [ "id", "name" ],
 			"page": {

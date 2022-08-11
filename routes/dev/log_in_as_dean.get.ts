@@ -98,6 +98,7 @@ export default class extends DevController {
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
 					.name(() => testDepartment)
+					.mayAdmit()
 					.insertOne()
 
 				Log.success("controller", "created test institute department")
@@ -125,7 +126,7 @@ export default class extends DevController {
 				roleID: testDeanRole.id
 			})
 
-			Log.success("controller", "attached test admin role to test admin")
+			Log.success("controller", "attached test dean role to test dean")
 
 			request.body = {
 				email: testDeanEmail,

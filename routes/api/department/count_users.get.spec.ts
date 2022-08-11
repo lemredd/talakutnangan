@@ -16,13 +16,10 @@ describe("Controller: GET /api/department/count_users", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		requester.customizeRequest({
-			body: {
-				data: [
-					{
-						type: "department",
-						id: String(department.id)
-					}
-				]
+			query: {
+				filter: {
+					IDs: String(department.id)
+				}
 			}
 		})
 
@@ -37,13 +34,10 @@ describe("Controller: GET /api/department/count_users", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		requester.customizeRequest({
-			body: {
-				data: [
-					{
-						type: "department",
-						id: "1"
-					}
-				]
+			query: {
+				filter: {
+					IDs: "1"
+				}
 			}
 		})
 
@@ -51,6 +45,6 @@ describe("Controller: GET /api/department/count_users", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
+		expect(body).toHaveProperty("0.source.parameter", "filter.IDs.0")
 	})
 })
