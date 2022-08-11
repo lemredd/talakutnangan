@@ -50,7 +50,7 @@ rules:
     - "error"
     - { "code": 100, "tabWidth": 3 }
   max-lines:
-    - "error"
+    - "warn"
     -
       max: 400
       skipBlankLines: true
