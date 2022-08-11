@@ -6,7 +6,9 @@ import type {
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface RoleResourceIdentifier extends ResourceIdentifier {
@@ -60,3 +62,9 @@ export interface DeserializedRoleListDocument extends DeserializedResourceListDo
 	RoleAttributes,
 	DeserializedRoleResource
 > {}
+
+export interface RoleIdentifierDocument
+extends IdentifierDocument<RoleResourceIdentifier> {}
+
+export interface RoleIdentifierListDocument
+extends IdentifierListDocument<RoleResourceIdentifier> {}
