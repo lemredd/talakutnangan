@@ -27,12 +27,10 @@ describe("Component/Fields: Select", () => {
 			}
 		})
 
-		const select = wrapper.find("select")
-		const identifiedInitialValue
-			= select.getRootNodes()[0] as unknown as HTMLSelectElement["value"]
+		const select = wrapper.find("select").getRootNodes()[0] as HTMLSelectElement
+		const identifiedInitialValue = select.value
 
 		const givenInitialValue = wrapper.props().initialValue
-
 		expect(Number(identifiedInitialValue)).toEqual(Number(givenInitialValue))
 	})
 })
