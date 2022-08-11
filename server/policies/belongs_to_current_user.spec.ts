@@ -23,7 +23,7 @@ describe("Policy: Belongs to current user", () => {
 			user: Serializer.serialize(user, transformer, {}),
 			isAuthenticated: jest.fn().mockReturnValue(true),
 			params: {
-				id: user.id+""
+				id: String(user.id)
 			}
 		})
 
@@ -40,11 +40,9 @@ describe("Policy: Belongs to current user", () => {
 			user: Serializer.serialize(user, transformer, {}),
 			isAuthenticated: jest.fn().mockReturnValue(true),
 			params: {
-				id: (user.id + 1)+""
+				id: String(user.id + 1)
 			}
 		})
-
-		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
 
