@@ -20,7 +20,7 @@ export default class extends AuthenticationBasedPolicy {
 		await super.authorize(request)
 
 		const user = deserialize(request.user) as DeserializedUserProfile
-		if (user.data.id !== +request.params.id) {
+		if (user.data.id !== request.params.id) {
 			throw new AuthorizationError("Only the owner of the resource can do the operation.")
 		}
 	}
