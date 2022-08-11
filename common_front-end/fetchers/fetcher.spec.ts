@@ -6,18 +6,23 @@ import Fetcher from "./fetcher"
 
 describe("Communicator: Fetcher", () => {
 	it("can create resource", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": {
+					"type": "user",
+					"attributes": {}
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.create({ "name": "A" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -33,13 +38,15 @@ describe("Communicator: Fetcher", () => {
 	})
 
 	it("can list all resources", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": [
-				{ "type": "user",
-"attributes": {} }
-			]
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [
+					{ "type": "user",
+						"attributes": {} }
+				]
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const queryObject: CommonQueryParameters = {
 			"filter": {
@@ -54,11 +61,12 @@ describe("Communicator: Fetcher", () => {
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.list(queryObject)
 
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
 		expect(request).toHaveProperty("url", `/api/user?${stringifyQuery({
 			...queryObject,
-			sort: queryObject.sort.join(",")
+			"sort": queryObject.sort.join(",")
 		})}`)
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
@@ -67,18 +75,23 @@ describe("Communicator: Fetcher", () => {
 	})
 
 	it("can update resource", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": {
+					"type": "user",
+					"attributes": {}
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.update(1, { "name": "A" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/user/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -95,43 +108,55 @@ describe("Communicator: Fetcher", () => {
 	})
 
 	it("can archive resource", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": {
+					"type": "user",
+					"attributes": {}
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.archive([ 1 ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "DELETE")
 		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
-				{ "type": "user",
-id: 1 }
+				{
+					"type": "user",
+					"id": 1
+				}
 			]
 		})
 	})
 
 	it("can restore resource", async() => {
-		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
-		}),
-		{ "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": {
+					"type": "user",
+					"attributes": {}
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.restore([ 2 ])
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -139,15 +164,17 @@ id: 1 }
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
 				{ "type": "user",
-id: 2 }
+					"id": 2 }
 			]
 		})
 	})
 
 	it("can retrieve JSON from server by GET", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
+			"data": {
+				"type": "user",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -155,7 +182,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
 		expect(request).toHaveProperty("url", "/api/sample")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -165,7 +193,7 @@ id: 2 }
 	it("can retrieve JSON from server by POST", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": { "type": "role",
-"attributes": {} }
+				"attributes": {} }
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -173,7 +201,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/sample")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -183,8 +212,10 @@ id: 2 }
 
 	it("can retrieve JSON from server by PATCH", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "department",
-"attributes": {} }
+			"data": {
+				"type": "department",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -192,7 +223,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/sample/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -202,8 +234,10 @@ id: 2 }
 
 	it("can retrieve JSON from server by DELETE", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "department",
-"attributes": {} }
+			"data": {
+				"type": "department",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -211,7 +245,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "DELETE")
 		expect(request).toHaveProperty("url", "/api/sample/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -231,8 +266,10 @@ id: 2 }
 
 	it("can retrieve JSON from server by GET manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "user",
-"attributes": {} }
+			"data": {
+				"type": "user",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -240,7 +277,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
 		expect(request).toHaveProperty("url", "/api/sample")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -250,7 +288,7 @@ id: 2 }
 	it("can retrieve JSON from server by POST manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": { "type": "role",
-"attributes": {} }
+				"attributes": {} }
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -258,7 +296,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/sample")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -268,8 +307,10 @@ id: 2 }
 
 	it("can retrieve JSON from server by PATCH manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "department",
-"attributes": {} }
+			"data": {
+				"type": "department",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -277,7 +318,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", "/api/sample/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
@@ -287,8 +329,10 @@ id: 2 }
 
 	it("can retrieve JSON from server by DELETE manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "department",
-"attributes": {} }
+			"data": {
+				"type": "department",
+				"attributes": {}
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -296,7 +340,8 @@ id: 2 }
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
-		const request = fetch as jest.Mock<any, any>.mock.calls[0][0]
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "DELETE")
 		expect(request).toHaveProperty("url", "/api/sample/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)

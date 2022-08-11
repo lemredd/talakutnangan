@@ -26,11 +26,11 @@ export default class Fetcher<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>,
-	W extends DeserializedResource<T, U>,
+	W extends DeserializedResource<string, T, U>,
 	X extends ResourceDocument<T, U, V>,
 	Y extends ResourceListDocument<T, U, V>,
-	Z extends DeserializedResourceDocument<T, U, W>,
-	A extends DeserializedResourceListDocument<T, U, W>,
+	Z extends DeserializedResourceDocument<string, T, U, W>,
+	A extends DeserializedResourceListDocument<string, T, U, W>,
 	B extends Serializable,
 	C extends CommonQueryParameters = CommonQueryParameters
 > extends RequestEnvironment {
@@ -97,8 +97,11 @@ export default class Fetcher<
 	archive(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
-				"data": IDs.map(id => ({ "type": this.type,
-					id }))
+				"data": IDs.map(id => ({
+					"type": this.type,
+					id
+				})),
+				meta
 			})
 		)
 	}
@@ -106,8 +109,11 @@ export default class Fetcher<
 	restore(IDs: number[], meta?: GeneralObject): Promise<Response<T, U, V, W, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
-				"data": IDs.map(id => ({ "type": this.type,
-					id }))
+				"data": IDs.map(id => ({
+					"type": this.type,
+					id
+				})),
+				meta
 			})
 		)
 	}
@@ -185,24 +191,28 @@ export default class Fetcher<
 					status
 				}
 			}
-			throw { body,
-				status }
+			throw {
+				body,
+				status
+			}
 		})
 	}
 
 	private async requestJSON(path: string, request: RequestInit)
 	: Promise<Response<any, any, any, any, any>> {
 		const completePath = `${this.basePath}/${path}`
-		return await fetch(new Request(completePath, request)).then(async response => ({
-			"status": response.status,
-			"body": response.status === this.status.NO_CONTENT ? null : await response.json()
+		const parsedResponse = await fetch(new Request(completePath, request))
+		.then(async response => ({
+			"body": response.status === this.status.NO_CONTENT ? null : await response.json(),
+			"status": response.status
 		}))
+		return parsedResponse
 	}
 
 	protected makeJSONHeaders(contentType: string = JSON_API_MEDIA_TYPE): Headers {
 		return new Headers({
-			"Content-Type": contentType,
-			"Accept": JSON_API_MEDIA_TYPE
+			"Accept": JSON_API_MEDIA_TYPE,
+			"Content-Type": contentType
 		})
 	}
 }
