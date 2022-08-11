@@ -19,10 +19,11 @@ export default function(
 	typeName: string,
 	validator: Pipe,
 	ClassName: BaseManagerClass,
+	mustCast: boolean = true,
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return {
-		...makeIDRules(true, "id", {
+		...makeIDRules(mustCast, "id", {
 			"constraints": {
 				"manager": {
 					"className": ClassName,
