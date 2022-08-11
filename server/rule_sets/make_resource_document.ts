@@ -9,11 +9,12 @@ import makeDataDocumentRules from "!/rule_sets/make_data_document"
 export default function(
 	typeName: string,
 	attributes: FieldRules,
+	isNew = false,
 	mustCastID = false,
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return makeDataDocumentRules(true, {
-		...makeIDRules(mustCastID, "id"),
+		...isNew ? {} : makeIDRules(mustCastID, "id"),
 		...makeTypeRules(typeName),
 		"attributes": {
 			"constraints": {
