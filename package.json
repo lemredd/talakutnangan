@@ -25,6 +25,8 @@
 		"@types/jest": "^27.5.2",
 		"@types/lodash.uniq": "^4.5.7",
 		"@types/supertest": "^2.0.12",
+		"@typescript-eslint/eslint-plugin": "^5.33.0",
+		"@typescript-eslint/parser": "^5.33.0",
 		"@vue/test-utils": "^2.0.0-rc.18",
 		"@vue/vue3-jest": "^27.0.0",
 		"babel-jest": "^27.5.1",
@@ -32,6 +34,8 @@
 		"changelogen": "^0.1.1",
 		"consola": "^2.15.3",
 		"data-uri-to-buffer": "^3.0.1",
+		"eslint": "^8.21.0",
+		"eslint-plugin-vue": "^9.3.0",
 		"flush-promises": "^1.0.2",
 		"jest": "^27.5.1",
 		"jest-fetch-mock": "^3.0.3",
@@ -41,7 +45,8 @@
 		"sequelize-cli": "^6.4.1",
 		"sqlite3": "^5.0.8",
 		"supertest": "^6.2.3",
-		"ts-jest": "^27.1.5"
+		"ts-jest": "^27.1.5",
+		"vue-eslint-parser": "^9.0.3"
 	},
 	"dependencies": {
 		"@types/bcryptjs": "^2.4.2",

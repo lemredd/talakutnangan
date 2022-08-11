@@ -20,10 +20,10 @@ export interface AuditTrailAttributes extends Attributes {
 	extra: GeneralObject
 }
 
-export interface AuditTrailResource extends Resource<
+export type AuditTrailResource = Resource<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes
-> {}
+>
 
 export interface DeserializedAuditTrailResource extends DeserializedResource<
 	AuditTrailResourceIdentifier,
@@ -32,26 +32,26 @@ export interface DeserializedAuditTrailResource extends DeserializedResource<
 	user: DeserializedUserResource|null
 }
 
-export interface AuditTrailDocument extends ResourceDocument<
+export type AuditTrailDocument = ResourceDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	AuditTrailResource
-> {}
+>
 
-export interface AuditTrailListDocument extends ResourceListDocument<
+export type AuditTrailListDocument = ResourceListDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	AuditTrailResource
-> {}
+>
 
-export interface DeserializedAuditTrailDocument extends DeserializedResourceDocument<
+export type DeserializedAuditTrailDocument = DeserializedResourceDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	DeserializedAuditTrailResource
-> {}
+>
 
-export interface DeserializedAuditTrailListDocument extends DeserializedResourceListDocument<
+export type DeserializedAuditTrailListDocument = DeserializedResourceListDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	DeserializedAuditTrailResource
-> {}
+>

@@ -79,15 +79,14 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: number,
-		constraints: Pick<V, "filter"> = ({} as Pick<V, "filter">),
+		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
 			{
 				// @ts-ignore
-				if (constraints.filter === undefined) constraints.filter = {}
-				if (constraints.filter.existence === undefined)
-					constraints.filter.existence = "exists"
+				if (constraints.filter) constraints.filter = {}
+				if (constraints.filter.existence) constraints.filter.existence = "exists"
 			}
 
 			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
@@ -95,7 +94,7 @@ export default abstract class Manager<
 			Log.success("manager", "done searching for a model using ID")
 
 			return foundModel
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}

@@ -1,7 +1,7 @@
 import trimRight from "./trim_right"
 
 describe("Helper: Trim right", () => {
-	it("can trim spaces", async () => {
+	it("can trim spaces", async() => {
 		const value = "Hello    "
 
 		const trimmedValue = trimRight(value)
@@ -9,7 +9,7 @@ describe("Helper: Trim right", () => {
 		expect(trimmedValue).toBe("Hello")
 	})
 
-	it("can trim other characters", async () => {
+	it("can trim other characters", async() => {
 		const value = "Hello;"
 
 		const trimmedValue = trimRight(value, ";")

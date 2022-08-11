@@ -17,36 +17,36 @@ export interface StudentDetailAttributes extends Attributes {
 	studentNumber: string
 }
 
-export interface StudentDetailResource extends Resource<
+export type StudentDetailResource = Resource<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes
-> {}
+>
 
-export interface DeserializedStudentDetailResource extends DeserializedResource<
+export type DeserializedStudentDetailResource = DeserializedResource<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes
-> {}
+>
 
-export interface StudentDetailDocument extends ResourceDocument<
+export type StudentDetailDocument = ResourceDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	StudentDetailResource
-> {}
+>
 
-export interface StudentDetailListDocument extends ResourceListDocument<
+export type StudentDetailListDocument = ResourceListDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	StudentDetailResource
-> {}
+>
 
-export interface DeserializedStudentDetailDocument extends DeserializedResourceDocument<
+export type DeserializedStudentDetailDocument = DeserializedResourceDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	DeserializedStudentDetailResource
-> {}
+>
 
-export interface DeserializedStudentDetailListDocument extends DeserializedResourceListDocument<
+export type DeserializedStudentDetailListDocument = DeserializedResourceListDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	DeserializedStudentDetailResource
-> {}
+>

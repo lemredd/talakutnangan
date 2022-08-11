@@ -30,33 +30,33 @@ export interface RoleAttributes extends Attributes {
 	deletedAt?: string | null
 }
 
-export interface RoleResource extends Resource<RoleResourceIdentifier, RoleAttributes> {}
+export type RoleResource = Resource<RoleResourceIdentifier, RoleAttributes>
 
-export interface DeserializedRoleResource extends DeserializedResource<
+export type DeserializedRoleResource = DeserializedResource<
 	RoleResourceIdentifier,
 	RoleAttributes
-> {}
+>
 
-export interface RoleDocument extends ResourceDocument<
+export type RoleDocument = ResourceDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
-> {}
+>
 
-export interface RoleListDocument extends ResourceListDocument<
+export type RoleListDocument = ResourceListDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
-> {}
+>
 
-export interface DeserializedRoleDocument extends DeserializedResourceDocument<
+export type DeserializedRoleDocument = DeserializedResourceDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	DeserializedRoleResource
-> {}
+>
 
-export interface DeserializedRoleListDocument extends DeserializedResourceListDocument<
+export type DeserializedRoleListDocument = DeserializedResourceListDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	DeserializedRoleResource
-> {}
+>

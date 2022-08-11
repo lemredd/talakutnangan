@@ -26,31 +26,31 @@ export interface SignatureResource<T = string> extends Resource<
 	}
 }
 
-export interface DeserializedSignatureResource extends DeserializedResource<
+export type DeserializedSignatureResource = DeserializedResource<
 	SignatureResourceIdentifier,
 	SignatureAttributes
-> {}
+>
 
-export interface SignatureDocument<T = Buffer> extends ResourceDocument<
+export type SignatureDocument<T = Buffer> = ResourceDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes<T>,
 	SignatureResource<T>
-> {}
+>
 
-export interface SignatureListDocument extends ResourceListDocument<
+export type SignatureListDocument = ResourceListDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource
-> {}
+>
 
-export interface DeserializedSignatureDocument extends DeserializedResourceDocument<
+export type DeserializedSignatureDocument = DeserializedResourceDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	DeserializedSignatureResource
-> {}
+>
 
-export interface DeserializedSignatureListDocument extends DeserializedResourceListDocument<
+export type DeserializedSignatureListDocument = DeserializedResourceListDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	DeserializedSignatureResource
-> {}
+>

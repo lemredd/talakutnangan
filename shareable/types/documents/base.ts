@@ -1,14 +1,14 @@
 import type { UnitError } from "$/types/server"
 import type { GeneralObject, Serializable } from "$/types/general"
 
-export interface PrimaryData extends Serializable {}
+export type PrimaryData = Serializable
 
 export interface ResourceIdentifier<T extends string|number = string> extends PrimaryData {
 	type: string,
 	id: T
 }
 
-export interface Attributes extends GeneralObject {}
+export type Attributes = GeneralObject
 
 export type Resource<T extends ResourceIdentifier, U extends Attributes> = T & {
 	attributes: U
@@ -26,35 +26,35 @@ export interface MetaDocument<T extends Serializable> extends Serializable {
 	meta: T
 }
 
-export interface ResourceDocument<
+export type ResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
-> extends DataDocument<V> {}
+> = DataDocument<V>
 
-export interface RawResourceDocument<
+export type RawResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
-> extends DataDocument<Pick<V, "type" | "attributes" | "relationships" | "links" | "meta">> {}
+> = DataDocument<Pick<V, "type" | "attributes" | "relationships" | "links" | "meta">>
 
-export interface ResourceListDocument<
+export type ResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
-> extends DataDocument<V[]> {}
+> = DataDocument<V[]>
 
-export interface DeserializedResourceDocument<
+export type DeserializedResourceDocument<
 	T extends ResourceIdentifier<number>,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
-> extends DataDocument<V> {}
+> = DataDocument<V>
 
-export interface DeserializedResourceListDocument<
+export type DeserializedResourceListDocument<
 	T extends ResourceIdentifier<number>,
 	U extends Attributes,
 	V extends DeserializedResource<T, U>
-> extends DataDocument<V[]> {}
+> = DataDocument<V[]>
 
 export interface ErrorDocument {
 	errors: UnitError[]

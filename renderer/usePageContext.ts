@@ -1,5 +1,7 @@
-// `usePageContext` allows us to access `pageContext` in any Vue component.
-// See https://vite-plugin-ssr.com/pageContext-anywhere
+/*
+ * `usePageContext` allows us to access `pageContext` in any Vue component.
+ * See https://vite-plugin-ssr.com/pageContext-anywhere
+ */
 
 import { inject } from "vue"
 import type { App, InjectionKey } from "vue"
