@@ -1,8 +1,7 @@
-import type { FieldRules } from "!/types/validation"
+import type { FieldRules, Pipe } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 
 import makeIDRules from "!/rule_sets/make_id"
-import exists from "!/validators/manager/exists"
 import makeTypeRules from "!/rule_sets/make_type"
 import makeDataDocumentRules from "!/rule_sets/make_data_document"
 
@@ -17,6 +16,7 @@ import makeDataDocumentRules from "!/rule_sets/make_data_document"
  */
 export default function(
 	typeName: string,
+	validator: Pipe,
 	ClassName: BaseManagerClass,
 	extraQueries: FieldRules = {}
 ): FieldRules {
@@ -28,7 +28,7 @@ export default function(
 					"columnName": "id"
 				}
 			},
-			"pipes": [ exists ]
+			"pipes": [ validator ]
 		}),
 		...makeTypeRules(typeName)
 	}, extraQueries)
