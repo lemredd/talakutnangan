@@ -9,7 +9,7 @@ describe("Communicator: Department", () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
 				"type": "department",
-				"id": 1,
+				"id": "1",
 				"attributes": {
 					"fullName": "A",
 					"acronym": "A",
@@ -42,7 +42,7 @@ describe("Communicator: Department", () => {
 		expect(response).toHaveProperty("body", {
 			"data": {
 				"type": "department",
-				"id": 1,
+				"id": "1",
 				"fullName": "A",
 				"acronym": "A",
 				"mayAdmit": true
@@ -111,7 +111,7 @@ describe("Communicator: Department", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
 				"type": "department",
-				"id": 1,
+				"id": "1",
 				"attributes": {
 					"fullName": "A",
 					"acronym": "A",
@@ -139,7 +139,7 @@ describe("Communicator: Department", () => {
 			"data": [
 				{
 					"type": "department",
-					"id": 1
+					"id": "1"
 				}
 			]
 		})
@@ -163,7 +163,7 @@ describe("Communicator: Department", () => {
 			"data": [
 				{
 					"type": "department",
-					"id": 2
+					"id": "2"
 				}
 			]
 		})
