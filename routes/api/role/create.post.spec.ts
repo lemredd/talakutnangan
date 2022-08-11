@@ -133,8 +133,7 @@ describe("Controller: POST /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().superRole()
-		.makeOne()
+		const role = await new RoleFactory().superRole().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {

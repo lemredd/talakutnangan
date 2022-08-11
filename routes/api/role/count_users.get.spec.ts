@@ -20,7 +20,7 @@ describe("Controller: GET /api/role/count_users", () => {
 				data: [
 					{
 						type: "role",
-						id: role.id
+						id: String(role.id)
 					}
 				]
 			}
@@ -41,7 +41,7 @@ describe("Controller: GET /api/role/count_users", () => {
 				data: [
 					{
 						type: "role",
-						id: 1
+						id: "1"
 					}
 				]
 			}

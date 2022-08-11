@@ -25,7 +25,6 @@ import makeFlagRules from "!/rule_sets/make_flag"
 import notExists from "!/validators/manager/not_exists"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
@@ -56,7 +55,7 @@ export default class extends JSONController {
 			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
 
-		return makeResourceDocumentRules("role", attributes)
+		return makeResourceDocumentRules("role", attributes, true)
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

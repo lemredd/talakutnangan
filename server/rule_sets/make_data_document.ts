@@ -10,7 +10,6 @@ export default function(
 	unitDataRules: FieldRules,
 	extraQueries: FieldRules = {}
 ): FieldRules {
-	const validators = isObject ? [ object ] : [ array, length ]
 	const constraints: RuleContraints = isObject
 		? { "object": unitDataRules }
 		: {
@@ -27,11 +26,11 @@ export default function(
 			}
 		}
 
+	const validators = isObject ? [ object ] : [ array, length ]
+
 	return {
 		"data": {
-			"constraints": {
-				...constraints
-			},
+			constraints,
 			"pipes": [ required, ...validators ]
 		},
 		...extraQueries
