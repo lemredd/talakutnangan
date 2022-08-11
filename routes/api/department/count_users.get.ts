@@ -11,13 +11,9 @@ import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
-import array from "!/validators/base/array"
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import same from "!/validators/comparison/same"
-import exists from "!/validators/manager/exists"
-import length from "!/validators/comparison/length"
+import present from "!/validators/manager/present"
+import makeResourceIdentifierListDocumentRules
+	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -29,44 +25,11 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ array, length ],
-				constraints: {
-					array: {
-						pipes: [ object ],
-						constraints: {
-							object: {
-								type: {
-									pipes: [ string, same ],
-									constraints: {
-										same: {
-											value: "department"
-										}
-									}
-								},
-								id: {
-									pipes: [ integer, exists ],
-									constraints: {
-										manager: {
-											className: DepartmentManager,
-											columnName: "id"
-										}
-									}
-								}
-							}
-						}
-					},
-					length: {
-						minimum: 1
-					}
-				}
-			}
-		}
+		return makeResourceIdentifierListDocumentRules("department", present, DepartmentManager)
 	}
 
 	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const IDs = (request.body.data as DepartmentResourceIdentifier[]).map(object => {
+		const IDs = (request.body.data as DepartmentResourceIdentifier<number>[]).map(object => {
 			return object.id
 		})
 

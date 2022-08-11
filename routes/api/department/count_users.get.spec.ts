@@ -20,7 +20,7 @@ describe("Controller: GET /api/department/count_users", () => {
 				data: [
 					{
 						type: "department",
-						id: department.id
+						id: String(department.id)
 					}
 				]
 			}
@@ -41,7 +41,7 @@ describe("Controller: GET /api/department/count_users", () => {
 				data: [
 					{
 						type: "department",
-						id: 1
+						id: "1"
 					}
 				]
 			}
