@@ -5,6 +5,8 @@ export interface NullableConstraints { nullable?: { defaultValue: any } }
 
 export interface BooleanConstraints { boolean?: { loose: boolean } }
 
+export interface IntegerConstraints { integer?: { shouldCast: boolean } }
+
 export interface LengthConstraints { length: { minimum?: number, maximum?: number } }
 
 export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
@@ -66,6 +68,7 @@ export interface BufferRuleConstraints {
 export type RuleContraints = Partial<
 	& NullableConstraints
 	& BooleanConstraints
+	& IntegerConstraints
 	& LengthConstraints
 	& RangeConstraints
 	& SameRuleConstraints
