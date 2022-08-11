@@ -70,5 +70,13 @@ body {
 </style>
 
 <script setup lang="ts">
+import { inject } from "vue"
+
+import type { PageContext } from "#/types"
+
 import LogInForm from "@/LogInForm.vue"
+
+const pageContext = inject("pageContext") as PageContext
+
+console.log(pageContext)
 </script>
