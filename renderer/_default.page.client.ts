@@ -9,7 +9,7 @@ import ErrorPage from "#/_error.page.vue"
 export { render }
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
-	if (pageContext.pageProps.parsedUnitError) {
+	if (pageContext.pageProps.parsedUnitError && pageContext.urlPathname === "/") {
 		pageContext.Page = ErrorPage
 		pageContext.pageProps = {
 			is404: false,
