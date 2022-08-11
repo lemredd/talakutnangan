@@ -86,7 +86,7 @@ export type RuleContraints = Partial<
 /**
  * Shape of validation constraints
  */
- export interface ValidationConstraints<T = any> extends RuleContraints {
+export interface ValidationConstraints<T = any> extends RuleContraints {
 	request: T,
 	source: any,
 	field: string
@@ -114,13 +114,4 @@ export interface Rules {
  */
 export interface FieldRules {
 	[key:string]: Rules
-}
-
-/**
- * Shape of validation constraints that are not part of main info.
- *
- * They are usually used internally.
- */
-export interface MetaValidationConstraints {
-	transformer?: Function
 }
