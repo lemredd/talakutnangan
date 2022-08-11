@@ -52,6 +52,7 @@ rules:
   max-lines:
     - "error"
     -
+      max: 400
       skipBlankLines: true
       skipComments: true
   max-lines-per-function: [ "off" ]
