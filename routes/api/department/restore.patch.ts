@@ -10,13 +10,9 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
-import array from "!/validators/base/array"
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
-import required from "!/validators/base/required"
 import archived from "!/validators/manager/archived"
+import makeResourceIdentifierListDocumentRules
+	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -28,37 +24,7 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return {
-			data: {
-				pipes: [required, array],
-				constraints: {
-					array: {
-						pipes: [required, object ],
-						constraints: {
-							object: {
-								type: {
-									pipes: [required, string, same],
-									constraints: {
-										same: {
-											value: "department"
-										}
-									}
-								},
-								id: {
-									pipes: [required, integer, archived],
-									constraints: {
-										manager: {
-											className: DepartmentManager,
-											columnName: "id"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		return makeResourceIdentifierListDocumentRules("department", archived, DepartmentManager)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
