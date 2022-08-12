@@ -1,5 +1,5 @@
 <template>
-<SettingsHeader title="User Settings" />
+<SettingsHeader />
 	<form @submit.prevent class="flex flex-col">
 		<div>
 			<TextualField
