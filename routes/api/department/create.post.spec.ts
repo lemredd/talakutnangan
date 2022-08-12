@@ -37,7 +37,7 @@ describe("Controller: POST /api/department", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await new DepartmentFactory().name(() => "Abc Def GHIJ").makeOne()
+		const department = await new DepartmentFactory().fullName(() => "Abc Def GHIJ").makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -88,7 +88,7 @@ describe("Controller: POST /api/department", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory()
-		.name(() => "Hacking Lavender Throughway1")
+		.fullName(() => "Hacking Lavender Throughway1")
 		.makeOne()
 		requester.customizeRequest({
 			"body": {

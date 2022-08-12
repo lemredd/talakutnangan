@@ -22,9 +22,9 @@ describe("POST /api/user/import", () => {
 		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
 		.insertOne()
 		const sampleRole = await new RoleFactory().insertOne()
-		await new DepartmentFactory().name(() => "I B C E").insertOne()
-		await new DepartmentFactory().name(() => "I A S T E").insertOne()
-		await new DepartmentFactory().name(() => "I H T M").insertOne()
+		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
+		await new DepartmentFactory().fullName(() => "I A S T E").insertOne()
+		await new DepartmentFactory().fullName(() => "I H T M").insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
@@ -88,9 +88,9 @@ describe("POST /api/user/import", () => {
 		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
 		.insertOne()
 		const role = await new RoleFactory().insertOne()
-		await new DepartmentFactory().name(() => "I B C E").insertOne()
-		await new DepartmentFactory().name(() => "I A S T E").insertOne()
-		await new DepartmentFactory().name(() => "I H T M").insertOne()
+		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
+		await new DepartmentFactory().fullName(() => "I A S T E").insertOne()
+		await new DepartmentFactory().fullName(() => "I H T M").insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
@@ -114,9 +114,9 @@ describe("POST /api/user/import", () => {
 		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
 		.insertOne()
 		const sampleRole = await new RoleFactory().insertOne()
-		await new DepartmentFactory().name(() => "I B C E").insertOne()
-		await new DepartmentFactory().name(() => "I A S T E").insertOne()
-		await new DepartmentFactory().name(() => "S A S S").mayNotAdmit().insertOne()
+		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
+		await new DepartmentFactory().fullName(() => "I A S T E").insertOne()
+		await new DepartmentFactory().fullName(() => "S A S S").mayNotAdmit().insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/invalid_student_details.csv`
 

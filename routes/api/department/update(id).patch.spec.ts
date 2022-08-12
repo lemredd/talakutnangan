@@ -39,7 +39,7 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await new DepartmentFactory().name(() => "Abc Def GHIJ").insertOne()
+		const department = await new DepartmentFactory().fullName(() => "Abc Def GHIJ").insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -121,7 +121,7 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory()
-		.name(() => "Hacking Lavender Throughway1")
+		.fullName(() => "Hacking Lavender Throughway1")
 		.insertOne()
 		requester.customizeRequest({
 			"body": {

@@ -31,13 +31,13 @@ describe("UI Component: Resource Manager", () => {
 
 		it("Should identify if resource type is of user profile", async() => {
 			const department = await new DepartmentFactory().mayAdmit()
-				.insertOne()
+			.insertOne()
 			const deanRole = await new RoleFactory()
-				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-				.insertOne()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.insertOne()
 			const user = await new UserFactory().in(department)
-				.attach(deanRole)
-				.deserializedOne()
+			.attach(deanRole)
+			.deserializedOne()
 
 			const sampleUserList = await listUsers()
 
