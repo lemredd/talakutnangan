@@ -132,12 +132,13 @@ export default class extends MultipartController {
 									constraints: {
 										object: {
 											name: {
-												pipes: [ required, string, notExists ],
+												pipes: [ required, string, notExists, regex ],
 												constraints: {
 													manager: {
 														className: UserManager,
 														columnName: "name"
-													}
+													},
+													regex: { match: /^[ a-zA-Z\-\']+$/ }
 												}
 											},
 											email: {

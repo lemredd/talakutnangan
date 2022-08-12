@@ -24,6 +24,7 @@ import {
 import string from "!/validators/base/string"
 import boolean from "!/validators/base/boolean"
 import unique from "!/validators/manager/unique"
+import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import email from "!/validators/comparison/email"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
@@ -43,8 +44,10 @@ export default class extends BoundJSONController {
 		const attributes = {
 			name: {
 				// TODO: Validate the name
-				pipes: [ required, string ],
-				constraints: {}
+				pipes: [ required, string, regex ],
+				constraints: {
+					regex: { match: /^[ a-zA-Z\-\']+$/ }
+				}
 			},
 			email: {
 				pipes: [ required, string, email, unique ],
