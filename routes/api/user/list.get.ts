@@ -38,45 +38,45 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(UserManager, {
-			slug: {
-				pipes: [ nullable, string ],
-				constraints: {
-					nullable: { defaultValue: "" }
-				}
+			"slug": {
+				"constraints": {
+					"nullable": { "defaultValue": "" }
+				},
+				"pipes": [ nullable, string ]
 			},
-			department: {
-				pipes: [ nullable, skipAsterisk, integer, exists ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					manager: {
-						className: DepartmentManager,
-						columnName: "id"
+			"department": {
+				"constraints": {
+					"nullable": { "defaultValue": "*" },
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "id"
 					}
-				}
+				},
+				"pipes": [ nullable, skipAsterisk, integer, exists ]
 			},
-			role: {
-				pipes: [ nullable, skipAsterisk, integer, exists ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					manager: {
-						className: RoleManager,
-						columnName: "id"
+			"role": {
+				"constraints": {
+					"nullable": { "defaultValue": "*" },
+					"manager": {
+						"className": RoleManager,
+						"columnName": "id"
 					}
-				}
+				},
+				"pipes": [ nullable, skipAsterisk, integer, exists ]
 			},
-			kind: {
-				pipes: [ nullable, string, skipAsterisk, oneOf ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					oneOf: { values: [ ...UserKindValues ] }
-				}
+			"kind": {
+				"constraints": {
+					"nullable": { "defaultValue": "*" },
+					"oneOf": { "values": [ ...UserKindValues ] }
+				},
+				"pipes": [ nullable, string, skipAsterisk, oneOf ]
 			}
 		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const users = await manager.list(request.query as UserQueryParameters)
+		const users = await manager.list(request.query as UserQueryParameters<number>)
 
 		return new ListResponse(users)
 	}
