@@ -11,21 +11,19 @@ import IDParameterValidation from "!/validations/id_parameter"
 import RouteParameterValidation from "!/validations/route_parameter"
 import MultipartController from "!/controllers/multipart_controller"
 
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { user as permissionGroup } from "$/permissions/permission_list"
 
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
-import same from "!/validators/comparison/same"
 import integer from "!/validators/base/integer"
 import required from "!/validators/base/required"
 import notExists from "!/validators/manager/not_exists"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -44,14 +42,14 @@ export default class extends MultipartController {
 				[ "id", UserManager ]
 			]),
 			new RouteParameterValidation(() => ({
-				id: {
-					pipes: [ required, integer, notExists ],
-					constraints: {
-						manager: {
-							className: ProfilePictureManager,
-							columnName: "userID"
+				"id": {
+					"constraints": {
+						"manager": {
+							"className": ProfilePictureManager,
+							"columnName": "userID"
 						}
-					}
+					},
+					"pipes": [ required, integer, notExists ]
 				}
 			})),
 			...super.validations
@@ -59,49 +57,33 @@ export default class extends MultipartController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "profile_picture"
-								}
-							}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									fileContents: {
-										pipes: [ required, buffer ],
-										constraints: {
-											buffer: {
-												// TODO: Think of maximum size of picture
-												allowedMimeTypes: [ "image/png" ],
-												maxSize: 1024 * 1024 * 10 // 10 MB
-											}
-										}
-									}
-								}
-							}
-						}
+		const attributes = {
+			"fileContents": {
+				"constraints": {
+					"buffer": {
+						// TODO: Think of maximum size of picture
+						"allowedMimeTypes": [ "image/png" ],
+						// 10 MB
+						"maxSize": 1024 * 1024 * 10
 					}
-				}
+				},
+				"pipes": [ required, buffer ]
 			}
 		}
+
+		return makeResourceDocumentRules("profile_picture", attributes, true)
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response)
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new ProfilePictureManager(request.transaction, request.cache)
 		const { fileContents } = request.body.data.attributes
-		const userID = +request.params.id
+		const userID = Number(request.params.id)
 
-		const profilePictureInfo = await manager.create({ userID, fileContents })
+		const profilePictureInfo = await manager.create({
+			fileContents,
+			userID
+		})
 
 		Log.success("controller", "successfully uploaded the profile picture")
 
