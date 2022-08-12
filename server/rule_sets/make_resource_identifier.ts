@@ -3,7 +3,6 @@ import type { BaseManagerClass } from "!/types/independent"
 
 import makeIDRules from "!/rule_sets/make_id"
 import makeTypeRules from "!/rule_sets/make_type"
-import makeDataDocumentRules from "!/rule_sets/make_data_document"
 
 /**
  * Validates a submitted resource identifier.
@@ -19,7 +18,7 @@ export default function(
 	typeName: string,
 	validator: Pipe,
 	ClassName: BaseManagerClass,
-	mustCast: boolean = true,
+	mustCast = true,
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return {
