@@ -61,7 +61,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const query = request.query as unknown as Pick<RoleQueryParameters, "filter">
+		const query = request.query as unknown as Pick<RoleQueryParameters<number>, "filter">
 
 		const manager = new RoleManager(request.transaction, request.cache)
 		const rolesWithUserCount = await manager

@@ -29,7 +29,8 @@ export default class extends Middleware {
 				"homePageURL": URLMaker.makeBaseURL(),
 				"emailVerificationURL": await URLMaker.makeTemporaryURL("/user/verify", {
 					"id": recipient.id
-				}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
+					// Verification is available for 30 minutes
+				}, 1000 * 60 * 30)
 			}
 		))
 

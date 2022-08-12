@@ -61,7 +61,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const query = request.query as unknown as Pick<DepartmentQueryParameters, "filter">
+		const query = request.query as unknown as Pick<DepartmentQueryParameters<number>, "filter">
 
 		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departmentWithUserCount = await manager

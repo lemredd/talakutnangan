@@ -43,9 +43,9 @@ export interface CriteriaFilter extends Serializable {
 	}
 }
 
-export interface IDsFilter extends Serializable {
+export interface IDsFilter<T extends number|string = string> extends Serializable {
 	filter: {
-		IDs?: number[]
+		IDs?: T[]
 	}
 }
 
@@ -86,8 +86,8 @@ export type UserQueryParameters<T extends number|string = string> =
 export type RoleQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DepartmentFilter<T>
-	& IDsFilter
+	& IDsFilter<T>
 
-export type DepartmentQueryParameters =
+export type DepartmentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
-	& IDsFilter
+	& IDsFilter<T>
