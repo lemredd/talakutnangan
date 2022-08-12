@@ -1,6 +1,6 @@
+import type { FileLikeAttributes, FileLikeResourceLinks } from "$/types/documents/file-like"
 import type {
 	Resource,
-	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
 	ResourceDocument,
@@ -14,18 +14,12 @@ extends ResourceIdentifier<T> {
 	type: "signature",
 }
 
-export interface SignatureAttributes<T = string> extends Attributes {
-	signature?: T
-}
+export type SignatureAttributes<T = string> = FileLikeAttributes<T>
 
 export interface SignatureResource<T = string> extends Resource<
 	SignatureResourceIdentifier,
 	SignatureAttributes<T>
-> {
-	links?: {
-		self: string
-	}
-}
+>, FileLikeResourceLinks {}
 
 export type DeserializedSignatureResource<T extends string|number = string>
 = DeserializedResource<
@@ -33,6 +27,7 @@ export type DeserializedSignatureResource<T extends string|number = string>
 	SignatureResourceIdentifier<T>,
 	SignatureAttributes
 >
+
 
 export type SignatureDocument<T = Buffer> = ResourceDocument<
 	SignatureResourceIdentifier,
