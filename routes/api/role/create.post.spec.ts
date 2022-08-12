@@ -96,6 +96,42 @@ describe("Controller: POST /api/role", () => {
 		requester.expectSuccess()
 	})
 
+	it("can trim non-validated attributes", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const newRole = await new RoleFactory().roleFlags(3).makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"type": "role",
+					"id": String(role.id),
+					"attributes": {
+						"name": newRole.name,
+						"departmentFlags": newRole.departmentFlags,
+						"roleFlags": newRole.roleFlags,
+						"tagFlags": newRole.tagFlags,
+						"userFlags": newRole.userFlags,
+						"postFlags": newRole.postFlags,
+						"commentFlags": newRole.commentFlags,
+						"semesterFlags": newRole.semesterFlags,
+						"profanityFlags": newRole.profanityFlags,
+						"auditTrailFlags": newRole.auditTrailFlags
+					}
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		const request = requester.expectSuccess()
+		expect(request).toHaveProperty("body.data.attributes.name")
+		expect(request).not.toHaveProperty("body.data.attributes.departmentFlags")
+		expect(request).not.toHaveProperty("body.data.attributes.roleFlags")
+	})
+
 	it("cannot accept invalid name", async() => {
 		const controller = new Controller()
 		const { validations } = controller
