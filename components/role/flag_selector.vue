@@ -9,7 +9,7 @@
 		<span>Operations: </span>
 		<li class="ml-5" v-for="permissionName in operationalPermissionNames">
 			<Checkbox
-				:label="camelToSentence(permissionName).toLowerCase()"
+				:label="transformText.toSentenceCase(permissionName).toLowerCase()"
 				:value="permissionName"
 				@change="updateFlags"
 				v-model="rawFlags" />
@@ -46,10 +46,10 @@ import uniq from "lodash.uniq"
 
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
-import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import BasePermissionGroup from "$/permissions/base"
-import camelToSentence from "$@/helpers/camel_to_sentence"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import TextTransformer from "$@/helpers/text_transformers"
+import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -61,6 +61,8 @@ const {
 	basePermissionGroup: BasePermissionGroup<any, any>
 	flags: number
 }>()
+
+const transformText = new TextTransformer()
 
 const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
 const initialReadScopedRawFlag = computed(() => {
