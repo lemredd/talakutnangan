@@ -9,19 +9,19 @@ const BODY_VALIDATION_INDEX = 0
 describe("Controller: PATCH /api/department", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
-		await department.destroy({ force: false })
+		const department = await new DepartmentFactory().insertOne()
+		await department.destroy({ "force": false })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "department",
-						id: department.id
+						"type": "department",
+						"id": String(department.id)
 					}
 				]
 			}
@@ -32,18 +32,18 @@ describe("Controller: PATCH /api/department", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept existing resources", async () => {
+	it("cannot accept existing resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
+		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "department",
-						id: department.id
+						"type": "department",
+						"id": String(department.id)
 					}
 				]
 			}
@@ -56,19 +56,19 @@ describe("Controller: PATCH /api/department", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
 	})
 
-	it("cannot accept non-existent resources", async () => {
+	it("cannot accept non-existent resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory()).insertOne()
-		await department.destroy({ force: true })
+		const department = await new DepartmentFactory().insertOne()
+		await department.destroy({ "force": true })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "department",
-						id: department.id
+						"type": "department",
+						"id": String(department.id)
 					}
 				]
 			}

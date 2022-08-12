@@ -1,71 +1,31 @@
 import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 
-import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import NoContentResponseInfo from "!/response_infos/no_content"
 import JSONController from "!/controllers/json_controller"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import NoContentResponseInfo from "!/response_infos/no_content"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
 
-import array from "!/validators/base/array"
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
-import required from "!/validators/base/required"
-import length from "!/validators/comparison/length"
 import archived from "!/validators/manager/archived"
+import makeResourceIdentifierListDocumentRules
+	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
-	get policy(): Policy {
+	get policy(): PermissionBasedPolicy<any, any> {
 		return new PermissionBasedPolicy(permissionGroup, [
 			ARCHIVE_AND_RESTORE
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ required, array, length ],
-				constraints: {
-					array: {
-						pipes: [ required, object ],
-						constraints: {
-							object: {
-								type: {
-									pipes: [ required, string, same ],
-									constraints: {
-										same: {
-											value: "user"
-										}
-									}
-								},
-								id: {
-									pipes: [ required, integer, archived ],
-									constraints: {
-										manager: {
-											className: UserManager,
-											columnName: "id"
-										}
-									}
-								}
-							}
-						}
-					},
-					length: {
-						minimum: 1,
-						maximum: 24 // This is possible to change in the future
-					}
-				}
-			}
-		}
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		return makeResourceIdentifierListDocumentRules("user", archived, UserManager)
 	}
 
-	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)

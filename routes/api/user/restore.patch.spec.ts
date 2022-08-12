@@ -21,7 +21,7 @@ describe("Controller: PATCH /api/user", () => {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}
@@ -43,7 +43,7 @@ describe("Controller: PATCH /api/user", () => {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}
@@ -68,7 +68,7 @@ describe("Controller: PATCH /api/user", () => {
 				data: [
 					{
 						type: "user",
-						id: user.id
+						id: String(user.id)
 					}
 				]
 			}

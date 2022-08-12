@@ -1,6 +1,6 @@
 import type { ModelCtor } from "%/types/dependent"
 import type { Serializable } from "$/types/general"
-import type { CommonQueryParameters } from "$/types/query"
+import type { DepartmentQueryParameters } from "$/types/query"
 import type {
 	DepartmentAttributes,
 	DepartmentResourceIdentifier
@@ -14,7 +14,11 @@ import DatabaseError from "$!/errors/database"
 import Condition from "%/managers/helpers/condition"
 import DepartmentTransformer from "%/transformers/department"
 
-export default class extends BaseManager<Department, DepartmentAttributes, CommonQueryParameters> {
+export default class extends BaseManager<
+	Department,
+	DepartmentAttributes,
+	DepartmentQueryParameters<number>
+> {
 	get model(): ModelCtor<Department> { return Department }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }

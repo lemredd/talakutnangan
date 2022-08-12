@@ -20,7 +20,7 @@ export default class extends JSONController {
 
 	get policy(): Policy { return CommonMiddlewareList.guestOnlyPolicy }
 
-	makeBodyRuleGenerator(request: AuthenticatedRequest): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: AuthenticatedRequest): FieldRules {
 		return {
 			email: {
 				pipes: [ required, string, length, exists ],

@@ -13,12 +13,10 @@ import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
 import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
+import makeIDRules from "!/rule_sets/make_id"
 import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
 import required from "!/validators/base/required"
-import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import stringArray from "!/validators/hybrid/string_array"
 
@@ -31,43 +29,44 @@ export default class extends QueryController {
 		])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
-			filter: {
-				pipes: [ nullable, object ],
-				constraints: {
-					nullable: { defaultValue: {} },
-					object: {
-						IDs: {
-							pipes: [ required, stringArray, length ],
-							constraints: {
-								array: {
-									pipes: [ integer, exists ],
-									constraints: {
-										manager: {
-											className: RoleManager,
-											columnName: "id"
+			"filter": {
+				"constraints": {
+					"nullable": { "defaultValue": {} },
+					"object": {
+						"IDs": {
+							"constraints": {
+								"array": makeIDRules(true, "id", {
+									"constraints": {
+										"manager": {
+											"className": RoleManager,
+											"columnName": "id"
 										}
-									}
-								},
-								length: {
-									minimum: 1,
-									maximum: +process.env.DATABASE_MAX_SELECT! || 10
+									},
+									"pipes": [ exists ]
+								}).id,
+								"length": {
+									"maximum": Number(process.env.DATABASE_MAX_SELECT || "10"),
+									"minimum": 1
 								}
-							}
+							},
+							"pipes": [ required, stringArray, length ]
 						}
 					}
-				}
+				},
+				"pipes": [ nullable, object ]
 			}
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<ListResponse> {
-		const query = request.query as unknown as Pick<RoleQueryParameters, "filter">
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
+		const query = request.query as unknown as Pick<RoleQueryParameters<number>, "filter">
 
 		const manager = new RoleManager(request.transaction, request.cache)
 		const rolesWithUserCount = await manager
-			.countUsers(query.filter.IDs!) as RoleResourceIdentifier
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		.countUsers(query.filter.IDs!) as RoleResourceIdentifier
 
 		return new ListResponse(rolesWithUserCount)
 	}

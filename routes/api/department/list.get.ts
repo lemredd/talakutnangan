@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { CommonQueryParameters } from "$/types/query"
+import type { DepartmentQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
@@ -22,15 +22,15 @@ export default class extends QueryController {
 		])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(DepartmentManager, {})
 	}
 
-	async handle(request: Request, response: Response): Promise<ListResponse> {
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
 		const manager = new DepartmentManager(request.transaction, request.cache)
-		const departments = await manager.list(constraints as CommonQueryParameters)
+		const departments = await manager.list(constraints as DepartmentQueryParameters<number>)
 
 		return new ListResponse(departments)
 	}

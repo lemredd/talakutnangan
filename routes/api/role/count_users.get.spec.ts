@@ -9,16 +9,16 @@ const BODY_VALIDATION_INDEX = 0
 describe("Controller: GET /api/role/count_users", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const role = await new RoleFactory().insertOne()
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		requester.customizeRequest({
-			query: {
-				filter: {
-					IDs: role.id+""
+			"query": {
+				"filter": {
+					"IDs": `${role.id}`
 				}
 			}
 		})
@@ -28,15 +28,15 @@ describe("Controller: GET /api/role/count_users", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		requester.customizeRequest({
-			query: {
-				filter: {
-					IDs: "1"
+			"query": {
+				"filter": {
+					"IDs": "1"
 				}
 			}
 		})

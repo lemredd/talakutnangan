@@ -21,7 +21,7 @@ describe("Back-end: Query Controller Special Validation", () => {
 
 	it("does validation middleware works properly with valid values", async () => {
 		const controller = new class extends BaseTestController {
-			makeQueryRuleGenerator(request: Request): FieldRules {
+			makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 				return {
 					order: {
 						pipes: [ required, oneOf ],

@@ -13,7 +13,7 @@ export default class extends MultipartController {
 
 	get policy(): null { return null }
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
 			importedCSV: {
 				pipes: [ nullable, buffer ],

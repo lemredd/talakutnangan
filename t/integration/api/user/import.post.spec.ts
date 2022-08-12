@@ -13,45 +13,55 @@ import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 describe("POST /api/user/import", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can upload valid student details", async () => {
+	it("can upload valid student details", async() => {
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
-			.insertOne()
-		const sampleRole = await (new RoleFactory()).insertOne()
-		const IBCE = await (new DepartmentFactory().name(() => "I B C E")).insertOne()
-		const IASTE = await (new DepartmentFactory().name(() => "I A S T E")).insertOne()
-		const IHTM = await (new DepartmentFactory().name(() => "I H T M")).insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.insertOne()
+		const sampleRole = await new RoleFactory().insertOne()
+		await new DepartmentFactory().name(() => "I B C E").insertOne()
+		await new DepartmentFactory().name(() => "I A S T E").insertOne()
+		await new DepartmentFactory().name(() => "I H T M").insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
-			.post("/api/user/import")
-			.field("data[type]", "user")
-			.field("data[attributes][kind]", "student")
-			.field("data[relationships][roles][data][0][type]", "role")
-			.field("data[relationships][roles][data][0][id]", sampleRole.id)
-			.attach("meta[importedCSV]", path)
-			.set("Cookie", cookie)
+		.post("/api/user/import")
+		.field("data[type]", "user")
+		.field("data[attributes][kind]", "student")
+		.field("data[relationships][roles][data][0][type]", "role")
+		.field("data[relationships][roles][data][0][id]", sampleRole.id)
+		.attach("meta[importedCSV]", path)
+		.set("Cookie", cookie)
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data).toHaveLength(3)
 		expect(response.body.included).toHaveLength(7)
 
-		await flushPromises() // Policy middleware runs
-		await flushPromises() // Middleware intermediate runs
-		await flushPromises() // E-mail template read for first user
-		await flushPromises() // E-mail template read for second user
-		await flushPromises() // E-mail template read for third user
-		await flushPromises() // E-mail message transmission to first user
-		await flushPromises() // E-mail message transmission to second user
-		await flushPromises() // E-mail message transmission to third user
+		// Policy middleware runs
+		await flushPromises()
+		// Middleware intermediate runs
+		await flushPromises()
+		// E-mail template read for first user
+		await flushPromises()
+		// E-mail template read for second user
+		await flushPromises()
+		// E-mail template read for third user
+		await flushPromises()
+		// E-mail message transmission to first user
+		await flushPromises()
+		// E-mail message transmission to second user
+		await flushPromises()
+		// E-mail message transmission to third user
+		await flushPromises()
 
 		// Waiting for all transmissions to finish
-		await new Promise(resolve => setTimeout(resolve, 1000))
+		await new Promise(resolve => {
+			setTimeout(resolve, 1000)
+		})
 
 		const previousMessages = Transport.consumePreviousMessages()
 		expect(previousMessages).toHaveLength(3)
@@ -73,52 +83,52 @@ describe("POST /api/user/import", () => {
 		expect(previousMessages[2].message.text).toContain("1920-113")
 	}, 10000)
 
-	it("cannot upload by text field", async () => {
+	it("cannot upload by text field", async() => {
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
-			.insertOne()
-		const role = await (new RoleFactory()).insertOne()
-		const IBCE = await (new DepartmentFactory().name(() => "I B C E")).insertOne()
-		const IASTE = await (new DepartmentFactory().name(() => "I A S T E")).insertOne()
-		const IHTM = await (new DepartmentFactory().name(() => "I H T M")).insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.insertOne()
+		const role = await new RoleFactory().insertOne()
+		await new DepartmentFactory().name(() => "I B C E").insertOne()
+		await new DepartmentFactory().name(() => "I A S T E").insertOne()
+		await new DepartmentFactory().name(() => "I H T M").insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
-			.post("/api/user/import")
-			.field("data[type]", "user")
-			.field("data[attributes][kind]", "student")
-			.field("data[relationships][roles][data][0][type]", "role")
-			.field("data[relationships][roles][data][0][id]", role.id)
-			.field("meta[importedCSV]", path)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
+		.post("/api/user/import")
+		.field("data[type]", "user")
+		.field("data[attributes][kind]", "student")
+		.field("data[relationships][roles][data][0][type]", "role")
+		.field("data[relationships][roles][data][0][id]", role.id)
+		.field("meta[importedCSV]", path)
+		.set("Cookie", cookie)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body.errors).toHaveLength(1)
 		expect(response.body).toHaveProperty("errors.0.source.pointer", "meta.importedCSV")
 	})
 
-	it("cannot upload invalid student details", async () => {
+	it("cannot upload invalid student details", async() => {
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
-			.insertOne()
-		const sampleRole = await (new RoleFactory()).insertOne()
-		const IBCE = await (new DepartmentFactory().name(() => "I B C E")).insertOne()
-		const IASTE = await (new DepartmentFactory().name(() => "I A S T E")).insertOne()
-		const SASS = await (new DepartmentFactory().name(() => "S A S S")).mayNotAdmit().insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.insertOne()
+		const sampleRole = await new RoleFactory().insertOne()
+		await new DepartmentFactory().name(() => "I B C E").insertOne()
+		await new DepartmentFactory().name(() => "I A S T E").insertOne()
+		await new DepartmentFactory().name(() => "S A S S").mayNotAdmit().insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const path = `${RequestEnvironment.root}/t/data/invalid_student_details.csv`
 
 		const response = await App.request
-			.post("/api/user/import")
-			.field("data[type]", "user")
-			.field("data[attributes][kind]", "student")
-			.field("data[relationships][roles][data][0][type]", "role")
-			.field("data[relationships][roles][data][0][id]", sampleRole.id)
-			.attach("meta[importedCSV]", path)
-			.set("Cookie", cookie)
-			.accept(JSON_API_MEDIA_TYPE)
+		.post("/api/user/import")
+		.field("data[type]", "user")
+		.field("data[attributes][kind]", "student")
+		.field("data[relationships][roles][data][0][type]", "role")
+		.field("data[relationships][roles][data][0][id]", sampleRole.id)
+		.attach("meta[importedCSV]", path)
+		.set("Cookie", cookie)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		// TODO: Change length to 2 when admissable validator exists

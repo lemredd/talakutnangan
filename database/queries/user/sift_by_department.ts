@@ -11,28 +11,29 @@ import Condition from "%/managers/helpers/condition"
  */
 export default function<T>(
 	currentState: FindOptions<T>,
-	constraints: DepartmentFilter
+	constraints: DepartmentFilter<number>
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	switch(constraints.filter.department) {
+	switch (constraints.filter.department) {
 		case "*":
-			// do nothing
+			// Do nothing
 			break
-		default:
+		default: {
 			const condition = new Condition()
 			condition.equal("id", constraints.filter.department)
 
-			if (newState.include === undefined) {
+			if (!newState.include) {
 				newState.include = []
 			}
 
 			(newState.include as any[])!.push({
-				model: Department,
-				required: true,
-				where: condition.build()
+				"model": Department,
+				"required": true,
+				"where": condition.build()
 			})
 			break
+		}
 	}
 
 	Log.trace("pipeline", "sift by department")
