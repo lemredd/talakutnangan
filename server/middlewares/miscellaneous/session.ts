@@ -10,7 +10,7 @@ export default class Session extends Middleware {
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
-			 maxAge: process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
+			 maxAge: Number(process.env.SESSION_DURATION || String(15 * 60 * 1000))
 		}
 	})
 
