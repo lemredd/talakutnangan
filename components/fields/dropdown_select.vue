@@ -2,13 +2,20 @@
 	<div class="read-scope">
 		<label for="read-scope">{{ label }}</label>
 		<select id="read-scope" @change="$emit('selectedOptionChanged', $event)">
-			<option value="" :selected="!initialValue" disabled>Select a scope</option>
+			<option
+				v-if="hasDisabledValue"
+				value=""
+				:selected="!initialValue"
+				disabled
+			>
+				Select a value
+			</option>
 
 			<option
 				v-for="option in options" :value="option" :selected="initialValue === option">
 					{{
 						isOptionString(option)
-						? camelToSentence(option).toLocaleLowerCase()
+						? transformText.toSentenceCase(option).toLocaleLowerCase()
 						: option
 					}}
 			</option>
@@ -16,21 +23,24 @@
 	</div>
 </template>
 
-<style>
+<style scoped lang="scss">
 </style>
 
 <script setup lang="ts">
-import camelToSentence from "$@/helpers/camel_to_sentence"
+import TextTransformer from "$@/helpers/text_transformers"
 
 const {
 	options,
 	initialValue,
 	label
 } = defineProps<{
-	options: any[]
+	options: any[],
+	hasDisabledValue?: boolean
 	initialValue?: any
-	label: string
+	label?: string
 }>()
+
+const transformText = new TextTransformer()
 
 function isOptionString(option: any): option is string {
 	return typeof option === "string"
