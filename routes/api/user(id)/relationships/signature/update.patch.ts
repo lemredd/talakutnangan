@@ -47,15 +47,16 @@ export default class extends MultipartController {
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const attributes = {
-			signature: {
-				pipes: [ required, buffer ],
-				constraints: {
-					buffer: {
+			"signature": {
+				"constraints": {
+					"buffer": {
 						// TODO: Think of maximum size of picture
-						allowedMimeTypes: [ "image/png" ],
-						maxSize: 1024 * 1024 * 10 // 10 MB
+						"allowedMimeTypes": [ "image/png" ],
+						// 10 MB
+						"maxSize": 1024 * 1024 * 10
 					}
-				}
+				},
+				"pipes": [ required, buffer ]
 			}
 		}
 
@@ -68,7 +69,7 @@ export default class extends MultipartController {
 		]
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response)
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
 		const manager = new SignatureManager(request.transaction, request.cache)
 		const { signature } = request.body.data.attributes
