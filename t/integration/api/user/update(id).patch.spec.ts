@@ -46,7 +46,7 @@ describe("PATCH /api/user/:id", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ "where": { "id": student.id } })
-		expect(updatedStudent!.emailVerifiedAt).toBeNull()
+		expect(updatedStudent?.emailVerifiedAt).toBeNull()
 
 		// Middleware intermediate runs
 		await flushPromises()
@@ -70,13 +70,13 @@ describe("PATCH /api/user/:id", () => {
 		await flushPromises()
 		// Wait for complete transmission
 		await new Promise(resolve => {
-			setTimeout(() => resolve, 1000)
+			setTimeout(resolve, 1000)
 		})
 		const previousMessages = Transport.consumePreviousMessages()
 		expect(previousMessages).toHaveLength(1)
 		expect(previousMessages[0]).toHaveProperty("message")
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
-		expect(previousMessages[0].message.text).toContain(updatedStudent!.email)
+		expect(previousMessages[0].message.text).toContain(updatedStudent?.email)
 		expect(previousMessages[0].message.text).toContain("/user/verify")
 	}, 10000)
 
@@ -108,8 +108,8 @@ describe("PATCH /api/user/:id", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ "where": { "id": student.id } })
-		expect(updatedStudent!.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
-		expect(updatedStudent!.name).toBe(newStudent.name)
-		expect(updatedStudent!.prefersDark).toBe(newStudent.prefersDark)
+		expect(updatedStudent?.emailVerifiedAt).toStrictEqual(student.emailVerifiedAt)
+		expect(updatedStudent?.name).toBe(newStudent.name)
+		expect(updatedStudent?.prefersDark).toBe(newStudent.prefersDark)
 	})
 })

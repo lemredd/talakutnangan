@@ -21,24 +21,25 @@ export default class extends Middleware {
 		Log.trace("middleware", "sending verification e-mail messages to recipients")
 
 		const emailTransmissions = recipients.map(async recipient => await Transport.sendMail(
-				[ recipient.email ],
-				subject,
-				"email_verification.md",
-				{
-					email: recipient.email,
-					homePageURL: URLMaker.makeBaseURL(),
-					emailVerificationURL: await URLMaker.makeTemporaryURL("/user/verify", {
-						id: recipient.id
-					}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
-				}
-			)
-		)
+			[ recipient.email ],
+			subject,
+			"email_verification.md",
+			{
+				"email": recipient.email,
+				"homePageURL": URLMaker.makeBaseURL(),
+				"emailVerificationURL": await URLMaker.makeTemporaryURL("/user/verify", {
+					"id": recipient.id
+				}, 1000 * 60 * 30 /* Verification is available for 30 minutes */)
+			}
+		))
 
 		for (const transmission of emailTransmissions) {
 			try {
+				// Force to wait for transmission to test with expected order
+				// eslint-disable-next-line no-await-in-loop
 				const sentInfo = await transmission
 				Log.trace("middleware", `Sent email verification to ${sentInfo.envelope.to[0]}`)
-			} catch(error) {
+			} catch (error) {
 				Log.error("middleware", error as Error)
 
 				next(error)

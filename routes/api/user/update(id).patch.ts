@@ -98,8 +98,8 @@ export default class extends BoundJSONController {
 			request.nextMiddlewareArguments = {
 				"emailsToContact": [
 					{
-						id,
-						email
+						email,
+						id
 					}
 				]
 			}
