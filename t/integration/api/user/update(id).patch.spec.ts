@@ -32,7 +32,7 @@ describe("PATCH /api/user/:id", () => {
 			.send({
 				data: {
 					type: "user",
-					id: student.id,
+					id: String(student.id),
 					attributes: {
 						name: student.name,
 						email: newStudent.email,
@@ -81,7 +81,7 @@ describe("PATCH /api/user/:id", () => {
 			.send({
 				data: {
 					type: "user",
-					id: student.id,
+					id: String(student.id),
 					attributes: {
 						name: newStudent.name,
 						email: student.email,

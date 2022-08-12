@@ -13,15 +13,14 @@ import makeDefaultPassword from "$!/helpers/make_default_password"
 import BoundJSONController from "!/controllers/bound_json_controller"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
+import PermissionBasedPolicy from "!/policies/permission-based"
 import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
 
 import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
 import required from "!/validators/base/required"
+import exists from "!/validators/manager/exists"
+import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -35,22 +34,9 @@ export default class extends BoundJSONController {
 	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
 			data: {
-				pipes: [ required, object],
+				pipes: [ required, object ],
 				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "user"
-								}
-							}
-						},
-						id: {
-							pipes: [ required, integer ],
-							constraints: {}
-						}
-					}
+					object: makeResourceIdentifierRules("user", exists, UserManager)
 				}
 			}
 		}
@@ -66,7 +52,7 @@ export default class extends BoundJSONController {
 		const id = request.body.data.id
 		const userProfile = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const newPassword = makeDefaultPassword(userProfile)
-		const isSuccess = await manager.resetPassword(id, newPassword)
+		const isSuccess = await manager.resetPassword(Number(id), newPassword)
 
 		if (isSuccess) {
 			request.nextMiddlewareArguments = {

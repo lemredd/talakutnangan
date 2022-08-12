@@ -3,29 +3,29 @@ import Person from "./Person.vue"
 
 describe("Component: Opening/Person", () => {
 	it("should have a chat icon", () => {
-        const wrapper = mount (Person, {
-            props: {
-                variant: "talking",
-                accessory: "chat"
-            }
-        })
+		const wrapper = mount(Person, {
+			"props": {
+				"variant": "talking",
+				"accessory": "chat"
+			}
+		})
 
-        const accessory = wrapper.find(".accessory")
-        // console.log(c)
+		const accessory = wrapper.find(".accessory")
+		// Console.log(c)
 
-        expect(accessory.html()).toContain("chat")
+		expect(accessory.html()).toContain("chat")
 	})
 	it("should have a campaign icon", () => {
-        const wrapper = mount (Person, {
-            props: {
-                variant: "announce",
-                accessory: "campaign"
-            }
-        })
+		const wrapper = mount(Person, {
+			"props": {
+				"variant": "announce",
+				"accessory": "campaign"
+			}
+		})
 
-        const accessory = wrapper.find(".accessory")
-        // console.log(c)
+		const accessory = wrapper.find(".accessory")
+		// Console.log(c)
 
-        expect(accessory.html()).toContain("campaign")
+		expect(accessory.html()).toContain("campaign")
 	})
 })

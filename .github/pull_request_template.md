@@ -18,10 +18,12 @@ Put your additions and compatible changes here...
 ## Lacking Mechanism
 - lemredd/talakutnangan#
 
+## Proof of Passing
+
 <!--
 ## Rules
 1. Under `# Changes`, it is recommended to put a summary of what the PR is all about.
-2. Keep your PR's number of edited lines to be low if possible so they can be reviewed easily. It also recommended to have less than 100 commits every PR. The said limit can be ignored for bug fixes, chores, patching security issue.
+2. Keep your PR's number of edited lines to be low if possible, so they can be reviewed easily. It also recommended having less than 100 commits every PR. The said limit can be ignored for bug fixes, chores, patching security issue.
 3. Prefix issue numbers with `lemredd/talakutnangan` to refer to the issues correctly.
 4. Put breaking change details below this comment if there are breaking changes. Breaking changes
    could be relocating certain set of files already in master, changing the types that already exist

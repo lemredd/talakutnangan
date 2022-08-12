@@ -1,7 +1,7 @@
-import { createSSRApp, defineComponent, h } from 'vue'
-import PageShell from './page_shell.vue'
-import { setPageContext } from './usePageContext'
-import type { PageContext } from './types'
+import { createSSRApp, defineComponent, h } from "vue"
+import PageShell from "./page_shell.vue"
+import { setPageContext } from "./usePageContext"
+import type { PageContext } from "./types"
 
 export { createApp }
 
@@ -15,10 +15,10 @@ function createApp(pageContext: PageContext) {
 				{
 					default() {
 						return h(Page, pageProps || {})
-					},
-				},
+					}
+				}
 			)
-		},
+		}
 	})
 
 	const app = createSSRApp(PageWithLayout)

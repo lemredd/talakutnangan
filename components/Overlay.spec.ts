@@ -8,12 +8,12 @@ describe("Component: Tab", () => {
 		wrapper = mount(Overlay)
 	})
 
-	it("should close on click of background", async () => {
+	it("should close on click of background", async() => {
 		const overlay = wrapper.find(".overlay")
 		await overlay.trigger("click")
 		expect(wrapper.emitted()).toHaveProperty("close")
 	})
-	it("should close on click of close button", async () => {
+	it("should close on click of close button", async() => {
 		const closeButton = wrapper.find(".close-btn")
 		await closeButton.trigger("click")
 		expect(wrapper.emitted()).toHaveProperty("close")

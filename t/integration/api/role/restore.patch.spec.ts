@@ -26,7 +26,7 @@ describe("PATCH /api/role/restore/:id", () => {
 			.patch("/api/role")
 			.send({
 				data: [
-					{ type: "role", id: role.id }
+					{ type: "role", id: String(role.id) }
 				]
 			})
 			.set("Cookie", cookie)

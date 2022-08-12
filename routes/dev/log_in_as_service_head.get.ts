@@ -39,7 +39,7 @@ export default class extends DevController {
 		} else {
 			const testEmail = "service_head@example.net"
 			const testRoleName = "test_service_head"
-			const testDepartmentName = "Test Department"
+			const testDepartmentName = "Test Service Department"
 
 			Log.success("controller", "searching for role")
 			let testRole = await Role.findOne({

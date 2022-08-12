@@ -1,4 +1,5 @@
 import type { Model } from "%/types/dependent"
+import type { MimeBuffer } from "data-uri-to-buffer"
 import type { FileLikeTransformerOptions } from "%/types/independent"
 import type {
 	ResourceIdentifier,
@@ -6,13 +7,12 @@ import type {
 	DeserializedResource,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
-Resource,
-ResourceDocument,
-ResourceListDocument
+	Resource,
+	ResourceDocument,
+	ResourceListDocument
 } from "$/types/documents/base"
 
 import dataURIToBuffer from "data-uri-to-buffer"
-import type { MimeBuffer } from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
 
 import BaseFactory from "~/factories/base"
@@ -22,11 +22,11 @@ export default abstract class FileLikeFactory<
 	U extends ResourceIdentifier,
 	V extends Attributes,
 	W extends Resource<U, V>,
-	X extends DeserializedResource<U, V>,
+	X extends DeserializedResource<string, U, V>,
 	Y extends ResourceDocument<U, V, W>,
 	Z extends ResourceListDocument<U, V, W>,
-	A extends DeserializedResourceDocument<U, V, X>,
-	B extends DeserializedResourceListDocument<U, V, X>,
+	A extends DeserializedResourceDocument<string, U, V, X>,
+	B extends DeserializedResourceListDocument<string, U, V, X>,
 	C extends FileLikeTransformerOptions = FileLikeTransformerOptions
 > extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C> {
 	protected fileContentsGenerator: () => MimeBuffer = () => dataURIToBuffer(

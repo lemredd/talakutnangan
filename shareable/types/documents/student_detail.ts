@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface StudentDetailResourceIdentifier extends ResourceIdentifier {
+export interface StudentDetailResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "student_detail"
 }
 
@@ -17,36 +18,42 @@ export interface StudentDetailAttributes extends Attributes {
 	studentNumber: string
 }
 
-export interface StudentDetailResource extends Resource<
+export type StudentDetailResource = Resource<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes
-> {}
+>
 
-export interface DeserializedStudentDetailResource extends DeserializedResource<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes
-> {}
+>
 
-export interface StudentDetailDocument extends ResourceDocument<
+export type StudentDetailDocument = ResourceDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	StudentDetailResource
-> {}
+>
 
-export interface StudentDetailListDocument extends ResourceListDocument<
+export type StudentDetailListDocument = ResourceListDocument<
 	StudentDetailResourceIdentifier,
 	StudentDetailAttributes,
 	StudentDetailResource
-> {}
+>
 
-export interface DeserializedStudentDetailDocument extends DeserializedResourceDocument<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes,
-	DeserializedStudentDetailResource
-> {}
+	DeserializedStudentDetailResource<T>
+>
 
-export interface DeserializedStudentDetailListDocument extends DeserializedResourceListDocument<
-	StudentDetailResourceIdentifier,
+export type DeserializedStudentDetailListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	StudentDetailResourceIdentifier<T>,
 	StudentDetailAttributes,
-	DeserializedStudentDetailResource
-> {}
+	DeserializedStudentDetailResource<T>
+>

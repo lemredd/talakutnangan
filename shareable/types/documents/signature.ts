@@ -9,7 +9,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface SignatureResourceIdentifier extends ResourceIdentifier {
+export interface SignatureResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "signature",
 }
 
@@ -26,31 +27,37 @@ export interface SignatureResource<T = string> extends Resource<
 	}
 }
 
-export interface DeserializedSignatureResource extends DeserializedResource<
-	SignatureResourceIdentifier,
+export type DeserializedSignatureResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	SignatureResourceIdentifier<T>,
 	SignatureAttributes
-> {}
+>
 
-export interface SignatureDocument<T = Buffer> extends ResourceDocument<
+export type SignatureDocument<T = Buffer> = ResourceDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes<T>,
 	SignatureResource<T>
-> {}
+>
 
-export interface SignatureListDocument extends ResourceListDocument<
+export type SignatureListDocument = ResourceListDocument<
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource
-> {}
+>
 
-export interface DeserializedSignatureDocument extends DeserializedResourceDocument<
-	SignatureResourceIdentifier,
+export type DeserializedSignatureDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	SignatureResourceIdentifier<T>,
 	SignatureAttributes,
-	DeserializedSignatureResource
-> {}
+	DeserializedSignatureResource<T>
+>
 
-export interface DeserializedSignatureListDocument extends DeserializedResourceListDocument<
-	SignatureResourceIdentifier,
+export type DeserializedSignatureListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	SignatureResourceIdentifier<T>,
 	SignatureAttributes,
-	DeserializedSignatureResource
-> {}
+	DeserializedSignatureResource<T>
+>

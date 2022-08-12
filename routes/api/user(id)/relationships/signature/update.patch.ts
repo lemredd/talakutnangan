@@ -21,11 +21,9 @@ import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
-import same from "!/validators/comparison/same"
 import required from "!/validators/base/required"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -48,40 +46,20 @@ export default class extends MultipartController {
 	}
 
 	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
+		const attributes = {
+			signature: {
+				pipes: [ required, buffer ],
 				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "signature"
-								}
-							}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									signature: {
-										pipes: [ required, buffer ],
-										constraints: {
-											buffer: {
-												// TODO: Think of maximum size of picture
-												allowedMimeTypes: [ "image/png" ],
-												maxSize: 1024 * 1024 * 10 // 10 MB
-											}
-										}
-									}
-								}
-							}
-						}
+					buffer: {
+						// TODO: Think of maximum size of picture
+						allowedMimeTypes: [ "image/png" ],
+						maxSize: 1024 * 1024 * 10 // 10 MB
 					}
 				}
 			}
 		}
+
+		return makeResourceDocumentRules("signature", attributes, true)
 	}
 
 	get postParseMiddlewares(): Policy[] {
@@ -97,7 +75,7 @@ export default class extends MultipartController {
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
 
-		const newSignature = await manager.attach(userID, signature)
+		const newSignature = await manager.attach(Number(userID), signature)
 		Log.success("controller", "successfully uploaded the signature")
 
 		return new OkResponseInfo(newSignature)

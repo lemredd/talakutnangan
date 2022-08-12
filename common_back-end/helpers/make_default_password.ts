@@ -11,7 +11,7 @@ import extractEmailUsername from "$!/helpers/extract_email_username"
 export default function(userProfile: DeserializedUserProfile): string {
 	if (userProfile.data.kind === "student") {
 		return userProfile.data.studentDetail.data.studentNumber
-	} else {
-		return extractEmailUsername(userProfile.data.email)
 	}
+
+	return extractEmailUsername(userProfile.data.email)
 }

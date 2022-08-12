@@ -21,14 +21,12 @@ import {
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
-import integer from "!/validators/base/integer"
 import boolean from "!/validators/base/boolean"
 import unique from "!/validators/manager/unique"
 import required from "!/validators/base/required"
 import email from "!/validators/comparison/email"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -42,53 +40,30 @@ export default class extends BoundJSONController {
 	}
 
 	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
+		const attributes = {
+			name: {
+				// TODO: Validate the name
+				pipes: [ required, string ],
+				constraints: {}
+			},
+			email: {
+				pipes: [ required, string, email, unique ],
 				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "user"
-								}
-							}
-						},
-						id: {
-							pipes: [ required, integer ]
-						},
-						attributes: {
-							pipes: [ required, object],
-							constraints: {
-								object: {
-									name: {
-										// TODO: Validate the name
-										pipes: [ required, string ],
-										constraints: {}
-									},
-									email: {
-										pipes: [ required, string, email, unique ],
-										constraints: {
-											manager: {
-												className: UserManager,
-												columnName: "email"
-											},
-											unique: {
-												IDPath: "data.id"
-											}
-										}
-									},
-									prefersDark: {
-										pipes: [ required, boolean ]
-									}
-								}
-							}
-						}
+					manager: {
+						className: UserManager,
+						columnName: "email"
+					},
+					unique: {
+						IDPath: "data.id"
 					}
 				}
+			},
+			prefersDark: {
+				pipes: [ required, boolean ]
 			}
 		}
+
+		return makeResourceDocumentRules("user", attributes)
 	}
 
 	get manager(): BaseManagerClass { return UserManager }
@@ -98,7 +73,7 @@ export default class extends BoundJSONController {
 		response: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const id = +request.body.data.id
+		const id = request.body.data.id
 		const { email } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const updateData: Serializable = request.body.data.attributes
@@ -108,7 +83,7 @@ export default class extends BoundJSONController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& userData.data.id !== id
+			&& userData.data.id !== String(id)
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}

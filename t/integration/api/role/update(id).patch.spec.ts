@@ -27,7 +27,7 @@ describe("PATCH /api/role/:id", () => {
 			.send({
 				data: {
 					type: "role",
-					id: role.id,
+					id: String(role.id),
 					attributes: {
 						name:					newRole.name,
 						semesterFlags:    newRole.semesterFlags,

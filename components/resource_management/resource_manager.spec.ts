@@ -8,7 +8,7 @@ import UserFactory from "~/factories/user"
 import deserialize from "$/helpers/deserialize"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
-import Manager from "@/resource_management/manager"
+import Manager from "$/helpers/manager"
 import DepartmentFactory from "~/factories/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -29,23 +29,26 @@ describe("UI Component: Resource Manager", () => {
 			return deserialize(serializedUsers)!.data
 		}
 
-		it("Should identify if resource type is of user profile", async () => {
-			const department = await new DepartmentFactory().mayAdmit().insertOne()
+		it("Should identify if resource type is of user profile", async() => {
+			const department = await new DepartmentFactory().mayAdmit()
+				.insertOne()
 			const deanRole = await new RoleFactory()
 				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 				.insertOne()
-			const user = await new UserFactory().in(department).attach(deanRole).deserializedOne()
+			const user = await new UserFactory().in(department)
+				.attach(deanRole)
+				.deserializedOne()
 
 			const sampleUserList = await listUsers()
 
 			const wrapper = mount(ResourceManager as object, {
-				shallow: true,
-				props: {
-					resource: sampleUserList
+				"shallow": true,
+				"props": {
+					"resource": sampleUserList
 				},
-				global: {
-					provide: {
-						managerKind: new Manager(user as DeserializedUserProfile)
+				"global": {
+					"provide": {
+						"managerKind": new Manager(user as DeserializedUserProfile)
 					}
 				}
 			})

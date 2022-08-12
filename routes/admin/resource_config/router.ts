@@ -1,4 +1,5 @@
 import Router from "!/bases/router"
+import GetIndex from "./index.get"
 import GetUsersRoute from "./users.get"
 import GetRolesRoute from "./roles.get"
 import GetDepartmentsRoute from "./departments.get"
@@ -8,7 +9,10 @@ export default class extends Router {
 		super()
 
 		this.useControllers([
-			new GetUsersRoute()
+			new GetIndex(),
+			new GetUsersRoute(),
+			new GetRolesRoute(),
+			new GetDepartmentsRoute()
 		])
 	}
 }

@@ -12,17 +12,17 @@ export default class RequestEnvironment {
 	static get status() { return StatusCodes }
 
 	static get isOnTest(): boolean {
-		const environment = this.environment
+		const { environment } = this
 		return environment === Environment.UnitTest || this.isOnIntegration
 	}
 
 	static get isOnIntegration(): boolean {
-		const environment = this.environment
+		const { environment } = this
 		return environment === Environment.UnitTest || environment === Environment.IntegrationTest
 	}
 
 	static get isNotOnProduction(): boolean {
-		const environment = this.environment
+		const { environment } = this
 		return environment !== Environment.Production
 	}
 

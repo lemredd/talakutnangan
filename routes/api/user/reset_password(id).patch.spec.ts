@@ -19,7 +19,7 @@ describe("Controller: PATCH /api/user/reset_password/:id", () => {
 			body: {
 				data: {
 					type: "user",
-					id: user.id
+					id: String(user.id)
 				}
 			}
 		})

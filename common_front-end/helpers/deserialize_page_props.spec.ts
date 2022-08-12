@@ -1,37 +1,37 @@
 import deserializePageProps from "./deserialize_page_props"
 
 describe("Helper: Deserialize page props", () => {
-	it("should deserialize authenticated page context", async () => {
+	it("should deserialize authenticated page context", async() => {
 		const userProfile = {
-			data: {
-				type: "user",
-				id: 1,
-				attributes: {
-					name: "A"
+			"data": {
+				"type": "user",
+				"id": 1,
+				"attributes": {
+					"name": "A"
 				},
-				relationships: {
-					role: {
-						data: [
+				"relationships": {
+					"role": {
+						"data": [
 							{
-								type: "role",
-								id: 2
+								"type": "role",
+								"id": 2
 							}
 						]
 					}
 				}
 			},
-			included: [
+			"included": [
 				{
-					type: "role",
-					id: 2,
-					attributes: {
-						name: "B"
+					"type": "role",
+					"id": 2,
+					"attributes": {
+						"name": "B"
 					}
 				}
 			]
 		}
 		const serializedObject = {
-			pageProps: {
+			"pageProps": {
 				userProfile
 			}
 		}
@@ -39,18 +39,18 @@ describe("Helper: Deserialize page props", () => {
 		const deserializedObject = deserializePageProps(serializedObject)
 
 		expect(deserializedObject).toStrictEqual({
-			pageProps: {
-				userProfile: {
-					data: {
-						type: "user",
-						id: 1,
-						name: "A",
-						role: {
-							data: [
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"type": "user",
+						"id": 1,
+						"name": "A",
+						"role": {
+							"data": [
 								{
-									type: "role",
-									id: 2,
-									name: "B"
+									"type": "role",
+									"id": 2,
+									"name": "B"
 								}
 							]
 						}
@@ -60,18 +60,18 @@ describe("Helper: Deserialize page props", () => {
 		})
 	})
 
-	it("should not deserialize unauthenticated page context", async () => {
+	it("should not deserialize unauthenticated page context", async() => {
 		const serializedObject = {
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		}
 
 		const deserializedObject = deserializePageProps(serializedObject)
 
 		expect(deserializedObject).toStrictEqual({
-			pageProps: {
-				userProfile: null
+			"pageProps": {
+				"userProfile": null
 			}
 		})
 	})

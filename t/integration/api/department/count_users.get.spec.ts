@@ -26,13 +26,10 @@ describe("GET /api/department/count_users", () => {
 
 		const response = await App.request
 			.get("/api/department/count_users")
-			.send({
-				data: [
-					{
-						type: "department",
-						id: adminDepartment.id
-					}
-				]
+			.query({
+				filter: {
+					IDs: adminDepartment.id
+				}
 			})
 			.set("Cookie", cookie)
 			.type(JSON_API_MEDIA_TYPE)
@@ -40,7 +37,7 @@ describe("GET /api/department/count_users", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.type", "department")
-		expect(response.body).toHaveProperty("data.0.id", adminDepartment.id)
+		expect(response.body).toHaveProperty("data.0.id", String(adminDepartment.id))
 		expect(response.body).toHaveProperty("data.0.meta.userCount", 1)
 		expect(response.body).not.toHaveProperty("data.1")
 	})

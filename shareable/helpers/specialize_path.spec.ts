@@ -1,7 +1,7 @@
 import specializePath from "./specialize_path"
 
 describe("Helper: Specialize path", () => {
-	it("can bind ID", async () => {
+	it("can bind ID", async() => {
 		const id = 1
 		const pathTemplate = "/api/user/:id"
 
@@ -10,7 +10,7 @@ describe("Helper: Specialize path", () => {
 		expect(specializedPath).toBe("/api/user/1")
 	})
 
-	it("can bind multiple IDs", async () => {
+	it("can bind multiple IDs", async() => {
 		const post_id = 2
 		const id = 1
 		const pathTemplate = "/api/post/:post_id/comment/:id"

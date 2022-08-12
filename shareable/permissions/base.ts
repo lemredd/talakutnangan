@@ -37,14 +37,13 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * @param names Name of the permission to generate its mask
 	 */
 	generateMask(...names: U[]): number {
-		const permissions = this.permissions
+		const { permissions } = this
 		return names.reduce((combinedMask, name) => {
 			const info: PermissionInfo<U> = permissions.get(name)
-				|| { flag: 0, permissionDependencies: [] }
+				|| { "flag": 0,
+					"permissionDependencies": [] }
 			return combinedMask
-				| info.permissionDependencies.reduce((dependentMask, dependentName) => {
-					return dependentMask | this.generateMask(dependentName)
-				}, info.flag)
+				| info.permissionDependencies.reduce((dependentMask, dependentName) => dependentMask | this.generateMask(dependentName), info.flag)
 		}, 0)
 	}
 
@@ -52,9 +51,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * Generates mask where all permissions are enabled.
 	 */
 	 generateSuperMask(): number {
-		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => {
-			return previousMask | permissionInfo.flag
-		}, 0)
+		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => previousMask | permissionInfo.flag, 0)
 	}
 
 
@@ -62,9 +59,9 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * Deserialize the flag into permission names.
 	 */
 	deserialize(flags: number): U[] {
-		const permissions = this.permissions
+		const { permissions } = this
 		const names: U[] = []
-		for(const [ key, value ] of permissions.entries()) {
+		for (const [ key, value ] of permissions.entries()) {
 			if (this.doesMatch(flags, value.flag)) {
 				names.push(key)
 			}
@@ -81,16 +78,16 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 */
 	hasOneRoleAllowed(roles: T[], permissionCombinations: U[][]): boolean {
 		return permissionCombinations
-			.reduce((previousPermittedCombination: boolean, combination: U[]) => {
+			.reduce((previousPermittedCombination: boolean, combination: U[]) =>
 				// Use logical OR to match one of the permission combinations
-				return previousPermittedCombination || roles.reduce((
+				 previousPermittedCombination || roles.reduce((
 					previousPermittedRole: boolean,
 					role: T
-				) => {
+				) =>
 					// Use logical OR to match one of the roles
-					return previousPermittedRole || this.mayAllow(role, ...combination)
-				}, false)
-		}, false)
+					 previousPermittedRole || this.mayAllow(role, ...combination)
+				, false)
+			, false)
 	}
 
 	private doesMatch(flags: number, targetFlag: number): boolean {

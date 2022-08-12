@@ -39,6 +39,9 @@ import regex from "!/validators/comparison/regex"
 import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import notExists from "!/validators/manager/not_exists"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import makeResourceIdentifierListDocumentRules
+	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
@@ -53,89 +56,35 @@ export default class extends MultipartController {
 		// TODO: Think of the maximum size of the CSV file. currently accepting 1MB.
 		const maxSize = 1*1000
 		return [
-			new BodyValidation((request: Request): FieldRules => ({
-				data: {
+			new BodyValidation((request: Request): FieldRules => {
+				const attributes = {
+					kind: {
+						pipes: [ required, string, oneOf ],
+						constraints: {
+							oneOf: {
+								values: [ ...UserKindValues ]
+							}
+						}
+					}
+				}
+				const relationships = {
 					pipes: [ required, object ],
 					constraints: {
 						object: {
-							type: {
-								pipes: [ required, string, same ],
-								constraints: {
-									same: {
-										value: "user"
-									}
-								}
-							},
-							attributes: {
+							roles: {
 								pipes: [ required, object ],
 								constraints: {
-									object: {
-										kind: {
-											pipes: [ required, string, oneOf ],
-											constraints: {
-												oneOf: {
-													values: [ ...UserKindValues ]
-												}
-											}
-										}
-									}
-								}
-							},
-							relationships: {
-								pipes: [ required, object ],
-								constraints: {
-									object: {
-										roles: {
-											pipes: [ required, object ],
-											constraints: {
-												object: {
-													data: {
-														pipes: [ required, array, length ],
-														constraints: {
-															array: {
-																pipes: [ required, object ],
-																constraints: {
-																	object: {
-																		type: {
-																			pipes: [ required, string, same ],
-																			constraints: {
-																				same: {
-																					value: "role"
-																				}
-																			}
-																		},
-																		id: {
-																			pipes: [
-																				required,
-																				string,
-																				integer,
-																				exists
-																			],
-																			constraints: {
-																				manager: {
-																					className: RoleManager,
-																					columnName: "id"
-																				}
-																			}
-																		}
-																	}
-																}
-															},
-															length: {
-																minimum: 1
-															}
-														}
-													}
-												}
-											}
-										}
-									}
+									object: makeResourceIdentifierListDocumentRules(
+										"role",
+										exists,
+										RoleManager
+									)
 								}
 							}
 						}
 					}
-				},
-				meta: {
+				}
+				const meta = {
 					pipes: [ required, object ],
 					constraints: {
 						object: {
@@ -151,7 +100,16 @@ export default class extends MultipartController {
 						}
 					}
 				}
-			})),
+
+				return makeResourceDocumentRules(
+					"user",
+					attributes,
+					true,
+					true,
+					{ relationships },
+					{ meta }
+				)
+			}),
 			new CSVParser("meta.importedCSV")
 		]
 	}
@@ -235,7 +193,8 @@ export default class extends MultipartController {
 		const body: Partial<RawBulkData> = {}
 
 		body.kind = importedBody.data.attributes.kind
-		body.roles = importedBody.data.relationships.roles.data.map(identifier => identifier.id)
+		body.roles = importedBody.data.relationships.roles.data
+			.map(identifier => Number(identifier.id))
 		body.importedCSV = importedBody.meta.importedCSV
 
 		Log.trace("controller", "made user manager")
