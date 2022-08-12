@@ -9,36 +9,12 @@
 				v-model="profileInfo.displayName"
 			/>
 		</div>
-		<div>
-			<h3 class="display-name text-lg">Profile Picture</h3>
-			<div class="picture-container relative p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
-				<img v-if="profileInfo.profilePic" :src="profileInfo.profilePic">
-				<div class="no-image flex justify-center" v-else>
-					<label for="input-profile-pic" class="flex flex-col items-center justify-center">
-						<span class="material-icons">add_circle</span>
-						<input type="file" accept="image/" id="input-profile-pic" class="input-pic" @change="loadImage($event, 'profilePic')">
-						<small class="text-center">
-							Drag and drop or upload image
-						</small>
-					</label>
-				</div>
-			</div>
-		</div>
-		<div>
-			<h3 class="display-name text-lg">Signature</h3>
-			<div class="picture-container p-1 w-35 h-35 rounded-0.8rem bg-dark-100 flex justify-center">
-				<img v-if="profileInfo.signature" :src="profileInfo.signature">
-				<div class="no-image flex justify-center" v-else>
-					<label for="input-signature" class="flex flex-col items-center justify-center">
-						<span class="material-icons">add_circle</span>
-						<input type="file" accept="image/" id="input-signature" class="input-pic" @change="loadImage($event, 'signature')">
-						<small class="text-center">
-							Drag and drop or upload image
-						</small>
-					</label>
-				</div>
-			</div>
-		</div>
+
+		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
+		<!-- TODO: Refactor HTML to Vue Components if applicable -->
+		<PicturePicker title="Profile Picture" :picture="profileInfo.profilePic"/>
+		<PicturePicker title="Signature" :picture="profileInfo.signature"/>
+
 		<div class ="p-5 dark-mode-toggle">
 			<h3 class="display-name text-lg col-span-full">Dark Mode</h3>
 			<p class="name">Click to toggle dark mode</p>
@@ -101,13 +77,15 @@ form {
 
 <script setup lang="ts">
 import { inject, Ref, ref, provide } from "vue"
+
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
+import PicturePicker from "@/settings/picture_picker.vue"
 
 const profileInfo = {
 	displayName: "Sample Name",
-	profilePic: null as any,
-	signature: null as any
+	profilePic: null as string | null,
+	signature: null as string | null
 }
 
 // const userInfo = inject("userInfo") as Ref<{ [key:string]: any }>
@@ -124,15 +102,6 @@ function toggleDarkMode() {
 	}
 
 	bodyClasses.value = [...mutatedBodyClasses]
-}
-
-function loadImage(e: Event, type: string) {
-	const target = e.target as HTMLInputElement
-	const [file] = target.files!
-	const fileObjectURL = URL.createObjectURL(file)
-
-	if (type === "signature") profileInfo.signature = fileObjectURL
-	if (type === "profilePic") profileInfo.profilePic = fileObjectURL
 }
 
 provide("tabs", ["Account", "Profile"])
