@@ -47,7 +47,7 @@ export default class extends MultipartController {
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const attributes = {
-			"signature": {
+			"fileContents": {
 				"constraints": {
 					"buffer": {
 						// TODO: Think of maximum size of picture
