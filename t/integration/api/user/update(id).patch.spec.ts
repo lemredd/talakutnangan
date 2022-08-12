@@ -78,7 +78,7 @@ describe("PATCH /api/user/:id", () => {
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
 		expect(previousMessages[0].message.text).toContain(updatedStudent!.email)
 		expect(previousMessages[0].message.text).toContain("/user/verify")
-	})
+	}, 10000)
 
 	it("can be accessed by student and retain email verification after update", async() => {
 		const studentRole = await new RoleFactory()
