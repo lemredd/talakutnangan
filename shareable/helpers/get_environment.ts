@@ -1,9 +1,9 @@
-import { Environment } from "$/types/server";
+import { Environment } from "$/types/server"
 
 export default function(): Environment {
 	const environment = process.env.NODE_ENV
 
-	switch(environment) {
+	switch (environment) {
 		case "production": return Environment.Production
 		case "intg_test": return Environment.IntegrationTest
 		case "unit_test": return Environment.UnitTest

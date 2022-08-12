@@ -11,7 +11,8 @@ import type {
 	IdentifierListDocument
 } from "$/types/documents/base"
 
-export interface RoleResourceIdentifier extends ResourceIdentifier {
+export interface RoleResourceIdentifier <T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "role",
 	meta?: {
 		userCount: number
@@ -32,36 +33,41 @@ export interface RoleAttributes extends Attributes {
 	deletedAt?: string | null
 }
 
-export interface RoleResource extends Resource<RoleResourceIdentifier, RoleAttributes> {}
+export type RoleResource = Resource<RoleResourceIdentifier, RoleAttributes>
 
-export interface DeserializedRoleResource extends DeserializedResource<
-	RoleResourceIdentifier,
+export type DeserializedRoleResource<T extends string|number = string> = DeserializedResource<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes
-> {}
+>
 
-export interface RoleDocument extends ResourceDocument<
+export type RoleDocument = ResourceDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
-> {}
+>
 
-export interface RoleListDocument extends ResourceListDocument<
+export type RoleListDocument = ResourceListDocument<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource
-> {}
+>
 
-export interface DeserializedRoleDocument extends DeserializedResourceDocument<
-	RoleResourceIdentifier,
+export type DeserializedRoleDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes,
-	DeserializedRoleResource
-> {}
+	DeserializedRoleResource<T>
+>
 
-export interface DeserializedRoleListDocument extends DeserializedResourceListDocument<
-	RoleResourceIdentifier,
+export type DeserializedRoleListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	RoleResourceIdentifier<T>,
 	RoleAttributes,
-	DeserializedRoleResource
-> {}
+	DeserializedRoleResource<T>
+>
 
 export interface RoleIdentifierDocument
 extends IdentifierDocument<RoleResourceIdentifier> {}

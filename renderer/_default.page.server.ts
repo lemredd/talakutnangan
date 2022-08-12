@@ -20,7 +20,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 	if (isInErrorPage) {
 		pageContext.Page = ErrorPage
 		pageContext.pageProps = {
-			is404: false,
+			"is404": false,
 			...pageContext.pageProps
 		}
 	}
@@ -30,8 +30,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
 	// See https://vite-plugin-ssr.com/head
 	const { documentProps } = pageContext
-	const title = (documentProps && documentProps.title) || "Vite SSR app"
-	const desc = (documentProps && documentProps.description) || "App using Vite + vite-plugin-ssr"
+	const title = documentProps && documentProps.title || "Vite SSR app"
+	const desc = documentProps && documentProps.description || "App using Vite + vite-plugin-ssr"
 
 	const documentHtml = escapeInject`<!DOCTYPE html>
 		<html lang="en">
@@ -50,17 +50,17 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
 	const responseDocument = {
 		documentHtml,
-		pageContext: {
+		"pageContext": {
 			// We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-		},
+		}
 	}
 
 	if (pageContext.pageProps.parsedUnitError) {
 		const rawStatus = pageContext.pageProps.parsedUnitError.status
 		const parsedStatus = Number(rawStatus)
-		if(!Number.isNaN(parsedStatus) && parsedStatus >= 400 && parsedStatus < 600) {
+		if (!Number.isNaN(parsedStatus) && parsedStatus >= 400 && parsedStatus < 600) {
 			responseDocument.pageContext = {
-				errorStatus: parsedStatus
+				"errorStatus": parsedStatus
 			}
 		}
 	}

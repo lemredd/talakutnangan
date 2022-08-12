@@ -9,42 +9,49 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ProfilePictureResourceIdentifier extends ResourceIdentifier {
+export interface ProfilePictureResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "profile_picture",
 }
 
-export interface ProfilePictureAttributes<T = string> extends FileLikeAttributes<T> {}
+export type ProfilePictureAttributes<T = string> = FileLikeAttributes<T>
 
 export interface ProfilePictureResource<T = string> extends Resource<
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes<T>
 >, FileLikeResourceLinks {}
 
-export interface DeserializedProfilePictureResource extends DeserializedResource<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes
-> {}
+>
 
-export interface ProfilePictureDocument<T = Buffer> extends ResourceDocument<
+export type ProfilePictureDocument<T = Buffer> = ResourceDocument<
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes<T>,
 	ProfilePictureResource<T>
-> {}
+>
 
-export interface ProfilePictureListDocument extends ResourceListDocument<
+export type ProfilePictureListDocument = ResourceListDocument<
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes,
 	ProfilePictureResource
-> {}
+>
 
-export interface DeserializedProfilePictureDocument extends DeserializedResourceDocument<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes,
-	DeserializedProfilePictureResource
-> {}
+	DeserializedProfilePictureResource<T>
+>
 
-export interface DeserializedProfilePictureListDocument extends DeserializedResourceListDocument<
-	ProfilePictureResourceIdentifier,
+export type DeserializedProfilePictureListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	ProfilePictureResourceIdentifier<T>,
 	ProfilePictureAttributes,
-	DeserializedProfilePictureResource
-> {}
+	DeserializedProfilePictureResource<T>
+>

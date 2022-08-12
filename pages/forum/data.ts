@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, Ref } from "vue"
 
 export type Post = {
 [x: string]: any;
@@ -13,24 +13,24 @@ export type Post = {
     isMenuShown: boolean
     isEditShown: boolean
     isPostShown: boolean
-    
+
 };
 
-var secludedPosts: Post[] = [];
+const secludedPosts: Post[] = []
 
-var posts: Post[] = [];
+const posts: Post[] = []
 
-export function getPosts(): Post[]
-{
-    return posts;
+export function getPosts(): Post[] {
+	return posts
 }
 
-export function getSecludedPosts(): Post[]
-{
-    return secludedPosts;
+export function getSecludedPosts(): Post[] {
+	return secludedPosts
 }
 
-// setInterval(() => {
-//     console.log("done checkking post");
-//     console.log(` checked ${posts.length}`);
-// }, 2000)
+/*
+ * SetInterval(() => {
+ *     console.log("done checkking post");
+ *     console.log(` checked ${posts.length}`);
+ * }, 2000)
+ */

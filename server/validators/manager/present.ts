@@ -1,10 +1,9 @@
 import type {
 	ValidationState,
 	ValidationConstraints,
-	PresentRuleConstraints
+	ManagerBasedRuleConstraints
 } from "!/types/validation"
 
-import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -12,13 +11,13 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<PresentRuleConstraints>
+	constraints: ValidationConstraints & Partial<ManagerBasedRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if(state.maySkip) return state
 
-	if (constraints.manager === undefined || constraints.present === undefined) {
+	if (constraints.manager === undefined) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -32,16 +31,13 @@ export default async function(
 		}
 	})
 
-	const foundID = (foundModel.data as any)?.id+""
-	const id = accessDeepPath(constraints.source, constraints.present.IDPath)
-
-	if (foundID === id) {
-		return state
-	} else {
+	if (foundModel.data === null) {
 		throw {
 			field: constraints.field,
 			messageMaker: (field: string, value: string) =>
 				`The ${value} in field "${field}" is not existing or archived in the database".`
 		}
+	} else {
+		return state
 	}
 }

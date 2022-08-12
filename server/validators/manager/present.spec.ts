@@ -19,9 +19,6 @@ describe("Validator: present", () => {
 			manager: {
 				className: UserManager,
 				columnName: "name"
-			},
-			present: {
-				IDPath: "id"
 			}
 		}
 
@@ -42,9 +39,6 @@ describe("Validator: present", () => {
 			manager: {
 				className: UserManager,
 				columnName: "name"
-			},
-			present: {
-				IDPath: "id"
 			}
 		}
 		await user.destroy({ force: false })
@@ -66,9 +60,6 @@ describe("Validator: present", () => {
 			manager: {
 				className: UserManager,
 				columnName: "name"
-			},
-			present: {
-				IDPath: "id"
 			}
 		}
 		await user.destroy({ force: true })

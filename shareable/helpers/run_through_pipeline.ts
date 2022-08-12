@@ -11,7 +11,5 @@ import type { Pipe } from "$/types/database"
  * @param pipeline Functions which transforms the data at specified constraints if possible.
  */
 export default function<T, U>(data: T, constraints: U, pipeline: Pipe<T, U>[]): T {
-	return pipeline.reduce((previousData, pipe) => {
-		return pipe(previousData, constraints)
-	}, data)
+	return pipeline.reduce((previousData, pipe) => pipe(previousData, constraints), data)
 }

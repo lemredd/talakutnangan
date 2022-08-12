@@ -36,7 +36,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 			.send({
 				data: {
 					type: "user",
-					id: student.id
+					id: String(student.id)
 				}
 			})
 			.set("Cookie", cookie)

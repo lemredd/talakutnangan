@@ -18,7 +18,8 @@ export default class extends PermissionGroup<AuditTrailFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: VIEW, permissionDependencies: [] } ]
+			[ "view", { "flag": VIEW,
+				"permissionDependencies": [] } ]
 		])
 	}
 }

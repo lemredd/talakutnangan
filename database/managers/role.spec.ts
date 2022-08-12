@@ -12,7 +12,7 @@ describe("Database: Role read operations", () => {
 
 		const counts = await manager.countUsers([ role.id ])
 
-		expect(counts).toHaveProperty("data.0.id", role.id)
+		expect(counts).toHaveProperty("data.0.id", String(role.id))
 		expect(counts).toHaveProperty("data.0.type", "role")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
@@ -23,7 +23,7 @@ describe("Database: Role read operations", () => {
 
 		const counts = await manager.countUsers([ role.id ])
 
-		expect(counts).toHaveProperty("data.0.id", role.id)
+		expect(counts).toHaveProperty("data.0.id", String(role.id))
 		expect(counts).toHaveProperty("data.0.type", "role")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
 	})
@@ -40,10 +40,10 @@ describe("Database: Role read operations", () => {
 
 		const counts = await manager.countUsers([ roleA.id, roleB.id ])
 
-		expect(counts).toHaveProperty("data.0.id", roleA.id)
+		expect(counts).toHaveProperty("data.0.id", String(roleA.id))
 		expect(counts).toHaveProperty("data.0.type", "role")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 3)
-		expect(counts).toHaveProperty("data.1.id", roleB.id)
+		expect(counts).toHaveProperty("data.1.id", String(roleB.id))
 		expect(counts).toHaveProperty("data.1.type", "role")
 		expect(counts).toHaveProperty("data.1.meta.userCount", 2)
 	})

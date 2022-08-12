@@ -23,9 +23,12 @@ describe("PATCH /api/user/:id/relationships/signature", () => {
 		const studentRole = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(studentRole, userFactory => {
-			return userFactory.beStudent()
-		})
+		const { user: admin, cookie } = await App.makeAuthenticatedCookie(
+			studentRole,
+			userFactory => {
+				return userFactory.beStudent()
+			}
+		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request

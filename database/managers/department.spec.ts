@@ -12,7 +12,7 @@ describe("Database: Department read operations", () => {
 
 		const counts = await manager.countUsers([ department.id ])
 
-		expect(counts).toHaveProperty("data.0.id", department.id)
+		expect(counts).toHaveProperty("data.0.id", String(department.id))
 		expect(counts).toHaveProperty("data.0.type", "department")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
@@ -23,7 +23,7 @@ describe("Database: Department read operations", () => {
 
 		const counts = await manager.countUsers([ department.id ])
 
-		expect(counts).toHaveProperty("data.0.id", department.id)
+		expect(counts).toHaveProperty("data.0.id", String(department.id))
 		expect(counts).toHaveProperty("data.0.type", "department")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
 	})
@@ -40,10 +40,10 @@ describe("Database: Department read operations", () => {
 
 		const counts = await manager.countUsers([ departmentA.id, departmentB.id ])
 
-		expect(counts).toHaveProperty("data.0.id", departmentA.id)
+		expect(counts).toHaveProperty("data.0.id", String(departmentA.id))
 		expect(counts).toHaveProperty("data.0.type", "department")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 3)
-		expect(counts).toHaveProperty("data.1.id", departmentB.id)
+		expect(counts).toHaveProperty("data.1.id", String(departmentB.id))
 		expect(counts).toHaveProperty("data.1.type", "department")
 		expect(counts).toHaveProperty("data.1.meta.userCount", 2)
 	})

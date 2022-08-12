@@ -2,10 +2,10 @@ import runThroughPipeline from "./run_through_pipeline"
 
 describe("Database: Run through pipeline", () => {
 	it("can handle single pipe", () => {
-		const mainData: number = 4
-		const baseConstraints = { pipeA: 3 }
+		const mainData = 4
+		const baseConstraints = { "pipeA": 3 }
 		const pipeA = (
-			data: typeof mainData,
+			data: number,
 			constraints: typeof baseConstraints
 		) => data + constraints.pipeA
 
@@ -15,14 +15,17 @@ describe("Database: Run through pipeline", () => {
 	})
 
 	it("can handle multiple pipes", () => {
-		const mainData: number = 2
-		const baseConstraints = { pipeB: 3, pipeC: 2 }
+		const mainData = 2
+		const baseConstraints = {
+			"pipeB": 3,
+			"pipeC": 2
+		}
 		const pipeB = (
-			data: typeof mainData,
+			data: number,
 			constraints: typeof baseConstraints
 		) => data ** constraints.pipeB
 		const pipeC = (
-			data: typeof mainData,
+			data: number,
 			constraints: typeof baseConstraints
 		) => data * constraints.pipeC
 

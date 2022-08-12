@@ -8,11 +8,11 @@ import NoContentResponseInfo from "!/response_infos/no_content"
 import BoundJSONController from "!/controllers/bound_json_controller"
 
 import { UPDATE } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import {
 	tag,
 	user,
+	role as permissionGroup,
 	post,
 	comment,
 	semester,
@@ -20,14 +20,12 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import same from "!/validators/comparison/same"
 import unique from "!/validators/manager/unique"
-import range from "!/validators/comparison/range"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
+import makeFlagRules from "!/rule_sets/make_flag"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
@@ -38,113 +36,40 @@ export default class extends BoundJSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "role"
-								}
-							}
-						},
-						id: {
-							pipes: [ required, integer ],
-							constraints: {}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									name: {
-										pipes: [ required, string, regex, unique ],
-										constraints: {
-											regex: { match: /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/ },
-											manager: {
-												className: RoleManager,
-												columnName: "name"
-											},
-											unique: {
-												IDPath: "data.id"
-											}
-										}
-									},
-									semesterFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: semester.generateSuperMask()
-											}
-										}
-									},
-									tagFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: tag.generateSuperMask()
-											}
-										}
-									},
-									postFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: post.generateSuperMask()
-											}
-										}
-									},
-									commentFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: comment.generateSuperMask()
-											}
-										}
-									},
-									profanityFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: profanity.generateSuperMask()
-											}
-										}
-									},
-									userFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: user.generateSuperMask()
-											}
-										}
-									},
-									auditTrailFlags: {
-										pipes: [ required, integer, range ],
-										constraints: {
-											range: {
-												minimum: 0, maximum: auditTrail.generateSuperMask()
-											}
-										}
-									},
-								}
-							}
-						}
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		const attributes: FieldRules = {
+			"name": {
+				"constraints": {
+					"manager": {
+						"className": RoleManager,
+						"columnName": "name"
+					},
+					"regex": { "match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u },
+					"unique": {
+						"IDPath": "data.id"
 					}
-				}
-			}
+				},
+				"pipes": [ required, string, regex, unique ]
+			},
+			...makeFlagRules("semesterFlags", semester),
+			...makeFlagRules("tagFlags", tag),
+			...makeFlagRules("postFlags", post),
+			...makeFlagRules("commentFlags", comment),
+			...makeFlagRules("profanityFlags", profanity),
+			...makeFlagRules("userFlags", user),
+			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
+
+		return makeResourceDocumentRules("role", attributes)
 	}
 
 	get manager(): BaseManagerClass { return RoleManager }
 
-	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new RoleManager(request.transaction, request.cache)
 		const { id, attributes } = request.body.data
 
-		await manager.update(id, attributes)
+		await manager.update(Number(id), attributes)
 
 		return new NoContentResponseInfo()
 	}

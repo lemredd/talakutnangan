@@ -10,7 +10,8 @@ import type {
 } from "$/types/documents/base"
 import type { Day } from "$/types/database"
 
-export interface EmployeeScheduleResourceIdentifier extends ResourceIdentifier {
+export interface EmployeeScheduleResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "employee_schedule"
 }
 
@@ -20,36 +21,42 @@ export interface EmployeeScheduleAttributes extends Attributes {
 	dayName: Day
 }
 
-export interface EmployeeScheduleResource extends Resource<
+export type EmployeeScheduleResource = Resource<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes
-> {}
+>
 
-export interface DeserializedEmployeeScheduleResource extends DeserializedResource<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes
-> {}
+>
 
-export interface EmployeeScheduleDocument extends ResourceDocument<
+export type EmployeeScheduleDocument = ResourceDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	EmployeeScheduleResource
-> {}
+>
 
-export interface EmployeeScheduleListDocument extends ResourceListDocument<
+export type EmployeeScheduleListDocument = ResourceListDocument<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	EmployeeScheduleResource
-> {}
+>
 
-export interface DeserializedEmployeeScheduleDocument extends DeserializedResourceDocument<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes,
-	DeserializedEmployeeScheduleResource
-> {}
+	DeserializedEmployeeScheduleResource<T>
+>
 
-export interface DeserializedEmployeeScheduleListDocument extends DeserializedResourceListDocument<
-	EmployeeScheduleResourceIdentifier,
+export type DeserializedEmployeeScheduleListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes,
-	DeserializedEmployeeScheduleResource
-> {}
+	DeserializedEmployeeScheduleResource<T>
+>

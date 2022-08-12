@@ -92,7 +92,7 @@ const isRolePresent = computed(() => {
 })
 
 onMounted(async () => {
-	await new RoleFetcher().read(+roleId)
+	await new RoleFetcher().read(roleId)
 	.then(response => {
 		const { body } = response
 		const deserializedData = (deserialize(body)! as DeserializedRoleDocument).data

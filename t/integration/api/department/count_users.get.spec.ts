@@ -37,7 +37,7 @@ describe("GET /api/department/count_users", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.type", "department")
-		expect(response.body).toHaveProperty("data.0.id", adminDepartment.id)
+		expect(response.body).toHaveProperty("data.0.id", String(adminDepartment.id))
 		expect(response.body).toHaveProperty("data.0.meta.userCount", 1)
 		expect(response.body).not.toHaveProperty("data.1")
 	})

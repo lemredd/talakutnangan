@@ -12,11 +12,10 @@ import type {
 	DeserializedRoleListDocument,
 	RoleIdentifierListDocument
 } from "$/types/documents/role"
-
-import Fetcher from "$@/fetchers/fetcher"
+import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
-export default class RoleFetcher extends Fetcher<
+export default class RoleFetcher extends BaseFetcher<
 	RoleResourceIdentifier,
 	RoleAttributes,
 	RoleResource,

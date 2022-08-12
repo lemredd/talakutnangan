@@ -26,13 +26,17 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view",              { flag: VIEW, permissionDependencies: [] } ],
-			[ "create",            { flag: CREATE, permissionDependencies: [ "view" ] } ],
-			[ "update",            { flag: UPDATE, permissionDependencies: [ "view" ] } ],
-			[ "archiveAndRestore", { flag: ARCHIVE_AND_RESTORE, permissionDependencies: [ "view" ] } ],
-			[ "merge",   {
-				flag: 0x100,
-				permissionDependencies: [
+			[ "view", { "flag": VIEW,
+				"permissionDependencies": [] } ],
+			[ "create", { "flag": CREATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "update", { "flag": UPDATE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ] } ],
+			[ "merge", {
+				"flag": 0x100,
+				"permissionDependencies": [
 					"archiveAndRestore", "create"
 				]
 			} ]

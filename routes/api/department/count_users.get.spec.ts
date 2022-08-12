@@ -18,7 +18,7 @@ describe("Controller: GET /api/department/count_users", () => {
 		requester.customizeRequest({
 			query: {
 				filter: {
-					IDs: department.id+""
+					IDs: String(department.id)
 				}
 			}
 		})

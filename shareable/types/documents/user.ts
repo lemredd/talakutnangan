@@ -18,7 +18,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface UserResourceIdentifier extends ResourceIdentifier {
+export interface UserResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "user"
 }
 
@@ -70,58 +71,68 @@ export type DeserializedUserAttributes =
 	| DeserializedReachableEmployeesAttributes
 	| DeserializedUnreachableEmployeesAttributes
 
-export interface UserResource extends Resource<
+export type UserResource = Resource<
 	UserResourceIdentifier,
 	UserAttributes
-> {}
+>
 
-interface DeserializedStudentResource extends DeserializedResource<
-	UserResourceIdentifier,
+type DeserializedStudentResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	UserResourceIdentifier<T>,
 	DeserializedStudentAttributes
-> {}
+>
 
-interface DeserializedReachableEmployeesResource extends DeserializedResource<
-	UserResourceIdentifier,
+type DeserializedReachableEmployeesResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	UserResourceIdentifier<T>,
 	DeserializedReachableEmployeesAttributes
-> {}
+>
 
-interface DeserializedUnreachableEmployeesResource extends DeserializedResource<
-	UserResourceIdentifier,
+type DeserializedUnreachableEmployeesResource<T extends string|number = string>
+= DeserializedResource<
+	T,
+	UserResourceIdentifier<T>,
 	DeserializedUnreachableEmployeesAttributes
-> {}
+>
 
-export type DeserializedUserResource =
-	| DeserializedStudentResource
-	| DeserializedReachableEmployeesResource
-	| DeserializedUnreachableEmployeesResource
+export type DeserializedUserResource<T extends string|number = string> =
+	| DeserializedStudentResource<T>
+	| DeserializedReachableEmployeesResource<T>
+	| DeserializedUnreachableEmployeesResource<T>
 
-export interface UserDocument extends ResourceDocument<
+export type UserDocument = ResourceDocument<
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource
-> {}
+>
 
-export interface UserListDocument extends ResourceListDocument<
+export type UserListDocument = ResourceListDocument<
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource
-> {}
+>
 
-export interface DeserializedUserDocument extends DeserializedResourceDocument<
-	UserResourceIdentifier,
+export type DeserializedUserDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	UserResourceIdentifier<T>,
 	DeserializedUserAttributes,
-	DeserializedUserResource
-> {}
+	DeserializedUserResource<T>
+>
 
-export interface DeserializedUserListDocument extends DeserializedResourceListDocument<
-	UserResourceIdentifier,
+export type DeserializedUserListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	UserResourceIdentifier<T>,
 	DeserializedUserAttributes,
-	DeserializedUserResource
-> {}
+	DeserializedUserResource<T>
+>
 
 interface GeneralUserProfileMetaProperties extends Serializable {
 	hasDefaultPassword?: boolean
 }
 
-export interface DeserializedUserProfile
-extends DeserializedUserDocument, MetaDocument<GeneralUserProfileMetaProperties> {}
+export interface DeserializedUserProfile<T extends string|number = string>
+extends DeserializedUserDocument<T>, MetaDocument<GeneralUserProfileMetaProperties> {}

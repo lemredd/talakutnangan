@@ -11,7 +11,8 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface AuditTrailResourceIdentifier extends ResourceIdentifier {
+export interface AuditTrailResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
 	type: "audit_trail"
 }
 
@@ -20,38 +21,44 @@ export interface AuditTrailAttributes extends Attributes {
 	extra: GeneralObject
 }
 
-export interface AuditTrailResource extends Resource<
+export type AuditTrailResource = Resource<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes
-> {}
+>
 
-export interface DeserializedAuditTrailResource extends DeserializedResource<
-	AuditTrailResourceIdentifier,
+export interface DeserializedAuditTrailResource<T extends string|number = string>
+extends DeserializedResource<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes
 > {
 	user: DeserializedUserResource|null
 }
 
-export interface AuditTrailDocument extends ResourceDocument<
+export type AuditTrailDocument = ResourceDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	AuditTrailResource
-> {}
+>
 
-export interface AuditTrailListDocument extends ResourceListDocument<
+export type AuditTrailListDocument = ResourceListDocument<
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
 	AuditTrailResource
-> {}
+>
 
-export interface DeserializedAuditTrailDocument extends DeserializedResourceDocument<
-	AuditTrailResourceIdentifier,
+export type DeserializedAuditTrailDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes,
-	DeserializedAuditTrailResource
-> {}
+	DeserializedAuditTrailResource<T>
+>
 
-export interface DeserializedAuditTrailListDocument extends DeserializedResourceListDocument<
-	AuditTrailResourceIdentifier,
+export type DeserializedAuditTrailListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes,
-	DeserializedAuditTrailResource
-> {}
+	DeserializedAuditTrailResource<T>
+>

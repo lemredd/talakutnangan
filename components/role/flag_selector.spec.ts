@@ -5,12 +5,12 @@ import { post } from "$/permissions/permission_list"
 import { ref } from "vue"
 
 describe("Component: Role/Flag Selector", () => {
-	it(("should check flag depependency/ies"), async () => {
+	it("should check flag depependency/ies", async() => {
 		const wrapper = mount(FlagSelector, {
-			props: {
-				header: "Post",
-				basePermissionGroup: post,
-				flags: 0
+			"props": {
+				"header": "Post",
+				"basePermissionGroup": post,
+				"flags": 0
 			}
 		})
 
@@ -23,12 +23,12 @@ describe("Component: Role/Flag Selector", () => {
 		expect(updates).toHaveLength(1)
 		expect(updates![0]).toEqual([ expectedFlagValue ])
 	})
-	it(("should increase flags on selection of access level"), async () => {
+	it("should increase flags on selection of access level", async() => {
 		const wrapper = mount(FlagSelector, {
-			props: {
-				header: "Post",
-				basePermissionGroup: post,
-				flags: 0
+			"props": {
+				"header": "Post",
+				"basePermissionGroup": post,
+				"flags": 0
 			}
 		})
 

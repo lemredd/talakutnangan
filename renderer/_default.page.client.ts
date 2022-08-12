@@ -12,7 +12,7 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
 	if (pageContext.pageProps.parsedUnitError && pageContext.urlPathname === "/") {
 		pageContext.Page = ErrorPage
 		pageContext.pageProps = {
-			is404: false,
+			"is404": false,
 			...pageContext.pageProps
 		}
 	}
