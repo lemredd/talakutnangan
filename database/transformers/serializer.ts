@@ -19,7 +19,7 @@ export default class Serializer {
 		.withInput(model as unknown as T)
 		.withTransformer(transformer)
 
-		if (!options) {
+		if (options) {
 			builder = builder.withOptions({ "extra": options as unknown as U })
 		}
 
