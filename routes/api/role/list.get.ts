@@ -9,14 +9,11 @@ import DepartmentManager from "%/managers/department"
 import QueryController from "!/controllers/query_controller"
 
 import { READ } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { role as permissionGroup } from "$/permissions/permission_list"
 
-import integer from "!/validators/base/integer"
-import exists from "!/validators/manager/exists"
-import nullable from "!/validators/base/nullable"
 import makeListRules from "!/rule_sets/make_list"
-import skipAsterisk from "!/validators/comparison/skip_asterisk"
+import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -28,18 +25,10 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(RoleManager, {
-			department: {
-				pipes: [ nullable, skipAsterisk, integer, exists ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					manager: {
-						className: DepartmentManager,
-						columnName: "id"
-					}
-				}
-			}
-		})
+		return makeListRules(
+			RoleManager,
+			makeIDBasedFilterRules("department", DepartmentManager, true)
+		)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
