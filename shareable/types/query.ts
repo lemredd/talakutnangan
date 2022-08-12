@@ -22,12 +22,12 @@ export interface DepartmentFilter<T extends number|string = string> extends Seri
 	}
 }
 
-export interface RoleFilter extends Serializable {
+export interface RoleFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
 		 * ID of the role to filter on
 		 */
-		role: "*"|number
+		role: "*"|T
 	}
 }
 
@@ -79,7 +79,7 @@ export type CommonQueryParameters =
 export type UserQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DepartmentFilter<T>
-	& RoleFilter
+	& RoleFilter<T>
 	& KindFilter
 	& SlugFilter
 
