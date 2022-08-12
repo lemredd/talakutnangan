@@ -101,6 +101,7 @@ rules:
   space-before-function-paren: ["error", "never"]
   sort-imports: "off"
   sort-keys: "off"
+  strict: "warn"
   quotes:
     - "error"
     - "double"
