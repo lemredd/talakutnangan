@@ -18,11 +18,10 @@ import {
 } from "$/permissions/user_combinations"
 
 import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
 import oneOf from "!/validators/comparison/one-of"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
+import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
 import makeListRules from "!/rule_sets/make_list"
 
@@ -44,26 +43,8 @@ export default class extends QueryController {
 				},
 				"pipes": [ nullable, string ]
 			},
-			"department": {
-				"constraints": {
-					"nullable": { "defaultValue": "*" },
-					"manager": {
-						"className": DepartmentManager,
-						"columnName": "id"
-					}
-				},
-				"pipes": [ nullable, skipAsterisk, integer, exists ]
-			},
-			"role": {
-				"constraints": {
-					"nullable": { "defaultValue": "*" },
-					"manager": {
-						"className": RoleManager,
-						"columnName": "id"
-					}
-				},
-				"pipes": [ nullable, skipAsterisk, integer, exists ]
-			},
+			...makeIDBasedFilterRules("department", DepartmentManager, true),
+			...makeIDBasedFilterRules("role", RoleManager, true),
 			"kind": {
 				"constraints": {
 					"nullable": { "defaultValue": "*" },
