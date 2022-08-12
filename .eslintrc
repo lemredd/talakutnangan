@@ -39,6 +39,7 @@ rules:
       SwitchCase: 1
       CallExpression: { "arguments": "first" }
       MemberExpression: 0
+      VariableDeclarator: "first"
   id-length: ["error", { "exceptions": ["i", "j", "k", "t"] }]
   lines-around-comment:
     - "warn"
@@ -62,7 +63,8 @@ rules:
   multiline-ternary: ["error", "always-multiline"]
   new-cap:
     - "error"
-    - { "capIsNewExceptions": ["Selector"] }
+    -
+      capIsNew: false
   newline-per-chained-call: "off"
   no-alert: "off"
   no-duplicate-imports: "warn"
