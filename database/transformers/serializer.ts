@@ -1,4 +1,4 @@
-import type { Serializable } from "$/types/general"
+import type { GeneralObject, Serializable } from "$/types/general"
 
 import { Model } from "sequelize-typescript"
 import {
@@ -16,11 +16,11 @@ export default class Serializer {
 		options?: object
 	): ContextBuilder<T, U> {
 		let builder = transform<T, U>()
-			.withInput(model as unknown as T)
-			.withTransformer(transformer)
+		.withInput(model as unknown as T)
+		.withTransformer(transformer)
 
-		if (options !== undefined) {
-			builder = builder.withOptions({ extra: options as unknown as U })
+		if (!options) {
+			builder = builder.withOptions({ "extra": options as unknown as U })
 		}
 
 		return builder
@@ -32,9 +32,19 @@ export default class Serializer {
 		options?: object
 	): Serializable {
 		const builder = Serializer.build(model, transformer, options)
-		const resources = builder.serialize() as Serializable
+		const resources = builder.serialize() as GeneralObject
 
-		return transformer.finalizeTransform(model, resources)
+		if (Array.isArray(resources.data)) {
+			resources.data.forEach(resource => {
+				if (resource?.id) {
+					resource.id = String(resource.id)
+				}
+			})
+		} else if (resources.data?.id) {
+			resources.data.id = String(resources.data.id)
+		}
+
+		return transformer.finalizeTransform(model, resources as Serializable)
 	}
 
 	static makeContext<T extends Model, U = void>(
@@ -44,7 +54,8 @@ export default class Serializer {
 	): RelationshipTransformerInfo<void, unknown> {
 		const builder = Serializer.build(model, transformer, options)
 
-		return builder.withIncluded(true).toContext() as unknown as RelationshipTransformerInfo<void, unknown>
+		const context = builder.withIncluded(true).toContext()
+		return context as unknown as RelationshipTransformerInfo<void, unknown>
 	}
 
 	static whitelist<T extends Model>(model: T|T[]|null, attributes: string[]) {
