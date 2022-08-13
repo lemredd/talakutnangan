@@ -10,7 +10,7 @@ import Middleware from "!/bases/middleware"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -29,7 +29,7 @@ import required from "!/validators/base/required"
 import emailValidator from "!/validators/comparison/email"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

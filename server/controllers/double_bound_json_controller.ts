@@ -7,7 +7,9 @@ import MatchedIDParameterValidation from "!/validations/matched_id_parameter"
 
 /**
  * Specialized controller class which accept JSON as their request body and requires ID to match an
- * exisiting model in the database .
+ * exisiting model in the database.
+ *
+ * Automatically casts the data ID to integer.
  */
 export default abstract class extends JSONController {
 	get validations(): Validation[] {

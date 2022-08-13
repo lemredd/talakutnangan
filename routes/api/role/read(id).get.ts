@@ -6,13 +6,13 @@ import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import Validation from "!/bases/validation"
 import OkResponseInfo from "!/response_infos/ok"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
 
 import { UPDATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

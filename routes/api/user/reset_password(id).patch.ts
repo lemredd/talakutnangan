@@ -10,7 +10,7 @@ import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import makeDefaultPassword from "$!/helpers/make_default_password"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -22,7 +22,7 @@ import required from "!/validators/base/required"
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
