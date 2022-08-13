@@ -23,6 +23,7 @@ import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
 import UserProfileTransformer from "%/transformers/user_profile"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 
 export default class UserFactory extends BaseFactory<
 	User,
@@ -35,7 +36,12 @@ export default class UserFactory extends BaseFactory<
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 > {
-	nameGenerator = () => faker.name.findName()
+	nameGenerator = () => `${
+		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 5)))
+	} ${
+		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 7)))
+	}`
+
 	prefersDarkGenerator = () => false
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
