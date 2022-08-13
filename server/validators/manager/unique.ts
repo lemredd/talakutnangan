@@ -1,4 +1,3 @@
-import type { Request } from "!/types/dependent"
 import type {
 	ValidationState,
 	ValidationConstraints,
@@ -17,32 +16,37 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.manager === undefined || constraints.unique === undefined) {
+	if (!constraints.manager || !constraints.unique) {
 		throw makeDeveloperError(constraints.field)
 	}
 
+	// eslint-disable-next-line new-cap
 	const manager = new constraints.manager.className(
 		constraints.request.transaction,
 		constraints.request.cache
 	)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
-		filter: {
-			existence: "*"
+		"filter": {
+			"existence": "*"
 		}
-	})
+	}) as any
 
-	const foundID = (foundModel.data as any)?.id
+	const foundID = foundModel.data?.id
 	const id = accessDeepPath(constraints.source, constraints.unique.IDPath)
 
 	if (foundModel.data === null || String(foundID) === String(id)) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" is not unique in the database".`
-		}
 	}
+
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (
+			field: string,
+			value: string
+		) => `The ${value} in field "${field}" is not unique in the database".`
+	}
+
+	throw error
 }

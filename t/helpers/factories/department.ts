@@ -28,7 +28,7 @@ export default class DepartmentFactory extends BaseFactory<
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 > {
-	#fullName = () => faker.commerce.department()
+	#fullName = () => `${faker.commerce.department()} ${faker.commerce.department()}`
 
 	#mayAdmit = true
 
