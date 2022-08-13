@@ -9,8 +9,9 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import extractEmailUsername from "$!/helpers/extract_email_username"
+import { personName } from "!/constants/regex"
 
+import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
@@ -18,7 +19,7 @@ import Middleware from "!/bases/middleware"
 import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CreatedResponse from "!/response_infos/created"
-import MultipartController from "!/controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import BodyValidation from "!/validations/body"
@@ -133,7 +134,7 @@ export default class extends MultipartController {
 														"columnName": "name"
 													},
 													"regex": {
-														"match": /^([A-Z][a-zA-Z\-']+ )+[A-Z=][a-zA-Z\-']+$/u
+														"match": personName
 													}
 												},
 												"pipes": [ required, string, regex, notExists ]

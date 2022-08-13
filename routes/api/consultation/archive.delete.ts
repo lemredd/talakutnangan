@@ -4,7 +4,7 @@ import type { Request, Response } from "!/types/dependent"
 import Policy from "!/bases/policy"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"

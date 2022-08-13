@@ -7,10 +7,10 @@ import MockRequester from "~/set-ups/mock_requester"
 import required from "!/validators/base/required"
 import regex from "!/validators/comparison/regex"
 
-import JSONController from "./json_controller"
+import JSONController from "./json"
 
 describe("Back-end: JSON Controller Special Validation", () => {
-	const requester  = new MockRequester()
+	const requester = new MockRequester()
 
 	abstract class BaseTestController extends JSONController {
 		get filePath(): string { return __filename }
@@ -18,31 +18,32 @@ describe("Back-end: JSON Controller Special Validation", () => {
 		get policy(): null { return null }
 	}
 
-	it("does validation middleware works properly with valid values", async () => {
+	it("does validation middleware works properly with valid values", async() => {
 		const controller = new class extends BaseTestController {
 			makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 				return {
-					email: {
-						pipes: [ required, regex ],
-						constraints: {
-							regex: {
-								match: /.*@.*/
+					"email": {
+						"constraints": {
+							"regex": {
+								"match": /.*@.*/u
 							}
-						}
+						},
+						"pipes": [ required, regex ]
 					}
 				}
 			}
 
 			get filePath(): string { return __filename }
 
-			handle(request: Request, response: Response): Promise<void> { return Promise.resolve() }
-		}
+			handle(unusedRequest: Request, unusedResponse: Response)
+			: Promise<void> { return Promise.resolve() }
+		}()
 
-		const middlewares = controller.middlewares
+		const { middlewares } = controller
 		const validationMiddleware = middlewares[middlewares.length - 1]
 		requester.customizeRequest({
-			body: {
-				email: faker.internet.exampleEmail()
+			"body": {
+				"email": faker.internet.exampleEmail()
 			}
 		})
 

@@ -6,7 +6,7 @@ import { v4 } from "uuid"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 

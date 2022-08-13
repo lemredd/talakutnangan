@@ -5,7 +5,7 @@ import type { CommonQueryParameters } from "$/types/query"
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
 import ConsultationManager from "%/managers/consultation"
-import QueryController from "!/controllers/query_controller"
+import QueryController from "!/controllers/query"
 
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"

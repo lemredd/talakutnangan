@@ -5,7 +5,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import { UPDATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -27,7 +27,7 @@ import required from "!/validators/base/required"
 import makeFlagRules from "!/rule_sets/make_flag"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

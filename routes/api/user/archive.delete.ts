@@ -3,7 +3,7 @@ import { Request, Response } from "!/types/dependent"
 
 import UserManager from "%/managers/user"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"

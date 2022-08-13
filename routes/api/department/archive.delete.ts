@@ -3,7 +3,7 @@ import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
 import PermissionBasedPolicy from "!/policies/permission-based"

@@ -3,7 +3,7 @@ import type { Request, Response } from "!/types/dependent"
 
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 
 import { CREATE } from "$/permissions/department_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"

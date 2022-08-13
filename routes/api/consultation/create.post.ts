@@ -5,7 +5,7 @@ import Policy from "!/bases/policy"
 import ConsultationManager from "%/managers/consultation"
 import AttachedRoleManager from "%/managers/role"
 import CreatedResponseInfo from "!/response_infos/created"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import object from "!/validators/base/object"

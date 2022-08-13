@@ -5,7 +5,7 @@ import type { DepartmentQueryParameters } from "$/types/query"
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
-import QueryController from "!/controllers/query_controller"
+import QueryController from "!/controllers/query"
 
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"

@@ -9,7 +9,7 @@ import CreatedResponseInfo from "!/response_infos/created"
 import ProfilePictureManager from "%/managers/profile_picture"
 import IDParameterValidation from "!/validations/id_parameter"
 import RouteParameterValidation from "!/validations/route_parameter"
-import MultipartController from "!/controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
