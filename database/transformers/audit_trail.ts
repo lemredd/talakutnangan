@@ -11,21 +11,21 @@ import Serializer from "%/transformers/serializer"
 
 export default class extends Transformer<AuditTrail, void> {
 	constructor() {
-		const userTransformer =  new UserTransformer()
+		const userTransformer = new UserTransformer()
 		super("audit_trail", {
 			...userTransformer.subtransformers,
-			user: {
-				attribute: "user",
-				transformer: userTransformer
+			"user": {
+				"attribute": "user",
+				"transformer": userTransformer
 			}
 		})
 
 		this.relationships = {
-			user: this.user.bind(this)
+			"user": this.user.bind(this)
 		}
 	}
 
-	transform(model: AuditTrail|AuditTrail[], options: TransformerOptions): AttributesObject {
+	transform(model: AuditTrail|AuditTrail[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"actionName",
@@ -39,7 +39,7 @@ export default class extends Transformer<AuditTrail, void> {
 	user(model: AuditTrail, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.user || null,
-			this.subtransformers["user"].transformer as UserTransformer,
+			this.subtransformers.user.transformer as UserTransformer,
 			options
 		)
 	}

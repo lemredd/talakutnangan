@@ -15,8 +15,8 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 		model: Signature|Signature[],
 		options: TransformerOptions<SignatureTransformerOptions>
 	): AttributesObject {
-		if (options.extra === undefined) {
-			options.extra = { raw: false }
+		if (!options.extra) {
+			options.extra = { "raw": false }
 		}
 
 		const whiteListedAttributes = [ "id" ]
@@ -31,33 +31,31 @@ export default class extends Transformer<Signature, SignatureTransformerOptions>
 	}
 
 	finalizeTransform(model: Signature|Signature[]|null, resource: Serializable): Serializable {
-		resource = super.finalizeTransform(model, resource)
+		const processedResource = super.finalizeTransform(model, resource) as GeneralObject
 
-		if (resource.data !== undefined && resource.data !== null) {
+		if (processedResource.data && processedResource.data !== null) {
 			const templatePath = "/api/signature/:id"
 
-			if (resource.data instanceof Array) {
-				resource.data = (resource.data as GeneralObject[]).map(data => {
-					if (data.attributes.signature === undefined) {
+			if (processedResource.data instanceof Array) {
+				processedResource.data = processedResource.data.map(data => {
+					if (!data.attributes.signature) {
 						data.links = {
-							self: URLMaker.makeURLFromPath(templatePath, {
-								id: data.id
+							"self": URLMaker.makeURLFromPath(templatePath, {
+								"id": data.id
 							})
 						}
 					}
 					return data
 				})
-			} else {
-				if ((resource.data as GeneralObject).attributes.signature === undefined) {
-					(resource.data as Serializable).links = {
-						self: URLMaker.makeURLFromPath(templatePath, {
-							id: (resource.data as GeneralObject).id
-						})
-					}
+			} else if (!processedResource.data.attributes.signature) {
+				processedResource.data.links = {
+					"self": URLMaker.makeURLFromPath(templatePath, {
+						"id": processedResource.data.id
+					})
 				}
 			}
 		}
 
-		return resource
+		return processedResource
 	}
 }
