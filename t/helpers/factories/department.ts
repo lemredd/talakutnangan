@@ -16,6 +16,7 @@ import { faker } from "@faker-js/faker"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 import DepartmentTransformer from "%/transformers/department"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 
 export default class DepartmentFactory extends BaseFactory<
 	Department,
@@ -28,7 +29,11 @@ export default class DepartmentFactory extends BaseFactory<
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 > {
-	#fullName = () => `${faker.commerce.department()} Sample`
+	#fullName = () => `${
+		faker.commerce.department()
+	} ${
+		convertToSentenceCase(faker.random.alpha(10))
+	}`
 
 	#mayAdmit = true
 

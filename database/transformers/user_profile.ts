@@ -16,7 +16,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 import makeDefaultPassword from "$!/helpers/make_default_password"
 
 export default class extends UserTransformer {
-	transform(model: User|User[], options: TransformerOptions): AttributesObject {
+	transform(model: User|User[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"name",
@@ -30,10 +30,10 @@ export default class extends UserTransformer {
 
 	finalizeTransform(model: User|User[]|null, transformedData: Serializable): Serializable {
 		const postTransformedData = super.finalizeTransform(model, transformedData)
-		const addPasswordStatus = (model: User, data: Serializable) => {
+		const addPasswordStatus = (targetModel: User, data: Serializable) => {
 			const userProfile = deserialize(cloneDeep(data)) as DeserializedUserProfile
 			const defaultPassword = makeDefaultPassword(userProfile)
-			const hasDefaultPassword = model.password === defaultPassword
+			const hasDefaultPassword = targetModel.password === defaultPassword
 
 			data.meta = {
 				hasDefaultPassword
@@ -43,17 +43,18 @@ export default class extends UserTransformer {
 		// Only add password status for individual resource
 		if (model instanceof Array || model === null) {
 			transformedData.meta = {
-				hasDefaultPassword: null
+				"hasDefaultPassword": null
 			}
 		} else {
 			try {
 				addPasswordStatus(model as User, transformedData)
-			} catch(error) {
-				if(!RequestEnvironment.isOnTest && RequestEnvironment.isNotOnProduction) {
+			} catch (error) {
+				const castError = error as Error
+				if (!RequestEnvironment.isOnTest && RequestEnvironment.isNotOnProduction) {
 					throw new DatabaseError(`Student account (user id: ${
 						model.id
 					}) has no student detail to base the default password. (Other error: ${
-						(error as Error).toString()
+						castError.toString()
 					})`)
 				}
 			}
