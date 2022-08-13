@@ -1,4 +1,5 @@
 import type { ModelCtor } from "%/types/dependent"
+import type { Serializable } from "$/types/general"
 import type { GeneratedData } from "~/types/dependent"
 import type {
 	UserResourceIdentifier,
@@ -21,7 +22,7 @@ import Department from "%/models/department"
 import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
-
+import UserProfileTransformer from "%/transformers/user_profile"
 
 export default class UserFactory extends BaseFactory<
 	User,
@@ -116,6 +117,17 @@ export default class UserFactory extends BaseFactory<
 		await Promise.all(pendingAttachments)
 
 		return users
+	}
+
+	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
+		const user = await this.insertOne()
+		const { password } = user
+		const profile = this.serialize(user, {}, new UserProfileTransformer())
+
+		return {
+			password,
+			profile
+		}
 	}
 
 	name(generator: () => string): UserFactory {
