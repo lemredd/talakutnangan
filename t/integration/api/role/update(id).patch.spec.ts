@@ -29,7 +29,7 @@ describe("PATCH /api/role/:id", () => {
 				"type": "role",
 				"id": String(role.id),
 				"attributes": {
-					"name":	newRole.name,
+					"name": newRole.name,
 					"semesterFlags": newRole.semesterFlags,
 					"tagFlags": newRole.tagFlags,
 					"postFlags": newRole.postFlags,
