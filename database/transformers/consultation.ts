@@ -6,15 +6,11 @@ import Consultation from "%/models/consultation"
 
 export default class extends Transformer<Consultation, void> {
 	constructor() {
-		super()
-		this.type = "consultation"
-
-		this.subtransformers = {
-
-		}
+		super("consultation")
 	}
 
-	transform(model: Consultation|Consultation[], options: TransformerOptions): AttributesObject {
+	transform(model: Consultation|Consultation[], unusedOptions: TransformerOptions)
+	: AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"reason",

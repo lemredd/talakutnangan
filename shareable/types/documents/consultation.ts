@@ -9,8 +9,9 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ConsultationResourceIdentifier extends ResourceIdentifier {
-	type: "consultation",
+export interface ConsultationResourceIdentifier<T extends string|number = string>
+extends ResourceIdentifier<T> {
+	type: "consultation"
 }
 
 export interface ConsultationAttributes extends Attributes {
@@ -26,10 +27,11 @@ export interface ConsultationResource extends Resource<
 	ConsultationAttributes
 > {}
 
-export interface DeserializedConsultationResource extends DeserializedResource<
-	ConsultationResourceIdentifier,
+export type DeserializedConsultationResource<T extends string|number = string> = DeserializedResource<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
-> {}
+>
 
 export interface ConsultationDocument extends ResourceDocument<
 	ConsultationResourceIdentifier,
@@ -43,14 +45,18 @@ export interface ConsultationListDocument extends ResourceListDocument<
 	ConsultationResource
 > {}
 
-export interface DeserializedConsultationDocument extends DeserializedResourceDocument<
-	ConsultationResourceIdentifier,
+export type DeserializedConsultationDocument<T extends string|number = string>
+= DeserializedResourceDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource
-> {}
+	DeserializedConsultationResource<T>
+>
 
-export interface DeserializedConsultationListDocument extends DeserializedResourceListDocument<
-	ConsultationResourceIdentifier,
+export type DeserializedConsultationListDocument<T extends string|number = string>
+= DeserializedResourceListDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource
-> {}
+	DeserializedConsultationResource<T>
+>

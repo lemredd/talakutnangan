@@ -1,11 +1,14 @@
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 import type {
-ConsultationResourceIdentifier,
+	ConsultationResourceIdentifier,
 	ConsultationAttributes,
 	DeserializedConsultationResource,
 	DeserializedConsultationDocument,
-	DeserializedConsultationListDocument
+	DeserializedConsultationListDocument,
+	ConsultationResource,
+	ConsultationDocument,
+	ConsultationListDocument
 } from "$/types/documents/consultation"
 
 import { faker } from "@faker-js/faker"
@@ -20,7 +23,10 @@ export default class ConsultationFactory extends BaseFactory<
 	Consultation,
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
+	ConsultationResource,
 	DeserializedConsultationResource,
+	ConsultationDocument,
+	ConsultationListDocument,
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
 > {

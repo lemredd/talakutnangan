@@ -131,9 +131,12 @@ export default class extends MultipartController {
 													"manager": {
 														"className": UserManager,
 														"columnName": "name"
+													},
+													"regex": {
+														"match": /^([A-Z][a-zA-Z\-']+ )+[A-Z=][a-zA-Z\-']+$/u
 													}
 												},
-												"pipes": [ required, string, notExists ]
+												"pipes": [ required, string, regex, notExists ]
 											},
 											"email": {
 												"constraints": {
