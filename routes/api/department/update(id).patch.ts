@@ -4,7 +4,7 @@ import type { BaseManagerClass } from "!/types/independent"
 
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import { UPDATE } from "$/permissions/department_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"

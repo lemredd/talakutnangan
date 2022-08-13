@@ -6,7 +6,7 @@ import type { RoleResourceIdentifier } from "$/types/documents/role"
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
-import QueryController from "!/controllers/query_controller"
+import QueryController from "!/controllers/query"
 
 import { READ } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"

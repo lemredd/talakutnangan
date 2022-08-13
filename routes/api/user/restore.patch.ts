@@ -2,7 +2,7 @@ import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 
 import UserManager from "%/managers/user"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"

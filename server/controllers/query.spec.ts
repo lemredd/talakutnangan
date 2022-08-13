@@ -6,40 +6,41 @@ import MockRequester from "~/set-ups/mock_requester"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 
-import QueryController from "./query_controller"
+import QueryController from "./query"
 
 describe("Back-end: Query Controller Special Validation", () => {
-	const requester  = new MockRequester()
+	const requester = new MockRequester()
 
 	abstract class BaseTestController extends QueryController {
 		get filePath(): string { return __filename }
 
 		get policy(): null { return null }
 
-		handle(_request: Request, _response: Response): Promise<void> { return Promise.resolve() }
+		handle(unusedRequest: Request, unusedResponse: Response)
+		: Promise<void> { return Promise.resolve() }
 	}
 
-	it("does validation middleware works properly with valid values", async () => {
+	it("does validation middleware works properly with valid values", async() => {
 		const controller = new class extends BaseTestController {
 			makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 				return {
-					order: {
-						pipes: [ required, oneOf ],
-						constraints: {
-							oneOf: {
-								values: [ "ascending", "descending" ]
+					"order": {
+						"constraints": {
+							"oneOf": {
+								"values": [ "ascending", "descending" ]
 							}
-						}
+						},
+						"pipes": [ required, oneOf ]
 					}
 				}
 			}
-		}
+		}()
 
-		const middlewares = controller.handlers.middlewares
+		const { middlewares } = controller.handlers
 		const validationMiddleware = middlewares[middlewares.length - 1]
 		requester.customizeRequest({
-			query: {
-				order: "ascending"
+			"query": {
+				"order": "ascending"
 			}
 		})
 

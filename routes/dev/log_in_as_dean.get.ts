@@ -23,7 +23,7 @@ import {
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 interface OwnArguments {

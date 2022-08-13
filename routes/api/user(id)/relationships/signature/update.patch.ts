@@ -9,7 +9,7 @@ import Validation from "!/bases/validation"
 import deserialize from "$/helpers/deserialize"
 import SignatureManager from "%/managers/signature"
 import OkResponseInfo from "!/response_infos/ok"
-import MultipartController from "!/controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart"
 
 import {
 	UPDATE_OWN_DATA,

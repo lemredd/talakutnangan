@@ -6,7 +6,7 @@ import object from "!/validators/base/object"
 import buffer from "!/validators/base/buffer"
 import nullable from "!/validators/base/nullable"
 
-import MultipartController from "!/controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart"
 
 export default class extends MultipartController {
 	get filePath(): string { return __filename }

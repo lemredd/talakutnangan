@@ -3,7 +3,7 @@ import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 
 import { CREATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"

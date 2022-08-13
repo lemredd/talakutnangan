@@ -6,7 +6,7 @@ import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import Validation from "!/bases/validation"
 import OkResponseInfo from "!/response_infos/ok"
-import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import { UPDATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"

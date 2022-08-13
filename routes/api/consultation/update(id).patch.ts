@@ -6,7 +6,7 @@ import Policy from "!/bases/policy"
 import AttachedRoleManager from "%/managers/role"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"

@@ -18,7 +18,7 @@ import Middleware from "!/bases/middleware"
 import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CreatedResponse from "!/response_infos/created"
-import MultipartController from "!/controllers/multipart_controller"
+import MultipartController from "!/controllers/multipart"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import BodyValidation from "!/validations/body"

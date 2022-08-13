@@ -10,7 +10,7 @@ import Middleware from "!/bases/middleware"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import DoubleBoundJSONController from "!/controllers/double_bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import { user as permissionGroup } from "$/permissions/permission_list"

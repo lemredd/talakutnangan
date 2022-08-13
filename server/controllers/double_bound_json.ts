@@ -1,7 +1,7 @@
 import type { BaseManagerClass } from "!/types/independent"
 
 import Validation from "!/bases/validation"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 import IDParameterValidation from "!/validations/id_parameter"
 import MatchedIDParameterValidation from "!/validations/matched_id_parameter"
 
