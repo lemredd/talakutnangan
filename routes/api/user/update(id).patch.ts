@@ -4,6 +4,8 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
+import { personName } from "!/constants/regex"
+
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"
@@ -13,8 +15,8 @@ import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
@@ -43,9 +45,10 @@ export default class extends DoubleBoundJSONController {
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const attributes = {
 			"name": {
-				// TODO: Validate the name
 				"constraints": {
-					"regex": { "match": /^([A-Z][a-zA-Z\-']+ )+[A-Z=][a-zA-Z\-']+$/u }
+					"regex": {
+						"match": personName
+					}
 				},
 				"pipes": [ required, string, regex ]
 			},
@@ -78,6 +81,7 @@ export default class extends DoubleBoundJSONController {
 		const manager = new UserManager(request.transaction, request.cache)
 		const { id } = request.body.data
 		const { email } = request.body.data.attributes
+
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const updateData: Serializable = request.body.data.attributes
 
