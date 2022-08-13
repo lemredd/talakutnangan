@@ -40,19 +40,19 @@ export default class extends Controller {
 		]
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response)
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
 		const manager = new ProfilePictureManager(request.transaction, request.cache)
 		const { id } = request.params
 
 		const profilePictureDocument = await manager.findWithID(
-			+id,
+			Number(id),
 			{
-				filter: {
-					existence: "*"
+				"filter": {
+					"existence": "*"
 				}
 			},
-			{ raw: true }
+			{ "raw": true }
 		) as ProfilePictureDocument
 
 		const profilePicture = profilePictureDocument.data.attributes.fileContents!

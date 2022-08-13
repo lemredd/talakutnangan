@@ -20,7 +20,7 @@ describe("Back-end: JSON Controller Special Validation", () => {
 
 	it("does validation middleware works properly with valid values", async () => {
 		const controller = new class extends BaseTestController {
-			makeBodyRuleGenerator(request: Request): FieldRules {
+			makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 				return {
 					email: {
 						pipes: [ required, regex ],

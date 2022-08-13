@@ -15,7 +15,7 @@ export default class extends QueryController {
 		return new PermissionBasedPolicy(permissionGroup, [ READ_OWN ])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return {}
 	}
 

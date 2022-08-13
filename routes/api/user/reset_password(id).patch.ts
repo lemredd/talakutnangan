@@ -31,12 +31,12 @@ export default class extends BoundJSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
 			data: {
 				pipes: [ required, object ],
 				constraints: {
-					object: makeResourceIdentifierRules("user", exists, UserManager)
+					object: makeResourceIdentifierRules("user", exists, UserManager, false)
 				}
 			}
 		}
@@ -46,7 +46,7 @@ export default class extends BoundJSONController {
 
 	async handle(
 		request: Request & PreprocessedRequest<PasswordResetArguments>,
-		response: Response
+		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
 		const id = request.body.data.id

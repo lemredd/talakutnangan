@@ -6,11 +6,11 @@ import DepartmentFactory from "~/factories/department"
 import siftByDepartment from "./sift_by_department"
 
 describe("Database Pipe: Sift by department", () => {
-	it("can find all", async () => {
+	it("can find all", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const user = await new UserFactory().in(department).insertOne()
 
-		const options = siftByDepartment({}, { filter: { department: "*" } })
+		const options = siftByDepartment({}, { "filter": { "department": "*" } })
 		const foundUsers = await User.findAll(options)
 
 		expect(options).not.toHaveProperty("include")
@@ -18,13 +18,13 @@ describe("Database Pipe: Sift by department", () => {
 		expect(foundUsers).toHaveProperty("0.id", user.id)
 	})
 
-	it("can find on specific department", async () => {
+	it("can find on specific department", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const user = await new UserFactory().in(department).insertOne()
 
 		const options = siftByDepartment({}, {
-			filter: {
-				department: department.id
+			"filter": {
+				"department": department.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
@@ -35,13 +35,13 @@ describe("Database Pipe: Sift by department", () => {
 		expect(foundUsers).toHaveProperty("0.department.id", department.id)
 	})
 
-	it("can find on with existing department model", async () => {
+	it("can find on with existing department model", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const user = await new UserFactory().in(department).insertOne()
 
-		const options = siftByDepartment({ include: [Department] }, {
-			filter: {
-				department: department.id
+		const options = siftByDepartment({ "include": [ Department ] }, {
+			"filter": {
+				"department": department.id
 			}
 		})
 		const foundUsers = await User.findAll(options)
@@ -52,14 +52,14 @@ describe("Database Pipe: Sift by department", () => {
 		expect(foundUsers).toHaveProperty("0.department.id", department.id)
 	})
 
-	it("cannot find on empty department", async () => {
+	it("cannot find on empty department", async() => {
 		const departmentA = await new DepartmentFactory().insertOne()
 		const departmentB = await new DepartmentFactory().insertOne()
-		const user = await new UserFactory().in(departmentA).insertOne()
+		await new UserFactory().in(departmentA).insertOne()
 
 		const options = siftByDepartment({}, {
-			filter: {
-				department: departmentB.id
+			"filter": {
+				"department": departmentB.id
 			}
 		})
 		const foundUsers = await User.findAll(options)

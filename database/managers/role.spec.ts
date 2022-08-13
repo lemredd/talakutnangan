@@ -4,7 +4,7 @@ import UserFactory from "~/factories/user"
 import RoleManager from "./role"
 
 describe("Database: Role read operations", () => {
-	it("can count single role", async () => {
+	it("can count single role", async() => {
 		const manager = new RoleManager()
 		const role = await new RoleFactory().insertOne()
 		await new UserFactory().attach(role).insertOne()
@@ -17,7 +17,7 @@ describe("Database: Role read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
-	it("can count single role with zero users", async () => {
+	it("can count single role with zero users", async() => {
 		const manager = new RoleManager()
 		const role = await new RoleFactory().insertOne()
 
@@ -28,7 +28,7 @@ describe("Database: Role read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
 	})
 
-	it("can count multiple roles", async () => {
+	it("can count multiple roles", async() => {
 		const manager = new RoleManager()
 		const roleA = await new RoleFactory().insertOne()
 		const roleB = await new RoleFactory().insertOne()
