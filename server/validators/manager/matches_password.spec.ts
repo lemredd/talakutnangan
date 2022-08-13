@@ -2,19 +2,16 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 
 import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
 import makeInitialState from "!/validators/make_initial_state"
 import matchesPassword from "./matches_password"
 
 describe("Validator: matches password", () => {
 	it("can accept valid input", async() => {
-		const user = await new UserFactory().insertOne()
-		const { password } = user
+		const { password, profile } = await new UserFactory().insertProfile()
 		const value = Promise.resolve(makeInitialState(password))
 		const constraints = {
 			"request": {
-				"user": Serializer.serialize(user, new UserTransformer(), {})
+				"user": profile
 			} as AuthenticatedRequest,
 			"source": null,
 			"field": "hello"
@@ -26,12 +23,11 @@ describe("Validator: matches password", () => {
 	})
 
 	it("cannot accept invalid value", async() => {
-		const user = await new UserFactory().insertOne()
-		const { password } = user
+		const { password, profile } = await new UserFactory().insertProfile()
 		const value = Promise.resolve(makeInitialState(`${password}1`))
 		const constraints = {
 			"request": {
-				"user": Serializer.serialize(user, new UserTransformer(), {})
+				"user": profile
 			} as AuthenticatedRequest,
 			"source": null,
 			"field": "hello"
