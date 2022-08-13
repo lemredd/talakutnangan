@@ -20,8 +20,8 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 				"data": {
 					"type": "signature",
 					"attributes": {
-						"signature": {
-							"buffer": signature.signature,
+						"fileContents": {
+							"buffer": signature.fileContents,
 							"info": {
 								"mimeType": "image/png"
 							}
@@ -47,8 +47,8 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 				"data": {
 					"type": "signature",
 					"attributes": {
-						"signature": {
-							"buffer": signature.signature,
+						"fileContents": {
+							"buffer": signature.fileContents,
 							"info": {
 								"mimeType": "image/xxx"
 							}
@@ -62,6 +62,6 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.attributes.signature")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fileContents")
 	})
 })

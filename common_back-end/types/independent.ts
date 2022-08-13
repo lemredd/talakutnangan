@@ -1,7 +1,7 @@
 /**
  * @module IndependentTypes
  * @description This module contains types that are independent from third-party packages. Contains
- * 	types that are common in the back-end but not in general.
+ *     types that are common in the back-end but not in general.
  */
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
@@ -26,7 +26,7 @@ export interface RawUser {
 
 export interface RawSignature {
 	userID: number,
-	signature: Buffer
+	fileContents: Buffer
 }
 
 export interface RawProfilePicture {
