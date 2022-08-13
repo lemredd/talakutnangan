@@ -13,6 +13,7 @@ type ParameterInfo = [ string, BaseManagerClass, Pipe? ]
 export default class extends RouteParameterValidation {
 	constructor(IDs: ParameterInfo[]) {
 		super((request: Request): FieldRules => {
+			// TODO: Remove in 0.12
 			if (IDs.reduce((previousAssertion, info) => previousAssertion || !info[2], false)) {
 				Log.warn("validation", `Parameter info validator should be provided in ${request.url}.`)
 			}
