@@ -20,11 +20,13 @@ import {
 	auditTrail
 } from "$/permissions/permission_list"
 
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import unique from "!/validators/manager/unique"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import makeFlagRules from "!/rule_sets/make_flag"
+import matchesPassword from "!/validators/manager/matches_password"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends DoubleBoundJSONController {
@@ -60,7 +62,18 @@ export default class extends DoubleBoundJSONController {
 			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
 
-		return makeResourceDocumentRules("role", attributes)
+		const meta = {
+			"constraints": {
+				"object": {
+					"password": {
+						"pipes": [ required, string, matchesPassword ]
+					}
+				}
+			},
+			"pipes": [ required, object ]
+		}
+
+		return makeResourceDocumentRules("role", attributes, false, false, {}, { meta })
 	}
 
 	get manager(): BaseManagerClass { return RoleManager }
