@@ -1,5 +1,3 @@
-import { Op } from "sequelize"
-
 import segregateIDs from "./segragate_IDs"
 
 describe("Database: Condition Builder", () => {
