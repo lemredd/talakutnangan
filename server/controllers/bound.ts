@@ -1,5 +1,5 @@
 import type { Pipe } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass, OptionalMiddleware } from "!/types/independent"
 
 import Validation from "!/bases/validation"
 import present from "!/validators/manager/present"
@@ -11,6 +11,8 @@ import IDParameterValidation from "!/validations/id_parameter"
  * database.
  */
 export default abstract class extends Controller {
+	get bodyParser(): OptionalMiddleware { return null }
+
 	get validations(): Validation[] {
 		return [
 			new IDParameterValidation([
