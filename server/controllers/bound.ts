@@ -7,7 +7,7 @@ import Controller from "!/bases/controller-likes/controller"
 import IDParameterValidation from "!/validations/id_parameter"
 
 /**
- * Specialized controller class which requires ID parameter to match an exisiting model in the
+ * Specialized controller class which requires ID parameter to match an present model in the
  * database.
  */
 export default abstract class extends Controller {
