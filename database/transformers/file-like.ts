@@ -33,7 +33,7 @@ export default abstract class<
 	finalizeTransform(model: T|T[]|null, resource: Serializable): Serializable {
 		const processedResource = super.finalizeTransform(model, resource) as GeneralObject
 
-		if (processedResource.data && processedResource.data !== null) {
+		if (processedResource.data) {
 			const templatePath = `/api/${this.type}/:id`
 
 			if (processedResource.data instanceof Array) {

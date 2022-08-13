@@ -12,17 +12,13 @@ import type {
 	SignatureListDocument
 } from "$/types/documents/signature"
 
-import dataURIToBuffer from "data-uri-to-buffer"
-import type { MimeBuffer } from "data-uri-to-buffer"
-import { faker } from "@faker-js/faker"
-
 import User from "%/models/user"
 import Signature from "%/models/signature"
 import UserFactory from "~/factories/user"
-import BaseFactory from "~/factories/base"
+import FileLikeFactory from "~/factories/file-like"
 import SignatureTransformer from "%/transformers/signature"
 
-export default class SignatureFactory extends BaseFactory<
+export default class SignatureFactory extends FileLikeFactory<
 	Signature,
 	SignatureResourceIdentifier,
 	SignatureAttributes,
@@ -34,8 +30,7 @@ export default class SignatureFactory extends BaseFactory<
 	DeserializedSignatureListDocument,
 	SignatureTransformerOptions
 > {
-	#user: () => Promise<User>  =  async () => await new UserFactory().insertOne()
-	#signature: () => MimeBuffer = () => dataURIToBuffer(faker.image.dataUri())
+	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 
 	get model(): ModelCtor<Signature> { return Signature }
 
@@ -43,14 +38,9 @@ export default class SignatureFactory extends BaseFactory<
 
 	async generate(): GeneratedData<Signature> {
 		return {
-			userID: (await this.#user()).id,
-			signature: this.#signature()
+			"userID": (await this.#user()).id,
+			"fileContents": this.fileContentsGenerator()
 		}
-	}
-
-	signature(generator: () => MimeBuffer): SignatureFactory {
-		this.#signature = generator
-		return this
 	}
 
 	user(generator: () => Promise<User>): SignatureFactory {

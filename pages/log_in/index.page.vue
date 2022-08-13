@@ -2,6 +2,9 @@
 	<div class="login-container">
 		<div class="image"></div>
 		<div class="login-form ">
+			<div class="error" v-if="receivedError">
+				<span class="description">{{ receivedError.detail }}</span>
+			</div>
 			<h1>Login</h1>
 			<LogInForm />
 		</div>
@@ -17,6 +20,7 @@ body {
 
 <style scoped lang="scss">
 @import "@styles/variables.scss";
+@import "@styles/error.scss";
 
 .login-container {
 	@apply flex items-center justify-center;
@@ -70,5 +74,13 @@ body {
 </style>
 
 <script setup lang="ts">
+import { inject } from "vue"
+
+import type { PageContext } from "#/types"
+
 import LogInForm from "@/LogInForm.vue"
+
+const pageContext = inject("pageContext") as PageContext
+const receivedError = pageContext.pageProps.parsedUnitError
+
 </script>

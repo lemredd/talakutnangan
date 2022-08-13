@@ -16,7 +16,7 @@ describe("Transformer: Signature", () => {
 
 		expect(object).toHaveProperty("data.type", "signature")
 		expect(object).toHaveProperty("data.id", String(model.id))
-		expect(object).toHaveProperty("data.attributes.signature")
+		expect(object).toHaveProperty("data.attributes.fileContents")
 		expect(object).not.toHaveProperty("data.links.self")
 	})
 

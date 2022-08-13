@@ -18,11 +18,11 @@ export default class extends BaseManager<
 
 	get transformer(): SignatureTransformer { return new SignatureTransformer() }
 
-	async attach(userID: number, signature: Buffer)
+	async attach(userID: number, fileContents: Buffer)
 	: Promise<Serializable> {
 		try {
 			await this.model.destroy({
-				where: {
+				"where": {
 					userID
 				},
 				...this.transaction.transactionObject
@@ -30,8 +30,11 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done archiving previous signature")
 
-			return await this.create({ userID, signature }, { raw: false })
-		} catch(error) {
+			return await this.create({
+				fileContents,
+				userID
+			}, { "raw": false })
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}

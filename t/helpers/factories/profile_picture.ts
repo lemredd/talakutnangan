@@ -30,7 +30,7 @@ export default class ProfilePictureFactory extends FileLikeFactory<
 	DeserializedProfilePictureListDocument,
 	ProfilePictureTransformerOptions
 > {
-	#user: () => Promise<User>  =  async () => await new UserFactory().insertOne()
+	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 
 	get model(): ModelCtor<ProfilePicture> { return ProfilePicture }
 
@@ -38,8 +38,8 @@ export default class ProfilePictureFactory extends FileLikeFactory<
 
 	async generate(): GeneratedData<ProfilePicture> {
 		return {
-			userID: (await this.#user()).id,
-			fileContents: this.fileContentsGenerator()
+			"userID": (await this.#user()).id,
+			"fileContents": this.fileContentsGenerator()
 		}
 	}
 

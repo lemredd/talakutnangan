@@ -11,11 +11,13 @@ import logoUrl from "@assets/logo_bg_transparent.svg"
 export { render }
 
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = [ "pageProps", "urlPathname", "routeParams", "state", "_", "render" ]
+export const passToClient = ["pageProps", "urlPathname", "routeParams"]
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
 	// Modify the page to show for errors
-	if (pageContext.pageProps.parsedUnitError) {
+	const isInErrorPage = pageContext.pageProps.parsedUnitError
+		&& pageContext.urlParsed.pathname === "/"
+	if (isInErrorPage) {
 		pageContext.Page = ErrorPage
 		pageContext.pageProps = {
 			"is404": false,
