@@ -1,6 +1,7 @@
 import type { FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { RoleIdentifierListDocument } from "$/types/documents/role"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -37,11 +38,11 @@ export default class extends BoundJSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new RoleManager(request.transaction, request.cache)
-		const { data } = request.body
+		const { data } = request.body as RoleIdentifierListDocument
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
 
-		await manager.reattach(userID, data)
+		await manager.reattach(userID, data.map(identifier => identifier.id))
 		Log.success("controller", "successfully updated the roles of the user")
 
 		return new NoContentResponseInfo()
