@@ -30,6 +30,10 @@ export interface MetaDocument<T extends Serializable> extends Serializable {
 	meta: T
 }
 
+export interface ResourceCount extends Serializable {
+	count: number
+}
+
 export type ResourceDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
@@ -42,11 +46,11 @@ export type RawResourceDocument<
 	V extends Resource<T, U>
 > = DataDocument<Pick<V, "type" | "attributes" | "relationships" | "links" | "meta">>
 
-export type ResourceListDocument<
+export interface ResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
-> = DataDocument<V[]>
+> extends DataDocument<V[]>, MetaDocument<ResourceCount> {}
 
 export type DeserializedResourceDocument<
 	T extends string|number,
@@ -55,12 +59,12 @@ export type DeserializedResourceDocument<
 	W extends DeserializedResource<T, U, V>
 > = DataDocument<W>
 
-export type DeserializedResourceListDocument<
+export interface DeserializedResourceListDocument<
 	T extends string|number,
 	U extends ResourceIdentifier<T>,
 	V extends Attributes,
 	W extends DeserializedResource<T, U, V>
-> = DataDocument<W[]>
+> extends DataDocument<W[]>, MetaDocument<ResourceCount> {}
 
 export type IdentifierDocument<T extends ResourceIdentifier> = DataDocument<T>
 
