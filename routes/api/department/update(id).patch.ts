@@ -86,7 +86,7 @@ export default class extends DoubleBoundJSONController {
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new DepartmentManager(request.transaction, request.cache)
-		const id = Number(request.params.id)
+		const { id } = request.params
 		await manager.update(id, request.body.data.attributes)
 
 		return new NoContentResponseInfo()

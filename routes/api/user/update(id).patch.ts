@@ -90,12 +90,12 @@ export default class extends DoubleBoundJSONController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& String(userData.data.id) !== String(id)
+			&& userData.data.id !== id
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
 
-		const oldUser = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
+		const oldUser = deserialize(await manager.findWithID(Number(id))) as DeserializedUserProfile
 		const oldEmail = oldUser.data.email
 
 		if (oldEmail === email) {

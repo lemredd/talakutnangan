@@ -33,7 +33,7 @@ export default class extends CreateController {
 		const { fileContents } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
-		const id = Number(request.params.id)
+		const { id } = request.params
 
 		await manager.update(id, {
 			fileContents,

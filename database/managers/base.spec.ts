@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 import type { Pipe } from "$/types/database"
 import type { RawUser } from "$!/types/independent"
 import type {
@@ -23,7 +24,7 @@ class MockUserTransformer extends Transformer<User, void> {
 		super("user")
 	}
 
-	transform(model: User|User[], options: TransformerOptions): AttributesObject {
+	transform(model: User|User[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"name",
@@ -54,9 +55,9 @@ class MockUserManager extends BaseManager<User, RawUser> {
 		customReadPipe: Pipe<FindAndCountOptions<User>, any>|null = null,
 		transaction: TransactionManager = new TransactionManager(),
 		cache: CacheClient = new (jest.fn(() => ({
-			getCache: jest.fn(() => null),
-			setCache: jest.fn()
-		}))) as unknown as CacheClient
+			"getCache": jest.fn(() => null),
+			"setCache": jest.fn()
+		})))() as unknown as CacheClient
 	) {
 		super(transaction, cache)
 		this.customReadPipe = customReadPipe
@@ -68,34 +69,34 @@ class MockUserManager extends BaseManager<User, RawUser> {
 }
 
 describe("Database: Base Read Operations", () => {
-	it("can search base with ID", async () => {
+	it("can search base with ID", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
-		const id = base.id
+		const base = await new UserFactory().insertOne()
+		const { id } = base
 
 		const foundUser = await manager.findWithID(id)
 
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
-	it("can search base on specific column", async () => {
+	it("can search base on specific column", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
+		const base = await new UserFactory().insertOne()
 
 		const foundUser = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
-	it("can search base with ID through transaction", async () => {
+	it("can search base with ID through transaction", async() => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
-		const base = await (new UserFactory()).insertOne()
-		const id = base.id
+		const base = await new UserFactory().insertOne()
+		const { id } = base
 
 		await transaction.initialize()
 		const foundUser = await manager.findWithID(id)
@@ -106,14 +107,14 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
-	it("can search base with ID and custom read pipe", async () => {
+	it("can search base with ID and custom read pipe", async() => {
 		const pipe = jest.fn()
 		const manager = new MockUserManager(options => {
 			pipe()
 			return options
 		})
-		const base = await (new UserFactory()).insertOne()
-		const id = base.id
+		const base = await new UserFactory().insertOne()
+		const { id } = base
 
 		const foundUser = await manager.findWithID(id)
 
@@ -121,7 +122,7 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser).toHaveProperty("data.attributes.email", base.email)
 	})
 
-	it("cannot search non-existing base with ID", async () => {
+	it("cannot search non-existing base with ID", async() => {
 		const manager = new MockUserManager()
 		const id = 0
 
@@ -130,30 +131,30 @@ describe("Database: Base Read Operations", () => {
 		expect(foundUser.data).toBeNull()
 	})
 
-	it("cannot find non-existing base with custom column", async () => {
+	it("cannot find non-existing base with custom column", async() => {
 		const manager = new MockUserManager()
 
 		const foundUser = await manager.findOneOnColumn("name", "Hello", {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 
 		expect(foundUser.data).toBeNull()
 	})
 
-	it("can list base", async () => {
+	it("can list base", async() => {
 		const manager = new MockUserManager()
-		const bases = await (new UserFactory()).insertMany(5)
+		await new UserFactory().insertMany(5)
 
 		const users = await manager.list({
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			},
-			sort: [ "name" ],
-			page: {
-				offset: 0,
-				limit: 3
+			"sort": [ "name" ],
+			"page": {
+				"offset": 0,
+				"limit": 3
 			}
 		})
 
@@ -163,16 +164,16 @@ describe("Database: Base Read Operations", () => {
 
 	it("can search with pipelines", async() => {
 		const manager = new MockUserManager()
-		await (new UserFactory()).insertMany(10)
+		await new UserFactory().insertMany(10)
 
 		const users = await manager.list({
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			},
-			sort: [ "name" ],
-			page: {
-				offset: 0,
-				limit: 5
+			"sort": [ "name" ],
+			"page": {
+				"offset": 0,
+				"limit": 5
 			}
 		})
 
@@ -182,11 +183,11 @@ describe("Database: Base Read Operations", () => {
 
 	it("can find on one column with existing", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
+		const base = await new UserFactory().insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 
@@ -196,12 +197,12 @@ describe("Database: Base Read Operations", () => {
 
 	it("cannot find on one column with existing if destroyed already", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
-		await base.destroy({ force: false })
+		const base = await new UserFactory().insertOne()
+		await base.destroy({ "force": false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 
@@ -211,12 +212,12 @@ describe("Database: Base Read Operations", () => {
 
 	it("can find on one column with archived", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
-		await base.destroy({ force: false })
+		const base = await new UserFactory().insertOne()
+		await base.destroy({ "force": false })
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "archived"
+			"filter": {
+				"existence": "archived"
 			}
 		})
 
@@ -226,11 +227,11 @@ describe("Database: Base Read Operations", () => {
 
 	it("cannot find on one column with archived if still exists", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
+		const base = await new UserFactory().insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "archived"
+			"filter": {
+				"existence": "archived"
 			}
 		})
 
@@ -240,23 +241,25 @@ describe("Database: Base Read Operations", () => {
 
 	it("can find on one column with existing that is cached", async() => {
 		let cachedModel: any = null
-		const getCache = jest.fn(value => cachedModel)
-		const setCache = jest.fn((path, value) => { cachedModel = value })
-		const cache = jest.fn(() => ({
+		const getCache = jest.fn(unusedValue => cachedModel)
+		const setCache = jest.fn((path, value) => {
+			cachedModel = value
+		})
+		const Cache = jest.fn(() => ({
 			getCache,
 			setCache
 		}))
-		const manager = new MockUserManager(null, undefined, new cache() as unknown as CacheClient)
-		const base = await (new UserFactory()).insertOne()
+		const manager = new MockUserManager(null, undefined, new Cache() as unknown as CacheClient)
+		const base = await new UserFactory().insertOne()
 
 		const user = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 		const sameUser = await manager.findOneOnColumn("name", base.name, {
-			filter: {
-				existence: "exists"
+			"filter": {
+				"existence": "exists"
 			}
 		})
 
@@ -269,23 +272,23 @@ describe("Database: Base Read Operations", () => {
 })
 
 describe("Database: Base Create Operations", () => {
-	it("can create base", async () => {
+	it("can create base", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).makeOne()
+		const base = await new UserFactory().makeOne()
 
 		const createdDepartment = await manager.create(base.toJSON())
 
 		expect(createdDepartment).toHaveProperty("data.attributes.email", base.email)
 	})
 
-	it("can create base through transaction", async () => {
+	it("can create base through transaction", async() => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
-		const base = await (new UserFactory()).makeOne()
+		const base = await new UserFactory().makeOne()
 
 		await transaction.initialize()
 		const createdDepartment = await manager.create(base.toJSON())
-		const transactionObject = transaction.transactionObject
+		const { transactionObject } = transaction
 		await transaction.destroySuccessfully()
 
 		expect(transactionObject).toHaveProperty("transaction")
@@ -294,175 +297,175 @@ describe("Database: Base Create Operations", () => {
 })
 
 describe("Database: Base Update Operations", () => {
-	it("can update base", async () => {
+	it("can update base", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
-		const newName = base.name+"1"
+		const base = await new UserFactory().insertOne()
+		const newName = `${base.name}1`
 
-		const updateCount = await manager.update(base.id, {
-			name: newName
+		const updateCount = await manager.update(String(base.id), {
+			"name": newName
 		})
 
 		expect(updateCount).toBe(1)
 		expect((
 			await User.findOne({
-				where: { id: base.id }
+				"where": { "id": base.id }
 			})
 		)!.name).not.toBe(base.name)
 	})
 
-	it("can update base through transaction", async () => {
+	it("can update base through transaction", async() => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
-		const base = await (new UserFactory()).insertOne()
-		const newName = base.name+"1"
+		const base = await new UserFactory().insertOne()
+		const newName = `${base.name}1`
 
 		await transaction.initialize()
 		const updateCount = await manager.update(base.id, {
-			name: newName
+			"name": newName
 		})
-		const transactionObject = transaction.transactionObject
+		const { transactionObject } = transaction
 		await transaction.destroySuccessfully()
 
 		expect(transactionObject).toHaveProperty("transaction")
 		expect(updateCount).toBe(1)
 		expect((
 			await User.findOne({
-				where: { id: base.id }
+				"where": { "id": base.id }
 			})
 		)!.name).not.toBe(base.name)
 	})
 })
 
 describe("Database: Base Archive and Restore Operations", () => {
-	it("can archive base", async () => {
+	it("can archive base", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
+		const base = await new UserFactory().insertOne()
 
 		const deleteCount = await manager.archive(base.id)
 
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				where: { id: base.id },
-				paranoid: true
+				"where": { "id": base.id },
+				"paranoid": true
 			})
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("can restore base", async () => {
+	it("can restore base", async() => {
 		const manager = new MockUserManager()
-		const base = await (new UserFactory()).insertOne()
-		await base.destroy({ force: false })
+		const base = await new UserFactory().insertOne()
+		await base.destroy({ "force": false })
 
 		await manager.restore(base.id)
 
 		expect((
 			await User.findOne({
-				where: { id: base.id }
+				"where": { "id": base.id }
 			})
 		)!.deletedAt).toBeNull()
 	})
 
-	it("can archive base through transaction", async () => {
+	it("can archive base through transaction", async() => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
-		const base = await (new UserFactory()).insertOne()
+		const base = await new UserFactory().insertOne()
 
 		await transaction.initialize()
 		const deleteCount = await manager.archive(base.id)
-		const transactionObject = transaction.transactionObject
+		const { transactionObject } = transaction
 		await transaction.destroySuccessfully()
 
 		expect(transactionObject).toHaveProperty("transaction")
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				where: { id: base.id },
-				paranoid: true
+				"where": { "id": base.id },
+				"paranoid": true
 			})
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("can restore base through transaction", async () => {
+	it("can restore base through transaction", async() => {
 		const transaction = new TransactionManager()
 		const manager = new MockUserManager(null, transaction)
-		const base = await (new UserFactory()).insertOne()
-		await base.destroy({ force: false })
+		const base = await new UserFactory().insertOne()
+		await base.destroy({ "force": false })
 
 		await transaction.initialize()
 		await manager.restore(base.id)
-		const transactionObject = transaction.transactionObject
+		const { transactionObject } = transaction
 		await transaction.destroySuccessfully()
 
 		expect(transactionObject).toHaveProperty("transaction")
 		expect((
 			await User.findOne({
-				where: { id: base.id }
+				"where": { "id": base.id }
 			})
 		)!.deletedAt).toBeNull()
 	})
 
-	it("can archive multiple bases", async () => {
+	it("can archive multiple bases", async() => {
 		const manager = new MockUserManager()
-		const bases = await (new UserFactory()).insertMany(3)
+		const bases = await new UserFactory().insertMany(3)
 
 		const deleteCount = await manager.archiveBatch(bases.map(base => base.id))
 
 		expect(deleteCount).toBe(3)
 		expect((
 			await User.findOne({
-				where: { id: bases[0].id },
-				paranoid: true
+				"where": { "id": bases[0].id },
+				"paranoid": true
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				where: { id: bases[1].id },
-				paranoid: true
+				"where": { "id": bases[1].id },
+				"paranoid": true
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				where: { id: bases[2].id },
-				paranoid: true
+				"where": { "id": bases[2].id },
+				"paranoid": true
 			})
 		)?.deletedAt).not.toBeNull()
 	})
 
-	it("can restore multiple bases", async () => {
+	it("can restore multiple bases", async() => {
 		const manager = new MockUserManager()
-		const bases = await (new UserFactory()).insertMany(3)
-		await bases[0].destroy({ force: false })
-		await bases[1].destroy({ force: false })
-		await bases[2].destroy({ force: false })
+		const bases = await new UserFactory().insertMany(3)
+		await bases[0].destroy({ "force": false })
+		await bases[1].destroy({ "force": false })
+		await bases[2].destroy({ "force": false })
 
 		await manager.restoreBatch(bases.map(base => base.id))
 
 		expect((
 			await User.findOne({
-				where: { id: bases[0].id }
+				"where": { "id": bases[0].id }
 			})
 		)!.deletedAt).toBeNull()
 		expect((
 			await User.findOne({
-				where: { id: bases[1].id }
+				"where": { "id": bases[1].id }
 			})
 		)!.deletedAt).toBeNull()
 		expect((
 			await User.findOne({
-				where: { id: bases[2].id }
+				"where": { "id": bases[2].id }
 			})
 		)!.deletedAt).toBeNull()
 	})
 })
 
 describe("Database: Error handling down errors", () => {
-	beforeEach(async () => {
+	beforeEach(async() => {
 		await Database.destroy()
 	})
 
-	it("can handle down errors", async () => {
+	it("can handle down errors", () => {
 		const manager = new MockUserManager()
 		const id = 0
 
@@ -471,10 +474,10 @@ describe("Database: Error handling down errors", () => {
 })
 
 describe("Database: Miscellaneous operations", () => {
-	it("can get sortable columns", async () => {
+	it("can get sortable columns", () => {
 		const manager = new MockUserManager()
 
-		const sortableColumns = manager.sortableColumns
+		const { sortableColumns } = manager
 
 		expect(sortableColumns).toEqual([
 			"-email",

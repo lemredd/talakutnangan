@@ -35,13 +35,14 @@ import siftByExistence from "%/queries/base/sift_by_existence"
  * First generic argument is `T` that represents the model it controls. Second generic argument is
  * `U` that represents the transformer for the model. Third, `V` represents the filter to be used by
  * the manager which is an object by default. Fourth, W which indicates extra options for the
- * transformer if there are.
+ * transformer if there are. Fifth, X indicates the type of primary ID.
  */
 export default abstract class Manager<
 	T extends Model,
 	U,
 	V extends GeneralObject = GeneralObject,
-	W = void
+	W = void,
+	X = number
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
 	protected cache: CacheClient
@@ -185,7 +186,9 @@ export default abstract class Manager<
 		}
 	}
 
-	async update(id: number, details: U & Attributes<T>): Promise<number> {
+	async update(rawID: string, details: U & Attributes<T>): Promise<number> {
+		const id = this.castID(rawID)
+
 		try {
 			const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
 				"where": { id },
@@ -262,6 +265,10 @@ export default abstract class Manager<
 		.sort()
 	}
 
+	protected castID(rawID: string): X {
+		return Number(rawID) as unknown as X
+	}
+
 	protected get exposableColumns(): string[] {
 		const attributeInfo = this.model.getAttributes() as GeneralObject
 		const attributeNames = []
@@ -275,16 +282,16 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<X = Serializable>(
+	protected serialize<Y = Serializable>(
 		models: T|T[]|null,
 		options: W = {} as W,
 		transformer: Transformer<T, W> = this.transformer
-	): X {
+	): Y {
 		return Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
-		) as unknown as X
+		) as unknown as Y
 	}
 
 	protected makeBaseError(error: any): BaseError {

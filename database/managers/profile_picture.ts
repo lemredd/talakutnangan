@@ -18,10 +18,11 @@ export default class extends BaseManager<
 
 	get transformer(): ProfilePictureTransformer { return new ProfilePictureTransformer() }
 
-	async updateContents(userID: number, fileContents: Buffer): Promise<number> {
+	async updateContents(rawUserID: string, fileContents: Buffer): Promise<number> {
+		const userID = this.castID(rawUserID)
 		try {
 			const [ affectedCount ] = await this.model.update({ fileContents }, {
-				where: {
+				"where": {
 					userID
 				},
 				...this.transaction.transactionObject
@@ -30,7 +31,7 @@ export default class extends BaseManager<
 			Log.success("manager", "done updating profile picture")
 
 			return affectedCount
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}
