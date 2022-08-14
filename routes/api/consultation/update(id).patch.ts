@@ -29,54 +29,54 @@ export default class extends DoubleBoundJSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+	makeBodyRuleGenerator(request: Request): FieldRules {
 		return {
-			"data": {
-				"pipes": [ required, object ],
-				"constraints": {
-					"object": {
-						"type": {
-							"pipes": [ required, string, same ],
-							"constraints": {
-								"same": {
-									"value": "consultation"
+			data: {
+				pipes: [ required, object ],
+				constraints: {
+					object: {
+						type: {
+							pipes: [ required, string, same ],
+							constraints: {
+								same: {
+									value: "consultation"
 								}
 							}
 						},
-						"id": {
-							"pipes": [ required, integer ],
-							"constraints": {}
+						id: {
+							pipes: [ required, integer ],
+							constraints: {}
 						},
-						"attributes": {
-							"pipes": [ required, object ],
-							"constraints": {
-								"object": {
-									"attachedRoleID": {
-										"pipes": [ required, exists ],
-										"constraints": {
-											"manager": {
-												"className": AttachedRoleManager,
-												"columnName": "id"
+						attributes: {
+							pipes: [ required, object ],
+							constraints: {
+								object: {
+									attachedRoleID: {
+										pipes: [ required, exists ],
+										constraints: {
+											manager: {
+												className: AttachedRoleManager,
+												columnName: "id"
+											},
+										}
+									},
+									reason: {
+										pipes: [ required, string ],
+										constraints: { }
+									},
+									status: {
+										pipes: [ required, oneOf ],
+										constraints: {
+											oneOf: {
+												values: [ "will_start", "ongoing", "done" ]
 											}
 										}
 									},
-									"reason": {
-										"pipes": [ required, string ],
-										"constraints": { }
+									actionTaken: {
+										pipes: [ required, string ],
+										constraints: { }
 									},
-									"status": {
-										"pipes": [ required, oneOf ],
-										"constraints": {
-											"oneOf": {
-												"values": [ "will_start", "ongoing", "done" ]
-											}
-										}
-									},
-									"actionTaken": {
-										"pipes": [ required, string ],
-										"constraints": { }
-									}
-									// TODO Dates
+									//TODO Dates
 								}
 							}
 						}
@@ -88,10 +88,10 @@ export default class extends DoubleBoundJSONController {
 
 	get manager(): BaseManagerClass { return ConsultationManager }
 
-	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
+	async handle(request: Request, response: Response): Promise<NoContentResponseInfo> {
 		const manager = new ConsultationManager(request.transaction, request.cache)
-		const { id } = request.params
-		await manager.update(id, request.body.data.attributes)
+		const id = +request.params.id
+		const affectedCount = await manager.update(id, request.body.data.attributes)
 
 		return new NoContentResponseInfo()
 	}
