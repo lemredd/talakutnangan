@@ -78,11 +78,7 @@ export default class extends BaseManager<Role, RoleAttributes, RoleQueryParamete
 		}
 	}
 
-	async reattach(rawUserID: string, rawRoleIDs: string[]): Promise<void> {
-		const userID = Number(rawUserID)
-		const roleIDs = rawRoleIDs.map(Number)
-
-		// Receive IDs as string in preparation for migration to receiving string IDs in manager
+	async reattach(userID: number, roleIDs: number[]): Promise<void> {
 		const attachedRoles = await AttachedRole.findAll({
 			"where": new Condition().equal("userID", userID).build()
 		})
