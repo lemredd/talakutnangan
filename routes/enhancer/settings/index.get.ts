@@ -14,10 +14,11 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] { return [] }
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+	intermediate(request: Request, response: Response, unusedNext: NextFunction): Promise<void> {
 		response.writeHead(this.status.MOVED_TEMPORARILY, {
-			Location: "/settings/account"
+			"Location": "/settings/account"
 		})
 		response.end()
+		return Promise.resolve()
 	}
 }
