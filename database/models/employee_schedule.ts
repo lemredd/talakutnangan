@@ -13,33 +13,33 @@ import { days } from "$/types/database.native"
 import User from "%/models/user"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class EmployeeSchedule extends Model {
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	scheduleStart!: number
+		scheduleStart!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	scheduleEnd!: number
+		scheduleEnd!: number
 
 	@Column({
-		allowNull: false,
-		type: DataType.ENUM(...days)
+		"allowNull": false,
+		"type": DataType.ENUM(...days)
 	})
-	dayName!: Day
+		dayName!: Day
 
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false,
-		type: DataType.BIGINT
+		"allowNull": false,
+		"type": DataType.BIGINT
 	})
-	userID!: number
+		userID!: number
 
 	@BelongsTo(() => User)
-	user!: User
+		user!: User
 }
