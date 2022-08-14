@@ -1,3 +1,4 @@
+import type { RequirePassword } from "$/types/documents/security"
 import type {
 	Resource,
 	Attributes,
@@ -64,8 +65,8 @@ export type DeserializedDepartmentListDocument<T extends string|number = string>
 	DeserializedDepartmentResource<T>
 >
 
-export interface DepartmentIdentifierDocument
-extends IdentifierDocument<DepartmentResourceIdentifier> {}
+export type DepartmentIdentifierDocument = IdentifierDocument<DepartmentResourceIdentifier>
 
-export interface DepartmentIdentifierListDocument
-extends IdentifierListDocument<DepartmentResourceIdentifier> {}
+export type DepartmentIdentifierListDocument = IdentifierListDocument<DepartmentResourceIdentifier>
+
+export type UpdatedDepartmentDocument = DepartmentDocument & RequirePassword

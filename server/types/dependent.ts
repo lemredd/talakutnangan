@@ -49,9 +49,9 @@ export interface PreprocessedRequest<T = any> extends Request {
 	nextMiddlewareArguments: T
 }
 
-export interface Response extends BaseResponse {}
-export interface NextFunction extends BaseNextFunction {}
-export interface RequestHandler extends BaseRequestHandler {}
+export type Response = BaseResponse
+export type NextFunction = BaseNextFunction
+export type RequestHandler = BaseRequestHandler
 
 import { ParsedQs } from "qs"
 export type Query = ParsedQs

@@ -62,9 +62,9 @@ export type DeserializedResourceListDocument<
 	W extends DeserializedResource<T, U, V>
 > = DataDocument<W[]>
 
-export interface IdentifierDocument<T extends ResourceIdentifier> extends DataDocument<T> {}
+export type IdentifierDocument<T extends ResourceIdentifier> = DataDocument<T>
 
-export interface IdentifierListDocument<T extends ResourceIdentifier> extends DataDocument<T[]> {}
+export type IdentifierListDocument<T extends ResourceIdentifier> = DataDocument<T[]>
 
 export interface ErrorDocument {
 	errors: UnitError[]
