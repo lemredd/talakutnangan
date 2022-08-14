@@ -50,7 +50,7 @@ export interface ResourceListDocument<
 	T extends ResourceIdentifier,
 	U extends Attributes,
 	V extends Resource<T, U>
-> extends DataDocument<V[]>, MetaDocument<ResourceCount> {}
+> extends DataDocument<V[]>, Partial<MetaDocument<ResourceCount>> {}
 
 export type DeserializedResourceDocument<
 	T extends string|number,
@@ -64,7 +64,7 @@ export interface DeserializedResourceListDocument<
 	U extends ResourceIdentifier<T>,
 	V extends Attributes,
 	W extends DeserializedResource<T, U, V>
-> extends DataDocument<W[]>, MetaDocument<ResourceCount> {}
+> extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
 export type IdentifierDocument<T extends ResourceIdentifier> = DataDocument<T>
 
