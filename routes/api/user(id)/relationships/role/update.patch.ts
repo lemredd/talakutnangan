@@ -36,12 +36,12 @@ export default class extends BoundJSONController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new UserManager(request.transaction, request.cache)
+		const manager = new RoleManager(request.transaction, request.cache)
 		const { data } = request.body
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
 
-		await manager.updateAttachedRoles(userID, data)
+		await manager.reattach(userID, data)
 		Log.success("controller", "successfully updated the roles of the user")
 
 		return new NoContentResponseInfo()

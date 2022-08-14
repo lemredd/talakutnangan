@@ -36,7 +36,6 @@ import Condition from "%/managers/helpers/condition"
 import siftBySlug from "%/queries/user/sift_by_slug"
 import siftByRole from "%/queries/user/sift_by_role"
 import siftByKind from "%/queries/user/sift_by_kind"
-import segragateIDs from "%/managers/helpers/segragate_IDs"
 import siftByDepartment from "%/queries/user/sift_by_department"
 import includeExclusiveDetails from "%/queries/user/include_exclusive_details"
 import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
@@ -104,42 +103,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 	protected get exposableColumns(): string[] {
 		const excludedColumns = new Set([ "password", "departmentID", "prefersDark" ])
 		return super.exposableColumns.filter(columnName => !excludedColumns.has(columnName))
-	}
-
-	async updateAttachedRoles(rawUserID: string, rawRoleIDs: string[]): Promise<void> {
-		const userID = Number(rawUserID)
-		const roleIDs = rawRoleIDs.map(Number)
-
-		// Receive IDs as string in preparation for migration to receiving string IDs in manager
-		const user = await User.findByPk(userID, { "include": [ AttachedRole ] })
-
-		const currentAttachedRoleIDs = user?.attachedRoles.map(
-			attachedRole => attachedRole.roleID
-		) as number[]
-		const { newIDs, deletedIDs } = segragateIDs(currentAttachedRoleIDs, roleIDs)
-
-		if (newIDs.length > 0) {
-			await AttachedRole.bulkCreate(
-				newIDs.map(roleID => ({
-					roleID,
-					userID
-				}))
-			)
-		}
-
-		if (deletedIDs.length > 0) {
-			const conditionedDeletedIDs: Condition[] = deletedIDs.map(
-				id => new Condition().equal("roleID", id)
-			)
-			const deleteCondition = new Condition().and(
-				new Condition().equal("userID", userID),
-				new Condition().or(...conditionedDeletedIDs)
-			)
-			await AttachedRole.destroy({
-				"where": deleteCondition.build(),
-				"force": true
-			})
-		}
 	}
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {

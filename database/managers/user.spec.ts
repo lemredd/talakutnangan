@@ -296,24 +296,6 @@ describe("Database: User Update Operations", () => {
 		expect(verifiedUserCount).toBe(1)
 		expect((await User.findOne({ "where": { "id": user.id } }))!.emailVerifiedAt).not.toBeNull()
 	})
-
-	it("can update roles", async() => {
-		const roles = await new RoleFactory().insertMany(4)
-		const manager = new UserManager()
-		const user = await new UserFactory().attach(roles[0]).attach(roles[1]).insertOne()
-
-		await manager.updateAttachedRoles(String(user.id), [
-			String(roles[1].id),
-			String(roles[2].id),
-			String(roles[3].id)
-		])
-
-		const updatedUser = await User.findByPk(user.id, { "include": [ AttachedRole ] })
-		expect(updatedUser?.attachedRoles).toHaveLength(3)
-		expect(updatedUser?.attachedRoles).toHaveProperty("0.roleID", roles[1].id)
-		expect(updatedUser?.attachedRoles).toHaveProperty("1.roleID", roles[2].id)
-		expect(updatedUser?.attachedRoles).toHaveProperty("2.roleID", roles[3].id)
-	})
 })
 
 describe("Database: Miscellaneous operations", () => {
