@@ -1,3 +1,5 @@
+import type { Day } from "$/types/database"
+import type { UserResourceIdentifier } from "$/types/documents/user"
 import type {
 	Resource,
 	Attributes,
@@ -8,23 +10,30 @@ import type {
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
-import type { Day } from "$/types/database"
 
 export interface EmployeeScheduleResourceIdentifier<T extends string|number = string>
 extends ResourceIdentifier<T> {
 	type: "employee_schedule"
 }
 
-export interface EmployeeScheduleAttributes extends Attributes {
+export interface EmployeeScheduleAttributes<T extends number|undefined = undefined>
+extends Attributes {
+	userID: T,
 	scheduleStart: number,
 	scheduleEnd: number,
 	dayName: Day
 }
 
-export type EmployeeScheduleResource = Resource<
+export interface EmployeeScheduleResource<T extends number|undefined = undefined> extends Resource<
 	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes
->
+	EmployeeScheduleAttributes<T>
+> {
+	relationships: T extends number ? undefined : {
+		user: {
+			data: UserResourceIdentifier
+		}
+	}
+}
 
 export type DeserializedEmployeeScheduleResource<T extends string|number = string>
 = DeserializedResource<
@@ -33,10 +42,10 @@ export type DeserializedEmployeeScheduleResource<T extends string|number = strin
 	EmployeeScheduleAttributes
 >
 
-export type EmployeeScheduleDocument = ResourceDocument<
+export type EmployeeScheduleDocument<T extends number|undefined = undefined> = ResourceDocument<
 	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes,
-	EmployeeScheduleResource
+	EmployeeScheduleAttributes<T>,
+	EmployeeScheduleResource<T>
 >
 
 export type EmployeeScheduleListDocument = ResourceListDocument<
