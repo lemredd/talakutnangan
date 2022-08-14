@@ -12,42 +12,48 @@ import SignatureTransformer from "%/transformers/signature"
 import DepartmentTransformer from "%/transformers/department"
 import StudentDetailTransformer from "%/transformers/student_detail"
 import ProfilePictureTransformer from "%/transformers/profile_picture"
+import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 
 export default class extends Transformer<User, void> {
 	constructor() {
 		super("user", {
-			department: {
-				attribute: "department",
-				transformer: new DepartmentTransformer()
+			"department": {
+				"attribute": "department",
+				"transformer": new DepartmentTransformer()
 			},
-			role: {
-				attribute: "role",
-				transformer: new RoleTransformer()
+			"role": {
+				"attribute": "role",
+				"transformer": new RoleTransformer()
 			},
 			"student_detail": {
-				attribute: "studentDetail",
-				transformer: new StudentDetailTransformer()
+				"attribute": "studentDetail",
+				"transformer": new StudentDetailTransformer()
 			},
-			signature: {
-				attribute: "signature",
-				transformer: new SignatureTransformer()
+			"employee_schedule": {
+				"attribute": "employeeSchedules",
+				"transformer": new EmployeeScheduleTransformer()
+			},
+			"signature": {
+				"attribute": "signature",
+				"transformer": new SignatureTransformer()
 			},
 			"profile_picture": {
-				attribute: "profilePicture",
-				transformer: new ProfilePictureTransformer()
+				"attribute": "profilePicture",
+				"transformer": new ProfilePictureTransformer()
 			}
 		})
 
 		this.relationships = {
-			roles: this.roles.bind(this),
-			department: this.department.bind(this),
-			studentDetail: this.studentDetail.bind(this),
-			signature: this.signature.bind(this),
-			profilePicture: this.profilePicture.bind(this)
+			"roles": this.roles.bind(this),
+			"department": this.department.bind(this),
+			"studentDetail": this.studentDetail.bind(this),
+			"employeeSchedules": this.employeeSchedules.bind(this),
+			"signature": this.signature.bind(this),
+			"profilePicture": this.profilePicture.bind(this)
 		}
 	}
 
-	transform(model: User|User[], options: TransformerOptions): AttributesObject {
+	transform(model: User|User[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"name",
@@ -61,7 +67,7 @@ export default class extends Transformer<User, void> {
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.department,
-			this.subtransformers["department"].transformer as DepartmentTransformer,
+			this.subtransformers.department.transformer as DepartmentTransformer,
 			options
 		)
 	}
@@ -69,7 +75,7 @@ export default class extends Transformer<User, void> {
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.roles,
-			this.subtransformers["role"].transformer as RoleTransformer,
+			this.subtransformers.role.transformer as RoleTransformer,
 			options
 		)
 	}
@@ -77,7 +83,15 @@ export default class extends Transformer<User, void> {
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.studentDetail || null,
-			this.subtransformers["student_detail"].transformer as StudentDetailTransformer,
+			this.subtransformers.student_detail.transformer as StudentDetailTransformer,
+			options
+		)
+	}
+
+	employeeSchedules(model: User, options: TransformerOptions): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			model.employeeSchedules || null,
+			this.subtransformers.employee_schedule.transformer as EmployeeScheduleTransformer,
 			options
 		)
 	}
@@ -85,7 +99,7 @@ export default class extends Transformer<User, void> {
 	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.signature || null,
-			this.subtransformers["signature"].transformer as SignatureTransformer,
+			this.subtransformers.signature.transformer as SignatureTransformer,
 			options
 		)
 	}
@@ -93,7 +107,7 @@ export default class extends Transformer<User, void> {
 	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.profilePicture || null,
-			this.subtransformers["profile_picture"].transformer as ProfilePictureTransformer,
+			this.subtransformers.profile_picture.transformer as ProfilePictureTransformer,
 			options
 		)
 	}
