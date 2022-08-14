@@ -70,8 +70,10 @@ export type DeserializedRoleListDocument<T extends string|number = string>
 	DeserializedRoleResource<T>
 >
 
-export type RoleIdentifierDocument = IdentifierDocument<RoleResourceIdentifier>
+export type RoleIdentifierDocument<T extends string|number = string>
+= IdentifierDocument<T, RoleResourceIdentifier<T>>
 
-export type RoleIdentifierListDocument = IdentifierListDocument<RoleResourceIdentifier>
+export type RoleIdentifierListDocument<T extends string|number = string>
+= IdentifierListDocument<T, RoleResourceIdentifier<T>>
 
 export type UpdatedRoleDocument = RoleDocument & RequirePassword
