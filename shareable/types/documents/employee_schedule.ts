@@ -24,13 +24,23 @@ extends Attributes {
 	dayName: Day
 }
 
-export interface EmployeeScheduleResource<T extends number|undefined = undefined> extends Resource<
+/**
+ * Shape of employee schedule resource.
+ *
+ * If first generic argument is number, second generic argument is unnecessary and
+ * `userID` will be one of the attributes. Second generic arguemnt dictates the type of primary ID
+ * for user resource identifier.
+ */
+export interface EmployeeScheduleResource<
+	T extends number|object|undefined = undefined,
+	U extends string|number = string,
+> extends Resource<
 	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes<T>
+	EmployeeScheduleAttributes<T extends number ? number : undefined>
 > {
-	relationships: T extends number ? undefined : {
+	relationships: T extends number|undefined ? undefined : {
 		user: {
-			data: UserResourceIdentifier
+			data: UserResourceIdentifier<U>
 		}
 	}
 }
@@ -42,10 +52,13 @@ export type DeserializedEmployeeScheduleResource<T extends string|number = strin
 	EmployeeScheduleAttributes
 >
 
-export type EmployeeScheduleDocument<T extends number|undefined = undefined> = ResourceDocument<
+export type EmployeeScheduleDocument<
+	T extends number|object|undefined = undefined,
+	U extends string|number = string
+> = ResourceDocument<
 	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes<T>,
-	EmployeeScheduleResource<T>
+	EmployeeScheduleAttributes<T extends number ? number : undefined>,
+	EmployeeScheduleResource<T, U>
 >
 
 export type EmployeeScheduleListDocument = ResourceListDocument<
