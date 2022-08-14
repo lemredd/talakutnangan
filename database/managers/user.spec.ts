@@ -15,8 +15,10 @@ describe("Database: User Authentication Operations", () => {
 		const role = await new RoleFactory().insertOne()
 		const manager = new UserManager()
 		const user = await new UserFactory().insertOne()
-		await AttachedRole.create({ "userID": user.id,
-			"roleID": role.id })
+		await AttachedRole.create({
+			"roleID": role.id,
+			"userID": user.id
+		})
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
