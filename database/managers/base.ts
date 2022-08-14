@@ -158,14 +158,25 @@ export default abstract class Manager<
 				this.listPipeline
 			)
 
-			const { rows } = await this.model.findAndCountAll({
+			const { rows, count } = await this.model.findAndCountAll({
 				...options,
 				...this.transaction.transactionObject
 			})
 
 			Log.success("manager", "done listing models according to constraints")
 
-			return this.serialize(rows, transformerOptions)
+			const document = this.serialize(rows, transformerOptions)
+
+			if (typeof document.meta === "object") {
+				document.meta = {
+					...document.meta,
+					count
+				}
+			} else {
+				document.meta = { count }
+			}
+
+			return document
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
