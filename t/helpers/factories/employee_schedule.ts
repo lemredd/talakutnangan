@@ -33,7 +33,7 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	DeserializedEmployeeScheduleListDocument
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
-	#day: () => Day = () => faker.helpers.arrayElement(days)
+	#dayName: () => Day = () => faker.helpers.arrayElement(days)
 	#scheduleStart: () => number = () => faker.datatype.number({ "max": 24 * 60 - 2 })
 	#scheduleEnd: (scheduleStart: number) => number
 		= (scheduleStart: number) => faker.datatype.number({
@@ -46,8 +46,8 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	get transformer(): EmployeeScheduleTransformer { return new EmployeeScheduleTransformer() }
 
 	async generate(): GeneratedData<EmployeeSchedule> {
-		const [ day, scheduleStart, scheduleEnd ] = faker.unique(() => {
-			const rawDay = this.#day()
+		const [ dayName, scheduleStart, scheduleEnd ] = faker.unique(() => {
+			const rawDay = this.#dayName()
 			const rawScheduleStart = this.#scheduleStart()
 			const rawScheduleEnd = this.#scheduleEnd(rawScheduleStart)
 
@@ -55,15 +55,15 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 		}).split("_")
 
 		return {
-			day,
+			dayName,
 			"scheduleEnd": Number(scheduleEnd),
 			"scheduleStart": Number(scheduleStart),
 			"userID": (await this.#user()).id
 		}
 	}
 
-	day(generator: () => Day): EmployeeScheduleFactory {
-		this.#day = generator
+	dayName(generator: () => Day): EmployeeScheduleFactory {
+		this.#dayName = generator
 		return this
 	}
 
