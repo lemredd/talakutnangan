@@ -99,6 +99,7 @@ export default class extends JSONController {
 
 	get manager(): BaseManagerClass { return UserManager }
 
+	// TODO: Limit the creation to current user unless there is enough permission to update user info
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)

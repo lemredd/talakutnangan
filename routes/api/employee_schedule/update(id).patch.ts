@@ -68,6 +68,7 @@ export default class extends DoubleBoundJSONController {
 
 	get manager(): BaseManagerClass { return UserManager }
 
+	// TODO: Limit the updating to current user unless there is enough permission to update user info
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
