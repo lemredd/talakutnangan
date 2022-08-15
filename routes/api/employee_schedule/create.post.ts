@@ -36,6 +36,7 @@ export default class extends BoundJSONController {
 		/*
 		 * TODO: Make validator if the schedule does not conflict with existing schedules
 		 * TODO: Make validator if the schedule start is less than schedule end
+		 * TODO: Make validator if the user is has a kind column with a value of "reachable_employee"
 		 */
 		const attributes: FieldRules = {
 			"dayName": {

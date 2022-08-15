@@ -41,9 +41,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 
 		await requester.runMiddleware(bodyValidationFunction)
 
-		// requester.expectSuccess()
-		const body = requester.expectFailure(ErrorBag).toJSON()
-		console.log(body, "\n\n\n\n")
+		requester.expectSuccess()
 	})
 
 	it("cannot accept invalid name", async() => {
