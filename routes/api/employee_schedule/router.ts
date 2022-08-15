@@ -1,4 +1,5 @@
 import Router from "!/bases/router"
+import GetList from "!%/api/employee_schedule/list.get"
 import PostCreate from "!%/api/employee_schedule/create.post"
 import PatchRestore from "!%/api/employee_schedule/restore.patch"
 import PatchUpdate from "!%/api/employee_schedule/update(id).patch"
@@ -9,6 +10,7 @@ export default class extends Router {
 		super()
 
 		this.useControllers([
+			new GetList(),
 			new PostCreate(),
 			new PatchUpdate(),
 			new PatchRestore(),
