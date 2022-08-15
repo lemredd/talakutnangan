@@ -8,9 +8,9 @@ import { days } from "$/types/database.native"
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import BoundJSONController from "!/controllers/bound_json"
 import CreatedResponseInfo from "!/response_infos/created"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
+import JSONController from "!/controllers/json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import convertTimeToMinutes from "$/helpers/time/convert_time_to_minutes"
 
@@ -24,7 +24,7 @@ import oneOf from "!/validators/comparison/one-of"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
-export default class extends BoundJSONController {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

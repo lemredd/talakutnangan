@@ -4,7 +4,7 @@ import MockRequester from "~/set-ups/mock_requester"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
 import Controller from "./create.post"
 
-const BODY_VALIDATION_INDEX = 1
+const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: POST /api/employee_schedule", () => {
 	const requester = new MockRequester()
