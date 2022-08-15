@@ -1,5 +1,5 @@
 import type { ModelCtor } from "%/types/dependent"
-import type { CommonQueryParameters } from "$/types/query"
+import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
 
 import BaseManager from "%/managers/base"
@@ -9,7 +9,7 @@ import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 export default class extends BaseManager<
 	EmployeeSchedule,
 	EmployeeScheduleAttributes<number>,
-	CommonQueryParameters
+	EmployeeScheduleQueryParameters
 > {
 	get model(): ModelCtor<EmployeeSchedule> { return EmployeeSchedule }
 
