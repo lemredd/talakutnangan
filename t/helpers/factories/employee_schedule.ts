@@ -56,8 +56,8 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 
 		return {
 			day,
-			scheduleEnd,
-			scheduleStart,
+			"scheduleEnd": Number(scheduleEnd),
+			"scheduleStart": Number(scheduleStart),
 			"userID": (await this.#user()).id
 		}
 	}
