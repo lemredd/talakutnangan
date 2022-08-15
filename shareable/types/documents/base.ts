@@ -20,9 +20,11 @@ export interface Relationships<
 	T extends boolean,
 	U extends RelationshipData<any>[]
 > extends Serializable {
-	relationships: T extends true ? {
-		[Property in U[number][0]]: U[number][1]
-	}: undefined
+	relationships: T extends false ? undefined : {
+		[Property in U[number][0]]: {
+			data: U[number][1]
+		}
+	}
 }
 
 export type DeserializedResource<
