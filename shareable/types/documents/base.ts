@@ -14,6 +14,14 @@ export type Resource<T extends ResourceIdentifier, U extends Attributes> = T & {
 	attributes: U
 }
 
+type RelationshipData<T extends ResourceIdentifier|ResourceIdentifier[]> = [ string, T ]
+
+export interface Relationships<T extends RelationshipData<any>[]> extends Serializable {
+	relationships: {
+		[Property in T[number][0]]: T[number][1]
+	}
+}
+
 export type DeserializedResource<
 	T extends string|number,
 	U extends ResourceIdentifier<T>,
