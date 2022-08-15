@@ -7,10 +7,7 @@ import UserManager from "%/managers/user"
 import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-
-import { READ } from "$/permissions/role_combinations"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { role as permissionGroup } from "$/permissions/permission_list"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import makeIDRules from "!/rule_sets/make_id"
 import exists from "!/validators/manager/exists"
@@ -20,9 +17,7 @@ export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ
-		])
+		return CommonMiddlewareList.knownOnlyPolicy
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
