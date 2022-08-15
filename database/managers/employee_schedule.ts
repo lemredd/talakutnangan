@@ -11,7 +11,7 @@ import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 export default class extends BaseManager<
 	EmployeeSchedule,
 	EmployeeScheduleAttributes<number>,
-	EmployeeScheduleQueryParameters
+	EmployeeScheduleQueryParameters<number>
 > {
 	get model(): ModelCtor<EmployeeSchedule> { return EmployeeSchedule }
 
