@@ -2,6 +2,7 @@ import type { Day } from "$/types/database"
 import type { UserResourceIdentifier } from "$/types/documents/user"
 import type {
 	Resource,
+	Relationships,
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
@@ -24,26 +25,27 @@ extends Attributes {
 	dayName: Day
 }
 
+export type EmployeeScheduleRelationships<
+	T extends boolean = false,
+	U extends number|string = string
+>
+= Relationships<T, [ [ "user", UserResourceIdentifier<U> ] ]>
+
 /**
  * Shape of employee schedule resource.
  *
- * If first generic argument is number, second generic argument is unnecessary and
- * `userID` will be one of the attributes. Second generic arguemnt dictates the type of primary ID
- * for user resource identifier.
+ * If first generic argument is number or false, second generic argument is unnecessary and `userID`
+ * will be one of the attributes. Otherwise, relationships will be included.
+ *
+ * Second generic argument dictates the type of primary ID for user resource identifier.
  */
 export interface EmployeeScheduleResource<
-	T extends number|object|undefined = undefined,
+	T extends number|boolean = false,
 	U extends string|number = string,
 > extends Resource<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes<T extends number ? number : undefined>
-> {
-	relationships: T extends number|undefined ? undefined : {
-		user: {
-			data: UserResourceIdentifier<U>
-		}
-	}
-}
+>, EmployeeScheduleRelationships<T extends number ? false : T, U> {}
 
 export type DeserializedEmployeeScheduleResource<T extends string|number = string>
 = DeserializedResource<
@@ -53,7 +55,7 @@ export type DeserializedEmployeeScheduleResource<T extends string|number = strin
 >
 
 export type EmployeeScheduleDocument<
-	T extends number|object|undefined = undefined,
+	T extends number|boolean = false,
 	U extends string|number = string
 > = ResourceDocument<
 	EmployeeScheduleResourceIdentifier,

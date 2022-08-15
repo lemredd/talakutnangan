@@ -32,7 +32,8 @@ export default class Fetcher<
 	Z extends DeserializedResourceDocument<string, T, U, W>,
 	A extends DeserializedResourceListDocument<string, T, U, W>,
 	B extends Serializable,
-	C extends CommonQueryParameters = CommonQueryParameters
+	C extends CommonQueryParameters = CommonQueryParameters,
+	D extends Serializable = Serializable
 > extends RequestEnvironment {
 	protected static basePath = ""
 	protected static type = ""
@@ -51,7 +52,7 @@ export default class Fetcher<
 		this.type = type
 	}
 
-	create(attributes: U, otherDataFields: GeneralObject = {}): Promise<Response<T, U, V, W, Z>> {
+	create(attributes: U, otherDataFields: D = {} as D): Promise<Response<T, U, V, W, Z>> {
 		return this.handleResponse(
 			this.postJSON(`${this.type}`, {
 				"data": {
@@ -182,14 +183,14 @@ export default class Fetcher<
 		})
 	}
 
-	protected handleResponse<D extends X|Y|Z|A|B|null>(
+	protected handleResponse<E extends X|Y|Z|A|B|null>(
 		response: Promise<Response<T, U, V, W, X|Y|B|null>>,
-		mustBeDeserialize: boolean = true
-	): Promise<Response<T, U, V, W, D>> {
+		mustBeDeserialize = true
+	): Promise<Response<T, U, V, W, E>> {
 		return response.then(({ body, status }) => {
 			if (status >= 200 || status <= 299) {
 				return {
-					"body": deserialize(body) as D,
+					"body": deserialize(body) as E,
 					status
 				}
 			}
