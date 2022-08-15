@@ -9,41 +9,39 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/role/create.post"
 
 describe("POST /api/role", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by authenticated user", async () => {
+	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-			.roleFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
+		.roleFlags(permissionGroup.generateMask(...CREATE))
+		.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const role = await (new RoleFactory()).makeOne()
+		const role = await new RoleFactory().makeOne()
 
 		const response = await App.request
-			.post("/api/role")
-			.set("Cookie", cookie)
-			.send({
-				data: {
-					type: "role",
-					attributes: {
-						name: role.name,
-						semesterFlags:     role.semesterFlags,
-						tagFlags:          role.tagFlags,
-						postFlags:         role.postFlags,
-						commentFlags:      role.commentFlags,
-						profanityFlags:    role.profanityFlags,
-						userFlags:         role.userFlags,
-						auditTrailFlags:   role.auditTrailFlags
-					}
+		.post("/api/role")
+		.set("Cookie", cookie)
+		.send({
+			"data": {
+				"type": "role",
+				"attributes": {
+					"name": role.name,
+					"semesterFlags": role.semesterFlags,
+					"tagFlags": role.tagFlags,
+					"postFlags": role.postFlags,
+					"commentFlags": role.commentFlags,
+					"profanityFlags": role.profanityFlags,
+					"userFlags": role.userFlags,
+					"auditTrailFlags": role.auditTrailFlags
 				}
-			})
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+			}
+		})
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.name).toBe(role.name)
 	})
-
-	it.todo("cannot accept invalid values")
 })
