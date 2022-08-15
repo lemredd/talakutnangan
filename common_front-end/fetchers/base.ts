@@ -190,14 +190,17 @@ export default class Fetcher<
 		return response.then(({ body, status }) => {
 			if (status >= 200 || status <= 299) {
 				return {
-					"body": deserialize(body) as E,
+					"body": mustBeDeserialize ? deserialize(body) as E : body as E,
 					status
 				}
 			}
-			throw {
+
+			const error = {
 				body,
 				status
 			}
+
+			throw error
 		})
 	}
 
