@@ -1,13 +1,13 @@
 import { v4 } from "uuid"
 
-import { Request, Response } from "!/types/dependent"
-
 import Policy from "!/bases/policy"
+import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import Controller from "!/bases/controller-likes/controller"
+import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
-export default class extends Controller {
+export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
@@ -16,9 +16,9 @@ export default class extends Controller {
 
 	get validations(): Validation[] { return [] }
 
-	async handle(request: Request, response: Response): Promise<void> {
-		response.writeHead(this.status.MOVED_TEMPORARILY, {
-			Location: `/chat/room/${v4()}`
-		})
+	get postValidationMiddlewares(): Middleware[] {
+		return [
+			new ForceRedirector(`/chat/room/${v4()}`)
+		]
 	}
 }
