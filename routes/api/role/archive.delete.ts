@@ -3,8 +3,9 @@ import { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import NoContentResponseInfo from "!/response_infos/no_content"
 import JSONController from "!/controllers/json"
+import NoContentResponseInfo from "!/response_infos/no_content"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
@@ -34,5 +35,11 @@ export default class extends JSONController {
 		await manager.archiveBatch(IDs)
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): ActionAuditor[] {
+		return [
+			new ActionAuditor("role.archive")
+		]
 	}
 }
