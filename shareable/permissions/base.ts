@@ -69,10 +69,10 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	}
 
 	/**
-	 * Generates a collection of masks for external permissions.
-	 * @param mask The mask to check for external dependencies.
+	 * Generates a collection of information about the external permission group dependency.
+	 * @param names The names of the permission names to check.
 	 */
-	generateExternalDependencyInfo(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
+	identifyExternalDependencies(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
 		const externalInfos = new Map<string, ExternalPermissionDependencyInfo<any, any>>()
 
 		// Check all permission names that have external permissions
