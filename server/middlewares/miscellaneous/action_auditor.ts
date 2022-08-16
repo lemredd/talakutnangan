@@ -15,7 +15,7 @@ export default class ActionAuditor extends Middleware {
 		this.actionName = actionName
 	}
 
-	intermediate(request: Request, response: Response, next: NextFunction)
+	async intermediate(request: Request, response: Response, next: NextFunction)
 	: Promise<void> {
 		const manager = new AuditTrailManager(request.transaction, request.cache)
 		const user = request.user
@@ -23,12 +23,12 @@ export default class ActionAuditor extends Middleware {
 			: null
 		const userID = user ? Number(user.data.id) : null
 
-		manager.create({
+		await manager.create({
 			"actionName": this.actionName,
 			"extra": {},
 			userID
 		})
+
 		next()
-		return Promise.resolve()
 	}
 }
