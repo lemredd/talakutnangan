@@ -1,5 +1,5 @@
 <template>
-<SettingsHeader title="User Settings" />
+<SettingsHeader />
 <form @submit.prevent class="text-dark-200 dark:text-light-100 flex flex-col">
 		<TextualField
 			label="E-mail"

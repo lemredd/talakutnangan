@@ -1,84 +1,73 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
-import Policy from "!/bases/policy"
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
-import JSONController from "!/controllers/json_controller"
+import JSONController from "!/controllers/json"
 
 import { CREATE } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { department as permissionGroup } from "$/permissions/permission_list"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
-import same from "!/validators/comparison/same"
 import boolean from "!/validators/base/boolean"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import length from "!/validators/comparison/length"
-import notExists from "!/validators/manager/not_exists"
 import acronym from "!/validators/comparison/acronym"
+import notExists from "!/validators/manager/not_exists"
+import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
-	get policy(): Policy {
+	get policy(): PermissionBasedPolicy<any, any> {
 		return new PermissionBasedPolicy(permissionGroup, [
 			CREATE
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
-		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						type: {
-							pipes: [ required, string, same ],
-							constraints: {
-								same: {
-									value: "department"
-								}
-							}
-						},
-						attributes: {
-							pipes: [ required, object ],
-							constraints: {
-								object: {
-									fullName: {
-										pipes: [ required, string, length, regex, notExists ],
-										constraints: {
-											length: { minimum: 10, maximum: 255 },
-											regex: { match: /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/ },
-											manager: { className: DepartmentManager , columnName: "fullName" }
-										}
-									},
-									acronym: {
-										pipes: [ required, string, length, regex, acronym, notExists ],
-										constraints: {
-											length: { minimum: 2, maximum: 255 },
-											regex: { match: /([A-Z][a-z]*)+/ },
-											acronym: { spelledOutPath: "data.attributes.fullName" },
-											manager: { className: DepartmentManager , columnName: "fullName" }
-										}
-									},
-									mayAdmit: {
-										pipes: [ required, boolean ],
-										constraints: {}
-									}
-								}
-							}
-						}
-					}
-				}
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		const attributes = {
+			"fullName": {
+				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 10
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "fullName"
+					},
+					"regex": { "match": /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/u }
+				},
+				"pipes": [ required, string, length, regex, notExists ]
+			},
+			"acronym": {
+				"constraints": {
+					"acronym": { "spelledOutPath": "data.attributes.fullName" },
+					"length": {
+						"maximum": 255,
+						"minimum": 2
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "fullName"
+					},
+					"regex": { "match": /([A-Z][a-z]*)+/u }
+				},
+				"pipes": [ required, string, length, regex, acronym, notExists ]
+			},
+			"mayAdmit": {
+				"pipes": [ required, boolean ]
 			}
 		}
+
+		return makeResourceDocumentRules("department", attributes, true)
 	}
 
-	async handle(request: Request, response: Response): Promise<CreatedResponseInfo> {
+	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
 		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departmentInfo = await manager.create(request.body.data.attributes)
 

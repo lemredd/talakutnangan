@@ -15,28 +15,32 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.manager === undefined) {
+	if (!constraints.manager) {
 		throw makeDeveloperError(constraints.field)
 	}
 
+	// eslint-disable-next-line new-cap
 	const manager = new constraints.manager.className(
 		constraints.request.transaction,
 		constraints.request.cache
 	)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
-		filter: {
-			existence: "*"
+		"filter": {
+			"existence": "*"
 		}
 	})
 
 	if (foundModel.data === null) {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string, value: string) =>
-				`The ${value} in field "${field}" is not existing or archived in the database".`
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (
+				field: string,
+				value: string
+			) => `The ${value} in field "${field}" is not existing or archived in the database".`
 		}
+		throw error
 	} else {
 		return state
 	}

@@ -9,16 +9,16 @@ import User from "%/models/user"
 import FileLike from "%/models/file-like"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class ProfilePicture extends FileLike {
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	userID!: number
+		userID!: number
 
 	@BelongsTo(() => User)
-	user!: User
+		user!: User
 }

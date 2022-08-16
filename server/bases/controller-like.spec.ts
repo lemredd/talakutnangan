@@ -26,7 +26,7 @@ abstract class BaseTestController extends ControllerLike {
 describe("Back-end Base: ControllerLike Non-Request", () => {
 	it("can make handlers", () => {
 		class ControllerA extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -44,7 +44,7 @@ describe("Back-end Base: ControllerLike Non-Request", () => {
 		class ControllerB extends BaseTestController {
 			get filePath(): string { return `${this.root}/routes/a/b/index.get.ts` }
 
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -68,7 +68,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareA extends Middleware {
-			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+			intermediate(request: Request, unusedResponse: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
 				next()
 				return Promise.resolve()
@@ -76,7 +76,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerD extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -105,7 +105,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class MiddlewareB extends Middleware {
-			intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+			intermediate(request: Request, unusedResponse: Response, next: NextFunction): Promise<void> {
 				middlewareFunction()
 				next()
 				return Promise.resolve()
@@ -113,7 +113,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerE extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -145,7 +145,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		class ControllerF extends BaseTestController {
 			private message = targetMessage
 
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				handleFunction(this.message)
 			}
@@ -168,7 +168,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerG extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -189,7 +189,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class BodyParserA extends Middleware {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				middlewareFunction()
 				return Promise.resolve()
@@ -197,7 +197,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerH extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -225,7 +225,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerI extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -246,7 +246,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class PostBodyParserA extends Middleware {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				middlewareFunction()
 				return Promise.resolve()
@@ -254,7 +254,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerJ extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}
@@ -277,7 +277,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		const middlewareFunction = jest.fn()
 
 		class PostValidationA extends Middleware {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				middlewareFunction()
 				return Promise.resolve()
@@ -285,7 +285,7 @@ describe("Back-end Base: ControllerLike Middlewares", () => {
 		}
 
 		class ControllerJ extends BaseTestController {
-			async intermediate(request: Request, response: Response, next: NextFunction)
+			async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 				: Promise<void> {
 				return Promise.resolve()
 			}

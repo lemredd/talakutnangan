@@ -26,7 +26,7 @@ describe("DELETE /api/user", () => {
 			.delete("/api/user")
 			.send({
 				data: [
-					{ type: "user", id: user.id }
+					{ type: "user", id: String(user.id) }
 				]
 			})
 			.set("Cookie", cookie)

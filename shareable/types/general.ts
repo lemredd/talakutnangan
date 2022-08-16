@@ -9,13 +9,10 @@ export type GeneralObject<T = any> = { [key: string]: T }
 export interface Serializable {
 	[key: string]:
 		| string
-		| string[]
 		| number
-		| number[]
 		| boolean
-		| boolean[]
 		| null
-		| Serializable[]
 		| Serializable
 		| undefined
+		| (string|number|boolean|Serializable)[]
 }

@@ -1,4 +1,3 @@
-import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
@@ -9,13 +8,6 @@ import BodyValidation from "!/validations/body"
 import IDParameterValidation from "!/validations/id_parameter"
 import ProfilePictureManager from "%/managers/profile_picture"
 import NoContentResponseInfo from "!/response_infos/no_content"
-
-import object from "!/validators/base/object"
-import string from "!/validators/base/string"
-import buffer from "!/validators/base/buffer"
-import same from "!/validators/comparison/same"
-import required from "!/validators/base/required"
-import nullable from "!/validators/base/nullable"
 
 import CreateController from "!%/api/user(id)/relationships/profile_picture/create.post"
 
@@ -35,15 +27,18 @@ export default class extends CreateController {
 		]
 	}
 
-	async handle(request: AuthenticatedIDRequest, response: Response)
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new ProfilePictureManager(request.transaction, request.cache)
 		const { fileContents } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
-		const id = +request.params.id
+		const id = Number(request.params.id)
 
-		await manager.update(id, { userID, fileContents })
+		await manager.update(id, {
+			fileContents,
+			userID
+		})
 
 		Log.success("controller", "successfully updated the profile picture")
 

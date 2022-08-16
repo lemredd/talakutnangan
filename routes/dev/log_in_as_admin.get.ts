@@ -12,7 +12,7 @@ import DepartmentFactory from "~/factories/department"
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 import Department from "%/models/department"
 
@@ -32,52 +32,52 @@ export default class extends DevController {
 			const testDepartmentName = "Test Department"
 
 			let testAdminRole = await Role.findOne({
-				where: (new Condition()).equal("name", testRole).build()
+				"where": new Condition().equal("name", testRole).build()
 			})
 
 			if (testAdminRole === null) {
 				testAdminRole = await new RoleFactory()
-					.name(() => testRole)
-					.departmentFlags(0xFFF)
-					.roleFlags(0xFFF)
-					.semesterFlags(0xFFF)
-					.tagFlags(0xFFF)
-					.postFlags(0xFFF)
-					.commentFlags(0xFFF)
-					.profanityFlags(0xFFF)
-					.userFlags(0xFFF)
-					.auditTrailFlags(0xFFF)
-					.insertOne()
+				.name(() => testRole)
+				.departmentFlags(0xFFF)
+				.roleFlags(0xFFF)
+				.semesterFlags(0xFFF)
+				.tagFlags(0xFFF)
+				.postFlags(0xFFF)
+				.commentFlags(0xFFF)
+				.profanityFlags(0xFFF)
+				.userFlags(0xFFF)
+				.auditTrailFlags(0xFFF)
+				.insertOne()
 
 				Log.success("controller", "created test admin role")
 			}
 
 			Log.success("controller", "searching for  dept")
 			let testDepartment = await Department.findOne({
-				where: (new Condition()).equal("fullName", testDepartmentName).build()
+				"where": new Condition().equal("fullName", testDepartmentName).build()
 			})
 
 			Log.success("controller", "making for  dept")
 			if (testDepartment === null) {
 				testDepartment = await new DepartmentFactory()
-					.name(() => testDepartmentName)
-					.mayNotAdmit()
-					.insertOne()
+				.fullName(() => testDepartmentName)
+				.mayNotAdmit()
+				.insertOne()
 
 				Log.success("controller", "created test department")
 			}
 
 
 			let previousUser = await User.findOne({
-				where: (new Condition()).equal("email", testAdminEmail).build()
+				"where": new Condition().equal("email", testAdminEmail).build()
 			})
 
 			if (previousUser === null) {
 				const user = await new UserFactory()
-					.email(() => testAdminEmail)
-					.beUnreachableEmployee()
+				.email(() => testAdminEmail)
+				.beUnreachableEmployee()
 
-					.insertOne()
+				.insertOne()
 
 				Log.success("controller", "created test admin")
 
@@ -85,18 +85,18 @@ export default class extends DevController {
 			}
 
 			await AttachedRole.upsert({
-				userID: previousUser.id,
-				roleID: testAdminRole.id
+				"userID": previousUser.id,
+				"roleID": testAdminRole.id
 			})
 
 			Log.success("controller", "attached test admin role to test admin")
 
 			request.body = {
-				email: testAdminEmail,
-				password: "password"
+				"email": testAdminEmail,
+				"password": "password"
 			}
 
-			request.nextMiddlewareArguments = { hasPreprocessed: true }
+			request.nextMiddlewareArguments = { "hasPreprocessed": true }
 		}
 	}
 

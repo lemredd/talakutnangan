@@ -9,21 +9,21 @@ const BODY_VALIDATION_INDEX = 1
 describe("Controller: PATCH /api/user/:id/profile_picture", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const validation = validations[BODY_VALIDATION_INDEX]
 		const validationFunction = validation.intermediate.bind(validation)
 		const profilePicture = await new ProfilePictureFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "profile_picture",
-					attributes: {
-						fileContents: {
-							buffer: profilePicture.fileContents,
-							info: {
-								mimeType: "image/png"
+			"body": {
+				"data": {
+					"type": "profile_picture",
+					"attributes": {
+						"fileContents": {
+							"buffer": profilePicture.fileContents,
+							"info": {
+								"mimeType": "image/png"
 							}
 						}
 					}
@@ -36,21 +36,21 @@ describe("Controller: PATCH /api/user/:id/profile_picture", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const validation = validations[BODY_VALIDATION_INDEX]
 		const validationFunction = validation.intermediate.bind(validation)
 		const profilePicture = await new ProfilePictureFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "profile_picture",
-					attributes: {
-						fileContents: {
-							buffer: profilePicture.fileContents,
-							info: {
-								mimeType: "image/xxx"
+			"body": {
+				"data": {
+					"type": "profile_picture",
+					"attributes": {
+						"fileContents": {
+							"buffer": profilePicture.fileContents,
+							"info": {
+								"mimeType": "image/xxx"
 							}
 						}
 					}

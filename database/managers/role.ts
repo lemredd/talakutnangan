@@ -13,12 +13,12 @@ import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
-export default class extends BaseManager<Role, RoleAttributes, RoleQueryParameters> {
+export default class extends BaseManager<Role, RoleAttributes, RoleQueryParameters<number>> {
 	get model(): ModelCtor<Role> { return Role }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<Role>, RoleQueryParameters>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Role>, RoleQueryParameters<number>>[] {
 		return [
 			siftByDepartment,
 			...super.listPipeline

@@ -1,14 +1,14 @@
 import "reflect-metadata"
 import Database from "./database"
 
-beforeAll(async () => {
+beforeAll(async() => {
 	await Database.create()
-});
+}, 10000)
 
-afterAll(async () => {
+afterAll(async() => {
 	await Database.destroy()
-});
+})
 
-afterEach(async () => {
+afterEach(async() => {
 	await Database.clear()
-});
+})

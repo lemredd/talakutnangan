@@ -1,36 +1,22 @@
-import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
-import Validation from "!/bases/validation"
 import OkResponseInfo from "!/response_infos/ok"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import BoundController from "!/controllers/bound"
 
 import { UPDATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-export default class extends BoundJSONController {
+export default class extends BoundController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			UPDATE
 		])
-	}
-
-	get validations(): Validation[] {
-		const parentValidations = super.validations
-		parentValidations.pop()
-		return parentValidations
-	}
-
-	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return {
-
-		}
 	}
 
 	get manager(): BaseManagerClass { return RoleManager }

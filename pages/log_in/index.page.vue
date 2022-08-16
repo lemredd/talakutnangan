@@ -20,6 +20,7 @@ body {
 
 <style scoped lang="scss">
 @import "@styles/variables.scss";
+@import "@styles/error.scss";
 
 .login-container {
 	@apply flex items-center justify-center;
@@ -43,19 +44,6 @@ body {
 		margin: 0 2em;
 		padding: 1em 2em;
 		z-index: 1;
-
-		// TODO(error): make into general style (error.scss)
-		.error {
-			margin: 1em 0;
-			border-radius: 3px;
-			padding: .25em 1em;
-
-			background-color: $color-primary;
-			color: white;
-			font-size: smaller;
-			text-align: center;
-			width: fit-content;
-		}
 
 		h1 {
 			font-size: 2em;

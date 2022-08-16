@@ -1,25 +1,24 @@
-import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
+import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import Validation from "!/bases/validation"
 import OkResponseInfo from "!/response_infos/ok"
+import BoundController from "!/controllers/bound"
 import sniffMediaType from "!/helpers/sniff_media_type"
-import Controller from "!/bases/controller-likes/controller"
 import ProfilePictureManager from "%/managers/profile_picture"
 
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_OWN,
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import IDParameterValidation from "!/validations/id_parameter"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { user as permissionGroup } from "$/permissions/permission_list"
 
-export default class extends Controller {
+export default class extends BoundController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -30,32 +29,24 @@ export default class extends Controller {
 		])
 	}
 
-	get bodyParser(): null { return null }
+	get manager(): BaseManagerClass { return UserManager }
 
-	get validations(): Validation[] {
-		return [
-			new IDParameterValidation([
-				[ "id", UserManager ]
-			])
-		]
-	}
-
-	async handle(request: AuthenticatedIDRequest, response: Response)
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
 		const manager = new ProfilePictureManager(request.transaction, request.cache)
 		const { id } = request.params
 
 		const profilePictureDocument = await manager.findWithID(
-			+id,
+			Number(id),
 			{
-				filter: {
-					existence: "*"
+				"filter": {
+					"existence": "*"
 				}
 			},
-			{ raw: true }
+			{ "raw": true }
 		) as ProfilePictureDocument
 
-		const profilePicture = profilePictureDocument.data.attributes.fileContents!
+		const profilePicture = profilePictureDocument.data.attributes.fileContents as Buffer
 		const type = await sniffMediaType(profilePicture)
 
 		Log.success("controller", "successfully got the profile picture")

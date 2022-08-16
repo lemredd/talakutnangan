@@ -12,7 +12,7 @@ import UserFactory from "~/factories/user"
 import Middleware from "!/bases/middleware"
 import URLMaker from "$!/singletons/url_maker"
 import Condition from "%/managers/helpers/condition"
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 
 interface OwnArguments {
 	hasPreprocessed?: boolean

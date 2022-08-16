@@ -5,10 +5,12 @@ import ProfilePictureFactory from "~/factories/profile_picture"
 import Transformer from "./audit_trail"
 
 describe("Transformer: Audit trail", () => {
-	it("can transform into normal resource object", async () => {
+	it("can transform into normal resource object", async() => {
 		const model = await new Factory().insertOne()
 		const user = await new UserFactory().insertOne()
-		const profilePicture = await new ProfilePictureFactory().user(async () => user).insertOne()
+		const profilePicture = await new ProfilePictureFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
 		model.user = user
 		model.user.profilePicture = profilePicture
 		const transformer = new Transformer()
@@ -16,7 +18,7 @@ describe("Transformer: Audit trail", () => {
 		const object = Serializer.serialize(model, transformer)
 
 		expect(object).toHaveProperty("data.type", "audit_trail")
-		expect(object).toHaveProperty("data.id", model.id)
+		expect(object).toHaveProperty("data.id", String(model.id))
 		expect(object).toHaveProperty("data.attributes.actionName", model.actionName)
 		expect(object).toHaveProperty("data.attributes.extra", {})
 		expect(object).toHaveProperty("included.0.type", "user")

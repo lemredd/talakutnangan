@@ -4,7 +4,7 @@ import UserFactory from "~/factories/user"
 import DeparmentManager from "./department"
 
 describe("Database: Department read operations", () => {
-	it("can count single department", async () => {
+	it("can count single department", async() => {
 		const manager = new DeparmentManager()
 		const department = await new DepartmentFactory().insertOne()
 		await new UserFactory().in(department).insertOne()
@@ -17,7 +17,7 @@ describe("Database: Department read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
-	it("can count single department with zero users", async () => {
+	it("can count single department with zero users", async() => {
 		const manager = new DeparmentManager()
 		const department = await new DepartmentFactory().insertOne()
 
@@ -28,7 +28,7 @@ describe("Database: Department read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
 	})
 
-	it("can count multiple departments", async () => {
+	it("can count multiple departments", async() => {
 		const manager = new DeparmentManager()
 		const departmentA = await new DepartmentFactory().insertOne()
 		const departmentB = await new DepartmentFactory().insertOne()

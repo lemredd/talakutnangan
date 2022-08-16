@@ -19,5 +19,5 @@ export default abstract class extends Controller {
 		]
 	}
 
-	abstract makeQueryRuleGenerator(request: Request): FieldRules
+	abstract makeQueryRuleGenerator(unusedRequest: Request): FieldRules
 }

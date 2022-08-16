@@ -13,10 +13,8 @@ describe("Controller: PATCH /api/role/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const newRole = await new RoleFactory().postFlags(2)
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const newRole = await new RoleFactory().postFlags(2).makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -46,8 +44,7 @@ describe("Controller: PATCH /api/role/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
 		const otherRole = await new RoleFactory().makeOne()
 		requester.customizeRequest({
 			"body": {
@@ -78,10 +75,8 @@ describe("Controller: PATCH /api/role/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const otherRole = await new RoleFactory().superRole()
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const otherRole = await new RoleFactory().superRole().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -104,6 +99,42 @@ describe("Controller: PATCH /api/role/:id", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		requester.expectSuccess()
+	})
+
+	it("can trim non-validated attributes", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const newRole = await new RoleFactory().departmentFlags(2).makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"type": "role",
+					"id": String(role.id),
+					"attributes": {
+						"name": newRole.name,
+						"departmentFlags": newRole.departmentFlags,
+						"roleFlags": newRole.roleFlags,
+						"tagFlags": newRole.tagFlags,
+						"userFlags": newRole.userFlags,
+						"postFlags": newRole.postFlags,
+						"commentFlags": newRole.commentFlags,
+						"semesterFlags": newRole.semesterFlags,
+						"profanityFlags": newRole.profanityFlags,
+						"auditTrailFlags": newRole.auditTrailFlags
+					}
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		const request = requester.expectSuccess()
+		expect(request).toHaveProperty("body.data.attributes.name")
+		expect(request).not.toHaveProperty("body.data.attributes.departmentFlags")
+		expect(request).not.toHaveProperty("body.data.attributes.roleFlags")
 	})
 
 	it("cannot accept non-unique name", async() => {
@@ -176,10 +207,8 @@ describe("Controller: PATCH /api/role/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const otherRole = await new RoleFactory().superRole()
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const otherRole = await new RoleFactory().superRole().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {

@@ -2,7 +2,7 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import QueryController from "!/controllers/query_controller"
+import QueryController from "!/controllers/query"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default class extends QueryController {
@@ -12,7 +12,7 @@ export default class extends QueryController {
 		return CommonMiddlewareList.studentOnlyPolicy
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return {}
 	}
 

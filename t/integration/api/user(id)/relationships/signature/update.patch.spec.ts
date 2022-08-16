@@ -11,40 +11,36 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/user(id)/relationships/signature/update.patch"
 
 describe("PATCH /api/user/:id/relationships/signature", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can update signature", async () => {
-		jest.setTimeout(10000)
-
+	it("can update signature", async() => {
 		URLMaker.initialize("http", "localhost", 16000, "/")
 
 		const studentRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(
+		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.insertOne()
+		const { "user": admin, cookie } = await App.makeAuthenticatedCookie(
 			studentRole,
-			userFactory => {
-				return userFactory.beStudent()
-			}
+			userFactory => userFactory.beStudent()
 		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
-			.patch(`/api/user/${admin.id}/relationships/signature`)
-			.field("data[type]", "signature")
-			.attach("data[attributes][signature]", path)
-			.set("Cookie", cookie)
-			.type(MULTIPART_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+		.patch(`/api/user/${admin.id}/relationships/signature`)
+		.field("data[type]", "signature")
+		.attach("data[attributes][fileContents]", path)
+		.set("Cookie", cookie)
+		.type(MULTIPART_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.type", "signature")
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
 			"data.links.self",
-			"http://localhost:16000/api/signature/"+response.body.data.id
+			`http://localhost:16000/api/signature/${response.body.data.id}`
 		)
-	})
+	}, 10000)
 })

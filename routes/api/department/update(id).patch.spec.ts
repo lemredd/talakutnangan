@@ -3,28 +3,27 @@ import MockRequester from "~/set-ups/mock_requester"
 import DepartmentFactory from "~/factories/department"
 import Controller from "./update(id).patch"
 
-const ID_VALIDATION_INDEX = 0
 const BODY_VALIDATION_INDEX = 1
 
 describe("Controller: PATCH /api/department/:id", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info with new details", async () => {
+	it("can accept valid info with new details", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		const newDepartment = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: newDepartment.acronym,
-						fullName: newDepartment.fullName,
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": newDepartment.acronym,
+						"fullName": newDepartment.fullName,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -35,21 +34,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		requester.expectSuccess()
 	})
 
-	it("can accept valid info with all-uppercase name", async () => {
+	it("can accept valid info with all-uppercase name", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await (new DepartmentFactory().name(() => "Abc Def GHIJ")).insertOne()
+		const department = await new DepartmentFactory().fullName(() => "Abc Def GHIJ").insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: department.acronym,
-						fullName: department.fullName,
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": department.acronym,
+						"fullName": department.fullName,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -60,22 +59,22 @@ describe("Controller: PATCH /api/department/:id", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept non-unique full name", async () => {
+	it("cannot accept non-unique full name", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		const otherDepartment = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: otherDepartment.acronym,
-						fullName: otherDepartment.fullName,
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": otherDepartment.acronym,
+						"fullName": otherDepartment.fullName,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -89,21 +88,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		expect(body).toHaveProperty("1.source.pointer", "data.attributes.fullName")
 	})
 
-	it("cannot accept invalid full name", async () => {
+	it("cannot accept invalid full name", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: department.acronym,
-						fullName: department.fullName+"1",
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": department.acronym,
+						"fullName": `${department.fullName}1`,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -116,23 +115,23 @@ describe("Controller: PATCH /api/department/:id", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fullName")
 	})
 
-	it("cannot accept invalid full name (as suggested by #211)", async () => {
+	it("cannot accept invalid full name (as suggested by #211)", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory()
-			.name(() => "Hacking Lavender Throughway1")
-			.insertOne()
+		.fullName(() => "Hacking Lavender Throughway1")
+		.insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: department.acronym,
-						fullName: department.fullName+"1",
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": department.acronym,
+						"fullName": `${department.fullName}1`,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -145,22 +144,23 @@ describe("Controller: PATCH /api/department/:id", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fullName")
 	})
 
-	it("cannot accept invalid acronym", async () => {
+	it("cannot accept invalid acronym", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
-		const randomData = await new DepartmentFactory().makeOne() // Used for generate random data
+		// Used for generate random data
+		const randomData = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: department.acronym+randomData.acronym,
-						fullName: department.fullName,
-						mayAdmit: department.mayAdmit
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": department.acronym + randomData.acronym,
+						"fullName": department.fullName,
+						"mayAdmit": department.mayAdmit
 					}
 				}
 			}
@@ -173,21 +173,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.acronym")
 	})
 
-	it("cannot accept invalid value if it should be admitted", async () => {
+	it("cannot accept invalid value if it should be admitted", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "department",
-					id: department.id,
-					attributes: {
-						acronym: department.acronym,
-						fullName: department.fullName,
-						mayAdmit: "123"
+			"body": {
+				"data": {
+					"type": "department",
+					"id": String(department.id),
+					"attributes": {
+						"acronym": department.acronym,
+						"fullName": department.fullName,
+						"mayAdmit": "123"
 					}
 				}
 			}

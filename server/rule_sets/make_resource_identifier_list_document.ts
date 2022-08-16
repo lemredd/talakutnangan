@@ -2,7 +2,7 @@ import type { FieldRules, Pipe } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 
 import makeDataDocumentRules from "!/rule_sets/make_data_document"
-import makeIdentifierRules from "!/rule_sets/make_resource_identifier"
+import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 /**
  * Validates a submitted resource document.
@@ -23,7 +23,7 @@ export default function(
 ): FieldRules {
 	return makeDataDocumentRules(
 		false,
-		makeIdentifierRules(typeName, validator, ClassName, extraIdentifierQueries),
+		makeResourceIdentifierRules(typeName, validator, ClassName, true, extraIdentifierQueries),
 		extraQueries
 	)
 }

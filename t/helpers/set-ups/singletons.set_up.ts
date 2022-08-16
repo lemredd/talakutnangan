@@ -5,13 +5,12 @@ import getDataSourceType from "~/set-ups/get_data_source_type"
 import RequestEnvironment from "$/helpers/request_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
-beforeAll(async () => {
+beforeAll(async() => {
 	if (RequestEnvironment.environment === Environment.UnitTest) {
 		consola.wrapAll()
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		consola.mockTypes(() => () => {})
 	}
 
-	jest.setTimeout(7500)
-
 	await initializeSingletons(getDataSourceType())
-})
+}, 10000)

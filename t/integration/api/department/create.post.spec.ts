@@ -10,32 +10,32 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/department/create.post"
 
 describe("POST /api/department", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by authenticated user", async () => {
+	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await (new DepartmentFactory()).makeOne()
+		.departmentFlags(permissionGroup.generateMask(...CREATE))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const department = await new DepartmentFactory().makeOne()
 
 		const response = await App.request
-			.post("/api/department")
-			.set("Cookie", cookie)
-			.send({
-				data: {
-					type: "department",
-					attributes: {
-						acronym: department.acronym,
-						fullName: department.fullName,
-						mayAdmit: department.mayAdmit
-					}
+		.post("/api/department")
+		.set("Cookie", cookie)
+		.send({
+			"data": {
+				"type": "department",
+				"attributes": {
+					"acronym": department.acronym,
+					"fullName": department.fullName,
+					"mayAdmit": department.mayAdmit
 				}
-			})
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+			}
+		})
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.acronym).toBe(department.acronym)
@@ -43,29 +43,30 @@ describe("POST /api/department", () => {
 		expect(response.body.data.attributes.mayAdmit).toBe(department.mayAdmit)
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const adminRole = await new RoleFactory()
-			.departmentFlags(permissionGroup.generateMask(...CREATE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await (new DepartmentFactory()).makeOne()
-		const randomData = await (new DepartmentFactory()).makeOne() // Used for generate random data
+		.departmentFlags(permissionGroup.generateMask(...CREATE))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const department = await new DepartmentFactory().makeOne()
+		// Used for generate random data
+		const randomData = await new DepartmentFactory().makeOne()
 
 		const response = await App.request
-			.post("/api/department")
-			.set("Cookie", cookie)
-			.send({
-				data: {
-					type: "department",
-					attributes: {
-						acronym: department.acronym+randomData.acronym,
-						fullName: department.fullName + "1",
-						mayAdmit: "123"
-					}
+		.post("/api/department")
+		.set("Cookie", cookie)
+		.send({
+			"data": {
+				"type": "department",
+				"attributes": {
+					"acronym": department.acronym + randomData.acronym,
+					"fullName": `${department.fullName}1`,
+					"mayAdmit": "123"
 				}
-			})
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+			}
+		})
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body.errors).toHaveLength(3)
