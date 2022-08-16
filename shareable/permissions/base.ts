@@ -1,5 +1,11 @@
 import type { GeneralObject } from "$/types/general"
-import type { PermissionMap, PermissionInfo } from "$/types/permission"
+import type {
+	PermissionMap,
+	PermissionInfo,
+	ExternalPermissionDependencyInfo
+} from "$/types/permission"
+
+import makeUnique from "$/helpers/array/make_unique"
 
 /**
  * Base class for permission groups.
@@ -40,8 +46,10 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const { permissions } = this
 		return names.reduce((combinedMask, name) => {
 			const info: PermissionInfo<U> = permissions.get(name)
-				|| { "flag": 0,
-					"permissionDependencies": [] }
+				|| {
+					"flag": 0,
+					"permissionDependencies": []
+				}
 			return combinedMask
 				| info.permissionDependencies.reduce(
 					(dependentMask, dependentName) => dependentMask | this.generateMask(dependentName),
@@ -60,6 +68,49 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		)
 	}
 
+	/**
+	 * Generates a collection of masks for external permissions.
+	 * @param mask The mask to check for external dependencies.
+	 */
+	generateExternalDependencyInfo(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
+		const externalInfos = new Map<string, ExternalPermissionDependencyInfo<any, any>>()
+
+		// Check all permission names that have external permissions
+		names.forEach(name => {
+			const info = this.permissions.get(name) as PermissionInfo<U>
+			if (info.externalPermissionDependencies) {
+				// Put all external permission in one external info
+				info.externalPermissionDependencies.forEach(externalDependency => {
+					const { "name": externalGroupName } = externalDependency.group
+					let externalInfo = externalDependency
+
+					if (externalInfos.has(externalGroupName)) {
+						externalInfo = externalInfos
+						.get(externalGroupName) as ExternalPermissionDependencyInfo<any, any>
+
+						externalInfo.permissionDependencies.push(
+							...externalDependency.permissionDependencies
+						)
+					}
+
+					externalInfos.set(externalGroupName, externalInfo)
+				})
+			}
+		})
+
+		// Remove the duplicate permission names
+		const cleanedExternalInfos = new Set<ExternalPermissionDependencyInfo<any, any>>()
+		for (const externalInfo of externalInfos.values()) {
+			const newExternalInfo: ExternalPermissionDependencyInfo<any, any> = {
+				"group": externalInfo.group,
+				"permissionDependencies": makeUnique(externalInfo.permissionDependencies)
+			}
+
+			cleanedExternalInfos.add(newExternalInfo)
+		}
+
+		return cleanedExternalInfos
+	}
 
 	/**
 	 * Deserialize the flag into permission names.
