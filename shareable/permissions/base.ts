@@ -43,15 +43,21 @@ export default abstract class<T extends GeneralObject<number>, U> {
 				|| { "flag": 0,
 					"permissionDependencies": [] }
 			return combinedMask
-				| info.permissionDependencies.reduce((dependentMask, dependentName) => dependentMask | this.generateMask(dependentName), info.flag)
+				| info.permissionDependencies.reduce(
+					(dependentMask, dependentName) => dependentMask | this.generateMask(dependentName),
+					info.flag
+				)
 		}, 0)
 	}
 
 	/**
 	 * Generates mask where all permissions are enabled.
 	 */
-	 generateSuperMask(): number {
-		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => previousMask | permissionInfo.flag, 0)
+	generateSuperMask(): number {
+		return Array.from(this.permissions.values()).reduce(
+			(previousMask, permissionInfo) => previousMask | permissionInfo.flag,
+			0
+		)
 	}
 
 
@@ -77,17 +83,25 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * @param permissionCombinations Possible permission that may a role.
 	 */
 	hasOneRoleAllowed(roles: T[], permissionCombinations: U[][]): boolean {
-		return permissionCombinations
-			.reduce((previousPermittedCombination: boolean, combination: U[]) =>
+		return permissionCombinations.reduce(
+			(previousPermittedCombination: boolean, combination: U[]) => {
 				// Use logical OR to match one of the permission combinations
-				 previousPermittedCombination || roles.reduce((
+				const isAllowed = previousPermittedCombination || roles.reduce((
 					previousPermittedRole: boolean,
 					role: T
-				) =>
+				) => {
 					// Use logical OR to match one of the roles
-					 previousPermittedRole || this.mayAllow(role, ...combination)
-				, false)
-			, false)
+					const hasLocallyAllowed = previousPermittedRole || this.mayAllow(
+						role,
+						...combination
+					)
+
+					return hasLocallyAllowed
+				}, false)
+
+				return isAllowed
+			}, false
+		)
 	}
 
 	private doesMatch(flags: number, targetFlag: number): boolean {
