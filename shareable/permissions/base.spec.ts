@@ -262,4 +262,31 @@ describe("Back-end: Base Permission Group", () => {
 		expect(externalDependencies[1].group).toBeInstanceOf(GroupB)
 		expect(externalDependencies).toHaveProperty("1.permissionDependencies.0", "c")
 	})
+
+	it("can allow with external dependencies", () => {
+		const permissionGroup = new GroupD()
+		const role = {
+			"name": "A",
+			"groupC": new GroupC().generateMask("e"),
+			"groupD": permissionGroup.generateMask("h")
+		}
+
+		const isAllowed = permissionGroup.mayAllow(role, "h")
+
+		expect(isAllowed).toBeTruthy()
+	})
+
+	it("can deny with external dependencies", () => {
+		const permissionGroup = new GroupD()
+		const role = {
+			"name": "A",
+			"groupB": 0,
+			"groupC": new GroupC().generateMask("f"),
+			"groupD": permissionGroup.generateMask("i")
+		}
+
+		const isAllowed = permissionGroup.mayAllow(role, "i")
+
+		expect(isAllowed).toBeFalsy()
+	})
 })

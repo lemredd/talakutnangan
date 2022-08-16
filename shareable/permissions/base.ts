@@ -32,7 +32,18 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 */
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
 		const mask = this.generateMask(...permissionNames)
-		return this.doesMatch(role[this.name], mask)
+		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
+		const mayAllowedExternally = Array.from(
+			this.identifyExternalDependencies(permissionNames)
+		).reduce((previousGroupApproval, currentExternalInfo) => {
+			const approval = previousGroupApproval && currentExternalInfo.group.mayAllow(
+				role,
+				...currentExternalInfo.permissionDependencies
+			)
+			return approval
+		}, true)
+
+		return mayAllowedInternally && mayAllowedExternally
 	}
 
 	/**
@@ -142,12 +153,12 @@ export default abstract class<T extends GeneralObject<number>, U> {
 					role: T
 				) => {
 					// Use logical OR to match one of the roles
-					const hasLocallyAllowed = previousPermittedRole || this.mayAllow(
+					const hasAllowed = previousPermittedRole || this.mayAllow(
 						role,
 						...combination
 					)
 
-					return hasLocallyAllowed
+					return hasAllowed
 				}, false)
 
 				return isAllowed
