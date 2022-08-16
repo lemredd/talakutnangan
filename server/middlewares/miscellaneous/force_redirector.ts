@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "!/types/dependent"
+import redirect from "!/helpers/redirect"
 import Middleware from "!/bases/middleware"
 import RequestEnvironment from "$/helpers/request_environment"
 
@@ -15,11 +16,9 @@ export default class ForceRedirector extends Middleware {
 		this.redirectStatusCode = redirectStatusCode
 	}
 
-	intermediate(request: Request, response: Response, unusedNext: NextFunction): Promise<void> {
-		response.writeHead(this.redirectStatusCode, {
-			"Location": this.location
-		})
-		response.end()
+	intermediate(unusedRequest: Request, response: Response, unusedNext: NextFunction)
+	: Promise<void> {
+		redirect(response, this.location, this.redirectStatusCode)
 		return Promise.resolve()
 	}
 }
