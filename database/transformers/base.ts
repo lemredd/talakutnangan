@@ -64,6 +64,18 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		return transformedData
 	}
 
+	protected findTransformer(attribute: string): Transformer<any, any> {
+		const subtransformer = this.subtransformers.find(info => info.attribute === attribute)
+
+		if (typeof subtransformer === "undefined") {
+			throw new Error(
+				`Developer is looking for a transformer with a missing attribute "${attribute}".`
+			)
+		} else {
+			return subtransformer.transformer
+		}
+	}
+
 	private findResource(included: Resource<any, any>[], resourceLinkage: ResourceIdentifier<any>)
 	: Resource<any, any>|null {
 		const index = included.findIndex(includedResource => {

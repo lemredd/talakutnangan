@@ -67,9 +67,7 @@ export default class extends Transformer<User, void> {
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.department,
-			this.subtransformers
-			.find(info => info.attribute === "department")
-			?.transformer as DepartmentTransformer,
+			this.findTransformer("department") as DepartmentTransformer,
 			options
 		)
 	}
@@ -77,9 +75,7 @@ export default class extends Transformer<User, void> {
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.roles,
-			this.subtransformers
-			.find(info => info.attribute === "role")
-			?.transformer as RoleTransformer,
+			this.findTransformer("role") as RoleTransformer,
 			options
 		)
 	}
@@ -87,9 +83,7 @@ export default class extends Transformer<User, void> {
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.studentDetail || null,
-			this.subtransformers
-			.find(info => info.attribute === "studentDetail")
-			?.transformer as StudentDetailTransformer,
+			this.findTransformer("studentDetail") as StudentDetailTransformer,
 			options
 		)
 	}
@@ -97,9 +91,7 @@ export default class extends Transformer<User, void> {
 	employeeSchedules(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.employeeSchedules || null,
-			this.subtransformers
-			.find(info => info.attribute === "employeeSchedule")
-			?.transformer as EmployeeScheduleTransformer,
+			this.findTransformer("employeeSchedule") as EmployeeScheduleTransformer,
 			options
 		)
 	}
@@ -107,9 +99,7 @@ export default class extends Transformer<User, void> {
 	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.signature || null,
-			this.subtransformers
-			.find(info => info.attribute === "signature")
-			?.transformer as SignatureTransformer,
+			this.findTransformer("signature") as SignatureTransformer,
 			options
 		)
 	}
@@ -117,9 +107,7 @@ export default class extends Transformer<User, void> {
 	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			model.profilePicture || null,
-			this.subtransformers
-			.find(info => info.attribute === "profile_picture")
-			?.transformer as ProfilePictureTransformer,
+			this.findTransformer("profile_picture") as ProfilePictureTransformer,
 			options
 		)
 	}
