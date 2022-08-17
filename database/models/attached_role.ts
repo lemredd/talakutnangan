@@ -12,10 +12,18 @@ import Role from "%/models/role"
 import Consultation from "%/models/consultation"
 
 @Table({
-	"timestamps": true,
-	"paranoid": true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class AttachedRole extends Model {
+	@Column({
+		"allowNull": false,
+		"autoIncrement": true,
+		"primaryKey": true,
+		"type": DataType.BIGINT
+	})
+		id!: number
+
 	@ForeignKey(() => User)
 	@Column({
 		"allowNull": false,
