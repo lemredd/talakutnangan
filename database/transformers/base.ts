@@ -84,8 +84,26 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 			processData(transformedData.data as GeneralObject[], relationshipProcessor)
 
-			// @ts-ignore
-			transformedData.included.push(...newIncluded)
+			const includedData = [
+				...transformedData.included as any[],
+				...newIncluded
+			]
+
+			includedData.sort((firstIncludedResource, secondIncludedResource) => {
+				let order = 0
+				const castFirstResource: Resource<any, any> = firstIncludedResource
+				const castSecondResource: Resource<any, any> = secondIncludedResource
+
+				if (castFirstResource.type === castSecondResource.type) {
+					order = Math.sign(castFirstResource.id - castSecondResource.id)
+				} else {
+					order = castFirstResource.type.localeCompare(castSecondResource.type)
+				}
+
+				return order
+			})
+
+			transformedData.included = includedData
 		}
 
 		return transformedData
