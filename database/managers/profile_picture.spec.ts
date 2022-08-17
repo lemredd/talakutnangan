@@ -3,7 +3,7 @@ import ProfilePictureFactory from "~/factories/profile_picture"
 
 import ProfilePictureManager from "./profile_picture"
 
-describe("Database: Profile picture update operations", () => {
+describe("Database Manager: Profile picture update operations", () => {
 	it("can update profile picture", async() => {
 		const manager = new ProfilePictureManager()
 		const newProfilePicture = await new ProfilePictureFactory().makeOne()

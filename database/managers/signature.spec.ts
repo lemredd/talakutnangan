@@ -4,7 +4,7 @@ import SignatureFactory from "~/factories/signature"
 
 import SignatureManager from "./signature"
 
-describe("Database: Signature update operations", () => {
+describe("Database Manager: Signature update operations", () => {
 	it("can create signature if not yet existing", async() => {
 		const manager = new SignatureManager()
 		const signature = await new SignatureFactory().makeOne()

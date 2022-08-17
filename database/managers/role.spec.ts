@@ -5,7 +5,7 @@ import Condition from "%/managers/helpers/condition"
 
 import RoleManager from "./role"
 
-describe("Database: Role read operations", () => {
+describe("Database Manager: Role read operations", () => {
 	it("can count single role", async() => {
 		const manager = new RoleManager()
 		const role = await new RoleFactory().insertOne()
@@ -51,7 +51,7 @@ describe("Database: Role read operations", () => {
 	})
 })
 
-describe("Database: Role update operations", () => {
+describe("Database Manager: Role update operations", () => {
 	it("can reattach roles", async() => {
 		const roles = await new RoleFactory().insertMany(4)
 		const manager = new RoleManager()
