@@ -11,6 +11,7 @@ import {
 import { Status, StatusValues } from "$/types/database"
 
 import User from "%/models/user"
+import Role from "%/models/role"
 import Consulter from "%/models/consulter"
 import AttachedRole from "%/models/attached_role"
 
@@ -59,10 +60,14 @@ export default class Consultation extends Model {
 		attachedRoleID!: number
 
 	@BelongsTo(() => AttachedRole)
-		facilitatorInfo!: AttachedRole
+		consultantInfo!: AttachedRole
 
 	@BelongsToMany(() => User, () => Consulter)
 		consulters!: User[]
+
+	get consultant(): User { return this.consultantInfo.user }
+
+	get consultantRole(): Role { return this.consultantInfo.role }
 
 	/*
 	 * @HasMany(() => Message)
