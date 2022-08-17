@@ -56,6 +56,10 @@ export interface BufferRuleConstraints {
 	}
 }
 
+export interface NotRuleConstraints {
+	not: Rules
+}
+
 /**
  * Union of rule contraints
  */
@@ -74,6 +78,7 @@ export type RuleContraints = Partial<
 	& AcronymRuleConstraints
 	& BufferRuleConstraints
 	& RegexRuleConstraints
+	& NotRuleConstraints
 >
 
 /**
