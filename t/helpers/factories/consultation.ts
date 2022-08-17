@@ -18,6 +18,7 @@ import AttachedRole from "%/models/role"
 import BaseFactory from "~/factories/base"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import Consulter from "%/models/consulter"
 import Consultation from "%/models/consultation"
 import ConsultationTransformer from "%/transformers/consultation"
 
@@ -66,6 +67,24 @@ export default class ConsultationFactory extends BaseFactory<
 			 */
 			"deletedAt": null
 		}
+	}
+
+	async attachChildren(model: Consultation): Promise<Consultation> {
+		const consulters = await this.#consultersGenerator()
+
+		if (model.id) {
+			const rawConsulters: { userID: number, consultationID: number }[] = consulters
+			.map(consulter => ({
+				"userID": consulter.id as number,
+				"consultationID": model.id as number
+			}))
+
+			await Consulter.bulkCreate(rawConsulters)
+		}
+
+		model.consulters = consulters
+
+		return model
 	}
 
 	status(generator: () => string): ConsultationFactory {
