@@ -9,18 +9,18 @@ const BODY_VALIDATION_INDEX = 0
 describe("Controller: DELETE /api/consultation/archive", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
+		const consultation = await new ConsultationFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": String(consultation.id)
 					}
 				]
 			}
@@ -31,19 +31,19 @@ describe("Controller: DELETE /api/consultation/archive", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept already-archived resources", async () => {
+	it("cannot accept already-archived resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
-		await consultation.destroy({ force: false })
+		const consultation = await new ConsultationFactory().insertOne()
+		await consultation.destroy({ "force": false })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": String(consultation.id)
 					}
 				]
 			}
@@ -56,19 +56,19 @@ describe("Controller: DELETE /api/consultation/archive", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
 	})
 
-	it("cannot delete non-existent resources", async () => {
+	it("cannot delete non-existent resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
-		await consultation.destroy({ force: true })
+		const consultation = await new ConsultationFactory().insertOne()
+		await consultation.destroy({ "force": false })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": String(consultation.id)
 					}
 				]
 			}
