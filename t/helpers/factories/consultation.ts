@@ -39,7 +39,7 @@ export default class ConsultationFactory extends BaseFactory<
 		"done"
 	])
 
-	#consulterGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
+	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
 	#reasonGenerator: () => string = () => faker.hacker.phrase()
 	#actionTakenGenerator: () => string = () => faker.hacker.phrase()
 	#scheduledStartDatetimeGenerator: () => Date = () => new Date()
@@ -98,8 +98,8 @@ export default class ConsultationFactory extends BaseFactory<
 		return this
 	}
 
-	consulter(generator: () => Promise<User[]>): ConsultationFactory {
-		this.#consulterGenerator = generator
+	consulters(generator: () => Promise<User[]>): ConsultationFactory {
+		this.#consultersGenerator = generator
 		return this
 	}
 
