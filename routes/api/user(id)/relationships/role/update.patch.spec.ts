@@ -51,7 +51,7 @@ describe("Controller: PATCH /api/user/:id/role", () => {
 					},
 					{
 						"type": "role",
-						"id": String(roles[1].id+3)
+						"id": String(roles[1].id + 3)
 					}
 				]
 			}
