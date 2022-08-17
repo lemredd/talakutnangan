@@ -1,8 +1,4 @@
-import type {
-	AttributesObject,
-	TransformerOptions,
-	RelationshipTransformerInfo
-} from "%/types/dependent"
+import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import AuditTrail from "%/models/audit_trail"
 import Transformer from "%/transformers/base"
@@ -11,18 +7,12 @@ import Serializer from "%/transformers/serializer"
 
 export default class extends Transformer<AuditTrail, void> {
 	constructor() {
-		const userTransformer = new UserTransformer()
-		super("audit_trail", {
-			...userTransformer.subtransformers,
-			"user": {
+		super("audit_trail", [
+			{
 				"attribute": "user",
-				"transformer": userTransformer
+				"transformer": new UserTransformer()
 			}
-		})
-
-		this.relationships = {
-			"user": this.user.bind(this)
-		}
+		])
 	}
 
 	transform(model: AuditTrail|AuditTrail[], unusedOptions: TransformerOptions): AttributesObject {
@@ -34,13 +24,5 @@ export default class extends Transformer<AuditTrail, void> {
 		])
 
 		return safeObject
-	}
-
-	user(model: AuditTrail, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.user || null,
-			this.subtransformers.user.transformer as UserTransformer,
-			options
-		)
 	}
 }

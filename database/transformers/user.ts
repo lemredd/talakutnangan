@@ -1,8 +1,4 @@
-import type {
-	AttributesObject,
-	TransformerOptions,
-	RelationshipTransformerInfo
-} from "%/types/dependent"
+import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import User from "%/models/user"
 import Transformer from "%/transformers/base"
