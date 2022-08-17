@@ -188,7 +188,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 			const { transformer } = transformerInfo
 
-			if (transformer && model !== null) {
+			if (transformer && model !== null && resourceObject !== null) {
 				const relatedModel = this.findModel(model, transformerInfo.attribute, resourceObject.id)
 
 				const newResourceObject = transformer.finalizeTransform(
