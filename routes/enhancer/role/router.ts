@@ -1,6 +1,6 @@
 import Router from "!/bases/router"
-import GetCreateRoute from "./create.get"
-import GetUpdateRoute from "./update.get"
+import GetCreateRoute from "!%/enhancer/role/create.get"
+import GetUpdateRoute from "!%/enhancer/role/update.get"
 
 export default class extends Router {
 	constructor() {
