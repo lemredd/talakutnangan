@@ -57,7 +57,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
 		if (model !== null && transformedData.included) {
-			const newIncluded: Resource<any, any> = []
+			const newIncluded: Resource<any, any>[] = []
 
 			const relationshipProcessor = (rawUnitData: any) => {
 				const unitData = rawUnitData as GeneralObject
@@ -172,7 +172,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	private processLinkage(
 		model: T|T[]|null,
 		transformedData: Serializable,
-		newIncluded: Resource<any, any>,
+		newIncluded: Resource<any, any>[],
 		resourceLinkage: ResourceIdentifier<any>,
 		attributeName: string
 	): void {
