@@ -125,12 +125,15 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 			return doesMatch
 		})
 
+		let foundResource: Resource<any, any>|null = null
+
 		if (index > -1) {
 			const resourceObject = included.splice(index, 1)
-			return resourceObject[0]
+			const [ resource ] = resourceObject
+			foundResource = resource
 		}
 
-		return null
+		return foundResource
 	}
 
 	findWithinModels(models: T[], attribute: string, id: number): any|null {
