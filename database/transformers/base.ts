@@ -68,7 +68,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 						if (Object.prototype.hasOwnProperty.call(relationships, relationshipName)) {
 							const relationship = relationships[relationshipName]
 							processData(
-								relationship,
+								relationship.data,
 								relationshipUnit => this.processLinkage(
 									model,
 									transformedData,
