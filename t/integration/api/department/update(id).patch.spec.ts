@@ -18,7 +18,7 @@ describe("PATCH /api/department/:id", () => {
 		const adminRole = await new RoleFactory()
 		.departmentFlags(permissionGroup.generateMask(...UPDATE))
 		.insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await new DepartmentFactory().insertOne()
 		const newDepartmentDetails = await new DepartmentFactory().makeOne()
 
@@ -34,6 +34,9 @@ describe("PATCH /api/department/:id", () => {
 					"fullName": newDepartmentDetails.fullName,
 					"mayAdmit": newDepartmentDetails.mayAdmit
 				}
+			},
+			"meta": {
+				"password": user.password
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)

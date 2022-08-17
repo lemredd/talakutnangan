@@ -75,7 +75,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 			const foundUser = await this.model.findOne({
 				...findOptions,
-				...this.transaction.lockedTransactionObject
+				...this.transaction.transactionObject
 			})
 
 			Log.trace("manager", "done finding for user")
