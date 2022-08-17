@@ -11,6 +11,7 @@ import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/managers/helpers/condition"
+import segragateIDs from "%/managers/helpers/segragate_IDs"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
 export default class extends BaseManager<Role, RoleAttributes, RoleQueryParameters<number>> {
@@ -74,6 +75,38 @@ export default class extends BaseManager<Role, RoleAttributes, RoleQueryParamete
 			return { "data": identifierObjects }
 		} catch (error) {
 			throw this.makeBaseError(error)
+		}
+	}
+
+	async reattach(userID: number, roleIDs: number[]): Promise<void> {
+		const attachedRoles = await AttachedRole.findAll({
+			"where": new Condition().equal("userID", userID).build()
+		})
+
+		const currentAttachedRoleIDs = attachedRoles.map(attachedRole => attachedRole.roleID)
+		const { newIDs, deletedIDs } = segragateIDs(currentAttachedRoleIDs, roleIDs)
+
+		if (newIDs.length > 0) {
+			await AttachedRole.bulkCreate(
+				newIDs.map(roleID => ({
+					roleID,
+					userID
+				}))
+			)
+		}
+
+		if (deletedIDs.length > 0) {
+			const conditionedDeletedIDs: Condition[] = deletedIDs.map(
+				id => new Condition().equal("roleID", id)
+			)
+			const deleteCondition = new Condition().and(
+				new Condition().equal("userID", userID),
+				new Condition().or(...conditionedDeletedIDs)
+			)
+			await AttachedRole.destroy({
+				"where": deleteCondition.build(),
+				"force": true
+			})
 		}
 	}
 }

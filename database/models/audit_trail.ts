@@ -12,29 +12,29 @@ import type { GeneralObject } from "$/types/general"
 import User from "%/models/user"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class AuditTrail extends Model {
 	@AllowNull
 	@ForeignKey(() => User)
 	@Column({
-		type: DataType.BIGINT
+		"type": DataType.BIGINT
 	})
-	userID!: number|null
+		userID!: number|null
 
 	@Column({
-		type: DataType.STRING,
-		allowNull: false
+		"allowNull": false,
+		"type": DataType.STRING
 	})
-	actionName!: string
+		actionName!: string
 
 	@Column({
-		type: DataType.JSON,
-		allowNull: false
+		"allowNull": false,
+		"type": DataType.JSON
 	})
-	extra!: GeneralObject
+		extra!: GeneralObject
 
 	@BelongsTo(() => User)
-	user!: User|null
+		user!: User|null
 }

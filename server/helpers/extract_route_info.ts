@@ -6,29 +6,37 @@ import getRoot from "$!/helpers/get_root"
 export default function(currentPath: string, routeRoot = resolve(getRoot(), "routes"))
 	: Partial<RouteInformation> {
 	const relativePath = relative(routeRoot, currentPath)
-	const pathExpression = /^(api|dev)?(.*?[\w\(\)]+?)\.(\w+?)\.ts$/
-	const [ _, rawPurpose, rawPath, method ] = pathExpression.exec(relativePath)!
+	const pathExpression = /^(api|dev|enhancer)?(.*?[\w(\\)]+?)\.(\w+?)\.ts$/u
+	const [
+		unused,
+		rawPurpose,
+		rawPath,
+		method
+	] = pathExpression.exec(relativePath) as RegExpExecArray
 	const purpose = <Purpose>(rawPurpose || "enhancer")
-	const dirtyPath = "/" + (purpose === "enhancer" ? rawPath : join(purpose, rawPath))
-	let path = dirtyPath.replace(/\\/g, "/").replace(/\((\w+)\)/g, "/:$1")
+	const dirtyPath = `/${purpose === "enhancer" ? rawPath : join(purpose, rawPath)}`
+	let path = dirtyPath.replace(/\\/ug, "/").replace(/\((\w+)\)/ug, "/:$1")
 
-	switch(purpose) {
+	switch (purpose) {
 		case "enhancer":
-			// Trim "index" suffix for enhancer routes
-			path = path.replace(/^\/(.*?)\/?index$/, "/$1")
+			// Trim "index" or "read" suffix for enhancer routes
+			path = path.replace(/^\/(.*?)\/?(index|read)(\/:id)?$/u, "/$1").replace(/\/\//ug, "/")
 			break
 		case "api":
-			// Trim "list", or "create" suffix for API routes
-			// ID parameter is the only parameter that can be retained if is a suffix
+			/*
+			 * Trim "list", "create", "read", "update", "archive", or "restore" suffix for API routes
+			 * ID parameter is the only parameter that can be retained if is a suffix
+			 */
 			path = path.replace(
-				/^\/(.*?)\/?(list|create|read|update|archive|restore)(\/:id)?$/,
+				/^\/(.*?)\/?(list|create|read|update|archive|restore)(\/:id)?$/u,
 				"/$1$3"
 			)
 			break
+		default:
 	}
 
 	return {
-		method: <Method><unknown>method,
+		"method": <Method><unknown>method,
 		path,
 		purpose
 	}

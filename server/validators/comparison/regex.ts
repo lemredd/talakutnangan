@@ -7,7 +7,7 @@ import type {
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
- *	Validator to check regex
+ * Validator to check regex
  */
 export default async function(
 	currentState: Promise<ValidationState>,
@@ -15,19 +15,21 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.regex === undefined) {
+	if (!constraints.regex) {
 		throw makeDeveloperError(constraints.field)
 	}
 
 	if (constraints.regex.match.test(state.value)) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must match "${constraints.regex?.match}".`
-		}
 	}
 
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (
+			field: string
+		) => `Field "${field}" must match "${constraints.regex?.match}".`
+	}
+	throw error
 }

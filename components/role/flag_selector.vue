@@ -15,7 +15,7 @@
 				class="ml-5">
 				<Checkbox
 					v-model="rawFlags"
-					:label="camelToSentence(permissionName).toLowerCase()"
+					:label="convertToSentenceCase(permissionName).toLowerCase()"
 					:value="permissionName"
 					@change="updateFlags"/>
 			</li>
@@ -59,8 +59,8 @@ import Checkbox from "@/fields/checkbox.vue"
 import makeUnique from "$/helpers/array/make_unique"
 import BasePermissionGroup from "$/permissions/base"
 import sanitizeArray from "$@/helpers/sanitize_array"
-import camelToSentence from "$@/helpers/camel_to_sentence"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -131,5 +131,5 @@ function updateAccessLevel(event: Event, accessPermissionNames: string[]) {
 	emit("update:flags", generatedMask)
 }
 
-const emit = defineEmits<{(e: "update:flags", newFlags: number): void}>()
+const emit = defineEmits<{(event: "update:flags", passedFlag: number): void}>()
 </script>

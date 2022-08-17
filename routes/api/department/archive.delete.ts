@@ -2,9 +2,10 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import DepartmentManager from "%/managers/department"
 import JSONController from "!/controllers/json"
+import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
@@ -34,5 +35,11 @@ export default class extends JSONController {
 		await manager.archiveBatch(IDs)
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): ActionAuditor[] {
+		return [
+			new ActionAuditor("department.archive")
+		]
 	}
 }
