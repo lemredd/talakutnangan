@@ -27,7 +27,7 @@ export default async function(
 	}
 
 	if (typeof constraints.same.value !== "undefined") {
-		if (state.value === constraints.same.value) {
+		if (state.value == constraints.same.value) {
 			return state
 		}
 		const error = {
@@ -39,7 +39,7 @@ export default async function(
 		throw error
 	} else if (typeof constraints.same.pointer !== "undefined") {
 		const accessedValue = accessDeepPath(constraints.source, constraints.same.pointer)
-		if (state.value === accessedValue) {
+		if (state.value == accessedValue) {
 			return state
 		}
 		const error = {
