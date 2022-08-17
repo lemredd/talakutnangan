@@ -21,71 +21,71 @@ import ProfilePicture from "%/models/profile_picture"
 import EmployeeSchedule from "%/models/employee_schedule"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"timestamps": true,
+	"paranoid": true
 })
 export default class User extends Model {
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	name!: string
+		name!: string
 
 	@Column({
-		unique: true,
-		allowNull: false
+		"unique": true,
+		"allowNull": false
 	})
-	email!: string
+		email!: string
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	password!: string
+		password!: string
 
 	@Column({
-		allowNull: false,
-		type: DataType.ENUM(
+		"allowNull": false,
+		"type": DataType.ENUM(
 			...UserKindValues
 		)
 	})
-	kind!: UserKind
+		kind!: UserKind
 
 	@AllowNull
 	@Column({
-		type: DataType.DATE,
-		defaultValue: null
+		"type": DataType.DATE,
+		"defaultValue": null
 	})
-	emailVerifiedAt!: Date|null
+		emailVerifiedAt!: Date|null
 
 	@Column({
-		allowNull: false,
-		type: DataType.BOOLEAN
+		"allowNull": false,
+		"type": DataType.BOOLEAN
 	})
-	prefersDark!: boolean
+		prefersDark!: boolean
 
 	@ForeignKey(() => Department)
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	departmentID!: number
+		departmentID!: number
 
 	@BelongsTo(() => Department)
-	department!: Department
+		department!: Department
 
 	@BelongsToMany(() => Role, () => AttachedRole)
-	roles!: Role[]
+		roles!: Role[]
 
 	@HasMany(() => AttachedRole, "userID")
-	attachedRoles!: AttachedRole[]
+		attachedRoles!: AttachedRole[]
 
 	@HasOne(() => Signature)
-	signature?: Signature
+		signature?: Signature
 
 	@HasOne(() => ProfilePicture)
-	profilePicture!: ProfilePicture
+		profilePicture!: ProfilePicture
 
 	@HasOne(() => StudentDetail)
-	studentDetail?: StudentDetail
+		studentDetail?: StudentDetail
 
 	@HasMany(() => EmployeeSchedule)
-	employeeSchedules?: EmployeeSchedule[]
+		employeeSchedules?: EmployeeSchedule[]
 }

@@ -37,8 +37,8 @@ import siftBySlug from "%/queries/user/sift_by_slug"
 import siftByRole from "%/queries/user/sift_by_role"
 import siftByKind from "%/queries/user/sift_by_kind"
 import siftByDepartment from "%/queries/user/sift_by_department"
-import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
 import includeExclusiveDetails from "%/queries/user/include_exclusive_details"
+import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
 
 export default class UserManager extends BaseManager<User, RawUser, UserQueryParameters<number>> {
 	get model(): ModelCtor<User> { return User }
