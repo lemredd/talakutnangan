@@ -42,15 +42,6 @@ export default class extends Transformer<User, void> {
 				"transformer": new ProfilePictureTransformer()
 			}
 		])
-
-		this.relationships = {
-			"roles": this.roles.bind(this),
-			"department": this.department.bind(this),
-			"studentDetail": this.studentDetail.bind(this),
-			"employeeSchedules": this.employeeSchedules.bind(this),
-			"signature": this.signature.bind(this),
-			"profilePicture": this.profilePicture.bind(this)
-		}
 	}
 
 	transform(model: User|User[], unusedOptions: TransformerOptions): AttributesObject {
@@ -62,29 +53,5 @@ export default class extends Transformer<User, void> {
 		])
 
 		return safeObject
-	}
-
-	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "department", options)
-	}
-
-	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "roles", options)
-	}
-
-	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "studentDetail", options)
-	}
-
-	employeeSchedules(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "employeeSchedules", options)
-	}
-
-	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "signature", options)
-	}
-
-	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return this.makeRelationshipTransformerInfo(model, "profilePicture", options)
 	}
 }

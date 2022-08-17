@@ -2,7 +2,11 @@ import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
-import type { TransformerOptions, RelationshipTransformerInfo } from "%/types/dependent"
+import type {
+	TransformerOptions,
+	RelationshipTransformerInfo,
+	TransformerRelationships
+} from "%/types/dependent"
 
 import Serializer from "%/transformers/serializer"
 import processData from "%/transformers/helpers/process_data"
@@ -28,6 +32,27 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		super()
 		this.type = type
 		this.subtransformers = subtransformers
+
+		if (subtransformers.length > 0) {
+			this.relationships = subtransformers.reduce(
+				(previousRelationships, subtransformer) => {
+					const compiledRelationships = {
+						...previousRelationships,
+						[subtransformer.attribute]: (
+							model: T,
+							options: U
+						): RelationshipTransformerInfo => this.makeRelationshipTransformerInfo(
+							model,
+							subtransformer.attribute,
+							options
+						)
+					} as TransformerRelationships<T, U>
+
+					return compiledRelationships
+				},
+				{}
+			)
+		}
 	}
 
 	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
