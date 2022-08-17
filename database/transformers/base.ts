@@ -120,7 +120,8 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	: Resource<any, any>|null {
 		const index = included.findIndex(includedResource => {
 			const doesMatch = includedResource.type === resourceLinkage.type
-				&& includedResource.id !== resourceLinkage.id
+				&& includedResource.id === resourceLinkage.id
+
 			return doesMatch
 		})
 
