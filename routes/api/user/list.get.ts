@@ -8,7 +8,7 @@ import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
-import QueryController from "!/controllers/query_controller"
+import QueryController from "!/controllers/query"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -18,11 +18,10 @@ import {
 } from "$/permissions/user_combinations"
 
 import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
 import oneOf from "!/validators/comparison/one-of"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
+import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
 import makeListRules from "!/rule_sets/make_list"
 
@@ -36,47 +35,29 @@ export default class extends QueryController {
 		])
 	}
 
-	makeQueryRuleGenerator(request: Request): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(UserManager, {
-			slug: {
-				pipes: [ nullable, string ],
-				constraints: {
-					nullable: { defaultValue: "" }
-				}
+			"slug": {
+				"constraints": {
+					"nullable": { "defaultValue": "" }
+				},
+				"pipes": [ nullable, string ]
 			},
-			department: {
-				pipes: [ nullable, skipAsterisk, integer, exists ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					manager: {
-						className: DepartmentManager,
-						columnName: "id"
-					}
-				}
-			},
-			role: {
-				pipes: [ nullable, skipAsterisk, integer, exists ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					manager: {
-						className: RoleManager,
-						columnName: "id"
-					}
-				}
-			},
-			kind: {
-				pipes: [ nullable, string, skipAsterisk, oneOf ],
-				constraints: {
-					nullable: { defaultValue: "*" },
-					oneOf: { values: [ ...UserKindValues ] }
-				}
+			...makeIDBasedFilterRules("department", DepartmentManager, true),
+			...makeIDBasedFilterRules("role", RoleManager, true),
+			"kind": {
+				"constraints": {
+					"nullable": { "defaultValue": "*" },
+					"oneOf": { "values": [ ...UserKindValues ] }
+				},
+				"pipes": [ nullable, string, skipAsterisk, oneOf ]
 			}
 		})
 	}
 
-	async handle(request: Request, response: Response): Promise<ListResponse> {
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const users = await manager.list(request.query as UserQueryParameters)
+		const users = await manager.list(request.query as UserQueryParameters<number>)
 
 		return new ListResponse(users)
 	}

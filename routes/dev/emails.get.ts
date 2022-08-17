@@ -1,7 +1,7 @@
 import { Request, Response } from "!/types/dependent"
 
 import Transport from "!/helpers/email/transport"
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"
 import encapsulateFragment from "!/helpers/text/encapsulate_fragment"

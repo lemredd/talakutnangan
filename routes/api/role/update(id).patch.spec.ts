@@ -1,7 +1,8 @@
 import ErrorBag from "$!/errors/error_bag"
-import MockRequester from "~/set-ups/mock_requester"
+import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Controller from "./update(id).patch"
+import MockRequester from "~/set-ups/mock_requester"
 
 const BODY_VALIDATION_INDEX = 1
 
@@ -9,15 +10,15 @@ describe("Controller: PATCH /api/role/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const newRole = await new RoleFactory().postFlags(2)
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const newRole = await new RoleFactory().postFlags(2).makeOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -32,6 +33,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": newRole.profanityFlags,
 						"auditTrailFlags": newRole.auditTrailFlags
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})
@@ -42,14 +46,15 @@ describe("Controller: PATCH /api/role/:id", () => {
 	})
 
 	it("can accept weakest role", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
 		const otherRole = await new RoleFactory().makeOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -64,6 +69,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": otherRole.profanityFlags,
 						"auditTrailFlags": otherRole.auditTrailFlags
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})
@@ -74,15 +82,15 @@ describe("Controller: PATCH /api/role/:id", () => {
 	})
 
 	it("can accept strongest role", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const otherRole = await new RoleFactory().superRole()
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const otherRole = await new RoleFactory().superRole().makeOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -97,6 +105,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": otherRole.profanityFlags,
 						"auditTrailFlags": otherRole.auditTrailFlags
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})
@@ -106,7 +117,49 @@ describe("Controller: PATCH /api/role/:id", () => {
 		requester.expectSuccess()
 	})
 
+	it("can trim non-validated attributes", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const newRole = await new RoleFactory().departmentFlags(2).makeOne()
+		requester.customizeRequest({
+			"user": profile,
+			"body": {
+				"data": {
+					"type": "role",
+					"id": String(role.id),
+					"attributes": {
+						"name": newRole.name,
+						"departmentFlags": newRole.departmentFlags,
+						"roleFlags": newRole.roleFlags,
+						"tagFlags": newRole.tagFlags,
+						"userFlags": newRole.userFlags,
+						"postFlags": newRole.postFlags,
+						"commentFlags": newRole.commentFlags,
+						"semesterFlags": newRole.semesterFlags,
+						"profanityFlags": newRole.profanityFlags,
+						"auditTrailFlags": newRole.auditTrailFlags
+					}
+				},
+				"meta": {
+					password
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		const request = requester.expectSuccess()
+		expect(request).toHaveProperty("body.data.attributes.name")
+		expect(request).not.toHaveProperty("body.data.attributes.departmentFlags")
+		expect(request).not.toHaveProperty("body.data.attributes.roleFlags")
+	})
+
 	it("cannot accept non-unique name", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
@@ -114,6 +167,7 @@ describe("Controller: PATCH /api/role/:id", () => {
 		const role = await new RoleFactory().insertOne()
 		const otherRole = await new RoleFactory().insertOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -128,6 +182,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})
@@ -140,12 +197,14 @@ describe("Controller: PATCH /api/role/:id", () => {
 	})
 
 	it("cannot accept invalid name", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const role = await new RoleFactory().insertOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -160,6 +219,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})
@@ -172,15 +234,15 @@ describe("Controller: PATCH /api/role/:id", () => {
 	})
 
 	it("cannot accept beyond strongest role", async() => {
+		const { password, profile } = await new UserFactory().insertProfile()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().userFlags(1)
-		.insertOne()
-		const otherRole = await new RoleFactory().superRole()
-		.makeOne()
+		const role = await new RoleFactory().userFlags(1).insertOne()
+		const otherRole = await new RoleFactory().superRole().makeOne()
 		requester.customizeRequest({
+			"user": profile,
 			"body": {
 				"data": {
 					"type": "role",
@@ -195,6 +257,9 @@ describe("Controller: PATCH /api/role/:id", () => {
 						"profanityFlags": otherRole.profanityFlags + 1,
 						"auditTrailFlags": otherRole.auditTrailFlags + 1
 					}
+				},
+				"meta": {
+					password
 				}
 			}
 		})

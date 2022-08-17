@@ -1,5 +1,11 @@
 import type { GeneralObject } from "$/types/general"
-import type { PermissionMap, PermissionInfo } from "$/types/permission"
+import type {
+	PermissionMap,
+	PermissionInfo,
+	ExternalPermissionDependencyInfo
+} from "$/types/permission"
+
+import makeUnique from "$/helpers/array/make_unique"
 
 /**
  * Base class for permission groups.
@@ -26,7 +32,18 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 */
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
 		const mask = this.generateMask(...permissionNames)
-		return this.doesMatch(role[this.name], mask)
+		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
+		const mayAllowedExternally = Array.from(
+			this.identifyExternalDependencies(permissionNames)
+		).reduce((previousGroupApproval, currentExternalInfo) => {
+			const approval = previousGroupApproval && currentExternalInfo.group.mayAllow(
+				role,
+				...currentExternalInfo.permissionDependencies
+			)
+			return approval
+		}, true)
+
+		return mayAllowedInternally && mayAllowedExternally
 	}
 
 	/**
@@ -40,20 +57,71 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const { permissions } = this
 		return names.reduce((combinedMask, name) => {
 			const info: PermissionInfo<U> = permissions.get(name)
-				|| { "flag": 0,
-					"permissionDependencies": [] }
+				|| {
+					"flag": 0,
+					"permissionDependencies": []
+				}
 			return combinedMask
-				| info.permissionDependencies.reduce((dependentMask, dependentName) => dependentMask | this.generateMask(dependentName), info.flag)
+				| info.permissionDependencies.reduce(
+					(dependentMask, dependentName) => dependentMask | this.generateMask(dependentName),
+					info.flag
+				)
 		}, 0)
 	}
 
 	/**
 	 * Generates mask where all permissions are enabled.
 	 */
-	 generateSuperMask(): number {
-		return Array.from(this.permissions.values()).reduce((previousMask, permissionInfo) => previousMask | permissionInfo.flag, 0)
+	generateSuperMask(): number {
+		return Array.from(this.permissions.values()).reduce(
+			(previousMask, permissionInfo) => previousMask | permissionInfo.flag,
+			0
+		)
 	}
 
+	/**
+	 * Generates a collection of information about the external permission group dependency.
+	 * @param names The names of the permission names to check.
+	 */
+	identifyExternalDependencies(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
+		const externalInfos = new Map<string, ExternalPermissionDependencyInfo<any, any>>()
+
+		// Check all permission names that have external permissions
+		names.forEach(name => {
+			const info = this.permissions.get(name) as PermissionInfo<U>
+			if (info.externalPermissionDependencies) {
+				// Put all external permission in one external info
+				info.externalPermissionDependencies.forEach(externalDependency => {
+					const { "name": externalGroupName } = externalDependency.group
+					let externalInfo = externalDependency
+
+					if (externalInfos.has(externalGroupName)) {
+						externalInfo = externalInfos
+						.get(externalGroupName) as ExternalPermissionDependencyInfo<any, any>
+
+						externalInfo.permissionDependencies.push(
+							...externalDependency.permissionDependencies
+						)
+					}
+
+					externalInfos.set(externalGroupName, externalInfo)
+				})
+			}
+		})
+
+		// Remove the duplicate permission names
+		const cleanedExternalInfos = new Set<ExternalPermissionDependencyInfo<any, any>>()
+		for (const externalInfo of externalInfos.values()) {
+			const newExternalInfo: ExternalPermissionDependencyInfo<any, any> = {
+				"group": externalInfo.group,
+				"permissionDependencies": makeUnique(externalInfo.permissionDependencies)
+			}
+
+			cleanedExternalInfos.add(newExternalInfo)
+		}
+
+		return cleanedExternalInfos
+	}
 
 	/**
 	 * Deserialize the flag into permission names.
@@ -77,17 +145,25 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * @param permissionCombinations Possible permission that may a role.
 	 */
 	hasOneRoleAllowed(roles: T[], permissionCombinations: U[][]): boolean {
-		return permissionCombinations
-			.reduce((previousPermittedCombination: boolean, combination: U[]) =>
+		return permissionCombinations.reduce(
+			(previousPermittedCombination: boolean, combination: U[]) => {
 				// Use logical OR to match one of the permission combinations
-				 previousPermittedCombination || roles.reduce((
+				const isAllowed = previousPermittedCombination || roles.reduce((
 					previousPermittedRole: boolean,
 					role: T
-				) =>
+				) => {
 					// Use logical OR to match one of the roles
-					 previousPermittedRole || this.mayAllow(role, ...combination)
-				, false)
-			, false)
+					const hasAllowed = previousPermittedRole || this.mayAllow(
+						role,
+						...combination
+					)
+
+					return hasAllowed
+				}, false)
+
+				return isAllowed
+			}, false
+		)
 	}
 
 	private doesMatch(flags: number, targetFlag: number): boolean {

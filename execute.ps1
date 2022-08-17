@@ -431,7 +431,7 @@ if ($Log) {
 	$packageConfiguration = $packageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $packageConfiguration
 
-	$contents = & npx changelogen
+	$contents = & npx changelogen --from=$("v0.$previousVersion.0")
 	$contents = $contents.Trim("`n")
 	$contents = $contents -Split "`n"
 	$cleanedContents = @("# Changelog", "", "## v$version", "")
@@ -470,6 +470,7 @@ if ($Log) {
 		}
 	}
 
+	$cleanedContents = $cleanedContents[0..($cleanedContents.length-4)]
 	$cleanedContents = $cleanedContents -join "`n"
 
 	Rename-Item -Path ./changelogs/CHANGELOG.md -NewName CHANGELOG_v0.$($previousVersion).md

@@ -1,31 +1,24 @@
 import {
 	Table,
-	Model,
 	Column,
 	BelongsTo,
-	ForeignKey,
-	DataType
+	ForeignKey
 } from "sequelize-typescript"
 
 import User from "%/models/user"
+import FileLike from "%/models/file-like"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
-export default class Signature extends Model {
+export default class Signature extends FileLike {
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	userID!: number
-
-	@Column({
-		type: DataType.BLOB("medium"),
-		allowNull: false
-	})
-	signature!: Buffer
+		userID!: number
 
 	@BelongsTo(() => User)
-	user!: User
+		user!: User
 }

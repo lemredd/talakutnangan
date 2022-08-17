@@ -1,33 +1,38 @@
 import type { Request } from "!/types/dependent"
-import type { FieldRules } from "!/types/validation"
+import type { FieldRules, Pipe } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
+
+import Log from "$!/singletons/log"
+import integer from "!/validators/base/integer"
+import required from "!/validators/base/required"
+import present from "!/validators/manager/present"
 import RouteParameterValidation from "!/validations/route_parameter"
 
-import integer from "!/validators/base/integer"
-import present from "!/validators/manager/present"
-import required from "!/validators/base/required"
-
-type ParameterInfo = [ string, BaseManagerClass ]
+type ParameterInfo = [ string, BaseManagerClass, Pipe? ]
 
 export default class extends RouteParameterValidation {
 	constructor(IDs: ParameterInfo[]) {
-		super((request: Request): FieldRules => IDs.reduce<FieldRules>(
-			(previousValidationRules, info) => ({
-				...previousValidationRules,
-				[info[0]]: {
-					pipes: [ required, integer, present ],
-					constraints: {
-						manager: {
-							className: info[1],
-							columnName: "id"
+		super((request: Request): FieldRules => {
+			// TODO: Remove in v0.12
+			if (IDs.reduce((previousAssertion, info) => previousAssertion || !info[2], false)) {
+				Log.warn("validation", `Parameter info validator should be provided in ${request.url}.`)
+			}
+
+			return IDs.reduce<FieldRules>(
+				(previousValidationRules, info) => ({
+					...previousValidationRules,
+					[info[0]]: {
+						"constraints": {
+							"manager": {
+								"className": info[1],
+								"columnName": "id"
+							}
 						},
-						present: {
-							IDPath: info[0]
-						}
+						"pipes": [ required, integer, info[2] || present ]
 					}
-				}
-			}),
-			{}
-		))
+				}),
+				{}
+			)
+		})
 	}
 }

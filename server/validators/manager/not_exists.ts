@@ -35,11 +35,14 @@ export default async function(
 	if (foundModel.data === null) {
 		return state
 	}
-	throw {
+
+	const error = {
 		"field": constraints.field,
 		"messageMaker": (
 			field: string,
 			value: string
 		) => `The ${value} in field "${field}" does exists in the database".`
 	}
+
+	throw error
 }

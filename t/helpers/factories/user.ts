@@ -1,4 +1,5 @@
 import type { ModelCtor } from "%/types/dependent"
+import type { Serializable } from "$/types/general"
 import type { GeneratedData } from "~/types/dependent"
 import type {
 	UserResourceIdentifier,
@@ -21,7 +22,8 @@ import Department from "%/models/department"
 import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
-
+import UserProfileTransformer from "%/transformers/user_profile"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 
 export default class UserFactory extends BaseFactory<
 	User,
@@ -34,7 +36,12 @@ export default class UserFactory extends BaseFactory<
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 > {
-	nameGenerator = () => faker.name.findName()
+	nameGenerator = () => `${
+		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 5)))
+	} ${
+		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 7)))
+	}`
+
 	prefersDarkGenerator = () => false
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
@@ -50,18 +57,18 @@ export default class UserFactory extends BaseFactory<
 
 	async generate(): GeneratedData<User> {
 		if (this.#department === null) {
-			this.#department = await (new DepartmentFactory()).insertOne()
+			this.#department = await new DepartmentFactory().insertOne()
 		}
 
 		return {
-			name: this.nameGenerator(),
-			email: this.emailGenerator(),
-			password: await hash(this.#password),
-			emailVerifiedAt: this.#mustBeVerified ? new Date() : null,
-			kind: this.#kind,
-			prefersDark: this.prefersDarkGenerator(),
-			departmentID: this.#department.id,
-			deletedAt: null
+			"name": this.nameGenerator(),
+			"email": this.emailGenerator(),
+			"password": await hash(this.#password),
+			"emailVerifiedAt": this.#mustBeVerified ? new Date() : null,
+			"kind": this.#kind,
+			"prefersDark": this.prefersDarkGenerator(),
+			"departmentID": this.#department.id,
+			"deletedAt": null
 		}
 	}
 
@@ -76,12 +83,10 @@ export default class UserFactory extends BaseFactory<
 	async insertOne() {
 		const user = await super.insertOne()
 		user.password = this.#password
-		await AttachedRole.bulkCreate(this.roles.map(role => {
-			return {
-				userID: user.id,
-				roleID: role.id
-			}
-		}))
+		await AttachedRole.bulkCreate(this.roles.map(role => ({
+			"userID": user.id,
+			"roleID": role.id
+		})))
 		user.roles = this.roles
 		user.department = this.#department!
 
@@ -90,27 +95,45 @@ export default class UserFactory extends BaseFactory<
 
 	async makeMany(count: number): Promise<User[]> {
 		const users = await super.makeMany(count)
-		users.forEach(user => user.password = this.#password)
+		users.forEach(user => {
+			user.password = this.#password
+		})
 		return users
 	}
 
 	async insertMany(count: number): Promise<User[]> {
 		const users = await super.insertMany(count)
 
+		const pendingAttachments = []
 		for (const user of users) {
 			user.password = this.#password
 
-			await AttachedRole.bulkCreate(this.roles.map(role => {
-				return {
-					userID: user.id,
-					roleID: role.id
-				}
-			}))
+			pendingAttachments.push(
+				AttachedRole.bulkCreate(
+					this.roles.map(role => ({
+						"userID": user.id,
+						"roleID": role.id
+					}))
+				)
+			)
 
 			user.roles = this.roles
 		}
 
+		await Promise.all(pendingAttachments)
+
 		return users
+	}
+
+	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
+		const user = await this.insertOne()
+		const { password } = user
+		const profile = this.serialize(user, {}, new UserProfileTransformer())
+
+		return {
+			password,
+			profile
+		}
 	}
 
 	name(generator: () => string): UserFactory {

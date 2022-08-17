@@ -6,7 +6,7 @@ import Policy from "!/bases/policy"
 import AttachedRoleManager from "%/managers/role"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -20,7 +20,7 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

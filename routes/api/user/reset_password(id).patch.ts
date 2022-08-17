@@ -10,7 +10,8 @@ import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import makeDefaultPassword from "$!/helpers/make_default_password"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -22,7 +23,7 @@ import required from "!/validators/base/required"
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -31,13 +32,13 @@ export default class extends BoundJSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: makeResourceIdentifierRules("user", exists, UserManager)
-				}
+			"data": {
+				"constraints": {
+					"object": makeResourceIdentifierRules("user", exists, UserManager, false)
+				},
+				"pipes": [ required, object ]
 			}
 		}
 	}
@@ -46,32 +47,32 @@ export default class extends BoundJSONController {
 
 	async handle(
 		request: Request & PreprocessedRequest<PasswordResetArguments>,
-		response: Response
+		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const id = request.body.data.id
+		const { id } = request.body.data
 		const userProfile = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const newPassword = makeDefaultPassword(userProfile)
 		const isSuccess = await manager.resetPassword(Number(id), newPassword)
 
 		if (isSuccess) {
 			request.nextMiddlewareArguments = {
-				emailToContact: {
-					email: userProfile.data.email,
-					name: userProfile.data.name,
-					password: newPassword
+				"emailToContact": {
+					"email": userProfile.data.email,
+					"name": userProfile.data.name,
+					"password": newPassword
 				}
 			}
 
 			return new NoContentResponseInfo()
-		} else {
-			throw new DatabaseError("There is a problem with the database. Cannot reset the password.")
 		}
+		throw new DatabaseError("There is a problem with the database. Cannot reset the password.")
 	}
 
 	get postJobs(): Middleware[] {
 		return [
-			new PasswordResetNotification()
+			new PasswordResetNotification(),
+			new ActionAuditor("user.reset_password")
 		]
 	}
 }

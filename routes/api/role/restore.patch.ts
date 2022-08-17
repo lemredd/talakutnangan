@@ -1,10 +1,12 @@
-import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
+import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import JSONController from "!/controllers/json_controller"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -34,5 +36,11 @@ export default class extends JSONController {
 		await manager.restoreBatch(IDs)
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): ActionAuditor[] {
+		return [
+			new ActionAuditor("role.restore")
+		]
 	}
 }

@@ -23,7 +23,7 @@ import {
 
 import Middleware from "!/bases/middleware"
 import Condition from "%/managers/helpers/condition"
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 
 interface OwnArguments {
@@ -43,103 +43,103 @@ export default class extends DevController {
 
 			Log.success("controller", "searching for role")
 			let testRole = await Role.findOne({
-				where: (new Condition()).equal("name", testRoleName).build()
+				"where": new Condition().equal("name", testRoleName).build()
 			})
 
 			Log.success("controller", "making for role")
 
 			if (testRole === null) {
 				testRole = await new RoleFactory()
-					.name(() => testRoleName)
-					.departmentFlags(department.generateMask(
-						"view"
-					))
-					.roleFlags(role.generateMask(
-						"view"
-					))
-					.semesterFlags(semester.generateMask(
-						"view"
-					))
-					.tagFlags(tag.generateMask(
-						"view"
-					))
-					.postFlags(post.generateMask(
-						"view",
-						"create",
-						"update",
-						"archiveAndRestore",
-						"readDepartmentScope",
-						"writeOwnScope",
-						"tag"
-					))
-					.commentFlags(comment.generateMask(
-						"view",
-						"create",
-						"update",
-						"archiveAndRestore",
-						"readDepartmentScope",
-						"writeOwnScope",
-						"vote"
-					))
-					.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-					.userFlags(user.generateMask(
-						"view",
-						"create",
-						"update",
-						"readDepartmentScope",
-						"writeDepartmentScope"
-					))
-					.auditTrailFlags(0)
-					.insertOne()
+				.name(() => testRoleName)
+				.departmentFlags(department.generateMask(
+					"view"
+				))
+				.roleFlags(role.generateMask(
+					"view"
+				))
+				.semesterFlags(semester.generateMask(
+					"view"
+				))
+				.tagFlags(tag.generateMask(
+					"view"
+				))
+				.postFlags(post.generateMask(
+					"view",
+					"create",
+					"update",
+					"archiveAndRestore",
+					"readDepartmentScope",
+					"writeOwnScope",
+					"tag"
+				))
+				.commentFlags(comment.generateMask(
+					"view",
+					"create",
+					"update",
+					"archiveAndRestore",
+					"readDepartmentScope",
+					"writeOwnScope",
+					"vote"
+				))
+				.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+				.userFlags(user.generateMask(
+					"view",
+					"create",
+					"update",
+					"readDepartmentScope",
+					"writeDepartmentScope"
+				))
+				.auditTrailFlags(0)
+				.insertOne()
 
 				Log.success("controller", "created test role")
 			}
 
 			Log.success("controller", "searching for  dept")
 			let testInstituteDepartment = await Department.findOne({
-				where: (new Condition()).equal("fullName", testDepartmentName).build()
+				"where": new Condition().equal("fullName", testDepartmentName).build()
 			})
 
 			Log.success("controller", "making for dept")
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
-					.name(() => testDepartmentName)
-					.mayAdmit()
-					.insertOne()
+				.fullName(() => testDepartmentName)
+				.mayAdmit()
+				.insertOne()
 
 				Log.success("controller", "created test department")
 			}
 
 			Log.success("controller", "searching for  user")
 			let previousUser = await User.findOne({
-				where: (new Condition()).equal("email", testEmail).build()
+				"where": new Condition().equal("email", testEmail).build()
 			})
 			Log.success("controller", "making for  user")
 			if (previousUser === null) {
-				const user = await new UserFactory()
-					.email(() => testEmail)
-					.beReachableEmployee()
-					.in(testInstituteDepartment)
-					.insertOne()
+				const createdUser = await new UserFactory()
+				.email(() => testEmail)
+				.beReachableEmployee()
+				.in(testInstituteDepartment)
+				.insertOne()
 
 				Log.success("controller", "created test user")
 
-				previousUser = user
+				previousUser = createdUser
 			}
 
 			await AttachedRole.upsert({
-				userID: previousUser.id,
-				roleID: testRole.id
+				"userID": previousUser.id,
+				"roleID": testRole.id
 			})
 
 			Log.success("controller", "attached test role to test user")
 
 			request.body = {
-				email: testEmail,
-				password: "password"
+				"email": testEmail,
+				"password": "password"
 			}
 
-			request.nextMiddlewareArguments = { hasPreprocessed: true }
+			request.nextMiddlewareArguments = { "hasPreprocessed": true }
 		}
 	}
 

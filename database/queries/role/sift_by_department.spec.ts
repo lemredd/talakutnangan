@@ -6,12 +6,12 @@ import DepartmentFactory from "~/factories/department"
 import siftByDepartment from "./sift_by_department"
 
 describe("Database Pipe: Sift by department", () => {
-	it("can find all", async () => {
+	it("can find all", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory().insertOne()
 		await new UserFactory().in(department).attach(role).insertOne()
 
-		const options = siftByDepartment({}, { filter: { department: "*" } })
+		const options = siftByDepartment({}, { "filter": { "department": "*" } })
 		const foundRoles = await Role.findAll(options)
 
 		expect(options).not.toHaveProperty("include")
@@ -19,14 +19,14 @@ describe("Database Pipe: Sift by department", () => {
 		expect(foundRoles).toHaveProperty("0.id", role.id)
 	})
 
-	it("can find on specific department", async () => {
+	it("can find on specific department", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory().insertOne()
 		await new UserFactory().in(department).attach(role).insertOne()
 
 		const options = siftByDepartment({}, {
-			filter: {
-				department: department.id
+			"filter": {
+				"department": department.id
 			}
 		})
 		const foundRoles = await Role.findAll(options)
@@ -36,15 +36,15 @@ describe("Database Pipe: Sift by department", () => {
 		expect(foundRoles).toHaveProperty("0.id", role.id)
 	})
 
-	it("cannot find on empty department", async () => {
+	it("cannot find on empty department", async() => {
 		const departmentA = await new DepartmentFactory().insertOne()
 		const departmentB = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory().insertOne()
 		await new UserFactory().in(departmentA).attach(role).insertOne()
 
 		const options = siftByDepartment({}, {
-			filter: {
-				department: departmentB.id
+			"filter": {
+				"department": departmentB.id
 			}
 		})
 		const foundRoles = await Role.findAll(options)

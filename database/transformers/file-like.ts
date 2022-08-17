@@ -15,8 +15,8 @@ export default abstract class<
 		model: T|T[],
 		options: TransformerOptions<FileLikeTransformerOptions>
 	): AttributesObject {
-		if (options.extra === undefined) {
-			options.extra = { raw: false }
+		if (!options.extra) {
+			options.extra = { "raw": false }
 		}
 
 		const whiteListedAttributes = [ "id" ]
@@ -31,33 +31,31 @@ export default abstract class<
 	}
 
 	finalizeTransform(model: T|T[]|null, resource: Serializable): Serializable {
-		resource = super.finalizeTransform(model, resource)
+		const processedResource = super.finalizeTransform(model, resource) as GeneralObject
 
-		if (resource.data !== undefined && resource.data !== null) {
+		if (processedResource.data) {
 			const templatePath = `/api/${this.type}/:id`
 
-			if (resource.data instanceof Array) {
-				resource.data = (resource.data as GeneralObject[]).map(data => {
-					if (data.attributes.fileContents === undefined) {
+			if (processedResource.data instanceof Array) {
+				processedResource.data = processedResource.data.map(data => {
+					if (!data.attributes.fileContents) {
 						data.links = {
-							self: URLMaker.makeURLFromPath(templatePath, {
-								id: data.id
+							"self": URLMaker.makeURLFromPath(templatePath, {
+								"id": data.id
 							})
 						}
 					}
 					return data
 				})
-			} else {
-				if ((resource.data as GeneralObject).attributes.fileContents === undefined) {
-					(resource.data as Serializable).links = {
-						self: URLMaker.makeURLFromPath(templatePath, {
-							id: (resource.data as GeneralObject).id
-						})
-					}
+			} else if (!processedResource.data.attributes.fileContents) {
+				processedResource.data.links = {
+					"self": URLMaker.makeURLFromPath(templatePath, {
+						"id": processedResource.data.id
+					})
 				}
 			}
 		}
 
-		return resource
+		return processedResource
 	}
 }

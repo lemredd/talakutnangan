@@ -35,7 +35,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 		super(DepartmentFetcher.basePath, DepartmentFetcher.type)
 	}
 
-	countUsers(IDs: number[]): Promise<Response<
+	countUsers(IDs: string[]): Promise<Response<
 		DepartmentResourceIdentifier,
 		DepartmentAttributes,
 		DepartmentResource,
@@ -45,7 +45,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 		return this.handleResponse(
 			this.getJSON(
 				`${this.type}/count_users?${stringifyQuery({
-					filter: {
+					"filter": {
 						IDs
 					}
 				})}`

@@ -7,7 +7,7 @@ import DepartmentFactory from "~/factories/department"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 
-import DevController from "!/controllers/dev_controller"
+import DevController from "!/controllers/dev"
 
 export default class extends DevController {
 	get filePath(): string { return __filename }

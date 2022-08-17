@@ -9,29 +9,29 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import extractEmailUsername from "$!/helpers/extract_email_username"
+import { personName } from "!/constants/regex"
 
+import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
-import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
 import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
+import CreatedResponse from "!/response_infos/created"
+import MultipartController from "!/controllers/multipart"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import MultipartController from "!/controllers/multipart_controller"
 
 import BodyValidation from "!/validations/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
-import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
 
 import array from "!/validators/base/array"
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import buffer from "!/validators/base/buffer"
-import integer from "!/validators/base/integer"
-import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
@@ -46,7 +46,7 @@ import makeResourceIdentifierListDocumentRules
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
-	get policy(): Policy {
+	get policy(): PermissionBasedPolicy<any, any> {
 		return new PermissionBasedPolicy(permissionGroup, [
 			IMPORT_USERS
 		])
@@ -54,51 +54,51 @@ export default class extends MultipartController {
 
 	get postParseMiddlewares(): OptionalMiddleware[] {
 		// TODO: Think of the maximum size of the CSV file. currently accepting 1MB.
-		const maxSize = 1*1000
+		const maxSize = 1 * 1000
 		return [
-			new BodyValidation((request: Request): FieldRules => {
+			new BodyValidation((unusedRequest: Request): FieldRules => {
 				const attributes = {
-					kind: {
-						pipes: [ required, string, oneOf ],
-						constraints: {
-							oneOf: {
-								values: [ ...UserKindValues ]
+					"kind": {
+						"constraints": {
+							"oneOf": {
+								"values": [ ...UserKindValues ]
 							}
-						}
+						},
+						"pipes": [ required, string, oneOf ]
 					}
 				}
 				const relationships = {
-					pipes: [ required, object ],
-					constraints: {
-						object: {
-							roles: {
-								pipes: [ required, object ],
-								constraints: {
-									object: makeResourceIdentifierListDocumentRules(
+					"constraints": {
+						"object": {
+							"roles": {
+								"constraints": {
+									"object": makeResourceIdentifierListDocumentRules(
 										"role",
 										exists,
 										RoleManager
 									)
-								}
+								},
+								"pipes": [ required, object ]
 							}
 						}
-					}
+					},
+					"pipes": [ required, object ]
 				}
 				const meta = {
-					pipes: [ required, object ],
-					constraints: {
-						object: {
-							importedCSV: {
-								pipes: [ required, buffer ],
-								constraints: {
-									buffer: {
-										allowedMimeTypes: [ "text/csv" ],
+					"constraints": {
+						"object": {
+							"importedCSV": {
+								"constraints": {
+									"buffer": {
+										"allowedMimeTypes": [ "text/csv" ],
 										maxSize
 									}
-								}
+								},
+								"pipes": [ required, buffer ]
 							}
 						}
-					}
+					},
+					"pipes": [ required, object ]
 				}
 
 				return makeResourceDocumentRules(
@@ -114,79 +114,81 @@ export default class extends MultipartController {
 		]
 	}
 
-	makeBodyRuleGenerator(request: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		// TODO: Make validator to validate name
 		return {
-			data: {
-				pipes: [ required ]
+			"data": {
+				"pipes": [ required ]
 			},
-			meta: {
-				pipes: [ required, object ],
-				constraints: {
-					object: {
-						importedCSV: {
-							pipes: [ required, array, length ],
-							constraints: {
-								array: {
-									pipes: [ required, object ],
-									constraints: {
-										object: {
-											name: {
-												pipes: [ required, string, notExists, regex ],
-												constraints: {
-													manager: {
-														className: UserManager,
-														columnName: "name"
+			"meta": {
+				"constraints": {
+					"object": {
+						"importedCSV": {
+							"constraints": {
+								"array": {
+									"constraints": {
+										"object": {
+											"name": {
+												"constraints": {
+													"manager": {
+														"className": UserManager,
+														"columnName": "name"
 													},
-													regex: { match: /^[ a-zA-Z\-\']+$/ }
-												}
-											},
-											email: {
-												pipes: [ required, string, notExists ],
-												constraints: {
-													manager: {
-														className: UserManager,
-														columnName: "email"
+													"regex": {
+														"match": personName
 													}
-												}
+												},
+												"pipes": [ required, string, regex, notExists ]
 											},
-											department: {
+											"email": {
+												"constraints": {
+													"manager": {
+														"className": UserManager,
+														"columnName": "email"
+													}
+												},
+												"pipes": [ required, string, notExists ]
+											},
+											"department": {
 												// TODO: Add validator to match if department may admit
-												pipes: [ required, string, exists ],
-												constraints: {
-													manager: {
-														className: DepartmentManager,
-														columnName: "acronym"
+												"constraints": {
+													"manager": {
+														"className": DepartmentManager,
+														"columnName": "acronym"
 													}
-												}
+												},
+												"pipes": [ required, string, exists ]
 											},
-											studentNumber: {
-												pipes: [ nullable, string, regex ],
-												constraints: {
-													regex: {
-														match: /^\d+-\d+$/
+											"studentNumber": {
+												"constraints": {
+													"regex": {
+														"match": /^\d+-\d+$/u
 													}
-												}
+												},
+												"pipes": [ nullable, string, regex ]
 											}
 										}
-									}
+									},
+									"pipes": [ required, object ]
 								},
-								length: {
-									minimum: 1,
-									maximum: 200
+								"length": {
+									"maximum": 200,
+									"minimum": 1
 								}
-							}
+							},
+							"pipes": [ required, array, length ]
 						}
 					}
-				}
+				},
+				"pipes": [ required, object ]
 			}
 		}
 	}
 
 	async handle(
 		request: PreprocessedRequest<NewUserNotificationArguments>,
-		response: Response
-	): Promise<void> {
+		unusedResponse: Response
+	): Promise<CreatedResponse> {
 		Log.trace("controller", "entered POST /api/user/import")
 
 		const manager = new UserManager(request.transaction, request.cache)
@@ -195,17 +197,18 @@ export default class extends MultipartController {
 
 		body.kind = importedBody.data.attributes.kind
 		body.roles = importedBody.data.relationships.roles.data
-			.map(identifier => Number(identifier.id))
+		.map(identifier => Number(identifier.id))
 		body.importedCSV = importedBody.meta.importedCSV
 
 		Log.trace("controller", "made user manager")
 
-		body.importedCSV = body.importedCSV!.map(data => {
+		body.importedCSV = body.importedCSV.map(data => {
 			// ! If there is a change below, update `$!/helpers/make_default_password` too.
-			if (body.kind! === "student") {
-				data.password = (data as RawBulkDataForStudent).studentNumber
+			if (body.kind === "student") {
+				const castData = data as RawBulkDataForStudent
+				data.password = castData.studentNumber
 			} else {
-				const email = (data as RawBulkDataForEmployee).email
+				const { email } = data as RawBulkDataForEmployee
 				data.password = extractEmailUsername(email)
 			}
 
@@ -220,26 +223,25 @@ export default class extends MultipartController {
 
 		Log.success("controller", "created users in bulk")
 
-		const userDetails = body.importedCSV.map(data => {
-			return {
-				name: data.name,
-				email: data.email,
-				kind: body.kind as UserKind,
-				password: data.password
-			}
-		})
+		const userDetails = body.importedCSV.map(data => ({
+			"name": data.name,
+			"email": data.email,
+			"kind": body.kind as UserKind,
+			"password": data.password
+		}))
 		request.nextMiddlewareArguments = { userDetails }
 
 		Log.success("controller", "prepared data to inform new users")
 
-		response.status(this.status.OK).json(createdModels)
+		return new CreatedResponse(createdModels)
 
 		Log.trace("controller", "exiting POST /api/user/import")
 	}
 
 	get postJobs(): Middleware[] {
 		return [
-			CommonMiddlewareList.newUserNotification
+			CommonMiddlewareList.newUserNotification,
+			new ActionAuditor("user.import")
 		]
 	}
 }

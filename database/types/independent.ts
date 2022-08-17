@@ -28,7 +28,7 @@ export interface RawBulkDataForStudent extends CommonRawBulkData {
 /**
  * Shape to expect for creating employee profiles in bulk
  */
-export interface RawBulkDataForEmployee extends CommonRawBulkData {}
+export type RawBulkDataForEmployee = CommonRawBulkData
 
 /**
  * Shape to expect for creating students profiles in bulk
@@ -111,3 +111,8 @@ export interface SignatureTransformerOptions {
 export interface ProfilePictureTransformerOptions {
 	raw: boolean
 }
+
+/**
+ * Useful for updating the many-to-many relationships
+ */
+export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }

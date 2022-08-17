@@ -67,9 +67,9 @@ describe("Communicator: Department", () => {
 		)
 
 		const queryObject: DepartmentQueryParameters = {
-			filter: {
-				existence: "exists",
-				IDs: []
+			"filter": {
+				"existence": "exists",
+				"IDs": []
 			},
 			"sort": [ "id", "name" ],
 			"page": {

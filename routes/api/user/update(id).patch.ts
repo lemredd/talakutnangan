@@ -4,17 +4,19 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmailVerificationArguments, BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
 
+import { personName } from "!/constants/regex"
+
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Middleware from "!/bases/middleware"
 import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import BoundJSONController from "!/controllers/bound_json_controller"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import { user as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
@@ -26,10 +28,10 @@ import boolean from "!/validators/base/boolean"
 import unique from "!/validators/manager/unique"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
-import email from "!/validators/comparison/email"
+import emailValidator from "!/validators/comparison/email"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -40,29 +42,30 @@ export default class extends BoundJSONController {
 		])
 	}
 
-	makeBodyRuleGenerator(request: AuthenticatedIDRequest): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const attributes = {
-			name: {
-				// TODO: Validate the name
-				pipes: [ required, string, regex ],
-				constraints: {
-					regex: { match: /^[ a-zA-Z\-\']+$/ }
-				}
-			},
-			email: {
-				pipes: [ required, string, email, unique ],
-				constraints: {
-					manager: {
-						className: UserManager,
-						columnName: "email"
-					},
-					unique: {
-						IDPath: "data.id"
+			"name": {
+				"constraints": {
+					"regex": {
+						"match": personName
 					}
-				}
+				},
+				"pipes": [ required, string, regex ]
 			},
-			prefersDark: {
-				pipes: [ required, boolean ]
+			"email": {
+				"constraints": {
+					"manager": {
+						"className": UserManager,
+						"columnName": "email"
+					},
+					"unique": {
+						"IDPath": "data.id"
+					}
+				},
+				"pipes": [ required, string, emailValidator, unique ]
+			},
+			"prefersDark": {
+				"pipes": [ required, boolean ]
 			}
 		}
 
@@ -73,11 +76,12 @@ export default class extends BoundJSONController {
 
 	async handle(
 		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
-		response: Response
+		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const id = request.body.data.id
+		const { id } = request.body.data
 		const { email } = request.body.data.attributes
+
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const updateData: Serializable = request.body.data.attributes
 
@@ -86,7 +90,7 @@ export default class extends BoundJSONController {
 				userData.data.roles.data,
 				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			&& userData.data.id !== String(id)
+			&& String(userData.data.id) !== String(id)
 		) {
 			throw new AuthorizationError("User is not permitted to edit other users")
 		}
@@ -94,20 +98,20 @@ export default class extends BoundJSONController {
 		const oldUser = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const oldEmail = oldUser.data.email
 
-		if (oldEmail !== email) {
+		if (oldEmail === email) {
 			request.nextMiddlewareArguments = {
-				emailsToContact: [
+				"emailsToContact": []
+			}
+		} else {
+			request.nextMiddlewareArguments = {
+				"emailsToContact": [
 					{
-						id,
-						email
+						email,
+						id
 					}
 				]
 			}
 			updateData.emailVerifiedAt = null
-		} else {
-			request.nextMiddlewareArguments = {
-				emailsToContact: []
-			}
 		}
 
 		await manager.update(id, updateData)

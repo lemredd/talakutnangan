@@ -39,6 +39,7 @@ rules:
       SwitchCase: 1
       CallExpression: { "arguments": "first" }
       MemberExpression: 0
+      VariableDeclarator: "first"
   id-length: ["error", { "exceptions": ["i", "j", "k", "t"] }]
   lines-around-comment:
     - "warn"
@@ -62,9 +63,16 @@ rules:
   multiline-ternary: ["error", "always-multiline"]
   new-cap:
     - "error"
-    - { "capIsNewExceptions": ["Selector"] }
+    -
+      capIsNew: false
   newline-per-chained-call: "off"
   no-alert: "off"
+  no-bitwise:
+    - "error"
+    -
+      allow:
+        - "|"
+        - "&"
   no-duplicate-imports: "warn"
   no-empty-function: ["error", { "allow": ["arrowFunctions"] }]
   no-console: "off"
@@ -95,11 +103,13 @@ rules:
   one-var: ["error", "never"]
   operator-linebreak: ["error", "before"]
   padded-blocks: ["error", "never"]
+  require-atomic-updates: [ "error", { "allowProperties": true } ]
   prefer-named-capture-group: "off"
   semi: [ "error", "never" ]
   space-before-function-paren: ["error", "never"]
   sort-imports: "off"
   sort-keys: "off"
+  strict: "warn"
   quotes:
     - "error"
     - "double"
@@ -159,5 +169,6 @@ rules:
   vue/no-setup-props-destructure: "off"
   "@typescript-eslint/ban-ts-comment": "off"
   "@typescript-eslint/no-explicit-any": "off"
+  "@typescript-eslint/no-var-requires": "off"
   "@typescript-eslint/no-non-null-assertion": "warn"
   "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^unused", "varsIgnorePattern": "^unused" } ]

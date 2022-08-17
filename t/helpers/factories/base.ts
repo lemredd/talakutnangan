@@ -71,37 +71,59 @@ export default abstract class Factory<
 		return model
 	}
 
-	async serializedOne(options: GeneralObject = {}): Promise<Y> {
+	async serializedOne(
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): Promise<Y> {
 		const model = await this.makeOne()
-		return this.serialize(model, options) as Y
+		return this.serialize(model, options, transformer) as Y
 	}
 
-	async serializedMany(count: number, options: GeneralObject = {}): Promise<Z> {
+	async serializedMany(
+		count: number,
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): Promise<Z> {
 		const model = await this.makeMany(count)
-		return this.serialize(model, options) as Z
+		return this.serialize(model, options, transformer) as Z
 	}
 
-	protected serialize(models: T|T[]|null, options: GeneralObject = {}): Y|Z {
+	protected serialize(
+		models: T|T[]|null,
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): Y|Z {
 		return Serializer.serialize(
 			models,
-			this.transformer,
+			transformer,
 			options
 		) as Y|Z
 	}
 
-	async deserializedOne(options: GeneralObject = {}): Promise<A> {
+	async deserializedOne(
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): Promise<A> {
 		const model = await this.makeOne()
-		return this.deserialize(model, options) as A
+		return this.deserialize(model, options, transformer) as A
 	}
 
-	async deserializedMany(count: number, options: GeneralObject = {}): Promise<B> {
+	async deserializedMany(
+		count: number,
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): Promise<B> {
 		const model = await this.makeMany(count)
-		return this.deserialize(model, options) as B
+		return this.deserialize(model, options, transformer) as B
 	}
 
-	protected deserialize(models: T|T[]|null, options: GeneralObject = {}): A|B {
+	protected deserialize(
+		models: T|T[]|null,
+		options: GeneralObject = {},
+		transformer: Transformer<T, C> = this.transformer
+	): A|B {
 		return deserialize(this.serialize(
-			models, options
+			models, options, transformer
 		)) as A|B
 	}
 }

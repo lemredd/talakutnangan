@@ -4,15 +4,14 @@
 <template>
 	<div class="input-container">
 		<input
+			ref="inputField"
 			class="bg-transparent mr-2"
 			type="checkbox"
-			:class=inputClasses
+			:class="inputClasses"
 			:checked="modelValue.includes(value)"
 			:value="value"
-			@change="emitUpdate"
 			:disabled="disabled"
-			ref="inputField"
-			/>
+			@change="emitUpdate"/>
 		<label v-if="label" class="input-header">
 			{{ label }}
 		</label>
@@ -23,16 +22,15 @@
 </style>
 
 <script setup lang="ts">
-import uniq from "lodash.uniq"
+import makeUnique from "$/helpers/array/make_unique"
 
 const {
 	label,
 	modelValue,
-	required = true,
 	value,
 	disabled,
 	inputClasses
-	} = defineProps<{
+} = defineProps<{
 	label?: string
 	modelValue: string[]
 	value: string
@@ -41,19 +39,18 @@ const {
 	inputClasses?: string
 }>()
 
-const emit = defineEmits<{
-	(e: "update:modelValue", modelValue: string[] ): void
-}>()
+const emit = defineEmits<{(e: "update:modelValue", newModelValue: string[]): void}>()
 
 
 function emitUpdate(event: Event) {
 	const modelValueCopy = modelValue
-	const eventTarget = (event.target as HTMLInputElement).value as string
-	if (modelValueCopy.includes(eventTarget)) {
-		delete modelValueCopy[modelValueCopy.indexOf(eventTarget)]
+	const eventTarget = event.target as HTMLInputElement
+	const eventValue = eventTarget.value as string
+	if (modelValueCopy.includes(eventValue)) {
+		delete modelValueCopy[modelValueCopy.indexOf(eventValue)]
 	} else {
-		modelValueCopy.push(eventTarget)
+		modelValueCopy.push(eventValue)
 	}
-	emit("update:modelValue", uniq(modelValueCopy))
+	emit("update:modelValue", makeUnique(modelValueCopy))
 }
 </script>

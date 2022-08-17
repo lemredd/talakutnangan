@@ -35,7 +35,7 @@ export default class RoleFetcher extends BaseFetcher<
 		super(RoleFetcher.basePath, RoleFetcher.type)
 	}
 
-	countUsers(IDs: number[]): Promise<Response<
+	countUsers(IDs: string[]): Promise<Response<
 		RoleResourceIdentifier,
 		RoleAttributes,
 		RoleResource,
@@ -45,7 +45,7 @@ export default class RoleFetcher extends BaseFetcher<
 		return this.handleResponse(
 			this.getJSON(
 				`${this.type}/count_users?${stringifyQuery({
-					filter: {
+					"filter": {
 						IDs
 					}
 				})}`

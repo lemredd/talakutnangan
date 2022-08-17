@@ -9,26 +9,24 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/signature/read(id).get"
 
 describe("GET /api/signature/:id", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can read signature", async () => {
+	it("can read signature", async() => {
 		const signature = await new SignatureFactory().insertOne()
 		const studentRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_OWN))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(
+		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,
-			userFactory => {
-				return userFactory.beStudent()
-			})
+			userFactory => userFactory.beStudent())
 
 		const response = await App.request
-			.get(`/api/signature/${signature.id}`)
-			.set("Cookie", cookie)
+		.get(`/api/signature/${signature.id}`)
+		.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
-		expect(response.body).toStrictEqual(signature.signature)
+		expect(response.body).toStrictEqual(signature.fileContents)
 	})
 })

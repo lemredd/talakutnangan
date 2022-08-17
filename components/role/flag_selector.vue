@@ -2,29 +2,40 @@
 	TODO: Refactor all WindiCSS inline classes using @apply directive
  -->
 <template>
-<ul class="flags my-3" :id="`${header.toLocaleLowerCase()}-flags`">
-	<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">{{ header }} Flags</h2>
+	<ul :id="`${header.toLocaleLowerCase()}-flags`" class="flags my-3">
+		<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">
+			{{ header }} Flags
+		</h2>
 
-	<div class="operational-flags">
-		<span>Operations: </span>
-		<li class="ml-5" v-for="permissionName in operationalPermissionNames">
-			<Checkbox
-				:label="camelToSentence(permissionName).toLowerCase()"
-				:value="permissionName"
-				@change="updateFlags"
-				v-model="rawFlags" />
-		</li>
-	</div>
+		<div class="operational-flags">
+			<span>Operations: </span>
+			<li
+				v-for="permissionName in operationalPermissionNames"
+				:key="permissionName"
+				class="ml-5">
+				<Checkbox
+					v-model="rawFlags"
+					:label="convertToSentenceCase(permissionName).toLowerCase()"
+					:value="permissionName"
+					@change="updateFlags"/>
+			</li>
+		</div>
 
-	<div class="access-level-flags" v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length">
-		<AccessLevelSelector
-			:initial-value="initialReadScopedRawFlag"
-			label="Read Access Level" :options="readScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)" />
-		<AccessLevelSelector
-			:initial-value="initialWriteScopedRawFlag"
-			label="Write Access Level" :options="writeScopedPermissionNames" @selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)" />
-	</div>
-</ul>
+		<div
+			v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length"
+			class="access-level-flags">
+			<AccessLevelSelector
+				:initial-value="initialReadScopedRawFlag"
+				label="Read Access Level"
+				:options="readScopedPermissionNames"
+				@selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)"/>
+			<AccessLevelSelector
+				:initial-value="initialWriteScopedRawFlag"
+				label="Write Access Level"
+				:options="writeScopedPermissionNames"
+				@selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)"/>
+		</div>
+	</ul>
 </template>
 
 <style scoped lang="scss">
@@ -42,14 +53,14 @@
 <script setup lang="ts">
 // Third Parties
 import { computed, ref } from "vue"
-import uniq from "lodash.uniq"
 
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
-import AccessLevelSelector from "@/fields/dropdown_select.vue"
+import makeUnique from "$/helpers/array/make_unique"
 import BasePermissionGroup from "$/permissions/base"
-import camelToSentence from "$@/helpers/camel_to_sentence"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import AccessLevelSelector from "@/fields/dropdown_select.vue"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -69,7 +80,7 @@ const initialReadScopedRawFlag = computed(() => {
 		return name.includes("scope") && name.includes("read")
 	})
 
-	return scopedRawFlags[scopedRawFlags.length-1]
+	return scopedRawFlags[scopedRawFlags.length - 1]
 })
 const initialWriteScopedRawFlag = computed(() => {
 	const scopedRawFlags = rawFlags.value.filter(flag => {
@@ -77,18 +88,18 @@ const initialWriteScopedRawFlag = computed(() => {
 		return name.includes("scope") && name.includes("write")
 	})
 
-	return scopedRawFlags[scopedRawFlags.length-1]
+	return scopedRawFlags[scopedRawFlags.length - 1]
 })
 
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
-const operationalPermissionNames = permissionNames.filter((permissionName) => {
-	return !permissionName.toLocaleLowerCase().includes("scope")
-})
-const readScopedPermissionNames = permissionNames.filter((permissionName) => {
+const operationalPermissionNames = permissionNames.filter(
+	permissionName => !permissionName.toLocaleLowerCase().includes("scope")
+)
+const readScopedPermissionNames = permissionNames.filter(permissionName => {
 	const name = permissionName.toLocaleLowerCase()
 	return name.includes("scope") && name.includes("read")
 })
-const writeScopedPermissionNames = permissionNames.filter((permissionName) => {
+const writeScopedPermissionNames = permissionNames.filter(permissionName => {
 	const name = permissionName.toLocaleLowerCase()
 	return name.includes("scope") && name.includes("write")
 })
@@ -96,16 +107,16 @@ const writeScopedPermissionNames = permissionNames.filter((permissionName) => {
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
 
-	rawFlags.value = sanitizeArray(uniq(rawFlags.value))
+	rawFlags.value = sanitizeArray(makeUnique(rawFlags.value))
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(rawFlags.value)
 	)
 	emit("update:flags", generatedMask)
 }
 
-function updateAccessLevel(e: Event, accessPermissionNames: string[]) {
-	const value = (e.target as HTMLSelectElement).value
-	rawFlags.value.map(rawFlag => {
+function updateAccessLevel(event: Event, accessPermissionNames: string[]) {
+	const { value } = event.target as HTMLSelectElement
+	rawFlags.value.forEach(rawFlag => {
 		if (accessPermissionNames.includes(rawFlag)) {
 			delete rawFlags.value[rawFlags.value.indexOf(rawFlag)]
 		}
@@ -120,7 +131,5 @@ function updateAccessLevel(e: Event, accessPermissionNames: string[]) {
 	emit("update:flags", generatedMask)
 }
 
-const emit = defineEmits<{
-	(e: "update:flags", flags: number): void
-}>()
+const emit = defineEmits<{(event: "update:flags", passedFlag: number): void}>()
 </script>

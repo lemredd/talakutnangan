@@ -6,6 +6,7 @@ import SignatureRouter from "!%/api/signature/router"
 import DepartmentRouter from "!%/api/department/router"
 import AuditTrailRouter from "!%/api/audit_trail/router"
 import ProfilePictureRouter from "!%/api/profile_picture/router"
+import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
 
 export default class extends Router {
 	constructor() {
@@ -18,7 +19,8 @@ export default class extends Router {
 			new AuditTrailRouter(),
 			new DepartmentRouter(),
 			new UserBindedRouter(),
-			new ProfilePictureRouter()
+			new ProfilePictureRouter(),
+			new EmployeeScheduleRouter()
 		])
 	}
 }

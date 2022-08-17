@@ -9,21 +9,21 @@ const BODY_VALIDATION_INDEX = 1
 describe("Controller: PATCH /api/user/:id/signature", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const validation = validations[BODY_VALIDATION_INDEX]
 		const validationFunction = validation.intermediate.bind(validation)
 		const signature = await new SignatureFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "signature",
-					attributes: {
-						signature: {
-							buffer: signature.signature,
-							info: {
-								mimeType: "image/png"
+			"body": {
+				"data": {
+					"type": "signature",
+					"attributes": {
+						"fileContents": {
+							"buffer": signature.fileContents,
+							"info": {
+								"mimeType": "image/png"
 							}
 						}
 					}
@@ -36,21 +36,21 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const validation = validations[BODY_VALIDATION_INDEX]
 		const validationFunction = validation.intermediate.bind(validation)
 		const signature = await new SignatureFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "signature",
-					attributes: {
-						signature: {
-							buffer: signature.signature,
-							info: {
-								mimeType: "image/xxx"
+			"body": {
+				"data": {
+					"type": "signature",
+					"attributes": {
+						"fileContents": {
+							"buffer": signature.fileContents,
+							"info": {
+								"mimeType": "image/xxx"
 							}
 						}
 					}
@@ -62,6 +62,6 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.attributes.signature")
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fileContents")
 	})
 })

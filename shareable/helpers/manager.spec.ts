@@ -16,13 +16,13 @@ import KindManager from "./manager"
 describe("Resource management: Kind manager", () => {
 	it("can detect admin user", async() => {
 		const department = await new DepartmentFactory().mayNotAdmit()
-			.insertOne()
+		.insertOne()
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
-			.insertOne()
+		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+		.insertOne()
 		const user = await new UserFactory().in(department)
-			.attach(adminRole)
-			.deserializedOne()
+		.attach(adminRole)
+		.deserializedOne()
 
 		const manager = new KindManager(user as DeserializedUserProfile)
 
@@ -33,13 +33,13 @@ describe("Resource management: Kind manager", () => {
 
 	it("can detect institute-limited user", async() => {
 		const department = await new DepartmentFactory().mayAdmit()
-			.insertOne()
+		.insertOne()
 		const deanRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-			.insertOne()
+		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+		.insertOne()
 		const user = await new UserFactory().in(department)
-			.attach(deanRole)
-			.deserializedOne()
+		.attach(deanRole)
+		.deserializedOne()
 
 		const manager = new KindManager(user as DeserializedUserProfile)
 
@@ -50,13 +50,13 @@ describe("Resource management: Kind manager", () => {
 
 	it("can detect service-limited user", async() => {
 		const department = await new DepartmentFactory().mayNotAdmit()
-			.insertOne()
+		.insertOne()
 		const serviceHeadRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-			.insertOne()
+		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+		.insertOne()
 		const user = await new UserFactory().in(department)
-			.attach(serviceHeadRole)
-			.deserializedOne()
+		.attach(serviceHeadRole)
+		.deserializedOne()
 
 		const manager = new KindManager(user as DeserializedUserProfile)
 

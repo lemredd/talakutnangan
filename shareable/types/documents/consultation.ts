@@ -22,28 +22,29 @@ export interface ConsultationAttributes extends Attributes {
 	endDatetime: Date
 }
 
-export interface ConsultationResource extends Resource<
+export type ConsultationResource = Resource<
 	ConsultationResourceIdentifier,
 	ConsultationAttributes
-> {}
+>
 
-export type DeserializedConsultationResource<T extends string|number = string> = DeserializedResource<
+export type DeserializedConsultationResource<T extends string|number = string>
+= DeserializedResource<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
 >
 
-export interface ConsultationDocument extends ResourceDocument<
+export type ConsultationDocument = ResourceDocument<
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
 	ConsultationResource
-> {}
+>
 
-export interface ConsultationListDocument extends ResourceListDocument<
+export type ConsultationListDocument = ResourceListDocument<
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
 	ConsultationResource
-> {}
+>
 
 export type DeserializedConsultationDocument<T extends string|number = string>
 = DeserializedResourceDocument<
