@@ -60,7 +60,7 @@ describe("Transformer: User", () => {
 		expect(object).not.toHaveProperty("data.attributes.prefersDark")
 		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
-			"included.2.links.self",
+			"included.1.links.self",
 			`http://localhost:16000/api/signature/${signatureA.id}`
 		)
 		expect(object).toHaveProperty(
