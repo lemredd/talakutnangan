@@ -193,8 +193,8 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 				const newResourceObject = transformer.finalizeTransform(
 					relatedModel,
-					resourceObject as Serializable
-				) as Serializable
+					{ "data": resourceObject } as Serializable
+				).data as Serializable
 
 				newIncluded.push(newResourceObject)
 			}
