@@ -5,10 +5,13 @@ import {
 	DataType,
 	AllowNull,
 	BelongsTo,
-	ForeignKey
+	ForeignKey,
+	BelongsToMany
 } from "sequelize-typescript"
 import { Status, StatusValues } from "$/types/database"
 
+import User from "%/models/user"
+import Consulter from "%/models/consulter"
 import AttachedRole from "%/models/attached_role"
 
 @Table({
@@ -57,6 +60,9 @@ export default class Consultation extends Model {
 
 	@BelongsTo(() => AttachedRole)
 		facilitatorInfo!: AttachedRole
+
+	@BelongsToMany(() => User, () => Consulter)
+		consulters!: User[]
 
 	/*
 	 * @HasMany(() => Message)
