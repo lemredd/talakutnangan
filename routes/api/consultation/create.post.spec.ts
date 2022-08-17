@@ -5,31 +5,27 @@ import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: POST /api/consultation/create", () => {
+describe.skip("Controller: POST /api/consultation/create", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).makeOne()
+		const consultation = await new ConsultationFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "consultation",
-					attributes: {
-						attachedRoleID: consultation.attachedRoleID,
-						reason: consultation.reason,
-						status: consultation.status,
-						actionTaken: consultation.actionTaken,
-						scheduledStartDatetime: consultation.scheduledStartDatetime,
-						endDatetime: consultation.scheduledStartDatetime,
-						//TODO Message
-						//TODO Consultation Requesters
-						//TODO Chat Message Activity
-						deletedAt: null
-								}
+			"body": {
+				"data": {
+					"type": "consultation",
+					"attributes": {
+						"attachedRoleID": consultation.attachedRoleID,
+						"reason": consultation.reason,
+						"status": consultation.status,
+						"actionTaken": consultation.actionTaken,
+						"scheduledStartDatetime": consultation.scheduledStartDatetime,
+						"endDatetime": consultation.scheduledStartDatetime
+					}
 				}
 			}
 		})
