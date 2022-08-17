@@ -67,6 +67,12 @@ rules:
       capIsNew: false
   newline-per-chained-call: "off"
   no-alert: "off"
+  no-bitwise:
+    - "error"
+    -
+      allow:
+        - "|"
+        - "&"
   no-duplicate-imports: "warn"
   no-empty-function: ["error", { "allow": ["arrowFunctions"] }]
   no-console: "off"
