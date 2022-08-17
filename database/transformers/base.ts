@@ -65,7 +65,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 					const { relationships } = unitData as { relationships: GeneralObject }
 
 					for (const relationshipName in relationships) {
-						if (Object.prototype.hasOwnProperty.call(relationships, relationshipName)) {
+						if (Object.hasOwn(relationships, relationshipName)) {
 							const relationship = relationships[relationshipName]
 							processData(
 								relationship.data,
@@ -162,7 +162,10 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	findModel(model: T|T[], attribute: string, id: number): any|null {
 		let relatedModel: any|null = null
 
-		// ! Does not iterate deeper relationships
+		/*
+		 * Does not iterate deeper relationships. However, deeper models will be subprocessed because
+		 * subtransformers are also called.
+		 */
 		if (model instanceof Array) {
 			relatedModel = this.findWithinModels(model, attribute, id)
 		} else {
@@ -195,12 +198,19 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 			if (transformer && model !== null && resourceObject !== null) {
 				const relatedModel = this.findModel(model, transformerInfo.attribute, resourceObject.id)
 
-				const newResourceObject = transformer.finalizeTransform(
+				const newResourceDocument = transformer.finalizeTransform(
 					relatedModel,
-					{ "data": resourceObject } as Serializable
-				).data as Serializable
+					{
+						"data": resourceObject,
+						"included": transformedData.included
+					} as Serializable
+				)
+
+				const newResourceObject = newResourceDocument.data as Serializable
+				const subprocessedIncludedData = newResourceDocument.included
 
 				newIncluded.push(newResourceObject)
+				transformedData.included = subprocessedIncludedData
 			}
 		}
 	}
