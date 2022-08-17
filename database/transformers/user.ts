@@ -22,7 +22,7 @@ export default class extends Transformer<User, void> {
 				"transformer": new DepartmentTransformer()
 			},
 			{
-				"attribute": "role",
+				"attribute": "roles",
 				"transformer": new RoleTransformer()
 			},
 			{
@@ -65,50 +65,26 @@ export default class extends Transformer<User, void> {
 	}
 
 	department(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.department,
-			this.findTransformer("department") as DepartmentTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "department", options)
 	}
 
 	roles(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.roles,
-			this.findTransformer("role") as RoleTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "roles", options)
 	}
 
 	studentDetail(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.studentDetail || null,
-			this.findTransformer("studentDetail") as StudentDetailTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "studentDetail", options)
 	}
 
 	employeeSchedules(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.employeeSchedules || null,
-			this.findTransformer("employeeSchedule") as EmployeeScheduleTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "employeeSchedules", options)
 	}
 
 	signature(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.signature || null,
-			this.findTransformer("signature") as SignatureTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "signature", options)
 	}
 
 	profilePicture(model: User, options: TransformerOptions): RelationshipTransformerInfo {
-		return Serializer.makeContext(
-			model.profilePicture || null,
-			this.findTransformer("profile_picture") as ProfilePictureTransformer,
-			options
-		)
+		return this.makeRelationshipTransformerInfo(model, "profilePicture", options)
 	}
 }

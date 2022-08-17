@@ -2,7 +2,9 @@ import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
+import type { TransformerOptions, RelationshipTransformerInfo } from "%/types/dependent"
 
+import Serializer from "%/transformers/serializer"
 import processData from "%/transformers/helpers/process_data"
 
 type Subtransformer = {
@@ -64,12 +66,25 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		return transformedData
 	}
 
-	protected findTransformer(attribute: string): Transformer<any, any> {
-		const subtransformer = this.subtransformers.find(info => info.attribute === attribute)
+	protected makeRelationshipTransformerInfo(
+		model: T,
+		attributeName: string,
+		options: TransformerOptions
+	): RelationshipTransformerInfo {
+		return Serializer.makeContext(
+			// @ts-ignore
+			model[attributeName] || null,
+			this.findTransformer(attributeName),
+			options
+		)
+	}
+
+	protected findTransformer(attributeName: string): Transformer<any, any> {
+		const subtransformer = this.subtransformers.find(info => info.attribute === attributeName)
 
 		if (typeof subtransformer === "undefined") {
 			throw new Error(
-				`Developer is looking for a transformer with a missing attribute "${attribute}".`
+				`Developer is looking for a transformer with a missing attribute "${attributeName}".`
 			)
 		} else {
 			return subtransformer.transformer
