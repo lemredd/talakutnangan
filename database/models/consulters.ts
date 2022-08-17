@@ -2,20 +2,18 @@ import {
 	Table,
 	Model,
 	Column,
-	BelongsTo,
 	DataType,
-	HasMany,
+	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
 import User from "%/models/user"
-import Role from "%/models/role"
 import Consultation from "%/models/consultation"
 
 @Table({
-	"timestamps": true,
-	"paranoid": true
+	"paranoid": true,
+	"timestamps": true
 })
-export default class AttachedRole extends Model {
+export default class Consulter extends Model {
 	@ForeignKey(() => User)
 	@Column({
 		"allowNull": false,
@@ -26,16 +24,13 @@ export default class AttachedRole extends Model {
 	@BelongsTo(() => User)
 		user!: User
 
-	@ForeignKey(() => Role)
+	@ForeignKey(() => Consultation)
 	@Column({
 		"allowNull": false,
 		"type": DataType.BIGINT
 	})
-		roleID!: number
+		consultationID!: number
 
-	@BelongsTo(() => Role)
-		role!: Role
-
-	@HasMany(() => Consultation)
+	@BelongsTo(() => Consultation)
 		consultation!: Consultation
 }
