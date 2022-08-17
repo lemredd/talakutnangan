@@ -35,13 +35,14 @@ import siftByExistence from "%/queries/base/sift_by_existence"
  * First generic argument is `T` that represents the model it controls. Second generic argument is
  * `U` that represents the transformer for the model. Third, `V` represents the filter to be used by
  * the manager which is an object by default. Fourth, W which indicates extra options for the
- * transformer if there are.
+ * transformer if there are. Fifth, X indicates the type of primary ID.
  */
 export default abstract class Manager<
 	T extends Model,
 	U,
 	V extends GeneralObject = GeneralObject,
-	W = void
+	W = void,
+	X = number
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
 	protected cache: CacheClient
@@ -78,7 +79,7 @@ export default abstract class Manager<
 	}
 
 	async findWithID(
-		id: number,
+		id: X,
 		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
@@ -196,7 +197,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async update(id: number, details: U & Attributes<T>): Promise<number> {
+	async update(id: X, details: U & Attributes<T>): Promise<number> {
 		try {
 			const [ affectedCount ] = await this.model.update(details, <UpdateOptions<T>>{
 				"where": { id },
@@ -211,7 +212,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async archive(id: number): Promise<number> {
+	async archive(id: X): Promise<number> {
 		try {
 			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
 				"where": { id },
@@ -226,7 +227,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async archiveBatch(IDs: number[]): Promise<number> {
+	async archiveBatch(IDs: X[]): Promise<number> {
 		try {
 			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
 				"where": { "id": IDs },
@@ -241,7 +242,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async restore(id: number): Promise<void> {
+	async restore(id: X): Promise<void> {
 		try {
 			await this.model.restore(<RestoreOptions<T>>{
 				"where": { id },
@@ -254,7 +255,7 @@ export default abstract class Manager<
 		}
 	}
 
-	async restoreBatch(IDs: number[]): Promise<void> {
+	async restoreBatch(IDs: X[]): Promise<void> {
 		try {
 			await this.model.restore(<RestoreOptions<T>>{
 				"where": { "id": IDs },
@@ -286,16 +287,16 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<X = Serializable>(
+	protected serialize<Y = Serializable>(
 		models: T|T[]|null,
 		options: W = {} as W,
 		transformer: Transformer<T, W> = this.transformer
-	): X {
+	): Y {
 		return Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
-		) as unknown as X
+		) as unknown as Y
 	}
 
 	protected makeBaseError(error: any): BaseError {

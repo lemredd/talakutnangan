@@ -57,10 +57,10 @@ describe("Database: Role update operations", () => {
 		const manager = new RoleManager()
 		const user = await new UserFactory().attach(roles[0]).attach(roles[1]).insertOne()
 
-		await manager.reattach(String(user.id), [
-			String(roles[1].id),
-			String(roles[2].id),
-			String(roles[3].id)
+		await manager.reattach(user.id, [
+			roles[1].id,
+			roles[2].id,
+			roles[3].id
 		])
 
 		const attachedRoles = await AttachedRole.findAll({

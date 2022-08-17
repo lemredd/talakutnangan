@@ -38,9 +38,9 @@ export default class extends BoundJSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new RoleManager(request.transaction, request.cache)
-		const { data } = request.body as RoleIdentifierListDocument
+		const { data } = request.body as RoleIdentifierListDocument<number>
 		const userData = deserialize(request.user) as DeserializedUserProfile
-		const userID = userData.data.id
+		const userID = Number(userData.data.id)
 
 		await manager.reattach(userID, data.map(identifier => identifier.id))
 		Log.success("controller", "successfully updated the roles of the user")

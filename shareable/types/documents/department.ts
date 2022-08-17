@@ -65,8 +65,10 @@ export type DeserializedDepartmentListDocument<T extends string|number = string>
 	DeserializedDepartmentResource<T>
 >
 
-export type DepartmentIdentifierDocument = IdentifierDocument<DepartmentResourceIdentifier>
+export type DepartmentIdentifierDocument<T extends string|number = string>
+= IdentifierDocument<T, DepartmentResourceIdentifier<T>>
 
-export type DepartmentIdentifierListDocument = IdentifierListDocument<DepartmentResourceIdentifier>
+export type DepartmentIdentifierListDocument<T extends string|number = string>
+= IdentifierListDocument<T, DepartmentResourceIdentifier<T>>
 
 export type UpdatedDepartmentDocument = DepartmentDocument & RequirePassword
