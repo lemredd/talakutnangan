@@ -1,3 +1,4 @@
+/* eslint-disable no-negated-condition */
 import type {
 	ValidationState,
 	ValidationConstraints,
@@ -19,33 +20,33 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.same === undefined) {
+	if (typeof constraints.same === "undefined") {
 		throw makeDeveloperError(constraints.field)
 	}
 
-	if (constraints.same.value !== undefined) {
+	if (typeof constraints.same.value !== "undefined") {
 		if (state.value === constraints.same.value) {
 			return state
-		} else {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) => `Field "${field}" must be "${
-					constraints.same?.value
-				}".`
-			}
 		}
-	} else if (constraints.same.pointer !== undefined ) {
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (field: string) => `Field "${field}" must be "${
+				constraints.same?.value
+			}".`
+		}
+		throw error
+	} else if (typeof constraints.same.pointer !== "undefined") {
 		const accessedValue = accessDeepPath(constraints.source, constraints.same.pointer)
-		if (state.value == accessedValue) {
+		if (state.value === accessedValue) {
 			return state
-		} else {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) => `Field "${field}" must be "${accessedValue}".`
-			}
 		}
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (field: string) => `Field "${field}" must be "${accessedValue}".`
+		}
+		throw error
 	} else {
 		throw makeDeveloperError(constraints.field)
 	}

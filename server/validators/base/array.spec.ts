@@ -3,15 +3,15 @@ import makeInitialState from "!/validators/make_initial_state"
 import array from "./array"
 
 describe("Validator pipe: array", () => {
-	it("can accept valid input", async () => {
+	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			array: {
-				pipes: [ integer ],
-				constraints: {}
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"array": {
+				"pipes": [ integer ],
+				"constraints": {}
 			}
 		}
 
@@ -20,17 +20,17 @@ describe("Validator pipe: array", () => {
 		expect(sanitizeValue).toEqual([ 2, 3 ])
 	})
 
-	it("can pass original source", async () => {
+	it("can pass original source", async() => {
 		const value = Promise.resolve(makeInitialState([ 4, 5, 6 ]))
 		const source = Symbol("source")
-		const customPipe = jest.fn(value => value)
+		const customPipe = jest.fn(originalValue => originalValue)
 		const constraints = {
-			request: null,
+			"request": null,
 			source,
-			field: "hello",
-			array: {
-				pipes: [ customPipe ],
-				constraints: {}
+			"field": "hello",
+			"array": {
+				"pipes": [ customPipe ],
+				"constraints": {}
 			}
 		}
 
@@ -40,15 +40,15 @@ describe("Validator pipe: array", () => {
 		expect(customPipe.mock.calls[0]).toHaveProperty("1.source", source)
 	})
 
-	it("cannot accept invalid input", async () => {
+	it("cannot accept invalid input", () => {
 		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			array: {
-				pipes: [ integer ],
-				constraints: {}
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"array": {
+				"pipes": [ integer ],
+				"constraints": {}
 			}
 		}
 

@@ -3,46 +3,53 @@ import makeInitialState from "!/validators/make_initial_state"
 import object from "./object"
 
 describe("Validator pipe: object", () => {
-	it("can accept valid input", async () => {
-		const value = Promise.resolve(makeInitialState({ hello: "world", foo: "bar" }))
+	it("can accept valid input", async() => {
+		const value = Promise.resolve(makeInitialState({
+			"hello": "world",
+			"foo": "bar"
+		}))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			object: {
-				hello: {
-					pipes: [ string ],
-					constraints: {}
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"object": {
+				"hello": {
+					"pipes": [ string ],
+					"constraints": {}
 				},
-				foo: {
-					pipes: [ string ],
-					constraints: {}
+				"foo": {
+					"pipes": [ string ],
+					"constraints": {}
 				}
 			}
 		}
 
 		const sanitizeValue = (await object(value, constraints)).value
 
-		expect(sanitizeValue).toStrictEqual({ hello: "world", foo: "bar" })
+		expect(sanitizeValue).toStrictEqual({ "hello": "world",
+			"foo": "bar" })
 	})
 
-	it("can pass original source", async () => {
-		const value = Promise.resolve(makeInitialState({ hello: "world", foo: "bar" }))
+	it("can pass original source", async() => {
+		const value = Promise.resolve(makeInitialState({
+			"hello": "world",
+			"foo": "bar"
+		}))
 		const source = Symbol("source")
-		const customPipeA = jest.fn(value => value)
-		const customPipeB = jest.fn(value => value)
+		const customPipeA = jest.fn(unusedValue => unusedValue)
+		const customPipeB = jest.fn(unusedValue => unusedValue)
 		const constraints = {
-			request: null,
+			"request": null,
 			source,
-			field: "hello",
-			object: {
-				hello: {
-					pipes: [ customPipeA ],
-					constraints: {}
+			"field": "hello",
+			"object": {
+				"hello": {
+					"pipes": [ customPipeA ],
+					"constraints": {}
 				},
-				foo: {
-					pipes: [ customPipeB ],
-					constraints: {}
+				"foo": {
+					"pipes": [ customPipeB ],
+					"constraints": {}
 				}
 			}
 		}
@@ -55,17 +62,17 @@ describe("Validator pipe: object", () => {
 		expect(customPipeB.mock.calls[0]).toHaveProperty("1.source", source)
 	})
 
-	it("can refresh values", async () => {
+	it("can refresh values", async() => {
 		const value = Promise.resolve(makeInitialState({}))
 		const customPipe = jest.fn().mockResolvedValue(makeInitialState("world"))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			object: {
-				hello: {
-					pipes: [ customPipe ],
-					constraints: {}
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"object": {
+				"hello": {
+					"pipes": [ customPipe ],
+					"constraints": {}
 				}
 			}
 		}
@@ -74,25 +81,29 @@ describe("Validator pipe: object", () => {
 
 		expect(customPipe).toHaveBeenCalled()
 		expect(customPipe.mock.calls[0][0]).resolves.toStrictEqual({
-			maySkip: false, value: undefined
+			"maySkip": false,
+			"value": null
 		})
-		expect(sanitizedInput).toStrictEqual({ hello: "world" })
+		expect(sanitizedInput).toStrictEqual({ "hello": "world" })
 	})
 
-	it("cannot accept invalid input", async () => {
-		const value = Promise.resolve(makeInitialState({ hello: 2, foo: 2 }))
+	it("cannot accept invalid input", () => {
+		const value = Promise.resolve(makeInitialState({
+			"hello": 2,
+			"foo": 2
+		}))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hi",
-			object: {
-				hello: {
-					pipes: [ string ],
-					constraints: {}
+			"request": null,
+			"source": null,
+			"field": "hi",
+			"object": {
+				"hello": {
+					"pipes": [ string ],
+					"constraints": {}
 				},
-				foo: {
-					pipes: [ string ],
-					constraints: {}
+				"foo": {
+					"pipes": [ string ],
+					"constraints": {}
 				}
 			}
 		}

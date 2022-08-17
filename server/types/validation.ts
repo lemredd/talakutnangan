@@ -60,6 +60,12 @@ export interface NotRuleConstraints {
 	not: Rules
 }
 
+export interface UniqueEmployeeScheduleRuleConstraint {
+	uniqueEmployeeSchedule: {
+		userIDPointer: string
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -79,6 +85,7 @@ export type RuleContraints = Partial<
 	& BufferRuleConstraints
 	& RegexRuleConstraints
 	& NotRuleConstraints
+	& UniqueEmployeeScheduleRuleConstraint
 >
 
 /**
