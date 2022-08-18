@@ -34,7 +34,7 @@ export default class extends BoundJSONController {
 
 			if (userID === targetUserID) {
 				return Promise.reject(
-					new AuthorizationError("A user cannot edit its own attached roles.")
+					new AuthorizationError("Users cannot edit the attached roles to themselves.")
 				)
 			}
 
