@@ -26,8 +26,10 @@ describe("Validator pipe: object", () => {
 
 		const sanitizeValue = (await object(value, constraints)).value
 
-		expect(sanitizeValue).toStrictEqual({ "hello": "world",
-			"foo": "bar" })
+		expect(sanitizeValue).toStrictEqual({
+			"hello": "world",
+			"foo": "bar"
+		})
 	})
 
 	it("can pass original source", async() => {
@@ -82,7 +84,8 @@ describe("Validator pipe: object", () => {
 		expect(customPipe).toHaveBeenCalled()
 		expect(customPipe.mock.calls[0][0]).resolves.toStrictEqual({
 			"maySkip": false,
-			"value": null
+			// eslint-disable-next-line no-undefined
+			"value": undefined
 		})
 		expect(sanitizedInput).toStrictEqual({ "hello": "world" })
 	})
