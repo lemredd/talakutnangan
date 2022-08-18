@@ -2,6 +2,7 @@ import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
+import AuthorizationError from "$!/errors/authorization"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
@@ -21,7 +22,7 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const adminRole = await new RoleFactory().userFlags(
 			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
-		const admin = await new UserFactory().attach(adminRole).deserializedOne()
+		const admin = await new UserFactory().attach(adminRole).serializedOne(true)
 		requester.customizeRequest({
 			"params": {
 				"id": student.id
@@ -35,17 +36,17 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		requester.expectSuccess()
 	})
 
-	it("can allow other user", async() => {
+	it("cannot allow user to edit self", async() => {
 		const controller = new Controller()
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
 		const adminRole = await new RoleFactory().userFlags(
 			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
-		const admin = await new UserFactory().attach(adminRole).deserializedOne()
+		const admin = await new UserFactory().attach(adminRole).serializedOne(true)
 		requester.customizeRequest({
 			"params": {
-				"id": admin.id
+				"id": admin.data.id
 			},
 			"isAuthenticated": jest.fn(() => true),
 			"user": admin
@@ -53,7 +54,7 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 
 		await requester.runMiddleware(policyFunction)
 
-		requester.expectSuccess()
+		requester.expectFailure(AuthorizationError)
 	})
 
 	it("can accept valid info", async() => {
