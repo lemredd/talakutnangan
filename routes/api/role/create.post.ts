@@ -55,7 +55,9 @@ export default class extends JSONController {
 			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
 
-		return makeResourceDocumentRules("role", attributes, true)
+		return makeResourceDocumentRules("role", attributes, {
+			"isNew": true
+		})
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {

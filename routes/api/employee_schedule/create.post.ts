@@ -88,13 +88,10 @@ export default class extends JSONController {
 			"pipes": [ required, object ]
 		}
 
-		return makeResourceDocumentRules(
-			"employee_schedule",
-			attributes,
-			true,
-			true,
-			{ relationships }
-		)
+		return makeResourceDocumentRules("employee_schedule", attributes, {
+			"isNew": true,
+			"extraDataQueries": { relationships }
+		})
 	}
 
 	get manager(): BaseManagerClass { return UserManager }

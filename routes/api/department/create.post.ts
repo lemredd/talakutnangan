@@ -64,7 +64,9 @@ export default class extends JSONController {
 			}
 		}
 
-		return makeResourceDocumentRules("department", attributes, true)
+		return makeResourceDocumentRules("department", attributes, {
+			"isNew": true
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
