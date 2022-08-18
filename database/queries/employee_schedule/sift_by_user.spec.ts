@@ -3,7 +3,7 @@ import UserFactory from "~/factories/user"
 import EmployeeSchedule from "%/models/employee_schedule"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
 
-import siftByDepartment from "./sift_by_user"
+import siftByUser from "./sift_by_user"
 
 describe("Database Pipe: Sift by user", () => {
 	it("can find on specific user", async() => {
@@ -12,7 +12,7 @@ describe("Database Pipe: Sift by user", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 
-		const options = siftByDepartment({}, {
+		const options = siftByUser({}, {
 			"filter": {
 				"user": user.id
 			}
@@ -31,7 +31,7 @@ describe("Database Pipe: Sift by user", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 
-		const options = siftByDepartment({ "include": [ User ] }, {
+		const options = siftByUser({ "include": [ User ] }, {
 			"filter": {
 				"user": user.id
 			}
@@ -47,7 +47,7 @@ describe("Database Pipe: Sift by user", () => {
 	it("cannot find on unscheduled user", async() => {
 		const user = await new UserFactory().beReachableEmployee().insertOne()
 
-		const options = siftByDepartment({}, {
+		const options = siftByUser({}, {
 			"filter": {
 				"user": user.id
 			}
