@@ -1,13 +1,60 @@
 import ErrorBag from "$!/errors/error_bag"
+import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
 import Controller from "./update.patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/user/:id/role", () => {
+describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 	const requester = new MockRequester()
+
+	it("can allow other user", async() => {
+		const controller = new Controller()
+		const { policy } = controller
+		const policyFunction = policy.intermediate.bind(policy)
+		const studentRole = await new RoleFactory().insertOne()
+		const student = await new UserFactory().attach(studentRole).insertOne()
+		const adminRole = await new RoleFactory().userFlags(
+			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+		).insertOne()
+		const admin = await new UserFactory().attach(adminRole).deserializedOne()
+		requester.customizeRequest({
+			"params": {
+				"id": student.id
+			},
+			"isAuthenticated": jest.fn(() => true),
+			"user": admin
+		})
+
+		await requester.runMiddleware(policyFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can allow other user", async() => {
+		const controller = new Controller()
+		const { policy } = controller
+		const policyFunction = policy.intermediate.bind(policy)
+		const adminRole = await new RoleFactory().userFlags(
+			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+		).insertOne()
+		const admin = await new UserFactory().attach(adminRole).deserializedOne()
+		requester.customizeRequest({
+			"params": {
+				"id": admin.id
+			},
+			"isAuthenticated": jest.fn(() => true),
+			"user": admin
+		})
+
+		await requester.runMiddleware(policyFunction)
+
+		requester.expectSuccess()
+	})
 
 	it("can accept valid info", async() => {
 		const controller = new Controller()
