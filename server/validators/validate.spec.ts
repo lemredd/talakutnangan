@@ -30,8 +30,18 @@ describe("Validator: validate", () => {
 		expect(sanitizeValue).toStrictEqual(input)
 	})
 
-	it("can check missing inputs", () => {
+	it("can check missing inputs", async() => {
 		const mockValidator = jest.fn(value => value)
+		const input = {}
+		const rules: FieldRules = {
+			"hello": {
+				"constraints": {},
+				"pipes": [ mockValidator ]
+			}
+		}
+
+		await requester.runValidator(validate, rules, input)
+
 		expect(mockValidator).toHaveBeenCalled()
 		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({
 			"maySkip": false,
