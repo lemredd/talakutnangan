@@ -5,4 +5,6 @@ export type Subtransformer = {
 	transformer: Transformer<any, any>
 }
 
+export type OptionalSubtransformerList = (Subtransformer|null)[]
+
 export type SubtransformerList = Subtransformer[]

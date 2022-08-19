@@ -1,4 +1,3 @@
-import type { SubtransformerList } from "%/types/hybrid"
 import type { IncludedForeignAttributes } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
@@ -27,7 +26,7 @@ export default class extends Transformer<ChatMessageActivity, void> {
 					"transformer": new ConsultationTransformer()
 				}
 				: null
-		].filter(Boolean) as SubtransformerList)
+		])
 	}
 
 	transform(model: ChatMessageActivity|ChatMessageActivity[], unusedOptions: TransformerOptions)

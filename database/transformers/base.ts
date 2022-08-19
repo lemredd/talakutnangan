@@ -1,8 +1,8 @@
 import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
-import type { Subtransformer, SubtransformerList } from "%/types/hybrid"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
+import type { Subtransformer, OptionalSubtransformerList, SubtransformerList } from "%/types/hybrid"
 import type {
 	TransformerOptions,
 	RelationshipTransformerInfo,
@@ -21,13 +21,13 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	 */
 	public readonly subtransformers: SubtransformerList
 
-	constructor(type: string, subtransformers: SubtransformerList = []) {
+	constructor(type: string, subtransformers: OptionalSubtransformerList = []) {
 		super()
 		this.type = type
-		this.subtransformers = subtransformers
+		this.subtransformers = subtransformers.filter(Boolean) as SubtransformerList
 
 		if (subtransformers.length > 0) {
-			this.relationships = subtransformers.reduce(
+			this.relationships = this.subtransformers.reduce(
 				(previousRelationships, subtransformer) => {
 					const compiledRelationships = {
 						...previousRelationships,
