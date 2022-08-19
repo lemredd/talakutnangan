@@ -2,12 +2,12 @@ import type { Serializable } from "$/types/general"
 import type { UserQueryParameters } from "$/types/query"
 import type { Response, LogInDetails } from "$@/types/independent"
 import type {
-	UserResourceIdentifier,
-	UserAttributes,
 	UserResource,
-	DeserializedUserResource,
 	UserDocument,
+	UserAttributes,
 	UserListDocument,
+	UserResourceIdentifier,
+	DeserializedUserResource,
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 } from "$/types/documents/user"
@@ -34,6 +34,7 @@ export default class UserFetcher extends BaseFetcher<
 	}
 
 	async logIn(details: LogInDetails): Promise<Response<
+		string,
 		UserResourceIdentifier,
 		UserAttributes,
 		UserResource,
@@ -41,6 +42,7 @@ export default class UserFetcher extends BaseFetcher<
 		Serializable
 	>> {
 		return await this.postJSON(`${this.type}/log_in`, details) as Response<
+			string,
 			UserResourceIdentifier,
 			UserAttributes,
 			UserResource,

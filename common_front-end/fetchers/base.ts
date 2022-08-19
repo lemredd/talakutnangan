@@ -23,7 +23,7 @@ import RequestEnvironment from "$/helpers/request_environment"
  * client-side code.
  */
 export default class Fetcher<
-	T extends ResourceIdentifier,
+	T extends ResourceIdentifier<string>,
 	U extends Attributes,
 	V extends Resource<string, T, U>,
 	W extends DeserializedResource<string, T, U>,
