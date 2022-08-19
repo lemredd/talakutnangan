@@ -1,55 +1,57 @@
 <template>
-<div v-if="!isLoggingIn" class="navigation">
-	<div class="container">
-		<a href="/" class="logo">
-			<img src="@assets/logo_navbar.svg" alt="logo" />
-			<h1 class="ml-1">TALAKUTNANGAN</h1>
-		</a>
+	<div v-if="!isLoggingIn" class="navigation">
+		<div class="container">
+			<a href="/" class="logo">
+				<img src="@assets/logo_navbar.svg" alt="logo"/>
+				<h1 class="ml-1">TALAKUTNANGAN</h1>
+			</a>
 
-		<Dropdown purpose="notifications" v-if="!isRoleGuest">
-			<template #toggler>
-				<span class="material-icons">notifications</span>
-			</template>
-			<template #default>
-				<ul class="notification-items">
-					<a href="">
-						<li class="notification-item" v-for="notification in notifications" :key="notification.id">
-							<div :class="`icon ${notification.type}`">
-								<span class="material-icons">{{ notification.icon }}</span>
-							</div>
-							<h3 class="title">{{ notification.description }}</h3>
-							<small class="date">{{ notification.dateOccured }}</small>
+			<Dropdown purpose="notifications" v-if="!isRoleGuest">
+				<template #toggler>
+					<span class="material-icons">notifications</span>
+				</template>
+				<template #default>
+					<ul class="notification-items">
+						<a href="">
+							<li
+								v-for="notification in notifications"
+								:key="notification.id"
+								class="notification-item">
+								<div :class="`icon ${notification.type}`">
+									<span class="material-icons">{{ notification.icon }}</span>
+								</div>
+								<h3 class="title">{{ notification.description }}</h3>
+								<small class="date">{{ notification.dateOccured }}</small>
+							</li>
+						</a>
+
+						<li class="notification-footer">
+							<a href="/notifications">View All</a>
 						</li>
-					</a>
-
-					<li class="notification-footer">
-						<a href="/notifications">View All</a>
-					</li>
-				</ul>
-			</template>
-		</Dropdown>
-		<RoleSpecificLinks :role="role"/>
-		<Dropdown purpose="user-settings" v-if="!isRoleGuest">
-		<template #toggler>
-			<span class="material-icons">account_circle</span>
-		</template>
-		<template #default>
-			<ul class="settings-items">
-					<a href="">
-						Account Settings
-					</a>
-					<a href="">
-						Profile Settings
-					</a>
-					<a href="">
-						Logout
-					</a>
-			</ul>
-		</template>
-		</Dropdown>
+					</ul>
+				</template>
+			</Dropdown>
+			<RoleSpecificLinks :role="role"/>
+			<Dropdown v-if="!isRoleGuest" purpose="user-settings">
+				<template #toggler>
+					<span class="material-icons">account_circle</span>
+				</template>
+				<template #default>
+					<ul class="settings-items">
+						<a href="">
+							Account Settings
+						</a>
+						<a href="">
+							Profile Settings
+						</a>
+						<a role="button" @click="logOut">
+							Logout
+						</a>
+					</ul>
+				</template>
+			</Dropdown>
+		</div>
 	</div>
-
-</div>
 </template>
 
 <style lang="scss">
