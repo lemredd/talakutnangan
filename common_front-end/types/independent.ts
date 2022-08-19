@@ -7,7 +7,9 @@
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	ResourceIdentifier,
 	Attributes,
@@ -20,9 +22,6 @@ import type {
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
-import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
 /**
  * Shape of expected page context parameter of common front-end functions
  */
@@ -83,30 +82,32 @@ export interface LogInDetails extends Serializable {
 }
 
 type PossibleResponseTypes<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>,
-	W extends DeserializedResource<T, U>
+	T extends string | number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends Resource<T, U, V>,
+	X extends DeserializedResource<T, U, V>
 > =
-	| ResourceDocument<T, U, V>
-	| ResourceListDocument<T, U, V>
-	| DeserializedResourceDocument<T, U, W>
-	| DeserializedResourceListDocument<T, U, W>
-	| IdentifierDocument<T>
-	| IdentifierListDocument<T>
+	| ResourceDocument<T, U, V, W>
+	| ResourceListDocument<T, U, V, W>
+	| DeserializedResourceDocument<T, U, V, X>
+	| DeserializedResourceListDocument<T, U, V, X>
+	| IdentifierDocument<T, U>
+	| IdentifierListDocument<T, U>
 	| Serializable
 
 /**
  * Shape of expected response from fetcher
  */
 export interface Response<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>,
-	W extends DeserializedResource<T, U>,
-	X extends PossibleResponseTypes<T, U, V, W>|null = PossibleResponseTypes<T, U, V, W>
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends Resource<T, U, V>,
+	X extends DeserializedResource<T, U, V>,
+	Y extends PossibleResponseTypes<T, U, V, W, X>|null = PossibleResponseTypes<T, U, V, W, X>
 > extends Serializable {
-	body: X,
+	body: Y,
 	status: number
 }
 
