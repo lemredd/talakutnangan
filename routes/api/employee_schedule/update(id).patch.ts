@@ -63,7 +63,7 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-		return makeResourceDocumentRules("employee_schedule", attributes, false, false)
+		return makeResourceDocumentRules("employee_schedule", attributes)
 	}
 
 	get manager(): BaseManagerClass { return UserManager }

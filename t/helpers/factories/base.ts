@@ -72,19 +72,21 @@ export default abstract class Factory<
 	}
 
 	async serializedOne(
+		mustInsert = false,
 		options: GeneralObject = {},
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<Y> {
-		const model = await this.makeOne()
+		const model = mustInsert ? await this.insertOne() : await this.makeOne()
 		return this.serialize(model, options, transformer) as Y
 	}
 
 	async serializedMany(
 		count: number,
+		mustInsert = false,
 		options: GeneralObject = {},
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<Z> {
-		const model = await this.makeMany(count)
+		const model = mustInsert ? await this.insertMany(count) : await this.makeMany(count)
 		return this.serialize(model, options, transformer) as Z
 	}
 
@@ -101,29 +103,19 @@ export default abstract class Factory<
 	}
 
 	async deserializedOne(
+		mustInsert = false,
 		options: GeneralObject = {},
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<A> {
-		const model = await this.makeOne()
-		return this.deserialize(model, options, transformer) as A
+		return deserialize(await this.serializedOne(mustInsert, options, transformer))as A
 	}
 
 	async deserializedMany(
 		count: number,
+		mustInsert = false,
 		options: GeneralObject = {},
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<B> {
-		const model = await this.makeMany(count)
-		return this.deserialize(model, options, transformer) as B
-	}
-
-	protected deserialize(
-		models: T|T[]|null,
-		options: GeneralObject = {},
-		transformer: Transformer<T, C> = this.transformer
-	): A|B {
-		return deserialize(this.serialize(
-			models, options, transformer
-		)) as A|B
+		return deserialize(await this.serializedMany(count, mustInsert, options, transformer))as B
 	}
 }

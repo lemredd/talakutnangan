@@ -101,14 +101,11 @@ export default class extends MultipartController {
 					"pipes": [ required, object ]
 				}
 
-				return makeResourceDocumentRules(
-					"user",
-					attributes,
-					true,
-					true,
-					{ relationships },
-					{ meta }
-				)
+				return makeResourceDocumentRules("user", attributes, {
+					"isNew": true,
+					"extraDataQueries": { relationships },
+					"extraQueries": { meta }
+				})
 			}),
 			new CSVParser("meta.importedCSV")
 		]
