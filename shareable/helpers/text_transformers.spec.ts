@@ -1,10 +1,10 @@
-import TextTransformer from "$@/helpers/text_transformers"
+import TextTransformer from "$/helpers/text_transformers"
 
 describe("Helper: Text Transformer", () => {
 	const transformText = new TextTransformer()
 
 	describe("Transforming to sentence-case", () => {
-		it("should transform from a string to sentence-case", async() => {
+		it("should transform from a string to sentence-case", () => {
 			const camelCasedWord = "helloWorld"
 			const sentenceCasedWord = "Hello world"
 			expect(transformText.toSentenceCase(camelCasedWord)).toEqual(sentenceCasedWord)
