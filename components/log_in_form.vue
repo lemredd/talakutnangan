@@ -11,7 +11,10 @@
 	</form>
 	<div class="controls">
 		<a href="">Forgot Password?</a>
-		<button v-if="email && !token" @click="logIn">
+		<button
+			v-if="email && !token"
+			id="submit-btn"
+			@click="logIn">
 			Log in
 		</button>
 	</div>
