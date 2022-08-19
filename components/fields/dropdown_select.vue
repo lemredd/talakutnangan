@@ -1,4 +1,4 @@
- <template>
+<template>
 	<div class="read-scope">
 		<label for="read-scope">{{ label }}</label>
 		<select id="read-scope" @change="$emit('selectedOptionChanged', $event)">
@@ -6,18 +6,20 @@
 				v-if="hasDisabledValue"
 				value=""
 				:selected="!initialValue"
-				disabled
-			>
+				disabled>
 				Select a value
 			</option>
 
 			<option
-				v-for="option in options" :value="option" :selected="initialValue === option">
-					{{
-						isOptionString(option)
+				v-for="option in options"
+				:key="option"
+				:value="option"
+				:selected="initialValue === option">
+				{{
+					isOptionString(option)
 						? transformText.toSentenceCase(option).toLocaleLowerCase()
 						: option
-					}}
+				}}
 			</option>
 		</select>
 	</div>
@@ -46,7 +48,5 @@ function isOptionString(option: any): option is string {
 	return typeof option === "string"
 }
 
-defineEmits<{
-	(e: "selectedOptionChanged", event: Event): void
-}>()
+defineEmits<{(e: "selectedOptionChanged", event: Event): void}>()
 </script>
