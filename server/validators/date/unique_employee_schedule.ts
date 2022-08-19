@@ -65,14 +65,22 @@ export default async function(
 				foundModel.attributes.dayName === value.dayName
 				&& (
 					// eslint-disable-next-line no-extra-parens
+					// Check if start time is inside an existing schedule.
 					(
 						foundModel.attributes.scheduleStart <= value.scheduleStart
 						&& value.scheduleStart < foundModel.attributes.scheduleEnd
 					)
 					// eslint-disable-next-line no-extra-parens
+					// Check if end time is inside an existing schedule.
 					|| (
 						foundModel.attributes.scheduleEnd < value.scheduleEnd
 						&& value.scheduleEnd <= foundModel.attributes.scheduleEnd
+					)
+					// eslint-disable-next-line no-extra-parens
+					// Check if existing schedule is inside the new schedule.
+					|| (
+						value.scheduleStart <= foundModel.attributes.scheduleStart
+						&& foundModel.attributes.scheduleEnd <= value.scheduleEnd
 					)
 				)
 			) {
