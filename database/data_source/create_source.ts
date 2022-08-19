@@ -15,6 +15,7 @@ import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
@@ -34,7 +35,8 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			AttachedRole,
 			StudentDetail,
 			ProfilePicture,
-			EmployeeSchedule
+			EmployeeSchedule,
+			ChatMessageActivity
 		]
 	})
 
