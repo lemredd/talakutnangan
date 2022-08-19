@@ -73,7 +73,9 @@ export default class extends DoubleBoundJSONController {
 			"pipes": [ required, object ]
 		}
 
-		return makeResourceDocumentRules("role", attributes, false, false, {}, { meta })
+		return makeResourceDocumentRules("role", attributes, {
+			"extraQueries": { meta }
+		})
 	}
 
 	get manager(): BaseManagerClass { return RoleManager }

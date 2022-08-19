@@ -71,7 +71,9 @@ export default class extends MultipartController {
 			}
 		}
 
-		return makeResourceDocumentRules("profile_picture", attributes, true)
+		return makeResourceDocumentRules("profile_picture", attributes, {
+			"isNew": true
+		})
 	}
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)

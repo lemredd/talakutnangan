@@ -1,9 +1,9 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
-
 import Policy from "!/bases/policy"
+import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
@@ -14,10 +14,9 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] { return [] }
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		response.writeHead(this.status.MOVED_TEMPORARILY, {
-			Location: "/admin/resource_config/users"
-		})
-		response.end()
+	get postValidationMiddlewares(): Middleware[] {
+		return [
+			new ForceRedirector("/admin/resource_config/users")
+		]
 	}
 }

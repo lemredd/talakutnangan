@@ -2,14 +2,14 @@ import makeInitialState from "!/validators/make_initial_state"
 import same from "./same"
 
 describe("Validator pipe: same", () => {
-	it("can accept valid input", async () => {
+	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world"))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			same: {
-				value: "world"
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"same": {
+				"value": "world"
 			}
 		}
 
@@ -18,14 +18,14 @@ describe("Validator pipe: same", () => {
 		expect(sanitizeValue).toEqual("world")
 	})
 
-	it("cannot accept invalid input", async () => {
+	it("cannot accept invalid input", () => {
 		const value = Promise.resolve(makeInitialState("foo"))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			same: {
-				value: "world"
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"same": {
+				"value": "world"
 			}
 		}
 

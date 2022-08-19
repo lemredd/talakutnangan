@@ -8,7 +8,15 @@ import AuditTrail from "%/models/audit_trail"
 import includeUser from "%/queries/audit_trail/include_user"
 import AuditTrailTransformer from "%/transformers/audit_trail"
 
-export default class  extends BaseManager<AuditTrail, AuditTrailAttributes, CommonQueryParameters> {
+interface RawAuditTrailAttributes extends AuditTrailAttributes {
+	userID: number|null
+}
+
+export default class extends BaseManager<
+	AuditTrail,
+	RawAuditTrailAttributes,
+	CommonQueryParameters
+> {
 	get model(): ModelCtor<AuditTrail> { return AuditTrail }
 
 	get transformer(): AuditTrailTransformer { return new AuditTrailTransformer() }

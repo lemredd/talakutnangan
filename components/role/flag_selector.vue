@@ -53,14 +53,14 @@
 <script setup lang="ts">
 // Third Parties
 import { computed, ref } from "vue"
-import uniq from "lodash.uniq"
 
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
-import AccessLevelSelector from "@/fields/dropdown_select.vue"
+import makeUnique from "$/helpers/array/make_unique"
 import BasePermissionGroup from "$/permissions/base"
-import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import AccessLevelSelector from "@/fields/dropdown_select.vue"
+import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -92,9 +92,9 @@ const initialWriteScopedRawFlag = computed(() => {
 })
 
 const permissionNames = Array.from(basePermissionGroup.permissions.keys())
-const operationalPermissionNames = permissionNames
-.filter(permissionName => !permissionName.toLocaleLowerCase().includes("scope"))
-
+const operationalPermissionNames = permissionNames.filter(
+	permissionName => !permissionName.toLocaleLowerCase().includes("scope")
+)
 const readScopedPermissionNames = permissionNames.filter(permissionName => {
 	const name = permissionName.toLocaleLowerCase()
 	return name.includes("scope") && name.includes("read")
@@ -107,7 +107,7 @@ const writeScopedPermissionNames = permissionNames.filter(permissionName => {
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
 
-	rawFlags.value = sanitizeArray(uniq(rawFlags.value))
+	rawFlags.value = sanitizeArray(makeUnique(rawFlags.value))
 	const generatedMask = basePermissionGroup.generateMask(
 		...Array.from(rawFlags.value)
 	)

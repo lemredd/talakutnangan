@@ -1,5 +1,5 @@
 import "dotenv/config"
-import express  from "express"
+import express from "express"
 
 import type { RequestHandler } from "!/types/dependent"
 
@@ -21,8 +21,8 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 
 	const globalPostJobs = await makeGlobalPostJobs()
 	const rawGlobalPostJobs = globalPostJobs
-		.filter(postJob => postJob !== null)
-		.map(postJob => postJob!.intermediate!.bind(postJob))
+	.filter(postJob => postJob !== null)
+	.map(postJob => postJob!.intermediate!.bind(postJob))
 
 	const allRouteInformation = customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
@@ -30,11 +30,11 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 		const { middlewares, controller, postJobs, endHandler } = handlers
 
 		const rawMiddlewares = middlewares
-			.filter(middleware => middleware !== null)
-			.map(middleware => middleware!.intermediate.bind(middleware))
+		.filter(middleware => middleware !== null)
+		.map(middleware => middleware!.intermediate.bind(middleware))
 		const rawPostJobs = postJobs
-			.filter(postJob => postJob !== null)
-			.map(postJob => postJob!.intermediate!.bind(postJob))
+		.filter(postJob => postJob !== null)
+		.map(postJob => postJob!.intermediate!.bind(postJob))
 		const rawHandlers = [
 			...rawMiddlewares,
 			controller,
@@ -42,9 +42,9 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 			...rawGlobalPostJobs,
 			endHandler
 		]
-			.filter(middleware => middleware !== null)
+		.filter(middleware => middleware !== null)
 
-		app[method](path, ...(<RequestHandler[]><unknown>rawHandlers))
+		app[method](path, ...<RequestHandler[]><unknown>rawHandlers)
 	}
 
 	app.use(viteDevRouter)

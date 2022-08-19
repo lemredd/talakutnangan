@@ -7,16 +7,16 @@ import makeInitialState from "!/validators/make_initial_state"
 import exists from "./exists"
 
 describe("Validator: exists", () => {
-	it("can accept valid input", async () => {
-		const user = await (new UserFactory()).insertOne()
+	it("can accept valid input", async() => {
+		const user = await new UserFactory().insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			request: {} as Request,
-			source: null,
-			field: "hello",
-			manager: {
-				className: UserManager,
-				columnName: "name"
+			"request": {} as Request,
+			"source": null,
+			"field": "hello",
+			"manager": {
+				"className": UserManager,
+				"columnName": "name"
 			}
 		}
 
@@ -25,19 +25,19 @@ describe("Validator: exists", () => {
 		expect(sanitizeValue).toEqual(user.name)
 	})
 
-	it("cannot accept archived value", async () => {
-		const user = await (new UserFactory()).insertOne()
+	it("cannot accept archived value", async() => {
+		const user = await new UserFactory().insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			request: {} as Request,
-			source: null,
-			field: "hello",
-			manager: {
-				className: UserManager,
-				columnName: "name"
+			"request": {} as Request,
+			"source": null,
+			"field": "hello",
+			"manager": {
+				"className": UserManager,
+				"columnName": "name"
 			}
 		}
-		await user.destroy({ force: false })
+		await user.destroy({ "force": false })
 
 		const error = exists(value, constraints)
 
@@ -45,16 +45,16 @@ describe("Validator: exists", () => {
 		expect(error).rejects.toHaveProperty("messageMaker")
 	})
 
-	it("cannot accept invalid value", async () => {
+	it("cannot accept invalid value", () => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
 		const constraints = {
-			request: {} as Request,
-			source: null,
-			field: "hello",
-			manager: {
-				className: UserManager,
-				columnName: "name"
+			"request": {} as Request,
+			"source": null,
+			"field": "hello",
+			"manager": {
+				"className": UserManager,
+				"columnName": "name"
 			}
 		}
 

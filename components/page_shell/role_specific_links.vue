@@ -1,6 +1,5 @@
 <template>
 	<div class="links mobile">
-
 		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
@@ -8,24 +7,33 @@
 
 			<template #default>
 				<div class="role-links flex flex-col">
-					<Anchor v-for="link in roleLinks" :key="link.name" :href="link.path">
+					<Anchor
+						v-for="link in roleLinks"
+						:key="link.name"
+						:href="link.path">
 						<span class="material-icons">
 							{{ link.icon }}
 						</span>
 						<span class="link-name">{{ link.name }}</span>
 					</Anchor>
-
 				</div>
-				<a role="button" href="/logout" id="logout-btn" class="flex items-center">
-						<span class="material-icons">logout</span>
-						Logout
+				<a
+					id="logout-btn"
+					role="button"
+					href="/logout"
+					class="flex items-center">
+					<span class="material-icons">logout</span>
+					Logout
 				</a>
 			</template>
 		</RoleLinksList>
 	</div>
 
 	<div class="links desktop">
-		<Anchor v-for="link in roleLinks" :key="link.name" :href="link.path">
+		<Anchor
+			v-for="link in roleLinks"
+			:key="link.name"
+			:href="link.path">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
@@ -103,8 +111,12 @@ import { computed, inject, ref, Ref } from "vue"
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
 import filterLinkInfo from "$@/helpers/filter_link_infos"
-import { user } from "$/permissions/permission_list"
+import { user, post } from "$/permissions/permission_list"
 import RequestEnvironment from "$/helpers/request_environment"
+import {
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/post_combinations"
 import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
@@ -117,72 +129,76 @@ import {
 import Anchor from "@/anchor.vue"
 import RoleLinksList from "@/Dropdown.vue"
 
-const emit = defineEmits(["toggle"])
+const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
 
-// Props
-type Props = {
-	role: string
-}
-const { role } = defineProps<Props>()
-
 // Role
-const isRoleGuest = role === "guest"
 const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
-		mustBeGuest: true,
-		kinds: null,
-		permissionCombinations: null,
-		permissionGroup: null,
-		links: [
+		"mustBeGuest": true,
+		"kinds": null,
+		"permissionCombinations": null,
+		"permissionGroup": null,
+		"links": [
 			{
-				name: "Log in",
-				path: "/log_in",
-				icon: "account_circle"
+				"name": "Log in",
+				"path": "/log_in",
+				"icon": "account_circle"
 			}
 		]
 	},
 	{
-		mustBeGuest: false,
-		kinds: [],
-		permissionCombinations: [],
-		permissionGroup: null,
-		links: [
+		"mustBeGuest": false,
+		"kinds": [],
+		"permissionCombinations": [],
+		"permissionGroup": null,
+		"links": [
 			{
-				name: "Notifications",
-				path: "/notifications",
-				icon: "notifications"
-			},
-			{// TODO: Make permission combination for posts
-				name: "Forum",
-				path: "/forum",
-				icon: "forum"
+				"name": "Notifications",
+				"path": "/notifications",
+				"icon": "notifications"
 			},
 			{
-				name: "User Settings",
-				path: "/settings",
-				icon: "account_circle"
+				"name": "User Settings",
+				"path": "/settings",
+				"icon": "account_circle"
 			}
 		]
 	},
 	{
-		mustBeGuest: false,
-		kinds: [ "student", "reachable_employee" ],
-		permissionCombinations: [],
-		permissionGroup: null,
-		links: [
+		"mustBeGuest": false,
+		"kinds": [],
+		"permissionCombinations": [
+			READ_ANYONE_ON_OWN_DEPARTMENT,
+			READ_ANYONE_ON_ALL_DEPARTMENTS
+		],
+		"permissionGroup": post,
+		"links": [
 			{
-				name: "Consultations",
-				path: "/consultations",
-				icon: "chat"
+				"name": "Forum",
+				"path": "/forum",
+				"icon": "forum"
 			}
 		]
 	},
 	{
-		mustBeGuest: false,
-		kinds: null,
-		permissionCombinations: [
+		"mustBeGuest": false,
+		"kinds": [ "student", "reachable_employee" ],
+		"permissionCombinations": [],
+		"permissionGroup": null,
+		"links": [
+			{
+				"name": "Consultations",
+				"path": "/consultations",
+				"icon": "chat"
+			}
+		]
+	},
+	{
+		"mustBeGuest": false,
+		"kinds": null,
+		"permissionCombinations": [
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
@@ -190,34 +206,32 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			IMPORT_USERS,
 			RESET_PASSWORD
 		],
-		permissionGroup: user,
-		links: [
+		"permissionGroup": user,
+		"links": [
 			{
-				name: "Manage Users",
-				path: "/manage",
-				icon: "group"
+				"name": "Manage Users",
+				"path": "/manage",
+				"icon": "group"
 			}
 		]
 	}
 ]
 
-const roleLinks = computed(function()  {
-	return filterLinkInfo(pageContext, linkInfos)
-})
+const roleLinks = computed(() => filterLinkInfo(pageContext, linkInfos))
 
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+
+function disableScroll() {
+	const bodyClasses = new Set([ ...rawBodyClasses.value ])
+	if (bodyClasses.has("unscrollable")) bodyClasses.delete("unscrollable")
+	else bodyClasses.add("unscrollable")
+
+	rawBodyClasses.value = [ ...bodyClasses ]
+}
 
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
-}
-
-function disableScroll() {
-	const bodyClasses = new Set([ ...rawBodyClasses.value ])
-	if (!bodyClasses.has("unscrollable")) bodyClasses.add("unscrollable")
-	else bodyClasses.delete("unscrollable")
-
-	rawBodyClasses.value = [...bodyClasses]
 }
 </script>

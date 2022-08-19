@@ -11,7 +11,7 @@ import unifyErrors from "!/validators/unify_errors"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
- * Validator to check if data is an array
+ * Validator to check if data is an object
  */
 export default async function(
 	currentState: Promise<ValidationState>,
@@ -19,14 +19,12 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (isPlainObject(state.value)) {
-		if (constraints.object === undefined) {
+		if (typeof constraints.object === "undefined") {
 			throw makeDeveloperError(constraints.field)
 		}
-
-		const sanitizedInputs: { [key:string]: any } = {}
 
 		try {
 			state.value = await validate(
@@ -36,7 +34,7 @@ export default async function(
 				constraints.source
 			)
 			return state
-		} catch(error) {
+		} catch (error) {
 			const flattendedErrors: (ErrorPointer|Error)[] = []
 			if (Array.isArray(error)) {
 				flattendedErrors.push(...error)
@@ -46,15 +44,16 @@ export default async function(
 
 			const errors = unifyErrors("", flattendedErrors)
 
-			throw errors.map(error => ({
-				field: `${constraints.field}.${error.field}`,
-				messageMaker: error.messageMaker
+			throw errors.map(thrownError => ({
+				"field": `${constraints.field}.${thrownError.field}`,
+				"messageMaker": thrownError.messageMaker
 			}))
 		}
 	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be an object.`
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (field: string) => `Field "${field}" must be an object.`
 		}
+		throw error
 	}
 }

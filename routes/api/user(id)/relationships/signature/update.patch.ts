@@ -60,7 +60,9 @@ export default class extends MultipartController {
 			}
 		}
 
-		return makeResourceDocumentRules("signature", attributes, true)
+		return makeResourceDocumentRules("signature", attributes, {
+			"isNew": true
+		})
 	}
 
 	get postParseMiddlewares(): Policy[] {

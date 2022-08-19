@@ -9,6 +9,7 @@ import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import deserialize from "$/helpers/deserialize"
+import AuthorizationError from "$!/errors/authorization"
 import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
@@ -26,7 +27,19 @@ export default class extends BoundJSONController {
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		], (request: AuthenticatedIDRequest): Promise<void> => {
+			const userData = deserialize(request.user) as DeserializedUserProfile
+			const userID = Number(userData.data.id)
+			const targetUserID = Number(request.params.id)
+
+			if (userID === targetUserID) {
+				return Promise.reject(
+					new AuthorizationError("Users cannot edit the attached roles to themselves.")
+				)
+			}
+
+			return Promise.resolve()
+		})
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {

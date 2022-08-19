@@ -10,6 +10,7 @@ import DatabaseError from "$!/errors/database"
 import deserialize from "$/helpers/deserialize"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import makeDefaultPassword from "$!/helpers/make_default_password"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import PasswordResetNotification from "!/middlewares/email_sender/password_reset_notification"
 
@@ -33,11 +34,11 @@ export default class extends DoubleBoundJSONController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
-			data: {
-				pipes: [ required, object ],
-				constraints: {
-					object: makeResourceIdentifierRules("user", exists, UserManager, false)
-				}
+			"data": {
+				"constraints": {
+					"object": makeResourceIdentifierRules("user", exists, UserManager, false)
+				},
+				"pipes": [ required, object ]
 			}
 		}
 	}
@@ -49,29 +50,29 @@ export default class extends DoubleBoundJSONController {
 		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request.transaction, request.cache)
-		const id = request.body.data.id
+		const { id } = request.body.data
 		const userProfile = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const newPassword = makeDefaultPassword(userProfile)
 		const isSuccess = await manager.resetPassword(Number(id), newPassword)
 
 		if (isSuccess) {
 			request.nextMiddlewareArguments = {
-				emailToContact: {
-					email: userProfile.data.email,
-					name: userProfile.data.name,
-					password: newPassword
+				"emailToContact": {
+					"email": userProfile.data.email,
+					"name": userProfile.data.name,
+					"password": newPassword
 				}
 			}
 
 			return new NoContentResponseInfo()
-		} else {
-			throw new DatabaseError("There is a problem with the database. Cannot reset the password.")
 		}
+		throw new DatabaseError("There is a problem with the database. Cannot reset the password.")
 	}
 
 	get postJobs(): Middleware[] {
 		return [
-			new PasswordResetNotification()
+			new PasswordResetNotification(),
+			new ActionAuditor("user.reset_password")
 		]
 	}
 }
