@@ -23,7 +23,7 @@ import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
 import UserProfileTransformer from "%/transformers/user_profile"
-import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
+import TextTransformer from "$/helpers/text_transformers"
 
 export default class UserFactory extends BaseFactory<
 	User,
@@ -37,9 +37,9 @@ export default class UserFactory extends BaseFactory<
 	DeserializedUserListDocument
 > {
 	nameGenerator = () => `${
-		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 5)))
+		new TextTransformer().toSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 5)))
 	} ${
-		convertToSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 7)))
+		new TextTransformer().toSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 7)))
 	}`
 
 	prefersDarkGenerator = () => false
@@ -61,14 +61,14 @@ export default class UserFactory extends BaseFactory<
 		}
 
 		return {
-			"name": this.nameGenerator(),
+			"deletedAt": null,
+			"departmentID": this.#department.id,
 			"email": this.emailGenerator(),
-			"password": await hash(this.#password),
 			"emailVerifiedAt": this.#mustBeVerified ? new Date() : null,
 			"kind": this.#kind,
-			"prefersDark": this.prefersDarkGenerator(),
-			"departmentID": this.#department.id,
-			"deletedAt": null
+			"name": this.nameGenerator(),
+			"password": await hash(this.#password),
+			"prefersDark": this.prefersDarkGenerator()
 		}
 	}
 
@@ -111,8 +111,8 @@ export default class UserFactory extends BaseFactory<
 			pendingAttachments.push(
 				AttachedRole.bulkCreate(
 					this.roles.map(role => ({
-						"userID": user.id,
-						"roleID": role.id
+						"roleID": role.id,
+						"userID": user.id
 					}))
 				)
 			)

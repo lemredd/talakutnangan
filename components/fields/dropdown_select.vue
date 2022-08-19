@@ -27,7 +27,7 @@
 </style>
 
 <script setup lang="ts">
-import TextTransformer from "$@/helpers/text_transformers"
+import TextTransformer from "$/helpers/text_transformers"
 
 const {
 	options,

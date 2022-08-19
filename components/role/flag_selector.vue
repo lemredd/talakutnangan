@@ -55,7 +55,7 @@ import { computed, ref } from "vue"
 import Checkbox from "@/fields/checkbox.vue"
 import BasePermissionGroup from "$/permissions/base"
 import sanitizeArray from "$@/helpers/sanitize_array"
-import TextTransformer from "$@/helpers/text_transformers"
+import TextTransformer from "$/helpers/text_transformers"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
