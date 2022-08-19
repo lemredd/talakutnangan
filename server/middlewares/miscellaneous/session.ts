@@ -18,16 +18,23 @@ export default class Session extends Middleware {
 
 	constructor() {
 		super()
-		Session.session = createSessionMiddleware({
-			"name": process.env.SESSION_NAME || "talakutnangan_session",
-			"secret": process.env.SESSION_SECRET || "12345678",
-			"resave": false,
-			"saveUninitialized": false,
-			"cookie": {
-				"maxAge": process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
-			},
-			"store": new (makeSequelizeStore(Store))({ "db": Database.dataSource })
-		})
+
+		/*
+		 * Prevent changing the memory store for tests
+		 * Please see: https://www.npmjs.com/package/connect-session-sequelize
+		 */
+		if (!this.isOnTest) {
+			Session.session = createSessionMiddleware({
+				"name": process.env.SESSION_NAME || "talakutnangan_session",
+				"secret": process.env.SESSION_SECRET || "12345678",
+				"resave": false,
+				"saveUninitialized": false,
+				"cookie": {
+					"maxAge": process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
+				},
+				"store": new (makeSequelizeStore(Store))({ "db": Database.dataSource })
+			})
+		}
 	}
 
 	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
