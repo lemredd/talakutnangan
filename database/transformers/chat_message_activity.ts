@@ -18,7 +18,7 @@ export default class extends Transformer<ChatMessageActivity, void> {
 					"transformer": new UserTransformer()
 				}
 				: null,
-			included.indexOf("user") > -1
+			included.indexOf("consultation") > -1
 				? {
 					"attribute": "consultation",
 					"transformer": new ConsultationTransformer()
