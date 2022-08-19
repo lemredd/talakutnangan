@@ -158,37 +158,33 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
-import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
+import { inject, computed } from "vue"
+
+import type { PageContext } from "#/types"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+
 import Dropdown from "@/Dropdown.vue"
+import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
 
 const isLoggingIn = inject("isLoggingIn") as boolean
+const { pageProps } = inject("pageContext") as PageContext
 
-const roles = ["guest", "student_or_employee", "user_manager", "admin"]
-const role = roles[2]
-const isRoleGuest = role === "guest"
+const role = computed(() => {
+	const userProfile = pageProps.userProfile as DeserializedUserProfile
+
+	if (!userProfile) return "guest"
+	return userProfile.data.roles.data[0].name
+})
+
+const isRoleGuest = role.value === "guest"
 
 const notifications = [
 	{
-		id: 0,
-		description: "lorem ipsum",
-		type: "general",
-		icon: "notifications",
-		dateOccured: new Date(2022, 2, 3).toDateString()
-	},
-	// {
-	// 	id: 0,
-	// 	description: "lorem ipsum",
-	// 	type: "general",
-	// 	icon: "notifications",
-	// 	dateOccured: new Date(2022, 2, 3).toDateString()
-	// },
-	// {
-	// 	id: 0,
-	// 	description: "lorem ipsum",
-	// 	type: "general",
-	// 	icon: "notifications",
-	// 	dateOccured: new Date(2022, 2, 3).toDateString()
-	// }
+		"dateOccured": new Date(2022, 2, 3).toDateString(),
+		"description": "lorem ipsum",
+		"icon": "notifications",
+		"id": 0,
+		"type": "general"
+	}
 ]
 </script>
