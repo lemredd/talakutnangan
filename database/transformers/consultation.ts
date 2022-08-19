@@ -6,8 +6,9 @@ import Consultation from "%/models/consultation"
 import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
+import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
-type ForeignAttributes = "consultant"|"consultantRole"|"consulters"
+type ForeignAttributes = "consultant"|"consultantRole"|"consulters"|"chatMessageActivities"
 
 export default class extends Transformer<Consultation, void> {
 	constructor(
@@ -32,6 +33,12 @@ export default class extends Transformer<Consultation, void> {
 				? {
 					"attribute": "consulters",
 					"transformer": new UserTransformer()
+				}
+				: null,
+			included.indexOf("chatMessageActivities")
+				? {
+					"attribute": "chatMessageActivities",
+					"transformer": new ChatMessageActivityTransformer({ "included": [ "user" ] })
 				}
 				: null
 		])
