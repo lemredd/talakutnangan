@@ -79,8 +79,4 @@ export default class Consultation extends Model {
 	 */
 
 	// TODO Message
-
-	// TODO Consultation Requesters
-
-	// TODO Chat Message Activity
 }
