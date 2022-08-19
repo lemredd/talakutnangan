@@ -20,41 +20,44 @@ import {
 describe("UI Page: Read resource by ID", () => {
 	it("Should load resource by ID", async() => {
 		const sampleResource = await new RoleFactory()
-			.departmentFlags(department.generateMask("view"))
-			.roleFlags(role.generateMask("view"))
-			.semesterFlags(semester.generateMask("view"))
-			.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-			.postFlags(post.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope",
-				"tag"
-			))
-			.commentFlags(comment.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope",
-				"vote"
-			))
-			.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-			.userFlags(user.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope"
-			))
-			.auditTrailFlags(0)
-			.serializedOne()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"tag"
+		))
+		.commentFlags(comment.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"vote"
+		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+		.userFlags(user.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope"
+		))
+		.auditTrailFlags(0)
+		.serializedOne()
 
-		fetchMock.mockResponse(JSON.stringify(sampleResource), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponse(
+			JSON.stringify(sampleResource),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new RoleFetcher()
 		const response = await fetcher.read(sampleResource.data.id)
@@ -80,41 +83,44 @@ describe("UI Page: Read resource by ID", () => {
 
 	it.skip("Can edit role name", async() => {
 		const sampleResource = await new RoleFactory()
-			.departmentFlags(department.generateMask("view"))
-			.roleFlags(role.generateMask("view"))
-			.semesterFlags(semester.generateMask("view"))
-			.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-			.postFlags(post.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope",
-				"tag"
-			))
-			.commentFlags(comment.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope",
-				"vote"
-			))
-			.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-			.userFlags(user.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readDepartmentScope",
-				"writeDepartmentScope"
-			))
-			.auditTrailFlags(0)
-			.serializedOne()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"tag"
+		))
+		.commentFlags(comment.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"vote"
+		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+		.userFlags(user.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope"
+		))
+		.auditTrailFlags(0)
+		.serializedOne()
 
-		fetchMock.mockResponse(JSON.stringify(sampleResource), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponse(
+			JSON.stringify(sampleResource),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const fetcher = new RoleFetcher()
 		const response = await fetcher.read(sampleResource.data.id)
