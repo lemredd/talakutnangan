@@ -34,7 +34,7 @@ module.exports = {
 						"type": Sequelize.DATE
 					},
 					"seenMessageAt": {
-						"allowNull": false,
+						"allowNull": true,
 						"type": Sequelize.DATE
 					},
 					"createdAt": {
