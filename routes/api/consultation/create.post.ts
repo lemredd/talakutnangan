@@ -93,9 +93,11 @@ export default class extends JSONController {
 		return makeResourceDocumentRules(
 			"consultation",
 			attributes,
-			true,
-			true,
-			{ relationships }
+			{
+				"isNew": true,
+				"mustCastID": true,
+				"extraDataQueries": { relationships }
+			}
 		)
 	}
 
