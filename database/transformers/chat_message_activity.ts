@@ -1,4 +1,4 @@
-import type { IncludedForeignAttributes } from "%/types/independent"
+import type { IncludedRelationships } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import Transformer from "%/transformers/base"
@@ -7,12 +7,10 @@ import Serializer from "%/transformers/serializer"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ConsultationTransformer from "%/transformers/consultation"
 
-type ForeignAttributes = "user"|"consultation"
+type Relationships = "user"|"consultation"
 
 export default class extends Transformer<ChatMessageActivity, void> {
-	constructor(
-		{ included }: IncludedForeignAttributes<ForeignAttributes> = { "included": [ "user" ] }
-	) {
+	constructor({ included }: IncludedRelationships<Relationships> = { "included": [ "user" ] }) {
 		super("chat_message_activity", [
 			included.indexOf("user") > -1
 				? {

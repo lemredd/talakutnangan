@@ -1,4 +1,4 @@
-import type { IncludedForeignAttributes } from "%/types/independent"
+import type { IncludedRelationships } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import Transformer from "%/transformers/base"
@@ -8,11 +8,11 @@ import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
-type ForeignAttributes = "consultant"|"consultantRole"|"consulters"|"chatMessageActivities"
+type Relationships = "consultant"|"consultantRole"|"consulters"|"chatMessageActivities"
 
 export default class extends Transformer<Consultation, void> {
 	constructor(
-		{ included }: IncludedForeignAttributes<ForeignAttributes> = {
+		{ included }: IncludedRelationships<Relationships> = {
 			"included": [ "consultant", "consultantRole", "consulters" ]
 		}
 	) {

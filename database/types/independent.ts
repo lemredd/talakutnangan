@@ -117,6 +117,6 @@ export interface ProfilePictureTransformerOptions {
  */
 export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }
 
-export interface IncludedForeignAttributes<T extends string = string> {
+export interface IncludedRelationships<T extends string = string> {
 	included: T[]
 }
