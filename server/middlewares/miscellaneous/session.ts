@@ -32,7 +32,10 @@ export default class Session extends Middleware {
 				"cookie": {
 					"maxAge": process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
 				},
-				"store": new (makeSequelizeStore(Store))({ "db": Database.dataSource })
+				"store": new (makeSequelizeStore(Store))({
+					"db": Database.dataSource,
+					"tableName": "Sessions"
+				})
 			})
 		}
 	}
