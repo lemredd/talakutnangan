@@ -17,25 +17,25 @@ export default class extends Transformer<Consultation, void> {
 		}
 	) {
 		super("consultation", [
-			included.indexOf("consultant")
+			included.indexOf("consultant") > -1
 				? {
 					"attribute": "consultant",
 					"transformer": new UserTransformer()
 				}
 				: null,
-			included.indexOf("consultantRole")
+			included.indexOf("consultantRole") > -1
 				? {
 					"attribute": "consultantRole",
 					"transformer": new RoleTransformer()
 				}
 				: null,
-			included.indexOf("consulters")
+			included.indexOf("consulters") > -1
 				? {
 					"attribute": "consulters",
 					"transformer": new UserTransformer()
 				}
 				: null,
-			included.indexOf("chatMessageActivities")
+			included.indexOf("chatMessageActivities") > -1
 				? {
 					"attribute": "chatMessageActivities",
 					"transformer": new ChatMessageActivityTransformer({ "included": [ "user" ] })
