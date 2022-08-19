@@ -27,7 +27,7 @@
 				</button>
 			</div>
 
-			<Overlay v-if="isAddingSchedule" @close="toggleAddingSchedule">
+			<Overlay :is-shown="isAddingSchedule" @close="toggleAddingSchedule">
 				<template #header>
 					<h1>Enter the consultation details</h1>
 				</template>

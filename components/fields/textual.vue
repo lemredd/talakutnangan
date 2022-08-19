@@ -23,7 +23,7 @@
 		</div>
 	</div>
 
-	<Overlay v-if="isOverlayShown" @close="toggleOverlay">
+	<Overlay is-shown="isOverlayShown" @close="toggleOverlay">
 		<template #header>
 			<h1>Update your {{ type }}</h1>
 		</template>
