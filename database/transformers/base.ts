@@ -1,5 +1,6 @@
 import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
+import type { Subtransformer, SubtransformerList } from "%/types/hybrid"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
 import type {
@@ -10,14 +11,6 @@ import type {
 
 import Serializer from "%/transformers/serializer"
 import processData from "%/transformers/helpers/process_data"
-
-type Subtransformer = {
-	attribute: string,
-	// eslint-disable-next-line no-use-before-define
-	transformer: Transformer<any, any>
-}
-
-type SubtransformerList = Subtransformer[]
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**
