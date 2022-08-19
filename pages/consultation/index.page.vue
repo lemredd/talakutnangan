@@ -27,19 +27,7 @@
 				</button>
 			</div>
 
-			<Overlay :is-shown="isAddingSchedule" @close="toggleAddingSchedule">
-				<template #header>
-					<h1>Enter the consultation details</h1>
-				</template>
-				<template #default>
-					<p>Sample</p>
-				</template>
-				<template #footer>
-					<button type="button">
-						Set the schedule
-					</button>
-				</template>
-			</Overlay>
+			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<div class="consultations-list">
 				<div v-if="!consultations.length" class="mx-auto max-w-[max-content] no-consultations">
@@ -224,7 +212,7 @@ footer {
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import SadIcon from "./sadicon.png"
-import Overlay from "@/helpers/overlay.vue"
+import ConsultationForm from "@/consultation/form.vue"
 
 type Consultation = {
 	// TODO(lead/types): type will change soon
