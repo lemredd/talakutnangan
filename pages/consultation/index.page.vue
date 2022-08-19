@@ -322,7 +322,9 @@ const consultations = ref<Consultation[]>([
 ])
 const selectedConsultationId = ref<number>(0)
 const selectedConsultation = computed(() => {
-	const selected = consultations.value.filter((consultation: Consultation) => consultation.id === selectedConsultationId.value)
+	const selected = consultations.value.filter(
+		(consultation: Consultation) => consultation.id === selectedConsultationId.value
+	)
 
 	return selected[0]
 })
