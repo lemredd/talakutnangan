@@ -1,3 +1,4 @@
+import type { IncludedForeignAttributes } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import Transformer from "%/transformers/base"
@@ -6,21 +7,33 @@ import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
 
+type ForeignAttributes = "consultant"|"consultantRole"|"consulters"
+
 export default class extends Transformer<Consultation, void> {
-	constructor() {
+	constructor(
+		{ included }: IncludedForeignAttributes<ForeignAttributes> = {
+			"included": [ "consultant", "consultantRole", "consulters" ]
+		}
+	) {
 		super("consultation", [
-			{
-				"attribute": "consultant",
-				"transformer": new UserTransformer()
-			},
-			{
-				"attribute": "consultantRole",
-				"transformer": new RoleTransformer()
-			},
-			{
-				"attribute": "consulters",
-				"transformer": new UserTransformer()
-			}
+			included.indexOf("consultant")
+				? {
+					"attribute": "consultant",
+					"transformer": new UserTransformer()
+				}
+				: null,
+			included.indexOf("consultantRole")
+				? {
+					"attribute": "consultantRole",
+					"transformer": new RoleTransformer()
+				}
+				: null,
+			included.indexOf("consulters")
+				? {
+					"attribute": "consulters",
+					"transformer": new UserTransformer()
+				}
+				: null
 		])
 	}
 
