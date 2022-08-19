@@ -50,4 +50,22 @@ export default class UserFetcher extends BaseFetcher<
 			Serializable
 		>
 	}
+
+	async logOut(): Promise<Response<
+		string,
+		UserResourceIdentifier,
+		UserAttributes,
+		UserResource,
+		DeserializedUserResource,
+		Serializable
+	>> {
+		return await this.postJSON(`${this.type}/log_out`, {}) as Response<
+			string,
+			UserResourceIdentifier,
+			UserAttributes,
+			UserResource,
+			DeserializedUserResource,
+			Serializable
+		>
+	}
 }
