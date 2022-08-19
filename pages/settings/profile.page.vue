@@ -12,8 +12,10 @@
 
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
 		<!-- TODO: Refactor HTML to Vue Components if applicable -->
-		<PicturePicker title="Profile Picture" :picture="profileInfo.profilePic"/>
-		<PicturePicker title="Signature" :picture="profileInfo.signature"/>
+		<div class="pictures">
+			<PicturePicker title="Profile Picture" :picture="profileInfo.profilePic"/>
+			<PicturePicker title="Signature" :picture="profileInfo.signature"/>
+		</div>
 
 		<div class ="p-5 dark-mode-toggle">
 			<h3 class="display-name text-lg col-span-full">Dark Mode</h3>
@@ -25,18 +27,9 @@
 				<input type="checkbox" name="" id="dark-mode-toggle" v-model="isDarkModeEnabled" @click="toggleDarkMode">
 			</label>
 		</div>
-		<div class ="p-5">
+		<div class ="consultation-schedules p-5">
 			<h3 class="display-name text-lg col-span-full">Consultation Schedules</h3>
-			<h3 class="display-name text-lg col-span-full">Day</h3>
-			<label for="start">From:
-			<input type="time" id="appt" name="appt"
-       		min="09:00" max="18:00" required>
-			</label>
-			<label for="start">To:
-			<input type="time" id="appt" name="appt"
-       		min="09:00" max="18:00" required>
-			</label>
-
+				<SchedulePicker day="Monday" start-time="08:00" end-time="17:00" />
 		</div>
 	</form>
 </template>
@@ -81,6 +74,7 @@ import { inject, Ref, ref, provide } from "vue"
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
+import SchedulePicker from "@/settings/schedule_picker.vue"
 
 const profileInfo = {
 	displayName: "Sample Name",
