@@ -138,11 +138,12 @@ There is a custom script in this repository to aid the development. Here are som
 ### Pair Programming
 When doing pair programming, it is recommended to attach the [co-authors]. Below are examples of
 what to add at the end of the messages.
-- *Co-authored-by: Angelo Magtoto &lt;19201.magtoto.angelo.l@gmail.com&gt;*
-- *Co-authored-by: AteKitty07 &lt;kiritogregorio@gmail.com&gt;*
-- *Co-authored-by: IKnightSKyl &lt;johnjeromepertez@yahoo.com&gt;*
-- *Co-authored-by: Jarlem Red de Peralta &lt;lmoa.jhdp@gmail.com&gt;*
-- *Co-authored-by: Kenneth Trecy Tobias &lt;19201.tobias.kennethtrecy.c@gmail.com&gt;*
+
+- `Co-authored-by: Angelo Magtoto <19201.magtoto.angelo.l@gmail.com>`
+- `Co-authored-by: AteKitty07 <kiritogregorio@gmail.com>`
+- `Co-authored-by: IKnightSKyl <johnjeromepertez@yahoo.com>`
+- `Co-authored-by: Jarlem Red de Peralta <lmoa.jhdp@gmail.com>`
+- `Co-authored-by: Kenneth Trecy Tobias <19201.tobias.kennethtrecy.c@gmail.com>`
 
 ## Notes
 
