@@ -3,7 +3,7 @@ import UserFactory from "~/factories/user"
 
 import DeparmentManager from "./department"
 
-describe("Database: Department read operations", () => {
+describe("Database Manager: Department read operations", () => {
 	it("can count single department", async() => {
 		const manager = new DeparmentManager()
 		const department = await new DepartmentFactory().insertOne()

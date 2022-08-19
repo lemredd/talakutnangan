@@ -2,43 +2,32 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.createTable("Consultations", {
+				await queryInterface.createTable("Consulters", {
 					"id": {
 						"allowNull": false,
 						"autoIncrement": true,
 						"primaryKey": true,
 						"type": Sequelize.BIGINT
 					},
-					"attachedRoleID": {
+					"userID": {
 						"allowNull": false,
 						"type": Sequelize.BIGINT,
 						"references": {
-							"model": "AttachedRoles",
+							"model": "Users",
 							"key": "id"
 						},
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
-					"reason": {
+					"consultationID": {
 						"allowNull": false,
-						"type": Sequelize.TEXT
-					},
-					"status": {
-						"allowNull": false,
-						"type": Sequelize.ENUM([ "will_start", "ongoing", "done" ])
-					},
-					"actionTaken": {
-						"allowNull": false,
-						"type": Sequelize.TEXT
-					},
-					"scheduledStartDatetime": {
-						"allowNull": false,
-						"type": Sequelize.DATE
-					},
-					"endDatetime": {
-						"allowNull": true,
-						"type": Sequelize.DATE,
-						"defaultValue": null
+						"type": Sequelize.BIGINT,
+						"references": {
+							"model": "Consultations",
+							"key": "id"
+						},
+						"onDelete": "cascade",
+						"onUpdate": "cascade"
 					},
 					"createdAt": {
 						"allowNull": false,
@@ -62,7 +51,7 @@ module.exports = {
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Consultations", { transaction })
+				await queryInterface.dropTable("Consulters", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err

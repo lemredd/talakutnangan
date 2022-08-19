@@ -103,6 +103,7 @@ rules:
   one-var: ["error", "never"]
   operator-linebreak: ["error", "before"]
   padded-blocks: ["error", "never"]
+  prefer-object-has-own: [ "warn" ]
   require-atomic-updates: [ "error", { "allowProperties": true } ]
   prefer-named-capture-group: "off"
   semi: [ "error", "never" ]

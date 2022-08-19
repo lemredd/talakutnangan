@@ -6,22 +6,22 @@ import Controller from "./restore.patch"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: PATCH /api/consultation/restore", () => {
+describe.skip("Controller: PATCH /api/consultation", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
-		await consultation.destroy({ force: false })
+		const consultation = await new ConsultationFactory().insertOne()
+		await consultation.destroy({ "force": false })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": consultation.id
 					}
 				]
 			}
@@ -32,18 +32,18 @@ describe("Controller: PATCH /api/consultation/restore", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept existing resources", async () => {
+	it("cannot accept existing resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
+		const consultation = await new ConsultationFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": consultation.id
 					}
 				]
 			}
@@ -56,19 +56,19 @@ describe("Controller: PATCH /api/consultation/restore", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
 	})
 
-	it("cannot accept non-existent resources", async () => {
+	it("cannot accept non-existent resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await (new ConsultationFactory()).insertOne()
-		await consultation.destroy({ force: true })
+		const consultation = await new ConsultationFactory().insertOne()
+		await consultation.destroy({ "force": true })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "consultation",
-						id: consultation.id
+						"type": "consultation",
+						"id": consultation.id
 					}
 				]
 			}

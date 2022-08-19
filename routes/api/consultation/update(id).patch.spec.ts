@@ -5,31 +5,33 @@ import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/consultation/update/:id", () => {
+describe.skip("Controller: PATCH /api/consultation/:id", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info with new details", async () => {
+	it("can accept valid info with new details", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const consultation = await new ConsultationFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "consultation",
-					id: consultation.id,
-					attributes: {
-						attachedRoleID: consultation.attachedRoleID,
-						reason: consultation.reason,
-						status: consultation.status,
-						actionTaken: consultation.actionTaken,
-						scheduledStartDatetime: consultation.scheduledStartDatetime,
-						endDatetime: consultation.scheduledStartDatetime,
-						//TODO Message
-						//TODO Consultation Requesters
-						//TODO Chat Message Activity
-						deletedAt: null
+			"body": {
+				"data": {
+					"type": "consultation",
+					"id": consultation.id,
+					"attributes": {
+						"attachedRoleID": consultation.attachedRoleID,
+						"reason": consultation.reason,
+						"status": consultation.status,
+						"actionTaken": consultation.actionTaken,
+						"scheduledStartDatetime": consultation.scheduledStartDatetime,
+						"endDatetime": consultation.scheduledStartDatetime,
+						/*
+						 * TODO Message
+						 * TODO Consultation Requesters
+						 * TODO Chat Message Activity
+						 */
+						"deletedAt": null
 					}
 				}
 			}

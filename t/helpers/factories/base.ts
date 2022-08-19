@@ -11,6 +11,7 @@ import type {
 	ResourceDocument,
 	ResourceListDocument
 } from "$/types/documents/base"
+
 import Transformer from "%/transformers/base"
 import deserialize from "$/helpers/deserialize"
 import Serializer from "%/transformers/serializer"
@@ -39,12 +40,13 @@ export default abstract class Factory<
 	abstract generate(): GeneratedData<T>
 
 	async makeOne(): Promise<T> {
-		return this.model.build(await this.generate())
+		const model = this.model.build(await this.generate())
+		return this.attachChildren(model)
 	}
 
 	async insertOne(): Promise<T> {
 		const model = await this.model.create(await this.generate())
-		return model
+		return this.attachChildren(model)
 	}
 
 	async generateMany(count: number): MultipleGeneratedData<T> {
@@ -61,15 +63,18 @@ export default abstract class Factory<
 	async makeMany(count: number): Promise<T[]> {
 		const generatedMultipleData = await this.generateMany(count)
 
-		return this.model.bulkBuild(generatedMultipleData)
+		const models = this.model.bulkBuild(generatedMultipleData)
+		return await Promise.all(models.map(model => this.attachChildren(model)))
 	}
 
 	async insertMany(count: number): Promise<T[]> {
 		const generatedMultipleData = await this.generateMany(count)
 
-		const model = await this.model.bulkCreate(generatedMultipleData)
-		return model
+		const models = await this.model.bulkCreate(generatedMultipleData)
+		return await Promise.all(models.map(model => this.attachChildren(model)))
 	}
+
+	async attachChildren(model: T): Promise<T> { return await Promise.resolve(model) }
 
 	async serializedOne(
 		mustInsert = false,

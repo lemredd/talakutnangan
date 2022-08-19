@@ -20,7 +20,8 @@ import {
 	Context as BaseContext,
 	AttributesObject as BaseAttributesObject,
 	Options,
-	RelationshipTransformerInfo as BaseRelationshipTransformerInfo
+	RelationshipTransformerInfo as BaseRelationshipTransformerInfo,
+	TransformerRelationships as BaseTransformerRelationships
 } from "jsonapi-fractal"
 
 export type Model = BaseModel
@@ -37,3 +38,4 @@ export type Context<T> = BaseContext<T>
 export type AttributesObject = BaseAttributesObject
 export type TransformerOptions<T = void> = Options<T>
 export type RelationshipTransformerInfo = BaseRelationshipTransformerInfo<void, unknown>
+export type TransformerRelationships<T, U> = BaseTransformerRelationships<T, U>

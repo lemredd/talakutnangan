@@ -67,7 +67,7 @@ class MockUserManager extends BaseManager<User, RawUser> {
 	}
 }
 
-describe("Database: Base Read Operations", () => {
+describe("Database Manager: Base Read Operations", () => {
 	it("can search base with ID", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
@@ -271,7 +271,7 @@ describe("Database: Base Read Operations", () => {
 	})
 })
 
-describe("Database: Base Create Operations", () => {
+describe("Database Manager: Base Create Operations", () => {
 	it("can create base", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().makeOne()
@@ -296,7 +296,7 @@ describe("Database: Base Create Operations", () => {
 	})
 })
 
-describe("Database: Base Update Operations", () => {
+describe("Database Manager: Base Update Operations", () => {
 	it("can update base", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
@@ -337,7 +337,7 @@ describe("Database: Base Update Operations", () => {
 	})
 })
 
-describe("Database: Base Archive and Restore Operations", () => {
+describe("Database Manager: Base Archive and Restore Operations", () => {
 	it("can archive base", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
@@ -460,7 +460,7 @@ describe("Database: Base Archive and Restore Operations", () => {
 	})
 })
 
-describe("Database: Error handling down errors", () => {
+describe("Database Manager: Error handling down errors", () => {
 	beforeEach(async() => {
 		await Database.destroy()
 	})
@@ -473,7 +473,7 @@ describe("Database: Error handling down errors", () => {
 	})
 })
 
-describe("Database: Miscellaneous operations", () => {
+describe("Database Manager: Miscellaneous operations", () => {
 	it("can get sortable columns", () => {
 		const manager = new MockUserManager()
 
