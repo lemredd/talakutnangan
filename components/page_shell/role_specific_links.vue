@@ -110,6 +110,7 @@ import { computed, inject, ref, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
+import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
 import { user, post } from "$/permissions/permission_list"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -222,11 +223,15 @@ const roleLinks = computed(() => filterLinkInfo(pageContext, linkInfos))
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function disableScroll() {
-	const bodyClasses = new Set([ ...rawBodyClasses.value ])
-	if (bodyClasses.has("unscrollable")) bodyClasses.delete("unscrollable")
-	else bodyClasses.add("unscrollable")
+	const bodyClasses = Array.from(rawBodyClasses.value)
+	if (bodyClasses.includes("unscrollable")) {
+		delete bodyClasses[bodyClasses.indexOf("unscrollable")]
+	} else {
+		bodyClasses.push("unscrollable")
+	}
 
-	rawBodyClasses.value = [ ...bodyClasses ]
+	rawBodyClasses.value = sanitizeArray(bodyClasses)
+	console.log(rawBodyClasses.value)
 }
 
 function toggleRoleLinks() {

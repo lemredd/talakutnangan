@@ -3,7 +3,7 @@ import RoleSpecificLinks from "./role_specific_links.vue"
 import { ref } from "vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
-	it("should specify the right link/s for authenticated user", async() => {
+	it("should specify the right link/s for authenticated user", () => {
 		const wrapper = mount(RoleSpecificLinks, {
 			"shallow": true,
 			"global": {
@@ -39,7 +39,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		expect(linkHref).toBe("/notifications")
 	})
 
-	it("should specify the right link/s for a guest user", async() => {
+	it("should specify the right link/s for a guest user", () => {
 		const wrapper = mount(RoleSpecificLinks, {
 			"shallow": true,
 			"global": {
