@@ -4,7 +4,6 @@
 			<header>
 				<slot name="header"></slot>
 				<button class="close-btn material-icons-outlined" @click="emitClose">close</button>
-
 			</header>
 			<main>
 				<slot></slot>

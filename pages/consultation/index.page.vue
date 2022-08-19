@@ -22,10 +22,25 @@
 				</button>
 
 				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons add">
+				<button class="material-icons add" @click="toggleAddingSchedule">
 					add
 				</button>
 			</div>
+
+			<Overlay v-if="isAddingSchedule" @close="toggleAddingSchedule">
+				<template #header>
+					<h1>Enter the consultation details</h1>
+				</template>
+				<template #default>
+					<p>Sample</p>
+				</template>
+				<template #footer>
+					<button type="button">
+						Set the schedule
+					</button>
+				</template>
+			</Overlay>
+
 			<div class="consultations-list">
 				<div v-if="!consultations.length" class="mx-auto max-w-[max-content] no-consultations">
 					<img class="mx-auto" :src="SadIcon"/>
@@ -207,8 +222,9 @@ footer {
 </style>
 
 <script setup lang="ts">
-import SadIcon from "./sadicon.png"
 import { computed, ref } from "vue"
+import SadIcon from "./sadicon.png"
+import Overlay from "@/helpers/overlay.vue"
 
 type Consultation = {
 	// TODO(lead/types): type will change soon
@@ -222,6 +238,12 @@ type Consultation = {
 	members?: number[]
 	status: string
 }
+
+const isAddingSchedule = ref<boolean>(false)
+function toggleAddingSchedule() {
+	isAddingSchedule.value = !isAddingSchedule.value
+}
+
 const consultations = ref<Consultation[]>([
 	{
 		"id": 0,
