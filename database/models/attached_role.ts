@@ -16,14 +16,6 @@ import Consultation from "%/models/consultation"
 	"timestamps": true
 })
 export default class AttachedRole extends Model {
-	@Column({
-		"allowNull": false,
-		"autoIncrement": true,
-		"primaryKey": true,
-		"type": DataType.BIGINT
-	})
-		id!: number
-
 	@ForeignKey(() => User)
 	@Column({
 		"allowNull": false,
