@@ -1,4 +1,5 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="links mobile">
 		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
@@ -20,7 +21,7 @@
 				<a
 					id="logout-btn"
 					role="button"
-					href="/logout"
+					@click="logOut"
 					class="flex items-center">
 					<span class="material-icons">logout</span>
 					Logout
@@ -110,6 +111,7 @@ import { computed, inject, ref, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
+import UserFetcher from "$@/fetchers/user"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
 import { user, post } from "$/permissions/permission_list"
@@ -129,6 +131,8 @@ import {
 
 import Anchor from "@/anchor.vue"
 import RoleLinksList from "@/Dropdown.vue"
+
+UserFetcher.initialize("/api")
 
 const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
@@ -238,5 +242,10 @@ function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
+}
+
+function logOut() {
+	new UserFetcher().logOut()
+	.then(console.log)
 }
 </script>

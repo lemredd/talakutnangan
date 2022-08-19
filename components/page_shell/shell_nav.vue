@@ -164,7 +164,10 @@ import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Dropdown from "@/Dropdown.vue"
+import UserFetcher from "$@/fetchers/user"
 import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
+
+UserFetcher.initialize("/api")
 
 const isLoggingIn = inject("isLoggingIn") as boolean
 const { pageProps } = inject("pageContext") as PageContext
@@ -187,4 +190,9 @@ const notifications = [
 		"type": "general"
 	}
 ]
+
+function logOut() {
+	new UserFetcher().logOut()
+	.then(console.log)
+}
 </script>
