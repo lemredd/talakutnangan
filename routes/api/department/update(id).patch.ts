@@ -10,13 +10,15 @@ import { UPDATE } from "$/permissions/department_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import boolean from "!/validators/base/boolean"
-import regex from "!/validators/comparison/regex"
 import unique from "!/validators/manager/unique"
+import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import length from "!/validators/comparison/length"
 import acronym from "!/validators/comparison/acronym"
+import matchesPassword from "!/validators/manager/matches_password"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends DoubleBoundJSONController {
@@ -66,7 +68,20 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-		return makeResourceDocumentRules("department", attributes)
+		const meta = {
+			"constraints": {
+				"object": {
+					"password": {
+						"pipes": [ required, string, matchesPassword ]
+					}
+				}
+			},
+			"pipes": [ required, object ]
+		}
+
+		return makeResourceDocumentRules("department", attributes, {
+			"extraQueries": { meta }
+		})
 	}
 
 	get manager(): BaseManagerClass { return DepartmentManager }

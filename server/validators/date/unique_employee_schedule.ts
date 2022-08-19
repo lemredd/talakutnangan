@@ -1,0 +1,101 @@
+import type { EmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
+import type {
+	ValidationState,
+	ValidationConstraints,
+	UniqueEmployeeScheduleRuleConstraint
+} from "!/types/validation"
+
+import accessDeepPath from "$!/helpers/access_deep_path"
+import EmployeeScheduleManager from "%/managers/employee_schedule"
+import makeDeveloperError from "!/validators/make_developer_error"
+
+/**
+ * Validator to check if data does not conflict with existing schedules
+ */
+export default async function(
+	currentState: Promise<ValidationState>,
+	constraints: ValidationConstraints & Partial<UniqueEmployeeScheduleRuleConstraint>
+): Promise<ValidationState> {
+	const state = await currentState
+
+	if (state.maySkip) return state
+
+	if (typeof constraints.uniqueEmployeeSchedule === "undefined") {
+		throw makeDeveloperError(constraints.field)
+	}
+
+	const { value } = state
+
+	if (value.scheduleStart > value.scheduleEnd) {
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (
+				unusedField: string,
+				unusedValue: string
+			) => "Start of schedule should be less than the end of the schedule."
+		}
+		throw error
+	}
+
+	const userID = accessDeepPath(
+		constraints.source,
+		constraints.uniqueEmployeeSchedule.userIDPointer
+	)
+
+	if (userID) {
+		const manager = new EmployeeScheduleManager(
+			constraints.request.transaction,
+			constraints.request.cache
+		)
+		const foundModels = await manager.list({
+			"filter": {
+				"existence": "*",
+				"user": userID
+			},
+			"sort": [ "dayName" ],
+			"page": {
+				// TODO Find the best limit
+				"limit": 24,
+				"offset": 0
+			}
+		}) as EmployeeScheduleListDocument
+
+		for (const foundModel of foundModels.data) {
+			if (
+				foundModel.attributes.dayName === value.dayName
+				&& (
+					// eslint-disable-next-line no-extra-parens
+					(
+						foundModel.attributes.scheduleStart <= value.scheduleStart
+						&& value.scheduleStart < foundModel.attributes.scheduleEnd
+					)
+					// eslint-disable-next-line no-extra-parens
+					|| (
+						foundModel.attributes.scheduleEnd < value.scheduleEnd
+						&& value.scheduleEnd <= foundModel.attributes.scheduleEnd
+					)
+				)
+			) {
+				const error = {
+					"field": constraints.field,
+					"messageMaker": (
+						unusedField: string,
+						unusedValue: string
+					) => "The new schedule should not conflict with the existing schedule."
+				}
+				throw error
+			}
+		}
+
+		return state
+	}
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (
+			unusedField: string,
+			unusedValue: string
+		) => "Developer put an invalid user ID pointer."
+	}
+
+	throw error
+}

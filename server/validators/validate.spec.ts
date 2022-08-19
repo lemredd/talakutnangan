@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 import type { FieldRules } from "!/types/validation"
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
@@ -8,19 +9,19 @@ import validate from "./validate"
 describe("Validator: validate", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid input", async () => {
+	it("can accept valid input", async() => {
 		const input = {
-			hello: "world",
-			foo: 42
+			"hello": "world",
+			"foo": 42
 		}
 		const rules: FieldRules = {
-			hello: {
-				pipes: [ required, string ],
-				constraints: {}
+			"hello": {
+				"pipes": [ required, string ],
+				"constraints": {}
 			},
-			foo: {
-				pipes: [ required, integer ],
-				constraints: {}
+			"foo": {
+				"pipes": [ required, integer ],
+				"constraints": {}
 			}
 		}
 
@@ -29,35 +30,38 @@ describe("Validator: validate", () => {
 		expect(sanitizeValue).toStrictEqual(input)
 	})
 
-	it("can check missing inputs", async () => {
+	it("can check missing inputs", async() => {
 		const mockValidator = jest.fn(value => value)
 		const input = {}
 		const rules: FieldRules = {
-			hello: {
-				pipes: [ mockValidator ],
-				constraints: {}
+			"hello": {
+				"constraints": {},
+				"pipes": [ mockValidator ]
 			}
 		}
 
-		const sanitizeValue = await requester.runValidator(validate, rules, input)
+		await requester.runValidator(validate, rules, input)
 
 		expect(mockValidator).toHaveBeenCalled()
-		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({ maySkip: false, value: undefined })
+		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({
+			"maySkip": false,
+			"value": undefined
+		})
 	})
 
-	it("cannot accept invalid input", async () => {
+	it("cannot accept invalid input", () => {
 		const input = {
-			hello: "world",
-			foo: 42
+			"hello": "world",
+			"foo": 42
 		}
 		const rules: FieldRules = {
-			hello: {
-				pipes: [ required, integer ],
-				constraints: {}
+			"hello": {
+				"pipes": [ required, integer ],
+				"constraints": {}
 			},
-			foo: {
-				pipes: [ required, string ],
-				constraints: {}
+			"foo": {
+				"pipes": [ required, string ],
+				"constraints": {}
 			}
 		}
 

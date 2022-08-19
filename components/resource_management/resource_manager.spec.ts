@@ -3,12 +3,9 @@ import { mount } from "@vue/test-utils"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import "~/set-ups/database.set_up"
+import Manager from "$/helpers/manager"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import deserialize from "$/helpers/deserialize"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-import Manager from "$/helpers/manager"
 import DepartmentFactory from "~/factories/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -19,14 +16,7 @@ import ResourceManager from "./resource_manager.vue"
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
 		async function listUsers() {
-			const users = await new UserFactory().makeMany(5)
-			const serializedUsers = Serializer.serialize(
-				users,
-				new UserTransformer(),
-				{}
-			)
-
-			return deserialize(serializedUsers)!.data
+			return await (await new UserFactory().deserializedMany(5)).data
 		}
 
 		it("Should identify if resource type is of user profile", async() => {

@@ -2,10 +2,11 @@ import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
 import type { SourceType } from "$/types/database"
 
-import Log from "$!/singletons/log"
 import Role from "%/models/role"
 import User from "%/models/user"
+import Log from "$!/singletons/log"
 import Signature from "%/models/signature"
+import Consulter from "%/models/consulter"
 import Department from "%/models/department"
 import AuditTrail from "%/models/audit_trail"
 import Consultation from "%/models/consultation"
@@ -19,13 +20,14 @@ export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
 	const sequelize = new Sequelize({
 		...configuration,
-		logging: (query: string) => {
+		"logging": (query: string) => {
 			Log.trace("query", query)
 		},
-		models: [
+		"models": [
 			Role,
 			User,
 			Signature,
+			Consulter,
 			AuditTrail,
 			Department,
 			Consultation,
@@ -39,7 +41,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 	try {
 		await sequelize.authenticate()
 		Log.success("server", "Connected to the database server")
-	} catch(error) {
+	} catch (error) {
 		Log.errorMessage("server", "Cannot connect to the database")
 		Log.error("server", error as Error)
 	}

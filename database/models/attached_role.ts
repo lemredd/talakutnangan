@@ -12,30 +12,38 @@ import Role from "%/models/role"
 import Consultation from "%/models/consultation"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class AttachedRole extends Model {
+	@Column({
+		"allowNull": false,
+		"autoIncrement": true,
+		"primaryKey": true,
+		"type": DataType.BIGINT
+	})
+		id!: number
+
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false,
-		type: DataType.BIGINT
+		"allowNull": false,
+		"type": DataType.BIGINT
 	})
-	userID!: number
+		userID!: number
 
 	@BelongsTo(() => User)
-	user!: User
+		user!: User
 
 	@ForeignKey(() => Role)
 	@Column({
-		allowNull: false,
-		type: DataType.BIGINT
+		"allowNull": false,
+		"type": DataType.BIGINT
 	})
-	roleID!: number
+		roleID!: number
 
 	@BelongsTo(() => Role)
-	role!: Role
+		role!: Role
 
 	@HasMany(() => Consultation)
-	consultation!: Consultation
+		consultation!: Consultation
 }

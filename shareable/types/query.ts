@@ -49,6 +49,15 @@ export interface IDsFilter<T extends number|string = string> extends Serializabl
 	}
 }
 
+export interface UserFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		/**
+		 * ID of the user to filter on
+		 */
+		user: T
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -91,3 +100,7 @@ export type RoleQueryParameters<T extends number|string = string> =
 export type DepartmentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& IDsFilter<T>
+
+export type EmployeeScheduleQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& UserFilter<T>

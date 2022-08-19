@@ -13,10 +13,14 @@ import type {
 
 import { faker } from "@faker-js/faker"
 
-import AttachedRole from "%/models/role"
+import User from "%/models/user"
+import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
 import RoleFactory from "~/factories/role"
+import UserFactory from "~/factories/user"
+import Consulter from "%/models/consulter"
 import Consultation from "%/models/consultation"
+import AttachedRole from "%/models/attached_role"
 import ConsultationTransformer from "%/transformers/consultation"
 
 export default class ConsultationFactory extends BaseFactory<
@@ -30,14 +34,34 @@ export default class ConsultationFactory extends BaseFactory<
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
 > {
-	#attachedRole: () => Promise<AttachedRole>  =  () => new RoleFactory().insertOne()
-	#statusGenerator: () => string = () => faker.helpers.arrayElement(['will_start', 'ongoing', 'done'])
+	#consultantInfoGenerator: () => Promise<AttachedRole>
+		= async() => {
+			const role = await new RoleFactory().insertOne()
+			const user = await new UserFactory().insertOne()
+			const attachedRole = await AttachedRole.create({
+				"roleID": role.id,
+				"userID": user.id
+			})
+
+			attachedRole.role = role
+			attachedRole.user = user
+
+			return attachedRole
+		}
+
+	#statusGenerator: () => string = () => faker.helpers.arrayElement([
+		"will_start",
+		"ongoing",
+		"done"
+	])
+
+	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
 	#reasonGenerator: () => string = () => faker.hacker.phrase()
 	#actionTakenGenerator: () => string = () => faker.hacker.phrase()
 	#scheduledStartDatetimeGenerator: () => Date = () => new Date()
 	#endDatetimeGenerator: () => Date|null = () => new Date()
 
-	//TODO date
+	// TODO date
 
 	get model(): ModelCtor<Consultation> { return Consultation }
 
@@ -45,17 +69,43 @@ export default class ConsultationFactory extends BaseFactory<
 
 	async generate(): GeneratedData<Consultation> {
 		return {
-			attachedRoleID: (await this.#attachedRole()).id,
-			reason: this.#reasonGenerator(),
-			status: this.#statusGenerator(),
-			actionTaken: this.#actionTakenGenerator(),
-			scheduledStartDatetime: this.#scheduledStartDatetimeGenerator(),
-			endDatetime: this.#endDatetimeGenerator(),
-			//TODO Message
-			//TODO Consultation Requesters
-			//TODO Chat Message Activity
-			deletedAt: null
+			"attachedRoleID": (await this.#consultantInfoGenerator()).id,
+			"reason": this.#reasonGenerator(),
+			"status": this.#statusGenerator(),
+			"actionTaken": this.#actionTakenGenerator(),
+			"scheduledStartDatetime": this.#scheduledStartDatetimeGenerator(),
+			"endDatetime": this.#endDatetimeGenerator(),
+			/*
+			 * TODO Message
+			 * TODO Consultation Requesters
+			 * TODO Chat Message Activity
+			 */
+			"deletedAt": null
 		}
+	}
+
+	async attachChildren(model: Consultation): Promise<Consultation> {
+		const consulters = await this.#consultersGenerator()
+
+		if (model.id) {
+			const rawConsulters: { userID: number, consultationID: number }[] = consulters
+			.map(consulter => ({
+				"userID": consulter.id as number,
+				"consultationID": model.id as number
+			}))
+
+			await Consulter.bulkCreate(rawConsulters)
+		}
+
+		model.consulters = consulters
+
+		const consultantInfo = await AttachedRole.findByPk(model.attachedRoleID, {
+			"include": [ User, Role ]
+		}) as AttachedRole
+
+		model.consultantInfo = consultantInfo
+
+		return model
 	}
 
 	status(generator: () => string): ConsultationFactory {
@@ -83,26 +133,28 @@ export default class ConsultationFactory extends BaseFactory<
 		return this
 	}
 
-	attachedRole(generator: () => Promise<AttachedRole>): ConsultationFactory {
-		this.#attachedRole = generator
+	consultantInfo(generator: () => Promise<AttachedRole>): ConsultationFactory {
+		this.#consultantInfoGenerator = generator
+		return this
+	}
+
+	consulters(generator: () => Promise<User[]>): ConsultationFactory {
+		this.#consultersGenerator = generator
 		return this
 	}
 
 	willStart(): ConsultationFactory {
-		this.#statusGenerator = () =>
-		"will_start"
+		this.#statusGenerator = () => "will_start"
 		return this
 	}
 
 	onGoing(): ConsultationFactory {
-		this.#statusGenerator = () =>
-		"ongoing"
+		this.#statusGenerator = () => "ongoing"
 		return this
 	}
 
 	done(): ConsultationFactory {
-		this.#statusGenerator = () =>
-		"done"
+		this.#statusGenerator = () => "done"
 		return this
 	}
 }

@@ -1,35 +1,17 @@
-import type { Request } from "!/types/dependent"
-import type { Pipe, FieldRules } from "!/types/validation"
-
-import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import BodyValidation from "!/validations/body"
-import exists from "!/validators/manager/exists"
-import BoundController from "!/controllers/bound"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BoundJSONController from "!/controllers/bound_json"
 import MatchedIDParameterValidation from "!/validations/matched_id_parameter"
 
 /**
- * Specialized controller class which accept JSON as their request body and requires ID to match an
- * exisiting model in the database.
+ * Specialized controller class which accept JSON as their request body, and requires ID to match an
+ * existing model in the database and the same with ID in the JSON.
  *
  * Automatically casts the data ID to integer.
  */
-export default abstract class extends BoundController {
-	get bodyParser(): Middleware {
-		return CommonMiddlewareList.JSONBody
-	}
-
-	get postBoundValidations(): Validation[] {
+export default abstract class extends BoundJSONController {
+	get postBodyValidations(): Validation[] {
 		return [
-			new BodyValidation(
-				this.makeBodyRuleGenerator.bind(this)
-			),
 			new MatchedIDParameterValidation()
 		]
 	}
-
-	protected get boundPipe(): Pipe { return exists }
-
-	abstract makeBodyRuleGenerator(unusedRequest: Request): FieldRules
 }

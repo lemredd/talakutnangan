@@ -67,6 +67,12 @@ rules:
       capIsNew: false
   newline-per-chained-call: "off"
   no-alert: "off"
+  no-bitwise:
+    - "error"
+    -
+      allow:
+        - "|"
+        - "&"
   no-duplicate-imports: "warn"
   no-empty-function: ["error", { "allow": ["arrowFunctions"] }]
   no-console: "off"
@@ -97,6 +103,7 @@ rules:
   one-var: ["error", "never"]
   operator-linebreak: ["error", "before"]
   padded-blocks: ["error", "never"]
+  prefer-object-has-own: [ "warn" ]
   require-atomic-updates: [ "error", { "allowProperties": true } ]
   prefer-named-capture-group: "off"
   semi: [ "error", "never" ]
@@ -163,5 +170,6 @@ rules:
   vue/no-setup-props-destructure: "off"
   "@typescript-eslint/ban-ts-comment": "off"
   "@typescript-eslint/no-explicit-any": "off"
+  "@typescript-eslint/no-var-requires": "off"
   "@typescript-eslint/no-non-null-assertion": "warn"
   "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^unused", "varsIgnorePattern": "^unused" } ]

@@ -20,6 +20,7 @@ import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CreatedResponse from "!/response_infos/created"
 import MultipartController from "!/controllers/multipart"
+import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import BodyValidation from "!/validations/body"
@@ -100,14 +101,11 @@ export default class extends MultipartController {
 					"pipes": [ required, object ]
 				}
 
-				return makeResourceDocumentRules(
-					"user",
-					attributes,
-					true,
-					true,
-					{ relationships },
-					{ meta }
-				)
+				return makeResourceDocumentRules("user", attributes, {
+					"isNew": true,
+					"extraDataQueries": { relationships },
+					"extraQueries": { meta }
+				})
 			}),
 			new CSVParser("meta.importedCSV")
 		]
@@ -239,7 +237,8 @@ export default class extends MultipartController {
 
 	get postJobs(): Middleware[] {
 		return [
-			CommonMiddlewareList.newUserNotification
+			CommonMiddlewareList.newUserNotification,
+			new ActionAuditor("user.import")
 		]
 	}
 }

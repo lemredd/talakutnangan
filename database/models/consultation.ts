@@ -2,71 +2,79 @@ import {
 	Table,
 	Model,
 	Column,
-	HasOne,
-	HasMany,
 	DataType,
 	AllowNull,
 	BelongsTo,
 	ForeignKey,
 	BelongsToMany
 } from "sequelize-typescript"
-import { Status, StatusValues} from "$/types/database"
+import { Status, StatusValues } from "$/types/database"
 
+import User from "%/models/user"
 import Role from "%/models/role"
-//import Message from "%/models/message"
+import Consulter from "%/models/consulter"
 import AttachedRole from "%/models/attached_role"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class Consultation extends Model {
-	@ForeignKey(() => AttachedRole)
 	@Column({
-		allowNull: false
+		"allowNull": false,
+		"type": DataType.TEXT
 	})
-	attachedRoleID!: number
+		reason!: string
 
 	@Column({
-		type: DataType.TEXT,
-		allowNull: false
-	})
-	reason!: string
-
-	@Column({
-		allowNull: false,
-		type: DataType.ENUM(
+		"allowNull": false,
+		"type": DataType.ENUM(
 			...StatusValues
 		)
 	})
-	status!: Status
+		status!: Status
 
 	@Column({
-		type: DataType.TEXT,
-		allowNull: false
+		"allowNull": false,
+		"type": DataType.TEXT
 	})
-	actionTaken!: string
+		actionTaken!: string
 
 	@Column({
-		type: DataType.DATE,
-		allowNull: false
+		"allowNull": false,
+		"type": DataType.DATE
 	})
-	scheduledStartDatetime!: Date
+		scheduledStartDatetime!: Date
 
 	@AllowNull
 	@Column({
-		type: DataType.DATE,
-		defaultValue: null
+		"defaultValue": null,
+		"type": DataType.DATE
 	})
-	endDatetime!: Date|null
+		endDatetime!: Date|null
 
-	// @HasMany(() => Message)
-	// message?: Message
-
-	// TODO Message
+	@ForeignKey(() => AttachedRole)
+	@Column({
+		"allowNull": false
+	})
+		attachedRoleID!: number
 
 	@BelongsTo(() => AttachedRole)
-	attachedRole!: AttachedRole
+		consultantInfo?: AttachedRole
+
+	@BelongsToMany(() => User, () => Consulter)
+		consulters!: User[]
+
+	get consultant(): User|null { return this.consultantInfo?.user ?? null }
+
+	get consultantRole(): Role|null { return this.consultantInfo?.role ?? null }
+
+	/*
+	 * @HasMany(() => Message)
+	 * message?: Message
+	 */
+
+	// TODO Message
 
 	// TODO Consultation Requesters
 

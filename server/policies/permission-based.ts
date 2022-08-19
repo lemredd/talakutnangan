@@ -10,10 +10,14 @@ import AuthenticationBasedPolicy from "!/policies/authentication-based"
  *
  * Automatically requires user to be authenticated.
  */
-export default class<T extends { [key:string]: number }, U> extends AuthenticationBasedPolicy {
+export default class <
+	T extends { [key:string]: number },
+	U,
+	V extends AuthenticatedRequest = AuthenticatedRequest
+> extends AuthenticationBasedPolicy {
 	private permissionCombinations: U[][]
 	private permissionGroup: PermissionGroup<T, U>
-	private checkOthers: (request: AuthenticatedRequest) => Promise<void>
+	private checkOthers: (request: V) => Promise<void>
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
@@ -21,7 +25,10 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 	constructor(
 		permissionGroup: PermissionGroup<T, U>,
 		permissionCombinations: U[][],
-		checkOthers: (request: AuthenticatedRequest) => Promise<void> = async() => {}
+		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
+			const promise = Promise.resolve()
+			return promise
+		}
 	) {
 		super(true)
 		this.permissionGroup = permissionGroup
@@ -29,7 +36,7 @@ export default class<T extends { [key:string]: number }, U> extends Authenticati
 		this.checkOthers = checkOthers
 	}
 
-	async authorize(request: AuthenticatedRequest): Promise<void> {
+	async authorize(request: V): Promise<void> {
 		await super.authorize(request)
 
 		const user = deserialise(request.user)

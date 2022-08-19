@@ -21,7 +21,7 @@ export default class extends BaseManager<
 	async updateContents(userID: number, fileContents: Buffer): Promise<number> {
 		try {
 			const [ affectedCount ] = await this.model.update({ fileContents }, {
-				where: {
+				"where": {
 					userID
 				},
 				...this.transaction.transactionObject
@@ -30,7 +30,7 @@ export default class extends BaseManager<
 			Log.success("manager", "done updating profile picture")
 
 			return affectedCount
-		} catch(error) {
+		} catch (error) {
 			throw this.makeBaseError(error)
 		}
 	}

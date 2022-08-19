@@ -1,11 +1,8 @@
-import type {
+import {
 	PermissionMap,
 	PermissionInfo,
 	LevelPermission,
-	OperationPermission
-} from "$/types/permission"
-
-import {
+	OperationPermission,
 	VIEW,
 	CREATE,
 	UPDATE,
@@ -18,10 +15,12 @@ import {
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
+import { post } from "$/permissions/permission_list"
+import { Permissions as PostPermissions } from "$/permissions/post"
 
 const commentColumnName = "commentFlags"
 
-type CommentFlags = { [commentColumnName]: number }
+type CommentFlags = { [commentColumnName]: number, "postFlags": number }
 export type Permissions =
 	| OperationPermission
 	| Exclude<LevelPermission, "readOwnScope">
@@ -37,21 +36,52 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view", { "flag": VIEW,
-				"permissionDependencies": [] } ],
-			[ "create", { "flag": CREATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "update", { "flag": UPDATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
-				"permissionDependencies": [ "view" ] } ],
-
-			[ "readDepartmentScope", { "flag": READ_DEPARTMENT_SCOPE,
-				"permissionDependencies": [ ] } ],
-			[ "readOverallScope", { "flag": READ_OVERALL_SCOPE,
-				"permissionDependencies": [ ] } ],
-			[ "writeOwnScope", { "flag": WRITE_OWN_SCOPE,
-				"permissionDependencies": [ ] } ],
+			[ "view", {
+				"flag": VIEW,
+				"permissionDependencies": [],
+				"externalPermissionDependencies": [
+					{
+						"group": post,
+						"permissionDependencies": [ "view" ] as PostPermissions[]
+					}
+				]
+			} ],
+			[ "create", {
+				"flag": CREATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "update", {
+				"flag": UPDATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "archiveAndRestore", {
+				"flag": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "readDepartmentScope", {
+				"flag": READ_DEPARTMENT_SCOPE,
+				"permissionDependencies": [ ],
+				"externalPermissionDependencies": [
+					{
+						"group": post,
+						"permissionDependencies": [ "readDepartmentScope" ] as PostPermissions[]
+					}
+				]
+			} ],
+			[ "readOverallScope", {
+				"flag": READ_OVERALL_SCOPE,
+				"permissionDependencies": [ ],
+				"externalPermissionDependencies": [
+					{
+						"group": post,
+						"permissionDependencies": [ "readOverallScope" ] as PostPermissions[]
+					}
+				]
+			} ],
+			[ "writeOwnScope", {
+				"flag": WRITE_OWN_SCOPE,
+				"permissionDependencies": [ ]
+			} ],
 			[ "writeDepartmentScope", {
 				"flag": WRITE_DEPARTMENT_SCOPE,
 				"permissionDependencies": [ "readDepartmentScope" ]
@@ -60,9 +90,10 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 				"flag": WRITE_OVERALL_SCOPE,
 				"permissionDependencies": [ "readOverallScope" ]
 			} ],
-
-			[ "vote", { "flag": 0x0100,
-				"permissionDependencies": [ "view" ] } ]
+			[ "vote", {
+				"flag": 0x0100,
+				"permissionDependencies": [ "view" ]
+			} ]
 		])
 	}
 }

@@ -10,23 +10,25 @@ import StudentDetail from "%/models/student_detail"
 import DepartmentFactory from "~/factories/department"
 import EmployeeSchedule from "%/models/employee_schedule"
 
-describe("Database: User Authentication Operations", () => {
+describe("Database Manager: User Authentication Operations", () => {
 	it("can find user using credentials", async() => {
 		const role = await new RoleFactory().insertOne()
 		const manager = new UserManager()
 		const user = await new UserFactory().insertOne()
-		await AttachedRole.create({ "userID": user.id,
-			"roleID": role.id })
+		await AttachedRole.create({
+			"roleID": role.id,
+			"userID": user.id
+		})
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
 
 		expect(foundUser).not.toBeNull()
 		expect(foundUser).toHaveProperty("data.attributes.email", user.email)
-		expect(foundUser).toHaveProperty("data.relationships.roles")
-		expect(foundUser).toHaveProperty("included.0.attributes.name", role.name)
 		expect(foundUser).toHaveProperty("data.relationships.department")
-		expect(foundUser).toHaveProperty("included.1.id", user.departmentID)
+		expect(foundUser).toHaveProperty("included.0.id", user.departmentID)
+		expect(foundUser).toHaveProperty("data.relationships.roles")
+		expect(foundUser).toHaveProperty("included.1.attributes.name", role.name)
 	})
 
 	it("cannot search user with incorrect credentials", async() => {
@@ -68,7 +70,7 @@ describe("Database: User Authentication Operations", () => {
 	})
 })
 
-describe("Database: User read operations", () => {
+describe("Database Manager: User read operations", () => {
 	it("can search user with matching query", async() => {
 		const manager = new UserManager()
 		const user = await new UserFactory().insertOne()
@@ -141,7 +143,7 @@ describe("Database: User read operations", () => {
 	})
 })
 
-describe("Database: User Create Operations", () => {
+describe("Database Manager: User Create Operations", () => {
 	it("can create students in bulk", async() => {
 		const roles = await new RoleFactory().insertMany(3)
 		const departments = await new DepartmentFactory().insertMany(2)
@@ -178,13 +180,13 @@ describe("Database: User Create Operations", () => {
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(2)
 		expect(userData.included).toHaveLength(7)
-		expect(userData.included).toHaveProperty([ 0, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 1, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 2, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 3, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 4, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 5, "type" ], "student_detail")
-		expect(userData.included).toHaveProperty([ 6, "type" ], "student_detail")
+		expect(userData).toHaveProperty("included.0.type", "department")
+		expect(userData).toHaveProperty("included.1.type", "department")
+		expect(userData).toHaveProperty("included.2.type", "role")
+		expect(userData).toHaveProperty("included.3.type", "role")
+		expect(userData).toHaveProperty("included.4.type", "role")
+		expect(userData).toHaveProperty("included.5.type", "student_detail")
+		expect(userData).toHaveProperty("included.6.type", "student_detail")
 	})
 
 	it("can create reachable employees in bulk", async() => {
@@ -228,12 +230,27 @@ describe("Database: User Create Operations", () => {
 		expect(await EmployeeSchedule.count()).toBe(15)
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(3)
-		expect(userData.included).toHaveLength(5)
-		expect(userData.included).toHaveProperty([ 0, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 1, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 2, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 3, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 4, "type" ], "department")
+		expect(userData.included).toHaveLength(20)
+		expect(userData).toHaveProperty("included.0.type", "department")
+		expect(userData).toHaveProperty("included.1.type", "department")
+		expect(userData).toHaveProperty("included.2.type", "department")
+		expect(userData).toHaveProperty("included.3.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.4.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.5.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.6.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.7.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.8.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.9.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.10.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.11.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.12.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.13.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.14.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.15.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.16.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.17.type", "employee_schedule")
+		expect(userData).toHaveProperty("included.18.type", "role")
+		expect(userData).toHaveProperty("included.19.type", "role")
 	})
 
 	it("can create unreachable employees in bulk", async() => {
@@ -278,15 +295,15 @@ describe("Database: User Create Operations", () => {
 		expect(userData).toHaveProperty("data")
 		expect(userData.data).toHaveLength(3)
 		expect(userData.included).toHaveLength(5)
-		expect(userData.included).toHaveProperty([ 0, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 1, "type" ], "role")
-		expect(userData.included).toHaveProperty([ 2, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 3, "type" ], "department")
-		expect(userData.included).toHaveProperty([ 4, "type" ], "department")
+		expect(userData).toHaveProperty("included.0.type", "department")
+		expect(userData).toHaveProperty("included.1.type", "department")
+		expect(userData).toHaveProperty("included.2.type", "department")
+		expect(userData).toHaveProperty("included.3.type", "role")
+		expect(userData).toHaveProperty("included.4.type", "role")
 	})
 })
 
-describe("Database: User Update Operations", () => {
+describe("Database Manager: User Update Operations", () => {
 	it("can verify user", async() => {
 		const manager = new UserManager()
 		const user = await new UserFactory().notVerified().insertOne()
@@ -298,7 +315,7 @@ describe("Database: User Update Operations", () => {
 	})
 })
 
-describe("Database: Miscellaneous operations", () => {
+describe("Database Manager: Miscellaneous operations", () => {
 	it("can get sortable columns", () => {
 		// Include in test to alert in case there are new columns to decide whether to expose or not
 		const manager = new UserManager()
