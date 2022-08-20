@@ -49,7 +49,7 @@ describe("Validator: unique employee schedule", () => {
 		})
 	})
 
-	it.skip("cannot accept invalid value", async() => {
+	it("cannot accept invalid value", async() => {
 		const user = await new UserFactory().insertOne()
 		const schedule = await new EmployeeScheduleFactory()
 		.user(() => Promise.resolve(user))
@@ -57,13 +57,12 @@ describe("Validator: unique employee schedule", () => {
 		.scheduleStart(() => convertTimeToMinutes("09:00"))
 		.scheduleEnd(() => convertTimeToMinutes("15:00"))
 		.makeOne()
-		const createdSchedule = await new EmployeeScheduleFactory()
+		await new EmployeeScheduleFactory()
 		.user(() => Promise.resolve(user))
 		.dayName(() => "tuesday")
 		.scheduleStart(() => convertTimeToMinutes("09:00"))
 		.scheduleEnd(() => convertTimeToMinutes("12:00"))
 		.insertOne()
-		console.log(createdSchedule)
 		const value = Promise.resolve(makeInitialState({
 			"dayName": schedule.dayName,
 			"scheduleStart": schedule.scheduleStart,
@@ -82,9 +81,11 @@ describe("Validator: unique employee schedule", () => {
 			}
 		}
 
-		const error = uniqueEmployeeSchedule(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await uniqueEmployeeSchedule(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

@@ -2,6 +2,7 @@ import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
+import type { Subtransformer, OptionalSubtransformerList, SubtransformerList } from "%/types/hybrid"
 import type {
 	TransformerOptions,
 	RelationshipTransformerInfo,
@@ -10,14 +11,6 @@ import type {
 
 import Serializer from "%/transformers/serializer"
 import processData from "%/transformers/helpers/process_data"
-
-type Subtransformer = {
-	attribute: string,
-	// eslint-disable-next-line no-use-before-define
-	transformer: Transformer<any, any>
-}
-
-type SubtransformerList = Subtransformer[]
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**
@@ -28,13 +21,13 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	 */
 	public readonly subtransformers: SubtransformerList
 
-	constructor(type: string, subtransformers: SubtransformerList = []) {
+	constructor(type: string, subtransformers: OptionalSubtransformerList = []) {
 		super()
 		this.type = type
-		this.subtransformers = subtransformers
+		this.subtransformers = subtransformers.filter(Boolean) as SubtransformerList
 
 		if (subtransformers.length > 0) {
-			this.relationships = subtransformers.reduce(
+			this.relationships = this.subtransformers.reduce(
 				(previousRelationships, subtransformer) => {
 					const compiledRelationships = {
 						...previousRelationships,
