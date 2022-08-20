@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils"
 
-import LogInForm from "@/log_in_form.vue"
+import LogInForm from "@/authentication/log_in_form.vue"
 import UserFetcher from "$@/fetchers/user"
 import { UnitError } from "$/types/server"
 import RequestEnvironment from "$/helpers/request_environment"

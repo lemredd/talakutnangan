@@ -78,7 +78,7 @@ import { inject } from "vue"
 
 import type { PageContext } from "#/types"
 
-import LogInForm from "@/log_in_form.vue"
+import LogInForm from "@/authentication/log_in_form.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const receivedError = pageContext.pageProps.parsedUnitError
