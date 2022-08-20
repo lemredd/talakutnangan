@@ -1,5 +1,8 @@
 <template>
-	<a role="button" @click="logOut">
+	<a
+		id="log-out-btn"
+		role="button"
+		@click="logOut">
 		<span class="material-icons">logout</span>
 		Logout
 	</a>
