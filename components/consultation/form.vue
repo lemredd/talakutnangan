@@ -5,12 +5,12 @@
 		</template>
 		<template #default>
 			<form>
-				<SelectableOptions
+				<SelectableOptionsField
 					v-model="chosenReason"
 					label="Kind of Reason: "
 					placeholder="Choose your reason"
 					:options="reasons"/>
-				<Textual
+				<NonSensitiveTextField
 					v-if="hasChosenOtherReason"
 					v-model="otherReason"
 					label="What are the other reasons(s)?"
@@ -32,8 +32,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import Overlay from "@/helpers/overlay.vue"
-import SelectableOptions from "@/fields/selectable_options.vue"
-import Textual from "@/fields/textual.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
