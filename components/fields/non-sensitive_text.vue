@@ -22,7 +22,6 @@
 		</div>
 	</div>
 </template>
-
 <style scoped lang="scss">
 .input-container {
 	@apply flex flex-col;

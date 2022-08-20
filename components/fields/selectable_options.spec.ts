@@ -1,9 +1,9 @@
 import { shallowMount } from "@vue/test-utils"
 import Component from "@/fields/selectable_options.vue"
 
-describe("Component/Fields: Selectable options", () => {
+describe("Component: fields/selectable_options", () => {
 	it("should emit custom event", async() => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
 				"options": [ 1, 2, 3 ]
@@ -18,7 +18,7 @@ describe("Component/Fields: Selectable options", () => {
 	})
 
 	it("should not select for missing model value", () => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
 				"options": []
