@@ -1,5 +1,11 @@
 <template>
 	<div class="user-controls">
+		<div v-if="willStart" class="wide-control">
+			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
+			<button class="start">
+				Start consultation
+			</button>
+		</div>
 		<div v-if="isOngoing" class="left-controls">
 			<!-- TODO(lead/button): Apply functionality -->
 			<button class="material-icons">
@@ -46,5 +52,6 @@ import type { Status } from "$/types/database"
 
 const { status } = defineProps<{ status: Status }>()
 
+const willStart = computed<boolean>(() => status === "will_start")
 const isOngoing = computed<boolean>(() => status === "ongoing")
 </script>
