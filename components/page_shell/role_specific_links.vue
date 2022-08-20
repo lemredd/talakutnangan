@@ -18,14 +18,7 @@
 						<span class="link-name">{{ link.name }}</span>
 					</Anchor>
 				</div>
-				<a
-					id="logout-btn"
-					role="button"
-					@click="logOut"
-					class="flex items-center">
-					<span class="material-icons">logout</span>
-					Logout
-				</a>
+				<LogOutBtn class="flex items-center"/>
 			</template>
 		</RoleLinksList>
 	</div>
@@ -111,7 +104,10 @@ import { computed, inject, ref, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
-import UserFetcher from "$@/fetchers/user"
+
+import Anchor from "@/anchor.vue"
+import LogOutBtn from "@/authentication/log_out_btn.vue"
+import RoleLinksList from "@/Dropdown.vue"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
 import { user, post } from "$/permissions/permission_list"
@@ -128,11 +124,6 @@ import {
 	IMPORT_USERS,
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
-
-import Anchor from "@/anchor.vue"
-import RoleLinksList from "@/Dropdown.vue"
-
-UserFetcher.initialize("/api")
 
 const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
@@ -242,10 +233,5 @@ function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
-}
-
-function logOut() {
-	new UserFetcher().logOut()
-	.then(console.log)
 }
 </script>

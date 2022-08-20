@@ -44,9 +44,7 @@
 						<a href="">
 							Profile Settings
 						</a>
-						<a role="button" @click="logOut">
-							Logout
-						</a>
+						<LogOutBtn/>
 					</ul>
 				</template>
 			</Dropdown>
@@ -164,10 +162,8 @@ import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Dropdown from "@/Dropdown.vue"
-import UserFetcher from "$@/fetchers/user"
+import LogOutBtn from "@/authentication/log_out_btn.vue"
 import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
-
-UserFetcher.initialize("/api")
 
 const isLoggingIn = inject("isLoggingIn") as boolean
 const { pageProps } = inject("pageContext") as PageContext
@@ -190,9 +186,4 @@ const notifications = [
 		"type": "general"
 	}
 ]
-
-function logOut() {
-	new UserFetcher().logOut()
-	.then(console.log)
-}
 </script>
