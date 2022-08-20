@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { mount } from "@vue/test-utils"
 
 import LogOutBtn from "@/authentication/log_out_btn.vue"

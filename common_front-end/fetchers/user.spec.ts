@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import type { UnitError } from "$/types/server"
 
 import UserFetcher from "$@/fetchers/user"
@@ -7,10 +8,10 @@ describe("Communicator: UserFetcher", () => {
 	it("can log in", async() => {
 		fetchMock.mockResponse(
 			JSON.stringify({
+				"data": null,
 				"meta": {
 					"redirectURL": "http://localhost"
-				},
-				"data": null
+				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
@@ -55,10 +56,10 @@ describe("Communicator: UserFetcher", () => {
 			JSON.stringify({
 				"errors": [
 					{
-						"status": RequestEnvironment.status.UNAUTHORIZED,
 						"code": "1",
-						"title": "Authorization Error",
-						"detail": "The user must be logged in to invoke the action."
+						"detail": "The user must be logged in to invoke the action.",
+						"status": RequestEnvironment.status.UNAUTHORIZED,
+						"title": "Authorization Error"
 					}
 				] as UnitError[]
 			}),

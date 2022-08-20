@@ -132,68 +132,75 @@ const pageContext = inject("pageContext") as DeserializedPageContext
 const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
-		"mustBeGuest": true,
 		"kinds": null,
-		"permissionCombinations": null,
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "account_circle",
 				"name": "Log in",
-				"path": "/log_in",
-				"icon": "account_circle"
+				"path": "/log_in"
 			}
-		]
+		],
+		"mustBeGuest": true,
+		"permissionCombinations": null,
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [],
-		"permissionCombinations": [],
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "notifications",
 				"name": "Notifications",
-				"path": "/notifications",
-				"icon": "notifications"
+				"path": "/notifications"
 			},
 			{
+				"icon": "account_circle",
 				"name": "User Settings",
-				"path": "/settings",
-				"icon": "account_circle"
+				"path": "/settings"
 			}
-		]
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [],
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [],
+		"links": [
+			{
+				"icon": "forum",
+				"name": "Forum",
+				"path": "/forum"
+			}
+		],
+		"mustBeGuest": false,
 		"permissionCombinations": [
 			READ_ANYONE_ON_OWN_DEPARTMENT,
 			READ_ANYONE_ON_ALL_DEPARTMENTS
 		],
-		"permissionGroup": post,
-		"links": [
-			{
-				"name": "Forum",
-				"path": "/forum",
-				"icon": "forum"
-			}
-		]
+		"permissionGroup": post
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [ "student", "reachable_employee" ],
-		"permissionCombinations": [],
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultations",
-				"icon": "chat"
+				"path": "/consultations"
 			}
-		]
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [],
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": null,
+		"links": [
+			{
+				"icon": "group",
+				"name": "Manage Users",
+				"path": "/manage"
+			}
+		],
+		"mustBeGuest": false,
 		"permissionCombinations": [
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
@@ -202,14 +209,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			IMPORT_USERS,
 			RESET_PASSWORD
 		],
-		"permissionGroup": user,
-		"links": [
-			{
-				"name": "Manage Users",
-				"path": "/manage",
-				"icon": "group"
-			}
-		]
+		"permissionGroup": user
 	}
 ]
 
