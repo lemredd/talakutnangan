@@ -4,9 +4,8 @@ import ssr from "vite-plugin-ssr/plugin"
 import tsconfig from "vite-tsconfig-paths"
 import windicss from "vite-plugin-windicss"
 import { resolve } from "path"
-import RequestEnvironment from "./shareable/helpers/request_environment"
 
-const config: UserConfig = {
+const configuration: UserConfig = {
 	"resolve": {
 		"alias": {
 			"@styles": resolve(__dirname, "styles")
@@ -27,8 +26,8 @@ const config: UserConfig = {
 	]
 }
 
-if (RequestEnvironment.isNotOnProduction) {
-	config.server = {
+if (process.env.NODE_ENV === "dev") {
+	configuration.server = {
 		"hmr": {
 			"host": "localhost",
 			"protocol": "ws"
@@ -36,4 +35,4 @@ if (RequestEnvironment.isNotOnProduction) {
 	}
 }
 
-export default config
+export default configuration
