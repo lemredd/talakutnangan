@@ -1,10 +1,12 @@
 <template>
 	<div>
 		<label :for="selectID">{{ label }}</label>
-		<select :id="selectID" @change="updateModelValue">
+		<select
+			:id="selectID"
+			:value="modelValue"
+			@change="updateModelValue">
 			<option
 				value=""
-				:selected="typeof modelValue === 'undefined'"
 				disabled>
 				{{
 					placeholder ?? "Please select"
@@ -14,8 +16,7 @@
 			<option
 				v-for="option in options"
 				:key="option"
-				:value="option"
-				:selected="modelValue === option">
+				:value="option">
 				{{ option }}
 			</option>
 		</select>
@@ -34,7 +35,7 @@ const {
 	placeholder
 } = defineProps<{
 	options: readonly any[]
-	modelValue?: any
+	modelValue: any
 	label: string
 	placeholder?: string
 }>()
