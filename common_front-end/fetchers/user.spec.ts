@@ -1,14 +1,17 @@
+/* eslint-disable no-undef */
+import type { UnitError } from "$/types/server"
+
+import UserFetcher from "$@/fetchers/user"
 import RequestEnvironment from "$/helpers/request_environment"
-import UserFetcher from "./user"
 
 describe("Communicator: UserFetcher", () => {
 	it("can log in", async() => {
-		fetchMock.mockResponseOnce(
+		fetchMock.mockResponse(
 			JSON.stringify({
+				"data": null,
 				"meta": {
 					"redirectURL": "http://localhost"
-				},
-				"data": null
+				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
@@ -30,5 +33,38 @@ describe("Communicator: UserFetcher", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty("body.data", null)
 		expect(response).toHaveProperty("body.meta.redirectURL", "http://localhost")
+	})
+
+	it("can log out", async() => {
+		fetchMock.mockResponse(
+			JSON.stringify({}),
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+
+		const fetcher = new UserFetcher()
+		const response = await fetcher.logOut()
+		expect(response).toHaveProperty("body", null)
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
+	})
+	it("should not log out if user is not authenticated", async() => {
+		fetchMock.mockResponse(
+			JSON.stringify({
+				"errors": [
+					{
+						"code": "1",
+						"detail": "The user must be logged in to invoke the action.",
+						"status": RequestEnvironment.status.UNAUTHORIZED,
+						"title": "Authorization Error"
+					}
+				] as UnitError[]
+			}),
+			{ "status": RequestEnvironment.status.UNAUTHORIZED }
+		)
+		const fetcher = new UserFetcher()
+
+		const response = await fetcher.logOut()
+		const { body } = response
+		expect(body).toHaveProperty("errors")
+		expect(response).toHaveProperty("status", RequestEnvironment.status.UNAUTHORIZED)
 	})
 })
