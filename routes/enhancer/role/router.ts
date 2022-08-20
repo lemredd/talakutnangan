@@ -1,6 +1,6 @@
 import Router from "!/bases/router"
-import GetCreateRoute from "!%/enhancer/role/create.get"
-import GetUpdateRoute from "!%/enhancer/role/update.get"
+import GetCreateRoute from "./create.get"
+import GetIDRoute from "./id.get"
 
 export default class extends Router {
 	constructor() {
@@ -8,7 +8,7 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetCreateRoute(),
-			new GetUpdateRoute()
+			new GetIDRoute()
 		])
 	}
 }
