@@ -36,8 +36,13 @@ import SelectableOptions from "@/fields/selectable_options.vue"
 import Textual from "@/fields/textual.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
+
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
 const otherReason = ref<string>("")
+const reason = computed<string>(() => {
+	if (hasChosenOtherReason.value) return otherReason.value
+	return chosenReason.value
+})
 </script>
