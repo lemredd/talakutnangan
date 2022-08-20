@@ -1,6 +1,6 @@
 import type { PartialOrPickObject } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedChatMessageDocument } from "$/types/documents/chat_message"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
 import type {
 	DeserializedChatMessageActivityListDocument
@@ -35,7 +35,7 @@ export type RawConsultationRelationships<T extends string|number = string> = [
 	[ "consultantRole", DeserializedRoleDocument<T> ],
 	[ "consulters", DeserializedUserListDocument<T> ],
 	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument<T> ],
-	[ "lastChatMessage", DeserializedChatMessageDocument<T> ]
+	[ "chatMessages", DeserializedChatMessageListDocument<T> ]
 ]
 
 export type ConsultationRelationshipNames = RawConsultationRelationships[number][0]
