@@ -2,7 +2,7 @@
 	<div class="user-controls">
 		<div v-if="willStart" class="wide-control">
 			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
-			<button class="start">
+			<button class="start" @click="startConsultation">
 				Start consultation
 			</button>
 		</div>
@@ -54,4 +54,11 @@ const { status } = defineProps<{ status: Status }>()
 
 const willStart = computed<boolean>(() => status === "will_start")
 const isOngoing = computed<boolean>(() => status === "ongoing")
+
+interface CustomEvents {
+	(eventName: "startConsultation"): void
+}
+const emit = defineEmits<CustomEvents>()
+
+const startConsultation = () => emit("startConsultation")
 </script>
