@@ -13,8 +13,13 @@
 		</template>
 	</Overlay>
 </template>
+
+<style lang="scss">
+
+</style>
+
 <script setup lang="ts">
 import Overlay from "@/helpers/overlay.vue"
 
-const { isShown } = defineProps<{ "isShown": boolean }>()
+const { isShown } = defineProps<{ isShown: boolean }>()
 </script>

@@ -54,7 +54,8 @@
 </style>
 
 <script setup lang="ts">
-const { isShown } = defineProps<{ "isShown": boolean }>()
+const { isShown } = defineProps<{ isShown: boolean }>()
+
 const emit = defineEmits([ "close" ])
 
 function emitClose() {
