@@ -1,3 +1,4 @@
+import type { Status } from "$/types/database"
 import type { PartialOrPickObject } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -24,7 +25,7 @@ extends ResourceIdentifier<T> {
 
 export interface ConsultationAttributes extends Attributes {
 	reason: string,
-	status: string,
+	status: Status,
 	actionTaken: string,
 	scheduledStartDatetim: Date,
 	endDatetime: Date
@@ -43,8 +44,9 @@ export type ConsultationRelationshipNames = RawConsultationRelationships[number]
 export type DeserializedConsultationRelationships<T extends string|number = string>
 = DeserializedRelationships<T, RawConsultationRelationships<T>>
 
-export type ConsultationResource = Resource<
-	ConsultationResourceIdentifier,
+export type ConsultationResource<T extends string|number = string> = Resource<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
 >
 
@@ -61,16 +63,18 @@ export type DeserializedConsultationResource<
 	DeserializedConsultationRelationships<T>
 >
 
-export type ConsultationDocument = ResourceDocument<
-	ConsultationResourceIdentifier,
+export type ConsultationDocument<T extends string|number = string> = ResourceDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	ConsultationResource
+	ConsultationResource<T>
 >
 
-export type ConsultationListDocument = ResourceListDocument<
-	ConsultationResourceIdentifier,
+export type ConsultationListDocument<T extends string|number = string> = ResourceListDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	ConsultationResource
+	ConsultationResource<T>
 >
 
 export type DeserializedConsultationDocument<
