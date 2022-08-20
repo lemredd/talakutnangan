@@ -101,7 +101,7 @@
 <script setup lang="ts">
 import type { Textual } from "@/fields/types"
 import { ref } from "vue"
-import Overlay from "@/overlay.vue"
+import Overlay from "@/helpers/overlay.vue"
 
 const {
 	label,
