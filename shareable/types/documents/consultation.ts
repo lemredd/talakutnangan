@@ -1,3 +1,9 @@
+import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { DeserializedChatMessageDocument } from "$/types/documents/chat_message"
+import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
+import type {
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
 import type {
 	Resource,
 	Attributes,
@@ -5,6 +11,7 @@ import type {
 	ResourceIdentifier,
 	DeserializedResource,
 	ResourceListDocument,
+	DeserializedRelationships,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
@@ -22,17 +29,36 @@ export interface ConsultationAttributes extends Attributes {
 	endDatetime: Date
 }
 
+export type RawConsultationRelationships<T extends string|number = string> = [
+	[ "consultant", DeserializedUserDocument<T> ],
+	[ "consultantRole", DeserializedRoleDocument<T> ],
+	[ "consulters", DeserializedUserListDocument<T> ],
+	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument<T> ],
+	[ "lastChatMessage", DeserializedChatMessageDocument<T> ]
+]
+
+export type ConsultationRelationshipNames = RawConsultationRelationships[number][0]
+
+export type DeserializedConsultationRelationships<T extends string|number = string>
+= DeserializedRelationships<T, RawConsultationRelationships<T>>
+
 export type ConsultationResource = Resource<
 	ConsultationResourceIdentifier,
 	ConsultationAttributes
 >
 
-export type DeserializedConsultationResource<T extends string|number = string>
-= DeserializedResource<
+export type DeserializedConsultationResource<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResource<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
->
+> & (
+	U extends ConsultationRelationshipNames
+	? Pick<DeserializedConsultationRelationships<T>, U>
+	: Partial<DeserializedConsultationRelationships<T>>
+)
 
 export type ConsultationDocument = ResourceDocument<
 	ConsultationResourceIdentifier,
