@@ -26,8 +26,8 @@
 			<div class="selected-consultation-new">
 				<p><strong>This is a new consultation.</strong> here are some additional details</p>
 				<ul class="selected-consultation-additional-details bg-gray-300 p-5">
-					<li>Ticket: {{ consultation.ticket }}</li>
-					<li>Status: {{ consultation.status }}</li>
+					<li>Ticket: {{ consultationID }}</li>
+					<li>Status: {{ consultationStatus }}</li>
 
 					<!-- TODO(lead/button): Apply functionality -->
 					<li><a href="#">View printable form (PDF)</a></li>
@@ -35,11 +35,11 @@
 			</div>
 
 			<div
-				v-for="chat in consultation.chats"
-				:key="chat"
+				v-for="message in consultationMessages.data"
+				:key="message.id"
 				class="chat-entry">
 				<!-- TODO(others): properly place chat entries -->
-				{{ chat }}
+				{{ JSON.stringify(message.data) }}
 			</div>
 		</div>
 		<div class="user-controls border-t p-3 flex">
@@ -75,7 +75,19 @@
 </template>
 
 <script setup lang="ts">
-import type { GeneralObject } from "$/types/general"
+import { computed } from "vue"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedConsultationDocument,
+	ConsultationRelationshipNames
+} from "$/types/documents/consultation"
 
-const { consultation } = defineProps<{ consultation: GeneralObject }>()
+const { consultation } = defineProps<{
+	consultation: DeserializedConsultationDocument<string, ConsultationRelationshipNames>
+}>()
+const consultationID = computed<string>(() => consultation.data.id)
+const consultationStatus = computed<string>(() => consultation.data.status)
+const consultationMessages = computed<DeserializedChatMessageListDocument<string>>(
+	() => consultation.data.chatMessages as DeserializedChatMessageListDocument<string>
+)
 </script>
