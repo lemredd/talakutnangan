@@ -28,9 +28,6 @@ describe("Component: Page Shell/Role Specific Links", () => {
 						}
 					}
 				}
-			},
-			"props": {
-				"role": "student_or_employee"
 			}
 		})
 		const link = wrapper.find("anchor-stub:first-of-type")
@@ -55,9 +52,6 @@ describe("Component: Page Shell/Role Specific Links", () => {
 						}
 					}
 				}
-			},
-			"props": {
-				"role": "guest"
 			}
 		})
 		const link = wrapper.find("anchor-stub:first-of-type")
@@ -91,9 +85,6 @@ describe("Component: Page Shell/Role Specific Links", () => {
 						}
 					}
 				}
-			},
-			"props": {
-				"role": "student_or_employee"
 			}
 		})
 
