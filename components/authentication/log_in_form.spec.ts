@@ -1,8 +1,10 @@
+import { v4 } from "uuid"
 import { mount } from "@vue/test-utils"
 
-import LogInForm from "@/authentication/log_in_form.vue"
+import type { UnitError } from "$/types/server"
+
 import UserFetcher from "$@/fetchers/user"
-import { UnitError } from "$/types/server"
+import LogInForm from "@/authentication/log_in_form.vue"
 import RequestEnvironment from "$/helpers/request_environment"
 
 describe("Component: Log In Form", () => {
@@ -10,7 +12,7 @@ describe("Component: Log In Form", () => {
 		fetchMock.mockResponse(
 			JSON.stringify({
 				"body": {
-					"token": "66e81a73-65fe-403d-a8e5-506272702209"
+					"token": v4()
 				},
 				"status": 200
 			}),
