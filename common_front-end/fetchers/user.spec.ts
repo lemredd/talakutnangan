@@ -1,5 +1,3 @@
-import { v4 } from "uuid"
-
 import type { UnitError } from "$/types/server"
 
 import UserFetcher from "$@/fetchers/user"
@@ -38,25 +36,17 @@ describe("Communicator: UserFetcher", () => {
 
 	it("can log out", async() => {
 		fetchMock.mockResponse(
-			JSON.stringify({
-				"body": {
-					"token": v4()
-				},
-				"status": 200
-			}),
-			{ "status": RequestEnvironment.status.OK }
-		)
-		const fetcher = new UserFetcher()
-		await fetcher.logIn({
-			"email": "sample@example.com",
-			"password": "1234"
-		})
-
-		fetchMock.mockResponse(
 			JSON.stringify({}),
 			{ "status": RequestEnvironment.status.NO_CONTENT }
 		)
+
+		const fetcher = new UserFetcher()
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
 		const response = await fetcher.logOut()
+
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/user/log_out")
 		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
