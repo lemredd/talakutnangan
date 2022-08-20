@@ -5,53 +5,23 @@
 		</label>
 		<div class="input-and-controls">
 			<input
-				ref="inputField"
 				class="bg-transparent"
 				:class="inputClasses"
 				:type="type"
 				:value="modelValue"
 				:required="required"
 				:disabled="disabled || editable"
-				@input="emitUpdate"/>
+				@input="updateModelValue"/>
 			<button
 				v-if="editable"
 				type="button"
 				class="material-icons"
-				@click="verify ? verifyBeforeSubmit() : editField()">
+				@click="editField">
 				edit
 			</button>
 		</div>
 	</div>
-
-	<Overlay :is-shown="isOverlayShown" @close="toggleOverlay">
-		<template #header>
-			<h1>Update your {{ type }}</h1>
-		</template>
-		<template #default>
-			<div v-if="type === 'email' || type === 'password'" class="verification">
-				<label for="password-confirm" class="text-black">
-					<input
-						id="password-confirm"
-						type="password"
-						placeholder="enter your password"/>
-				</label>
-				<label :for="`new-${type}`">
-					<input
-						:id="`new-${type}`"
-						:type="type"
-						:placeholder="`enter your new ${type}`"/>
-				</label>
-			</div>
-			<div class="password"></div>
-		</template>
-		<template #footer>
-			<button type="button">
-				Save {{ type }}
-			</button>
-		</template>
-	</Overlay>
 </template>
-
 <style scoped lang="scss">
 .input-container {
 	@apply flex flex-col;
@@ -85,23 +55,11 @@
 		}
 	}
 }
-
-.verification {
-	@apply flex flex-col;
-
-	label {
-		padding: .5em 1em;
-
-		input {
-			padding: .25em .5em;
-		}
-	}
-}
 </style>
 <script setup lang="ts">
-import type { Textual } from "@/fields/types"
-import { ref } from "vue"
-import Overlay from "@/helpers/overlay.vue"
+import type { Textual as BaseTextual } from "@/fields/types"
+
+type Textual = Exclude<BaseTextual, "password">
 
 const {
 	label,
@@ -110,7 +68,6 @@ const {
 	required = true,
 	disabled,
 	editable,
-	verify,
 	inputClasses
 } = defineProps<{
 	label?: string
@@ -119,29 +76,20 @@ const {
 	required?: boolean
 	disabled?: boolean
 	editable?: boolean
-	verify?: boolean
 	inputClasses?: string
 }>()
 const emit = defineEmits<{(e: "update:modelValue", newModelValue: string): void}>()
 
-const inputField = ref<HTMLInputElement | null>(null)
-const isOverlayShown = ref(false)
-
-function emitUpdate(event: Event) {
+function updateModelValue(event: Event) {
 	const castTarget = event.target as HTMLInputElement
 	emit("update:modelValue", castTarget.value)
 }
 
-function editField() {
+function editField(event: Event) {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	inputField.value!.disabled = !inputField.value?.disabled
-}
+	const castTarget = event.target as HTMLButtonElement
+	const inputSibling = castTarget.previousSibling as HTMLInputElement
 
-function verifyBeforeSubmit() {
-	toggleOverlay()
-}
-
-function toggleOverlay() {
-	isOverlayShown.value = !isOverlayShown.value
+	inputSibling.disabled = !inputSibling.disabled
 }
 </script>

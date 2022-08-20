@@ -5,7 +5,7 @@ import tsconfig from "vite-tsconfig-paths"
 import windicss from "vite-plugin-windicss"
 import { resolve } from "path"
 
-const config: UserConfig = {
+const configuration: UserConfig = {
 	"resolve": {
 		"alias": {
 			"@styles": resolve(__dirname, "styles")
@@ -26,4 +26,13 @@ const config: UserConfig = {
 	]
 }
 
-export default config
+if (process.env.NODE_ENV === "dev") {
+	configuration.server = {
+		"hmr": {
+			"host": "localhost",
+			"protocol": "ws"
+		}
+	}
+}
+
+export default configuration

@@ -8,29 +8,50 @@
 	<div class="consultations-container ">
 		<section class="consultations-picker left">
 			<div class="consultations-list-header p-3">
-				<h2 class="flex-1">Consultations</h2>
+				<h2 class="flex-1">
+					Consultations
+				</h2>
 				<!-- TODO(lead/button): apply functionality -->
-				<button class="material-icons expand-or-collapse">chevron_left</button>
+				<button class="material-icons expand-or-collapse">
+					chevron_left
+				</button>
 
 				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons search">search</button>
+				<button class="material-icons search">
+					search
+				</button>
 
 				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons add">add</button>
+				<button class="material-icons add" @click="toggleAddingSchedule">
+					add
+				</button>
 			</div>
+
+			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
+
 			<div class="consultations-list">
-				<div class="mx-auto max-w-[max-content] no-consultations" v-if="!consultations.length">
-					<img class="mx-auto" :src="SadIcon" />
+				<div v-if="!consultations.length" class="mx-auto max-w-[max-content] no-consultations">
+					<img class="mx-auto" :src="SadIcon"/>
 					<h2>There are no consultations yet...</h2>
 				</div>
-				<div v-for="consultation in consultations" @click="pickConsultation(consultation.id)" class="consultation p-2 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] hover:bg-gray-300 justify-between">
+				<div
+					v-for="consultation in consultations"
+					:key="consultation.id"
+					class="consultation"
+					@click="pickConsultation(consultation.id)">
 					<!-- TODO(others): should contain profile picture?  -->
 
-					<h3 class="consultation-title col-span-full font-400">{{ consultation.title }}</h3>
+					<h3 class="consultation-title col-span-full font-400">
+						{{ consultation.title }}
+					</h3>
 
 					<small class="last-chat span">
 						<!-- TODO(others): must limit length -->
-						{{ consultation.chats ? consultation.chats[consultation.chats.length-1] : "Start by saying hello!" }}
+						{{
+							consultation.chats
+								? consultation.chats[consultation.chats.length - 1]
+								: "Start by saying hello!"
+						}}
 					</small>
 
 					<div class="last-chat-time-sent">
@@ -44,7 +65,7 @@
 		<section class="selected-consultation flex flex-col right">
 			<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
 
-			<div class="selected-consultation-header border-b p-3 grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))] justify-between">
+			<div class="selected-consultation-header">
 				<div class="selected-consultation-title">
 					{{ selectedConsultation.title }}
 				</div>
@@ -54,10 +75,14 @@
 				</div>
 				<div class="controls row-span-full self-center">
 					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">video_camera_back</button>
+					<button class="material-icons">
+						video_camera_back
+					</button>
 
 					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">more_horiz</button>
+					<button class="material-icons">
+						more_horiz
+					</button>
 				</div>
 			</div>
 			<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
@@ -72,30 +97,43 @@
 					</ul>
 				</div>
 
-				<div class="chat-entry" v-for="chat in selectedConsultation.chats">
-				<!-- TODO(others): properly place chat entries -->
+				<div
+					v-for="chat in selectedConsultation.chats"
+					:key="chat"
+					class="chat-entry">
+					<!-- TODO(others): properly place chat entries -->
 					{{ chat }}
 				</div>
 			</div>
 			<div class="user-controls border-t p-3 flex">
-					<div class="left-controls">
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">more_horiz</button>
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">photo_camera</button>
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">image</button>
-					</div>
-					<div class="message-box flex-1 border">
-						<input type="text">
-					</div>
-					<div class="right-controls">
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">sentiment_satisfied</button>
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">send</button>
-					</div>
+				<div class="left-controls">
+					<!-- TODO(lead/button): Apply functionality -->
+					<button class="material-icons">
+						more_horiz
+					</button>
+					<!-- TODO(lead/button): Apply functionality -->
+					<button class="material-icons">
+						photo_camera
+					</button>
+					<!-- TODO(lead/button): Apply functionality -->
+					<button class="material-icons">
+						image
+					</button>
 				</div>
+				<div class="message-box flex-1 border">
+					<input type="text"/>
+				</div>
+				<div class="right-controls">
+					<!-- TODO(lead/button): Apply functionality -->
+					<button class="material-icons">
+						sentiment_satisfied
+					</button>
+					<!-- TODO(lead/button): Apply functionality -->
+					<button class="material-icons">
+						send
+					</button>
+				</div>
+			</div>
 		</section>
 	</div>
 </template>
@@ -121,6 +159,23 @@ footer {
 .consultations-container, .consultations-list-header {
 	@apply flex;
 }
+
+.consultation {
+	@apply
+		p-2
+		grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))]
+		justify-between
+		hover:bg-gray-300
+}
+
+.selected-consultation-header {
+	@apply
+		border-b
+		p-3
+		grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))]
+		justify-between
+}
+
 .consultations-container {
 	section {
 		@include useContentBaseHeight;
@@ -155,9 +210,9 @@ footer {
 </style>
 
 <script setup lang="ts">
-import SadIcon from "./sadicon.png"
 import { computed, ref } from "vue"
-let input = ref("")
+import SadIcon from "./sadicon.png"
+import ConsultationForm from "@/consultation/form.vue"
 
 type Consultation = {
 	// TODO(lead/types): type will change soon
@@ -171,14 +226,20 @@ type Consultation = {
 	members?: number[]
 	status: string
 }
+
+const isAddingSchedule = ref<boolean>(false)
+function toggleAddingSchedule() {
+	isAddingSchedule.value = !isAddingSchedule.value
+}
+
 const consultations = ref<Consultation[]>([
 	{
-		id: 0,
-		studentId: 0,
-		employeeId: 0,
-		ticket: 0,
-		title: "Sample Consultation",
-		chats: [
+		"id": 0,
+		"studentId": 0,
+		"employeeId": 0,
+		"ticket": 0,
+		"title": "Sample Consultation",
+		"chats": [
 			"sample chat",
 			"sample chat",
 			"sample chat",
@@ -217,16 +278,16 @@ const consultations = ref<Consultation[]>([
 			"sample chat",
 			"sample chat"
 		],
-		isGroup: false,
-		status: "ongoing"
+		"isGroup": false,
+		"status": "ongoing"
 	},
 	{
-		id: 1,
-		studentId: 0,
-		employeeId: 0,
-		ticket: 0,
-		title: "Sample Consultation2",
-		chats: [
+		"id": 1,
+		"studentId": 0,
+		"employeeId": 0,
+		"ticket": 0,
+		"title": "Sample Consultation2",
+		"chats": [
 			"sample chat",
 			"sample chat",
 			"sample chat",
@@ -265,15 +326,15 @@ const consultations = ref<Consultation[]>([
 			"sample chat",
 			"sample chat"
 		],
-		isGroup: false,
-		status: "ongoing"
-	},
+		"isGroup": false,
+		"status": "ongoing"
+	}
 ])
 const selectedConsultationId = ref<number>(0)
-const selectedConsultation = computed(function() {
-	const selected = consultations.value.filter(function(consultation: Consultation) {
-		return consultation.id === selectedConsultationId.value
-	})
+const selectedConsultation = computed(() => {
+	const selected = consultations.value.filter(
+		(consultation: Consultation) => consultation.id === selectedConsultationId.value
+	)
 
 	return selected[0]
 })
