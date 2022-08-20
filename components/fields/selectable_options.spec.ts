@@ -6,8 +6,7 @@ describe("Component/Fields: Selectable options", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"label": "Sample select",
-				"options": [ 1, 2, 3 ],
-				"modelValue": null
+				"options": [ 1, 2, 3 ]
 			}
 		})
 
@@ -16,6 +15,20 @@ describe("Component/Fields: Selectable options", () => {
 
 		const updates = wrapper.emitted()
 		expect(updates).toHaveProperty("update:modelValue")
+	})
+
+	it("should not select for missing model value", () => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "Sample select",
+				"options": []
+			}
+		})
+
+		const select = wrapper.find("select").element as HTMLSelectElement
+		const currentValue = select.value
+
+		expect(currentValue).toEqual("")
 	})
 
 	it("should identify initial value", () => {

@@ -4,7 +4,7 @@
 		<select :id="selectID" @change="updateModelValue">
 			<option
 				value=""
-				:selected="modelValue === null"
+				:selected="typeof modelValue === 'undefined'"
 				disabled>
 				{{
 					placeholder ?? "Please select"
@@ -34,7 +34,7 @@ const {
 	placeholder
 } = defineProps<{
 	options: any[]
-	modelValue: any|null
+	modelValue?: any
 	label: string
 	placeholder?: string
 }>()
