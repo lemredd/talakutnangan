@@ -33,7 +33,7 @@ const {
 	label,
 	placeholder
 } = defineProps<{
-	options: any[]
+	options: readonly any[]
 	modelValue?: any
 	label: string
 	placeholder?: string
