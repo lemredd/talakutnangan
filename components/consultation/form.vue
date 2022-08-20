@@ -5,12 +5,11 @@
 		</template>
 		<template #default>
 			<form>
-				<DropdownSelect
-					label="Choose your reason"
-					:options="reasons"
-					:initial-value="chosenReason"
-					@selectedOptionChanged="updateChosenReason"/>
-				<p>Sample</p>
+				<SelectableOptions
+					v-model="chosenReason"
+					label="Kind of Reason: "
+					placeholder="Choose your reason"
+					:options="reasons"/>
 			</form>
 		</template>
 		<template #footer>
@@ -28,13 +27,10 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import Overlay from "@/helpers/overlay.vue"
-import DropdownSelect from "@/fields/dropwdown_select.vue"
+import SelectableOptions from "@/fields/selectable_options.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 
-function chosenReason(event: Event) {
-	const
-}
 </script>
