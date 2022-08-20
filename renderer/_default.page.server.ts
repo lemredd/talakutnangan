@@ -1,17 +1,14 @@
 import { renderToString } from "@vue/server-renderer"
-import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
+import { PageContextBuiltIn, escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
 
-import type { PageContextBuiltIn } from "vite-plugin-ssr"
 import type { PageContext } from "#/types"
 
 import { createApp } from "#/app"
 import ErrorPage from "#/_error.page.vue"
 import logoUrl from "@assets/logo_bg_transparent.svg"
 
-export { render }
-
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ["pageProps", "urlPathname", "routeParams"]
+export const passToClient = [ "pageProps", "urlPathname", "routeParams" ]
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
 	// Modify the page to show for errors
@@ -40,7 +37,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<link rel="icon" href="${logoUrl}" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<meta name="description" content="${desc}" />
-				<script defer src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script>
+				<!--script defer src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script-->
 				<title>${title}</title>
 			</head>
 			<body>
@@ -51,7 +48,10 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 	const responseDocument = {
 		documentHtml,
 		"pageContext": {
-			// We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
+			/*
+			 * We can add some `pageContext` here, which is useful if we want to do page redirection
+			 * Please see: https://vite-plugin-ssr.com/page-redirection
+			 */
 		}
 	}
 
@@ -67,3 +67,5 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
 	return responseDocument
 }
+
+export { render }

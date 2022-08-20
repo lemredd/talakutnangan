@@ -1,0 +1,51 @@
+<template>
+	<div>
+		<label :for="selectID">{{ label }}</label>
+		<select
+			:id="selectID"
+			:value="modelValue"
+			@change="updateModelValue">
+			<option
+				value=""
+				disabled>
+				{{
+					placeholder ?? "Please select"
+				}}
+			</option>
+
+			<option
+				v-for="option in options"
+				:key="option"
+				:value="option">
+				{{ option }}
+			</option>
+		</select>
+	</div>
+</template>
+
+<style>
+</style>
+
+<script setup lang="ts">
+import { computed } from "vue"
+const {
+	options,
+	modelValue,
+	label,
+	placeholder
+} = defineProps<{
+	options: readonly any[]
+	modelValue: any
+	label: string
+	placeholder?: string
+}>()
+
+const selectID = computed(() => options.join(" ").replace(" ", "_"))
+
+const emit = defineEmits<{(e: "update:modelValue", value: string): void}>()
+
+function updateModelValue(event: Event) {
+	const element = event.target as HTMLSelectElement
+	emit("update:modelValue", element.value)
+}
+</script>
