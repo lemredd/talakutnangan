@@ -73,18 +73,22 @@ export type ConsultationListDocument = ResourceListDocument<
 	ConsultationResource
 >
 
-export type DeserializedConsultationDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type DeserializedConsultationDocument<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource<T>
+	DeserializedConsultationResource<T, U>
 >
 
-export type DeserializedConsultationListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
+export type DeserializedConsultationListDocument<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource<T>
+	DeserializedConsultationResource<T, U>
 >
