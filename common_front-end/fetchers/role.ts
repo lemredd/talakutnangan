@@ -36,6 +36,7 @@ export default class RoleFetcher extends BaseFetcher<
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
+		string,
 		RoleResourceIdentifier,
 		RoleAttributes,
 		RoleResource,
@@ -52,6 +53,7 @@ export default class RoleFetcher extends BaseFetcher<
 			),
 			false
 		) as Promise<Response<
+			string,
 			RoleResourceIdentifier,
 			RoleAttributes,
 			RoleResource,

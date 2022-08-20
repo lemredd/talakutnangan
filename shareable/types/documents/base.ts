@@ -10,8 +10,11 @@ export interface ResourceIdentifier<T extends string|number = string> extends Pr
 
 export type Attributes = GeneralObject
 
-export type Resource<T extends ResourceIdentifier, U extends Attributes> = T & {
-	attributes: U
+export type Resource<
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes> = U & {
+	attributes: V
 }
 
 type RelationshipData<T extends ResourceIdentifier|ResourceIdentifier[]> = [ string, T ]
@@ -48,22 +51,25 @@ export interface ResourceCount extends Serializable {
 }
 
 export type ResourceDocument<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>
-> = DataDocument<V>
+	T extends string|number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends Resource<T, U, V>
+> = DataDocument<W>
 
 export type RawResourceDocument<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>
-> = DataDocument<Pick<V, "type" | "attributes" | "relationships" | "links" | "meta">>
+	T extends string | number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends Resource<T, U, V>
+> = DataDocument<Pick<W, "type" | "attributes" | "relationships" | "links" | "meta">>
 
 export interface ResourceListDocument<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>
-> extends DataDocument<V[]>, Partial<MetaDocument<ResourceCount>> {}
+	T extends string | number,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes,
+	W extends Resource<T, U, V>
+> extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
 export type DeserializedResourceDocument<
 	T extends string|number,

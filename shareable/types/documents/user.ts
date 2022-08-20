@@ -72,6 +72,7 @@ export type DeserializedUserAttributes =
 	| DeserializedUnreachableEmployeesAttributes
 
 export type UserResource = Resource<
+	string,
 	UserResourceIdentifier,
 	UserAttributes
 >
@@ -103,12 +104,14 @@ export type DeserializedUserResource<T extends string|number = string> =
 	| DeserializedUnreachableEmployeesResource<T>
 
 export type UserDocument = ResourceDocument<
+	string,
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource
 >
 
 export type UserListDocument = ResourceListDocument<
+	string,
 	UserResourceIdentifier,
 	UserAttributes,
 	UserResource

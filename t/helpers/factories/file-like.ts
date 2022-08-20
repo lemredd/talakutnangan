@@ -21,10 +21,10 @@ export default abstract class FileLikeFactory<
 	T extends Model,
 	U extends ResourceIdentifier,
 	V extends Attributes,
-	W extends Resource<U, V>,
+	W extends Resource<string, U, V>,
 	X extends DeserializedResource<string, U, V>,
-	Y extends ResourceDocument<U, V, W>,
-	Z extends ResourceListDocument<U, V, W>,
+	Y extends ResourceDocument<string, U, V, W>,
+	Z extends ResourceListDocument<string, U, V, W>,
 	A extends DeserializedResourceDocument<string, U, V, X>,
 	B extends DeserializedResourceListDocument<string, U, V, X>,
 	C extends FileLikeTransformerOptions = FileLikeTransformerOptions

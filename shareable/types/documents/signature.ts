@@ -17,6 +17,7 @@ extends ResourceIdentifier<T> {
 export type SignatureAttributes<T = string> = FileLikeAttributes<T>
 
 export interface SignatureResource<T = string> extends Resource<
+	string,
 	SignatureResourceIdentifier,
 	SignatureAttributes<T>
 >, FileLikeResourceLinks {}
@@ -30,12 +31,14 @@ export type DeserializedSignatureResource<T extends string|number = string>
 
 
 export type SignatureDocument<T = Buffer> = ResourceDocument<
+	string,
 	SignatureResourceIdentifier,
 	SignatureAttributes<T>,
 	SignatureResource<T>
 >
 
 export type SignatureListDocument = ResourceListDocument<
+	string,
 	SignatureResourceIdentifier,
 	SignatureAttributes,
 	SignatureResource

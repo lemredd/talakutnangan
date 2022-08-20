@@ -7,13 +7,13 @@ import Database from "%/data_source/database"
 
 export default class Session extends Middleware {
 	private static session = createSessionMiddleware({
+		"cookie": {
+			"maxAge": Number(process.env.SESSION_DURATION || String(15 * 60 * 1000))
+		},
 		"name": process.env.SESSION_NAME || "talakutnangan_session",
-		"secret": process.env.SESSION_SECRET || "12345678",
 		"resave": false,
 		"saveUninitialized": false,
-		"cookie": {
-			"maxAge": process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
-		}
+		"secret": process.env.SESSION_SECRET || "12345678"
 	})
 
 	constructor() {
@@ -30,7 +30,7 @@ export default class Session extends Middleware {
 				"resave": false,
 				"saveUninitialized": false,
 				"cookie": {
-					"maxAge": process.env.SESSION_DURATION as unknown as number || 15 * 60 * 1000
+					"maxAge": Number(process.env.SESSION_DURATION || String(15 * 60 * 1000))
 				},
 				"store": new (makeSequelizeStore(Store))({
 					"db": Database.dataSource,

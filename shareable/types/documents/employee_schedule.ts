@@ -43,6 +43,7 @@ export interface EmployeeScheduleResource<
 	T extends number|boolean = false,
 	U extends string|number = string,
 > extends Resource<
+	string,
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes<T extends number ? number : undefined>
 >, EmployeeScheduleRelationships<T extends number ? false : T, U> {}
@@ -58,12 +59,14 @@ export type EmployeeScheduleDocument<
 	T extends number|boolean = false,
 	U extends string|number = string
 > = ResourceDocument<
+	string,
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes<T extends number ? number : undefined>,
 	EmployeeScheduleResource<T, U>
 >
 
 export type EmployeeScheduleListDocument = ResourceListDocument<
+	string,
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes,
 	EmployeeScheduleResource
