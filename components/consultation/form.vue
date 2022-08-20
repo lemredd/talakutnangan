@@ -10,6 +10,11 @@
 					label="Kind of Reason: "
 					placeholder="Choose your reason"
 					:options="reasons"/>
+				<Textual
+					v-if="hasChosenOtherReason"
+					v-model="otherReason"
+					label="What are the other reasons(s)?"
+					type="text"/>
 			</form>
 		</template>
 		<template #footer>
@@ -25,12 +30,14 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import Overlay from "@/helpers/overlay.vue"
 import SelectableOptions from "@/fields/selectable_options.vue"
+import Textual from "@/fields/textual.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
-
+const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
+const otherReason = ref<string>("")
 </script>
