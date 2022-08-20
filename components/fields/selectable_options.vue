@@ -6,7 +6,9 @@
 				value=""
 				:selected="modelValue === null"
 				disabled>
-				Select a scope
+				{{
+					placeholder ?? "Please select"
+				}}
 			</option>
 
 			<option
@@ -28,11 +30,13 @@ import { computed } from "vue"
 const {
 	options,
 	modelValue,
-	label
+	label,
+	placeholder
 } = defineProps<{
 	options: any[]
 	modelValue: any|null
 	label: string
+	placeholder?: string
 }>()
 
 const selectID = computed(() => options.join(" ").replace(" ", "_"))

@@ -20,7 +20,7 @@ describe("Component/Fields: Selectable options", () => {
 
 	it("should identify initial value", () => {
 		const options = [ 1, 2, 3 ]
-		const [ modelValue ]= options
+		const [ modelValue ] = options
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"label": "Sample select",
@@ -33,5 +33,37 @@ describe("Component/Fields: Selectable options", () => {
 		const identifiedInitialValue = select.value
 
 		expect(Number(identifiedInitialValue)).toEqual(Number(modelValue))
+	})
+
+	it("should show default placeholder", () => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "Sample select",
+				"modelValue": 1,
+				"options": [ 1 ]
+			}
+		})
+
+		const option = wrapper.find("option:first-child").element as HTMLOptionElement
+		const placeholder = option.text
+
+		expect(placeholder).toEqual("Please select")
+	})
+
+	it("should show custom placeholder", () => {
+		const customPlaceholder = "Please a role"
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "Sample select",
+				"modelValue": 1,
+				"options": [ 1 ],
+				"placeholder": customPlaceholder
+			}
+		})
+
+		const option = wrapper.find("option:first-child").element as HTMLOptionElement
+		const placeholder = option.text
+
+		expect(placeholder).toEqual(customPlaceholder)
 	})
 })
