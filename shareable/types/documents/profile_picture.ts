@@ -17,6 +17,7 @@ extends ResourceIdentifier<T> {
 export type ProfilePictureAttributes<T = string> = FileLikeAttributes<T>
 
 export interface ProfilePictureResource<T = string> extends Resource<
+	string,
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes<T>
 >, FileLikeResourceLinks {}
@@ -29,12 +30,14 @@ export type DeserializedProfilePictureResource<T extends string|number = string>
 >
 
 export type ProfilePictureDocument<T = Buffer> = ResourceDocument<
+	string,
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes<T>,
 	ProfilePictureResource<T>
 >
 
 export type ProfilePictureListDocument = ResourceListDocument<
+	string,
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes,
 	ProfilePictureResource

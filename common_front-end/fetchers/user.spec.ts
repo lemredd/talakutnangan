@@ -42,12 +42,7 @@ describe("Communicator: UserFetcher", () => {
 		)
 
 		const fetcher = new UserFetcher()
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
 		const response = await fetcher.logOut()
-
-		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/user/log_out")
 		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})

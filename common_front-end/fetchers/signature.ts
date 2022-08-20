@@ -37,6 +37,7 @@ export default class SignatureFetcher extends BaseFetcher<
 	}
 
 	async renew(userID: string, details: FormData): Promise<Response<
+		string,
 		SignatureResourceIdentifier,
 		SignatureAttributes,
 		SignatureResource,
@@ -50,6 +51,7 @@ export default class SignatureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
 		) as Response<
+			string,
 			SignatureResourceIdentifier,
 			SignatureAttributes,
 			SignatureResource,
