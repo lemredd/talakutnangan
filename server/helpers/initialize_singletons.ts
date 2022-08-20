@@ -19,7 +19,7 @@ export default async function(sourceType: SourceType) {
 
 	const protocol = process.env.WEB_PROTOCOL || "http"
 	const hostname = process.env.WEB_HOST || "localhost"
-	const port = parseInt(process.env.WEB_PORT || process.env.PORT || "80")
+	const port = parseInt(process.env.WEB_PORT || process.env.PORT || "80", 10)
 	const basePath = process.env.WEB_BASE_PATH || "/"
 	URLMaker.initialize(protocol, hostname, port, basePath)
 
@@ -30,24 +30,22 @@ export default async function(sourceType: SourceType) {
 	Log.trace("app", "initialized database")
 
 	if (
-		process.env.EMAIL_HOST !== undefined
-		&& process.env.EMAIL_PORT !== undefined
-		&& process.env.EMAIL_USER !== undefined
-		&& process.env.EMAIL_PASS !== undefined
+		typeof process.env.EMAIL_HOST !== "undefined"
+		&& typeof process.env.EMAIL_PORT !== "undefined"
+		&& typeof process.env.EMAIL_USER !== "undefined"
+		&& typeof process.env.EMAIL_PASS !== "undefined"
 	) {
 		Transport.initialize(
 			process.env.EMAIL_HOST,
-			+process.env.EMAIL_PORT,
+			Number(process.env.EMAIL_PORT),
 			process.env.EMAIL_USER,
 			process.env.EMAIL_PASS
 		)
 
 		Log.trace("app", "initialized e-mail transport")
-	} else {
-		if (!RequestEnvironment.isOnTest) {
-			console.error("Some e-mail variables are not defined");
-			process.exit(1)
-		}
+	} else if (!RequestEnvironment.isOnTest) {
+		console.error("Some e-mail variables are not defined")
+		process.exit(1)
 	}
 
 	CommonMiddlewareList.initialize()
