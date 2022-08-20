@@ -1,3 +1,4 @@
+import type { PartialOrPickObject } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedChatMessageDocument } from "$/types/documents/chat_message"
 import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
@@ -54,11 +55,11 @@ export type DeserializedConsultationResource<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
-> & (
-	U extends ConsultationRelationshipNames
-	? Pick<DeserializedConsultationRelationships<T>, U>
-	: Partial<DeserializedConsultationRelationships<T>>
-)
+> & PartialOrPickObject<
+	U,
+	ConsultationRelationshipNames,
+	DeserializedConsultationRelationships<T>
+>
 
 export type ConsultationDocument = ResourceDocument<
 	ConsultationResourceIdentifier,
