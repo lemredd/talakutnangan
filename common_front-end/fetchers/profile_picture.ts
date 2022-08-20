@@ -37,6 +37,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	}
 
 	async createFile(userID: string, details: FormData): Promise<Response<
+		string,
 		ProfilePictureResourceIdentifier,
 		ProfilePictureAttributes,
 		ProfilePictureResource,
@@ -53,6 +54,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.postTo(path, details, headers)
 		) as Response<
+			string,
 			ProfilePictureResourceIdentifier,
 			ProfilePictureAttributes,
 			ProfilePictureResource,
@@ -62,6 +64,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	}
 
 	async updateFile(profilePictureID: string, details: FormData): Promise<Response<
+		string,
 		ProfilePictureResourceIdentifier,
 		ProfilePictureAttributes,
 		ProfilePictureResource,
@@ -78,6 +81,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
 		) as Response<
+			string,
 			ProfilePictureResourceIdentifier,
 			ProfilePictureAttributes,
 			ProfilePictureResource,

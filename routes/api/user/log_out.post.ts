@@ -1,4 +1,4 @@
-import type { AuthenticatedRequest, Response }  from "!/types/dependent"
+import type { AuthenticatedRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
@@ -15,7 +15,7 @@ export default class extends Controller {
 
 	get validations(): Validation[] { return [] }
 
-	async handle(request: AuthenticatedRequest, response: Response): Promise<NoContentResponseInfo> {
+	async handle(request: AuthenticatedRequest): Promise<NoContentResponseInfo> {
 		return await new Promise<NoContentResponseInfo>(resolve => {
 			// @ts-ignore
 			request.logout((error: Error): void => {

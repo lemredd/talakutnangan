@@ -1,4 +1,5 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="links mobile">
 		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
 			<template #toggler>
@@ -17,14 +18,7 @@
 						<span class="link-name">{{ link.name }}</span>
 					</Anchor>
 				</div>
-				<a
-					id="logout-btn"
-					role="button"
-					href="/logout"
-					class="flex items-center">
-					<span class="material-icons">logout</span>
-					Logout
-				</a>
+				<LogOutBtn class="flex items-center"/>
 			</template>
 		</RoleLinksList>
 	</div>
@@ -110,6 +104,11 @@ import { computed, inject, ref, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
+
+import Anchor from "@/anchor.vue"
+import LogOutBtn from "@/authentication/log_out_btn.vue"
+import RoleLinksList from "@/Dropdown.vue"
+import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
 import { user, post } from "$/permissions/permission_list"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -126,9 +125,6 @@ import {
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
 
-import Anchor from "@/anchor.vue"
-import RoleLinksList from "@/Dropdown.vue"
-
 const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
 
@@ -136,68 +132,75 @@ const pageContext = inject("pageContext") as DeserializedPageContext
 const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
-		"mustBeGuest": true,
 		"kinds": null,
-		"permissionCombinations": null,
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "account_circle",
 				"name": "Log in",
-				"path": "/log_in",
-				"icon": "account_circle"
+				"path": "/log_in"
 			}
-		]
+		],
+		"mustBeGuest": true,
+		"permissionCombinations": null,
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [],
-		"permissionCombinations": [],
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "notifications",
 				"name": "Notifications",
-				"path": "/notifications",
-				"icon": "notifications"
+				"path": "/notifications"
 			},
 			{
+				"icon": "account_circle",
 				"name": "User Settings",
-				"path": "/settings",
-				"icon": "account_circle"
+				"path": "/settings"
 			}
-		]
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [],
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [],
+		"links": [
+			{
+				"icon": "forum",
+				"name": "Forum",
+				"path": "/forum"
+			}
+		],
+		"mustBeGuest": false,
 		"permissionCombinations": [
 			READ_ANYONE_ON_OWN_DEPARTMENT,
 			READ_ANYONE_ON_ALL_DEPARTMENTS
 		],
-		"permissionGroup": post,
-		"links": [
-			{
-				"name": "Forum",
-				"path": "/forum",
-				"icon": "forum"
-			}
-		]
+		"permissionGroup": post
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": [ "student", "reachable_employee" ],
-		"permissionCombinations": [],
-		"permissionGroup": null,
 		"links": [
 			{
+				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultations",
-				"icon": "chat"
+				"path": "/consultations"
 			}
-		]
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [],
+		"permissionGroup": null
 	},
 	{
-		"mustBeGuest": false,
 		"kinds": null,
+		"links": [
+			{
+				"icon": "group",
+				"name": "Manage Users",
+				"path": "/manage"
+			}
+		],
+		"mustBeGuest": false,
 		"permissionCombinations": [
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
@@ -206,14 +209,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			IMPORT_USERS,
 			RESET_PASSWORD
 		],
-		"permissionGroup": user,
-		"links": [
-			{
-				"name": "Manage Users",
-				"path": "/manage",
-				"icon": "group"
-			}
-		]
+		"permissionGroup": user
 	}
 ]
 
@@ -222,11 +218,15 @@ const roleLinks = computed(() => filterLinkInfo(pageContext, linkInfos))
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function disableScroll() {
-	const bodyClasses = new Set([ ...rawBodyClasses.value ])
-	if (bodyClasses.has("unscrollable")) bodyClasses.delete("unscrollable")
-	else bodyClasses.add("unscrollable")
+	const bodyClasses = Array.from(rawBodyClasses.value)
+	if (bodyClasses.includes("unscrollable")) {
+		delete bodyClasses[bodyClasses.indexOf("unscrollable")]
+	} else {
+		bodyClasses.push("unscrollable")
+	}
 
-	rawBodyClasses.value = [ ...bodyClasses ]
+	rawBodyClasses.value = sanitizeArray(bodyClasses)
+	console.log(rawBodyClasses.value)
 }
 
 function toggleRoleLinks() {

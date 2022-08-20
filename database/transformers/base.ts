@@ -2,6 +2,7 @@ import { Transformer as BaseTransformer } from "jsonapi-fractal"
 
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { ResourceIdentifier, Resource } from "$/types/documents/base"
+import type { Subtransformer, OptionalSubtransformerList, SubtransformerList } from "%/types/hybrid"
 import type {
 	TransformerOptions,
 	RelationshipTransformerInfo,
@@ -10,14 +11,6 @@ import type {
 
 import Serializer from "%/transformers/serializer"
 import processData from "%/transformers/helpers/process_data"
-
-type Subtransformer = {
-	attribute: string,
-	// eslint-disable-next-line no-use-before-define
-	transformer: Transformer<any, any>
-}
-
-type SubtransformerList = Subtransformer[]
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**
@@ -28,13 +21,13 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	 */
 	public readonly subtransformers: SubtransformerList
 
-	constructor(type: string, subtransformers: SubtransformerList = []) {
+	constructor(type: string, subtransformers: OptionalSubtransformerList = []) {
 		super()
 		this.type = type
-		this.subtransformers = subtransformers
+		this.subtransformers = subtransformers.filter(Boolean) as SubtransformerList
 
 		if (subtransformers.length > 0) {
-			this.relationships = subtransformers.reduce(
+			this.relationships = this.subtransformers.reduce(
 				(previousRelationships, subtransformer) => {
 					const compiledRelationships = {
 						...previousRelationships,
@@ -57,7 +50,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
 		if (model !== null && transformedData.included) {
-			const newIncluded: Resource<any, any>[] = []
+			const newIncluded: Resource<any, any, any>[] = []
 
 			const relationshipProcessor = (rawUnitData: any) => {
 				const unitData = rawUnitData as GeneralObject
@@ -91,8 +84,8 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 
 			includedData.sort((firstIncludedResource, secondIncludedResource) => {
 				let order = 0
-				const castFirstResource: Resource<any, any> = firstIncludedResource
-				const castSecondResource: Resource<any, any> = secondIncludedResource
+				const castFirstResource: Resource<any, any, any> = firstIncludedResource
+				const castSecondResource: Resource<any, any, any> = secondIncludedResource
 
 				if (castFirstResource.type === castSecondResource.type) {
 					order = Math.sign(castFirstResource.id - castSecondResource.id)
@@ -134,8 +127,11 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		}
 	}
 
-	private findResource(included: Resource<any, any>[], resourceLinkage: ResourceIdentifier<any>)
-	: Resource<any, any>|null {
+	private findResource(
+		included: Resource<any, any, any>[],
+		resourceLinkage: ResourceIdentifier<any>
+	)
+	: Resource<any, any, any>|null {
 		const index = included.findIndex(includedResource => {
 			const doesMatch = includedResource.type === resourceLinkage.type
 				&& includedResource.id === resourceLinkage.id
@@ -143,7 +139,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 			return doesMatch
 		})
 
-		let foundResource: Resource<any, any>|null = null
+		let foundResource: Resource<any, any, any>|null = null
 
 		if (index > -1) {
 			const resourceObject = included.splice(index, 1)
@@ -197,12 +193,12 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	private processLinkage(
 		model: T|T[]|null,
 		transformedData: Serializable,
-		newIncluded: Resource<any, any>[],
+		newIncluded: Resource<any, any, any>[],
 		resourceLinkage: ResourceIdentifier<any>,
 		attributeName: string
 	): void {
 		const resourceObject = this.findResource(
-			transformedData.included as Resource<any, any>[],
+			transformedData.included as Resource<any, any, any>[],
 			resourceLinkage
 		)
 

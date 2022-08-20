@@ -36,6 +36,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
+		string,
 		DepartmentResourceIdentifier,
 		DepartmentAttributes,
 		DepartmentResource,
@@ -52,6 +53,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 			),
 			false
 		) as Promise<Response<
+			string,
 			DepartmentResourceIdentifier,
 			DepartmentAttributes,
 			DepartmentResource,

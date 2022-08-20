@@ -116,3 +116,7 @@ export interface ProfilePictureTransformerOptions {
  * Useful for updating the many-to-many relationships
  */
 export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }
+
+export interface IncludedRelationships<T extends string = string> {
+	included: T[]
+}

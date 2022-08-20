@@ -6,7 +6,11 @@ import type { Resource, RawResourceDocument, MetaDocument } from "$/types/docume
 
 type PartialUserAttributes = Pick<UserAttributes, "kind">
 
-interface LinkedUserResource extends Resource<UserResourceIdentifier, PartialUserAttributes> {
+interface LinkedUserResource extends Resource<
+	string,
+	UserResourceIdentifier,
+	PartialUserAttributes
+> {
 	relationships: {
 		roles: {
 			data: RoleResourceIdentifier[]
@@ -19,6 +23,7 @@ interface ImportedCSV extends Serializable {
 }
 
 export interface ImportUserDocument extends RawResourceDocument<
+	string,
 	UserResourceIdentifier,
 	PartialUserAttributes,
 	LinkedUserResource

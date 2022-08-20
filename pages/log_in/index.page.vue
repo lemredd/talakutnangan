@@ -6,7 +6,7 @@
 				<span class="description">{{ receivedError.detail }}</span>
 			</div>
 			<h1>Login</h1>
-			<LogInForm />
+			<LogInForm/>
 		</div>
 	</div>
 
@@ -78,7 +78,7 @@ import { inject } from "vue"
 
 import type { PageContext } from "#/types"
 
-import LogInForm from "@/LogInForm.vue"
+import LogInForm from "@/authentication/log_in_form.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const receivedError = pageContext.pageProps.parsedUnitError
