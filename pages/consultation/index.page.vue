@@ -20,8 +20,6 @@
 				<button class="material-icons search">
 					search
 				</button>
-
-				<!-- TODO(lead/button): Apply functionality -->
 				<button class="material-icons add" @click="toggleAddingSchedule">
 					add
 				</button>
@@ -35,12 +33,10 @@
 					<h2>There are no consultations yet...</h2>
 				</div>
 				<div
-					v-for="consultation in consultations"
+					v-for="consultation in consultations.data"
 					:key="consultation.id"
 					class="consultation"
 					@click="pickConsultation(consultation.id)">
-					<!-- TODO(others): should contain profile picture?  -->
-
 					<h3 class="consultation-title col-span-full font-400">
 						{{ consultation.title }}
 					</h3>
@@ -61,7 +57,9 @@
 				</div>
 			</div>
 		</section>
-		<ChatWindow :consultation="selectedConsultation"/>
+
+		<!-- TODO(minor): conditionally render the contents chat window -->
+		<ChatWindow v-if="selectedConsultation" :consultation="selectedConsultation"/>
 	</div>
 </template>
 
@@ -138,135 +136,35 @@ footer {
 
 <script setup lang="ts">
 import { computed, ref } from "vue"
+import type {
+	DeserializedConsultationListDocument,
+	ConsultationRelationshipNames
+} from "$/types/documents/consultation"
+
 import SadIcon from "./sadicon.png"
 import ConsultationForm from "@/consultation/form.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
-
-type Consultation = {
-	// TODO(lead/types): type will change soon
-	id: number
-	studentId: number
-	employeeId: number
-	ticket: number
-	title: string
-	chats?: string[]
-	isGroup: boolean
-	members?: number[]
-	status: string
-}
 
 const isAddingSchedule = ref<boolean>(false)
 function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<Consultation[]>([
-	{
-		"id": 0,
-		"studentId": 0,
-		"employeeId": 0,
-		"ticket": 0,
-		"title": "Sample Consultation",
-		"chats": [
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat"
-		],
-		"isGroup": false,
-		"status": "ongoing"
-	},
-	{
-		"id": 1,
-		"studentId": 0,
-		"employeeId": 0,
-		"ticket": 0,
-		"title": "Sample Consultation2",
-		"chats": [
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat"
-		],
-		"isGroup": false,
-		"status": "ongoing"
-	}
-])
-const selectedConsultationId = ref<number>(0)
+const consultations = ref<DeserializedConsultationListDocument<
+	string,
+	ConsultationRelationshipNames
+>>({
+	"data": []
+})
+const selectedConsultationID = ref<string>("1")
 const selectedConsultation = computed(() => {
-	const selected = consultations.value.filter(
-		(consultation: Consultation) => consultation.id === selectedConsultationId.value
+	const foundConsultation = consultations.value.data.find(
+		consultation => consultation.id === selectedConsultationID.value
 	)
 
-	return selected[0]
+	return foundConsultation
 })
-function pickConsultation(consultationId: number) {
-	selectedConsultationId.value = consultationId
+function pickConsultation(consultationID: string) {
+	selectedConsultationID.value = consultationID
 }
 </script>

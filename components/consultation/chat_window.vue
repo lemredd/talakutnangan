@@ -4,7 +4,7 @@
 
 		<div class="selected-consultation-header">
 			<div class="selected-consultation-title">
-				{{ consultation.title }}
+				{{ consultation.reason }}
 			</div>
 			<div class="selected-consultation-user-status row-start-2">
 				<!-- TODO(lead): must base on user active status -->
@@ -78,16 +78,16 @@
 import { computed } from "vue"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
-	DeserializedConsultationDocument,
+	DeserializedConsultationResource,
 	ConsultationRelationshipNames
 } from "$/types/documents/consultation"
 
 const { consultation } = defineProps<{
-	consultation: DeserializedConsultationDocument<string, ConsultationRelationshipNames>
+	consultation: DeserializedConsultationResource<string, ConsultationRelationshipNames>
 }>()
-const consultationID = computed<string>(() => consultation.data.id)
-const consultationStatus = computed<string>(() => consultation.data.status)
+const consultationID = computed<string>(() => consultation.id)
+const consultationStatus = computed<string>(() => consultation.status)
 const consultationMessages = computed<DeserializedChatMessageListDocument<string>>(
-	() => consultation.data.chatMessages as DeserializedChatMessageListDocument<string>
+	() => consultation.chatMessages as DeserializedChatMessageListDocument<string>
 )
 </script>
