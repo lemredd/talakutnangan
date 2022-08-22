@@ -22,8 +22,9 @@ import ChatMessageActivityTransformer from "%/transformers/chat_message_activity
 
 export default class ChatMessageActivityFactory extends BaseFactory<
 	ChatMessageActivity,
-	ChatMessageActivityResourceIdentifier,
-	ChatMessageActivityAttributes,
+	ChatMessageActivityResourceIdentifier<"read">,
+	ChatMessageActivityAttributes<"serialized">,
+	ChatMessageActivityAttributes<"deserialized">,
 	ChatMessageActivityResource,
 	DeserializedChatMessageActivityResource,
 	ChatMessageActivityDocument,
