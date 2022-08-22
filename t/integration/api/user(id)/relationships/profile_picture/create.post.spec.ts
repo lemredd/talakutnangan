@@ -56,7 +56,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 			userFactory => userFactory.beStudent()
 		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
-		await new ProfilePictureFactory().user(async() => student).insertOne()
+		await new ProfilePictureFactory().user(() => Promise.resolve(student)).insertOne()
 
 		const response = await App.request
 		.post(`/api/user/${student.id}/relationships/profile_picture`)
