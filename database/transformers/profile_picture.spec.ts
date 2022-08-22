@@ -17,7 +17,6 @@ describe("Transformer: Profile picture", () => {
 		expect(object).toHaveProperty("data.type", "profile_picture")
 		expect(object).toHaveProperty("data.id", String(model.id))
 		expect(object).toHaveProperty("data.attributes.fileContents")
-		expect(object).not.toHaveProperty("data.links.self")
 	})
 
 	it("can transform into resource object with links", async() => {
@@ -29,7 +28,7 @@ describe("Transformer: Profile picture", () => {
 		expect(object).toHaveProperty("data.type", "profile_picture")
 		expect(object).toHaveProperty("data.id", String(model.id))
 		expect(object).toHaveProperty(
-			"data.links.self",
+			"data.attributes.fileContents",
 			`http://localhost:16000/api/profile_picture/${model.id}`
 		)
 	})
@@ -43,13 +42,13 @@ describe("Transformer: Profile picture", () => {
 		expect(object).toHaveProperty("data.0.type", "profile_picture")
 		expect(object).toHaveProperty("data.0.id", String(models[0].id))
 		expect(object).toHaveProperty(
-			"data.0.links.self",
+			"data.0.attributes.fileContents",
 			`http://localhost:16000/api/profile_picture/${models[0].id}`
 		)
 		expect(object).toHaveProperty("data.1.type", "profile_picture")
 		expect(object).toHaveProperty("data.1.id", String(models[1].id))
 		expect(object).toHaveProperty(
-			"data.1.links.self",
+			"data.1.attributes.fileContents",
 			`http://localhost:16000/api/profile_picture/${models[1].id}`
 		)
 	})
