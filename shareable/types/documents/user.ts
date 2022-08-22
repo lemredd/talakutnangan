@@ -32,7 +32,7 @@ extends ResourceIdentifier<T> {
 interface GeneralUserAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	name: string,
 	email: string,
-	prefersDark: T extends "deserialized" ? boolean : boolean|undefined
+	prefersDark: boolean
 }
 
 export interface StudentAttributes<T extends Format = "serialized">
