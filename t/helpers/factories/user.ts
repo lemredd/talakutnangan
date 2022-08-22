@@ -28,7 +28,8 @@ import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 export default class UserFactory extends BaseFactory<
 	User,
 	UserResourceIdentifier,
-	UserAttributes,
+	UserAttributes<"serialized">,
+	UserAttributes<"deserialized">,
 	UserResource,
 	DeserializedUserResource,
 	UserDocument,
@@ -61,14 +62,14 @@ export default class UserFactory extends BaseFactory<
 		}
 
 		return {
-			"name": this.nameGenerator(),
+			"deletedAt": null,
+			"departmentID": this.#department.id,
 			"email": this.emailGenerator(),
-			"password": await hash(this.#password),
 			"emailVerifiedAt": this.#mustBeVerified ? new Date() : null,
 			"kind": this.#kind,
-			"prefersDark": this.prefersDarkGenerator(),
-			"departmentID": this.#department.id,
-			"deletedAt": null
+			"name": this.nameGenerator(),
+			"password": await hash(this.#password),
+			"prefersDark": this.prefersDarkGenerator()
 		}
 	}
 
@@ -84,8 +85,8 @@ export default class UserFactory extends BaseFactory<
 		const user = await super.insertOne()
 		user.password = this.#password
 		await AttachedRole.bulkCreate(this.roles.map(role => ({
-			"userID": user.id,
-			"roleID": role.id
+			"roleID": role.id,
+			"userID": user.id
 		})))
 		user.roles = this.roles
 		user.department = this.#department!
@@ -128,7 +129,7 @@ export default class UserFactory extends BaseFactory<
 	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
 		const user = await this.insertOne()
 		const { password } = user
-		const profile = this.serialize(user, {}, new UserProfileTransformer())
+		const profile = this.serialize(user, {} as unknown as void, new UserProfileTransformer())
 
 		return {
 			password,

@@ -9,19 +9,19 @@ const BODY_VALIDATION_INDEX = 0
 describe("Controller: PATCH /api/user", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
-		await user.destroy({ force: false })
+		const user = await new UserFactory().insertOne()
+		await user.destroy({ "force": false })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "user",
-						id: String(user.id)
+						"id": String(user.id),
+						"type": "user"
 					}
 				]
 			}
@@ -32,18 +32,18 @@ describe("Controller: PATCH /api/user", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept existing resources", async () => {
+	it("cannot accept existing resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
+		const user = await new UserFactory().insertOne()
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "user",
-						id: String(user.id)
+						"id": String(user.id),
+						"type": "user"
 					}
 				]
 			}
@@ -56,19 +56,19 @@ describe("Controller: PATCH /api/user", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
 	})
 
-	it("cannot accept non-existent resources", async () => {
+	it("cannot accept non-existent resources", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await (new UserFactory()).insertOne()
-		await user.destroy({ force: true })
+		const user = await new UserFactory().insertOne()
+		await user.destroy({ "force": true })
 		requester.customizeRequest({
-			body: {
-				data: [
+			"body": {
+				"data": [
 					{
-						type: "user",
-						id: String(user.id)
+						"id": String(user.id),
+						"type": "user"
 					}
 				]
 			}
