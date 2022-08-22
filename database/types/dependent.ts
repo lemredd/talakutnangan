@@ -2,16 +2,6 @@
  * @module DatabaseDependentTypes
  * @description This module exports types that are independent from any third-party packages.
  */
-import {
-	Attributes as BaseAttributes,
-	UpdateOptions as BaseUpdateOptions,
-	DestroyOptions as BaseDestroyOptions,
-	RestoreOptions as BaseRestoreOptions,
-	CreationAttributes as BaseCreationAttributes,
-	FindOptions as BaseFindOptions,
-	WhereOptions as BaseWhereOptions,
-	FindAndCountOptions as BaseFindAndCountOptions
-} from "sequelize"
 import type {
 	Model as BaseModel,
 	ModelCtor as BaseModelCtor
@@ -23,8 +13,20 @@ import {
 	RelationshipTransformerInfo as BaseRelationshipTransformerInfo,
 	TransformerRelationships as BaseTransformerRelationships
 } from "jsonapi-fractal"
+import {
+	Attributes as BaseAttributes,
+	UpdateOptions as BaseUpdateOptions,
+	DestroyOptions as BaseDestroyOptions,
+	RestoreOptions as BaseRestoreOptions,
+	CreationAttributes as BaseCreationAttributes,
+	FindOptions as BaseFindOptions,
+	WhereOptions as BaseWhereOptions,
+	FindAndCountOptions as BaseFindAndCountOptions,
+	IncludeOptions as BaseIncludeOptions
+} from "sequelize"
 
 export type Model = BaseModel
+export type IncludeOptions = BaseIncludeOptions
 export type FindOptions<T> = BaseFindOptions<T>
 export type WhereOptions<T> = BaseWhereOptions<T>
 export type UpdateOptions<T> = BaseUpdateOptions<T>
