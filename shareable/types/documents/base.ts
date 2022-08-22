@@ -81,11 +81,11 @@ export interface DeserializedResourceListDocument<
 	W extends DeserializedResource<U, V>
 > extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
-export type IdentifierDocument<U extends ResourceIdentifier>
-= DataDocument<U>
+export type IdentifierDocument<T extends ResourceIdentifier<"read">>
+= DataDocument<T>
 
-export type IdentifierListDocument<U extends ResourceIdentifier>
-= DataDocument<U[]>
+export type IdentifierListDocument<T extends ResourceIdentifier<"read">>
+= DataDocument<T[]>
 
 export interface ErrorDocument {
 	errors: UnitError[]
