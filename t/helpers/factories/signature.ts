@@ -20,14 +20,15 @@ import SignatureTransformer from "%/transformers/signature"
 
 export default class SignatureFactory extends FileLikeFactory<
 	Signature,
-	SignatureResourceIdentifier,
-	SignatureAttributes,
-	SignatureResource,
-	DeserializedSignatureResource,
-	SignatureDocument<string>,
-	SignatureListDocument,
-	DeserializedSignatureDocument,
-	DeserializedSignatureListDocument,
+	SignatureResourceIdentifier<"read">,
+	SignatureAttributes<"raw">,
+	SignatureAttributes<"raw">,
+	SignatureResource<"read", "raw">,
+	DeserializedSignatureResource<"raw">,
+	SignatureDocument<"read", "raw">,
+	SignatureListDocument<"read", "raw">,
+	DeserializedSignatureDocument<"raw">,
+	DeserializedSignatureListDocument<"raw">,
 	SignatureTransformerOptions
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
@@ -38,8 +39,8 @@ export default class SignatureFactory extends FileLikeFactory<
 
 	async generate(): GeneratedData<Signature> {
 		return {
-			"userID": (await this.#user()).id,
-			"fileContents": this.fileContentsGenerator()
+			"fileContents": this.fileContentsGenerator(),
+			"userID": (await this.#user()).id
 		}
 	}
 

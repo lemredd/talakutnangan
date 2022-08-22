@@ -12,7 +12,7 @@ import type {
 
 export interface ProfilePictureResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
-	type: "profile_picture",
+	type: "profile_picture"
 }
 
 export type ProfilePictureAttributes<T extends Format = "serialized"> = FileLikeAttributes<T>

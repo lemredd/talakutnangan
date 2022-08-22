@@ -44,9 +44,9 @@ export default class extends BoundController {
 				}
 			},
 			{ "raw": true }
-		) as SignatureDocument
+		) as SignatureDocument<"read", "raw">
 
-		const signature = signatureDocument.data.attributes.fileContents as unknown as Buffer
+		const signature = signatureDocument.data.attributes.fileContents
 		const type = await sniffMediaType(signature)
 
 		Log.success("controller", "successfully got the signature")
