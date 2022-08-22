@@ -100,12 +100,12 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<true, number>
+		const { data } = request.body as EmployeeScheduleDocument<"create", true>
 		const { attributes, relationships } = data
 
 		const document = await manager.create({
 			...attributes,
-			"userID": relationships.user.data.id
+			"userID": Number(relationships.user.data.id)
 		})
 
 		Log.success("controller", "successfully created the employee schedule of the user")
