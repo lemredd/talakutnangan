@@ -16,7 +16,7 @@ import DepartmentTransformer from "%/transformers/department"
 
 export default class extends BaseManager<
 	Department,
-	DepartmentAttributes<"serialized">,
+	DepartmentAttributes<"deserialized">,
 	DepartmentQueryParameters<number>
 > {
 	get model(): ModelCtor<Department> { return Department }
@@ -61,11 +61,11 @@ export default class extends BaseManager<
 			const identifierObjects: DepartmentResourceIdentifier[] = []
 			counts.forEach(countInfo => {
 				identifierObjects.push({
-					"type": "department",
 					"id": String(countInfo.id),
 					"meta": {
 						"userCount": Number(countInfo.count)
-					}
+					},
+					"type": "department"
 				})
 			})
 

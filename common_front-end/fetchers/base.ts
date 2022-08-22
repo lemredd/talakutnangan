@@ -89,9 +89,9 @@ export default class Fetcher<
 		return this.handleResponse(
 			this.patchJSON(`${this.type}/:id`, { id }, {
 				"data": {
-					"type": this.type,
+					attributes,
 					id,
-					attributes
+					"type": this.type
 				}
 			})
 		)
@@ -101,8 +101,8 @@ export default class Fetcher<
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
-					"type": this.type,
-					id
+					id,
+					"type": this.type
 				})),
 				meta
 			})
@@ -113,8 +113,8 @@ export default class Fetcher<
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
-					"type": this.type,
-					id
+					id,
+					"type": this.type
 				})),
 				meta
 			})

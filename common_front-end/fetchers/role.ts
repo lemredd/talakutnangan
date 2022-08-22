@@ -17,7 +17,8 @@ import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class RoleFetcher extends BaseFetcher<
 	RoleResourceIdentifier,
-	RoleAttributes,
+	RoleAttributes<"serialized">,
+	RoleAttributes<"deserialized">,
 	RoleResource,
 	DeserializedRoleResource,
 	RoleDocument,
