@@ -33,11 +33,11 @@ export interface Relationships<T extends RelationshipData<any>> extends Serializ
 }
 
 export type DeserializedResource<
-	U extends ResourceIdentifier,
-	V extends Attributes,
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"deserialized">
 > =
+	& T
 	& U
-	& V
 
 export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Serializable {
 	data: T
