@@ -46,7 +46,7 @@ export default class Consultation extends Model {
 		"allowNull": false,
 		"type": DataType.DATE
 	})
-		scheduledStartedAt!: Date
+		scheduledStartAt!: Date
 
 	@AllowNull
 	@Column({

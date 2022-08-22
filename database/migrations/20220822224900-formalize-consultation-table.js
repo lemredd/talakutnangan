@@ -1,4 +1,4 @@
-"use strict";
+
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
@@ -26,10 +26,10 @@ module.exports = {
 					{ transaction }
 				)
 			} catch (err) {
-				await transaction.rollback();
-				throw err;
+				await transaction.rollback()
+				throw err
 			}
-		});
+		})
 	},
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
@@ -46,11 +46,11 @@ module.exports = {
 					"endDatetime",
 					{ transaction }
 				)
-				await queryInterface.removeColumn("Consultations", "startedAt", { transaction });
+				await queryInterface.removeColumn("Consultations", "startedAt", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
 			}
 		})
 	}
-};
+}
