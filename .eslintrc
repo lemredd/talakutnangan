@@ -90,6 +90,15 @@ rules:
   no-lone-blocks: "off"
   no-magic-numbers:
     - "warn"
+    -
+      ignore:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 200
+        - 299
   no-mixed-operators: "off"
   no-return-await: "off"
   no-warning-comments: "off"
