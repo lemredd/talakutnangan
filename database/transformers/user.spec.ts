@@ -28,7 +28,7 @@ describe("Transformer: User", () => {
 		expect(object).not.toHaveProperty("data.attributes.prefersDark")
 		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
-			"included.1.links.self",
+			"included.1.attributes.fileContents",
 			`http://localhost:16000/api/signature/${signature.id}`
 		)
 	})
@@ -60,11 +60,11 @@ describe("Transformer: User", () => {
 		expect(object).not.toHaveProperty("data.attributes.prefersDark")
 		expect(object).not.toHaveProperty("meta.hasDefaultPassword")
 		expect(object).toHaveProperty(
-			"included.0.links.self",
+			"included.0.attributes.fileContents",
 			`http://localhost:16000/api/signature/${signatureA.id}`
 		)
 		expect(object).toHaveProperty(
-			"included.1.links.self",
+			"included.1.attributes.fileContents",
 			`http://localhost:16000/api/signature/${signatureB.id}`
 		)
 	})

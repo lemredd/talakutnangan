@@ -49,9 +49,10 @@ describe("Database Manager: User Authentication Operations", () => {
 		const isResetSuccess = await manager.resetPassword(user.id, newPassword)
 
 		expect(isResetSuccess).toBeTruthy()
+		const foundUser = await User.findByPk(user.id) as User
 		expect(compare(
 			newPassword,
-			(await User.findByPk(user.id))!.password
+			foundUser.password
 		)).resolves.toBeTruthy()
 	})
 
@@ -63,9 +64,10 @@ describe("Database Manager: User Authentication Operations", () => {
 		const isResetSuccess = await manager.resetPassword(user.id + 1, newPassword)
 
 		expect(isResetSuccess).toBeFalsy()
+		const foundUser = await User.findOne({ "where": { "id": user.id } }) as User
 		expect(compare(
 			newPassword,
-			(await User.findOne({ "where": { "id": user.id } }))!.password
+			foundUser.password
 		)).resolves.toBeFalsy()
 	})
 })
@@ -78,17 +80,17 @@ describe("Database Manager: User read operations", () => {
 
 		const users = await manager.list({
 			"filter": {
-				"slug": incompleteName,
 				"department": "*",
-				"role": "*",
+				"existence": "exists",
 				"kind": "*",
-				"existence": "exists"
+				"role": "*",
+				"slug": incompleteName,
+			},
+			"page": {
+				"limit": 5,
+				"offset": 0,
 			},
 			"sort": [],
-			"page": {
-				"offset": 0,
-				"limit": 5
-			}
 		})
 
 		expect(users).toHaveProperty("data")
@@ -102,17 +104,17 @@ describe("Database Manager: User read operations", () => {
 
 		const users = await manager.list({
 			"filter": {
-				"slug": incorrectName,
 				"department": "*",
-				"role": "*",
+				"existence": "exists",
 				"kind": "*",
-				"existence": "exists"
+				"role": "*",
+				"slug": incorrectName,
+			},
+			"page": {
+				"limit": 5,
+				"offset": 0,
 			},
 			"sort": [],
-			"page": {
-				"offset": 0,
-				"limit": 5
-			}
 		})
 
 		expect(users).toHaveProperty("data")
@@ -125,17 +127,17 @@ describe("Database Manager: User read operations", () => {
 
 		const users = await manager.list({
 			"filter": {
-				"slug": "",
 				"department": "*",
-				"role": "*",
+				"existence": "exists",
 				"kind": "unreachable_employee",
-				"existence": "exists"
+				"role": "*",
+				"slug": "",
+			},
+			"page": {
+				"limit": 5,
+				"offset": 0,
 			},
 			"sort": [],
-			"page": {
-				"offset": 0,
-				"limit": 5
-			}
 		})
 
 		expect(users).toHaveProperty("data")
@@ -151,26 +153,26 @@ describe("Database Manager: User Create Operations", () => {
 		const fakeUserB = await new UserFactory().in(departments[1]).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForStudents = {
-			"kind": "student",
-			"roles": roles.map(role => role.id),
 			"importedCSV": [
 				{
 					"department": departments[0].acronym,
 					"email": fakeUserA.email,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
+					"prefersDark": false,
 					"studentNumber": "1920-1",
-					"prefersDark": false
 				},
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
+					"prefersDark": false,
 					"studentNumber": "1920-2",
-					"prefersDark": false
-				}
-			]
+				},
+			],
+			"kind": "student",
+			"roles": roles.map(role => role.id),
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
@@ -197,31 +199,31 @@ describe("Database Manager: User Create Operations", () => {
 		const fakeUserC = await new UserFactory().in(departments[2]).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
-			"kind": "reachable_employee",
-			"roles": roles.map(role => role.id),
 			"importedCSV": [
 				{
 					"department": departments[0].acronym,
 					"email": fakeUserA.email,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
-					"prefersDark": false
+					"prefersDark": false,
 				},
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
-					"prefersDark": false
+					"prefersDark": false,
 				},
 				{
 					"department": departments[2].acronym,
 					"email": fakeUserC.email,
 					"name": fakeUserC.name,
 					"password": fakeUserC.password,
-					"prefersDark": false
+					"prefersDark": false,
 				}
-			]
+			],
+			"kind": "reachable_employee",
+			"roles": roles.map(role => role.id),
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
@@ -261,8 +263,6 @@ describe("Database Manager: User Create Operations", () => {
 		const fakeUserC = await new UserFactory().in(departments[2]).makeOne()
 		const manager = new UserManager()
 		const bulkData: RawBulkDataForEmployees = {
-			"kind": "unreachable_employee",
-			"roles": roles.map(role => role.id),
 			"importedCSV": [
 				{
 					"department": departments[0].acronym,
@@ -285,7 +285,9 @@ describe("Database Manager: User Create Operations", () => {
 					"password": fakeUserC.password,
 					"prefersDark": false
 				}
-			]
+			],
+			"kind": "unreachable_employee",
+			"roles": roles.map(role => role.id),
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
@@ -311,7 +313,8 @@ describe("Database Manager: User Update Operations", () => {
 		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
-		expect((await User.findOne({ "where": { "id": user.id } }))!.emailVerifiedAt).not.toBeNull()
+		const foundUser = await User.findOne({ "where": { "id": user.id } }) as User
+		expect(foundUser.emailVerifiedAt).not.toBeNull()
 	})
 })
 

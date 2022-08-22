@@ -13,8 +13,7 @@ describe("Database Manager: Signature update operations", () => {
 		const resource = await manager.attach(user.id, signature.fileContents)
 
 		expect(resource).toHaveProperty("data.type", "signature")
-		expect(resource).not.toHaveProperty("data.attributes.fileContents")
-		expect(resource).toHaveProperty("data.links.self")
+		expect(resource).toHaveProperty("data.attributes.fileContents")
 	})
 
 	it("can create signature and delete the previous", async() => {
@@ -33,7 +32,6 @@ describe("Database Manager: Signature update operations", () => {
 		expect(resource).toHaveProperty("data.type", "signature")
 		expect(resource).toHaveProperty("data.id")
 		expect(resource.data.id).not.toEqual(oldSignature.id)
-		expect(resource).not.toHaveProperty("data.attributes.fileContents")
-		expect(resource).toHaveProperty("data.links.self")
+		expect(resource).toHaveProperty("data.attributes.fileContents")
 	})
 })
