@@ -42,7 +42,7 @@
 				{{ JSON.stringify(message.data) }}
 			</div>
 		</div>
-		<UserController :status="consultationStatus"/>
+		<UserController :status="consultationStatus" @start-consultation="startConsultation"/>
 	</section>
 </template>
 
@@ -54,6 +54,7 @@ import type {
 	ConsultationRelationshipNames
 } from "$/types/documents/consultation"
 
+import ConsultationFetcher from "$@/fetchers/consultation"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 
 const { consultation } = defineProps<{
@@ -64,4 +65,17 @@ const consultationStatus = computed<string>(() => consultation.status)
 const consultationMessages = computed<DeserializedChatMessageListDocument<string>>(
 	() => consultation.chatMessages as DeserializedChatMessageListDocument<string>
 )
+
+function startConsultation() {
+	const newConsultationData = {
+		"actionTaken": consultation.actionTaken,
+		"endDatetime": consultation.endDatetime,
+		"reason": consultation.reason,
+		"scheduledStartDatetime": consultation.scheduledStartDatetime,
+		"status": "ongoing"
+	}
+	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
+
+	})
+}
 </script>
