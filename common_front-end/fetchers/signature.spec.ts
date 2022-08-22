@@ -10,11 +10,11 @@ describe("Communicator: SignatureFetcher", () => {
 				"data": {
 					"id": "1",
 					"type": "signature",
-					"links": {
-						"self": "http://localhost:16000/api/signature/1"
+					"attributes": {
+						"fileContents": "http://localhost:16000/api/signature/1"
 					}
 				}
-			} as SignatureDocument<string>),
+			} as SignatureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
 
@@ -29,7 +29,7 @@ describe("Communicator: SignatureFetcher", () => {
 		expect(request).toHaveProperty("url", "/api/user/1/relationships/signature")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty(
-			"body.data.links.self",
+			"body.data.attributes.fileContents",
 			"http://localhost:16000/api/signature/1")
 	})
 })
