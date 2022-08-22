@@ -59,7 +59,7 @@ module.exports = {
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Consulters", { transaction })
+				await queryInterface.dropTable("ChatMessageActivities", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
