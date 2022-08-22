@@ -4,7 +4,7 @@ import RequestEnvironment from "$/helpers/request_environment"
 import SignatureFetcher from "./signature"
 
 describe("Communicator: SignatureFetcher", () => {
-	it("can log in", async() => {
+	it("can get signature URL", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
@@ -29,7 +29,7 @@ describe("Communicator: SignatureFetcher", () => {
 		expect(request).toHaveProperty("url", "/api/user/1/relationships/signature")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty(
-			"body.data.attributes.fileContents",
+			"body.data.fileContents",
 			"http://localhost:16000/api/signature/1")
 	})
 })
