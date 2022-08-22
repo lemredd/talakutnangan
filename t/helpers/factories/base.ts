@@ -17,25 +17,26 @@ import deserialize from "$/helpers/deserialize"
 import Serializer from "%/transformers/serializer"
 
 /**
- * First generic argument `T` represents the model it controls. Generic argument `U`, `V`, `X`, `A`,
- * and `B` are used for deserialization. Lastly, `C` indicates the type of custom options for
+ * First generic argument `T` represents the model it controls. Generic argument `U`, `V`, `Y`, `B`,
+ * and `C` are used for deserialization. Lastly, `D` indicates the type of custom options for
  * transformer.
  */
 export default abstract class Factory<
 	T extends Model,
-	U extends ResourceIdentifier,
-	V extends Attributes,
-	W extends Resource<"read", U, V>,
-	X extends DeserializedResource<U, V>,
-	Y extends ResourceDocument<"read", U, V, W>,
-	Z extends ResourceListDocument<"read", U, V, W>,
-	A extends DeserializedResourceDocument<U, V, X>,
-	B extends DeserializedResourceListDocument<U, V, X>,
-	C = void
+	U extends ResourceIdentifier<"read">,
+	V extends Attributes<"serialized">,
+	W extends Attributes<"deserialized">,
+	X extends Resource<"read", U, V>,
+	Y extends DeserializedResource<U, W>,
+	Z extends ResourceDocument<"read", U, V, X>,
+	A extends ResourceListDocument<"read", U, V, X>,
+	B extends DeserializedResourceDocument<U, W, Y>,
+	C extends DeserializedResourceListDocument<U, W, Y>,
+	D = void
 > {
 	abstract get model(): ModelCtor<T>
 
-	abstract get transformer(): Transformer<T, C>
+	abstract get transformer(): Transformer<T, D>
 
 	abstract generate(): GeneratedData<T>
 
@@ -78,49 +79,49 @@ export default abstract class Factory<
 
 	async serializedOne(
 		mustInsert = false,
-		options: C = {} as C,
-		transformer: Transformer<T, C> = this.transformer
-	): Promise<Y> {
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): Promise<Z> {
 		const model = mustInsert ? await this.insertOne() : await this.makeOne()
-		return this.serialize(model, options, transformer) as Y
+		return this.serialize(model, options, transformer) as Z
 	}
 
 	async serializedMany(
 		count: number,
 		mustInsert = false,
-		options: C = {} as C,
-		transformer: Transformer<T, C> = this.transformer
-	): Promise<Z> {
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): Promise<A> {
 		const model = mustInsert ? await this.insertMany(count) : await this.makeMany(count)
-		return this.serialize(model, options, transformer) as Z
+		return this.serialize(model, options, transformer) as A
 	}
 
 	protected serialize(
 		models: T|T[]|null,
-		options: C = {} as C,
-		transformer: Transformer<T, C> = this.transformer
-	): Y|Z {
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): Z|A {
 		return Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
-		) as Y|Z
+		) as Z|A
 	}
 
 	async deserializedOne(
 		mustInsert = false,
-		options: C = {} as C,
-		transformer: Transformer<T, C> = this.transformer
-	): Promise<A> {
-		return deserialize(await this.serializedOne(mustInsert, options, transformer))as A
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): Promise<B> {
+		return deserialize(await this.serializedOne(mustInsert, options, transformer))as B
 	}
 
 	async deserializedMany(
 		count: number,
 		mustInsert = false,
-		options: C = {} as C,
-		transformer: Transformer<T, C> = this.transformer
-	): Promise<B> {
-		return deserialize(await this.serializedMany(count, mustInsert, options, transformer))as B
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): Promise<C> {
+		return deserialize(await this.serializedMany(count, mustInsert, options, transformer))as C
 	}
 }
