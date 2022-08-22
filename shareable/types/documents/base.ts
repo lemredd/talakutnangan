@@ -19,7 +19,7 @@ export type Resource<
 	U extends ResourceIdentifier<T>,
 	V extends Attributes<"serialized">
 > = U & {
-	attributes: V
+	attributes: T extends "update" ? Partial<V> : V
 }
 
 type RelationshipData<T extends ResourceIdentifier|ResourceIdentifier[]> = Record<string, T>
