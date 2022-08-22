@@ -29,7 +29,7 @@ module.exports = {
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
-					"message": {
+					"data": {
 						"type": Sequelize.JSON,
 						"allowNull": false
 					},

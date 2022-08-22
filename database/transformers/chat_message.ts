@@ -31,7 +31,7 @@ export default class extends Transformer<ChatMessage, void> {
 	: AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-			"message"
+			"data"
 		])
 
 		return safeObject

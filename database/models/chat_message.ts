@@ -20,7 +20,7 @@ export default class ChatMessage extends Model {
 		"allowNull": false,
 		"type": DataType.JSON
 	})
-		message!: GeneralObject
+		data!: GeneralObject
 
 	@ForeignKey(() => User)
 	@Column({

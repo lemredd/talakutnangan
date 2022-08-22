@@ -39,7 +39,7 @@ export default class ChatMessageFactory extends BaseFactory<
 	#consultationGenerator: () => Promise<Consultation>
 		= async() => await new ConsultationFactory().insertOne()
 
-	#messageGenerator: () => Message = () => ({
+	#dataGenerator: () => Message = () => ({
 		"data": faker.lorem.sentence(),
 		"type": "text"
 	} as TextMessage)
@@ -51,13 +51,13 @@ export default class ChatMessageFactory extends BaseFactory<
 	async generate(): GeneratedData<ChatMessage> {
 		return {
 			"consultationID": (await this.#consultationGenerator()).id,
-			"message": this.#messageGenerator(),
+			"data": this.#dataGenerator(),
 			"userID": (await this.#userGenerator()).id
 		}
 	}
 
-	message(generator: () => Message): ChatMessageFactory {
-		this.#messageGenerator = generator
+	data(generator: () => Message): ChatMessageFactory {
+		this.#dataGenerator = generator
 		return this
 	}
 
