@@ -53,14 +53,14 @@ export default class Consultation extends Model {
 		"defaultValue": null,
 		"type": DataType.DATE
 	})
-		endedAt!: Date|null
+		startedAt!: Date|null
 
 	@AllowNull
 	@Column({
 		"defaultValue": null,
 		"type": DataType.DATE
 	})
-		startedAt!: Date|null
+		finishedAt!: Date|null
 
 	@ForeignKey(() => AttachedRole)
 	@Column({
