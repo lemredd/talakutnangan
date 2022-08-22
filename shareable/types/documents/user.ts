@@ -57,7 +57,7 @@ export type UserAttributes<T extends Format = "serialized"> =
 
 interface DeserializedGeneralUserAttributes extends GeneralUserAttributes<"deserialized"> {
 	department: DeserializedDepartmentDocument<"attached">,
-	roles: DeserializedRoleListDocument,
+	roles: DeserializedRoleListDocument<"attached">,
 	profilePicture?: DeserializedProfilePictureDocument,
 	signature?: DeserializedSignatureDocument
 }

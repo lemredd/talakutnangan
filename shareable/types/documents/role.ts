@@ -1,7 +1,12 @@
 import type { Serializable } from "$/types/general"
 import type { RequirePassword } from "$/types/documents/security"
 import type {
-	Completeness,
+	AttachableCompleteness as Completeness,
+	CompletenessRegulator,
+	ReadableCompleteness,
+	PaginatedDocument
+} from "$/types/documents/irregularity"
+import type {
 	Format,
 	Resource,
 	Attributes,
@@ -15,12 +20,9 @@ import type {
 	IdentifierListDocument
 } from "$/types/documents/base"
 
-export interface RoleResourceIdentifier<T extends Completeness = "read">
-extends ResourceIdentifier<T> {
-	type: "role",
-	meta: T extends "read" ? ({
-		userCount: number
-	} | undefined): undefined
+export type RoleResourceIdentifier<T extends Completeness = "read">
+= ResourceIdentifier<CompletenessRegulator<T>> & PaginatedDocument<T> & {
+	type: "role"
 }
 
 export interface RoleAttributes<T extends Format = "serialized"> extends Attributes<T> {
@@ -38,18 +40,19 @@ export interface RoleAttributes<T extends Format = "serialized"> extends Attribu
 }
 
 export type RoleResource<T extends Completeness = "read"> = Resource<
-	T,
+	CompletenessRegulator<T>,
 	RoleResourceIdentifier<T>,
 	RoleAttributes<"serialized">
 >
 
-export type DeserializedRoleResource = DeserializedResource<
-	RoleResourceIdentifier<"read">,
+export type DeserializedRoleResource<T extends ReadableCompleteness = "read">
+= DeserializedResource<
+	RoleResourceIdentifier<T>,
 	RoleAttributes<"deserialized">
 >
 
 export type RoleDocument<T extends Completeness = "read"> = ResourceDocument<
-	T,
+	CompletenessRegulator<T>,
 	RoleResourceIdentifier<T>,
 	RoleAttributes<"serialized">,
 	RoleResource<T>
@@ -58,22 +61,24 @@ export type RoleDocument<T extends Completeness = "read"> = ResourceDocument<
 )
 
 export type RoleListDocument<T extends Completeness = "read"> = ResourceListDocument<
-	T,
+	CompletenessRegulator<T>,
 	RoleResourceIdentifier<T>,
 	RoleAttributes<"serialized">,
 	RoleResource<T>
 >
 
-export type DeserializedRoleDocument = DeserializedResourceDocument<
-	RoleResourceIdentifier<"read">,
+export type DeserializedRoleDocument<T extends ReadableCompleteness = "read">
+= DeserializedResourceDocument<
+	RoleResourceIdentifier<T>,
 	RoleAttributes<"deserialized">,
-	DeserializedRoleResource
+	DeserializedRoleResource<T>
 >
 
-export type DeserializedRoleListDocument = DeserializedResourceListDocument<
-	RoleResourceIdentifier<"read">,
+export type DeserializedRoleListDocument<T extends ReadableCompleteness = "read">
+= DeserializedResourceListDocument<
+	RoleResourceIdentifier<T>,
 	RoleAttributes<"deserialized">,
-	DeserializedRoleResource
+	DeserializedRoleResource<T>
 >
 
 export type RoleIdentifierDocument
