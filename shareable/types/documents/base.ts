@@ -3,9 +3,11 @@ import type { GeneralObject, Serializable } from "$/types/general"
 
 export type PrimaryData = Serializable
 
-export interface ResourceIdentifier extends PrimaryData {
+export type Completeness = "create"|"update"|"read"
+
+export interface ResourceIdentifier<T extends Completeness = "read"> extends PrimaryData {
 	type: string,
-	id: string
+	id: T extends "create"? undefined : string
 }
 
 export type Format = "serialized"|"deserialized"
