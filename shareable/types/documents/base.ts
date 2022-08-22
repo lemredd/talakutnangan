@@ -76,8 +76,8 @@ export type DeserializedResourceDocument<
 > = DataDocument<W>
 
 export interface DeserializedResourceListDocument<
-	U extends ResourceIdentifier,
-	V extends Attributes,
+	U extends ResourceIdentifier<"read">,
+	V extends Attributes<"deserialized">,
 	W extends DeserializedResource<U, V>
 > extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
