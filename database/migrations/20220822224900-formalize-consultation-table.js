@@ -12,7 +12,7 @@ module.exports = {
 				await queryInterface.renameColumn(
 					"Consultations",
 					"endDatetime",
-					"endedAt",
+					"finishedAt",
 					{ transaction }
 				)
 				await queryInterface.addColumn(
@@ -42,7 +42,7 @@ module.exports = {
 				)
 				await queryInterface.renameColumn(
 					"Consultations",
-					"endedAt",
+					"finishedAt",
 					"endDatetime",
 					{ transaction }
 				)
