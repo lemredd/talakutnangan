@@ -15,9 +15,12 @@ export type Format = "serialized"|"deserialized"
 export type Attributes<unusedT extends Format = "serialized"> = GeneralObject
 
 export type Resource<
-	U extends ResourceIdentifier,
-	V extends Attributes> = U & {
-	attributes: V
+	T extends Completeness,
+	U extends Format,
+	V extends ResourceIdentifier<T>,
+	W extends Attributes<U>
+> = V & {
+	attributes: W
 }
 
 type RelationshipData<T extends ResourceIdentifier|ResourceIdentifier[]> = [ string, T ]
