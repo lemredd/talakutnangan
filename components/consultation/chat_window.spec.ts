@@ -18,8 +18,8 @@ describe("Component: consultation/chat_window", () => {
 			"type": "consultation",
 			"chatMessages": {
 				"data": []
-			} as DeserializedChatMessageListDocument<string>
-		} as DeserializedConsultationResource<string>
+			} as DeserializedChatMessageListDocument
+		} as DeserializedConsultationResource
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"consultation": fakeData
