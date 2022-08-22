@@ -1,4 +1,3 @@
-import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
 import ConsultationFactory from "~/factories/consultation"
 import Controller from "./create.post"
@@ -17,15 +16,15 @@ describe.skip("Controller: POST /api/consultation/create", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "consultation",
 					"attributes": {
-						"attachedRoleID": consultation.attachedRoleID,
-						"reason": consultation.reason,
-						"status": consultation.status,
 						"actionTaken": consultation.actionTaken,
-						"scheduledStartDatetime": consultation.scheduledStartDatetime,
-						"endDatetime": consultation.scheduledStartDatetime
-					}
+						"attachedRoleID": consultation.attachedRoleID,
+						"finishedAt": consultation.finishedAt,
+						"reason": consultation.reason,
+						"scheduledStartAt": consultation.scheduledStartAt,
+						"status": consultation.status
+					},
+					"type": "consultation"
 				}
 			}
 		})
