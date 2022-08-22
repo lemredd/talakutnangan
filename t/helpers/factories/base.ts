@@ -25,12 +25,12 @@ export default abstract class Factory<
 	T extends Model,
 	U extends ResourceIdentifier,
 	V extends Attributes,
-	W extends Resource<string, U, V>,
-	X extends DeserializedResource<string, U, V>,
-	Y extends ResourceDocument<string, U, V, W>,
-	Z extends ResourceListDocument<string, U, V, W>,
-	A extends DeserializedResourceDocument<string, U, V, X>,
-	B extends DeserializedResourceListDocument<string, U, V, X>,
+	W extends Resource<"read", U, V>,
+	X extends DeserializedResource<U, V>,
+	Y extends ResourceDocument<"read", U, V, W>,
+	Z extends ResourceListDocument<"read", U, V, W>,
+	A extends DeserializedResourceDocument<U, V, X>,
+	B extends DeserializedResourceListDocument<U, V, X>,
 	C = void
 > {
 	abstract get model(): ModelCtor<T>
@@ -78,7 +78,7 @@ export default abstract class Factory<
 
 	async serializedOne(
 		mustInsert = false,
-		options: GeneralObject = {},
+		options: C = {} as C,
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<Y> {
 		const model = mustInsert ? await this.insertOne() : await this.makeOne()
@@ -88,7 +88,7 @@ export default abstract class Factory<
 	async serializedMany(
 		count: number,
 		mustInsert = false,
-		options: GeneralObject = {},
+		options: C = {} as C,
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<Z> {
 		const model = mustInsert ? await this.insertMany(count) : await this.makeMany(count)
@@ -97,19 +97,19 @@ export default abstract class Factory<
 
 	protected serialize(
 		models: T|T[]|null,
-		options: GeneralObject = {},
+		options: C = {} as C,
 		transformer: Transformer<T, C> = this.transformer
 	): Y|Z {
 		return Serializer.serialize(
 			models,
 			transformer,
-			options
+			options as GeneralObject
 		) as Y|Z
 	}
 
 	async deserializedOne(
 		mustInsert = false,
-		options: GeneralObject = {},
+		options: C = {} as C,
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<A> {
 		return deserialize(await this.serializedOne(mustInsert, options, transformer))as A
@@ -118,7 +118,7 @@ export default abstract class Factory<
 	async deserializedMany(
 		count: number,
 		mustInsert = false,
-		options: GeneralObject = {},
+		options: C = {} as C,
 		transformer: Transformer<T, C> = this.transformer
 	): Promise<B> {
 		return deserialize(await this.serializedMany(count, mustInsert, options, transformer))as B
