@@ -1,11 +1,14 @@
-import type { Attributes } from "$/types/documents/base"
+import type { Format as BaseFormat, Attributes } from "$/types/documents/base"
 
-export interface FileLikeAttributes<T = string> extends Attributes {
-	fileContents?: T
+type Format = BaseFormat|"raw"
+
+export interface FileLikeAttributes<T extends Format = "serialized">
+extends Attributes<T extends "raw" ? "serialized": T> {
+	fileContents: T extends "raw" ? Buffer : undefined
 }
 
-export interface FileLikeResourceLinks {
-	links?: {
+export interface FileLikeResourceLinks<T extends Format = "serialized"> {
+	links: T extends "raw" ? undefined : {
 		self: string
 	}
 }

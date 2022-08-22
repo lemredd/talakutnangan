@@ -19,21 +19,22 @@ import BaseFactory from "~/factories/base"
 
 export default abstract class FileLikeFactory<
 	T extends Model,
-	U extends ResourceIdentifier,
-	V extends Attributes,
-	W extends Resource<string, U, V>,
-	X extends DeserializedResource<string, U, V>,
-	Y extends ResourceDocument<string, U, V, W>,
-	Z extends ResourceListDocument<string, U, V, W>,
-	A extends DeserializedResourceDocument<string, U, V, X>,
-	B extends DeserializedResourceListDocument<string, U, V, X>,
-	C extends FileLikeTransformerOptions = FileLikeTransformerOptions
-> extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C> {
+	U extends ResourceIdentifier<"read">,
+	V extends Attributes<"serialized">,
+	W extends Attributes<"deserialized">,
+	X extends Resource<"read", U, V>,
+	Y extends DeserializedResource<U, W>,
+	Z extends ResourceDocument<"read", U, V, X>,
+	A extends ResourceListDocument<"read", U, V, X>,
+	B extends DeserializedResourceDocument<U, W, Y>,
+	C extends DeserializedResourceListDocument<U, W, Y>,
+	D extends FileLikeTransformerOptions = FileLikeTransformerOptions
+> extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 	protected fileContentsGenerator: () => MimeBuffer = () => dataURIToBuffer(
 		faker.image.dataUri()
 	)
 
-	fileContents(generator: () => MimeBuffer): FileLikeFactory<T, U, V, W, X, Y, Z, A, B, C> {
+	fileContents(generator: () => MimeBuffer): FileLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.fileContentsGenerator = generator
 		return this
 	}
