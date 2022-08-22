@@ -31,7 +31,8 @@ import {
 export default class RoleFactory extends BaseFactory<
 	Role,
 	RoleResourceIdentifier,
-	RoleAttributes,
+	RoleAttributes<"serialized">,
+	RoleAttributes<"deserialized">,
 	RoleResource,
 	DeserializedRoleResource,
 	RoleDocument,
@@ -40,33 +41,33 @@ export default class RoleFactory extends BaseFactory<
 	DeserializedRoleListDocument
 > {
 	#name: () => string = () => faker.name.jobTitle()
-	#departmentFlags: number = 0
-	#roleFlags: number = 0
-	#semesterFlags: number = 0
-	#tagFlags: number = 0
-	#postFlags: number = 0
-	#commentFlags: number = 0
-	#profanityFlags: number = 0
-	#userFlags: number = 0
-	#auditTrailFlags: number = 0
+	#departmentFlags = 0
+	#roleFlags = 0
+	#semesterFlags = 0
+	#tagFlags = 0
+	#postFlags = 0
+	#commentFlags = 0
+	#profanityFlags = 0
+	#userFlags = 0
+	#auditTrailFlags = 0
 
 	get model(): ModelCtor<Role> { return Role }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
 
-	async generate(): GeneratedData<Role> {
-		return {
-			name: this.#name(),
-			departmentFlags: this.#departmentFlags,
-			roleFlags: this.#roleFlags,
-			semesterFlags: this.#semesterFlags,
-			tagFlags: this.#tagFlags,
-			postFlags: this.#postFlags,
-			commentFlags: this.#commentFlags,
-			profanityFlags: this.#profanityFlags,
-			userFlags: this.#userFlags,
-			auditTrailFlags: this.#auditTrailFlags
-		}
+	generate(): GeneratedData<Role> {
+		return Promise.resolve({
+			"auditTrailFlags": this.#auditTrailFlags,
+			"commentFlags": this.#commentFlags,
+			"departmentFlags": this.#departmentFlags,
+			"name": this.#name(),
+			"postFlags": this.#postFlags,
+			"profanityFlags": this.#profanityFlags,
+			"roleFlags": this.#roleFlags,
+			"semesterFlags": this.#semesterFlags,
+			"tagFlags": this.#tagFlags,
+			"userFlags": this.#userFlags
+		})
 	}
 
 	name(name: () => string): RoleFactory {
@@ -121,14 +122,14 @@ export default class RoleFactory extends BaseFactory<
 
 	superRole(): RoleFactory {
 		return this
-			.tagFlags(tag.generateSuperMask())
-			.roleFlags(role.generateSuperMask())
-			.userFlags(user.generateSuperMask())
-			.postFlags(post.generateSuperMask())
-			.commentFlags(comment.generateSuperMask())
-			.semesterFlags(semester.generateSuperMask())
-			.profanityFlags(profanity.generateSuperMask())
-			.departmentFlags(department.generateSuperMask())
-			.auditTrailFlags(auditTrail.generateSuperMask())
+		.tagFlags(tag.generateSuperMask())
+		.roleFlags(role.generateSuperMask())
+		.userFlags(user.generateSuperMask())
+		.postFlags(post.generateSuperMask())
+		.commentFlags(comment.generateSuperMask())
+		.semesterFlags(semester.generateSuperMask())
+		.profanityFlags(profanity.generateSuperMask())
+		.departmentFlags(department.generateSuperMask())
+		.auditTrailFlags(auditTrail.generateSuperMask())
 	}
 }
