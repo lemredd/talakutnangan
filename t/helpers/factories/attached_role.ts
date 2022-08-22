@@ -49,6 +49,13 @@ export default class AttachedRoleFactory extends BaseFactory<
 		}
 	}
 
+	async attachChildren(model: AttachedRole): Promise<AttachedRole> {
+		model.role = await Role.findByPk(model.roleID) as Role
+		model.user = await User.findByPk(model.userID) as User
+
+		return model
+	}
+
 	user(generator: () => Promise<User>): AttachedRoleFactory {
 		this.#userGenerator = generator
 		return this
