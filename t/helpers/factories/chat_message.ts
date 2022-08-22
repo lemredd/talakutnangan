@@ -1,6 +1,6 @@
 
-import type { GeneralObject } from "$/types/general"
 import type { ModelCtor } from "%/types/dependent"
+import type { Message, TextMessage } from "$/types/message"
 import type { GeneratedData } from "~/types/dependent"
 import type {
 	ChatMessageResourceIdentifier,
@@ -12,6 +12,8 @@ import type {
 	ChatMessageDocument,
 	ChatMessageListDocument
 } from "$/types/documents/chat_message"
+
+import { faker } from "@faker-js/faker"
 
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
@@ -37,8 +39,10 @@ export default class ChatMessageFactory extends BaseFactory<
 	#consultationGenerator: () => Promise<Consultation>
 		= async() => await new ConsultationFactory().insertOne()
 
-	// TODO: Base message type on client
-	#messageGenerator: () => GeneralObject = () => ({})
+	#messageGenerator: () => Message = () => ({
+		"data": faker.lorem.sentence(),
+		"type": "text"
+	} as TextMessage)
 
 	get model(): ModelCtor<ChatMessage> { return ChatMessage }
 
@@ -52,7 +56,7 @@ export default class ChatMessageFactory extends BaseFactory<
 		}
 	}
 
-	message(generator: () => Date): ChatMessageFactory {
+	message(generator: () => Message): ChatMessageFactory {
 		this.#messageGenerator = generator
 		return this
 	}
