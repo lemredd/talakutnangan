@@ -39,6 +39,21 @@ export type DeserializedResource<
 	& T
 	& U
 
+type DeserializedRelationshipData<
+	T extends string|number,
+	U extends DeserializedResource<T, any, any>|DeserializedResource<T, any, any>[]
+> = [
+	string,
+	U
+]
+
+export type DeserializedRelationships<
+	T extends string|number,
+	U extends DeserializedRelationshipData<T, any>[]
+> = Serializable & {
+	[Property in U[number][0]]: U[number][1]
+}
+
 export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Serializable {
 	data: T
 }
