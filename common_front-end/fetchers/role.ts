@@ -37,9 +37,9 @@ export default class RoleFetcher extends BaseFetcher<
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
-		string,
-		RoleResourceIdentifier,
-		RoleAttributes,
+		RoleResourceIdentifier<"read">,
+		RoleAttributes<"serialized">,
+		RoleAttributes<"deserialized">,
 		RoleResource,
 		DeserializedRoleResource,
 		RoleIdentifierListDocument
@@ -54,9 +54,9 @@ export default class RoleFetcher extends BaseFetcher<
 			),
 			false
 		) as Promise<Response<
-			string,
-			RoleResourceIdentifier,
-			RoleAttributes,
+			RoleResourceIdentifier<"read">,
+			RoleAttributes<"serialized">,
+			RoleAttributes<"deserialized">,
 			RoleResource,
 			DeserializedRoleResource,
 			RoleIdentifierListDocument

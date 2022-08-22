@@ -37,9 +37,9 @@ export default class DepartmentFetcher extends BaseFetcher<
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
-		string,
 		DepartmentResourceIdentifier,
-		DepartmentAttributes,
+		DepartmentAttributes<"serialized">,
+		DepartmentAttributes<"deserialized">,
 		DepartmentResource,
 		DeserializedDepartmentResource,
 		DepartmentIdentifierListDocument
@@ -54,9 +54,9 @@ export default class DepartmentFetcher extends BaseFetcher<
 			),
 			false
 		) as Promise<Response<
-			string,
 			DepartmentResourceIdentifier,
-			DepartmentAttributes,
+			DepartmentAttributes<"serialized">,
+			DepartmentAttributes<"deserialized">,
 			DepartmentResource,
 			DeserializedDepartmentResource,
 			DepartmentIdentifierListDocument
