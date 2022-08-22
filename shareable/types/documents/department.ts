@@ -74,8 +74,8 @@ export type DeserializedDepartmentListDocument<T extends ReadableCompleteness = 
 	DeserializedDepartmentResource<T>
 >
 
-export type DepartmentIdentifierDocument
-= IdentifierDocument<DepartmentResourceIdentifier<"read">>
+export type DepartmentIdentifierDocument<T extends ReadableCompleteness = "read">
+= IdentifierDocument<DepartmentResourceIdentifier<T>>
 
-export type DepartmentIdentifierListDocument
-= IdentifierListDocument<DepartmentResourceIdentifier<"read">>
+export type DepartmentIdentifierListDocument<T extends ReadableCompleteness = "read">
+= IdentifierListDocument<DepartmentResourceIdentifier<T>>

@@ -42,7 +42,7 @@ export default class RoleFetcher extends BaseFetcher<
 		RoleAttributes<"deserialized">,
 		RoleResource,
 		DeserializedRoleResource,
-		RoleIdentifierListDocument
+		RoleIdentifierListDocument<"read">
 	>> {
 		return this.handleResponse(
 			this.getJSON(
@@ -59,7 +59,7 @@ export default class RoleFetcher extends BaseFetcher<
 			RoleAttributes<"deserialized">,
 			RoleResource,
 			DeserializedRoleResource,
-			RoleIdentifierListDocument
+			RoleIdentifierListDocument<"read">
 		>>
 	}
 }

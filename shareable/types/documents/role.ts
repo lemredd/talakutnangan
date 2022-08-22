@@ -81,8 +81,8 @@ export type DeserializedRoleListDocument<T extends ReadableCompleteness = "read"
 	DeserializedRoleResource<T>
 >
 
-export type RoleIdentifierDocument
-= IdentifierDocument<RoleResourceIdentifier<"read">>
+export type RoleIdentifierDocument<T extends ReadableCompleteness = "read">
+= IdentifierDocument<RoleResourceIdentifier<T>>
 
-export type RoleIdentifierListDocument
-= IdentifierListDocument<RoleResourceIdentifier<"read">>
+export type RoleIdentifierListDocument<T extends ReadableCompleteness = "read">
+= IdentifierListDocument<RoleResourceIdentifier<T>>

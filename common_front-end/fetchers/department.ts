@@ -42,7 +42,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 		DepartmentAttributes<"deserialized">,
 		DepartmentResource,
 		DeserializedDepartmentResource,
-		DepartmentIdentifierListDocument
+		DepartmentIdentifierListDocument<"read">
 	>> {
 		return this.handleResponse(
 			this.getJSON(
@@ -59,7 +59,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 			DepartmentAttributes<"deserialized">,
 			DepartmentResource,
 			DeserializedDepartmentResource,
-			DepartmentIdentifierListDocument
+			DepartmentIdentifierListDocument<"read">
 		>>
 	}
 }
