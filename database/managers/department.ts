@@ -16,7 +16,7 @@ import DepartmentTransformer from "%/transformers/department"
 
 export default class extends BaseManager<
 	Department,
-	DepartmentAttributes,
+	DepartmentAttributes<"serialized">,
 	DepartmentQueryParameters<number>
 > {
 	get model(): ModelCtor<Department> { return Department }

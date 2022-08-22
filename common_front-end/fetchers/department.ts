@@ -17,7 +17,8 @@ import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class DepartmentFetcher extends BaseFetcher<
 	DepartmentResourceIdentifier,
-	DepartmentAttributes,
+	DepartmentAttributes<"serialized">,
+	DepartmentAttributes<"deserialized">,
 	DepartmentResource,
 	DeserializedDepartmentResource,
 	DepartmentDocument,
