@@ -93,7 +93,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 	async create(details: RawUser): Promise<Serializable> {
 		try {
-			details.password = await hash(details.password!)
+			details.password = await hash(details.password as string)
 			return await super.create({ ...details })
 		} catch (error) {
 			throw this.makeBaseError(error)

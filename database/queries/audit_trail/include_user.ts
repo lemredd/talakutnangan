@@ -19,14 +19,14 @@ export default function<T>(
 	}
 
 	(newState.include as any[])!.push({
-		model: User,
-		required: false,
-		include: [
+		"include": [
 			{
-				model: ProfilePicture,
-				required: false
+				"model": ProfilePicture,
+				"required": false
 			}
-		]
+		],
+		"model": User,
+		"required": false
 	})
 
 	Log.trace("pipeline", "include user")
