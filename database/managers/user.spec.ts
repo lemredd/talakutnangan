@@ -84,13 +84,13 @@ describe("Database Manager: User read operations", () => {
 				"existence": "exists",
 				"kind": "*",
 				"role": "*",
-				"slug": incompleteName,
+				"slug": incompleteName
 			},
 			"page": {
 				"limit": 5,
-				"offset": 0,
+				"offset": 0
 			},
-			"sort": [],
+			"sort": []
 		})
 
 		expect(users).toHaveProperty("data")
@@ -108,13 +108,13 @@ describe("Database Manager: User read operations", () => {
 				"existence": "exists",
 				"kind": "*",
 				"role": "*",
-				"slug": incorrectName,
+				"slug": incorrectName
 			},
 			"page": {
 				"limit": 5,
-				"offset": 0,
+				"offset": 0
 			},
-			"sort": [],
+			"sort": []
 		})
 
 		expect(users).toHaveProperty("data")
@@ -131,13 +131,13 @@ describe("Database Manager: User read operations", () => {
 				"existence": "exists",
 				"kind": "unreachable_employee",
 				"role": "*",
-				"slug": "",
+				"slug": ""
 			},
 			"page": {
 				"limit": 5,
-				"offset": 0,
+				"offset": 0
 			},
-			"sort": [],
+			"sort": []
 		})
 
 		expect(users).toHaveProperty("data")
@@ -160,7 +160,7 @@ describe("Database Manager: User Create Operations", () => {
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
 					"prefersDark": false,
-					"studentNumber": "1920-1",
+					"studentNumber": "1920-1"
 				},
 				{
 					"department": departments[1].acronym,
@@ -168,11 +168,11 @@ describe("Database Manager: User Create Operations", () => {
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
 					"prefersDark": false,
-					"studentNumber": "1920-2",
-				},
+					"studentNumber": "1920-2"
+				}
 			],
 			"kind": "student",
-			"roles": roles.map(role => role.id),
+			"roles": roles.map(role => role.id)
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
@@ -205,25 +205,25 @@ describe("Database Manager: User Create Operations", () => {
 					"email": fakeUserA.email,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
-					"prefersDark": false,
+					"prefersDark": false
 				},
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
-					"prefersDark": false,
+					"prefersDark": false
 				},
 				{
 					"department": departments[2].acronym,
 					"email": fakeUserC.email,
 					"name": fakeUserC.name,
 					"password": fakeUserC.password,
-					"prefersDark": false,
+					"prefersDark": false
 				}
 			],
 			"kind": "reachable_employee",
-			"roles": roles.map(role => role.id),
+			"roles": roles.map(role => role.id)
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
@@ -287,7 +287,7 @@ describe("Database Manager: User Create Operations", () => {
 				}
 			],
 			"kind": "unreachable_employee",
-			"roles": roles.map(role => role.id),
+			"roles": roles.map(role => role.id)
 		}
 
 		const userData = await manager.bulkCreate(bulkData)
