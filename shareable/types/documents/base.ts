@@ -83,8 +83,8 @@ export interface ErrorDocument {
 
 type RelationshipData = Record<string, IdentifierDocument<any>|IdentifierListDocument<any>>
 
-export interface Relationships extends Serializable {
-	relationships: RelationshipData
+export interface Relationships<T extends RelationshipData> extends Serializable {
+	relationships: T
 }
 
 export type DeserializedRelationships = Record<
