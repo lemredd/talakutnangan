@@ -18,9 +18,9 @@ import type {
 export interface RoleResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "role",
-	meta: T extends "read" ? {
+	meta: T extends "read" ? ({
 		userCount: number
-	}: undefined
+	} | undefined): undefined
 }
 
 export interface RoleAttributes<T extends Format = "serialized"> extends Attributes<T> {

@@ -19,9 +19,9 @@ import type {
 export interface DepartmentResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "department",
-	meta: T extends "read" ? {
+	meta: T extends "read" ? ({
 		userCount: number
-	}: undefined
+	} | undefined): undefined
 }
 
 export interface DepartmentAttributes<T extends Format = "serialized"> extends Attributes<T> {
