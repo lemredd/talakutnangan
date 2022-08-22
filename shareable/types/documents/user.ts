@@ -18,7 +18,10 @@ import type {
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface UserResourceIdentifier<T extends Completeness = "read">
@@ -135,3 +138,9 @@ interface GeneralUserProfileMetaProperties extends Serializable {
 
 export interface DeserializedUserProfile
 extends DeserializedUserDocument, MetaDocument<GeneralUserProfileMetaProperties> {}
+
+export type UserIdentifierDocument
+= IdentifierDocument<UserResourceIdentifier<"read">>
+
+export type UserIdentifierListDocument
+= IdentifierListDocument<UserResourceIdentifier<"read">>
