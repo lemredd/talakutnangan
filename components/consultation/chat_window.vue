@@ -50,6 +50,7 @@
 import { computed } from "vue"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
+	ConsultationAttributes,
 	DeserializedConsultationResource,
 	ConsultationRelationshipNames
 } from "$/types/documents/consultation"
@@ -66,8 +67,13 @@ const consultationMessages = computed<DeserializedChatMessageListDocument<string
 	() => consultation.chatMessages as DeserializedChatMessageListDocument<string>
 )
 
+interface CustomEvents {
+	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes): void
+}
+const emit = defineEmits<CustomEvents>()
+
 function startConsultation() {
-	const newConsultationData = {
+	const newConsultationData: ConsultationAttributes = {
 		"actionTaken": consultation.actionTaken,
 		"endDatetime": consultation.endDatetime,
 		"reason": consultation.reason,
@@ -75,7 +81,8 @@ function startConsultation() {
 		"status": "ongoing"
 	}
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
-
+		// TODO: Start the timer
+		emit("updatedConsultationAttributes", newConsultationData)
 	})
 }
 </script>
