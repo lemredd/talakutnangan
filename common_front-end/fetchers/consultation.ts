@@ -13,8 +13,9 @@ import type {
 import BaseFetcher from "$@/fetchers/base"
 
 export default class ConsultationFetcher extends BaseFetcher<
-	ConsultationResourceIdentifier,
-	ConsultationAttributes,
+	ConsultationResourceIdentifier<"read">,
+	ConsultationAttributes<"serialized">,
+	ConsultationAttributes<"deserialized">,
 	ConsultationResource,
 	DeserializedConsultationResource,
 	ConsultationDocument,

@@ -25,8 +25,9 @@ import ConsultationTransformer from "%/transformers/consultation"
 
 export default class ConsultationFactory extends BaseFactory<
 	Consultation,
-	ConsultationResourceIdentifier,
-	ConsultationAttributes,
+	ConsultationResourceIdentifier<"read">,
+	ConsultationAttributes<"serialized">,
+	ConsultationAttributes<"deserialized">,
 	ConsultationResource,
 	DeserializedConsultationResource,
 	ConsultationDocument,
