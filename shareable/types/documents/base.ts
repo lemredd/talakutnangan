@@ -8,7 +8,9 @@ export interface ResourceIdentifier extends PrimaryData {
 	id: string
 }
 
-export type Attributes = GeneralObject
+export type Format = "serialized"|"deserialized"
+
+export type Attributes<unusedT extends Format = "serialized"> = GeneralObject
 
 export type Resource<
 	U extends ResourceIdentifier,
@@ -49,44 +51,39 @@ export interface ResourceCount extends Serializable {
 }
 
 export type ResourceDocument<
-	T extends string|number,
 	U extends ResourceIdentifier,
 	V extends Attributes,
 	W extends Resource<U, V>
 > = DataDocument<W>
 
 export type RawResourceDocument<
-	T extends string | number,
 	U extends ResourceIdentifier,
 	V extends Attributes,
 	W extends Resource<U, V>
 > = DataDocument<Pick<W, "type" | "attributes" | "relationships" | "links" | "meta">>
 
 export interface ResourceListDocument<
-	T extends string | number,
 	U extends ResourceIdentifier,
 	V extends Attributes,
 	W extends Resource<U, V>
 > extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
 export type DeserializedResourceDocument<
-	T extends string|number,
 	U extends ResourceIdentifier,
 	V extends Attributes,
-	W extends DeserializedResource<T, U, V>
+	W extends DeserializedResource<U, V>
 > = DataDocument<W>
 
 export interface DeserializedResourceListDocument<
-	T extends string|number,
 	U extends ResourceIdentifier,
 	V extends Attributes,
-	W extends DeserializedResource<T, U, V>
+	W extends DeserializedResource<U, V>
 > extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
-export type IdentifierDocument<T extends string|number, U extends ResourceIdentifier>
+export type IdentifierDocument<U extends ResourceIdentifier>
 = DataDocument<U>
 
-export type IdentifierListDocument<T extends string|number, U extends ResourceIdentifier>
+export type IdentifierListDocument<U extends ResourceIdentifier>
 = DataDocument<U[]>
 
 export interface ErrorDocument {
