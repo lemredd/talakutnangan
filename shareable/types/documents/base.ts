@@ -52,21 +52,21 @@ export interface ResourceCount extends Serializable {
 }
 
 export type ResourceDocument<
-	U extends ResourceIdentifier,
-	V extends Attributes,
-	W extends Resource<U, V>
-> = DataDocument<W>
-
-export type RawResourceDocument<
-	U extends ResourceIdentifier,
-	V extends Attributes,
-	W extends Resource<U, V>
-> = DataDocument<Pick<W, "type" | "attributes" | "relationships" | "links" | "meta">>
+	T extends Completeness,
+	U extends ResourceIdentifier<T>,
+	V extends Attributes<"serialized">,
+	W extends Resource<T, U, V>
+> = DataDocument<
+	T extends "create"
+		? Pick<W, "type" | "attributes" | "relationships" | "links" | "meta">
+		: W
+>
 
 export interface ResourceListDocument<
-	U extends ResourceIdentifier,
+	T extends Completeness,
+	U extends ResourceIdentifier<T>,
 	V extends Attributes,
-	W extends Resource<U, V>
+	W extends Resource<T, U, V>
 > extends DataDocument<W[]>, Partial<MetaDocument<ResourceCount>> {}
 
 export type DeserializedResourceDocument<
