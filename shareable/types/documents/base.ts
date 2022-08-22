@@ -22,37 +22,12 @@ export type Resource<
 	attributes: T extends "update" ? Partial<V> : V
 }
 
-type RelationshipData<T extends ResourceIdentifier|ResourceIdentifier[]> = Record<string, T>
-
-export interface Relationships<T extends RelationshipData<any>> extends Serializable {
-	relationships: {
-		[Property in T[string][0]]: {
-			data: T[string][1]
-		}
-	}
-}
-
 export type DeserializedResource<
 	T extends ResourceIdentifier<"read">,
 	U extends Attributes<"deserialized">
 > =
 	& T
 	& U
-
-type DeserializedRelationshipData<
-	T extends string|number,
-	U extends DeserializedResource<T, any, any>|DeserializedResource<T, any, any>[]
-> = [
-	string,
-	U
-]
-
-export type DeserializedRelationships<
-	T extends string|number,
-	U extends DeserializedRelationshipData<T, any>[]
-> = Serializable & {
-	[Property in U[number][0]]: U[number][1]
-}
 
 export interface DataDocument<T extends PrimaryData|PrimaryData[]> extends Serializable {
 	data: T
@@ -105,3 +80,14 @@ export type IdentifierListDocument<T extends ResourceIdentifier<"read">>
 export interface ErrorDocument {
 	errors: UnitError[]
 }
+
+type RelationshipData = Record<string, IdentifierDocument<any>|IdentifierListDocument<any>>
+
+export interface Relationships extends Serializable {
+	relationships: RelationshipData
+}
+
+export type DeserializedRelationships = Record<
+	string,
+	DeserializedResourceDocument<any, any, any>|DeserializedResourceListDocument<any, any, any>
+>
