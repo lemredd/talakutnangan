@@ -1,4 +1,5 @@
-import type { Format, FileLikeAttributes } from "$/types/documents/file-like"
+import type { FileLikeAttributes } from "$/types/documents/file-like"
+import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
 	Completeness,
 	Resource,
