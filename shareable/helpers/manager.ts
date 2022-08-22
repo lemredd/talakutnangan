@@ -41,7 +41,7 @@ export default class {
 		])
 	}
 
-	protected get userRoles(): DeserializedRoleResource[] {
+	protected get userRoles(): DeserializedRoleResource<"attached">[] {
 		return this.user.data.roles.data
 	}
 
