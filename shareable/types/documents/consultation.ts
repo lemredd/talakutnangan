@@ -27,7 +27,7 @@ export interface ConsultationAttributes extends Attributes {
 	reason: string,
 	status: Status,
 	actionTaken: string,
-	scheduledStartDatetim: Date,
+	scheduledStartDatetime: Date,
 	endDatetime: Date
 }
 
