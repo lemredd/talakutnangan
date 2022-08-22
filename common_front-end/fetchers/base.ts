@@ -23,17 +23,18 @@ import RequestEnvironment from "$/helpers/request_environment"
  * client-side code.
  */
 export default class Fetcher<
-	T extends ResourceIdentifier<string>,
-	U extends Attributes,
-	V extends Resource<string, T, U>,
-	W extends DeserializedResource<string, T, U>,
-	X extends ResourceDocument<string, T, U, V>,
-	Y extends ResourceListDocument<string, T, U, V>,
-	Z extends DeserializedResourceDocument<string, T, U, W>,
-	A extends DeserializedResourceListDocument<string, T, U, W>,
-	B extends Serializable,
-	C extends CommonQueryParameters = CommonQueryParameters,
-	D extends Serializable = Serializable
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"serialized">,
+	V extends Attributes<"deserialized">,
+	W extends Resource<"read", T, U>,
+	X extends DeserializedResource<T, V>,
+	Y extends ResourceDocument<"read", T, U, W>,
+	Z extends ResourceListDocument<"read", T, U, W>,
+	A extends DeserializedResourceDocument<T, V, X>,
+	B extends DeserializedResourceListDocument<T, V, X>,
+	C extends Serializable,
+	D extends CommonQueryParameters = CommonQueryParameters,
+	E extends Serializable = Serializable
 > extends RequestEnvironment {
 	protected static basePath = ""
 	protected static type = ""
@@ -52,7 +53,7 @@ export default class Fetcher<
 		this.type = type
 	}
 
-	create(attributes: U, otherDataFields: D = {} as D): Promise<Response<string, T, U, V, W, Z>> {
+	create(attributes: U, otherDataFields: E = {} as E): Promise<Response<string, T, U, W, X, A>> {
 		return this.handleResponse(
 			this.postJSON(`${this.type}`, {
 				"data": {
@@ -64,7 +65,7 @@ export default class Fetcher<
 		)
 	}
 
-	read(id: string): Promise<Response<string, T, U, V, W, Z>> {
+	read(id: string): Promise<Response<string, T, U, W, X, A>> {
 		const path = specializedPath(`${this.type}/:id`, { id })
 
 		return this.handleResponse(
@@ -72,7 +73,7 @@ export default class Fetcher<
 		)
 	}
 
-	list(parameters: C): Promise<Response<string, T, U, V, W, A>> {
+	list(parameters: D): Promise<Response<string, T, U, W, X, B>> {
 		const commaDelimitedSort = {
 			...parameters,
 			"sort": parameters.sort.join(",")
@@ -84,7 +85,7 @@ export default class Fetcher<
 		)
 	}
 
-	update(id: string, attributes: U): Promise<Response<string, T, U, V, W, null>> {
+	update(id: string, attributes: U): Promise<Response<string, T, U, W, X, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}/:id`, { id }, {
 				"data": {
@@ -96,7 +97,7 @@ export default class Fetcher<
 		)
 	}
 
-	archive(IDs: string[], meta?: GeneralObject): Promise<Response<string, T, U, V, W, null>> {
+	archive(IDs: string[], meta?: GeneralObject): Promise<Response<string, T, U, W, X, null>> {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -108,7 +109,7 @@ export default class Fetcher<
 		)
 	}
 
-	restore(IDs: string[], meta?: GeneralObject): Promise<Response<string, T, U, V, W, null>> {
+	restore(IDs: string[], meta?: GeneralObject): Promise<Response<string, T, U, W, X, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -120,14 +121,14 @@ export default class Fetcher<
 		)
 	}
 
-	getJSON(path: string): Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	getJSON(path: string): Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.getFrom(path, this.makeJSONHeaders())
 	}
 
 	postJSON(
 		path: string,
 		data: Serializable
-	): Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	): Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.postTo(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
@@ -135,7 +136,7 @@ export default class Fetcher<
 		pathTemplate: string,
 		IDs: { [key:string]: string },
 		data: Serializable
-	): Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	): Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
 		return this.patchThrough(path, JSON.stringify(data), this.makeJSONHeaders())
@@ -145,55 +146,55 @@ export default class Fetcher<
 		pathTemplate: string,
 		IDs: { [key:string]: string },
 		data: Serializable
-	): Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	): Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
 		return this.deleteThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
 	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	: Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.requestJSON(path, {
-			"method": "GET",
-			headers
+			headers,
+			"method": "GET"
 		})
 	}
 
 	postTo(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	: Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.requestJSON(path, {
-			"method": "POST",
+			body,
 			headers,
-			body
+			"method": "POST"
 		})
 	}
 
 	patchThrough(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	: Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.requestJSON(path, {
-			"method": "PATCH",
+			body,
 			headers,
-			body
+			"method": "PATCH"
 		})
 	}
 
 	deleteThrough(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<string, T, U, V, W, X | Y | B | null>> {
+	: Promise<Response<string, T, U, W, X, Y | Z | C | null>> {
 		return this.requestJSON(path, {
-			"method": "DELETE",
+			body,
 			headers,
-			body
+			"method": "DELETE"
 		})
 	}
 
-	protected handleResponse<E extends X | Y | Z | A | B | null>(
-		response: Promise<Response<string, T, U, V, W, X | Y | B | null>>,
+	protected handleResponse<F extends Y | Z | A | B | C | null>(
+		response: Promise<Response<string, T, U, W, X, Y | Z | C | null>>,
 		mustBeDeserialize = true
-	): Promise<Response<string, T, U, V, W, E>> {
+	): Promise<Response<string, T, U, W, X, F>> {
 		return response.then(({ body, status }) => {
 			if (status >= 200 || status <= 299) {
 				return {
-					"body": mustBeDeserialize ? deserialize(body) as E : body as E,
+					"body": mustBeDeserialize ? deserialize(body) as F : body as F,
 					status
 				}
 			}
