@@ -71,12 +71,17 @@ form {
 <script setup lang="ts">
 import { inject, Ref, ref, provide } from "vue"
 
+import type { PageContext } from "#/types"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
+const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext
+
+const { "data": userProfile } = pageContext.pageProps.userProfile as DeserializedUserProfile
 const profileInfo = {
 	displayName: "Sample Name",
 	profilePic: null as string | null,
