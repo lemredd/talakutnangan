@@ -11,7 +11,13 @@
 		<SelectableOptionsField
 			v-model="currentOption"
 			:options="remainingOptions"
-			:placeholder="placeholder"/>
+			:placeholder="placeholder">
+			<template #after-dropdown>
+				<button class="material-icons" @click="addCurrentOption">
+					add
+				</button>
+			</template>
+		</SelectableOptionsField>
 	</div>
 </template>
 
@@ -31,7 +37,7 @@ const {
 } = defineProps<{
 	options: readonly OptionInfo[]
 	modelValue: string[]
-	label?: string
+	label: string
 	placeholder?: string
 }>()
 
@@ -49,7 +55,7 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-function updateSelectedValues() {
+function addCurrentOption() {
 	emit("updated:modelValue", [
 		...modelValue,
 		currentOption.value
