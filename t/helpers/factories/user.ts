@@ -73,57 +73,18 @@ export default class UserFactory extends BaseFactory<
 		}
 	}
 
-	async makeOne() {
-		const user = await super.makeOne()
-		user.roles = this.roles
-		user.department = this.#department!
-		user.password = this.#password
-		return user
-	}
-
-	async insertOne() {
-		const user = await super.insertOne()
-		user.password = this.#password
-		await AttachedRole.bulkCreate(this.roles.map(role => ({
-			"roleID": role.id,
-			"userID": user.id
-		})))
-		user.roles = this.roles
-		user.department = this.#department!
-
-		return user
-	}
-
-	async makeMany(count: number): Promise<User[]> {
-		const users = await super.makeMany(count)
-		users.forEach(user => {
-			user.password = this.#password
-		})
-		return users
-	}
-
-	async insertMany(count: number): Promise<User[]> {
-		const users = await super.insertMany(count)
-
-		const pendingAttachments = []
-		for (const user of users) {
-			user.password = this.#password
-
-			pendingAttachments.push(
-				AttachedRole.bulkCreate(
-					this.roles.map(role => ({
-						"userID": user.id,
-						"roleID": role.id
-					}))
-				)
-			)
-
-			user.roles = this.roles
+	async attachChildren(user: User): Promise<User> {
+		if (user.id) {
+			await AttachedRole.bulkCreate(this.roles.map(role => ({
+				"roleID": role.id,
+				"userID": user.id
+			})))
 		}
+		user.roles = this.roles
+		user.department = this.#department as Department
+		user.password = this.#password
 
-		await Promise.all(pendingAttachments)
-
-		return users
+		return user
 	}
 
 	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
