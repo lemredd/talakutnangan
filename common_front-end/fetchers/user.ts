@@ -11,6 +11,10 @@ import type {
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 } from "$/types/documents/user"
+
+import { MULTIPART_MEDIA_TYPE } from "$/types/server"
+import specializedPath from "$/helpers/specialize_path"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class UserFetcher extends BaseFetcher<
@@ -61,6 +65,28 @@ export default class UserFetcher extends BaseFetcher<
 		Serializable
 	>> {
 		return await this.postJSON(`${this.type}/log_out`, {}) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			Serializable
+		>
+	}
+
+	async import(form: FormData): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		Serializable
+	>> {
+		const pathTemplate = ":type/import"
+		const path = specializedPath(pathTemplate, { "type": this.type })
+		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+
+		return await this.handleResponse(this.postTo(path, form, headers)) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
 			UserAttributes<"deserialized">,
