@@ -16,6 +16,7 @@
 import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "#/types"
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -24,8 +25,11 @@ const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
 const { "roles": rawRoles } = pageProps
 const roles = ref<DeserializedRoleListDocument>(rawRoles as DeserializedRoleListDocument)
-const roleNames = computed(() => roles.value.data.map(data => data.name))
-const chosenRole = ref(roleNames.value[0])
+const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
+	"label": data.name,
+	"value": data.id
+})))
+const chosenRole = ref(roleNames.value[0].value)
 
 function importData(event: Event) {
 	const form = event.target as HTMLFormElement
