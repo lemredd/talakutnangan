@@ -43,4 +43,16 @@ const selectedOptions = computed<OptionInfo[]>(() => {
 const remainingOptions = computed<OptionInfo[]>(() => subtract(options, selectedOptions.value))
 
 const currentOption = ref<string>(remainingOptions.value[0].value)
+
+interface CustomEvents {
+	(eventName: "updated:modelValue", data: string[]): void
+}
+const emit = defineEmits<CustomEvents>()
+
+function updateSelectedValues() {
+	emit("updated:modelValue", [
+		...modelValue,
+		currentOption.value
+	])
+}
 </script>
