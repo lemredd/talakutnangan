@@ -80,7 +80,7 @@ export default class UserFetcher extends BaseFetcher<
 		UserAttributes<"deserialized">,
 		UserResource,
 		DeserializedUserResource,
-		Serializable
+		DeserializedUserListDocument
 	>> {
 		const pathTemplate = ":type/import"
 		const path = specializedPath(pathTemplate, { "type": this.type })
@@ -92,7 +92,7 @@ export default class UserFetcher extends BaseFetcher<
 			UserAttributes<"deserialized">,
 			UserResource,
 			DeserializedUserResource,
-			Serializable
+			DeserializedUserListDocument
 		>
 	}
 }
