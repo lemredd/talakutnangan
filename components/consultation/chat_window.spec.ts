@@ -9,16 +9,17 @@ describe("Component: consultation/chat_window", () => {
 	it("should show main controllers if ongoing", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeData = {
-			"id": "1",
 			"actionTaken": "",
-			"endDatetime": new Date(),
-			"reason": "",
-			"scheduledStartDatetime": new Date(),
-			"status": "will_start",
-			"type": "consultation",
 			"chatMessages": {
 				"data": []
-			} as DeserializedChatMessageListDocument
+			} as DeserializedChatMessageListDocument,
+			"finishedAt": null,
+			"id": "1",
+			"reason": "",
+			"scheduledStartAt": new Date(),
+			"startedAt": null,
+			"status": "will_start",
+			"type": "consultation"
 		} as DeserializedConsultationResource
 		const wrapper = shallowMount<any>(Component, {
 			"props": {

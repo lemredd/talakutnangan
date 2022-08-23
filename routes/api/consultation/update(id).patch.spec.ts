@@ -1,4 +1,3 @@
-import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
 import ConsultationFactory from "~/factories/consultation"
 import Controller from "./update(id).patch"
@@ -24,14 +23,9 @@ describe.skip("Controller: PATCH /api/consultation/:id", () => {
 						"reason": consultation.reason,
 						"status": consultation.status,
 						"actionTaken": consultation.actionTaken,
-						"scheduledStartDatetime": consultation.scheduledStartDatetime,
-						"endDatetime": consultation.scheduledStartDatetime,
-						/*
-						 * TODO Message
-						 * TODO Consultation Requesters
-						 * TODO Chat Message Activity
-						 */
-						"deletedAt": null
+						"scheduledStartAt": consultation.scheduledStartAt,
+						"startedAt": consultation.startedAt,
+						"finishedAt": consultation.finishedAt
 					}
 				}
 			}

@@ -68,21 +68,30 @@ const consultationMessages = computed<DeserializedChatMessageListDocument>(
 )
 
 interface CustomEvents {
-	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes): void
+	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 }
 const emit = defineEmits<CustomEvents>()
 
 function startConsultation() {
-	const newConsultationData: ConsultationAttributes = {
+	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": consultation.actionTaken,
-		"endDatetime": consultation.endDatetime,
+		"finishedAt": consultation.finishedAt?.toISOString() ?? null,
 		"reason": consultation.reason,
-		"scheduledStartDatetime": consultation.scheduledStartDatetime,
-		"status": "ongoing"
+		"scheduledStartAt": consultation.scheduledStartAt?.toISOString() ?? null,
+		"status": "ongoing",
+		"startedAt": consultation.startedAt?.toISOString() ?? null
 	}
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
+		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
+			"actionTaken": consultation.actionTaken,
+			"finishedAt": consultation.finishedAt,
+			"reason": consultation.reason,
+			"scheduledStartAt": consultation.scheduledStartAt,
+			"status": "ongoing",
+			"startedAt": consultation.startedAt
+		}
 		// TODO: Start the timer
-		emit("updatedConsultationAttributes", newConsultationData)
+		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
 </script>

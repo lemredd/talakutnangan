@@ -30,8 +30,9 @@ extends Attributes<T> {
 	reason: string,
 	status: T extends "serialized" ? string : Status,
 	actionTaken: string,
-	scheduledStartDatetime: T extends "serialized" ? string : Date,
-	endDatetime: T extends "serialized" ? string : Date,
+	scheduledStartAt: T extends "serialized" ? string : Date,
+	startedAt: (T extends "serialized" ? string : Date)|null,
+	finishedAt: (T extends "serialized" ? string : Date)|null
 }
 
 type RawConsultationRelationships = [
