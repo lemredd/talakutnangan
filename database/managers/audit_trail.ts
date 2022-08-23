@@ -8,7 +8,7 @@ import AuditTrail from "%/models/audit_trail"
 import includeUser from "%/queries/audit_trail/include_user"
 import AuditTrailTransformer from "%/transformers/audit_trail"
 
-interface RawAuditTrailAttributes extends AuditTrailAttributes {
+interface RawAuditTrailAttributes extends AuditTrailAttributes<"serialized"> {
 	userID: number|null
 }
 

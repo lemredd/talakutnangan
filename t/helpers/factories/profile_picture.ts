@@ -20,14 +20,15 @@ import ProfilePictureTransformer from "%/transformers/profile_picture"
 
 export default class ProfilePictureFactory extends FileLikeFactory<
 	ProfilePicture,
-	ProfilePictureResourceIdentifier,
-	ProfilePictureAttributes,
-	ProfilePictureResource,
-	DeserializedProfilePictureResource,
-	ProfilePictureDocument<string>,
-	ProfilePictureListDocument,
-	DeserializedProfilePictureDocument,
-	DeserializedProfilePictureListDocument,
+	ProfilePictureResourceIdentifier<"read">,
+	ProfilePictureAttributes<"raw">,
+	ProfilePictureAttributes<"raw">,
+	ProfilePictureResource<"read", "raw">,
+	DeserializedProfilePictureResource<"raw">,
+	ProfilePictureDocument<"read", "raw">,
+	ProfilePictureListDocument<"read", "raw">,
+	DeserializedProfilePictureDocument<"raw">,
+	DeserializedProfilePictureListDocument<"raw">,
 	ProfilePictureTransformerOptions
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
@@ -38,8 +39,8 @@ export default class ProfilePictureFactory extends FileLikeFactory<
 
 	async generate(): GeneratedData<ProfilePicture> {
 		return {
-			"userID": (await this.#user()).id,
-			"fileContents": this.fileContentsGenerator()
+			"fileContents": this.fileContentsGenerator(),
+			"userID": (await this.#user()).id
 		}
 	}
 

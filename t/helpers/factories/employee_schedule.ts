@@ -23,8 +23,9 @@ import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 
 export default class EmployeeScheduleFactory extends BaseFactory<
 	EmployeeSchedule,
-	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes,
+	EmployeeScheduleResourceIdentifier<"read">,
+	EmployeeScheduleAttributes<"serialized">,
+	EmployeeScheduleAttributes<"deserialized">,
 	EmployeeScheduleResource,
 	DeserializedEmployeeScheduleResource,
 	EmployeeScheduleDocument,

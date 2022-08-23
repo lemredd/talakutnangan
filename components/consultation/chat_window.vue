@@ -59,12 +59,12 @@ import ConsultationFetcher from "$@/fetchers/consultation"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 
 const { consultation } = defineProps<{
-	consultation: DeserializedConsultationResource<string, ConsultationRelationshipNames>
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
 }>()
 const consultationID = computed<string>(() => consultation.id)
 const consultationStatus = computed<string>(() => consultation.status)
-const consultationMessages = computed<DeserializedChatMessageListDocument<string>>(
-	() => consultation.chatMessages as DeserializedChatMessageListDocument<string>
+const consultationMessages = computed<DeserializedChatMessageListDocument>(
+	() => consultation.chatMessages as DeserializedChatMessageListDocument
 )
 
 interface CustomEvents {

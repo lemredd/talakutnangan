@@ -21,7 +21,8 @@ import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 export default class DepartmentFactory extends BaseFactory<
 	Department,
 	DepartmentResourceIdentifier,
-	DepartmentAttributes,
+	DepartmentAttributes<"serialized">,
+	DepartmentAttributes<"deserialized">,
 	DepartmentResource,
 	DeserializedDepartmentResource,
 	DepartmentDocument,

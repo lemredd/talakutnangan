@@ -39,7 +39,7 @@ describe("PATCH /api/user/:id/relationships/signature", () => {
 		expect(response.body).toHaveProperty("data.type", "signature")
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
-			"data.links.self",
+			"data.attributes.fileContents",
 			`http://localhost:16000/api/signature/${response.body.data.id}`
 		)
 	}, 10000)

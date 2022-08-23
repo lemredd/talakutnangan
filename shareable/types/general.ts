@@ -12,9 +12,10 @@ export interface Serializable {
 		| number
 		| boolean
 		| null
+		| Date
 		| Serializable
 		| undefined
-		| (string|number|boolean|Serializable)[]
+		| (string|number|boolean|Date|Serializable)[]
 }
 
 /**

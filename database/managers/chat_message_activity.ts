@@ -8,7 +8,7 @@ import ChatMessageActivityTransformer from "%/transformers/chat_message_activity
 
 export default class extends BaseManager<
 	ChatMessageActivity,
-	ChatMessageActivityAttributes,
+	ChatMessageActivityAttributes<"deserialized">,
 	CommonQueryParameters
 > {
 	get model(): ModelCtor<ChatMessageActivity> { return ChatMessageActivity }

@@ -9,9 +9,9 @@ import type {
 	DeserializedAuditTrailResource,
 	DeserializedAuditTrailDocument,
 	DeserializedAuditTrailListDocument,
-AuditTrailResource,
-AuditTrailDocument,
-AuditTrailListDocument
+	AuditTrailResource,
+	AuditTrailDocument,
+	AuditTrailListDocument
 } from "$/types/documents/audit_trail"
 
 import User from "%/models/user"
@@ -22,8 +22,9 @@ import AuditTrailTransformer from "%/transformers/audit_trail"
 
 export default class AuditTrailFactory extends BaseFactory<
 	AuditTrail,
-	AuditTrailResourceIdentifier,
-	AuditTrailAttributes,
+	AuditTrailResourceIdentifier<"read">,
+	AuditTrailAttributes<"serialized">,
+	AuditTrailAttributes<"deserialized">,
 	AuditTrailResource,
 	DeserializedAuditTrailResource,
 	AuditTrailDocument,
@@ -31,10 +32,13 @@ export default class AuditTrailFactory extends BaseFactory<
 	DeserializedAuditTrailDocument,
 	DeserializedAuditTrailListDocument
 > {
-	#user: () => Promise<User|null> = async () => await new UserFactory().insertOne()
-	#actionName: () => string = () => {
-		return `${faker.hacker.noun().replace(" ", "_")}.${faker.hacker.verb()}`
-	}
+	#user: () => Promise<User|null> = async() => await new UserFactory().insertOne()
+	#actionName: () => string = () => `${
+		faker.hacker.noun().replace(" ", "_")
+	}.${
+		faker.hacker.verb()
+	}`
+
 	#extra: () => GeneralObject = () => ({})
 
 	get model(): ModelCtor<AuditTrail> { return AuditTrail }
@@ -43,9 +47,9 @@ export default class AuditTrailFactory extends BaseFactory<
 
 	async generate(): GeneratedData<AuditTrail> {
 		return {
-			userID: (await this.#user())?.id,
-			actionName: this.#actionName(),
-			extra: this.#extra()
+			"userID": (await this.#user())?.id,
+			"actionName": this.#actionName(),
+			"extra": this.#extra()
 		}
 	}
 

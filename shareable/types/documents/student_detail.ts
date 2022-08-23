@@ -1,4 +1,6 @@
 import type {
+	Completeness,
+	Format,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
@@ -9,51 +11,48 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface StudentDetailResourceIdentifier<T extends string|number = string>
+export interface StudentDetailResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "student_detail"
 }
 
-export interface StudentDetailAttributes extends Attributes {
+export interface StudentDetailAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	studentNumber: string
 }
 
-export type StudentDetailResource = Resource<
-	StudentDetailResourceIdentifier,
+export type StudentDetailResource<T extends Completeness = "read"> = Resource<
+	T,
+	StudentDetailResourceIdentifier<T>,
+	StudentDetailAttributes<"serialized">
+>
+
+export type DeserializedStudentDetailResource = DeserializedResource<
+	StudentDetailResourceIdentifier<"read">,
 	StudentDetailAttributes
 >
 
-export type DeserializedStudentDetailResource<T extends string|number = string>
-= DeserializedResource<
+export type StudentDetailDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
 	StudentDetailResourceIdentifier<T>,
-	StudentDetailAttributes
+	StudentDetailAttributes<"serialized">,
+	StudentDetailResource<T>
 >
 
-export type StudentDetailDocument = ResourceDocument<
-	StudentDetailResourceIdentifier,
-	StudentDetailAttributes,
-	StudentDetailResource
->
-
-export type StudentDetailListDocument = ResourceListDocument<
-	StudentDetailResourceIdentifier,
-	StudentDetailAttributes,
-	StudentDetailResource
->
-
-export type DeserializedStudentDetailDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type StudentDetailListDocument<T extends Completeness = "read"> = ResourceListDocument<
 	T,
 	StudentDetailResourceIdentifier<T>,
-	StudentDetailAttributes,
-	DeserializedStudentDetailResource<T>
+	StudentDetailAttributes<"serialized">,
+	StudentDetailResource<T>
 >
 
-export type DeserializedStudentDetailListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
-	T,
-	StudentDetailResourceIdentifier<T>,
-	StudentDetailAttributes,
-	DeserializedStudentDetailResource<T>
+export type DeserializedStudentDetailDocument = DeserializedResourceDocument<
+	StudentDetailResourceIdentifier<"read">,
+	StudentDetailAttributes<"deserialized">,
+	DeserializedStudentDetailResource
+>
+
+export type DeserializedStudentDetailListDocument = DeserializedResourceListDocument<
+	StudentDetailResourceIdentifier<"read">,
+	StudentDetailAttributes<"deserialized">,
+	DeserializedStudentDetailResource
 >

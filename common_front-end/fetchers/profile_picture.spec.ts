@@ -10,11 +10,11 @@ describe("Communicator: ProfilePictureFetcher", () => {
 				"data": {
 					"id": "1",
 					"type": "profile_picture",
-					"links": {
-						"self": "http://localhost:16000/api/profile_picture/1"
+					"attributes": {
+						"fileContents": "http://localhost:16000/api/profile_picture/1"
 					}
 				}
-			} as ProfilePictureDocument<string>),
+			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
 
@@ -29,7 +29,7 @@ describe("Communicator: ProfilePictureFetcher", () => {
 		expect(request).toHaveProperty("url", "/api/user/1/relationships/profile_picture")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty(
-			"body.data.links.self",
+			"body.data.fileContents",
 			"http://localhost:16000/api/profile_picture/1")
 	})
 
@@ -39,11 +39,11 @@ describe("Communicator: ProfilePictureFetcher", () => {
 				"data": {
 					"id": "1",
 					"type": "profile_picture",
-					"links": {
-						"self": "http://localhost:16000/api/profile_picture/1"
+					"attributes": {
+						"fileContents": "http://localhost:16000/api/profile_picture/1"
 					}
 				}
-			} as ProfilePictureDocument<string>),
+			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
 
@@ -58,7 +58,7 @@ describe("Communicator: ProfilePictureFetcher", () => {
 		expect(request).toHaveProperty("url", "/api/profile_picture/1")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 		expect(response).toHaveProperty(
-			"body.data.links.self",
+			"body.data.fileContents",
 			"http://localhost:16000/api/profile_picture/1")
 	})
 })

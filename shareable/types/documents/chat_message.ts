@@ -1,5 +1,7 @@
 import type { GeneralObject } from "$/types/general"
 import type {
+	Completeness,
+	Format,
 	Resource,
 	Attributes,
 	ResourceDocument,
@@ -10,51 +12,49 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ChatMessageResourceIdentifier<T extends string|number = string>
+export interface ChatMessageResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "chat_message"
 }
 
-export interface ChatMessageAttributes extends Attributes {
+export interface ChatMessageAttributes<T extends Format = "serialized">
+extends Attributes<T> {
 	data: GeneralObject
 }
 
-export type ChatMessageResource = Resource<
-	ChatMessageResourceIdentifier,
-	ChatMessageAttributes
->
-
-export type DeserializedChatMessageResource<T extends string|number = string>
-= DeserializedResource<
+export type ChatMessageResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageResourceIdentifier<T>,
-	ChatMessageAttributes
+	ChatMessageAttributes<"serialized">
 >
 
-export type ChatMessageDocument = ResourceDocument<
-	ChatMessageResourceIdentifier,
-	ChatMessageAttributes,
-	ChatMessageResource
+export type DeserializedChatMessageResource = DeserializedResource<
+	ChatMessageResourceIdentifier<"read">,
+	ChatMessageAttributes<"deserialized">
 >
 
-export type ChatMessageListDocument = ResourceListDocument<
-	ChatMessageResourceIdentifier,
-	ChatMessageAttributes,
-	ChatMessageResource
->
-
-export type DeserializedChatMessageDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type ChatMessageDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
 	ChatMessageResourceIdentifier<T>,
-	ChatMessageAttributes,
-	DeserializedChatMessageResource<T>
+	ChatMessageAttributes<"serialized">,
+	ChatMessageResource<T>
 >
 
-export type DeserializedChatMessageListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
+export type ChatMessageListDocument<T extends Completeness = "read"> = ResourceListDocument<
 	T,
 	ChatMessageResourceIdentifier<T>,
-	ChatMessageAttributes,
-	DeserializedChatMessageResource<T>
+	ChatMessageAttributes<"serialized">,
+	ChatMessageResource<T>
+>
+
+export type DeserializedChatMessageDocument = DeserializedResourceDocument<
+	ChatMessageResourceIdentifier<"read">,
+	ChatMessageAttributes<"deserialized">,
+	DeserializedChatMessageResource
+>
+
+export type DeserializedChatMessageListDocument = DeserializedResourceListDocument<
+	ChatMessageResourceIdentifier<"read">,
+	ChatMessageAttributes<"deserialized">,
+	DeserializedChatMessageResource
 >
