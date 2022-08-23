@@ -23,13 +23,13 @@ export default class <
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
-	 * @param ownScopePermissionCombination Permission combination which only allows current user.
+	 * @param narrowScopePermissionCombination Permission combination which only allows current user.
 	 * @param wideScopePermissionCombinations Permission combinations which may allow heads or admin.
 	 * @param checkOthers Extra function used for checking other constraints.
 	 */
 	constructor(
 		permissionGroup: PermissionGroup<T, U>,
-		ownScopePermissionCombination: U[],
+		narrowScopePermissionCombination: U[],
 		wideScopePermissionCombinations: U[][],
 		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
 			const promise = Promise.resolve()
@@ -38,7 +38,7 @@ export default class <
 	) {
 		super(
 			permissionGroup,
-			[ ownScopePermissionCombination, ...wideScopePermissionCombinations ],
+			[ narrowScopePermissionCombination, ...wideScopePermissionCombinations ],
 			async(request: V): Promise<void> => {
 				await this.checkLimitation(request)
 				await checkOthers(request)
@@ -56,6 +56,7 @@ export default class <
 			this.wideScopePermissionCombinations
 		)
 
+		// TODO: Check for department-wide scope
 		if (!hasWidePermission) {
 			if (user.data.id !== request.params.id) {
 				return Promise.reject(new AuthorizationError(
