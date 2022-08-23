@@ -16,11 +16,11 @@ import { faker } from "@faker-js/faker"
 import User from "%/models/user"
 import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
-import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Consulter from "%/models/consulter"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
+import AttachedRoleFactory from "~/factories/attached_role"
 import ConsultationTransformer from "%/transformers/consultation"
 
 export default class ConsultationFactory extends BaseFactory<
@@ -37,15 +37,7 @@ export default class ConsultationFactory extends BaseFactory<
 > {
 	#consultantInfoGenerator: () => Promise<AttachedRole>
 		= async() => {
-			const role = await new RoleFactory().insertOne()
-			const user = await new UserFactory().insertOne()
-			const attachedRole = await AttachedRole.create({
-				"roleID": role.id,
-				"userID": user.id
-			})
-
-			attachedRole.role = role
-			attachedRole.user = user
+			const attachedRole = await new AttachedRoleFactory().insertOne()
 
 			return attachedRole
 		}
@@ -62,8 +54,6 @@ export default class ConsultationFactory extends BaseFactory<
 	#scheduledStartAtGenerator: () => Date = () => new Date()
 	#startedAtGenerator: () => Date|null = () => new Date()
 	#finishedAtGenerator: () => Date|null = () => new Date()
-
-	// TODO date
 
 	get model(): ModelCtor<Consultation> { return Consultation }
 

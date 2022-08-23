@@ -2,7 +2,7 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.createTable("AuditTrails", {
+				await queryInterface.createTable("ChatMessages", {
 					"id": {
 						"allowNull": false,
 						"autoIncrement": true,
@@ -10,8 +10,7 @@ module.exports = {
 						"type": Sequelize.BIGINT
 					},
 					"userID": {
-						"allowNull": true,
-						"defaultValue": null,
+						"allowNull": false,
 						"type": Sequelize.BIGINT,
 						"references": {
 							"model": "Users",
@@ -20,11 +19,17 @@ module.exports = {
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
-					"actionName": {
-						"type": Sequelize.STRING,
-						"allowNull": false
+					"consultationID": {
+						"allowNull": false,
+						"type": Sequelize.BIGINT,
+						"references": {
+							"model": "Consultations",
+							"key": "id"
+						},
+						"onDelete": "cascade",
+						"onUpdate": "cascade"
 					},
-					"extra": {
+					"data": {
 						"type": Sequelize.JSON,
 						"allowNull": false
 					},
@@ -40,7 +45,7 @@ module.exports = {
 						"allowNull": true,
 						"type": Sequelize.DATE
 					}
-				})
+				}, { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
@@ -50,7 +55,7 @@ module.exports = {
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("AuditTrails", { transaction })
+				await queryInterface.dropTable("ChatMessages", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
