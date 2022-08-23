@@ -45,10 +45,13 @@ import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "#/types"
 import type { OptionInfo } from "$@/types/component"
+import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import { UserKindValues } from "$/types/database"
 
+import UserFetcher from "$@/fetchers/user"
 import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
+
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
@@ -68,18 +71,18 @@ const kindNames = UserKindValues.map(kind => ({
 }))
 const chosenKind = ref<string>(kindNames[0].value)
 
+const createdUsers = ref<DeserializedUserResource[]>([])
+
+UserFetcher.initialize("/api")
+const fetcher = new UserFetcher()
+
 function importData(event: Event) {
 	const form = event.target as HTMLFormElement
 	const formData = new FormData(form)
 
-	fetch("/api/user/import", {
-		"method": "POST",
-		"headers": {
-			"Content-Type": "multipart/form-data"
-		},
-		"body": formData
-	}).then(response => {
-		console.log(response)
+	fetcher.import(formData).then(({ body }) => {
+		const { data } = body
+		createdUsers.value = data
 	})
 }
 
