@@ -1,4 +1,5 @@
 import type { Request } from "!/types/dependent"
+import type { PageProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
 
 import Policy from "!/bases/policy"
@@ -24,7 +25,7 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: Request): Promise<Serializable> {
 		const manager = new RoleManager(request.transaction, request.cache)
-		const pageProps = {
+		const pageProps: Partial<PageProps> = {
 			"roles": await manager.list({
 				"filter": {
 					"department": "*",
