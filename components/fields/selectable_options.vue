@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<label :for="selectID">{{ label }}</label>
+		<label v-if="label" :for="selectID">{{ label }}</label>
 		<select
 			:id="selectID"
 			:value="modelValue"
@@ -36,7 +36,7 @@ const {
 } = defineProps<{
 	options: readonly any[]
 	modelValue: any
-	label: string
+	label?: string
 	placeholder?: string
 }>()
 
