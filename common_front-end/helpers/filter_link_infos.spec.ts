@@ -14,17 +14,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -43,38 +43,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": 0,
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -84,17 +85,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -116,17 +117,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": true,
 				"kinds": null,
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": true,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -145,38 +146,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": 0,
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -186,17 +188,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": true,
 				"kinds": null,
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": true,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -210,38 +212,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": 0,
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -251,17 +254,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": [],
-				"permissionCombinations": [],
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [],
+				"permissionGroup": null
 			}
 		]
 
@@ -283,17 +286,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": [],
-				"permissionCombinations": [],
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [],
+				"permissionGroup": null
 			}
 		]
 
@@ -307,38 +310,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": 0,
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -348,17 +352,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": [ "unreachable_employee" ],
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -377,38 +381,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": 0,
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -418,17 +423,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": [ "reachable_employee" ],
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -445,17 +450,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": [ "unreachable_employee" ],
-				"permissionCombinations": null,
-				"permissionGroup": null,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
 			}
 		]
 
@@ -471,12 +476,18 @@ describe("Helper: Filter Link Infos", () => {
 		get name(): string { return "userFlags" }
 		get permissions(): PermissionMap<AvailablePermissionsC> {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
-				[ "a", { "flag": 0x1,
-					"permissionDependencies": [] } ],
-				[ "b", { "flag": 0x2,
-					"permissionDependencies": [] } ],
-				[ "c", { "flag": 0x4,
-					"permissionDependencies": [] } ]
+				[ "a", {
+					"flag": 0x1,
+					"permissionDependencies": []
+				} ],
+				[ "b", {
+					"flag": 0x2,
+					"permissionDependencies": []
+				} ],
+				[ "c", {
+					"flag": 0x4,
+					"permissionDependencies": []
+				} ]
 			])
 		}
 	}
@@ -487,38 +498,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": permissionGroup.generateMask("a"),
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": permissionGroup.generateMask("a")
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -528,17 +540,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": [ [ "a" ] ],
-				permissionGroup,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [ [ "a" ] ],
+				permissionGroup
 			}
 		]
 
@@ -558,38 +570,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": permissionGroup.generateMask("a"),
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": permissionGroup.generateMask("a")
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -599,17 +612,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": [ [ "b" ] ],
-				permissionGroup,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [ [ "b" ] ],
+				permissionGroup
 			}
 		]
 
@@ -627,17 +640,17 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": [ [ "c" ] ],
-				permissionGroup,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [ [ "c" ] ],
+				permissionGroup
 			}
 		]
 
@@ -652,38 +665,39 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": "1",
-						"name": "",
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
 						"email": "",
+						"id": "1",
 						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
 						"roles": {
 							"data": [
 								{
-									"type": "role",
-									"id": "2",
-									"name": "B",
-									"userFlags": permissionGroup.generateMask("a", "b"),
-									"departmentFlags": 0,
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
 									"postFlags": 0,
 									"profanityFlags": 0,
 									"roleFlags": 0,
 									"semesterFlags": 0,
-									"tagFlags": 0
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": permissionGroup.generateMask("a", "b")
 								}
 							]
 						},
-						"department": {
-							"data": {
-								"type": "department",
-								"id": "1",
-								"acronym": "A",
-								"fullName": "A",
-								"mayAdmit": true
-							}
-						}
+						"type": "user"
 					},
 					"meta": {
 						"hasDefaultPassword": false
@@ -693,30 +707,30 @@ describe("Helper: Filter Link Infos", () => {
 		}
 		const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": [ [ "a" ] ],
-				permissionGroup,
 				"links": [
 					{
 						"icon": "a",
 						"name": "A",
 						"path": "/a"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [ [ "a" ] ],
+				permissionGroup
 			},
 			{
-				"mustBeGuest": false,
 				"kinds": null,
-				"permissionCombinations": [ [ "b" ] ],
-				permissionGroup,
 				"links": [
 					{
 						"icon": "b",
 						"name": "B",
 						"path": "/b"
 					}
-				]
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": [ [ "b" ] ],
+				permissionGroup
 			}
 		]
 

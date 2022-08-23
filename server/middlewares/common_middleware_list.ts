@@ -17,16 +17,16 @@ export default class CommonMiddlewareList {
 	static newUserNotification: NewUserNotification
 
 	static initialize() {
-		if (CommonMiddlewareList.guestOnlyPolicy === undefined) {
+		if (typeof CommonMiddlewareList.guestOnlyPolicy === "undefined") {
 			CommonMiddlewareList.guestOnlyPolicy = new AuthenticationBasedPolicy(false)
 			CommonMiddlewareList.knownOnlyPolicy = new AuthenticationBasedPolicy(true)
-			CommonMiddlewareList.unreachableEmployeeOnlyPolicy= new KindBasedPolicy(
+			CommonMiddlewareList.unreachableEmployeeOnlyPolicy = new KindBasedPolicy(
 				"unreachable_employee"
 			)
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy= new KindBasedPolicy(
+			CommonMiddlewareList.reachableEmployeeOnlyPolicy = new KindBasedPolicy(
 				"reachable_employee"
 			)
-			CommonMiddlewareList.studentOnlyPolicy= new KindBasedPolicy("student")
+			CommonMiddlewareList.studentOnlyPolicy = new KindBasedPolicy("student")
 
 			CommonMiddlewareList.JSONBody = new JSONBodyParser()
 			CommonMiddlewareList.multipart = new MultipartParser()

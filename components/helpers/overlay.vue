@@ -1,15 +1,18 @@
 <template>
-	<div class="overlay bg-[rgba(0,0,0,0.3)]" @click.self="emitClose">
+	<div
+		v-if="isShown"
+		class="overlay bg-[rgba(0,0,0,0.3)]"
+		@click.self="emitClose">
 		<div class="content bg-dark-200 text-white">
 			<header>
 				<slot name="header"></slot>
-				<button class="close-btn material-icons-outlined" @click="emitClose">close</button>
-
+				<button class="close-btn material-icons-outlined" @click="emitClose">
+					close
+				</button>
 			</header>
 			<main>
 				<slot></slot>
 			</main>
-
 			<footer>
 				<slot name="footer"></slot>
 			</footer>
@@ -51,7 +54,9 @@
 </style>
 
 <script setup lang="ts">
-const emit = defineEmits(["close"])
+const { isShown } = defineProps<{ isShown: boolean }>()
+
+const emit = defineEmits([ "close" ])
 
 function emitClose() {
 	emit("close")

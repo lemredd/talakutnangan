@@ -25,8 +25,9 @@ import ConsultationTransformer from "%/transformers/consultation"
 
 export default class ConsultationFactory extends BaseFactory<
 	Consultation,
-	ConsultationResourceIdentifier,
-	ConsultationAttributes,
+	ConsultationResourceIdentifier<"read">,
+	ConsultationAttributes<"serialized">,
+	ConsultationAttributes<"deserialized">,
 	ConsultationResource,
 	DeserializedConsultationResource,
 	ConsultationDocument,
@@ -58,8 +59,9 @@ export default class ConsultationFactory extends BaseFactory<
 	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
 	#reasonGenerator: () => string = () => faker.hacker.phrase()
 	#actionTakenGenerator: () => string = () => faker.hacker.phrase()
-	#scheduledStartDatetimeGenerator: () => Date = () => new Date()
-	#endDatetimeGenerator: () => Date|null = () => new Date()
+	#scheduledStartAtGenerator: () => Date = () => new Date()
+	#startedAtGenerator: () => Date|null = () => new Date()
+	#finishedAtGenerator: () => Date|null = () => new Date()
 
 	// TODO date
 
@@ -69,29 +71,30 @@ export default class ConsultationFactory extends BaseFactory<
 
 	async generate(): GeneratedData<Consultation> {
 		return {
-			"attachedRoleID": (await this.#consultantInfoGenerator()).id,
-			"reason": this.#reasonGenerator(),
-			"status": this.#statusGenerator(),
 			"actionTaken": this.#actionTakenGenerator(),
-			"scheduledStartDatetime": this.#scheduledStartDatetimeGenerator(),
-			"endDatetime": this.#endDatetimeGenerator(),
-			/*
-			 * TODO Message
-			 * TODO Consultation Requesters
-			 * TODO Chat Message Activity
-			 */
-			"deletedAt": null
+			"attachedRoleID": (await this.#consultantInfoGenerator()).id,
+			"deletedAt": null,
+			"finishedAt": this.#finishedAtGenerator(),
+			"reason": this.#reasonGenerator(),
+			"scheduledStartAt": this.#scheduledStartAtGenerator(),
+			"staredAt": this.#startedAtGenerator(),
+			"status": this.#statusGenerator()
 		}
 	}
 
 	async attachChildren(model: Consultation): Promise<Consultation> {
+		/*
+		 * TODO Message
+		 * TODO Consultation Requesters
+		 * TODO Chat Message Activity
+		 */
 		const consulters = await this.#consultersGenerator()
 
 		if (model.id) {
 			const rawConsulters: { userID: number, consultationID: number }[] = consulters
 			.map(consulter => ({
-				"userID": consulter.id as number,
-				"consultationID": model.id as number
+				"consultationID": model.id as number,
+				"userID": consulter.id as number
 			}))
 
 			await Consulter.bulkCreate(rawConsulters)
@@ -123,13 +126,18 @@ export default class ConsultationFactory extends BaseFactory<
 		return this
 	}
 
-	scheduledStartDatetime(generator: () => Date): ConsultationFactory {
-		this.#scheduledStartDatetimeGenerator = generator
+	scheduledStartAt(generator: () => Date): ConsultationFactory {
+		this.#scheduledStartAtGenerator = generator
 		return this
 	}
 
-	endDatetime(generator: () => Date|null): ConsultationFactory {
-		this.#endDatetimeGenerator = generator
+	startedAt(generator: () => Date|null): ConsultationFactory {
+		this.#startedAtGenerator = generator
+		return this
+	}
+
+	finishedAt(generator: () => Date|null): ConsultationFactory {
+		this.#finishedAtGenerator = generator
 		return this
 	}
 

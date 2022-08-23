@@ -21,8 +21,9 @@ import StudentDetailTransformer from "%/transformers/student_detail"
 
 export default class StudentDetailFactory extends BaseFactory<
 	StudentDetail,
-	StudentDetailResourceIdentifier,
-	StudentDetailAttributes,
+	StudentDetailResourceIdentifier<"read">,
+	StudentDetailAttributes<"serialized">,
+	StudentDetailAttributes<"deserialized">,
 	StudentDetailResource,
 	DeserializedStudentDetailResource,
 	StudentDetailDocument,
@@ -30,7 +31,7 @@ export default class StudentDetailFactory extends BaseFactory<
 	DeserializedStudentDetailDocument,
 	DeserializedStudentDetailListDocument
 > {
-	#user: () => Promise<User>  =  async () => await new UserFactory().insertOne()
+	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 	#studentNumber: () => string = () => `${faker.random.numeric(4)}-${faker.random.numeric(4)}`
 
 	get model(): ModelCtor<StudentDetail> { return StudentDetail }
@@ -39,8 +40,8 @@ export default class StudentDetailFactory extends BaseFactory<
 
 	async generate(): GeneratedData<StudentDetail> {
 		return {
-			userID: (await this.#user()).id,
-			studentNumber: this.#studentNumber()
+			"userID": (await this.#user()).id,
+			"studentNumber": this.#studentNumber()
 		}
 	}
 

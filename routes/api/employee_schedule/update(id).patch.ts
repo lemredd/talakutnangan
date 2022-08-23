@@ -3,7 +3,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 
-import { days } from "$/types/database.native"
+import { DayValues } from "$/types/database"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -38,7 +38,7 @@ export default class extends DoubleBoundJSONController {
 			"dayName": {
 				"constraints": {
 					"oneOf": {
-						"values": [ ...days ]
+						"values": [ ...DayValues ]
 					}
 				},
 				"pipes": [ required, string, oneOf ]
@@ -72,7 +72,7 @@ export default class extends DoubleBoundJSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<false>
+		const { data } = request.body as EmployeeScheduleDocument<"update">
 		const { id, attributes } = data
 
 		await manager.update(Number(id), attributes)

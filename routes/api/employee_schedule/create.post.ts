@@ -3,7 +3,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 
-import { days } from "$/types/database.native"
+import { DayValues } from "$/types/database"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -42,7 +42,7 @@ export default class extends JSONController {
 			"dayName": {
 				"constraints": {
 					"oneOf": {
-						"values": [ ...days ]
+						"values": [ ...DayValues ]
 					}
 				},
 				"pipes": [ required, string, oneOf ]
@@ -100,12 +100,12 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<true, number>
+		const { data } = request.body as EmployeeScheduleDocument<"create", true>
 		const { attributes, relationships } = data
 
 		const document = await manager.create({
 			...attributes,
-			"userID": relationships.user.data.id
+			"userID": Number(relationships.user.data.id)
 		})
 
 		Log.success("controller", "successfully created the employee schedule of the user")

@@ -44,9 +44,9 @@ export default class extends BoundController {
 				}
 			},
 			{ "raw": true }
-		) as ProfilePictureDocument
+		) as ProfilePictureDocument<"read", "raw">
 
-		const profilePicture = profilePictureDocument.data.attributes.fileContents as Buffer
+		const profilePicture = profilePictureDocument.data.attributes.fileContents
 		const type = await sniffMediaType(profilePicture)
 
 		Log.success("controller", "successfully got the profile picture")

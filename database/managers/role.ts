@@ -14,7 +14,11 @@ import Condition from "%/managers/helpers/condition"
 import segragateIDs from "%/managers/helpers/segragate_IDs"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
-export default class extends BaseManager<Role, RoleAttributes, RoleQueryParameters<number>> {
+export default class extends BaseManager<
+	Role,
+	RoleAttributes<"deserialized">,
+	RoleQueryParameters<number>
+> {
 	get model(): ModelCtor<Role> { return Role }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
@@ -61,7 +65,7 @@ export default class extends BaseManager<Role, RoleAttributes, RoleQueryParamete
 				)
 			) as unknown as [ { id: number, count: string }[] ]
 
-			const identifierObjects: RoleResourceIdentifier[] = []
+			const identifierObjects: RoleResourceIdentifier<"read">[] = []
 			counts.forEach(countInfo => {
 				identifierObjects.push({
 					"type": "role",

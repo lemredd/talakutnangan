@@ -1,5 +1,7 @@
-import type { FileLikeAttributes, FileLikeResourceLinks } from "$/types/documents/file-like"
+import type { FileLikeAttributes } from "$/types/documents/file-like"
+import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
+	Completeness,
 	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
@@ -9,50 +11,59 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface SignatureResourceIdentifier<T extends string|number = string>
+export interface SignatureResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
-	type: "signature",
+	type: "signature"
 }
 
-export type SignatureAttributes<T = string> = FileLikeAttributes<T>
+export type SignatureAttributes<T extends Format = "serialized"> = FileLikeAttributes<T>
 
-export interface SignatureResource<T = string> extends Resource<
-	SignatureResourceIdentifier,
-	SignatureAttributes<T>
->, FileLikeResourceLinks {}
+export type SignatureResource<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = Resource<
+	T,
+	SignatureResourceIdentifier<T>,
+	SignatureAttributes<U>
+>
 
-export type DeserializedSignatureResource<T extends string|number = string>
+export type DeserializedSignatureResource<T extends Format = "serialized">
 = DeserializedResource<
+	SignatureResourceIdentifier<"read">,
+	SignatureAttributes<T>
+>
+
+
+export type SignatureDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceDocument<
 	T,
 	SignatureResourceIdentifier<T>,
-	SignatureAttributes
+	SignatureAttributes<U>,
+	SignatureResource<T, U>
 >
 
-
-export type SignatureDocument<T = Buffer> = ResourceDocument<
-	SignatureResourceIdentifier,
-	SignatureAttributes<T>,
-	SignatureResource<T>
+export type SignatureListDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceListDocument<
+	T,
+	SignatureResourceIdentifier<T>,
+	SignatureAttributes<U>,
+	SignatureResource<T, U>
 >
 
-export type SignatureListDocument = ResourceListDocument<
-	SignatureResourceIdentifier,
-	SignatureAttributes,
-	SignatureResource
->
-
-export type DeserializedSignatureDocument<T extends string|number = string>
+export type DeserializedSignatureDocument<T extends Format = "serialized">
 = DeserializedResourceDocument<
-	T,
-	SignatureResourceIdentifier<T>,
-	SignatureAttributes,
+	SignatureResourceIdentifier<"read">,
+	SignatureAttributes<T>,
 	DeserializedSignatureResource<T>
 >
 
-export type DeserializedSignatureListDocument<T extends string|number = string>
+export type DeserializedSignatureListDocument<T extends Format = "serialized">
 = DeserializedResourceListDocument<
-	T,
-	SignatureResourceIdentifier<T>,
-	SignatureAttributes,
+	SignatureResourceIdentifier<"read">,
+	SignatureAttributes<T>,
 	DeserializedSignatureResource<T>
 >

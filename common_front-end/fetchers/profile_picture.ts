@@ -17,11 +17,12 @@ import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
 export default class ProfilePictureFetcher extends BaseFetcher<
-	ProfilePictureResourceIdentifier,
-	ProfilePictureAttributes,
+	ProfilePictureResourceIdentifier<"read">,
+	ProfilePictureAttributes<"serialized">,
+	ProfilePictureAttributes<"deserialized">,
 	ProfilePictureResource,
 	DeserializedProfilePictureResource,
-	ProfilePictureDocument<string>,
+	ProfilePictureDocument,
 	ProfilePictureListDocument,
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument,
@@ -37,8 +38,9 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	}
 
 	async createFile(userID: string, details: FormData): Promise<Response<
-		ProfilePictureResourceIdentifier,
-		ProfilePictureAttributes,
+		ProfilePictureResourceIdentifier<"read">,
+		ProfilePictureAttributes<"serialized">,
+		ProfilePictureAttributes<"deserialized">,
 		ProfilePictureResource,
 		DeserializedProfilePictureResource,
 		DeserializedProfilePictureDocument
@@ -53,8 +55,9 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.postTo(path, details, headers)
 		) as Response<
-			ProfilePictureResourceIdentifier,
-			ProfilePictureAttributes,
+			ProfilePictureResourceIdentifier<"read">,
+			ProfilePictureAttributes<"serialized">,
+			ProfilePictureAttributes<"deserialized">,
 			ProfilePictureResource,
 			DeserializedProfilePictureResource,
 			DeserializedProfilePictureDocument
@@ -62,8 +65,9 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	}
 
 	async updateFile(profilePictureID: string, details: FormData): Promise<Response<
-		ProfilePictureResourceIdentifier,
-		ProfilePictureAttributes,
+		ProfilePictureResourceIdentifier<"read">,
+		ProfilePictureAttributes<"serialized">,
+		ProfilePictureAttributes<"deserialized">,
 		ProfilePictureResource,
 		DeserializedProfilePictureResource,
 		DeserializedProfilePictureDocument
@@ -78,8 +82,9 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
 		) as Response<
-			ProfilePictureResourceIdentifier,
-			ProfilePictureAttributes,
+			ProfilePictureResourceIdentifier<"read">,
+			ProfilePictureAttributes<"serialized">,
+			ProfilePictureAttributes<"deserialized">,
 			ProfilePictureResource,
 			DeserializedProfilePictureResource,
 			DeserializedProfilePictureDocument

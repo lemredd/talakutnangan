@@ -1,5 +1,7 @@
-import type { FileLikeAttributes, FileLikeResourceLinks } from "$/types/documents/file-like"
+import type { FileLikeAttributes } from "$/types/documents/file-like"
+import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
+	Completeness,
 	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
@@ -9,49 +11,58 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ProfilePictureResourceIdentifier<T extends string|number = string>
+export interface ProfilePictureResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
-	type: "profile_picture",
+	type: "profile_picture"
 }
 
-export type ProfilePictureAttributes<T = string> = FileLikeAttributes<T>
+export type ProfilePictureAttributes<T extends Format = "serialized"> = FileLikeAttributes<T>
 
-export interface ProfilePictureResource<T = string> extends Resource<
-	ProfilePictureResourceIdentifier,
-	ProfilePictureAttributes<T>
->, FileLikeResourceLinks {}
+export type ProfilePictureResource<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = Resource<
+	T,
+	ProfilePictureResourceIdentifier<T>,
+	ProfilePictureAttributes<U>
+>
 
-export type DeserializedProfilePictureResource<T extends string|number = string>
+export type DeserializedProfilePictureResource<T extends Format = "serialized">
 = DeserializedResource<
+	ProfilePictureResourceIdentifier<"read">,
+	ProfilePictureAttributes<T>
+>
+
+export type ProfilePictureDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceDocument<
 	T,
 	ProfilePictureResourceIdentifier<T>,
-	ProfilePictureAttributes
+	ProfilePictureAttributes<U>,
+	ProfilePictureResource<T, U>
 >
 
-export type ProfilePictureDocument<T = Buffer> = ResourceDocument<
-	ProfilePictureResourceIdentifier,
-	ProfilePictureAttributes<T>,
-	ProfilePictureResource<T>
+export type ProfilePictureListDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceListDocument<
+	T,
+	ProfilePictureResourceIdentifier<T>,
+	ProfilePictureAttributes<U>,
+	ProfilePictureResource<T, U>
 >
 
-export type ProfilePictureListDocument = ResourceListDocument<
-	ProfilePictureResourceIdentifier,
-	ProfilePictureAttributes,
-	ProfilePictureResource
->
-
-export type DeserializedProfilePictureDocument<T extends string|number = string>
+export type DeserializedProfilePictureDocument<T extends Format = "serialized">
 = DeserializedResourceDocument<
-	T,
-	ProfilePictureResourceIdentifier<T>,
-	ProfilePictureAttributes,
+	ProfilePictureResourceIdentifier<"read">,
+	ProfilePictureAttributes<T>,
 	DeserializedProfilePictureResource<T>
 >
 
-export type DeserializedProfilePictureListDocument<T extends string|number = string>
+export type DeserializedProfilePictureListDocument<T extends Format = "serialized">
 = DeserializedResourceListDocument<
-	T,
-	ProfilePictureResourceIdentifier<T>,
-	ProfilePictureAttributes,
+	ProfilePictureResourceIdentifier<"read">,
+	ProfilePictureAttributes<T>,
 	DeserializedProfilePictureResource<T>
 >

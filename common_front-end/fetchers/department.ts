@@ -17,7 +17,8 @@ import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class DepartmentFetcher extends BaseFetcher<
 	DepartmentResourceIdentifier,
-	DepartmentAttributes,
+	DepartmentAttributes<"serialized">,
+	DepartmentAttributes<"deserialized">,
 	DepartmentResource,
 	DeserializedDepartmentResource,
 	DepartmentDocument,
@@ -37,10 +38,11 @@ export default class DepartmentFetcher extends BaseFetcher<
 
 	countUsers(IDs: string[]): Promise<Response<
 		DepartmentResourceIdentifier,
-		DepartmentAttributes,
+		DepartmentAttributes<"serialized">,
+		DepartmentAttributes<"deserialized">,
 		DepartmentResource,
 		DeserializedDepartmentResource,
-		DepartmentIdentifierListDocument
+		DepartmentIdentifierListDocument<"read">
 	>> {
 		return this.handleResponse(
 			this.getJSON(
@@ -53,10 +55,11 @@ export default class DepartmentFetcher extends BaseFetcher<
 			false
 		) as Promise<Response<
 			DepartmentResourceIdentifier,
-			DepartmentAttributes,
+			DepartmentAttributes<"serialized">,
+			DepartmentAttributes<"deserialized">,
 			DepartmentResource,
 			DeserializedDepartmentResource,
-			DepartmentIdentifierListDocument
+			DepartmentIdentifierListDocument<"read">
 		>>
 	}
 }

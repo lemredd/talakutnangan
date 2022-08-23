@@ -28,7 +28,8 @@ import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 export default class UserFactory extends BaseFactory<
 	User,
 	UserResourceIdentifier,
-	UserAttributes,
+	UserAttributes<"serialized">,
+	UserAttributes<"deserialized">,
 	UserResource,
 	DeserializedUserResource,
 	UserDocument,
@@ -61,74 +62,35 @@ export default class UserFactory extends BaseFactory<
 		}
 
 		return {
-			"name": this.nameGenerator(),
+			"deletedAt": null,
+			"departmentID": this.#department.id,
 			"email": this.emailGenerator(),
-			"password": await hash(this.#password),
 			"emailVerifiedAt": this.#mustBeVerified ? new Date() : null,
 			"kind": this.#kind,
-			"prefersDark": this.prefersDarkGenerator(),
-			"departmentID": this.#department.id,
-			"deletedAt": null
+			"name": this.nameGenerator(),
+			"password": await hash(this.#password),
+			"prefersDark": this.prefersDarkGenerator()
 		}
 	}
 
-	async makeOne() {
-		const user = await super.makeOne()
-		user.roles = this.roles
-		user.department = this.#department!
-		user.password = this.#password
-		return user
-	}
-
-	async insertOne() {
-		const user = await super.insertOne()
-		user.password = this.#password
-		await AttachedRole.bulkCreate(this.roles.map(role => ({
-			"userID": user.id,
-			"roleID": role.id
-		})))
-		user.roles = this.roles
-		user.department = this.#department!
-
-		return user
-	}
-
-	async makeMany(count: number): Promise<User[]> {
-		const users = await super.makeMany(count)
-		users.forEach(user => {
-			user.password = this.#password
-		})
-		return users
-	}
-
-	async insertMany(count: number): Promise<User[]> {
-		const users = await super.insertMany(count)
-
-		const pendingAttachments = []
-		for (const user of users) {
-			user.password = this.#password
-
-			pendingAttachments.push(
-				AttachedRole.bulkCreate(
-					this.roles.map(role => ({
-						"userID": user.id,
-						"roleID": role.id
-					}))
-				)
-			)
-
-			user.roles = this.roles
+	async attachChildren(user: User): Promise<User> {
+		if (user.id) {
+			await AttachedRole.bulkCreate(this.roles.map(role => ({
+				"roleID": role.id,
+				"userID": user.id
+			})))
 		}
+		user.roles = this.roles
+		user.department = this.#department as Department
+		user.password = this.#password
 
-		await Promise.all(pendingAttachments)
-
-		return users
+		return user
 	}
 
 	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
 		const user = await this.insertOne()
 		const { password } = user
-		const profile = this.serialize(user, {}, new UserProfileTransformer())
+		const profile = this.serialize(user, {} as unknown as void, new UserProfileTransformer())
 
 		return {
 			password,

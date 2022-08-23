@@ -17,7 +17,8 @@ import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class RoleFetcher extends BaseFetcher<
 	RoleResourceIdentifier,
-	RoleAttributes,
+	RoleAttributes<"serialized">,
+	RoleAttributes<"deserialized">,
 	RoleResource,
 	DeserializedRoleResource,
 	RoleDocument,
@@ -36,11 +37,12 @@ export default class RoleFetcher extends BaseFetcher<
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
-		RoleResourceIdentifier,
-		RoleAttributes,
+		RoleResourceIdentifier<"read">,
+		RoleAttributes<"serialized">,
+		RoleAttributes<"deserialized">,
 		RoleResource,
 		DeserializedRoleResource,
-		RoleIdentifierListDocument
+		RoleIdentifierListDocument<"read">
 	>> {
 		return this.handleResponse(
 			this.getJSON(
@@ -52,11 +54,12 @@ export default class RoleFetcher extends BaseFetcher<
 			),
 			false
 		) as Promise<Response<
-			RoleResourceIdentifier,
-			RoleAttributes,
+			RoleResourceIdentifier<"read">,
+			RoleAttributes<"serialized">,
+			RoleAttributes<"deserialized">,
 			RoleResource,
 			DeserializedRoleResource,
-			RoleIdentifierListDocument
+			RoleIdentifierListDocument<"read">
 		>>
 	}
 }

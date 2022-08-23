@@ -12,7 +12,17 @@ export interface Serializable {
 		| number
 		| boolean
 		| null
+		| Date
 		| Serializable
 		| undefined
-		| (string|number|boolean|Serializable)[]
+		| (string|number|boolean|Date|Serializable)[]
 }
+
+/**
+ * Usually used to pick or patial construct certain relationships in documents.
+ */
+export type PartialOrPickObject<
+	T extends string|undefined,
+	U extends string,
+	V extends GeneralObject
+> = T extends U ? Pick<V, U> : Partial<V>

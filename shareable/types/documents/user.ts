@@ -6,6 +6,9 @@ import type { DeserializedStudentDetailDocument } from "$/types/documents/studen
 import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 import type {
+	Completeness,
+	Format,
+
 	Resource,
 	Attributes,
 	ResourceIdentifier,
@@ -15,124 +18,129 @@ import type {
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
-export interface UserResourceIdentifier<T extends string|number = string>
+export interface UserResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "user"
 }
 
-interface GeneralUserAttributes extends Attributes {
+interface GeneralUserAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	name: string,
 	email: string,
-	prefersDark?: boolean
+	prefersDark: boolean
 }
 
-export interface StudentAttributes extends GeneralUserAttributes {
+export interface StudentAttributes<T extends Format = "serialized">
+extends GeneralUserAttributes<T> {
 	kind: "student"
 }
 
-export interface ReachableEmployeesAttributes extends GeneralUserAttributes {
+export interface ReachableEmployeesAttributes<T extends Format = "serialized">
+extends GeneralUserAttributes<T> {
 	kind: "reachable_employee"
 }
 
-export interface UnreachableEmployeesAttributes extends GeneralUserAttributes {
+export interface UnreachableEmployeesAttributes<T extends Format = "serialized">
+extends GeneralUserAttributes<T> {
 	kind: "unreachable_employee"
 }
 
-export type UserAttributes =
-	| StudentAttributes
-	| ReachableEmployeesAttributes
-	| UnreachableEmployeesAttributes
+export type UserAttributes<T extends Format = "serialized"> =
+	| StudentAttributes<T>
+	| ReachableEmployeesAttributes<T>
+	| UnreachableEmployeesAttributes<T>
 
-interface DeserializedGeneralUserAttributes extends GeneralUserAttributes {
-	department: DeserializedDepartmentDocument,
-	roles: DeserializedRoleListDocument,
+interface DeserializedGeneralUserAttributes extends GeneralUserAttributes<"deserialized"> {
+	department: DeserializedDepartmentDocument<"attached">,
+	roles: DeserializedRoleListDocument<"attached">,
 	profilePicture?: DeserializedProfilePictureDocument,
 	signature?: DeserializedSignatureDocument
 }
 
 interface DeserializedStudentAttributes
-extends DeserializedGeneralUserAttributes, StudentAttributes {
+extends DeserializedGeneralUserAttributes, StudentAttributes<"deserialized"> {
 	studentDetail: DeserializedStudentDetailDocument
 }
 
 interface DeserializedReachableEmployeesAttributes
-extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes {
+extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes<"deserialized"> {
 	employeeSchedules: DeserializedEmployeeScheduleListDocument
 }
 
 interface DeserializedUnreachableEmployeesAttributes
-extends DeserializedGeneralUserAttributes, UnreachableEmployeesAttributes {}
+extends DeserializedGeneralUserAttributes, UnreachableEmployeesAttributes<"deserialized"> {}
 
 export type DeserializedUserAttributes =
 	| DeserializedStudentAttributes
 	| DeserializedReachableEmployeesAttributes
 	| DeserializedUnreachableEmployeesAttributes
 
-export type UserResource = Resource<
-	UserResourceIdentifier,
-	UserAttributes
->
-
-type DeserializedStudentResource<T extends string|number = string>
-= DeserializedResource<
+export type UserResource<T extends Completeness = "read"> = Resource<
 	T,
 	UserResourceIdentifier<T>,
+	UserAttributes<"serialized">
+>
+
+export type DeserializedStudentResource = DeserializedResource<
+	UserResourceIdentifier<"read">,
 	DeserializedStudentAttributes
 >
 
-type DeserializedReachableEmployeesResource<T extends string|number = string>
-= DeserializedResource<
-	T,
-	UserResourceIdentifier<T>,
+export type DeserializedReachableEmployeesResource = DeserializedResource<
+	UserResourceIdentifier<"read">,
 	DeserializedReachableEmployeesAttributes
 >
 
-type DeserializedUnreachableEmployeesResource<T extends string|number = string>
-= DeserializedResource<
-	T,
-	UserResourceIdentifier<T>,
+export type DeserializedUnreachableEmployeesResource = DeserializedResource<
+	UserResourceIdentifier<"read">,
 	DeserializedUnreachableEmployeesAttributes
 >
 
-export type DeserializedUserResource<T extends string|number = string> =
-	| DeserializedStudentResource<T>
-	| DeserializedReachableEmployeesResource<T>
-	| DeserializedUnreachableEmployeesResource<T>
+export type DeserializedUserResource =
+	| DeserializedStudentResource
+	| DeserializedReachableEmployeesResource
+	| DeserializedUnreachableEmployeesResource
 
-export type UserDocument = ResourceDocument<
-	UserResourceIdentifier,
-	UserAttributes,
-	UserResource
->
-
-export type UserListDocument = ResourceListDocument<
-	UserResourceIdentifier,
-	UserAttributes,
-	UserResource
->
-
-export type DeserializedUserDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type UserDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
 	UserResourceIdentifier<T>,
-	DeserializedUserAttributes,
-	DeserializedUserResource<T>
+	UserAttributes<"serialized">,
+	UserResource<T>
 >
 
-export type DeserializedUserListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
+export type UserListDocument<T extends Completeness = "read"> = ResourceListDocument<
 	T,
 	UserResourceIdentifier<T>,
+	UserAttributes<"serialized">,
+	UserResource<T>
+>
+
+export type DeserializedUserDocument = DeserializedResourceDocument<
+	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
-	DeserializedUserResource<T>
+	DeserializedUserResource
+>
+
+export type DeserializedUserListDocument = DeserializedResourceListDocument<
+	UserResourceIdentifier<"read">,
+	DeserializedUserAttributes,
+	DeserializedUserResource
 >
 
 interface GeneralUserProfileMetaProperties extends Serializable {
 	hasDefaultPassword?: boolean
 }
 
-export interface DeserializedUserProfile<T extends string|number = string>
-extends DeserializedUserDocument<T>, MetaDocument<GeneralUserProfileMetaProperties> {}
+export interface DeserializedUserProfile
+extends DeserializedUserDocument, MetaDocument<GeneralUserProfileMetaProperties> {}
+
+export type UserIdentifierDocument
+= IdentifierDocument<UserResourceIdentifier<"read">>
+
+export type UserIdentifierListDocument
+= IdentifierListDocument<UserResourceIdentifier<"read">>

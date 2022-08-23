@@ -7,7 +7,9 @@
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	ResourceIdentifier,
 	Attributes,
@@ -20,9 +22,6 @@ import type {
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
-import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
 /**
  * Shape of expected page context parameter of common front-end functions
  */
@@ -83,15 +82,16 @@ export interface LogInDetails extends Serializable {
 }
 
 type PossibleResponseTypes<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>,
-	W extends DeserializedResource<T, U>
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"serialized">,
+	V extends Attributes<"deserialized">,
+	W extends Resource<"read", T, U>,
+	X extends DeserializedResource<T, V>
 > =
-	| ResourceDocument<T, U, V>
-	| ResourceListDocument<T, U, V>
-	| DeserializedResourceDocument<T, U, W>
-	| DeserializedResourceListDocument<T, U, W>
+	| ResourceDocument<"read", T, U, W>
+	| ResourceListDocument<"read", T, U, W>
+	| DeserializedResourceDocument<T, V, X>
+	| DeserializedResourceListDocument<T, V, X>
 	| IdentifierDocument<T>
 	| IdentifierListDocument<T>
 	| Serializable
@@ -100,13 +100,14 @@ type PossibleResponseTypes<
  * Shape of expected response from fetcher
  */
 export interface Response<
-	T extends ResourceIdentifier,
-	U extends Attributes,
-	V extends Resource<T, U>,
-	W extends DeserializedResource<T, U>,
-	X extends PossibleResponseTypes<T, U, V, W>|null = PossibleResponseTypes<T, U, V, W>
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"serialized">,
+	V extends Attributes<"deserialized">,
+	W extends Resource<"read", T, U>,
+	X extends DeserializedResource<T, V>,
+	Y extends PossibleResponseTypes<T, U, V, W, X>|null = PossibleResponseTypes<T, U, V, W, X>
 > extends Serializable {
-	body: X,
+	body: Y,
 	status: number
 }
 

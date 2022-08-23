@@ -2,6 +2,7 @@ import {
 	Table,
 	Model,
 	Column,
+	HasMany,
 	DataType,
 	AllowNull,
 	BelongsTo,
@@ -14,6 +15,7 @@ import User from "%/models/user"
 import Role from "%/models/role"
 import Consulter from "%/models/consulter"
 import AttachedRole from "%/models/attached_role"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 @Table({
 	"paranoid": true,
@@ -44,14 +46,21 @@ export default class Consultation extends Model {
 		"allowNull": false,
 		"type": DataType.DATE
 	})
-		scheduledStartDatetime!: Date
+		scheduledStartAt!: Date
 
 	@AllowNull
 	@Column({
 		"defaultValue": null,
 		"type": DataType.DATE
 	})
-		endDatetime!: Date|null
+		startedAt!: Date|null
+
+	@AllowNull
+	@Column({
+		"defaultValue": null,
+		"type": DataType.DATE
+	})
+		finishedAt!: Date|null
 
 	@ForeignKey(() => AttachedRole)
 	@Column({
@@ -69,14 +78,12 @@ export default class Consultation extends Model {
 
 	get consultantRole(): Role|null { return this.consultantInfo?.role ?? null }
 
+	@HasMany(() => ChatMessageActivity)
+		chatMessageActivities?: ChatMessageActivity[]
 	/*
 	 * @HasMany(() => Message)
 	 * message?: Message
 	 */
 
 	// TODO Message
-
-	// TODO Consultation Requesters
-
-	// TODO Chat Message Activity
 }
