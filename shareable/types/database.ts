@@ -3,7 +3,16 @@
  * @description This module contains types originally used in database and do not depend from other
  * packages. However, they can be used by other parts of the repository.
  */
-import { days } from "$/types/database.native"
+
+export const DayValues = [
+	"sunday",
+	"monday",
+	"tuesday",
+	"wednesday",
+	"thursday",
+	"friday",
+	"saturday"
+] as const
 
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
@@ -22,5 +31,4 @@ export type SourceType = "pgsql" | "mysql" | "memoried_sqlite" | "filed_sqlite" 
 
 export type Pipe<T, U> = (currentState: T, constraints: U) => T
 
-const rawDays = [ ...days ] as const
-export type Day = typeof rawDays[number]
+export type Day = typeof DayValues[number]

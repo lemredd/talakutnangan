@@ -3,7 +3,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 
-import { days } from "$/types/database.native"
+import { DayValues } from "$/types/database"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -38,7 +38,7 @@ export default class extends DoubleBoundJSONController {
 			"dayName": {
 				"constraints": {
 					"oneOf": {
-						"values": [ ...days ]
+						"values": [ ...DayValues ]
 					}
 				},
 				"pipes": [ required, string, oneOf ]
