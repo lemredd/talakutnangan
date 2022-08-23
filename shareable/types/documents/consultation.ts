@@ -1,3 +1,11 @@
+import type { Status } from "$/types/database"
+import type { PartialOrPickObject } from "$/types/general"
+import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
+import type {
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
 import type {
 	Resource,
 	Attributes,
@@ -5,6 +13,7 @@ import type {
 	ResourceIdentifier,
 	DeserializedResource,
 	ResourceListDocument,
+	DeserializedRelationships,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
@@ -16,48 +25,74 @@ extends ResourceIdentifier<T> {
 
 export interface ConsultationAttributes extends Attributes {
 	reason: string,
-	status: string,
+	status: Status,
 	actionTaken: string,
-	scheduledStartDatetim: Date,
+	scheduledStartDatetime: Date,
 	endDatetime: Date
 }
 
-export type ConsultationResource = Resource<
-	ConsultationResourceIdentifier,
-	ConsultationAttributes
->
+export type RawConsultationRelationships<T extends string|number = string> = [
+	[ "consultant", DeserializedUserDocument<T> ],
+	[ "consultantRole", DeserializedRoleDocument<T> ],
+	[ "consulters", DeserializedUserListDocument<T> ],
+	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument<T> ],
+	[ "chatMessages", DeserializedChatMessageListDocument<T> ]
+]
 
-export type DeserializedConsultationResource<T extends string|number = string>
-= DeserializedResource<
+export type ConsultationRelationshipNames = RawConsultationRelationships[number][0]
+
+export type DeserializedConsultationRelationships<T extends string|number = string>
+= DeserializedRelationships<T, RawConsultationRelationships<T>>
+
+export type ConsultationResource<T extends string|number = string> = Resource<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes
 >
 
-export type ConsultationDocument = ResourceDocument<
-	ConsultationResourceIdentifier,
-	ConsultationAttributes,
-	ConsultationResource
+export type DeserializedConsultationResource<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResource<
+	T,
+	ConsultationResourceIdentifier<T>,
+	ConsultationAttributes
+> & PartialOrPickObject<
+	U,
+	ConsultationRelationshipNames,
+	DeserializedConsultationRelationships<T>
 >
 
-export type ConsultationListDocument = ResourceListDocument<
-	ConsultationResourceIdentifier,
-	ConsultationAttributes,
-	ConsultationResource
->
-
-export type DeserializedConsultationDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type ConsultationDocument<T extends string|number = string> = ResourceDocument<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource<T>
+	ConsultationResource<T>
 >
 
-export type DeserializedConsultationListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
+export type ConsultationListDocument<T extends string|number = string> = ResourceListDocument<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes,
-	DeserializedConsultationResource<T>
+	ConsultationResource<T>
+>
+
+export type DeserializedConsultationDocument<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
+	ConsultationAttributes,
+	DeserializedConsultationResource<T, U>
+>
+
+export type DeserializedConsultationListDocument<
+	T extends string|number = string,
+	U extends ConsultationRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
+	T,
+	ConsultationResourceIdentifier<T>,
+	ConsultationAttributes,
+	DeserializedConsultationResource<T, U>
 >
