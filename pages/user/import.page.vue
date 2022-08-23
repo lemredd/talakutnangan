@@ -1,9 +1,9 @@
 <template>
 	<form @submit.prevent="importData">
-		<SelectableOptionsField
-			v-model="chosenRole"
-			:options="roleNames"
-			placeholder="Please select role to attach"/>
+		<MultiSelectableOptionsField
+			v-model="chosenRoleIDs"
+			label="Add the roles to attach"
+			:options="roleNames"/>
 		<input
 			type="file"
 			accept="text/csv"
@@ -19,7 +19,7 @@ import type { PageContext } from "#/types"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 
-import SelectableOptionsField from "@/fields/selectable_options.vue"
+import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
@@ -29,7 +29,7 @@ const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
 	"label": data.name,
 	"value": data.id
 })))
-const chosenRole = ref(roleNames.value[0].value)
+const chosenRoleIDs = ref([])
 
 function importData(event: Event) {
 	const form = event.target as HTMLFormElement
