@@ -20,6 +20,7 @@
 				{{ option.label ?? option.value }}
 			</option>
 		</select>
+		<slot name="after-dropdown"></slot>
 	</div>
 </template>
 
