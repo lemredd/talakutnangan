@@ -8,12 +8,20 @@
 				}}
 			</li>
 		</ul>
+		<SelectableOptionsField
+			v-model="currentOption"
+			:options="remainingOptions"
+			:placeholder="placeholder"/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import type { OptionInfo } from "$@/types/component"
+
+import subtract from "$/helpers/array/subtract"
+
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const {
 	options,
@@ -31,4 +39,8 @@ const selectedOptions = computed<OptionInfo[]>(() => {
 	const chosenOptions = options.filter(option => modelValue.includes(option.value)) as OptionInfo[]
 	return chosenOptions
 })
+
+const remainingOptions = computed<OptionInfo[]>(() => subtract(options, selectedOptions.value))
+
+const currentOption = ref<string>(remainingOptions.value[0].value)
 </script>
