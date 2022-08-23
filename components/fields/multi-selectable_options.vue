@@ -51,12 +51,12 @@ const remainingOptions = computed<OptionInfo[]>(() => subtract(options, selected
 const currentOption = ref<string>(remainingOptions.value[0].value)
 
 interface CustomEvents {
-	(eventName: "updated:modelValue", data: string[]): void
+	(eventName: "update:modelValue", data: string[]): void
 }
 const emit = defineEmits<CustomEvents>()
 
 function addCurrentOption() {
-	emit("updated:modelValue", [
+	emit("update:modelValue", [
 		...modelValue,
 		currentOption.value
 	])
