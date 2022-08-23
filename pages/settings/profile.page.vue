@@ -76,6 +76,7 @@ import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
+const pageContext = inject("pageContext") as PageContext
 const profileInfo = {
 	displayName: "Sample Name",
 	profilePic: null as string | null,
