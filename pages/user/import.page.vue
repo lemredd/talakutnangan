@@ -37,6 +37,28 @@
 				:value="roleID"/>
 			<input type="submit" value="Import"/>
 		</div>
+		<output v-if="createdUsers.length > 0">
+			<table>
+				<thead>
+					<tr>
+						<th v-if="isStudentResource(createdUsers[0])">Student number</th>
+						<th>Name</th>
+						<th>E-mail</th>
+						<th>Department</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="user in createdUsers" :key="user.id">
+						<td v-if="isStudentResource(user)">
+							{{ user.studentDetail.data.studentNumber }}
+						</td>
+						<td>{{ user.name }}</td>
+						<td>{{ user.email }}</td>
+						<td>{{ user.department.data.acronym }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</output>
 	</form>
 </template>
 
@@ -45,8 +67,9 @@ import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "#/types"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedUserResource } from "$/types/documents/user"
+import type { ErrorDocument } from "$/types/documents/base"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedUserResource, DeserializedStudentResource } from "$/types/documents/user"
 import { UserKindValues } from "$/types/database"
 
 import UserFetcher from "$@/fetchers/user"
@@ -57,6 +80,7 @@ import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
+
 const { "roles": rawRoles } = pageProps
 const roles = ref<DeserializedRoleListDocument>(rawRoles as DeserializedRoleListDocument)
 const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
@@ -83,7 +107,14 @@ function importData(event: Event) {
 	fetcher.import(formData).then(({ body }) => {
 		const { data } = body
 		createdUsers.value = data
+	}).catch(({ body }) => {
+		const unusedCastBody = body as ErrorDocument
+		// Process the error
 	})
 }
 
+function isStudentResource(resource: DeserializedUserResource)
+: resource is DeserializedStudentResource {
+	return resource.kind === "student"
+}
 </script>
