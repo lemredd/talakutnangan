@@ -72,7 +72,7 @@ export default class extends DoubleBoundJSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<false>
+		const { data } = request.body as EmployeeScheduleDocument<"update">
 		const { id, attributes } = data
 
 		await manager.update(Number(id), attributes)

@@ -21,7 +21,8 @@ import TextTransformer from "$/helpers/text_transformers"
 export default class DepartmentFactory extends BaseFactory<
 	Department,
 	DepartmentResourceIdentifier,
-	DepartmentAttributes,
+	DepartmentAttributes<"serialized">,
+	DepartmentAttributes<"deserialized">,
 	DepartmentResource,
 	DeserializedDepartmentResource,
 	DepartmentDocument,

@@ -1,4 +1,6 @@
 import type {
+	Completeness,
+	Format,
 	Resource,
 	Attributes,
 	ResourceDocument,
@@ -9,52 +11,50 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface ChatMessageActivityResourceIdentifier<T extends string|number = string>
+export interface ChatMessageActivityResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
 	type: "chat_message_activity"
 }
 
-export interface ChatMessageActivityAttributes extends Attributes {
+export interface ChatMessageActivityAttributes<T extends Format = "serialized">
+extends Attributes<T> {
 	receivedMessageAt: string,
 	seenMessageAt: string|null
 }
 
-export type ChatMessageActivityResource = Resource<
-	ChatMessageActivityResourceIdentifier,
-	ChatMessageActivityAttributes
->
-
-export type DeserializedChatMessageActivityResource<T extends string|number = string>
-= DeserializedResource<
+export type ChatMessageActivityResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
-	ChatMessageActivityAttributes
+	ChatMessageActivityAttributes<"serialized">
 >
 
-export type ChatMessageActivityDocument = ResourceDocument<
-	ChatMessageActivityResourceIdentifier,
-	ChatMessageActivityAttributes,
-	ChatMessageActivityResource
+export type DeserializedChatMessageActivityResource = DeserializedResource<
+	ChatMessageActivityResourceIdentifier<"read">,
+	ChatMessageActivityAttributes<"deserialized">
 >
 
-export type ChatMessageActivityListDocument = ResourceListDocument<
-	ChatMessageActivityResourceIdentifier,
-	ChatMessageActivityAttributes,
-	ChatMessageActivityResource
->
-
-export type DeserializedChatMessageActivityDocument<T extends string|number = string>
-= DeserializedResourceDocument<
+export type ChatMessageActivityDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
-	ChatMessageActivityAttributes,
-	DeserializedChatMessageActivityResource<T>
+	ChatMessageActivityAttributes<"serialized">,
+	ChatMessageActivityResource<T>
 >
 
-export type DeserializedChatMessageActivityListDocument<T extends string|number = string>
-= DeserializedResourceListDocument<
+export type ChatMessageActivityListDocument<T extends Completeness = "read"> = ResourceListDocument<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
-	ChatMessageActivityAttributes,
-	DeserializedChatMessageActivityResource<T>
+	ChatMessageActivityAttributes<"serialized">,
+	ChatMessageActivityResource<T>
+>
+
+export type DeserializedChatMessageActivityDocument = DeserializedResourceDocument<
+	ChatMessageActivityResourceIdentifier<"read">,
+	ChatMessageActivityAttributes<"deserialized">,
+	DeserializedChatMessageActivityResource
+>
+
+export type DeserializedChatMessageActivityListDocument = DeserializedResourceListDocument<
+	ChatMessageActivityResourceIdentifier<"read">,
+	ChatMessageActivityAttributes<"deserialized">,
+	DeserializedChatMessageActivityResource
 >

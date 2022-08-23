@@ -82,29 +82,29 @@ export interface LogInDetails extends Serializable {
 }
 
 type PossibleResponseTypes<
-	T extends string | number,
-	U extends ResourceIdentifier<T>,
-	V extends Attributes,
-	W extends Resource<T, U, V>,
-	X extends DeserializedResource<T, U, V>
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"serialized">,
+	V extends Attributes<"deserialized">,
+	W extends Resource<"read", T, U>,
+	X extends DeserializedResource<T, V>
 > =
-	| ResourceDocument<T, U, V, W>
-	| ResourceListDocument<T, U, V, W>
-	| DeserializedResourceDocument<T, U, V, X>
-	| DeserializedResourceListDocument<T, U, V, X>
-	| IdentifierDocument<T, U>
-	| IdentifierListDocument<T, U>
+	| ResourceDocument<"read", T, U, W>
+	| ResourceListDocument<"read", T, U, W>
+	| DeserializedResourceDocument<T, V, X>
+	| DeserializedResourceListDocument<T, V, X>
+	| IdentifierDocument<T>
+	| IdentifierListDocument<T>
 	| Serializable
 
 /**
  * Shape of expected response from fetcher
  */
 export interface Response<
-	T extends string|number,
-	U extends ResourceIdentifier<T>,
-	V extends Attributes,
-	W extends Resource<T, U, V>,
-	X extends DeserializedResource<T, U, V>,
+	T extends ResourceIdentifier<"read">,
+	U extends Attributes<"serialized">,
+	V extends Attributes<"deserialized">,
+	W extends Resource<"read", T, U>,
+	X extends DeserializedResource<T, V>,
 	Y extends PossibleResponseTypes<T, U, V, W, X>|null = PossibleResponseTypes<T, U, V, W, X>
 > extends Serializable {
 	body: Y,

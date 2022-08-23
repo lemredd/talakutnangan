@@ -20,8 +20,6 @@
 				<button class="material-icons search">
 					search
 				</button>
-
-				<!-- TODO(lead/button): Apply functionality -->
 				<button class="material-icons add" @click="toggleAddingSchedule">
 					add
 				</button>
@@ -35,12 +33,10 @@
 					<h2>There are no consultations yet...</h2>
 				</div>
 				<div
-					v-for="consultation in consultations"
+					v-for="consultation in consultations.data"
 					:key="consultation.id"
 					class="consultation"
 					@click="pickConsultation(consultation.id)">
-					<!-- TODO(others): should contain profile picture?  -->
-
 					<h3 class="consultation-title col-span-full font-400">
 						{{ consultation.title }}
 					</h3>
@@ -62,79 +58,8 @@
 			</div>
 		</section>
 
-		<section class="selected-consultation flex flex-col right">
-			<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
-
-			<div class="selected-consultation-header">
-				<div class="selected-consultation-title">
-					{{ selectedConsultation.title }}
-				</div>
-				<div class="selected-consultation-user-status row-start-2">
-					<!-- TODO(lead): must base on user active status -->
-					User is online
-				</div>
-				<div class="controls row-span-full self-center">
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						video_camera_back
-					</button>
-
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						more_horiz
-					</button>
-				</div>
-			</div>
-			<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
-				<div class="selected-consultation-new">
-					<p><strong>This is a new consultation.</strong> here are some additional details</p>
-					<ul class="selected-consultation-additional-details bg-gray-300 p-5">
-						<li>Ticket: {{ selectedConsultation.ticket }}</li>
-						<li>Status: {{ selectedConsultation.status }}</li>
-
-						<!-- TODO(lead/button): Apply functionality -->
-						<li><a href="#">View printable form (PDF)</a></li>
-					</ul>
-				</div>
-
-				<div
-					v-for="chat in selectedConsultation.chats"
-					:key="chat"
-					class="chat-entry">
-					<!-- TODO(others): properly place chat entries -->
-					{{ chat }}
-				</div>
-			</div>
-			<div class="user-controls border-t p-3 flex">
-				<div class="left-controls">
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						more_horiz
-					</button>
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						photo_camera
-					</button>
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						image
-					</button>
-				</div>
-				<div class="message-box flex-1 border">
-					<input type="text"/>
-				</div>
-				<div class="right-controls">
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						sentiment_satisfied
-					</button>
-					<!-- TODO(lead/button): Apply functionality -->
-					<button class="material-icons">
-						send
-					</button>
-				</div>
-			</div>
-		</section>
+		<!-- TODO(minor): conditionally render the contents chat window -->
+		<ChatWindow v-if="selectedConsultation" :consultation="selectedConsultation"/>
 	</div>
 </template>
 
@@ -211,134 +136,35 @@ footer {
 
 <script setup lang="ts">
 import { computed, ref } from "vue"
+import type {
+	DeserializedConsultationListDocument,
+	ConsultationRelationshipNames
+} from "$/types/documents/consultation"
+
 import SadIcon from "./sadicon.png"
 import ConsultationForm from "@/consultation/form.vue"
-
-type Consultation = {
-	// TODO(lead/types): type will change soon
-	id: number
-	studentId: number
-	employeeId: number
-	ticket: number
-	title: string
-	chats?: string[]
-	isGroup: boolean
-	members?: number[]
-	status: string
-}
+import ChatWindow from "@/consultation/chat_window.vue"
 
 const isAddingSchedule = ref<boolean>(false)
 function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<Consultation[]>([
-	{
-		"id": 0,
-		"studentId": 0,
-		"employeeId": 0,
-		"ticket": 0,
-		"title": "Sample Consultation",
-		"chats": [
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat"
-		],
-		"isGroup": false,
-		"status": "ongoing"
-	},
-	{
-		"id": 1,
-		"studentId": 0,
-		"employeeId": 0,
-		"ticket": 0,
-		"title": "Sample Consultation2",
-		"chats": [
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat",
-			"sample chat"
-		],
-		"isGroup": false,
-		"status": "ongoing"
-	}
-])
-const selectedConsultationId = ref<number>(0)
+const consultations = ref<DeserializedConsultationListDocument<
+	string,
+	ConsultationRelationshipNames
+>>({
+	"data": []
+})
+const selectedConsultationID = ref<string>("1")
 const selectedConsultation = computed(() => {
-	const selected = consultations.value.filter(
-		(consultation: Consultation) => consultation.id === selectedConsultationId.value
+	const foundConsultation = consultations.value.data.find(
+		consultation => consultation.id === selectedConsultationID.value
 	)
 
-	return selected[0]
+	return foundConsultation
 })
-function pickConsultation(consultationId: number) {
-	selectedConsultationId.value = consultationId
+function pickConsultation(consultationID: string) {
+	selectedConsultationID.value = consultationID
 }
 </script>

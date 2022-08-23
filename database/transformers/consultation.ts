@@ -51,8 +51,9 @@ export default class extends Transformer<Consultation, void> {
 			"reason",
 			"status",
 			"actionTaken",
-			"scheduledStartDatetime",
-			"endDatetime"
+			"scheduledStartAt",
+			"startedAt",
+			"finishedAt"
 		])
 
 		return safeObject

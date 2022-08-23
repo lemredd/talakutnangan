@@ -15,7 +15,8 @@ import BaseFetcher from "$@/fetchers/base"
 
 export default class UserFetcher extends BaseFetcher<
 	UserResourceIdentifier,
-	UserAttributes,
+	UserAttributes<"serialized">,
+	UserAttributes<"deserialized">,
 	UserResource,
 	DeserializedUserResource,
 	UserDocument,
@@ -34,17 +35,17 @@ export default class UserFetcher extends BaseFetcher<
 	}
 
 	async logIn(details: LogInDetails): Promise<Response<
-		string,
 		UserResourceIdentifier,
-		UserAttributes,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
 		UserResource,
 		DeserializedUserResource,
 		Serializable
 	>> {
 		return await this.postJSON(`${this.type}/log_in`, details) as Response<
-			string,
 			UserResourceIdentifier,
-			UserAttributes,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
 			UserResource,
 			DeserializedUserResource,
 			Serializable
@@ -52,17 +53,17 @@ export default class UserFetcher extends BaseFetcher<
 	}
 
 	async logOut(): Promise<Response<
-		string,
 		UserResourceIdentifier,
-		UserAttributes,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
 		UserResource,
 		DeserializedUserResource,
 		Serializable
 	>> {
 		return await this.postJSON(`${this.type}/log_out`, {}) as Response<
-			string,
 			UserResourceIdentifier,
-			UserAttributes,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
 			UserResource,
 			DeserializedUserResource,
 			Serializable

@@ -1,5 +1,14 @@
+
+import type { Serializable } from "$/types/general"
 import type { RequirePassword } from "$/types/documents/security"
 import type {
+	AttachableCompleteness as Completeness,
+	CompletenessRegulator,
+	ReadableCompleteness,
+	PaginatedDocument
+} from "$/types/documents/irregularity"
+import type {
+	Format,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
@@ -12,63 +21,61 @@ import type {
 	IdentifierListDocument
 } from "$/types/documents/base"
 
-export interface DepartmentResourceIdentifier<T extends string|number = string>
-extends ResourceIdentifier<T> {
-	type: "department",
-	meta?: {
-		userCount: number
-	}
+export type DepartmentResourceIdentifier<T extends Completeness = "read">
+= ResourceIdentifier<CompletenessRegulator<T>> & PaginatedDocument<T> & {
+	type: "department"
 }
 
-export interface DepartmentAttributes extends Attributes {
+export interface DepartmentAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	fullName: string,
 	acronym: string,
 	mayAdmit: boolean
 }
 
-export type DepartmentResource = Resource<
-	DepartmentResourceIdentifier,
-	DepartmentAttributes
->
-
-export type DeserializedDepartmentResource<T extends string|number = string> = DeserializedResource<
-	T,
+export type DepartmentResource<T extends Completeness = "read"> = Resource<
+	CompletenessRegulator<T>,
 	DepartmentResourceIdentifier<T>,
-	DepartmentAttributes
+	DepartmentAttributes<"serialized">
 >
 
-export type DepartmentDocument = ResourceDocument<
-	DepartmentResourceIdentifier,
-	DepartmentAttributes,
-	DepartmentResource
+export type DeserializedDepartmentResource<T extends ReadableCompleteness = "read">
+= DeserializedResource<
+	DepartmentResourceIdentifier<T>,
+	DepartmentAttributes<"deserialized">
 >
 
-export type DepartmentListDocument = ResourceListDocument<
-	DepartmentResourceIdentifier,
-	DepartmentAttributes,
-	DepartmentResource
+export type DepartmentDocument<T extends Completeness = "read"> = ResourceDocument<
+	CompletenessRegulator<T>,
+	DepartmentResourceIdentifier<T>,
+	DepartmentAttributes<"serialized">,
+	DepartmentResource<T>
+> & (
+	T extends "update" ? RequirePassword : Serializable
+)
+
+export type DepartmentListDocument<T extends Completeness = "read"> = ResourceListDocument<
+	CompletenessRegulator<T>,
+	DepartmentResourceIdentifier<T>,
+	DepartmentAttributes<"serialized">,
+	DepartmentResource<T>
 >
 
-export type DeserializedDepartmentDocument<T extends string|number = string>
+export type DeserializedDepartmentDocument<T extends ReadableCompleteness = "read">
 = DeserializedResourceDocument<
-	T,
 	DepartmentResourceIdentifier<T>,
-	DepartmentAttributes,
+	DepartmentAttributes<"deserialized">,
 	DeserializedDepartmentResource<T>
 >
 
-export type DeserializedDepartmentListDocument<T extends string|number = string>
+export type DeserializedDepartmentListDocument<T extends ReadableCompleteness = "read">
 = DeserializedResourceListDocument<
-	T,
 	DepartmentResourceIdentifier<T>,
-	DepartmentAttributes,
+	DepartmentAttributes<"deserialized">,
 	DeserializedDepartmentResource<T>
 >
 
-export type DepartmentIdentifierDocument<T extends string|number = string>
-= IdentifierDocument<T, DepartmentResourceIdentifier<T>>
+export type DepartmentIdentifierDocument<T extends ReadableCompleteness = "read">
+= IdentifierDocument<DepartmentResourceIdentifier<T>>
 
-export type DepartmentIdentifierListDocument<T extends string|number = string>
-= IdentifierListDocument<T, DepartmentResourceIdentifier<T>>
-
-export type UpdatedDepartmentDocument = DepartmentDocument & RequirePassword
+export type DepartmentIdentifierListDocument<T extends ReadableCompleteness = "read">
+= IdentifierListDocument<DepartmentResourceIdentifier<T>>

@@ -66,7 +66,7 @@ export default class extends QueryController {
 		const manager = new DepartmentManager(request.transaction, request.cache)
 		const departmentWithUserCount = await manager
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		.countUsers(query.filter.IDs!) as DepartmentResourceIdentifier
+		.countUsers(query.filter.IDs!) as DepartmentResourceIdentifier<"read">
 
 		return new ListResponse(departmentWithUserCount)
 	}

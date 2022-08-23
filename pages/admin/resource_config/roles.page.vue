@@ -1,12 +1,12 @@
 <template>
-	<AdminSettingsHeader title="Admin Settings" />
+	<AdminSettingsHeader title="Admin Settings"/>
 
 	<RolesManager :resource="roles">
 		<template #search-filter>
 			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<RolesList :filtered-list="filteredList" />
+		<RolesList :filtered-list="filteredList"/>
 	</RolesManager>
 </template>
 
@@ -27,8 +27,8 @@ import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
 const pageContext = inject("pageContext") as PageContext
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
-provide("tabs", ["Users", "Roles", "Roles"])
+provide("managerKind", new Manager(pageContext.pageProps.userProfile as DeserializedUserProfile))
+provide("tabs", [ "Users", "Roles", "Roles" ])
 
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
@@ -39,30 +39,31 @@ const filteredList = ref<DeserializedRoleResource[]>([])
 function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedRoleResource[]
 }
-async function fetchRoleInfos(offset: number) {
+async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
-		filter: {
-			existence: "exists",
-			department: "*"
+		"filter": {
+			"department": "*",
+			"existence": "exists"
 		},
-		page: {
-			limit: 10,
-			offset,
+		"page": {
+			"limit": 10,
+			offset
 		},
-		sort: ["name"]
+		"sort": [ "name" ]
 	}).then(response => {
 		const deserializedData = response.body.data as DeserializedRoleResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
 
-		if (deserializedData.length === 0) return
+		if (deserializedData.length === 0) return Promise.resolve()
 
 		roles.value = [ ...roles.value, ...deserializedData ]
 
+		// eslint-disable-next-line no-use-before-define
 		return countUsersPerRole(IDsToCount)
 	})
 }
 
-async function countUsersPerRole(IDsToCount: number[]) {
+async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
 		const originalData = [ ...roles.value ]
@@ -80,7 +81,7 @@ async function countUsersPerRole(IDsToCount: number[]) {
 	})
 }
 
-onMounted(async () => {
+onMounted(async() => {
 	await fetchRoleInfos(0)
 })
 </script>

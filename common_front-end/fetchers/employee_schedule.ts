@@ -15,7 +15,8 @@ import BaseFetcher from "$@/fetchers/base"
 
 export default class EmployeeScheduleFetcher extends BaseFetcher<
 	EmployeeScheduleResourceIdentifier,
-	EmployeeScheduleAttributes,
+	EmployeeScheduleAttributes<"serialized">,
+	EmployeeScheduleAttributes<"deserialized">,
 	EmployeeScheduleResource,
 	DeserializedEmployeeScheduleResource,
 	EmployeeScheduleDocument,
@@ -24,7 +25,7 @@ export default class EmployeeScheduleFetcher extends BaseFetcher<
 	DeserializedEmployeeScheduleListDocument,
 	Serializable,
 	EmployeeScheduleQueryParameters,
-	EmployeeScheduleRelationships<true>
+	EmployeeScheduleRelationships
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "employee_schedule")

@@ -8,7 +8,7 @@ import ConsultationTransformer from "%/transformers/consultation"
 
 export default class extends BaseManager<
 	Consultation,
-	ConsultationAttributes,
+	ConsultationAttributes<"deserialized">,
 	CommonQueryParameters
 > {
 	get model(): ModelCtor<Consultation> { return Consultation }

@@ -17,11 +17,12 @@ import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
 export default class SignatureFetcher extends BaseFetcher<
-	SignatureResourceIdentifier,
-	SignatureAttributes,
+	SignatureResourceIdentifier<"read">,
+	SignatureAttributes<"serialized">,
+	SignatureAttributes<"deserialized">,
 	SignatureResource,
 	DeserializedSignatureResource,
-	SignatureDocument<string>,
+	SignatureDocument,
 	SignatureListDocument,
 	DeserializedSignatureDocument,
 	DeserializedSignatureListDocument,
@@ -37,9 +38,9 @@ export default class SignatureFetcher extends BaseFetcher<
 	}
 
 	async renew(userID: string, details: FormData): Promise<Response<
-		string,
 		SignatureResourceIdentifier,
-		SignatureAttributes,
+		SignatureAttributes<"serialized">,
+		SignatureAttributes<"deserialized">,
 		SignatureResource,
 		DeserializedSignatureResource,
 		DeserializedSignatureDocument
@@ -51,9 +52,9 @@ export default class SignatureFetcher extends BaseFetcher<
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
 		) as Response<
-			string,
 			SignatureResourceIdentifier,
-			SignatureAttributes,
+			SignatureAttributes<"serialized">,
+			SignatureAttributes<"deserialized">,
 			SignatureResource,
 			DeserializedSignatureResource,
 			DeserializedSignatureDocument

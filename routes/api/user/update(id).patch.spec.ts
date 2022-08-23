@@ -9,23 +9,23 @@ const BODY_VALIDATION_INDEX = 1
 describe("Controller: PATCH /api/user/:id", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const user = await new UserFactory().insertOne()
 		const newUser = await new UserFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "user",
-					id: String(user.id),
-					attributes: {
-						name: newUser.name,
-						email: newUser.email,
-						prefersDark: newUser.prefersDark
-					}
+			"body": {
+				"data": {
+					"attributes": {
+						"email": newUser.email,
+						"name": newUser.name,
+						"prefersDark": newUser.prefersDark
+					},
+					"id": String(user.id),
+					"type": "user"
 				}
 			}
 		})
@@ -35,23 +35,23 @@ describe("Controller: PATCH /api/user/:id", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const user = await new UserFactory().insertOne()
 		const newUser = await new UserFactory().makeOne()
 		requester.customizeRequest({
-			body: {
-				data: {
-					type: "user",
-					id: String(user.id),
-					attributes: {
-						name: newUser.name,
-						email: "random",
-						prefersDark: newUser.prefersDark
-					}
+			"body": {
+				"data": {
+					"attributes": {
+						"email": "random",
+						"name": newUser.name,
+						"prefersDark": newUser.prefersDark
+					},
+					"id": String(user.id),
+					"type": "user"
 				}
 			}
 		})

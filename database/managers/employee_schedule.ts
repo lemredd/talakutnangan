@@ -8,9 +8,13 @@ import EmployeeSchedule from "%/models/employee_schedule"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 
+interface RawEmployeeScheduleAttributes extends EmployeeScheduleAttributes<"serialized"> {
+	userID: number
+}
+
 export default class extends BaseManager<
 	EmployeeSchedule,
-	EmployeeScheduleAttributes<number>,
+	RawEmployeeScheduleAttributes,
 	EmployeeScheduleQueryParameters<number>
 > {
 	get model(): ModelCtor<EmployeeSchedule> { return EmployeeSchedule }
