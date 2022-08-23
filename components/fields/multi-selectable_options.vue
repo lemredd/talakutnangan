@@ -6,6 +6,11 @@
 				{{
 					option.label ?? option.value
 				}}
+				<button
+					class="close material-icons-outlined"
+					@click="removeOption(option.value)">
+					close
+				</button>
 			</li>
 		</ul>
 		<SelectableOptionsField
@@ -60,5 +65,9 @@ function addCurrentOption() {
 		...modelValue,
 		currentOption.value
 	])
+}
+
+function removeOption(removedValue: string) {
+	emit("update:modelValue", modelValue.filter(value => value !== removedValue))
 }
 </script>
