@@ -11,10 +11,30 @@
 		<div>
 			<input
 				type="file"
-				accept="text/csv"
-				name="importedCSV"/>
+				name="meta[importedCSV]"
+				accept="text/csv"/>
 		</div>
 		<div>
+			<input
+				type="hidden"
+				name="data[type]"
+				value="user"/>
+			<input
+				type="hidden"
+				name="data[attributes][kind]"
+				:value="chosenKind"/>
+			<input
+				v-for="(roleID, i) in chosenRoleIDs"
+				:key="roleID"
+				type="hidden"
+				:name="`data[relationships][roles][${i}][type]`"
+				value="role"/>
+			<input
+				v-for="(roleID, i) in chosenRoleIDs"
+				:key="roleID"
+				type="hidden"
+				:name="`data[relationships][roles][${i}][id]`"
+				:value="roleID"/>
 			<input type="submit" value="Import"/>
 		</div>
 	</form>
