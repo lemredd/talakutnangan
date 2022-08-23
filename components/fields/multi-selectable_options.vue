@@ -18,11 +18,13 @@ import type { OptionInfo } from "$@/types/component"
 const {
 	options,
 	modelValue,
-	label
+	label,
+	placeholder
 } = defineProps<{
 	options: readonly OptionInfo[]
 	modelValue: string[]
 	label?: string
+	placeholder?: string
 }>()
 
 const selectedOptions = computed<OptionInfo[]>(() => {
