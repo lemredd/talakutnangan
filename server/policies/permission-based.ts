@@ -6,7 +6,7 @@ import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 
 /**
- * Creates middleware to only allow certain kind of user.
+ * Creates middleware to only allow certain users base from permissions.
  *
  * Automatically requires user to be authenticated.
  */
@@ -16,7 +16,7 @@ export default class <
 	V extends AuthenticatedRequest = AuthenticatedRequest
 > extends AuthenticationBasedPolicy {
 	private permissionCombinations: U[][]
-	private permissionGroup: PermissionGroup<T, U>
+	protected readonly permissionGroup: PermissionGroup<T, U>
 	private checkOthers: (request: V) => Promise<void>
 
 	/**
