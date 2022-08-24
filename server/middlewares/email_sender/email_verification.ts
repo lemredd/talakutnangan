@@ -1,24 +1,28 @@
+import type { PreprocessedRequest } from "!/types/dependent"
 import type { EmailVerificationArguments } from "!/types/independent"
-import type { PreprocessedRequest, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
-import Middleware from "!/bases/middleware"
 import URLMaker from "$!/singletons/url_maker"
 import Transport from "!/helpers/email/transport"
+import RequestFilter from "!/bases/request_filter"
 
 /**
  * Creates middleware to provide email verification for new users or updated email addresses.
  */
-export default class extends Middleware {
-	async intermediate(
-		request: PreprocessedRequest<EmailVerificationArguments>,
-		_response: Response,
-		next: NextFunction
-	): Promise<void> {
+export default class extends RequestFilter {
+	async filterRequest(request: PreprocessedRequest<EmailVerificationArguments>): Promise<void> {
 		const recipients = request.nextMiddlewareArguments.emailsToContact
 		const subject = "Email Verification"
 
 		Log.trace("middleware", "sending verification e-mail messages to recipients")
+
+		const MILLISECONDS_PER_SECOND = 1000
+		const SECONDS_PER_MINUTE = 60
+		const EXPIRATION_MINUTE_DURATION = 30
+		const EXPIRATION_MILLISECOND_DURATION
+			= MILLISECONDS_PER_SECOND
+				* SECONDS_PER_MINUTE
+				* EXPIRATION_MINUTE_DURATION
 
 		const emailTransmissions = recipients.map(async recipient => await Transport.sendMail(
 			[ recipient.email ],
@@ -26,29 +30,38 @@ export default class extends Middleware {
 			"email_verification.md",
 			{
 				"email": recipient.email,
-				"homePageURL": URLMaker.makeBaseURL(),
 				"emailVerificationURL": await URLMaker.makeTemporaryURL("/user/verify", {
 					"id": recipient.id
 					// Verification is available for 30 minutes
-				}, 1000 * 60 * 30)
+				}, EXPIRATION_MILLISECOND_DURATION),
+				"homePageURL": URLMaker.makeBaseURL()
 			}
 		))
 
-		for (const transmission of emailTransmissions) {
+		if (this.isOnTest) {
+			for (const transmission of emailTransmissions) {
+				try {
+					// Force to wait for transmission to test with expected order
+					// eslint-disable-next-line no-await-in-loop
+					const sentInfo = await transmission
+					Log.trace("middleware", `Sent email verification to ${sentInfo.envelope.to[0]}`)
+				} catch (error) {
+					Log.error("middleware", error as Error)
+
+					throw error
+				}
+			}
+		} else {
 			try {
-				// Force to wait for transmission to test with expected order
-				// eslint-disable-next-line no-await-in-loop
-				const sentInfo = await transmission
-				Log.trace("middleware", `Sent email verification to ${sentInfo.envelope.to[0]}`)
+				await Promise.all(emailTransmissions)
+				Log.trace("middleware", "Sent email verification to users")
 			} catch (error) {
 				Log.error("middleware", error as Error)
 
-				next(error)
+				throw error
 			}
 		}
 
 		Log.success("middleware", "e-mail messages were sent")
-
-		next()
 	}
 }

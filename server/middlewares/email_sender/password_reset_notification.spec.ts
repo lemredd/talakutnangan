@@ -9,16 +9,16 @@ import Transport from "!/helpers/email/transport"
 import PasswordResetNotification from "./password_reset_notification"
 
 describe("Middleware: New User Notifier", () => {
-	const requester  = new MockRequester<PreprocessedRequest<PasswordResetArguments>>()
+	const requester = new MockRequester<PreprocessedRequest<PasswordResetArguments>>()
 
-	it("can notify to user with default password", async () => {
+	it("can notify to user with default password", async() => {
 		const sender = new PasswordResetNotification()
 		requester.customizeRequest({
-			nextMiddlewareArguments: <PasswordResetArguments>{
-				emailToContact: {
-					email: "sampleA@example.com",
-					name: "Sample A",
-					password: "12345678"
+			"nextMiddlewareArguments": <PasswordResetArguments>{
+				"emailToContact": {
+					"email": "sampleA@example.com",
+					"name": "Sample A",
+					"password": "12345678"
 				}
 			}
 		})
