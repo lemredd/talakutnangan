@@ -1,12 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
-import ConsultationFactory from "~/factories/consultation"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
-import Controller from "./restore.patch"
+import Controller from "./archive.delete"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe.skip("Controller: PATCH /api/consultation", () => {
+describe("Controller: DELETE /api/chat_message_activity", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
@@ -14,14 +14,13 @@ describe.skip("Controller: PATCH /api/consultation", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
-		await consultation.destroy({ "force": false })
+		const model = await new ChatMessageActivityFactory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": consultation.id
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}
@@ -32,18 +31,19 @@ describe.skip("Controller: PATCH /api/consultation", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept existing resources", async() => {
+	it("cannot accept already-archived resources", async() => {
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new ChatMessageActivityFactory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": consultation.id
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}
@@ -56,19 +56,19 @@ describe.skip("Controller: PATCH /api/consultation", () => {
 		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
 	})
 
-	it("cannot accept non-existent resources", async() => {
+	it("cannot delete non-existent resources", async() => {
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
-		await consultation.destroy({ "force": true })
+		const model = await new ChatMessageActivityFactory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": consultation.id
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}

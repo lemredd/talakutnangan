@@ -21,6 +21,7 @@ import {
 
 function makeList() {
 	const policies = {
+		"consultationParticipantsOnlyPolicy": new KindBasedPolicy("student", "reachable_employee"),
 		"employeeSchedulePolicy": new PermissionBasedPolicy(user, [
 			UPDATE_OWN_DATA,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,

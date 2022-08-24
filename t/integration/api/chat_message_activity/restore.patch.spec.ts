@@ -1,35 +1,31 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
-import Model from "%/models/department"
 import RoleFactory from "~/factories/role"
-import Factory from "~/factories/department"
+import Model from "%/models/chat_message_activity"
+import Factory from "~/factories/chat_message_activity"
 import RequestEnvironment from "$!/singletons/request_environment"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
 
-import Route from "!%/api/department/restore.patch"
+import Route from "!%/api/chat_message_activity/restore.patch"
 
-describe("PATCH /api/department", () => {
+describe("PATCH /api/chat_message_activity", () => {
 	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
 	it("can be accessed by authenticated user", async() => {
-		const adminRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE))
-		.insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const role = await new RoleFactory().insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beStudent())
 		const model = await new Factory().insertOne()
 		await model.destroy()
 
 		const response = await App.request
-		.patch("/api/department")
+		.patch("/api/chat_message_activity")
 		.send({
 			"data": [
 				{
 					"id": String(model.id),
-					"type": "department"
+					"type": "chat_message_activity"
 				}
 			]
 		})

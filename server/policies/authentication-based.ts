@@ -21,7 +21,7 @@ export default class extends Policy {
 		this.targetAuthenticationState = targetAuthenticationState
 	}
 
-	async authorize(request: Request | AuthenticatedIDRequest): Promise<void> {
+	authorize(request: Request | AuthenticatedIDRequest): Promise<void> {
 		if (request.isAuthenticated() !== this.targetAuthenticationState) {
 			const reason = this.targetAuthenticationState
 				? "The user must be logged in to invoke the action."
@@ -31,7 +31,9 @@ export default class extends Policy {
 				? URLMaker.makeURLFromPath("/log_in")
 				: URLMaker.makeURLFromPath("/")
 
-			throw new AuthorizationError(reason, link)
+			return Promise.reject(new AuthorizationError(reason, link))
 		}
+
+		return Promise.resolve()
 	}
 }

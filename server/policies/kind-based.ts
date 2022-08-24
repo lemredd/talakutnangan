@@ -1,33 +1,34 @@
-import { deserialise } from "kitsu-core"
 import type { UserKind } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import deserialize from "$/helpers/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 
 /**
- * Creates middleware to only allow certain kind of user.
+ * Creates middleware to only allow certain kinds of user.
  *
  * Automatically requires user to be authenticated.
  */
 export default class extends AuthenticationBasedPolicy {
-	private kind: UserKind
+	private kinds: UserKind[]
 
 	/**
-	 * @param kind Specific kind of user to only allow.
+	 * @param kinds Specific kinds of user to only allow.
 	 */
-	constructor(kind: UserKind) {
+	constructor(...kinds: UserKind[]) {
 		super(true)
-		this.kind = kind
+		this.kinds = kinds
 	}
 
 	async authorize(request: AuthenticatedRequest): Promise<void> {
 		await super.authorize(request)
 
-		const user = deserialise(request.user)
-		const kind = user?.data?.kind
-		// @ts-ignore
-		if(kind !== this.kind) {
+		const user = deserialize(request.user) as DeserializedUserProfile
+		const { kind } = user.data
+
+		if (!this.kinds.includes(kind)) {
 			throw new AuthorizationError("Correct user kind can invoke the action.")
 		}
 	}
