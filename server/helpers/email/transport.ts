@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { createTransport, Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "$!/singletons/log"
@@ -41,17 +42,17 @@ export default class Transport {
 	constructor(host: string, port: number, user: string, pass: string) {
 		this.senderUser = user
 		this.transport = createTransport(<TransportOptions>{
-			host,
-			port,
-			auth: {
-				type: "login",
-				user,
-				pass
+			"auth": {
+				pass,
+				"type": "login",
+				user
 			},
-			jsonTransport: RequestEnvironment.isOnTest
+			host,
+			"jsonTransport": RequestEnvironment.isOnTest,
+			port
 		})
 
-		this.transport.verify((error, success) => {
+		this.transport.verify(error => {
 			if (error) {
 				Log.errorMessage("server", "There is a problem on connecting with the e-mail server.")
 				Log.error("server", error)
@@ -70,15 +71,15 @@ export default class Transport {
 
 		const from = this.senderUser
 		const message = {
-			from,
-			to,
-			envelope: {
+			"envelope": {
 				from,
 				to
 			},
-			subject: subject,
+			from,
+			html,
+			subject,
 			text,
-			html
+			to
 		}
 
 		return await new Promise((resolve, reject) => {
@@ -98,7 +99,7 @@ export default class Transport {
 	}
 
 	static consumePreviousMessages(): { [key:string]: any }[] {
-		const previousMessages = this.previousMessages
+		const { previousMessages } = this
 
 		this.previousMessages = []
 
