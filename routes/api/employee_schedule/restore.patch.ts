@@ -1,11 +1,10 @@
-import { FieldRules } from "!/types/validation"
-import { Request, Response } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
+import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import archived from "!/validators/manager/archived"
@@ -16,19 +15,18 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Combine with permission-based policy
-		return CommonMiddlewareList.reachableEmployeeOnlyPolicy
+		return CommonMiddlewareList.employeeSchedulePolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules(
 			"employee_schedule",
+			// TODO: Check if the schedules to restore belongs to current user or has enough permission
 			archived,
 			EmployeeScheduleManager
 		)
 	}
 
-	// TODO: Limit the archiving to own user unless there is enough permission to update user info
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
 

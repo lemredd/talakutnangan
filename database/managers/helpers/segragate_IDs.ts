@@ -1,10 +1,9 @@
-import difference from "lodash.difference"
-
 import type { SegregatedIDs } from "%/types/independent"
+import subtract from "$/helpers/array/subtract"
 
 export default function(originalIDs: number[], modifiedIDs: number[]): SegregatedIDs {
-	const deletedIDs = difference(originalIDs, modifiedIDs)
-	const newIDs = difference(modifiedIDs, originalIDs)
+	const deletedIDs = subtract(originalIDs, modifiedIDs)
+	const newIDs = subtract(modifiedIDs, originalIDs)
 
 	return {
 		deletedIDs,

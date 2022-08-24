@@ -17,7 +17,7 @@ describe("PATCH /api/employee_schedule/:id", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.roleFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
+		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			adminRole,

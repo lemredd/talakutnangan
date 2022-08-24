@@ -13,27 +13,30 @@ import setDeepPath from "$!/helpers/set_deep_path"
  * Used to parse the forms that have attached files.
  */
 export default class FormBodyParser extends Middleware {
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		Log.trace("middleware", "entered multipart body parser")
 		const bufferedFiles: { [key: string]: any } = {}
 		const formQueries: string[] = []
-		const parser = busboy({ headers: request.headers })
+		const parser = busboy({ "headers": request.headers })
 
 		parser.on("file", (name, stream, info) => {
-			let rawBuffer: number[] = []
+			const rawBuffer: number[] = []
 			stream.on("data", data => {
 				rawBuffer.push(...data)
 			})
 			.on("close", () => {
-				setDeepPath(bufferedFiles, name, { buffer: Buffer.from(rawBuffer), info })
+				setDeepPath(bufferedFiles, name, {
+					"buffer": Buffer.from(rawBuffer),
+					info
+				})
 				Log.trace("middleware", `parsed "${name}" file data in multipart body parser`)
 			})
 		})
 
-		parser.on("field", (name, value, _info) => {
+		parser.on("field", (name, value, unusedInfo) => {
 			formQueries.push(`${name}=${value}`)
 			Log.trace("middleware", `prepared "${name}" field in multipart body parser`)
-		});
+		})
 
 		parser.on("close", () => {
 			const parsedFormQuery = parse(formQueries.join("&"))
@@ -52,5 +55,7 @@ export default class FormBodyParser extends Middleware {
 		request.pipe(parser)
 
 		Log.success("middleware", "piped request body to parser in multipart body parser")
+
+		return Promise.resolve()
 	}
 }

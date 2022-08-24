@@ -11,7 +11,7 @@ import ControllerLike from "!/bases/controller-like"
  * This is intended to set up the passing of data to client.
  */
 export default abstract class extends ControllerLike {
-	getPageProps(request: Request): Promise<Serializable>|Serializable {
+	getPageProps(unusedRequest: Request): Promise<Serializable>|Serializable {
 		return {}
 	}
 
@@ -28,12 +28,12 @@ export default abstract class extends ControllerLike {
 	): Promise<void> {
 		try {
 			request.pageProps = {
-				userProfile: request.isAuthenticated() ? request.user! : null,
+				"userProfile": request.isAuthenticated() ? request.user as Serializable : null,
 				...await this.getPageProps(request)
 			}
 
 			next()
-		} catch(error) {
+		} catch (error) {
 			next(error)
 		}
 	}
