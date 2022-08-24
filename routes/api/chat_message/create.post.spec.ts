@@ -5,7 +5,7 @@ import ChatMessageFactory from "~/factories/chat_message"
 import ConsultationFactory from "~/factories/consultation"
 import Controller from "./create.post"
 
-const BODY_VALIDATION_INDEX = 1
+const BODY_VALIDATION_INDEX = 0
 
 describe("Controller: POST /api/chat_message", () => {
 	const requester = new MockRequester()

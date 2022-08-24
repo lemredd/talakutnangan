@@ -3,12 +3,14 @@ import type { FieldRules, Rules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
+import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
+import JSONController from "!/controllers/json"
 import ChatMessageManager from "%/managers/chat_message"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
-import DoubleBoundJSONController from "!/controllers/double_bound_json"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -19,7 +21,7 @@ import required from "!/validators/base/required"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
-export default class extends DoubleBoundJSONController {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -92,6 +94,12 @@ export default class extends DoubleBoundJSONController {
 			"consultationID": Number(relationships.consultation.data.id),
 			"userID": Number(relationships.user.data.id)
 		})
+
+		Socket.emitToClients(
+			makeConsultationChatNamespace(relationships.consultation.data.id),
+			"create",
+			document
+		)
 
 		Log.success("controller", "successfully created the chat message of the user")
 
