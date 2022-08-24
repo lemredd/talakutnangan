@@ -96,7 +96,7 @@ export default abstract class Factory<
 		return this.serialize(model, options, transformer) as A
 	}
 
-	protected serialize(
+	public serialize(
 		models: T|T[]|null,
 		options: D = {} as D,
 		transformer: Transformer<T, D> = this.transformer
@@ -108,12 +108,20 @@ export default abstract class Factory<
 		) as Z|A
 	}
 
+	public deserialize(
+		models: T|T[]|null,
+		options: D = {} as D,
+		transformer: Transformer<T, D> = this.transformer
+	): B|C {
+		return deserialize(this.serialize(models, options, transformer)) as B|C
+	}
+
 	async deserializedOne(
 		mustInsert = false,
 		options: D = {} as D,
 		transformer: Transformer<T, D> = this.transformer
 	): Promise<B> {
-		return deserialize(await this.serializedOne(mustInsert, options, transformer))as B
+		return deserialize(await this.serializedOne(mustInsert, options, transformer)) as B
 	}
 
 	async deserializedMany(
@@ -122,6 +130,6 @@ export default abstract class Factory<
 		options: D = {} as D,
 		transformer: Transformer<T, D> = this.transformer
 	): Promise<C> {
-		return deserialize(await this.serializedMany(count, mustInsert, options, transformer))as C
+		return deserialize(await this.serializedMany(count, mustInsert, options, transformer)) as C
 	}
 }
