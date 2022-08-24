@@ -3,8 +3,8 @@ import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import JSONController from "!/controllers/json"
-import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
+import ChatMessageActivity from "%/managers/chat_message_activity"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -25,14 +25,14 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules(
-			"consultation",
+			"chat_message_activity",
 			exists,
-			ConsultationManager
+			ChatMessageActivity
 		)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new ConsultationManager(request.transaction, request.cache)
+		const manager = new ChatMessageActivity(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
 		await manager.archiveBatch(IDs)
