@@ -6,9 +6,7 @@ import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ChatMessageActivity from "%/managers/chat_message_activity"
 
-import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierListDocumentRules
@@ -18,9 +16,7 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			ARCHIVE_AND_RESTORE
-		])
+		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
