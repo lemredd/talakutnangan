@@ -1,8 +1,8 @@
 import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { Permissions as UserPermissions } from "$/permissions/user"
 
+import Middleware from "!/bases/middleware"
 import KindBasedPolicy from "!/policies/kind-based"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -12,6 +12,7 @@ import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
 
 import deserialize from "$/helpers/deserialize"
+import mergeDeeply from "$!/helpers/merge_deeply"
 import { user } from "$/permissions/permission_list"
 import AuthorizationError from "$!/errors/authorization"
 import {
@@ -20,57 +21,68 @@ import {
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-export default class CommonMiddlewareList {
-	static guestOnlyPolicy: AuthenticationBasedPolicy
-	static knownOnlyPolicy: AuthenticationBasedPolicy
-	static unreachableEmployeeOnlyPolicy: KindBasedPolicy
-	static reachableEmployeeOnlyPolicy: KindBasedPolicy
-	static studentOnlyPolicy: KindBasedPolicy
-	static employeeSchedulePolicy: PermissionBasedPolicy<GeneralObject<number>, UserPermissions, any>
-
-	static JSONBody: JSONBodyParser
-	static multipart: MultipartParser
-	static emailVerification: EmailVerification
-	static newUserNotification: NewUserNotification
-
-	static initialize() {
-		if (typeof CommonMiddlewareList.guestOnlyPolicy === "undefined") {
-			CommonMiddlewareList.guestOnlyPolicy = new AuthenticationBasedPolicy(false)
-			CommonMiddlewareList.knownOnlyPolicy = new AuthenticationBasedPolicy(true)
-			CommonMiddlewareList.unreachableEmployeeOnlyPolicy = new KindBasedPolicy(
-				"unreachable_employee"
+function makeList() {
+	const policies = {
+		"employeeSchedulePolicy": new PermissionBasedPolicy(user, [
+			UPDATE_OWN_DATA,
+			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+		], (request: AuthenticatedRequest) => {
+			const currentUser = deserialize(request.user) as DeserializedUserDocument
+			const roles = currentUser.data.roles.data
+			const hasWidePermission = user.hasOneRoleAllowed(
+				roles,
+				[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
 			)
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy = new KindBasedPolicy(
-				"reachable_employee"
-			)
-			CommonMiddlewareList.studentOnlyPolicy = new KindBasedPolicy("student")
-			CommonMiddlewareList.employeeSchedulePolicy = new PermissionBasedPolicy(user, [
-				UPDATE_OWN_DATA,
-				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			], (request: AuthenticatedRequest) => {
-				const currentUser = deserialize(request.user) as DeserializedUserDocument
-				const roles = currentUser.data.roles.data
-				const hasWidePermission = user.hasOneRoleAllowed(
-					roles,
-					[ UPDATE_ANYONE_ON_OWN_DEPARTMENT, UPDATE_ANYONE_ON_ALL_DEPARTMENTS ]
-				)
 
-				if (!hasWidePermission) {
-					if (currentUser.data.kind !== "reachable_employee") {
-						return Promise.reject(
-							new AuthorizationError("Action is not available to the current user.")
-						)
-					}
+			if (!hasWidePermission) {
+				if (currentUser.data.kind !== "reachable_employee") {
+					return Promise.reject(
+						new AuthorizationError("Action is not available to the current user.")
+					)
 				}
+			}
 
-				return Promise.resolve()
-			})
+			return Promise.resolve()
+		}),
+		"guestOnlyPolicy": new AuthenticationBasedPolicy(false),
+		"knownOnlyPolicy": new AuthenticationBasedPolicy(true),
+		"reachableEmployeeOnlyPolicy": new KindBasedPolicy("reachable_employee"),
+		"studentOnlyPolicy": new KindBasedPolicy("student"),
+		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy("unreachable_employee")
+	}
 
-			CommonMiddlewareList.JSONBody = new JSONBodyParser()
-			CommonMiddlewareList.multipart = new MultipartParser()
-			CommonMiddlewareList.emailVerification = new EmailVerification()
-			CommonMiddlewareList.newUserNotification = new NewUserNotification()
-		}
+	const parsers = {
+		"JSONBody": new JSONBodyParser(),
+		"multipart": new MultipartParser()
+	}
+
+	const emailSenders = {
+		"emailVerification": new EmailVerification(),
+		"newUserNotification": new NewUserNotification()
+	}
+
+	return {
+		...policies,
+		...parsers,
+		...emailSenders
 	}
 }
+
+type List = ReturnType<typeof makeList>
+type ListKeys = keyof List
+
+const list = new Proxy({} as List, {
+	get(target: List|GeneralObject<any>, property: ListKeys|"initialize"): Middleware|void {
+		if (property === "initialize") {
+			const madeList = makeList()
+			mergeDeeply(target, madeList)
+			return
+		}
+
+		// eslint-disable-next-line consistent-return
+		return target[property]
+	}
+})
+
+export default list
