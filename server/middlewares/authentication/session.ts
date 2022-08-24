@@ -1,11 +1,17 @@
 import passport from "passport"
-import type { Request, Response, NextFunction } from "!/types/dependent"
-import Middleware from "!/bases/middleware"
+import type { Request, Response } from "!/types/dependent"
 
-export default class Session extends Middleware {
+import RequestFilter from "!/bases/request_filter"
+
+export default class Session extends RequestFilter {
 	private static session = passport.session()
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		Session.session(request, response, next)
+	async filterRequest(request: Request): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			Session.session(request, {} as Response, (error?: any) => {
+				if (error) reject(error)
+				resolve()
+			})
+		})
 	}
 }
