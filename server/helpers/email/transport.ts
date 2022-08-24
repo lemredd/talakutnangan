@@ -1,5 +1,4 @@
-import { createTransport } from "nodemailer"
-import type { Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
+import { createTransport, Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "$!/singletons/log"
 import RequestEnvironment from "$/helpers/request_environment"

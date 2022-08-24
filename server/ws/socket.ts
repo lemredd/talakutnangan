@@ -13,11 +13,8 @@ export default class Socket extends RequestEnvironment {
 		Log.trace("app", "initialized web socket")
 	}
 
-	static emitToClients(namespace: string, eventName: string, ...data: any) {
-		this.runDependingOnEnvironment(
-			() => this.server.of(namespace).emit(eventName, data),
-			() => {}
-		)
+	static emitToClients(namespace: string, eventName: string, ...data: any): void {
+		this.server.of(namespace).emit(eventName, data)
 	}
 
 	private static get server(): WebSocketServer {
@@ -27,13 +24,5 @@ export default class Socket extends RequestEnvironment {
 			"Web socket server was not initialized.",
 			"Some services are not working at the moment."
 		)
-	}
-
-	private static runDependingOnEnvironment(liveMechanism: () => void, testMechanism: () => void) {
-		if (this.isOnTest) {
-			testMechanism()
-		} else {
-			liveMechanism()
-		}
 	}
 }
