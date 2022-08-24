@@ -1,8 +1,6 @@
-import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import Middleware from "!/bases/middleware"
 import KindBasedPolicy from "!/policies/kind-based"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -65,7 +63,9 @@ function makeList() {
 	return {
 		...policies,
 		...parsers,
-		...emailSenders
+		...emailSenders,
+		// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+		initialize(): void {}
 	}
 }
 
@@ -73,14 +73,12 @@ type List = ReturnType<typeof makeList>
 type ListKeys = keyof List
 
 const list = new Proxy({} as List, {
-	get(target: List|GeneralObject<any>, property: ListKeys|"initialize"): Middleware|void {
+	get(target: List, property: ListKeys) {
 		if (property === "initialize") {
 			const madeList = makeList()
 			mergeDeeply(target, madeList)
-			return
 		}
 
-		// eslint-disable-next-line consistent-return
 		return target[property]
 	}
 })
