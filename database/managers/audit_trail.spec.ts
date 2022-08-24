@@ -21,6 +21,7 @@ describe("Database Manager: Audit trail read operations", () => {
 		expect(serializedModel).toHaveProperty("included.1.id", user.id)
 	})
 })
+
 describe("Database Manager: Miscellaneous operations", () => {
 	it("can get sortable columns", () => {
 		// Include in test to alert in case there are new columns to decide whether to expose or not

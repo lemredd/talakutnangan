@@ -16,4 +16,12 @@ export default class extends BaseManager<
 	get model(): ModelCtor<ChatMessage> { return ChatMessage }
 
 	get transformer(): ChatMessageTransformer { return new ChatMessageTransformer() }
+
+	get exposableColumns(): string[] {
+		const excludedColumns = [ "id", "userID", "data", "consultationID", "deletedAt" ]
+		return super.exposableColumns.filter(columnName => {
+			const isIncluded = !excludedColumns.includes(columnName)
+			return isIncluded
+		})
+	}
 }
