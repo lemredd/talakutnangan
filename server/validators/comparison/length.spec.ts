@@ -1,17 +1,16 @@
-import integer from "!/validators/base/integer"
 import makeInitialState from "!/validators/make_initial_state"
 import length from "./length"
 
 describe("Validator pipe: length", () => {
-	it("can accept valid input", async () => {
+	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			length: {
-				minimimum: 2,
-				maximimum: 2
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"length": {
+				"minimum": 2,
+				"maximum": 2
 			}
 		}
 
@@ -20,14 +19,14 @@ describe("Validator pipe: length", () => {
 		expect(sanitizeValue).toEqual([ 2, 3 ])
 	})
 
-	it("cannot accept few input", async () => {
+	it("cannot accept few input", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			length: {
-				minimum: 2
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"length": {
+				"minimum": 2
 			}
 		}
 
@@ -36,14 +35,14 @@ describe("Validator pipe: length", () => {
 		expect(error).rejects.toHaveProperty("field", "hello")
 	})
 
-	it("cannot accept greater input", async () => {
+	it("cannot accept greater input", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
-			request: null,
-			source: null,
-			field: "hello",
-			length: {
-				maximum: 0
+			"request": null,
+			"source": null,
+			"field": "hello",
+			"length": {
+				"maximum": 0
 			}
 		}
 
