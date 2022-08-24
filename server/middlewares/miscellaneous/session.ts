@@ -16,7 +16,7 @@ const EXPIRATION_MILLISECOND_DURATION
 export default class Session extends Middleware {
 	private static session = createSessionMiddleware({
 		"cookie": {
-			"maxAge": Number(process.env.SESSION_DURATION || String(EXPIRATION_MINUTE_DURATION))
+			"maxAge": Number(process.env.SESSION_DURATION || String(EXPIRATION_MILLISECOND_DURATION))
 		},
 		"name": process.env.SESSION_NAME || "talakutnangan_session",
 		"resave": false,
