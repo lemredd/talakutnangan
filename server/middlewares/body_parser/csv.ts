@@ -7,6 +7,7 @@ import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
 import ParserError from "$!/errors/parser"
 import RequestFilter from "!/bases/request_filter"
+import setDeepPath from "$!/helpers/set_deep_path"
 import accessDeepPath from "$!/helpers/access_deep_path"
 import convertToCamelCase from "$/helpers/convert_to_camel_case"
 
