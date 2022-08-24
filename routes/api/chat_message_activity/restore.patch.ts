@@ -8,7 +8,7 @@ import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import exists from "!/validators/manager/exists"
+import archived from "!/validators/manager/archived"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
 
@@ -22,7 +22,7 @@ export default class extends JSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules(
 			"chat_message_activity",
-			exists,
+			archived,
 			ChatMessageActivityManager
 		)
 	}
@@ -31,7 +31,7 @@ export default class extends JSONController {
 		const manager = new ChatMessageActivityManager(request.transaction, request.cache)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
-		await manager.archiveBatch(IDs)
+		await manager.restoreBatch(IDs)
 
 		return new NoContentResponseInfo()
 	}
