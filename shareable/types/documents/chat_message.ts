@@ -1,12 +1,17 @@
-import type { GeneralObject } from "$/types/general"
+import type { GeneralObject, Serializable } from "$/types/general"
+import type { UserIdentifierDocument } from "$/types/documents/user"
+import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
 import type {
 	Completeness,
 	Format,
+
+	Relationships,
 	Resource,
 	Attributes,
-	ResourceDocument,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
@@ -22,11 +27,18 @@ extends Attributes<T> {
 	data: GeneralObject
 }
 
+export type ChatMessageRelationships = Relationships<{
+	"user": UserIdentifierDocument,
+	"consultation": ConsultationIdentifierDocument
+}>
+
 export type ChatMessageResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageResourceIdentifier<T>,
 	ChatMessageAttributes<"serialized">
->
+> & (
+	T extends "create" ? ChatMessageRelationships : Serializable
+)
 
 export type DeserializedChatMessageResource = DeserializedResource<
 	ChatMessageResourceIdentifier<"read">,
