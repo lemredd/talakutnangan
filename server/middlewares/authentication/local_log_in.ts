@@ -13,6 +13,7 @@ export default class LocalLogIn extends Middleware {
 			LocalLogIn.authenticate(request, response, resolver)
 			// Error since resolve was not called
 			await request.transaction.destroyIneffectually()
+			resolver()
 			/*
 			 * TODO: Investigate why going to next error handler does not work
 			 * reject(new Error())
