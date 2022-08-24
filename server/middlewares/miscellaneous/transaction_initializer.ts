@@ -1,14 +1,12 @@
 import TransactionManager from "%/managers/helpers/transaction_manager"
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import type { Request } from "!/types/dependent"
 
-import Middleware from "!/bases/middleware"
+import RequestFilter from "!/bases/request_filter"
 
-export default class TransanctionInitializer extends Middleware {
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+export default class TransanctionInitializer extends RequestFilter {
+	async filterRequest(request: Request): Promise<void> {
 		request.transaction = new TransactionManager()
 
 		await request.transaction.initialize()
-
-		next()
 	}
 }

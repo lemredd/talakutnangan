@@ -5,10 +5,18 @@ import type { Request, Response, NextFunction } from "!/types/dependent"
 import Middleware from "!/bases/middleware"
 import Database from "%/data_source/database"
 
+const MILLISECONDS_PER_SECOND = 1000
+const SECONDS_PER_MINUTE = 60
+const EXPIRATION_MINUTE_DURATION = 15
+const EXPIRATION_MILLISECOND_DURATION
+	= MILLISECONDS_PER_SECOND
+		* SECONDS_PER_MINUTE
+		* EXPIRATION_MINUTE_DURATION
+
 export default class Session extends Middleware {
 	private static session = createSessionMiddleware({
 		"cookie": {
-			"maxAge": Number(process.env.SESSION_DURATION || String(15 * 60 * 1000))
+			"maxAge": Number(process.env.SESSION_DURATION || String(EXPIRATION_MINUTE_DURATION))
 		},
 		"name": process.env.SESSION_NAME || "talakutnangan_session",
 		"resave": false,
@@ -25,13 +33,16 @@ export default class Session extends Middleware {
 		 */
 		if (!this.isOnTest) {
 			Session.session = createSessionMiddleware({
+				"cookie": {
+					"maxAge": Number(
+						process.env.SESSION_DURATION
+						|| String(EXPIRATION_MILLISECOND_DURATION)
+					)
+				},
 				"name": process.env.SESSION_NAME || "talakutnangan_session",
-				"secret": process.env.SESSION_SECRET || "12345678",
 				"resave": false,
 				"saveUninitialized": false,
-				"cookie": {
-					"maxAge": Number(process.env.SESSION_DURATION || String(15 * 60 * 1000))
-				},
+				"secret": process.env.SESSION_SECRET || "12345678",
 				"store": new (makeSequelizeStore(Store))({
 					"db": Database.dataSource,
 					"tableName": "Sessions"
