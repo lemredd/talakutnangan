@@ -1,19 +1,19 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import { parse } from "qs"
+import busboy from "busboy"
 import { Buffer } from "buffer"
 
-import busboy from "busboy"
-import { parse } from "qs"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
-import Middleware from "!/bases/middleware"
 import mergeDeeply from "$!/helpers/merge_deeply"
+import RequestFilter from "!/bases/request_filter"
 import setDeepPath from "$!/helpers/set_deep_path"
 
 /**
  * Used to parse the forms that have attached files.
  */
-export default class FormBodyParser extends Middleware {
-	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+export default class FormBodyParser extends RequestFilter {
+	parse(request: Request, next: NextFunction): Promise<void> {
 		Log.trace("middleware", "entered multipart body parser")
 		const bufferedFiles: { [key: string]: any } = {}
 		const formQueries: string[] = []
@@ -57,5 +57,14 @@ export default class FormBodyParser extends Middleware {
 		Log.success("middleware", "piped request body to parser in multipart body parser")
 
 		return Promise.resolve()
+	}
+
+	async filterRequest(request: Request): Promise<void> {
+		await this.runFilter(
+			(passedRequest: Request, unusedResponse: Response, next: NextFunction) => {
+				this.parse(passedRequest, next)
+			},
+			request
+		)
 	}
 }
