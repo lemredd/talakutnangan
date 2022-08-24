@@ -11,4 +11,8 @@ export default class Socket extends RequestEnvironment {
 
 		Log.trace("app", "initialized web socket")
 	}
+
+	static emitToClients(namespace: string, eventName: string, ...data: any) {
+		this.server?.of(namespace).emit(eventName, data)
+	}
 }
