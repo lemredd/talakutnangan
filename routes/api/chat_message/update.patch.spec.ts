@@ -1,13 +1,14 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
+import Factory from "~/factories/chat_message"
 import MockRequester from "~/set-ups/mock_requester"
-import ChatMessageFactory from "~/factories/chat_message"
 import ConsultationFactory from "~/factories/consultation"
-import Controller from "./create.post"
 
-const BODY_VALIDATION_INDEX = 0
+import Controller from "./update(id).patch"
 
-describe("Controller: POST /api/chat_message", () => {
+const BODY_VALIDATION_INDEX = 1
+
+describe("Controller: PATCH /api/chat_message/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
@@ -17,30 +18,17 @@ describe("Controller: POST /api/chat_message", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const user = await new UserFactory().beReachableEmployee().insertOne()
 		const consultation = await new ConsultationFactory().insertOne()
-		const chatMessage = await new ChatMessageFactory()
+		const model = await new Factory()
 		.user(() => Promise.resolve(user))
 		.consultation(() => Promise.resolve(consultation))
-		.makeOne()
+		.insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"data": chatMessage.data
+						"data": model.data
 					},
-					"relationships": {
-						"consultation": {
-							"data": {
-								"id": String(consultation.id),
-								"type": "consultation"
-							}
-						},
-						"user": {
-							"data": {
-								"id": String(user.id),
-								"type": "user"
-							}
-						}
-					},
+					"id": String(model.id),
 					"type": "chat_message"
 				}
 			}
@@ -58,26 +46,17 @@ describe("Controller: POST /api/chat_message", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const user = await new UserFactory().beReachableEmployee().insertOne()
 		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new Factory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultation))
+		.insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
 						"data": "not an object"
 					},
-					"relationships": {
-						"consultation": {
-							"data": {
-								"id": String(consultation.id),
-								"type": "consultation"
-							}
-						},
-						"user": {
-							"data": {
-								"id": String(user.id),
-								"type": "user"
-							}
-						}
-					},
+					"id": String(model.id),
 					"type": "chat_message"
 				}
 			}
