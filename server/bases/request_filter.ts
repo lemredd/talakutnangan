@@ -11,6 +11,18 @@ import Middleware from "!/bases/middleware"
 export default abstract class extends Middleware {
 	abstract filterRequest(request: Request): Promise<void>
 
+	protected async runFilter(
+		filter: (request: Request, response: Response, next: NextFunction) => void,
+		request: Request
+	): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			filter(request, {} as Response, (error?: any) => {
+				if (error) reject(error)
+				resolve()
+			})
+		})
+	}
+
 	async intermediate(request: Request, unusedResponse: Response, next: NextFunction)
 	: Promise<void> {
 		try {
