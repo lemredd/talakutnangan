@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker"
 
-import { Day } from "$/types/database"
-import { days } from "$/types/database.native"
+import { Day, DayValues } from "$/types/database"
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 import type {
@@ -34,7 +33,7 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	DeserializedEmployeeScheduleListDocument
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
-	#dayName: () => Day = () => faker.helpers.arrayElement(days)
+	#dayName: () => Day = () => faker.helpers.arrayElement(DayValues)
 	#scheduleStart: () => number = () => faker.datatype.number({ "max": 24 * 60 - 2 })
 	#scheduleEnd: (scheduleStart: number) => number
 		= (scheduleStart: number) => faker.datatype.number({

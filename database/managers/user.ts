@@ -1,7 +1,6 @@
-import { days } from "$/types/database.native"
-import type { Day, Pipe } from "$/types/database"
-import type { UserQueryParameters } from "$/types/query"
 import type { RawUser } from "$!/types/independent"
+import { Day, Pipe, DayValues } from "$/types/database"
+import type { UserQueryParameters } from "$/types/query"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
@@ -315,7 +314,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		roles: Role[]
 	): Promise<Serializable> {
 		// Prepare for bulk reachable employee creation
-		const employeeSchedules = days.reduce<RawEmployeeSchedule[]>((
+		const employeeSchedules = DayValues.reduce<RawEmployeeSchedule[]>((
 			previousSchedule: RawEmployeeSchedule[],
 			dayName: Day
 		) => {
