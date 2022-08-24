@@ -28,8 +28,7 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Combine with permission-based policy
-		return CommonMiddlewareList.reachableEmployeeOnlyPolicy
+		return CommonMiddlewareList.employeeSchedulePolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
