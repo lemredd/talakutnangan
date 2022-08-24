@@ -1,9 +1,11 @@
+import type { AuthenticatedRequest } from "!/types/dependent"
+import type { DeserializedUserDocument } from "$/types/documents/user"
+
 import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import deserialize from "$/helpers/deserialize"
 import UserPermissions from "$/permissions/user"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
 import MockRequester from "~/set-ups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 
@@ -11,7 +13,6 @@ import Middleware from "./scope-based"
 
 describe("Middleware: Permission-Based Policy", () => {
 	const requester = new MockRequester()
-	const transformer = new UserTransformer()
 	const permissions = new UserPermissions()
 
 	it("can allow users with narrow scope", async() => {
@@ -19,16 +20,19 @@ describe("Middleware: Permission-Based Policy", () => {
 		.userFlags(permissions.generateMask("update", "writeOwnScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).insertOne()
-		const pageGuard = new Middleware(permissions, [ "update", "writeOwnScope" ], [
+		const pageGuard = new Middleware(
+			permissions,
+			[ "update", "writeOwnScope" ],
 			[ "update", "writeDepartmentScope" ],
-			[ "update", "writeOverallScope" ]
-		])
+			[ "update", "writeOverallScope" ],
+			(request: AuthenticatedRequest): Promise<DeserializedUserDocument> => {
+				const owner = deserialize(request.user) as DeserializedUserDocument
+				return Promise.resolve(owner)
+			}
+		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"params": {
-				"id": String(user.id)
-			},
-			"user": Serializer.serialize(user, transformer, {})
+			"user": new UserFactory().serialize(user)
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -36,21 +40,24 @@ describe("Middleware: Permission-Based Policy", () => {
 		requester.expectSuccess()
 	})
 
-	it("can allow users with wide scope to invoke for others", async() => {
+	it("can allow users with social scope to invoke for others", async() => {
 		const role = await new RoleFactory()
 		.userFlags(permissions.generateMask("update", "writeDepartmentScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).insertOne()
-		const pageGuard = new Middleware(permissions, [ "update", "writeOwnScope" ], [
+		const pageGuard = new Middleware(
+			permissions,
+			[ "update", "writeOwnScope" ],
 			[ "update", "writeDepartmentScope" ],
-			[ "update", "writeOverallScope" ]
-		])
+			[ "update", "writeOverallScope" ],
+			async(): Promise<DeserializedUserDocument> => {
+				const owner = await new UserFactory().attach(role).insertOne()
+				return new UserFactory().deserialize(owner) as DeserializedUserDocument
+			}
+		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"params": {
-				"id": `${user.id}1`
-			},
-			"user": Serializer.serialize(user, transformer, {})
+			"user": new UserFactory().serialize(user)
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -63,19 +70,22 @@ describe("Middleware: Permission-Based Policy", () => {
 		.userFlags(permissions.generateMask("update", "writeOwnScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).insertOne()
-		const pageGuard = new Middleware(permissions, [ "update", "writeOwnScope" ], [
+		const middleware = new Middleware(
+			permissions,
+			[ "update", "writeOwnScope" ],
 			[ "update", "writeDepartmentScope" ],
-			[ "update", "writeOverallScope" ]
-		])
+			[ "update", "writeOverallScope" ],
+			async(): Promise<DeserializedUserDocument> => {
+				const owner = await new UserFactory().attach(role).insertOne()
+				return new UserFactory().deserialize(owner) as DeserializedUserDocument
+			}
+		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"params": {
-				"id": `${user.id}1`
-			},
-			"user": Serializer.serialize(user, transformer, {})
+			"user": new UserFactory().serialize(user)
 		})
 
-		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+		await requester.runMiddleware(middleware.intermediate.bind(middleware))
 
 		requester.expectFailure(AuthorizationError)
 	})
