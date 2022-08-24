@@ -1,12 +1,12 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
-import ConsultationFactory from "~/factories/consultation"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Controller from "./archive.delete"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: DELETE /api/consultation", () => {
+describe("Controller: DELETE /api/chat_message_activity", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
@@ -14,13 +14,13 @@ describe("Controller: DELETE /api/consultation", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new ChatMessageActivityFactory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": String(consultation.id)
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}
@@ -36,14 +36,14 @@ describe("Controller: DELETE /api/consultation", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
-		await consultation.destroy({ "force": false })
+		const model = await new ChatMessageActivityFactory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": String(consultation.id)
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}
@@ -61,14 +61,14 @@ describe("Controller: DELETE /api/consultation", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
-		await consultation.destroy({ "force": false })
+		const model = await new ChatMessageActivityFactory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "consultation",
-						"id": String(consultation.id)
+						"id": String(model.id),
+						"type": "chat_message_activity"
 					}
 				]
 			}
