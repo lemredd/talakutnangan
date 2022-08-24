@@ -16,6 +16,7 @@ import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import object from "!/validators/base/object"
+import anyObject from "!/validators/base/any_object"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
@@ -31,10 +32,7 @@ export default class extends JSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes: FieldRules = {
 			"data": {
-				"constraints": {
-					"object": {}
-				},
-				"pipes": [ object ]
+				"pipes": [ anyObject ]
 			}
 		}
 
