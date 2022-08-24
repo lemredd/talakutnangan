@@ -7,6 +7,7 @@ import Developer from "$!/errors/developer"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 type PreviousCallInfo = { functionName: string, arguments: GeneralObject<any> }
+
 export default class Socket extends RequestEnvironment {
 	private static rawServer: WebSocketServer|null = null
 	private static previousCallInfos: PreviousCallInfo[] = []
@@ -27,7 +28,7 @@ export default class Socket extends RequestEnvironment {
 						eventName,
 						namespace
 					},
-					"functionName": this.name
+					"functionName": "emitToClients"
 				})
 
 				return true
