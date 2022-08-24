@@ -46,6 +46,7 @@ describe("Communicator: UserFetcher", () => {
 		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
+
 	it("should not log out if user is not authenticated", async() => {
 		fetchMock.mockResponse(
 			JSON.stringify({
@@ -66,5 +67,40 @@ describe("Communicator: UserFetcher", () => {
 		const { body } = response
 		expect(body).toHaveProperty("errors")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.UNAUTHORIZED)
+	})
+
+	it("should import", async() => {
+		fetchMock.mockResponse(
+			JSON.stringify({
+				"data": [
+					{
+						"attributes": {
+							"name": "admin@example.com"
+						},
+						"id": "1",
+						"type": "user"
+					}
+				]
+			}),
+			{ "status": RequestEnvironment.status.CREATED }
+		)
+		const fetcher = new UserFetcher()
+
+		const response = await fetcher.import({} as FormData)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/user/import")
+		const { body } = response
+		expect(body).toStrictEqual({
+			"data": [
+				{
+					"id": "1",
+					"name": "admin@example.com",
+					"type": "user"
+				}
+			]
+		})
 	})
 })

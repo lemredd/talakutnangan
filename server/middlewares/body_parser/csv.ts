@@ -27,60 +27,69 @@ export default class CSVParser extends Middleware {
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		try {
+			const promisedFields: Promise<{ field: string, value: any }>[] = []
+
 			for (const field of this.rawFields) {
 				const parser = parse({
-					columns: headers => headers.map((header: string) => convertToCamelCase(header)),
-					bom: true
+					"bom": true,
+					"columns": headers => headers.map((header: string) => convertToCamelCase(header))
 				})
 
 				const buffer: Buffer = accessDeepPath(request.body, `${field}.buffer`)
 
-				setDeepPath(request.body, field, await new Promise<GeneralObject<string>[]>(
-					(resolve, reject) => {
-						const rows: { [key:string]: string }[] = []
-						const reader = () => {
-							Log.trace("middleware", `reading the rows in the CSV file in "${field}" field`)
-							let row;
-							while((row = parser.read()) !== null) {
-								rows.push(row)
-							}
+				const promise = new Promise<GeneralObject<string>[]>((resolve, reject) => {
+					const rows: { [key:string]: string }[] = []
+					const reader = () => {
+						Log.trace("middleware", `reading the rows in the CSV file in "${field}" field`)
+						let row = null
+						while ((row = parser.read()) !== null) {
+							rows.push(row)
 						}
-						const thrower = (error: Error) => {
-							Log.errorMessage(
-								"middleware",
-								`encountered error in processing CSV file  in "${field}" field`
-							)
-							Log.error("middleware", error)
-
-							unlisten()
-							reject(error)
-						}
-						const closer = () => {
-							Log.trace(
-								"middleware",
-								`resolving the read rows in the CSV file io "${field}" field`
-							)
-							unlisten()
-							resolve(rows)
-						}
-						const unlisten = () => {
-							parser.off("readable", reader)
-							parser.off("error", thrower)
-							parser.off("end", closer)
-						}
-						parser.on("readable", reader)
-						parser.on("error", thrower)
-						parser.on("end", closer)
-						parser.write(buffer)
-						parser.end()
 					}
-				))
+					const thrower = (error: Error) => {
+						Log.errorMessage(
+							"middleware",
+							`encountered error in processing CSV file  in "${field}" field`
+						)
+						Log.error("middleware", error)
 
+						unlisten()
+						reject(error)
+					}
+					const closer = () => {
+						Log.trace(
+							"middleware",
+							`resolving the read rows in the CSV file io "${field}" field`
+						)
+						unlisten()
+						resolve(rows)
+					}
+					const unlisten = () => {
+						parser.off("readable", reader)
+						parser.off("error", thrower)
+						parser.off("end", closer)
+					}
+					parser.on("readable", reader)
+					parser.on("error", thrower)
+					parser.on("end", closer)
+					parser.write(buffer)
+					parser.end()
+				}).then(value => ({
+					field,
+					value
+				}))
+
+				promisedFields.push(promise)
 				Log.success("middleware", `parsed the CSV file in "${field}" field`)
 			}
 
+			(await Promise.all(promisedFields)).forEach(info => {
+				const { field, value } = info
+				setDeepPath(request.body, field, value)
+			})
+
 			next()
-		} catch(error) {
+		} catch (error) {
 			if (error instanceof BaseError) {
 				next(error)
 			} else if (error instanceof Error) {

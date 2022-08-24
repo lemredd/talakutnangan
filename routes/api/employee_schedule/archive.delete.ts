@@ -16,19 +16,18 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Combine with permission-based policy
-		return CommonMiddlewareList.reachableEmployeeOnlyPolicy
+		return CommonMiddlewareList.employeeSchedulePolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules(
 			"employee_schedule",
+			// TODO: Check if the schedules to archive belongs to current user or has enough permission
 			exists,
 			EmployeeScheduleManager
 		)
 	}
 
-	// TODO: Limit the archiving to own user unless there is enough permission to update user info
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
 

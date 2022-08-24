@@ -4,9 +4,12 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
+import type { RoleListDocument } from "$/types/documents/role"
+
 /**
  * Used to indicate the type of current environment where the script is running.
  */
+// eslint-disable-next-line no-shadow
 export enum Environment {
 	Production,
 	Development,
@@ -44,18 +47,8 @@ import type { Serializable } from "$/types/general"
 export interface PageProps extends Serializable {
 	// Added to pass data from server to client
 	userProfile: Serializable|null
-}
 
-/**
- * Errors output by the server
- */
-export interface UnitError {
-	status: number,
-	code: string,
-	title: string,
-	detail: string,
-	meta?: Serializable
-	source?: SourcePointer|SourceParameter
+	roles?: Serializable
 }
 
 /**
@@ -72,6 +65,17 @@ export interface SourceParameter extends Serializable {
 	parameter: string
 }
 
+/**
+ * Errors output by the server
+ */
+export interface UnitError {
+	status: number,
+	code: string,
+	title: string,
+	detail: string,
+	meta?: Serializable
+	source?: SourcePointer|SourceParameter
+}
 
 // Media types used in the application
 export const HTML_MEDIA_TYPE = "text/html"

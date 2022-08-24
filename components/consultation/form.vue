@@ -9,7 +9,7 @@
 					v-model="chosenReason"
 					label="Kind of Reason: "
 					placeholder="Choose your reason"
-					:options="reasons"/>
+					:options="reasonOptions"/>
 				<NonSensitiveTextField
 					v-if="hasChosenOtherReason"
 					v-model="otherReason"
@@ -38,10 +38,12 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 const { isShown } = defineProps<{ isShown: boolean }>()
 
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
+const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
 const otherReason = ref<string>("")
-const reason = computed<string>(() => {
+// TODO: Use the value below to create the consultation
+const unusedReason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
