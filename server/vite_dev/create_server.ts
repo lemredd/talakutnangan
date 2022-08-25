@@ -1,9 +1,7 @@
-import type { Express as ExpressApp } from "express"
-
 import { Buffer } from "buffer"
 import serveStaticFiles from "sirv"
-import { Router as createRouter } from "express"
 import { renderPage } from "vite-plugin-ssr"
+import { Router as createRouter, Express as ExpressApp } from "express"
 
 import { PageRequest } from "!/types/hybrid"
 import { Environment } from "$/types/server"
@@ -15,10 +13,10 @@ import getEnvironment from "$/helpers/get_environment"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
-	const isProduction = (
-		getEnvironment() === Environment.Production
+	const isProduction
+		= getEnvironment() === Environment.Production
 		|| getEnvironment() === Environment.IntegrationTest
-	)
+
 
 	if (isProduction) {
 		app.use(serveStaticFiles(`${root}/dist/client`))
@@ -26,14 +24,14 @@ export default async function(app: ExpressApp) {
 		const { createServer } = require("vite")
 		const viteDevServer = await createServer({
 			root,
-			server: { middlewareMode: "ssr" },
+			"server": { "middlewareMode": true }
 		})
 		app.use(viteDevServer.middlewares)
 	}
 
 	const router = createRouter()
 	// @ts-ignore
-	router.get("*", async (request: PageRequest, response: Response, next: NextFunction) => {
+	router.get("*", async(request: PageRequest, response: Response, next: NextFunction): void => {
 		if (!request.transaction.hasDestroyed) {
 			await request.transaction.destroyIneffectually()
 
@@ -45,29 +43,29 @@ export default async function(app: ExpressApp) {
 			)
 		}
 
-		const { error: rawError = null } = request.query
+		const { "error": rawError = null } = request.query
 		// ! There is a possiblity of crashing the server using the query
-		let parsedUnitError =  null
+		let parsedUnitError = null
 
 		try {
 			if (rawError !== null) {
 				const decodedError = Buffer.from(rawError as string, "base64url").toString("utf8")
 				parsedUnitError = JSON.parse(decodedError)
 			}
-		} catch(error) {
-
+		} catch (error) {
+			// Ignore parse or decode errors
 		} finally {
 			const url = request.originalUrl
 			const pageContextInit = {
-				url,
-				pageProps: {
+				"pageProps": {
 					...request.pageProps,
 					parsedUnitError
-				}
+				},
+				url
 			}
 			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)
 			const { httpResponse, errorStatus } = pageContext
-			if (!httpResponse) return next()
+			if (!httpResponse) next()
 			const { body, statusCode, contentType } = httpResponse
 			response.status(errorStatus || statusCode).type(contentType).send(body)
 		}

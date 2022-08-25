@@ -6,11 +6,6 @@ import windicss from "vite-plugin-windicss"
 import { resolve } from "path"
 
 const configuration: UserConfig = {
-	"resolve": {
-		"alias": {
-			"@styles": resolve(__dirname, "styles")
-		}
-	},
 	"plugins": [
 		tsconfig(),
 		vue({
@@ -23,7 +18,12 @@ const configuration: UserConfig = {
 				"fileExtensions": [ "vue", "js", "ts" ]
 			}
 		})
-	]
+	],
+	"resolve": {
+		"alias": {
+			"@styles": resolve(__dirname, "styles")
+		}
+	}
 }
 
 if (process.env.NODE_ENV === "dev") {
