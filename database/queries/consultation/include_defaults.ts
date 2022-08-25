@@ -40,8 +40,16 @@ export default function<T>(
 		"required": true
 	}, {
 		"model": ChatMessageActivity,
+		"paranoid": false,
 		"required": true
 	}, {
+		"include": [
+			{
+				"model": ChatMessageActivity,
+				"paranoid": false,
+				"required": true
+			}
+		],
 		"limit": 1,
 		"model": ChatMessage,
 		"required": true
