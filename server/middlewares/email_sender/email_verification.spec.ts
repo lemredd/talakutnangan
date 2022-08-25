@@ -9,18 +9,17 @@ import Transport from "!/helpers/email/transport"
 import EmailVerification from "./email_verification"
 
 describe("Middleware: Email Verification Sender", () => {
-	const requester  = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
+	const requester = new MockRequester<PreprocessedRequest<EmailVerificationArguments>>()
+	const EMAIL_TEST_TIMEOUT = 7500
 
-	it("can send to single user", async () => {
-		jest.setTimeout(7500)
-
+	it("can send to single user", async() => {
 		const sender = new EmailVerification()
 		requester.customizeRequest({
-			nextMiddlewareArguments: {
-				emailsToContact: [
+			"nextMiddlewareArguments": {
+				"emailsToContact": [
 					{
-						id: 1,
-						email: "sample@example.com"
+						"email": "sample@example.com",
+						"id": 1
 					}
 				]
 			}
@@ -37,27 +36,25 @@ describe("Middleware: Email Verification Sender", () => {
 		expect(previousMessages[0].message.text).toContain("sample@example.com")
 		expect(previousMessages[0].message.html).toContain("/user/verify")
 		expect(previousMessages[0].message.html).toContain("sample@example.com")
-	})
+	}, EMAIL_TEST_TIMEOUT)
 
-	it("can send to multiple users", async () => {
-		jest.setTimeout(7500)
-
+	it("can send to multiple users", async() => {
 		const sender = new EmailVerification()
 		requester.customizeRequest({
-			protocol: "http",
-			hostname: "localhost",
-			nextMiddlewareArguments: {
-				emailsToContact: [
+			"hostname": "localhost",
+			"nextMiddlewareArguments": {
+				"emailsToContact": [
 					{
-						id: 2,
-						email: "sampleA@example.com"
+						"email": "sampleA@example.com",
+						"id": 2
 					},
 					{
-						id: 3,
-						email: "sampleB@example.net"
+						"email": "sampleB@example.net",
+						"id": 3
 					}
 				]
-			}
+			},
+			"protocol": "http"
 		})
 
 		await requester.runMiddleware(sender.intermediate.bind(sender))
@@ -83,5 +80,5 @@ describe("Middleware: Email Verification Sender", () => {
 		expect(previousMessages[sampleBIndex].message.text).toContain("sampleB@example.net")
 		expect(previousMessages[sampleBIndex].message.html).toContain("/user/verify")
 		expect(previousMessages[sampleBIndex].message.html).toContain("sampleB@example.net")
-	})
+	}, EMAIL_TEST_TIMEOUT)
 })

@@ -20,15 +20,15 @@ export default class ResponseInfo {
 	constructor(status: number, type: string, body: Body);
 	constructor(
 		status: number,
-		raw_body_or_type: string|Body,
-		raw_body?: Body
+		rawBodyOrType: string|Body,
+		rawBody?: Body
 	) {
 		let type = JSON_API_MEDIA_TYPE
-		let body = raw_body_or_type
+		let body = rawBodyOrType
 
-		if (raw_body) {
-			type = raw_body_or_type as string
-			body = raw_body as Body
+		if (rawBody) {
+			type = rawBodyOrType as string
+			body = rawBody as Body
 		}
 
 		this.status = status
@@ -43,7 +43,7 @@ export default class ResponseInfo {
 			&& this.body === null
 		) {
 			const URL = response.req.url
-			const method = response.req.method
+			const { method } = response.req
 			const message = `There should be a response body in "${method} ${URL}"`
 				+ ` as it returns ${this.status}`
 			Log.errorMessage("response", message)

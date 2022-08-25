@@ -1,11 +1,12 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
-import CacheManager from "$!/singletons/cache_manager"
-import Middleware from "!/bases/middleware"
+import type { Request } from "!/types/dependent"
 
-export default class CacheInitializer extends Middleware {
-	async intermediate(request: Request, _response: Response, next: NextFunction): Promise<void> {
+import RequestFilter from "!/bases/request_filter"
+import CacheManager from "$!/singletons/cache_manager"
+
+export default class CacheInitializer extends RequestFilter {
+	filterRequest(request: Request): Promise<void> {
 		request.cache = CacheManager.initializeClient()
 
-		next()
+		return Promise.resolve()
 	}
 }

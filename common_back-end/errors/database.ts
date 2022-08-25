@@ -5,11 +5,11 @@ import RequestEnvironment from "$/helpers/request_environment"
  * Used when there is a general problem in database.
  */
 export default class DatabaseError extends BaseError {
-	static CODE: string = "4"
+	static CODE = "4"
 	static STATUS: number = RequestEnvironment.status.INTERNAL_SERVER_ERROR
 
 	constructor(
-		message: string = "There is a database problem. It may be down or operation failed."
+		message = "There is a database problem. It may be down or operation failed."
 	) {
 		super(
 			DatabaseError.CODE,

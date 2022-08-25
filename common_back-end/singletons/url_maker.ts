@@ -31,14 +31,15 @@ export default class {
 		document.links = document.links || {}
 		document.links = {
 			...document.links as object,
-			"first": this.makeBaseModelPath(modelPath) + `?page=1`,
-			"last": this.makeBaseModelPath(modelPath) + `?page=${lastPage}`,
-			"prev": currentPage === 1 ? null : (
-				this.makeBaseModelPath(modelPath) + `?page=${currentPage - 1}`
-			),
-			"next": currentPage === lastPage ? null : (
-				this.makeBaseModelPath(modelPath) + `?page=${currentPage + 1}`
-			)
+			"first": `${this.makeBaseModelPath(modelPath)}?page=1`,
+			"last": `${this.makeBaseModelPath(modelPath)}?page=${lastPage}`,
+			"prev": currentPage === 1
+				? null
+				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage - 1}`,
+			"next": currentPage === lastPage
+				? null
+				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage + 1}`
+
 		}
 
 		return document
@@ -49,7 +50,7 @@ export default class {
 	}
 
 	static getResolvedPort() {
-		return this.port === 0 || this.port === 80 || this.port === 443? "" :  `:${this.port}`
+		return this.port === 0 || this.port === 80 || this.port === 443 ? "" : `:${this.port}`
 	}
 
 	static makeBaseURL(): string {
@@ -65,8 +66,6 @@ export default class {
 	}
 
 	static async makeEncryptedPath(path: string, data: string): Promise<string> {
-		const port = this.getResolvedPort()
-
 		return this.removeRepeatingSlashes(`${path}/${await encrypt(data)}`)
 	}
 
@@ -100,7 +99,7 @@ export default class {
 
 		try {
 			return await decrypt(encryptedData)
-		} catch(error) {
+		} catch (error) {
 			throw new DecryptionError("URL is invalid")
 		}
 	}
@@ -120,19 +119,18 @@ export default class {
 				&& typeof parsedData[0] === "number"
 			) {
 				return {
-					hasExpired: parsedData[0] < currentTime,
-					data: parsedData[1]
+					"hasExpired": parsedData[0] < currentTime,
+					"data": parsedData[1]
 				}
-			} else {
-				throw new Error()
 			}
-		} catch(error) {
+			throw new Error()
+		} catch (error) {
 			throw new DecryptionError("URL data is invalid")
 		}
 	}
 
 	static removeRepeatingSlashes(URLPart: string): string {
-		return URLPart.replace(/([^:\/])\/\/+/g, "$1/")
+		return URLPart.replace(/([^:/])\/\/+/gu, "$1/")
 	}
 
 	static destroy(): void {

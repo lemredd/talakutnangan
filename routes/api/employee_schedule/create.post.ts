@@ -88,8 +88,8 @@ export default class extends JSONController {
 		}
 
 		return makeResourceDocumentRules("employee_schedule", attributes, {
-			"isNew": true,
-			"extraDataQueries": { relationships }
+			"extraDataQueries": { relationships },
+			"isNew": true
 		})
 	}
 
@@ -99,7 +99,7 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<"create", true>
+		const { data } = request.body as EmployeeScheduleDocument<"create">
 		const { attributes, relationships } = data
 
 		const document = await manager.create({

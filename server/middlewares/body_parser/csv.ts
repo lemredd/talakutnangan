@@ -1,12 +1,12 @@
 import { parse } from "csv-parse"
 
+import type { Request } from "!/types/dependent"
 import type { GeneralObject } from "$/types/general"
-import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
 import ParserError from "$!/errors/parser"
-import Middleware from "!/bases/middleware"
+import RequestFilter from "!/bases/request_filter"
 import setDeepPath from "$!/helpers/set_deep_path"
 import accessDeepPath from "$!/helpers/access_deep_path"
 import convertToCamelCase from "$/helpers/convert_to_camel_case"
@@ -17,7 +17,7 @@ import convertToCamelCase from "$/helpers/convert_to_camel_case"
  * Assumes request's body was parsed buy `Multipart` middleware.
  * Assumes the fields to be converted exists.
  */
-export default class CSVParser extends Middleware {
+export default class CSVParser extends RequestFilter {
 	private rawFields: string[]
 
 	constructor(...rawFields: string[]) {
@@ -25,10 +25,10 @@ export default class CSVParser extends Middleware {
 		this.rawFields = rawFields
 	}
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		try {
-			const promisedFields: Promise<{ field: string, value: any }>[] = []
+	async filterRequest(request: Request): Promise<void> {
+		const promisedFields: Promise<{ field: string, value: any }>[] = []
 
+		try {
 			for (const field of this.rawFields) {
 				const parser = parse({
 					"bom": true,
@@ -53,6 +53,7 @@ export default class CSVParser extends Middleware {
 						)
 						Log.error("middleware", error)
 
+						// eslint-disable-next-line no-use-before-define
 						unlisten()
 						reject(error)
 					}
@@ -61,6 +62,7 @@ export default class CSVParser extends Middleware {
 							"middleware",
 							`resolving the read rows in the CSV file io "${field}" field`
 						)
+						// eslint-disable-next-line no-use-before-define
 						unlisten()
 						resolve(rows)
 					}
@@ -87,15 +89,13 @@ export default class CSVParser extends Middleware {
 				const { field, value } = info
 				setDeepPath(request.body, field, value)
 			})
-
-			next()
 		} catch (error) {
 			if (error instanceof BaseError) {
-				next(error)
+				throw error
 			} else if (error instanceof Error) {
-				next(new ParserError(error.message))
+				throw new ParserError(error.message)
 			} else {
-				next(error)
+				throw error
 			}
 		}
 	}

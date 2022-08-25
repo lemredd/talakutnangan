@@ -3,6 +3,7 @@ import { Server as HTTPServer } from "http"
 import { SourceType } from "$/types/database"
 
 import Router from "!%/router"
+import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
 import URLMaker from "$!/singletons/url_maker"
 import createWSServer from "!/ws/create_server"
@@ -16,7 +17,9 @@ export default async function startServer(): Promise<HTTPServer> {
 
 	const app = await createAppHandler(customRouter)
 	const httpServer = new HTTPServer(app)
-	const _wsServer = createWSServer(httpServer)
+	const wsServer = createWSServer(httpServer)
+
+	Socket.initialize(wsServer)
 
 	const port = process.env.PORT || 3000
 	httpServer.listen(port)

@@ -9,6 +9,7 @@ import Signature from "%/models/signature"
 import Consulter from "%/models/consulter"
 import Department from "%/models/department"
 import AuditTrail from "%/models/audit_trail"
+import ChatMessage from "%/models/chat_message"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -31,6 +32,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			Consulter,
 			AuditTrail,
 			Department,
+			ChatMessage,
 			Consultation,
 			AttachedRole,
 			StudentDetail,

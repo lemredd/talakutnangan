@@ -9,29 +9,29 @@ import Transport from "!/helpers/email/transport"
 import NewUserNotification from "./new_user_notification"
 
 describe("Middleware: New User Notifier", () => {
-	const requester  = new MockRequester<PreprocessedRequest<NewUserNotificationArguments>>()
+	const requester = new MockRequester<PreprocessedRequest<NewUserNotificationArguments>>()
 
-	it("can notify to multiple users", async () => {
+	it("can notify to multiple users", async() => {
 		const sender = new NewUserNotification()
 		requester.customizeRequest({
-			protocol: "http",
-			hostname: "localhost",
-			nextMiddlewareArguments: <NewUserNotificationArguments>{
-				userDetails: [
+			"hostname": "localhost",
+			"nextMiddlewareArguments": <NewUserNotificationArguments>{
+				"userDetails": [
 					{
-						email: "sampleA@example.com",
-						kind: "student",
-						name: "Sample A",
-						password: "12345678"
+						"email": "sampleA@example.com",
+						"kind": "student",
+						"name": "Sample A",
+						"password": "12345678"
 					},
 					{
-						email: "sampleB@example.net",
-						kind: "student",
-						name: "Sample B",
-						password: "abcdefgh"
+						"email": "sampleB@example.net",
+						"kind": "student",
+						"name": "Sample B",
+						"password": "abcdefgh"
 					}
 				]
-			}
+			},
+			"protocol": "http"
 		})
 
 		await requester.runMiddleware(sender.intermediate.bind(sender))

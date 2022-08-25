@@ -9,15 +9,20 @@ import type {
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Attributes,
-	ResourceDocument,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	ResourceDocument,
 	ResourceListDocument,
 	DeserializedRelationships,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ConsultationResourceIdentifier<T extends Completeness = "read">
@@ -96,3 +101,9 @@ export type DeserializedConsultationListDocument<
 	ConsultationAttributes<"deserialized">,
 	DeserializedConsultationResource<T>
 >
+
+export type ConsultationIdentifierDocument
+= IdentifierDocument<ConsultationResourceIdentifier<"read">>
+
+export type ConsultationIdentifierListDocument
+= IdentifierListDocument<ConsultationResourceIdentifier<"read">>

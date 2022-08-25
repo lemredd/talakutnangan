@@ -6,18 +6,19 @@ import App from "~/set-ups/app"
 import Route from "!%/api/user/log_out.post"
 
 describe("POST /api/user/log_out", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can log out", async () => {
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie()
+	it("can log out", async() => {
+		const { cookie } = await App.makeAuthenticatedCookie()
 
 		const response = await App.request
-			.post("/api/user/log_out")
-			.set("Cookie", cookie)
-			.type(JSON_MEDIA_TYPE)
+		.post("/api/user/log_out")
+		.set("Cookie", cookie)
+		.type(JSON_MEDIA_TYPE)
 
+		console.log(response.headers)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})
 })
