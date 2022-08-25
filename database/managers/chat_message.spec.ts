@@ -16,7 +16,7 @@ describe("Database Manager: Chat message create operations", () => {
 
 		await new Promise<void>(resolve => {
 			const DELAY = 1000
-			setTimeout(() => resolve(), DELAY);
+			setTimeout(() => resolve(), DELAY)
 		})
 		const userData = await manager.create({
 			"chatMessageActivityID": model.chatMessageActivityID,

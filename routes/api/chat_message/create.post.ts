@@ -66,14 +66,15 @@ export default class extends JSONController {
 		const manager = new ChatMessageManager(request.transaction, request.cache)
 		const { data } = request.body as ChatMessageDocument<"create">
 		const { attributes, relationships } = data
+		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)
 
 		const document = await manager.create({
 			...attributes,
-			"chatMessageActivityID": Number(relationships.chatMessageActivity.data.id)
-		})
+			chatMessageActivityID
+		}) as ChatMessageDocument<"create">
 
 		Socket.emitToClients(
-			makeConsultationChatNamespace(relationships.consultation.data.id),
+			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),
 			"create",
 			document
 		)
