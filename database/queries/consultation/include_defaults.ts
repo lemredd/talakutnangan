@@ -39,22 +39,18 @@ export default function<T>(
 		"model": User,
 		"required": true
 	}, {
-		"model": ChatMessageActivity,
-		"paranoid": false,
-		"required": true
-	}, {
 		"include": [
 			{
-				"model": ChatMessageActivity,
-				"paranoid": false,
+				"limit": 1,
+				"model": ChatMessage,
+				"order": [
+					[ "createdAt", "DESC" ]
+				],
 				"required": true
 			}
 		],
-		"limit": 1,
-		"model": ChatMessage,
-		"order": [
-			[ "createdAt", "DESC" ]
-		],
+		"model": ChatMessageActivity,
+		"paranoid": false,
 		"required": true
 	})
 
