@@ -25,6 +25,7 @@ extends ResourceIdentifier<T> {
 
 export interface ChatMessageAttributes<T extends Format = "serialized">
 extends Attributes<T> {
+	kind: string,
 	data: GeneralObject
 }
 
