@@ -1,3 +1,4 @@
+import "dotenv/config"
 import { UserConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import ssr from "vite-plugin-ssr/plugin"
@@ -29,6 +30,7 @@ const configuration: UserConfig = {
 if (process.env.NODE_ENV === "dev") {
 	configuration.server = {
 		"hmr": {
+			"clientPort": Number(process.env.PORT ?? "16000"),
 			"host": "localhost",
 			"protocol": "ws"
 		}
