@@ -6,7 +6,7 @@
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
 			</a>
 
-			<Dropdown purpose="notifications" v-if="!isRoleGuest">
+			<Dropdown v-if="!isUserAGuest" purpose="notifications">
 				<template #toggler>
 					<span class="material-icons">notifications</span>
 				</template>
@@ -31,8 +31,8 @@
 					</ul>
 				</template>
 			</Dropdown>
-			<RoleSpecificLinks :role="role"/>
-			<Dropdown v-if="!isRoleGuest" purpose="user-settings">
+			<RoleSpecificLinks/>
+			<Dropdown v-if="!isUserAGuest" purpose="user-settings">
 				<template #toggler>
 					<span class="material-icons">account_circle</span>
 				</template>
@@ -167,15 +167,9 @@ import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
 
 const isLoggingIn = inject("isLoggingIn") as boolean
 const { pageProps } = inject("pageContext") as PageContext
+const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 
-const role = computed(() => {
-	const userProfile = pageProps.userProfile as DeserializedUserProfile
-
-	if (!userProfile) return "guest"
-	return userProfile.data.roles.data[0].name
-})
-
-const isRoleGuest = role.value === "guest"
+const isUserAGuest = computed(() => userProfile === null)
 
 const notifications = [
 	{
