@@ -31,7 +31,7 @@ describe("Database Manager: Chat message create operations", () => {
 		expect(userData).toHaveProperty("data.attributes.data", model.data)
 		expect(userData).toHaveProperty(
 			"data.relationships.consultation.data.id",
-			model.chatMessageActivity.consultationID
+			model.chatMessageActivity?.consultationID
 		)
 		expect(userData).toHaveProperty("data.relationships.user")
 		expect(userData).toHaveProperty("data.relationships.chatMessageActivity")
