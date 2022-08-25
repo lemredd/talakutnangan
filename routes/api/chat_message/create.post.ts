@@ -14,7 +14,10 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
+import string from "!/validators/base/string"
 import exists from "!/validators/manager/exists"
+import regex from "!/validators/comparison/regex"
+import required from "!/validators/base/required"
 import anyObject from "!/validators/base/any_object"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
@@ -29,7 +32,15 @@ export default class extends JSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes: FieldRules = {
 			"data": {
-				"pipes": [ anyObject ]
+				"pipes": [ required, anyObject ]
+			},
+			"kind": {
+				"constraints": {
+					"regex": {
+						"match": /[a-z_]+/u
+					}
+				},
+				"pipes": [ required, string, regex ]
 			}
 		}
 

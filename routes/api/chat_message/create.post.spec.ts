@@ -22,7 +22,8 @@ describe("Controller: POST /api/chat_message", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"data": model.data
+						"data": model.data,
+						"kind": model.kind
 					},
 					"relationships": {
 						"chatMessageActivity": {
@@ -53,7 +54,8 @@ describe("Controller: POST /api/chat_message", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"data": "not an object"
+						"data": "not an object",
+						"kind": "123"
 					},
 					"relationships": {
 						"chatMessageActivity": {
@@ -71,7 +73,8 @@ describe("Controller: POST /api/chat_message", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(1)
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.data")
+		expect(body).toHaveProperty("1.source.pointer", "data.attributes.kind")
 	})
 })

@@ -9,7 +9,10 @@ import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import object from "!/validators/base/object"
+import string from "!/validators/base/string"
+import regex from "!/validators/comparison/regex"
+import required from "!/validators/base/required"
+import anyObject from "!/validators/base/any_object"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends DoubleBoundJSONController {
@@ -22,12 +25,18 @@ export default class extends DoubleBoundJSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes: FieldRules = {
 			"data": {
+				"pipes": [ required, anyObject ]
+			},
+			"kind": {
 				"constraints": {
-					"object": {}
+					"regex": {
+						"match": /[a-z_]+/u
+					}
 				},
-				"pipes": [ object ]
+				"pipes": [ required, string, regex ]
 			}
 		}
+
 
 		return makeResourceDocumentRules("chat_message", attributes)
 	}
