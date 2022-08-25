@@ -82,6 +82,29 @@ export default class Consultation extends Model {
 	@HasMany(() => ChatMessageActivity)
 		chatMessageActivities?: ChatMessageActivity[]
 
-	@BelongsToMany(() => ChatMessage, () => ChatMessageActivity)
-		chatMessages?: ChatMessage[]
+	get chatMessages(): ChatMessage[]|null {
+		let chatMessages: ChatMessage[] = []
+
+		if (this.chatMessageActivities) {
+			chatMessages = this.chatMessageActivities.reduce(
+				(previousMessages, chatMessageActivity) => {
+					const messages = chatMessageActivity.chatMessages
+
+					if (messages) {
+						return [
+							...previousMessages,
+							...messages
+						]
+					}
+
+					return previousMessages
+				},
+				[] as ChatMessage[]
+			)
+		}
+
+		if (chatMessages.length === 0) return null
+
+		return chatMessages
+	}
 }
