@@ -23,7 +23,10 @@ export default function(
 ): FieldRules {
 	return makeDataDocumentRules(
 		false,
-		makeResourceIdentifierRules(typeName, validator, ClassName, true, extraIdentifierQueries),
+		makeResourceIdentifierRules(typeName, validator, ClassName, {
+			"extraQueries": extraIdentifierQueries,
+			"mustCastID": false
+		}),
 		extraQueries
 	)
 }
