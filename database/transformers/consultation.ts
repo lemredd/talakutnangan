@@ -6,9 +6,15 @@ import Consultation from "%/models/consultation"
 import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
+import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
-type Relationships = "consultant"|"consultantRole"|"consulters"|"chatMessageActivities"
+type Relationships =
+	| "consultant"
+	|"consultantRole"
+	|"consulters"
+	|"chatMessageActivities"
+	|"chatMessages"
 
 export default class extends Transformer<Consultation, void> {
 	constructor(
@@ -39,6 +45,14 @@ export default class extends Transformer<Consultation, void> {
 				? {
 					"attribute": "chatMessageActivities",
 					"transformer": new ChatMessageActivityTransformer({ "included": [ "user" ] })
+				}
+				: null,
+			included.indexOf("chatMessages") > -1
+				? {
+					"attribute": "chatMessages",
+					"transformer": new ChatMessageTransformer({
+						"included": [ "user", "chatMessageActivity" ]
+					})
 				}
 				: null
 		])

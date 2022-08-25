@@ -15,13 +15,13 @@ import type {
 
 import { faker } from "@faker-js/faker"
 
-import User from "%/models/user"
-import UserFactory from "~/factories/user"
 import BaseFactory from "~/factories/base"
+import User from "%/models/user"
 import Consultation from "%/models/consultation"
-import ConsultationFactory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
+import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageTransformer from "%/transformers/chat_message"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 export default class ChatMessageFactory extends BaseFactory<
 	ChatMessage,
@@ -35,10 +35,10 @@ export default class ChatMessageFactory extends BaseFactory<
 	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument
 > {
-	#userGenerator: () => Promise<User> = async() => await new UserFactory().insertOne()
-	#consultationGenerator: () => Promise<Consultation>
-		= async() => await new ConsultationFactory().insertOne()
+	#chatMessageActivityGenerator: () => Promise<ChatMessageActivity>
+		= async() => await new ChatMessageActivityFactory().insertOne()
 
+	#kindGenerator: () => string = () => faker.word.adjective()
 	#dataGenerator: () => Message = () => ({
 		"data": faker.lorem.sentence(),
 		"type": "text"
@@ -50,10 +50,22 @@ export default class ChatMessageFactory extends BaseFactory<
 
 	async generate(): GeneratedData<ChatMessage> {
 		return {
-			"consultationID": (await this.#consultationGenerator()).id,
+			"chatMessageActivityID": (await this.#chatMessageActivityGenerator()).id,
 			"data": this.#dataGenerator(),
-			"userID": (await this.#userGenerator()).id
+			"kind": this.#kindGenerator()
 		}
+	}
+
+	async attachChildren(model: ChatMessage): Promise<ChatMessage> {
+		model.chatMessageActivity = await ChatMessageActivity
+		.findByPk(
+			model.chatMessageActivityID,
+			{
+				"include": [ User, Consultation ]
+			}
+		) as ChatMessageActivity
+
+		return model
 	}
 
 	data(generator: () => Message): ChatMessageFactory {
@@ -61,13 +73,13 @@ export default class ChatMessageFactory extends BaseFactory<
 		return this
 	}
 
-	user(generator: () => Promise<User>): ChatMessageFactory {
-		this.#userGenerator = generator
+	kind(generator: () => string): ChatMessageFactory {
+		this.#kindGenerator = generator
 		return this
 	}
 
-	consultation(generator: () => Promise<Consultation>): ChatMessageFactory {
-		this.#consultationGenerator = generator
+	chatMessageActivity(generator: () => Promise<ChatMessageActivity>): ChatMessageFactory {
+		this.#chatMessageActivityGenerator = generator
 		return this
 	}
 }

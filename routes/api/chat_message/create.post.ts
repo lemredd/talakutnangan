@@ -1,26 +1,26 @@
+import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { FieldRules, Rules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
-import UserManager from "%/managers/user"
+import Manager from "%/managers/chat_message"
 import JSONController from "!/controllers/json"
-import ChatMessageManager from "%/managers/chat_message"
-import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
+import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import object from "!/validators/base/object"
-import anyObject from "!/validators/base/any_object"
+import string from "!/validators/base/string"
 import exists from "!/validators/manager/exists"
+import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
+import anyObject from "!/validators/base/any_object"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
-import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -32,69 +32,49 @@ export default class extends JSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes: FieldRules = {
 			"data": {
-				"pipes": [ anyObject ]
+				"pipes": [ required, anyObject ]
+			},
+			"kind": {
+				"constraints": {
+					"regex": {
+						"match": /[a-z_]+/u
+					}
+				},
+				"pipes": [ required, string, regex ]
 			}
 		}
 
-		const relationships: Rules = {
-			"constraints": {
-				"object": {
-					"consultation": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules(
-											"consultation",
-											exists,
-											ConsultationManager
-										)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					},
-					"user": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules("user", exists, UserManager)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					}
-				}
-			},
-			"pipes": [ required, object ]
-		}
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": ChatMessageActivityManager,
+				"isArray": false,
+				"relationshipName": "chatMessageActivity",
+				"typeName": "chat_message_activity",
+				"validator": exists
+			}
+		])
 
 		return makeResourceDocumentRules("chat_message", attributes, {
-			"extraDataQueries": { relationships },
+			"extraDataQueries": relationships,
 			"isNew": true
 		})
 	}
 
-	get manager(): BaseManagerClass { return ChatMessageManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
-		const manager = new ChatMessageManager(request.transaction, request.cache)
+		const manager = new Manager(request.transaction, request.cache)
 		const { data } = request.body as ChatMessageDocument<"create">
 		const { attributes, relationships } = data
+		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)
 
 		const document = await manager.create({
 			...attributes,
-			"consultationID": Number(relationships.consultation.data.id),
-			"userID": Number(relationships.user.data.id)
-		})
+			chatMessageActivityID
+		}) as ChatMessageDocument<"create">
 
 		Socket.emitToClients(
-			makeConsultationChatNamespace(relationships.consultation.data.id),
+			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),
 			"create",
 			document
 		)

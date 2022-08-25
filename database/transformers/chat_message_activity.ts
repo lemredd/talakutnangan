@@ -10,7 +10,9 @@ import ConsultationTransformer from "%/transformers/consultation"
 type Relationships = "user"|"consultation"
 
 export default class extends Transformer<ChatMessageActivity, void> {
-	constructor({ included }: IncludedRelationships<Relationships> = { "included": [ "user" ] }) {
+	constructor({ included }: IncludedRelationships<Relationships> = {
+		"included": [ "user", "consultation" ]
+	}) {
 		super("chat_message_activity", [
 			included.indexOf("user") > -1
 				? {

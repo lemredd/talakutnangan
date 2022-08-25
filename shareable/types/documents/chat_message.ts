@@ -1,6 +1,7 @@
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
+import type { ChatMessageActivityIdentifierDocument } from "$/types/documents/chat_message_activity"
 import type {
 	Completeness,
 	Format,
@@ -24,12 +25,14 @@ extends ResourceIdentifier<T> {
 
 export interface ChatMessageAttributes<T extends Format = "serialized">
 extends Attributes<T> {
+	kind: string,
 	data: GeneralObject
 }
 
 export type ChatMessageRelationships = Relationships<{
 	"user": UserIdentifierDocument,
-	"consultation": ConsultationIdentifierDocument
+	"consultation": ConsultationIdentifierDocument,
+	"chatMessageActivity": ChatMessageActivityIdentifierDocument
 }>
 
 export type ChatMessageResource<T extends Completeness = "read"> = Resource<

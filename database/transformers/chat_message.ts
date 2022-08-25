@@ -6,8 +6,9 @@ import ChatMessage from "%/models/chat_message"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import ConsultationTransformer from "%/transformers/consultation"
+import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
-type Relationships = "user"|"consultation"
+type Relationships = "user"|"consultation"|"chatMessageActivity"
 
 export default class extends Transformer<ChatMessage, void> {
 	constructor({ included }: IncludedRelationships<Relationships> = { "included": [ "user" ] }) {
@@ -23,6 +24,14 @@ export default class extends Transformer<ChatMessage, void> {
 					"attribute": "consultation",
 					"transformer": new ConsultationTransformer()
 				}
+				: null,
+			included.indexOf("chatMessageActivity") > -1
+				? {
+					"attribute": "chatMessageActivity",
+					"transformer": new ChatMessageActivityTransformer({
+						"included": [ "user", "consultation" ]
+					})
+				}
 				: null
 		])
 	}
@@ -31,6 +40,7 @@ export default class extends Transformer<ChatMessage, void> {
 	: AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
+			"kind",
 			"data"
 		])
 

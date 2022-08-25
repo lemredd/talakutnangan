@@ -2,12 +2,14 @@ import {
 	Table,
 	Model,
 	Column,
+	HasMany,
 	DataType,
 	AllowNull,
 	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
 import User from "%/models/user"
+import ChatMessage from "%/models/chat_message"
 import Consultation from "%/models/consultation"
 
 @Table({
@@ -47,4 +49,7 @@ export default class ChatMessageActivity extends Model {
 
 	@BelongsTo(() => Consultation)
 		consultation!: Consultation
+
+	@HasMany(() => ChatMessage)
+		chatMessages?: ChatMessage[]
 }
