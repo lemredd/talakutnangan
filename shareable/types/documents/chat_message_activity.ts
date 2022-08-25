@@ -1,7 +1,10 @@
+import type { UserIdentifierDocument } from "$/types/documents/user"
+import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
 import type {
 	Completeness,
 	Format,
 
+	Relationships,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
@@ -27,11 +30,16 @@ extends Attributes<T> {
 	seenMessageAt: string|null
 }
 
+export type ChatMessageActivityRelationships = Relationships<{
+	"user": UserIdentifierDocument,
+	"consultation": ConsultationIdentifierDocument
+}>
+
 export type ChatMessageActivityResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
 	ChatMessageActivityAttributes<"serialized">
->
+> & ChatMessageActivityRelationships
 
 export type DeserializedChatMessageActivityResource = DeserializedResource<
 	ChatMessageActivityResourceIdentifier<"read">,
