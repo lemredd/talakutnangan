@@ -18,7 +18,7 @@ module.exports = {
 					"kind",
 					{
 						"allowNull": false,
-						"type": Sequelize.TEXT
+						"type": Sequelize.STRING
 					},
 					{ transaction }
 				)
