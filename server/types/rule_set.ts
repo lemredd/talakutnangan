@@ -9,9 +9,10 @@ export type IdentifierDocumentOptions = Partial<{
 
 export interface Relationship{
 	isArray: boolean,
-	typeName: string,
+	relationshipName: string,
 	validator: Pipe,
 	ClassName: BaseManagerClass,
+	typeName?: string,
 	options?: Partial<{
 		postIDRules: Rules
 		extraIdentifierQueries: FieldRules

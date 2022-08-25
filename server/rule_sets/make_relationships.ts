@@ -32,14 +32,14 @@ export default function(
 
 					if (isArray) {
 						objectConstraints = makeResourceIdentifierDocumentRules(
-							typeName,
+							typeName ?? relationshipName,
 							validator,
 							ClassName,
 							options ?? {}
 						)
 					} else {
 						objectConstraints = makeResourceIdentifierListDocumentRules(
-							typeName,
+							typeName ?? relationshipName,
 							validator,
 							ClassName,
 							options ?? {}
