@@ -9,8 +9,10 @@ describe("Database Manager: Miscellaneous chat message operations", () => {
 
 		expect(sortableColumns).toStrictEqual([
 			"-createdAt",
+			"-kind",
 			"-updatedAt",
 			"createdAt",
+			"kind",
 			"updatedAt"
 		])
 	})

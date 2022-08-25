@@ -18,7 +18,7 @@ export default class extends BaseManager<
 	get transformer(): ChatMessageTransformer { return new ChatMessageTransformer() }
 
 	get exposableColumns(): string[] {
-		const excludedColumns = [ "id", "userID", "data", "consultationID", "deletedAt" ]
+		const excludedColumns = [ "id", "data", "chatMessageActivityID", "deletedAt" ]
 		return super.exposableColumns.filter(columnName => {
 			const isIncluded = !excludedColumns.includes(columnName)
 			return isIncluded
