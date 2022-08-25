@@ -66,6 +66,16 @@ export interface UniqueEmployeeScheduleRuleConstraint {
 	}
 }
 
+export interface ExistWithSameAttributeConstraint extends ManagerBasedRuleConstraints {
+	sameAttribute: {
+		columnName: string,
+		pointer?: string
+		value?: any,
+	}
+}
+
+export interface SizeConstraints { size: { minimum?: number, maximum?: number } }
+
 /**
  * Union of rule contraints
  */
@@ -86,6 +96,8 @@ export type RuleContraints = Partial<
 	& RegexRuleConstraints
 	& NotRuleConstraints
 	& UniqueEmployeeScheduleRuleConstraint
+	& ExistWithSameAttributeConstraint
+	& SizeConstraints
 >
 
 /**

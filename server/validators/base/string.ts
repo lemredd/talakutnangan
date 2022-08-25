@@ -11,14 +11,13 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (isString(state.value)) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be a string.`
-		}
+	}
+	throw {
+		"field": constraints.field,
+		"messageMaker": (field: string) => `Field "${field}" must be a string.`
 	}
 }
