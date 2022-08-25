@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === "dev") {
 		"hmr": {
 			"clientPort": Number(process.env.PORT ?? "16000"),
 			"host": "localhost",
+			"port": Number(process.env.PORT ?? "16000"),
 			"protocol": "ws"
 		}
 	}
