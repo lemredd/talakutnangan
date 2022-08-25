@@ -16,7 +16,6 @@ export default async function(
 
 	const castedValue = new Date(value)
 
-	/* eslint no-negated-condition: "error"*/
 	if (castedValue.toString() === "Invalid Date") {
 		const error = {
 			"field": value,

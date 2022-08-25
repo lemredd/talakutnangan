@@ -1,7 +1,7 @@
 import type {
 	ValidationState,
 	ValidationConstraints,
-	LengthConstraints
+	SizeConstraints
 } from "!/types/validation"
 
 import makeDeveloperError from "!/validators/make_developer_error"
@@ -11,38 +11,44 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<LengthConstraints>
+	constraints: ValidationConstraints & Partial<SizeConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if (state.maySkip) return state
 
-	if (constraints.length === undefined) {
+	if (typeof constraints.size === "undefined") {
 		throw makeDeveloperError(constraints.field)
 	}
 
 	const jsonLength = JSON.stringify(state.value).length
 
 	if (
-		constraints.length.minimum !== undefined
-		&& jsonLength < constraints.length.minimum) {
-		throw {
+		typeof constraints.size.minimum !== "undefined"
+		&& jsonLength < constraints.size.minimum) {
+		const error = {
 			"field": constraints.field,
-			"messageMaker": (field: string) => `Field "${field}" must be more than or equal to ${
-					constraints.length!.minimum
+			"messageMaker": (
+				field: string
+			) => `Field "${field}" must be more than or equal to ${
+				constraints.size?.minimum
 			} character(s).`
 		}
+
+		throw error
 	}
 
 	if (
-		constraints.length.maximum !== undefined
-		&& constraints.length.maximum < jsonLength) {
-		throw {
+		typeof constraints.size.maximum !== "undefined"
+		&& constraints.size.maximum < jsonLength) {
+		const error = {
 			"field": constraints.field,
 			"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
-					constraints.length!.maximum
+				constraints.size?.maximum
 			} character(s).`
 		}
+
+		throw error
 	}
 
 	return state
