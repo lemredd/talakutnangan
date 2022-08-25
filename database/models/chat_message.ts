@@ -38,9 +38,9 @@ export default class ChatMessage extends Model {
 		chatMessageActivityID!: number
 
 	@BelongsTo(() => ChatMessageActivity)
-		chatMessageActivity!: ChatMessageActivity
+		chatMessageActivity?: ChatMessageActivity
 
-	get user(): User { return this.chatMessageActivity.user }
+	get user(): User|undefined { return this.chatMessageActivity?.user }
 
-	get consultation(): Consultation { return this.chatMessageActivity.consultation }
+	get consultation(): Consultation|undefined { return this.chatMessageActivity?.consultation }
 }
