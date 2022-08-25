@@ -1,14 +1,19 @@
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Attributes,
-	ResourceDocument,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ChatMessageActivityResourceIdentifier<T extends Completeness = "read">
@@ -58,3 +63,9 @@ export type DeserializedChatMessageActivityListDocument = DeserializedResourceLi
 	ChatMessageActivityAttributes<"deserialized">,
 	DeserializedChatMessageActivityResource
 >
+
+export type ChatMessageActivityIdentifierDocument
+= IdentifierDocument<ChatMessageActivityResourceIdentifier<"read">>
+
+export type ChatMessageActivityIdentifierListDocument
+= IdentifierListDocument<ChatMessageActivityResourceIdentifier<"read">>
