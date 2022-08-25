@@ -52,6 +52,9 @@ export default function<T>(
 		],
 		"limit": 1,
 		"model": ChatMessage,
+		"order": [
+			[ "createdAt", "DESC" ]
+		],
 		"required": true
 	})
 
