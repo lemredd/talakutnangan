@@ -8,8 +8,10 @@ import {
 } from "sequelize-typescript"
 
 import type { GeneralObject } from "$/types/general"
+
 import User from "%/models/user"
 import Consultation from "%/models/consultation"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 @Table({
 	"paranoid": true,
@@ -18,27 +20,27 @@ import Consultation from "%/models/consultation"
 export default class ChatMessage extends Model {
 	@Column({
 		"allowNull": false,
+		"type": DataType.STRING
+	})
+		kind!: string
+
+	@Column({
+		"allowNull": false,
 		"type": DataType.JSON
 	})
 		data!: GeneralObject
 
-	@ForeignKey(() => User)
+	@ForeignKey(() => ChatMessageActivity)
 	@Column({
 		"allowNull": false,
 		"type": DataType.BIGINT
 	})
-		userID!: number
+		chatMessageActivityID!: number
 
-	@BelongsTo(() => User)
-		user!: User
+	@BelongsTo(() => ChatMessageActivity)
+		chatMessageActivity!: ChatMessageActivity
 
-	@ForeignKey(() => Consultation)
-	@Column({
-		"allowNull": false,
-		"type": DataType.BIGINT
-	})
-		consultationID!: number
+	get user(): User { return this.chatMessageActivity.user }
 
-	@BelongsTo(() => Consultation)
-		consultation!: Consultation
+	get consultation(): Consultation { return this.chatMessageActivity.consultation }
 }
