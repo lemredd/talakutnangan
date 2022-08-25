@@ -22,14 +22,18 @@ export default function(
 	extraQueries: FieldRules = {}
 ): FieldRules {
 	return {
-		...makeIDRules(mustCast, "id", {
-			"constraints": {
-				"manager": {
-					"className": ClassName,
-					"columnName": "id"
-				}
-			},
-			"pipes": [ validator ]
+		...makeIDRules({
+			"IDName": "id",
+			mustCast,
+			"postRules": {
+				"constraints": {
+					"manager": {
+						"className": ClassName,
+						"columnName": "id"
+					}
+				},
+				"pipes": [ validator ]
+			}
 		}),
 		...makeTypeRules(typeName),
 		...extraQueries

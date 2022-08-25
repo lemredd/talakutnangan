@@ -37,14 +37,18 @@ export default class extends QueryController {
 					"object": {
 						"IDs": {
 							"constraints": {
-								"array": makeIDRules(true, "id", {
-									"constraints": {
-										"manager": {
-											"className": RoleManager,
-											"columnName": "id"
-										}
-									},
-									"pipes": [ exists ]
+								"array": makeIDRules({
+									"IDName": "id",
+									"mustCast": true,
+									"postRules": {
+										"constraints": {
+											"manager": {
+												"className": RoleManager,
+												"columnName": "id"
+											}
+										},
+										"pipes": [ exists ]
+									}
 								}).id,
 								"length": {
 									"maximum": Number(process.env.DATABASE_MAX_SELECT || "10"),
