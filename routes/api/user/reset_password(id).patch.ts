@@ -36,7 +36,9 @@ export default class extends DoubleBoundJSONController {
 		return {
 			"data": {
 				"constraints": {
-					"object": makeResourceIdentifierRules("user", exists, UserManager, false)
+					"object": makeResourceIdentifierRules("user", exists, UserManager, {
+						"mustCastID": false
+					})
 				},
 				"pipes": [ required, object ]
 			}

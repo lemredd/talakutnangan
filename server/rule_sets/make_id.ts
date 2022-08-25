@@ -5,12 +5,18 @@ import integer from "!/validators/base/integer"
 import required from "!/validators/base/required"
 
 export default function(
-	mustCast = false,
-	IDName = "id",
-	additionalRules: Rules = { "pipes": [] }
+	{
+		mustCast = false,
+		IDName = "id",
+		postRules = { "pipes": [] }
+	}: Partial<{
+		mustCast: boolean
+		IDName: string
+		postRules: Rules
+	}> = {}
 ): FieldRules {
-	const additionalConstraints = additionalRules.constraints || {}
-	const additionalPipes = additionalRules.pipes
+	const additionalConstraints = postRules.constraints || {}
+	const additionalPipes = postRules.pipes
 	return {
 		[IDName]: {
 			"constraints": {

@@ -6,7 +6,7 @@ import makeDataDocumentRules from "!/rule_sets/make_data_document"
 import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 /**
- * Validates a submitted resource document.
+ * Validates a submitted resource identifier document.
  *
  * @param typeName Name of the type to expect
  * @param validator Pipe to use to validate the ID.
@@ -27,7 +27,7 @@ export default function(
 	}: IdentifierDocumentOptions = {}
 ): FieldRules {
 	return makeDataDocumentRules(
-		false,
+		true,
 		makeResourceIdentifierRules(typeName, validator, ClassName, {
 			"extraQueries": extraIdentifierQueries,
 			"mustCastID": false,
