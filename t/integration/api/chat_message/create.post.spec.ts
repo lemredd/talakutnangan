@@ -3,11 +3,10 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/set-ups/app"
 
 import Socket from "!/ws/socket"
-import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/chat_message"
-import ConsultationFactory from "~/factories/consultation"
 import RequestEnvironment from "$!/singletons/request_environment"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Route from "!%/api/chat_message/create.post"
@@ -23,11 +22,9 @@ describe("POST /api/chat_message", () => {
 		const { cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const user = await new UserFactory().beReachableEmployee().insertOne()
-		const consultation = await new ConsultationFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
 		const model = await new Factory()
-		.user(() => Promise.resolve(user))
-		.consultation(() => Promise.resolve(consultation))
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.serializedOne()
 
 		const response = await App.request
@@ -36,19 +33,14 @@ describe("POST /api/chat_message", () => {
 		.send({
 			"data": {
 				"attributes": {
-					"data": model.data.attributes.data
+					"data": model.data.attributes.data,
+					"kind": model.data.attributes.kind
 				},
 				"relationships": {
-					"consultation": {
+					"chatMessageActivity": {
 						"data": {
-							"id": String(consultation.id),
-							"type": "consultation"
-						}
-					},
-					"user": {
-						"data": {
-							"id": String(user.id),
-							"type": "user"
+							"id": String(chatMessageActivity.id),
+							"type": "chat_message_activity"
 						}
 					}
 				},
@@ -65,7 +57,7 @@ describe("POST /api/chat_message", () => {
 		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"namespace",
-			makeConsultationChatNamespace(String(consultation.id))
+			makeConsultationChatNamespace(String(chatMessageActivity.consultationID))
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"data.0.data.attributes.data",
