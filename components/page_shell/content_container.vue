@@ -1,9 +1,9 @@
 <template>
-<div class="content" :class="{ 'login-content': isLoggingIn }">
-	<div class="container">
-		<slot />
+	<div class="content" :class="{ 'login-content': isLoggingIn }">
+		<div class="container">
+			<slot></slot>
+		</div>
 	</div>
-</div>
 </template>
 
 <style scoped lang="scss">

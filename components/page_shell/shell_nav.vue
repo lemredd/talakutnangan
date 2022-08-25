@@ -161,7 +161,7 @@ import { inject, computed } from "vue"
 import type { PageContext } from "#/types"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import Dropdown from "@/Dropdown.vue"
+import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
 
