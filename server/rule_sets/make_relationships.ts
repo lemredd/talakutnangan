@@ -1,5 +1,5 @@
 import type { Relationship } from "!/types/rule_set"
-import type { FieldRules, Rules } from "!/types/validation"
+import type { FieldRules, Rules, ObjectRuleConstraints } from "!/types/validation"
 
 import object from "!/validators/base/object"
 import required from "!/validators/base/required"
@@ -21,13 +21,24 @@ export default function(
 				"object": relationships.map(relationship => {
 					const {
 						isArray,
+						relationshipName,
 						typeName,
 						validator,
 						ClassName,
 						options
 					} = relationship
+
+					let objectConstraints: ObjectRuleConstraints["object"] = {}
+
 					if (isArray) {
-						return makeResourceIdentifierDocumentRules(
+						objectConstraints = makeResourceIdentifierDocumentRules(
+							typeName,
+							validator,
+							ClassName,
+							options ?? {}
+						)
+					} else {
+						objectConstraints = makeResourceIdentifierListDocumentRules(
 							typeName,
 							validator,
 							ClassName,
@@ -35,12 +46,14 @@ export default function(
 						)
 					}
 
-					return makeResourceIdentifierListDocumentRules(
-						typeName,
-						validator,
-						ClassName,
-						options ?? {}
-					)
+					return {
+						[relationshipName]: {
+							"constraints": {
+								"object": objectConstraints
+							},
+							"pipes": [ required, object ]
+						}
+					}
 				}).reduce((previousFields, currentField) => ({
 					...previousFields,
 					...currentField
