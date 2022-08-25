@@ -38,6 +38,15 @@ export default class extends BaseManager<
 		try {
 			const model = await this.model.create(details, this.transaction.transactionObject)
 
+			const activityManager = new ChatMessageActivityManager(
+				this.transaction,
+				this.cache
+			)
+
+			await activityManager.update(details.chatMessageActivityID, {
+				"receivedMessageAt": new Date()
+			})
+
 			model.chatMessageActivity = await ChatMessageActivity.findByPk(
 				details.chatMessageActivityID,
 				{
@@ -54,19 +63,11 @@ export default class extends BaseManager<
 				}
 			) as ChatMessageActivity
 
-			const activityManager = new ChatMessageActivityManager(
-				this.transaction,
-				this.cache
-			)
-
-			await activityManager.update(details.chatMessageActivityID, {
-				"receivedMessageAt": new Date(),
-				"seenMessageAt": new Date()
-			})
-
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions)
+			return this.serialize(model, transformerOptions, new Transformer({
+				"included": [ "user", "consultation", "chatMessageActivity" ]
+			}))
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}

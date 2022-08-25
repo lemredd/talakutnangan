@@ -6,12 +6,18 @@ import Manager from "./chat_message"
 
 describe("Database Manager: Chat message create operations", () => {
 	it("can create message", async() => {
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.seenMessageAt(() => new Date())
+		.insertOne()
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.makeOne()
 		const manager = new Manager()
 
+		await new Promise<void>(resolve => {
+			const DELAY = 1000
+			setTimeout(() => resolve(), DELAY);
+		})
 		const userData = await manager.create({
 			"chatMessageActivityID": model.chatMessageActivityID,
 			"data": model.data,
@@ -23,12 +29,17 @@ describe("Database Manager: Chat message create operations", () => {
 		expect(userData).toHaveProperty("data")
 		expect(userData).toHaveProperty("data.attributes.kind", model.kind)
 		expect(userData).toHaveProperty("data.attributes.data", model.data)
+		expect(userData).toHaveProperty(
+			"data.relationships.consultation.data.id",
+			model.chatMessageActivity.consultationID
+		)
+		expect(userData).toHaveProperty("data.relationships.user")
+		expect(userData).toHaveProperty("data.relationships.chatMessageActivity")
 		const activity = await ChatMessageActivity.findByPk(
 			model.chatMessageActivityID
 		) as ChatMessageActivity
-		expect(activity).not.toBeNull()
-		expect(activity.seenMessageAt).not.toBe(chatMessageActivity.seenMessageAt)
-		expect(activity.receivedMessageAt).not.toBe(chatMessageActivity.receivedMessageAt)
+		expect(activity.seenMessageAt).toStrictEqual(chatMessageActivity.seenMessageAt)
+		expect(activity.receivedMessageAt).not.toStrictEqual(chatMessageActivity.receivedMessageAt)
 	})
 })
 
