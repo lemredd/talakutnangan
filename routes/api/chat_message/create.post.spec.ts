@@ -1,8 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
-import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
 import MockRequester from "~/set-ups/mock_requester"
-import ConsultationFactory from "~/factories/consultation"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
@@ -15,11 +14,9 @@ describe("Controller: POST /api/chat_message", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().beReachableEmployee().insertOne()
-		const consultation = await new ConsultationFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
 		const model = await new Factory()
-		.user(() => Promise.resolve(user))
-		.consultation(() => Promise.resolve(consultation))
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.makeOne()
 		requester.customizeRequest({
 			"body": {
@@ -28,16 +25,10 @@ describe("Controller: POST /api/chat_message", () => {
 						"data": model.data
 					},
 					"relationships": {
-						"consultation": {
+						"chatMessageActivity": {
 							"data": {
-								"id": String(consultation.id),
-								"type": "consultation"
-							}
-						},
-						"user": {
-							"data": {
-								"id": String(user.id),
-								"type": "user"
+								"id": String(chatMessageActivity.id),
+								"type": "chat_message_activity"
 							}
 						}
 					},
@@ -57,8 +48,7 @@ describe("Controller: POST /api/chat_message", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().beReachableEmployee().insertOne()
-		const consultation = await new ConsultationFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -66,16 +56,10 @@ describe("Controller: POST /api/chat_message", () => {
 						"data": "not an object"
 					},
 					"relationships": {
-						"consultation": {
+						"chatMessageActivity": {
 							"data": {
-								"id": String(consultation.id),
-								"type": "consultation"
-							}
-						},
-						"user": {
-							"data": {
-								"id": String(user.id),
-								"type": "user"
+								"id": String(chatMessageActivity.id),
+								"type": "chat_message_activity"
 							}
 						}
 					},

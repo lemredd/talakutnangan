@@ -1,26 +1,23 @@
+import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { FieldRules, Rules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
-import UserManager from "%/managers/user"
 import JSONController from "!/controllers/json"
 import ChatMessageManager from "%/managers/chat_message"
-import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
+import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import object from "!/validators/base/object"
-import anyObject from "!/validators/base/any_object"
 import exists from "!/validators/manager/exists"
-import required from "!/validators/base/required"
+import anyObject from "!/validators/base/any_object"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
-import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -36,46 +33,18 @@ export default class extends JSONController {
 			}
 		}
 
-		const relationships: Rules = {
-			"constraints": {
-				"object": {
-					"consultation": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules(
-											"consultation",
-											exists,
-											ConsultationManager
-										)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					},
-					"user": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules("user", exists, UserManager)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					}
-				}
-			},
-			"pipes": [ required, object ]
-		}
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": ChatMessageActivityManager,
+				"isArray": false,
+				"relationshipName": "chatMessageActivity",
+				"typeName": "chat_message_activity",
+				"validator": exists
+			}
+		])
 
 		return makeResourceDocumentRules("chat_message", attributes, {
-			"extraDataQueries": { relationships },
+			"extraDataQueries": relationships,
 			"isNew": true
 		})
 	}
@@ -89,8 +58,7 @@ export default class extends JSONController {
 
 		const document = await manager.create({
 			...attributes,
-			"consultationID": Number(relationships.consultation.data.id),
-			"userID": Number(relationships.user.data.id)
+			"chatMessageActivityID": Number(relationships.chatMessageActivity.data.id)
 		})
 
 		Socket.emitToClients(
