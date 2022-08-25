@@ -1,21 +1,27 @@
-import type { ModelCtor, Attributes } from "%/types/dependent"
+import type { Serializable } from "$/types/general"
 import type { CommonQueryParameters } from "$/types/query"
 import type { ChatMessageAttributes } from "$/types/documents/chat_message"
+import type { ModelCtor, Attributes, CreationAttributes } from "%/types/dependent"
 
+import User from "%/models/user"
+import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
-import ChatMessage from "%/models/chat_message"
-import ChatMessageTransformer from "%/transformers/chat_message"
+import Model from "%/models/chat_message"
+import Consultation from "%/models/Consultation"
+import Transformer from "%/transformers/chat_message"
+import ChatMessageActivity from "%/models/chat_message_activity"
+import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
-type RawChatMessageAttributes = ChatMessageAttributes<"deserialized"> & Attributes<ChatMessage>
+type RawChatMessageAttributes = ChatMessageAttributes<"deserialized"> & Attributes<Model>
 
 export default class extends BaseManager<
-	ChatMessage,
+	Model,
 	RawChatMessageAttributes,
 	CommonQueryParameters
 > {
-	get model(): ModelCtor<ChatMessage> { return ChatMessage }
+	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): ChatMessageTransformer { return new ChatMessageTransformer() }
+	get transformer(): Transformer { return new Transformer() }
 
 	get exposableColumns(): string[] {
 		const excludedColumns = [ "id", "data", "chatMessageActivityID", "deletedAt" ]
@@ -23,5 +29,46 @@ export default class extends BaseManager<
 			const isIncluded = !excludedColumns.includes(columnName)
 			return isIncluded
 		})
+	}
+
+	async create(
+		details: RawChatMessageAttributes & CreationAttributes<Model>,
+		transformerOptions: void = {} as unknown as void
+	): Promise<Serializable> {
+		try {
+			const model = await this.model.create(details, this.transaction.transactionObject)
+
+			model.chatMessageActivity = await ChatMessageActivity.findByPk(
+				details.chatMessageActivityID,
+				{
+					"include": [
+						{
+							"model": User,
+							"required": true
+						},
+						{
+							"model": Consultation,
+							"required": true
+						}
+					]
+				}
+			) as ChatMessageActivity
+
+			const activityManager = new ChatMessageActivityManager(
+				this.transaction,
+				this.cache
+			)
+
+			await activityManager.update(details.chatMessageActivityID, {
+				"receivedMessageAt": new Date(),
+				"seenMessageAt": new Date()
+			})
+
+			Log.success("manager", "done creating a model")
+
+			return this.serialize(model, transformerOptions)
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 }
