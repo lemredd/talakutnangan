@@ -1,5 +1,5 @@
 import type { Pipe } from "$/types/database"
-import type { CommonQueryParameters } from "$/types/query"
+import type { ConsultationQueryParameters } from "$/types/query"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { ConsultationAttributes } from "$/types/documents/consultation"
 
@@ -12,13 +12,13 @@ import includeDefaults from "%/queries/consultation/include_defaults"
 export default class extends BaseManager<
 	Model,
 	ConsultationAttributes<"deserialized">,
-	CommonQueryParameters
+	ConsultationQueryParameters<number>
 > {
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): Transformer { return new Transformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<Model>, CommonQueryParameters>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, ConsultationQueryParameters<number>>[] {
 		return [
 			includeDefaults,
 			...super.listPipeline
