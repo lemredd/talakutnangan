@@ -26,7 +26,7 @@ export default function(
 		mustCastID: boolean,
 		postIDRules: Rules,
 		extraQueries: FieldRules
-	}>
+	}> = {}
 ): FieldRules {
 	const postIDConstraints = postIDRules.constraints || {}
 	const postIDPipes = postIDRules.pipes
