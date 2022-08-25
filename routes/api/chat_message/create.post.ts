@@ -5,8 +5,8 @@ import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
+import Manager from "%/managers/chat_message"
 import JSONController from "!/controllers/json"
-import ChatMessageManager from "%/managers/chat_message"
 import CreatedResponseInfo from "!/response_infos/created"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -60,10 +60,10 @@ export default class extends JSONController {
 		})
 	}
 
-	get manager(): BaseManagerClass { return ChatMessageManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
-		const manager = new ChatMessageManager(request.transaction, request.cache)
+		const manager = new Manager(request.transaction, request.cache)
 		const { data } = request.body as ChatMessageDocument<"create">
 		const { attributes, relationships } = data
 		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)
