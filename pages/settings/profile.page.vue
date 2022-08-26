@@ -40,9 +40,11 @@
 				Consultation Schedules
 			</h3>
 			<SchedulePicker
-				day="Monday"
-				start-time="08:00"
-				end-time="17:00"/>
+				v-for="schedule in schedules"
+				:key="schedules.indexOf(schedule)"
+				:day="schedule.day"
+				:start-time="schedule.startTime"
+				:end-time="schedule.endTime"/>
 		</div>
 	</form>
 </template>
@@ -114,8 +116,23 @@ function toggleDarkMode() {
 	bodyClasses.value = [ ...mutatedBodyClasses ]
 }
 
-
-const days = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+const schedules = [
+	{
+		"day": "monday",
+		"endTime": "17:00",
+		"startTime": "08:00"
+	},
+	{
+		"day": "tuesday",
+		"endTime": "17:00",
+		"startTime": "08:00"
+	},
+	{
+		"day": "wednesday",
+		"endTime": "17:00",
+		"startTime": "08:00"
+	}
+]
 
 provide("tabs", [ "Account", "Profile" ])
 </script>
