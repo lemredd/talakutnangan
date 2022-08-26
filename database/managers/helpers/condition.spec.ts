@@ -4,7 +4,7 @@ import Condition from "./condition"
 
 describe("Database: Condition Builder", () => {
 	it("can retain built condition", () => {
-		const builtCondition = { sample: { [Op.eq]: 3 } }
+		const builtCondition = { "sample": { [Op.eq]: 3 } }
 
 		const condition = new Condition(builtCondition)
 
@@ -17,7 +17,7 @@ describe("Database: Condition Builder", () => {
 		const builtCondition = condition.not("sample", null).build()
 
 		expect(builtCondition).toStrictEqual({
-			sample: { [Op.not]: null }
+			"sample": { [Op.not]: null }
 		})
 	})
 
@@ -27,7 +27,7 @@ describe("Database: Condition Builder", () => {
 		const builtCondition = condition.is("sample", null).build()
 
 		expect(builtCondition).toStrictEqual({
-			sample: { [Op.is]: null }
+			"sample": { [Op.is]: null }
 		})
 	})
 
@@ -37,7 +37,27 @@ describe("Database: Condition Builder", () => {
 		const builtCondition = condition.equal("sample", 1).build()
 
 		expect(builtCondition).toStrictEqual({
-			sample: { [Op.eq]: 1 }
+			"sample": { [Op.eq]: 1 }
+		})
+	})
+
+	it("can make 'greater than or equal' operation", () => {
+		const condition = new Condition()
+
+		const builtCondition = condition.greaterThanOrEqual("sample", 1).build()
+
+		expect(builtCondition).toStrictEqual({
+			"sample": { [Op.gte]: 1 }
+		})
+	})
+
+	it("can make 'less than or equal' operation", () => {
+		const condition = new Condition()
+
+		const builtCondition = condition.lessThanOrEqual("sample", 1).build()
+
+		expect(builtCondition).toStrictEqual({
+			"sample": { [Op.gte]: 1 }
 		})
 	})
 
@@ -47,7 +67,7 @@ describe("Database: Condition Builder", () => {
 		const builtCondition = condition.search("name", "abcd").build()
 
 		expect(builtCondition).toStrictEqual({
-			name: { [Op.like]: "%abcd%" }
+			"name": { [Op.like]: "%abcd%" }
 		})
 	})
 
@@ -63,8 +83,8 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			[Op.or]: [
-				{ columnA: { [Op.is]: null } },
-				{ columnB: { [Op.not]: null } }
+				{ "columnA": { [Op.is]: null } },
+				{ "columnB": { [Op.not]: null } }
 			]
 		})
 	})
@@ -79,7 +99,7 @@ describe("Database: Condition Builder", () => {
 			subconditionB
 		).build()
 
-		expect(builtCondition).toStrictEqual({ columnA: { [Op.is]: null } })
+		expect(builtCondition).toStrictEqual({ "columnA": { [Op.is]: null } })
 	})
 
 	it("can make 'and' operation", () => {
@@ -94,8 +114,8 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			[Op.and]: [
-				{ columnA: { [Op.is]: null } },
-				{ columnB: { [Op.eq]: 1 } }
+				{ "columnA": { [Op.is]: null } },
+				{ "columnB": { [Op.eq]: 1 } }
 			]
 		})
 	})
@@ -110,6 +130,6 @@ describe("Database: Condition Builder", () => {
 			subconditionB
 		).build()
 
-		expect(builtCondition).toStrictEqual({ columnA: { [Op.is]: null } })
+		expect(builtCondition).toStrictEqual({ "columnA": { [Op.is]: null } })
 	})
 })
