@@ -1,19 +1,17 @@
-/**
- * Basic requirement for messages.
- */
-export interface GeneralMessage {
-	type: string
-}
+import type { Format } from "$/types/documents/base"
+import type { ChatMessageAttributes } from "$/types/documents/chat_message"
 
 /**
  * Shape of text messages.
  */
-export interface TextMessage extends GeneralMessage {
-	type: "text",
-	data: string
+export interface TextMessage<T extends Format = "serialized"> extends ChatMessageAttributes<T> {
+	kind: "text",
+	data: {
+		value: string
+	}
 }
 
 /**
  * Union of all kinds of messages.
  */
-export type Message = TextMessage
+export type Message<T extends Format = "serialized"> = TextMessage<T>

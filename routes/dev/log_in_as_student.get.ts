@@ -37,40 +37,32 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).end()
 		} else {
-			const testDeanEmail = "dean@example.net"
-			const testRole = "test_dean"
+			const testStudentEmail = "student@example.net"
+			const testRole = "test_student"
 			const testDepartment = "Test Department"
 
-			Log.success("controller", "searching for dean role")
-			let testDeanRole = await Role.findOne({
+			Log.success("controller", "searching for student role")
+			let testStudentRole = await Role.findOne({
 				"where": new Condition().equal("name", testRole).build()
 			})
 
-			Log.success("controller", "making for dean role")
+			Log.success("controller", "making for student role")
 
-			if (testDeanRole === null) {
-				testDeanRole = await new RoleFactory()
+			if (testStudentRole === null) {
+				testStudentRole = await new RoleFactory()
 				.name(() => testRole)
 				.departmentFlags(department.generateMask("view"))
 				.roleFlags(role.generateMask("view"))
 				.semesterFlags(semester.generateMask("view"))
-				.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-				.postFlags(post.generateMask(
-					"view",
-					"create",
-					"update",
-					"archiveAndRestore",
-					"readDepartmentScope",
-					"writeDepartmentScope",
-					"tag"
-				))
+				.tagFlags(tag.generateMask("view"))
+				.postFlags(post.generateMask("view", "readDepartmentScope"))
 				.commentFlags(comment.generateMask(
 					"view",
 					"create",
 					"update",
 					"archiveAndRestore",
 					"readDepartmentScope",
-					"writeDepartmentScope",
+					"writeOwnScope",
 					"vote"
 				))
 				.profanityFlags(profanity.generateMask("view", "readOverallScope"))
@@ -78,22 +70,22 @@ export default class extends DevController {
 					"view",
 					"create",
 					"update",
-					"archiveAndRestore",
-					"readDepartmentScope",
-					"writeDepartmentScope"
+					"readOwnScope",
+					"writeOwnScope"
 				))
 				.auditTrailFlags(0)
 				.insertOne()
 
-				Log.success("controller", "created test dean role")
+				Log.success("controller", "created test student role")
 			}
 
-			Log.success("controller", "searching for dean dept")
+			Log.success("controller", "searching for student dept")
 			let testInstituteDepartment = await Department.findOne({
 				"where": new Condition().equal("fullName", testDepartment).build()
 			})
 
-			Log.success("controller", "making for dean department")
+			Log.success("controller", "making for student department")
+
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
 				.fullName(() => testDepartment)
@@ -103,32 +95,33 @@ export default class extends DevController {
 				Log.success("controller", "created test institute department")
 			}
 
-			Log.success("controller", "searching for dean user")
+			Log.success("controller", "searching for student user")
 			let previousUser = await User.findOne({
-				"where": new Condition().equal("email", testDeanEmail).build()
+				"where": new Condition().equal("email", testStudentEmail).build()
 			})
-			Log.success("controller", "making for dean dept")
+
+			Log.success("controller", "making for student department")
 			if (previousUser === null) {
 				const createdUser = await new UserFactory()
-				.email(() => testDeanEmail)
+				.email(() => testStudentEmail)
 				.beReachableEmployee()
 				.in(testInstituteDepartment)
 				.insertOne()
 
-				Log.success("controller", "created test dean")
+				Log.success("controller", "created test student")
 
 				previousUser = createdUser
 			}
 
 			await AttachedRole.upsert({
-				"userID": previousUser.id,
-				"roleID": testDeanRole.id
+				"roleID": testStudentRole.id,
+				"userID": previousUser.id
 			})
 
-			Log.success("controller", "attached test dean role to test dean")
+			Log.success("controller", "attached test student role to test student")
 
 			request.body = {
-				"email": testDeanEmail,
+				"email": testStudentEmail,
 				"password": "password"
 			}
 

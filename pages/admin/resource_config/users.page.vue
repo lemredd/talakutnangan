@@ -1,12 +1,12 @@
 <template>
-	<AdminSettingsHeader title="Admin Settings" />
+	<AdminSettingsHeader title="Admin Settings"/>
 
 	<UsersManager :resource="users">
 		<template #search-filter>
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList" />
+		<UsersList :filtered-list="filteredList"/>
 	</UsersManager>
 </template>
 
@@ -16,10 +16,9 @@
 <script setup lang="ts">
 import { inject, onMounted, provide, ref } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
-import type { DeserializedUserResource } from "$/types/documents/user"
-import type { PageContext } from "#/types"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
 import Manager from "$/helpers/manager"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
@@ -30,11 +29,13 @@ import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 import UserFetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
-import deserialize from "$/helpers/deserialize"
-const pageContext = inject("pageContext") as PageContext
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
-provide("tabs", ["Users", "Roles", "Departments"])
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const { pageProps } = pageContext
+const userProfile = pageProps.userProfile as DeserializedUserProfile
+
+provide("managerKind", new Manager(userProfile))
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 UserFetcher.initialize("/api")
 RoleFetcher.initialize("/api")
@@ -53,19 +54,19 @@ onMounted(() => {
 	const currentUserDepartment = currentUserProfile.data.department.data.id
 
 	new UserFetcher().list({
-		filter: {
-			slug: "",
-			department: currentUserDepartment,
-			role: "*",
-			kind: "*",
-			existence: "exists"
+		"filter": {
+			"department": currentUserDepartment,
+			"existence": "exists",
+			"kind": "*",
+			"role": "*",
+			"slug": ""
 		},
-		sort: [ "name" ],
-		page: {
-			offset: 0,
-			limit: 10
-		}
-	}).then(({ body: deserializedUserList }) => {
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	}).then(({ "body": deserializedUserList }) => {
 		users.value = deserializedUserList.data
 	})
 })

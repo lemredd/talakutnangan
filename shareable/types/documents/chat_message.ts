@@ -1,4 +1,4 @@
-import type { GeneralObject, Serializable } from "$/types/general"
+import type { Serializable } from "$/types/general"
 import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
 import type { ChatMessageActivityIdentifierDocument } from "$/types/documents/chat_message_activity"
@@ -26,7 +26,7 @@ extends ResourceIdentifier<T> {
 export interface ChatMessageAttributes<T extends Format = "serialized">
 extends Attributes<T> {
 	kind: string,
-	data: GeneralObject
+	data: Serializable
 }
 
 export type ChatMessageRelationships = Relationships<{

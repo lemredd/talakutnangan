@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { inject, onMounted, provide, ref } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"

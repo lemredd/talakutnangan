@@ -76,11 +76,11 @@ body {
 <script setup lang="ts">
 import { inject } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 
 import LogInForm from "@/authentication/log_in_form.vue"
 
-const pageContext = inject("pageContext") as PageContext
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const receivedError = pageContext.pageProps.parsedUnitError
 
 </script>

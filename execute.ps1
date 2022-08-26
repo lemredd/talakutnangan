@@ -240,9 +240,9 @@ if ($Help) {
 
 if ($Server) {
 	if ($Normal) {
-		& npx ts-node ./server
+		& npx cross-env NODE_ENV=dev ts-node ./server
 	} elseif ($Prod) {
-		& cross-env NODE_ENV=production npx ts-node ./server
+		& npx cross-env NODE_ENV=production npx ts-node ./server
 	} elseif ($Routes) {
 		& npx ts-node ./server/cli/list_routes.ts
 	} else {

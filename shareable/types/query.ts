@@ -143,3 +143,7 @@ export type EmployeeScheduleQueryParameters<T extends number|string = string> =
 	& UserFilter<T>
 	& EmployeeScheduleRangeFilter
 	& EmployeeScheduleDayFilter
+
+export type ConsultationQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& UserFilter<T>

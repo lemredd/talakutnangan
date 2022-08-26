@@ -7,7 +7,7 @@
 <template>
 	<ConsultationShell @picked-consultation="pickConsultation">
 		<template #chat-window>
-			<EmptyChatWindow :user-profile="userProfile"/>
+			<ChatWindow :consultation="consultation"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -27,19 +27,25 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type {
+	ConsultationRelationshipNames,
+	DeserializedConsultationResource
+} from "$/types/documents/consultation"
 
+import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
-import EmptyChatWindow from "@/consultation/empty_chat_window.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
 const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
+
+const consultation = ref<DeserializedConsultationResource<ConsultationRelationshipNames>>(
+	pageProps.consultation.data as DeserializedConsultationResource<ConsultationRelationshipNames>
+)
 
 function pickConsultation(unusedConsultationID: string) {
-	// TODO: Go to chat window
+	// TODO: Go to other location
 }
 </script>
