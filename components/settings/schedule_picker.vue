@@ -66,33 +66,38 @@ function generateNumberRange(start: number, end: number) {
 	return numbers
 }
 
+function getTimePart(time: string, part: "hour" | "minute" | "midday"): string {
+	const noon = 12
+	const [ hour, minute ] = time.split(":")
+	let partToGive = ""
+
+	if (part === "hour") {
+		if (Number(hour) <= noon) partToGive = hour
+		else partToGive = twoDigits(Number(hour) - noon) as string
+	}
+
+	if (part === "minute") partToGive = minute
+
+	if (part === "midday") {
+		if (Number(hour) < 12) partToGive = "AM"
+		else partToGive = "PM"
+	}
+
+	return partToGive
+}
 const hours = generateNumberRange(1, 13)
 const minutes = generateNumberRange(0, 60)
 const midDay = [ "AM", "PM" ]
 
 const rawStartTime = startTime as string
-const initialStartHour = computed(() => {
-	const [ hour ] = rawStartTime.split(":")
-
-	if (Number(hour) < 12) return hour
-	return twoDigits(Number(hour) - 12)
-})
-const initialStartMinute = computed(() => {
-	const [ unusedhour, minute ] = rawStartTime.split(":")
-
-	return minute
-})
-const initialStartMidDay = computed(() => {
-	const [ hour ] = rawStartTime.split(":")
-
-	if (Number(hour) < 12) return "AM"
-	return "PM"
-})
-console.log(initialStartHour.value, ":", initialStartMinute.value, initialStartMidDay.value)
+const initialStartHour = computed(() => getTimePart(rawStartTime, "hour"))
+const initialStartMinute = computed(() => getTimePart(rawStartTime, "minute"))
+const initialStartMidDay = computed(() => getTimePart(rawStartTime, "midday"))
 
 const rawEndTime = endTime as string
-const initialEndHour = computed(() => {
-	const [ hour ] = rawEndTime.split(":")
+const initialEndHour = computed(() => getTimePart(rawEndTime, "hour"))
+const initialEndMinute = computed(() => getTimePart(rawEndTime, "minute"))
+const initialEndMidDay = computed(() => getTimePart(rawEndTime, "midday"))
 
 	if (Number(hour) < 12) return hour
 	return twoDigits(Number(hour) - 12)
