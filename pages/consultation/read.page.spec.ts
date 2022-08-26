@@ -1,6 +1,5 @@
 import { mount, flushPromises } from "@vue/test-utils"
 
-
 import "~/set-ups/database.set_up"
 import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
@@ -16,7 +15,7 @@ import {
 	role
 } from "$/permissions/permission_list"
 
-import Page from "./chat.page.vue"
+import Page from "./read.page.vue"
 
 describe("UI Page: Read resource by ID", () => {
 	it("Should load resource by ID", async() => {
