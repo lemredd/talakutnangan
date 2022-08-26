@@ -31,7 +31,7 @@
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<div class="consultations-list">
-				<div v-if="!consultations.length" class="mx-auto max-w-[max-content] no-consultations">
+				<div v-if="hasConsultations" class="mx-auto max-w-[max-content] no-consultations">
 					<img class="mx-auto" :src="SadIcon"/>
 					<h2>There are no consultations yet...</h2>
 				</div>
@@ -164,6 +164,8 @@ function toggleAddingSchedule() {
 const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
 	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
 )
+const hasConsultations = computed<number>(() => consultations.value.data.length)
+
 const selectedConsultationID = ref<string>("1")
 const selectedConsultation = computed(() => {
 	const foundConsultation = consultations.value.data.find(
