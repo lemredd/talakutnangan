@@ -7,7 +7,7 @@
 <template>
 	<ConsultationShell @picked-consultation="pickConsultation">
 		<template #chat-window>
-			<ChatWindow :consultation="selectedConsultation"/>
+			<ChatWindow :consultation="consultation"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -27,36 +27,25 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { inject, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	ConsultationRelationshipNames,
-	DeserializedConsultationListDocument
+	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
 const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
 
-const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
-	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
+const consultation = ref<DeserializedConsultationResource<ConsultationRelationshipNames>>(
+	pageProps.consultation.data as DeserializedConsultationResource<ConsultationRelationshipNames>
 )
 
-const selectedConsultationID = ref<string>("1")
-const selectedConsultation = computed(() => {
-	const foundConsultation = consultations.value.data.find(
-		consultation => consultation.id === selectedConsultationID.value
-	)
-
-	return foundConsultation
-})
-
-function pickConsultation(consultationID: string) {
-	selectedConsultationID.value = consultationID
+function pickConsultation(unusedConsultationID: string) {
+	// TODO: Go to other location
 }
 </script>
