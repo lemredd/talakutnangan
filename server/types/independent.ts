@@ -73,3 +73,11 @@ export interface UsableErrorPointer {
  * Indicates the error source types usually used for validation errors.
  */
 export type SourceType = "parameter"|"pointer"|null
+
+/**
+ * Shape of redirect information
+ */
+export interface RedirectInfo {
+	location: string,
+	status?: number
+}
