@@ -133,6 +133,9 @@ export type RoleQueryParameters<T extends number|string = string> =
 export type DepartmentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& IDsFilter<T>
+
+export type ConsultationQueryParameters =
+	& CommonQueryParameters
 	& ConsultationRangeFilter
 
 export type EmployeeScheduleQueryParameters<T extends number|string = string> =
