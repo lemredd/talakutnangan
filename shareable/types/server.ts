@@ -8,7 +8,10 @@ import type { Serializable } from "$/types/general"
 import type { Format } from "$/types/documents/base"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
-import type { DeserializedConsultationListDocument } from "$/types/documents/consultation"
+import type {
+	DeserializedConsultationDocument,
+	DeserializedConsultationListDocument
+} from "$/types/documents/consultation"
 
 /**
  * Used to indicate the type of current environment where the script is running.
@@ -52,8 +55,11 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	roles: T extends "deserialized" ? DeserializedRoleListDocument : Serializable|undefined
 	consultations: T extends "deserialized"
-	? DeserializedConsultationListDocument
-	: Serializable|undefined
+		? DeserializedConsultationListDocument
+		: Serializable|undefined
+	consultation: T extends "deserialized"
+		? DeserializedConsultationDocument
+		: Serializable|undefined
 }
 
 export type AdditionalPropNames<T extends Format = "serialized">
