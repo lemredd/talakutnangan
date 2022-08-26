@@ -4,7 +4,7 @@ import type { FindOptions, Model } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 /**
- * Selects if the models to retrieve should all, present or archived.
+ * Sorts the selected models.
  */
 export default function<T extends Model>(
 	currentState: FindOptions<T>,
@@ -15,17 +15,18 @@ export default function<T extends Model>(
 	const rawSortInfo = constraints.sort.map(column => {
 		if (column.startsWith("-")) {
 			return [ column.slice(1), "DESC" ]
-		} else {
-			return [ column, "ASC" ]
 		}
+
+		return [ column, "ASC" ]
 	})
 
 	if (rawSortInfo.length > 0) {
-		if (newState.order === undefined) {
+		if (typeof newState.order === "undefined") {
 			newState.order = []
 		}
 
-		(newState.order as any[]).push(...rawSortInfo)
+		const castOrder = newState.order as any[]
+		castOrder.push(...rawSortInfo)
 	}
 
 	Log.trace("pipeline", "sort")

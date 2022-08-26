@@ -1,8 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
-import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
 import MockRequester from "~/set-ups/mock_requester"
-import ConsultationFactory from "~/factories/consultation"
 
 import Controller from "./update(id).patch"
 
@@ -16,17 +14,14 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().beReachableEmployee().insertOne()
-		const consultation = await new ConsultationFactory().insertOne()
-		const model = await new Factory()
-		.user(() => Promise.resolve(user))
-		.consultation(() => Promise.resolve(consultation))
-		.insertOne()
+		const model = await new Factory().insertOne()
+		const newModel = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"data": model.data
+						"data": newModel.data,
+						"kind": newModel.kind
 					},
 					"id": String(model.id),
 					"type": "chat_message"
@@ -44,17 +39,14 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().beReachableEmployee().insertOne()
-		const consultation = await new ConsultationFactory().insertOne()
-		const model = await new Factory()
-		.user(() => Promise.resolve(user))
-		.consultation(() => Promise.resolve(consultation))
-		.insertOne()
+		const model = await new Factory().insertOne()
+		const newModel = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"data": "not an object"
+						"data": "not an object",
+						"kind": newModel.kind
 					},
 					"id": String(model.id),
 					"type": "chat_message"

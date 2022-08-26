@@ -9,58 +9,55 @@ import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
-import Route from "!%/api/chat_message/create.post"
+import Route from "!%/api/chat_message/update(id).patch"
 
-describe("POST /api/chat_message", () => {
+describe("PATCH /api/chat_message/:id", () => {
 	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
 	it("can be accessed by authenticated user", async() => {
 		const normalRole = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(employee))
+		.insertOne()
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
-		.serializedOne()
+		.serializedOne(true)
+		const newModel = await new Factory()
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
+		.serializedOne(false)
 
 		const response = await App.request
-		.post("/api/chat_message")
+		.patch(`/api/chat_message/${model.data.id}`)
 		.set("Cookie", cookie)
 		.send({
 			"data": {
 				"attributes": {
-					"data": model.data.attributes.data,
-					"kind": model.data.attributes.kind
+					"data": newModel.data.attributes.data,
+					"kind": newModel.data.attributes.kind
 				},
-				"relationships": {
-					"chatMessageActivity": {
-						"data": {
-							"id": String(chatMessageActivity.id),
-							"type": "chat_message_activity"
-						}
-					}
-				},
+				"id": String(model.data.id),
 				"type": "chat_message"
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
-		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
-		expect(response.body.data.attributes.data).toStrictEqual(model.data.attributes.data)
+		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		const previousCalls = Socket.consumePreviousCalls()
 		expect(previousCalls[0].functionName).toBe("emitToClients")
-		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
+		expect(previousCalls[0].arguments).toHaveProperty("eventName", "update")
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"namespace",
 			makeConsultationChatNamespace(String(chatMessageActivity.consultationID))
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"data.0.data.attributes.data",
-			model.data.attributes.data
+			newModel.data.attributes.data
 		)
 	})
 })

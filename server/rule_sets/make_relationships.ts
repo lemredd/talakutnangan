@@ -31,14 +31,14 @@ export default function(
 					let objectConstraints: ObjectRuleConstraints["object"] = {}
 
 					if (isArray) {
-						objectConstraints = makeResourceIdentifierDocumentRules(
+						objectConstraints = makeResourceIdentifierListDocumentRules(
 							typeName ?? relationshipName,
 							validator,
 							ClassName,
 							options ?? {}
 						)
 					} else {
-						objectConstraints = makeResourceIdentifierListDocumentRules(
+						objectConstraints = makeResourceIdentifierDocumentRules(
 							typeName ?? relationshipName,
 							validator,
 							ClassName,
