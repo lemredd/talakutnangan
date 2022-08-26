@@ -4,7 +4,10 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
-import type { RoleListDocument } from "$/types/documents/role"
+import type { Format } from "$/types/documents/base"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedConsultationListDocument } from "$/types/documents/consultation"
 
 /**
  * Used to indicate the type of current environment where the script is running.
@@ -44,13 +47,26 @@ export interface RouteInformation {
 
 import type { Serializable } from "$/types/general"
 
-export interface PageProps extends Serializable {
+interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	// Added to pass data from server to client
-	userProfile: Serializable|null
+	userProfile: T extends "deserialized" ? DeserializedUserProfile : Serializable|null
 
-	roles?: Serializable
-	consultations?: Serializable
+	roles: T extends "deserialized" ? DeserializedRoleListDocument : Serializable|undefined
+	consultations: T extends "deserialized"
+	? DeserializedConsultationListDocument
+	: Serializable|undefined
 }
+
+export type AdditionalPropNames<T extends Format = "serialized">
+= Exclude<keyof RawPageProps<T>, "userProfile">
+
+export type PageProps<
+	T extends Format = "serialized",
+	U extends AdditionalPropNames<T>|undefined = undefined
+>
+= U extends AdditionalPropNames<T>
+	? Pick<RawPageProps<T>, "userProfile"|U>
+	: Pick<RawPageProps<T>, "userProfile"> & Partial<Omit<RawPageProps<T>, "userProfile">>
 
 /**
  * Source of error in the sent resource
