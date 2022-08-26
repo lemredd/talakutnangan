@@ -19,7 +19,10 @@
 			:options="remainingOptions"
 			:placeholder="placeholder">
 			<template #after-dropdown>
-				<button class="material-icons" @click="addCurrentOption">
+				<button
+					type="button"
+					class="material-icons"
+					@click="addCurrentOption">
 					add
 				</button>
 			</template>
