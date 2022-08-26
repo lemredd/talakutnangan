@@ -77,16 +77,25 @@ const { day, startTime, endTime } = defineProps<{
 function twoDigits(number: number) {
 	return number < 10 ? `0${number}` : number.toString()
 }
+
 function generateNumberRange(start: number, end: number) {
 	const numbers = []
 	for (let i = start; i < end; i++) {
-		numbers.push(twoDigits(i))
+		numbers.push({ "value": twoDigits(i) })
 	}
 
 	return numbers
 }
 
-function getTimePart(time: string, part: "hour" | "minute" | "midday"): string {
+function makeOptions(values: any[]): any[] {
+	const options: any[] = []
+	// eslint-disable-next-line object-shorthand
+	values.map(value => options.push({ "value": value }))
+
+	return options
+}
+
+function getTimePart(time: string, part: "hour" | "minute" | "midday") {
 	const noon = 12
 	const [ hour, minute ] = time.split(":")
 	let partToGive = ""
@@ -105,18 +114,10 @@ function getTimePart(time: string, part: "hour" | "minute" | "midday"): string {
 
 	return partToGive
 }
+
 const hours = generateNumberRange(1, 13)
 const minutes = generateNumberRange(0, 60)
-const midDay = [ "AM", "PM" ]
-const days = [
-	"sunday",
-	"monday",
-	"tuesday",
-	"wednesday",
-	"thursday",
-	"friday",
-	"saturday"
-]
+const midDay = makeOptions([ "AM", "PM" ])
 
 const rawStartTime = startTime as string
 const startHour = ref(getTimePart(rawStartTime, "hour"))
