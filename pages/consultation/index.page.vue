@@ -150,10 +150,7 @@ function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<DeserializedConsultationListDocument<
-	string,
-	ConsultationRelationshipNames
->>({
+const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>({
 	"data": []
 })
 const selectedConsultationID = ref<string>("1")
