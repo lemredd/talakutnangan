@@ -24,8 +24,8 @@ export default function<T>(
 
 	if (consultationScheduleRange !== "*") {
 		condition.and(
-			new Condition().greaterThanOrEqual("scheduledStart", consultationScheduleRange.start),
-			new Condition().lessThanOrEqual("scheduledStart", consultationScheduleRange.end)
+			new Condition().greaterThanOrEqual("scheduledStartAt", consultationScheduleRange.start),
+			new Condition().lessThanOrEqual("scheduledStartAt", consultationScheduleRange.end)
 		)
 	}
 
