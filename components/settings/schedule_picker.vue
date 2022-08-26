@@ -16,19 +16,17 @@
 					v-model="startHour"
 					class="inline"
 					:options="hours"
-					:initial-value="initialStartHour"/>
-				<TimeSelect
+					@change="setNewTime(startHour, startMinute, startMidDay)"/>
 				<Selectable
 					v-model="startMinute"
 					class="inline"
 					:options="minutes"
-					:initial-value="initialStartMinute"/>
-				<TimeSelect
+					@change="setNewTime(startHour, startMinute, startMidDay)"/>
 				<Selectable
 					v-model="startMidDay"
 					class="inline"
 					:options="midDay"
-					:initial-value="initialStartMidDay"/>
+					@change="setNewTime(startHour, startMinute, startMidDay)"/>
 			</div>
 		</label>
 		<label class="flex">
@@ -38,19 +36,17 @@
 					v-model="endHour"
 					class="inline"
 					:options="hours"
-					:initial-value="initialEndHour"/>
-				<TimeSelect
+					@change="setNewTime(endHour, endMinute, endMidDay)"/>
 				<Selectable
 					v-model="endMinute"
 					class="inline"
 					:options="minutes"
-					:initial-value="initialEndMinute"/>
-				<TimeSelect
+					@change="setNewTime(endHour, endMinute, endMidDay)"/>
 				<Selectable
 					v-model="endMidDay"
 					class="inline"
 					:options="midDay"
-					:initial-value="initialEndMidDay"/>
+					@change="setNewTime(endHour, endMinute, endMidDay)"/>
 			</div>
 		</label>
 	</div>
@@ -63,7 +59,9 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref } from "vue"
+
+import { DayValues } from "$/types/database"
 
 import Selectable from "@/fields/selectable_options.vue"
 import TextTransformer from "$/helpers/text_transformers"
@@ -118,6 +116,7 @@ function getTimePart(time: string, part: "hour" | "minute" | "midday") {
 const hours = generateNumberRange(1, 13)
 const minutes = generateNumberRange(0, 60)
 const midDay = makeOptions([ "AM", "PM" ])
+const unuseddays = [ ...DayValues ]
 
 const rawStartTime = startTime as string
 const startHour = ref(getTimePart(rawStartTime, "hour"))
@@ -129,19 +128,14 @@ const endHour = ref(getTimePart(rawEndTime, "hour"))
 const endMinute = ref(getTimePart(rawEndTime, "minute"))
 const endMidDay = ref(getTimePart(rawEndTime, "midday"))
 
-	if (Number(hour) < 12) return hour
-	return twoDigits(Number(hour) - 12)
-})
-const initialEndMinute = computed(() => {
-	const [ unusedhour, minute ] = rawEndTime.split(":")
+function setNewTime(hour: string, minute: string, oldMidDay: string) {
+	const newHour = oldMidDay === "PM"
+		? Number(hour) + 12
+		: Number(hour)
 
-	return minute
-})
-const initialEndMidDay = computed(() => {
-	const [ hour ] = rawEndTime.split(":")
+	const newTime = `${newHour}:${minute}`
+	emit("passNewTime", newTime)
+}
 
-	if (Number(hour) < 12) return "AM"
-	return "PM"
-})
-console.log(initialEndHour.value, ":", initialEndMinute.value, initialEndMidDay.value)
+const emit = defineEmits<{(e: "passNewTime", newTime: string): void }>()
 </script>
