@@ -78,14 +78,10 @@ export default class Condition<T = any> {
 
 	private simplifyConditions(conditions: Condition[]): { [key: string|symbol]: any }[] {
 		return conditions.map(condition => condition.build()).filter(object => {
-			for (const key in object) {
-				// eslint-disable-next-line prefer-object-has-own
-				if (Object.prototype.hasOwnProperty.call(object, key)) {
-					return true
-				}
-			}
+			const hasProperties = Object.getOwnPropertyNames(object).length > 0
+				|| Object.getOwnPropertySymbols(object).length > 0
 
-			return false
+			return hasProperties
 		})
 	}
 }

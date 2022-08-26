@@ -132,4 +132,26 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({ "columnA": { [Op.is]: null } })
 	})
+
+	it("can make simplified nested 'and' operation", () => {
+		const condition = new Condition()
+		const subconditionA = new Condition().is("columnA", null)
+		const subconditionB = new Condition().not("columnB", null)
+		const subconditionC = new Condition()
+
+		const builtCondition = condition.and(
+			new Condition(new Condition().and(
+				subconditionA,
+				subconditionB
+			).build()),
+			subconditionC
+		).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{ "columnA": { [Op.is]: null } },
+				{ "columnB": { [Op.not]: null } }
+			]
+		})
+	})
 })
