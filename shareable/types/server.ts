@@ -63,8 +63,7 @@ export type AdditionalPropNames<T extends Format = "serialized">
 export type PageProps<
 	T extends Format = "serialized",
 	U extends AdditionalPropNames<T>|undefined = undefined
->
-= U extends AdditionalPropNames<T>
+> = U extends AdditionalPropNames<T>
 	? Pick<RawPageProps<T>, "userProfile"|U>
 	: Pick<RawPageProps<T>, "userProfile"> & Partial<Omit<RawPageProps<T>, "userProfile">>
 
