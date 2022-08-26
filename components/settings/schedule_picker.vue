@@ -3,14 +3,12 @@
 	TODO(lead): Use `employee_schedule` fetcher to modify data
 
  -->
+
 <template>
 	<div class="schedule-picker">
-		<label class="flex">
-			<span>Day:</span>
-			<Select
-				:options="days"
-				:initial-value="day"/>
-		</label>
+		<h3 class="day">
+			{{ new TextTransformer().toSentenceCase(day) }}
+		</h3>
 		<label class="flex">
 			<span>From:</span>
 			<div id="start">
