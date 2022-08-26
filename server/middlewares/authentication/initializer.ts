@@ -1,12 +1,12 @@
 import passport from "passport"
-import type { Request, Response, NextFunction } from "!/types/dependent"
-import Middleware from "!/bases/middleware"
+import type { Request } from "!/types/dependent"
 
-export default class Initializer extends Middleware {
+import RequestFilter from "!/bases/request_filter"
+
+export default class Initializer extends RequestFilter {
 	private static intialize = passport.initialize()
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		// @ts-ignore
-		Initializer.intialize(request, response, next)
+	async filterRequest(request: Request): Promise<void> {
+		await this.runFilter(Initializer.intialize, request)
 	}
 }

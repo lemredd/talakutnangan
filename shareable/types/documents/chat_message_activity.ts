@@ -1,14 +1,22 @@
+import type { UserIdentifierDocument } from "$/types/documents/user"
+import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
 import type {
 	Completeness,
 	Format,
+
+	Relationships,
 	Resource,
 	Attributes,
-	ResourceDocument,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ChatMessageActivityResourceIdentifier<T extends Completeness = "read">
@@ -22,11 +30,16 @@ extends Attributes<T> {
 	seenMessageAt: string|null
 }
 
+export type ChatMessageActivityRelationships = Relationships<{
+	"user": UserIdentifierDocument,
+	"consultation": ConsultationIdentifierDocument
+}>
+
 export type ChatMessageActivityResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
 	ChatMessageActivityAttributes<"serialized">
->
+> & ChatMessageActivityRelationships
 
 export type DeserializedChatMessageActivityResource = DeserializedResource<
 	ChatMessageActivityResourceIdentifier<"read">,
@@ -58,3 +71,9 @@ export type DeserializedChatMessageActivityListDocument = DeserializedResourceLi
 	ChatMessageActivityAttributes<"deserialized">,
 	DeserializedChatMessageActivityResource
 >
+
+export type ChatMessageActivityIdentifierDocument
+= IdentifierDocument<ChatMessageActivityResourceIdentifier<"read">>
+
+export type ChatMessageActivityIdentifierListDocument
+= IdentifierListDocument<ChatMessageActivityResourceIdentifier<"read">>

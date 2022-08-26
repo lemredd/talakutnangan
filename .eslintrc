@@ -27,6 +27,7 @@ rules:
   default-case: "warn"
   class-methods-use-this: "off"
   curly: ["error", "multi-line", "consistent"]
+  eqeqeq: ["warn"]
   func-style: ["error", "declaration", { "allowArrowFunctions": true }]
   func-names: "off"
   function-call-argument-newline: ["error", "consistent"]
@@ -92,6 +93,7 @@ rules:
     - "warn"
     -
       ignore:
+        - -1
         - 0
         - 1
         - 2

@@ -14,6 +14,7 @@ import { Status, StatusValues } from "$/types/database"
 import User from "%/models/user"
 import Role from "%/models/role"
 import Consulter from "%/models/consulter"
+import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
@@ -80,10 +81,30 @@ export default class Consultation extends Model {
 
 	@HasMany(() => ChatMessageActivity)
 		chatMessageActivities?: ChatMessageActivity[]
-	/*
-	 * @HasMany(() => Message)
-	 * message?: Message
-	 */
 
-	// TODO Message
+	get chatMessages(): ChatMessage[]|null {
+		let chatMessages: ChatMessage[] = []
+
+		if (this.chatMessageActivities) {
+			chatMessages = this.chatMessageActivities.reduce(
+				(previousMessages, chatMessageActivity) => {
+					const messages = chatMessageActivity.chatMessages
+
+					if (messages) {
+						return [
+							...previousMessages,
+							...messages
+						]
+					}
+
+					return previousMessages
+				},
+				[] as ChatMessage[]
+			)
+		}
+
+		if (chatMessages.length === 0) return null
+
+		return chatMessages
+	}
 }

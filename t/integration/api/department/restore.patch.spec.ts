@@ -1,9 +1,9 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
+import Model from "%/models/department"
 import RoleFactory from "~/factories/role"
-import Department from "%/models/department"
-import DepartmentFactory from "~/factories/department"
+import Factory from "~/factories/department"
 import RequestEnvironment from "$!/singletons/request_environment"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -20,16 +20,16 @@ describe("PATCH /api/department", () => {
 		.departmentFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const department = await new DepartmentFactory().insertOne()
-		await department.destroy()
+		const model = await new Factory().insertOne()
+		await model.destroy()
 
 		const response = await App.request
 		.patch("/api/department")
 		.send({
 			"data": [
 				{
-					"type": "department",
-					"id": String(department.id)
+					"id": String(model.id),
+					"type": "department"
 				}
 			]
 		})
@@ -38,6 +38,7 @@ describe("PATCH /api/department", () => {
 		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect((await Department.findOne({ "where": { "id": department.id } }))!.deletedAt).toBeNull()
+		const targetModel = await Model.findByPk(model.id) as Model
+		expect(targetModel.deletedAt).toBeNull()
 	})
 })

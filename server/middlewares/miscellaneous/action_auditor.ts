@@ -1,13 +1,14 @@
+import type { Request } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { Request, Response, NextFunction } from "!/types/dependent"
-import Middleware from "!/bases/middleware"
+
 import deserialize from "$/helpers/deserialize"
+import RequestFilter from "!/bases/request_filter"
 import AuditTrailManager from "%/managers/audit_trail"
 
 /**
  * A post job to audit the actions done by user.
  */
-export default class ActionAuditor extends Middleware {
+export default class ActionAuditor extends RequestFilter {
 	private actionName: string
 
 	constructor(actionName: string) {
@@ -15,8 +16,7 @@ export default class ActionAuditor extends Middleware {
 		this.actionName = actionName
 	}
 
-	async intermediate(request: Request, response: Response, next: NextFunction)
-	: Promise<void> {
+	async filterRequest(request: Request): Promise<void> {
 		const manager = new AuditTrailManager(request.transaction, request.cache)
 		const user = request.user
 			? deserialize(request.user) as DeserializedUserProfile
@@ -28,7 +28,5 @@ export default class ActionAuditor extends Middleware {
 			"extra": {},
 			userID
 		})
-
-		next()
 	}
 }

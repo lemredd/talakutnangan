@@ -23,14 +23,18 @@ export default class extends QueryController {
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(
 			EmployeeScheduleManager,
-			makeIDRules(true, "user", {
-				"constraints": {
-					"manager": {
-						"className": UserManager,
-						"columnName": "id"
-					}
-				},
-				"pipes": [ exists ]
+			makeIDRules({
+				"IDName": "user",
+				"mustCast": true,
+				"postRules": {
+					"constraints": {
+						"manager": {
+							"className": UserManager,
+							"columnName": "id"
+						}
+					},
+					"pipes": [ exists ]
+				}
 			})
 		)
 	}

@@ -17,11 +17,11 @@ describe("DELETE /api/employee_schedule", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.roleFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
+		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			adminRole,
-			userFactory => userFactory.beReachableEmployee())
+			userFactory => userFactory.beUnreachableEmployee())
 		const user = await new UserFactory().beReachableEmployee().insertOne()
 		const employeeSchedule = await new EmployeeScheduleFactory()
 		.user(() => Promise.resolve(user))

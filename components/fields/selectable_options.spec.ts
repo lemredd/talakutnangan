@@ -1,17 +1,21 @@
 import { shallowMount } from "@vue/test-utils"
-import Component from "@/fields/selectable_options.vue"
+
+import type { OptionInfo } from "$@/types/component"
+
+import Component from "./selectable_options.vue"
 
 describe("Component: fields/selectable_options", () => {
 	it("should emit custom event", async() => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
-				"options": [ 1, 2, 3 ]
+				"modelValue": "",
+				"options": [ { "value": "1" }, { "value": "2" }, { "value": "3" } ] as OptionInfo[]
 			}
 		})
 
 		const select = wrapper.find("select")
-		await select.setValue(2)
+		await select.setValue("2")
 
 		const updates = wrapper.emitted()
 		expect(updates).toHaveProperty("update:modelValue")
@@ -21,6 +25,7 @@ describe("Component: fields/selectable_options", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
+				"modelValue": "",
 				"options": []
 			}
 		})
@@ -32,9 +37,9 @@ describe("Component: fields/selectable_options", () => {
 	})
 
 	it("should identify initial value", () => {
-		const options = [ 1, 2, 3 ]
-		const [ modelValue ] = options
-		const wrapper = shallowMount(Component, {
+		const options = [ { "value": "1" }, { "value": "2" }, { "value": "3" } ] as OptionInfo[]
+		const modelValue = options[0].value
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
 				modelValue,
@@ -49,11 +54,11 @@ describe("Component: fields/selectable_options", () => {
 	})
 
 	it("should show default placeholder", () => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
-				"modelValue": 1,
-				"options": [ 1 ]
+				"modelValue": "1",
+				"options": [ { "value": "1" } ] as OptionInfo[]
 			}
 		})
 
@@ -65,11 +70,11 @@ describe("Component: fields/selectable_options", () => {
 
 	it("should show custom placeholder", () => {
 		const customPlaceholder = "Please a role"
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"label": "Sample select",
-				"modelValue": 1,
-				"options": [ 1 ],
+				"modelValue": "1",
+				"options": [ { "value": "1" } ] as OptionInfo[],
 				"placeholder": customPlaceholder
 			}
 		})

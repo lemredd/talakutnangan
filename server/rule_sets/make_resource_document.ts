@@ -24,7 +24,12 @@ export default function(
 	}> = {}
 ): FieldRules {
 	return makeDataDocumentRules(true, {
-		...isNew ? {} : makeIDRules(mustCastID, "id"),
+		...isNew
+			? {}
+			: makeIDRules({
+				"IDName": "id",
+				"mustCast": mustCastID
+			}),
 		...makeTypeRules(typeName),
 		"attributes": {
 			"constraints": {

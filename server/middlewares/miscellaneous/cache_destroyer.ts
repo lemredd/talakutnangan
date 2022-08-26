@@ -1,9 +1,11 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
-import Middleware from "!/bases/middleware"
+import type { Request } from "!/types/dependent"
 
-export default class CacheDestroyer extends Middleware {
-	async intermediate(request: Request, _response: Response, next: NextFunction): Promise<void> {
+import RequestFilter from "!/bases/request_filter"
+
+export default class CacheDestroyer extends RequestFilter {
+	filterRequest(request: Request): Promise<void> {
 		request.cache.destroy()
-		next()
+
+		return Promise.resolve()
 	}
 }

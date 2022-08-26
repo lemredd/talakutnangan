@@ -1,39 +1,42 @@
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import { parse } from "qs"
+import busboy from "busboy"
 import { Buffer } from "buffer"
 
-import busboy from "busboy"
-import { parse } from "qs"
+import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
-import Middleware from "!/bases/middleware"
 import mergeDeeply from "$!/helpers/merge_deeply"
+import RequestFilter from "!/bases/request_filter"
 import setDeepPath from "$!/helpers/set_deep_path"
 
 /**
  * Used to parse the forms that have attached files.
  */
-export default class FormBodyParser extends Middleware {
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
+export default class FormBodyParser extends RequestFilter {
+	parse(request: Request, next: NextFunction): Promise<void> {
 		Log.trace("middleware", "entered multipart body parser")
 		const bufferedFiles: { [key: string]: any } = {}
 		const formQueries: string[] = []
-		const parser = busboy({ headers: request.headers })
+		const parser = busboy({ "headers": request.headers })
 
 		parser.on("file", (name, stream, info) => {
-			let rawBuffer: number[] = []
+			const rawBuffer: number[] = []
 			stream.on("data", data => {
 				rawBuffer.push(...data)
 			})
 			.on("close", () => {
-				setDeepPath(bufferedFiles, name, { buffer: Buffer.from(rawBuffer), info })
+				setDeepPath(bufferedFiles, name, {
+					"buffer": Buffer.from(rawBuffer),
+					info
+				})
 				Log.trace("middleware", `parsed "${name}" file data in multipart body parser`)
 			})
 		})
 
-		parser.on("field", (name, value, _info) => {
+		parser.on("field", (name, value, unusedInfo) => {
 			formQueries.push(`${name}=${value}`)
 			Log.trace("middleware", `prepared "${name}" field in multipart body parser`)
-		});
+		})
 
 		parser.on("close", () => {
 			const parsedFormQuery = parse(formQueries.join("&"))
@@ -52,5 +55,16 @@ export default class FormBodyParser extends Middleware {
 		request.pipe(parser)
 
 		Log.success("middleware", "piped request body to parser in multipart body parser")
+
+		return Promise.resolve()
+	}
+
+	async filterRequest(request: Request): Promise<void> {
+		await this.runFilter(
+			(passedRequest: Request, unusedResponse: Response, next: NextFunction) => {
+				this.parse(passedRequest, next)
+			},
+			request
+		)
 	}
 }

@@ -28,23 +28,12 @@ export interface EmployeeScheduleAttributes<T extends Format = "serialized"> ext
 
 export type EmployeeScheduleRelationships = Relationships<{ "user": UserIdentifierDocument }>
 
-/**
- * Shape of employee schedule resource.
- *
- * If first generic argument is number or false, second generic argument is unnecessary and `userID`
- * will be one of the attributes. Otherwise, relationships will be included.
- *
- * Second generic argument dictates the type of primary ID for user resource identifier.
- */
-export type EmployeeScheduleResource<
-	T extends Completeness = "read",
-	U extends boolean = false,
-> = Resource<
+export type EmployeeScheduleResource<T extends Completeness = "read", > = Resource<
 	T,
 	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes<"serialized">
 > & (
-	U extends true ? EmployeeScheduleRelationships : Serializable
+	T extends "create" ? EmployeeScheduleRelationships : Serializable
 )
 
 export type DeserializedEmployeeScheduleResource = DeserializedResource<
@@ -52,24 +41,18 @@ export type DeserializedEmployeeScheduleResource = DeserializedResource<
 	EmployeeScheduleAttributes<"deserialized">
 >
 
-export type EmployeeScheduleDocument<
-	T extends Completeness = "read",
-	U extends boolean = false,
-> = ResourceDocument<
+export type EmployeeScheduleDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
 	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes<"serialized">,
-	EmployeeScheduleResource<T, U>
+	EmployeeScheduleResource<T>
 >
 
-export type EmployeeScheduleListDocument<
-	T extends Completeness = "read",
-	U extends boolean = false,
-> = ResourceListDocument<
+export type EmployeeScheduleListDocument<T extends Completeness = "read"> = ResourceListDocument<
 	T,
 	EmployeeScheduleResourceIdentifier<T>,
 	EmployeeScheduleAttributes<"serialized">,
-	EmployeeScheduleResource<T, U>
+	EmployeeScheduleResource<T>
 >
 
 export type DeserializedEmployeeScheduleDocument = DeserializedResourceDocument<

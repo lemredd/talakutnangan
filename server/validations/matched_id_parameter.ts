@@ -13,13 +13,17 @@ export default class extends Validation {
 		super((unusedRequest: Request): FieldRules => ({
 			"body": {
 				"constraints": {
-					"object": makeDataDocumentRules(true, makeIDRules(true, "id", {
-						"constraints": {
-							"same": {
-								"pointer": "params.id"
-							}
-						},
-						"pipes": [ same ]
+					"object": makeDataDocumentRules(true, makeIDRules({
+						"IDName": "id",
+						"mustCast": true,
+						"postRules": {
+							"constraints": {
+								"same": {
+									"pointer": "params.id"
+								}
+							},
+							"pipes": [ same ]
+						}
 					}))
 				},
 				"pipes": [ required, object ]

@@ -1,4 +1,4 @@
-import type { FieldRules, Rules } from "!/types/validation"
+import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -9,15 +9,12 @@ import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
-import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
-import makeResourceIdentifierListDocumentRules
-	from "!/rule_sets/make_resource_identifier_list_document"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -50,53 +47,37 @@ export default class extends JSONController {
 			}
 		}
 
-		const relationships: Rules = {
-			"constraints": {
-				"object": {
-					"consultant": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules("user", exists, UserManager)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					},
-					"consultantRole": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules("role", exists, RoleManager)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					},
-					"consulters": {
-						"constraints": {
-							"object": makeResourceIdentifierListDocumentRules("user", exists, UserManager)
-						},
-						"pipes": [ required, object ]
-					}
-				}
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": UserManager,
+				"isArray": false,
+				"relationshipName": "consultant",
+				"typeName": "user",
+				"validator": exists
 			},
-			"pipes": [ required, object ]
-		}
+			{
+				"ClassName": RoleManager,
+				"isArray": false,
+				"relationshipName": "consultantRole",
+				"typeName": "role",
+				"validator": exists
+			},
+			{
+				"ClassName": UserManager,
+				"isArray": true,
+				"relationshipName": "consulters",
+				"typeName": "user",
+				"validator": exists
+			}
+		])
 
 		return makeResourceDocumentRules(
 			"consultation",
 			attributes,
 			{
+				"extraDataQueries": relationships,
 				"isNew": true,
-				"mustCastID": true,
-				"extraDataQueries": { relationships }
+				"mustCastID": true
 			}
 		)
 	}

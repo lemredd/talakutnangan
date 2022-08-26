@@ -1,44 +1,46 @@
+import type { PreprocessedRequest } from "!/types/dependent"
 import type { NewUserNotificationArguments } from "!/types/independent"
-import type { PreprocessedRequest, Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
-import Middleware from "!/bases/middleware"
 import Transport from "!/helpers/email/transport"
+import RequestFilter from "!/bases/request_filter"
 
 /**
  * Creates middleware to provide e-mail notification to new users.
  */
-export default class extends Middleware {
-	async intermediate(
-		request: PreprocessedRequest<NewUserNotificationArguments>,
-		_response: Response,
-		next: NextFunction
-	): Promise<void> {
+export default class extends RequestFilter {
+	async filterRequest(request: PreprocessedRequest<NewUserNotificationArguments>): Promise<void> {
 		const recipients = request.nextMiddlewareArguments.userDetails
 		const subject = "New User in Talakutnangan"
 
 		Log.trace("middleware", "sending e-mail notifications to new users")
 
 		try {
+			const promises: Promise<void>[] = []
+
 			for (const recipient of recipients) {
-				await Transport.sendMail(
+				const promise = Transport.sendMail(
 					[ recipient.email ],
 					subject,
 					"new_user.md",
 					{
-						homePageURL: `${request.protocol}://${request.hostname}`,
+						"homePageURL": `${request.protocol}://${request.hostname}`,
 						...recipient
 					}
 				)
+
+				// eslint-disable-next-line no-await-in-loop
+				if (this.isOnTest) await promise
+				else promises.push(promise)
 			}
 
-			Log.success("middleware", "new users were e-mailed")
+			if (!this.isOnTest) await Promise.all(promises)
 
-			next()
-		} catch(error) {
+			Log.success("middleware", "new users were e-mailed")
+		} catch (error) {
 			Log.error("middleware", error as Error)
 
-			next(error)
+			throw error
 		}
 	}
 }

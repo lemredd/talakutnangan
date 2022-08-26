@@ -3,7 +3,7 @@ import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 
-import { days } from "$/types/database.native"
+import { DayValues } from "$/types/database"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -28,8 +28,7 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		// TODO: Combine with permission-based policy
-		return CommonMiddlewareList.reachableEmployeeOnlyPolicy
+		return CommonMiddlewareList.employeeSchedulePolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
@@ -42,7 +41,7 @@ export default class extends JSONController {
 			"dayName": {
 				"constraints": {
 					"oneOf": {
-						"values": [ ...days ]
+						"values": [ ...DayValues ]
 					}
 				},
 				"pipes": [ required, string, oneOf ]
@@ -89,8 +88,8 @@ export default class extends JSONController {
 		}
 
 		return makeResourceDocumentRules("employee_schedule", attributes, {
-			"isNew": true,
-			"extraDataQueries": { relationships }
+			"extraDataQueries": { relationships },
+			"isNew": true
 		})
 	}
 
@@ -100,7 +99,7 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
-		const { data } = request.body as EmployeeScheduleDocument<"create", true>
+		const { data } = request.body as EmployeeScheduleDocument<"create">
 		const { attributes, relationships } = data
 
 		const document = await manager.create({

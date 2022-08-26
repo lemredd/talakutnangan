@@ -57,7 +57,7 @@ export default class ChatMessageActivityFactory extends BaseFactory<
 		return this
 	}
 
-	seenMessageAt(generator: () => Date): ChatMessageActivityFactory {
+	seenMessageAt(generator: () => Date|null): ChatMessageActivityFactory {
 		this.#seenMessageAtGenerator = generator
 		return this
 	}

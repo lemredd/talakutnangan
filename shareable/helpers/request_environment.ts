@@ -18,7 +18,7 @@ export default class RequestEnvironment {
 
 	static get isOnIntegration(): boolean {
 		const { environment } = this
-		return environment === Environment.UnitTest || environment === Environment.IntegrationTest
+		return environment === Environment.IntegrationTest
 	}
 
 	static get isNotOnProduction(): boolean {

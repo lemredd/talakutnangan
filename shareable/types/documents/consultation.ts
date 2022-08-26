@@ -9,15 +9,20 @@ import type {
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Attributes,
-	ResourceDocument,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	ResourceDocument,
 	ResourceListDocument,
 	DeserializedRelationships,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ConsultationResourceIdentifier<T extends Completeness = "read">
@@ -35,7 +40,7 @@ extends Attributes<T> {
 	finishedAt: (T extends "serialized" ? string : Date)|null
 }
 
-type RawConsultationRelationships = [
+type RawDeserializedConsultationRelationships = [
 	[ "consultant", DeserializedUserDocument ],
 	[ "consultantRole", DeserializedRoleDocument ],
 	[ "consulters", DeserializedUserListDocument ],
@@ -44,10 +49,11 @@ type RawConsultationRelationships = [
 ]
 
 export type DeserializedConsultationRelationships = DeserializedRelationships & {
-	[Property in RawConsultationRelationships[number][0]]: RawConsultationRelationships[number][1]
+	[Property in RawDeserializedConsultationRelationships[number][0]]
+	: RawDeserializedConsultationRelationships[number][1]
 }
 
-export type ConsultationRelationshipNames = RawConsultationRelationships[number][0]
+export type ConsultationRelationshipNames = RawDeserializedConsultationRelationships[number][0]
 
 export type ConsultationResource<T extends Completeness = "read"> = Resource<
 	T,
@@ -95,3 +101,9 @@ export type DeserializedConsultationListDocument<
 	ConsultationAttributes<"deserialized">,
 	DeserializedConsultationResource<T>
 >
+
+export type ConsultationIdentifierDocument
+= IdentifierDocument<ConsultationResourceIdentifier<"read">>
+
+export type ConsultationIdentifierListDocument
+= IdentifierListDocument<ConsultationResourceIdentifier<"read">>

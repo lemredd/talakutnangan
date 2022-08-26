@@ -86,17 +86,17 @@ export type UserResource<T extends Completeness = "read"> = Resource<
 	UserAttributes<"serialized">
 >
 
-type DeserializedStudentResource = DeserializedResource<
+export type DeserializedStudentResource = DeserializedResource<
 	UserResourceIdentifier<"read">,
 	DeserializedStudentAttributes
 >
 
-type DeserializedReachableEmployeesResource = DeserializedResource<
+export type DeserializedReachableEmployeesResource = DeserializedResource<
 	UserResourceIdentifier<"read">,
 	DeserializedReachableEmployeesAttributes
 >
 
-type DeserializedUnreachableEmployeesResource = DeserializedResource<
+export type DeserializedUnreachableEmployeesResource = DeserializedResource<
 	UserResourceIdentifier<"read">,
 	DeserializedUnreachableEmployeesAttributes
 >

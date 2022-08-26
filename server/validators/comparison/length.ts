@@ -17,7 +17,7 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (constraints.length === undefined) {
 		throw makeDeveloperError(constraints.field)
@@ -29,11 +29,10 @@ export default async function(
 		constraints.length.minimum !== undefined
 		&& expectedSanitizeLength < constraints.length.minimum) {
 		throw {
-			field: constraints.field,
-			messageMaker: (field: string) =>
-				`Field "${field}" must be more than or equal to ${
+			"field": constraints.field,
+			"messageMaker": (field: string) => `Field "${field}" must be more than or equal to ${
 					constraints.length!.minimum
-				} character(s).`
+			} character(s).`
 		}
 	}
 
@@ -41,11 +40,10 @@ export default async function(
 		constraints.length.maximum !== undefined
 		&& constraints.length.maximum < expectedSanitizeLength) {
 		throw {
-			field: constraints.field,
-			messageMaker: (field: string) =>
-				`Field "${field}" must be less than or equal to ${
+			"field": constraints.field,
+			"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
 					constraints.length!.maximum
-				} character(s).`
+			} character(s).`
 		}
 	}
 

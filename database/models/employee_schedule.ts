@@ -7,8 +7,7 @@ import {
 	ForeignKey
 } from "sequelize-typescript"
 
-import type { Day } from "$/types/database"
-import { days } from "$/types/database.native"
+import { Day, DayValues } from "$/types/database"
 
 import User from "%/models/user"
 
@@ -29,7 +28,7 @@ export default class EmployeeSchedule extends Model {
 
 	@Column({
 		"allowNull": false,
-		"type": DataType.ENUM(...days)
+		"type": DataType.ENUM(...DayValues)
 	})
 		dayName!: Day
 

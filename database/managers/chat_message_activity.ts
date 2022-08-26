@@ -1,17 +1,27 @@
-import type { ModelCtor } from "%/types/dependent"
+import type { Pipe } from "$/types/database"
 import type { CommonQueryParameters } from "$/types/query"
+import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { ChatMessageActivityAttributes } from "$/types/documents/chat_message_activity"
 
 import BaseManager from "%/managers/base"
-import ChatMessageActivity from "%/models/chat_message_activity"
-import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
+import Model from "%/models/chat_message_activity"
+import Transformer from "%/transformers/chat_message_activity"
+
+import includeDefaults from "%/queries/chat_message_activity/include_defaults"
 
 export default class extends BaseManager<
-	ChatMessageActivity,
+	Model,
 	ChatMessageActivityAttributes<"deserialized">,
 	CommonQueryParameters
 > {
-	get model(): ModelCtor<ChatMessageActivity> { return ChatMessageActivity }
+	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): ChatMessageActivityTransformer { return new ChatMessageActivityTransformer() }
+	get transformer(): Transformer { return new Transformer() }
+
+	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, CommonQueryParameters>[] {
+		return [
+			includeDefaults,
+			...super.singleReadPipeline
+		]
+	}
 }
