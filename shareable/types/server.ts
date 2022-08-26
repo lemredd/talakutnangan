@@ -4,6 +4,7 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
+import type { Serializable } from "$/types/general"
 import type { Format } from "$/types/documents/base"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
@@ -44,8 +45,6 @@ export interface RouteInformation {
 	purpose: Purpose,
 	description: string|null
 }
-
-import type { Serializable } from "$/types/general"
 
 interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	// Added to pass data from server to client

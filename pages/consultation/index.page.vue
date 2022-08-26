@@ -135,24 +135,30 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, inject, ref } from "vue"
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
-	DeserializedConsultationListDocument,
-	ConsultationRelationshipNames
+	ConsultationRelationshipNames,
+	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
 import SadIcon from "./sadicon.png"
 import ConsultationForm from "@/consultation/form.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const { pageProps } = pageContext
+const userProfile = pageProps.userProfile as DeserializedUserProfile
+
 const isAddingSchedule = ref<boolean>(false)
 function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>({
-	"data": []
-})
+const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
+	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
+)
 const selectedConsultationID = ref<string>("1")
 const selectedConsultation = computed(() => {
 	const foundConsultation = consultations.value.data.find(

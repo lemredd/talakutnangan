@@ -1,12 +1,15 @@
 <template>
-<ul class="tabs">
-	<li v-for="tab in tabs" class="tab-button">
-		<Anchor
-			:href="`${parentUrl}/${tab.toLowerCase()}`">
-			{{ tab }}
-		</Anchor>
-	</li>
-</ul>
+	<ul class="tabs">
+		<li
+			v-for="tab in tabs"
+			:key="tab"
+			class="tab-button">
+			<Anchor
+				:href="`${parentUrl}/${tab.toLowerCase()}`">
+				{{ tab }}
+			</Anchor>
+		</li>
+	</ul>
 </template>
 
 <style lang="scss">
@@ -40,7 +43,7 @@
 <script setup lang="ts">
 import { inject } from "vue"
 import Anchor from "@/anchor.vue"
-import { PageContext } from "#/types"
+import { PageContext } from "$/types/renderer"
 
 const pageContext = inject("pageContext") as PageContext
 const tabs = inject("tabs") as string[]

@@ -158,7 +158,7 @@
 <script setup lang="ts">
 import { inject, computed } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Dropdown from "@/page_shell/dropdown.vue"
