@@ -24,7 +24,6 @@ export default function<T>(
 
 	if (employeeScheduleRange !== "*") {
 		condition.and(
-			new Condition().equal("dayName", employeeScheduleRange.day),
 			new Condition().greaterThanOrEqual("scheduleStart", employeeScheduleRange.start),
 			new Condition().lessThanOrEqual("scheduleEnd", employeeScheduleRange.end)
 		)

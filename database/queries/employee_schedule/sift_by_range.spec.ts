@@ -30,7 +30,6 @@ describe("Database Pipe: Sift by range", () => {
 		const options = siftByRange({}, {
 			"filter": {
 				"employeeScheduleRange": {
-					"day": "monday",
 					"end": END_TIME,
 					"start": START_TIME
 				}
@@ -55,7 +54,6 @@ describe("Database Pipe: Sift by range", () => {
 		const options = siftByRange({}, {
 			"filter": {
 				"employeeScheduleRange": {
-					"day": "monday",
 					"end": END_TIME,
 					"start": START_TIME + START_OFFSET
 				}

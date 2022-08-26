@@ -58,13 +58,21 @@ export interface UserFilter<T extends number|string = string> extends Serializab
 	}
 }
 
+export interface EmployeeScheduleDayFilter extends Serializable {
+	filter: {
+		/**
+		 * The day where employee schedules are available.
+		 */
+		day: "*"|Day
+	}
+}
+
 export interface EmployeeScheduleRangeFilter extends Serializable {
 	filter: {
 		/**
-		 * The time and day where employee schedules are available.
+		 * The time range where employee schedules are available.
 		 */
 		employeeScheduleRange: "*"|{
-			day: Day,
 			end: number,
 			start: number
 		}
@@ -118,3 +126,4 @@ export type EmployeeScheduleQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& UserFilter<T>
 	& EmployeeScheduleRangeFilter
+	& EmployeeScheduleDayFilter
