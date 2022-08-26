@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { onMounted, provide, ref, inject } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 

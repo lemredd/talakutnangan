@@ -1,7 +1,7 @@
 
 import type { ModelCtor } from "%/types/dependent"
-import type { Message, TextMessage } from "$/types/message"
 import type { GeneratedData } from "~/types/dependent"
+import type { Message, TextMessage } from "$/types/message"
 import type {
 	ChatMessageResourceIdentifier,
 	ChatMessageAttributes,
@@ -39,10 +39,9 @@ export default class ChatMessageFactory extends BaseFactory<
 		= async() => await new ChatMessageActivityFactory().insertOne()
 
 	#kindGenerator: () => string = () => faker.word.adjective()
-	#dataGenerator: () => Message = () => ({
-		"data": faker.lorem.sentence(),
-		"type": "text"
-	} as TextMessage)
+	#dataGenerator: () => Message["data"] = () => ({
+		"value": faker.lorem.sentence()
+	} as TextMessage["data"])
 
 	get model(): ModelCtor<ChatMessage> { return ChatMessage }
 
@@ -68,7 +67,7 @@ export default class ChatMessageFactory extends BaseFactory<
 		return model
 	}
 
-	data(generator: () => Message): ChatMessageFactory {
+	data(generator: () => Message["data"]): ChatMessageFactory {
 		this.#dataGenerator = generator
 		return this
 	}

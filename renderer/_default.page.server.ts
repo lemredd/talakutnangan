@@ -1,7 +1,7 @@
 import { renderToString } from "@vue/server-renderer"
 import { PageContextBuiltIn, escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 
 import { createApp } from "#/app"
 import ErrorPage from "#/_error.page.vue"

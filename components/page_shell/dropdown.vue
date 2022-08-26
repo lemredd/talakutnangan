@@ -1,12 +1,19 @@
 <template>
 	<div :class="purpose">
-		<div class="invisible-closer" v-if="isDropdownShown" @click="toggleDropdown"></div>
+		<div
+			v-if="isDropdownShown"
+			class="invisible-closer"
+			@click="toggleDropdown">
+		</div>
 		<div class="toggler">
-			<a id="dropdown-btn" role="button" @click="toggleDropdown">
+			<a
+				id="dropdown-btn"
+				role="button"
+				@click="toggleDropdown">
 				<slot name="toggler"></slot>
 			</a>
 		</div>
-		<div class="dropdown-container" v-if="isDropdownShown">
+		<div v-if="isDropdownShown" class="dropdown-container">
 			<slot></slot>
 		</div>
 	</div>
@@ -34,7 +41,7 @@ import { ref } from "vue"
 const { purpose } = defineProps<{
 	purpose: string
 }>()
-const emit = defineEmits(["toggle"])
+const emit = defineEmits([ "toggle" ])
 const isDropdownShown = ref(false)
 
 function toggleDropdown() {

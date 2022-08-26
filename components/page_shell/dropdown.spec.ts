@@ -1,10 +1,9 @@
 import { mount } from "@vue/test-utils"
-import Dropdown from "./Dropdown.vue"
-
+import Component from "./dropdown.vue"
 
 describe("Component: Dropdown", () => {
 	it("should show dropdown when toggled", async() => {
-		const wrapper = mount(Dropdown, {
+		const wrapper = mount(Component, {
 			"props": {
 				"purpose": ""
 			}
@@ -17,7 +16,7 @@ describe("Component: Dropdown", () => {
 		expect(wrapper.html()).toContain("dropdown-container")
 	})
 	it("Should close if click emitted outside of dropdown", async() => {
-		const wrapper = mount(Dropdown, {
+		const wrapper = mount(Component, {
 			"props": {
 				"purpose": ""
 			}
