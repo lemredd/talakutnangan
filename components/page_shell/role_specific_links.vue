@@ -104,14 +104,11 @@ import { computed, inject, ref, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
-
-import Anchor from "@/anchor.vue"
-import LogOutBtn from "@/authentication/log_out_btn.vue"
-import RoleLinksList from "@/Dropdown.vue"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
-import { user, post } from "$/permissions/permission_list"
 import RequestEnvironment from "$/helpers/request_environment"
+
+import { user, post } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
@@ -124,6 +121,10 @@ import {
 	IMPORT_USERS,
 	RESET_PASSWORD
 } from "$/permissions/user_combinations"
+
+import Anchor from "@/anchor.vue"
+import RoleLinksList from "@/page_shell/dropdown.vue"
+import LogOutBtn from "@/authentication/log_out_btn.vue"
 
 const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
