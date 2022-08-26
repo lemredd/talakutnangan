@@ -90,7 +90,7 @@ export default class extends MultipartController {
 							"importedCSV": {
 								"constraints": {
 									"buffer": {
-										"allowedMimeTypes": [ "text/csv" ],
+										"allowedMimeTypes": [ "text/csv", "application/vnd.ms-excel" ],
 										maxSize
 									}
 								},
