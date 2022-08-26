@@ -12,15 +12,20 @@
 		<label class="flex">
 			<span>From:</span>
 			<div id="start">
-				<TimeSelect
+				<Selectable
+					v-model="startHour"
 					class="inline"
 					:options="hours"
 					:initial-value="initialStartHour"/>
 				<TimeSelect
+				<Selectable
+					v-model="startMinute"
 					class="inline"
 					:options="minutes"
 					:initial-value="initialStartMinute"/>
 				<TimeSelect
+				<Selectable
+					v-model="startMidDay"
 					class="inline"
 					:options="midDay"
 					:initial-value="initialStartMidDay"/>
@@ -29,15 +34,20 @@
 		<label class="flex">
 			<span>to:</span>
 			<div id="end">
-				<TimeSelect
+				<Selectable
+					v-model="endHour"
 					class="inline"
 					:options="hours"
 					:initial-value="initialEndHour"/>
 				<TimeSelect
+				<Selectable
+					v-model="endMinute"
 					class="inline"
 					:options="minutes"
 					:initial-value="initialEndMinute"/>
 				<TimeSelect
+				<Selectable
+					v-model="endMidDay"
 					class="inline"
 					:options="midDay"
 					:initial-value="initialEndMidDay"/>
@@ -55,7 +65,8 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-import Select from "@/fields/dropdown_select.vue"
+import Selectable from "@/fields/selectable_options.vue"
+import TextTransformer from "$/helpers/text_transformers"
 
 const { day, startTime, endTime } = defineProps<{
 	day: string
@@ -108,14 +119,14 @@ const days = [
 ]
 
 const rawStartTime = startTime as string
-const initialStartHour = computed(() => getTimePart(rawStartTime, "hour"))
-const initialStartMinute = computed(() => getTimePart(rawStartTime, "minute"))
-const initialStartMidDay = computed(() => getTimePart(rawStartTime, "midday"))
+const startHour = ref(getTimePart(rawStartTime, "hour"))
+const startMinute = ref(getTimePart(rawStartTime, "minute"))
+const startMidDay = ref(getTimePart(rawStartTime, "midday"))
 
 const rawEndTime = endTime as string
-const initialEndHour = computed(() => getTimePart(rawEndTime, "hour"))
-const initialEndMinute = computed(() => getTimePart(rawEndTime, "minute"))
-const initialEndMidDay = computed(() => getTimePart(rawEndTime, "midday"))
+const endHour = ref(getTimePart(rawEndTime, "hour"))
+const endMinute = ref(getTimePart(rawEndTime, "minute"))
+const endMidDay = ref(getTimePart(rawEndTime, "midday"))
 
 	if (Number(hour) < 12) return hour
 	return twoDigits(Number(hour) - 12)
