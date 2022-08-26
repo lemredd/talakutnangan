@@ -85,6 +85,7 @@ export interface ExistWithSameAttributeConstraint extends ManagerBasedRuleConstr
 
 export interface UniqueConsultationScheduleConstraints {
 	uniqueConsultationSchedule: {
+		userIDPointer: string,
 		conflictConfirmationPointer: string
 	}
 }
