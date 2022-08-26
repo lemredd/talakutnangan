@@ -23,10 +23,12 @@ export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 export interface RegexRuleConstraints { regex: { match: RegExp } }
 
 export interface ArrayRuleConstraints {
+	// eslint-disable-next-line no-use-before-define
 	array: Rules
 }
 
 export interface ObjectRuleConstraints {
+	// eslint-disable-next-line no-use-before-define
 	object: FieldRules
 }
 
@@ -57,11 +59,18 @@ export interface BufferRuleConstraints {
 }
 
 export interface NotRuleConstraints {
+	// eslint-disable-next-line no-use-before-define
 	not: Rules
 }
 
 export interface UniqueEmployeeScheduleRuleConstraint {
 	uniqueEmployeeSchedule: {
+		userIDPointer: string
+	}
+}
+
+export interface RestorableEmployeeScheduleConstraints extends ManagerBasedRuleConstraints {
+	restorableEmployeeSchedule: {
 		userIDPointer: string
 	}
 }
@@ -98,6 +107,7 @@ export type RuleContraints = Partial<
 	& UniqueEmployeeScheduleRuleConstraint
 	& ExistWithSameAttributeConstraint
 	& SizeConstraints
+	& RestorableEmployeeScheduleConstraints
 >
 
 /**
