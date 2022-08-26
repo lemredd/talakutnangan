@@ -49,9 +49,21 @@ export default async function(
 
 	const endTime = foundModel.data.attributes.scheduleEnd
 	const startTime = foundModel.data.attributes.scheduleStart
-	const userID = accessDeepPath(
+	const userID = Number(accessDeepPath(
 		constraints.source, constraints.restorableEmployeeSchedule.userIDPointer
-	)
+	))
+
+	if (Number.isNaN(userID)) {
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (
+				field: string,
+				value: string
+			) => `The "${field}" with a value of "${value}" should be a numeric ID.`
+		}
+
+		throw error
+	}
 
 	const foundSchedules = await manager.list({
 		"filter": {
@@ -61,7 +73,7 @@ export default async function(
 				"start": startTime
 			},
 			"existence": "exists",
-			"user": Number(userID)
+			"user": userID
 		},
 		"page": {
 			"limit": 1,
@@ -71,16 +83,16 @@ export default async function(
 	}) as EmployeeScheduleListDocument
 
 	if (foundSchedules.data.length === 0) {
-		const error = {
-			"field": constraints.field,
-			"messageMaker": (
-				field: string,
-				value: string
-			) => `The "${field}" with a value of "${value}" conflicts with existing schedules".`
-		}
-
-		throw error
-	} else {
 		return state
 	}
+
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (
+			field: string,
+			value: string
+		) => `The "${field}" with a value of "${value}" conflicts with existing schedules.`
+	}
+
+	throw error
 }
