@@ -65,9 +65,12 @@ export default async function(app: ExpressApp) {
 			}
 			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)
 			const { httpResponse, errorStatus } = pageContext
-			if (!httpResponse) next()
-			const { body, statusCode, contentType } = httpResponse
-			response.status(errorStatus || statusCode).type(contentType).send(body)
+			if (httpResponse) {
+				const { body, statusCode, contentType } = httpResponse
+				response.status(errorStatus || statusCode).type(contentType).send(body)
+			} else {
+				next()
+			}
 		}
 	})
 
