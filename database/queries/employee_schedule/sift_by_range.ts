@@ -30,7 +30,7 @@ export default function<T>(
 		)
 	}
 
-	newState.where = condition.and(
+	newState.where = new Condition().and(
 		new Condition(newState.where),
 		condition
 	).build()
