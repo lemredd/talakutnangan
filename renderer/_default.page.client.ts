@@ -7,7 +7,7 @@ import ErrorPage from "#/_error.page.vue"
 
 // eslint-disable-next-line require-await
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
-	if (pageContext.pageProps.parsedUnitError === null && pageContext.urlPathname === "/") {
+	if (pageContext.pageProps.parsedUnitError && pageContext.urlPathname === "/") {
 		pageContext.Page = ErrorPage
 		pageContext.pageProps = {
 			...pageContext.pageProps,
