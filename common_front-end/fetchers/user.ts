@@ -1,4 +1,5 @@
 import type { Serializable } from "$/types/general"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { UserQueryParameters } from "$/types/query"
 import type { Response, LogInDetails } from "$@/types/independent"
 import type {
@@ -12,7 +13,6 @@ import type {
 	DeserializedUserListDocument
 } from "$/types/documents/user"
 
-import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 import specializedPath from "$/helpers/specialize_path"
 
 import BaseFetcher from "$@/fetchers/base"
@@ -84,7 +84,9 @@ export default class UserFetcher extends BaseFetcher<
 	>> {
 		const pathTemplate = ":type/import"
 		const path = specializedPath(pathTemplate, { "type": this.type })
-		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+		const headers = new Headers({
+			"Accept": JSON_API_MEDIA_TYPE
+		})
 
 		return await this.handleResponse(this.postTo(path, form, headers)) as Response<
 			UserResourceIdentifier,
