@@ -83,6 +83,12 @@ export interface ExistWithSameAttributeConstraint extends ManagerBasedRuleConstr
 	}
 }
 
+export interface UniqueConsultationScheduleConstraints {
+	uniqueConsultationSchedule: {
+		conflictConfirmationPointer: string
+	}
+}
+
 export interface SizeConstraints { size: { minimum?: number, maximum?: number } }
 
 /**
@@ -108,6 +114,7 @@ export type RuleContraints = Partial<
 	& ExistWithSameAttributeConstraint
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
+	& UniqueConsultationScheduleConstraints
 >
 
 /**
