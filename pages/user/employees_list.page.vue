@@ -1,12 +1,14 @@
 <template>
-	<h1 class="text-2xl m-2 ">Employees of {{ currentUserDepartment.fullName }}</h1>
+	<h1 class="text-2xl m-2 ">
+		Employees of {{ currentUserDepartment.fullName }}
+	</h1>
 	<UsersManager :resource="users">
 		<template #search-filter>
 			<!-- TODO: search filter rearrangement - declare outside of template -->
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList" />
+		<UsersList :filtered-list="filteredList"/>
 	</UsersManager>
 </template>
 
@@ -16,26 +18,28 @@
 <script setup lang="ts">
 import { onMounted, provide, ref, inject } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
-import Suspensible from "@/suspensible.vue"
 import Manager from "$/helpers/manager"
-import UsersManager from "@/resource_management/resource_manager.vue"
-import UsersList from "@/resource_management/resource_manager/resource_list.vue"
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RoleFetcher from "$@/fetchers/role"
 import UserFetcher from "$@/fetchers/user"
 import DepartmentFetcher from "$@/fetchers/department"
 
-const pageContext = inject("pageContext") as PageContext
+import UsersManager from "@/resource_management/resource_manager.vue"
+import UsersList from "@/resource_management/resource_manager/resource_list.vue"
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const { pageProps } = pageContext
+const userProfile = pageProps.userProfile as DeserializedUserProfile
 
 RoleFetcher.initialize("/api")
 UserFetcher.initialize("/api")
 DepartmentFetcher.initialize("/api")
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile! as DeserializedUserProfile))
+provide("managerKind", new Manager(userProfile))
 
 const users = ref<DeserializedUserResource[]>([])
 const filteredList = ref<DeserializedUserResource[]>([])
@@ -44,24 +48,24 @@ function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedUserResource[]
 }
 
-const currentUserProfile = (pageContext.pageProps.userProfile! as DeserializedUserProfile).data
-const currentUserDepartment = currentUserProfile!.department.data
+const currentUserProfile = userProfile.data
+const currentUserDepartment = currentUserProfile.department.data
 
 onMounted(() => {
 	new UserFetcher().list({
-		filter: {
-			slug: "",
-			department: currentUserDepartment.id,
-			role: "*",
-			kind: "*",
-			existence: "exists"
+		"filter": {
+			"department": currentUserDepartment.id,
+			"existence": "exists",
+			"kind": "*",
+			"role": "*",
+			"slug": ""
 		},
-		sort: [ "name" ],
-		page: {
-			offset: 0,
-			limit: 10
-		}
-	}).then(({ body: deserializedUserList }) => {
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	}).then(({ "body": deserializedUserList }) => {
 		users.value = deserializedUserList.data
 	})
 })

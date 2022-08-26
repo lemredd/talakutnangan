@@ -27,7 +27,7 @@ export default class extends QueryController {
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(
 			RoleManager,
-			makeIDBasedFilterRules("department", DepartmentManager, true)
+			makeIDBasedFilterRules("role", DepartmentManager, true)
 		)
 	}
 

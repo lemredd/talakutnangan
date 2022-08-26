@@ -1,42 +1,12 @@
 <template>
-	<div class="layout" ref="layout">
-		<ShellNav />
+	<div ref="layout" class="layout">
+		<ShellNav/>
 		<Content>
-			<slot/>
+			<slot></slot>
 		</Content>
-		<Footer />
+		<Footer/>
 	</div>
 </template>
-
-<script lang="ts" setup>
-import { onMounted, provide, ref, watch } from "vue"
-import { usePageContext } from "#/usePageContext"
-import deserializedPageProps from "$@/helpers/deserialize_page_props"
-import ShellNav from "@/page_shell/shell_nav.vue"
-import Content from "@/page_shell/Content.vue"
-import Footer from "@/Footer.vue"
-
-const pageContext = usePageContext()
-const path = pageContext.urlPathname
-const isLoggingIn = path === "/log_in"
-provide("isLoggingIn", isLoggingIn)
-
-const layout = ref<HTMLElement | null>(null)
-const body = ref<HTMLBodyElement | null>(null)
-const bodyClasses = ref<string[]>([])
-onMounted(function() {
-	if (layout.value) {
-		// ! Risky
-		body.value = layout.value.parentElement!.parentElement as HTMLBodyElement
-	}
-})
-watch(bodyClasses, newSource => {
-	body.value!.classList.remove(...body.value!.classList.values())
-	body.value!.classList.add(...newSource)
-})
-provide("pageContext", deserializedPageProps(pageContext))
-provide("bodyClasses", bodyClasses)
-</script>
 
 <style lang="scss">
 @import 'material-icons/iconfont/material-icons.css';
@@ -67,3 +37,35 @@ a {
 	margin: auto;
 }
 </style>
+
+<script lang="ts" setup>
+import { onMounted, provide, ref, watch } from "vue"
+
+import { usePageContext } from "#/usePageContext"
+import deserializedPageProps from "$@/helpers/deserialize_page_props"
+
+import Footer from "@/page_shell/footer.vue"
+import ShellNav from "@/page_shell/shell_nav.vue"
+import Content from "@/page_shell/content_container.vue"
+
+const pageContext = usePageContext()
+const path = pageContext.urlPathname
+const isLoggingIn = path === "/log_in"
+provide("isLoggingIn", isLoggingIn)
+
+const layout = ref<HTMLElement | null>(null)
+const body = ref<HTMLBodyElement | null>(null)
+const bodyClasses = ref<string[]>([])
+onMounted(() => {
+	if (layout.value) {
+		// ! Risky
+		body.value = layout.value.parentElement?.parentElement as HTMLBodyElement
+	}
+})
+watch(bodyClasses, newSource => {
+	body.value?.classList.remove(...body.value?.classList.values() ?? [])
+	body.value?.classList.add(...newSource)
+})
+provide("pageContext", deserializedPageProps(pageContext))
+provide("bodyClasses", bodyClasses)
+</script>

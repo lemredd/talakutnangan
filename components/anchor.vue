@@ -1,6 +1,6 @@
 <template>
 	<a class="link" :class="{ active: pageContext.urlPathname === $attrs.href }">
-		<slot />
+		<slot></slot>
 	</a>
 </template>
 <style scoped lang="scss">
@@ -14,7 +14,7 @@ a.active {
 }
 </style>
 <script lang="ts" setup>
-import { PageContext } from "#/types"
+import { PageContext } from "$/types/renderer"
 import { inject } from "vue"
 
 const pageContext = inject("pageContext") as PageContext

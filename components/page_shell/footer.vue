@@ -1,10 +1,15 @@
 <template>
 	<footer>
 		<div class="links">
-			<div v-for="N in 4" class ="footer-list">
+			<div
+				v-for="i in 4"
+				:key="i"
+				class="footer-list">
 				<h1>Footer</h1>
 				<ul>
-					<li v-for = "N in 3">Sub Footer</li>
+					<li v-for="j in 3" :key="j">
+						Sub Footer
+					</li>
 				</ul>
 			</div>
 		</div>
