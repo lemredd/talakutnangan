@@ -58,7 +58,7 @@ const { day, startTime, endTime } = defineProps<{
 }>()
 
 function twoDigits(number: number) {
-	return number < 10 ? `0${number}` : number
+	return number < 10 ? `0${number}` : number.toString()
 }
 function generateNumberRange(start: number, end: number) {
 	const numbers = []
