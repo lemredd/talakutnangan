@@ -31,7 +31,7 @@ export default async function(
 	const ESTIMATED_CONSULTATION_MINUTE_DURATION = 5
 	const minimumPossiblePreviousSchedule = new Date(target)
 	minimumPossiblePreviousSchedule.setMinutes(
-		target.getMinutes() + ESTIMATED_CONSULTATION_MINUTE_DURATION
+		minimumPossiblePreviousSchedule.getMinutes() - ESTIMATED_CONSULTATION_MINUTE_DURATION
 	)
 
 	// eslint-disable-next-line new-cap
@@ -39,13 +39,15 @@ export default async function(
 		constraints.request.transaction,
 		constraints.request.cache
 	)
+
+	// TODO: Add sift by reachable employee
 	const foundModels = await manager.list({
 		"filter": {
 			"consultationScheduleRange": {
 				"end": target,
 				"start": minimumPossiblePreviousSchedule
 			},
-			"existence": "archived"
+			"existence": "exists"
 		},
 		"page": {
 			"limit": 1,
