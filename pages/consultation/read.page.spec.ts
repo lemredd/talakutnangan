@@ -17,7 +17,7 @@ import {
 
 import Page from "./read.page.vue"
 
-describe("UI Page: Read resource by ID", () => {
+describe.skip("UI Page: Read resource by ID", () => {
 	it("Should load resource by ID", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
