@@ -57,7 +57,7 @@ describe("Database: Condition Builder", () => {
 		const builtCondition = condition.lessThanOrEqual("sample", 1).build()
 
 		expect(builtCondition).toStrictEqual({
-			"sample": { [Op.gte]: 1 }
+			"sample": { [Op.lte]: 1 }
 		})
 	})
 
