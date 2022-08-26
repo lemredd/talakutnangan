@@ -41,6 +41,9 @@
 </template>
 
 <style scoped lang="scss">
+.schedule-picker {
+	margin: 1em 0;
+}
 </style>
 
 <script setup lang="ts">
