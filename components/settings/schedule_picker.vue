@@ -1,8 +1,11 @@
 <template>
 	<div class="schedule-picker">
-		<h3 class="display-name text-lg col-span-full flex">
-			{{ day }}
-		</h3>
+		<label class="flex">
+			<span>Day:</span>
+			<Select
+				:options="days"
+				:initial-value="day"/>
+		</label>
 		<label class="flex">
 			<span>From:</span>
 			<div id="start">
@@ -47,9 +50,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed } from "vue"
 
-import TimeSelect from "@/fields/dropdown_select.vue"
+import Select from "@/fields/dropdown_select.vue"
 
 const { day, startTime, endTime } = defineProps<{
 	day: string
@@ -91,6 +94,15 @@ function getTimePart(time: string, part: "hour" | "minute" | "midday"): string {
 const hours = generateNumberRange(1, 13)
 const minutes = generateNumberRange(0, 60)
 const midDay = [ "AM", "PM" ]
+const days = [
+	"sunday",
+	"monday",
+	"tuesday",
+	"wednesday",
+	"thursday",
+	"friday",
+	"saturday"
+]
 
 const rawStartTime = startTime as string
 const initialStartHour = computed(() => getTimePart(rawStartTime, "hour"))
