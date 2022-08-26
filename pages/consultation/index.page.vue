@@ -20,7 +20,10 @@
 				<button class="material-icons search">
 					search
 				</button>
-				<button class="material-icons add" @click="toggleAddingSchedule">
+				<button
+					v-if="isUserAStudent"
+					class="material-icons add"
+					@click="toggleAddingSchedule">
 					add
 				</button>
 			</div>
@@ -150,6 +153,8 @@ import ChatWindow from "@/consultation/chat_window.vue"
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
+
+const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
 const isAddingSchedule = ref<boolean>(false)
 function toggleAddingSchedule() {
