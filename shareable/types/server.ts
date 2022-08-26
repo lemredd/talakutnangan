@@ -49,6 +49,7 @@ export interface PageProps extends Serializable {
 	userProfile: Serializable|null
 
 	roles?: Serializable
+	consultations?: Serializable
 }
 
 /**
