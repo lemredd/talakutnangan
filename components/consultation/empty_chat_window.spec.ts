@@ -1,4 +1,4 @@
-import { shallowMount, flushPromises } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
 
 import Component from "./empty_chat_window.vue"
 
