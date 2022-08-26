@@ -79,6 +79,18 @@ export interface EmployeeScheduleRangeFilter extends Serializable {
 	}
 }
 
+export interface ConsultationRangeFilter extends Serializable {
+	filter: {
+		/**
+		 * The time range where consultation schedules are available.
+		 */
+		consultationScheduleRange: "*"|{
+			end: Date,
+			start: Date
+		}
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -121,6 +133,7 @@ export type RoleQueryParameters<T extends number|string = string> =
 export type DepartmentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& IDsFilter<T>
+	& ConsultationRangeFilter
 
 export type EmployeeScheduleQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
