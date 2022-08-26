@@ -27,13 +27,13 @@
 				v-for="(roleID, i) in chosenRoleIDs"
 				:key="roleID"
 				type="hidden"
-				:name="`data[relationships][roles][${i}][type]`"
+				:name="`data[relationships][roles][data][${i}][type]`"
 				value="role"/>
 			<input
 				v-for="(roleID, i) in chosenRoleIDs"
 				:key="roleID"
 				type="hidden"
-				:name="`data[relationships][roles][${i}][id]`"
+				:name="`data[relationships][roles][data][${i}][id]`"
 				:value="roleID"/>
 			<input type="submit" value="Import"/>
 		</div>
