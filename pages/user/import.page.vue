@@ -1,13 +1,17 @@
 <template>
 	<form @submit.prevent="importData">
+		<div>
 		<MultiSelectableOptionsField
+			class="selectable multi"
 			v-model="chosenRoleIDs"
 			label="Add the roles to attach"
 			:options="roleNames"/>
 		<SelectableOptionsField
+			class="selectable import"
 			v-model="chosenKind"
 			label="What kind of users to import?"
 			:options="kindNames"/>
+		</div>
 		<div>
 			<input
 				type="file"
@@ -61,6 +65,23 @@
 		</output>
 	</form>
 </template>
+<style lang = "scss">
+
+.import{
+	@apply flex flex-col;
+}
+@media (min-width: 640px) {
+	.selectable{
+		max-width: 80%;
+		@apply flex-row flex justify-between;
+
+
+}
+}
+
+
+</style>
+
 
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
