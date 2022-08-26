@@ -9,6 +9,7 @@
 		<template #chat-window>
 			<!-- TODO(minor): conditionally render the contents chat window -->
 			<ChatWindow v-if="selectedConsultation" :consultation="selectedConsultation"/>
+			<EmptyChatWindow v-else :user-profile="userProfile"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -29,7 +30,9 @@ footer {
 
 <script setup lang="ts">
 import { computed, inject, ref } from "vue"
+
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	ConsultationRelationshipNames,
 	DeserializedConsultationListDocument
@@ -37,10 +40,11 @@ import type {
 
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
+import EmptyChatWindow from "@/consultation/empty_chat_window.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { pageProps } = pageContext
-
+const userProfile = pageProps.userProfile as DeserializedUserProfile
 
 const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
 	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>

@@ -4,13 +4,13 @@ import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
 import ConsultationFactory from "~/factories/consultation"
 
-import Page from "./index.page.vue"
+import Component from "./page_shell.vue"
 
-describe.skip("Page: consultation/index", () => {
+describe("Component: consultation/page_shell", () => {
 	it("should show add consultation button for student", async() => {
 		const userProfile = await new UserFactory().beStudent().deserializedOne(false)
 		const consultations = await new ConsultationFactory().deserializedMany(2, false)
-		const wrapper = shallowMount(Page, {
+		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -34,7 +34,7 @@ describe.skip("Page: consultation/index", () => {
 	it("should hide add consultation button for reachable employee", async() => {
 		const userProfile = await new UserFactory().beReachableEmployee().deserializedOne(false)
 		const consultations = await new ConsultationFactory().deserializedMany(2, false)
-		const wrapper = shallowMount(Page, {
+		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
