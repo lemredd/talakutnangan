@@ -5,7 +5,9 @@ import type { EmployeeScheduleAttributes } from "$/types/documents/employee_sche
 
 import BaseManager from "%/managers/base"
 import EmployeeSchedule from "%/models/employee_schedule"
+import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
+import siftByRange from "%/queries/employee_schedule/sift_by_range"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 
 interface RawEmployeeScheduleAttributes extends EmployeeScheduleAttributes<"serialized"> {
@@ -26,7 +28,9 @@ export default class extends BaseManager<
 		EmployeeScheduleQueryParameters<number>
 	>[] {
 		return [
+			siftByDay,
 			siftByUser,
+			siftByRange,
 			...super.listPipeline
 		]
 	}
