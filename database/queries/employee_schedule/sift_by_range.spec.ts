@@ -22,7 +22,6 @@ describe("Database Pipe: Sift by range", () => {
 		const START_TIME = 0
 		const END_TIME = 360
 		const model = await new Factory()
-		.dayName(() => "monday")
 		.scheduleStart(() => START_TIME)
 		.scheduleEnd(() => END_TIME)
 		.insertOne()
@@ -45,8 +44,7 @@ describe("Database Pipe: Sift by range", () => {
 		const START_TIME = 20
 		const START_OFFSET = 20
 		const END_TIME = 360
-		const model = await new Factory()
-		.dayName(() => "monday")
+		await new Factory()
 		.scheduleStart(() => START_TIME)
 		.scheduleEnd(() => END_TIME)
 		.insertOne()
@@ -61,7 +59,6 @@ describe("Database Pipe: Sift by range", () => {
 		})
 		const foundModels = await Model.findAll(options)
 
-		expect(foundModels).toHaveLength(1)
-		expect(foundModels).toHaveProperty("0.id", model.id)
+		expect(foundModels).toHaveLength(0)
 	})
 })
