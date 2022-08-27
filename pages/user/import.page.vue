@@ -1,18 +1,26 @@
 <template>
 	<form @submit.prevent="importData">
-		<MultiSelectableOptionsField
-			v-model="chosenRoleIDs"
-			label="Add the roles to attach"
-			:options="roleNames"/>
-		<SelectableOptionsField
-			v-model="chosenKind"
-			label="What kind of users to import?"
-			:options="kindNames"/>
 		<div>
-			<input
-				type="file"
-				name="meta[importedCSV]"
-				accept="text/csv"/>
+			<MultiSelectableOptionsField
+				v-model="chosenRoleIDs"
+				class="selectable multi"
+				label="Add the roles to attach"
+				:options="roleNames"/>
+			<SelectableOptionsField
+				v-model="chosenKind"
+				class="selectable import"
+				label="What kind of users to import?"
+				:options="kindNames"/>
+		</div>
+		<div>
+			<label class="btn" for="choose-file-btn">
+				<input
+					id="choose-file-btn"
+					type="file"
+					name="meta[importedCSV]"
+					accept="text/csv"/>
+				CHOOSE FILE
+			</label>
 		</div>
 		<div>
 			<input
@@ -35,7 +43,12 @@
 				type="hidden"
 				:name="`data[relationships][roles][data][${i}][id]`"
 				:value="roleID"/>
-			<input type="submit" value="Import"/>
+
+			<input
+				id="import-btn"
+				class="btn btn-primary"
+				type="submit"
+				value="Import"/>
 		</div>
 		<output v-if="createdUsers.length > 0">
 			<table>
@@ -61,6 +74,21 @@
 		</output>
 	</form>
 </template>
+<style lang = "scss">
+@import "@styles/btn.scss";
+.import{
+	@apply flex flex-col;
+}
+
+#choose-file-btn {
+	display:none;
+	appearance: none;
+}
+#import-btn{
+	margin-top:1em;
+}
+</style>
+
 
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
