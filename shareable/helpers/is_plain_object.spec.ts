@@ -1,7 +1,7 @@
 import isPlainObject from "./is_plain_object"
 
 describe("Helper: Is plain object", () => {
-	it("can check plain object", async () => {
+	it("can check plain object", () => {
 		const value = {}
 
 		const assertion = isPlainObject(value)
@@ -9,7 +9,7 @@ describe("Helper: Is plain object", () => {
 		expect(assertion).toBeTruthy()
 	})
 
-	it("can check null", async () => {
+	it("can check null", () => {
 		const value = null
 
 		const assertion = isPlainObject(value)
@@ -17,7 +17,7 @@ describe("Helper: Is plain object", () => {
 		expect(assertion).toBeFalsy()
 	})
 
-	it("can check array", async () => {
+	it("can check array", () => {
 		const value: any[] = []
 
 		const assertion = isPlainObject(value)
