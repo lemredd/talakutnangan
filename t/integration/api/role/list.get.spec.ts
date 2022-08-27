@@ -9,22 +9,22 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/role/list.get"
 
 describe("GET /api/role", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by permitted user and multiple roles", async () => {
+	it("can be accessed by permitted user and multiple roles", async() => {
 		const adminRole = await new RoleFactory()
-			.roleFlags(permissionGroup.generateMask(...READ))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const roles = await (new RoleFactory()).insertMany(3)
+		.roleFlags(permissionGroup.generateMask(...READ))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const roles = await new RoleFactory().insertMany(3)
 
 		const response = await App.request
-			.get("/api/role")
-			.set("Cookie", cookie)
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+		.get("/api/role")
+		.set("Cookie", cookie)
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.attributes.name", adminRole.name)
