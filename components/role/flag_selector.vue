@@ -7,16 +7,19 @@
 			{{ header }} Flags
 		</h2>
 
-	<div class="operational-flags">
-		<span>Operations: </span>
-		<li class="ml-5" v-for="permissionName in operationalPermissionNames">
-			<Checkbox
-				:label="transformText.toSentenceCase(permissionName).toLowerCase()"
-				:value="permissionName"
-				@change="updateFlags"
-				v-model="rawFlags" />
-		</li>
-	</div>
+		<div class="operational-flags">
+			<span>Operations: </span>
+			<li
+				v-for="permissionName in operationalPermissionNames"
+				:key="permissionName"
+				class="ml-5">
+				<Checkbox
+					v-model="rawFlags"
+					:label="transformText.toSentenceCase(permissionName).toLowerCase()"
+					:value="permissionName"
+					@change="updateFlags"/>
+			</li>
+		</div>
 
 		<div
 			v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length"
