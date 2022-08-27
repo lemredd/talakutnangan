@@ -12,14 +12,9 @@ import { READ } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
-import string from "!/validators/base/string"
-import integer from "!/validators/base/integer"
-import exists from "!/validators/manager/exists"
-import nullable from "!/validators/base/nullable"
 import makeListRules from "!/rule_sets/make_list"
-import length from "!/validators/comparison/length"
-import stringArray from "!/validators/hybrid/string_array"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
+import makeMultiIDBasedFilterRules from "!/rule_sets/make_multi-id-based_filter"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
@@ -35,26 +30,7 @@ export default class extends QueryController {
 			Manager,
 			{
 				...makeIDBasedFilterRules("department", DepartmentManager, true),
-				"IDs": {
-					"constraints": {
-						"array": {
-							"constraints": {
-								"integer": { "mustCast": true },
-								"manager": {
-									"className": Manager,
-									"columnName": "id"
-								}
-							},
-							"pipes": [ string, integer, exists ]
-						},
-						"length": {
-							// TODO: Find the best length
-							"maximum": 24,
-							"minimum": 1
-						}
-					},
-					"pipes": [ nullable, stringArray, length ]
-				}
+				...makeMultiIDBasedFilterRules(Manager, { "mustCast": true })
 			}
 		)
 	}
