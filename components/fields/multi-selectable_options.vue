@@ -3,6 +3,7 @@
 		<h3>{{ label }}</h3>
 		<ul class="selected-options">
 			<li v-for="option in selectedOptions" :key="option.value">
+				<!-- TODO: display options below label and selectable options field  -->
 				{{
 					option.label ?? option.value
 				}}

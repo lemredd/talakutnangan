@@ -51,6 +51,7 @@
 				value="Import"/>
 		</div>
 		<output v-if="createdUsers.length > 0">
+			<!-- TODO: center table display -->
 			<table>
 				<thead>
 					<tr>
