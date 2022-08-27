@@ -1,5 +1,7 @@
-import type { WhereOptions } from "%/types/dependent"
+/* eslint-disable max-len */
 import { Op } from "sequelize"
+
+import type { WhereOptions } from "%/types/dependent"
 
 export default class Condition<T = any> {
 	private currentCondition: { [key: string|symbol]: any }
@@ -23,15 +25,27 @@ export default class Condition<T = any> {
 		return this
 	}
 
+	greaterThanOrEqual(column: string, value: any): Condition {
+		this.currentCondition[column] = { [Op.gte]: value }
+		return this
+	}
+
+	lessThanOrEqual(column: string, value: any): Condition {
+		this.currentCondition[column] = { [Op.lte]: value }
+		return this
+	}
+
 	search(column: string, value: string): Condition {
-		// `findAndCountAll` uses `findAll`. See
-		// https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L2070
-		// `findAll` uses `select`. See
-		// https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L1713
-		// `select` uses query generator which handles replacements. See
-		// https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/dialects/abstract/query-interface.js#L1062
-		// Replacements are escaped. See
-		// https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
+		/*
+		 * `findAndCountAll` uses `findAll`. See
+		 * https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L2070
+		 * `findAll` uses `select`. See
+		 * https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L1713
+		 * `select` uses query generator which handles replacements. See
+		 * https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/dialects/abstract/query-interface.js#L1062
+		 * Replacements are escaped. See
+		 * https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
+		 */
 		this.currentCondition[column] = { [Op.like]: `%${value}%` }
 		return this
 	}
@@ -40,7 +54,7 @@ export default class Condition<T = any> {
 		const simplifiedConditions = this.simplifyConditions(conditions)
 
 		if (simplifiedConditions.length === 1) {
-			this.currentCondition = simplifiedConditions[0]
+			[ this.currentCondition ] = simplifiedConditions
 		} else if (simplifiedConditions.length > 1) {
 			this.currentCondition[Op.or] = conditions.map(condition => condition.build())
 		}
@@ -52,7 +66,7 @@ export default class Condition<T = any> {
 		const simplifiedConditions = this.simplifyConditions(conditions)
 
 		if (simplifiedConditions.length === 1) {
-			this.currentCondition = simplifiedConditions[0]
+			[ this.currentCondition ] = simplifiedConditions
 		} else if (simplifiedConditions.length > 1) {
 			this.currentCondition[Op.and] = conditions.map(condition => condition.build())
 		}
@@ -64,13 +78,10 @@ export default class Condition<T = any> {
 
 	private simplifyConditions(conditions: Condition[]): { [key: string|symbol]: any }[] {
 		return conditions.map(condition => condition.build()).filter(object => {
-			for (const key in object) {
-				if (Object.prototype.hasOwnProperty.call(object, key)) {
-					return true
-				}
-			}
+			const hasProperties = Object.getOwnPropertyNames(object).length > 0
+				|| Object.getOwnPropertySymbols(object).length > 0
 
-			return false
+			return hasProperties
 		})
 	}
 }
