@@ -16,9 +16,10 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await string(currentState, constraints)
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	state.value = (state.value as string).split(",")
+	const castValue = state.value as string
+	state.value = castValue.split(",")
 
 	return await array(Promise.resolve(state), constraints)
 }
