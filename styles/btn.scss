@@ -1,9 +1,11 @@
 @import "./variables.scss";
 
 .btn {
+	@apply bg-gray-300;
 	padding: .5em 1em;
 	text-transform: uppercase;
 	font-size: small;
+	cursor: pointer;
 
 	&.btn-primary {
 		background-color: $color-primary;
