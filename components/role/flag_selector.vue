@@ -57,6 +57,7 @@ import { computed, ref } from "vue"
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
 import BasePermissionGroup from "$/permissions/base"
+import makeUnique from "$/helpers/array/make_unique"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import TextTransformer from "$/helpers/text_transformers"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"
