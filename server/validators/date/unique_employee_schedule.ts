@@ -49,39 +49,38 @@ export default async function(
 		)
 		const foundModels = await manager.list({
 			"filter": {
+				"day": value.dayName,
+				"employeeScheduleRange": "*",
 				"existence": "*",
 				"user": userID
 			},
-			"sort": [ "dayName" ],
 			"page": {
 				// TODO Find the best limit
 				"limit": 24,
 				"offset": 0
-			}
+			},
+			"sort": [ "dayName" ]
 		}) as EmployeeScheduleListDocument
 
 		for (const foundModel of foundModels.data) {
 			if (
-				foundModel.attributes.dayName === value.dayName
-				&& (
-					// Check if start time is inside an existing schedule.
-					// eslint-disable-next-line no-extra-parens
-					(
-						foundModel.attributes.scheduleStart <= value.scheduleStart
-						&& value.scheduleStart < foundModel.attributes.scheduleEnd
-					)
-					// Check if end time is inside an existing schedule.
-					// eslint-disable-next-line no-extra-parens
-					|| (
-						foundModel.attributes.scheduleEnd < value.scheduleEnd
-						&& value.scheduleEnd <= foundModel.attributes.scheduleEnd
-					)
-					// Check if existing schedule is inside the new schedule.
-					// eslint-disable-next-line no-extra-parens
-					|| (
-						value.scheduleStart <= foundModel.attributes.scheduleStart
-						&& foundModel.attributes.scheduleEnd <= value.scheduleEnd
-					)
+				// Check if start time is inside an existing schedule.
+				// eslint-disable-next-line no-extra-parens
+				(
+					foundModel.attributes.scheduleStart <= value.scheduleStart
+					&& value.scheduleStart < foundModel.attributes.scheduleEnd
+				)
+				// Check if end time is inside an existing schedule.
+				// eslint-disable-next-line no-extra-parens
+				|| (
+					foundModel.attributes.scheduleEnd < value.scheduleEnd
+					&& value.scheduleEnd <= foundModel.attributes.scheduleEnd
+				)
+				// Check if existing schedule is inside the new schedule.
+				// eslint-disable-next-line no-extra-parens
+				|| (
+					value.scheduleStart <= foundModel.attributes.scheduleStart
+					&& foundModel.attributes.scheduleEnd <= value.scheduleEnd
 				)
 			) {
 				const error = {
