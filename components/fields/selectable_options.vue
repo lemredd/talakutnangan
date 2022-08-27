@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="selectable">
 		<label v-if="label" :for="selectID">{{ label }}</label>
 		<select
 			:id="selectID"
@@ -24,7 +24,13 @@
 	</div>
 </template>
 
-<style>
+<style scoped lang="scss">
+@media (min-width: 640px) {
+	.selectable{
+		max-width: 80%;
+		@apply flex-row flex justify-between;
+	}
+}
 </style>
 
 <script setup lang="ts">

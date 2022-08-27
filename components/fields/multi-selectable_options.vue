@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="multi-select">
 		<h3>{{ label }}</h3>
 		<ul class="selected-options">
 			<li v-for="option in selectedOptions" :key="option.value">
@@ -26,6 +26,15 @@
 		</SelectableOptionsField>
 	</div>
 </template>
+
+<style scoped lang ="scss">
+@media (min-width: 640px) {
+	.multi-select{
+		max-width: 80%;
+		@apply flex-row flex justify-between;
+	}
+}
+</style>
 
 <script setup lang="ts">
 import { computed, ref } from "vue"
