@@ -1,9 +1,5 @@
 <template>
 	<div class="consultations-list">
-		<div class="mx-auto max-w-[max-content] no-consultations">
-			<img class="mx-auto" :src="SadIcon"/>
-			<h2>There are no consultations yet...</h2>
-		</div>
 		<div
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
@@ -35,8 +31,6 @@ import type {
 	ConsultationRelationshipNames,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
-
-import SadIcon from "@assets/sadicon.png"
 
 const {
 	consultations
