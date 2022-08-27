@@ -15,6 +15,19 @@ describe("Validator: unique consultation schedule", () => {
 	it("can accept valid input", async() => {
 		const CURRENT_DATETIME = new Date()
 		CURRENT_DATETIME.setMilliseconds(0)
+		const previousConsultation = await new Factory()
+		.scheduledStartAt(() => {
+			const previousDate = new Date(CURRENT_DATETIME)
+			previousDate.setMinutes(previousDate.getMinutes() - 6)
+			return previousDate
+		})
+		.insertOne()
+		const activity = await new ChatMessageActivityFactory()
+		.consultation(() => Promise.resolve(previousConsultation))
+		.insertOne()
+		await new ChatMessageFactory()
+		.chatMessageActivity(() => Promise.resolve(activity))
+		.insertOne()
 		const model = await new Factory()
 		.scheduledStartAt(() => CURRENT_DATETIME)
 		.makeOne()
@@ -23,10 +36,12 @@ describe("Validator: unique consultation schedule", () => {
 			"field": "hello",
 			"request": {} as Request,
 			"source": {
-				"confirm": false
+				"confirm": false,
+				"user": activity.userID
 			},
 			"uniqueConsultationSchedule": {
-				"conflictConfirmationPointer": "confirm"
+				"conflictConfirmationPointer": "confirm",
+				"userIDPointer": "user"
 			}
 		} as unknown as ValidationConstraints<Request>
 		& Partial<UniqueConsultationScheduleConstraints>
@@ -56,10 +71,12 @@ describe("Validator: unique consultation schedule", () => {
 			"field": "hello",
 			"request": {} as Request,
 			"source": {
-				"confirm": false
+				"confirm": false,
+				"user": activity.userID
 			},
 			"uniqueConsultationSchedule": {
-				"conflictConfirmationPointer": "confirm"
+				"conflictConfirmationPointer": "confirm",
+				"userIDPointer": "user"
 			}
 		} as unknown as ValidationConstraints<Request>
 		& Partial<UniqueConsultationScheduleConstraints>
