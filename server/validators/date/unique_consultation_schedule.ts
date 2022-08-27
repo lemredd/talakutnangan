@@ -34,20 +34,35 @@ export default async function(
 		minimumPossiblePreviousSchedule.getMinutes() - ESTIMATED_CONSULTATION_MINUTE_DURATION
 	)
 
-	// eslint-disable-next-line new-cap
 	const manager = new Manager(
 		constraints.request.transaction,
 		constraints.request.cache
 	)
 
-	// TODO: Add sift by reachable employee
+	const userID = Number(accessDeepPath(
+		constraints.source, constraints.uniqueConsultationSchedule.userIDPointer
+	))
+
+	if (Number.isNaN(userID)) {
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (
+				field: string,
+				value: string
+			) => `The "${field}" with a value of "${value}" should be a numeric ID.`
+		}
+
+		throw error
+	}
+
 	const foundModels = await manager.list({
 		"filter": {
 			"consultationScheduleRange": {
 				"end": target,
 				"start": minimumPossiblePreviousSchedule
 			},
-			"existence": "exists"
+			"existence": "exists",
+			"user": userID
 		},
 		"page": {
 			"limit": 1,
@@ -70,7 +85,6 @@ export default async function(
 	if (mayAllowConflict) {
 		return state
 	}
-
 
 	const error = {
 		"field": constraints.field,
