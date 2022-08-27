@@ -8,7 +8,7 @@ export default class extends Transformer<Role, void> {
 		super("role")
 	}
 
-	transform(model: Role|Role[], options: TransformerOptions): AttributesObject {
+	transform(model: Role|Role[], unusedOptions: TransformerOptions<void>): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"name",

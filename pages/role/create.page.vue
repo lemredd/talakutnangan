@@ -2,40 +2,43 @@
 	<form @submit.prevent="createRole">
 		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
-				label="Role Name"
-				type="text"
-				v-model="roleName" />
+			v-model="roleName"
+			label="Role Name"
+			type="text"/>
 
 		<FlagSelector
+			v-model:flags="semesterFlags"
 			header="Semester"
-			:base-permission-group="semester"
-			v-model:flags="semesterFlags" />
+			:base-permission-group="semester"/>
 		<FlagSelector
+			v-model:flags="tagFlags"
 			header="Tag"
-			:base-permission-group="tag"
-			v-model:flags="tagFlags" />
+			:base-permission-group="tag"/>
 		<FlagSelector
+			v-model:flags="postFlags"
 			header="Post"
-			:base-permission-group="post"
-			v-model:flags="postFlags" />
+			:base-permission-group="post"/>
 		<FlagSelector
+			v-model:flags="commentFlags"
 			header="Comment"
-			:base-permission-group="comment"
-			v-model:flags="commentFlags" />
+			:base-permission-group="comment"/>
 		<FlagSelector
+			v-model:flags="profanityFlags"
 			header="Profanity"
-			:base-permission-group="profanity"
-			v-model:flags="profanityFlags" />
+			:base-permission-group="profanity"/>
 		<FlagSelector
+			v-model:flags="userFlags"
 			header="User"
-			:base-permission-group="user"
-			v-model:flags="userFlags" />
+			:base-permission-group="user"/>
 		<FlagSelector
+			v-model:flags="auditTrailFlags"
 			header="Audit Trail"
-			:base-permission-group="auditTrail"
-			v-model:flags="auditTrailFlags" />
+			:base-permission-group="auditTrail"/>
 
-		<input class="btn btn-primary" type="submit" value="Create Role"/>
+		<input
+			class="btn btn-primary"
+			type="submit"
+			value="Create Role"/>
 	</form>
 </template>
 
@@ -79,16 +82,16 @@ RoleFetcher.initialize("/api")
 
 function createRole() {
 	new RoleFetcher().create({
-		name: roleName.value,
-		postFlags: postFlags.value,
-		semesterFlags: semesterFlags.value,
-		tagFlags: tagFlags.value,
-		commentFlags: commentFlags.value,
-		profanityFlags: profanityFlags.value,
-		userFlags: userFlags.value,
-		auditTrailFlags: auditTrailFlags.value,
-		departmentFlags: 1,
-		roleFlags: 1
+		"name": roleName.value,
+		"postFlags": postFlags.value,
+		"semesterFlags": semesterFlags.value,
+		"tagFlags": tagFlags.value,
+		"commentFlags": commentFlags.value,
+		"profanityFlags": profanityFlags.value,
+		"userFlags": userFlags.value,
+		"auditTrailFlags": auditTrailFlags.value,
+		"departmentFlags": 1,
+		"roleFlags": 1
 	})
 	.then(({ body, status }) => {
 		console.log(body, status)

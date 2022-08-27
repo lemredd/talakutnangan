@@ -15,7 +15,7 @@
 				class="ml-5">
 				<Checkbox
 					v-model="rawFlags"
-					:label="convertToSentenceCase(permissionName).toLowerCase()"
+					:label="transformText.toSentenceCase(permissionName).toLowerCase()"
 					:value="permissionName"
 					@change="updateFlags"/>
 			</li>
@@ -56,11 +56,11 @@ import { computed, ref } from "vue"
 
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
-import makeUnique from "$/helpers/array/make_unique"
 import BasePermissionGroup from "$/permissions/base"
+import makeUnique from "$/helpers/array/make_unique"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import TextTransformer from "$/helpers/text_transformers"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"
-import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 const {
@@ -72,6 +72,8 @@ const {
 	basePermissionGroup: BasePermissionGroup<any, any>
 	flags: number
 }>()
+
+const transformText = new TextTransformer()
 
 const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
 const initialReadScopedRawFlag = computed(() => {

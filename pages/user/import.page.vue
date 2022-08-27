@@ -73,7 +73,7 @@ import type { DeserializedUserResource, DeserializedStudentResource } from "$/ty
 import { UserKindValues } from "$/types/database"
 
 import UserFetcher from "$@/fetchers/user"
-import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
+import TextTransformer from "$/helpers/text_transformers"
 
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
@@ -90,7 +90,7 @@ const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
 const chosenRoleIDs = ref<string[]>([])
 
 const kindNames = UserKindValues.map(kind => ({
-	"label": convertToSentenceCase(kind),
+	"label": new TextTransformer().toSentenceCase(kind),
 	"value": kind
 }))
 const chosenKind = ref<string>(kindNames[0].value)

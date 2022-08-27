@@ -16,7 +16,7 @@ import { faker } from "@faker-js/faker"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 import DepartmentTransformer from "%/transformers/department"
-import convertToSentenceCase from "$/helpers/convert_to_sentence_case"
+import TextTransformer from "$/helpers/text_transformers"
 
 export default class DepartmentFactory extends BaseFactory<
 	Department,
@@ -33,7 +33,7 @@ export default class DepartmentFactory extends BaseFactory<
 	#fullName = () => `${
 		faker.commerce.department()
 	} ${
-		convertToSentenceCase(faker.random.alpha(10))
+		new TextTransformer().toSentenceCase(faker.random.alpha(10))
 	}`
 
 	#mayAdmit = true
@@ -48,8 +48,8 @@ export default class DepartmentFactory extends BaseFactory<
 		.map(fullName => fullName.slice(0, 1).toLocaleUpperCase() + fullName.slice(1))
 		.join(" ")
 		return Promise.resolve({
-			"fullName": departmentName,
 			"acronym": departmentName.split(" ").map(fullName => fullName.slice(0, 1)).join(""),
+			"fullName": departmentName,
 			"mayAdmit": this.#mayAdmit
 		})
 	}

@@ -33,7 +33,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 						...previousRelationships,
 						[subtransformer.attribute]: (
 							model: T,
-							options: U
+							options: TransformerOptions<U>
 						): RelationshipTransformerInfo => this.makeRelationshipTransformerInfo(
 							model,
 							subtransformer.attribute,
@@ -105,7 +105,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	protected makeRelationshipTransformerInfo(
 		model: T,
 		attributeName: string,
-		options: TransformerOptions
+		options: TransformerOptions<U>
 	): RelationshipTransformerInfo {
 		return Serializer.makeContext(
 			// @ts-ignore
