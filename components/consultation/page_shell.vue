@@ -30,7 +30,7 @@
 
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-			<ConsultationList :consultations="consultations"/>
+			<slot name="list"></slot>
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -98,15 +98,10 @@
 import { computed, inject, ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type {
-	ConsultationRelationshipNames,
-	DeserializedConsultationListDocument
-} from "$/types/documents/consultation"
 
 import ConsultationForm from "@/consultation/form.vue"
-import ConsultationList from "@/consultation/list.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
 
@@ -117,7 +112,4 @@ function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
-	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
-)
 </script>
