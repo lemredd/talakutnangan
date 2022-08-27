@@ -1,22 +1,26 @@
 <template>
 	<form @submit.prevent="importData">
 		<div>
-		<MultiSelectableOptionsField
-			class="selectable multi"
-			v-model="chosenRoleIDs"
-			label="Add the roles to attach"
-			:options="roleNames"/>
-		<SelectableOptionsField
-			class="selectable import"
-			v-model="chosenKind"
-			label="What kind of users to import?"
-			:options="kindNames"/>
+			<MultiSelectableOptionsField
+				v-model="chosenRoleIDs"
+				class="selectable multi"
+				label="Add the roles to attach"
+				:options="roleNames"/>
+			<SelectableOptionsField
+				v-model="chosenKind"
+				class="selectable import"
+				label="What kind of users to import?"
+				:options="kindNames"/>
 		</div>
 		<div>
-			<input
-				type="file"
-				name="meta[importedCSV]"
-				accept="text/csv"/>
+			<label class="btn" for="choose-file-btn">
+				<input
+					id="choose-file-btn"
+					type="file"
+					name="meta[importedCSV]"
+					accept="text/csv"/>
+				CHOOSE FILE
+			</label>
 		</div>
 		<div>
 			<input
@@ -39,7 +43,12 @@
 				type="hidden"
 				:name="`data[relationships][roles][${i}][id]`"
 				:value="roleID"/>
-			<input type="submit" value="Import"/>
+
+			<input
+				id="import-btn"
+				class="btn btn-primary"
+				type="submit"
+				value="Import"/>
 		</div>
 		<output v-if="createdUsers.length > 0">
 			<table>
@@ -66,20 +75,18 @@
 	</form>
 </template>
 <style lang = "scss">
-
+@import "@styles/btn.scss";
 .import{
 	@apply flex flex-col;
 }
-@media (min-width: 640px) {
-	.selectable{
-		max-width: 80%;
-		@apply flex-row flex justify-between;
 
-
+#choose-file-btn {
+	display:none;
+	appearance: none;
 }
+#import-btn{
+	margin-top:1em;
 }
-
-
 </style>
 
 
