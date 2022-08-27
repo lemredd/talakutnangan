@@ -30,35 +30,7 @@
 
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-			<div class="consultations-list">
-				<div v-if="hasConsultations" class="mx-auto max-w-[max-content] no-consultations">
-					<img class="mx-auto" :src="SadIcon"/>
-					<h2>There are no consultations yet...</h2>
-				</div>
-				<div
-					v-for="consultation in consultations.data"
-					:key="consultation.id"
-					class="consultation"
-					@click="pickConsultation(consultation.id)">
-					<h3 class="consultation-title col-span-full font-400">
-						{{ consultation.title }}
-					</h3>
-
-					<small class="last-chat span">
-						<!-- TODO(others): must limit length -->
-						{{
-							consultation.chats
-								? consultation.chats[consultation.chats.length - 1]
-								: "Start by saying hello!"
-						}}
-					</small>
-
-					<div class="last-chat-time-sent">
-						<!-- TODO(lead): Replace with real value soon -->
-						HH:MM
-					</div>
-				</div>
-			</div>
+			<ConsultationList :consultations="consultations"/>
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -131,8 +103,8 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
-import SadIcon from "@assets/sadicon.png"
 import ConsultationForm from "@/consultation/form.vue"
+import ConsultationList from "@/consultation/list.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { pageProps } = pageContext
@@ -148,15 +120,4 @@ function toggleAddingSchedule() {
 const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
 	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
 )
-const hasConsultations = computed<number>(() => consultations.value.data.length)
-
-
-interface CustomEvents {
-	(eventName: "pickedConsultation", ID: string): void
-}
-const emit = defineEmits<CustomEvents>()
-
-function pickConsultation(consultationID: string) {
-	emit("pickedConsultation", consultationID)
-}
 </script>
