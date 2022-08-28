@@ -26,7 +26,9 @@ extends ResourceIdentifier<T> {
 export interface ChatMessageAttributes<T extends Format = "serialized">
 extends Attributes<T> {
 	kind: string,
-	data: Serializable
+	data: Serializable,
+	createdAt: T extends "deserialized" ? Date : string
+	updatedAt: T extends "deserialized" ? Date : string
 }
 
 export type ChatMessageRelationships = Relationships<{
