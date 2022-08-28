@@ -84,8 +84,9 @@ export interface ErrorDocument {
 interface GeneralRelationshipDatum {
 	deserialized:
 		| DeserializedResourceDocument<any, any, any>
-		| DeserializedResourceListDocument<any, any, any>,
-	serialized: IdentifierDocument<any>|IdentifierListDocument<any>
+		| DeserializedResourceListDocument<any, any, any>
+		| undefined,
+	serialized: IdentifierDocument<any>|IdentifierListDocument<any>|undefined
 }
 
 export type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
