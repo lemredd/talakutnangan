@@ -53,7 +53,7 @@ export default class extends JSONController {
 			"reason": {
 				"constraints": {
 					"regex": {
-						"match": /[a-zA-Z0-9!?.-]/u
+						"match": /[a-zA-Z0-9!?.- ]/u
 					}
 				},
 				"pipes": [ required, string, regex ]
