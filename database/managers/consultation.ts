@@ -98,15 +98,22 @@ export default class extends BaseManager<
 			model.consultantInfo = attachedRole
 
 			const rawChatMessageActivities = rawConsulters.map(consulter => {
-				const userID = consulter.id
+				const userID = Number(consulter.id)
 				const rawChatMessageActivityAttributes: CreationAttributes<ChatMessageActivity> = {
-					"consultationID": model.id,
+					"consultationID": Number(model.id),
 					"receivedMessageAt": null,
 					"seenMessageAt": null,
 					userID
 				}
 
 				return rawChatMessageActivityAttributes
+			})
+
+			rawChatMessageActivities.push({
+				"consultationID": Number(consultantRoleID),
+				"receivedMessageAt": null,
+				"seenMessageAt": null,
+				"userID": Number(consultantID)
 			})
 
 			const chatMessageActivities = await ChatMessageActivity.bulkCreate(
