@@ -42,15 +42,9 @@ export default class ConsultationFactory extends BaseFactory<
 			return attachedRole
 		}
 
-	#statusGenerator: () => string = () => faker.helpers.arrayElement([
-		"will_start",
-		"ongoing",
-		"done"
-	])
-
 	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
-	#reasonGenerator: () => string = () => faker.hacker.phrase()
-	#actionTakenGenerator: () => string = () => faker.hacker.phrase()
+	#reasonGenerator: () => string = () => faker.hacker.noun()
+	#actionTakenGenerator: () => string|null = () => null
 	#scheduledStartAtGenerator: () => Date = () => new Date()
 	#startedAtGenerator: () => Date|null = () => new Date()
 	#finishedAtGenerator: () => Date|null = () => new Date()
@@ -67,8 +61,7 @@ export default class ConsultationFactory extends BaseFactory<
 			"finishedAt": this.#finishedAtGenerator(),
 			"reason": this.#reasonGenerator(),
 			"scheduledStartAt": this.#scheduledStartAtGenerator(),
-			"staredAt": this.#startedAtGenerator(),
-			"status": this.#statusGenerator()
+			"staredAt": this.#startedAtGenerator()
 		}
 	}
 
@@ -101,17 +94,12 @@ export default class ConsultationFactory extends BaseFactory<
 		return model
 	}
 
-	status(generator: () => string): ConsultationFactory {
-		this.#statusGenerator = generator
-		return this
-	}
-
 	reason(generator: () => string): ConsultationFactory {
 		this.#reasonGenerator = generator
 		return this
 	}
 
-	actionTaken(generator: () => string): ConsultationFactory {
+	actionTaken(generator: () => string|null): ConsultationFactory {
 		this.#actionTakenGenerator = generator
 		return this
 	}
@@ -138,21 +126,6 @@ export default class ConsultationFactory extends BaseFactory<
 
 	consulters(generator: () => Promise<User[]>): ConsultationFactory {
 		this.#consultersGenerator = generator
-		return this
-	}
-
-	willStart(): ConsultationFactory {
-		this.#statusGenerator = () => "will_start"
-		return this
-	}
-
-	onGoing(): ConsultationFactory {
-		this.#statusGenerator = () => "ongoing"
-		return this
-	}
-
-	done(): ConsultationFactory {
-		this.#statusGenerator = () => "done"
 		return this
 	}
 }
