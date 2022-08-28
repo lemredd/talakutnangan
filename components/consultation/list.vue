@@ -16,29 +16,23 @@
 				{{ consultation.title }}
 			</h3>
 
-			<small class="last-chat span">
-				<!-- TODO(others): must limit length -->
-				{{
-					consultation.chats
-						? consultation.chats[consultation.chats.length - 1]
-						: "Start by saying hello!"
-				}}
-			</small>
-
-			<div class="last-chat-time-sent">
-				<!-- TODO(lead): Replace with real value soon -->
-				HH:MM
-			</div>
+			<LastChat
+				v-if="consultation.chatMessages.data.length > 0"
+				:chats="(consultation.chatMessages as DeserializedChatMessageListDocument<'user'>)"/>
+			<EmptyLastChat v-else/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationRelationshipNames,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import LastChat from "@/consultation/list/last_chat.vue"
+import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/proile_picture_item.vue"
 
 const {
