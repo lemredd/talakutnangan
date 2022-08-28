@@ -23,7 +23,7 @@ function isDeserializedProfilePictureDocument(value: any)
 }
 
 const profilePictureURL = computed(() => {
-	const { profilePicture } = activity.user.data.profilePicture
+	const { profilePicture } = activity.user.data
 
 	if (isDeserializedProfilePictureDocument(profilePicture)) {
 		return profilePicture.data.fileContents
