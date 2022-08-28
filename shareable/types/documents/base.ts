@@ -88,14 +88,36 @@ interface GeneralRelationshipDatum {
 	serialized: IdentifierDocument<any>|IdentifierListDocument<any>
 }
 
-type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
+export type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
 
+export type DeriveRelationshipNames<T extends GeneralRelationshipData>
+= keyof T extends string ? T : never
+
+export interface DeriveRelationships<T extends GeneralRelationshipData> extends Serializable {
+	relationships: {
+		[Property in keyof T]: T[Property]["serialized"]
+	}
+}
+
+export type DeriveDeserializedRelationships<T extends GeneralRelationshipData> = {
+	[Property in keyof T]: T[Property]["deserialized"]
+} & Serializable
+
+/**
+ * @deprecated
+ */
 type RelationshipData = Record<string, IdentifierDocument<any>|IdentifierListDocument<any>>
 
+/**
+ * @deprecated
+ */
 export interface Relationships<T extends RelationshipData> extends Serializable {
 	relationships: T
 }
 
+/**
+ * @deprecated
+ */
 export type DeserializedRelationships = Record<
 	string,
 	DeserializedResourceDocument<any, any, any>|DeserializedResourceListDocument<any, any, any>
