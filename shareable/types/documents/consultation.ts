@@ -61,21 +61,21 @@ extends GeneralRelationshipData {
 		deserialized: DeserializedUserDocument
 	},
 	consultantRole: {
-		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "read" : T>,
+		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedRoleDocument
 	},
 	consulters: {
 		serialized: UserIdentifierListDocument,
 		deserialized: DeserializedUserListDocument
 	},
-	chatMessageActivity: T extends "create" ? {
-		serialized: ChatMessageActivityIdentifierListDocument,
+	chatMessageActivities: {
+		serialized: T extends "create" ? undefined : ChatMessageActivityIdentifierListDocument,
 		deserialized: DeserializedChatMessageActivityListDocument
-	} : never,
-	chatMessages: T extends "create" ? {
-		serialized: ChatMessageIdentifierListDocument,
+	},
+	chatMessages: {
+		serialized: T extends "create" ? undefined : ChatMessageIdentifierListDocument,
 		deserialized: DeserializedChatMessageListDocument
-	}: never
+	}
 }
 
 export type ConsultationRelationshipNames = DeriveRelationshipNames<ConsultationRelationshipData>
@@ -90,7 +90,7 @@ export type ConsultationResource<T extends Completeness = "read">
 = Resource<
 	T,
 	ConsultationResourceIdentifier<T>,
-	ConsultationAttributes<U>
+	ConsultationAttributes
 > & (
 	T extends "create"
 		? ConsultationRelationships<T>
