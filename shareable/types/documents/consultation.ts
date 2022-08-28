@@ -1,4 +1,3 @@
-import type { Status } from "$/types/database"
 import type { PartialOrPickObject } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -33,8 +32,7 @@ extends ResourceIdentifier<T> {
 export interface ConsultationAttributes<T extends Format = "serialized">
 extends Attributes<T> {
 	reason: string,
-	status: T extends "serialized" ? string : Status,
-	actionTaken: string,
+	actionTaken: string|null,
 	scheduledStartAt: T extends "serialized" ? string : Date,
 	startedAt: (T extends "serialized" ? string : Date)|null,
 	finishedAt: (T extends "serialized" ? string : Date)|null
