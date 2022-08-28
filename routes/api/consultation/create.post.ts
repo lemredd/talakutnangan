@@ -19,7 +19,6 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
 import regex from "!/validators/comparison/regex"
-import anyObject from "!/validators/base/any_object"
 import length from "!/validators/comparison/length"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
@@ -118,17 +117,6 @@ export default class extends JSONController {
 								}
 							},
 							"pipes": [ required, boolean ]
-						},
-						"messageData": {
-							"pipes": [ required, anyObject ]
-						},
-						"messageKind": {
-							"constraints": {
-								"regex": {
-									"match": /[a-z_]+/u
-								}
-							},
-							"pipes": [ required, string, regex ]
 						},
 						"reachableEmployeeID": {
 							"constraints": {
