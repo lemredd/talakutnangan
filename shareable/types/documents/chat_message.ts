@@ -91,14 +91,18 @@ export type ChatMessageListDocument<T extends Completeness = "read"> = ResourceL
 	ChatMessageResource<T>
 >
 
-export type DeserializedChatMessageDocument = DeserializedResourceDocument<
+export type DeserializedChatMessageDocument<
+	T extends ChatMessageRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	ChatMessageResourceIdentifier<"read">,
 	ChatMessageAttributes<"deserialized">,
-	DeserializedChatMessageResource
+	DeserializedChatMessageResource<T>
 >
 
-export type DeserializedChatMessageListDocument = DeserializedResourceListDocument<
+export type DeserializedChatMessageListDocument<
+	T extends ChatMessageRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	ChatMessageResourceIdentifier<"read">,
 	ChatMessageAttributes<"deserialized">,
-	DeserializedChatMessageResource
+	DeserializedChatMessageResource<T>
 >
