@@ -36,6 +36,14 @@ export default class extends BaseManager<
 		]
 	}
 
+	get exposableColumns(): string[] {
+		const excludedColumns = [ "id", "attachedRoleID" ]
+		return super.exposableColumns.filter(columnName => {
+			const isIncluded = !excludedColumns.includes(columnName)
+			return isIncluded
+		})
+	}
+
 	async createUsingResource(
 		details: ConsultationResource<"create">,
 		transformerOptions: void = {} as unknown as void
