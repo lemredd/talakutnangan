@@ -1,10 +1,22 @@
 import type { PartialOrPickObject } from "$/types/general"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
-import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
 import type {
+	RoleDocument,
+	DeserializedRoleDocument
+} from "$/types/documents/role"
+import type {
+	ChatMessageListDocument,
+	DeserializedChatMessageListDocument
+} from "$/types/documents/chat_message"
+import type {
+	ChatMessageActivityListDocument,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
+import type {
+	UserDocument,
+	UserListDocument,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+} from "$/types/documents/user"
 import type {
 	Completeness,
 	Format,
@@ -14,9 +26,13 @@ import type {
 	ResourceIdentifier,
 	DeserializedResource,
 
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+
 	ResourceDocument,
 	ResourceListDocument,
-	DeserializedRelationships,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
 
@@ -38,20 +54,36 @@ extends Attributes<T> {
 	finishedAt: (T extends "serialized" ? string : Date)|null
 }
 
-type RawDeserializedConsultationRelationships = [
-	[ "consultant", DeserializedUserDocument ],
-	[ "consultantRole", DeserializedRoleDocument ],
-	[ "consulters", DeserializedUserListDocument ],
-	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument ],
-	[ "chatMessages", DeserializedChatMessageListDocument ]
-]
-
-export type DeserializedConsultationRelationships = DeserializedRelationships & {
-	[Property in RawDeserializedConsultationRelationships[number][0]]
-	: RawDeserializedConsultationRelationships[number][1]
+interface ConsultationRelationshipData extends GeneralRelationshipData {
+	consultant: {
+		serialized: UserDocument,
+		deserialized: DeserializedUserDocument
+	},
+	consultantRole: {
+		serialized: RoleDocument,
+		deserialized: DeserializedRoleDocument
+	},
+	consulters: {
+		serialized: UserListDocument,
+		deserialized: DeserializedUserListDocument
+	},
+	chatMessageActivity: {
+		serialized: ChatMessageActivityListDocument,
+		deserialized: DeserializedChatMessageActivityListDocument
+	},
+	chatMessages: {
+		serialized: ChatMessageListDocument,
+		deserialized: DeserializedChatMessageListDocument
+	}
 }
 
-export type ConsultationRelationshipNames = RawDeserializedConsultationRelationships[number][0]
+export type ConsultationRelationshipNames = DeriveRelationshipNames<ConsultationRelationshipData>
+
+export type ConsultationRelationships
+= DeriveRelationships<ConsultationRelationshipData>
+
+export type DeserializedConsultationRelationships
+= DeriveDeserializedRelationships<ConsultationRelationshipData>
 
 export type ConsultationResource<T extends Completeness = "read"> = Resource<
 	T,
