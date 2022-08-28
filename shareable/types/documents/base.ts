@@ -81,6 +81,15 @@ export interface ErrorDocument {
 	errors: UnitError[]
 }
 
+interface GeneralRelationshipDatum {
+	deserialized:
+		| DeserializedResourceDocument<any, any, any>
+		| DeserializedResourceListDocument<any, any, any>,
+	serialized: IdentifierDocument<any>|IdentifierListDocument<any>
+}
+
+type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
+
 type RelationshipData = Record<string, IdentifierDocument<any>|IdentifierListDocument<any>>
 
 export interface Relationships<T extends RelationshipData> extends Serializable {
