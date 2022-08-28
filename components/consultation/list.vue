@@ -10,7 +10,7 @@
 				<ProfilePictureItem
 					v-for="activity in consultation.chatMessageActivities.data"
 					:key="activity.id"
-					:src="activity"/>
+					:activity="activity"/>
 			</div>
 			<h3 class="consultation-title col-span-full font-400">
 				{{ consultation.title }}
@@ -33,7 +33,7 @@ import type {
 
 import LastChat from "@/consultation/list/last_chat.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
-import ProfilePictureItem from "@/consultation/list/proile_picture_item.vue"
+import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 const {
 	consultations
