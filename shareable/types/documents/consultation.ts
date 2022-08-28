@@ -89,7 +89,13 @@ export type ConsultationResource<T extends Completeness = "read"> = Resource<
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes<"serialized">
 > & (
-	T extends "create" ? ConsultationRelationships : Serializable
+	T extends "create"
+		? {
+			relationships: Pick<
+				ConsultationRelationships["relationships"],
+				"consultant"|"consultantRole"|"consulters"
+			>
+		} : Serializable
 )
 
 export type DeserializedConsultationResource<
