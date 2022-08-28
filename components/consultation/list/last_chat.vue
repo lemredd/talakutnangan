@@ -7,7 +7,7 @@
 		</small>
 
 		<div class="last-chat-time-sent">
-			{{ lastChat.createdAt }}
+			{{ lastChat.createdAt.toString() }}
 		</div>
 	</div>
 </template>
