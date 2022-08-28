@@ -13,7 +13,8 @@
 					:activity="activity"/>
 			</div>
 			<h3 class="consultation-title col-span-full font-400">
-				{{ consultation.title }}
+				<!-- TODO: Derive the title from reason and consultants -->
+				{{ consultation.reason }}
 			</h3>
 
 			<LastChat
