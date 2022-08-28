@@ -5,6 +5,13 @@
 			:key="consultation.id"
 			class="consultation"
 			@click="pickConsultation(consultation.id)">
+			<!-- TODO(others): must rearrange the pictures -->
+			<div class="profile-pictures">
+				<ProfilePictureItem
+					v-for="activity in consultation.chatMessageActivities.data"
+					:key="activity.id"
+					:src="activity"/>
+			</div>
 			<h3 class="consultation-title col-span-full font-400">
 				{{ consultation.title }}
 			</h3>
@@ -31,6 +38,8 @@ import type {
 	ConsultationRelationshipNames,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
+
+import ProfilePictureItem from "@/consultation/list/proile_picture_item.vue"
 
 const {
 	consultations
