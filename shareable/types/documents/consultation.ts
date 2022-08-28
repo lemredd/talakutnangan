@@ -54,49 +54,47 @@ extends Attributes<T> {
 	finishedAt: (T extends "serialized" ? string : Date)|null
 }
 
-interface ConsultationRelationshipData extends GeneralRelationshipData {
+interface ConsultationRelationshipData<T extends Completeness = "read">
+extends GeneralRelationshipData {
 	consultant: {
 		serialized: UserIdentifierDocument,
 		deserialized: DeserializedUserDocument
 	},
 	consultantRole: {
-		serialized: RoleIdentifierDocument,
+		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "read" : T>,
 		deserialized: DeserializedRoleDocument
 	},
 	consulters: {
 		serialized: UserIdentifierListDocument,
 		deserialized: DeserializedUserListDocument
 	},
-	chatMessageActivity: {
+	chatMessageActivity: T extends "create" ? {
 		serialized: ChatMessageActivityIdentifierListDocument,
 		deserialized: DeserializedChatMessageActivityListDocument
-	},
-	chatMessages: {
+	} : never,
+	chatMessages: T extends "create" ? {
 		serialized: ChatMessageIdentifierListDocument,
 		deserialized: DeserializedChatMessageListDocument
-	}
+	}: never
 }
 
 export type ConsultationRelationshipNames = DeriveRelationshipNames<ConsultationRelationshipData>
 
-export type ConsultationRelationships = DeriveRelationships<ConsultationRelationshipData>
+export type ConsultationRelationships<T extends Completeness = "read">
+= DeriveRelationships<ConsultationRelationshipData<T>>
 
-export type DeserializedConsultationRelationships
-= DeriveDeserializedRelationships<ConsultationRelationshipData>
+export type DeserializedConsultationRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<ConsultationRelationshipData<T>>
 
-export type ConsultationResource<T extends Completeness = "read", U extends Format = "serialized">
+export type ConsultationResource<T extends Completeness = "read">
 = Resource<
 	T,
 	ConsultationResourceIdentifier<T>,
 	ConsultationAttributes<U>
 > & (
 	T extends "create"
-		? {
-			relationships: Pick<
-				ConsultationRelationships["relationships"],
-				"consultant"|"consultantRole"|"consulters"
-			>
-		} : Serializable
+		? ConsultationRelationships<T>
+		: Serializable
 )
 
 export type DeserializedConsultationResource<
