@@ -1,12 +1,19 @@
-import type { Serializable } from "$/types/general"
-import type { UserIdentifierDocument } from "$/types/documents/user"
-import type { ConsultationIdentifierDocument } from "$/types/documents/consultation"
-import type { ChatMessageActivityIdentifierDocument } from "$/types/documents/chat_message_activity"
+import type { Serializable, PartialOrPickObject } from "$/types/general"
+import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/documents/user"
+import type {
+	ChatMessageActivityIdentifierDocument,
+	DeserializedChatMessageActivityDocument
+} from "$/types/documents/chat_message_activity"
+import type {
+	ConsultationIdentifierDocument,
+	DeserializedConsultationDocument
+} from "$/types/documents/consultation"
 import type {
 	Completeness,
 	Format,
 
 	Relationships,
+	DeserializedRelationships,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
@@ -45,9 +52,29 @@ export type ChatMessageResource<T extends Completeness = "read"> = Resource<
 	T extends "create" ? ChatMessageRelationships : Serializable
 )
 
-export type DeserializedChatMessageResource = DeserializedResource<
+type RawDeserializedChatMessageRelationships = [
+	[ "user", DeserializedUserDocument ],
+	[ "consultation", DeserializedConsultationDocument ],
+	[ "chatMessageActivity", DeserializedChatMessageActivityDocument ]
+]
+
+export type DeserializedChatMessageRelationships = DeserializedRelationships & {
+	[Property in RawDeserializedChatMessageRelationships[number][0]]
+	: RawDeserializedChatMessageRelationships[number][1]
+}
+
+export type ChatMessageRelationshipNames
+= RawDeserializedChatMessageRelationships[number][0]
+
+export type DeserializedChatMessageResource<
+	T extends ChatMessageRelationshipNames|undefined = undefined
+> = DeserializedResource<
 	ChatMessageResourceIdentifier<"read">,
 	ChatMessageAttributes<"deserialized">
+> & PartialOrPickObject<
+	T,
+	ChatMessageRelationshipNames,
+	DeserializedChatMessageRelationships
 >
 
 export type ChatMessageDocument<T extends Completeness = "read"> = ResourceDocument<
