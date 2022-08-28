@@ -1,19 +1,19 @@
 import type { Serializable, PartialOrPickObject } from "$/types/general"
 import type {
-	RoleDocument,
+	RoleIdentifierDocument,
 	DeserializedRoleDocument
 } from "$/types/documents/role"
 import type {
-	ChatMessageListDocument,
+	ChatMessageIdentifierListDocument,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
 import type {
-	ChatMessageActivityListDocument,
+	ChatMessageActivityIdentifierListDocument,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
-	UserDocument,
-	UserListDocument,
+	UserIdentifierDocument,
+	UserIdentifierListDocument,
 	DeserializedUserDocument,
 	DeserializedUserListDocument
 } from "$/types/documents/user"
@@ -56,23 +56,23 @@ extends Attributes<T> {
 
 interface ConsultationRelationshipData extends GeneralRelationshipData {
 	consultant: {
-		serialized: UserDocument,
+		serialized: UserIdentifierDocument,
 		deserialized: DeserializedUserDocument
 	},
 	consultantRole: {
-		serialized: RoleDocument,
+		serialized: RoleIdentifierDocument,
 		deserialized: DeserializedRoleDocument
 	},
 	consulters: {
-		serialized: UserListDocument,
+		serialized: UserIdentifierListDocument,
 		deserialized: DeserializedUserListDocument
 	},
 	chatMessageActivity: {
-		serialized: ChatMessageActivityListDocument,
+		serialized: ChatMessageActivityIdentifierListDocument,
 		deserialized: DeserializedChatMessageActivityListDocument
 	},
 	chatMessages: {
-		serialized: ChatMessageListDocument,
+		serialized: ChatMessageIdentifierListDocument,
 		deserialized: DeserializedChatMessageListDocument
 	}
 }
@@ -84,10 +84,11 @@ export type ConsultationRelationships = DeriveRelationships<ConsultationRelation
 export type DeserializedConsultationRelationships
 = DeriveDeserializedRelationships<ConsultationRelationshipData>
 
-export type ConsultationResource<T extends Completeness = "read"> = Resource<
+export type ConsultationResource<T extends Completeness = "read", U extends Format = "serialized">
+= Resource<
 	T,
 	ConsultationResourceIdentifier<T>,
-	ConsultationAttributes<"serialized">
+	ConsultationAttributes<U>
 > & (
 	T extends "create"
 		? {
