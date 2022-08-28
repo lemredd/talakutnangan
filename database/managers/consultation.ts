@@ -77,10 +77,12 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			}) as AttachedRole
 
+			const { scheduledStartAt, ...otherAttributes } = attributes
 			const model = await this.model.create(
 				{
-					...attributes,
-					"attachedRoleID": attachedRole.id
+					...otherAttributes,
+					"attachedRoleID": attachedRole.id,
+					"scheduledStartAt": new Date(scheduledStartAt)
 				},
 				this.transaction.transactionObject
 			)
