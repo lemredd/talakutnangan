@@ -9,12 +9,20 @@ import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
+import date from "!/validators/base/date"
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
+import boolean from "!/validators/base/boolean"
+import integer from "!/validators/base/integer"
+import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
-import oneOf from "!/validators/comparison/one-of"
+import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
+import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -24,26 +32,47 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		/**
-		 * TODO: Validate reason with regex.
-		 * TODO: Validate action taken with regex.
-		 */
-		const attributes = {
-			"reason": {
-				"constraints": { },
-				"pipes": [ required, string ]
-			},
-			"status": {
+		const attributes: FieldRules = {
+			"actionTaken": {
 				"constraints": {
-					"oneOf": {
-						"values": [ "will_start", "ongoing", "done" ]
+					"same": {
+						"value": null
 					}
 				},
-				"pipes": [ required, oneOf ]
+				"pipes": [ nullable, same ]
 			},
-			"actionTaken": {
-				"constraints": { },
-				"pipes": [ required, string ]
+			"finishedAt": {
+				"constraints": {
+					"same": {
+						"value": null
+					}
+				},
+				"pipes": [ nullable, same ]
+			},
+			"reason": {
+				"constraints": {
+					"regex": {
+						"match": /[a-zA-Z0-9!?.-]/u
+					}
+				},
+				"pipes": [ required, string, regex ]
+			},
+			"scheduledStartAt": {
+				"constraints": {
+					"uniqueConsultationSchedule": {
+						"conflictConfirmationPointer": "meta.doesAllowConflicts",
+						"userIDPointer": "meta.reachableEmployeeID"
+					}
+				},
+				"pipes": [ required, date, uniqueConsultationSchedule ]
+			},
+			"startedAt": {
+				"constraints": {
+					"same": {
+						"value": null
+					}
+				},
+				"pipes": [ nullable, same ]
 			}
 		}
 
@@ -71,11 +100,46 @@ export default class extends JSONController {
 			}
 		])
 
+		const meta: FieldRules = {
+			"meta": {
+				"constraints": {
+					"object": {
+						"doesAllowConflicts": {
+							"constraints": {
+								"boolean": {
+									"loose": false
+								}
+							},
+							"pipes": [ required, boolean ]
+						},
+						"reachableEmployeeID": {
+							"constraints": {
+								"integer": {
+									"mustCast": true
+								},
+								"manager": {
+									"className": UserManager,
+									"columnName": "id"
+								},
+								"sameAttribute": {
+									"columnName": "kind",
+									"value": "reachable_employee"
+								}
+							},
+							"pipes": [ required, string, integer, existWithSameAttribute ]
+						}
+					}
+				},
+				"pipes": [ required, object ]
+			}
+		}
+
 		return makeResourceDocumentRules(
 			"consultation",
 			attributes,
 			{
 				"extraDataQueries": relationships,
+				"extraQueries": meta,
 				"isNew": true,
 				"mustCastID": true
 			}
@@ -85,7 +149,6 @@ export default class extends JSONController {
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
 		const manager = new ConsultationManager(request.transaction, request.cache)
 
-		// TODO: Get the attached role ID first
 		const consultationInfo = await manager.create(request.body.data.attributes)
 
 		return new CreatedResponseInfo(consultationInfo)
