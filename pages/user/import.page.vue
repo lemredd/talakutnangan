@@ -1,5 +1,5 @@
 <template>
-	<AdminConfigHeader class="tabs" title="Admin Settings"/>
+	<AdminConfigHeader class="tabs" title="Admin Configuration"/>
 
 	<form @submit.prevent="importData">
 		<div>
