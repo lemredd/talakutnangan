@@ -1,4 +1,6 @@
 <template>
+	<AdminConfigHeader class="tabs" title="Admin Settings"/>
+
 	<form @submit.prevent="importData">
 		<div>
 			<MultiSelectableOptionsField
@@ -81,6 +83,11 @@
 </template>
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
+
+.tabs {
+	margin-bottom: 2em;
+}
+
 .kind{
 	@apply flex-col;
 	margin-bottom:2em;
@@ -109,7 +116,6 @@
 	}
 }
 
-
 @media (min-width: 640px) {
 	.kind{
 		@apply flex flex-row;
@@ -120,7 +126,7 @@
 
 
 <script setup lang="ts">
-import { inject, ref, computed } from "vue"
+import { inject, ref, computed, provide } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -132,8 +138,11 @@ import { UserKindValues } from "$/types/database"
 import UserFetcher from "$@/fetchers/user"
 import TextTransformer from "$/helpers/text_transformers"
 
+import AdminConfigHeader from "@/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
