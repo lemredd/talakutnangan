@@ -101,7 +101,7 @@ export default class extends BaseManager<
 				const userID = Number(consulter.id)
 				const rawChatMessageActivityAttributes: CreationAttributes<ChatMessageActivity> = {
 					"consultationID": Number(model.id),
-					"receivedMessageAt": null,
+					"receivedMessageAt": new Date(),
 					"seenMessageAt": null,
 					userID
 				}
@@ -110,8 +110,8 @@ export default class extends BaseManager<
 			})
 
 			rawChatMessageActivities.push({
-				"consultationID": Number(consultantRoleID),
-				"receivedMessageAt": null,
+				"consultationID": Number(model.id),
+				"receivedMessageAt": new Date(),
 				"seenMessageAt": null,
 				"userID": Number(consultantID)
 			})
