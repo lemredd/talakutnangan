@@ -7,7 +7,7 @@ describe("Validator pipe: date", () => {
 		const state = Promise.resolve(makeInitialState(value))
 		const sanitizeValue = (await date(state)).value
 
-		expect(sanitizeValue).toEqual(value)
+		expect(sanitizeValue).toEqual(new Date(value))
 	})
 
 	it("cannot accept invalid input", () => {
