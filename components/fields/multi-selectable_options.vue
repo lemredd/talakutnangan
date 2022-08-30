@@ -21,7 +21,7 @@
 			:key="option.value"
 			class="selected-option">
 			{{
-				option.label ?? option.value
+				option.label || option.value
 			}}
 			<button
 				type="button"
@@ -29,6 +29,9 @@
 				@click="removeOption(option.value)">
 				close
 			</button>
+		</li>
+		<li v-if="!selectedOptions.length" class="no-options">
+			There are no roles selected
 		</li>
 	</ul>
 </template>
@@ -42,6 +45,10 @@
 
 	.selected-option{
 		@apply flex justify-between;
+	}
+
+	.no-options{
+		text-align: center;
 	}
 }
 @media (min-width: 640px) {
