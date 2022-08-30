@@ -47,11 +47,24 @@ export default abstract class extends RequestFilter {
 				}
 			}
 		} catch (rawError) {
-			const castErrors = rawError as ErrorPointer[]
-			errorInfos = castErrors.map(error => ({
-				"field": error.field,
-				"message": error.messageMaker(error.field, accessDeepPath(body, error.field))
-			}))
+			if (Array.isArray(rawError)) {
+				const castErrors = rawError as ErrorPointer[]
+				errorInfos = castErrors.map(error => ({
+					"field": error.field,
+					"message": error.messageMaker(error.field, accessDeepPath(body, error.field))
+				}))
+			} else {
+				const castError = rawError as ErrorPointer
+				errorInfos = [
+					{
+						"field": castError.field,
+						"message": castError.messageMaker(
+							castError.field,
+							accessDeepPath(body, castError.field)
+						)
+					}
+				]
+			}
 		}
 
 		if (errorInfos !== null) {
