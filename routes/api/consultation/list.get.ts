@@ -4,9 +4,9 @@ import type { ConsultationQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import Manager from "%/managers/consultation"
 import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
-import ConsultationManager from "%/managers/consultation"
 
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -26,7 +26,7 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(): FieldRules {
 		return makeListRules(
-			ConsultationManager,
+			Manager,
 			makeIDBasedFilterRules("user", UserManager, true)
 		)
 	}
@@ -34,7 +34,7 @@ export default class extends QueryController {
 	async handle(request: Request): Promise<ListResponse> {
 		const constraints = { ...request.query } as ConsultationQueryParameters<number>
 
-		const manager = new ConsultationManager(request.transaction, request.cache)
+		const manager = new Manager(request.transaction, request.cache)
 		const consultations = await manager.list(constraints)
 
 		return new ListResponse(consultations)

@@ -57,7 +57,7 @@ export default class extends JSONController {
 						"minimum": 10
 					},
 					"regex": {
-						"match": /[a-zA-Z0-9!?.- ]/u
+						"match": /[a-zA-Z0-9!?. -]/u
 					}
 				},
 				"pipes": [ required, string, length, regex ]
