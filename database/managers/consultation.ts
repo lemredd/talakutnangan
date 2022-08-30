@@ -125,7 +125,9 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions)
+			return this.serialize(model, transformerOptions, new Transformer({
+				"included": [ "consultant", "consultantRole", "chatMessageActivities" ]
+			}))
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
