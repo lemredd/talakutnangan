@@ -1,5 +1,6 @@
 <template>
 	<div class="multi-select">
+		<div class="select">
 		<h3>{{ label }}</h3>
 		<SelectableOptionsField
 			v-model="currentOption"
@@ -34,6 +35,7 @@
 			There are no roles selected
 		</li>
 	</ul>
+	</div>
 </template>
 
 <style scoped lang ="scss">
