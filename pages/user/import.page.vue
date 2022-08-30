@@ -3,12 +3,12 @@
 		<div>
 			<MultiSelectableOptionsField
 				v-model="chosenRoleIDs"
-				class="selectable multi"
+				class="role"
 				label="Add the roles to attach"
 				:options="roleNames"/>
 			<SelectableOptionsField
 				v-model="chosenKind"
-				class="selectable kind"
+				class="kind"
 				label="What kind of users to import?"
 				:options="kindNames"/>
 		</div>
@@ -51,7 +51,6 @@
 				value="Import"/>
 		</div>
 		<output v-if="createdUsers.length > 0">
-			<!-- TODO: center table display -->
 			<div class="overflowing-table">
 				<table>
 					<thead>
@@ -63,12 +62,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="user in createdUsers" :key="user.id">
+						<tr
+							v-for="user in createdUsers"
+							:key="user.id"
+							class="user-row">
 							<td v-if="isStudentResource(user)">
 								{{ user.studentDetail.data.studentNumber }}
 							</td>
-							<td>{{ user.name }}</td>
-							<td>{{ user.email }}</td>
+							<td class="user name">{{ user.name }}</td>
+							<td class="user email">{{ user.email }}</td>
 							<td>{{ user.department.data.acronym }}</td>
 						</tr>
 					</tbody>
@@ -80,7 +82,7 @@
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
 .kind{
-	@apply flex flex-col;
+	@apply flex-col;
 	margin-bottom:2em;
 }
 
@@ -93,12 +95,27 @@
 }
 
 .overflowing-table {
+	@apply flex;
+	margin:1em 0;
+	width: 100%;
 	overflow-x: scroll;
+
+	table {
+		width: 100%;
+
+		th, td {
+			text-align: center;
+		}
+	}
 }
 
-th {
-	width: max-content;
+
+@media (min-width: 640px) {
+	.kind{
+		@apply flex flex-row;
+	}
 }
+
 </style>
 
 
