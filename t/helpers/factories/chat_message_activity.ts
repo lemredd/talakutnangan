@@ -36,7 +36,7 @@ export default class ChatMessageActivityFactory extends BaseFactory<
 	#consultationGenerator: () => Promise<Consultation>
 		= async() => await new ConsultationFactory().insertOne()
 
-	#receivedMessageAtGenerator: () => Date = () => new Date()
+	#receivedMessageAtGenerator: () => Date|null = () => null
 	#seenMessageAtGenerator: () => Date|null = () => null
 
 	get model(): ModelCtor<ChatMessageActivity> { return ChatMessageActivity }
@@ -52,7 +52,7 @@ export default class ChatMessageActivityFactory extends BaseFactory<
 		}
 	}
 
-	receivedMessageAt(generator: () => Date): ChatMessageActivityFactory {
+	receivedMessageAt(generator: () => Date|null): ChatMessageActivityFactory {
 		this.#receivedMessageAtGenerator = generator
 		return this
 	}
