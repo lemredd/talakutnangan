@@ -19,32 +19,36 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (constraints.length === undefined) {
+	if (typeof constraints.length === "undefined") {
 		throw makeDeveloperError(constraints.field)
 	}
 
 	const expectedSanitizeLength = state.value.length
 
 	if (
-		constraints.length.minimum !== undefined
+		typeof constraints.length.minimum !== "undefined"
 		&& expectedSanitizeLength < constraints.length.minimum) {
-		throw {
+		const error = {
 			"field": constraints.field,
 			"messageMaker": (field: string) => `Field "${field}" must be more than or equal to ${
-					constraints.length!.minimum
+				constraints.length?.minimum
 			} character(s).`
 		}
+
+		throw error
 	}
 
 	if (
-		constraints.length.maximum !== undefined
+		typeof constraints.length.maximum !== "undefined"
 		&& constraints.length.maximum < expectedSanitizeLength) {
-		throw {
+		const error = {
 			"field": constraints.field,
 			"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
-					constraints.length!.maximum
+				constraints.length?.maximum
 			} character(s).`
 		}
+
+		throw error
 	}
 
 	return state

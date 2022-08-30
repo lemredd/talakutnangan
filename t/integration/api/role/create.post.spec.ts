@@ -17,7 +17,7 @@ describe("POST /api/role", () => {
 		const adminRole = await new RoleFactory()
 		.roleFlags(permissionGroup.generateMask(...CREATE))
 		.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const role = await new RoleFactory().makeOne()
 
 		const response = await App.request

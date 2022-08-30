@@ -93,7 +93,7 @@ export default class extends DevController {
 				"where": new Condition().equal("fullName", testDepartment).build()
 			})
 
-			Log.success("controller", "making for dean dept")
+			Log.success("controller", "making for dean department")
 			if (testInstituteDepartment === null) {
 				testInstituteDepartment = await new DepartmentFactory()
 				.fullName(() => testDepartment)

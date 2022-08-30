@@ -14,18 +14,18 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	switch(constraints.filter.slug) {
+	switch (constraints.filter.slug) {
 		case "":
-			// do nothing
+			// Do nothing
 			break
-		default:
+		default: {
 			const condition = new Condition()
 			condition.or(
 				new Condition().search("name", constraints.filter.slug),
 				new Condition().search("email", constraints.filter.slug)
 			)
 
-			if (newState.where === undefined) {
+			if (typeof newState.where === "undefined") {
 				newState.where = {}
 			}
 
@@ -34,6 +34,7 @@ export default function<T>(
 				...condition.build()
 			}
 			break
+		}
 	}
 
 	Log.trace("pipeline", "sift by slug")

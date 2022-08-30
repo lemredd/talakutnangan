@@ -4,6 +4,7 @@ import ChatRouter from "!%/enhancer/chat/router"
 import UserRouter from "!%/enhancer/user/router"
 import DepartmentRouter from "!%/enhancer/department/router"
 import UserSettingsRouter from "!%/enhancer/settings/router"
+import ConsultationRouter from "!%/enhancer/consultation/router"
 import AdminResourceConfigRouter from "!%/enhancer/admin/resource_config/router"
 
 export default class extends Router {
@@ -13,6 +14,7 @@ export default class extends Router {
 		this.useRouters([
 			new UserRouter(),
 			new AdminResourceConfigRouter(),
+			new ConsultationRouter(),
 			new ChatRouter(),
 			new DepartmentRouter(),
 			new UserSettingsRouter()

@@ -94,7 +94,7 @@
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { ErrorDocument } from "$/types/documents/base"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"

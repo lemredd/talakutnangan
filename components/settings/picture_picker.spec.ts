@@ -6,9 +6,9 @@ describe("Component: Picture Picker", () => {
 	it("should give the proper input ID", () => {
 		const title = "Sample Title"
 		const wrapper = mount(PicturePicker, {
-			props: {
-				title,
-				picture: null
+			"props": {
+				"picture": null,
+				title
 			}
 		})
 

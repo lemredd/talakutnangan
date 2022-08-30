@@ -159,7 +159,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 					roleID,
 					{
 						"filter": {
-							"department": "*",
 							"existence": "exists"
 						}
 					}

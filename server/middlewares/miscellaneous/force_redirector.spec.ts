@@ -2,7 +2,7 @@ import MockRequester from "~/set-ups/mock_requester"
 
 import Middleware from "./force_redirector"
 
-describe("Middleware: Redirector", () => {
+describe("Middleware: force redirector", () => {
 	const requester = new MockRequester()
 
 	it("can redirect", async() => {

@@ -1,5 +1,5 @@
-import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
+import type { UserKind, Day } from "$/types/database"
 
 export interface ExistenceFilter extends Serializable {
 	filter: {
@@ -58,6 +58,39 @@ export interface UserFilter<T extends number|string = string> extends Serializab
 	}
 }
 
+export interface EmployeeScheduleDayFilter extends Serializable {
+	filter: {
+		/**
+		 * The day where employee schedules are available.
+		 */
+		day: "*"|Day
+	}
+}
+
+export interface EmployeeScheduleRangeFilter extends Serializable {
+	filter: {
+		/**
+		 * The time range where employee schedules are available.
+		 */
+		employeeScheduleRange: "*"|{
+			end: number,
+			start: number
+		}
+	}
+}
+
+export interface ConsultationRangeFilter extends Serializable {
+	filter: {
+		/**
+		 * The time range where consultation schedules are available.
+		 */
+		consultationScheduleRange: "*"|{
+			end: Date,
+			start: Date
+		}
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -104,3 +137,10 @@ export type DepartmentQueryParameters<T extends number|string = string> =
 export type EmployeeScheduleQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& UserFilter<T>
+	& EmployeeScheduleRangeFilter
+	& EmployeeScheduleDayFilter
+
+export type ConsultationQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& UserFilter<T>
+	& ConsultationRangeFilter

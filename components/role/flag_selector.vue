@@ -7,16 +7,19 @@
 			{{ header }} Flags
 		</h2>
 
-	<div class="operational-flags">
-		<span>Operations: </span>
-		<li class="ml-5" v-for="permissionName in operationalPermissionNames">
-			<Checkbox
-				:label="transformText.toSentenceCase(permissionName).toLowerCase()"
-				:value="permissionName"
-				@change="updateFlags"
-				v-model="rawFlags" />
-		</li>
-	</div>
+		<div class="operational-flags">
+			<span>Operations: </span>
+			<li
+				v-for="permissionName in operationalPermissionNames"
+				:key="permissionName"
+				class="ml-5">
+				<Checkbox
+					v-model="rawFlags"
+					:label="transformText.toSentenceCase(permissionName).toLowerCase()"
+					:value="permissionName"
+					@change="updateFlags"/>
+			</li>
+		</div>
 
 		<div
 			v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length"
@@ -54,6 +57,7 @@ import { computed, ref } from "vue"
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
 import BasePermissionGroup from "$/permissions/base"
+import makeUnique from "$/helpers/array/make_unique"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import TextTransformer from "$/helpers/text_transformers"
 import AccessLevelSelector from "@/fields/dropdown_select.vue"

@@ -1,4 +1,5 @@
 import type { Pipe } from "$/types/database"
+import type { CommonFilter } from "$/types/query"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type {
 	Model,
@@ -26,8 +27,8 @@ import Serializer from "%/transformers/serializer"
 import page from "%/queries/base/page"
 import sort from "%/queries/base/sort"
 import Condition from "%/managers/helpers/condition"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
 import siftByExistence from "%/queries/base/sift_by_existence"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 /**
  * A base class for model managers which contains methods for CRUD operations.
@@ -42,7 +43,8 @@ export default abstract class Manager<
 	U,
 	V extends GeneralObject = GeneralObject,
 	W = void,
-	X = number
+	X = number,
+	Y extends CommonFilter = CommonFilter
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
 	protected cache: CacheClient
@@ -80,7 +82,7 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: X,
-		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
+		constraints: Y = {} as Y,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
@@ -103,7 +105,7 @@ export default abstract class Manager<
 	async findOneOnColumn(
 		columnName: string,
 		value: any,
-		constraints: Pick<V, "filter"> = {} as Pick<V, "filter">,
+		constraints: Y = {} as Y,
 		transformerOptions: W = {} as W
 	): Promise<Serializable> {
 		try {
@@ -287,16 +289,16 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<Y = Serializable>(
+	protected serialize<Z = Serializable>(
 		models: T|T[]|null,
 		options: W = {} as W,
 		transformer: Transformer<T, W> = this.transformer
-	): Y {
+	): Z {
 		return Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
-		) as unknown as Y
+		) as unknown as Z
 	}
 
 	protected makeBaseError(error: any): BaseError {
