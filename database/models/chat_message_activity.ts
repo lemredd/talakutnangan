@@ -21,7 +21,7 @@ export default class ChatMessageActivity extends Model {
 		"allowNull": false,
 		"type": DataType.DATE
 	})
-		receivedMessageAt!: Date
+		receivedMessageAt!: Date|null
 
 	@AllowNull
 	@Column({
