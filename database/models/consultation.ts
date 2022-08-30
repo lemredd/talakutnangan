@@ -9,7 +9,6 @@ import {
 	ForeignKey,
 	BelongsToMany
 } from "sequelize-typescript"
-import { Status, StatusValues } from "$/types/database"
 
 import User from "%/models/user"
 import Role from "%/models/role"
@@ -25,23 +24,16 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 export default class Consultation extends Model {
 	@Column({
 		"allowNull": false,
-		"type": DataType.TEXT
+		"type": DataType.STRING
 	})
 		reason!: string
 
 	@Column({
-		"allowNull": false,
-		"type": DataType.ENUM(
-			...StatusValues
-		)
-	})
-		status!: Status
-
-	@Column({
-		"allowNull": false,
+		"allowNull": true,
+		"defaultValue": null,
 		"type": DataType.TEXT
 	})
-		actionTaken!: string
+		actionTaken!: string|null
 
 	@Column({
 		"allowNull": false,

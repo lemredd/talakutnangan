@@ -21,24 +21,26 @@ module.exports = {
 					},
 					"reason": {
 						"allowNull": false,
-						"type": Sequelize.TEXT
-					},
-					"status": {
-						"allowNull": false,
-						"type": Sequelize.ENUM([ "will_start", "ongoing", "done" ])
+						"type": Sequelize.STRING
 					},
 					"actionTaken": {
-						"allowNull": false,
+						"allowNull": true,
+						"defaultValue": null,
 						"type": Sequelize.TEXT
 					},
-					"scheduledStartDatetime": {
+					"scheduledStartAt": {
 						"allowNull": false,
 						"type": Sequelize.DATE
 					},
-					"endDatetime": {
+					"startedAt": {
 						"allowNull": true,
-						"type": Sequelize.DATE,
-						"defaultValue": null
+						"defaultValue": null,
+						"type": Sequelize.DATE
+					},
+					"finishedAt": {
+						"allowNull": true,
+						"defaultValue": null,
+						"type": Sequelize.DATE
 					},
 					"createdAt": {
 						"allowNull": false,
