@@ -1,40 +1,40 @@
 <template>
 	<div class="multi-select">
 		<div class="select">
-		<h3>{{ label }}</h3>
-		<SelectableOptionsField
-			v-model="currentOption"
-			:options="remainingOptions"
-			:placeholder="placeholder">
-			<template #after-dropdown>
+			<h3>{{ label }}</h3>
+			<SelectableOptionsField
+				v-model="currentOption"
+				:options="remainingOptions"
+				:placeholder="placeholder">
+				<template #after-dropdown>
+					<button
+						type="button"
+						class="material-icons"
+						@click="addCurrentOption">
+						add
+					</button>
+				</template>
+			</SelectableOptionsField>
+		</div>
+		<ul class="selected-options">
+			<li
+				v-for="option in selectedOptions"
+				:key="option.value"
+				class="selected-option">
+				{{
+					option.label || option.value
+				}}
 				<button
 					type="button"
-					class="material-icons"
-					@click="addCurrentOption">
-					add
+					class="close material-icons-outlined"
+					@click="removeOption(option.value)">
+					close
 				</button>
-			</template>
-		</SelectableOptionsField>
-	</div>
-	<ul class="selected-options">
-		<li
-			v-for="option in selectedOptions"
-			:key="option.value"
-			class="selected-option">
-			{{
-				option.label || option.value
-			}}
-			<button
-				type="button"
-				class="close material-icons-outlined"
-				@click="removeOption(option.value)">
-				close
-			</button>
-		</li>
-		<li v-if="!selectedOptions.length" class="no-options">
-			There are no roles selected
-		</li>
-	</ul>
+			</li>
+			<li v-if="!selectedOptions.length" class="no-options">
+				There are no roles selected
+			</li>
+		</ul>
 	</div>
 </template>
 
@@ -54,8 +54,10 @@
 	}
 }
 @media (min-width: 640px) {
-	.multi-select{
-		max-width: 80%;
+	.multi-select .select, .selected-options{
+		max-width: 70%;
+	}
+	.multi-select .select{
 		@apply flex-row flex justify-between;
 	}
 }
