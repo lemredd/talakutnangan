@@ -5,7 +5,7 @@
 
 import { inject } from "vue"
 import type { App, InjectionKey } from "vue"
-import { PageContext } from "./types"
+import { PageContext } from "$/types/renderer"
 
 export { usePageContext }
 export { setPageContext }
