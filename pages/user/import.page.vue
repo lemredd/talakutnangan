@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import { inject, ref, computed, provide } from "vue"
 
-import type { PageContext } from "$/types/renderer"
+import type { PageContext, PageProps } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { ErrorDocument } from "$/types/documents/base"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
@@ -146,7 +146,7 @@ provide("tabs", [ "Users", "Roles", "Departments" ])
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
 
-const { "roles": rawRoles } = pageProps
+const { "roles": rawRoles } = pageProps as PageProps<"serialized", "roles">
 const roles = ref<DeserializedRoleListDocument>(rawRoles as DeserializedRoleListDocument)
 const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
 	"label": data.name,
