@@ -6,6 +6,9 @@
 -->
 <template>
 	<ConsultationShell @picked-consultation="pickConsultation">
+		<template #list>
+			<EmptyConsultationList/>
+		</template>
 		<template #chat-window>
 			<EmptyChatWindow :user-profile="userProfile"/>
 		</template>
@@ -33,6 +36,7 @@ import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import ConsultationShell from "@/consultation/page_shell.vue"
+import EmptyConsultationList from "@/consultation/empty_list.vue"
 import EmptyChatWindow from "@/consultation/empty_chat_window.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">

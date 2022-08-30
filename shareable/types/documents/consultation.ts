@@ -44,7 +44,7 @@ type RawDeserializedConsultationRelationships = [
 	[ "consultant", DeserializedUserDocument ],
 	[ "consultantRole", DeserializedRoleDocument ],
 	[ "consulters", DeserializedUserListDocument ],
-	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument ],
+	[ "chatMessageActivities", DeserializedChatMessageActivityListDocument ],
 	[ "chatMessages", DeserializedChatMessageListDocument ]
 ]
 
