@@ -37,7 +37,7 @@ export default class extends BaseManager<
 	}
 
 	get exposableColumns(): string[] {
-		const excludedColumns = [ "id", "attachedRoleID" ]
+		const excludedColumns = [ "attachedRoleID" ]
 		return super.exposableColumns.filter(columnName => {
 			const isIncluded = !excludedColumns.includes(columnName)
 			return isIncluded
