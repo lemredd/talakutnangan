@@ -32,7 +32,7 @@
 				</button>
 			</li>
 			<li v-if="!selectedOptions.length" class="no-options">
-				There are no roles selected
+				<small>There are no roles selected</small>
 			</li>
 		</ul>
 	</div>
@@ -40,8 +40,8 @@
 
 <style scoped lang ="scss">
 .selected-options{
-	margin: 1em 0;
-	border-top:1px solid black;
+	@apply border-t border-opacity-50;
+	margin: 1em 0 3em;
 	padding-top: 1em;
 	display:block;
 
@@ -50,6 +50,7 @@
 	}
 
 	.no-options{
+		@apply text-gray-500;
 		text-align: center;
 	}
 }

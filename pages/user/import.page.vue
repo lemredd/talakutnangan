@@ -66,13 +66,12 @@
 					<tbody>
 						<tr
 							v-for="user in createdUsers"
-							:key="user.id"
-							class="user-row">
+							:key="user.id">
 							<td v-if="isStudentResource(user)">
 								{{ user.studentDetail.data.studentNumber }}
 							</td>
-							<td class="user name">{{ user.name }}</td>
-							<td class="user email">{{ user.email }}</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.email }}</td>
 							<td>{{ user.department.data.acronym }}</td>
 						</tr>
 					</tbody>
@@ -90,7 +89,7 @@
 
 .kind{
 	@apply flex-col;
-	margin-bottom:2em;
+	margin-bottom: 3em;
 }
 
 #choose-file-btn {
