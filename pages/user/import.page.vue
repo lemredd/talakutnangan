@@ -8,7 +8,7 @@
 				:options="roleNames"/>
 			<SelectableOptionsField
 				v-model="chosenKind"
-				class="selectable import"
+				class="selectable kind"
 				label="What kind of users to import?"
 				:options="kindNames"/>
 		</div>
@@ -52,33 +52,36 @@
 		</div>
 		<output v-if="createdUsers.length > 0">
 			<!-- TODO: center table display -->
-			<table>
-				<thead>
-					<tr>
-						<th v-if="isStudentResource(createdUsers[0])">Student number</th>
-						<th>Name</th>
-						<th>E-mail</th>
-						<th>Department</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="user in createdUsers" :key="user.id">
-						<td v-if="isStudentResource(user)">
-							{{ user.studentDetail.data.studentNumber }}
-						</td>
-						<td>{{ user.name }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ user.department.data.acronym }}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="overflowing-table">
+				<table>
+					<thead>
+						<tr>
+							<th v-if="isStudentResource(createdUsers[0])" class="">Student number</th>
+							<th>Name</th>
+							<th>E-mail</th>
+							<th>Department</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="user in createdUsers" :key="user.id">
+							<td v-if="isStudentResource(user)">
+								{{ user.studentDetail.data.studentNumber }}
+							</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.email }}</td>
+							<td>{{ user.department.data.acronym }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</output>
 	</form>
 </template>
-<style lang = "scss">
+<style scoped lang = "scss">
 @import "@styles/btn.scss";
-.import{
+.kind{
 	@apply flex flex-col;
+	margin-bottom:2em;
 }
 
 #choose-file-btn {
@@ -87,6 +90,14 @@
 }
 #import-btn{
 	margin-top:1em;
+}
+
+.overflowing-table {
+	overflow-x: scroll;
+}
+
+th {
+	width: max-content;
 }
 </style>
 
