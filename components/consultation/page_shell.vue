@@ -30,35 +30,7 @@
 
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-			<div class="consultations-list">
-				<div v-if="hasConsultations" class="mx-auto max-w-[max-content] no-consultations">
-					<img class="mx-auto" :src="SadIcon"/>
-					<h2>There are no consultations yet...</h2>
-				</div>
-				<div
-					v-for="consultation in consultations.data"
-					:key="consultation.id"
-					class="consultation"
-					@click="pickConsultation(consultation.id)">
-					<h3 class="consultation-title col-span-full font-400">
-						{{ consultation.title }}
-					</h3>
-
-					<small class="last-chat span">
-						<!-- TODO(others): must limit length -->
-						{{
-							consultation.chats
-								? consultation.chats[consultation.chats.length - 1]
-								: "Start by saying hello!"
-						}}
-					</small>
-
-					<div class="last-chat-time-sent">
-						<!-- TODO(lead): Replace with real value soon -->
-						HH:MM
-					</div>
-				</div>
-			</div>
+			<slot name="list"></slot>
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -126,15 +98,10 @@
 import { computed, inject, ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type {
-	ConsultationRelationshipNames,
-	DeserializedConsultationListDocument
-} from "$/types/documents/consultation"
 
-import SadIcon from "@assets/sadicon.png"
 import ConsultationForm from "@/consultation/form.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
 
@@ -145,18 +112,4 @@ function toggleAddingSchedule() {
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
-const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
-	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
-)
-const hasConsultations = computed<number>(() => consultations.value.data.length)
-
-
-interface CustomEvents {
-	(eventName: "pickedConsultation", ID: string): void
-}
-const emit = defineEmits<CustomEvents>()
-
-function pickConsultation(consultationID: string) {
-	emit("pickedConsultation", consultationID)
-}
 </script>
