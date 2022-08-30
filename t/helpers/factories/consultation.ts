@@ -37,13 +37,15 @@ export default class ConsultationFactory extends BaseFactory<
 > {
 	#consultantInfoGenerator: () => Promise<AttachedRole>
 		= async() => {
-			const attachedRole = await new AttachedRoleFactory().insertOne()
+			const attachedRole = await new AttachedRoleFactory()
+			.user(() => new UserFactory().beReachableEmployee().insertOne())
+			.insertOne()
 
 			return attachedRole
 		}
 
 	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
-	#reasonGenerator: () => string = () => faker.hacker.noun()
+	#reasonGenerator: () => string = () => `${faker.hacker.noun()}-${faker.hacker.noun()}`
 	#actionTakenGenerator: () => string|null = () => null
 	#scheduledStartAtGenerator: () => Date = () => new Date()
 	#startedAtGenerator: () => Date|null = () => new Date()
