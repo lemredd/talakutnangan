@@ -1,20 +1,6 @@
 <template>
 	<div class="multi-select">
 		<h3>{{ label }}</h3>
-		<ul class="selected-options">
-			<li v-for="option in selectedOptions" :key="option.value">
-				<!-- TODO: display options below label and selectable options field  -->
-				{{
-					option.label ?? option.value
-				}}
-				<button
-					type="button"
-					class="close material-icons-outlined"
-					@click="removeOption(option.value)">
-					close
-				</button>
-			</li>
-		</ul>
 		<SelectableOptionsField
 			v-model="currentOption"
 			:options="remainingOptions"
@@ -29,9 +15,35 @@
 			</template>
 		</SelectableOptionsField>
 	</div>
+	<ul class="selected-options">
+		<li
+			v-for="option in selectedOptions"
+			:key="option.value"
+			class="selected-option">
+			{{
+				option.label ?? option.value
+			}}
+			<button
+				type="button"
+				class="close material-icons-outlined"
+				@click="removeOption(option.value)">
+				close
+			</button>
+		</li>
+	</ul>
 </template>
 
 <style scoped lang ="scss">
+.selected-options{
+	margin: 1em 0;
+	border-top:1px solid black;
+	padding-top: 1em;
+	display:block;
+
+	.selected-option{
+		@apply flex justify-between;
+	}
+}
 @media (min-width: 640px) {
 	.multi-select{
 		max-width: 80%;
