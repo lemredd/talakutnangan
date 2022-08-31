@@ -1,24 +1,33 @@
 <template>
-<div class="dropdown-filter-container">
-			<label for="dropdown-filter">{{ filterLabel }}</label>
-			<select name="dropdown-filter" id="dropdown-filter">
-				<option v-for="filterItem in availableFilters" :value="filterItem">
-					{{ filterItem }}
-				</option>
-			</select>
-		</div>
+	<div class="dropdown-filter-container">
+		<label for="dropdown-filter">{{ filterLabel }}</label>
+		<select id="dropdown-filter" name="dropdown-filter">
+			<option
+				v-for="filterItem in availableFilters"
+				:key="filterItem"
+				:value="filterItem">
+				{{ filterItem }}
+			</option>
+		</select>
+	</div>
 </template>
 
 <style scoped lang="scss">
 .dropdown-filter-container {
-	@apply flex justify-between;
+	@apply flex flex-col;
+	margin-top:1em;
 	label {
-		@apply sm:justify-self-end self-center;
+		@apply sm:justify-self-end flex-1;
 	}
 
 	select {
-		@apply dark:bg-dark-300 bg-gray-300;
+		@apply flex-1 dark:bg-dark-300 bg-gray-300;
 		position: relative;
+	}
+}
+@media screen and  (min-width: 640px){
+	.dropdown-filter-container{
+	@apply flex flex-row;
 	}
 }
 </style>
@@ -39,7 +48,7 @@ const { by } = defineProps<{
 }>()
 
 const selectedFilter = ref("all")
-const availableFilters = ref(["All"])
+const availableFilters = ref([ "All" ])
 const filterLabel = ref(by)
 const managerKind = inject("managerKind") as Manager
 
@@ -55,9 +64,7 @@ function siftViewableRoles() {
 	}
 
 	if (managerKind.isStudentServiceLimited()) {
-		availableFilters.value = availableFilters.value.filter((f: string) => {
-			return f.toLowerCase().includes("service") || f.toLowerCase().includes("all")
-		})
+		availableFilters.value = availableFilters.value.filter((f: string) => f.toLowerCase().includes("service") || f.toLowerCase().includes("all"))
 	}
 }
 
@@ -67,15 +74,15 @@ function siftViewableDepartments() {
 
 async function listRoles() {
 	await new RoleFetcher().list({
-		filter: {
-			existence: "exists",
-			department: "*"
+		"filter": {
+			"existence": "exists",
+			"department": "*"
 		},
-		page: {
-			limit: 10,
-			offset: 0
+		"page": {
+			"limit": 10,
+			"offset": 0
 		},
-		sort: ["name"]
+		"sort": [ "name" ]
 	})
 	.then(response => {
 		const { body } = response
@@ -90,37 +97,37 @@ async function listRoles() {
 
 function listDepartments() {
 	new DepartmentFetcher().list({
-		filter: {
-			existence: "exists"
+		"filter": {
+			"existence": "exists"
 		},
-		page: {
-			limit: 10,
-			offset: 0
+		"page": {
+			"limit": 10,
+			"offset": 0
 		},
-		sort: ["fullName"]
+		"sort": [ "fullName" ]
 	})
 	.then(response => {
 		const { body } = response
 		const deserializedData = deserialize(body) as DeserializedDepartmentListDocument
 		deserializedData.data.map(department => {
-			availableFilters.value.push(department.fullName)
+			availableFilters.value.push(department.acronym)
 		})
 	})
 }
 
-onMounted(async () => {
+onMounted(async() => {
 	switch (by) {
 		case "Role":
 			await listRoles()
-		break
+			break
 
 		case "Department":
 			listDepartments()
-		break
+			break
 
 		case "Kind":
-			// listKind()
-		break
+			// ListKind()
+			break
 	}
 })
 </script>
