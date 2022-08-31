@@ -104,7 +104,7 @@ export default class extends DevController {
 			if (previousUser === null) {
 				const createdUser = await new UserFactory()
 				.email(() => testStudentEmail)
-				.beReachableEmployee()
+				.beStudent()
 				.in(testInstituteDepartment)
 				.insertOne()
 

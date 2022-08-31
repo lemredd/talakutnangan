@@ -152,7 +152,7 @@ export default class extends DevController {
 		if (previousStudentUser === null) {
 			const createdUser = await new UserFactory()
 			.email(() => testStudentEmail)
-			.beReachableEmployee()
+			.beStudent()
 			.in(testInstituteDepartment)
 			.insertOne()
 
@@ -221,7 +221,7 @@ export default class extends DevController {
 				"consulters": {
 					"data": [
 						{
-							"id": testStudentRole.id,
+							"id": previousStudentUser.id,
 							"type": "user"
 						}
 					]
