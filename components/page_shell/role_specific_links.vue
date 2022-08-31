@@ -185,7 +185,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultations"
+				"path": "/consultation"
 			}
 		],
 		"mustBeGuest": false,
