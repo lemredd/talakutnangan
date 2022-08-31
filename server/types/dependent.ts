@@ -10,6 +10,7 @@ import type {
 	NextFunction as BaseNextFunction,
 	RequestHandler as BaseRequestHandler
 } from "express"
+import type { ExpressPeerServer } from "peer"
 import type { Session } from "express-session"
 import type { Serializable } from "$/types/general"
 import CacheClient from "$!/helpers/cache_client"
@@ -65,3 +66,5 @@ export interface IDParameter extends Parameters {
 export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 	params: IDParameter
 }
+
+export type PeerServer = ReturnType<typeof ExpressPeerServer>
