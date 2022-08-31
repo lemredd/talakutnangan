@@ -1,25 +1,63 @@
 <template>
-	<div class="resource-row" v-for="resource in filteredList" :key="resource.id">
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>E-mail</th>
+				<th>Department</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr
+				v-for="resource in filteredList"
+				:key="resource.id"
+				class="resource-row">
+				<div v-if="resourceType == 'user'">
+					<td>{{ resource }}</td>
+					<td>{{ resource.name }}</td>
+					<td>{{ resource.email }}</td>
+					<td>{{ resource.roles.data[0].name }}</td>
+				</div>
+				<div v-else-if="resourceType === 'role'" class="resource-properties">
+					<td>{{ resource.name }}</td>
+					<td>{{ resource }} users</td>
+				</div>
 
-		<div class="resource-properties" v-if="resourceType === 'user'">
+				<div v-else class="resource-properties">
+					<td>{{ resource.fullName }}</td>
+					<td>{{ resource }} users</td>
+				</div>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- <div
+		v-for="resource in filteredList"
+		:key="resource.id"
+		class="resource-row">
+		<div v-if="resourceType === 'user'" class="resource-properties">
 			<span>{{ resource.name }}</span>
 			<span>{{ resource.email }}</span>
 			<span>{{ resource.roles.data[0].name }}</span>
 		</div>
-		<div class="resource-properties" v-else-if="resourceType === 'role'">
+
+		<div v-else-if="resourceType === 'role'" class="resource-properties">
 			<span>{{ resource.name }}</span>
 			<span>{{ resource }} users</span>
 		</div>
-		<div class="resource-properties" v-else>
+
+		<div v-else class="resource-properties">
 			<span>{{ resource.fullName }}</span>
 			<span>{{ resource }} users</span>
 		</div>
 		<div class="btns">
-			<button class="btn1">Update</button>
+			<button class="btn1">
+				Update
+			</button>
 		</div>
-	</div>
+	</div> -->
 
-	<div class="no-results" v-if="!filteredList.length">
+	<div v-if="!filteredList.length" class="no-results">
 		<p>No results found!</p>
 	</div>
 </template>
@@ -69,17 +107,17 @@ const resourceType = ref("")
 const resourceProperties = ref<string[]>([])
 
 onUpdated(() => {
-	// displays retrieved data from database properly
+	// Displays retrieved data from database properly
 	if (filteredList.length) {
 		resourceType.value = filteredList[0].type
 
 		filteredList.forEach((element:any) => {
-			const non_id_properties = new Set<string>([])
+			const nonIDProperties = new Set<string>([])
 			Object.keys(element).forEach(key => {
-				non_id_properties.add(key)
-			});
-			resourceProperties.value = [...non_id_properties]
-		});
+				nonIDProperties.add(key)
+			})
+			resourceProperties.value = [ ...nonIDProperties ]
+		})
 	}
 })
 </script>
