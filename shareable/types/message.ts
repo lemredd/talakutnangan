@@ -12,6 +12,16 @@ export interface TextMessage<T extends Format = "serialized"> extends ChatMessag
 }
 
 /**
+ * Shape of text messages.
+ */
+export interface StatusMessage<T extends Format = "serialized"> extends ChatMessageAttributes<T> {
+	kind: "status",
+	data: {
+		value: string
+	}
+}
+
+/**
  * Union of all kinds of messages.
  */
-export type Message<T extends Format = "serialized"> = TextMessage<T>
+export type Message<T extends Format = "serialized"> = TextMessage<T>|StatusMessage<T>
