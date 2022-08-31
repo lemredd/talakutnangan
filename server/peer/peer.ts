@@ -1,5 +1,4 @@
-import { Server as WebSocketServer } from "socket.io"
-
+import type { PeerServer } from "!/types/dependent"
 import type { GeneralObject } from "$/types/general"
 
 import Log from "$!/singletons/log"
@@ -8,39 +7,21 @@ import RequestEnvironment from "$!/singletons/request_environment"
 
 type PreviousCallInfo = { functionName: string, arguments: GeneralObject<any> }
 
-export default class Socket extends RequestEnvironment {
-	private static rawServer: WebSocketServer|null = null
+export default class Peer extends RequestEnvironment {
+	private static rawServer: PeerServer|null = null
 	private static previousCallInfos: PreviousCallInfo[] = []
 
-	static initialize(server: WebSocketServer) {
+	static initialize(server: PeerServer) {
 		this.rawServer = server
 
-		Log.trace("app", "initialized web socket server")
-	}
-
-	static emitToClients(namespace: string, eventName: string, ...data: any): void {
-		this.runDependingOnEnvironment(
-			() => this.server.of(namespace).emit(eventName, data),
-			() => {
-				this.previousCallInfos.push({
-					"arguments": {
-						data,
-						eventName,
-						namespace
-					},
-					"functionName": "emitToClients"
-				})
-
-				return true
-			}
-		)
+		Log.trace("app", "initialized peer server")
 	}
 
 	static consumePreviousCalls(): PreviousCallInfo[] {
 		return this.runDependingOnEnvironment(
 			(): PreviousCallInfo[] => {
 				throw new Developer(
-					"Web socket server should not monitor previous calls.",
+					"Peer server should not monitor previous calls.",
 					"Some services are not working at the moment."
 				)
 			},
@@ -52,11 +33,11 @@ export default class Socket extends RequestEnvironment {
 		)
 	}
 
-	private static get server(): WebSocketServer {
+	private static get server(): PeerServer {
 		if (this.rawServer) return this.rawServer
 
 		throw new Developer(
-			"Web socket server was not initialized.",
+			"Peer server was not initialized.",
 			"Some services are not working at the moment."
 		)
 	}
