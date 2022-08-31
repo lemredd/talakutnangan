@@ -1,36 +1,48 @@
 <template>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>E-mail</th>
-				<th>Department</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr
-				v-for="resource in filteredList"
-				:key="resource.id"
-				class="resource-row">
-				<div v-if="resourceType == 'user'">
-					<td>{{ resource }}</td>
+	<div class="overflowing-table">
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>E-mail</th>
+					<th>Role</th>
+					<th>Department</th>
+				</tr>
+			</thead>
+			<tbody v-if="resourceType == 'user'">
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
 					<td>{{ resource.name }}</td>
 					<td>{{ resource.email }}</td>
 					<td>{{ resource.roles.data[0].name }}</td>
-				</div>
-				<div v-else-if="resourceType === 'role'" class="resource-properties">
+					<td :title="resource.department.data.fullName">
+						{{ resource.department.data.acronym }}
+					</td>
+				</tr>
+			</tbody>
+			<tbody v-else-if="resourceType === 'role'" class="resource-properties">
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
 					<td>{{ resource.name }}</td>
 					<td>{{ resource }} users</td>
-				</div>
+				</tr>
+			</tbody>
 
-				<div v-else class="resource-properties">
+			<tbody v-else class="resource-properties">
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
 					<td>{{ resource.fullName }}</td>
 					<td>{{ resource }} users</td>
-				</div>
-			</tr>
-		</tbody>
-	</table>
-
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<!-- <div
 		v-for="resource in filteredList"
 		:key="resource.id"
@@ -64,7 +76,7 @@
 
 <style scoped lang="scss">
 .resource-row {
-	@apply dark:text-light-100 flex flex-col gap-2 sm:items-center sm:flex-row sm:justify-between;
+	@apply dark:text-light-100;
 	margin: .5rem;
 	border-bottom-width: 1px;
 	padding-bottom: .5rem;
@@ -88,6 +100,12 @@
 		@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
 	}
 }
+
+.overflowing-table{
+	width: 100%;
+	overflow-x: scroll;
+}
+
 </style>
 
 <script setup lang="ts">
@@ -116,6 +134,7 @@ onUpdated(() => {
 			Object.keys(element).forEach(key => {
 				nonIDProperties.add(key)
 			})
+			console.log(element)
 			resourceProperties.value = [ ...nonIDProperties ]
 		})
 	}
