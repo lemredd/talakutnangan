@@ -57,7 +57,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const link = wrapper.find("anchor-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
-		expect(linkHref).toBe("/log_in")
+		expect(linkHref).toBe("/user/log_in")
 	})
 
 	it("should appear different in desktop", () => {
