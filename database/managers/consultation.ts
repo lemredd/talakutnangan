@@ -9,6 +9,7 @@ import Role from "%/models/role"
 import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
 import Model from "%/models/consultation"
+import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Condition from "%/managers/helpers/condition"
 import Transformer from "%/transformers/consultation"
@@ -46,6 +47,7 @@ export default class extends BaseManager<
 
 	async createUsingResource(
 		details: ConsultationResource<"create">,
+		requesterID: number,
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {

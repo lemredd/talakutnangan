@@ -228,7 +228,7 @@ export default class extends DevController {
 				}
 			},
 			"type": "consultation"
-		})
+		}, Number(previousStudentUser.id))
 
 		response.status(this.status.OK).send({
 			"data": [
