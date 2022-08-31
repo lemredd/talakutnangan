@@ -58,6 +58,7 @@ export default class extends PageMiddleware {
 
 		const consultations = await manager.list({
 			"filter": {
+				"consultationScheduleRange": "*",
 				"existence": "exists",
 				"user": Number(user.data.id)
 			},
