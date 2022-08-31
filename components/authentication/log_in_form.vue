@@ -54,6 +54,9 @@ function logIn() {
 	}
 
 	new UserFetcher().logIn(details)
-	.then(console.log)
+	.then(data => {
+		console.log(data)
+		window.location.reload()
+	})
 }
 </script>
