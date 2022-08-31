@@ -6,11 +6,13 @@ import User from "%/models/user"
 import Role from "%/models/role"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
+import StudentDetail from "%/models/student_detail"
 import ConsultationManager from "%/managers/consultation"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import StudentDetailFactory from "~/factories/student_detail"
 import {
 	tag,
 	user,
@@ -32,6 +34,7 @@ export default class extends DevController {
 		const testSecretaryEmail = "secretary@example.net"
 		const testSecretaryRoleName = "test_secretary"
 		const testStudentEmail = "student@example.net"
+		const testStudentNumber = "000-0001"
 		const testStudentRoleName = "test_student"
 		const testDepartment = "Test Department"
 
@@ -167,6 +170,22 @@ export default class extends DevController {
 		})
 
 		Log.success("controller", "attached test student role to test student")
+
+		let previousStudentDetail = await User.findOne({
+			"where": new Condition().equal("studentNumber", testStudentNumber).build()
+		})
+
+		Log.success("controller", "making for student detail")
+		if (previousStudentDetail === null) {
+			const createdStudentDetail = await new StudentDetailFactory()
+			.user(() => Promise.resolve(previousStudentUser as User))
+			.studentNumber(() => testStudentNumber)
+			.insertOne()
+
+			Log.success("controller", "created test student detail")
+
+			previousStudentDetail = createdStudentDetail
+		}
 
 		Log.success("controller", "searching for secretary user")
 		let previousSecretaryUser = await User.findOne({
