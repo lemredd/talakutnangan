@@ -38,10 +38,10 @@
 				</template>
 				<template #default>
 					<ul class="settings-items">
-						<a href="">
+						<a href="/settings/account">
 							Account Settings
 						</a>
-						<a href="">
+						<a href="/settings/profile">
 							Profile Settings
 						</a>
 						<LogOutBtn/>
