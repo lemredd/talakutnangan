@@ -1,4 +1,6 @@
 <template>
+	<AdminConfigHeader class="tabs" title="Admin Configuration"/>
+
 	<form @submit.prevent="importData">
 		<div>
 			<MultiSelectableOptionsField
@@ -64,13 +66,12 @@
 					<tbody>
 						<tr
 							v-for="user in createdUsers"
-							:key="user.id"
-							class="user-row">
+							:key="user.id">
 							<td v-if="isStudentResource(user)">
 								{{ user.studentDetail.data.studentNumber }}
 							</td>
-							<td class="user name">{{ user.name }}</td>
-							<td class="user email">{{ user.email }}</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.email }}</td>
 							<td>{{ user.department.data.acronym }}</td>
 						</tr>
 					</tbody>
@@ -81,9 +82,14 @@
 </template>
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
+
+.tabs {
+	margin-bottom: 2em;
+}
+
 .kind{
 	@apply flex-col;
-	margin-bottom:2em;
+	margin-bottom: 3em;
 }
 
 #choose-file-btn {
@@ -109,7 +115,6 @@
 	}
 }
 
-
 @media (min-width: 640px) {
 	.kind{
 		@apply flex flex-row;
@@ -120,9 +125,9 @@
 
 
 <script setup lang="ts">
-import { inject, ref, computed } from "vue"
+import { inject, ref, computed, provide } from "vue"
 
-import type { PageContext } from "$/types/renderer"
+import type { PageContext, PageProps } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { ErrorDocument } from "$/types/documents/base"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
@@ -132,13 +137,16 @@ import { UserKindValues } from "$/types/database"
 import UserFetcher from "$@/fetchers/user"
 import TextTransformer from "$/helpers/text_transformers"
 
+import AdminConfigHeader from "@/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
 
-const { "roles": rawRoles } = pageProps
+const { "roles": rawRoles } = pageProps as PageProps<"serialized", "roles">
 const roles = ref<DeserializedRoleListDocument>(rawRoles as DeserializedRoleListDocument)
 const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
 	"label": data.name,

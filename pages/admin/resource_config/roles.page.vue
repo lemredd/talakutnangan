@@ -1,5 +1,5 @@
 <template>
-	<AdminSettingsHeader title="Admin Settings"/>
+	<AdminSettingsHeader title="Admin Configuration"/>
 
 	<RolesManager :resource="roles">
 		<template #search-filter>

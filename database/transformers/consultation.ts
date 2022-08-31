@@ -10,7 +10,7 @@ import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
 type Relationships =
-	| "consultant"
+	|"consultant"
 	|"consultantRole"
 	|"consulters"
 	|"chatMessageActivities"
@@ -63,11 +63,11 @@ export default class extends Transformer<Consultation, void> {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"reason",
-			"status",
 			"actionTaken",
 			"scheduledStartAt",
 			"startedAt",
-			"finishedAt"
+			"finishedAt",
+			"deletedAt"
 		])
 
 		return safeObject
