@@ -55,7 +55,7 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(unusedData => {
-		window.location.reload()
+		window.location.assign("/")
 	}).catch(unusedErrors => {
 		// Show error infos
 	})
