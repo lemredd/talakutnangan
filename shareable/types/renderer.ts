@@ -4,7 +4,7 @@ import type { PageProps as BasePageProps, AdditionalPropNames, UnitError } from 
 
 export type PageProps<
 	T extends Format = "serialized",
-	U extends AdditionalPropNames<T>|undefined = undefined
+	U extends AdditionalPropNames<T> = "userProfile"
 > = BasePageProps<T, U> & {
 	parsedUnitError: UnitError & Serializable
 }
@@ -12,7 +12,7 @@ export type PageProps<
 // The `pageContext` that are available in both on the server-side and browser-side
 export type PageContext<
 	T extends Format = "serialized",
-	U extends AdditionalPropNames<T>|undefined = undefined
+	U extends AdditionalPropNames<T> = "userProfile"
 > = {
 	Page: any
 	pageProps: PageProps<T, U>

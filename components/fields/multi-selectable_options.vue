@@ -1,10 +1,28 @@
 <template>
-	<div>
-		<h3>{{ label }}</h3>
+	<div class="multi-select">
+		<div class="select">
+			<h3>{{ label }}</h3>
+			<SelectableOptionsField
+				v-model="currentOption"
+				:options="remainingOptions"
+				:placeholder="placeholder">
+				<template #after-dropdown>
+					<button
+						type="button"
+						class="material-icons"
+						@click="addCurrentOption">
+						add
+					</button>
+				</template>
+			</SelectableOptionsField>
+		</div>
 		<ul class="selected-options">
-			<li v-for="option in selectedOptions" :key="option.value">
+			<li
+				v-for="option in selectedOptions"
+				:key="option.value"
+				class="selected-option">
 				{{
-					option.label ?? option.value
+					option.label || option.value
 				}}
 				<button
 					type="button"
@@ -13,22 +31,38 @@
 					close
 				</button>
 			</li>
+			<li v-if="!selectedOptions.length" class="no-options">
+				<small>There are no roles selected</small>
+			</li>
 		</ul>
-		<SelectableOptionsField
-			v-model="currentOption"
-			:options="remainingOptions"
-			:placeholder="placeholder">
-			<template #after-dropdown>
-				<button
-					type="button"
-					class="material-icons"
-					@click="addCurrentOption">
-					add
-				</button>
-			</template>
-		</SelectableOptionsField>
 	</div>
 </template>
+
+<style scoped lang ="scss">
+.selected-options{
+	@apply border-t border-opacity-50;
+	margin: 1em 0 3em;
+	padding-top: 1em;
+	display:block;
+
+	.selected-option{
+		@apply flex justify-between;
+	}
+
+	.no-options{
+		@apply text-gray-500;
+		text-align: center;
+	}
+}
+@media (min-width: 640px) {
+	.multi-select .select, .selected-options{
+		max-width: 70%;
+	}
+	.multi-select .select{
+		@apply flex-row flex justify-between;
+	}
+}
+</style>
 
 <script setup lang="ts">
 import { computed, ref } from "vue"

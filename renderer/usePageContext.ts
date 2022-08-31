@@ -3,13 +3,11 @@
  * See https://vite-plugin-ssr.com/pageContext-anywhere
  */
 
-import { inject } from "vue"
-import type { App, InjectionKey } from "vue"
-import { PageContext } from "./types"
+import { inject, App, InjectionKey } from "vue"
 
-export { usePageContext }
-export { setPageContext }
+import type { PageContext } from "$/types/renderer"
 
+// eslint-disable-next-line symbol-description
 const key: InjectionKey<PageContext> = Symbol()
 
 function usePageContext() {
@@ -21,3 +19,5 @@ function usePageContext() {
 function setPageContext(app: App, pageContext: PageContext) {
 	app.provide(key, pageContext)
 }
+
+export { usePageContext, setPageContext }

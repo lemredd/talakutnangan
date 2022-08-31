@@ -27,7 +27,7 @@ const configuration: UserConfig = {
 	}
 }
 
-if (process.env.NODE_ENV === "dev") {
+if (process.env.NODE_ENV === "dev" && process.env.WEB_PROXY === "true") {
 	configuration.server = {
 		"hmr": {
 			"clientPort": Number(process.env.PORT ?? "16000"),

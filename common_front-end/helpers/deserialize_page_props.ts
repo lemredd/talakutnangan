@@ -6,9 +6,16 @@ import deserialize from "$/helpers/deserialize"
 export default function(
 	pageContext: Serializable & { pageProps: { userProfile: Serializable|null } }
 ): DeserializedPageContext {
-	const restructuredContext = { ...pageContext }
-	restructuredContext.pageProps.userProfile = deserialize(
-		restructuredContext.pageProps.userProfile
-	)
+	const restructuredContext = { ...pageContext } as Serializable
+	const castPageProps = restructuredContext.pageProps as Serializable
+
+	restructuredContext.pageProps = Object.getOwnPropertyNames(restructuredContext.pageProps)
+	.map(property => ({
+		[property]: deserialize(castPageProps[property] as Serializable)
+	})).reduce((previousProperties, currentProperty) => ({
+		...previousProperties,
+		...currentProperty
+	}), {} as DeserializedPageContext) as DeserializedPageContext
+
 	return restructuredContext as DeserializedPageContext
 }
