@@ -3,6 +3,7 @@ import type { ConsultationResource } from "$/types/documents/consultation"
 import Model from "%/models/consultation"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
+import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
@@ -57,13 +58,15 @@ describe("Database Manager: Consultation create operations", () => {
 		}
 		const manager = new Manager()
 
-		const createdData = await manager.createUsingResource(resource)
+		const createdData = await manager.createUsingResource(resource, user.id)
 
 		expect(await Model.count()).toBe(1)
+		expect(await ChatMessage.count()).toBe(1)
 		expect(await ChatMessageActivity.count()).toBe(2)
 		expect(createdData).toHaveProperty("data.attributes.actionTaken", model.actionTaken)
 		expect(createdData).toHaveProperty("data.attributes.reason", model.reason)
 		expect(createdData).toHaveProperty("data.relationships.consultant")
+		expect(createdData).toHaveProperty("data.relationships.chatMessages")
 		expect(createdData).toHaveProperty("data.relationships.consultantRole")
 		expect(createdData).toHaveProperty("data.relationships.chatMessageActivities")
 	})

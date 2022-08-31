@@ -7,8 +7,8 @@ import type { ConsultationResource, ConsultationAttributes } from "$/types/docum
 import User from "%/models/user"
 import Role from "%/models/role"
 import Log from "$!/singletons/log"
-import BaseManager from "%/managers/base"
 import Model from "%/models/consultation"
+import BaseManager from "%/managers/base"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Condition from "%/managers/helpers/condition"
@@ -125,10 +125,31 @@ export default class extends BaseManager<
 
 			model.chatMessageActivities = chatMessageActivities
 
+			const chatMessageActivityOfRequester = chatMessageActivities.find(
+				activity => activity.userID === requesterID
+			) as ChatMessageActivity
+
+			const initialChatMessage = await ChatMessage.create({
+				"chatMessageActivityID": chatMessageActivityOfRequester.id,
+				"data": {
+					"value": "Consultation has been prepared."
+				},
+				"kind": "status"
+			})
+
+			chatMessageActivityOfRequester.chatMessages = [
+				initialChatMessage
+			]
+
 			Log.success("manager", "done creating a model")
 
 			return this.serialize(model, transformerOptions, new Transformer({
-				"included": [ "consultant", "consultantRole", "chatMessageActivities" ]
+				"included": [
+					"consultant",
+					"consultantRole",
+					"chatMessageActivities",
+					"chatMessages"
+				]
 			}))
 		} catch (error) {
 			throw this.makeBaseError(error)
