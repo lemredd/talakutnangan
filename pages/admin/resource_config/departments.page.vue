@@ -1,5 +1,5 @@
 <template>
-	<AdminSettingsHeader title="Admin Settings" />
+	<AdminSettingsHeader title="Admin Configuration" />
 
 	<DeptManager :resource="departments" >
 		<template #search-filter>
