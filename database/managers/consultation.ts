@@ -103,7 +103,7 @@ export default class extends BaseManager<
 				const userID = Number(consulter.id)
 				const rawChatMessageActivityAttributes: CreationAttributes<ChatMessageActivity> = {
 					"consultationID": Number(model.id),
-					"receivedMessageAt": new Date(),
+					"receivedMessageAt": null,
 					"seenMessageAt": null,
 					userID
 				}
@@ -113,7 +113,7 @@ export default class extends BaseManager<
 
 			rawChatMessageActivities.push({
 				"consultationID": Number(model.id),
-				"receivedMessageAt": new Date(),
+				"receivedMessageAt": null,
 				"seenMessageAt": null,
 				"userID": Number(consultantID)
 			})
@@ -126,7 +126,7 @@ export default class extends BaseManager<
 			model.chatMessageActivities = chatMessageActivities
 
 			const chatMessageActivityOfRequester = chatMessageActivities.find(
-				activity => activity.userID === requesterID
+				activity => Number(activity.userID) === Number(requesterID)
 			) as ChatMessageActivity
 
 			const initialChatMessage = await ChatMessage.create({
@@ -135,7 +135,7 @@ export default class extends BaseManager<
 					"value": "Consultation has been prepared."
 				},
 				"kind": "status"
-			})
+			}, this.transaction.transactionObject)
 
 			chatMessageActivityOfRequester.chatMessages = [
 				initialChatMessage
