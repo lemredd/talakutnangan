@@ -37,20 +37,20 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).end()
 		} else {
-			const testEmail = "secretary@example.net"
-			const testRoleName = "test_secretary"
+			const testSecretaryEmail = "secretary@example.net"
+			const testSecretaryRoleName = "test_secretary"
 			const testDepartmentName = "Test Department"
 
 			Log.success("controller", "searching for role")
-			let testRole = await Role.findOne({
-				"where": new Condition().equal("name", testRoleName).build()
+			let testSecretaryRole = await Role.findOne({
+				"where": new Condition().equal("name", testSecretaryRoleName).build()
 			})
 
 			Log.success("controller", "making for role")
 
-			if (testRole === null) {
-				testRole = await new RoleFactory()
-				.name(() => testRoleName)
+			if (testSecretaryRole === null) {
+				testSecretaryRole = await new RoleFactory()
+				.name(() => testSecretaryRoleName)
 				.departmentFlags(department.generateMask(
 					"view"
 				))
@@ -110,32 +110,32 @@ export default class extends DevController {
 				Log.success("controller", "created test department")
 			}
 
-			Log.success("controller", "searching for  user")
+			Log.success("controller", "searching for secretary user")
 			let previousUser = await User.findOne({
-				"where": new Condition().equal("email", testEmail).build()
+				"where": new Condition().equal("email", testSecretaryEmail).build()
 			})
-			Log.success("controller", "making for  user")
+			Log.success("controller", "making for secretary user")
 			if (previousUser === null) {
 				const createdUser = await new UserFactory()
-				.email(() => testEmail)
+				.email(() => testSecretaryEmail)
 				.beReachableEmployee()
 				.in(testInstituteDepartment)
 				.insertOne()
 
-				Log.success("controller", "created test user")
+				Log.success("controller", "created test secretary user")
 
 				previousUser = createdUser
 			}
 
 			await AttachedRole.upsert({
 				"userID": previousUser.id,
-				"roleID": testRole.id
+				"roleID": testSecretaryRole.id
 			})
 
-			Log.success("controller", "attached test role to test user")
+			Log.success("controller", "attached test secretary role to test secretary user")
 
 			request.body = {
-				"email": testEmail,
+				"email": testSecretaryEmail,
 				"password": "password"
 			}
 

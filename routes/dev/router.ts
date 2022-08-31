@@ -11,6 +11,7 @@ import GetSampleUserListRoute from "!%/dev/sample_user_list.get"
 import GetSampleServerErrorRoute from "!%/dev/sample_server_error.get"
 import GetMakeUnverifiedUserRoute from "!%/dev/make_unverified_user.get"
 import GetNewUserNotificationRoute from "!%/dev/new_user_notification.get"
+import GetMakeTestConsultationRoute from "!%/dev/make_test_consultation.get"
 
 export default class extends Router {
 	constructor() {
@@ -28,7 +29,8 @@ export default class extends Router {
 			new GetSampleUserListRoute(),
 			new GetSampleServerErrorRoute(),
 			new GetMakeUnverifiedUserRoute(),
-			new GetNewUserNotificationRoute()
+			new GetNewUserNotificationRoute(),
+			new GetMakeTestConsultationRoute()
 		])
 	}
 }
