@@ -74,7 +74,7 @@ export default class extends PageMiddleware {
 		const consultation = await manager.findWithID(Number(id)) as ConsultationDocument
 
 		const consultationIDs = consultations.data.map(consultation => Number(consultation.id))
-		consultationIDs.push(Number(consultation.data.id))
+		consultationIDs.unshift(Number(consultation.data.id))
 
 		const chatMessageActivityManager = new ChatMessageActivityManager(
 			request.transaction,
