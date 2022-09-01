@@ -102,8 +102,11 @@
 }
 
 .overflowing-table{
-	width: 100%;
 	overflow-x: scroll;
+
+	table {
+		width: 100%;
+	}
 }
 
 </style>
