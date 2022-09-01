@@ -91,16 +91,20 @@ export type ChatMessageActivityListDocument<T extends Completeness = "read"> = R
 	ChatMessageActivityResource<T>
 >
 
-export type DeserializedChatMessageActivityDocument = DeserializedResourceDocument<
+export type DeserializedChatMessageActivityDocument<
+	T extends ChatMessageActivityRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	ChatMessageActivityResourceIdentifier<"read">,
 	ChatMessageActivityAttributes<"deserialized">,
-	DeserializedChatMessageActivityResource
+	DeserializedChatMessageActivityResource<T>
 >
 
-export type DeserializedChatMessageActivityListDocument = DeserializedResourceListDocument<
+export type DeserializedChatMessageActivityListDocument<
+	T extends ChatMessageActivityRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	ChatMessageActivityResourceIdentifier<"read">,
 	ChatMessageActivityAttributes<"deserialized">,
-	DeserializedChatMessageActivityResource
+	DeserializedChatMessageActivityResource<T>
 >
 
 export type ChatMessageActivityIdentifierDocument
