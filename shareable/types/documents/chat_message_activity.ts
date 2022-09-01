@@ -1,4 +1,3 @@
-import type { PartialOrPickObject } from "$/types/general"
 import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/documents/user"
 import type {
 	ConsultationIdentifierDocument,
@@ -17,6 +16,7 @@ import type {
 	DeriveRelationshipNames,
 	GeneralRelationshipData,
 	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -71,10 +71,12 @@ export type DeserializedChatMessageActivityResource<
 > = DeserializedResource<
 	ChatMessageActivityResourceIdentifier<"read">,
 	ChatMessageActivityAttributes<"deserialized">
-> & PartialOrPickObject<
-	T,
+> & PartialOrPickDeserializedRelationship<
+	ChatMessageActivityRelationshipData<"read">,
+	DeserializedChatMessageActivityRelationships<"read">,
 	ChatMessageActivityRelationshipNames,
-	DeserializedChatMessageActivityRelationships
+	T extends ChatMessageActivityRelationshipNames ? true : false,
+	T extends ChatMessageActivityRelationshipNames ? T : ChatMessageActivityRelationshipNames
 >
 
 export type ChatMessageActivityDocument<T extends Completeness = "read"> = ResourceDocument<
