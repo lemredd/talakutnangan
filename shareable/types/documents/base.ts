@@ -91,10 +91,7 @@ interface GeneralRelationshipDatum {
 
 export type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
 
-export type DeriveRelationshipNames<T extends GeneralRelationshipData>
-= keyof T extends string
-	? keyof T
-	: string
+export type DeriveRelationshipNames<T extends GeneralRelationshipData> = keyof T
 
 export interface DeriveRelationships<T extends GeneralRelationshipData> extends Serializable {
 	relationships: {
@@ -105,6 +102,14 @@ export interface DeriveRelationships<T extends GeneralRelationshipData> extends 
 export type DeriveDeserializedRelationships<T extends GeneralRelationshipData> = {
 	[Property in keyof T]: T[Property]["deserialized"]
 } & Serializable
+
+export type PartialOrPickDeserializedRelationship<
+ T extends GeneralRelationshipData,
+ U extends DeriveDeserializedRelationships<T>,
+ V extends DeriveRelationshipNames<T>,
+ W extends boolean,
+ X extends V = V
+> = W extends true ? Pick<U, X> : Partial<U>
 
 /**
  * @deprecated
