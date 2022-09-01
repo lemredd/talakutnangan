@@ -10,6 +10,7 @@ import Manager from "%/managers/consultation"
 import URLMaker from "$!/singletons/url_maker"
 import deserialize from "$/helpers/deserialize"
 import present from "!/validators/manager/present"
+import makeUnique from "$/helpers/array/make_unique"
 import ChatMessageManager from "%/managers/chat_message"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
@@ -72,13 +73,16 @@ export default class extends PageMiddleware {
 		}) as ConsultationListDocument
 		const consultation = await manager.findWithID(Number(id)) as ConsultationDocument
 
+		const consultationIDs = consultations.data.map(consultation => Number(consultation.id))
+		consultationIDs.push(Number(consultation.data.id))
+
 		const chatMessageActivityManager = new ChatMessageActivityManager(
 			request.transaction,
 			request.cache
 		)
 		const chatMessageActivities = await chatMessageActivityManager.list({
 			"filter": {
-				"consultationIDs": [ Number(consultation.data.id) ],
+				"consultationIDs": makeUnique(consultationIDs),
 				"existence": "*"
 			},
 			"page": {
