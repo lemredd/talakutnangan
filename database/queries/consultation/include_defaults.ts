@@ -42,20 +42,6 @@ export default function<T>(
 		],
 		"model": AttachedRole,
 		"required": true
-	}, {
-		"include": [
-			{
-				"limit": 1,
-				"model": ChatMessage,
-				"order": [
-					[ "createdAt", "DESC" ]
-				],
-				"required": true
-			}
-		],
-		"model": ChatMessageActivity,
-		"paranoid": false,
-		"required": true
 	})
 
 	Log.trace("pipeline", "applied default includer")
