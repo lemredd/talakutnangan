@@ -7,6 +7,10 @@
 import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
 import type {
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
@@ -64,8 +68,14 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	userProfile: T extends "deserialized" ? DeserializedUserProfile : Serializable|null
 
 	roles: OptionalPageProps<T, DeserializedRoleListDocument>
+
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
 	consultation: OptionalPageProps<T, DeserializedConsultationDocument>
+
+	chatMessageActivities: OptionalPageProps<T, DeserializedChatMessageActivityListDocument>
+
+	chatMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
+	previewMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 }
 
 export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>
