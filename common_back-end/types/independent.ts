@@ -33,3 +33,8 @@ export interface RawProfilePicture {
 	userID: number,
 	fileContents: Buffer
 }
+
+export interface RawAttachedChatFile {
+	chatMessageID: number,
+	fileContents: Buffer
+}
