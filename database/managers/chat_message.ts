@@ -86,11 +86,7 @@ export default class extends BaseManager<
 							}
 						],
 						"model": ChatMessageActivity,
-						"required": true,
-						"order": [
-							[ Model, "createdAt", "DESC" ]
-						],
-						"limit": 1
+						"required": true
 					}
 				],
 				"where": condition.build(),
@@ -99,9 +95,14 @@ export default class extends BaseManager<
 
 			const models = consultations.reduce(
 				(previousMessages, consultation) => {
+					const messages = consultation.chatMessages as Model[]
+					const latestMessage = messages.sort((messageA, messageB) => {
+						return -Math.sign(messageA.createdAt - messageB.createdAt)
+					})[0]
+
 					return [
 						...previousMessages,
-						...consultation.chatMessages ?? []
+						latestMessage
 					]
 				},
 				[] as Model[]
