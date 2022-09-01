@@ -54,6 +54,7 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
+		const NORMAL_MAXIMUM_CONSULTATION_COUNT = 10
 		const user = deserialize(request.user) as DeserializedUserProfile
 
 		const { id } = request.params
@@ -66,7 +67,7 @@ export default class extends PageMiddleware {
 				"user": Number(user.data.id)
 			},
 			"page": {
-				"limit": 1,
+				"limit": NORMAL_MAXIMUM_CONSULTATION_COUNT,
 				"offset": 0
 			},
 			"sort": [ "-updatedAt" ]
@@ -79,6 +80,11 @@ export default class extends PageMiddleware {
 			...consultationIDs
 		])
 
+		const INCLUSIVE_CONSULTATION_COUNT = allConsultationIDs.length
+		const MAXIMUM_STUDENT_COUNT = 5
+		const MAXIMUM_REACHABLE_EMPLOYEE_COUNT = 1
+		const MAXIMUM_PARTICIPANT_COUNT = MAXIMUM_STUDENT_COUNT + MAXIMUM_REACHABLE_EMPLOYEE_COUNT
+
 		const chatMessageActivityManager = new ChatMessageActivityManager(
 			request.transaction,
 			request.cache
@@ -89,7 +95,7 @@ export default class extends PageMiddleware {
 				"existence": "*"
 			},
 			"page": {
-				"limit": 10,
+				"limit": INCLUSIVE_CONSULTATION_COUNT * MAXIMUM_PARTICIPANT_COUNT,
 				"offset": 0
 			},
 			"sort": [ "id" ]
