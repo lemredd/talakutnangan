@@ -1,73 +1,46 @@
 <template>
-	<div class="overflowing-table">
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>E-mail</th>
-					<th>Role</th>
-					<th>Department</th>
-				</tr>
-			</thead>
-			<tbody v-if="resourceType == 'user'">
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>{{ resource.email }}</td>
-					<td>{{ resource.roles.data[0].name }}</td>
-					<td :title="resource.department.data.fullName">
-						{{ resource.department.data.acronym }}
-					</td>
-				</tr>
-			</tbody>
-			<tbody v-else-if="resourceType === 'role'" class="resource-properties">
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>{{ resource }} users</td>
-				</tr>
-			</tbody>
+	<ResourceTable>
+		<template #table-headers>
+			<th>Name</th>
+			<th>E-mail</th>
+			<th>Role</th>
+			<th>Department</th>
+		</template>
 
-			<tbody v-else class="resource-properties">
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.fullName }}</td>
-					<td>{{ resource }} users</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<!-- <div
-		v-for="resource in filteredList"
-		:key="resource.id"
-		class="resource-row">
-		<div v-if="resourceType === 'user'" class="resource-properties">
-			<span>{{ resource.name }}</span>
-			<span>{{ resource.email }}</span>
-			<span>{{ resource.roles.data[0].name }}</span>
-		</div>
+		<template #table-body v-if="resourceType === 'user'">
+			<tr
+				v-for="resource in filteredList"
+				:key="resource.id"
+				class="resource-row">
+				<td>{{ resource.name }}</td>
+				<td>{{ resource.email }}</td>
+				<td>{{ resource.roles.data[0].name }}</td>
+				<td :title="resource.department.data.fullName">
+					{{ resource.department.data.acronym }}
+				</td>
+			</tr>
+		</template>
 
-		<div v-else-if="resourceType === 'role'" class="resource-properties">
-			<span>{{ resource.name }}</span>
-			<span>{{ resource }} users</span>
-		</div>
+		<template #table-body v-else-if="resourceType === 'role'">
+			<tr
+				v-for="resource in filteredList"
+				:key="resource.id"
+				class="resource-row">
+				<td>{{ resource.name }}</td>
+				<td>{{ resource }} users</td>
+			</tr>
+		</template>
 
-		<div v-else class="resource-properties">
-			<span>{{ resource.fullName }}</span>
-			<span>{{ resource }} users</span>
-		</div>
-		<div class="btns">
-			<button class="btn1">
-				Update
-			</button>
-		</div>
-	</div> -->
+		<template #table-body v-else>
+			<tr
+				v-for="resource in filteredList"
+				:key="resource.id"
+				class="resource-row">
+				<td>{{ resource.fullName }}</td>
+				<td>{{ resource }} users</td>
+			</tr>
+		</template>
+	</ResourceTable>
 
 	<div v-if="!filteredList.length" class="no-results">
 		<p>No results found!</p>
@@ -100,15 +73,6 @@
 		@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
 	}
 }
-
-.overflowing-table{
-	overflow-x: scroll;
-
-	table {
-		width: 100%;
-	}
-}
-
 </style>
 
 <script setup lang="ts">
@@ -117,6 +81,7 @@ import { inject, onUpdated, ref } from "vue"
 import type { PossibleResources } from "$@/types/independent"
 
 import Manager from "$/helpers/manager"
+import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]

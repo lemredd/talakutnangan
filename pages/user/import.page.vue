@@ -53,30 +53,28 @@
 				value="Import"/>
 		</div>
 		<output v-if="createdUsers.length > 0">
-			<div class="overflowing-table">
-				<table>
-					<thead>
-						<tr>
-							<th v-if="isStudentResource(createdUsers[0])" class="">Student number</th>
-							<th>Name</th>
-							<th>E-mail</th>
-							<th>Department</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr
-							v-for="user in createdUsers"
-							:key="user.id">
-							<td v-if="isStudentResource(user)">
-								{{ user.studentDetail.data.studentNumber }}
-							</td>
-							<td>{{ user.name }}</td>
-							<td>{{ user.email }}</td>
-							<td>{{ user.department.data.acronym }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			<OutputTable>
+				<template #table-headers>
+					<tr>
+						<th v-if="isStudentResource(createdUsers[0])" class="">Student number</th>
+						<th>Name</th>
+						<th>E-mail</th>
+						<th>Department</th>
+					</tr>
+				</template>
+				<template #table-body>
+					<tr
+						v-for="user in createdUsers"
+						:key="user.id">
+						<td v-if="isStudentResource(user)">
+							{{ user.studentDetail.data.studentNumber }}
+						</td>
+						<td>{{ user.name }}</td>
+						<td>{{ user.email }}</td>
+						<td>{{ user.department.data.acronym }}</td>
+					</tr>
+				</template>
+			</OutputTable>
 		</output>
 	</form>
 </template>
@@ -100,20 +98,6 @@
 	margin-top:1em;
 }
 
-.overflowing-table {
-	@apply flex;
-	margin:1em 0;
-	width: 100%;
-	overflow-x: scroll;
-
-	table {
-		width: 100%;
-
-		th, td {
-			text-align: center;
-		}
-	}
-}
 
 @media (min-width: 640px) {
 	.kind{
@@ -139,6 +123,7 @@ import TextTransformer from "$/helpers/text_transformers"
 
 import AdminConfigHeader from "@/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import OutputTable from "@/helpers/overflowing_table.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 provide("tabs", [ "Users", "Roles", "Departments" ])
