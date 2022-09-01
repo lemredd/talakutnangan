@@ -8,7 +8,7 @@
 			<!-- TODO(others): must rearrange the pictures -->
 			<div class="profile-pictures">
 				<ProfilePictureItem
-					v-for="activity in consultation.chatMessageActivities.data"
+					v-for="activity in getChatMessageActivities(consultation)"
 					:key="activity.id"
 					:activity="activity"/>
 			</div>
@@ -27,6 +27,10 @@
 
 <script setup lang="ts">
 import type {
+	DeserializedChatMessageActivityResource,
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
+import type {
 	DeserializedChatMessageResource,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
@@ -42,11 +46,23 @@ import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 const {
 	consultations,
+	chatMessageActivities,
 	previewMessages
 } = defineProps<{
+	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
 	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
 	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
 }>()
+
+function getChatMessageActivities(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+): DeserializedChatMessageActivityResource<"user">[] {
+	const index = findPreviewMessageIndex(consultation)
+
+	return chatMessageActivities.data.filter(
+		activity => activity.consultation.data.id === consultation.id
+	)
+}
 
 function findPreviewMessageIndex(
 	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
