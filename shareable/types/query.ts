@@ -157,3 +157,7 @@ export type ConsultationQueryParameters<T extends number|string = string> =
 export type ChatMessageActivityQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& ConsultationFilter<T>
+
+export type ChatMessageQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& ConsultationFilter<T>
