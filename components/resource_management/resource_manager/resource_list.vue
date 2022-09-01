@@ -2,13 +2,12 @@
 	<div class="resource-list">
 		<ResourceTable v-if="filteredList.length">
 			<template #table-headers>
-				<th>Name</th>
-				<th>E-mail</th>
-				<th>Role</th>
-				<th>Department</th>
+				<th v-for="header in tableHeaders" :key="header">
+					{{ header }}
+				</th>
 			</template>
 
-			<template #table-body v-if="resourceType === 'user'">
+			<template v-if="resourceType === 'user'" #table-body>
 				<tr
 					v-for="resource in filteredList"
 					:key="resource.id"
@@ -22,23 +21,19 @@
 				</tr>
 			</template>
 
-			<template #table-body v-else-if="resourceType === 'role'">
+			<template v-else #table-body>
 				<tr
 					v-for="resource in filteredList"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>{{ resource }} users</td>
-				</tr>
-			</template>
-
-			<template #table-body v-else>
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.fullName }}</td>
-					<td>{{ resource }} users</td>
+					<td>
+						{{
+							resourceType === "role"
+								? resource.name
+								: resource.fullName
+						}}
+					</td>
+					<td>{{ resource.meta }} users</td>
 				</tr>
 			</template>
 		</ResourceTable>
@@ -58,21 +53,6 @@
 		margin: .5rem;
 		border-bottom-width: 1px;
 		padding-bottom: .5rem;
-		font-size: 1.5rem;
-
-		.resource-properties {
-			@apply flex flex-col w-[max-content];
-			font-size: 1.125rem;
-
-			& span:not(:first-of-type) {
-				font-size: 0.75rem;
-				margin: 1em 0;
-			}
-
-			@screen sm {
-				width: 20%;
-			}
-		}
 
 		.btn1 {
 			@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
@@ -86,21 +66,25 @@
 </style>
 
 <script setup lang="ts">
-import { inject, onUpdated, ref } from "vue"
+import { computed, onUpdated, ref } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
-import Manager from "$/helpers/manager"
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
 }>()
 
-const managerKind = inject("managerKind") as Manager
 const resourceType = ref("")
-
 const resourceProperties = ref<string[]>([])
+const tableHeaders = computed(() => {
+	let headers: string[] = []
+	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
+	else headers = [ "Name", "# of users", "" ]
+
+	return headers
+})
 
 onUpdated(() => {
 	// Displays retrieved data from database properly
