@@ -24,7 +24,7 @@ export default function<T>(
 	}
 
 	const condition = new Condition()
-	condition.and(
+	condition.or(
 		...constraints.filter.consultationIDs.map(
 			consultationID => new Condition().equal("consultationID", consultationID)
 		)
