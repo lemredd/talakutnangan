@@ -1,13 +1,14 @@
-import type { FindOptions } from "%/types/dependent"
 import type { ConsultationFilter } from "$/types/query"
+import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import Condition from "%/managers/helpers/condition"
 import isUndefined from "$/helpers/type_guards/is_undefined"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
- * Sift chat message activity model which belong to a consultation.
+ * Sift chat message model which belong to a consultation.
  */
 export default function<T>(
 	currentState: FindOptions<T>,
@@ -30,14 +31,16 @@ export default function<T>(
 		)
 	)
 
-	if (isUndefined(newState.where)) {
-		newState.where = {}
+	if (isUndefined(newState.include)) {
+		newState.include = []
 	}
 
-	newState.where = new Condition().and(
-		new Condition(newState.where),
-		condition
-	).build()
+	const castInclude = newState.include as IncludeOptions[]
+	castInclude.push({
+		"model": ChatMessageActivity,
+		"required": true,
+		"where": condition.build()
+	})
 
 	Log.trace("query pipe", "sift by consultation")
 
