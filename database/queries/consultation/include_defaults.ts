@@ -4,13 +4,11 @@ import Log from "$!/singletons/log"
 
 import Role from "%/models/role"
 import User from "%/models/user"
-import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import ProfilePicture from "%/models/profile_picture"
-import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
- * Includes role and department models upon getting user models
+ * Includes default models
  */
 export default function<T>(
 	currentState: FindOptions<T>,
