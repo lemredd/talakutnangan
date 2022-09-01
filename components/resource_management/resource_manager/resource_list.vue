@@ -1,76 +1,86 @@
 <template>
-	<ResourceTable>
-		<template #table-headers>
-			<th>Name</th>
-			<th>E-mail</th>
-			<th>Role</th>
-			<th>Department</th>
-		</template>
+	<div class="resource-list">
+		<ResourceTable v-if="filteredList.length">
+			<template #table-headers>
+				<th>Name</th>
+				<th>E-mail</th>
+				<th>Role</th>
+				<th>Department</th>
+			</template>
 
-		<template #table-body v-if="resourceType === 'user'">
-			<tr
-				v-for="resource in filteredList"
-				:key="resource.id"
-				class="resource-row">
-				<td>{{ resource.name }}</td>
-				<td>{{ resource.email }}</td>
-				<td>{{ resource.roles.data[0].name }}</td>
-				<td :title="resource.department.data.fullName">
-					{{ resource.department.data.acronym }}
-				</td>
-			</tr>
-		</template>
+			<template #table-body v-if="resourceType === 'user'">
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.name }}</td>
+					<td>{{ resource.email }}</td>
+					<td>{{ resource.roles.data[0].name }}</td>
+					<td :title="resource.department.data.fullName">
+						{{ resource.department.data.acronym }}
+					</td>
+				</tr>
+			</template>
 
-		<template #table-body v-else-if="resourceType === 'role'">
-			<tr
-				v-for="resource in filteredList"
-				:key="resource.id"
-				class="resource-row">
-				<td>{{ resource.name }}</td>
-				<td>{{ resource }} users</td>
-			</tr>
-		</template>
+			<template #table-body v-else-if="resourceType === 'role'">
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.name }}</td>
+					<td>{{ resource }} users</td>
+				</tr>
+			</template>
 
-		<template #table-body v-else>
-			<tr
-				v-for="resource in filteredList"
-				:key="resource.id"
-				class="resource-row">
-				<td>{{ resource.fullName }}</td>
-				<td>{{ resource }} users</td>
-			</tr>
-		</template>
-	</ResourceTable>
+			<template #table-body v-else>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.fullName }}</td>
+					<td>{{ resource }} users</td>
+				</tr>
+			</template>
+		</ResourceTable>
 
-	<div v-if="!filteredList.length" class="no-results">
-		<p>No results found!</p>
+		<div v-else class="no-results">
+			<p>No results found!</p>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-.resource-row {
-	@apply dark:text-light-100;
-	margin: .5rem;
-	border-bottom-width: 1px;
-	padding-bottom: .5rem;
-	font-size: 1.5rem;
+.resource-list {
+	margin-top: 1em;
 
-	.resource-properties {
-		@apply flex flex-col w-[max-content];
-		font-size: 1.125rem;
+	.resource-row {
+		@apply dark:text-light-100;
+		margin: .5rem;
+		border-bottom-width: 1px;
+		padding-bottom: .5rem;
+		font-size: 1.5rem;
 
-		& span:not(:first-of-type) {
-			font-size: 0.75rem;
-			margin: 1em 0;
+		.resource-properties {
+			@apply flex flex-col w-[max-content];
+			font-size: 1.125rem;
+
+			& span:not(:first-of-type) {
+				font-size: 0.75rem;
+				margin: 1em 0;
+			}
+
+			@screen sm {
+				width: 20%;
+			}
 		}
 
-		@screen sm {
-			width: 20%;
+		.btn1 {
+			@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
 		}
 	}
 
-	.btn1 {
-		@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+	.no-results {
+		text-align: center;
 	}
 }
 </style>
