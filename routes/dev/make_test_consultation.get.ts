@@ -171,7 +171,7 @@ export default class extends DevController {
 
 		Log.success("controller", "attached test student role to test student")
 
-		let previousStudentDetail = await User.findOne({
+		let previousStudentDetail = await StudentDetail.findOne({
 			"where": new Condition().equal("studentNumber", testStudentNumber).build()
 		})
 
