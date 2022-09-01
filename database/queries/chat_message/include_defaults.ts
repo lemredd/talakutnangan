@@ -5,6 +5,7 @@ import Log from "$!/singletons/log"
 import User from "%/models/user"
 import ProfilePicture from "%/models/profile_picture"
 import isUndefined from "$/helpers/type_guards/is_undefined"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
  * Includes default models
@@ -23,11 +24,17 @@ export default function<T>(
 	castInclude.push({
 		"include": [
 			{
-				"model": ProfilePicture,
-				"required": false
+				"include": [
+					{
+						"model": ProfilePicture,
+						"required": false
+					}
+				],
+				"model": User,
+				"required": true
 			}
 		],
-		"model": User,
+		"model": ChatMessageActivity,
 		"required": true
 	})
 
