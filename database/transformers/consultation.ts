@@ -51,7 +51,7 @@ export default class extends Transformer<Consultation, void> {
 				? {
 					"attribute": "chatMessages",
 					"transformer": new ChatMessageTransformer({
-						"included": [ "user", "chatMessageActivity" ]
+						"included": [ "user" ]
 					})
 				}
 				: null
