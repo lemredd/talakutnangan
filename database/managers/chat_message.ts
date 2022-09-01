@@ -110,9 +110,13 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done searching preview messages")
 
-			return this.serialize(models, {} as unknown as void, new Transformer({
+			const serializedModels = this.serialize(models, {} as unknown as void, new Transformer({
 				"included": [ "user" ]
 			}))
+			serializedModels.meta = {
+				"count": models.length
+			}
+			return serializedModels
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}

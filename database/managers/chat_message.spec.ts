@@ -41,6 +41,7 @@ describe("Database Manager: Chat message read operations", () => {
 		expect(models).not.toHaveProperty("data.1.id", String(modelB.id))
 		expect(models).toHaveProperty("data.1.id", String(modelD.id))
 		expect(models).not.toHaveProperty("data.2")
+		expect(models).toHaveProperty("meta.count", 2)
 	})
 })
 
