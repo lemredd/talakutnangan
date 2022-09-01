@@ -1,7 +1,13 @@
+import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
-import type { CommonQueryParameters } from "$/types/query"
+import type { ChatMessageQueryParameters } from "$/types/query"
 import type { ChatMessageAttributes } from "$/types/documents/chat_message"
-import type { ModelCtor, Attributes, CreationAttributes } from "%/types/dependent"
+import type {
+	ModelCtor,
+	FindAndCountOptions,
+	Attributes,
+	CreationAttributes
+} from "%/types/dependent"
 
 import User from "%/models/user"
 import Log from "$!/singletons/log"
@@ -12,16 +18,30 @@ import Transformer from "%/transformers/chat_message"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
+import includeDefaults from "%/queries/chat_message/include_defaults"
+import siftByConsultation from "%/queries/chat_message/sift_by_consultation"
+
 type RawChatMessageAttributes = ChatMessageAttributes<"deserialized"> & Attributes<Model>
 
 export default class extends BaseManager<
 	Model,
 	RawChatMessageAttributes,
-	CommonQueryParameters
+	ChatMessageQueryParameters<number>
 > {
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): Transformer { return new Transformer() }
+
+	get listPipeline(): Pipe<
+		FindAndCountOptions<Model>,
+		ChatMessageQueryParameters<number>
+	>[] {
+		return [
+			siftByConsultation,
+			includeDefaults,
+			...super.listPipeline
+		]
+	}
 
 	get exposableColumns(): string[] {
 		const excludedColumns = [ "id", "data", "chatMessageActivityID", "deletedAt" ]
