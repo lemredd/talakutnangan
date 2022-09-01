@@ -19,7 +19,7 @@ type Relationships =
 export default class extends Transformer<Consultation, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "consultant", "consultantRole", "consulters" ]
+			"included": [ "consultant", "consultantRole", "chatMessageActivities", "chatMessages" ]
 		}
 	) {
 		super("consultation", [
