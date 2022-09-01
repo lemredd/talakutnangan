@@ -32,7 +32,6 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	// eslint-disable-next-line new-cap
 	const manager = new Manager(
 		constraints.request.transaction,
 		constraints.request.cache
@@ -47,10 +46,23 @@ export default async function(
 		}
 	) as EmployeeScheduleDocument
 
+	if (foundModel.data === null) {
+		const error = {
+			"field": constraints.field,
+			"messageMaker": (
+				field: string,
+				value: string
+			) => `The "${field}" with a value of "${value}" should be existing.`
+		}
+
+		throw error
+	}
+
 	const endTime = foundModel.data.attributes.scheduleEnd
 	const startTime = foundModel.data.attributes.scheduleStart
 	const userID = Number(accessDeepPath(
-		constraints.source, constraints.restorableEmployeeSchedule.userIDPointer
+		constraints.source,
+		constraints.restorableEmployeeSchedule.userIDPointer
 	))
 
 	if (Number.isNaN(userID)) {

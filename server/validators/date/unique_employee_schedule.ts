@@ -96,6 +96,7 @@ export default async function(
 
 		return state
 	}
+
 	const error = {
 		"field": constraints.field,
 		"messageMaker": (
