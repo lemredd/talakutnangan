@@ -18,17 +18,21 @@
 			</h3>
 
 			<LastChat
-				v-if="consultation.chatMessages.data.length > 0"
-				:chats="(consultation.chatMessages as DeserializedChatMessageListDocument<'user'>)"/>
+				v-if="hasPreviewMessage(consultation)"
+				:last-chat="getPreviewMessage(consultation)"/>
 			<EmptyLastChat v-else/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageResource,
+	DeserializedChatMessageListDocument
+} from "$/types/documents/chat_message"
 import type {
 	ConsultationRelationshipNames,
+	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
@@ -37,10 +41,36 @@ import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 const {
-	consultations
+	consultations,
+	previewMessages
 } = defineProps<{
-	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>
+	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
+	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
 }>()
+
+function findPreviewMessageIndex(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+): number {
+	return  previewMessages.data.findIndex(
+		message => message.consultation.data.id === consultation.id
+	)
+}
+
+function hasPreviewMessage(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+): boolean {
+	const index = findPreviewMessageIndex(consultation)
+
+	return index > -1
+}
+
+function getPreviewMessage(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+): DeserializedChatMessageResource<"user"> {
+	const index = findPreviewMessageIndex(consultation)
+
+	return previewMessages.data[index]
+}
 
 interface CustomEvents {
 	(eventName: "pickedConsultation", ID: string): void
