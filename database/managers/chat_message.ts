@@ -14,7 +14,9 @@ import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
 import Model from "%/models/chat_message"
 import Consultation from "%/models/consultation"
+import Condition from "%/managers/helpers/condition"
 import Transformer from "%/transformers/chat_message"
+import ProfilePicture from "%/models/profile_picture"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
@@ -49,6 +51,70 @@ export default class extends BaseManager<
 			const isIncluded = !excludedColumns.includes(columnName)
 			return isIncluded
 		})
+	}
+
+	async findPreviews(consultationIDs: number[]): Promise<Serializable> {
+		try {
+			const condition = new Condition()
+			condition.or(
+				...consultationIDs.map(
+					consultationID => new Condition().equal("id", consultationID)
+				)
+			)
+
+			const consultations = await Consultation.findAll({
+				"include": [
+					{
+						"include": [
+							{
+								"model": Model,
+								"required": true,
+								"order": [
+									[ "createdAt", "DESC" ]
+								],
+								"limit": 1
+							},
+							{
+								"include": [
+									{
+										"model": ProfilePicture,
+										"required": false
+									}
+								],
+								"model": User,
+								"required": true
+							}
+						],
+						"model": ChatMessageActivity,
+						"required": true,
+						"order": [
+							[ Model, "createdAt", "DESC" ]
+						],
+						"limit": 1
+					}
+				],
+				"where": condition.build(),
+				...this.transaction.transactionObject
+			})
+
+			const models = consultations.reduce(
+				(previousMessages, consultation) => {
+					return [
+						...previousMessages,
+						...consultation.chatMessages ?? []
+					]
+				},
+				[] as Model[]
+			)
+
+			Log.success("manager", "done searching preview messages")
+
+			return this.serialize(models, {} as unknown as void, new Transformer({
+				"included": [ "user" ]
+			}))
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async create(
