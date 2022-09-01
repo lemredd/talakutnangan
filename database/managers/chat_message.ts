@@ -95,15 +95,20 @@ export default class extends BaseManager<
 
 			const models = consultations.reduce(
 				(previousMessages, consultation) => {
-					const messages = consultation.chatMessages as Model[]
-					const latestMessage = messages.sort((messageA, messageB) => {
-						return -Math.sign(messageA.createdAt - messageB.createdAt)
-					})[0]
+					const messages = consultation.chatMessages
 
-					return [
-						...previousMessages,
-						latestMessage
-					]
+					if (messages) {
+						const latestMessage = messages.sort((messageA, messageB) => {
+							return -Math.sign(messageA.createdAt - messageB.createdAt)
+						})[0]
+
+						return [
+							...previousMessages,
+							latestMessage
+						]
+					}
+
+					return previousMessages
 				},
 				[] as Model[]
 			)
