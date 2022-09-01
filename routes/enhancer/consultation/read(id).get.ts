@@ -74,7 +74,10 @@ export default class extends PageMiddleware {
 		const consultation = await manager.findWithID(Number(id)) as ConsultationDocument
 
 		const consultationIDs = consultations.data.map(consultation => Number(consultation.id))
-		consultationIDs.unshift(Number(consultation.data.id))
+		const allConsultationIDs = makeUnique([
+			Number(consultation.data.id),
+			...consultationIDs
+		])
 
 		const chatMessageActivityManager = new ChatMessageActivityManager(
 			request.transaction,
@@ -82,7 +85,7 @@ export default class extends PageMiddleware {
 		)
 		const chatMessageActivities = await chatMessageActivityManager.list({
 			"filter": {
-				"consultationIDs": makeUnique(consultationIDs),
+				"consultationIDs": allConsultationIDs,
 				"existence": "*"
 			},
 			"page": {
@@ -92,8 +95,24 @@ export default class extends PageMiddleware {
 			"sort": [ "id" ]
 		})
 
+
+		const chatMessageManager = new ChatMessageManager(request.transaction, request.cache)
+		const chatMessages = await chatMessageManager.list({
+			"filter": {
+				"consultationIDs": [ Number(consultation.data.id) ],
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		})
+
 		return {
 			consultation,
+			chatMessages,
+
 			consultations,
 			chatMessageActivities
 		}
