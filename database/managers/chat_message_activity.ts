@@ -1,5 +1,5 @@
 import type { Pipe } from "$/types/database"
-import type { CommonQueryParameters } from "$/types/query"
+import type { ChatMessageActivityQueryParameters } from "$/types/query"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { ChatMessageActivityAttributes } from "$/types/documents/chat_message_activity"
 
@@ -8,20 +8,25 @@ import Model from "%/models/chat_message_activity"
 import Transformer from "%/transformers/chat_message_activity"
 
 import includeDefaults from "%/queries/chat_message_activity/include_defaults"
+import siftByConsultation from "%/queries/chat_message_activity/sift_by_consultation"
 
 export default class extends BaseManager<
 	Model,
 	ChatMessageActivityAttributes<"deserialized">,
-	CommonQueryParameters
+	ChatMessageActivityQueryParameters<number>
 > {
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): Transformer { return new Transformer() }
 
-	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, CommonQueryParameters>[] {
+	get listPipeline(): Pipe<
+		FindAndCountOptions<Model>,
+		ChatMessageActivityQueryParameters<number>
+	>[] {
 		return [
+			siftByConsultation,
 			includeDefaults,
-			...super.singleReadPipeline
+			...super.listPipeline
 		]
 	}
 }
