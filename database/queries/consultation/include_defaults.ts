@@ -43,9 +43,6 @@ export default function<T>(
 		"model": AttachedRole,
 		"required": true
 	}, {
-		"model": User,
-		"required": true
-	}, {
 		"include": [
 			{
 				"limit": 1,
