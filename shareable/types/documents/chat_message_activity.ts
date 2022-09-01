@@ -8,12 +8,15 @@ import type {
 	Completeness,
 	Format,
 
-	Relationships,
-	DeserializedRelationships,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -35,29 +38,33 @@ extends Attributes<T> {
 	seenMessageAt: (T extends "deserialized" ? Date : string)|null
 }
 
-export type ChatMessageActivityRelationships = Relationships<{
-	"user": UserIdentifierDocument,
-	"consultation": ConsultationIdentifierDocument
-}>
+
+interface ChatMessageActivityRelationshipData<T extends Completeness = "read">
+extends GeneralRelationshipData {
+	user: {
+		serialized: UserIdentifierDocument,
+		deserialized: DeserializedUserDocument
+	},
+	consultation: {
+		serialized: ConsultationIdentifierDocument,
+		deserialized: DeserializedConsultationDocument
+	}
+}
+
+export type ChatMessageActivityRelationshipNames
+= DeriveRelationshipNames<ChatMessageActivityRelationshipData>
+
+export type ChatMessageActivityRelationships<T extends Completeness = "read">
+= DeriveRelationships<ChatMessageActivityRelationshipData<T>>
+
+export type DeserializedChatMessageActivityRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<ChatMessageActivityRelationshipData<T>>
 
 export type ChatMessageActivityResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageActivityResourceIdentifier<T>,
 	ChatMessageActivityAttributes<"serialized">
 > & ChatMessageActivityRelationships
-
-type RawDeserializedChatMessageActivityRelationships = [
-	[ "user", DeserializedUserDocument ],
-	[ "consultation", DeserializedConsultationDocument ]
-]
-
-export type DeserializedChatMessageActivityRelationships = DeserializedRelationships & {
-	[Property in RawDeserializedChatMessageActivityRelationships[number][0]]
-	: RawDeserializedChatMessageActivityRelationships[number][1]
-}
-
-export type ChatMessageActivityRelationshipNames
-= RawDeserializedChatMessageActivityRelationships[number][0]
 
 export type DeserializedChatMessageActivityResource<
 	T extends ChatMessageActivityRelationshipNames|undefined = undefined
