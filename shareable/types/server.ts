@@ -73,6 +73,11 @@ export type PartialPageProps<T extends Format = "serialized"> =
 	& Pick<RawPageProps<T>, "userProfile">
 	& Partial<Omit<RawPageProps<T>, "userProfile">>
 
+export interface DocumentProps extends Serializable {
+	title: string
+	description: string
+}
+
 /**
  * Source of error in the sent resource
  */

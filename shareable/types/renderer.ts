@@ -1,6 +1,11 @@
 import type { Serializable } from "$/types/general"
 import type { Format } from "$/types/documents/base"
-import type { PageProps as BasePageProps, AdditionalPropNames, UnitError } from "$/types/server"
+import type {
+	PageProps as BasePageProps,
+	DocumentProps,
+	AdditionalPropNames,
+	UnitError
+} from "$/types/server"
 
 export type PageProps<
 	T extends Format = "serialized",
@@ -16,10 +21,7 @@ export type PageContext<
 > = {
 	Page: any
 	pageProps: PageProps<T, U>
-	documentProps?: {
-		title?: string
-		description?: string
-	}
+	documentProps?: Partial<DocumentProps>
 	urlPathname?: string,
 	routeParams?: {
 		[key:string]: string
