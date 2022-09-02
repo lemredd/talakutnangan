@@ -12,7 +12,7 @@ export interface PageRequest extends Request {
 	// Added to pass data from server to client
 	pageProps: PageProps
 
-	// Possibly to be required in v0.15.0
+	// TODO: Require in v0.15.0
 	documentProps?: DocumentProps
 }
 
