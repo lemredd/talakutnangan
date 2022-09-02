@@ -38,12 +38,14 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { onUpdated, ref } from "vue"
+
+import RequestEnvironment from "$/helpers/request_environment"
 
 const { purpose } = defineProps<{
 	purpose: string
 }>()
-const emit = defineEmits([ "toggle" ])
+const emit = defineEmits([ "toggle", "resize" ])
 const isDropdownShown = ref(false)
 
 function toggleDropdown() {
@@ -51,9 +53,12 @@ function toggleDropdown() {
 	isDropdownShown.value = !isDropdownShown.value
 }
 
-if (typeof window !== "undefined") {
-	window.onresize = () => {
-		isDropdownShown.value = false
+onUpdated(() => {
+	if (typeof window !== "undefined") {
+		window.onresize = () => {
+			if (RequestEnvironment.isOnTest) emit("resize")
+			isDropdownShown.value = false
+		}
 	}
-}
+})
 </script>
