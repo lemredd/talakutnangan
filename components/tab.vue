@@ -5,6 +5,7 @@
 			:key="tab"
 			class="tab-button">
 			<Anchor
+				class="tab-link"
 				:href="`${parentUrl}/${tab.toLowerCase()}`">
 				{{ tab }}
 			</Anchor>
@@ -12,11 +13,6 @@
 	</ul>
 </template>
 
-<style lang="scss">
-.anchor {
-	padding: .5em 1em !important;
-}
-</style>
 
 <style scoped lang="scss">
 .tabs {
@@ -30,6 +26,10 @@
 		display: inline;
 		border-radius: 5px;
 		padding: 0.25em 1em;
+
+		.tab-link {
+			padding: .5em 1em;
+		}
 	}
 }
 
