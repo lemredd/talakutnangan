@@ -6,8 +6,8 @@ export type PageProps<
 	T extends Format = "serialized",
 	U extends AdditionalPropNames<T> = "userProfile"
 > = BasePageProps<T, U> & {
-	parsedUnitError: UnitError & Serializable
-}
+	parsedUnitError: (UnitError|null) & Serializable
+} & Serializable
 
 // The `pageContext` that are available in both on the server-side and browser-side
 export type PageContext<
