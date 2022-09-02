@@ -51,7 +51,9 @@ import { ref, computed } from "vue"
 import { DateTime, Duration } from "luxon"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
-const { consultation } = defineProps<{ consultation: DeserializedConsultationResource<"read"> }>()
+const { consultation } = defineProps<{
+	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+}>()
 
 const currentTime = ref<DateTime>(DateTime.now())
 

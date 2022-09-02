@@ -42,7 +42,7 @@
 				{{ JSON.stringify(message.data) }}
 			</div>
 		</div>
-		<UserController :status="consultationStatus" @start-consultation="startConsultation"/>
+		<UserController :consultation="consultation" @start-consultation="startConsultation"/>
 	</section>
 </template>
 
