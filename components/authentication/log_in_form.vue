@@ -54,6 +54,10 @@ function logIn() {
 	}
 
 	new UserFetcher().logIn(details)
-	.then(console.log)
+	.then(unusedData => {
+		window.location.assign("/")
+	}).catch(unusedErrors => {
+		// Show error infos
+	})
 }
 </script>

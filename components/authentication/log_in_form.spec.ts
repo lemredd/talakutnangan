@@ -1,7 +1,8 @@
 import { v4 } from "uuid"
-import { mount } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
 
 import type { UnitError } from "$/types/server"
+import type { GeneralObject } from "$/types/general"
 
 import UserFetcher from "$@/fetchers/user"
 import LogInForm from "@/authentication/log_in_form.vue"
@@ -18,10 +19,10 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK })
 
-		const wrapper = mount(LogInForm)
+		const wrapper = shallowMount(LogInForm)
 
-		const emailField = wrapper.find("input[type='email']")
-		const passwordField = wrapper.find("input[type='password']")
+		const textualFields = wrapper.findAllComponents({ "name": "TextualField" })
+		const [ emailField, passwordField ] = textualFields
 		const submitBtn = wrapper.find("#submit-btn")
 
 		await emailField.setValue("dean@example.net")
@@ -60,7 +61,7 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
-		const wrapper = mount(LogInForm)
+		const wrapper = shallowMount(LogInForm)
 
 		const submitBtn = wrapper.find("#submit-btn")
 		await submitBtn.trigger("click")
@@ -70,10 +71,15 @@ describe("Component: Log In Form", () => {
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/user/log_in")
 
-		const response = new UserFetcher().logIn(await request.json())
-		const responseErrors = (await response).body.errors as unknown as UnitError[]
-		const { status } = responseErrors[0] as unknown as UnitError
-		expect(status).toEqual(RequestEnvironment.status.BAD_REQUEST)
+		try {
+			const response = new UserFetcher().logIn(await request.json())
+			await response
+		} catch (response) {
+			const castResponse = response as GeneralObject
+			const responseErrors = castResponse.body.errors as unknown as UnitError[]
+			const { status } = responseErrors[0] as unknown as UnitError
+			expect(status).toEqual(RequestEnvironment.status.BAD_REQUEST)
+		}
 	})
 
 	it("should not log in if user is already logged in", async() => {
@@ -90,10 +96,10 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.UNAUTHORIZED })
 
-		const wrapper = mount(LogInForm)
+		const wrapper = shallowMount(LogInForm)
 
-		const emailField = wrapper.find("input[type='email']")
-		const passwordField = wrapper.find("input[type='password']")
+		const textualFields = wrapper.findAllComponents({ "name": "TextualField" })
+		const [ emailField, passwordField ] = textualFields
 		const submitBtn = wrapper.find("#submit-btn")
 
 		await emailField.setValue("dean@example.net")
@@ -106,9 +112,14 @@ describe("Component: Log In Form", () => {
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/user/log_in")
 
-		const response = new UserFetcher().logIn(await request.json())
-		const responseErrors = (await response).body.errors as unknown as UnitError[]
-		const { status } = responseErrors[0] as unknown as UnitError
-		expect(status).toEqual(RequestEnvironment.status.UNAUTHORIZED)
+		try {
+			const response = new UserFetcher().logIn(await request.json())
+			await response
+		} catch (response) {
+			const castResponse = response as GeneralObject
+			const responseErrors = castResponse.body.errors as unknown as UnitError[]
+			const { status } = responseErrors[0] as unknown as UnitError
+			expect(status).toEqual(RequestEnvironment.status.UNAUTHORIZED)
+		}
 	})
 })

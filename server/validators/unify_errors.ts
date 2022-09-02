@@ -11,7 +11,7 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 					value: any
 				): string => {
 					let message = `Unexpected error happened while validating ${field}.`
-					if (RequestEnvironment.isOnTest) {
+					if (RequestEnvironment.isNotOnProduction) {
 						message += `Message: ${error.message} ${error.stack})`
 					}
 					return message

@@ -28,7 +28,7 @@ export default class extends Policy {
 				: "The user must be logged out to invoke the action."
 
 			const link = this.targetAuthenticationState
-				? URLMaker.makeURLFromPath("/log_in")
+				? URLMaker.makeURLFromPath("/user/log_in")
 				: URLMaker.makeURLFromPath("/")
 
 			return Promise.reject(new AuthorizationError(reason, link))

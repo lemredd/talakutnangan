@@ -19,6 +19,7 @@ import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
 import EmployeeSchedule from "%/models/employee_schedule"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 @Table({
 	"timestamps": true,
@@ -88,4 +89,7 @@ export default class User extends Model {
 
 	@HasMany(() => EmployeeSchedule)
 		employeeSchedules?: EmployeeSchedule[]
+
+	@HasMany(() => ChatMessageActivity)
+		chatMessageActivities?: ChatMessageActivity[]
 }
