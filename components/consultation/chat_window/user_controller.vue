@@ -1,8 +1,8 @@
 <template>
 	<div class="user-controls">
-		<div v-if="willStart" class="wide-control">
+		<div v-if="willSoonStart || willStart" class="wide-control">
 			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
-			<button class="start" @click="startConsultation">
+			<button :disabled="willStart" class="start" @click="startConsultation">
 				Start consultation
 			</button>
 		</div>
@@ -47,13 +47,46 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import type { Status } from "$/types/database"
+import { ref, computed } from "vue"
+import { DateTime, Duration } from "luxon"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
-const { status } = defineProps<{ status: Status }>()
+const { consultation } = defineProps<{ consultation: DeserializedConsultationResource<"read"> }>()
 
-const willStart = computed<boolean>(() => status === "will_start")
-const isOngoing = computed<boolean>(() => status === "ongoing")
+const currentTime = ref<DateTime>(DateTime.now())
+
+const differenceFromSchedule = computed<Duration>(() => {
+	const difference = DateTime
+	.fromJSDate(consultation.scheduledStartAt)
+	.diff(currentTime.value)
+	return difference
+})
+const isAfterScheduledStart = computed<boolean>(() => {
+	const beyondScheduledStart = differenceFromSchedule.value.milliseconds < 0
+	return beyondScheduledStart
+})
+const hasStarted = computed<boolean>(() => consultation.startedAt !== null)
+const hasFinished = computed<boolean>(() => consultation.finishedAt !== null)
+const hasDeleted = computed<boolean>(() => consultation.deletedAt !== null)
+
+const willSoonStart = computed<boolean>(() => differenceFromSchedule.value.milliseconds > 0)
+const willStart = computed<boolean>(() => {
+	const mayStart = differenceFromSchedule.value.milliseconds == 0 || isAfterScheduledStart.value
+	return mayStart && !hasStarted.value
+})
+const isOngoing = computed<boolean>(() => {
+	const isInProgress = isAfterScheduledStart.value && hasStarted.value
+	return isInProgress && !hasFinished.value
+})
+const isDone = computed<boolean>(() => {
+	const isInProgress = isAfterScheduledStart.value && hasStarted.value
+	return isInProgress && hasFinished.value && hasDeleted.value
+})
+const isCanceled = computed<boolean>(() => !isAfterScheduledStart.value && hasDeleted.value)
+const isAutoTerminated = computed<boolean>(() => {
+	const hasTerminated = isAfterScheduledStart.value && hasDeleted.value
+	return hasTerminated && consultation.actionTaken == null
+})
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
