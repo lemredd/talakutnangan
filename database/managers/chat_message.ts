@@ -17,6 +17,7 @@ import Consultation from "%/models/consultation"
 import Condition from "%/managers/helpers/condition"
 import Transformer from "%/transformers/chat_message"
 import ProfilePicture from "%/models/profile_picture"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
@@ -73,16 +74,6 @@ export default class extends BaseManager<
 									[ "createdAt", "DESC" ]
 								],
 								"limit": 1
-							},
-							{
-								"include": [
-									{
-										"model": ProfilePicture,
-										"required": false
-									}
-								],
-								"model": User,
-								"required": true
 							}
 						],
 						"model": ChatMessageActivity,
@@ -93,7 +84,7 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const models = consultations.reduce(
+			const rawModels = consultations.reduce(
 				(previousMessages, consultation) => {
 					const messages = consultation.chatMessages
 
@@ -112,6 +103,34 @@ export default class extends BaseManager<
 				},
 				[] as Model[]
 			)
+			const models = await Model.findAll({
+				"include": [
+					{
+						"include": [
+							{
+								"include": [
+									{
+										"model": ProfilePicture,
+										"required": false
+									}
+								],
+								"model": User,
+								"required": true
+							},
+							{
+								"model": Consultation,
+								"required": true
+							}
+						],
+						"model": ChatMessageActivity,
+						"required": true
+					}
+				],
+				"where": new Condition().or(
+					...rawModels.map(rawModel => new Condition().equal("id", rawModel.id))
+				).build()
+			})
+
 
 			Log.success("manager", "done searching preview messages")
 
