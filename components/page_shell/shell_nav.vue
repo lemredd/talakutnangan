@@ -38,12 +38,14 @@
 				</template>
 				<template #default>
 					<ul class="settings-items">
-						<a href="">
-							Account Settings
-						</a>
-						<a href="">
-							Profile Settings
-						</a>
+						<Anchor href="/settings/account">
+							<span class="material-icons">settings</span>
+							<span class="label anchor-label">Account Settings</span>
+						</Anchor>
+						<Anchor href="/settings/profile">
+							<span class="material-icons">person</span>
+							<span class="label anchor-label">Profile Settings</span>
+						</Anchor>
 						<LogOutBtn/>
 					</ul>
 				</template>
@@ -53,6 +55,7 @@
 </template>
 
 <style lang="scss">
+// todo: use `@apply` to compatibility-stricted styles
 @import "@styles/variables.scss";
 
 .navigation {
@@ -105,6 +108,21 @@
 			.settings-items {
 				display: flex;
 				flex-direction: column;
+
+				.anchor, #log-out-btn {
+					margin-bottom: .5em;
+
+					.label {
+						font-size: small;
+						text-transform: uppercase
+					}
+				}
+
+
+				#log-out-btn {
+					@apply flex items-center;
+					padding: 3px 10px;
+				}
 			}
 		}
 	}
@@ -161,6 +179,7 @@ import { inject, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"

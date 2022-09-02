@@ -64,7 +64,7 @@ body.unscrollable {
 			z-index: -1;
 		}
 
-		.link {
+		.anchor {
 			padding: .5em;
 
 			.material-icons {
@@ -91,7 +91,7 @@ body.unscrollable {
 		&.desktop {
 			@apply flex;
 
-			.link[href="/settings"], .link[href="/notifications"] {
+			.anchor[href="/settings"], .anchor[href="/notifications"] {
 				display: none;
 			}
 		}
@@ -227,7 +227,6 @@ function disableScroll() {
 	}
 
 	rawBodyClasses.value = sanitizeArray(bodyClasses)
-	console.log(rawBodyClasses.value)
 }
 
 function toggleRoleLinks() {

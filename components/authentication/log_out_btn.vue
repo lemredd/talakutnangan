@@ -4,7 +4,7 @@
 		role="button"
 		@click="logOut">
 		<span class="material-icons">logout</span>
-		Logout
+		<span class="label btn-label">Logout</span>
 	</a>
 </template>
 
@@ -18,6 +18,8 @@ UserFetcher.initialize("/api")
 
 function logOut() {
 	new UserFetcher().logOut()
-	.then(console.log)
+	.then(() => {
+		window.location.assign("/user/log_in")
+	})
 }
 </script>
