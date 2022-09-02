@@ -100,7 +100,7 @@ body.unscrollable {
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from "vue"
+import { computed, inject, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
@@ -130,7 +130,6 @@ const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
 
 // Role
-const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		"kinds": null,
@@ -231,7 +230,6 @@ function disableScroll() {
 
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
 }
 </script>
