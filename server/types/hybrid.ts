@@ -4,8 +4,8 @@
  */
 
 import type { FieldRules } from "!/types/validation"
-import type { RouteInformation, PageProps, DocumentProps } from "$/types/server"
 import type { OptionalMiddleware, RedirectInfo } from "!/types/independent"
+import type { RouteInformation, PageProps, DocumentProps } from "$/types/server"
 import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
 
 export interface PageRequest extends Request {
