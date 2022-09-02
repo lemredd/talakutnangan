@@ -52,7 +52,8 @@ extends Attributes<T> {
 	actionTaken: string|null,
 	scheduledStartAt: T extends "serialized" ? string : Date,
 	startedAt: (T extends "serialized" ? string : Date)|null,
-	finishedAt: (T extends "serialized" ? string : Date)|null
+	finishedAt: (T extends "serialized" ? string : Date)|null,
+	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 
 interface ConsultationRelationshipData<T extends Completeness = "read">

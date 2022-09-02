@@ -23,6 +23,7 @@ describe("Database Pipe: Include defaults", () => {
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
 				"actionTaken": model.actionTaken,
+				"deletedAt": null,
 				"finishedAt": null,
 				"reason": model.reason,
 				"scheduledStartAt": new Date().toISOString(),

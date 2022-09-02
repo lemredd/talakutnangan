@@ -42,7 +42,7 @@
 				{{ JSON.stringify(message.data) }}
 			</div>
 		</div>
-		<UserController :status="consultationStatus" @start-consultation="startConsultation"/>
+		<UserController :consultation="consultation" @start-consultation="startConsultation"/>
 	</section>
 </template>
 
@@ -51,8 +51,7 @@ import { computed } from "vue"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
-	DeserializedConsultationResource,
-	ConsultationRelationshipNames
+	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -76,6 +75,7 @@ const emit = defineEmits<CustomEvents>()
 function startConsultation() {
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": null,
+		"deletedAt": consultation.deletedAt?.toISOString() ?? null,
 		"finishedAt": null,
 		"reason": consultation.reason,
 		"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
@@ -84,6 +84,7 @@ function startConsultation() {
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
 			"actionTaken": consultation.actionTaken,
+			"deletedAt": consultation.deletedAt ?? null,
 			"finishedAt": consultation.finishedAt,
 			"reason": consultation.reason,
 			"scheduledStartAt": consultation.scheduledStartAt,

@@ -9,6 +9,7 @@ import IDParameterValidation from "!/validations/id_parameter"
 import ProfilePictureManager from "%/managers/profile_picture"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
+import exists from "!/validators/manager/exists"
 import CreateController from "!%/api/user(id)/relationships/profile_picture/create.post"
 
 export default class extends CreateController {
@@ -21,7 +22,7 @@ export default class extends CreateController {
 
 		return [
 			new IDParameterValidation([
-				[ "id", ProfilePictureManager ]
+				[ "id", ProfilePictureManager, exists ]
 			]),
 			...targetValidations
 		]
