@@ -4,13 +4,15 @@
  */
 
 import type { FieldRules } from "!/types/validation"
-import type { RouteInformation, PageProps } from "$/types/server"
+import type { RouteInformation, PageProps, DocumentProps } from "$/types/server"
 import type { OptionalMiddleware, RedirectInfo } from "!/types/independent"
 import type { Response, Request, NextFunction, RequestHandler } from "!/types/dependent"
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client
 	pageProps: PageProps|null
+
+	documentProps: DocumentProps
 }
 
 export interface AsynchronousRequestHandler {
