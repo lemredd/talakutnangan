@@ -59,14 +59,12 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-console.log(pageProps)
-
-const consultation = ref<DeserializedConsultationResource<ConsultationRelationshipNames>>(
-	pageProps.consultation.data as DeserializedConsultationResource<ConsultationRelationshipNames>
+const consultation = ref<DeserializedConsultationResource<"consultant"|"consultantRole">>(
+	pageProps.consultation.data as DeserializedConsultationResource<"consultant"|"consultantRole">
 )
 
-const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
-	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
+const consultations = ref<DeserializedConsultationListDocument<"consultant"|"consultantRole">>(
+	pageProps.consultations as DeserializedConsultationListDocument<"consultant"|"consultantRole">
 )
 
 const previewMessages = ref<DeserializedChatMessageListDocument<"user"|"consultation">>(
@@ -80,6 +78,7 @@ const chatMessageActivities = ref<
 		"user"|"consultation"
 	>
 )
+
 
 function pickConsultation(unusedConsultationID: string) {
 	// TODO: Go to other location
