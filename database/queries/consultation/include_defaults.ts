@@ -6,6 +6,7 @@ import Role from "%/models/role"
 import User from "%/models/user"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
+import ProfilePicture from "%/models/profile_picture"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
@@ -25,6 +26,12 @@ export default function<T>(
 	castInclude.push({
 		"include": [
 			{
+				"include": [
+					{
+						"model": ProfilePicture,
+						"required": false
+					}
+				],
 				"model": User,
 				"required": true
 			},
@@ -34,9 +41,6 @@ export default function<T>(
 			}
 		],
 		"model": AttachedRole,
-		"required": true
-	}, {
-		"model": User,
 		"required": true
 	}, {
 		"include": [

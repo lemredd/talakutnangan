@@ -62,15 +62,16 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 		: Serializable|undefined
 }
 
-export type AdditionalPropNames<T extends Format = "serialized">
-= Exclude<keyof RawPageProps<T>, "userProfile">
+export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>
 
 export type PageProps<
 	T extends Format = "serialized",
-	U extends AdditionalPropNames<T>|undefined = undefined
-> = U extends AdditionalPropNames<T>
-	? Pick<RawPageProps<T>, "userProfile"|U>
-	: Pick<RawPageProps<T>, "userProfile"> & Partial<Omit<RawPageProps<T>, "userProfile">>
+	U extends AdditionalPropNames<T> = "userProfile"
+> = Pick<RawPageProps<T>, "userProfile"|U>
+
+export type PartialPageProps<T extends Format = "serialized"> =
+	& Pick<RawPageProps<T>, "userProfile">
+	& Partial<Omit<RawPageProps<T>, "userProfile">>
 
 /**
  * Source of error in the sent resource

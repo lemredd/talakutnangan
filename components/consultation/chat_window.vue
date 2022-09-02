@@ -74,12 +74,11 @@ const emit = defineEmits<CustomEvents>()
 
 function startConsultation() {
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
-		"actionTaken": consultation.actionTaken,
-		"finishedAt": consultation.finishedAt?.toISOString() ?? null,
+		"actionTaken": null,
+		"finishedAt": null,
 		"reason": consultation.reason,
-		"scheduledStartAt": consultation.scheduledStartAt?.toISOString() ?? null,
-		"status": "ongoing",
-		"startedAt": consultation.startedAt?.toISOString() ?? null
+		"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
+		"startedAt": new Date().toISOString()
 	}
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
@@ -87,7 +86,6 @@ function startConsultation() {
 			"finishedAt": consultation.finishedAt,
 			"reason": consultation.reason,
 			"scheduledStartAt": consultation.scheduledStartAt,
-			"status": "ongoing",
 			"startedAt": consultation.startedAt
 		}
 		// TODO: Start the timer

@@ -6,19 +6,20 @@ import type { DeserializedChatMessageListDocument } from "$/types/documents/chat
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
-	it("should show main controllers if ongoing", async() => {
+	it("should start consultation", async() => {
+		const scheduledStartAt = new Date()
+		// eslint-disable-next-line no-undef
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeData = {
-			"actionTaken": "",
+			"actionTaken": null,
 			"chatMessages": {
 				"data": []
 			} as DeserializedChatMessageListDocument,
 			"finishedAt": null,
 			"id": "1",
 			"reason": "",
-			"scheduledStartAt": new Date(),
+			scheduledStartAt,
 			"startedAt": null,
-			"status": "will_start",
 			"type": "consultation"
 		} as DeserializedConsultationResource
 		const wrapper = shallowMount<any>(Component, {
@@ -31,8 +32,19 @@ describe("Component: consultation/chat_window", () => {
 		await userController.trigger("start-consultation")
 		await flushPromises()
 
-		// TODO: Test if consultation fetcher sends data
 		const events = wrapper.emitted("updatedConsultationAttributes")
 		expect(events).toHaveLength(1)
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", "/api/consultation/1")
+		const body = await request.json()
+		expect(body).toHaveProperty("data.attributes.actionTaken", null)
+		expect(body).toHaveProperty("data.attributes.finishedAt", null)
+		expect(body).toHaveProperty("data.attributes.reason", "")
+		expect(body).toHaveProperty("data.attributes.scheduledStartAt", scheduledStartAt.toJSON())
+		expect(body).not.toHaveProperty("data.attributes.startedAt", null)
+		expect(body).toHaveProperty("data.id", "1")
+		expect(body).toHaveProperty("data.type", "consultation")
 	})
 })

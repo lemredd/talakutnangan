@@ -1,5 +1,4 @@
 // @ts-check
-"use strict";
 
 /**
  * @type {(import("sequelize").Attributes<import("../models/department")>)[]}
@@ -7,33 +6,33 @@
  */
 const rawDepartments = [
 	{
-		fullName: "Institute of Arts, Sciences, and Teacher Education",
-		acronym: "IASTE",
-		mayAdmit: true
+		"acronym": "IASTE",
+		"fullName": "Institute of Arts, Sciences, and Teacher Education",
+		"mayAdmit": true
 	},
 	{
-		fullName: "Institute of Business and Computing Education",
-		acronym: "IBCE",
-		mayAdmit: true
+		"acronym": "IBCE",
+		"fullName": "Institute of Business and Computing Education",
+		"mayAdmit": true
 	},
 	{
-		fullName: "Institute of Hospitality and Tourism Managment",
-		acronym: "IHTM",
-		mayAdmit: true
+		"acronym": "IHTM",
+		"fullName": "Institute of Hospitality and Tourism Managment",
+		"mayAdmit": true
 	},
 	{
-		fullName: "Student Affairs and Support Services",
-		acronym: "SASS",
-		mayAdmit: false
+		"acronym": "SASS",
+		"fullName": "Student Affairs and Support Services",
+		"mayAdmit": false
 	}
 ]
 
 module.exports = {
 	/**
 	 * @param {import("sequelize").QueryInterface} queryInterface
-	 * @param {import("sequelize").Sequelize} Sequelize
+	 * @param {import("sequelize").Sequelize} unusedSequelize
 	 */
-	async up (queryInterface, Sequelize) {
+	async up(queryInterface, unusedSequelize) {
 		const departments = rawDepartments
 
 		departments.forEach(department => {
@@ -50,16 +49,16 @@ module.exports = {
 
 	/**
 	 * @param {import("sequelize").QueryInterface} queryInterface
-	 * @param {import("sequelize").Sequelize} Sequelize
+	 * @param {import("sequelize").Sequelize} unusedSequelize
 	 */
-	async down (queryInterface, Sequelize) {
+	async down(queryInterface, unusedSequelize) {
 		const departments = rawDepartments
 		// @ts-ignore
 		const departmentNames = departments.map(department => department.fullName)
 
 		await queryInterface.bulkDelete("Departments", {
-			fullName: departmentNames
+			"fullName": departmentNames
 		}, {})
 		console.log("Deleted: ", departmentNames)
 	}
-};
+}

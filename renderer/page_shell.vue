@@ -50,7 +50,7 @@ import Content from "@/page_shell/content_container.vue"
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
-const isLoggingIn = path === "/log_in"
+const isLoggingIn = path === "/user/log_in"
 provide("isLoggingIn", isLoggingIn)
 
 const layout = ref<HTMLElement | null>(null)

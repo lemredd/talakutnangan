@@ -6,6 +6,7 @@ import type {
 
 import isBoolean from "validator/lib/isBoolean"
 import toBoolean from "validator/lib/toBoolean"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 /**
  * Validator to check if data is a valid boolean value.
@@ -19,25 +20,25 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	const mayCheckLoosely = (constraints.boolean !== undefined)
+	const mayCheckLoosely = !isUndefined(constraints.boolean)
 		&& constraints.boolean.loose
 
 	if (mayCheckLoosely) {
-		const value = state.value+""
+		const value = `${state.value}`
 		if (isBoolean(value)) {
 			state.value = toBoolean(value)
 			return state
 		}
-	} else {
-		if (state.value === true || state.value === false) {
-			return state
-		}
+	} else if (state.value === true || state.value === false) {
+		return state
 	}
 
-	throw {
-		field: constraints.field,
-		messageMaker: (field: string) => `Field "${field}" should be a boolean.`
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (field: string) => `Field "${field}" should be a boolean.`
 	}
+
+	throw error
 }

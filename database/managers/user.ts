@@ -68,7 +68,10 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 			const condition = new Condition()
 			condition.equal("email", email)
 			const whereOptions: FindOptions<User> = { "where": condition.build() }
-			const findOptions = runThroughPipeline(whereOptions, {}, [ includeRoleAndDepartment ])
+			const findOptions = runThroughPipeline(whereOptions, {}, [
+				includeExclusiveDetails,
+				includeRoleAndDepartment
+			])
 
 			Log.trace("manager", "prepared query to find user with certain credential")
 

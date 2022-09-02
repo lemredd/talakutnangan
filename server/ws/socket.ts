@@ -15,7 +15,7 @@ export default class Socket extends RequestEnvironment {
 	static initialize(server: WebSocketServer) {
 		this.rawServer = server
 
-		Log.trace("app", "initialized web socket")
+		Log.trace("app", "initialized web socket server")
 	}
 
 	static emitToClients(namespace: string, eventName: string, ...data: any): void {

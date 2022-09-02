@@ -46,7 +46,9 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserResource,
 		Serializable
 	>> {
-		return await this.postJSON(`${this.type}/log_in`, details) as Response<
+		return await this.handleResponse(
+			this.postJSON(`${this.type}/log_in`, details)
+		) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
 			UserAttributes<"deserialized">,

@@ -1,5 +1,5 @@
 <template>
-	<AdminSettingsHeader title="Admin Settings"/>
+	<AdminSettingsHeader title="Admin Configuration"/>
 
 	<UsersManager :resource="users">
 		<template #search-filter>

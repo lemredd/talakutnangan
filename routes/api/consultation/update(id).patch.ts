@@ -3,7 +3,6 @@ import type { Request, Response } from "!/types/dependent"
 import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
-import AttachedRoleManager from "%/managers/role"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
@@ -12,11 +11,15 @@ import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
+import date from "!/validators/base/date"
 import string from "!/validators/base/string"
-import exists from "!/validators/manager/exists"
+import same from "!/validators/comparison/same"
 import required from "!/validators/base/required"
-import oneOf from "!/validators/comparison/one-of"
+import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
+import length from "!/validators/comparison/length"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
 
 export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
@@ -30,31 +33,51 @@ export default class extends DoubleBoundJSONController {
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes: FieldRules = {
 			"actionTaken": {
-				"constraints": { },
-				"pipes": [ required, string ]
-			},
-			"attachedRoleID": {
 				"constraints": {
-					"manager": {
-						"className": AttachedRoleManager,
-						"columnName": "id"
+					"same": {
+						"value": null
 					}
 				},
-				"pipes": [ required, exists ]
+				"pipes": [ nullable, same ]
+			},
+			"finishedAt": {
+				"constraints": {
+					"same": {
+						"value": null
+					}
+				},
+				"pipes": [ nullable, same ]
 			},
 			"reason": {
-				"constraints": { },
-				"pipes": [ required, string ]
-			},
-			"status": {
 				"constraints": {
-					"oneOf": {
-						"values": [ "will_start", "ongoing", "done" ]
+					"length": {
+						"maximum": 100,
+						"minimum": 10
+					},
+					"regex": {
+						"match": /[a-zA-Z0-9!?. -]/u
 					}
 				},
-				"pipes": [ required, oneOf ]
+				"pipes": [ required, string, length, regex ]
+			},
+			"scheduledStartAt": {
+				"constraints": {
+					// TODO: Check if the schedule fits within the schedule of employee
+					"uniqueConsultationSchedule": {
+						"conflictConfirmationPointer": "meta.doesAllowConflicts",
+						"userIDPointer": "meta.reachableEmployeeID"
+					}
+				},
+				"pipes": [ required, date, uniqueConsultationSchedule ]
+			},
+			"startedAt": {
+				"constraints": {
+					"same": {
+						"value": null
+					}
+				},
+				"pipes": [ nullable, same ]
 			}
-			// TODO Dates
 		}
 
 		return makeResourceDocumentRules("consultation", attributes)

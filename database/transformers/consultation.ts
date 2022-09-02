@@ -10,7 +10,7 @@ import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
 type Relationships =
-	| "consultant"
+	|"consultant"
 	|"consultantRole"
 	|"consulters"
 	|"chatMessageActivities"
@@ -19,7 +19,7 @@ type Relationships =
 export default class extends Transformer<Consultation, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "consultant", "consultantRole", "consulters" ]
+			"included": [ "consultant", "consultantRole", "chatMessageActivities", "chatMessages" ]
 		}
 	) {
 		super("consultation", [
@@ -51,7 +51,7 @@ export default class extends Transformer<Consultation, void> {
 				? {
 					"attribute": "chatMessages",
 					"transformer": new ChatMessageTransformer({
-						"included": [ "user", "chatMessageActivity" ]
+						"included": [ "user" ]
 					})
 				}
 				: null
@@ -63,11 +63,11 @@ export default class extends Transformer<Consultation, void> {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"reason",
-			"status",
 			"actionTaken",
 			"scheduledStartAt",
 			"startedAt",
-			"finishedAt"
+			"finishedAt",
+			"deletedAt"
 		])
 
 		return safeObject

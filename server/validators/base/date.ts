@@ -23,7 +23,7 @@ export default async function(
 		}
 		throw error
 	} else {
-		state.value = value
+		state.value = castedValue
 	}
 
 	return state

@@ -1,15 +1,13 @@
 <template>
-	<div class="overflowing-table">
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>E-mail</th>
-					<th>Role</th>
-					<th>Department</th>
-				</tr>
-			</thead>
-			<tbody v-if="resourceType == 'user'">
+	<div class="resource-list">
+		<ResourceTable v-if="filteredList.length">
+			<template #table-headers>
+				<th v-for="header in tableHeaders" :key="header">
+					{{ header }}
+				</th>
+			</template>
+
+			<template v-if="resourceType === 'user'" #table-body>
 				<tr
 					v-for="resource in filteredList"
 					:key="resource.id"
@@ -21,108 +19,72 @@
 						{{ resource.department.data.acronym }}
 					</td>
 				</tr>
-			</tbody>
-			<tbody v-else-if="resourceType === 'role'" class="resource-properties">
+			</template>
+
+			<template v-else #table-body>
 				<tr
 					v-for="resource in filteredList"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>{{ resource }} users</td>
+					<td>
+						{{
+							resourceType === "role"
+								? resource.name
+								: resource.fullName
+						}}
+					</td>
+					<td>{{ resource.meta }} users</td>
 				</tr>
-			</tbody>
+			</template>
+		</ResourceTable>
 
-			<tbody v-else class="resource-properties">
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.fullName }}</td>
-					<td>{{ resource }} users</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<!-- <div
-		v-for="resource in filteredList"
-		:key="resource.id"
-		class="resource-row">
-		<div v-if="resourceType === 'user'" class="resource-properties">
-			<span>{{ resource.name }}</span>
-			<span>{{ resource.email }}</span>
-			<span>{{ resource.roles.data[0].name }}</span>
+		<div v-else class="no-results">
+			<p>No results found!</p>
 		</div>
-
-		<div v-else-if="resourceType === 'role'" class="resource-properties">
-			<span>{{ resource.name }}</span>
-			<span>{{ resource }} users</span>
-		</div>
-
-		<div v-else class="resource-properties">
-			<span>{{ resource.fullName }}</span>
-			<span>{{ resource }} users</span>
-		</div>
-		<div class="btns">
-			<button class="btn1">
-				Update
-			</button>
-		</div>
-	</div> -->
-
-	<div v-if="!filteredList.length" class="no-results">
-		<p>No results found!</p>
 	</div>
 </template>
 
 <style scoped lang="scss">
-.resource-row {
-	@apply dark:text-light-100;
-	margin: .5rem;
-	border-bottom-width: 1px;
-	padding-bottom: .5rem;
-	font-size: 1.5rem;
+.resource-list {
+	margin-top: 1em;
 
-	.resource-properties {
-		@apply flex flex-col w-[max-content];
-		font-size: 1.125rem;
+	.resource-row {
+		@apply dark:text-light-100;
+		margin: .5rem;
+		border-bottom-width: 1px;
+		padding-bottom: .5rem;
 
-		& span:not(:first-of-type) {
-			font-size: 0.75rem;
-			margin: 1em 0;
-		}
-
-		@screen sm {
-			width: 20%;
+		.btn1 {
+			@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
 		}
 	}
 
-	.btn1 {
-		@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+	.no-results {
+		text-align: center;
 	}
 }
-
-.overflowing-table{
-	width: 100%;
-	overflow-x: scroll;
-}
-
 </style>
 
 <script setup lang="ts">
-import { inject, onUpdated, ref } from "vue"
+import { computed, onUpdated, ref } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
-import Manager from "$/helpers/manager"
+import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
 }>()
 
-const managerKind = inject("managerKind") as Manager
 const resourceType = ref("")
-
 const resourceProperties = ref<string[]>([])
+const tableHeaders = computed(() => {
+	let headers: string[] = []
+	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
+	else headers = [ "Name", "# of users", "" ]
+
+	return headers
+})
 
 onUpdated(() => {
 	// Displays retrieved data from database properly

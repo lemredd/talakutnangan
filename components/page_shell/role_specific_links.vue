@@ -64,7 +64,7 @@ body.unscrollable {
 			z-index: -1;
 		}
 
-		.link {
+		.anchor {
 			padding: .5em;
 
 			.material-icons {
@@ -91,7 +91,7 @@ body.unscrollable {
 		&.desktop {
 			@apply flex;
 
-			.link[href="/settings"], .link[href="/notifications"] {
+			.anchor[href="/settings"], .anchor[href="/notifications"] {
 				display: none;
 			}
 		}
@@ -138,7 +138,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "account_circle",
 				"name": "Log in",
-				"path": "/log_in"
+				"path": "/user/log_in"
 			}
 		],
 		"mustBeGuest": true,
@@ -185,7 +185,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultations"
+				"path": "/consultation"
 			}
 		],
 		"mustBeGuest": false,
@@ -227,7 +227,6 @@ function disableScroll() {
 	}
 
 	rawBodyClasses.value = sanitizeArray(bodyClasses)
-	console.log(rawBodyClasses.value)
 }
 
 function toggleRoleLinks() {

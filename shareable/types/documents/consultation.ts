@@ -1,11 +1,22 @@
-import type { Status } from "$/types/database"
-import type { PartialOrPickObject } from "$/types/general"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
-import type { DeserializedUserDocument, DeserializedUserListDocument } from "$/types/documents/user"
+import type { Serializable, PartialOrPickObject } from "$/types/general"
 import type {
+	RoleIdentifierDocument,
+	DeserializedRoleDocument
+} from "$/types/documents/role"
+import type {
+	ChatMessageIdentifierListDocument,
+	DeserializedChatMessageListDocument
+} from "$/types/documents/chat_message"
+import type {
+	ChatMessageActivityIdentifierListDocument,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
+import type {
+	UserIdentifierDocument,
+	UserIdentifierListDocument,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+} from "$/types/documents/user"
 import type {
 	Completeness,
 	Format,
@@ -15,9 +26,13 @@ import type {
 	ResourceIdentifier,
 	DeserializedResource,
 
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+
 	ResourceDocument,
 	ResourceListDocument,
-	DeserializedRelationships,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
 
@@ -33,33 +48,54 @@ extends ResourceIdentifier<T> {
 export interface ConsultationAttributes<T extends Format = "serialized">
 extends Attributes<T> {
 	reason: string,
-	status: T extends "serialized" ? string : Status,
-	actionTaken: string,
+	actionTaken: string|null,
 	scheduledStartAt: T extends "serialized" ? string : Date,
 	startedAt: (T extends "serialized" ? string : Date)|null,
 	finishedAt: (T extends "serialized" ? string : Date)|null
 }
 
-type RawDeserializedConsultationRelationships = [
-	[ "consultant", DeserializedUserDocument ],
-	[ "consultantRole", DeserializedRoleDocument ],
-	[ "consulters", DeserializedUserListDocument ],
-	[ "chatMessageActivity", DeserializedChatMessageActivityListDocument ],
-	[ "chatMessages", DeserializedChatMessageListDocument ]
-]
-
-export type DeserializedConsultationRelationships = DeserializedRelationships & {
-	[Property in RawDeserializedConsultationRelationships[number][0]]
-	: RawDeserializedConsultationRelationships[number][1]
+interface ConsultationRelationshipData<T extends Completeness = "read">
+extends GeneralRelationshipData {
+	consultant: {
+		serialized: UserIdentifierDocument,
+		deserialized: DeserializedUserDocument
+	},
+	consultantRole: {
+		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
+		deserialized: DeserializedRoleDocument
+	},
+	consulters: {
+		serialized: UserIdentifierListDocument,
+		deserialized: DeserializedUserListDocument
+	},
+	chatMessageActivities: {
+		serialized: T extends "create" ? undefined : ChatMessageActivityIdentifierListDocument,
+		deserialized: DeserializedChatMessageActivityListDocument
+	},
+	chatMessages: {
+		serialized: T extends "create" ? undefined : ChatMessageIdentifierListDocument,
+		deserialized: DeserializedChatMessageListDocument
+	}
 }
 
-export type ConsultationRelationshipNames = RawDeserializedConsultationRelationships[number][0]
+export type ConsultationRelationshipNames = DeriveRelationshipNames<ConsultationRelationshipData>
 
-export type ConsultationResource<T extends Completeness = "read"> = Resource<
+export type ConsultationRelationships<T extends Completeness = "read">
+= DeriveRelationships<ConsultationRelationshipData<T>>
+
+export type DeserializedConsultationRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<ConsultationRelationshipData<T>>
+
+export type ConsultationResource<T extends Completeness = "read">
+= Resource<
 	T,
 	ConsultationResourceIdentifier<T>,
-	ConsultationAttributes<"serialized">
->
+	ConsultationAttributes
+> & (
+	T extends "create"
+		? ConsultationRelationships<T>
+		: Serializable
+)
 
 export type DeserializedConsultationResource<
 	T extends ConsultationRelationshipNames|undefined = undefined

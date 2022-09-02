@@ -6,6 +6,9 @@
 -->
 <template>
 	<ConsultationShell @picked-consultation="pickConsultation">
+		<template #list>
+			<ConsultationList :consultations="consultations"/>
+		</template>
 		<template #chat-window>
 			<ChatWindow :consultation="consultation"/>
 		</template>
@@ -32,18 +35,26 @@ import { inject, ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type {
 	ConsultationRelationshipNames,
-	DeserializedConsultationResource
+	DeserializedConsultationResource,
+	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
+type RequiredExtraProps = "consultation"|"consultations"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
 const consultation = ref<DeserializedConsultationResource<ConsultationRelationshipNames>>(
 	pageProps.consultation.data as DeserializedConsultationResource<ConsultationRelationshipNames>
 )
+
+const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
+	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
+)
+console.log(JSON.stringify(consultations))
 
 function pickConsultation(unusedConsultationID: string) {
 	// TODO: Go to other location
