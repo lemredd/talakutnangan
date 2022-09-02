@@ -48,4 +48,10 @@ function toggleDropdown() {
 	emit("toggle")
 	isDropdownShown.value = !isDropdownShown.value
 }
+
+if (typeof window !== "undefined") {
+	window.onresize = () => {
+		isDropdownShown.value = false
+	}
+}
 </script>
