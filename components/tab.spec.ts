@@ -23,7 +23,7 @@ describe("Component: Tab", () => {
 			}
 		})
 
-		const firstLink = wrapper.find(".link")
+		const firstLink = wrapper.find(".anchor")
 		expect(firstLink.classes()).toContain("active")
 	})
 })
