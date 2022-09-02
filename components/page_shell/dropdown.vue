@@ -25,6 +25,7 @@
 .invisible-closer {
 	position: fixed;
 	inset: 0;
+	z-index: 1000;
 }
 .dropdown-container {
 	@apply dark:bg-dark-400;
@@ -32,6 +33,7 @@
 	background-color: white;
 	border-top: 1px solid #888;
 	box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+	z-index: 1001;
 }
 </style>
 
