@@ -13,7 +13,7 @@
 				:preview-messages="previewMessages"/>
 		</template>
 		<template #chat-window>
-			<!-- <ChatWindow :consultation="consultation"/> -->
+			<ChatWindow :consultation="consultation" :chat-messages="chatMessages"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -41,7 +41,6 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
-	ConsultationRelationshipNames,
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
@@ -61,6 +60,10 @@ const { pageProps } = pageContext
 
 const consultation = ref<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	pageProps.consultation.data as DeserializedConsultationResource<"consultant"|"consultantRole">
+)
+
+const chatMessages = ref<DeserializedChatMessageListDocument<"user">>(
+	pageProps.chatMessages as DeserializedChatMessageListDocument<"user">
 )
 
 const consultations = ref<DeserializedConsultationListDocument<"consultant"|"consultantRole">>(
