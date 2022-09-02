@@ -22,6 +22,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import buffer from "!/validators/base/buffer"
+import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
@@ -39,7 +40,7 @@ export default class extends MultipartController {
 	get validations(): Validation[] {
 		return [
 			new IDParameterValidation([
-				[ "id", UserManager ]
+				[ "id", UserManager, exists ]
 			]),
 			...super.validations
 		]
