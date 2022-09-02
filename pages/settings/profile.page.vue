@@ -96,11 +96,9 @@ import SchedulePicker from "@/settings/schedule_picker.vue"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext
-console.log("pageProps", pageContext.pageProps)
 
 const { "data": userProfile } = pageContext.pageProps.userProfile as DeserializedUserProfile
 const { kind } = userProfile
-console.log(kind)
 const profileInfo = {
 	"displayName": userProfile.name,
 	"profilePic": null as string | null,
