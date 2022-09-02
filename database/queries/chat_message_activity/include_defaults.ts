@@ -3,6 +3,7 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
+import Consultation from "%/models/consultation"
 import ProfilePicture from "%/models/profile_picture"
 import isUndefined from "$/helpers/type_guards/is_undefined"
 
@@ -28,6 +29,9 @@ export default function<T>(
 			}
 		],
 		"model": User,
+		"required": true
+	}, {
+		"model": Consultation,
 		"required": true
 	})
 
