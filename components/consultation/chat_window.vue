@@ -51,8 +51,7 @@ import { computed } from "vue"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
-	DeserializedConsultationResource,
-	ConsultationRelationshipNames
+	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"

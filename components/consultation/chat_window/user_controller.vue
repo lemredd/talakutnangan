@@ -2,7 +2,10 @@
 	<div class="user-controls">
 		<div v-if="willSoonStart || willStart" class="wide-control">
 			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
-			<button :disabled="willStart" class="start" @click="startConsultation">
+			<button
+				:disabled="!willStart"
+				class="start"
+				@click="startConsultation">
 				Start consultation
 			</button>
 		</div>
@@ -49,6 +52,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { DateTime, Duration } from "luxon"
+
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 const { consultation } = defineProps<{
@@ -73,21 +77,21 @@ const hasDeleted = computed<boolean>(() => consultation.deletedAt !== null)
 
 const willSoonStart = computed<boolean>(() => differenceFromSchedule.value.milliseconds > 0)
 const willStart = computed<boolean>(() => {
-	const mayStart = differenceFromSchedule.value.milliseconds == 0 || isAfterScheduledStart.value
+	const mayStart = differenceFromSchedule.value.milliseconds === 0 || isAfterScheduledStart.value
 	return mayStart && !hasStarted.value
 })
 const isOngoing = computed<boolean>(() => {
 	const isInProgress = isAfterScheduledStart.value && hasStarted.value
 	return isInProgress && !hasFinished.value
 })
-const isDone = computed<boolean>(() => {
+const unusedIsDone = computed<boolean>(() => {
 	const isInProgress = isAfterScheduledStart.value && hasStarted.value
 	return isInProgress && hasFinished.value && hasDeleted.value
 })
-const isCanceled = computed<boolean>(() => !isAfterScheduledStart.value && hasDeleted.value)
-const isAutoTerminated = computed<boolean>(() => {
+const unusedIsCanceled = computed<boolean>(() => !isAfterScheduledStart.value && hasDeleted.value)
+const unusedIsAutoTerminated = computed<boolean>(() => {
 	const hasTerminated = isAfterScheduledStart.value && hasDeleted.value
-	return hasTerminated && consultation.actionTaken == null
+	return hasTerminated && consultation.actionTaken === null
 })
 
 interface CustomEvents {
