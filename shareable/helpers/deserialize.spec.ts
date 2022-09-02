@@ -28,7 +28,7 @@ describe("Helper: Deserialize", () => {
 						"name": "B"
 					},
 					"id": 2,
-					"type": "role",
+					"type": "role"
 				}
 			]
 		}
@@ -45,11 +45,11 @@ describe("Helper: Deserialize", () => {
 						{
 							"id": 2,
 							"name": "B",
-							"type": "role",
+							"type": "role"
 						}
 					]
 				},
-				"type": "user",
+				"type": "user"
 			}
 		})
 	})
