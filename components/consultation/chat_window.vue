@@ -62,7 +62,7 @@ const {
 	consultation,
 	chatMessages
 } = defineProps<{
-	consultation: DeserializedConsultationResource<"consultant"|"consltantRole">
+	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
 const consultationID = computed<string>(() => consultation.id)
