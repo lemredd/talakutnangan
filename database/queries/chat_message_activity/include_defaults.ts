@@ -4,6 +4,8 @@ import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Consultation from "%/models/consultation"
+import ProfilePicture from "%/models/profile_picture"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 /**
  * Includes default models
@@ -14,20 +16,26 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (typeof newState.include === "undefined") {
+	if (isUndefined(newState.include)) {
 		newState.include = []
 	}
 
 	const castInclude = newState.include as IncludeOptions[]
 	castInclude.push({
-		"model": Consultation,
+		"include": [
+			{
+				"model": ProfilePicture,
+				"required": false
+			}
+		],
+		"model": User,
 		"required": true
 	}, {
-		"model": User,
+		"model": Consultation,
 		"required": true
 	})
 
-	Log.trace("pipeline", "applied default includer")
+	Log.trace("query pipe", "applied default includer")
 
 	return newState
 }
