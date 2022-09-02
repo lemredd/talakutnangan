@@ -26,7 +26,7 @@
 	}
 
 	.filters {
-		@apply flex justify-between;
+		@apply flex flex-col sm:flex-row justify-between;
 	}
 }
 </style>

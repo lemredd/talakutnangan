@@ -18,10 +18,10 @@ import Consultation from "%/models/consultation"
 })
 export default class ChatMessageActivity extends Model {
 	@Column({
-		"allowNull": false,
+		"defaultValue": null,
 		"type": DataType.DATE
 	})
-		receivedMessageAt!: Date
+		receivedMessageAt!: Date|null
 
 	@AllowNull
 	@Column({

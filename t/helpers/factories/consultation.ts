@@ -45,7 +45,14 @@ export default class ConsultationFactory extends BaseFactory<
 		}
 
 	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
-	#reasonGenerator: () => string = () => `${faker.hacker.noun()}-${faker.hacker.noun()}`
+	#reasonGenerator: () => string = () => `${
+		faker.hacker.noun()
+	}-${
+		faker.hacker.noun()
+	}-${
+		faker.hacker.noun()
+	}`
+
 	#actionTakenGenerator: () => string|null = () => null
 	#scheduledStartAtGenerator: () => Date = () => new Date()
 	#startedAtGenerator: () => Date|null = () => new Date()

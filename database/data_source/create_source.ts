@@ -16,6 +16,7 @@ import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
+import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 export default async function(type: SourceType): Promise<Sequelize> {
@@ -38,6 +39,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 			StudentDetail,
 			ProfilePicture,
 			EmployeeSchedule,
+			AttachedChatFile,
 			ChatMessageActivity
 		]
 	})
