@@ -13,19 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import type {
-	DeserializedChatMessageResource,
-	DeserializedChatMessageListDocument
-} from "$/types/documents/chat_message"
+import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
 const {
-	chats
+	lastChat
 } = defineProps<{
-	chats: DeserializedChatMessageListDocument<"user">
+	lastChat: DeserializedChatMessageResource<"user">
 }>()
-
-const lastChat = computed<DeserializedChatMessageResource<"user">>(
-	() => chats.data[chats.data.length - 1]
-)
 </script>
