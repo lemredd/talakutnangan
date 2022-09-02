@@ -40,8 +40,6 @@
 <script setup lang="ts">
 import { onUpdated, ref } from "vue"
 
-import RequestEnvironment from "$/helpers/request_environment"
-
 const { purpose } = defineProps<{
 	purpose: string
 }>()
@@ -56,8 +54,10 @@ function toggleDropdown() {
 onUpdated(() => {
 	if (typeof window !== "undefined") {
 		window.onresize = () => {
-			if (RequestEnvironment.isOnTest) emit("resize")
-			isDropdownShown.value = false
+			if (isDropdownShown.value) {
+				emit("resize")
+				isDropdownShown.value = false
+			}
 		}
 	}
 })

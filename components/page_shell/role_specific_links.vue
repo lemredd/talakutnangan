@@ -1,7 +1,10 @@
 <template>
 	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="links mobile">
-		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
+		<RoleLinksList
+			purpose="role-navigation"
+			@toggle="toggleRoleLinks"
+			@resize="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
 			</template>
