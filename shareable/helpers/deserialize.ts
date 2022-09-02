@@ -4,6 +4,8 @@ import convertDates from "$/helpers/object/convert_dates"
 
 export default function(serializedInfo: Serializable|null): Serializable|null {
 	const deserializedDocument = deserialise(serializedInfo) || null
-	const castDeserializedDocument = convertDates(deserializedDocument)
+	const castDeserializedDocument = deserializedDocument === null
+		? null
+		: convertDates(deserializedDocument)
 	return castDeserializedDocument
 }
