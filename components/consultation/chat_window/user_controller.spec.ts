@@ -1,13 +1,22 @@
 import { shallowMount } from "@vue/test-utils"
-import { StatusValues } from "$/types/database"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 import Component from "./user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
 	it("should show main controllers if ongoing", () => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"status": StatusValues[1]
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": new Date(),
+					"type": "consultation"
+				} as DeserializedConsultationResource
 			}
 		})
 
@@ -23,9 +32,18 @@ describe("Component: consultation/chat_window/user_controller", () => {
 	})
 
 	it("should show start button if consultation will start", () => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"status": StatusValues[0]
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": null,
+					"type": "consultation"
+				}
 			}
 		})
 
@@ -41,9 +59,18 @@ describe("Component: consultation/chat_window/user_controller", () => {
 	})
 
 	it("should start upon pressing the button", async() => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"status": StatusValues[0]
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": null,
+					"type": "consultation"
+				}
 			}
 		})
 
