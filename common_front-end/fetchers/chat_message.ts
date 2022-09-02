@@ -1,5 +1,5 @@
 import type { Serializable } from "$/types/general"
-import type { CommonQueryParameters } from "$/types/query"
+import type { ChatMessageQueryParameters } from "$/types/query"
 import type {
 	ChatMessageResourceIdentifier,
 	ChatMessageAttributes,
@@ -24,7 +24,7 @@ export default class ChatMessageFetcher extends BaseFetcher<
 	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument,
 	Serializable,
-	CommonQueryParameters,
+	ChatMessageQueryParameters<string>,
 	ChatMessageRelationships
 > {
 	static initialize(basePath: string) {
