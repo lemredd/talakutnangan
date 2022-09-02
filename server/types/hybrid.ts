@@ -12,7 +12,8 @@ export interface PageRequest extends Request {
 	// Added to pass data from server to client
 	pageProps: PageProps
 
-	documentProps: DocumentProps
+	// Possibly to be required in v0.15.0
+	documentProps?: DocumentProps
 }
 
 export interface AsynchronousRequestHandler {
