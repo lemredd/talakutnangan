@@ -35,7 +35,7 @@
 			</div>
 
 			<div
-				v-for="message in consultationMessages.data"
+				v-for="message in chatMessages.data"
 				:key="message.id"
 				class="chat-entry">
 				<!-- TODO(others): properly place chat entries -->
@@ -58,14 +58,15 @@ import type {
 import ConsultationFetcher from "$@/fetchers/consultation"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 
-const { consultation } = defineProps<{
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+const {
+	consultation,
+	chatMessages
+} = defineProps<{
+	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
 const consultationID = computed<string>(() => consultation.id)
 const consultationStatus = computed<string>(() => consultation.status)
-const consultationMessages = computed<DeserializedChatMessageListDocument>(
-	() => consultation.chatMessages as DeserializedChatMessageListDocument
-)
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void

@@ -15,6 +15,7 @@ describe("Component: Dropdown", () => {
 		expect(wrapper.html()).toContain("invisible-closer")
 		expect(wrapper.html()).toContain("dropdown-container")
 	})
+
 	it("Should close if click emitted outside of dropdown", async() => {
 		const wrapper = mount(Component, {
 			"props": {
@@ -27,5 +28,22 @@ describe("Component: Dropdown", () => {
 		await invisibleCloser.trigger("click")
 
 		expect(wrapper.emitted()).toHaveProperty("click")
+	})
+
+	it("Should close if window resized", async() => {
+		const wrapper = mount(Component, {
+			"props": {
+				"purpose": ""
+			}
+		})
+
+		const toggler = wrapper.find("#dropdown-btn")
+		await toggler.trigger("click")
+
+		window.innerWidth = 800
+		window.dispatchEvent(new Event("resize"))
+
+		const updates = wrapper.emitted()
+		expect(updates).toHaveProperty("resize")
 	})
 })
