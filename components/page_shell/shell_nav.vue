@@ -38,9 +38,10 @@
 				</template>
 				<template #default>
 					<ul class="settings-items">
-						<a href="/settings/account">
-							Account Settings
-						</a>
+						<Anchor href="/settings/account">
+							<span class="material-icons">settings</span>
+							<span>Account Settings</span>
+						</Anchor>
 						<a href="/settings/profile">
 							Profile Settings
 						</a>
@@ -161,6 +162,7 @@ import { inject, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
