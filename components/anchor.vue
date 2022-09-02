@@ -1,5 +1,5 @@
 <template>
-	<a class="link" :class="{ active: pageContext.urlPathname === $attrs.href }">
+	<a class="anchor" :class="{ active: pageContext.urlPathname === $attrs.href }">
 		<slot></slot>
 	</a>
 </template>

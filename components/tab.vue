@@ -13,7 +13,7 @@
 </template>
 
 <style lang="scss">
-.link {
+.anchor {
 	padding: .5em 1em !important;
 }
 </style>
