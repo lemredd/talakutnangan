@@ -40,11 +40,11 @@
 					<ul class="settings-items">
 						<Anchor href="/settings/account">
 							<span class="material-icons">settings</span>
-							<span>Account Settings</span>
+							<span class="label anchor-label">Account Settings</span>
 						</Anchor>
 						<Anchor href="/settings/profile">
 							<span class="material-icons">person</span>
-							<span>Profile Settings</span>
+							<span class="label anchor-label">Profile Settings</span>
 						</Anchor>
 						<LogOutBtn/>
 					</ul>
@@ -110,8 +110,14 @@
 				flex-direction: column;
 
 				.anchor, #log-out-btn {
-					margin: .5em .25em;
+					margin-bottom: .5em;
+
+					.label {
+						font-size: small;
+						text-transform: uppercase
+					}
 				}
+
 
 				#log-out-btn {
 					@apply flex items-center;
