@@ -21,6 +21,7 @@ describe("Database Manager: Consultation create operations", () => {
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
 				"actionTaken": model.actionTaken,
+				"deletedAt": null,
 				"finishedAt": null,
 				"reason": model.reason,
 				"scheduledStartAt": new Date().toISOString(),
