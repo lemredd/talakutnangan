@@ -1,7 +1,10 @@
 <template>
 	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="links mobile">
-		<RoleLinksList purpose="role-navigation" @toggle="toggleRoleLinks">
+		<RoleLinksList
+			purpose="role-navigation"
+			@toggle="toggleRoleLinks"
+			@resize="toggleRoleLinks">
 			<template #toggler>
 				<span id="menu-btn" class="material-icons">menu</span>
 			</template>
@@ -100,7 +103,7 @@ body.unscrollable {
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from "vue"
+import { computed, inject, Ref } from "vue"
 
 import type { DeserializedPageContext, ConditionalLinkInfo } from "$@/types/independent"
 
@@ -130,7 +133,6 @@ const emit = defineEmits([ "toggle" ])
 const pageContext = inject("pageContext") as DeserializedPageContext
 
 // Role
-const areRoleLinksShown = ref(false)
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		"kinds": null,
@@ -231,7 +233,6 @@ function disableScroll() {
 
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	areRoleLinksShown.value = !areRoleLinksShown.value
 	disableScroll()
 }
 </script>
