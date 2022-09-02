@@ -42,9 +42,10 @@
 							<span class="material-icons">settings</span>
 							<span>Account Settings</span>
 						</Anchor>
-						<a href="/settings/profile">
-							Profile Settings
-						</a>
+						<Anchor href="/settings/profile">
+							<span class="material-icons">person</span>
+							<span>Profile Settings</span>
+						</Anchor>
 						<LogOutBtn/>
 					</ul>
 				</template>
@@ -54,6 +55,7 @@
 </template>
 
 <style lang="scss">
+// todo: use `@apply` to compatibility-stricted styles
 @import "@styles/variables.scss";
 
 .navigation {
@@ -106,6 +108,15 @@
 			.settings-items {
 				display: flex;
 				flex-direction: column;
+
+				.anchor, #log-out-btn {
+					margin: .5em .25em;
+				}
+
+				#log-out-btn {
+					@apply flex items-center;
+					padding: 3px 10px;
+				}
 			}
 		}
 	}
