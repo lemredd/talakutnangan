@@ -227,7 +227,6 @@ function disableScroll() {
 	}
 
 	rawBodyClasses.value = sanitizeArray(bodyClasses)
-	console.log(rawBodyClasses.value)
 }
 
 function toggleRoleLinks() {
