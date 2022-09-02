@@ -16,7 +16,7 @@
 			<PicturePicker title="Signature" :picture="profileInfo.signature"/>
 		</div>
 
-		<div class="p-5 dark-mode-toggle">
+		<div class="dark-mode-toggle">
 			<h3 class="display-name text-lg col-span-full">
 				Dark Mode
 			</h3>
@@ -35,7 +35,7 @@
 					@click="toggleDarkMode"/>
 			</label>
 		</div>
-		<div v-if="kind === 'reachable_employee'" class="consultation-schedules p-5">
+		<div v-if="isReachableEmployee" class="consultation-schedules p-5">
 			<h3 class="display-name text-lg col-span-full">
 				Consultation Schedules
 			</h3>
@@ -59,7 +59,7 @@ form {
 }
 
 .dark-mode-toggle {
-	display: grid;
+	@apply p-5 grid;
 	grid-template:
 		"formHeader formHeader"
 		"subtitle toggle";
@@ -84,9 +84,15 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, Ref, ref, provide } from "vue"
+import {
+	ref,
+	Ref,
+	inject,
+	provide,
+	computed
+} from "vue"
 
-import type { PageContext } from "#/types"
+import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import TextualField from "@/fields/textual.vue"
@@ -104,6 +110,7 @@ const profileInfo = {
 	"profilePic": null as string | null,
 	"signature": null as string | null
 }
+const isReachableEmployee = computed(() => kind === "reachable_employee")
 
 const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
 function toggleDarkMode() {
