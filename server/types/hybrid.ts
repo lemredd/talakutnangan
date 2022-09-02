@@ -10,7 +10,7 @@ import type { Response, Request, NextFunction, RequestHandler } from "!/types/de
 
 export interface PageRequest extends Request {
 	// Added to pass data from server to client
-	pageProps: PageProps|null
+	pageProps: PageProps
 
 	documentProps: DocumentProps
 }
