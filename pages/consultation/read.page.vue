@@ -54,6 +54,7 @@ const consultation = ref<DeserializedConsultationResource<ConsultationRelationsh
 const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
 	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
 )
+console.log(JSON.stringify(consultations))
 
 function pickConsultation(unusedConsultationID: string) {
 	// TODO: Go to other location

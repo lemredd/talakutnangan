@@ -2,14 +2,13 @@
 	<div class="login-container">
 		<div class="image"></div>
 		<div class="login-form ">
-			<div class="error" v-if="receivedError">
+			<div v-if="receivedError" class="error">
 				<span class="description">{{ receivedError.detail }}</span>
 			</div>
 			<h1>Login</h1>
 			<LogInForm/>
 		</div>
 	</div>
-
 </template>
 
 <style>

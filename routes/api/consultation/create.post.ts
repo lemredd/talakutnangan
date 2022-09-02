@@ -1,9 +1,12 @@
 import type { FieldRules } from "!/types/validation"
-import type { Request, Response } from "!/types/dependent"
+import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
+import deserialize from "$/helpers/deserialize"
 import JSONController from "!/controllers/json"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
@@ -32,7 +35,7 @@ export default class extends JSONController {
 		return CommonMiddlewareList.studentOnlyPolicy
 	}
 
-	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
 		const attributes: FieldRules = {
 			"actionTaken": {
 				"constraints": {
@@ -152,10 +155,15 @@ export default class extends JSONController {
 		)
 	}
 
-	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
+	async handle(request: AuthenticatedRequest, unusedResponse: Response)
+	: Promise<CreatedResponseInfo> {
+		const user = deserialize(request.user) as DeserializedUserProfile
 		const manager = new ConsultationManager(request.transaction, request.cache)
 
-		const consultationInfo = await manager.create(request.body.data.attributes)
+		const consultationInfo = await manager.createUsingResource(
+			request.body as ConsultationResource<"create">,
+			Number(user.data.id)
+		)
 
 		return new CreatedResponseInfo(consultationInfo)
 	}

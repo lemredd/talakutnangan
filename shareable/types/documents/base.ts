@@ -91,8 +91,7 @@ interface GeneralRelationshipDatum {
 
 export type GeneralRelationshipData = Record<string, GeneralRelationshipDatum>
 
-export type DeriveRelationshipNames<T extends GeneralRelationshipData>
-= keyof T extends string ? T : never
+export type DeriveRelationshipNames<T extends GeneralRelationshipData> = keyof T
 
 export interface DeriveRelationships<T extends GeneralRelationshipData> extends Serializable {
 	relationships: {

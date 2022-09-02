@@ -138,7 +138,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "account_circle",
 				"name": "Log in",
-				"path": "/log_in"
+				"path": "/user/log_in"
 			}
 		],
 		"mustBeGuest": true,
@@ -185,7 +185,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultations"
+				"path": "/consultation"
 			}
 		],
 		"mustBeGuest": false,
