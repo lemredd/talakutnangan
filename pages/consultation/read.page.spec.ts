@@ -38,7 +38,7 @@ describe("UI Page: Read resource by ID", () => {
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModelIterator.next().value))
 		.insertMany(chatMessageActivityModels.length)
 		const activityOfModel = chatMessageActivityModels.find(
-			chatMessageActivityModel => chatMessageActivityModel.consultationID === model.id
+			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
 		) as ChatMessageActivity
 		const chatMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
@@ -137,7 +137,7 @@ describe("UI Page: Read resource by ID", () => {
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModelIterator.next().value))
 		.insertMany(chatMessageActivityModels.length)
 		const activityOfModel = chatMessageActivityModels.find(
-			chatMessageActivityModel => chatMessageActivityModel.consultationID === model.id
+			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
 		) as ChatMessageActivity
 		const chatMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
