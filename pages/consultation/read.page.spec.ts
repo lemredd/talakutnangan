@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
@@ -21,6 +22,7 @@ import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
+
 
 describe("UI Page: Read resource by ID", () => {
 	it("should load resource by ID", async() => {
@@ -343,7 +345,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatEntries = wrapper.findAll(".chat-entry")
 		expect(chatEntries[0].text()).toContain(sampleUpdatedChatMessageResource.data.data.value)
 		expect(chatEntries[1].text()).toContain(chatMessageResources.data[1].data.value)
-		expect(chatEntries[2].text()).toContain(sampleChatMessageResource.data.value)
+		expect(chatEntries[2].text()).toContain(sampleChatMessageResource.data.data.value)
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
