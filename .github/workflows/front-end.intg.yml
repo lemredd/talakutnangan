@@ -10,6 +10,7 @@ on:
       - 'pages/**'
       - 'components/**'
       - '.github/workflows/front-end.intg.yml'
+      - 'jest.front.intg.config.json'
   pull_request:
     types:
       - reopened
@@ -23,9 +24,10 @@ on:
       - 'pages/**'
       - 'components/**'
       - '.github/workflows/front-end.intg.yml'
+      - 'jest.front.intg.config.json'
 
 jobs:
-  compilation_tests:
+  integration_tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checking out from the pushed source
@@ -34,6 +36,16 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 16.x
+    # See https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#postgresql
+    - name: Start database server
+      run: sudo systemctl start postgresql.service
+    - name: Create root database user
+      run: sudo -u postgres psql -c "CREATE USER root WITH PASSWORD 'root';"
+    - name: Create database
+      run: |
+        sudo -u postgres psql -c "CREATE DATABASE talakutnangan_test WITH OWNER = root;"
+    - name: Use .env.ci as the environment file for front-end
+      run: mv .env.ci .env
     - name: Use .env.ci as the environment file for front-end
       run: mv .env.ci .env
     - name: Cache node modules
@@ -45,4 +57,8 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: npm run build
+    - name: Test for compilation
+      run: npm run build
+    - run: ./execute.ps1 -test intg:front
+      shell: pwsh
+      timeout-minutes: 5
