@@ -20,7 +20,6 @@ on:
       - master
     paths:
       - 'shareable/**'
-      - 'common_front-end/**'
       - 'common_back-end/**'
       - 'database/**'
       - 'server/**'
