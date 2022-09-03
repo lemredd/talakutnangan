@@ -478,12 +478,14 @@ if ($Log) {
 	Set-Content -Path changelogs/CHANGELOG.md -Value $cleanedContents
 
 	& git add .
-	& git commit -m $("Update current version to v0.$nextVersion.0")
-	& git tag -s $("v0.$nextVersion.0")
+	& git commit -m $("Update current version to $version")
+	& git tag -s $($version)
 
 	$packageConfiguration.version = "v0.$nextVersion.0-dev"
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration
+
+	& git add .
 	& git commit -m $("Update current version to v0.$nextVersion.0-dev")
 }
