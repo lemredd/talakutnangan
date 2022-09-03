@@ -14,6 +14,7 @@ describe("Helper: Calculate milliscond difference", () => {
 	it("should return to negative if minuend is in the future", () => {
 		const rawSubtrahend = new Date()
 		const rawMinuend = new Date()
+		rawMinuend.setMinutes(rawMinuend.getMinutes() + 1)
 
 		const difference = calculateMillisecondDifference(rawSubtrahend, rawMinuend)
 
@@ -21,8 +22,9 @@ describe("Helper: Calculate milliscond difference", () => {
 	})
 
 	it("should return to negative if minuend is in the past", () => {
-		const rawMinuend = new Date()
 		const rawSubtrahend = new Date()
+		const rawMinuend = new Date()
+		rawMinuend.setMinutes(rawMinuend.getMinutes() - 1)
 
 		const difference = calculateMillisecondDifference(rawSubtrahend, rawMinuend)
 
