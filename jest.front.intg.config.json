@@ -28,7 +28,9 @@
 		"./t/helpers/set-ups/fetch.set_up.ts",
 		"./t/helpers/set-ups/fetcher.set_up.ts",
 		"./t/helpers/set-ups/form_data.set_up.ts",
-		"./t/helpers/set-ups/log.set_up.ts"
+		"./t/helpers/set-ups/log.set_up.ts",
+		"./t/helpers/set-ups/cache_manager.set_up.ts",
+		"./t/helpers/set-ups/database.set_up.ts"
 	],
 
 	"transformIgnorePatterns": [],
