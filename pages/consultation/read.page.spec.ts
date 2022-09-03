@@ -290,6 +290,9 @@ describe("UI Page: Read resource by ID", () => {
 		.deserialize(chatMessageModels) as DeserializedChatMessageListDocument
 		const sampleChatMessageResource = chatMessageFactory
 		.deserialize(sampleChatMessageModel) as DeserializedChatMessageDocument
+		const sampleUpdatedChatMessageResource = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.deserializedOne()
 		const consultationChatNamespace = makeConsultationChatNamespace(model.id)
 
 		fetchMock.mockResponse(
@@ -320,10 +323,22 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatMessageResource)
+		Socket.emitMockEvent(consultationChatNamespace, "update", {
+			"data": {
+				"attributes": {
+					"createdAt": chatMessageResources.data[0].createdAt.toJSON(),
+					"data": sampleUpdatedChatMessageResource.data.data,
+					"kind": chatMessageResources.data[0].kind,
+					"updatedAt": new Date().toJSON()
+				},
+				"id": chatMessageResources.data[0].id,
+				"type": "chat_message"
+			}
+		} as ChatMessageDocument)
 		await flushPromises()
 
 		const chatEntries = wrapper.findAll(".chat-entry")
-		expect(chatEntries[0].text()).toContain(chatMessageResources.data[0].data.value)
+		expect(chatEntries[0].text()).toContain(sampleUpdatedChatMessageResource.data.data.value)
 		expect(chatEntries[1].text()).toContain(chatMessageResources.data[1].data.value)
 		expect(chatEntries[2].text()).toContain(sampleChatMessageResource.data.value)
 
