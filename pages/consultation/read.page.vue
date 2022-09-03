@@ -112,7 +112,7 @@ function createMessage(message: ChatMessageDocument<"read">): void {
 		"data": [
 			...chatMessages.value.data,
 			deserializedMessage.data
-		].sort((first, second) => Math.sign(-calculateMillisecondDifference(
+		].sort((first, second) => Math.sign(calculateMillisecondDifference(
 			first.createdAt,
 			second.createdAt
 		)))
