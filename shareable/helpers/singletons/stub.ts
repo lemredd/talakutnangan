@@ -10,7 +10,7 @@ type PreviousCallInfo = { functionName: string, arguments: GeneralObject<any> }
  * Based from `Socket` sinfgleton in server.
  */
 export default class Stub extends RequestEnvironment {
-	private static previousCallInfos: (PreviousCallInfo|undefined)[] = []
+	private static previousCallInfos: (PreviousCallInfo|null)[] = []
 
 	static consumePreviousCalls(): PreviousCallInfo[] {
 		return this.runConditionally(
@@ -22,15 +22,14 @@ export default class Stub extends RequestEnvironment {
 			() => {
 				const previousCalls = this.previousCallInfos.filter(Boolean) as PreviousCallInfo[]
 				this.previousCallInfos = []
-				// eslint-disable-next-line no-undefined
-				return [ previousCalls, undefined ]
+				return [ previousCalls, null ]
 			}
 		)
 	}
 
 	static runConditionally<T = void>(
 		liveMechanism: () => T,
-		testMechanism: () => [T, PreviousCallInfo|undefined]
+		testMechanism: () => [T, PreviousCallInfo|null]
 	): T {
 		if (this.isOnTest) {
 			const [ valueToReturn, callInfo ] = testMechanism()
