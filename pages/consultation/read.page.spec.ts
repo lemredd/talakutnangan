@@ -324,6 +324,7 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatMessageResource)
+		await nextTick()
 		Socket.emitMockEvent(consultationChatNamespace, "update", {
 			"data": {
 				"attributes": {
@@ -336,6 +337,7 @@ describe("UI Page: Read resource by ID", () => {
 				"type": "chat_message"
 			}
 		} as ChatMessageDocument)
+		await nextTick()
 		await flushPromises()
 
 		const chatEntries = wrapper.findAll(".chat-entry")
