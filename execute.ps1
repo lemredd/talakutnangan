@@ -478,8 +478,8 @@ if ($Log) {
 	Set-Content -Path changelogs/CHANGELOG.md -Value $cleanedContents
 
 	& git add .
-	& git commit -m $("Update current version to $version")
-	& git tag -s $($version)
+	& git commit -m $("Update current version to v$version")
+	& git tag -s $("v$version")
 
 	$packageConfiguration.version = "v0.$nextVersion.0-dev"
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
