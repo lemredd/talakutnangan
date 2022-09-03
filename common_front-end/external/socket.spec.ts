@@ -25,6 +25,6 @@ describe("External: Socket", () => {
 		Socket.emitMockEvent(namespace, "chat", eventData)
 
 		expect(mockChat).toHaveBeenCalled()
-		expect(mockChat.mock.calls).toStrictEqual([ [ eventData ] ])
+		expect(mockChat.mock.calls).toEqual([ [ eventData ] ])
 	})
 })
