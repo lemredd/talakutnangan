@@ -1,1 +1,1 @@
-export type Textual = "text" | "password" | "email"
+export type Textual = "text" | "email"

@@ -10,11 +10,8 @@ describe("Component: consultation/chat_window", () => {
 		const scheduledStartAt = new Date()
 		// eslint-disable-next-line no-undef
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const fakeData = {
+		const fakeConsultation = {
 			"actionTaken": null,
-			"chatMessages": {
-				"data": []
-			} as DeserializedChatMessageListDocument,
 			"finishedAt": null,
 			"id": "1",
 			"reason": "",
@@ -22,9 +19,13 @@ describe("Component: consultation/chat_window", () => {
 			"startedAt": null,
 			"type": "consultation"
 		} as DeserializedConsultationResource
+		const fakeChatMessage = {
+			"data": []
+		} as DeserializedChatMessageListDocument
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"consultation": fakeData
+				"chatMessages": fakeChatMessage,
+				"consultation": fakeConsultation
 			}
 		})
 

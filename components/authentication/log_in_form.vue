@@ -8,6 +8,11 @@
 			v-model="password"
 			label="Password"
 			type="password"/>
+		<div v-if="RequestEnvironment.isNotOnProduction">
+			<button type="button" @click="fillStudent">
+				Fill Student Details
+			</button>
+		</div>
 	</form>
 	<div class="controls">
 		<a href="">Forgot Password?</a>
@@ -39,6 +44,8 @@
 import { ref } from "vue"
 
 import UserFetcher from "$@/fetchers/user"
+import RequestEnvironment from "$/helpers/request_environment"
+
 import TextualField from "@/fields/textual.vue"
 
 const email = ref("sample@example.com")
@@ -59,5 +66,10 @@ function logIn() {
 	}).catch(unusedErrors => {
 		// Show error infos
 	})
+}
+
+function fillStudent() {
+	email.value = "student@example.net"
+	password.value = "password"
 }
 </script>

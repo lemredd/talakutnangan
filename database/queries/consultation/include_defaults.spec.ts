@@ -1,17 +1,19 @@
+import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Model from "%/models/consultation"
 import UserFactory from "~/factories/user"
+import Manager from "%/managers/consultation"
 import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
-import type { UserIdentifierDocument } from "$/types/documents/user"
-import Manager from "./consultation"
+import includeDefaults from "./include_defaults"
 
-describe("Database Manager: Consultation create operations", () => {
-	it("can create resource", async() => {
+
+describe("Database Pipe: Include defaults", () => {
+	it("can read resource", async() => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const user = await new UserFactory().insertOne()
 		const model = await new Factory()
@@ -58,47 +60,14 @@ describe("Database Manager: Consultation create operations", () => {
 			"type": "consultation"
 		}
 		const manager = new Manager()
-
 		const createdData = await manager.createUsingResource(resource, user.id)
+
+		const options = includeDefaults({}, {})
+		const foundModels = await Model.findAll(options)
 
 		expect(await Model.count()).toBe(1)
 		expect(await ChatMessage.count()).toBe(1)
 		expect(await ChatMessageActivity.count()).toBe(2)
-		expect(createdData).toHaveProperty("data.attributes.actionTaken", model.actionTaken)
-		expect(createdData).toHaveProperty("data.attributes.reason", model.reason)
-		expect(createdData).toHaveProperty("data.relationships.consultant")
-		expect(createdData).toHaveProperty("data.relationships.chatMessages")
-		expect(createdData).toHaveProperty("data.relationships.consultantRole")
-		expect(createdData).toHaveProperty("data.relationships.chatMessageActivities")
-	})
-})
-
-describe("Database Manager: Miscellaneous chat message operations", () => {
-	it("can get sortable columns", () => {
-		// Include in test to alert in case there are new columns to decide whether to expose or not
-		const manager = new Manager()
-
-		const { sortableColumns } = manager
-
-		expect(sortableColumns).toStrictEqual([
-			"-actionTaken",
-			"-createdAt",
-			"-deletedAt",
-			"-finishedAt",
-			"-id",
-			"-reason",
-			"-scheduledStartAt",
-			"-startedAt",
-			"-updatedAt",
-			"actionTaken",
-			"createdAt",
-			"deletedAt",
-			"finishedAt",
-			"id",
-			"reason",
-			"scheduledStartAt",
-			"startedAt",
-			"updatedAt"
-		])
+		expect(foundModels).toHaveLength(1)
 	})
 })

@@ -2,10 +2,10 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
-import Role from "%/models/role"
 import User from "%/models/user"
-import AttachedRole from "%/models/attached_role"
 import ProfilePicture from "%/models/profile_picture"
+import isUndefined from "$/helpers/type_guards/is_undefined"
+import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
  * Includes default models
@@ -16,7 +16,7 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (typeof newState.include === "undefined") {
+	if (isUndefined(newState.include)) {
 		newState.include = []
 	}
 
@@ -32,17 +32,13 @@ export default function<T>(
 				],
 				"model": User,
 				"required": true
-			},
-			{
-				"model": Role,
-				"required": true
 			}
 		],
-		"model": AttachedRole,
+		"model": ChatMessageActivity,
 		"required": true
 	})
 
-	Log.trace("pipeline", "applied default includer")
+	Log.trace("query pipe", "applied default includer")
 
 	return newState
 }

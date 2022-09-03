@@ -4,12 +4,13 @@ import { renderPage } from "vite-plugin-ssr"
 import { Router as createRouter, Express as ExpressApp } from "express"
 
 import { PageRequest } from "!/types/hybrid"
-import { Environment } from "$/types/server"
+import { Environment, UnitError } from "$/types/server"
 import { Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import getRoot from "$!/helpers/get_root"
 import getEnvironment from "$/helpers/get_environment"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
@@ -55,12 +56,24 @@ export default async function(app: ExpressApp) {
 		} catch (error) {
 			// Ignore parse or decode errors
 		} finally {
+			if (parsedUnitError !== null) {
+				const castParsedUnitError = parsedUnitError as UnitError
+				request.documentProps = {
+					"title": castParsedUnitError.title,
+					"description": castParsedUnitError.detail
+				}
+			} else if (isUndefined(request.documentProps)) {
+				// TODO: Remove in v0.15
+				Log.errorMessage("middleware", `Document props must be provided in ${request.url}.`)
+			}
+
 			const url = request.originalUrl
 			const pageContextInit = {
 				"pageProps": {
 					...request.pageProps,
 					parsedUnitError
 				},
+				"documentProps": request.documentProps,
 				url
 			}
 			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)

@@ -18,7 +18,6 @@ describe("POST /api/user/log_out", () => {
 		.set("Cookie", cookie)
 		.type(JSON_MEDIA_TYPE)
 
-		console.log(response.headers)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})
 })

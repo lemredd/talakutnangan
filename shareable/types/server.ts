@@ -5,13 +5,21 @@
  */
 
 import type { Serializable } from "$/types/general"
-import type { Format } from "$/types/documents/base"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
 import type {
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
+import type {
+	Format,
+	DeserializedResourceDocument,
+	DeserializedResourceListDocument
+} from "$/types/documents/base"
 
 /**
  * Used to indicate the type of current environment where the script is running.
@@ -49,17 +57,25 @@ export interface RouteInformation {
 	description: string|null
 }
 
+type OptionalPageProps<
+	T extends Format,
+	U extends DeserializedResourceDocument<any, any, any>
+		| DeserializedResourceListDocument<any, any, any>
+> = T extends "deserialized" ? U : Serializable|undefined
+
 interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	// Added to pass data from server to client
 	userProfile: T extends "deserialized" ? DeserializedUserProfile : Serializable|null
 
-	roles: T extends "deserialized" ? DeserializedRoleListDocument : Serializable|undefined
-	consultations: T extends "deserialized"
-		? DeserializedConsultationListDocument
-		: Serializable|undefined
-	consultation: T extends "deserialized"
-		? DeserializedConsultationDocument
-		: Serializable|undefined
+	roles: OptionalPageProps<T, DeserializedRoleListDocument>
+
+	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
+	consultation: OptionalPageProps<T, DeserializedConsultationDocument>
+
+	chatMessageActivities: OptionalPageProps<T, DeserializedChatMessageActivityListDocument>
+
+	chatMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
+	previewMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 }
 
 export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>
@@ -72,6 +88,11 @@ export type PageProps<
 export type PartialPageProps<T extends Format = "serialized"> =
 	& Pick<RawPageProps<T>, "userProfile">
 	& Partial<Omit<RawPageProps<T>, "userProfile">>
+
+export interface DocumentProps extends Serializable {
+	title: string
+	description: string
+}
 
 /**
  * Source of error in the sent resource

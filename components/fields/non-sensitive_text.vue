@@ -57,9 +57,7 @@
 }
 </style>
 <script setup lang="ts">
-import type { Textual as BaseTextual } from "@/fields/types"
-
-type Textual = Exclude<BaseTextual, "password">
+import type { Textual } from "@/fields/types"
 
 const {
 	label,

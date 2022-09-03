@@ -91,6 +91,15 @@ export interface ConsultationRangeFilter extends Serializable {
 	}
 }
 
+export interface ConsultationFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		/**
+		 * ID of the consultations to filter on. If none is provided, it selects all consultations.
+		 */
+		consultationIDs?: T[]
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -144,3 +153,11 @@ export type ConsultationQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& UserFilter<T>
 	& ConsultationRangeFilter
+
+export type ChatMessageActivityQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& ConsultationFilter<T>
+
+export type ChatMessageQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& ConsultationFilter<T>

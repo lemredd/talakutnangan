@@ -67,14 +67,14 @@ export default class Consultation extends Model {
 	@BelongsToMany(() => User, () => Consulter)
 		consulters!: User[]
 
-	get consultant(): User|null { return this.consultantInfo?.user ?? null }
+	get consultant(): User|undefined { return this.consultantInfo?.user }
 
-	get consultantRole(): Role|null { return this.consultantInfo?.role ?? null }
+	get consultantRole(): Role|undefined { return this.consultantInfo?.role }
 
 	@HasMany(() => ChatMessageActivity)
 		chatMessageActivities?: ChatMessageActivity[]
 
-	get chatMessages(): ChatMessage[]|null {
+	get chatMessages(): ChatMessage[]|undefined {
 		let chatMessages: ChatMessage[] = []
 
 		if (this.chatMessageActivities) {
@@ -85,7 +85,10 @@ export default class Consultation extends Model {
 					if (messages) {
 						return [
 							...previousMessages,
-							...messages
+							...messages.map(message => {
+								message.chatMessageActivity = chatMessageActivity
+								return message
+							})
 						]
 					}
 
@@ -95,7 +98,7 @@ export default class Consultation extends Model {
 			)
 		}
 
-		if (chatMessages.length === 0) return null
+		if (chatMessages.length === 0) return undefined
 
 		return chatMessages
 	}

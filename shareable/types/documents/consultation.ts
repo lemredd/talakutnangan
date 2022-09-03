@@ -1,4 +1,4 @@
-import type { Serializable, PartialOrPickObject } from "$/types/general"
+import type { Serializable } from "$/types/general"
 import type {
 	RoleIdentifierDocument,
 	DeserializedRoleDocument
@@ -30,6 +30,7 @@ import type {
 	DeriveRelationshipNames,
 	GeneralRelationshipData,
 	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -51,7 +52,8 @@ extends Attributes<T> {
 	actionTaken: string|null,
 	scheduledStartAt: T extends "serialized" ? string : Date,
 	startedAt: (T extends "serialized" ? string : Date)|null,
-	finishedAt: (T extends "serialized" ? string : Date)|null
+	finishedAt: (T extends "serialized" ? string : Date)|null,
+	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 
 interface ConsultationRelationshipData<T extends Completeness = "read">
@@ -102,10 +104,12 @@ export type DeserializedConsultationResource<
 > = DeserializedResource<
 	ConsultationResourceIdentifier<"read">,
 	ConsultationAttributes<"deserialized">
-> & PartialOrPickObject<
-	T,
+>& PartialOrPickDeserializedRelationship<
+	ConsultationRelationshipData<"read">,
+	DeserializedConsultationRelationships<"read">,
 	ConsultationRelationshipNames,
-	DeserializedConsultationRelationships
+	T extends ConsultationRelationshipNames ? true : false,
+	T extends ConsultationRelationshipNames ? T : ConsultationRelationshipNames
 >
 
 export type ConsultationDocument<T extends Completeness = "read"> = ResourceDocument<

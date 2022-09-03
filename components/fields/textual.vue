@@ -99,9 +99,11 @@
 }
 </style>
 <script setup lang="ts">
-import type { Textual } from "@/fields/types"
 import { ref } from "vue"
+import type { Textual as BaseTextual } from "@/fields/types"
 import Overlay from "@/helpers/overlay.vue"
+
+type Textual = BaseTextual | "password"
 
 const {
 	label,

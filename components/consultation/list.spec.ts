@@ -9,26 +9,20 @@ describe("Component: consultation/list", () => {
 				"consultations": {
 					"data": [
 						{
-							"chatMessageActivities": {
-								"data": []
-							},
-							"chatMessages": {
-								"data": []
-							},
 							"id": "1",
 							"reason": "Reason A"
 						},
 						{
-							"chatMessageActivities": {
-								"data": []
-							},
-							"chatMessages": {
-								"data": []
-							},
 							"id": "2",
 							"reason": "Reason B"
 						}
 					]
+				},
+				"chatMessageActivities": {
+					"data": []
+				},
+				"previewMessages": {
+					"data": []
 				}
 			}
 		})

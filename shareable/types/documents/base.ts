@@ -103,6 +103,14 @@ export type DeriveDeserializedRelationships<T extends GeneralRelationshipData> =
 	[Property in keyof T]: T[Property]["deserialized"]
 } & Serializable
 
+export type PartialOrPickDeserializedRelationship<
+ T extends GeneralRelationshipData,
+ U extends DeriveDeserializedRelationships<T>,
+ V extends DeriveRelationshipNames<T>,
+ W extends boolean,
+ X extends V = V
+> = W extends true ? Pick<U, X> : Partial<U>
+
 /**
  * @deprecated
  */
