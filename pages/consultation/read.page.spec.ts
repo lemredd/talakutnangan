@@ -2,6 +2,8 @@ import { nextTick } from "vue"
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import type { ChatMessageQueryParameters } from "$/types/query"
+import type { DeserializedConsultationDocument } from "$/types/documents/consultation"
 import type {
 	ChatMessageDocument,
 	DeserializedChatMessageDocument,
@@ -28,7 +30,7 @@ describe("UI Page: Read resource by ID", () => {
 	it("should load resource by ID", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
-		const MESSAGE_COUNT = 5
+		const INITIAL_MESSAGE_COUNT = 5
 
 		const userFactory = new UserFactory()
 		const userModel = await userFactory.insertOne()
@@ -51,14 +53,14 @@ describe("UI Page: Read resource by ID", () => {
 		) as ChatMessageActivity
 		const chatMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
-		.insertMany(MESSAGE_COUNT)
+		.insertMany(INITIAL_MESSAGE_COUNT)
 
 		const userResource = userFactory.deserialize(
 			userModel,
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model)
+		const resource = factory.deserialize(model) as DeserializedConsultationDocument
 		const resources = factory.deserialize([ model, ...models ])
 		const chatMessageActivityResources = chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
@@ -115,9 +117,9 @@ describe("UI Page: Read resource by ID", () => {
 		expect(previousCalls).toHaveProperty("1.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", `/api/consultation?${
+		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "GET")
+		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
 			stringifyQuery({
 				"filter": {
 					"consultationScheduleRange": "*",
@@ -131,14 +133,30 @@ describe("UI Page: Read resource by ID", () => {
 				"sort": "-updatedAt"
 			})
 		}`)
-		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+			stringifyQuery({
+				"filter": {
+					"consultationIDs": [ resource.data.id ],
+					"existence": "exists"
+				},
+				"page": {
+					"limit": 10,
+					"offset": INITIAL_MESSAGE_COUNT
+				},
+				"sort": [ "-createdAt" ]
+			} as ChatMessageQueryParameters)
+		}`)
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 
 	it("can visit resource by ID", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
-		const MESSAGE_COUNT = 5
+		const INITIAL_MESSAGE_COUNT = 5
 
 		const userFactory = new UserFactory()
 		const userModel = await userFactory.insertOne()
@@ -161,14 +179,14 @@ describe("UI Page: Read resource by ID", () => {
 		) as ChatMessageActivity
 		const chatMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
-		.insertMany(MESSAGE_COUNT)
+		.insertMany(INITIAL_MESSAGE_COUNT)
 
 		const userResource = userFactory.deserialize(
 			userModel,
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model)
+		const resource = factory.deserialize(model) as DeserializedConsultationDocument
 		const resources = factory.deserialize([ model, ...models ])
 		const chatMessageActivityResources = chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
@@ -224,9 +242,9 @@ describe("UI Page: Read resource by ID", () => {
 		expect(previousCalls).toHaveProperty("2.arguments", [ `/consultation/${models[0].id}` ])
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", `/api/consultation?${
+		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "GET")
+		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
 			stringifyQuery({
 				"filter": {
 					"consultationScheduleRange": "*",
@@ -240,8 +258,24 @@ describe("UI Page: Read resource by ID", () => {
 				"sort": "-updatedAt"
 			})
 		}`)
-		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+			stringifyQuery({
+				"filter": {
+					"consultationIDs": [ resource.data.id ],
+					"existence": "exists"
+				},
+				"page": {
+					"limit": 10,
+					"offset": INITIAL_MESSAGE_COUNT
+				},
+				"sort": [ "-createdAt" ]
+			} as ChatMessageQueryParameters)
+		}`)
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 
 	it("can insert messages from socket", async() => {
@@ -280,7 +314,7 @@ describe("UI Page: Read resource by ID", () => {
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model)
+		const resource = factory.deserialize(model) as DeserializedConsultationDocument
 		const resources = factory.deserialize([ model, ...models ])
 		const chatMessageActivityResources = chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
@@ -359,9 +393,9 @@ describe("UI Page: Read resource by ID", () => {
 		expect(previousCalls).toHaveProperty("1.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", `/api/consultation?${
+		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "GET")
+		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
 			stringifyQuery({
 				"filter": {
 					"consultationScheduleRange": "*",
@@ -375,7 +409,23 @@ describe("UI Page: Read resource by ID", () => {
 				"sort": "-updatedAt"
 			})
 		}`)
-		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+			stringifyQuery({
+				"filter": {
+					"consultationIDs": [ resource.data.id ],
+					"existence": "exists"
+				},
+				"page": {
+					"limit": 10,
+					"offset": INITIAL_MESSAGE_COUNT
+				},
+				"sort": [ "-createdAt" ]
+			} as ChatMessageQueryParameters)
+		}`)
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })
