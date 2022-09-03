@@ -5,6 +5,7 @@ on:
     paths:
       - 'shareable/**'
       - 'common_front-end/**'
+      - 'common_back-end/**'
       - 't/helpers/**'
       - 'renderer/**'
       - 'pages/**'
@@ -19,6 +20,7 @@ on:
     paths:
       - 'shareable/**'
       - 'common_front-end/**'
+      - 'common_back-end/**'
       - 't/helpers/**'
       - 'renderer/**'
       - 'pages/**'
@@ -44,8 +46,6 @@ jobs:
     - name: Create database
       run: |
         sudo -u postgres psql -c "CREATE DATABASE talakutnangan_test WITH OWNER = root;"
-    - name: Use .env.ci as the environment file for front-end
-      run: mv .env.ci .env
     - name: Use .env.ci as the environment file for front-end
       run: mv .env.ci .env
     - name: Cache node modules
