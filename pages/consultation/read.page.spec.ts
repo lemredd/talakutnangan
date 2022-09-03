@@ -2,6 +2,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type {
+	ChatMessageDocument,
 	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
