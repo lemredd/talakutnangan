@@ -9,7 +9,9 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.unit.yml'
-      - 'jest.front_ci.config.json'
+      - 'jest.front.config.json'
+      - 'jest.component.config.json'
+      - 'jest.front.unit_ci.config.json'
   pull_request:
     types:
       - reopened
@@ -22,7 +24,9 @@ on:
       - 'pages/**'
       - 't/helpers/**'
       - '.github/workflows/front-end.unit.yml'
-      - 'jest.front_ci.config.json'
+      - 'jest.front.config.json'
+      - 'jest.component.config.json'
+      - 'jest.front.unit_ci.config.json'
 
 jobs:
   unit_tests:
@@ -43,6 +47,6 @@ jobs:
           ${{ runner.os }}_${{ hashFiles('package.json') }}
           ${{ runner.os }}_
     - run: npm install
-    - run: ./execute.ps1 -test unit:front_ci
+    - run: ./execute.ps1 -test unit_ci:front
       shell: pwsh
       timeout-minutes: 3
