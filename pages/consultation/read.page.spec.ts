@@ -12,6 +12,7 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
 
@@ -93,6 +94,17 @@ describe("UI Page: Read resource by ID", () => {
 
 		expect(consultationList.exists()).toBeTruthy()
 		expect(chatWindow.exists()).toBeTruthy()
+
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
+		expect(previousCalls).toHaveProperty("0.arguments", [])
+		expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty(
+			"1.arguments.0",
+			makeConsultationChatNamespace(model.id)
+		)
+		expect(previousCalls).toHaveProperty("1.arguments.1.create")
+		expect(previousCalls).toHaveProperty("1.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
@@ -191,8 +203,17 @@ describe("UI Page: Read resource by ID", () => {
 		await flushPromises()
 
 		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments", [ `/consultation/${models[0].id}` ])
+		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
+		expect(previousCalls).toHaveProperty("0.arguments", [])
+		expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty(
+			"1.arguments.0",
+			makeConsultationChatNamespace(model.id)
+		)
+		expect(previousCalls).toHaveProperty("1.arguments.1.create")
+		expect(previousCalls).toHaveProperty("1.arguments.1.update")
+		expect(previousCalls).toHaveProperty("2.functionName", "assignPath")
+		expect(previousCalls).toHaveProperty("2.arguments", [ `/consultation/${models[0].id}` ])
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
