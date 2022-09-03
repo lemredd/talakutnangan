@@ -34,7 +34,7 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { inject, ref, onMounted } from "vue"
+import { inject, ref, onBeforeMount, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -46,6 +46,7 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import Socket from "$@/external/socket"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -97,7 +98,10 @@ function visitConsultation(consultationID: string) {
 	assignPath(path)
 }
 
-ConsultationFetcher.initialize("/api")
+onBeforeMount(() => {
+	ConsultationFetcher.initialize("/api")
+	Socket.initialize()
+})
 
 onMounted(() => {
 	const fetcher = new ConsultationFetcher()
