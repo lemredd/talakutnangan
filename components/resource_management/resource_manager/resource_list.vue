@@ -30,10 +30,14 @@
 						{{
 							resourceType === "role"
 								? resource.name
-								: resource.fullName
+								: `${resource.fullName} (${resource.acronym})`
 						}}
 					</td>
-					<td>{{ resource.meta }} users</td>
+					<td>
+						{{
+							resource.meta ? resource.meta.userCount : ""
+						}} users
+					</td>
 				</tr>
 			</template>
 		</ResourceTable>

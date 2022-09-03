@@ -13,12 +13,13 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetList(),
+			// ! this should match first to prevent shadowing by `read(id)` route
+			new GetCountUsers(),
 			new GetRead(),
 			new PostCreate(),
 			new PatchUpdate(),
 			new PatchRestore(),
-			new DeleteArchive(),
-			new GetCountUsers()
+			new DeleteArchive()
 		])
 	}
 }

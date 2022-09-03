@@ -27,7 +27,6 @@ export default class extends BoundController {
 
 		const document = await manager.findWithID(Number(id), {
 			"filter": {
-				"department": "*",
 				"existence": "*"
 			}
 		})

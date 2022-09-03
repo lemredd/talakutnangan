@@ -1,12 +1,12 @@
 <template>
-	<AdminSettingsHeader title="Admin Configuration" />
+	<AdminSettingsHeader title="Admin Configuration"/>
 
-	<DeptManager :resource="departments" >
+	<DeptManager :resource="departments">
 		<template #search-filter>
 			<SearchFilter :resource="departments" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<DeptList :filtered-list="filteredList" />
+		<DeptList :filtered-list="filteredList"/>
 	</DeptManager>
 </template>
 
@@ -21,7 +21,7 @@ import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import DeptManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import DeptList from "@/resource_management/resource_manager/resource_list.vue"
-provide("tabs", ["Users", "Roles", "Departments"])
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 DepartmentFetcher.initialize("/api")
 const fetcher = new DepartmentFetcher()
@@ -35,14 +35,14 @@ function getFilteredList(resource: PossibleResources[]) {
 
 async function fetchDepartmentInfos(offset: number) {
 	await fetcher.list({
-		filter: {
-			existence: "exists"
+		"filter": {
+			"existence": "exists"
 		},
-		page: {
-			limit: 10,
-			offset,
+		"page": {
+			"limit": 10,
+			offset
 		},
-		sort: ["fullName"]
+		"sort": [ "fullName" ]
 	}).then(response => {
 		const deserializedData = response.body.data as DeserializedDepartmentResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
@@ -73,7 +73,7 @@ async function countUsersPerDepartment(IDsToCount: number[]) {
 	})
 }
 
-onMounted(async () => {
+onMounted(async() => {
 	await fetchDepartmentInfos(0)
 })
 </script>
