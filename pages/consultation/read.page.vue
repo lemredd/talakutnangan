@@ -97,14 +97,14 @@ const chatMessageActivities = ref<
 	>
 )
 
-function visitConsultation(consultationID: string) {
+function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {
 		"id": consultationID
 	})
 	assignPath(path)
 }
 
-function insertMessage(message: ChatMessageDocument<"read">) {
+function insertMessage(message: ChatMessageDocument<"read">): void {
 	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
 	chatMessages.value = {
 		...chatMessages.value,
@@ -116,6 +116,15 @@ function insertMessage(message: ChatMessageDocument<"read">) {
 			second.createdAt
 		)))
 	}
+}
+
+function updateMessage(message: ChatMessageDocument<"read">): void {
+	const IDofMessageToRemove = message.data.id
+	chatMessages.value.data = chatMessages.value.data.filter(
+		chatMessage => chatMessage.id !== IDofMessageToRemove
+	)
+
+	insertMessage(message)
 }
 
 onBeforeMount(() => {
