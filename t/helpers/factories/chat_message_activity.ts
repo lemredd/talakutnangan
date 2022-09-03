@@ -57,7 +57,7 @@ export default class ChatMessageActivityFactory extends BaseFactory<
 
 		model.consultation = await Consultation.findByPk(model.consultationID) as Consultation
 		model.user = await User.findByPk(model.userID) as User
-s
+
 		return model
 	}
 

@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 
 import UserFactory from "~/factories/user"
 import Stub from "$/helpers/singletons/stub"
@@ -6,6 +6,7 @@ import Factory from "~/factories/consultation"
 import ChatMessageFactory from "~/factories/chat_message"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
+import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Page from "./read.page.vue"
@@ -44,9 +45,13 @@ describe("UI Page: Read resource by ID", () => {
 		const resources = factory.deserialize(models)
 		const chatMessageActivityResources = chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
-		const previewMessageResources = chatMessageFactory.deserialize(previewMessageModels)
+		const previewMessageResources = chatMessageFactory.deserialize(
+			previewMessageModels,
+			{} as unknown as void,
+			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
+		)
 		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
-		const wrapper = shallowMount(Page, {
+		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -59,15 +64,12 @@ describe("UI Page: Read resource by ID", () => {
 							"userProfile": userResource
 						}
 					}
-				},
-				"stubs": {
-					"ConsultationShell": false
 				}
 			}
 		})
 
-		const consultationList = wrapper.findComponent({ "name": "ConsultationList" })
-		const chatWindow = wrapper.findComponent({ "name": "ChatWindow" })
+		const consultationList = wrapper.find(".consultations-list")
+		const chatWindow = wrapper.find(".chat-window")
 
 		expect(consultationList.exists()).toBeTruthy()
 		expect(chatWindow.exists()).toBeTruthy()
@@ -106,9 +108,13 @@ describe("UI Page: Read resource by ID", () => {
 		const resources = factory.deserialize(models)
 		const chatMessageActivityResources = chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
-		const previewMessageResources = chatMessageFactory.deserialize(previewMessageModels)
+		const previewMessageResources = chatMessageFactory.deserialize(
+			previewMessageModels,
+			{} as unknown as void,
+			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
+		)
 		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
-		const wrapper = shallowMount(Page, {
+		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -121,18 +127,15 @@ describe("UI Page: Read resource by ID", () => {
 							"userProfile": userResource
 						}
 					}
-				},
-				"stubs": {
-					"ConsultationShell": false
 				}
 			}
 		})
-		const consultationList = wrapper.findComponent({ "name": "ConsultationList" })
+		const consultationListItem = wrapper.find(".consultation:nth-child(2)")
 
-		await consultationList.vm.$emit("picked-consultation", "1")
+		await consultationListItem.trigger("click")
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments", [ "/consultation/1" ])
+		expect(previousCalls).toHaveProperty("0.arguments", [ `/consultation/${models[1].id}` ])
 	})
 })
