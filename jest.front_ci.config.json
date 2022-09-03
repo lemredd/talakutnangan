@@ -34,8 +34,7 @@
 
 	"testRegex": [
 		"./common_front-end/.*\\.spec\\.ts",
-		"./components/.*\\.spec\\.ts",
-		"./pages/.*\\.spec\\.ts"
+		"./components/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "jsdom"
