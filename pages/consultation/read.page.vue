@@ -34,7 +34,7 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { inject, ref, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -48,12 +48,14 @@ import type {
 
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
+import ConsultationFetcher from "$@/fetchers/consultation"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
 
 type RequiredExtraProps =
+	| "userProfile"
 	| "consultation"
 	| "consultations"
 	| "previewMessages"
@@ -61,6 +63,8 @@ type RequiredExtraProps =
 	| "chatMessageActivities"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
+
+const { userProfile } = pageProps
 
 const consultation = ref<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	pageProps.consultation.data as DeserializedConsultationResource<"consultant"|"consultantRole">
@@ -92,4 +96,40 @@ function visitConsultation(consultationID: string) {
 	})
 	assignPath(path)
 }
+
+ConsultationFetcher.initialize("/api")
+
+onMounted(() => {
+	const fetcher = new ConsultationFetcher()
+	fetcher.list({
+		"filter": {
+			"consultationScheduleRange": "*",
+			"existence": "exists",
+			"user": userProfile.data.id
+		},
+		"page": {
+			"limit": 10,
+			"offset": consultations.value.data.length
+		},
+		"sort": [ "-updatedAt" ]
+	}).then(({ body, unusedStatus }) => {
+		const { data, meta } = body
+
+		if (meta?.count ?? data.length > 0) {
+			const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
+
+			consultations.value.data = [
+				...consultations.value.data,
+				...castData
+			]
+
+			// TODO: Get preview messages per consultation
+			return []
+		}
+
+		return []
+	}).catch(({ unusedBody, unusedStatus }) => {
+		// Fail
+	})
+})
 </script>

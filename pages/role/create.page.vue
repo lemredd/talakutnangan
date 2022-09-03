@@ -92,13 +92,10 @@ function createRole() {
 		"auditTrailFlags": auditTrailFlags.value,
 		"departmentFlags": 1,
 		"roleFlags": 1
-	})
-	.then(({ body, status }) => {
-		console.log(body, status)
-
-		if (status >= 400) {
-			// TODO: Output error in UI
-		}
+	}).then(({ unusedBody, unusedStatus }) => {
+		// Success
+	}).catch(({ unusedBody, unusedStatus }) => {
+		// Fail
 	})
 }
 </script>
