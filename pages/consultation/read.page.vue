@@ -37,7 +37,6 @@ footer {
 import { inject, ref, onBeforeMount, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
@@ -45,11 +44,18 @@ import type {
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
+import type {
+	ChatMessageDocument,
+	DeserializedChatMessageDocument,
+	DeserializedChatMessageListDocument
+} from "$/types/documents/chat_message"
 
 import Socket from "$@/external/socket"
+import deserialize from "$/helpers/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
@@ -96,6 +102,20 @@ function visitConsultation(consultationID: string) {
 		"id": consultationID
 	})
 	assignPath(path)
+}
+
+function insertMessage(message: ChatMessageDocument<"read">) {
+	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
+	chatMessages.value = {
+		...chatMessages.value,
+		"data": [
+			...chatMessages.value.data,
+			deserializedMessage.data
+		].sort((first, second) => Math.sign(-calculateMillisecondDifference(
+			first.createdAt,
+			second.createdAt
+		)))
+	}
 }
 
 onBeforeMount(() => {
