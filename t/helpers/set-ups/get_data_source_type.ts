@@ -5,7 +5,7 @@ import getEnvironment from "$/helpers/get_environment"
 export default function(): SourceType {
 	if (getEnvironment() === Environment.UnitTest) {
 		return "unit_test"
-	} else {
-		return process.env.DATABASE_TYPE as SourceType
 	}
+
+	return process.env.DATABASE_TYPE as SourceType
 }
