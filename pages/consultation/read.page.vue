@@ -55,6 +55,7 @@ import deserialize from "$/helpers/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 import ConsultationList from "@/consultation/list.vue"
@@ -104,7 +105,7 @@ function visitConsultation(consultationID: string): void {
 	assignPath(path)
 }
 
-function insertMessage(message: ChatMessageDocument<"read">): void {
+function createMessage(message: ChatMessageDocument<"read">): void {
 	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
 	chatMessages.value = {
 		...chatMessages.value,
@@ -124,12 +125,18 @@ function updateMessage(message: ChatMessageDocument<"read">): void {
 		chatMessage => chatMessage.id !== IDofMessageToRemove
 	)
 
-	insertMessage(message)
+	createMessage(message)
 }
 
 onBeforeMount(() => {
 	ConsultationFetcher.initialize("/api")
 	Socket.initialize()
+
+	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
+	Socket.addEventListeners(chatNamespace, {
+		"create": createMessage,
+		"update": updateMessage
+	})
 })
 
 onMounted(() => {
