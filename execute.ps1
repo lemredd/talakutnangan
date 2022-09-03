@@ -167,7 +167,7 @@ Param(
 		"unit:back_ci",
 		"unit:front_ci",
 		"unit:server",
-		"unit:routes",
+		"unit:route",
 		"unit:database",
 		"intg:front",
 		"intg:back",
