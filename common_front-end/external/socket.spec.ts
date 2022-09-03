@@ -1,3 +1,4 @@
+import { SocketListeners } from "$@/types/dependent"
 import Stub from "$/helpers/singletons/stub"
 import Socket from "./socket"
 
@@ -16,7 +17,7 @@ describe("External: Socket", () => {
 		const eventData = "Hello world!"
 		const mockChat = jest.fn()
 		const namespace = "a"
-		const listeners = {
+		const listeners: SocketListeners = {
 			"chat": mockChat
 		}
 
