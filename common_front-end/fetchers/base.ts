@@ -14,8 +14,8 @@ import type {
 } from "$/types/documents/base"
 
 import deserialize from "$/helpers/deserialize"
-import stringifyQuery from "$@/fetchers/stringify_query"
 import specializedPath from "$/helpers/specialize_path"
+import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/helpers/request_environment"
 
 /**

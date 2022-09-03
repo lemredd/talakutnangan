@@ -1,7 +1,7 @@
 {
 	"preset": "ts-jest",
 
-	"cacheDirectory": "t/cache/unit_routes",
+	"cacheDirectory": "t/cache/unit_route",
 
 	"extensionsToTreatAsEsm": [".ts"],
 

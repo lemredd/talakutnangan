@@ -52,6 +52,15 @@ export default class ChatMessageActivityFactory extends BaseFactory<
 		}
 	}
 
+	async attachRelatedModels(model: ChatMessageActivity): Promise<ChatMessageActivity> {
+		// ! Does not get the department of user
+
+		model.consultation = await Consultation.findByPk(model.consultationID) as Consultation
+		model.user = await User.findByPk(model.userID) as User
+
+		return model
+	}
+
 	receivedMessageAt(generator: () => Date|null): ChatMessageActivityFactory {
 		this.#receivedMessageAtGenerator = generator
 		return this

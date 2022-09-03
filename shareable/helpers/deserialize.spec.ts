@@ -1,32 +1,34 @@
 import deserialize from "./deserialize"
 
 describe("Helper: Deserialize", () => {
-	it("should deserialize object with relationship", async() => {
+	it("should deserialize object with relationship", () => {
+		const CURRENT_TIME = new Date()
 		const serializedObject = {
 			"data": {
-				"type": "user",
-				"id": 1,
 				"attributes": {
+					"createdAt": CURRENT_TIME.toISOString(),
 					"name": "A"
 				},
+				"id": 1,
 				"relationships": {
 					"role": {
 						"data": [
 							{
-								"type": "role",
-								"id": 2
+								"id": 2,
+								"type": "role"
 							}
 						]
 					}
-				}
+				},
+				"type": "user"
 			},
 			"included": [
 				{
-					"type": "role",
-					"id": 2,
 					"attributes": {
 						"name": "B"
-					}
+					},
+					"id": 2,
+					"type": "role"
 				}
 			]
 		}
@@ -35,23 +37,24 @@ describe("Helper: Deserialize", () => {
 
 		expect(deserializedObject).toStrictEqual({
 			"data": {
-				"type": "user",
+				"createdAt": CURRENT_TIME,
 				"id": 1,
 				"name": "A",
 				"role": {
 					"data": [
 						{
-							"type": "role",
 							"id": 2,
-							"name": "B"
+							"name": "B",
+							"type": "role"
 						}
 					]
-				}
+				},
+				"type": "user"
 			}
 		})
 	})
 
-	it("should not deserialize null", async() => {
+	it("should not deserialize null", () => {
 		const serializedObject = null
 
 		const deserializedObject = deserialize(serializedObject)

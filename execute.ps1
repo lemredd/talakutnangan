@@ -161,17 +161,17 @@ Param(
 	[Parameter(ParameterSetName="Test", Mandatory, Position=1)]
 	[ValidateSet(
 		"unit:share",
-		"unit:front",
-		"unit:ui",
-		"unit:back",
-		"unit:back_ci",
-		"unit:front_ci",
-		"unit:server",
-		"unit:routes",
-		"unit:database",
-		"intg:front",
-		"intg:back",
 
+		"unit:front",
+		"unit:component",
+		"intg:front",
+		"unit_ci:front",
+
+		"unit:back",
+		"unit:route",
+		"unit:server",
+		"unit:database",
+		"intg:back",
 		"unit_ci:back",
 		"unit_ci:back_database"
 	)]

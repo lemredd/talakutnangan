@@ -1,6 +1,5 @@
 import { shallowMount } from "@vue/test-utils"
 
-import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
 import ConsultationFactory from "~/factories/consultation"
 
