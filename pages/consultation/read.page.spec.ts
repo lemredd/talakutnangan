@@ -357,8 +357,6 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		expect(previousCalls).toHaveProperty("1.arguments.1.create")
 		expect(previousCalls).toHaveProperty("1.arguments.1.update")
-		expect(previousCalls).toHaveProperty("2.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("2.arguments", [ `/consultation/${models[0].id}` ])
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
