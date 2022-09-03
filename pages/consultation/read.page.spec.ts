@@ -5,6 +5,7 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import UserFactory from "~/factories/user"
 import Stub from "$/helpers/singletons/stub"
 import Factory from "~/factories/consultation"
+import stringifyQuery from "$@/fetchers/stringify_query"
 import ChatMessageFactory from "~/factories/chat_message"
 import RequestEnvironment from "$/helpers/request_environment"
 import ChatMessageActivity from "%/models/chat_message_activity"
@@ -96,11 +97,22 @@ describe("UI Page: Read resource by ID", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/consultation")
+		expect(request).toHaveProperty("url", `/api/consultation?${
+			stringifyQuery({
+				"filter": {
+					"consultationScheduleRange": "*",
+					"existence": "exists",
+					"user": userModel.id
+				},
+				"page": {
+					"limit": 10,
+					"offset": ALL_CONSULTATION_COUNT
+				},
+				"sort": "-updatedAt"
+			})
+		}`)
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		const consultationListRequestBody = await request.json()
-		expect(consultationListRequestBody).toHaveProperty("page.offset", ALL_CONSULTATION_COUNT)
 	})
 
 	it("can visit resource by ID", async() => {
@@ -185,10 +197,21 @@ describe("UI Page: Read resource by ID", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", "/api/consultation")
+		expect(request).toHaveProperty("url", `/api/consultation?${
+			stringifyQuery({
+				"filter": {
+					"consultationScheduleRange": "*",
+					"existence": "exists",
+					"user": userModel.id
+				},
+				"page": {
+					"limit": 10,
+					"offset": ALL_CONSULTATION_COUNT
+				},
+				"sort": "-updatedAt"
+			})
+		}`)
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		const consultationListRequestBody = await request.json()
-		expect(consultationListRequestBody).toHaveProperty("page.offset", ALL_CONSULTATION_COUNT)
 	})
 })
