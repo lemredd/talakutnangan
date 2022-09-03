@@ -5,9 +5,9 @@
 	TODO(others): Make use of mixins if applicable
 -->
 <template>
-	<ConsultationShell @picked-consultation="pickConsultation">
+	<ConsultationShell>
 		<template #list>
-			<ConsultationList :consultations="consultations"/>
+			<ConsultationList :consultations="consultations" @picked-consultation="visitConsultation"/>
 		</template>
 		<template #chat-window>
 			<ChatWindow :consultation="consultation"/>
@@ -39,6 +39,9 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
+
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
@@ -54,9 +57,11 @@ const consultation = ref<DeserializedConsultationResource<ConsultationRelationsh
 const consultations = ref<DeserializedConsultationListDocument<ConsultationRelationshipNames>>(
 	pageProps.consultations as DeserializedConsultationListDocument<ConsultationRelationshipNames>
 )
-console.log(JSON.stringify(consultations))
 
-function pickConsultation(unusedConsultationID: string) {
-	// TODO: Go to other location
+function visitConsultation(consultationID: string) {
+	const path = specializePath("/consultation/:id", {
+		"id": consultationID
+	})
+	assignPath(path)
 }
 </script>
