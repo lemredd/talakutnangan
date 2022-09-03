@@ -1,6 +1,5 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
-import "~/set-ups/database.set_up"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import deserialize from "$/helpers/deserialize"

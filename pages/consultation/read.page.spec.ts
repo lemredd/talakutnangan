@@ -1,6 +1,5 @@
 import { mount, flushPromises } from "@vue/test-utils"
 
-import "~/set-ups/database.set_up"
 import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
 import RequestEnvironment from "$/helpers/request_environment"
