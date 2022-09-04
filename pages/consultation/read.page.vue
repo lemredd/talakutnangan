@@ -55,6 +55,7 @@ import deserialize from "$/helpers/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import ChatMessageFetcher from "$@/fetchers/chat_message"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
@@ -134,6 +135,7 @@ function updateMessage(message: ChatMessageDocument<"read">): void {
 
 onBeforeMount(() => {
 	ConsultationFetcher.initialize("/api")
+	ChatMessageFetcher.initialize("/api")
 	Socket.initialize()
 
 	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
@@ -145,8 +147,8 @@ onBeforeMount(() => {
 
 const consultationFetcher = new ConsultationFetcher()
 
-function loadConsultations(): void {
-	consultationFetcher.list({
+async function loadConsultations(): Promise<string[]> {
+	const { body } = await consultationFetcher.list({
 		"filter": {
 			"consultationScheduleRange": "*",
 			"existence": "exists",
@@ -157,25 +159,24 @@ function loadConsultations(): void {
 			"offset": consultations.value.data.length
 		},
 		"sort": [ "-updatedAt" ]
-	}).then(({ body, unusedStatus }) => {
-		const { data, meta } = body
-
-		if (meta?.count ?? data.length > 0) {
-			const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
-
-			consultations.value.data = [
-				...consultations.value.data,
-				...castData
-			]
-
-			// TODO: Get preview messages per consultation
-			return []
-		}
-
-		return []
-	}).catch(({ unusedBody, unusedStatus }) => {
-		// Fail
 	})
+
+	const { data, meta } = body
+	const consultationIDs: string[] = []
+
+	if (meta?.count ?? data.length > 0) {
+		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
+
+		consultations.value.data = [
+			...consultations.value.data,
+			...castData
+		]
+
+		// TODO: Get preview messages per consultation
+		return consultationIDs
+	}
+
+	return consultationIDs
 }
 
 onMounted(() => {
