@@ -125,6 +125,26 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	}
 
 	/**
+	 * Identify dependencies of permissions names.
+	 * @param names Names of the child permissions.
+	 */
+	identifyDependencies(names: U[]): U[] {
+		const { permissions } = this
+		const dependencies: U[] = []
+		for (const [ key, value ] of permissions.entries()) {
+			if (!dependencies.includes(key) && names.includes(key)) {
+				const { permissionDependencies } = value
+				dependencies.push(
+					...permissionDependencies,
+					...this.identifyDependencies(permissionDependencies)
+				)
+			}
+		}
+
+		return makeUnique(dependencies)
+	}
+
+	/**
 	 * Identify permissions names which depend to the specified permissions.
 	 * @param names Names of the parent permissions.
 	 */
@@ -157,23 +177,76 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const dependents: U[] = []
 
 		for (const [ key, value ] of permissions.entries()) {
+			const rawPairPermissionDependencies = []
+			const rawSimilarPairPermissionDependencies = []
+			const rawDissimilarPairPermissionDependencies = []
+
 			const { externalPermissionDependencies } = value
-			if (!isUndefined(externalPermissionDependencies) && !dependents.includes(key)) {
-				const cartesianProduct = externalPermissionDependencies.map(
-					externalDependency => externalNames
-					.filter(specifiedDependency => {
+			if (!isUndefined(externalPermissionDependencies)) {
+				rawPairPermissionDependencies.push(
+					...externalPermissionDependencies.map(
+						externalDependency => externalNames
+						.map(specifiedDependency => [ externalDependency, specifiedDependency ])
+					).flat(1)
+				)
+
+				rawSimilarPairPermissionDependencies.push(
+					...rawPairPermissionDependencies
+					.filter(([ externalDependency, specifiedDependency ]) => {
 						const externalName = externalDependency.group.name
 						const specifiedName = specifiedDependency.group.name
 						return externalName === specifiedName
 					})
-					.map(specifiedDependency => [ externalDependency, specifiedDependency ])
-				).flat(1)
+				)
 
-				for (const [ externalDependency, specifiedDependency ] of cartesianProduct) {
+				rawDissimilarPairPermissionDependencies.push(
+					...subtractArrays(
+						rawPairPermissionDependencies,
+						rawSimilarPairPermissionDependencies
+					)
+				)
+			}
+
+			if (!dependents.includes(key)) {
+				for (const [
+					externalDependency,
+					specifiedDependency
+				] of rawSimilarPairPermissionDependencies) {
 					const original = externalDependency.permissionDependencies
 					const target = specifiedDependency.permissionDependencies
 					const differenceLength = subtractArrays(original, target).length
 					const originalLength = original.length
+					const hasChangedLength = differenceLength < originalLength
+					if (hasChangedLength) {
+						dependents.push(key, ...this.identifyDependents([ key ]))
+						break
+					}
+				}
+			}
+
+			if (!dependents.includes(key)) {
+				const rawDissimilarPermissionDependencies = makeUnique(
+					rawDissimilarPairPermissionDependencies
+					.map(([ externalDependency ]) => externalDependency)
+				)
+
+				for (const externalDependency of rawDissimilarPermissionDependencies) {
+					const externalTransitiveDependencies = externalDependency.group
+					.identifyDependencies(externalDependency.permissionDependencies)
+
+					const allExternalDependencies = makeUnique([
+						...externalDependency.permissionDependencies,
+						...externalTransitiveDependencies
+					])
+
+					const externallyDependentExternalDependencies = externalDependency.group
+					.identifyExternallyDependents(externalNames)
+
+					const differenceLength = subtractArrays(
+						allExternalDependencies,
+						externallyDependentExternalDependencies
+					).length
+					const originalLength = allExternalDependencies.length
 					const hasChangedLength = differenceLength < originalLength
 					if (hasChangedLength) {
 						dependents.push(key, ...this.identifyDependents([ key ]))
