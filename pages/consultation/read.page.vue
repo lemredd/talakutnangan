@@ -143,9 +143,10 @@ onBeforeMount(() => {
 	})
 })
 
-onMounted(() => {
-	const fetcher = new ConsultationFetcher()
-	fetcher.list({
+const consultationFetcher = new ConsultationFetcher()
+
+function loadConsultations(): void {
+	consultationFetcher.list({
 		"filter": {
 			"consultationScheduleRange": "*",
 			"existence": "exists",
@@ -175,5 +176,9 @@ onMounted(() => {
 	}).catch(({ unusedBody, unusedStatus }) => {
 		// Fail
 	})
+}
+
+onMounted(() => {
+	loadConsultations()
 })
 </script>
