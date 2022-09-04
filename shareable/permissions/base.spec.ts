@@ -290,17 +290,51 @@ describe("Back-end: Base Permission Group", () => {
 
 	it("can get dependent permission names", () => {
 		const permissionGroup = new GroupD()
+		const parentPermissionName = "h"
 
-		const { dependentPermissionNames } = permissionGroup
+		const dependentPermissions = permissionGroup.identifyDependents([
+			parentPermissionName
+		])
 
-		expect(dependentPermissionNames).toEqual([ "i" ])
+		expect(dependentPermissions).toEqual([ "i" ])
 	})
 
 	it("can get externally dependent permission names", () => {
+		const groupC = new GroupC()
 		const permissionGroup = new GroupD()
 
-		const { externallyDependentPermissionNames } = permissionGroup
+		const externallyDependentPermissions = permissionGroup.identifyExternallyDependents([
+			{
+				"group": groupC,
+				"permissionDependencies": [ "e" ]
+			}
+		])
 
-		expect(externallyDependentPermissionNames).toEqual([ "h", "i" ])
+		expect(externallyDependentPermissions).toEqual([ "h" ])
+	})
+
+	it("cannot get dependent permission names", () => {
+		const permissionGroup = new GroupD()
+		const parentPermissionName = "i"
+
+		const dependentPermissions = permissionGroup.identifyDependents([
+			parentPermissionName
+		])
+
+		expect(dependentPermissions).toEqual([])
+	})
+
+	it("can get externally dependent permission names", () => {
+		const groupC = new GroupC()
+		const permissionGroup = new GroupD()
+
+		const externallyDependentPermissions = permissionGroup.identifyExternallyDependents([
+			{
+				"group": groupC,
+				"permissionDependencies": [ "g" ]
+			}
+		])
+
+		expect(externallyDependentPermissions).toEqual([])
 	})
 })
