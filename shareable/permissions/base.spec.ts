@@ -324,7 +324,7 @@ describe("Back-end: Base Permission Group", () => {
 		expect(dependentPermissions).toEqual([])
 	})
 
-	it("can get externally dependent permission names", () => {
+	it("cannot get externally dependent permission names", () => {
 		const groupC = new GroupC()
 		const permissionGroup = new GroupD()
 

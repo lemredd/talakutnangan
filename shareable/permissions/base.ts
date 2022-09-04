@@ -132,16 +132,18 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const { permissions } = this
 		const dependents: U[] = []
 		for (const [ key, value ] of permissions.entries()) {
-			const { permissionDependencies } = value
-			const differenceLength = subtractArrays(permissionDependencies, names).length
-			const originalLength = permissionDependencies.length
-			const hasChangedLength = differenceLength < originalLength
-			if (hasChangedLength) {
-				dependents.push(key)
+			if (!dependents.includes(key)) {
+				const { permissionDependencies } = value
+				const differenceLength = subtractArrays(permissionDependencies, names).length
+				const originalLength = permissionDependencies.length
+				const hasChangedLength = differenceLength < originalLength
+				if (hasChangedLength) {
+					dependents.push(key, ...this.identifyDependents([ key ]))
+				}
 			}
 		}
 
-		return dependents
+		return makeUnique(dependents)
 	}
 
 	/**
