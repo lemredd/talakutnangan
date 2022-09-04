@@ -399,7 +399,7 @@ describe("Back-end: Base Permission Group", () => {
 			}
 		])
 
-		expect(externallyDependentPermissions).toEqual([ "j", "k", "l", "m" ])
+		expect(externallyDependentPermissions.sort()).toEqual([ "j", "k", "l", "m" ])
 	})
 
 	it("can get externally deeply transitively dependent permission names", () => {
