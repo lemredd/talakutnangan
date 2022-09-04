@@ -339,7 +339,7 @@ describe("Back-end: Base Permission Group", () => {
 	})
 
 	type GroupNameE = { "groupE": number }
-	type AvailablePermissionsE = "j" | "k" | "l"
+	type AvailablePermissionsE = "j" | "k" | "l" | "m"
 
 	class GroupE extends BasePermissionGroup<GroupNameE, AvailablePermissionsE> {
 		get name(): string { return "groupD" }
@@ -366,12 +366,27 @@ describe("Back-end: Base Permission Group", () => {
 							"permissionDependencies": [ "i" ]
 						}
 					],
-					"flag": 0x1,
+					"flag": 0x4,
 					"permissionDependencies": []
+				} ],
+				[ "m", {
+					"flag": 0x8,
+					"permissionDependencies": [ "k" ]
 				} ]
 			])
 		}
 	}
+
+	it("can get transitively dependent permission names", () => {
+		const permissionGroup = new GroupE()
+		const parentPermissionName = "j"
+
+		const dependentPermissions = permissionGroup.identifyDependents([
+			parentPermissionName
+		])
+
+		expect(dependentPermissions).toEqual([ "k", "m" ])
+	})
 
 	it("can get externally shallowly transitively dependent permission names", () => {
 		const groupD = new GroupD()
@@ -384,7 +399,7 @@ describe("Back-end: Base Permission Group", () => {
 			}
 		])
 
-		expect(externallyDependentPermissions).toEqual([ "j", "k", "l" ])
+		expect(externallyDependentPermissions).toEqual([ "j", "k", "l", "m" ])
 	})
 
 	it("can get externally deeply transitively dependent permission names", () => {
