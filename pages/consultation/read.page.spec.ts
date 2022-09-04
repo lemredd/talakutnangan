@@ -136,7 +136,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest).toHaveProperty("method", "GET")
-		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
 					"consultationIDs": [ resource.data.id ],
@@ -261,7 +261,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest).toHaveProperty("method", "GET")
-		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
 					"consultationIDs": [ resource.data.id ],
@@ -373,8 +373,8 @@ describe("UI Page: Read resource by ID", () => {
 				"type": "chat_message"
 			}
 		} as ChatMessageDocument)
-		await nextTick()
 		await flushPromises()
+		await nextTick()
 
 		const chatEntries = wrapper.findAll(".chat-entry")
 		expect(chatEntries[0].text()).toContain(sampleUpdatedChatMessageResource.data.data.value)
@@ -412,7 +412,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest).toHaveProperty("method", "GET")
-		expect(secondRequest).toHaveProperty("url", `/api/chat_messages?${
+		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
 					"consultationIDs": [ resource.data.id ],
@@ -420,7 +420,7 @@ describe("UI Page: Read resource by ID", () => {
 				},
 				"page": {
 					"limit": 10,
-					"offset": INITIAL_MESSAGE_COUNT
+					"offset": INITIAL_MESSAGE_COUNT + 1
 				},
 				"sort": [ "-createdAt" ]
 			} as ChatMessageQueryParameters)
