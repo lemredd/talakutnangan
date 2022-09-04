@@ -310,7 +310,7 @@ describe("Back-end: Base Permission Group", () => {
 			}
 		])
 
-		expect(externallyDependentPermissions).toEqual([ "h" ])
+		expect(externallyDependentPermissions).toEqual([ "h", "i" ])
 	})
 
 	it("cannot get dependent permission names", () => {

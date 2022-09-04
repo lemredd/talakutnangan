@@ -213,8 +213,11 @@ export default abstract class<T extends GeneralObject<number>, U> {
 					specifiedDependency
 				] of rawSimilarPairPermissionDependencies) {
 					const original = externalDependency.permissionDependencies
-					const target = specifiedDependency.permissionDependencies
-					const differenceLength = subtractArrays(original, target).length
+					const rawTarget = specifiedDependency.permissionDependencies
+					const rawTargetDependencies = specifiedDependency.group
+					.identifyDependencies(specifiedDependency.permissionDependencies)
+					const allTargets = makeUnique([ ...rawTarget, ...rawTargetDependencies ])
+					const differenceLength = subtractArrays(original, allTargets).length
 					const originalLength = original.length
 					const hasChangedLength = differenceLength < originalLength
 					if (hasChangedLength) {
