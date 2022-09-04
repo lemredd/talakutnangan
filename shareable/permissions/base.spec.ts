@@ -287,4 +287,20 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(isAllowed).toBeFalsy()
 	})
+
+	it("can get dependent permission names", () => {
+		const permissionGroup = new GroupD()
+
+		const { dependentPermissionNames } = permissionGroup
+
+		expect(dependentPermissionNames).toEqual([ "i" ])
+	})
+
+	it("can get externally dependent permission names", () => {
+		const permissionGroup = new GroupD()
+
+		const { externallyDependentPermissionNames } = permissionGroup
+
+		expect(externallyDependentPermissionNames).toEqual([ "h", "i" ])
+	})
 })
