@@ -33,9 +33,8 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
 		const mask = this.generateMask(...permissionNames)
 		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
-		const mayAllowedExternally = Array.from(
-			this.identifyExternalDependencies(permissionNames)
-		).reduce((previousGroupApproval, currentExternalInfo) => {
+		const mayAllowedExternally = this.identifyExternalDependencies(permissionNames)
+		.reduce((previousGroupApproval, currentExternalInfo) => {
 			const approval = previousGroupApproval && currentExternalInfo.group.mayAllow(
 				role,
 				...currentExternalInfo.permissionDependencies
@@ -83,7 +82,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * Generates a collection of information about the external permission group dependency.
 	 * @param names The names of the permission names to check.
 	 */
-	identifyExternalDependencies(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
+	identifyExternalDependencies(names: U[]): ExternalPermissionDependencyInfo<any, any>[] {
 		const externalInfos = new Map<string, ExternalPermissionDependencyInfo<any, any>>()
 
 		// Check all permission names that have external permissions
@@ -110,14 +109,14 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		})
 
 		// Remove the duplicate permission names
-		const cleanedExternalInfos = new Set<ExternalPermissionDependencyInfo<any, any>>()
+		const cleanedExternalInfos: ExternalPermissionDependencyInfo<any, any>[] = []
 		for (const externalInfo of externalInfos.values()) {
 			const newExternalInfo: ExternalPermissionDependencyInfo<any, any> = {
 				"group": externalInfo.group,
 				"permissionDependencies": makeUnique(externalInfo.permissionDependencies)
 			}
 
-			cleanedExternalInfos.add(newExternalInfo)
+			cleanedExternalInfos.push(newExternalInfo)
 		}
 
 		return cleanedExternalInfos
