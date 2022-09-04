@@ -46,6 +46,7 @@ import type {
 } from "$/types/documents/consultation"
 import type {
 	ChatMessageDocument,
+	DeserializedChatMessageResource,
 	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
@@ -183,10 +184,44 @@ async function loadConsultations(): Promise<string[]> {
 	return consultationIDs
 }
 
-onMounted(() => {
-	// Reinitialize since fetchers are now initialized properly
-	consultationFetcher = new ConsultationFetcher()
 
-	loadConsultations()
+let chatMessageFetcher: ChatMessageFetcher|null = null
+
+async function loadPreviousChatMessages(): Promise<void> {
+	if (chatMessageFetcher === null) {
+		throw new Error("Consultations cannot be loaded yet.")
+	}
+
+	const { body } = await chatMessageFetcher.list({
+		"filter": {
+			"consultationIDs": [ consultation.value.id ],
+			"existence": "exists"
+		},
+		"page": {
+			"limit": 10,
+			"offset": chatMessages.value.data.length
+		},
+		"sort": [ "-createdAt" ]
+	})
+
+	const { data, meta } = body
+
+	if (meta?.count ?? data.length > 0) {
+		const castData = data as DeserializedChatMessageResource<"user">[]
+
+		chatMessages.value.data = [
+			...chatMessages.value.data,
+			...castData
+		]
+	}
+}
+
+onMounted(async() => {
+	// Reinitialize since fetchers were now initialized properly
+	consultationFetcher = new ConsultationFetcher()
+	chatMessageFetcher = new ChatMessageFetcher()
+
+	await loadConsultations()
+	await loadPreviousChatMessages()
 })
 </script>
