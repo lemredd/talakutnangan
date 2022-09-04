@@ -145,9 +145,13 @@ onBeforeMount(() => {
 	})
 })
 
-const consultationFetcher = new ConsultationFetcher()
+let consultationFetcher: ConsultationFetcher|null = null
 
 async function loadConsultations(): Promise<string[]> {
+	if (consultationFetcher === null) {
+		throw new Error("Consultations cannot be loaded yet.")
+	}
+
 	const { body } = await consultationFetcher.list({
 		"filter": {
 			"consultationScheduleRange": "*",
@@ -180,6 +184,9 @@ async function loadConsultations(): Promise<string[]> {
 }
 
 onMounted(() => {
+	// Reinitialize since fetchers are now initialized properly
+	consultationFetcher = new ConsultationFetcher()
+
 	loadConsultations()
 })
 </script>
