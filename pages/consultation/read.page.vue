@@ -107,13 +107,12 @@ function visitConsultation(consultationID: string): void {
 	assignPath(path)
 }
 
-function createMessage(message: ChatMessageDocument<"read">): void {
-	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
+function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"user">[]): void {
 	chatMessages.value = {
 		...chatMessages.value,
 		"data": [
 			...chatMessages.value.data,
-			deserializedMessage.data
+			...messages
 		].sort((first, second) => {
 			const comparison = Math.sign(calculateMillisecondDifference(
 				first.createdAt,
@@ -123,6 +122,11 @@ function createMessage(message: ChatMessageDocument<"read">): void {
 			return comparison || Math.sign(Number(first.id) - Number(second.id))
 		})
 	}
+}
+
+function createMessage(message: ChatMessageDocument<"read">): void {
+	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
+	mergeDeserializedMessages([ deserializedMessage.data ])
 }
 
 function updateMessage(message: ChatMessageDocument<"read">): void {
@@ -209,10 +213,7 @@ async function loadPreviousChatMessages(): Promise<void> {
 	if (meta?.count ?? data.length > 0) {
 		const castData = data as DeserializedChatMessageResource<"user">[]
 
-		chatMessages.value.data = [
-			...chatMessages.value.data,
-			...castData
-		]
+		mergeDeserializedMessages(castData)
 	}
 }
 
