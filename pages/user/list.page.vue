@@ -20,7 +20,6 @@
 	text-transform: uppercase;
 }
 </style>
-
 <script setup lang="ts">
 import { computed, inject, onMounted, provide, ref } from "vue"
 
@@ -44,8 +43,10 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 
-provide("managerKind", new Manager(userProfile))
-provide("tabs", [ "Users", "Roles", "Departments" ])
+if (currentResourceManager.isAdmin()) {
+	provide("managerKind", new Manager(userProfile))
+	provide("tabs", [ "Users", "Roles", "Departments" ])
+}
 
 UserFetcher.initialize("/api")
 RoleFetcher.initialize("/api")
