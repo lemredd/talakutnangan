@@ -155,8 +155,8 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const dependents: U[] = []
 
 		for (const [ key, value ] of permissions.entries()) {
-			if (!isUndefined(value.externalPermissionDependencies)) {
-				const { externalPermissionDependencies } = value
+			const { externalPermissionDependencies } = value
+			if (!isUndefined(externalPermissionDependencies) && !dependents.includes(key)) {
 				const cartesianProduct = externalPermissionDependencies.map(
 					externalDependency => externalNames
 					.filter(specifiedDependency => {
@@ -174,14 +174,14 @@ export default abstract class<T extends GeneralObject<number>, U> {
 					const originalLength = original.length
 					const hasChangedLength = differenceLength < originalLength
 					if (hasChangedLength) {
-						dependents.push(key)
+						dependents.push(key, ...this.identifyDependents([ key ]))
 						break
 					}
 				}
 			}
 		}
 
-		return dependents
+		return makeUnique(dependents)
 	}
 
 	/**
