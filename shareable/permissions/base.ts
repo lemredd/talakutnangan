@@ -6,6 +6,8 @@ import type {
 } from "$/types/permission"
 
 import makeUnique from "$/helpers/array/make_unique"
+import subtractArrays from "$/helpers/array/subtract"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 /**
  * Base class for permission groups.
@@ -120,6 +122,66 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		}
 
 		return cleanedExternalInfos
+	}
+
+	/**
+	 * Identify permissions names which depend to the specified permissions.
+	 * @param names Names of the parent permissions.
+	 */
+	identifyDependents(names: U[]): U[] {
+		const { permissions } = this
+		const dependents: U[] = []
+		for (const [ key, value ] of permissions.entries()) {
+			const { permissionDependencies } = value
+			const differenceLength = subtractArrays(permissionDependencies, names).length
+			const originalLength = permissionDependencies.length
+			const hasChangedLength = differenceLength < originalLength
+			if (hasChangedLength) {
+				dependents.push(key)
+			}
+		}
+
+		return dependents
+	}
+
+	/**
+	 * Identify permissions names which depend to the specified external permissions.
+	 * @param externalNames Names of the external parent permissions.
+	 *
+	 * Note: This does not check transitively.
+	 */
+	identifyExternallyDependents(externalNames: ExternalPermissionDependencyInfo<any, any>[]): U[] {
+		const { permissions } = this
+		const dependents: U[] = []
+
+		for (const [ key, value ] of permissions.entries()) {
+			if (!isUndefined(value.externalPermissionDependencies)) {
+				const { externalPermissionDependencies } = value
+				const cartesianProduct = externalPermissionDependencies.map(
+					externalDependency => externalNames
+					.filter(specifiedDependency => {
+						const externalName = externalDependency.group.name
+						const specifiedName = specifiedDependency.group.name
+						return externalName === specifiedName
+					})
+					.map(specifiedDependency => [ externalDependency, specifiedDependency ])
+				).flat(1)
+
+				for (const [ externalDependency, specifiedDependency ] of cartesianProduct) {
+					const original = externalDependency.permissionDependencies
+					const target = specifiedDependency.permissionDependencies
+					const differenceLength = subtractArrays(original, target).length
+					const originalLength = original.length
+					const hasChangedLength = differenceLength < originalLength
+					if (hasChangedLength) {
+						dependents.push(key)
+						break
+					}
+				}
+			}
+		}
+
+		return dependents
 	}
 
 	/**
