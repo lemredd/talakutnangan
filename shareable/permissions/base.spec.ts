@@ -337,4 +337,67 @@ describe("Back-end: Base Permission Group", () => {
 
 		expect(externallyDependentPermissions).toEqual([])
 	})
+
+	type GroupNameE = { "groupE": number }
+	type AvailablePermissionsE = "j" | "k" | "l"
+
+	class GroupE extends BasePermissionGroup<GroupNameE, AvailablePermissionsE> {
+		get name(): string { return "groupD" }
+		get permissions(): PermissionMap<AvailablePermissionsE> {
+			return new Map<AvailablePermissionsE, PermissionInfo<AvailablePermissionsE>>([
+				[ "j", {
+					"externalPermissionDependencies": [
+						{
+							"group": new GroupD(),
+							"permissionDependencies": [ "h" ]
+						}
+					],
+					"flag": 0x1,
+					"permissionDependencies": []
+				} ],
+				[ "k", {
+					"flag": 0x2,
+					"permissionDependencies": [ "j" ]
+				} ],
+				[ "l", {
+					"externalPermissionDependencies": [
+						{
+							"group": new GroupD(),
+							"permissionDependencies": [ "i" ]
+						}
+					],
+					"flag": 0x1,
+					"permissionDependencies": []
+				} ]
+			])
+		}
+	}
+
+	it("can get externally shallowly transitively dependent permission names", () => {
+		const groupD = new GroupD()
+		const permissionGroup = new GroupE()
+
+		const externallyDependentPermissions = permissionGroup.identifyExternallyDependents([
+			{
+				"group": groupD,
+				"permissionDependencies": [ "h" ]
+			}
+		])
+
+		expect(externallyDependentPermissions).toEqual([ "j", "k", "l" ])
+	})
+
+	it("can get externally deeply transitively dependent permission names", () => {
+		const groupC = new GroupC()
+		const permissionGroup = new GroupE()
+
+		const externallyDependentPermissions = permissionGroup.identifyExternallyDependents([
+			{
+				"group": groupC,
+				"permissionDependencies": [ "f" ]
+			}
+		])
+
+		expect(externallyDependentPermissions).toEqual([ "l" ])
+	})
 })
