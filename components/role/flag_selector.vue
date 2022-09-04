@@ -54,6 +54,9 @@
 // Third Parties
 import { computed, ref } from "vue"
 
+// Types
+import type { ExternalPermissionDependencyInfo } from "$/types/permission"
+
 // Developer defined internals
 import Checkbox from "@/fields/checkbox.vue"
 import BasePermissionGroup from "$/permissions/base"
@@ -105,6 +108,12 @@ const writeScopedPermissionNames = permissionNames.filter(permissionName => {
 	const name = permissionName.toLocaleLowerCase()
 	return name.includes("scope") && name.includes("write")
 })
+
+interface CustomEvents {
+	(event: "update:flags", passedFlag: number): void
+	(event: "updateDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[]): void
+}
+const emit = defineEmits<CustomEvents>()
 
 function updateFlags() {
 	includePermissionDependencies(basePermissionGroup, rawFlags)
