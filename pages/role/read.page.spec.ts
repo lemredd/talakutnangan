@@ -130,6 +130,85 @@ describe("UI Page: Read resource by ID", () => {
 		expect(castCreateCommentPermissionCheckbox.checked).toBeFalsy()
 	})
 
+	it("should uncheck externally dependent permissions", async() => {
+		const sampleResource = await new RoleFactory()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view"))
+		.postFlags(post.generateMask("view"))
+		.commentFlags(comment.generateMask("view", "create"))
+		.profanityFlags(profanity.generateMask("view"))
+		.userFlags(user.generateMask("view"))
+		.auditTrailFlags(0)
+		.deserializedOne()
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"role": sampleResource
+						}
+					}
+				}
+			}
+		})
+
+		const createCommentPermission = wrapper.find(
+			"#comment-flags input[type=checkbox][value=create]"
+		)
+		const viewPostPermission = wrapper.find("#post-flags input[type=checkbox][value=view]")
+		const viewCommentPermission = wrapper.find("#comment-flags input[type=checkbox][value=view]")
+
+		await viewPostPermission.setValue(false)
+
+		const castViewCommentPermissionCheckbox = viewCommentPermission.element as HTMLInputElement
+		const castCreateCommentPermissionCheckbox = createCommentPermission
+		.element as HTMLInputElement
+		expect(castViewCommentPermissionCheckbox.checked).toBeFalsy()
+		expect(castCreateCommentPermissionCheckbox.checked).toBeFalsy()
+	})
+
+	it("should check external dependency permissions", async() => {
+		const sampleResource = await new RoleFactory()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view"))
+		.postFlags(0)
+		.commentFlags(0)
+		.profanityFlags(profanity.generateMask("view"))
+		.userFlags(user.generateMask("view"))
+		.auditTrailFlags(0)
+		.deserializedOne()
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"role": sampleResource
+						}
+					}
+				}
+			}
+		})
+
+		const createCommentPermission = wrapper.find(
+			"#comment-flags input[type=checkbox][value=create]"
+		)
+		const viewPostPermission = wrapper.find("#post-flags input[type=checkbox][value=view]")
+		const viewCommentPermission = wrapper.find("#comment-flags input[type=checkbox][value=view]")
+
+		await createCommentPermission.setValue(true)
+
+		const castViewPostPermissionCheckbox = viewPostPermission.element as HTMLInputElement
+		const castViewCommentPermissionCheckbox = viewCommentPermission.element as HTMLInputElement
+		expect(castViewPostPermissionCheckbox.checked).toBeTruthy()
+		expect(castViewCommentPermissionCheckbox.checked).toBeTruthy()
+	})
+
 	it("can edit role name", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
