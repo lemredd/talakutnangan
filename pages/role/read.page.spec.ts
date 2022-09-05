@@ -1,6 +1,5 @@
 import { mount, flushPromises } from "@vue/test-utils"
 
-
 import Page from "./id.page.vue"
 import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
