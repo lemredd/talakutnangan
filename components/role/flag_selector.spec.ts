@@ -1,4 +1,3 @@
-import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
 
 import { post, comment } from "$/permissions/permission_list"
@@ -38,7 +37,6 @@ describe("Component: role/flag_selector", () => {
 			"header": "Post",
 			"modelValue": 1
 		})
-		await nextTick()
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
 		expect(dependentCheckbox.props("modelValue")).toEqual([ "view" ])
