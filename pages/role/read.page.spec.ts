@@ -1,9 +1,9 @@
 import { mount, flushPromises } from "@vue/test-utils"
 
-import Page from "./id.page.vue"
-import RoleFetcher from "$@/fetchers/role"
-import RoleFactory from "~/factories/role"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
+
 import RequestEnvironment from "$/helpers/request_environment"
+import RoleFactory from "~/factories/role"
 import {
 	tag,
 	user,
@@ -14,9 +14,10 @@ import {
 	department,
 	role
 } from "$/permissions/permission_list"
+import Page from "./read.page.vue"
 
 describe("UI Page: Read resource by ID", () => {
-	it("Should load resource by ID", async() => {
+	it("should uncheck dependent permissions", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
@@ -52,34 +53,34 @@ describe("UI Page: Read resource by ID", () => {
 		.auditTrailFlags(0)
 		.serializedOne()
 
-		fetchMock.mockResponse(
-			JSON.stringify(sampleResource),
-			{ "status": RequestEnvironment.status.OK }
-		)
-
-		const fetcher = new RoleFetcher()
-		const response = await fetcher.read(sampleResource.data.id)
-
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
 					"pageContext": {
-						"routeParams": {
-							"id": 0
+						"pageProps": {
+							"role": sampleResource
 						}
 					}
 				}
 			}
 		})
 
-		await flushPromises()
+		const createCommentPermission = wrapper.find(
+			".comment-flags input[type=checked][value=create]"
+		)
+		const viewPostPermission = wrapper.find(".post-flags input[type=checked][value=view]")
+		const viewCommentPermission = wrapper.find(".comment-flags input[type=checked][value=view]")
 
-		const fetchedRoleName = wrapper.find(".role-name input").getRootNodes() as HTMLInputElement[]
-		const expectedRoleName = response.body.data.name
-		expect(fetchedRoleName[0].value).toEqual(expectedRoleName)
+		await viewCommentPermission.setValue(false)
+
+		const castViewPostPermissionCheckbox = viewPostPermission.element as HTMLInputElement
+		const castCreateCommentPermissionCheckbox = createCommentPermission
+		.element as HTMLInputElement
+		expect(castViewPostPermissionCheckbox.checked).toBeTruthy()
+		expect(castCreateCommentPermissionCheckbox.checked).toBeFalsy()
 	})
 
-	it.skip("Can edit role name", async() => {
+	it.skip("can edit role name", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
@@ -113,35 +114,47 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope"
 		))
 		.auditTrailFlags(0)
-		.serializedOne()
+		.serializedOne(true)
+		const newSampleModel = await new RoleFactory().makeOne()
 
-		fetchMock.mockResponse(
-			JSON.stringify(sampleResource),
-			{ "status": RequestEnvironment.status.OK }
-		)
-
-		const fetcher = new RoleFetcher()
-		const response = await fetcher.read(sampleResource.data.id)
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
 					"pageContext": {
-						"routeParams": {
-							"id": 0
+						"pageProps": {
+							"role": sampleResource
 						}
 					}
 				}
 			}
 		})
 
+		const roleName = wrapper.find(".role-name input")
+		const submit = wrapper.find("[type='submit']")
+
+		await roleName.setValue(newSampleModel.name)
+		await submit.setValue("submit")
 		await flushPromises()
 
-		const fetchedRoleName = wrapper.find(".role-name input")
-		await fetchedRoleName.setValue("Another Role Name")
-		const castFetchedRoleName = fetchedRoleName.getRootNodes()[0] as HTMLInputElement
-		const newRoleName = castFetchedRoleName.value
-		// TODO: test update submission and expect new role name to successfully push in database
+		// TODO?: test update submission and expect new role name to successfully push in database
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/user")
+		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(request.json()).resolves.toStrictEqual({
+			"data": {
+				"attributes": {
+					...sampleResource.data.attributes,
+					"name": newSampleModel.name
+				},
+				"id": sampleResource.data.id,
+				"type": "role"
+			}
+		})
 	})
 
 	it.todo("Should be archivable")
