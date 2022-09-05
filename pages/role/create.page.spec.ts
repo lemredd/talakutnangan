@@ -32,6 +32,7 @@ describe("Page: /role", () => {
 				"attributes": {
 					"auditTrailFlags": 1,
 					"commentFlags": 1,
+					"deletedAt": null,
 					"departmentFlags": 1,
 					"name": "Role Sample",
 					"postFlags": 1,
@@ -85,6 +86,7 @@ describe("Page: /role", () => {
 				"attributes": {
 					"auditTrailFlags": 1,
 					"commentFlags": 1,
+					"deletedAt": null,
 					"departmentFlags": 1,
 					"name": "",
 					"postFlags": 1,
