@@ -102,7 +102,7 @@ const rawFlags = computed<string[]>({
 			resolvedPermissions = subtractArrays(resolvedPermissions, dependentPermissions)
 		}
 
-		emit("update:flags", basePermissionGroup.generateMask(resolvedPermissions))
+		emit("update:flags", basePermissionGroup.generateMask(...resolvedPermissions))
 		emit(
 			"updateDependencyFlags",
 			basePermissionGroup.identifyExternalDependencies(resolvedPermissions)
