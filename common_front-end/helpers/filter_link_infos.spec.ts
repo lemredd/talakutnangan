@@ -62,6 +62,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -165,6 +166,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -231,6 +233,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -329,6 +332,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -400,6 +404,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -517,6 +522,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -589,6 +595,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
@@ -684,6 +691,7 @@ describe("Helper: Filter Link Infos", () => {
 								{
 									"auditTrailFlags": 0,
 									"commentFlags": 0,
+									"deletedAt": null,
 									"departmentFlags": 0,
 									"id": "2",
 									"name": "B",
