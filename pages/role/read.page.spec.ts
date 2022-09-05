@@ -1,4 +1,3 @@
-import { nextTick } from "vue"
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"

@@ -9,32 +9,32 @@
 		</div>
 
 		<FlagSelector
-			v-model:flags="role.data.semesterFlags"
+			v-model="role.data.semesterFlags"
 			header="Semester"
 			:base-permission-group="semesterPermissions"/>
 		<FlagSelector
-			v-model:flags="role.data.tagFlags"
+			v-model="role.data.tagFlags"
 			header="Tag"
 			:base-permission-group="tagPermissions"/>
 		<FlagSelector
-			v-model:flags="role.data.postFlags"
+			v-model="role.data.postFlags"
 			header="Post"
 			:base-permission-group="postPermissions"
 			:dependent-permission-groups="[ commentPermissions] "/>
 		<FlagSelector
-			v-model:flags="role.data.commentFlags"
+			v-model="role.data.commentFlags"
 			header="Comment"
 			:base-permission-group="commentPermissions"/>
 		<FlagSelector
-			v-model:flags="role.data.profanityFlags"
+			v-model="role.data.profanityFlags"
 			header="Profanity"
 			:base-permission-group="profanityPermissions"/>
 		<FlagSelector
-			v-model:flags="role.data.userFlags"
+			v-model="role.data.userFlags"
 			header="User"
 			:base-permission-group="userPermissions"/>
 		<FlagSelector
-			v-model:flags="role.data.auditTrailFlags"
+			v-model="role.data.auditTrailFlags"
 			header="Audit Trail"
 			:base-permission-group="auditTrailPermissions"/>
 
