@@ -77,7 +77,8 @@ const {
 
 interface CustomEvents {
 	(event: "update:flags", passedFlag: number): void
-	(event: "updateDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[]): void
+	(event: "checkExternalDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
+	: void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -104,7 +105,7 @@ const rawFlags = computed<string[]>({
 
 		emit("update:flags", basePermissionGroup.generateMask(...resolvedPermissions))
 		emit(
-			"updateDependencyFlags",
+			"checkExternalDependencyFlags",
 			basePermissionGroup.identifyExternalDependencies(resolvedPermissions)
 		)
 	}

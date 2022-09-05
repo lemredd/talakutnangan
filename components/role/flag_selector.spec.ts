@@ -55,7 +55,7 @@ describe("Component: role/flag_selector", () => {
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = comment.generateMask("view")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
-		const externalUpdates = wrapper.emitted("updateDependencyFlags")
+		const externalUpdates = wrapper.emitted("checkExternalDependencyFlags")
 		expect(externalUpdates).toHaveProperty("0.0.0.group", post)
 		expect(externalUpdates).toHaveProperty("0.0.0.permissionDependencies", [ "view" ])
 		expect(externalUpdates).not.toHaveProperty("0.0.1")
@@ -95,7 +95,7 @@ describe("Component: role/flag_selector", () => {
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = 0
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
-		const externalUpdates = wrapper.emitted("updateDependencyFlags")
+		const externalUpdates = wrapper.emitted("checkExternalDependencyFlags")
 		expect(externalUpdates).toHaveProperty("0.0.0.group", comment)
 		expect(externalUpdates).toHaveProperty("0.0.0.permissionDependents", [ "view" ])
 		expect(externalUpdates).not.toHaveProperty("0.0.1")
