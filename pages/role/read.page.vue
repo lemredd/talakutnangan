@@ -20,12 +20,13 @@
 			v-model="role.data.postFlags"
 			header="Post"
 			:base-permission-group="postPermissions"
-			:dependent-permission-groups="[ commentPermissions] "/>
+			:dependent-permission-groups="[ commentPermissions ]"
+			@uncheck-externally-dependent-flags="uncheckExternalDependents"/>
 		<FlagSelector
 			v-model="role.data.commentFlags"
 			header="Comment"
 			:base-permission-group="commentPermissions"
-			@check-external-dependency-flags="checkExternalPermissions"/>
+			@check-external-dependency-flags="checkExternalDependencies"/>
 		<FlagSelector
 			v-model="role.data.profanityFlags"
 			header="Profanity"
@@ -79,8 +80,7 @@ import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import RoleFetcher from "$@/fetchers/role"
-import RoleNameField from "@/fields/textual.vue"
-import FlagSelector from "@/role/flag_selector.vue"
+import makeUnique from "$/helpers/array/make_unique"
 import {
 	semester as semesterPermissions,
 	tag as tagPermissions,
@@ -90,6 +90,9 @@ import {
 	user as userPermissions,
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
+
+import RoleNameField from "@/fields/textual.vue"
+import FlagSelector from "@/role/flag_selector.vue"
 
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -112,7 +115,7 @@ function roleFetcher(): RoleFetcher {
 	throw new Error("Roles cannot be retrived/sent to server yet")
 }
 
-function checkExternalPermissions(dependencies: ExternalPermissionDependencyInfo<any, any>[])
+function checkExternalDependencies(dependencies: ExternalPermissionDependencyInfo<any, any>[])
 : void {
 	for (const dependency of dependencies) {
 		const {
@@ -120,14 +123,73 @@ function checkExternalPermissions(dependencies: ExternalPermissionDependencyInfo
 			permissionDependencies
 		} = dependency
 
-		const additionalMask = group.generateMask(...permissionDependencies)
+		const flagsToAdd = group.generateMask(...permissionDependencies)
 
-		const newFlags = role.value.data[group.name] | additionalMask
+		const newFlags = role.value.data[group.name] | flagsToAdd
 		role.value.data[group.name] = newFlags
 
 		const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
-		checkExternalPermissions(externalDependencies)
+		checkExternalDependencies(externalDependencies)
 	}
+}
+
+function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<any, any>[])
+: void {
+	if (dependents.length === 0) return
+
+	let externalDependencyNames: string[] = []
+	const dependentNames: string[] = []
+
+	for (const dependent of dependents) {
+		const {
+			group,
+			permissionDependencies
+		} = dependent
+
+		const internalDependents = group.identifyDependents(permissionDependencies)
+		const allDependents = makeUnique([
+			...permissionDependencies,
+			...internalDependents
+		])
+		const flagsToRemove = group.generateMask(...allDependents)
+
+		// eslint-disable-next-line no-bitwise
+		const filteredFlags = role.value.data[group.name] & ~flagsToRemove
+		role.value.data[group.name] = filteredFlags
+
+		dependentNames.push(group.name)
+		const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
+
+		for (const dependency of externalDependencies) {
+			externalDependencyNames.push(dependency.group.name)
+		}
+	}
+
+	externalDependencyNames = makeUnique(externalDependencyNames)
+	const unsuspectedNames = makeUnique([ ...externalDependencyNames, ...dependentNames ])
+
+	const possibleDependents = [
+		semesterPermissions,
+		tagPermissions,
+		postPermissions,
+		commentPermissions,
+		profanityPermissions,
+		userPermissions,
+		auditTrailPermissions
+	].filter(info => !unsuspectedNames.includes(info.name))
+
+	const subdependents = possibleDependents
+	.map(subdependent => {
+		const permissionDependencies = subdependent.identifyExternallyDependents(dependents)
+
+		return {
+			"group": subdependent,
+			permissionDependencies
+		}
+	})
+	.filter(subdependentInfo => subdependentInfo.permissionDependencies.length > 0)
+
+	uncheckExternalDependents(subdependents)
 }
 
 async function updateRole() {
