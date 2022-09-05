@@ -15,7 +15,7 @@
 				class="ml-5">
 				<Checkbox
 					v-model="rawFlags"
-					:label="transformText.toSentenceCase(permissionName).toLowerCase()"
+					:label="convertForSentence(permissionName).toLowerCase()"
 					:value="permissionName"
 					@change="updateFlags"/>
 			</li>
@@ -62,7 +62,7 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 import BasePermissionGroup from "$/permissions/base"
 import makeUnique from "$/helpers/array/make_unique"
 import sanitizeArray from "$@/helpers/sanitize_array"
-import TextTransformer from "$/helpers/text_transformers"
+import convertForSentence from "$/string/convert_for_sentence"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
 
 import Checkbox from "@/fields/checkbox.vue"

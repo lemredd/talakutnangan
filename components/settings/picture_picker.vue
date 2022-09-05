@@ -34,21 +34,19 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import TextTransformer from "$/helpers/text_transformers"
+import convertForParameter from "$/string/convert_for_parameter"
 
 const { title, picture } = defineProps<{
 	title: string
 	picture: string | null
 }>()
 
-const transformText = new TextTransformer()
-
 const pictureToDisplay = ref(picture)
-const inputId = transformText.toParamCase(title)
+const inputId = convertForParameter(title)
 
 function loadImage(event: Event) {
 	const target = event.target as HTMLInputElement
-	const [ file ] = target.files!
+	const [ file ] = target.files as FileList
 	const fileObjectURL = URL.createObjectURL(file)
 
 	pictureToDisplay.value = fileObjectURL

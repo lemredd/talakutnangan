@@ -17,7 +17,7 @@
 				:selected="initialValue === option">
 				{{
 					isOptionString(option)
-						? transformText.toSentenceCase(option).toLocaleLowerCase()
+						? convertForSentence(option).toLocaleLowerCase()
 						: option
 				}}
 			</option>
@@ -29,7 +29,7 @@
 </style>
 
 <script setup lang="ts">
-import TextTransformer from "$/helpers/text_transformers"
+import convertForSentence from "$/string/convert_for_sentence"
 
 const {
 	options,
@@ -41,8 +41,6 @@ const {
 	initialValue?: any
 	label?: string
 }>()
-
-const transformText = new TextTransformer()
 
 function isOptionString(option: any): option is string {
 	return typeof option === "string"
