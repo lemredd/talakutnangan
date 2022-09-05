@@ -4,7 +4,7 @@ import FlagSelector from "./flag_selector.vue"
 import { post, comment } from "$/permissions/permission_list"
 
 describe("Component: role/flag_selector", () => {
-	it("should check internal flag depependency/ies", async() => {
+	it("should check internal flag depependencies", async() => {
 		const wrapper = shallowMount(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
@@ -13,13 +13,13 @@ describe("Component: role/flag_selector", () => {
 			}
 		})
 
-		const dependentCheckbox = wrapper.find("input[value='create']")
-		await dependentCheckbox.trigger("change")
+		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
+		await dependentCheckbox.setValue([ "create", "view" ])
 
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = post.generateMask("create", "view")
-		expect(internalUpdates).toHaveLength(1)
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
+		expect(internalUpdates).not.toHaveProperty("1")
 	})
 
 	it("should increase internal flags on selection of access level", async() => {
@@ -31,12 +31,13 @@ describe("Component: role/flag_selector", () => {
 			}
 		})
 
-		const readAccessLevelFlags = wrapper.find(".read-scope")
+		const readAccessLevelFlags = wrapper.findComponent({ "name": "AccessLevelSelector" })
 		await readAccessLevelFlags.setValue("readDepartmentScope")
 
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = post.generateMask("readDepartmentScope")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
+		expect(internalUpdates).not.toHaveProperty("1")
 	})
 
 	it("should check external dependency flags", async() => {
