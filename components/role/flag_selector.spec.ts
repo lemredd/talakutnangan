@@ -97,7 +97,13 @@ describe("Component: role/flag_selector", () => {
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		const externalUpdates = wrapper.emitted("uncheckExternallyDependentFlags")
 		expect(externalUpdates).toHaveProperty("0.0.0.group", comment)
-		expect(externalUpdates).toHaveProperty("0.0.0.permissionDependents", [ "view" ])
+		expect(externalUpdates).toHaveProperty("0.0.0.permissionDependencies", [
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"vote"
+		])
 		expect(externalUpdates).not.toHaveProperty("0.0.1")
 	})
 })
