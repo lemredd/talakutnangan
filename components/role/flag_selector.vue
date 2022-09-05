@@ -101,6 +101,11 @@ const rawFlags = computed<string[]>({
 				...resolvedPermissions,
 				...basePermissionGroup.identifyDependencies(newPermissions)
 			])
+
+			emit(
+				"checkExternalDependencyFlags",
+				basePermissionGroup.identifyExternalDependencies(resolvedPermissions)
+			)
 		} else {
 			const removedPermissions = subtractArrays(oldFlags, resolvedPermissions)
 			const dependentPermissions = basePermissionGroup.identifyDependents(removedPermissions)
@@ -131,10 +136,6 @@ const rawFlags = computed<string[]>({
 		}
 
 		emit("update:flags", basePermissionGroup.generateMask(...resolvedPermissions))
-		emit(
-			"checkExternalDependencyFlags",
-			basePermissionGroup.identifyExternalDependencies(resolvedPermissions)
-		)
 	}
 })
 
