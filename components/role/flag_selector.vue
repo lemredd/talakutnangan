@@ -69,16 +69,16 @@ const {
 	header,
 	basePermissionGroup,
 	dependentPermissionGroups = [],
-	flags
+	modelValue
 } = defineProps<{
 	header: string
 	basePermissionGroup: BasePermissionGroup<any, any>
 	dependentPermissionGroups?: BasePermissionGroup<any, any>[]
-	flags: number
+	modelValue: number
 }>()
 
 interface CustomEvents {
-	(event: "update:flags", passedFlag: number): void
+	(event: "update:modelValue", passedFlag: number): void
 	(event: "checkExternalDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
 	: void
 	(event: "uncheckExternallyDependentFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
@@ -87,7 +87,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const rawFlags = computed<string[]>({
-	"get": () => basePermissionGroup.deserialize(flags),
+	"get": () => basePermissionGroup.deserialize(modelValue),
 	set(newUnresolvedPermissions: string[]) {
 		let resolvedPermissions = [ ...newUnresolvedPermissions ]
 		const oldFlags = rawFlags.value
@@ -135,7 +135,7 @@ const rawFlags = computed<string[]>({
 			emit("uncheckExternallyDependentFlags", externalDependents)
 		}
 
-		emit("update:flags", basePermissionGroup.generateMask(...resolvedPermissions))
+		emit("update:modelValue", basePermissionGroup.generateMask(...resolvedPermissions))
 	}
 })
 
