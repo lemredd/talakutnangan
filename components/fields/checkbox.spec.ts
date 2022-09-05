@@ -8,17 +8,17 @@ describe("Component: fields/checkbox", () => {
 		const wrapper = mount(Checkbox, {
 			"props": {
 				"label": "View",
-				"value": checkboxValue,
-				"modelValue": values
+				"modelValue": values,
+				"value": checkboxValue
 			}
 		})
 
 		const field = wrapper.find("input")
 		await field.setValue(true)
 
-		const updates = wrapper.emitted("update:modelValue")
+		const updates = wrapper.emitted("update:modelValue") as string[][]
 		expect(updates).toHaveLength(1)
-		const updatedValues = updates![0] as string[]
+		const updatedValues = updates[0] as string[]
 		expect(updatedValues[0].includes(checkboxValue)).toBeTruthy()
 	})
 })
