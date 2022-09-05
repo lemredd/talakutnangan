@@ -181,12 +181,13 @@ describe("UI Page: Read resource by ID", () => {
 			}
 		})
 
-		const roleName = wrapper.find(".role-name input[type='text']")
+		const roleName = wrapper.find("input[type='text']")
+		const editButton = wrapper.find("input[type='text'] + button")
 		const submit = wrapper.find("[type='submit']")
 
+		await editButton.trigger("click")
 		await roleName.setValue(newSampleModel.name)
 		await submit.trigger("submit")
-		await wrapper.vm.$nextTick()
 		await flushPromises()
 
 		// TODO?: test update submission and expect new role name to successfully push in database
