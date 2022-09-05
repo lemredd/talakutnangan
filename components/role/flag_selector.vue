@@ -65,17 +65,19 @@ import convertForSentence from "$/string/convert_for_sentence"
 import Checkbox from "@/fields/checkbox.vue"
 import AccessLevelSelector from "@/fields/selectable_options.vue"
 
-const {
-	header,
-	basePermissionGroup,
-	dependentPermissionGroups = [],
-	modelValue
-} = defineProps<{
+// Props should be contained to retain its reactivity
+const props = defineProps<{
 	header: string
 	basePermissionGroup: BasePermissionGroup<any, any>
 	dependentPermissionGroups?: BasePermissionGroup<any, any>[]
 	modelValue: number
 }>()
+
+const {
+	header,
+	basePermissionGroup,
+	dependentPermissionGroups = []
+} = props
 
 interface CustomEvents {
 	(event: "update:modelValue", passedFlag: number): void
@@ -87,7 +89,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const rawFlags = computed<string[]>({
-	"get": () => basePermissionGroup.deserialize(modelValue),
+	"get": () => basePermissionGroup.deserialize(props.modelValue),
 	set(newUnresolvedPermissions: string[]) {
 		let resolvedPermissions = [ ...newUnresolvedPermissions ]
 		const oldFlags = rawFlags.value
