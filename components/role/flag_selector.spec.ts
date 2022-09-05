@@ -14,7 +14,7 @@ describe("Component: role/flag_selector", () => {
 		})
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
-		await dependentCheckbox.setValue([ "create", "view" ])
+		await dependentCheckbox.setValue([ "create" ])
 
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = post.generateMask("create", "view")
@@ -70,8 +70,8 @@ describe("Component: role/flag_selector", () => {
 			}
 		})
 
-		const dependentCheckbox = wrapper.find("input[value='view']")
-		await dependentCheckbox.trigger("change")
+		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
+		await dependentCheckbox.setValue([ "create" ])
 
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = 0
@@ -89,8 +89,8 @@ describe("Component: role/flag_selector", () => {
 			}
 		})
 
-		const dependentCheckbox = wrapper.find("input[value='view']")
-		await dependentCheckbox.trigger("change")
+		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
+		await dependentCheckbox.setValue([])
 
 		const internalUpdates = wrapper.emitted("update:flags")
 		const expectedFlagValue = 0
