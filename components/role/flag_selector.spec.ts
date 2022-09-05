@@ -1,11 +1,13 @@
+import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
-import FlagSelector from "./flag_selector.vue"
 
 import { post, comment } from "$/permissions/permission_list"
 
+import Component from "./flag_selector.vue"
+
 describe("Component: role/flag_selector", () => {
 	it("should check internal flag depependencies", async() => {
-		const wrapper = shallowMount<any>(FlagSelector, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"basePermissionGroup": post,
 				"header": "Post",
@@ -22,8 +24,28 @@ describe("Component: role/flag_selector", () => {
 		expect(internalUpdates).not.toHaveProperty("1")
 	})
 
+	it("should check internal flag depependencies upon prop update", async() => {
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"basePermissionGroup": post,
+				"header": "Post",
+				"modelValue": 0
+			}
+		})
+
+		await wrapper.setProps({
+			"basePermissionGroup": post,
+			"header": "Post",
+			"modelValue": 1
+		})
+		await nextTick()
+
+		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
+		expect(dependentCheckbox.props("modelValue")).toEqual([ "view" ])
+	})
+
 	it("should increase internal flags on selection of access level", async() => {
-		const wrapper = shallowMount<any>(FlagSelector, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"basePermissionGroup": post,
 				"header": "Post",
@@ -41,7 +63,7 @@ describe("Component: role/flag_selector", () => {
 	})
 
 	it("should check external dependency flags", async() => {
-		const wrapper = shallowMount<any>(FlagSelector, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"basePermissionGroup": comment,
 				"header": "Comment",
@@ -62,7 +84,7 @@ describe("Component: role/flag_selector", () => {
 	})
 
 	it("should uncheck internal dependent flags", async() => {
-		const wrapper = shallowMount<any>(FlagSelector, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"basePermissionGroup": post,
 				"header": "Post",
@@ -80,7 +102,7 @@ describe("Component: role/flag_selector", () => {
 	})
 
 	it("should uncheck external dependency flags", async() => {
-		const wrapper = shallowMount<any>(FlagSelector, {
+		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"basePermissionGroup": post,
 				"dependentPermissionGroups": [ comment ],
