@@ -19,29 +19,29 @@ describe("Page: /role", () => {
 		const submit = wrapper.find("input[type=submit]")
 
 		await roleNameField.setValue("Role Sample")
-		viewCheckboxes.map(async checkbox => await checkbox.setValue(true))
+		await Promise.all(viewCheckboxes.map(async checkbox => await checkbox.setValue(true)))
 		await submit.trigger("submit")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/role")
-
-		expect(request.json()).resolves.toStrictEqual({
+		const requestBody = await request.json()
+		expect(requestBody).toStrictEqual({
 			"data": {
-				"type": "role",
 				"attributes": {
+					"auditTrailFlags": 1,
+					"commentFlags": 1,
+					"departmentFlags": 1,
 					"name": "Role Sample",
 					"postFlags": 1,
+					"profanityFlags": 1,
+					"roleFlags": 1,
 					"semesterFlags": 1,
 					"tagFlags": 1,
-					"commentFlags": 1,
-					"profanityFlags": 1,
-					"userFlags": 1,
-					"auditTrailFlags": 1,
-					"departmentFlags": 1,
-					"roleFlags": 1
-				}
+					"userFlags": 1
+				},
+				"type": "role"
 			}
 		})
 	})
@@ -50,13 +50,13 @@ describe("Page: /role", () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"errors": [
 				{
-					"status": RequestEnvironment.status.BAD_REQUEST,
 					"code": "3",
-					"title": "Validation Error",
 					"detail": "Field \"data.attributes.name\" must match the expression.",
 					"source": {
 						"pointer": "/data/attributes/name"
-					}
+					},
+					"status": RequestEnvironment.status.BAD_REQUEST,
+					"title": "Validation Error"
 				}
 			] as UnitError[]
 		}), { "status": RequestEnvironment.status.BAD_REQUEST })
@@ -71,7 +71,7 @@ describe("Page: /role", () => {
 		const viewCheckboxes = wrapper.findAll("input[value='view']")
 		const submit = wrapper.find("input[type=submit]")
 
-		viewCheckboxes.map(async checkbox => await checkbox.setValue(true))
+		await Promise.all(viewCheckboxes.map(async checkbox => await checkbox.setValue(true)))
 		await submit.trigger("submit")
 
 		// TODO: Test the showing of error messages in the UI
@@ -79,22 +79,22 @@ describe("Page: /role", () => {
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/role")
-
-		expect(request.json()).resolves.toStrictEqual({
+		const requestBody = await request.json()
+		expect(requestBody).toStrictEqual({
 			"data": {
-				"type": "role",
 				"attributes": {
+					"auditTrailFlags": 1,
+					"commentFlags": 1,
+					"departmentFlags": 1,
 					"name": "",
 					"postFlags": 1,
+					"profanityFlags": 1,
+					"roleFlags": 1,
 					"semesterFlags": 1,
 					"tagFlags": 1,
-					"commentFlags": 1,
-					"profanityFlags": 1,
-					"userFlags": 1,
-					"auditTrailFlags": 1,
-					"departmentFlags": 1,
-					"roleFlags": 1
-				}
+					"userFlags": 1
+				},
+				"type": "role"
 			}
 		})
 	})
