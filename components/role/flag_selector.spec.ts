@@ -5,54 +5,54 @@ import { post, comment } from "$/permissions/permission_list"
 
 describe("Component: role/flag_selector", () => {
 	it("should check internal flag depependencies", async() => {
-		const wrapper = shallowMount(FlagSelector, {
+		const wrapper = shallowMount<any>(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
-				"flags": 0,
-				"header": "Post"
+				"header": "Post",
+				"modelValue": 0
 			}
 		})
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
 		await dependentCheckbox.setValue([ "create" ])
 
-		const internalUpdates = wrapper.emitted("update:flags")
+		const internalUpdates = wrapper.emitted("update:modelValue")
 		const expectedFlagValue = post.generateMask("create", "view")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		expect(internalUpdates).not.toHaveProperty("1")
 	})
 
 	it("should increase internal flags on selection of access level", async() => {
-		const wrapper = shallowMount(FlagSelector, {
+		const wrapper = shallowMount<any>(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
-				"flags": 0,
-				"header": "Post"
+				"header": "Post",
+				"modelValue": 0
 			}
 		})
 
 		const readAccessLevelFlags = wrapper.findComponent({ "name": "AccessLevelSelector" })
 		await readAccessLevelFlags.setValue("readDepartmentScope")
 
-		const internalUpdates = wrapper.emitted("update:flags")
+		const internalUpdates = wrapper.emitted("update:modelValue")
 		const expectedFlagValue = post.generateMask("readDepartmentScope")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		expect(internalUpdates).not.toHaveProperty("1")
 	})
 
 	it("should check external dependency flags", async() => {
-		const wrapper = shallowMount(FlagSelector, {
+		const wrapper = shallowMount<any>(FlagSelector, {
 			"props": {
 				"basePermissionGroup": comment,
-				"flags": 0,
-				"header": "Comment"
+				"header": "Comment",
+				"modelValue": 0
 			}
 		})
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
 		await dependentCheckbox.setValue([ "view" ])
 
-		const internalUpdates = wrapper.emitted("update:flags")
+		const internalUpdates = wrapper.emitted("update:modelValue")
 		const expectedFlagValue = comment.generateMask("view")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		const externalUpdates = wrapper.emitted("checkExternalDependencyFlags")
@@ -62,37 +62,37 @@ describe("Component: role/flag_selector", () => {
 	})
 
 	it("should uncheck internal dependent flags", async() => {
-		const wrapper = shallowMount(FlagSelector, {
+		const wrapper = shallowMount<any>(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
-				"flags": post.generateMask("create", "view"),
-				"header": "Post"
+				"header": "Post",
+				"modelValue": post.generateMask("create", "view")
 			}
 		})
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
 		await dependentCheckbox.setValue([ "create" ])
 
-		const internalUpdates = wrapper.emitted("update:flags")
+		const internalUpdates = wrapper.emitted("update:modelValue")
 		const expectedFlagValue = 0
 		expect(internalUpdates).toHaveLength(1)
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 	})
 
 	it("should uncheck external dependency flags", async() => {
-		const wrapper = shallowMount(FlagSelector, {
+		const wrapper = shallowMount<any>(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
 				"dependentPermissionGroups": [ comment ],
-				"flags": post.generateMask("view"),
-				"header": "Comment"
+				"header": "Comment",
+				"modelValue": post.generateMask("view")
 			}
 		})
 
 		const dependentCheckbox = wrapper.findComponent({ "name": "Checkbox" })
 		await dependentCheckbox.setValue([])
 
-		const internalUpdates = wrapper.emitted("update:flags")
+		const internalUpdates = wrapper.emitted("update:modelValue")
 		const expectedFlagValue = 0
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		const externalUpdates = wrapper.emitted("uncheckExternallyDependentFlags")
