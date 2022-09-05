@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
@@ -67,7 +68,7 @@ describe("UI Page: Read resource by ID", () => {
 		])
 	})
 
-	it.skip("should uncheck dependent permissions", async() => {
+	it("should uncheck dependent permissions", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
