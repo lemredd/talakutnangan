@@ -1,10 +1,10 @@
-import convertToCamelCase from "./convert_to_camel_case"
+import convertToCamel from "./convert_to_camel"
 
 describe("Helpers: Camel Case", () => {
 	it("can convert words with initial uppercase letter", () => {
 		const value = "Name"
 
-		const result = convertToCamelCase(value)
+		const result = convertToCamel(value)
 
 		expect(result).toBe("name")
 	})
@@ -12,7 +12,7 @@ describe("Helpers: Camel Case", () => {
 	it("can convert words with initial uppercase letter and whitespace separated", () => {
 		const value = "Student Number"
 
-		const result = convertToCamelCase(value)
+		const result = convertToCamel(value)
 
 		expect(result).toBe("studentNumber")
 	})
