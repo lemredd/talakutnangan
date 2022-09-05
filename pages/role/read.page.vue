@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="updateRole">
-		<div v-if="role" class="role-name">
+		<div class="role-name">
 			<RoleNameField
 				v-model="role.data.name"
 				label="Role Name"
@@ -114,7 +114,7 @@ async function updateRole() {
 	await roleFetcher().update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
 		"commentFlags": role.value.data.commentFlags,
-		"deletedAt": role.value.data.deletedAt?.toJSON() ?? null,
+		"deletedAt": role.value.data.deletedAt?.toJSON() || null,
 		"departmentFlags": role.value.data.departmentFlags,
 		"name": role.value.data.name,
 		"postFlags": role.value.data.postFlags,
@@ -122,7 +122,6 @@ async function updateRole() {
 		"roleFlags": role.value.data.roleFlags,
 		"semesterFlags": role.value.data.semesterFlags,
 		"tagFlags": role.value.data.tagFlags,
-		"type": role.value.data.type,
 		"userFlags": role.value.data.userFlags
 	})
 	.then(({ body, status }) => {
