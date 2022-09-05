@@ -24,7 +24,8 @@
 		<FlagSelector
 			v-model="role.data.commentFlags"
 			header="Comment"
-			:base-permission-group="commentPermissions"/>
+			:base-permission-group="commentPermissions"
+			@check-external-dependency-flags="checkExternalPermissions"/>
 		<FlagSelector
 			v-model="role.data.profanityFlags"
 			header="Profanity"
@@ -75,6 +76,7 @@ import {
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import RoleFetcher from "$@/fetchers/role"
 import RoleNameField from "@/fields/textual.vue"
@@ -108,6 +110,24 @@ function roleFetcher(): RoleFetcher {
 	if (rawRoleFetcher) return rawRoleFetcher
 
 	throw new Error("Roles cannot be retrived/sent to server yet")
+}
+
+function checkExternalPermissions(dependencies: ExternalPermissionDependencyInfo<any, any>[])
+: void {
+	for (const dependency of dependencies) {
+		const {
+			group,
+			permissionDependencies
+		} = dependency
+
+		const additionalMask = group.generateMask(...permissionDependencies)
+
+		const newFlags = role.value.data[group.name] | additionalMask
+		role.value.data[group.name] = newFlags
+
+		const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
+		checkExternalPermissions(externalDependencies)
+	}
 }
 
 async function updateRole() {
