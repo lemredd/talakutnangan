@@ -17,6 +17,60 @@ import {
 import Page from "./read.page.vue"
 
 describe("UI Page: Read resource by ID", () => {
+	it("render properly", async() => {
+		const sampleResource = await new RoleFactory()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view"))
+		.postFlags(post.generateMask("view"))
+		.commentFlags(comment.generateMask("view"))
+		.profanityFlags(profanity.generateMask("view"))
+		.userFlags(user.generateMask("view"))
+		.auditTrailFlags(0)
+		.serializedOne()
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"role": sampleResource
+						}
+					}
+				}
+			}
+		})
+
+		const viewCheckboxes = wrapper.findAll("input[type=checkbox][value=view]")
+
+		const checkedValues = viewCheckboxes.map(checkbox => {
+			const castCheckbox = checkbox.element as HTMLInputElement
+			return castCheckbox.checked
+		})
+
+		expect(checkedValues).toEqual([
+			// Department Flags
+			true,
+			// Role Flags
+			true,
+			// Semester Flags
+			true,
+			// Tag Flags
+			true,
+			// Post Flags
+			true,
+			// Comment Flags
+			true,
+			// Profanity Flags
+			true,
+			// User Flags
+			true,
+			// Audit Trail Flags
+			false
+		])
+	})
+
 	it("should uncheck dependent permissions", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
