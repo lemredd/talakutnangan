@@ -66,10 +66,10 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		const createCommentPermission = wrapper.find(
-			".comment-flags input[type=checked][value=create]"
+			"#comment-flags input[type=checkbox][value=create]"
 		)
-		const viewPostPermission = wrapper.find(".post-flags input[type=checked][value=view]")
-		const viewCommentPermission = wrapper.find(".comment-flags input[type=checked][value=view]")
+		const viewPostPermission = wrapper.find("#post-flags input[type=checkbox][value=view]")
+		const viewCommentPermission = wrapper.find("#comment-flags input[type=checkbox][value=view]")
 
 		await viewCommentPermission.setValue(false)
 
