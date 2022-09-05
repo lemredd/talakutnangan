@@ -68,16 +68,20 @@ import AccessLevelSelector from "@/fields/selectable_options.vue"
 const {
 	header,
 	basePermissionGroup,
+	dependentPermissionGroups = [],
 	flags
 } = defineProps<{
 	header: string
 	basePermissionGroup: BasePermissionGroup<any, any>
+	dependentPermissionGroups?: BasePermissionGroup<any, any>[]
 	flags: number
 }>()
 
 interface CustomEvents {
 	(event: "update:flags", passedFlag: number): void
 	(event: "checkExternalDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
+	: void
+	(event: "uncheckExternallyDependentFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
 	: void
 }
 const emit = defineEmits<CustomEvents>()
@@ -101,6 +105,29 @@ const rawFlags = computed<string[]>({
 			const removedPermissions = subtractArrays(oldFlags, resolvedPermissions)
 			const dependentPermissions = basePermissionGroup.identifyDependents(removedPermissions)
 			resolvedPermissions = subtractArrays(resolvedPermissions, dependentPermissions)
+
+			const allRemovedPermissions = makeUnique([
+				...removedPermissions,
+				...dependentPermissions
+			])
+
+			const externalDependents = dependentPermissionGroups.map(dependentGroup => {
+				const externallyDependents = dependentGroup.identifyExternallyDependents([
+					{
+						"group": basePermissionGroup,
+						"permissionDependencies": allRemovedPermissions
+					}
+				])
+
+				const externalPermissionGroupToAffect: ExternalPermissionDependencyInfo<any, any> = {
+					"group": dependentGroup,
+					"permissionDependencies": externallyDependents
+				}
+
+				return externalPermissionGroupToAffect
+			})
+
+			emit("uncheckExternallyDependentFlags", externalDependents)
 		}
 
 		emit("update:flags", basePermissionGroup.generateMask(...resolvedPermissions))
