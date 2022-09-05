@@ -55,16 +55,18 @@
 import { computed, ref } from "vue"
 
 // Types
+import type { OptionInfo } from "$@/types/component"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 // Developer defined internals
-import Checkbox from "@/fields/checkbox.vue"
 import BasePermissionGroup from "$/permissions/base"
 import makeUnique from "$/helpers/array/make_unique"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import TextTransformer from "$/helpers/text_transformers"
-import AccessLevelSelector from "@/fields/dropdown_select.vue"
 import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
+
+import Checkbox from "@/fields/checkbox.vue"
+import AccessLevelSelector from "@/fields/selectable_options.vue"
 
 const {
 	header,
@@ -76,9 +78,13 @@ const {
 	flags: number
 }>()
 
-const transformText = new TextTransformer()
+const rawFlags = computed<string[]>(() => basePermissionGroup.deserialize(flags))
 
-const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
+const rawEmptyOption: OptionInfo = {
+	"label": "None",
+	"value": ""
+}
+
 const initialReadScopedRawFlag = computed(() => {
 	const scopedRawFlags = rawFlags.value.filter(flag => {
 		const name = flag.toLocaleLowerCase()
@@ -142,5 +148,4 @@ function updateAccessLevel(event: Event, accessPermissionNames: string[]) {
 	emit("update:flags", generatedMask)
 }
 
-const emit = defineEmits<{(event: "update:flags", passedFlag: number): void}>()
 </script>
