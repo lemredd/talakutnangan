@@ -83,7 +83,7 @@ describe("Component: role/flag_selector", () => {
 		const wrapper = shallowMount(FlagSelector, {
 			"props": {
 				"basePermissionGroup": post,
-				"dependentGroups": [ comment ],
+				"dependentPermissionGroups": [ comment ],
 				"flags": post.generateMask("view"),
 				"header": "Comment"
 			}
