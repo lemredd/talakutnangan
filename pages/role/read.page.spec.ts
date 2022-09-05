@@ -28,7 +28,7 @@ describe("UI Page: Read resource by ID", () => {
 		.profanityFlags(profanity.generateMask("view"))
 		.userFlags(user.generateMask("view"))
 		.auditTrailFlags(0)
-		.serializedOne()
+		.deserializedOne()
 
 		const wrapper = mount(Page, {
 			"global": {
@@ -50,10 +50,6 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		expect(checkedValues).toEqual([
-			// Department Flags
-			true,
-			// Role Flags
-			true,
 			// Semester Flags
 			true,
 			// Tag Flags
@@ -105,7 +101,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope"
 		))
 		.auditTrailFlags(0)
-		.serializedOne()
+		.deserializedOne()
 
 		const wrapper = mount(Page, {
 			"global": {
