@@ -95,7 +95,7 @@ describe("Database Manager: Chat message create operations", () => {
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModel))
 		.makeOne()
 		const fileModel = await new AttachedChatFileFactory()
-		.chatMessage(model)
+		.chatMessage(() => Promise.resolve(model))
 		.makeOne()
 		const manager = new Manager()
 
