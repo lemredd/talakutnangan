@@ -85,7 +85,7 @@ const resourceProperties = ref<string[]>([])
 const tableHeaders = computed(() => {
 	let headers: string[] = []
 	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
-	else headers = [ "Name", "# of users", "" ]
+	else headers = [ "Name", "no. of users", "" ]
 
 	return headers
 })
