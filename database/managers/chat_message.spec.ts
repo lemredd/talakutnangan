@@ -94,7 +94,7 @@ describe("Database Manager: Chat message create operations", () => {
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModel))
 		.makeOne()
-		const fileModel = await new AttachedChatFileFactory()
+		const attachedChatFileModel = await new AttachedChatFileFactory()
 		.chatMessage(() => Promise.resolve(model))
 		.makeOne()
 		const manager = new Manager()
@@ -107,7 +107,7 @@ describe("Database Manager: Chat message create operations", () => {
 			"chatMessageActivityID": model.chatMessageActivityID,
 			"data": model.data,
 			"kind": model.kind
-		}, fileModel)
+		}, attachedChatFileModel.fileContents)
 
 		expect(await Model.count()).toBe(1)
 		expect(await AttachedChatFile.count()).toBe(1)
