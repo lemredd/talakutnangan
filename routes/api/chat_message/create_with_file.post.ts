@@ -1,0 +1,80 @@
+import type { Request, Response } from "!/types/dependent"
+import type { FieldRules, Rules } from "!/types/validation"
+import type { ChatMessageDocument } from "$/types/documents/chat_message"
+
+import Socket from "!/ws/socket"
+import Log from "$!/singletons/log"
+import Manager from "%/managers/chat_message"
+import CreatedResponseInfo from "!/response_infos/created"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
+
+import Middleware from "!/bases/middleware"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+
+import object from "!/validators/base/object"
+import buffer from "!/validators/base/buffer"
+import required from "!/validators/base/required"
+
+import CreateRoute from "!%/api/chat_message/create.post"
+
+export default class extends CreateRoute {
+	get filePath(): string { return __filename }
+
+	get bodyParser(): Middleware {
+		return CommonMiddlewareList.multipart
+	}
+
+	makeBodyRuleGenerator(request: Request): FieldRules {
+		// 20 MB
+		const MAX_SIZE = 20 * 1024 * 1024
+		const meta: Rules = {
+			"constraints": {
+				"object": {
+					"file": {
+						"constraints": {
+							"buffer": {
+								"allowedMimeTypes": [ "text/plain", "image/png" ],
+								"maxSize": MAX_SIZE
+							}
+						},
+						"pipes": [ required, buffer ]
+					}
+				}
+			},
+			"pipes": [ required, object ]
+		}
+
+		const originalRules = super.makeBodyRuleGenerator(request)
+
+		return {
+			...originalRules,
+			meta
+		}
+	}
+
+	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
+		const manager = new Manager(request.transaction, request.cache)
+		const { data, meta } = request.body as ChatMessageDocument<"create">
+		const { attributes, relationships } = data
+		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)
+
+		const document = await manager.create({
+			...attributes,
+			chatMessageActivityID
+		}) as ChatMessageDocument<"create">
+		// const document = await manager.createWithFile({
+		// 	...attributes,
+		// 	chatMessageActivityID
+		// }, meta.file) as ChatMessageDocument<"create">
+
+		Socket.emitToClients(
+			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),
+			"create",
+			document
+		)
+
+		Log.success("controller", "successfully created the chat message of the user with file")
+
+		return new CreatedResponseInfo(document)
+	}
+}
