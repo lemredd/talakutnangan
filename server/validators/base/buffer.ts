@@ -4,6 +4,7 @@ import type {
 	BufferRuleConstraints
 } from "!/types/validation"
 
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import isPlainObject from "$/helpers/is_plain_object"
 import makeDeveloperError from "!/validators/make_developer_error"
 
@@ -16,13 +17,13 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.buffer === undefined) {
+	if (isUndefined(constraints.buffer)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const value = state.value
+	const { value } = state
 	if (
 		typeof value === "object"
 		&& isPlainObject(value)
@@ -30,31 +31,38 @@ export default async function(
 		&& value.buffer instanceof Buffer
 		&& "info" in value
 		&& typeof value.info === "object"
-		&& value.info?.mimeType !== undefined
+		&& !isUndefined(value.info?.mimeType)
 	) {
-		if (!((value.buffer as Buffer).byteLength <= constraints.buffer.maxSize)) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) => `Field "${field}" must be less than ${
+		const { buffer } = value as { buffer: Buffer }
+		if (!(buffer.byteLength <= constraints.buffer.maxSize)) {
+			const error = {
+				"field": constraints.field,
+				"messageMaker": (field: string) => `Field "${field}" must be less than ${
 					constraints.buffer?.maxSize
 				} bytes.`
 			}
+
+			throw error
 		}
 
-		if (!(constraints.buffer.allowedMimeTypes.includes(value.info.mimeType))) {
-			throw {
-				field: constraints.field,
-				messageMaker: (field: string) => `Field "${field}" must be one of the media types: ${
+		if (!constraints.buffer.allowedMimeTypes.includes(value.info.mimeType)) {
+			const error = {
+				"field": constraints.field,
+				"messageMaker": (field: string) => `Field "${field}" must be one of the media types: ${
 					constraints.buffer?.allowedMimeTypes.join(", ")
 				}.`
 			}
+
+			throw error
 		}
 
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be a file.`
-		}
 	}
+
+	const error = {
+		"field": constraints.field,
+		"messageMaker": (field: string) => `Field "${field}" must be a file.`
+	}
+
+	throw error
 }
