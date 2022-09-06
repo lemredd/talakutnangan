@@ -5,6 +5,7 @@ import type { ChatMessageActivityDocument } from "$/types/documents/chat_message
 
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
+import { chatMessageKind } from "!/constants/regex"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
@@ -34,7 +35,7 @@ export default class extends DoubleBoundJSONController {
 			"kind": {
 				"constraints": {
 					"regex": {
-						"match": /[a-z_]+/u
+						"match": chatMessageKind
 					}
 				},
 				"pipes": [ required, string, regex ]

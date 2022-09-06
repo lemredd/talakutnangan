@@ -7,6 +7,7 @@ import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
 import Manager from "%/managers/chat_message"
 import JSONController from "!/controllers/json"
+import { chatMessageKind } from "!/constants/regex"
 import CreatedResponseInfo from "!/response_infos/created"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -37,7 +38,7 @@ export default class extends JSONController {
 			"kind": {
 				"constraints": {
 					"regex": {
-						"match": /[a-z_]+/u
+						"match": chatMessageKind
 					}
 				},
 				"pipes": [ required, string, regex ]
