@@ -1,6 +1,7 @@
-import { mount } from "@vue/test-utils"
-import RoleSpecificLinks from "./role_specific_links.vue"
 import { ref } from "vue"
+
+import { mount } from "@vue/test-utils"
+import RoleSpecificLinks from "./navigation_links.vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
 	it("should specify the right link/s for authenticated user", () => {
