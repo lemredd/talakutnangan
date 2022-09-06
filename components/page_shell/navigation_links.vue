@@ -11,7 +11,7 @@
 		<template #dropdown-contents>
 			<div class="mobile-role-links">
 				<Anchor
-					v-for="link in roleLinks"
+					v-for="link in mobileRoleLinks"
 					:key="link.name"
 					:href="link.path">
 					<span class="material-icons">
@@ -26,7 +26,7 @@
 
 	<div class="links desktop">
 		<Anchor
-			v-for="link in roleLinks"
+			v-for="link in desktopRoleLinks"
 			:key="link.name"
 			:href="link.path">
 			<span class="material-icons">
@@ -124,6 +124,13 @@ const pageContext = inject("pageContext") as DeserializedPageContext
 
 // Role
 const roleLinks = computed(() => filterLinkInfo(pageContext, linkInfos))
+
+const mobileRoleLinks = computed(() => roleLinks.value.filter(
+	info => info.viewportsAvailable.includes("mobile")
+))
+const desktopRoleLinks = computed(() => roleLinks.value.filter(
+	info => info.viewportsAvailable.includes("desktop")
+))
 
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
