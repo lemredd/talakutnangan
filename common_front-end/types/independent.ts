@@ -31,13 +31,16 @@ export interface DeserializedPageContext extends Serializable {
 	}
 }
 
+type SupportedViewport = "mobile"|"desktop"
+
 /**
  * Shape of link info
  */
 export interface LinkInfo {
 	name: string,
 	path: string,
-	icon: string
+	icon: string,
+	viewportsAvailable: SupportedViewport[]
 }
 
 /**

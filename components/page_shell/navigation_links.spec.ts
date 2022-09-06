@@ -1,20 +1,17 @@
 import { ref } from "vue"
 
-import { mount } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
 import RoleSpecificLinks from "./navigation_links.vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
 	it("should specify the right link/s for authenticated user", () => {
-		const wrapper = mount(RoleSpecificLinks, {
-			"shallow": true,
+		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
-				"stubs": {
-					"RoleLinksList": false
-				},
 				"provide": {
 					"bodyClasses": ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
+							"parsedUnitError": {},
 							"userProfile": {
 								"data": {
 									"type": "user",
@@ -24,10 +21,12 @@ describe("Component: Page Shell/Role Specific Links", () => {
 										"data": []
 									}
 								}
-							},
-							"parsedUnitError": {}
+							}
 						}
 					}
+				},
+				"stubs": {
+					"RoleLinksList": false
 				}
 			}
 		})
@@ -38,20 +37,19 @@ describe("Component: Page Shell/Role Specific Links", () => {
 	})
 
 	it("should specify the right link/s for a guest user", () => {
-		const wrapper = mount(RoleSpecificLinks, {
-			"shallow": true,
+		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
-				"stubs": {
-					"RoleLinksList": false
-				},
 				"provide": {
 					"bodyClasses": ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
-							"userProfile": null,
-							"parsedUnitError": {}
+							"parsedUnitError": {},
+							"userProfile": null
 						}
 					}
+				},
+				"stubs": {
+					"RoleLinksList": false
 				}
 			}
 		})
@@ -62,29 +60,28 @@ describe("Component: Page Shell/Role Specific Links", () => {
 	})
 
 	it("should appear different in desktop", () => {
-		const wrapper = mount(RoleSpecificLinks, {
-			"shallow": true,
+		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
-				"stubs": {
-					"RoleLinksList": false
-				},
 				"provide": {
 					"bodyClasses": ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
+							"parsedUnitError": {},
 							"userProfile": {
 								"data": {
-									"type": "user",
 									"id": 1,
 									"kind": "student",
 									"roles": {
 										"data": []
-									}
+									},
+									"type": "user"
 								}
-							},
-							"parsedUnitError": {}
+							}
 						}
 					}
+				},
+				"stubs": {
+					"RoleLinksList": false
 				}
 			}
 		})
