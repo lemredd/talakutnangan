@@ -1,12 +1,12 @@
 <template>
-	<div v-if="!isLoggingIn" class="navigation">
+	<div class="navigation">
 		<div class="container">
 			<a href="/" class="logo">
 				<img src="@assets/logo_navbar.svg" alt="logo"/>
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
 			</a>
 
-			<Dropdown v-if="!isUserAGuest" purpose="notifications">
+			<Dropdown v-if="!isUserAGuest" class="notifications">
 				<template #toggler>
 					<span class="material-icons">notifications</span>
 				</template>
@@ -31,8 +31,8 @@
 					</ul>
 				</template>
 			</Dropdown>
-			<RoleSpecificLinks/>
-			<Dropdown v-if="!isUserAGuest" purpose="user-settings">
+			<CommonNavigationLinks/>
+			<Dropdown v-if="!isUserAGuest" class="user-settings">
 				<template #toggler>
 					<span class="material-icons">account_circle</span>
 				</template>
@@ -70,14 +70,13 @@
 	height: $navHeight;
 
 	.container {
-		@apply grid grid-cols-[1fr,repeat(3,min-content)];
+		@apply grid grid-cols-[1fr,repeat(3,min-content)] flex-1;
 	}
 
 	.logo {
 		@apply flex items-center;
 
 		padding: .25em;
-		width: max-content;
 
 		img {
 			width: 48px;
@@ -90,7 +89,11 @@
 	display: none;
 }
 
-@media screen and (min-width: $mobileViewport) {
+@media screen and (min-width: $desktopViewportMinimum) {
+	.container {
+		margin: auto;
+	}
+
 	.user-settings {
 		@apply self-center;
 
@@ -126,6 +129,7 @@
 			}
 		}
 	}
+
 	.notifications {
 		@apply self-center;
 		display: initial;
@@ -139,35 +143,35 @@
 			top: 56px;
 			left: -50%;
 
-				.notification-items {
-					@apply flex flex-col justify-between;
+			.notification-items {
+				@apply flex flex-col justify-between;
 
-					.notification-item {
-						@apply grid grid-cols-[repeat(2,max-content)] grid-rows-[repeat(2,max-content)];
-						padding: .5em 1em;
+				.notification-item {
+					@apply grid grid-cols-[repeat(2,max-content)] grid-rows-[repeat(2,max-content)];
+					padding: .5em 1em;
 
-						.icon {
-							@apply self-center row-span-full  dark:bg-light-800;
-							border-radius: 50%;
-							height: min-content;
-							background-color: gray;
+					.icon {
+						@apply self-center row-span-full  dark:bg-light-800;
+						border-radius: 50%;
+						height: min-content;
+						background-color: gray;
 
-							span {
-								font-size: 32px;
-							}
-						}
-
-						.title {
-							@apply col-start-2 row-start-1;
-						}
-						.date {
-							@apply col-start-2 row-start-2;
+						span {
+							font-size: 32px;
 						}
 					}
-					.notification-footer {
-						text-align: center;
+
+					.title {
+						@apply col-start-2 row-start-1;
+					}
+					.date {
+						@apply col-start-2 row-start-2;
 					}
 				}
+				.notification-footer {
+					text-align: center;
+				}
+			}
 		}
 	}
 }
@@ -182,9 +186,8 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
-import RoleSpecificLinks from "@/page_shell/role_specific_links.vue"
+import CommonNavigationLinks from "@/page_shell/navigation_links.vue"
 
-const isLoggingIn = inject("isLoggingIn") as boolean
 const { pageProps } = inject("pageContext") as PageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 

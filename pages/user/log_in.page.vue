@@ -52,7 +52,7 @@ body {
 
 }
 
-@media (min-width: $mobileViewport) {
+@media (min-width: $mobileViewportMaximum) {
 	.login-container {
 		display: grid;
 		align-items: initial;
