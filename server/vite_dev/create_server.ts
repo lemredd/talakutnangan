@@ -59,8 +59,8 @@ export default async function(app: ExpressApp) {
 			if (parsedUnitError !== null) {
 				const castParsedUnitError = parsedUnitError as UnitError
 				request.documentProps = {
-					"title": castParsedUnitError.title,
-					"description": castParsedUnitError.detail
+					"description": castParsedUnitError.detail,
+					"title": castParsedUnitError.title
 				}
 			} else if (isUndefined(request.documentProps)) {
 				// TODO: Remove in v0.15
@@ -69,12 +69,12 @@ export default async function(app: ExpressApp) {
 
 			const url = request.originalUrl
 			const pageContextInit = {
+				"documentProps": request.documentProps,
 				"pageProps": {
 					...request.pageProps,
 					parsedUnitError
 				},
-				"documentProps": request.documentProps,
-				url
+				"urlOriginal": url
 			}
 			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)
 			const { httpResponse, errorStatus } = pageContext
