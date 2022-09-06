@@ -30,7 +30,7 @@ export default class extends CreateRoute {
 		const meta: Rules = {
 			"constraints": {
 				"object": {
-					"file": {
+					"fileContents": {
 						"constraints": {
 							"buffer": {
 								"allowedMimeTypes": [ "text/plain", "image/png" ],

@@ -37,7 +37,7 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 					"type": "chat_message"
 				},
 				"meta": {
-					"file": {
+					"fileContents": {
 						"buffer": Buffer.from("a".repeat(BUFFER_SIZE)),
 						"info": {
 							"mimeType": "image/png"
@@ -78,7 +78,7 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 					"type": "chat_message"
 				},
 				"meta": {
-					"file": {
+					"fileContents": {
 						"buffer": Buffer.from("a".repeat(BUFFER_SIZE)),
 						"info": {
 							"mimeType": "image/png"

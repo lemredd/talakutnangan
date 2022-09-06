@@ -35,7 +35,7 @@ describe("POST /api/chat_message/create_with_file", () => {
 		.field("data[attributes][data]", model.data.attributes.data)
 		.field("data[relationships][chatMessageActivity][data][type]", "chat_message_activity")
 		.field("data[relationships][chatMessageActivity][data][id]", String(chatMessageActivity.id))
-		.attach("meta[file]", path)
+		.attach("meta[fileContents]", path)
 		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
