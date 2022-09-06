@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils"
+import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import Stub from "$/helpers/singletons/stub"
 import RequestEnvironment from "$/helpers/request_environment"
@@ -11,8 +11,9 @@ describe("Component: Log Out Button", () => {
 			{ "status": RequestEnvironment.status.NO_CONTENT }
 		)
 
-		const logOutBtn = mount(Component).find("#log-out-btn")
+		const logOutBtn = shallowMount(Component).find("#log-out-btn")
 		await logOutBtn.trigger("click")
+		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
