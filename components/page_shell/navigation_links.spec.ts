@@ -14,12 +14,12 @@ describe("Component: Page Shell/Role Specific Links", () => {
 							"parsedUnitError": {},
 							"userProfile": {
 								"data": {
-									"type": "user",
 									"id": 1,
 									"kind": "student",
 									"roles": {
 										"data": []
-									}
+									},
+									"type": "user"
 								}
 							}
 						}
@@ -33,7 +33,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const link = wrapper.find("anchor-stub:first-of-type")
 		const linkHref = link.attributes("href")
 
-		expect(linkHref).toBe("/notifications")
+		expect(linkHref).toBe("/forum")
 	})
 
 	it("should specify the right link/s for a guest user", () => {
