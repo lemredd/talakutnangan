@@ -8,7 +8,7 @@ import type {
 
 import User from "%/models/user"
 import BaseManager from "%/managers/base"
-import trimRight from "$/helpers/trim_right"
+import trimRight from "$/string/trim_right"
 import Department from "%/models/department"
 import DatabaseError from "$!/errors/database"
 import Condition from "%/managers/helpers/condition"

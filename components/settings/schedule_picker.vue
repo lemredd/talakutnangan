@@ -7,7 +7,7 @@
 <template>
 	<div class="schedule-picker">
 		<h3 class="day">
-			{{ new TextTransformer().toSentenceCase(day) }}
+			{{ convertForSentence(day) }}
 		</h3>
 		<label class="flex">
 			<span>From:</span>
@@ -64,7 +64,7 @@ import { ref } from "vue"
 import { DayValues } from "$/types/database"
 
 import Selectable from "@/fields/selectable_options.vue"
-import TextTransformer from "$/helpers/text_transformers"
+import convertForSentence from "$/string/convert_for_sentence"
 
 const { day, startTime, endTime } = defineProps<{
 	day: string

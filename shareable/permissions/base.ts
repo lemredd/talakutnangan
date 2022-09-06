@@ -6,6 +6,8 @@ import type {
 } from "$/types/permission"
 
 import makeUnique from "$/helpers/array/make_unique"
+import subtractArrays from "$/helpers/array/subtract"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 /**
  * Base class for permission groups.
@@ -33,9 +35,8 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
 		const mask = this.generateMask(...permissionNames)
 		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
-		const mayAllowedExternally = Array.from(
-			this.identifyExternalDependencies(permissionNames)
-		).reduce((previousGroupApproval, currentExternalInfo) => {
+		const mayAllowedExternally = this.identifyExternalDependencies(permissionNames)
+		.reduce((previousGroupApproval, currentExternalInfo) => {
 			const approval = previousGroupApproval && currentExternalInfo.group.mayAllow(
 				role,
 				...currentExternalInfo.permissionDependencies
@@ -83,7 +84,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * Generates a collection of information about the external permission group dependency.
 	 * @param names The names of the permission names to check.
 	 */
-	identifyExternalDependencies(names: U[]): Set<ExternalPermissionDependencyInfo<any, any>> {
+	identifyExternalDependencies(names: U[]): ExternalPermissionDependencyInfo<any, any>[] {
 		const externalInfos = new Map<string, ExternalPermissionDependencyInfo<any, any>>()
 
 		// Check all permission names that have external permissions
@@ -110,17 +111,160 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		})
 
 		// Remove the duplicate permission names
-		const cleanedExternalInfos = new Set<ExternalPermissionDependencyInfo<any, any>>()
+		const cleanedExternalInfos: ExternalPermissionDependencyInfo<any, any>[] = []
 		for (const externalInfo of externalInfos.values()) {
 			const newExternalInfo: ExternalPermissionDependencyInfo<any, any> = {
 				"group": externalInfo.group,
 				"permissionDependencies": makeUnique(externalInfo.permissionDependencies)
 			}
 
-			cleanedExternalInfos.add(newExternalInfo)
+			cleanedExternalInfos.push(newExternalInfo)
 		}
 
 		return cleanedExternalInfos
+	}
+
+	/**
+	 * Identify dependencies of permissions names.
+	 * @param names Names of the child permissions.
+	 */
+	identifyDependencies(names: U[]): U[] {
+		const { permissions } = this
+		const dependencies: U[] = []
+		for (const [ key, value ] of permissions.entries()) {
+			if (!dependencies.includes(key) && names.includes(key)) {
+				const { permissionDependencies } = value
+				dependencies.push(
+					...permissionDependencies,
+					...this.identifyDependencies(permissionDependencies)
+				)
+			}
+		}
+
+		return makeUnique(dependencies)
+	}
+
+	/**
+	 * Identify permissions names which depend to the specified permissions.
+	 * @param names Names of the parent permissions.
+	 */
+	identifyDependents(names: U[]): U[] {
+		const { permissions } = this
+		const dependents: U[] = []
+		for (const [ key, value ] of permissions.entries()) {
+			if (!dependents.includes(key)) {
+				const { permissionDependencies } = value
+				const differenceLength = subtractArrays(permissionDependencies, names).length
+				const originalLength = permissionDependencies.length
+				const hasChangedLength = differenceLength < originalLength
+				if (hasChangedLength) {
+					dependents.push(key, ...this.identifyDependents([ key ]))
+				}
+			}
+		}
+
+		return makeUnique(dependents)
+	}
+
+	/**
+	 * Identify permissions names which depend to the specified external permissions.
+	 * @param externalNames Names of the external parent permissions.
+	 *
+	 * Note: This does not check transitively.
+	 */
+	identifyExternallyDependents(externalNames: ExternalPermissionDependencyInfo<any, any>[]): U[] {
+		const { permissions } = this
+		const dependents: U[] = []
+
+		for (const [ key, value ] of permissions.entries()) {
+			const rawPairPermissionDependencies = []
+			const rawSimilarPairPermissionDependencies = []
+			const rawDissimilarPairPermissionDependencies = []
+
+			const { externalPermissionDependencies } = value
+			if (!isUndefined(externalPermissionDependencies)) {
+				rawPairPermissionDependencies.push(
+					...externalPermissionDependencies.map(
+						externalDependency => externalNames
+						.map(specifiedDependency => [ externalDependency, specifiedDependency ])
+					).flat(1)
+				)
+
+				rawSimilarPairPermissionDependencies.push(
+					...rawPairPermissionDependencies
+					.filter(([ externalDependency, specifiedDependency ]) => {
+						const externalName = externalDependency.group.name
+						const specifiedName = specifiedDependency.group.name
+						return externalName === specifiedName
+					})
+				)
+
+				rawDissimilarPairPermissionDependencies.push(
+					...subtractArrays(
+						rawPairPermissionDependencies,
+						rawSimilarPairPermissionDependencies
+					)
+				)
+			}
+
+			if (!dependents.includes(key)) {
+				for (const [
+					externalDependency,
+					specifiedDependency
+				] of rawSimilarPairPermissionDependencies) {
+					const rawOriginal = externalDependency.permissionDependencies
+					const rawOriginalDependencies = externalDependency.group
+					.identifyDependencies(externalDependency.permissionDependencies)
+					const allOriginals = makeUnique([ ...rawOriginal, ...rawOriginalDependencies ])
+
+					const rawTarget = specifiedDependency.permissionDependencies
+					const rawTargetDependencies = specifiedDependency.group
+					.identifyDependencies(specifiedDependency.permissionDependencies)
+					const allTargets = makeUnique([ ...rawTarget, ...rawTargetDependencies ])
+
+					const differenceLength = subtractArrays(allOriginals, allTargets).length
+					const originalLength = allOriginals.length
+					const hasChangedLength = differenceLength < originalLength
+					if (hasChangedLength) {
+						dependents.push(key, ...this.identifyDependents([ key ]))
+						break
+					}
+				}
+			}
+
+			if (!dependents.includes(key)) {
+				const rawDissimilarPermissionDependencies = makeUnique(
+					rawDissimilarPairPermissionDependencies
+					.map(([ externalDependency ]) => externalDependency)
+				)
+
+				for (const externalDependency of rawDissimilarPermissionDependencies) {
+					const externalTransitiveDependencies = externalDependency.group
+					.identifyDependencies(externalDependency.permissionDependencies)
+
+					const allExternalDependencies = makeUnique([
+						...externalDependency.permissionDependencies,
+						...externalTransitiveDependencies
+					])
+
+					const externallyDependentExternalDependencies = externalDependency.group
+					.identifyExternallyDependents(externalNames)
+
+					const differenceLength = subtractArrays(
+						allExternalDependencies,
+						externallyDependentExternalDependencies
+					).length
+					const originalLength = allExternalDependencies.length
+					const hasChangedLength = differenceLength < originalLength
+					if (hasChangedLength) {
+						dependents.push(key, ...this.identifyDependents([ key ]))
+						break
+					}
+				}
+			}
+		}
+
+		return makeUnique(dependents)
 	}
 
 	/**

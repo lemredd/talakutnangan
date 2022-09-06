@@ -37,14 +37,14 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
 			[ "view", {
-				"flag": VIEW,
-				"permissionDependencies": [],
 				"externalPermissionDependencies": [
 					{
 						"group": post,
 						"permissionDependencies": [ "view" ] as PostPermissions[]
 					}
-				]
+				],
+				"flag": VIEW,
+				"permissionDependencies": []
 			} ],
 			[ "create", {
 				"flag": CREATE,
@@ -59,24 +59,24 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 				"permissionDependencies": [ "view" ]
 			} ],
 			[ "readDepartmentScope", {
-				"flag": READ_DEPARTMENT_SCOPE,
-				"permissionDependencies": [ ],
 				"externalPermissionDependencies": [
 					{
 						"group": post,
 						"permissionDependencies": [ "readDepartmentScope" ] as PostPermissions[]
 					}
-				]
+				],
+				"flag": READ_DEPARTMENT_SCOPE,
+				"permissionDependencies": [ ]
 			} ],
 			[ "readOverallScope", {
-				"flag": READ_OVERALL_SCOPE,
-				"permissionDependencies": [ ],
 				"externalPermissionDependencies": [
 					{
 						"group": post,
 						"permissionDependencies": [ "readOverallScope" ] as PostPermissions[]
 					}
-				]
+				],
+				"flag": READ_OVERALL_SCOPE,
+				"permissionDependencies": [ ]
 			} ],
 			[ "writeOwnScope", {
 				"flag": WRITE_OWN_SCOPE,

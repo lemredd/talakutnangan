@@ -6,7 +6,7 @@ import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/r
 
 import Role from "%/models/role"
 import BaseManager from "%/managers/base"
-import trimRight from "$/helpers/trim_right"
+import trimRight from "$/string/trim_right"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"

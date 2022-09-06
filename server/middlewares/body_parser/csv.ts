@@ -8,8 +8,8 @@ import BaseError from "$!/errors/base"
 import ParserError from "$!/errors/parser"
 import RequestFilter from "!/bases/request_filter"
 import setDeepPath from "$!/helpers/set_deep_path"
+import convertToCamel from "$/string/convert_to_camel"
 import accessDeepPath from "$!/helpers/access_deep_path"
-import convertToCamelCase from "$/helpers/convert_to_camel_case"
 
 /**
  * Used to parse CSV files attached.
@@ -32,7 +32,7 @@ export default class CSVParser extends RequestFilter {
 			for (const field of this.rawFields) {
 				const parser = parse({
 					"bom": true,
-					"columns": headers => headers.map((header: string) => convertToCamelCase(header))
+					"columns": headers => headers.map((header: string) => convertToCamel(header))
 				})
 
 				const buffer: Buffer = accessDeepPath(request.body, `${field}.buffer`)

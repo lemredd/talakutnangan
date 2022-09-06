@@ -5,13 +5,12 @@
 		</label>
 		<div class="input-and-controls">
 			<input
+				v-model="modelValue"
 				class="bg-transparent"
 				:class="inputClasses"
 				:type="type"
-				:value="modelValue"
 				:required="required"
-				:disabled="disabled || editable"
-				@input="updateModelValue"/>
+				:disabled="disabled || editable"/>
 			<button
 				v-if="editable"
 				type="button"
@@ -57,17 +56,11 @@
 }
 </style>
 <script setup lang="ts">
+import { computed } from "vue"
+
 import type { Textual } from "@/fields/types"
 
-const {
-	label,
-	type,
-	modelValue,
-	required = true,
-	disabled,
-	editable,
-	inputClasses
-} = defineProps<{
+const props = defineProps<{
 	label?: string
 	type: Textual
 	modelValue: string
@@ -76,12 +69,24 @@ const {
 	editable?: boolean
 	inputClasses?: string
 }>()
+
+const {
+	label,
+	type,
+	required = true,
+	disabled,
+	editable,
+	inputClasses
+} = props
+
 const emit = defineEmits<{(e: "update:modelValue", newModelValue: string): void}>()
 
-function updateModelValue(event: Event) {
-	const castTarget = event.target as HTMLInputElement
-	emit("update:modelValue", castTarget.value)
-}
+const modelValue = computed<string>({
+	"get": () => props.modelValue,
+	set(newValue: string): void {
+		emit("update:modelValue", newValue)
+	}
+})
 
 function editField(event: Event) {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

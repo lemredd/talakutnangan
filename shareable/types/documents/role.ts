@@ -36,7 +36,7 @@ export interface RoleAttributes<T extends Format = "serialized"> extends Attribu
 	profanityFlags: number,
 	userFlags: number,
 	auditTrailFlags: number,
-	deletedAt?: string | null
+	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 
 export type RoleResource<T extends Completeness = "read"> = Resource<
