@@ -1,17 +1,15 @@
 <template>
-	<a
+	<Anchor
 		id="log-out-btn"
 		role="button"
 		@click="logOut">
 		<span class="material-icons">logout</span>
 		<span class="label btn-label">Logout</span>
-	</a>
+	</Anchor>
 </template>
 
-<style>
-</style>
-
 <script setup lang="ts">
+import Anchor from "@/anchor.vue"
 import UserFetcher from "$@/fetchers/user"
 
 UserFetcher.initialize("/api")
