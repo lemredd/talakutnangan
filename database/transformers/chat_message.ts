@@ -7,8 +7,9 @@ import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import ConsultationTransformer from "%/transformers/consultation"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
+import AttachedChatFileTransformer from "%/transformers/attached_chat_file"
 
-type Relationships = "user"|"consultation"|"chatMessageActivity"
+type Relationships = "user"|"consultation"|"chatMessageActivity"|"attachedChatFile"
 
 export default class extends Transformer<ChatMessage, void> {
 	constructor({ included }: IncludedRelationships<Relationships> = { "included": [ "user" ] }) {
@@ -31,6 +32,12 @@ export default class extends Transformer<ChatMessage, void> {
 					"transformer": new ChatMessageActivityTransformer({
 						"included": [ "user", "consultation" ]
 					})
+				}
+				: null,
+			included.indexOf("attachedChatFile") > -1
+				? {
+					"attribute": "attachedChatFile",
+					"transformer": new AttachedChatFileTransformer()
 				}
 				: null
 		])
