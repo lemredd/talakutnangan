@@ -1,4 +1,4 @@
-# Base from KennethTrecy's personal configuration
+# Based from KennethTrecy's personal configuration
 root: true
 parserOptions:
   parser: "@typescript-eslint/parser"
@@ -11,6 +11,8 @@ env:
   es6: true
   node: true
   jest: true
+globals:
+  fetchMock: "readonly"
 plugins: ["@typescript-eslint"]
 extends:
   - "eslint:all"

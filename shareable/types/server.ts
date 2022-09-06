@@ -6,8 +6,8 @@
 
 import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
@@ -67,7 +67,8 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	// Added to pass data from server to client
 	userProfile: T extends "deserialized" ? DeserializedUserProfile : Serializable|null
 
-	roles: OptionalPageProps<T, DeserializedRoleListDocument>
+	roles: OptionalPageProps<T, DeserializedRoleListDocument>,
+	role: OptionalPageProps<T, DeserializedRoleDocument>
 
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
 	consultation: OptionalPageProps<T, DeserializedConsultationDocument>

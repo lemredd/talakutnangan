@@ -16,7 +16,7 @@ import { faker } from "@faker-js/faker"
 import BaseFactory from "~/factories/base"
 import Department from "%/models/department"
 import DepartmentTransformer from "%/transformers/department"
-import TextTransformer from "$/helpers/text_transformers"
+import convertForSentence from "$/string/convert_for_sentence"
 
 export default class DepartmentFactory extends BaseFactory<
 	Department,
@@ -33,7 +33,7 @@ export default class DepartmentFactory extends BaseFactory<
 	#fullName = () => `${
 		faker.commerce.department()
 	} ${
-		new TextTransformer().toSentenceCase(faker.random.alpha(10))
+		convertForSentence(faker.random.alpha(10))
 	}`
 
 	#mayAdmit = true

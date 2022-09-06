@@ -15,9 +15,8 @@
 				class="ml-5">
 				<Checkbox
 					v-model="rawFlags"
-					:label="transformText.toSentenceCase(permissionName).toLowerCase()"
-					:value="permissionName"
-					@change="updateFlags"/>
+					:label="convertForSentence(permissionName).toLowerCase()"
+					:value="permissionName"/>
 			</li>
 		</div>
 
@@ -25,15 +24,13 @@
 			v-if="readScopedPermissionNames.length && writeScopedPermissionNames.length"
 			class="access-level-flags">
 			<AccessLevelSelector
-				:initial-value="initialReadScopedRawFlag"
+				v-model="readPermission"
 				label="Read Access Level"
-				:options="readScopedPermissionNames"
-				@selected-option-changed="updateAccessLevel($event, readScopedPermissionNames)"/>
+				:options="readScopedPermissionNames"/>
 			<AccessLevelSelector
-				:initial-value="initialWriteScopedRawFlag"
+				v-model="writePermission"
 				label="Write Access Level"
-				:options="writeScopedPermissionNames"
-				@selected-option-changed="updateAccessLevel($event, writeScopedPermissionNames)"/>
+				:options="writeScopedPermissionNames"/>
 		</div>
 	</ul>
 </template>
@@ -52,86 +49,176 @@
 
 <script setup lang="ts">
 // Third Parties
-import { computed, ref } from "vue"
+import { computed } from "vue"
+
+// Types
+import type { OptionInfo } from "$@/types/component"
+import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 // Developer defined internals
-import Checkbox from "@/fields/checkbox.vue"
-import BasePermissionGroup from "$/permissions/base"
 import makeUnique from "$/helpers/array/make_unique"
+import BasePermissionGroup from "$/permissions/base"
+import subtractArrays from "$/helpers/array/subtract"
 import sanitizeArray from "$@/helpers/sanitize_array"
-import TextTransformer from "$/helpers/text_transformers"
-import AccessLevelSelector from "@/fields/dropdown_select.vue"
-import includePermissionDependencies from "$@/helpers/include_permission_dependencies"
+import convertForSentence from "$/string/convert_for_sentence"
+
+import Checkbox from "@/fields/checkbox.vue"
+import AccessLevelSelector from "@/fields/selectable_options.vue"
+
+// Props should be contained to retain its reactivity
+const props = defineProps<{
+	header: string
+	basePermissionGroup: BasePermissionGroup<any, any>
+	dependentPermissionGroups?: BasePermissionGroup<any, any>[]
+	modelValue: number
+}>()
 
 const {
 	header,
 	basePermissionGroup,
-	flags
-} = defineProps<{
-	header: string
-	basePermissionGroup: BasePermissionGroup<any, any>
-	flags: number
-}>()
+	dependentPermissionGroups = []
+} = props
 
-const transformText = new TextTransformer()
-
-const rawFlags = ref<string[]>(basePermissionGroup.deserialize(flags))
-const initialReadScopedRawFlag = computed(() => {
-	const scopedRawFlags = rawFlags.value.filter(flag => {
-		const name = flag.toLocaleLowerCase()
-		return name.includes("scope") && name.includes("read")
-	})
-
-	return scopedRawFlags[scopedRawFlags.length - 1]
-})
-const initialWriteScopedRawFlag = computed(() => {
-	const scopedRawFlags = rawFlags.value.filter(flag => {
-		const name = flag.toLocaleLowerCase()
-		return name.includes("scope") && name.includes("write")
-	})
-
-	return scopedRawFlags[scopedRawFlags.length - 1]
-})
-
-const permissionNames = Array.from(basePermissionGroup.permissions.keys())
-const operationalPermissionNames = permissionNames.filter(
-	permissionName => !permissionName.toLocaleLowerCase().includes("scope")
-)
-const readScopedPermissionNames = permissionNames.filter(permissionName => {
-	const name = permissionName.toLocaleLowerCase()
-	return name.includes("scope") && name.includes("read")
-})
-const writeScopedPermissionNames = permissionNames.filter(permissionName => {
-	const name = permissionName.toLocaleLowerCase()
-	return name.includes("scope") && name.includes("write")
-})
-
-function updateFlags() {
-	includePermissionDependencies(basePermissionGroup, rawFlags)
-
-	rawFlags.value = sanitizeArray(makeUnique(rawFlags.value))
-	const generatedMask = basePermissionGroup.generateMask(
-		...Array.from(rawFlags.value)
-	)
-	emit("update:flags", generatedMask)
+interface CustomEvents {
+	(event: "update:modelValue", passedFlag: number): void
+	(event: "checkExternalDependencyFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
+	: void
+	(event: "uncheckExternallyDependentFlags", infos: ExternalPermissionDependencyInfo<any, any>[])
+	: void
 }
+const emit = defineEmits<CustomEvents>()
 
-function updateAccessLevel(event: Event, accessPermissionNames: string[]) {
-	const { value } = event.target as HTMLSelectElement
-	rawFlags.value.forEach(rawFlag => {
-		if (accessPermissionNames.includes(rawFlag)) {
-			delete rawFlags.value[rawFlags.value.indexOf(rawFlag)]
+const rawFlags = computed<string[]>({
+	"get": () => basePermissionGroup.deserialize(props.modelValue),
+	set(newUnresolvedPermissions: string[]) {
+		let resolvedPermissions = [ ...newUnresolvedPermissions ]
+		const oldFlags = rawFlags.value
+		const oldFlagsLength = oldFlags.length
+		const newFlagsLength = resolvedPermissions.length
+		const hasAddedPermission = oldFlagsLength < newFlagsLength
+
+		if (hasAddedPermission) {
+			const newPermissions = subtractArrays(resolvedPermissions, oldFlags)
+			resolvedPermissions = makeUnique([
+				...resolvedPermissions,
+				...basePermissionGroup.identifyDependencies(newPermissions)
+			])
+
+			emit(
+				"checkExternalDependencyFlags",
+				basePermissionGroup.identifyExternalDependencies(resolvedPermissions)
+			)
+		} else {
+			const removedPermissions = subtractArrays(oldFlags, resolvedPermissions)
+			const dependentPermissions = basePermissionGroup.identifyDependents(removedPermissions)
+			resolvedPermissions = subtractArrays(resolvedPermissions, dependentPermissions)
+
+			const allRemovedPermissions = makeUnique([
+				...removedPermissions,
+				...dependentPermissions
+			])
+
+			const externalDependents = dependentPermissionGroups.map(dependentGroup => {
+				const externallyDependents = dependentGroup.identifyExternallyDependents([
+					{
+						"group": basePermissionGroup,
+						"permissionDependencies": allRemovedPermissions
+					}
+				])
+
+				const externalPermissionGroupToAffect: ExternalPermissionDependencyInfo<any, any> = {
+					"group": dependentGroup,
+					"permissionDependencies": externallyDependents
+				}
+
+				return externalPermissionGroupToAffect
+			})
+
+			emit("uncheckExternallyDependentFlags", externalDependents)
 		}
-	})
-	rawFlags.value.push(value)
-	rawFlags.value = sanitizeArray(rawFlags.value)
 
-	const generatedMask = basePermissionGroup.generateMask(
-		...Array.from(rawFlags.value)
-	)
+		emit("update:modelValue", basePermissionGroup.generateMask(...resolvedPermissions))
+	}
+})
 
-	emit("update:flags", generatedMask)
+const rawEmptyValue = ""
+const rawEmptyOption: OptionInfo = {
+	"label": "None",
+	"value": rawEmptyValue
 }
 
-const emit = defineEmits<{(event: "update:flags", passedFlag: number): void}>()
+const permissionNames = computed<string[]>(() => Array.from(basePermissionGroup.permissions.keys()))
+const operationalPermissionNames = computed<string[]>(() => permissionNames.value.filter(
+	permissionName => !permissionName.toLocaleLowerCase().includes("scope")
+))
+const readScopedPermissionNames = computed<OptionInfo[]>(() => [
+	rawEmptyOption,
+	...permissionNames.value.filter(permissionName => {
+		const name = permissionName.toLocaleLowerCase()
+		return name.includes("scope") && name.includes("read")
+	}).map(name => ({
+		"label": convertForSentence(name),
+		"value": name
+	}))
+])
+const writeScopedPermissionNames = computed<OptionInfo[]>(() => [
+	rawEmptyOption,
+	...permissionNames.value.filter(permissionName => {
+		const name = permissionName.toLocaleLowerCase()
+		return name.includes("scope") && name.includes("write")
+	}).map(name => ({
+		"label": convertForSentence(name),
+		"value": name
+	}))
+])
+
+function getScopedPermission(scopedPermissionOptions: OptionInfo[]): string {
+	const rawPermissionNames = scopedPermissionOptions.map(option => option.value)
+	for (const name of rawPermissionNames) {
+		if (rawFlags.value.includes(name)) return name
+	}
+
+	return rawEmptyValue
+}
+
+function toggleAccessLevel(
+	currentPermissions: string[],
+	permissionToRemove: string,
+	permissionToAdd: string
+): void {
+	let newPermissions = [ ...currentPermissions ]
+	const previousValue = permissionToRemove
+	const newValue = permissionToAdd
+
+	if (previousValue !== rawEmptyValue) {
+		if (newPermissions.includes(previousValue)) {
+			delete newPermissions[newPermissions.indexOf(previousValue)]
+			newPermissions = sanitizeArray(newPermissions)
+		}
+	}
+
+	if (newValue !== rawEmptyValue) {
+		newPermissions.push(newValue)
+	}
+
+	rawFlags.value = newPermissions
+}
+
+const readPermission = computed<string>({
+	get(): string {
+		return getScopedPermission(readScopedPermissionNames.value)
+	},
+	set(value: string) {
+		toggleAccessLevel(rawFlags.value, readPermission.value, value)
+	}
+})
+
+const writePermission = computed<string>({
+	get(): string {
+		return getScopedPermission(writeScopedPermissionNames.value)
+	},
+	set(value: string) {
+		toggleAccessLevel(rawFlags.value, writePermission.value, value)
+	}
+})
 </script>

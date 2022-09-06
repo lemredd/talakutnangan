@@ -51,33 +51,29 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import { DateTime, Duration } from "luxon"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+
+import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 const { consultation } = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 }>()
 
-const currentTime = ref<DateTime>(DateTime.now())
+const currentTime = ref<Date>(new Date())
 
-const differenceFromSchedule = computed<Duration>(() => {
-	const difference = DateTime
-	.fromJSDate(consultation.scheduledStartAt)
-	.diff(currentTime.value)
-	return difference
-})
-const isAfterScheduledStart = computed<boolean>(() => {
-	const beyondScheduledStart = differenceFromSchedule.value.milliseconds < 0
-	return beyondScheduledStart
-})
+const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
+	consultation.scheduledStartAt,
+	currentTime.value
+))
+const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value < 0)
 const hasStarted = computed<boolean>(() => consultation.startedAt !== null)
 const hasFinished = computed<boolean>(() => consultation.finishedAt !== null)
 const hasDeleted = computed<boolean>(() => consultation.deletedAt !== null)
 
-const willSoonStart = computed<boolean>(() => differenceFromSchedule.value.milliseconds > 0)
+const willSoonStart = computed<boolean>(() => differenceFromSchedule.value > 0)
 const willStart = computed<boolean>(() => {
-	const mayStart = differenceFromSchedule.value.milliseconds === 0 || isAfterScheduledStart.value
+	const mayStart = differenceFromSchedule.value === 0 || isAfterScheduledStart.value
 	return mayStart && !hasStarted.value
 })
 const isOngoing = computed<boolean>(() => {

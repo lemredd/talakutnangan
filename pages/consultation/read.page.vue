@@ -34,10 +34,9 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { inject, ref, onMounted } from "vue"
+import { inject, ref, onBeforeMount, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
@@ -45,10 +44,21 @@ import type {
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
+import type {
+	ChatMessageDocument,
+	DeserializedChatMessageResource,
+	DeserializedChatMessageDocument,
+	DeserializedChatMessageListDocument
+} from "$/types/documents/chat_message"
 
+import Socket from "$@/external/socket"
+import deserialize from "$/helpers/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import ChatMessageFetcher from "$@/fetchers/chat_message"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
+import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
@@ -90,18 +100,64 @@ const chatMessageActivities = ref<
 	>
 )
 
-function visitConsultation(consultationID: string) {
+function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {
 		"id": consultationID
 	})
 	assignPath(path)
 }
 
-ConsultationFetcher.initialize("/api")
+function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"user">[]): void {
+	chatMessages.value = {
+		...chatMessages.value,
+		"data": [
+			...chatMessages.value.data,
+			...messages
+		].sort((first, second) => {
+			const comparison = Math.sign(calculateMillisecondDifference(
+				first.createdAt,
+				second.createdAt
+			))
 
-onMounted(() => {
-	const fetcher = new ConsultationFetcher()
-	fetcher.list({
+			return comparison || Math.sign(Number(first.id) - Number(second.id))
+		})
+	}
+}
+
+function createMessage(message: ChatMessageDocument<"read">): void {
+	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
+	mergeDeserializedMessages([ deserializedMessage.data ])
+}
+
+function updateMessage(message: ChatMessageDocument<"read">): void {
+	const IDofMessageToRemove = message.data.id
+	chatMessages.value.data = chatMessages.value.data.filter(
+		chatMessage => chatMessage.id !== IDofMessageToRemove
+	)
+
+	createMessage(message)
+}
+
+onBeforeMount(() => {
+	ConsultationFetcher.initialize("/api")
+	ChatMessageFetcher.initialize("/api")
+	Socket.initialize()
+
+	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
+	Socket.addEventListeners(chatNamespace, {
+		"create": createMessage,
+		"update": updateMessage
+	})
+})
+
+let consultationFetcher: ConsultationFetcher|null = null
+
+async function loadConsultations(): Promise<string[]> {
+	if (consultationFetcher === null) {
+		throw new Error("Consultations cannot be loaded yet.")
+	}
+
+	const { body } = await consultationFetcher.list({
 		"filter": {
 			"consultationScheduleRange": "*",
 			"existence": "exists",
@@ -112,24 +168,61 @@ onMounted(() => {
 			"offset": consultations.value.data.length
 		},
 		"sort": [ "-updatedAt" ]
-	}).then(({ body, unusedStatus }) => {
-		const { data, meta } = body
-
-		if (meta?.count ?? data.length > 0) {
-			const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
-
-			consultations.value.data = [
-				...consultations.value.data,
-				...castData
-			]
-
-			// TODO: Get preview messages per consultation
-			return []
-		}
-
-		return []
-	}).catch(({ unusedBody, unusedStatus }) => {
-		// Fail
 	})
+
+	const { data, meta } = body
+	const consultationIDs: string[] = []
+
+	if (meta?.count ?? data.length > 0) {
+		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
+
+		consultations.value.data = [
+			...consultations.value.data,
+			...castData
+		]
+
+		// TODO: Get preview messages per consultation
+		return consultationIDs
+	}
+
+	return consultationIDs
+}
+
+
+let chatMessageFetcher: ChatMessageFetcher|null = null
+
+async function loadPreviousChatMessages(): Promise<void> {
+	if (chatMessageFetcher === null) {
+		throw new Error("Consultations cannot be loaded yet.")
+	}
+
+	const { body } = await chatMessageFetcher.list({
+		"filter": {
+			"consultationIDs": [ consultation.value.id ],
+			"existence": "exists"
+		},
+		"page": {
+			"limit": 10,
+			"offset": chatMessages.value.data.length
+		},
+		"sort": [ "-createdAt" ]
+	})
+
+	const { data, meta } = body
+
+	if (meta?.count ?? data.length > 0) {
+		const castData = data as DeserializedChatMessageResource<"user">[]
+
+		mergeDeserializedMessages(castData)
+	}
+}
+
+onMounted(async() => {
+	// Reinitialize since fetchers were now initialized properly
+	consultationFetcher = new ConsultationFetcher()
+	chatMessageFetcher = new ChatMessageFetcher()
+
+	await loadConsultations()
+	await loadPreviousChatMessages()
 })
 </script>
