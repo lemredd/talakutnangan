@@ -53,7 +53,7 @@ describe("POST /api/chat_message/create_with_file", () => {
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"included.0.data.type",
-			"attached_file"
+			"attached_chat_file"
 		)
 	})
 })
