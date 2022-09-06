@@ -33,7 +33,7 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ChatMessageResourceIdentifier<T extends Completeness = "read">
@@ -63,6 +63,10 @@ extends GeneralRelationshipData {
 		serialized: ChatMessageActivityIdentifierDocument,
 		deserialized: DeserializedChatMessageActivityDocument
 	},
+	attachedChatFile: {
+		serialized: AttachedChatFileIdentifierDocument,
+		deserialized: DeserializedAttachedChatFileDocument
+	}
 }
 
 export type ChatMessageRelationshipNames = DeriveRelationshipNames<ChatMessageRelationshipData>
