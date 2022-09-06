@@ -49,7 +49,7 @@ extends Attributes<T> {
 	updatedAt: T extends "deserialized" ? Date : string
 }
 
-interface ChatMessageRelationshipData<T extends Completeness = "read">
+interface ChatMessageRelationshipData<unusedT extends Completeness = "read">
 extends GeneralRelationshipData {
 	user: {
 		serialized: UserIdentifierDocument,
