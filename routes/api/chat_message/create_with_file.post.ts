@@ -1,5 +1,6 @@
 import type { Request, Response } from "!/types/dependent"
 import type { FieldRules, Rules } from "!/types/validation"
+import type { AttachedFile } from "$/types/documents/file-like"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
 import Socket from "!/ws/socket"
@@ -54,18 +55,14 @@ export default class extends CreateRoute {
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
 		const manager = new Manager(request.transaction, request.cache)
-		const { data, meta } = request.body as ChatMessageDocument<"create">
+		const { data, meta } = request.body as ChatMessageDocument<"create"> & AttachedFile<"raw">
 		const { attributes, relationships } = data
 		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)
 
-		const document = await manager.create({
+		const document = await manager.createWithFile({
 			...attributes,
 			chatMessageActivityID
-		}) as ChatMessageDocument<"create">
-		// const document = await manager.createWithFile({
-		// 	...attributes,
-		// 	chatMessageActivityID
-		// }, meta.file) as ChatMessageDocument<"create">
+		}, meta.fileContents) as ChatMessageDocument<"create">
 
 		Socket.emitToClients(
 			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),
