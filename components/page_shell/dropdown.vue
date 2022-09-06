@@ -1,5 +1,5 @@
 <template>
-	<div :class="purpose">
+	<div>
 		<div
 			v-if="isDropdownShown"
 			class="invisible-closer"
@@ -14,7 +14,7 @@
 			</a>
 		</div>
 		<div v-if="isDropdownShown" class="dropdown-container">
-			<slot></slot>
+			<slot name="dropdown-contents"></slot>
 		</div>
 	</div>
 </template>
@@ -39,20 +39,18 @@
 
 <script setup lang="ts">
 import { onUpdated, ref } from "vue"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
-const { purpose } = defineProps<{
-	purpose: string
-}>()
 const emit = defineEmits([ "toggle", "resize" ])
 const isDropdownShown = ref(false)
 
 function toggleDropdown() {
-	emit("toggle")
 	isDropdownShown.value = !isDropdownShown.value
+	emit("toggle")
 }
 
 onUpdated(() => {
-	if (typeof window !== "undefined") {
+	if (!isUndefined(window)) {
 		window.onresize = () => {
 			if (isDropdownShown.value) {
 				emit("resize")
