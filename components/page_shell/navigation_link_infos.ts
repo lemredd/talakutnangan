@@ -21,7 +21,8 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "account_circle",
 				"name": "Log in",
-				"path": "/user/log_in"
+				"path": "/user/log_in",
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
 		"mustBeGuest": true,
@@ -34,12 +35,14 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "notifications",
 				"name": "Notifications",
-				"path": "/notifications"
+				"path": "/notifications",
+				"viewportsAvailable": [ "mobile" ]
 			},
 			{
 				"icon": "account_circle",
 				"name": "User Settings",
-				"path": "/settings"
+				"path": "/settings",
+				"viewportsAvailable": [ "mobile" ]
 			}
 		],
 		"mustBeGuest": false,
@@ -52,7 +55,8 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "forum",
 				"name": "Forum",
-				"path": "/forum"
+				"path": "/forum",
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
 		"mustBeGuest": false,
@@ -68,7 +72,8 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "chat",
 				"name": "Consultations",
-				"path": "/consultation"
+				"path": "/consultation",
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
 		"mustBeGuest": false,
@@ -81,7 +86,8 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "group",
 				"name": "Manage Users",
-				"path": "/manage"
+				"path": "/manage",
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
 		"mustBeGuest": false,

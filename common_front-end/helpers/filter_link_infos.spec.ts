@@ -19,7 +19,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -34,7 +35,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -91,7 +93,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -106,7 +109,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -123,7 +127,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": true,
@@ -138,7 +143,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -195,7 +201,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": true,
@@ -262,7 +269,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -277,7 +285,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -294,7 +303,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -361,7 +371,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -376,7 +387,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -433,7 +445,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -460,7 +473,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -551,7 +565,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -566,7 +581,8 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 	})
 
@@ -624,7 +640,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -652,7 +669,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -720,7 +738,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "a",
 						"name": "A",
-						"path": "/a"
+						"path": "/a",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -733,7 +752,8 @@ describe("Helper: Filter Link Infos", () => {
 					{
 						"icon": "b",
 						"name": "B",
-						"path": "/b"
+						"path": "/b",
+						"viewportsAvailable": []
 					}
 				],
 				"mustBeGuest": false,
@@ -748,12 +768,14 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos[0]).toStrictEqual({
 			"icon": "a",
 			"name": "A",
-			"path": "/a"
+			"path": "/a",
+			"viewportsAvailable": []
 		})
 		expect(filteredLinkInfos[1]).toStrictEqual({
 			"icon": "b",
 			"name": "B",
-			"path": "/b"
+			"path": "/b",
+			"viewportsAvailable": []
 		})
 	})
 })
