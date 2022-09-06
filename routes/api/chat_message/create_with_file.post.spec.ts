@@ -54,7 +54,7 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 	})
 
 	it("cannot accept invalid data", async() => {
-		const BUFFER_SIZE = 5
+		const BUFFER_SIZE = 21 * 1024 * 1024
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
@@ -94,6 +94,6 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 		expect(body).toHaveLength(3)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.data")
 		expect(body).toHaveProperty("1.source.pointer", "data.attributes.kind")
-		expect(body).toHaveProperty("3.source.pointer", "meta.file")
+		expect(body).toHaveProperty("2.source.pointer", "meta.file")
 	})
 })
