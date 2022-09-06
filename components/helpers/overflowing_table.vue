@@ -14,16 +14,17 @@
 	</div>
 </template>
 
+<style>
+th, td {
+	text-align: center;
+}
+</style>
 <style scoped lang="scss">
 .overflowing-table {
 	overflow-x: scroll;
 
 	table {
 		width: 100%;
-
-		th, td {
-			text-align: center;
-		}
 	}
 }
 </style>
