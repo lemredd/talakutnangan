@@ -42,7 +42,7 @@ body.unscrollable {
 }
 </style>
 
-<style scoped lang="scss">
+<style lang="scss">
 .links {
 	height: 100%;
 
