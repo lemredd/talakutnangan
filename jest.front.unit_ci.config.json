@@ -1,6 +1,8 @@
 {
 	"preset": "ts-jest",
 
+	"cacheDirectory": "t/cache/unit_ci_front",
+
 	"moduleFileExtensions": [
 		"js",
 		"ts",
@@ -32,8 +34,7 @@
 
 	"testRegex": [
 		"./common_front-end/.*\\.spec\\.ts",
-		"./components/.*\\.spec\\.ts",
-		"./pages/.*\\.spec\\.ts"
+		"./components/.*\\.spec\\.ts"
 	],
 
 	"testEnvironment": "jsdom"

@@ -74,7 +74,9 @@ export default class extends PageMiddleware {
 		}) as ConsultationListDocument
 		const consultation = await manager.findWithID(Number(id)) as ConsultationDocument
 
-		const consultationIDs = consultations.data.map(consultation => Number(consultation.id))
+		const consultationIDs = consultations.data.map(
+			consultationResource => Number(consultationResource.id)
+		)
 		const allConsultationIDs = makeUnique([
 			Number(consultation.data.id),
 			...consultationIDs

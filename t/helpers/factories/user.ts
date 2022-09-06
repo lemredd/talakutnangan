@@ -73,7 +73,7 @@ export default class UserFactory extends BaseFactory<
 		}
 	}
 
-	async attachChildren(user: User): Promise<User> {
+	async attachRelatedModels(user: User): Promise<User> {
 		if (user.id) {
 			await AttachedRole.bulkCreate(this.roles.map(role => ({
 				"roleID": role.id,

@@ -74,12 +74,7 @@ export default class ConsultationFactory extends BaseFactory<
 		}
 	}
 
-	async attachChildren(model: Consultation): Promise<Consultation> {
-		/*
-		 * TODO Message
-		 * TODO Consultation Requesters
-		 * TODO Chat Message Activity
-		 */
+	async attachRelatedModels(model: Consultation): Promise<Consultation> {
 		const consulters = await this.#consultersGenerator()
 
 		if (model.id) {

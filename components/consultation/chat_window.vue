@@ -1,5 +1,5 @@
 <template>
-	<section class="selected-consultation flex flex-col right">
+	<section class="chat-window flex flex-col right">
 		<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
 
 		<div class="selected-consultation-header">

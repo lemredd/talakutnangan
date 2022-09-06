@@ -57,8 +57,6 @@ const {
 function getChatMessageActivities(
 	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
 ): DeserializedChatMessageActivityResource<"user">[] {
-	const index = findPreviewMessageIndex(consultation)
-
 	return chatMessageActivities.data.filter(
 		activity => activity.consultation.data.id === consultation.id
 	)
@@ -67,7 +65,7 @@ function getChatMessageActivities(
 function findPreviewMessageIndex(
 	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
 ): number {
-	return  previewMessages.data.findIndex(
+	return previewMessages.data.findIndex(
 		message => message.consultation.data.id === consultation.id
 	)
 }

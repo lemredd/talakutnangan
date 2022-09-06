@@ -55,7 +55,7 @@ export default class ChatMessageFactory extends BaseFactory<
 		}
 	}
 
-	async attachChildren(model: ChatMessage): Promise<ChatMessage> {
+	async attachRelatedModels(model: ChatMessage): Promise<ChatMessage> {
 		model.chatMessageActivity = await ChatMessageActivity
 		.findByPk(
 			model.chatMessageActivityID,

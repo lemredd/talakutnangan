@@ -42,12 +42,12 @@ export default abstract class Factory<
 
 	async makeOne(): Promise<T> {
 		const model = this.model.build(await this.generate())
-		return this.attachChildren(model)
+		return this.attachRelatedModels(model)
 	}
 
 	async insertOne(): Promise<T> {
 		const model = await this.model.create(await this.generate())
-		return this.attachChildren(model)
+		return this.attachRelatedModels(model)
 	}
 
 	async generateMany(count: number): MultipleGeneratedData<T> {
@@ -65,17 +65,17 @@ export default abstract class Factory<
 		const generatedMultipleData = await this.generateMany(count)
 
 		const models = this.model.bulkBuild(generatedMultipleData)
-		return await Promise.all(models.map(model => this.attachChildren(model)))
+		return await Promise.all(models.map(model => this.attachRelatedModels(model)))
 	}
 
 	async insertMany(count: number): Promise<T[]> {
 		const generatedMultipleData = await this.generateMany(count)
 
 		const models = await this.model.bulkCreate(generatedMultipleData)
-		return await Promise.all(models.map(model => this.attachChildren(model)))
+		return await Promise.all(models.map(model => this.attachRelatedModels(model)))
 	}
 
-	async attachChildren(model: T): Promise<T> { return await Promise.resolve(model) }
+	async attachRelatedModels(model: T): Promise<T> { return await Promise.resolve(model) }
 
 	async serializedOne(
 		mustInsert = false,
