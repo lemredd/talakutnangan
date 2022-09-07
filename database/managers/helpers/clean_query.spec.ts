@@ -1,7 +1,7 @@
 import cleanQuery from "./clean_query"
 
 describe("Database: Clean query", () => {
-	it("can make 'is on day' operation", () => {
+	it("can clean query", () => {
 		const dirtyQuery = `
 			EXTRACT (
 				WEEK FROM \`example\`
