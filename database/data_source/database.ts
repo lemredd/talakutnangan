@@ -14,4 +14,17 @@ export default class Database {
 	static get dataSource(): Sequelize {
 		return this.source
 	}
+
+	static get isOnSQLite(): boolean {
+		const SQLiteModes: SourceType[] = [ "filed_sqlite", "memoried_sqlite", "unit_test" ]
+		return SQLiteModes.includes(this.sourceType)
+	}
+
+	static get isOnMySQL(): boolean {
+		return this.sourceType === "mysql"
+	}
+
+	static get isOnPostgreSQL(): boolean {
+		return this.sourceType === "pgsql"
+	}
 }
