@@ -92,11 +92,77 @@ describe("Database: Condition Builder", () => {
 		expect(builtCondition).toStrictEqual({
 			[
 				Sequelize.literal(`
-					extract (
-						week from ${Sequelize.col("startAt").col}
+					EXTRACT (
+						WEEK FROM ${Sequelize.col("startAt").col}
 					)
 				`.replace(/(\t|\n)+/mgu, "")).val as string
 			]: { [Op.eq]: DayValues.indexOf(targetDay) }
+		})
+	})
+
+	it("can make 'on or after time' operation", () => {
+		const condition = new Condition()
+		const TIME = {
+			"hours": 6,
+			"minutes": 0
+		}
+
+		const builtCondition = condition.onOrAfterTime("startAt", TIME).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{
+					[
+						Sequelize.literal(`
+							EXTRACT (
+								HOUR FROM ${Sequelize.col("startAt").col}
+							)
+						`.replace(/(\t|\n)+/mgu, "")).val as string
+					]: { [Op.gte]: TIME.hours }
+				},
+				{
+					[
+						Sequelize.literal(`
+							EXTRACT (
+								MINUTE FROM ${Sequelize.col("startAt").col}
+							)
+						`.replace(/(\t|\n)+/mgu, "")).val as string
+					]: { [Op.gte]: TIME.minutes }
+				}
+			]
+		})
+	})
+
+	it("can make 'on or before time' operation", () => {
+		const condition = new Condition()
+		const TIME = {
+			"hours": 6,
+			"minutes": 0
+		}
+
+		const builtCondition = condition.onOrBeforeTime("startAt", TIME).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{
+					[
+						Sequelize.literal(`
+							EXTRACT (
+								HOUR FROM ${Sequelize.col("startAt").col}
+							)
+						`.replace(/(\t|\n)+/mgu, "")).val as string
+					]: { [Op.lte]: TIME.hours }
+				},
+				{
+					[
+						Sequelize.literal(`
+							EXTRACT (
+								MINUTE FROM ${Sequelize.col("startAt").col}
+							)
+						`.replace(/(\t|\n)+/mgu, "")).val as string
+					]: { [Op.lte]: TIME.minutes }
+				}
+			]
 		})
 	})
 
