@@ -72,11 +72,11 @@ describe("Database: Condition Builder", () => {
 		})
 	})
 
-	it("can make 'included in' operation", () => {
+	it("can make 'is included in' operation", () => {
 		const condition = new Condition()
-		const set = [ 1, 2, 3, 4, 5]
+		const set = [ 0, 1, 2, 3, 4 ]
 
-		const builtCondition = condition.includedIn("name", set).build()
+		const builtCondition = condition.isIncludedIn("name", set).build()
 
 		expect(builtCondition).toStrictEqual({
 			"name": { [Op.in]: set }
