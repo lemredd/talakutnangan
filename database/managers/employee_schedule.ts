@@ -5,24 +5,26 @@ import type { ModelCtor, FindAndCountOptions, DestroyOptions } from "%/types/dep
 
 import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
+import Model from "%/models/employee_schedule"
 import Consultation from "%/models/consultation"
 import Condition from "%/managers/helpers/condition"
-import EmployeeSchedule from "%/models/employee_schedule"
 import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
 import siftByRange from "%/queries/employee_schedule/sift_by_range"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
+import makeDateFromMinutesAfterMidnight
+	from "%/managers/helpers/make_date_from_minutes_after_midnight"
 
 interface RawEmployeeScheduleAttributes extends EmployeeScheduleAttributes<"serialized"> {
 	userID: number
 }
 
 export default class extends BaseManager<
-	EmployeeSchedule,
+	Model,
 	RawEmployeeScheduleAttributes,
 	EmployeeScheduleQueryParameters<number>
 > {
-	get model(): ModelCtor<EmployeeSchedule> { return EmployeeSchedule }
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): EmployeeScheduleTransformer { return new EmployeeScheduleTransformer() }
 
@@ -35,7 +37,7 @@ export default class extends BaseManager<
 	}
 
 	get listPipeline(): Pipe<
-		FindAndCountOptions<EmployeeSchedule>,
+		FindAndCountOptions<Model>,
 		EmployeeScheduleQueryParameters<number>
 	>[] {
 		return [
@@ -49,14 +51,14 @@ export default class extends BaseManager<
 	async archiveBatch(IDs: number[]): Promise<number> {
 		try {
 			const foundModels = await this.model.findAll({
-				"where": new Condition().includedIn("userID", IDs),
+				"where": new Condition().isIncludedIn("userID", IDs).build(),
 				...this.transaction.transactionObject
 			})
-			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
+			const destroyCount = await this.model.destroy(<DestroyOptions<Model>>{
 				"where": { "id": IDs },
 				...this.transaction.transactionObject
 			})
-			await Consultation.destroy(<DestroyOptions<T>>{
+			await Consultation.destroy(<DestroyOptions<Consultation>>{
 				"where": new Condition().or(
 					...foundModels.map(model => {
 						const individualCondition = new Condition()
