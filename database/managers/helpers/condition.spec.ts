@@ -93,9 +93,9 @@ describe("Database: Condition Builder", () => {
 			[
 				Sequelize.literal(`
 					extract (
-						week from ${Sequelize.col("startAt").col},
+						week from ${Sequelize.col("startAt").col}
 					)
-				`.replace(/\t+/u, "")).val as string
+				`.replace(/(\t|\n)+/mgu, "")).val as string
 			]: { [Op.eq]: DayValues.indexOf(targetDay) }
 		})
 	})
