@@ -87,18 +87,13 @@ export default class extends BaseManager<
 				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
-			await Consultation.sequelize.query(
-				"UPDATE $table SET deletedAt = $date WHERE ($where)",
-				{
-					"bind": {
-						"date": Consultation.sequelize.escape(currentTime),
-						"table": Consultation.tableName,
-						"where": literal.val
-					},
-					"type": QueryTypes.UPDATE,
-					...this.transaction.transactionObject
-				}
-			)
+			await Consultation.destroy(<DestroyOptions<Model>>{
+				"where": Consultation.sequelize.where(
+					Consultation.sequelize.literal(literal.val as string),
+					true
+				),
+				...this.transaction.transactionObject
+			})
 
 			Log.success("manager", "done archiving models")
 
