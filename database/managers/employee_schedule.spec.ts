@@ -1,8 +1,8 @@
 import { DayValues } from "$/types/database"
 
-import Model from "%/models/consultation"
+import Model from "%/models/employee_schedule"
+import Consultation from "%/models/consultation"
 import Factory from "~/factories/employee_schedule"
-import Consultation from "%/models/employee_schedule"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
 import findMinutesAfterMidnight from "%/managers/helpers/find_minutes_after_midnight"
