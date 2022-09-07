@@ -93,9 +93,7 @@ describe("Database: Condition builder", () => {
 		expect(builtCondition).toStrictEqual({
 			[
 				Sequelize.literal(cleanQuery(`
-					EXTRACT (
-						WEEK FROM ${Sequelize.col("startAt").col}
-					)
+					strftime('%w', ${Sequelize.col("startAt").col})
 				`)).val as string
 			]: { [Op.eq]: DayValues.indexOf(targetDay) }
 		})
@@ -115,18 +113,14 @@ describe("Database: Condition builder", () => {
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							EXTRACT (
-								HOUR FROM ${Sequelize.col("startAt").col}
-							)
+							strftime('%H', ${Sequelize.col("startAt").col})
 						`)).val as string
 					]: { [Op.gte]: TIME.hours }
 				},
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							EXTRACT (
-								MINUTE FROM ${Sequelize.col("startAt").col}
-							)
+							strftime('%M', ${Sequelize.col("startAt").col})
 						`)).val as string
 					]: { [Op.gte]: TIME.minutes }
 				}
@@ -148,18 +142,14 @@ describe("Database: Condition builder", () => {
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							EXTRACT (
-								HOUR FROM ${Sequelize.col("startAt").col}
-							)
+							strftime('%H', ${Sequelize.col("startAt").col})
 						`)).val as string
 					]: { [Op.lte]: TIME.hours }
 				},
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							EXTRACT (
-								MINUTE FROM ${Sequelize.col("startAt").col}
-							)
+							strftime('%M', ${Sequelize.col("startAt").col})
 						`)).val as string
 					]: { [Op.lte]: TIME.minutes }
 				}
