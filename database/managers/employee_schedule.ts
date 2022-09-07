@@ -12,8 +12,7 @@ import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
 import siftByRange from "%/queries/employee_schedule/sift_by_range"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
-import makeDateFromMinutesAfterMidnight
-	from "%/managers/helpers/make_date_from_minutes_after_midnight"
+import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
 
 interface RawEmployeeScheduleAttributes extends EmployeeScheduleAttributes<"serialized"> {
 	userID: number
@@ -51,7 +50,7 @@ export default class extends BaseManager<
 	async archiveBatch(IDs: number[]): Promise<number> {
 		try {
 			const foundModels = await this.model.findAll({
-				"where": new Condition().isIncludedIn("userID", IDs).build(),
+				"where": { "id": IDs },
 				...this.transaction.transactionObject
 			})
 			const destroyCount = await this.model.destroy(<DestroyOptions<Model>>{
@@ -64,20 +63,14 @@ export default class extends BaseManager<
 						const individualCondition = new Condition()
 
 						const currentTime = new Date()
-						const targetStartTime = makeDateFromMinutesAfterMidnight(
-							currentTime,
-							model.scheduleStart
-						)
-						const targetEndTime = makeDateFromMinutesAfterMidnight(
-							currentTime,
-							model.scheduleEnd
-						)
+						const targetStartTime = convertMinutesToTimeObject(model.scheduleStart)
+						const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
 						individualCondition.and(
 							new Condition().greaterThanOrEqual("scheduledStartAt", currentTime),
 							new Condition().isOnDay("scheduledStartAt", model.dayName),
-							new Condition().greaterThanOrEqual("scheduledStartAt", targetStartTime),
-							new Condition().lessThanOrEqual("scheduledStartAt", targetEndTime)
+							new Condition().onOrAfterTime("scheduledStartAt", targetStartTime),
+							new Condition().onOrBeforeTime("scheduledStartAt", targetEndTime)
 						)
 
 						return individualCondition
