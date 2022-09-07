@@ -32,4 +32,14 @@ export default class Database {
 	: ReturnType<typeof Sequelize["where"]> {
 		return this.source.where(leftOperand, operator as any, rightOperand)
 	}
+
+	static fn(functionName: string, ...argumentstoPass: any)
+	: ReturnType<typeof Sequelize["fn"]> {
+		return this.source.fn(functionName, ...argumentstoPass)
+	}
+
+	static cast(value: any, targetType: string)
+	: ReturnType<typeof Sequelize["cast"]> {
+		return this.source.cast(value, targetType)
+	}
 }

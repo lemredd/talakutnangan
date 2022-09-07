@@ -78,23 +78,26 @@ export default class Condition<T = any> {
 	}
 
 	isOnDay(column: string, value: Day): Condition {
-		let query = ""
+		let query: any = ""
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			query = `CAST(STRFTIME('%w', ${escapedColumn}) AS INTEGER)`
+			query = Database.cast(
+				Database.fn("STRFTIME", Sequelize.literal('"%w"'), escapedColumn),
+				"integer"
+			)
 		} else if (Database.isOnPostgreSQL) {
-			query = `
+			query = Sequelize.literal(cleanQuery(`
 				EXTRACT (
 					WEEK FROM ${escapedColumn}
 				)
-			`
+			`))
 		} else {
 			throw new DatabaseError("The current database cannot be supported right now.")
 		}
 
 		this.currentWhereCondition = Database.where(
-			Sequelize.literal(cleanQuery(query)),
+			query,
 			Op.eq,
 			DayValues.indexOf(value)
 		)
@@ -103,36 +106,42 @@ export default class Condition<T = any> {
 	}
 
 	onOrAfterTime(column: string, time: Time): Condition {
-		let hourQuery = ""
-		let minuteQuery = ""
-		const escapedColumn = Sequelize.col(column).col
+		let hourQuery: any = ""
+		let minuteQuery: any = ""
+		const escapedColumn = Sequelize.col(column)
 
 		if (Database.isOnSQLite) {
-			hourQuery = `CAST(STRFTIME('%H', ${escapedColumn}) AS INTEGER)`
-			minuteQuery = `CAST(STRFTIME('%M', ${escapedColumn}) AS INTEGER)`
+			hourQuery = Database.cast(
+				Database.fn("STRFTIME", Sequelize.literal('"%H"'), escapedColumn),
+				"integer"
+			)
+			minuteQuery = Database.cast(
+				Database.fn("STRFTIME", Sequelize.literal('"%M"'), escapedColumn),
+				"integer"
+			)
 		} else if (Database.isOnPostgreSQL) {
-			hourQuery = `
+			hourQuery = Sequelize.literal(cleanQuery(`
 				EXTRACT (
-					HOUR FROM ${escapedColumn}
+					HOUR FROM ${escapedColumn.col}
 				)
-			`
-			minuteQuery = `
+			`))
+			minuteQuery = Sequelize.literal(cleanQuery(`
 				EXTRACT (
-					MINUTE FROM ${escapedColumn}
+					MINUTE FROM ${escapedColumn.col}
 				)
-			`
+			`))
 		} else {
 			throw new DatabaseError("The current database cannot be supported right now.")
 		}
 
 		return this.and(
 			new Condition(Database.where(
-				Sequelize.literal(cleanQuery(hourQuery)),
+				hourQuery,
 				Op.gte,
 				time.hours
 			)),
 			new Condition(Database.where(
-				Sequelize.literal(cleanQuery(minuteQuery)),
+				minuteQuery,
 				Op.gte,
 				time.minutes
 			))
@@ -140,36 +149,42 @@ export default class Condition<T = any> {
 	}
 
 	onOrBeforeTime(column: string, time: Time): Condition {
-		let hourQuery = ""
-		let minuteQuery = ""
-		const escapedColumn = Sequelize.col(column).col
+		let hourQuery: any = ""
+		let minuteQuery: any = ""
+		const escapedColumn = Sequelize.col(column)
 
 		if (Database.isOnSQLite) {
-			hourQuery = `CAST(STRFTIME('%H', ${escapedColumn}) AS INTEGER)`
-			minuteQuery = `CAST(STRFTIME('%M', ${escapedColumn}) AS INTEGER)`
+			hourQuery = Database.cast(
+				Database.fn("STRFTIME", Sequelize.literal('"%H"'), escapedColumn),
+				"integer"
+			)
+			minuteQuery = Database.cast(
+				Database.fn("STRFTIME", Sequelize.literal('"%M"'), escapedColumn),
+				"integer"
+			)
 		} else if (Database.isOnPostgreSQL) {
-			hourQuery = `
+			hourQuery = Sequelize.literal(cleanQuery(`
 				EXTRACT (
-					HOUR FROM ${escapedColumn}
+					HOUR FROM ${escapedColumn.col}
 				)
-			`
-			minuteQuery = `
+			`))
+			minuteQuery = Sequelize.literal(cleanQuery(`
 				EXTRACT (
-					MINUTE FROM ${escapedColumn}
+					MINUTE FROM ${escapedColumn.col}
 				)
-			`
+			`))
 		} else {
 			throw new DatabaseError("The current database cannot be supported right now.")
 		}
 
 		return this.and(
 			new Condition(Database.where(
-				Sequelize.literal(cleanQuery(hourQuery)),
+				hourQuery,
 				Op.lte,
 				time.hours
 			)),
 			new Condition(Database.where(
-				Sequelize.literal(cleanQuery(minuteQuery)),
+				minuteQuery,
 				Op.lte,
 				time.minutes
 			))
