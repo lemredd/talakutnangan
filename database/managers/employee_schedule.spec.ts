@@ -83,7 +83,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 })
 
 describe("Database Manager: Employee schedule archive operations", () => {
-	it("can archive multiple resource", async() => {
+	it("can archive multiple resources", async() => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
@@ -92,12 +92,23 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
+		const FUTURE_DATE = new Date(
+			DATE_NOW.getFullYear(),
+			DATE_NOW.getMonth(),
+			DATE_NOW.getDate() + 7
+		)
+		const UNAFFECTED_FUTURE_DATE = new Date(
+			DATE_NOW.getFullYear(),
+			DATE_NOW.getMonth(),
+			DATE_NOW.getDate() + 6
+		)
+		const dates = [ DATE_NOW, FUTURE_DATE, UNAFFECTED_FUTURE_DATE ].values()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => DATE_NOW)
+		.scheduledStartAt(() => dates.next().value)
 		.startedAt(() => null)
 		.finishedAt(() => null)
-		.insertOne()
+		.insertMany(2)
 		const model = await new Factory()
 		.dayName(() => CONSULTATION_DAY)
 		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
@@ -109,7 +120,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		await manager.archiveBatch([ Number(model.id) ])
 
 		expect(await Model.count()).toBe(0)
-		expect(await Consultation.count()).toBe(0)
+		expect(await Consultation.count()).toBe(1)
 	})
 })
 
