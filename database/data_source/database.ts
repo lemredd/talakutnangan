@@ -27,4 +27,9 @@ export default class Database {
 	static get isOnPostgreSQL(): boolean {
 		return this.sourceType === "pgsql"
 	}
+
+	static where(leftOperand: any, operatorAndRightOperand: any)
+	: ReturnType<typeof Sequelize["where"]> {
+		return this.source.where(leftOperand, operatorAndRightOperand)
+	}
 }

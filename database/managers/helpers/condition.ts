@@ -11,17 +11,22 @@ import isUndefined from "$/helpers/type_guards/is_undefined"
 import cleanQuery from "%/managers/helpers/clean_query"
 
 type Literal = ReturnType<typeof literal>
+type Where = ReturnType<typeof Sequelize["where"]>
 
 export default class Condition<T = any> {
 	private currentCondition: { [key: string|symbol]: any }
-	private currentRawCondition: Literal
+	private currentWhereCondition: Where|null
+	private currentRawCondition: Literal|null
 
-	constructor(currentCondition: { [key: string|symbol]: any }|Literal = {}) {
+	constructor(currentCondition: { [key: string|symbol]: any }|Literal|Where = {}) {
 		this.currentCondition = {}
-		this.currentRawCondition = Sequelize.literal("")
+		this.currentWhereCondition = null
+		this.currentRawCondition = null
 
 		if (this.isLiteral(currentCondition)) {
-			this.currentRawCondition = currentCondition as Literal
+			this.currentRawCondition = currentCondition
+		} else if (this.isWhere(currentCondition)) {
+			this.currentWhereCondition = currentCondition
 		} else {
 			this.currentCondition = currentCondition as object
 		}
@@ -88,9 +93,12 @@ export default class Condition<T = any> {
 			throw new DatabaseError("The current database cannot be supported right now.")
 		}
 
-		this.currentRawCondition = Sequelize.literal(cleanQuery(
-			`${query} = ${DayValues.indexOf(value)}`
-		))
+		this.currentWhereCondition = Database.where(
+			Sequelize.literal(cleanQuery(query)),
+			{
+				[Op.eq]: DayValues.indexOf(value)
+			}
+		)
 
 		return this
 	}
@@ -119,12 +127,18 @@ export default class Condition<T = any> {
 		}
 
 		return this.and(
-			new Condition(Sequelize.literal(cleanQuery(
-				`${hourQuery} >= ${time.hours}`
-			))),
-			new Condition(Sequelize.literal(cleanQuery(
-				`${minuteQuery} >= ${time.minutes}`
-			)))
+			new Condition(Database.where(
+				Sequelize.literal(cleanQuery(hourQuery)),
+				{
+					[Op.gte]: time.hours
+				}
+			)),
+			new Condition(Database.where(
+				Sequelize.literal(cleanQuery(minuteQuery)),
+				{
+					[Op.gte]: time.minutes
+				}
+			))
 		)
 	}
 
@@ -152,12 +166,18 @@ export default class Condition<T = any> {
 		}
 
 		return this.and(
-			new Condition(Sequelize.literal(cleanQuery(
-				`${hourQuery} <= ${time.hours}`
-			))),
-			new Condition(Sequelize.literal(cleanQuery(
-				`${minuteQuery} <= ${time.minutes}`
-			)))
+			new Condition(Database.where(
+				Sequelize.literal(cleanQuery(hourQuery)),
+				{
+					[Op.lte]: time.hours
+				}
+			)),
+			new Condition(Database.where(
+				Sequelize.literal(cleanQuery(minuteQuery)),
+				{
+					[Op.lte]: time.minutes
+				}
+			))
 		)
 	}
 
@@ -173,11 +193,7 @@ export default class Condition<T = any> {
 				this.currentCondition = condition as object
 			}
 		} else if (simplifiedConditions.length > 1) {
-			this.setLiteralOrObject(
-				Op.or,
-				"OR",
-				conditions.map(condition => condition.build())
-			)
+			this.currentCondition[Op.or] = conditions.map(condition => condition.build())
 		}
 
 		return this
@@ -195,19 +211,19 @@ export default class Condition<T = any> {
 				this.currentCondition = condition as object
 			}
 		} else if (simplifiedConditions.length > 1) {
-			this.setLiteralOrObject(
-				Op.and,
-				"AND",
-				conditions.map(condition => condition.build())
-			)
+			this.currentCondition[Op.and] = conditions.map(condition => condition.build())
 		}
 
 		return this
 	}
 
-	build(mustReturnRaw = false): WhereOptions<T>|Literal {
-		if (mustReturnRaw || this.currentRawCondition.val as string) {
+	build(): WhereOptions<T>|Literal|Where {
+		if (this.currentRawCondition !== null) {
 			return this.currentRawCondition
+		}
+
+		if (this.currentWhereCondition !== null) {
+			return this.currentWhereCondition
 		}
 
 		return { ...this.currentCondition }
@@ -252,7 +268,9 @@ export default class Condition<T = any> {
 					)
 					hasFoundMatch = true
 				}
-			} else if (this.currentRawCondition.val !== "") {
+			} else if (this.currentRawCondition !== null) {
+				hasFoundMatch = true
+			} else if (this.currentWhereCondition !== null) {
 				hasFoundMatch = true
 			}
 		}
@@ -261,7 +279,7 @@ export default class Condition<T = any> {
 			return Sequelize.literal("")
 		}
 
-		return this.build(true) as Literal
+		return this.build() as Literal
 	}
 
 	private getAppropriateOperator(operator: symbol): string {
@@ -314,5 +332,12 @@ export default class Condition<T = any> {
 	private isLiteral(value: any): value is Literal {
 		const castValue = value as Literal
 		return !isUndefined(castValue.val)
+	}
+
+	private isWhere(value: any): value is Where {
+		const castValue = value as Where
+		return !isUndefined(castValue.attribute)
+			&& !isUndefined(castValue.comparator)
+			&& !isUndefined(castValue.logic)
 	}
 }

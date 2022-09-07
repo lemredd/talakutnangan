@@ -1,5 +1,3 @@
-import { QueryTypes } from "sequelize"
-
 import { Pipe } from "$/types/database"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
@@ -61,7 +59,7 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 			const currentTime = new Date()
-			const literal = new Condition().or(
+			const conditions = new Condition().or(
 				...foundModels.map(model => {
 					const individualCondition = new Condition()
 
@@ -69,10 +67,7 @@ export default class extends BaseManager<
 					const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
 					individualCondition.and(
-						new Condition().greaterThanOrEqual(
-							"scheduledStartAt",
-							Consultation.sequelize?.escape(currentTime)
-						),
+						new Condition().greaterThanOrEqual("scheduledStartAt", currentTime),
 						new Condition().isOnDay(
 							"scheduledStartAt", model.dayName),
 						new Condition().onOrAfterTime("scheduledStartAt", targetStartTime),
@@ -81,17 +76,14 @@ export default class extends BaseManager<
 
 					return individualCondition
 				})
-			).buildAsLiteral()
+			).build()
 
 			if (!Consultation.sequelize) {
 				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
 			await Consultation.destroy(<DestroyOptions<Model>>{
-				"where": Consultation.sequelize.where(
-					Consultation.sequelize.literal(literal.val as string),
-					true
-				),
+				"where": conditions,
 				...this.transaction.transactionObject
 			})
 
