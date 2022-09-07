@@ -47,7 +47,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 
 	it("can update resource and retain other consultations", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		FUTURE_DATE.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 100
@@ -86,7 +86,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 describe("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resources", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		FUTURE_DATE.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 90
@@ -97,7 +97,10 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		const SECOND_FUTURE_DATE = new Date(
 			FUTURE_DATE.getFullYear(),
 			FUTURE_DATE.getMonth(),
-			FUTURE_DATE.getDate() + 7
+			FUTURE_DATE.getDate() + 7,
+			FUTURE_DATE.getHours(),
+			FUTURE_DATE.getMinutes(),
+			FUTURE_DATE.getSeconds()
 		)
 		const dates = [ FUTURE_DATE, SECOND_FUTURE_DATE ].values()
 		await new ConsultationFactory()
@@ -122,10 +125,10 @@ describe("Database Manager: Employee schedule archive operations", () => {
 
 	it("cannot archive unaffected consultations", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		FUTURE_DATE.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
-		const FREE_DURATION_IN_MINUTES = 40
+		const FREE_DURATION_IN_MINUTES = 80
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
@@ -133,7 +136,10 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		const UNAFFECTED_FUTURE_DATE = new Date(
 			FUTURE_DATE.getFullYear(),
 			FUTURE_DATE.getMonth(),
-			FUTURE_DATE.getDate() + 6
+			FUTURE_DATE.getDate() + 4,
+			FUTURE_DATE.getHours(),
+			FUTURE_DATE.getMinutes(),
+			FUTURE_DATE.getSeconds()
 		)
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
