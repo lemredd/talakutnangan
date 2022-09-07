@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Sequelize, Op, literal, cast } from "sequelize"
+import { Sequelize, Op, literal } from "sequelize"
 import { DayValues, Day } from "$/types/database"
 
 import type { Time } from "%/types/independent"
@@ -167,7 +167,7 @@ export default class Condition<T = any> {
 		if (simplifiedConditions.length === 1) {
 			const [ condition ] = simplifiedConditions
 
-			if (condition?.val) {
+			if (this.isLiteral(condition)) {
 				this.currentRawCondition = condition as Literal
 			} else {
 				this.currentCondition = condition as object
@@ -189,7 +189,7 @@ export default class Condition<T = any> {
 		if (simplifiedConditions.length === 1) {
 			const [ condition ] = simplifiedConditions
 
-			if (condition?.val) {
+			if (this.isLiteral(condition)) {
 				this.currentRawCondition = condition as Literal
 			} else {
 				this.currentCondition = condition as object
@@ -205,8 +205,8 @@ export default class Condition<T = any> {
 		return this
 	}
 
-	build(): WhereOptions<T>|Literal {
-		if (this.currentRawCondition.val as string) {
+	build(mustReturnRaw = false): WhereOptions<T>|Literal {
+		if (mustReturnRaw || this.currentRawCondition.val as string) {
 			return this.currentRawCondition
 		}
 
@@ -248,23 +248,20 @@ export default class Condition<T = any> {
 
 					const operator = this.getAppropriateOperator(operation)
 					this.currentRawCondition = Sequelize.literal(
-						`${propertyName} ${operator} ${cast(value, "string")}`
+						`${propertyName} ${operator} ${value}`
 					)
 					hasFoundMatch = true
 				}
-			} else if (!this.currentRawCondition.val) {
+			} else if (this.currentRawCondition.val !== "") {
 				hasFoundMatch = true
 			}
 		}
 
 		if (!hasFoundMatch) {
-			console.log("Canot convert as literal", this.currentCondition)
-			throw new DatabaseError(
-				"There are certain operations unable to be performed in the database."
-			)
+			return Sequelize.literal("")
 		}
 
-		return this.build() as Literal
+		return this.build(true) as Literal
 	}
 
 	private getAppropriateOperator(operator: symbol): string {
@@ -273,7 +270,6 @@ export default class Condition<T = any> {
 			case Op.lte: return "<="
 			case Op.eq: return "="
 			default:
-				console.log(operator, "Not supported\n\n\n\n\n")
 				throw new DatabaseError("Database operator not supported.")
 		}
 	}
