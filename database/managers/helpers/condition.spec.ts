@@ -1,4 +1,5 @@
-import { Op } from "sequelize"
+import { Op, Sequelize } from "sequelize"
+import { DayValues } from "$/types/database"
 
 import Condition from "./condition"
 
@@ -68,6 +69,34 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			"name": { [Op.like]: "%abcd%" }
+		})
+	})
+
+	it("can make 'included in' operation", () => {
+		const condition = new Condition()
+		const set = [ 1, 2, 3, 4, 5]
+
+		const builtCondition = condition.includedIn("name", set).build()
+
+		expect(builtCondition).toStrictEqual({
+			"name": { [Op.in]: set }
+		})
+	})
+
+	it("can make 'is on day' operation", () => {
+		const condition = new Condition()
+		const targetDay = "monday"
+
+		const builtCondition = condition.isOnDay("startAt", targetDay).build()
+
+		expect(builtCondition).toStrictEqual({
+			[
+				Sequelize.literal(`
+					extract (
+						week from ${Sequelize.col("startAt").col},
+					)
+				`.replace(/\t+/u, "")).val as string
+			]: { [Op.eq]: DayValues.indexOf(targetDay) }
 		})
 	})
 
