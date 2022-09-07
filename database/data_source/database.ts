@@ -30,16 +30,16 @@ export default class Database {
 
 	static where(leftOperand: any, operator: symbol, rightOperand: any)
 	: ReturnType<typeof Sequelize["where"]> {
-		return this.source.where(leftOperand, operator as any, rightOperand)
+		return this.source.where.bind(this.source)(leftOperand, operator as any, rightOperand)
 	}
 
 	static fn(functionName: string, ...argumentstoPass: any)
 	: ReturnType<typeof Sequelize["fn"]> {
-		return this.source.fn(functionName, ...argumentstoPass)
+		return this.source.fn.bind(this.source)(functionName, ...argumentstoPass)
 	}
 
 	static cast(value: any, targetType: string)
 	: ReturnType<typeof Sequelize["cast"]> {
-		return this.source.cast(value, targetType)
+		return this.source.cast.bind(this.source)(value, targetType)
 	}
 }

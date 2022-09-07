@@ -79,17 +79,17 @@ export default class Condition<T = any> {
 
 	isOnDay(column: string, value: Day): Condition {
 		let query: any = ""
-		const escapedColumn = Sequelize.col(column).col
+		const escapedColumn = Sequelize.col(column)
 
 		if (Database.isOnSQLite) {
 			query = Database.cast(
-				Database.fn("STRFTIME", Sequelize.literal('"%w"'), escapedColumn),
+				Database.fn("STRFTIME", Sequelize.literal("'%w'"), escapedColumn),
 				"integer"
 			)
 		} else if (Database.isOnPostgreSQL) {
 			query = Sequelize.literal(cleanQuery(`
 				EXTRACT (
-					WEEK FROM ${escapedColumn}
+					WEEK FROM ${escapedColumn.col}
 				)
 			`))
 		} else {
@@ -112,11 +112,11 @@ export default class Condition<T = any> {
 
 		if (Database.isOnSQLite) {
 			hourQuery = Database.cast(
-				Database.fn("STRFTIME", Sequelize.literal('"%H"'), escapedColumn),
+				Database.fn("STRFTIME", Sequelize.literal("'%H'"), escapedColumn),
 				"integer"
 			)
 			minuteQuery = Database.cast(
-				Database.fn("STRFTIME", Sequelize.literal('"%M"'), escapedColumn),
+				Database.fn("STRFTIME", Sequelize.literal("'%M'"), escapedColumn),
 				"integer"
 			)
 		} else if (Database.isOnPostgreSQL) {
@@ -155,11 +155,11 @@ export default class Condition<T = any> {
 
 		if (Database.isOnSQLite) {
 			hourQuery = Database.cast(
-				Database.fn("STRFTIME", Sequelize.literal('"%H"'), escapedColumn),
+				Database.fn("STRFTIME", Sequelize.literal("'%H'"), escapedColumn),
 				"integer"
 			)
 			minuteQuery = Database.cast(
-				Database.fn("STRFTIME", Sequelize.literal('"%M"'), escapedColumn),
+				Database.fn("STRFTIME", Sequelize.literal("'%M'"), escapedColumn),
 				"integer"
 			)
 		} else if (Database.isOnPostgreSQL) {
