@@ -22,8 +22,8 @@ import Department from "%/models/department"
 import UserTransformer from "%/transformers/user"
 import AttachedRole from "%/models/attached_role"
 import DepartmentFactory from "~/factories/department"
+import convertForSentence from "$/string/convert_for_sentence"
 import UserProfileTransformer from "%/transformers/user_profile"
-import TextTransformer from "$/helpers/text_transformers"
 
 export default class UserFactory extends BaseFactory<
 	User,
@@ -38,9 +38,9 @@ export default class UserFactory extends BaseFactory<
 	DeserializedUserListDocument
 > {
 	nameGenerator = () => `${
-		new TextTransformer().toSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 5)))
+		convertForSentence(faker.random.alpha(faker.mersenne.rand(10, 5)))
 	} ${
-		new TextTransformer().toSentenceCase(faker.random.alpha(faker.mersenne.rand(10, 7)))
+		convertForSentence(faker.random.alpha(faker.mersenne.rand(10, 7)))
 	}`
 
 	prefersDarkGenerator = () => false

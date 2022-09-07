@@ -81,7 +81,7 @@
 	}
 }
 
-@media screen and (min-width: $mobileViewport) {
+@media screen and (min-width: $mobileViewportMaximum) {
 	.expand-or-collapse {
 		display: inline !important;
 	}

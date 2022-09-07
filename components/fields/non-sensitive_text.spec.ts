@@ -22,6 +22,26 @@ describe("Component: fields/non-sensitive_text", () => {
 		expect(updates[0]).toEqual([ exampleEmail ])
 	})
 
+	it("should change upon prop update", async() => {
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"type": "email"
+			}
+		})
+
+		const newValue = "admin@example.com"
+		await wrapper.setProps({
+			"label": "E-mail",
+			"modelValue": newValue,
+			"type": "email"
+		})
+
+		const field = wrapper.find("input").element as HTMLInputElement
+		expect(field.value).toBe(newValue)
+	})
+
 	it("may be edited", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {

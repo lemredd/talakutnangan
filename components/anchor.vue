@@ -5,8 +5,7 @@
 </template>
 <style scoped lang="scss">
 a {
-	@apply flex items-center;
-	padding: 3px 10px;
+	@apply flex items-center px-3px py-10px;
 }
 a.active {
 	@apply dark:bg-[#eee] dark:text-[#222] bg-dark-300 text-white;

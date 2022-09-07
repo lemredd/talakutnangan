@@ -1,13 +1,9 @@
-import { mount } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
 import Component from "./dropdown.vue"
 
 describe("Component: Dropdown", () => {
 	it("should show dropdown when toggled", async() => {
-		const wrapper = mount(Component, {
-			"props": {
-				"purpose": ""
-			}
-		})
+		const wrapper = shallowMount(Component)
 
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")
@@ -17,11 +13,7 @@ describe("Component: Dropdown", () => {
 	})
 
 	it("Should close if click emitted outside of dropdown", async() => {
-		const wrapper = mount(Component, {
-			"props": {
-				"purpose": ""
-			}
-		})
+		const wrapper = shallowMount(Component)
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")
 		const invisibleCloser = wrapper.find(".invisible-closer")
@@ -31,11 +23,7 @@ describe("Component: Dropdown", () => {
 	})
 
 	it("Should close if window resized", async() => {
-		const wrapper = mount(Component, {
-			"props": {
-				"purpose": ""
-			}
-		})
+		const wrapper = shallowMount(Component)
 
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")

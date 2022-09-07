@@ -1,7 +1,7 @@
 <template>
 	<div ref="layout" class="layout">
-		<ShellNav/>
-		<Content>
+		<ShellNav v-if="!isLoggingIn"/>
+		<Content :class="{ 'login-content': isLoggingIn }">
 			<slot></slot>
 		</Content>
 		<Footer/>
@@ -24,17 +24,25 @@ body {
 *, *::before, *::after {
 	box-sizing: border-box;
 }
+
 a {
 	text-decoration: none;
 }
 
+:root, html, body, #app {
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+<style scoped lang="scss">
 .layout {
 	@apply flex flex-col;
 }
 
-.container {
-	max-width: 900px;
-	margin: auto;
+.login-content {
+	margin-top: 0;
+	padding: 0;
 }
 </style>
 
@@ -50,8 +58,7 @@ import Content from "@/page_shell/content_container.vue"
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname
-const isLoggingIn = path === "/user/log_in"
-provide("isLoggingIn", isLoggingIn)
+const isLoggingIn = ref<boolean>(path === "/user/log_in")
 
 const layout = ref<HTMLElement | null>(null)
 const body = ref<HTMLBodyElement | null>(null)

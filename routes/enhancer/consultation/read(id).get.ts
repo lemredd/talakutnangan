@@ -27,7 +27,7 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] {
 		return [
-			// TODO: Allow adding other rules
+			// TODO: Allow adding other rules to check if consultation belongs to current user
 			new IDParameterValidator([
 				[ "id", Manager, present ]
 			])
@@ -120,12 +120,11 @@ export default class extends PageMiddleware {
 		const previewMessages = await chatMessageManager.findPreviews(allConsultationIDs)
 
 		return {
-			consultation,
+			chatMessageActivities,
 			chatMessages,
-
+			consultation,
 			consultations,
-			previewMessages,
-			chatMessageActivities
+			previewMessages
 		}
 	}
 }
