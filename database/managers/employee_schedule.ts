@@ -1,4 +1,5 @@
-import { Pipe, DayValues } from "$/types/database"
+import { Pipe, Day, DayValues } from "$/types/database"
+import type { Time } from "%/types/independent"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
 import type { ModelCtor, FindAndCountOptions, DestroyOptions } from "%/types/dependent"
@@ -59,67 +60,81 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const currentTime = new Date()
-			if (this.isOnTest) {
-				const TEST_HOURS = 8
-				currentTime.setHours(TEST_HOURS)
-			}
 
-			if (!Consultation.sequelize) {
-				throw new DatabaseError("Developer may have forgot to register the models.")
-			}
+			const targetTimes = foundModels.map(model => {
+				const targetStartTime = convertMinutesToTimeObject(model.scheduleStart)
+				const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
-			const futureConsultations = await Consultation.findAll({
-				"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentTime).build(),
-				...this.transaction.transactionObject
+				return [
+					model.dayName,
+					targetStartTime,
+					targetEndTime
+				] as [ Day, Time, Time ]
 			})
-			const consultationsToDelete = futureConsultations.filter(consultation => {
-				const { scheduledStartAt } = consultation
-				const day = DayValues[scheduledStartAt.getDay()]
-				const hours = scheduledStartAt.getHours()
-				const minutes = scheduledStartAt.getMinutes()
-				for (const model of foundModels) {
-					const targetStartTime = convertMinutesToTimeObject(model.scheduleStart)
-					const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
-					if (
-						model.dayName === day
-						&& (
-							targetStartTime.hours < hours
-							// eslint-disable-next-line no-extra-parens
-							|| (
-								targetStartTime.hours === hours
-								&& targetStartTime.minutes <= minutes
-							)
-						)
-						&& (
-							targetEndTime.hours > hours
-							// eslint-disable-next-line no-extra-parens
-							|| (
-								targetEndTime.hours === hours
-								&& targetEndTime.minutes >= minutes
-							)
-						)
-					) {
-						return true
-					}
-				}
-
-				return false
-			}).map(matchedConsultation => new Condition().equal("id", matchedConsultation.id))
-
-			if (consultationsToDelete.length > 0) {
-				await Consultation.destroy(<DestroyOptions<Model>>{
-					"where": new Condition().or(...consultationsToDelete).build(),
-					...this.transaction.transactionObject
-				})
-			}
+			await this.removePossibleConsultations(targetTimes)
 
 			Log.success("manager", "done archiving models")
 
 			return destroyCount
 		} catch (error) {
 			throw this.makeBaseError(error)
+		}
+	}
+
+	private async removePossibleConsultations(targetTimes: [ Day, Time, Time ][]): Promise<void> {
+		const currentTime = new Date()
+		if (this.isOnTest) {
+			const TEST_HOURS = 8
+			currentTime.setHours(TEST_HOURS)
+		}
+
+		if (!Consultation.sequelize) {
+			throw new DatabaseError("Developer may have forgot to register the models.")
+		}
+
+		const futureConsultations = await Consultation.findAll({
+			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentTime).build(),
+			...this.transaction.transactionObject
+		})
+
+		const consultationsToDelete = futureConsultations.filter(consultation => {
+			const { scheduledStartAt } = consultation
+			const day = DayValues[scheduledStartAt.getDay()]
+			const hours = scheduledStartAt.getHours()
+			const minutes = scheduledStartAt.getMinutes()
+			for (const [ targetDay, targetStartTime, targetEndTime ] of targetTimes) {
+				if (
+					targetDay === day
+					&& (
+						targetStartTime.hours < hours
+						// eslint-disable-next-line no-extra-parens
+						|| (
+							targetStartTime.hours === hours
+							&& targetStartTime.minutes <= minutes
+						)
+					)
+					&& (
+						targetEndTime.hours > hours
+						// eslint-disable-next-line no-extra-parens
+						|| (
+							targetEndTime.hours === hours
+							&& targetEndTime.minutes >= minutes
+						)
+					)
+				) {
+					return true
+				}
+			}
+
+			return false
+		}).map(matchedConsultation => new Condition().equal("id", matchedConsultation.id))
+
+		if (consultationsToDelete.length > 0) {
+			await Consultation.destroy(<DestroyOptions<Model>>{
+				"where": new Condition().or(...consultationsToDelete).build(),
+				...this.transaction.transactionObject
+			})
 		}
 	}
 }
