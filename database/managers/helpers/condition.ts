@@ -2,6 +2,7 @@
 import { Sequelize, Op } from "sequelize"
 import { DayValues, Day } from "$/types/database"
 
+import type { Time } from "%/types/independent"
 import type { WhereOptions } from "%/types/dependent"
 
 export default class Condition<T = any> {
@@ -57,14 +58,56 @@ export default class Condition<T = any> {
 	}
 
 	isOnDay(column: string, value: Day): Condition {
-		this.currentCondition[
+		return this.equal(
 			Sequelize.literal(`
-				extract (
-					week from ${Sequelize.col(column).col}
+				EXTRACT (
+					WEEK FROM ${Sequelize.col(column).col}
 				)
-			`.replace(/(\t|\n)+/mgu, "")).val as string
-		] = { [Op.eq]: DayValues.indexOf(value) }
-		return this
+			`.replace(/(\t|\n)+/mgu, "")).val as string,
+			DayValues.indexOf(value)
+		)
+	}
+
+	onOrAfterTime(column: string, time: Time): Condition {
+		return this.and(
+			new Condition().greaterThanOrEqual(
+				Sequelize.literal(`
+					EXTRACT (
+						HOUR FROM ${Sequelize.col(column).col}
+					)
+				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				time.hours
+			),
+			new Condition().greaterThanOrEqual(
+				Sequelize.literal(`
+					EXTRACT (
+						MINUTE FROM ${Sequelize.col(column).col}
+					)
+				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				time.minutes
+			)
+		)
+	}
+
+	onOrBeforeTime(column: string, time: Time): Condition {
+		return this.and(
+			new Condition().lessThanOrEqual(
+				Sequelize.literal(`
+					EXTRACT (
+						HOUR FROM ${Sequelize.col(column).col}
+					)
+				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				time.hours
+			),
+			new Condition().lessThanOrEqual(
+				Sequelize.literal(`
+					EXTRACT (
+						MINUTE FROM ${Sequelize.col(column).col}
+					)
+				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				time.minutes
+			)
+		)
 	}
 
 	or(...conditions: Condition[]): Condition {
