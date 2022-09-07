@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import { Op } from "sequelize"
+import { Sequelize, Op } from "sequelize"
+import { DayValues, Day } from "$/types/database"
 
 import type { WhereOptions } from "%/types/dependent"
 
@@ -47,6 +48,22 @@ export default class Condition<T = any> {
 		 * https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
 		 */
 		this.currentCondition[column] = { [Op.like]: `%${value}%` }
+		return this
+	}
+
+	isIncludedIn(column: string, value: any[]): Condition {
+		this.currentCondition[column] = { [Op.in]: value }
+		return this
+	}
+
+	isOnDay(column: string, value: Day): Condition {
+		this.currentCondition[
+			Sequelize.literal(`
+				extract (
+					week from ${Sequelize.col(column).col}
+				)
+			`.replace(/(\t|\n)+/mgu, "")).val as string
+		] = { [Op.eq]: DayValues.indexOf(value) }
 		return this
 	}
 
