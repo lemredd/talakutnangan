@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Sequelize, Op } from "sequelize"
+import { Sequelize, Op, literal, cast } from "sequelize"
 import { DayValues, Day } from "$/types/database"
 
 import type { Time } from "%/types/independent"
@@ -7,13 +7,24 @@ import type { WhereOptions } from "%/types/dependent"
 
 import Database from "%/data_source/database"
 import DatabaseError from "$!/errors/database"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import cleanQuery from "%/managers/helpers/clean_query"
+
+type Literal = ReturnType<typeof literal>
 
 export default class Condition<T = any> {
 	private currentCondition: { [key: string|symbol]: any }
+	private currentRawCondition: Literal
 
-	constructor(currentCondition: { [key: string|symbol]: any } = {}) {
-		this.currentCondition = currentCondition
+	constructor(currentCondition: { [key: string|symbol]: any }|Literal = {}) {
+		this.currentCondition = {}
+		this.currentRawCondition = Sequelize.literal("")
+
+		if (this.isLiteral(currentCondition)) {
+			this.currentRawCondition = currentCondition as Literal
+		} else {
+			this.currentCondition = currentCondition as object
+		}
 	}
 
 	not(column: string, value: any): Condition {
@@ -66,21 +77,22 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			query = `strftime('%w', ${escapedColumn})`
+			query = `cast(strftime('%w', ${escapedColumn}) as integer)`
 		} else if (Database.isOnPostgreSQL) {
-			query = Sequelize.literal(cleanQuery(`
+			query = `
 				EXTRACT (
-					WEEK FROM ${Sequelize.col(column).col}
+					WEEK FROM ${escapedColumn}
 				)
-			`)).val as string
+			`
 		} else {
 			throw new DatabaseError("The current database cannot be supported right now.")
 		}
 
-		return this.equal(
-			query,
-			DayValues.indexOf(value)
-		)
+		this.currentRawCondition = Sequelize.literal(cleanQuery(
+			`${query} = ${DayValues.indexOf(value)}`
+		))
+
+		return this
 	}
 
 	onOrAfterTime(column: string, time: Time): Condition {
@@ -89,17 +101,17 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			hourQuery = `strftime('%H', ${escapedColumn})`
-			minuteQuery = `strftime('%M', ${escapedColumn})`
+			hourQuery = `cast(strftime('%H', ${escapedColumn}) as integer)`
+			minuteQuery = `cast(strftime('%M', ${escapedColumn}) as integer)`
 		} else if (Database.isOnPostgreSQL) {
 			hourQuery = `
 				EXTRACT (
-					HOUR FROM ${Sequelize.col(column).col}
+					HOUR FROM ${escapedColumn}
 				)
 			`
 			minuteQuery = `
 				EXTRACT (
-					MINUTE FROM ${Sequelize.col(column).col}
+					MINUTE FROM ${escapedColumn}
 				)
 			`
 		} else {
@@ -107,14 +119,12 @@ export default class Condition<T = any> {
 		}
 
 		return this.and(
-			new Condition().greaterThanOrEqual(
-				Sequelize.literal(cleanQuery(hourQuery)).val as string,
-				time.hours
-			),
-			new Condition().greaterThanOrEqual(
-				Sequelize.literal(cleanQuery(minuteQuery)).val as string,
-				time.minutes
-			)
+			new Condition(Sequelize.literal(cleanQuery(
+				`${hourQuery} >= ${time.hours}`
+			))),
+			new Condition(Sequelize.literal(cleanQuery(
+				`${minuteQuery} >= ${time.minutes}`
+			)))
 		)
 	}
 
@@ -124,17 +134,17 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			hourQuery = `strftime('%H', ${escapedColumn})`
-			minuteQuery = `strftime('%M', ${escapedColumn})`
+			hourQuery = `cast(strftime('%H', ${escapedColumn}) as integer)`
+			minuteQuery = `cast(strftime('%M', ${escapedColumn}) as integer)`
 		} else if (Database.isOnPostgreSQL) {
 			hourQuery = `
 				EXTRACT (
-					HOUR FROM ${Sequelize.col(column).col}
+					HOUR FROM ${escapedColumn}
 				)
 			`
 			minuteQuery = `
 				EXTRACT (
-					MINUTE FROM ${Sequelize.col(column).col}
+					MINUTE FROM ${escapedColumn}
 				)
 			`
 		} else {
@@ -142,14 +152,12 @@ export default class Condition<T = any> {
 		}
 
 		return this.and(
-			new Condition().lessThanOrEqual(
-				Sequelize.literal(cleanQuery(hourQuery)).val as string,
-				time.hours
-			),
-			new Condition().lessThanOrEqual(
-				Sequelize.literal(cleanQuery(minuteQuery)).val as string,
-				time.minutes
-			)
+			new Condition(Sequelize.literal(cleanQuery(
+				`${hourQuery} <= ${time.hours}`
+			))),
+			new Condition(Sequelize.literal(cleanQuery(
+				`${minuteQuery} <= ${time.minutes}`
+			)))
 		)
 	}
 
@@ -157,9 +165,19 @@ export default class Condition<T = any> {
 		const simplifiedConditions = this.simplifyConditions(conditions)
 
 		if (simplifiedConditions.length === 1) {
-			[ this.currentCondition ] = simplifiedConditions
+			const [ condition ] = simplifiedConditions
+
+			if (condition?.val) {
+				this.currentRawCondition = condition as Literal
+			} else {
+				this.currentCondition = condition as object
+			}
 		} else if (simplifiedConditions.length > 1) {
-			this.currentCondition[Op.or] = conditions.map(condition => condition.build())
+			this.setLiteralOrObject(
+				Op.or,
+				"OR",
+				conditions.map(condition => condition.build())
+			)
 		}
 
 		return this
@@ -169,22 +187,136 @@ export default class Condition<T = any> {
 		const simplifiedConditions = this.simplifyConditions(conditions)
 
 		if (simplifiedConditions.length === 1) {
-			[ this.currentCondition ] = simplifiedConditions
+			const [ condition ] = simplifiedConditions
+
+			if (condition?.val) {
+				this.currentRawCondition = condition as Literal
+			} else {
+				this.currentCondition = condition as object
+			}
 		} else if (simplifiedConditions.length > 1) {
-			this.currentCondition[Op.and] = conditions.map(condition => condition.build())
+			this.setLiteralOrObject(
+				Op.and,
+				"AND",
+				conditions.map(condition => condition.build())
+			)
 		}
 
 		return this
 	}
 
-	build(): WhereOptions<T> { return { ...this.currentCondition } }
+	build(): WhereOptions<T>|Literal {
+		if (this.currentRawCondition.val as string) {
+			return this.currentRawCondition
+		}
 
-	private simplifyConditions(conditions: Condition[]): { [key: string|symbol]: any }[] {
-		return conditions.map(condition => condition.build()).filter(object => {
+		return { ...this.currentCondition }
+	}
+
+	buildAsLiteral(): Literal {
+		let hasFoundMatch = false
+		if (!isUndefined(this.currentCondition[Op.and])) {
+			hasFoundMatch = true
+			this.setLiteralOrObject(
+				Op.and,
+				"AND",
+				this.currentCondition[Op.and] as ({ [key: string|symbol]: any }|Literal)[]
+			)
+		}
+
+		if (!isUndefined(this.currentCondition[Op.or])) {
+			hasFoundMatch = true
+			this.setLiteralOrObject(
+				Op.or,
+				"OR",
+				this.currentCondition[Op.or] as ({ [key: string|symbol]: any }|Literal)[]
+			)
+		}
+
+		if (!hasFoundMatch) {
+			const propertyNames = Object.getOwnPropertyNames(this.currentCondition)
+
+			if (propertyNames.length === 1) {
+				const [ propertyName ] = propertyNames
+				const condition = this.currentCondition[propertyName]
+
+				const operations = Object.getOwnPropertySymbols(condition)
+
+				if (operations.length === 1) {
+					const [ operation ] = operations
+					const value = condition[operation]
+
+					const operator = this.getAppropriateOperator(operation)
+					this.currentRawCondition = Sequelize.literal(
+						`${propertyName} ${operator} ${cast(value, "string")}`
+					)
+					hasFoundMatch = true
+				}
+			} else if (!this.currentRawCondition.val) {
+				hasFoundMatch = true
+			}
+		}
+
+		if (!hasFoundMatch) {
+			console.log("Canot convert as literal", this.currentCondition)
+			throw new DatabaseError(
+				"There are certain operations unable to be performed in the database."
+			)
+		}
+
+		return this.build() as Literal
+	}
+
+	private getAppropriateOperator(operator: symbol): string {
+		switch (operator) {
+			case Op.gte: return ">="
+			case Op.lte: return "<="
+			case Op.eq: return "="
+			default:
+				console.log(operator, "Not supported\n\n\n\n\n")
+				throw new DatabaseError("Database operator not supported.")
+		}
+	}
+
+	private setLiteralOrObject(
+		operator: symbol,
+		rawOperator: string,
+		conditions: ({ [key: string|symbol]: any }|Literal)[]
+	) {
+		const literalIndex = conditions.findIndex(condition => this.isLiteral(condition))
+
+		// Combine all conditions to literal
+		if (literalIndex > -1) {
+			this.currentRawCondition = Sequelize.literal(conditions.map(condition => {
+				if (this.isLiteral(condition)) {
+					return condition
+				}
+
+				return new Condition(condition).buildAsLiteral()
+			})
+			.map(condition => `(${condition.val as string})`)
+			.join(` ${rawOperator} `))
+		} else {
+			this.currentCondition[operator] = conditions
+		}
+	}
+
+	private simplifyConditions(conditions: Condition[]): ({ [key: string|symbol]: any }|Literal)[] {
+		return conditions.map(condition => condition.build()).filter(value => {
+			if (this.isLiteral(value)) {
+				return value.val as string !== ""
+			}
+
+			const object = value as WhereOptions<T>
 			const hasProperties = Object.getOwnPropertyNames(object).length > 0
-				|| Object.getOwnPropertySymbols(object).length > 0
+					|| Object.getOwnPropertySymbols(object).length > 0
 
 			return hasProperties
 		})
+	}
+
+	private isLiteral(value: any): value is Literal {
+		const castValue = value as Literal
+		return !isUndefined(castValue.val)
 	}
 }

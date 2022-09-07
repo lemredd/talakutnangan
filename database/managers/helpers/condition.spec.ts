@@ -93,7 +93,7 @@ describe("Database: Condition builder", () => {
 		expect(builtCondition).toStrictEqual({
 			[
 				Sequelize.literal(cleanQuery(`
-					strftime('%w', ${Sequelize.col("startAt").col})
+					CAST(STRFTIME('%w', ${Sequelize.col("startAt").col}) AS INTEGER)
 				`)).val as string
 			]: { [Op.eq]: DayValues.indexOf(targetDay) }
 		})
@@ -113,14 +113,14 @@ describe("Database: Condition builder", () => {
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							strftime('%H', ${Sequelize.col("startAt").col})
+							CAST(STRFTIME('%H', ${Sequelize.col("startAt").col}) AS INTEGER)
 						`)).val as string
 					]: { [Op.gte]: TIME.hours }
 				},
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							strftime('%M', ${Sequelize.col("startAt").col})
+							CAST(STRFTIME('%M', ${Sequelize.col("startAt").col}) AS INTEGER)
 						`)).val as string
 					]: { [Op.gte]: TIME.minutes }
 				}
@@ -142,14 +142,14 @@ describe("Database: Condition builder", () => {
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							strftime('%H', ${Sequelize.col("startAt").col})
+							CAST(STRFTIME('%H', ${Sequelize.col("startAt").col}) AS INTEGER)
 						`)).val as string
 					]: { [Op.lte]: TIME.hours }
 				},
 				{
 					[
 						Sequelize.literal(cleanQuery(`
-							strftime('%M', ${Sequelize.col("startAt").col})
+							CAST(STRFTIME('%M', ${Sequelize.col("startAt").col}) AS INTEGER)
 						`)).val as string
 					]: { [Op.lte]: TIME.minutes }
 				}
