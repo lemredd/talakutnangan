@@ -11,9 +11,9 @@ import Manager from "./employee_schedule"
 
 describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
-		const DATE_NOW = new Date()
-		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
+		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 120
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
@@ -23,7 +23,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => DATE_NOW)
+		.scheduledStartAt(() => FUTURE_DATE)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -46,9 +46,10 @@ describe("Database Manager: Employee schedule update operations", () => {
 	})
 
 	it("can update resource and retain other consultations", async() => {
-		const DATE_NOW = new Date()
-		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
+		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 100
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
@@ -59,7 +60,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => DATE_NOW)
+		.scheduledStartAt(() => FUTURE_DATE)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -84,20 +85,21 @@ describe("Database Manager: Employee schedule update operations", () => {
 
 describe("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resources", async() => {
-		const DATE_NOW = new Date()
-		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
+		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 90
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
-		const FUTURE_DATE = new Date(
-			DATE_NOW.getFullYear(),
-			DATE_NOW.getMonth(),
-			DATE_NOW.getDate() + 7
+		const SECOND_FUTURE_DATE = new Date(
+			FUTURE_DATE.getFullYear(),
+			FUTURE_DATE.getMonth(),
+			FUTURE_DATE.getDate() + 7
 		)
-		const dates = [ DATE_NOW, FUTURE_DATE ].values()
+		const dates = [ FUTURE_DATE, SECOND_FUTURE_DATE ].values()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.scheduledStartAt(() => dates.next().value)
@@ -119,18 +121,19 @@ describe("Database Manager: Employee schedule archive operations", () => {
 	})
 
 	it("cannot archive unaffected consultations", async() => {
-		const DATE_NOW = new Date()
-		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
+		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		FUTURE_DATE.setMinutes(FUTURE_DATE.getMinutes() - 5)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 40
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const UNAFFECTED_FUTURE_DATE = new Date(
-			DATE_NOW.getFullYear(),
-			DATE_NOW.getMonth(),
-			DATE_NOW.getDate() + 6
+			FUTURE_DATE.getFullYear(),
+			FUTURE_DATE.getMonth(),
+			FUTURE_DATE.getDate() + 6
 		)
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
