@@ -5,7 +5,7 @@ import Factory from "~/factories/employee_schedule"
 import Consultation from "%/models/employee_schedule"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
-import findMinutesFromMidnight from "%/managers/helpers/find_minutes_from_midnight"
+import findMinutesAfterMidnight from "%/managers/helpers/find_minutes_after_midnight"
 
 import Manager from "./employee_schedule"
 
@@ -13,7 +13,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesFromMidnight(DATE_NOW)
+		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
 		const FREE_DURATION_IN_MINUTES = 120
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
@@ -48,7 +48,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and retain other consultations", async() => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesFromMidnight(DATE_NOW)
+		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
 		const FREE_DURATION_IN_MINUTES = 120
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
@@ -86,7 +86,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resource", async() => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
-		const START_DATETIME = findMinutesFromMidnight(DATE_NOW)
+		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
 		const FREE_DURATION_IN_MINUTES = 120
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
