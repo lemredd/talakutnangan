@@ -5,6 +5,7 @@ import Factory from "~/factories/employee_schedule"
 import Consultation from "%/models/employee_schedule"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
+import findMinutesFromMidnight from "%/managers/helpers/find_minutes_from_midnight"
 
 import Manager from "./employee_schedule"
 
@@ -82,7 +83,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 })
 
 describe("Database Manager: Employee schedule archive operations", () => {
-	it("can archive resource", async() => {
+	it("can archive multiple resource", async() => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
 		const START_DATETIME = findMinutesFromMidnight(DATE_NOW)
@@ -105,7 +106,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 
 		const manager = new Manager()
 
-		await manager.archive([ Number(model.id) ])
+		await manager.archiveBatch([ Number(model.id) ])
 
 		expect(await Model.count()).toBe(1)
 		expect(await Consultation.count()).toBe(0)
@@ -121,15 +122,15 @@ describe("Database Manager: Miscellaneous chat message operations", () => {
 
 		expect(sortableColumns).toStrictEqual([
 			"-createdAt",
-			"-deletedAt",
 			"-dayName",
+			"-deletedAt",
 			"-id",
 			"-scheduleEnd",
 			"-scheduleStart",
 			"-updatedAt",
 			"createdAt",
-			"deletedAt",
 			"dayName",
+			"deletedAt",
 			"id",
 			"scheduleEnd",
 			"scheduleStart",

@@ -23,6 +23,14 @@ export default class extends BaseManager<
 
 	get transformer(): EmployeeScheduleTransformer { return new EmployeeScheduleTransformer() }
 
+	get exposableColumns(): string[] {
+		const excludedColumns = [ "userID" ]
+		return super.exposableColumns.filter(columnName => {
+			const isIncluded = !excludedColumns.includes(columnName)
+			return isIncluded
+		})
+	}
+
 	get listPipeline(): Pipe<
 		FindAndCountOptions<EmployeeSchedule>,
 		EmployeeScheduleQueryParameters<number>
