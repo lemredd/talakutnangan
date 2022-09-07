@@ -1,3 +1,5 @@
+import { QueryTypes } from "sequelize"
+
 import { Pipe } from "$/types/database"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
@@ -6,6 +8,7 @@ import type { ModelCtor, FindAndCountOptions, DestroyOptions } from "%/types/dep
 import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
 import Model from "%/models/employee_schedule"
+import DatabaseError from "$!/errors/database"
 import Consultation from "%/models/consultation"
 import Condition from "%/managers/helpers/condition"
 import siftByDay from "%/queries/employee_schedule/sift_by_day"
@@ -57,27 +60,45 @@ export default class extends BaseManager<
 				"where": { "id": IDs },
 				...this.transaction.transactionObject
 			})
-			await Consultation.destroy(<DestroyOptions<Consultation>>{
-				"where": new Condition().or(
-					...foundModels.map(model => {
-						const individualCondition = new Condition()
+			const currentTime = new Date()
+			const literal = new Condition().or(
+				...foundModels.map(model => {
+					const individualCondition = new Condition()
 
-						const currentTime = new Date()
-						const targetStartTime = convertMinutesToTimeObject(model.scheduleStart)
-						const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
+					const targetStartTime = convertMinutesToTimeObject(model.scheduleStart)
+					const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
-						individualCondition.and(
-							new Condition().greaterThanOrEqual("scheduledStartAt", currentTime),
-							new Condition().isOnDay("scheduledStartAt", model.dayName),
-							new Condition().onOrAfterTime("scheduledStartAt", targetStartTime),
-							new Condition().onOrBeforeTime("scheduledStartAt", targetEndTime)
-						)
+					individualCondition.and(
+						new Condition().greaterThanOrEqual(
+							"scheduledStartAt",
+							Consultation.sequelize?.escape(currentTime)
+						),
+						new Condition().isOnDay(
+							"scheduledStartAt", model.dayName),
+						new Condition().onOrAfterTime("scheduledStartAt", targetStartTime),
+						new Condition().onOrBeforeTime("scheduledStartAt", targetEndTime)
+					)
 
-						return individualCondition
-					})
-				).build(),
-				...this.transaction.transactionObject
-			})
+					return individualCondition
+				})
+			).buildAsLiteral()
+
+			if (!Consultation.sequelize) {
+				throw new DatabaseError("Developer may have forgot to register the models.")
+			}
+
+			await Consultation.sequelize.query(
+				"UPDATE $table SET deletedAt = $date WHERE ($where)",
+				{
+					"bind": {
+						"date": Consultation.sequelize.escape(currentTime),
+						"table": Consultation.tableName,
+						"where": literal.val
+					},
+					"type": QueryTypes.UPDATE,
+					...this.transaction.transactionObject
+				}
+			)
 
 			Log.success("manager", "done archiving models")
 
