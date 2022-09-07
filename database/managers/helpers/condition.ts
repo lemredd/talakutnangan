@@ -82,7 +82,7 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			query = `cast(strftime('%w', ${escapedColumn}) as integer)`
+			query = `CAST(STRFTIME('%w', ${escapedColumn}) AS INTEGER)`
 		} else if (Database.isOnPostgreSQL) {
 			query = `
 				EXTRACT (
@@ -95,9 +95,8 @@ export default class Condition<T = any> {
 
 		this.currentWhereCondition = Database.where(
 			Sequelize.literal(cleanQuery(query)),
-			{
-				[Op.eq]: DayValues.indexOf(value)
-			}
+			Op.eq,
+			DayValues.indexOf(value)
 		)
 
 		return this
@@ -109,8 +108,8 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			hourQuery = `cast(strftime('%H', ${escapedColumn}) as integer)`
-			minuteQuery = `cast(strftime('%M', ${escapedColumn}) as integer)`
+			hourQuery = `CAST(STRFTIME('%H', ${escapedColumn}) AS INTEGER)`
+			minuteQuery = `CAST(STRFTIME('%M', ${escapedColumn}) AS INTEGER)`
 		} else if (Database.isOnPostgreSQL) {
 			hourQuery = `
 				EXTRACT (
@@ -129,15 +128,13 @@ export default class Condition<T = any> {
 		return this.and(
 			new Condition(Database.where(
 				Sequelize.literal(cleanQuery(hourQuery)),
-				{
-					[Op.gte]: time.hours
-				}
+				Op.gte,
+				time.hours
 			)),
 			new Condition(Database.where(
 				Sequelize.literal(cleanQuery(minuteQuery)),
-				{
-					[Op.gte]: time.minutes
-				}
+				Op.gte,
+				time.minutes
 			))
 		)
 	}
@@ -148,8 +145,8 @@ export default class Condition<T = any> {
 		const escapedColumn = Sequelize.col(column).col
 
 		if (Database.isOnSQLite) {
-			hourQuery = `cast(strftime('%H', ${escapedColumn}) as integer)`
-			minuteQuery = `cast(strftime('%M', ${escapedColumn}) as integer)`
+			hourQuery = `CAST(STRFTIME('%H', ${escapedColumn}) AS INTEGER)`
+			minuteQuery = `CAST(STRFTIME('%M', ${escapedColumn}) AS INTEGER)`
 		} else if (Database.isOnPostgreSQL) {
 			hourQuery = `
 				EXTRACT (
@@ -168,15 +165,13 @@ export default class Condition<T = any> {
 		return this.and(
 			new Condition(Database.where(
 				Sequelize.literal(cleanQuery(hourQuery)),
-				{
-					[Op.lte]: time.hours
-				}
+				Op.lte,
+				time.hours
 			)),
 			new Condition(Database.where(
 				Sequelize.literal(cleanQuery(minuteQuery)),
-				{
-					[Op.lte]: time.minutes
-				}
+				Op.lte,
+				time.minutes
 			))
 		)
 	}

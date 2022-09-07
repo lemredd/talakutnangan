@@ -28,8 +28,8 @@ export default class Database {
 		return this.sourceType === "pgsql"
 	}
 
-	static where(leftOperand: any, operatorAndRightOperand: any)
+	static where(leftOperand: any, operator: symbol, rightOperand: any)
 	: ReturnType<typeof Sequelize["where"]> {
-		return this.source.where(leftOperand, operatorAndRightOperand)
+		return this.source.where(leftOperand, operator as any, rightOperand)
 	}
 }
