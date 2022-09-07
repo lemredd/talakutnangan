@@ -5,6 +5,8 @@ import { DayValues, Day } from "$/types/database"
 import type { Time } from "%/types/independent"
 import type { WhereOptions } from "%/types/dependent"
 
+import cleanQuery from "%/managers/helpers/clean_query"
+
 export default class Condition<T = any> {
 	private currentCondition: { [key: string|symbol]: any }
 
@@ -59,11 +61,11 @@ export default class Condition<T = any> {
 
 	isOnDay(column: string, value: Day): Condition {
 		return this.equal(
-			Sequelize.literal(`
+			Sequelize.literal(cleanQuery(`
 				EXTRACT (
 					WEEK FROM ${Sequelize.col(column).col}
 				)
-			`.replace(/(\t|\n)+/mgu, "")).val as string,
+			`)).val as string,
 			DayValues.indexOf(value)
 		)
 	}
@@ -71,19 +73,19 @@ export default class Condition<T = any> {
 	onOrAfterTime(column: string, time: Time): Condition {
 		return this.and(
 			new Condition().greaterThanOrEqual(
-				Sequelize.literal(`
+				Sequelize.literal(cleanQuery(`
 					EXTRACT (
 						HOUR FROM ${Sequelize.col(column).col}
 					)
-				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				`)).val as string,
 				time.hours
 			),
 			new Condition().greaterThanOrEqual(
-				Sequelize.literal(`
+				Sequelize.literal(cleanQuery(`
 					EXTRACT (
 						MINUTE FROM ${Sequelize.col(column).col}
 					)
-				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				`)).val as string,
 				time.minutes
 			)
 		)
@@ -92,19 +94,19 @@ export default class Condition<T = any> {
 	onOrBeforeTime(column: string, time: Time): Condition {
 		return this.and(
 			new Condition().lessThanOrEqual(
-				Sequelize.literal(`
+				Sequelize.literal(cleanQuery(`
 					EXTRACT (
 						HOUR FROM ${Sequelize.col(column).col}
 					)
-				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				`)).val as string,
 				time.hours
 			),
 			new Condition().lessThanOrEqual(
-				Sequelize.literal(`
+				Sequelize.literal(cleanQuery(`
 					EXTRACT (
 						MINUTE FROM ${Sequelize.col(column).col}
 					)
-				`.replace(/(\t|\n)+/mgu, "")).val as string,
+				`)).val as string,
 				time.minutes
 			)
 		)

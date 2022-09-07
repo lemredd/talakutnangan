@@ -1,9 +1,10 @@
 import { Op, Sequelize } from "sequelize"
 import { DayValues } from "$/types/database"
 
+import cleanQuery from "%/managers/helpers/clean_query"
 import Condition from "./condition"
 
-describe("Database: Condition Builder", () => {
+describe("Database: Condition builder", () => {
 	it("can retain built condition", () => {
 		const builtCondition = { "sample": { [Op.eq]: 3 } }
 
@@ -91,11 +92,11 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			[
-				Sequelize.literal(`
+				Sequelize.literal(cleanQuery(`
 					EXTRACT (
 						WEEK FROM ${Sequelize.col("startAt").col}
 					)
-				`.replace(/(\t|\n)+/mgu, "")).val as string
+				`)).val as string
 			]: { [Op.eq]: DayValues.indexOf(targetDay) }
 		})
 	})
@@ -113,20 +114,20 @@ describe("Database: Condition Builder", () => {
 			[Op.and]: [
 				{
 					[
-						Sequelize.literal(`
+						Sequelize.literal(cleanQuery(`
 							EXTRACT (
 								HOUR FROM ${Sequelize.col("startAt").col}
 							)
-						`.replace(/(\t|\n)+/mgu, "")).val as string
+						`)).val as string
 					]: { [Op.gte]: TIME.hours }
 				},
 				{
 					[
-						Sequelize.literal(`
+						Sequelize.literal(cleanQuery(`
 							EXTRACT (
 								MINUTE FROM ${Sequelize.col("startAt").col}
 							)
-						`.replace(/(\t|\n)+/mgu, "")).val as string
+						`)).val as string
 					]: { [Op.gte]: TIME.minutes }
 				}
 			]
@@ -146,20 +147,20 @@ describe("Database: Condition Builder", () => {
 			[Op.and]: [
 				{
 					[
-						Sequelize.literal(`
+						Sequelize.literal(cleanQuery(`
 							EXTRACT (
 								HOUR FROM ${Sequelize.col("startAt").col}
 							)
-						`.replace(/(\t|\n)+/mgu, "")).val as string
+						`)).val as string
 					]: { [Op.lte]: TIME.hours }
 				},
 				{
 					[
-						Sequelize.literal(`
+						Sequelize.literal(cleanQuery(`
 							EXTRACT (
 								MINUTE FROM ${Sequelize.col("startAt").col}
 							)
-						`.replace(/(\t|\n)+/mgu, "")).val as string
+						`)).val as string
 					]: { [Op.lte]: TIME.minutes }
 				}
 			]
