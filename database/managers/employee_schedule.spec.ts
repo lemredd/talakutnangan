@@ -49,7 +49,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
-		const FREE_DURATION_IN_MINUTES = 120
+		const FREE_DURATION_IN_MINUTES = 100
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 		const MINUTE_SHIFT = 15
@@ -87,7 +87,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		const DATE_NOW = new Date()
 		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
-		const FREE_DURATION_IN_MINUTES = 120
+		const FREE_DURATION_IN_MINUTES = 90
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
@@ -108,7 +108,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 
 		await manager.archiveBatch([ Number(model.id) ])
 
-		expect(await Model.count()).toBe(1)
+		expect(await Model.count()).toBe(0)
 		expect(await Consultation.count()).toBe(0)
 	})
 })
