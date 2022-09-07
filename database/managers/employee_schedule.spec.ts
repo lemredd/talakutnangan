@@ -97,18 +97,47 @@ describe("Database Manager: Employee schedule archive operations", () => {
 			DATE_NOW.getMonth(),
 			DATE_NOW.getDate() + 7
 		)
-		const UNAFFECTED_FUTURE_DATE = new Date(
-			DATE_NOW.getFullYear(),
-			DATE_NOW.getMonth(),
-			DATE_NOW.getDate() + 6
-		)
-		const dates = [ DATE_NOW, FUTURE_DATE, UNAFFECTED_FUTURE_DATE ].values()
+		const dates = [ DATE_NOW, FUTURE_DATE ].values()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.scheduledStartAt(() => dates.next().value)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertMany(2)
+		const model = await new Factory()
+		.dayName(() => CONSULTATION_DAY)
+		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
+		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
+		.insertOne()
+
+		const manager = new Manager()
+
+		await manager.archiveBatch([ Number(model.id) ])
+
+		expect(await Model.count()).toBe(0)
+		expect(await Consultation.count()).toBe(0)
+	})
+
+	it("cannot archive unaffected consultations", async() => {
+		const DATE_NOW = new Date()
+		const CONSULTATION_DAY = DayValues[DATE_NOW.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(DATE_NOW)
+		const FREE_DURATION_IN_MINUTES = 40
+		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
+		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
+
+		const attachedRole = await new AttachedRoleFactory().insertOne()
+		const UNAFFECTED_FUTURE_DATE = new Date(
+			DATE_NOW.getFullYear(),
+			DATE_NOW.getMonth(),
+			DATE_NOW.getDate() + 6
+		)
+		await new ConsultationFactory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.scheduledStartAt(() => UNAFFECTED_FUTURE_DATE)
+		.startedAt(() => null)
+		.finishedAt(() => null)
+		.insertOne()
 		const model = await new Factory()
 		.dayName(() => CONSULTATION_DAY)
 		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
