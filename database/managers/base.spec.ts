@@ -270,13 +270,26 @@ describe("Database Manager: Base Read Operations", () => {
 		expect(model).toStrictEqual(sameUser)
 	})
 
-	it("can check if resource belongs to a user", async() => {
+	it("can check if model belongs to a user", async() => {
 		const manager = new MockUserManager()
 		const model = await new UserFactory().insertOne()
+		const IDOfModelToCheck = model.id
+		const ownerIDToMatch = model.id
 
-		const hasFound = await manager.belongsTo(model.id, model.id)
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch)
 
 		expect(hasFound).toBeTruthy()
+	})
+
+	it("can check if model not belongs to a user", async() => {
+		const manager = new MockUserManager()
+		const model = await new UserFactory().insertOne()
+		const IDOfModelToCheck = model.id
+		const ownerIDToMatch = model.id + 1
+
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch)
+
+		expect(hasFound).toBeFalsy()
 	})
 })
 
