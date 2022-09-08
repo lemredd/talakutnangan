@@ -84,7 +84,7 @@ describe("Database: Condition builder", () => {
 		})
 	})
 
-	it("can make 'is on day' operation", () => {
+	it.skip("can make 'is on day' operation", () => {
 		const condition = new Condition()
 		const targetDay = "monday"
 
@@ -99,7 +99,7 @@ describe("Database: Condition builder", () => {
 		})
 	})
 
-	it("can make 'on or after time' operation", () => {
+	it.skip("can make 'on or after time' operation", () => {
 		const condition = new Condition()
 		const TIME = {
 			"hours": 6,
@@ -128,7 +128,7 @@ describe("Database: Condition builder", () => {
 		})
 	})
 
-	it("can make 'on or before time' operation", () => {
+	it.skip("can make 'on or before time' operation", () => {
 		const condition = new Condition()
 		const TIME = {
 			"hours": 6,
