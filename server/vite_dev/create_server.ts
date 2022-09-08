@@ -77,11 +77,12 @@ export default async function(app: ExpressApp) {
 				url,
 				"urlOriginal": url
 			}
-			const pageContext = await renderPage(pageContextInit)
-			const { httpResponse } = pageContext
+			const pageContext: Awaited<ReturnType<typeof renderPage>> & { errorStatus?: number }
+			= await renderPage(pageContextInit)
+			const { httpResponse, errorStatus } = pageContext
 			if (httpResponse) {
 				const { body, statusCode, contentType } = httpResponse
-				response.status(statusCode).type(contentType).send(body)
+				response.status(errorStatus || statusCode).type(contentType).send(body)
 			} else {
 				next()
 			}
