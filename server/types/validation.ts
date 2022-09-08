@@ -1,4 +1,3 @@
-import type { PermissionMap } from "$/types/permission"
 import type { Pipe as BasePipe } from "$/types/database"
 import type BasePermissionGroup from "$/permissions/base"
 import type { BaseManagerClass } from "!/types/independent"
@@ -92,10 +91,8 @@ export interface UniqueConsultationScheduleConstraints {
 	}
 }
 
-export interface DoesBelongToUserConstraints<U> extends ManagerBasedRuleConstraints {
+export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleConstraints {
 	doesBelongToUser: {
-		userIDPointer?: string
-		userIDValue?: string,
 		permissionGroup: BasePermissionGroup<any, U>,
 		anyPermissionCombinationForBypass: U[][]
 	}
@@ -127,7 +124,7 @@ export type RuleContraints = Partial<
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
-	& DoesBelongToUserConstraints<any>
+	& DoesBelongToCurrentUserConstraints<any>
 >
 
 /**

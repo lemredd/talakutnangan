@@ -44,14 +44,6 @@ export default class extends DoubleBoundJSONController {
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const attributes = {
-			"name": {
-				"constraints": {
-					"regex": {
-						"match": personName
-					}
-				},
-				"pipes": [ required, string, regex ]
-			},
 			"email": {
 				"constraints": {
 					"manager": {
@@ -63,6 +55,14 @@ export default class extends DoubleBoundJSONController {
 					}
 				},
 				"pipes": [ required, string, emailValidator, unique ]
+			},
+			"name": {
+				"constraints": {
+					"regex": {
+						"match": personName
+					}
+				},
+				"pipes": [ required, string, regex ]
 			},
 			"prefersDark": {
 				"pipes": [ required, boolean ]

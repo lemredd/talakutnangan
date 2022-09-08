@@ -1,10 +1,11 @@
-import type { PermissionMap, PermissionInfo, OperationPermission } from "$/types/permission"
-
 import {
 	VIEW,
 	CREATE,
 	UPDATE,
-	ARCHIVE_AND_RESTORE
+	PermissionMap,
+	PermissionInfo,
+	ARCHIVE_AND_RESTORE,
+	OperationPermission
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
