@@ -15,10 +15,10 @@ describe("Database Manager: Employee schedule update operations", () => {
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 120
-		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
-		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
-		const NEW_EMPLOYEE_SCHEDULE_START = EMPLOYEE_SCHEDULE_START - FREE_DURATION_IN_MINUTES / 2
-		const NEW_EMPLOYEE_SCHEDULE_END = EMPLOYEE_SCHEDULE_END - FREE_DURATION_IN_MINUTES / 2
+		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 3 * 4
+		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 4
+		const NEW_EMPLOYEE_SCHEDULE_START = EMPLOYEE_SCHEDULE_START - FREE_DURATION_IN_MINUTES / 4
+		const NEW_EMPLOYEE_SCHEDULE_END = EMPLOYEE_SCHEDULE_END - FREE_DURATION_IN_MINUTES
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
@@ -38,7 +38,8 @@ describe("Database Manager: Employee schedule update operations", () => {
 		await manager.update(model.id, {
 			"dayName": CONSULTATION_DAY,
 			"scheduleEnd": NEW_EMPLOYEE_SCHEDULE_END,
-			"scheduleStart": NEW_EMPLOYEE_SCHEDULE_START
+			"scheduleStart": NEW_EMPLOYEE_SCHEDULE_START,
+			"userID": model.userID
 		})
 
 		expect(await Model.count()).toBe(1)
@@ -46,14 +47,14 @@ describe("Database Manager: Employee schedule update operations", () => {
 	})
 
 	it("can update resource and retain other consultations", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		const FUTURE_DATE = new Date(Date.now() + 5 * 60 * 1000)
 		FUTURE_DATE.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
 		const FREE_DURATION_IN_MINUTES = 100
-		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
-		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
-		const MINUTE_SHIFT = 15
+		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 3 * 4
+		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 4
+		const MINUTE_SHIFT = FREE_DURATION_IN_MINUTES / 4 / 2
 		const NEW_EMPLOYEE_SCHEDULE_START = EMPLOYEE_SCHEDULE_START - MINUTE_SHIFT
 		const NEW_EMPLOYEE_SCHEDULE_END = EMPLOYEE_SCHEDULE_END - MINUTE_SHIFT
 
@@ -75,7 +76,8 @@ describe("Database Manager: Employee schedule update operations", () => {
 		await manager.update(model.id, {
 			"dayName": CONSULTATION_DAY,
 			"scheduleEnd": NEW_EMPLOYEE_SCHEDULE_END,
-			"scheduleStart": NEW_EMPLOYEE_SCHEDULE_START
+			"scheduleStart": NEW_EMPLOYEE_SCHEDULE_START,
+			"userID": model.userID
 		})
 
 		expect(await Model.count()).toBe(1)
