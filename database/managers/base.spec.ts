@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Pipe } from "$/types/database"
 import type { RawUser } from "$!/types/independent"
 import type {
@@ -146,38 +147,38 @@ describe("Database Manager: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		await new UserFactory().insertMany(5)
 
-		const users = await manager.list({
+		const models = await manager.list({
 			"filter": {
 				"existence": "exists"
 			},
-			"sort": [ "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 3
-			}
+				"limit": 3,
+				"offset": 0
+			},
+			"sort": [ "name" ]
 		})
 
-		expect(model).toHaveProperty("data")
-		expect(model.data).toHaveLength(3)
+		expect(models).toHaveProperty("data")
+		expect(models.data).toHaveLength(3)
 	})
 
 	it("can search with pipelines", async() => {
 		const manager = new MockUserManager()
 		await new UserFactory().insertMany(10)
 
-		const users = await manager.list({
+		const models = await manager.list({
 			"filter": {
 				"existence": "exists"
 			},
-			"sort": [ "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 5
-			}
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": [ "name" ]
 		})
 
-		expect(model).toHaveProperty("data")
-		expect(model.data).toHaveLength(5)
+		expect(models).toHaveProperty("data")
+		expect(models.data).toHaveLength(5)
 	})
 
 	it("can find on one column with existing", async() => {
@@ -276,7 +277,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const IDOfModelToCheck = model.id
 		const ownerIDToMatch = model.id
 
-		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch)
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch, [])
 
 		expect(hasFound).toBeTruthy()
 	})
@@ -287,7 +288,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const IDOfModelToCheck = model.id
 		const ownerIDToMatch = model.id + 1
 
-		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch)
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch, [])
 
 		expect(hasFound).toBeFalsy()
 	})
@@ -333,7 +334,7 @@ describe("Database Manager: Base Update Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.name).not.toBe(base.name)
+		)?.name).not.toBe(base.name)
 	})
 
 	it("can update base through transaction", async() => {
@@ -355,7 +356,7 @@ describe("Database Manager: Base Update Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.name).not.toBe(base.name)
+		)?.name).not.toBe(base.name)
 	})
 })
 
@@ -369,8 +370,8 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				"where": { "id": base.id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": base.id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -386,7 +387,7 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.deletedAt).toBeNull()
+		)?.deletedAt).toBeNull()
 	})
 
 	it("can archive base through transaction", async() => {
@@ -403,8 +404,8 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				"where": { "id": base.id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": base.id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -425,7 +426,7 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.deletedAt).toBeNull()
+		)?.deletedAt).toBeNull()
 	})
 
 	it("can archive multiple bases", async() => {
@@ -437,20 +438,20 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(3)
 		expect((
 			await User.findOne({
-				"where": { "id": bases[0].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[0].id }
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				"where": { "id": bases[1].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[1].id }
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				"where": { "id": bases[2].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[2].id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -464,21 +465,21 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 
 		await manager.restoreBatch(bases.map(base => base.id))
 
-		expect((
-			await User.findOne({
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[0].id }
-			})
-		)!.deletedAt).toBeNull()
-		expect((
-			await User.findOne({
+			}))?.deletedAt
+		).toBeNull()
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[1].id }
-			})
-		)!.deletedAt).toBeNull()
-		expect((
-			await User.findOne({
+			}))?.deletedAt
+		).toBeNull()
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[2].id }
-			})
-		)!.deletedAt).toBeNull()
+			}))?.deletedAt
+		).toBeNull()
 	})
 })
 
