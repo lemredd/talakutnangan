@@ -157,8 +157,8 @@ describe("Database Manager: Base Read Operations", () => {
 			}
 		})
 
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(3)
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveLength(3)
 	})
 
 	it("can search with pipelines", async() => {
@@ -176,22 +176,22 @@ describe("Database Manager: Base Read Operations", () => {
 			}
 		})
 
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(5)
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveLength(5)
 	})
 
 	it("can find on one column with existing", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
 	})
 
 	it("cannot find on one column with existing if destroyed already", async() => {
@@ -199,14 +199,14 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 		await base.destroy({ "force": false })
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toBeNull()
+		expect(model).toHaveProperty("data")
+		expect(model.data).toBeNull()
 	})
 
 	it("can find on one column with archived", async() => {
@@ -214,28 +214,28 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 		await base.destroy({ "force": false })
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "archived"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
 	})
 
 	it("cannot find on one column with archived if still exists", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "archived"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toBeNull()
+		expect(model).toHaveProperty("data")
+		expect(model.data).toBeNull()
 	})
 
 	it("can find on one column with existing that is cached", async() => {
@@ -252,7 +252,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const manager = new MockUserManager(null, undefined, new Cache() as unknown as CacheClient)
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
@@ -265,9 +265,18 @@ describe("Database Manager: Base Read Operations", () => {
 
 		expect(getCache).toHaveBeenCalledTimes(2)
 		expect(setCache).toHaveBeenCalledTimes(1)
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
-		expect(user).toStrictEqual(sameUser)
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
+		expect(model).toStrictEqual(sameUser)
+	})
+
+	it("can check if resource belongs to a user", async() => {
+		const manager = new MockUserManager()
+		const model = await new UserFactory().insertOne()
+
+		const hasFound = await manager.belongsTo(model.id, model.id)
+
+		expect(hasFound).toBeTruthy()
 	})
 })
 
