@@ -1,6 +1,6 @@
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
-import type { ProfilePictureTransformerOptions } from "%/types/independent"
+import type { FileLikeTransformerOptions } from "%/types/independent"
 import type {
 	ProfilePictureResource,
 	ProfilePictureDocument,
@@ -29,7 +29,7 @@ export default class ProfilePictureFactory extends FileLikeFactory<
 	ProfilePictureListDocument<"read", "raw">,
 	DeserializedProfilePictureDocument<"raw">,
 	DeserializedProfilePictureListDocument<"raw">,
-	ProfilePictureTransformerOptions
+	FileLikeTransformerOptions
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 

@@ -7,31 +7,31 @@
 			type="text"/>
 
 		<FlagSelector
-			v-model:flags="semesterFlags"
+			v-model="semesterFlags"
 			header="Semester"
 			:base-permission-group="semester"/>
 		<FlagSelector
-			v-model:flags="tagFlags"
+			v-model="tagFlags"
 			header="Tag"
 			:base-permission-group="tag"/>
 		<FlagSelector
-			v-model:flags="postFlags"
+			v-model="postFlags"
 			header="Post"
 			:base-permission-group="post"/>
 		<FlagSelector
-			v-model:flags="commentFlags"
+			v-model="commentFlags"
 			header="Comment"
 			:base-permission-group="comment"/>
 		<FlagSelector
-			v-model:flags="profanityFlags"
+			v-model="profanityFlags"
 			header="Profanity"
 			:base-permission-group="profanity"/>
 		<FlagSelector
-			v-model:flags="userFlags"
+			v-model="userFlags"
 			header="User"
 			:base-permission-group="user"/>
 		<FlagSelector
-			v-model:flags="auditTrailFlags"
+			v-model="auditTrailFlags"
 			header="Audit Trail"
 			:base-permission-group="auditTrail"/>
 
@@ -54,7 +54,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, onMounted, onBeforeMount } from "vue"
 import RoleFetcher from "$@/fetchers/role"
 import {
 	tag,
@@ -78,24 +78,39 @@ const profanityFlags = ref<number>(0)
 const userFlags = ref<number>(0)
 const auditTrailFlags = ref<number>(0)
 
-RoleFetcher.initialize("/api")
+onBeforeMount(() => {
+	RoleFetcher.initialize("/api")
+})
+
+let rawRoleFetcher: RoleFetcher|null = null
+
+function roleFetcher(): RoleFetcher {
+	if (rawRoleFetcher) return rawRoleFetcher
+
+	throw new Error("Roles cannot be retrived/sent to server yet")
+}
 
 function createRole() {
-	new RoleFetcher().create({
+	roleFetcher().create({
+		"auditTrailFlags": auditTrailFlags.value,
+		"commentFlags": commentFlags.value,
+		"deletedAt": null,
+		"departmentFlags": 1,
 		"name": roleName.value,
 		"postFlags": postFlags.value,
+		"profanityFlags": profanityFlags.value,
+		"roleFlags": 1,
 		"semesterFlags": semesterFlags.value,
 		"tagFlags": tagFlags.value,
-		"commentFlags": commentFlags.value,
-		"profanityFlags": profanityFlags.value,
-		"userFlags": userFlags.value,
-		"auditTrailFlags": auditTrailFlags.value,
-		"departmentFlags": 1,
-		"roleFlags": 1
+		"userFlags": userFlags.value
 	}).then(({ unusedBody, unusedStatus }) => {
 		// Success
 	}).catch(({ unusedBody, unusedStatus }) => {
 		// Fail
 	})
 }
+
+onMounted(() => {
+	rawRoleFetcher = new RoleFetcher()
+})
 </script>

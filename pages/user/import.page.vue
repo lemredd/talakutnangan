@@ -119,11 +119,11 @@ import type { DeserializedUserResource, DeserializedStudentResource } from "$/ty
 import { UserKindValues } from "$/types/database"
 
 import UserFetcher from "$@/fetchers/user"
-import TextTransformer from "$/helpers/text_transformers"
+import convertForSentence from "$/string/convert_for_sentence"
 
 import AdminConfigHeader from "@/tabbed_page_header.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
 import OutputTable from "@/helpers/overflowing_table.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 provide("tabs", [ "Users", "Roles", "Departments" ])
@@ -140,7 +140,7 @@ const roleNames = computed<OptionInfo[]>(() => roles.value.data.map(data => ({
 const chosenRoleIDs = ref<string[]>([])
 
 const kindNames = UserKindValues.map(kind => ({
-	"label": new TextTransformer().toSentenceCase(kind),
+	"label": convertForSentence(kind),
 	"value": kind
 }))
 const chosenKind = ref<string>(kindNames[0].value)

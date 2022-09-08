@@ -7,6 +7,9 @@ import windicss from "vite-plugin-windicss"
 import { resolve } from "path"
 
 const configuration: UserConfig = {
+	"legacy": {
+		"buildSsrCjsExternalHeuristics": true
+	},
 	"plugins": [
 		tsconfig(),
 		vue({

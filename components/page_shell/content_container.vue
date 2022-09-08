@@ -1,5 +1,5 @@
 <template>
-	<div class="content" :class="{ 'login-content': isLoggingIn }">
+	<div class="content">
 		<div class="container">
 			<slot></slot>
 		</div>
@@ -15,21 +15,8 @@
 	margin-top: $navHeight;
 	padding: 20px;
 
-	&.login-content {
-		margin-top: 0;
-		padding: 0;
-		.container {
-			max-width: none;
-		}
-
-		footer {
-			display: none;
-		}
+	.container {
+		max-width: none;
 	}
 }
 </style>
-
-<script setup lang="ts">
-import { inject } from "vue"
-const isLoggingIn = inject("isLoggingIn") as boolean
-</script>
