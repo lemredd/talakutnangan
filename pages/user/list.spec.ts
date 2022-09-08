@@ -1,7 +1,7 @@
 /* eslint-disable no-tabs */
 /* eslint-disable no-undef */
 /* eslint-disable vue/sort-keys */
-import { mount } from "@vue/test-utils"
+import { mount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
@@ -30,6 +30,7 @@ describe("Page: user/list", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile
@@ -67,6 +68,7 @@ describe("Page: user/list", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 			.insertOne()
 			const user = await new UserFactory().in(department)
+			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile
@@ -107,6 +109,7 @@ describe("Page: user/list", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile
@@ -135,28 +138,28 @@ describe("Page: user/list", () => {
 			})
 			const fetchedData = await (await response).body.data
 
-			// TODO(lead): ensure list of users in component
-			/*
-			 * Const wrapper = mount(Page, {
-			 * "global": {
-			 * "provide": {
-			 * "pageContext": {
-			 *	 "pageProps": {
-			 *		 userProfile
-			 *	 }
-			 * },
-			 * "managerKind": new Manager(userProfile)
-			 * },
-			 * "stubs": {
-			 * "UsersManager": false,
-			 * "Suspensible": false
-			 * }
-			 * },
-			 * "shallow": true
-			 * })
-			 */
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								userProfile
+							}
+						},
+						"managerKind": new Manager(userProfile)
+					},
+					"stubs": {
+						"UsersManager": false,
+						"Suspensible": false
+					}
+				},
+				"shallow": true
+			})
 
+
+			flushPromises()
 			expect(fetchedData).toStrictEqual([ userProfile.data as DeserializedUserResource ])
+			console.log(wrapper.html(), "\n\n\n\n")
 		})
 	})
 })
