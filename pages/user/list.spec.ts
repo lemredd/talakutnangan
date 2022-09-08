@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable vue/sort-keys */
 import { mount } from "@vue/test-utils"
 
@@ -32,7 +33,6 @@ describe("Page: user/list", () => {
 				JSON.stringify([ userProfile.data ]),
 				{ "status": RequestEnvironment.status.OK }
 			)
-
 			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
