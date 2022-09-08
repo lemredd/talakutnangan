@@ -2,7 +2,12 @@ import { Pipe, Day, DayValues } from "$/types/database"
 import type { Time } from "%/types/independent"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
-import type { ModelCtor, FindAndCountOptions, DestroyOptions } from "%/types/dependent"
+import type {
+	ModelCtor,
+	Attributes,
+	DestroyOptions,
+	FindAndCountOptions
+} from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
@@ -47,6 +52,51 @@ export default class extends BaseManager<
 			siftByRange,
 			...super.listPipeline
 		]
+	}
+
+	async update(id: number, details: RawEmployeeScheduleAttributes & Attributes<Model>)
+	: Promise<number> {
+		try {
+			const foundModel = await this.model.findByPk(id, {
+				...this.transaction.transactionObject
+			})
+
+			const affectedCount = super.update(id, details)
+
+			const day = foundModel?.dayName as Day
+			const originalStartTime = Number(foundModel?.scheduleStart)
+			const originalEndTime = Number(foundModel?.scheduleEnd)
+			const targetTimes: [ Day, Time, Time ][] = []
+
+			// Ignore expansion
+			if (!(
+				details.scheduleStart < originalStartTime && originalEndTime < details.scheduleEnd
+			)) {
+				if (originalStartTime < details.scheduleStart) {
+					// Start was increased therefore beginning portion should be removed
+					const targetStartTime = convertMinutesToTimeObject(originalStartTime)
+					const targetEndTime = convertMinutesToTimeObject(details.scheduleStart - 1)
+					targetTimes.push([ day, targetStartTime, targetEndTime ])
+				}
+
+				if (details.scheduleEnd < originalEndTime) {
+					// End was decreased therefore end portion should be removed
+					const targetStartTime = convertMinutesToTimeObject(details.scheduleEnd + 1)
+					const targetEndTime = convertMinutesToTimeObject(originalEndTime)
+					targetTimes.push([ day, targetStartTime, targetEndTime ])
+				}
+			}
+
+			if (targetTimes.length > 0) {
+				await this.removePossibleConsultations(targetTimes)
+			}
+
+			Log.success("manager", "done updating a model")
+
+			return affectedCount
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	async archiveBatch(IDs: number[]): Promise<number> {
