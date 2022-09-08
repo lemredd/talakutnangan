@@ -1,13 +1,13 @@
 <template>
-<div>
-	<header>
-		<h1>{{ title }}</h1>
-	</header>
+	<div>
+		<header>
+			<h1>{{ title }}</h1>
+		</header>
 
-	<main>
-		<Tab />
-	</main>
-</div>
+		<main>
+			<Tab/>
+		</main>
+	</div>
 </template>
 
 <style scoped lang="scss">
