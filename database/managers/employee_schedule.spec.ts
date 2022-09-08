@@ -1,5 +1,6 @@
 import { DayValues } from "$/types/database"
 
+import UserFactory from "~/factories/user"
 import Model from "%/models/employee_schedule"
 import Consultation from "%/models/consultation"
 import Factory from "~/factories/employee_schedule"
@@ -112,6 +113,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		.finishedAt(() => null)
 		.insertMany(2)
 		const model = await new Factory()
+		.user(() => Promise.resolve(attachedRole.user))
 		.dayName(() => CONSULTATION_DAY)
 		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
@@ -125,7 +127,7 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		expect(await Consultation.count()).toBe(0)
 	})
 
-	it("cannot archive unaffected consultations", async() => {
+	it("cannot archive consultations with unaffected schedules", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
 		FUTURE_DATE.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
@@ -150,6 +152,39 @@ describe("Database Manager: Employee schedule archive operations", () => {
 		.finishedAt(() => null)
 		.insertOne()
 		const model = await new Factory()
+		.user(() => Promise.resolve(attachedRole.user))
+		.dayName(() => CONSULTATION_DAY)
+		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
+		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
+		.insertOne()
+
+		const manager = new Manager()
+
+		await manager.archiveBatch([ Number(model.id) ])
+
+		expect(await Model.count()).toBe(0)
+		expect(await Consultation.count()).toBe(1)
+	})
+
+	it("cannot archive unowned consultations", async() => {
+		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
+		FUTURE_DATE.setHours(8)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		const FREE_DURATION_IN_MINUTES = 70
+		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
+		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
+
+		const otherUser = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory().insertOne()
+		await new ConsultationFactory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.scheduledStartAt(() => FUTURE_DATE)
+		.startedAt(() => null)
+		.finishedAt(() => null)
+		.insertOne()
+		const model = await new Factory()
+		.user(() => Promise.resolve(otherUser))
 		.dayName(() => CONSULTATION_DAY)
 		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
