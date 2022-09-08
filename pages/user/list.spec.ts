@@ -136,30 +136,32 @@ describe("Page: user/list", () => {
 				},
 				"sort": [ "name" ]
 			})
-			const fetchedData = await (await response).body.data
+			const fetchedData = (await response).body.data
 
-			const wrapper = mount(Page, {
-				"global": {
-					"provide": {
-						"pageContext": {
-							"pageProps": {
-								userProfile
-							}
-						},
-						"managerKind": new Manager(userProfile)
-					},
-					"stubs": {
-						"UsersManager": false,
-						"Suspensible": false
-					}
-				},
-				"shallow": true
-			})
-
-
-			flushPromises()
 			expect(fetchedData).toStrictEqual([ userProfile.data as DeserializedUserResource ])
-			console.log(wrapper.html(), "\n\n\n\n")
+
+			// TODO(lead): ensure user is in list
+			/*
+			 * Const wrapper = mount(Page, {
+			 * 	"global": {
+			 * 		"provide": {
+			 * 			"pageContext": {
+			 * 				"pageProps": {
+			 * 					userProfile
+			 * 				}
+			 * 			},
+			 * 			"managerKind": new Manager(userProfile)
+			 * 		},
+			 * 		"stubs": {
+			 * 			"UsersManager": false,
+			 * 			"Suspensible": false
+			 * 		}
+			 * 	},
+			 * 	"shallow": true
+			 * })
+			 * flushPromises()
+			 * console.log(wrapper.html(), "\n\n\n\n")
+			 */
 		})
 	})
 })
