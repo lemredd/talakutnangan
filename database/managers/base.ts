@@ -24,6 +24,7 @@ import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 
+import User from "%/models/user"
 import page from "%/queries/base/page"
 import sort from "%/queries/base/sort"
 import Condition from "%/managers/helpers/condition"
@@ -43,7 +44,7 @@ export default abstract class Manager<
 	U,
 	V extends GeneralObject = GeneralObject,
 	W = void,
-	X = number,
+	X extends number|string= number,
 	Y extends CommonFilter = CommonFilter
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
@@ -265,6 +266,24 @@ export default abstract class Manager<
 			})
 
 			Log.success("manager", "done restoring models")
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async isModelBelongsTo(modelID: X, userID: number): Promise<boolean> {
+		try {
+			const foundModel = await this.model.findByPk(modelID, {
+				"include": [
+					{
+						"model": User,
+						"required": true,
+						"where": new Condition().equal("id", userID).build()
+					}
+				]
+			})
+
+			return foundModel !== null
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
