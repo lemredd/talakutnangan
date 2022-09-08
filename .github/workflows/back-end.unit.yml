@@ -71,4 +71,4 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit_ci:back_database
       shell: pwsh
-      timeout-minutes: 5
+      timeout-minutes: 6
