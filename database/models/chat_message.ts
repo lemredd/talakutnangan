@@ -2,6 +2,7 @@ import {
 	Table,
 	Model,
 	Column,
+	HasOne,
 	DataType,
 	BelongsTo,
 	ForeignKey
@@ -11,6 +12,7 @@ import type { GeneralObject } from "$/types/general"
 
 import User from "%/models/user"
 import Consultation from "%/models/consultation"
+import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 @Table({
@@ -43,4 +45,7 @@ export default class ChatMessage extends Model {
 	get user(): User|undefined { return this.chatMessageActivity?.user }
 
 	get consultation(): Consultation|undefined { return this.chatMessageActivity?.consultation }
+
+	@HasOne(() => AttachedChatFile)
+		attachedChatFile?: AttachedChatFile
 }

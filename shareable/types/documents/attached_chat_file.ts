@@ -3,12 +3,17 @@ import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
 	Completeness,
 	Resource,
+
 	ResourceIdentifier,
 	DeserializedResource,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface AttachedChatFileResourceIdentifier<T extends Completeness = "read">
@@ -66,3 +71,9 @@ export type DeserializedAttachedChatFileListDocument<T extends Format = "seriali
 	AttachedChatFileAttributes<T>,
 	DeserializedAttachedChatFileResource<T>
 >
+
+export type AttachedChatFileIdentifierDocument
+= IdentifierDocument<AttachedChatFileResourceIdentifier<"read">>
+
+export type AttachedChatFileIdentifierListDocument
+= IdentifierListDocument<AttachedChatFileResourceIdentifier<"read">>

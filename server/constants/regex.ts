@@ -5,3 +5,5 @@
  * See https://kb.iu.edu/d/aepu
  */
 export const personName = /^([A-Z\u{C0}-\u{D6}\u{D8}-\u{DE}][a-zA-Z\-'\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{FF}]+ )+[A-Z\u{C0}-\u{D6}\u{D8}-\u{DE}][a-zA-Z\-'\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{FF}]+$/u
+
+export const chatMessageKind = /^[a-z_]+$/u
