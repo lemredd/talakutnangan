@@ -74,6 +74,7 @@ export default async function(app: ExpressApp) {
 					...request.pageProps,
 					parsedUnitError
 				},
+				url,
 				"urlOriginal": url
 			}
 			const pageContext = await renderPage(pageContextInit)
