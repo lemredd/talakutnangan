@@ -14,6 +14,7 @@ import BaseManager from "%/managers/base"
 import Model from "%/models/employee_schedule"
 import DatabaseError from "$!/errors/database"
 import Consultation from "%/models/consultation"
+import AttachedRole from "%/models/attached_role"
 import Condition from "%/managers/helpers/condition"
 import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
@@ -66,7 +67,7 @@ export default class extends BaseManager<
 			const day = foundModel?.dayName as Day
 			const originalStartTime = Number(foundModel?.scheduleStart)
 			const originalEndTime = Number(foundModel?.scheduleEnd)
-			const targetTimes: [ Day, Time, Time ][] = []
+			const targetTimes: [ number, Day, Time, Time ][] = []
 
 			// Ignore expansion
 			if (!(
@@ -76,14 +77,14 @@ export default class extends BaseManager<
 					// Start was increased therefore beginning portion should be removed
 					const targetStartTime = convertMinutesToTimeObject(originalStartTime)
 					const targetEndTime = convertMinutesToTimeObject(details.scheduleStart - 1)
-					targetTimes.push([ day, targetStartTime, targetEndTime ])
+					targetTimes.push([ id, day, targetStartTime, targetEndTime ])
 				}
 
 				if (details.scheduleEnd < originalEndTime) {
 					// End was decreased therefore end portion should be removed
 					const targetStartTime = convertMinutesToTimeObject(details.scheduleEnd + 1)
 					const targetEndTime = convertMinutesToTimeObject(originalEndTime)
-					targetTimes.push([ day, targetStartTime, targetEndTime ])
+					targetTimes.push([ id, day, targetStartTime, targetEndTime ])
 				}
 			}
 
@@ -116,10 +117,11 @@ export default class extends BaseManager<
 				const targetEndTime = convertMinutesToTimeObject(model.scheduleEnd)
 
 				return [
+					model.userID,
 					model.dayName,
 					targetStartTime,
 					targetEndTime
-				] as [ Day, Time, Time ]
+				] as [ number, Day, Time, Time ]
 			})
 
 			await this.removePossibleConsultations(targetTimes)
@@ -132,7 +134,8 @@ export default class extends BaseManager<
 		}
 	}
 
-	private async removePossibleConsultations(targetTimes: [ Day, Time, Time ][]): Promise<void> {
+	private async removePossibleConsultations(targetTimes: [ number, Day, Time, Time ][])
+	: Promise<void> {
 		const currentTime = new Date()
 		if (this.isOnTest) {
 			const TEST_HOURS = 8
@@ -144,18 +147,31 @@ export default class extends BaseManager<
 		}
 
 		const futureConsultations = await Consultation.findAll({
+			"include": [
+				{
+					"model": AttachedRole,
+					"required": true,
+					"where": new Condition().or(
+						...targetTimes.map(target => {
+							const [ userID ] = target
+							return new Condition().equal("userID", userID)
+						})
+					).build()
+				}
+			],
 			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentTime).build(),
 			...this.transaction.transactionObject
 		})
 
 		const consultationsToDelete = futureConsultations.filter(consultation => {
-			const { scheduledStartAt } = consultation
+			const { scheduledStartAt, consultantInfo } = consultation
 			const day = DayValues[scheduledStartAt.getDay()]
 			const hours = scheduledStartAt.getHours()
 			const minutes = scheduledStartAt.getMinutes()
-			for (const [ targetDay, targetStartTime, targetEndTime ] of targetTimes) {
+			for (const [ userID, targetDay, targetStartTime, targetEndTime ] of targetTimes) {
 				if (
-					targetDay === day
+					consultantInfo?.userID === userID
+					&& targetDay === day
 					&& (
 						targetStartTime.hours < hours
 						// eslint-disable-next-line no-extra-parens
