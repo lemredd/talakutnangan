@@ -62,10 +62,10 @@ jobs:
      - name: Cache node modules
        uses: actions/cache@v3
        with:
-         path: ./node_modules
-         key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-         restore-keys: |
-           ${{ runner.os }}_${{ hashFiles('package.json') }}
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}
     - run: npm install
     - run: ./execute.ps1 -database -upgrade
       shell: pwsh
