@@ -37,7 +37,7 @@ import UserFetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
 const currentResourceManager = new Manager(userProfile)
