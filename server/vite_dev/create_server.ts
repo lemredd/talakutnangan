@@ -76,11 +76,11 @@ export default async function(app: ExpressApp) {
 				},
 				"urlOriginal": url
 			}
-			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)
-			const { httpResponse, errorStatus } = pageContext
+			const pageContext = await renderPage(pageContextInit)
+			const { httpResponse } = pageContext
 			if (httpResponse) {
 				const { body, statusCode, contentType } = httpResponse
-				response.status(errorStatus || statusCode).type(contentType).send(body)
+				response.status(statusCode).type(contentType).send(body)
 			} else {
 				next()
 			}
