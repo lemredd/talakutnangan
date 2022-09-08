@@ -59,14 +59,13 @@ jobs:
         sudo -u postgres psql -c "CREATE DATABASE talakutnangan_test WITH OWNER = root;"
     - name: Use .env.ci as the environment file for back-end
       run: mv .env.ci .env
-    # - name: Cache node modules
-    #  uses: actions/cache@v3
-    #  with:
-    #    path: ./node_modules
-    #    key: ${{ runner.os }}_${{ hashFiles('package.json') }}
-    #    restore-keys: |
-    #      ${{ runner.os }}_${{ hashFiles('package.json') }}
-    #      ${{ runner.os }}_
+     - name: Cache node modules
+       uses: actions/cache@v3
+       with:
+         path: ./node_modules
+         key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+         restore-keys: |
+           ${{ runner.os }}_${{ hashFiles('package.json') }}
     - run: npm install
     - run: ./execute.ps1 -database -upgrade
       shell: pwsh
