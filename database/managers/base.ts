@@ -285,7 +285,7 @@ export default abstract class Manager<
 	async isModelBelongsTo<Z extends number|string = number>(
 		modelID: X,
 		parentID: Z,
-		parentModelChain: ModelCtor<any>[]
+		parentModelChain: readonly ModelCtor<any>[]
 	): Promise<boolean> {
 		try {
 			if (parentModelChain.length === 0) return String(modelID) === String(parentID)
@@ -318,6 +318,8 @@ export default abstract class Manager<
 		.flatMap(column => [ column, `-${column}` ])
 		.sort()
 	}
+
+	get modelChainToUser(): readonly ModelCtor<Model>[] { return [ User ] }
 
 	protected get exposableColumns(): string[] {
 		const attributeInfo = this.model.getAttributes() as GeneralObject
@@ -353,6 +355,4 @@ export default abstract class Manager<
 
 		return new DatabaseError()
 	}
-
-	protected get modelChainToUser(): ModelCtor<Model>[] { return [ User ] }
 }
