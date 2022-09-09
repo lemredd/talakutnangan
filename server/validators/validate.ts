@@ -17,39 +17,39 @@ export default async function(
 	const errors: ErrorPointer[] = []
 
 	for (const field in fields) {
-		const rules = fields[field]
+		if (Object.hasOwn(fields, field)) {
+			const rules = fields[field]
 
-		try {
-			const constraints: ValidationConstraints = {
-				request,
-				source: originalInput,
-				field,
-				...(rules.constraints ?? {})
+			try {
+				const constraints: ValidationConstraints = {
+					field,
+					request,
+					"source": originalInput,
+					...rules.constraints ?? {}
+				}
+				const sanitizedInput = await runThroughPipeline(
+					Promise.resolve(makeInitialState(input[field])),
+					constraints,
+					rules.pipes
+				)
+
+				sanitizedInputs[field] = sanitizedInput.value
+			} catch (error) {
+				const flattendedErrors: (ErrorPointer|Error)[] = []
+
+				if (Array.isArray(error)) {
+					flattendedErrors.push(...error)
+				} else {
+					flattendedErrors.push(error as ErrorPointer)
+				}
+
+				errors.push(...unifyErrors(field, flattendedErrors))
 			}
-			const sanitizedInput = await runThroughPipeline(
-				Promise.resolve(makeInitialState(input[field])),
-				constraints,
-				rules.pipes
-			)
-
-			sanitizedInputs[field] = sanitizedInput.value
-		} catch(error) {
-			const flattendedErrors: (ErrorPointer|Error)[] = []
-
-			if (Array.isArray(error)) {
-				flattendedErrors.push(...error)
-			} else {
-				flattendedErrors.push(error as ErrorPointer)
-			}
-
-			errors.push(...unifyErrors(field, flattendedErrors))
 		}
 	}
 
 	if (errors.length > 0) {
-		throw errors.sort((errorA, errorB) => {
-			return errorA.field.localeCompare(errorB.field)
-		})
+		throw errors.sort((errorA, errorB) => errorA.field.localeCompare(errorB.field))
 	}
 
 	return sanitizedInputs
