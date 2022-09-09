@@ -1,13 +1,16 @@
 import { Server as WebSocketServer, Socket } from "socket.io"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
+import RequestFilter from "!/bases/request_filter"
 import makeGlobalMiddlewares from "!/helpers/make_global_middlewares"
 
 export default function(io: WebSocketServer): void {
 	type UseMiddlewareFunction = WebSocketServer["use"]
 	type SocketNextFunction
 	= UseMiddlewareFunction extends (unusedSocket: any, next: infer T) => void ? T : never
-	const middlewares = makeGlobalMiddlewares()
+	const middlewares = makeGlobalMiddlewares().filter(
+		middleware => middleware instanceof RequestFilter
+	)
 
 	middlewares.forEach(middleware => {
 		const bindedMiddleware = middleware.intermediate.bind(middleware)

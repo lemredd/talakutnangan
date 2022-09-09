@@ -7,8 +7,8 @@ import registerGlobalMiddlewares from "!/ws/register_global_middlewares"
 export default function(httpServer: Server): WebSocketServer {
 	const wsServer = new WebSocketServer(httpServer)
 
-	registerChatEvents(wsServer)
 	registerGlobalMiddlewares(wsServer)
+	registerChatEvents(wsServer)
 
 	return wsServer
 }
