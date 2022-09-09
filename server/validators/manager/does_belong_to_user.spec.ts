@@ -1,5 +1,5 @@
-import type { Request } from "!/types/dependent"
 import type { Serializable } from "$/types/general"
+import type { AuthenticatedRequest } from "!/types/dependent"
 import type {
 	ValidationConstraints,
 	DoesBelongToCurrentUserConstraints
@@ -50,9 +50,9 @@ describe("Validator: does belong to user", () => {
 			},
 			"request": {
 				"user": userFactory.serialize(user) as Serializable
-			} as Request,
+			} as AuthenticatedRequest,
 			"source": {}
-		} as unknown as ValidationConstraints<Request>
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
 		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
@@ -90,9 +90,9 @@ describe("Validator: does belong to user", () => {
 			},
 			"request": {
 				"user": userFactory.serialize(admin) as Serializable
-			} as Request,
+			} as AuthenticatedRequest,
 			"source": {}
-		} as unknown as ValidationConstraints<Request>
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
 		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
@@ -130,9 +130,9 @@ describe("Validator: does belong to user", () => {
 			},
 			"request": {
 				"user": userFactory.serialize(otherUser) as Serializable
-			} as Request,
+			} as AuthenticatedRequest,
 			"source": {}
-		} as unknown as ValidationConstraints<Request>
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
 		const error = doesBelongToUser(value, constraints)
