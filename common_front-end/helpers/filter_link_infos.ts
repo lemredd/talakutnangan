@@ -1,6 +1,7 @@
+import type PermissionGroup from "$/permissions/base"
 import type { DeserializedPageContext, ConditionalLinkInfo, LinkInfo } from "$@/types/independent"
 
-import type PermissionGroup from "$/permissions/base"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 
 export default function<T, U extends PermissionGroup<any, T>>(
 	context: DeserializedPageContext,
@@ -37,12 +38,15 @@ export default function<T, U extends PermissionGroup<any, T>>(
 		const isAuthenticatedOnly = mayNecesarilyAuthenticated
 			&& linkInfo.kinds !== null
 			&& linkInfo.permissionCombinations !== null
+			&& !isUndefined(userProfile)
 		const hasMetCertainKind = mayNecesarilyAuthenticated
 			&& linkInfo.kinds !== null
+			&& !isUndefined(userProfile)
 			&& linkInfo.kinds.includes(userProfile.data.kind)
 		const hasAllowed = mayNecesarilyAuthenticated
 			&& linkInfo.permissionGroup !== null
 			&& linkInfo.permissionCombinations !== null
+			&& !isUndefined(userProfile)
 			&& linkInfo.permissionGroup.hasOneRoleAllowed(
 				userProfile.data.roles.data,
 				linkInfo.permissionCombinations

@@ -60,7 +60,8 @@
 			"lukashass.volar",
 			"dbaeumer.vscode-eslint",
 			"voorjaar.windicss-intellisense",
-			"aaron-bond.better-comments"
+			"aaron-bond.better-comments",
+			"qcz.text-power-tools"
 		]
 	},
 	"settings": {

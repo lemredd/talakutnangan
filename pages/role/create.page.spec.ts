@@ -1,7 +1,8 @@
 import { mount } from "@vue/test-utils"
-import RequestEnvironment from "$/helpers/request_environment"
-import { UnitError } from "$/types/server"
+
 import Page from "./create.page.vue"
+import { UnitError } from "$/types/server"
+import RequestEnvironment from "$/helpers/request_environment"
 
 describe("Page: /role", () => {
 	it("can create role", async() => {
