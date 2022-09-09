@@ -41,7 +41,7 @@ describe("Validator: does belong to user", () => {
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 				],
-				permissionGroup,
+				permissionGroup
 			},
 			"field": "hello",
 			"manager": {
