@@ -41,6 +41,7 @@ export default async function(
 	if (Number.isNaN(modelID)) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
@@ -65,6 +66,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			field: string,
 			value: string
