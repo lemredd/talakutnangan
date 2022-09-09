@@ -104,7 +104,7 @@ export type DeserializedConsultationResource<
 > = DeserializedResource<
 	ConsultationResourceIdentifier<"read">,
 	ConsultationAttributes<"deserialized">
->& PartialOrPickDeserializedRelationship<
+> & PartialOrPickDeserializedRelationship<
 	ConsultationRelationshipData<"read">,
 	DeserializedConsultationRelationships<"read">,
 	ConsultationRelationshipNames,
