@@ -12,7 +12,10 @@ as shown here.
 ### Prerequisites
 - [Node.js and NPM]. LTS version is recommended
 - [Docker]
+- [DB Browser for SQLite] if `filed_sqlite` is preferred.
 - [PostgreSQL]. [v14.3] is recommended.
+- [Python]. [v3 or higher]
+- [Visual Studio Build Tools]. [v2017 or higher] with desktop development with C++
 
 ### General Development Instruction
 1. Run `npm install`
@@ -161,6 +164,7 @@ what to add at the end of the messages.
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
 [Node.js and NPM]: https://nodejs.org/en/
 [Docker]: https://www.docker.com/get-started/
+[DB Browser for SQLite]: https://www.w.co
 [PostgreSQL]: https://www.postgresql.org/download/windows/
 [v14.3]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 [installer]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
