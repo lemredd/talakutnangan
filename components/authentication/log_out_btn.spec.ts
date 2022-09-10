@@ -1,7 +1,7 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import Stub from "$/singletons/stub"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./log_out_btn.vue"
 
 describe("Component: Log Out Button", () => {

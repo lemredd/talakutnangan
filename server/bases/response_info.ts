@@ -4,7 +4,7 @@ import type { Serializable } from "$/types/general"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 type Body = string|Serializable|Buffer|null
 

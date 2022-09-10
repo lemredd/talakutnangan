@@ -5,7 +5,7 @@ import Database from "%/data_source/database"
 import URLMaker from "$!/singletons/url_maker"
 import Transport from "!/helpers/email/transport"
 import CacheManager from "$!/singletons/cache_manager"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 export default async function(sourceType: SourceType) {

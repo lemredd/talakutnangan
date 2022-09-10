@@ -2,7 +2,7 @@
 import type { UnitError } from "$/types/server"
 
 import UserFetcher from "$@/fetchers/user"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Communicator: UserFetcher", () => {
 	it("can log in", async() => {

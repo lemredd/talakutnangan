@@ -7,7 +7,7 @@ import RoleTransformer from "%/transformers/role"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
 import StudentDetailFactory from "~/factories/student_detail"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./import.page.vue"
 

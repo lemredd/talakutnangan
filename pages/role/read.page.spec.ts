@@ -2,7 +2,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import RoleFactory from "~/factories/role"
 import {
 	tag,

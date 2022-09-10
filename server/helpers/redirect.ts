@@ -1,5 +1,5 @@
 import type { Response } from "!/types/dependent"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 export default function(
 	response: Response,
