@@ -2,12 +2,12 @@ import { mount } from "@vue/test-utils"
 import Tab from "./tab.vue"
 
 const Tab1 = {
-	"name": "Tab1",
-	"template": "<div>hello from Tab1</div>"
+	"label": "Tab1",
+	"path": "/tabbed_page/tab1"
 }
 const Tab2 = {
-	"name": "Tab2",
-	"template": "<div>hello from Tab2</div>"
+	"label": "Tab2",
+	"path": "/tabbed_page/tab2"
 }
 
 describe("Component: Tab", () => {
@@ -18,7 +18,7 @@ describe("Component: Tab", () => {
 					"pageContext": {
 						"urlPathname": "/tabbed_page/tab1"
 					},
-					"tabs": [ Tab1.name, Tab2.name ]
+					"tabs": [ Tab1, Tab2 ]
 				}
 			}
 		})
