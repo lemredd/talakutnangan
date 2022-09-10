@@ -4,6 +4,7 @@ import type {
 	SizeConstraints
 } from "!/types/validation"
 
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -17,17 +18,18 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.size === "undefined") {
+	if (isUndefined(constraints.size)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
 	const jsonLength = JSON.stringify(state.value).length
 
 	if (
-		typeof constraints.size.minimum !== "undefined"
+		!isUndefined(constraints.size.minimum)
 		&& jsonLength < constraints.size.minimum) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string
 			) => `Field "${field}" must be more than or equal to ${
@@ -39,10 +41,11 @@ export default async function(
 	}
 
 	if (
-		typeof constraints.size.maximum !== "undefined"
+		!isUndefined(constraints.size.maximum)
 		&& constraints.size.maximum < jsonLength) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
 				constraints.size?.maximum
 			} character(s).`

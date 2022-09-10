@@ -1,4 +1,5 @@
 import type { Pipe as BasePipe } from "$/types/database"
+import type BasePermissionGroup from "$/permissions/base"
 import type { BaseManagerClass } from "!/types/independent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
@@ -90,6 +91,13 @@ export interface UniqueConsultationScheduleConstraints {
 	}
 }
 
+export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleConstraints {
+	doesBelongToUser: {
+		permissionGroup: BasePermissionGroup<any, U>,
+		anyPermissionCombinationForBypass: U[][]
+	}
+}
+
 export interface SizeConstraints { size: { minimum?: number, maximum?: number } }
 
 /**
@@ -116,6 +124,7 @@ export type RuleContraints = Partial<
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
+	& DoesBelongToCurrentUserConstraints<any>
 >
 
 /**
@@ -124,7 +133,8 @@ export type RuleContraints = Partial<
 export interface ValidationConstraints<T = any> extends RuleContraints {
 	request: T,
 	source: any,
-	field: string
+	field: string,
+	friendlyName?: string
 }
 
 /**
@@ -146,7 +156,8 @@ export type Pipe = BasePipe<Promise<ValidationState>, ValidationConstraints>
  */
 export interface Rules {
 	pipes: Pipe[],
-	constraints?: RuleContraints
+	constraints?: RuleContraints,
+	friendlyName?: string
 }
 
 /**

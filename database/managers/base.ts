@@ -7,6 +7,7 @@ import type {
 	Attributes,
 	FindOptions,
 	UpdateOptions,
+	IncludeOptions,
 	DestroyOptions,
 	RestoreOptions,
 	CreationAttributes,
@@ -24,6 +25,7 @@ import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
 
+import User from "%/models/user"
 import page from "%/queries/base/page"
 import sort from "%/queries/base/sort"
 import Condition from "%/managers/helpers/condition"
@@ -43,7 +45,7 @@ export default abstract class Manager<
 	U,
 	V extends GeneralObject = GeneralObject,
 	W = void,
-	X = number,
+	X extends number|string= number,
 	Y extends CommonFilter = CommonFilter
 > extends RequestEnvironment {
 	protected transaction: TransactionManager
@@ -270,11 +272,54 @@ export default abstract class Manager<
 		}
 	}
 
+	/**
+	 * Checks if the model belongs to a certain parent model.
+	 *
+	 * If there are no models passed, model ID and foreign ID will be checked if they are the same.
+	 *
+	 * @param modelID ID of the model to check
+	 * @param parentID ID of the parent  model to match
+	 * @param modelsToInclude Any number of "parent" models to include to determine if the model
+	 * belongs to the target parent model. Target foreign model should be the last model.
+	 */
+	async isModelBelongsTo<Z extends number|string = number>(
+		modelID: X,
+		parentID: Z,
+		parentModelChain: readonly ModelCtor<any>[]
+	): Promise<boolean> {
+		try {
+			if (parentModelChain.length === 0) return String(modelID) === String(parentID)
+
+			const foundModel = await this.model.findByPk(modelID, {
+				"include": parentModelChain.reduceRight((previousIncludeOptions, currentModel) => {
+					const base: IncludeOptions = {
+						"model": currentModel,
+						"required": true
+					}
+
+					if (previousIncludeOptions.length === 0) {
+						base.where = new Condition().equal("id", parentID).build()
+					} else {
+						base.include = previousIncludeOptions
+					}
+
+					return [ base ]
+				}, [] as IncludeOptions[])
+			})
+
+			return foundModel !== null
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
 	get sortableColumns(): string[] {
 		return this.exposableColumns
 		.flatMap(column => [ column, `-${column}` ])
 		.sort()
 	}
+
+	get modelChainToUser(): readonly ModelCtor<Model>[] { return [ User ] }
 
 	protected get exposableColumns(): string[] {
 		const attributeInfo = this.model.getAttributes() as GeneralObject

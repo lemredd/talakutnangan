@@ -5,11 +5,11 @@ import type { ValidationState, ValidationConstraints } from "!/types/validation"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints
+	unusedConstraints: ValidationConstraints
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (state.value === "*") {
 		state.maySkip = true

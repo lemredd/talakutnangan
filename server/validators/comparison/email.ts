@@ -2,7 +2,7 @@ import validator from "validator"
 
 import type {
 	ValidationState,
-	ValidationConstraints,
+	ValidationConstraints
 } from "!/types/validation"
 
 /**
@@ -14,14 +14,17 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (validator.isEmail(state.value)) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be valid email.`
-		}
 	}
+
+	const error = {
+		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
+		"messageMaker": (field: string) => `Field "${field}" must be valid email.`
+	}
+
+	throw error
 }

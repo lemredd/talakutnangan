@@ -4,6 +4,7 @@ import type {
 	RuleContraints
 } from "!/types/validation"
 
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -17,28 +18,36 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.range === undefined) {
+	if (isUndefined(constraints.range)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const value = state.value
+	const { value } = state
 
-	if (constraints.range.minimum !== undefined && value < constraints.range.minimum) {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) =>
-				`Field "${field}" must be more than or equal to ${constraints.range!.minimum}.`
+	if (!isUndefined(constraints.range.minimum) && value < constraints.range.minimum) {
+		const error = {
+			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
+			"messageMaker": (
+				field: string
+			) => `Field "${field}" must be more than or equal to ${constraints.range?.minimum}.`
 		}
+
+		throw error
 	}
 
-	if (constraints.range.maximum !== undefined && constraints.range.maximum < value) {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) =>
-				`Field "${field}" must be less than or equal to ${constraints.range!.maximum}.`
+	if (!isUndefined(constraints.range.maximum) && constraints.range.maximum < value) {
+		const error = {
+			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
+			"messageMaker": (
+				field: string
+			) => `Field "${field}" must be less than or equal to ${constraints.range?.maximum}.`
 		}
+
+		throw error
 	}
 
 	return state

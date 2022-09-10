@@ -68,6 +68,7 @@ rules:
     - "error"
     -
       capIsNew: false
+      newIsCap: false
   newline-per-chained-call: "off"
   no-alert: "off"
   no-bitwise:

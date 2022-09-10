@@ -24,6 +24,7 @@ export default async function(
 	} else {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be an integer.`
 		}
 		throw error

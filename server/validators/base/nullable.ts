@@ -4,6 +4,8 @@ import type {
 	ValidationConstraints
 } from "!/types/validation"
 
+import isUndefined from "$/helpers/type_guards/is_undefined"
+
 /**
  * Validator to allow data to be nullable.
  *
@@ -15,10 +17,10 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (state.value === undefined || state.value === null) {
-		if (constraints.nullable === undefined) {
+	if (isUndefined(state.value) || state.value === null) {
+		if (isUndefined(constraints.nullable)) {
 			state.maySkip = true
 			state.value = null
 		} else {

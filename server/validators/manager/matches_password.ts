@@ -29,6 +29,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			unusedField: string,
 			unusedValue: string
