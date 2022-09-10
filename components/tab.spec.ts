@@ -26,4 +26,23 @@ describe("Component: Tab", () => {
 		const firstLink = wrapper.find(".anchor")
 		expect(firstLink.classes()).toContain("active")
 	})
+
+	it.skip("Should have first tab initially active", async() => {
+		const wrapper = mount(Tab, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"urlPathname": "/tabbed_page/tab1"
+					},
+					"tabs": [ Tab1, Tab2 ]
+				}
+			}
+		})
+
+		const secondLink = wrapper.find(".anchor:not(.active)")
+
+		await secondLink.trigger("click")
+		window.location.href = `${window.location.href}/tabbed_page/tab2`
+		// expect(secondLink.classes()).not.toContain("active")
+	})
 })
