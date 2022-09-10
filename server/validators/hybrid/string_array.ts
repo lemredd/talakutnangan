@@ -4,8 +4,8 @@ import type {
 	ArrayRuleConstraints
 } from "!/types/validation"
 
-import string from "!/validators/base/string"
 import array from "!/validators/base/array"
+import string from "!/validators/base/string"
 
 /**
  * Validator to check if data is a string with comma-delimited values

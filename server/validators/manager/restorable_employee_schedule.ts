@@ -12,6 +12,7 @@ import type {
 import Manager from "%/managers/employee_schedule"
 import archived from "!/validators/manager/archived"
 import accessDeepPath from "$!/helpers/access_deep_path"
+import isUndefined from "$/helpers/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -25,10 +26,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (
-		typeof constraints.manager === "undefined"
-		|| typeof constraints.restorableEmployeeSchedule === "undefined"
-	) {
+	if (isUndefined(constraints.manager) || isUndefined(constraints.restorableEmployeeSchedule)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -49,6 +47,7 @@ export default async function(
 	if (foundModel.data === null) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
@@ -68,6 +67,7 @@ export default async function(
 	if (Number.isNaN(userID)) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
@@ -100,6 +100,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			field: string,
 			value: string

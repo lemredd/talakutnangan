@@ -4,8 +4,8 @@ import type {
 	BufferRuleConstraints
 } from "!/types/validation"
 
-import isUndefined from "$/helpers/type_guards/is_undefined"
 import isObject from "$/type_guards/is_object"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -33,10 +33,11 @@ export default async function(
 		&& typeof value.info === "object"
 		&& !isUndefined(value.info?.mimeType)
 	) {
-		const { buffer } = value as { buffer: Buffer }
-		if (!(buffer.byteLength <= constraints.buffer.maxSize)) {
+		const castBuffer = value.buffer as Buffer
+		if (!(castBuffer.byteLength <= constraints.buffer.maxSize)) {
 			const error = {
 				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
 				"messageMaker": (field: string) => `Field "${field}" must be less than ${
 					constraints.buffer?.maxSize
 				} bytes.`
@@ -48,6 +49,7 @@ export default async function(
 		if (!constraints.buffer.allowedMimeTypes.includes(value.info.mimeType)) {
 			const error = {
 				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
 				"messageMaker": (field: string) => `Field "${field}" must be one of the media types: ${
 					constraints.buffer?.allowedMimeTypes.join(", ")
 				}.`
@@ -61,6 +63,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (field: string) => `Field "${field}" must be a file.`
 	}
 

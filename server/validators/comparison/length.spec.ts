@@ -5,13 +5,13 @@ describe("Validator pipe: length", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
 			"length": {
-				"minimum": 2,
-				"maximum": 2
-			}
+				"maximum": 2,
+				"minimum": 2
+			},
+			"request": null,
+			"source": null
 		}
 
 		const sanitizeValue = (await length(value, constraints)).value
@@ -22,12 +22,12 @@ describe("Validator pipe: length", () => {
 	it("cannot accept few input", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
 			"length": {
 				"minimum": 2
-			}
+			},
+			"request": null,
+			"source": null
 		}
 
 		const error = length(value, constraints)
@@ -38,12 +38,12 @@ describe("Validator pipe: length", () => {
 	it("cannot accept greater input", () => {
 		const value = Promise.resolve(makeInitialState([ 2 ]))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
 			"length": {
 				"maximum": 0
-			}
+			},
+			"request": null,
+			"source": null
 		}
 
 		const error = length(value, constraints)

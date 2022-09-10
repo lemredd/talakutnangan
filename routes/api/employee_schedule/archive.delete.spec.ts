@@ -19,8 +19,8 @@ describe("Controller: DELETE /api/employee_schedule", () => {
 			"body": {
 				"data": [
 					{
-						"type": "employee_schedule",
-						"id": String(employeeSchedule.id)
+						"id": String(employeeSchedule.id),
+						"type": "employee_schedule"
 					}
 				]
 			}
@@ -42,8 +42,8 @@ describe("Controller: DELETE /api/employee_schedule", () => {
 			"body": {
 				"data": [
 					{
-						"type": "employee_schedule",
-						"id": String(employeeSchedule.id)
+						"id": String(employeeSchedule.id),
+						"type": "employee_schedule"
 					}
 				]
 			}
@@ -67,8 +67,8 @@ describe("Controller: DELETE /api/employee_schedule", () => {
 			"body": {
 				"data": [
 					{
-						"type": "employee_schedule",
-						"id": String(employeeSchedule.id)
+						"id": String(employeeSchedule.id),
+						"type": "employee_schedule"
 					}
 				]
 			}

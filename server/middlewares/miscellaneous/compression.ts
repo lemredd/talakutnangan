@@ -1,13 +1,12 @@
 import compression from "compression"
-import type { Request, Response, NextFunction } from "!/types/dependent"
+import type { Request } from "!/types/dependent"
 
-import Middleware from "!/bases/middleware";
+import RequestFilter from "!/bases/request_filter"
 
-export default class Compression extends Middleware {
+export default class Compression extends RequestFilter {
 	private static compress = compression()
 
-	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
-		// @ts-ignore
-		Compression.compress(request, response, next)
+	async filterRequest(request: Request): Promise<void> {
+		await this.runFilter(Compression.compress, request)
 	}
 }

@@ -1,6 +1,7 @@
 import { mount } from "@vue/test-utils"
-import RequestEnvironment from "$/singletons/request_environment"
+
 import { UnitError } from "$/types/server"
+import RequestEnvironment from "$/singletons/request_environment"
 import Page from "./create.page.vue"
 
 describe("Page: /role", () => {

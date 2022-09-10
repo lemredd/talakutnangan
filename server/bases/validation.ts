@@ -51,7 +51,10 @@ export default abstract class extends RequestFilter {
 				const castErrors = rawError as ErrorPointer[]
 				errorInfos = castErrors.map(error => ({
 					"field": error.field,
-					"message": error.messageMaker(error.field, accessDeepPath(body, error.field))
+					"message": error.messageMaker(
+						error.friendlyName || error.field,
+						accessDeepPath(body, error.field)
+					)
 				}))
 			} else {
 				const castError = rawError as ErrorPointer
@@ -59,7 +62,7 @@ export default abstract class extends RequestFilter {
 					{
 						"field": castError.field,
 						"message": castError.messageMaker(
-							castError.field,
+							castError.friendlyName || castError.field,
 							accessDeepPath(body, castError.field)
 						)
 					}

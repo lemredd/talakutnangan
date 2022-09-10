@@ -8,6 +8,7 @@ import type {
 import validate from "!/validators/validate"
 import isPlainObject from "$/type_guards/is_object"
 import unifyErrors from "!/validators/unify_errors"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -22,7 +23,7 @@ export default async function(
 	if (state.maySkip) return state
 
 	if (isPlainObject(state.value)) {
-		if (typeof constraints.object === "undefined") {
+		if (isUndefined(constraints.object)) {
 			throw makeDeveloperError(constraints.field)
 		}
 
@@ -52,6 +53,7 @@ export default async function(
 	} else {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be an object.`
 		}
 		throw error
