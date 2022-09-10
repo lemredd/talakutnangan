@@ -1,6 +1,6 @@
 import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Validator to require the data

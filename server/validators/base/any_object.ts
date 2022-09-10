@@ -3,7 +3,7 @@ import type {
 	ValidationConstraints
 } from "!/types/validation"
 
-import isPlainObject from "$/type_guards/is_object"
+import isPlainObject from "$/type_guards/is_plain_object"
 
 /**
  * Validator to check if data is an object with any value.

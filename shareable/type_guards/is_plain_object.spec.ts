@@ -1,17 +1,16 @@
-import isObject from "./is_object"
-
+import isPlainObject from "./is_plain_object"
 
 describe("Helpers: primitive type guards", () => {
 	describe("Object assertion", () => {
 		it("Should be truthy", () => {
 			const value = {}
-			const assertion = isObject(value)
+			const assertion = isPlainObject(value)
 			expect(assertion).toBeTruthy()
 		})
 
 		it("Should be falsy", () => {
 			const value = ""
-			const assertion = isObject(value)
+			const assertion = isPlainObject(value)
 			expect(assertion).toBeFalsy()
 		})
 	})

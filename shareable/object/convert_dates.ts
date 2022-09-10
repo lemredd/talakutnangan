@@ -1,6 +1,6 @@
 import type { GeneralObject } from "$/types/general"
 import isString from "$/helpers/is_string"
-import isPlainObject from "$/type_guards/is_object"
+import isPlainObject from "$/type_guards/is_plain_object"
 
 /**
  * Converts the value of string with At to date.
