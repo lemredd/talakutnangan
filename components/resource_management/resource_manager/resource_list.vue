@@ -100,7 +100,6 @@ onUpdated(() => {
 			Object.keys(element).forEach(key => {
 				nonIDProperties.add(key)
 			})
-			console.log(element)
 			resourceProperties.value = [ ...nonIDProperties ]
 		})
 	}
