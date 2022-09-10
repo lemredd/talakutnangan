@@ -39,7 +39,7 @@ extends Attributes<T> {
 }
 
 
-interface ChatMessageActivityRelationshipData<T extends Completeness = "read">
+interface ChatMessageActivityRelationshipData<unusedT extends Completeness = "read">
 extends GeneralRelationshipData {
 	user: {
 		serialized: UserIdentifierDocument,
