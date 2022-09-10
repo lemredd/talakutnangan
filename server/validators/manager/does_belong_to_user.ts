@@ -6,7 +6,7 @@ import type {
 	DoesBelongToCurrentUserConstraints
 } from "!/types/validation"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import present from "!/validators/manager/present"
 import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
