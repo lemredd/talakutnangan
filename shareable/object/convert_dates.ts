@@ -1,5 +1,5 @@
 import type { GeneralObject } from "$/types/general"
-import isString from "$/helpers/is_string"
+import isString from "$/type_guards/is_string"
 import isPlainObject from "$/type_guards/is_plain_object"
 
 /**
