@@ -13,7 +13,7 @@ import type {
 } from "%/types/independent"
 
 import Log from "$!/singletons/log"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"

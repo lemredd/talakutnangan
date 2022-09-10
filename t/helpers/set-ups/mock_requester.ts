@@ -4,7 +4,7 @@ import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-moc
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 /**
  * A set-up class used for testing the middlewares.

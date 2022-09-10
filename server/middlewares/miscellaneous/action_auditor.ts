@@ -1,7 +1,7 @@
 import type { Request } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import RequestFilter from "!/bases/request_filter"
 import AuditTrailManager from "%/managers/audit_trail"
 

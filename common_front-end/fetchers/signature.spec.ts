@@ -1,6 +1,6 @@
 import type { SignatureDocument } from "$/types/documents/signature"
 
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import SignatureFetcher from "./signature"
 
 describe("Communicator: SignatureFetcher", () => {

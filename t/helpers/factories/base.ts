@@ -13,7 +13,7 @@ import type {
 } from "$/types/documents/base"
 
 import Transformer from "%/transformers/base"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import Serializer from "%/transformers/serializer"
 
 /**

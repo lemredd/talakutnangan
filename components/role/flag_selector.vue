@@ -56,9 +56,9 @@ import type { OptionInfo } from "$@/types/component"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 // Developer defined internals
-import makeUnique from "$/helpers/array/make_unique"
+import makeUnique from "$/array/make_unique"
 import BasePermissionGroup from "$/permissions/base"
-import subtractArrays from "$/helpers/array/subtract"
+import subtractArrays from "$/array/subtract"
 import sanitizeArray from "$@/helpers/sanitize_array"
 import convertForSentence from "$/string/convert_for_sentence"
 
