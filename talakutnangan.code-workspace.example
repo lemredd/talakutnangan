@@ -65,6 +65,7 @@
 	},
 	"settings": {
 		"scss.lint.unknownAtRules": "ignore",
+		"files.eol": "\n",
 
 		"editor.tabSize": 3,
 		"editor.insertSpaces": false,

@@ -22,8 +22,8 @@ export default abstract class extends ControllerLike {
 		Log.errorMessage("controller", `Document props getter must be implemented in ${request.url}.`)
 
 		return {
-			"title": "Vite SSR app",
-			"description": "App using Vite + vite-plugin-ssr"
+			"description": "App using Vite + vite-plugin-ssr",
+			"title": "Vite SSR app"
 		}
 	}
 
