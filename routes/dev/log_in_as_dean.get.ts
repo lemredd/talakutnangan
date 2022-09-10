@@ -39,7 +39,7 @@ export default class extends DevController {
 		} else {
 			const testDeanEmail = "dean@example.net"
 			const testRole = "test_dean"
-			const testDepartment = "Test Department"
+			const testDepartment = "Test Institute Department"
 
 			Log.success("controller", "searching for dean role")
 			let testDeanRole = await Role.findOne({
@@ -51,10 +51,21 @@ export default class extends DevController {
 			if (testDeanRole === null) {
 				testDeanRole = await new RoleFactory()
 				.name(() => testRole)
-				.departmentFlags(department.generateMask("view"))
-				.roleFlags(role.generateMask("view"))
-				.semesterFlags(semester.generateMask("view"))
-				.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+				.departmentFlags(department.generateMask(
+					"view"
+				))
+				.roleFlags(role.generateMask(
+					"view"
+				))
+				.semesterFlags(semester.generateMask(
+					"view"
+				))
+				.tagFlags(tag.generateMask(
+					"view",
+					"create",
+					"update",
+					"archiveAndRestore"
+				))
 				.postFlags(post.generateMask(
 					"view",
 					"create",
@@ -73,7 +84,10 @@ export default class extends DevController {
 					"writeDepartmentScope",
 					"vote"
 				))
-				.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+				.profanityFlags(profanity.generateMask(
+					"view",
+					"readOverallScope"
+				))
 				.userFlags(user.generateMask(
 					"view",
 					"create",

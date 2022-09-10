@@ -1,27 +1,43 @@
 <template>
-	<div class ="main" v-if="is404">
+	<div v-if="is404" class="main">
 		<div class="box-column">
 			<div class="error-header">
-					<div class="line">
-						<p class="error-number">404</p>
-					</div>
-				<p class="error-text">Page Not Found</p>
+				<div class="line">
+					<p class="error-number">
+						404
+					</p>
+				</div>
+				<p class="error-text">
+					Page Not Found
+				</p>
 			</div>
-			<p class ="details">This page could not be found.</p>
+			<p class="details">
+				This page could not be found.
+			</p>
 		</div>
 	</div>
-	<div class ="main" v-else>
+	<div v-else class="main">
 		<div class="box-column">
 			<div class="error-header">
-					<div class="line">
-						<p class="error-number" v-if="pageContext.pageProps.parsedUnitError === null">500</p>
-						<p class="error-number" v-else>{{ pageContext.pageProps.parsedUnitError.status }}</p>
-					</div>
-				<p class="error-text" v-if="pageContext.pageProps.parsedUnitError === null">Internal Server Error</p>
-				<p class="error-text" v-else>{{ pageContext.pageProps.parsedUnitError.title }}</p>
+				<div class="line">
+					<p v-if="pageContext.pageProps.parsedUnitError === null" class="error-number">
+						500
+					</p>
+					<p v-else class="error-number">
+						{{ pageContext.pageProps.parsedUnitError.status }}
+					</p>
+				</div>
+				<p v-if="pageContext.pageProps.parsedUnitError === null" class="error-text">
+					Internal Server Error
+				</p>
+				<p v-else class="error-text">
+					{{ pageContext.pageProps.parsedUnitError.title }}
+				</p>
 			</div>
-			<p class="details" v-if="pageContext.pageProps.parsedUnitError === null">Something went wrong.</p>
-			<p class="details" v-else>
+			<p v-if="pageContext.pageProps.parsedUnitError === null" class="details">
+				Something went wrong.
+			</p>
+			<p v-else class="details">
 				[Error Code: {{ pageContext.pageProps.parsedUnitError.code }}]
 				{{ pageContext.pageProps.parsedUnitError.detail }}
 			</p>
@@ -91,9 +107,10 @@
 
 </style>
 <script lang="ts" setup>
-import { usePageContext } from "#/usePageContext"
+import { inject } from "vue"
+import { PageContext } from "$/types/renderer"
 
-defineProps(["is404"])
+defineProps([ "is404" ])
 
-const pageContext = usePageContext()
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 </script>
