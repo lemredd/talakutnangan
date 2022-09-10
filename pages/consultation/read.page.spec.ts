@@ -12,7 +12,7 @@ import type {
 
 import Socket from "$@/external/socket"
 import UserFactory from "~/factories/user"
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 import Factory from "~/factories/consultation"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import ChatMessageFactory from "~/factories/chat_message"

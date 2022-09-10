@@ -2,7 +2,7 @@ import { io, Socket as BaseSocket } from "socket.io-client"
 
 import { SocketListeners } from "$@/types/dependent"
 
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/helpers/request_environment"
 
 export default class Socket extends RequestEnvironment {
