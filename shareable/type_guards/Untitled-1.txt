@@ -1,8 +1,0 @@
-ok na greg.
-
-sync fork muna then
-1. git checkout master
-2. ./execute -pull origin
-3. git checkout primitive_type_guards
-
-then check mo comments ni kenneth sa pr mo

@@ -1,7 +1,6 @@
 import isNumber from "./is_number"
 
-
-describe("Helpers: primitive type guards", () => {
+describe("Type guard: Number", () => {
 	describe("Number assertion", () => {
 		it("Should be truthy", () => {
 			const value = 5

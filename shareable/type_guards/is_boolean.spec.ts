@@ -1,7 +1,6 @@
 import isBoolean from "./is_boolean"
 
-
-describe("Helpers: primitive type guards", () => {
+describe("Type guard: Boolean", () => {
 	describe("Boolean assertion", () => {
 		it("Should be truthy", () => {
 			const value = true

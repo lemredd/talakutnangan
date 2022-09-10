@@ -1,6 +1,6 @@
 import isString from "./is_string"
 
-describe("Helpers: primitive type guards", () => {
+describe("Type guard: String", () => {
 	describe("String assertion", () => {
 		it("Should be truthy", () => {
 			const value = ""

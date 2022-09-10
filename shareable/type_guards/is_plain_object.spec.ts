@@ -1,6 +1,6 @@
 import isPlainObject from "./is_plain_object"
 
-describe("Helpers: primitive type guards", () => {
+describe("Type guard: Object", () => {
 	describe("Object assertion", () => {
 		it("Should be truthy", () => {
 			const value = {}
