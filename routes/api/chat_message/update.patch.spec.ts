@@ -1,6 +1,8 @@
 import ErrorBag from "$!/errors/error_bag"
+import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
 import MockRequester from "~/set-ups/mock_requester"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Controller from "./update(id).patch"
 
@@ -14,7 +16,11 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const { user } = chatMessageActivity
+		const model = await new Factory().chatMessageActivity(
+			() => Promise.resolve(chatMessageActivity)
+		).insertOne()
 		const newModel = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
@@ -26,7 +32,8 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 					"id": String(model.id),
 					"type": "chat_message"
 				}
-			}
+			},
+			"user": new UserFactory().serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -39,6 +46,7 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const otherUser = await new UserFactory().serializedOne(true)
 		const model = await new Factory().insertOne()
 		const newModel = await new Factory().makeOne()
 		requester.customizeRequest({
@@ -51,13 +59,15 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 					"id": String(model.id),
 					"type": "chat_message"
 				}
-			}
+			},
+			"user": otherUser
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(1)
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.data")
+		expect(body).toHaveProperty("1.source.pointer", "data.id")
 	})
 })
