@@ -17,7 +17,7 @@ import type {
 import Log from "$!/singletons/log"
 import CacheClient from "$!/helpers/cache_client"
 import encodeToBase64 from "$!/helpers/encode_to_base64"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
 import BaseError from "$!/errors/base"

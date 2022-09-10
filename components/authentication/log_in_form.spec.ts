@@ -6,7 +6,7 @@ import type { GeneralObject } from "$/types/general"
 
 import UserFetcher from "$@/fetchers/user"
 import LogInForm from "@/authentication/log_in_form.vue"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Component: Log In Form", () => {
 	it("should log in with existing credentials", async() => {
