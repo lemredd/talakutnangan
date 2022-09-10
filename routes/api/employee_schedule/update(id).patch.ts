@@ -12,7 +12,7 @@ import NoContentResponseInfo from "!/response_infos/no_content"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import convertTimeToMinutes from "$/helpers/time/convert_time_to_minutes"
+import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
