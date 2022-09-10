@@ -11,13 +11,13 @@ describe("Helper: Specialize path", () => {
 	})
 
 	it("can bind multiple IDs", async() => {
-		const post_id = 2
+		const postID = 2
 		const id = 1
-		const pathTemplate = "/api/post/:post_id/comment/:id"
+		const pathTemplate = "/api/post/:postID/comment/:id"
 
 		const specializedPath = specializePath(pathTemplate, {
-			post_id,
-			id
+			id,
+			postID
 		})
 
 		expect(specializedPath).toBe("/api/post/2/comment/1")
