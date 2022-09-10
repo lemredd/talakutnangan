@@ -8,7 +8,7 @@ import type {
 
 import Manager from "%/managers/consultation"
 import accessDeepPath from "$!/helpers/access_deep_path"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**

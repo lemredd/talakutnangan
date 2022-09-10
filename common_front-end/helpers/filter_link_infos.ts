@@ -1,7 +1,7 @@
 import type PermissionGroup from "$/permissions/base"
 import type { DeserializedPageContext, ConditionalLinkInfo, LinkInfo } from "$@/types/independent"
 
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 export default function<T, U extends PermissionGroup<any, T>>(
 	context: DeserializedPageContext,

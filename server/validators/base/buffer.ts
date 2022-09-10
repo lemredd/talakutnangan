@@ -4,8 +4,8 @@ import type {
 	BufferRuleConstraints
 } from "!/types/validation"
 
-import isPlainObject from "$/helpers/is_plain_object"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isPlainObject from "$/type_guards/is_plain_object"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -25,12 +25,11 @@ export default async function(
 
 	const { value } = state
 	if (
-		typeof value === "object"
-		&& isPlainObject(value)
+		isPlainObject(value)
 		&& "buffer" in value
 		&& value.buffer instanceof Buffer
 		&& "info" in value
-		&& typeof value.info === "object"
+		&& isPlainObject(value.info)
 		&& !isUndefined(value.info?.mimeType)
 	) {
 		const castBuffer = value.buffer as Buffer

@@ -2,7 +2,7 @@
 import { Sequelize } from "sequelize-typescript"
 
 import Database from "%/data_source/database"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import getDataSourceType from "~/set-ups/get_data_source_type"
 
 export default class {

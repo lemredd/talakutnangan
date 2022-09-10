@@ -6,7 +6,7 @@ import type {
 
 import isBoolean from "validator/lib/isBoolean"
 import toBoolean from "validator/lib/toBoolean"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Validator to check if data is a valid boolean value.

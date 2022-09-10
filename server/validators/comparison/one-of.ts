@@ -4,7 +4,7 @@ import type {
 	OneOfRuleConstraints
 } from "!/types/validation"
 
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
