@@ -53,7 +53,6 @@ jobs:
         key: ${{ runner.os }}_${{ hashFiles('package.json') }}
         restore-keys: |
           ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
     - run: npm install
     - name: Test for compilation
       run: npm run build

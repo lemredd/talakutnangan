@@ -33,7 +33,6 @@ jobs:
         key: ${{ runner.os }}_${{ hashFiles('package.json') }}
         restore-keys: |
           ${{ runner.os }}_${{ hashFiles('package.json') }}
-          ${{ runner.os }}_
     - run: npm install
     - run: ./execute.ps1 -test unit:share
       shell: pwsh

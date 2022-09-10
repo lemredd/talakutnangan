@@ -74,9 +74,11 @@ export default async function(app: ExpressApp) {
 					...request.pageProps,
 					parsedUnitError
 				},
+				url,
 				"urlOriginal": url
 			}
-			const pageContext: { [key:string]: any } = await renderPage(pageContextInit)
+			const pageContext: Awaited<ReturnType<typeof renderPage>> & { errorStatus?: number }
+			= await renderPage(pageContextInit)
 			const { httpResponse, errorStatus } = pageContext
 			if (httpResponse) {
 				const { body, statusCode, contentType } = httpResponse
