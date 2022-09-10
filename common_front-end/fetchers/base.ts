@@ -13,7 +13,7 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import specializedPath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"

@@ -52,7 +52,7 @@ import type {
 } from "$/types/documents/chat_message"
 
 import Socket from "$@/external/socket"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"

@@ -2,7 +2,7 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import RoleTransformer from "%/transformers/role"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"

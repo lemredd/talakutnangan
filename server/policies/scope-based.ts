@@ -2,7 +2,7 @@ import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
 import AuthorizationError from "$!/errors/authorization"
 import PermissionBasedPolicy from "!/policies/permission-based"

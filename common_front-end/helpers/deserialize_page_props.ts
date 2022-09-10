@@ -1,7 +1,7 @@
 import type { Serializable } from "$/types/general"
 import type { DeserializedPageContext } from "$@/types/independent"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 
 export default function(
 	pageContext: Serializable & { pageProps: { userProfile: Serializable|null } }
