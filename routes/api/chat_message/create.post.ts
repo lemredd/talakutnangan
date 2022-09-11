@@ -21,6 +21,7 @@ import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import anyObject from "!/validators/base/any_object"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
+import doesBelongToUser from "!/validators/manager/does_belong_to_user"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends JSONController {
@@ -49,6 +50,11 @@ export default class extends JSONController {
 			{
 				"ClassName": ChatMessageActivityManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"pipes": [ doesBelongToUser ]
+					}
+				},
 				"relationshipName": "chatMessageActivity",
 				"typeName": "chat_message_activity",
 				"validator": exists
