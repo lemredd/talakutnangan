@@ -92,7 +92,7 @@ export interface UniqueConsultationScheduleConstraints {
 }
 
 export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleConstraints {
-	doesBelongToUser: {
+	doesBelongToUser?: {
 		permissionGroup: BasePermissionGroup<any, U>,
 		anyPermissionCombinationForBypass: U[][]
 	}
