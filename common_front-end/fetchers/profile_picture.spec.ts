@@ -1,6 +1,6 @@
 import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
 
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import ProfilePictureFetcher from "./profile_picture"
 
 describe("Communicator: ProfilePictureFetcher", () => {

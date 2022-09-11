@@ -12,11 +12,11 @@ import type {
 
 import Socket from "$@/external/socket"
 import UserFactory from "~/factories/user"
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 import Factory from "~/factories/consultation"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import ChatMessageFactory from "~/factories/chat_message"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"

@@ -80,7 +80,7 @@ import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import RoleFetcher from "$@/fetchers/role"
-import makeUnique from "$/helpers/array/make_unique"
+import makeUnique from "$/array/make_unique"
 import {
 	semester as semesterPermissions,
 	tag as tagPermissions,

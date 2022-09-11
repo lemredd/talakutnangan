@@ -1,6 +1,6 @@
 import runThroughPipeline from "./run_through_pipeline"
 
-describe("Database: Run through pipeline", () => {
+describe("Helper: Run through pipeline", () => {
 	it("can handle single pipe", () => {
 		const mainData = 4
 		const baseConstraints = { "pipeA": 3 }

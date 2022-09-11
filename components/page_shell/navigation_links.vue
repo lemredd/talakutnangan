@@ -111,7 +111,7 @@ import type { DeserializedPageContext } from "$@/types/independent"
 
 import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import linkInfos from "@/page_shell/navigation_link_infos"
 

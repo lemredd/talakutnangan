@@ -4,7 +4,7 @@ import "~/set-ups/database.set_up"
 import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
 import Suspensible from "./suspensible.vue"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 

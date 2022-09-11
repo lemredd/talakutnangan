@@ -10,14 +10,14 @@ export default class extends PageMiddleware {
 
 	getDocumentProps(): DocumentProps {
 		return {
-			"title": "Home | Talakutnangan",
-			"description": "Consultation chat platform for MCC"
+			"description": "Consultation chat platform for MCC",
+			"title": "Home | Talakutnangan"
 		}
 	}
 
-	getPageProps(request: Request): Serializable {
+	getPageProps(unusedRequest: Request): Serializable {
 		return {
-			data: "Hello world!"
+			"data": "Hello world!"
 		}
 	}
 }

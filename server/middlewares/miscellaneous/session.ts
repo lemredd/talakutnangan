@@ -2,8 +2,8 @@ import createSessionMiddleware, { Store } from "express-session"
 import makeSequelizeStore from "connect-session-sequelize"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Middleware from "!/bases/middleware"
 import Database from "%/data_source/database"
+import RequestFilter from "!/bases/request_filter"
 
 const MILLISECONDS_PER_SECOND = 1000
 const SECONDS_PER_MINUTE = 60
@@ -13,7 +13,7 @@ const EXPIRATION_MILLISECOND_DURATION
 		* SECONDS_PER_MINUTE
 		* EXPIRATION_MINUTE_DURATION
 
-export default class Session extends Middleware {
+export default class Session extends RequestFilter {
 	private static session = createSessionMiddleware({
 		"cookie": {
 			"maxAge": Number(process.env.SESSION_DURATION || String(EXPIRATION_MILLISECOND_DURATION)),
@@ -56,6 +56,14 @@ export default class Session extends Middleware {
 	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		// @ts-ignore
 		Session.session(request, response, next)
+		return Promise.resolve()
+	}
+
+	filterRequest(unusedRequest: Request): Promise<void> {
+		/*
+		 * Since intermediate method was overrided, just return a resolve promise to follow
+		 * base class' requirements.
+		 */
 		return Promise.resolve()
 	}
 }

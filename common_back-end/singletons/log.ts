@@ -1,5 +1,5 @@
 import consola from "consola"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 export default class Log {
 	private static maxStringLength: number

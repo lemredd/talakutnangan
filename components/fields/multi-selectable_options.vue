@@ -68,7 +68,7 @@
 import { computed, ref } from "vue"
 import type { OptionInfo } from "$@/types/component"
 
-import subtract from "$/helpers/array/subtract"
+import subtract from "$/array/subtract"
 
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 

@@ -375,8 +375,10 @@ if ($Pull) {
 
 	if ($Remote -eq "") {
 		& git pull --prune
+		& git fetch
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+		& git fetch $($Remote)
 	}
 
 	$possibleBranches = & git branch -l --format='%(refname:lstrip=2)'

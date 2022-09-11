@@ -4,7 +4,7 @@ import "~/set-ups/database.set_up"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
-import convertTimeToMinutes from "$/helpers/time/convert_time_to_minutes"
+import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 import uniqueEmployeeSchedule from "./unique_employee_schedule"
 
 describe("Validator: unique employee schedule", () => {
@@ -24,17 +24,17 @@ describe("Validator: unique employee schedule", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		}))
 		const constraints = {
+			"field": "hello",
 			"request": {} as Request,
 			"source": {
 				"user": {
 					"id": user.id
 				}
 			},
-			"field": "hello",
 			"uniqueEmployeeSchedule": {
 				"userIDPointer": "user.id"
 			}
@@ -44,8 +44,8 @@ describe("Validator: unique employee schedule", () => {
 
 		expect(sanitizeValue).toStrictEqual({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		})
 	})
 
@@ -65,17 +65,17 @@ describe("Validator: unique employee schedule", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		}))
 		const constraints = {
+			"field": "hello",
 			"request": {} as Request,
 			"source": {
 				"user": {
 					"id": user.id
 				}
 			},
-			"field": "hello",
 			"uniqueEmployeeSchedule": {
 				"userIDPointer": "user.id"
 			}

@@ -7,7 +7,7 @@ import type { WhereOptions } from "%/types/dependent"
 
 import Database from "%/data_source/database"
 import DatabaseError from "$!/errors/database"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import cleanQuery from "%/managers/helpers/clean_query"
 
 type Literal = ReturnType<typeof literal>

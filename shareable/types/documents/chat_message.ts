@@ -82,7 +82,7 @@ export type ChatMessageResource<T extends Completeness = "read"> = Resource<
 	ChatMessageResourceIdentifier<T>,
 	ChatMessageAttributes<"serialized">
 > & (
-	T extends "create" ? ChatMessageRelationships : Serializable
+	T extends "create" ? ChatMessageRelationships<T> : Serializable
 )
 
 export type DeserializedChatMessageResource<

@@ -5,7 +5,7 @@ import Log from "$!/singletons/log"
 import User from "%/models/user"
 import Consultation from "%/models/consultation"
 import ProfilePicture from "%/models/profile_picture"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Includes default models

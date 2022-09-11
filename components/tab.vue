@@ -2,12 +2,12 @@
 	<ul class="tabs">
 		<li
 			v-for="tab in tabs"
-			:key="tab"
+			:key="tab.label"
 			class="tab-button">
 			<Anchor
 				class="tab-link"
-				:href="`${parentUrl}/${tab.toLowerCase()}`">
-				{{ tab }}
+				:href="`${tab.path}`">
+				{{ tab.label }}
 			</Anchor>
 		</li>
 	</ul>
@@ -42,19 +42,10 @@
 
 <script setup lang="ts">
 import { inject } from "vue"
+
+import type { TabInfo } from "$@/types/component"
+
 import Anchor from "@/anchor.vue"
-import { PageContext } from "$/types/renderer"
 
-const pageContext = inject("pageContext") as PageContext
-const tabs = inject("tabs") as string[]
-
-const fullUrl = pageContext.urlPathname
-const splittedUrl = fullUrl!.split("/")
-splittedUrl.shift()
-const currentTab = splittedUrl[splittedUrl.length - 1]
-
-let parentUrl = ""
-splittedUrl.forEach(word => {
-	if (word !== currentTab) parentUrl += `/${word}`
-})
+const tabs = inject("tabs") as TabInfo[]
 </script>

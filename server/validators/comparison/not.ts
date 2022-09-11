@@ -5,7 +5,7 @@ import type {
 } from "!/types/validation"
 
 import validate from "!/validators/validate"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**

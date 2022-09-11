@@ -3,7 +3,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
 import UserManager from "%/managers/user"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 
 /**
  * Validator to check if the password matches the password of currently logged in user.

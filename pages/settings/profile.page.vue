@@ -92,6 +92,7 @@ import {
 	computed
 } from "vue"
 
+import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -142,5 +143,16 @@ const schedules = [
 	}
 ]
 
-provide("tabs", [ "Account", "Profile" ])
+const tabs: TabInfo[] = [
+	{
+		"label": "Account",
+		"path": "/settings/account"
+	},
+	{
+		"label": "Profile",
+		"path": "/settings/profile"
+	}
+]
+
+provide("tabs", tabs)
 </script>
