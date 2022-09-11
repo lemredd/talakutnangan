@@ -483,7 +483,7 @@ if ($Log) {
 	& git commit -m $("Update current version to v$version")
 	& git tag -s $("v$version")
 
-	$packageConfiguration.version = "v0.$nextVersion.0-dev"
+	$packageConfiguration.version = "0.$nextVersion.0-dev"
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration
