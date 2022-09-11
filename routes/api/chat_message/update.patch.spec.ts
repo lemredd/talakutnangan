@@ -6,6 +6,7 @@ import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Controller from "./update(id).patch"
 
+const ID_PARAMETER_VALIDATION_INDEX = 0
 const BODY_VALIDATION_INDEX = 1
 
 describe("Controller: PATCH /api/chat_message/:id", () => {
@@ -41,6 +42,54 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		requester.expectSuccess()
 	})
 
+	it("can accept owned info", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const IDParameterValidation = validations[ID_PARAMETER_VALIDATION_INDEX]
+		const IDParameterValidationFunction = IDParameterValidation.intermediate
+		.bind(IDParameterValidation)
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const { user } = chatMessageActivity
+		const model = await new Factory().chatMessageActivity(
+			() => Promise.resolve(chatMessageActivity)
+		).insertOne()
+		requester.customizeRequest({
+			"params": {
+				"id": String(model.id)
+			},
+			"user": new UserFactory().serialize(user)
+		})
+
+		await requester.runMiddleware(IDParameterValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("cannot accept unowned info", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const IDParameterValidation = validations[ID_PARAMETER_VALIDATION_INDEX]
+		const IDParameterValidationFunction = IDParameterValidation.intermediate
+		.bind(IDParameterValidation)
+		const otherUser = await new UserFactory().serializedOne(true)
+		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const model = await new Factory().chatMessageActivity(
+			() => Promise.resolve(chatMessageActivity)
+		).insertOne()
+		requester.customizeRequest({
+			"params": {
+				"id": String(model.id)
+			},
+			"user": otherUser
+		})
+
+		await requester.runMiddleware(IDParameterValidationFunction)
+
+		const body = requester.expectFailure(ErrorBag).toJSON()
+		expect(body).toHaveLength(1)
+		expect(body).toHaveProperty("0.source.pointer", "id")
+	})
+
 	it("cannot accept invalid data", async() => {
 		const controller = new Controller()
 		const { validations } = controller
@@ -66,8 +115,7 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(2)
+		expect(body).toHaveLength(1)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.data")
-		expect(body).toHaveProperty("1.source.pointer", "data.id")
 	})
 })
