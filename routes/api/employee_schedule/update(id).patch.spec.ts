@@ -24,13 +24,21 @@ describe("Controller: PATCH /api/employee_schedule", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "employee_schedule",
-					"id": String(employeeeSchedule.id),
 					"attributes": {
 						"dayName": newEmployeeeSchedule.dayName,
 						"scheduleEnd": newEmployeeeSchedule.scheduleEnd,
 						"scheduleStart": newEmployeeeSchedule.scheduleStart
-					}
+					},
+					"id": String(employeeeSchedule.id),
+					"relationships": {
+						"user": {
+							"data": {
+								"id": String(user.id),
+								"type": "user"
+							}
+						}
+					},
+					"type": "employee_schedule"
 				}
 			}
 		})
@@ -55,13 +63,21 @@ describe("Controller: PATCH /api/employee_schedule", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "employee_schedule",
-					"id": String(employeeeSchedule.id),
 					"attributes": {
 						"dayName": "tue",
 						"scheduleEnd": newEmployeeeSchedule.scheduleEnd,
 						"scheduleStart": newEmployeeeSchedule.scheduleStart
-					}
+					},
+					"id": String(employeeeSchedule.id),
+					"relationships": {
+						"user": {
+							"data": {
+								"id": String(user.id),
+								"type": "user"
+							}
+						}
+					},
+					"type": "employee_schedule"
 				}
 			}
 		})
