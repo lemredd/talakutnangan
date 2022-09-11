@@ -31,7 +31,7 @@ export default class extends BaseManager<
 	}
 
 	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
-		throw new DatabaseError("Role is not owned by any user. They are being attached.")
+		throw new DatabaseError("Roles are not owned by any user. They are being attached.")
 	}
 
 	async countUsers(roleIDs: number[]): Promise<Serializable> {

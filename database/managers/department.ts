@@ -1,6 +1,6 @@
-import type { ModelCtor } from "%/types/dependent"
 import type { Serializable } from "$/types/general"
 import type { DepartmentQueryParameters } from "$/types/query"
+import type { Model as BaseModel, ModelCtor } from "%/types/dependent"
 import type {
 	DepartmentAttributes,
 	DepartmentResourceIdentifier
@@ -22,6 +22,10 @@ export default class extends BaseManager<
 	get model(): ModelCtor<Department> { return Department }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
+
+	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
+		throw new DatabaseError("Departments are not owned by any user.")
+	}
 
 	async countUsers(departmentIDs: number[]): Promise<Serializable> {
 		try {
