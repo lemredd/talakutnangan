@@ -32,7 +32,7 @@ describe("Validator: unique employee schedule", () => {
 			"request": {} as Request,
 			"source": {
 				"user": {
-					"id": user.id
+					"id": String(user.id)
 				}
 			},
 			"uniqueEmployeeSchedule": {
@@ -66,11 +66,11 @@ describe("Validator: unique employee schedule", () => {
 			"field": "hello",
 			"request": {} as Request,
 			"source": {
-				"employeeScheduleIDPointer": {
-					"id": schedule.id
+				"employeeSchedule": {
+					"id": String(schedule.id)
 				},
 				"user": {
-					"id": user.id
+					"id": String(user.id)
 				}
 			},
 			"uniqueEmployeeSchedule": {
@@ -112,7 +112,7 @@ describe("Validator: unique employee schedule", () => {
 			"request": {} as Request,
 			"source": {
 				"user": {
-					"id": user.id
+					"id": String(user.id)
 				}
 			},
 			"uniqueEmployeeSchedule": {
