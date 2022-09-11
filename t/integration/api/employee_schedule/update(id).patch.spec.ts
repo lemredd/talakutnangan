@@ -35,13 +35,21 @@ describe("PATCH /api/employee_schedule/:id", () => {
 		.set("Cookie", cookie)
 		.send({
 			"data": {
-				"type": "employee_schedule",
-				"id": String(employeeSchedule.id),
 				"attributes": {
 					"dayName": newEmployeeSchedule.dayName,
 					"scheduleEnd": newEmployeeSchedule.scheduleEnd,
 					"scheduleStart": newEmployeeSchedule.scheduleStart
-				}
+				},
+				"id": String(employeeSchedule.id),
+				"relationships": {
+					"user": {
+						"data": {
+							"id": String(user.id),
+							"type": "user"
+						}
+					}
+				},
+				"type": "employee_schedule"
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
