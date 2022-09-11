@@ -46,7 +46,7 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	get transformer(): EmployeeScheduleTransformer { return new EmployeeScheduleTransformer() }
 
 	async generate(): GeneratedData<EmployeeSchedule> {
-		const [ dayName, scheduleStart, scheduleEnd ] = faker.unique(() => {
+		const [ dayName, scheduleStart, scheduleEnd ] = faker.helpers.unique(() => {
 			const rawDay = this.#dayName()
 			const rawScheduleStart = this.#scheduleStart()
 			const rawScheduleEnd = this.#scheduleEnd(rawScheduleStart)
