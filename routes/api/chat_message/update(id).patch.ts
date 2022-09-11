@@ -6,6 +6,7 @@ import type { ChatMessageActivityDocument } from "$/types/documents/chat_message
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
 import { chatMessageKind } from "!/constants/regex"
+import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import TripleBoundJSONController from "!/controllers/triple_bound_json"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
@@ -13,6 +14,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import string from "!/validators/base/string"
 import regex from "!/validators/comparison/regex"
@@ -24,7 +26,10 @@ export default class extends TripleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(this.manager)
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {

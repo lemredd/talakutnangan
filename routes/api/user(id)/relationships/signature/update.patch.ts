@@ -7,8 +7,9 @@ import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Validation from "!/bases/validation"
 import deserialize from "$/object/deserialize"
-import SignatureManager from "%/managers/signature"
 import OkResponseInfo from "!/response_infos/ok"
+import SignatureManager from "%/managers/signature"
+import Merger from "!/middlewares/miscellaneous/merger"
 import MultipartController from "!/controllers/multipart"
 
 import {
@@ -16,7 +17,6 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import Merger from "!/middlewares/miscellaneous/merger"
 import IDParameterValidation from "!/validations/id_parameter"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
