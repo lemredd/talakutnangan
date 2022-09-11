@@ -16,6 +16,7 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
+import Merger from "!/middlewares/miscellaneous/merger"
 import IDParameterValidation from "!/validations/id_parameter"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -30,11 +31,14 @@ export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			UPDATE_OWN_DATA,
-			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		return new Merger([
+			new PermissionBasedPolicy(permissionGroup, [
+				UPDATE_OWN_DATA,
+				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+			]),
+			new BelongsToCurrentUserPolicy(UserManager)
+		]) as unknown as Policy
 	}
 
 	get validations(): Validation[] {
@@ -64,12 +68,6 @@ export default class extends MultipartController {
 		return makeResourceDocumentRules("signature", attributes, {
 			"isNew": true
 		})
-	}
-
-	get postParseMiddlewares(): Policy[] {
-		return [
-			new BelongsToCurrentUserPolicy()
-		]
 	}
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
