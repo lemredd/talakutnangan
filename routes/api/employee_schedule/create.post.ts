@@ -1,4 +1,4 @@
-import type { FieldRules, Rules } from "!/types/validation"
+import type { FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
@@ -8,6 +8,7 @@ import { DayValues } from "$/types/database"
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
 import JSONController from "!/controllers/json"
+import Merger from "!/middlewares/miscellaneous/merger"
 import CreatedResponseInfo from "!/response_infos/created"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
 import convertTimeToMinutes from "$/object/convert_time_to_minutes"
@@ -37,7 +38,14 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.employeeSchedulePolicy
+		return new Merger([
+			CommonMiddlewareList.reachableEmployeeOnlyPolicy,
+			new PermissionBasedPolicy(permissionGroup, [
+				UPDATE_OWN_DATA,
+				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+			])
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
