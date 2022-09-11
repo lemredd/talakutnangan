@@ -48,6 +48,43 @@ describe("Controller: PATCH /api/employee_schedule", () => {
 		requester.expectSuccess()
 	})
 
+	it("can accept same info", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const user = await new UserFactory().beReachableEmployee().insertOne()
+		const employeeeSchedule = await new EmployeeScheduleFactory()
+		.dayName(() => "wednesday")
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"dayName": employeeeSchedule.dayName,
+						"scheduleEnd": employeeeSchedule.scheduleEnd,
+						"scheduleStart": employeeeSchedule.scheduleStart
+					},
+					"id": String(employeeeSchedule.id),
+					"relationships": {
+						"user": {
+							"data": {
+								"id": String(user.id),
+								"type": "user"
+							}
+						}
+					},
+					"type": "employee_schedule"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
 	it("cannot accept invalid name", async() => {
 		const controller = new Controller()
 		const { validations } = controller
