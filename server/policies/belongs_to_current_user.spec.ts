@@ -40,10 +40,10 @@ describe("Policy: Belongs to current user", () => {
 		const otherUser = await userFactory.attach(adminRole).serializedOne(true)
 		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {
 			"bypassNecessarilyWith": {
-				"group": permissions,
 				"combinations": [
 					[ "readDepartmentScope" ]
-				]
+				],
+				"group": permissions
 			}
 		})
 		requester.customizeRequest({
@@ -64,12 +64,12 @@ describe("Policy: Belongs to current user", () => {
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
 		const user = await userFactory.attach(role).serializedOne(true)
 		const otherUser = await userFactory.serializedOne(true)
-		const pageGuard = new BelongsToCurrentUserPolicy(UserManager,, {
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {
 			"bypassNecessarilyWith": {
-				"group": permissions,
 				"combinations": [
 					[ "readDepartmentScope" ]
-				]
+				],
+				"group": permissions
 			}
 		})
 		requester.customizeRequest({
