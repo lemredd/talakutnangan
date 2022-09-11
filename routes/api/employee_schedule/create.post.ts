@@ -22,7 +22,6 @@ import {
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
 import exists from "!/validators/manager/exists"
@@ -32,6 +31,7 @@ import oneOf from "!/validators/comparison/one-of"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -43,7 +43,6 @@ export default class extends JSONController {
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		/*
 		 * TODO: Make validator if the schedule start is less than schedule end
-		 * TODO: Make validator if the user is has a kind column with a value of "reachable_employee"
 		 */
 		const attributes: FieldRules = {
 			"dayName": {
@@ -78,6 +77,17 @@ export default class extends JSONController {
 			{
 				"ClassName": UserManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"sameAttribute": {
+								"columnName": "kind",
+								"value": "reachable_employee"
+							}
+						},
+						"pipes": [ existWithSameAttribute ]
+					}
+				},
 				"relationshipName": "user",
 				"typeName": "user",
 				"validator": exists
