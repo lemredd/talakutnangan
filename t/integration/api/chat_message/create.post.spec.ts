@@ -18,10 +18,12 @@ describe("POST /api/chat_message", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const normalRole = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { user, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.serializedOne()
