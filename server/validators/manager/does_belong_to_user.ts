@@ -25,7 +25,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (isUndefined(constraints.manager) || isUndefined(constraints.doesBelongToUser)) {
+	if (isUndefined(constraints.manager)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -58,6 +58,24 @@ export default async function(
 	)
 
 	if (doesBelong) return state
+
+	if (isUndefined(constraints.doesBelongToUser)) {
+		const error = {
+			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
+			"messageMaker": (
+				field: string,
+				value: string
+			) => {
+				const subject = `The "${field}" with a value of "${value}"`
+				const predicate = "can only be processed for the current user"
+
+				return `${subject} ${predicate}`
+			}
+		}
+
+		throw error
+	}
 
 	const { permissionGroup, anyPermissionCombinationForBypass } = constraints.doesBelongToUser
 	const roles = userProfile.data.roles.data
