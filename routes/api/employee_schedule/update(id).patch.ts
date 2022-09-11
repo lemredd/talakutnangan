@@ -33,6 +33,7 @@ import Merger from "!/middlewares/miscellaneous/merger"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 
 export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
@@ -94,6 +95,17 @@ export default class extends DoubleBoundJSONController {
 			{
 				"ClassName": UserManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"sameAttribute": {
+								"columnName": "kind",
+								"value": "reachable_employee"
+							}
+						},
+						"pipes": [ existWithSameAttribute ]
+					}
+				},
 				"relationshipName": "user",
 				"typeName": "user",
 				"validator": exists
