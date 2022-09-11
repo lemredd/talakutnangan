@@ -1,7 +1,5 @@
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-
 import "~/set-ups/database.set_up"
+import UserManager from "%/managers/user"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import UserPermissions from "$/permissions/user"
@@ -11,20 +9,20 @@ import AuthorizationError from "$!/errors/authorization"
 import BelongsToCurrentUserPolicy from "./belongs_to_current_user"
 
 describe("Policy: Belongs to current user", () => {
-	const requester  = new MockRequester()
-	const transformer = new UserTransformer()
+	const requester = new MockRequester()
 	const permissions = new UserPermissions()
 
-	it("can allow user", async () => {
+	it("can allow user", async() => {
+		const userFactory = new UserFactory()
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
-		const user = await (new UserFactory().attach(role)).insertOne()
-		const pageGuard = new BelongsToCurrentUserPolicy()
+		const user = await userFactory.attach(role).serializedOne(true)
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager)
 		requester.customizeRequest({
-			user: Serializer.serialize(user, transformer, {}),
-			isAuthenticated: jest.fn().mockReturnValue(true),
-			params: {
-				id: String(user.id)
-			}
+			"isAuthenticated": jest.fn().mockReturnValue(true),
+			"params": {
+				"id": String(user.data.id)
+			},
+			user
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -32,16 +30,54 @@ describe("Policy: Belongs to current user", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot allow different user", async () => {
+	it("can allow different user if permitted", async() => {
+		const userFactory = new UserFactory()
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
-		const user = await (new UserFactory().attach(role)).insertOne()
-		const pageGuard = new BelongsToCurrentUserPolicy()
-		requester.customizeRequest({
-			user: Serializer.serialize(user, transformer, {}),
-			isAuthenticated: jest.fn().mockReturnValue(true),
-			params: {
-				id: String(user.id + 1)
+		const adminRole = await new RoleFactory()
+		.userFlags(permissions.generateMask("readDepartmentScope"))
+		.insertOne()
+		const user = await userFactory.attach(role).serializedOne(true)
+		const otherUser = await userFactory.attach(adminRole).serializedOne(true)
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {
+			"bypassNecessarilyWith": {
+				"combinations": [
+					[ "readDepartmentScope" ]
+				],
+				"group": permissions
 			}
+		})
+		requester.customizeRequest({
+			"isAuthenticated": jest.fn().mockReturnValue(true),
+			"params": {
+				"id": String(user.data.id)
+			},
+			"user": otherUser
+		})
+
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+
+		requester.expectSuccess()
+	})
+
+	it("cannot allow different user without required permission", async() => {
+		const userFactory = new UserFactory()
+		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const user = await userFactory.attach(role).serializedOne(true)
+		const otherUser = await userFactory.serializedOne(true)
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {
+			"bypassNecessarilyWith": {
+				"combinations": [
+					[ "readDepartmentScope" ]
+				],
+				"group": permissions
+			}
+		})
+		requester.customizeRequest({
+			"isAuthenticated": jest.fn().mockReturnValue(true),
+			"params": {
+				"id": String(user.data.id)
+			},
+			"user": otherUser
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))

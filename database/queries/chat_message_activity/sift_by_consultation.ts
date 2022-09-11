@@ -4,7 +4,7 @@ import type { ConsultationFilter } from "$/types/query"
 import Log from "$!/singletons/log"
 
 import Condition from "%/managers/helpers/condition"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Sift chat message activity model which belong to a consultation.

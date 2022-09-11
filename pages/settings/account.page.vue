@@ -53,6 +53,8 @@ form {
 
 <script setup lang="ts">
 import { provide } from "vue"
+import type { TabInfo } from "$@/types/component"
+
 import TextualField from "@/fields/textual.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 
@@ -64,5 +66,16 @@ const accountInfo = {
 	"institute": "INS"
 }
 
-provide("tabs", [ "Account", "Profile" ])
+const tabs: TabInfo[] = [
+	{
+		"label": "Account",
+		"path": "/settings/account"
+	},
+	{
+		"label": "Profile",
+		"path": "/settings/profile"
+	}
+]
+
+provide("tabs", tabs)
 </script>

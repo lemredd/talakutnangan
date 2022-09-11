@@ -8,7 +8,7 @@ import BaseError from "$!/errors/base"
 import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
 import encodeToBase64 from "$!/helpers/encode_to_base64"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 /**
  * Catches all errors on every route for unified error handling.

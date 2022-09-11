@@ -60,7 +60,7 @@ describe("Validator: does belong to user", () => {
 		expect(sanitizeValue).toEqual(model.id)
 	})
 
-	it("can bypass if it does not own the resurce", async() => {
+	it("can bypass if user does not own the resource", async() => {
 		const START_TIME = 2
 		const END_TIME = 300
 		const role = await new RoleFactory()
@@ -100,6 +100,42 @@ describe("Validator: does belong to user", () => {
 		expect(sanitizeValue).toEqual(model.id)
 	})
 
+	it("cannot bypass if user does not own the resource", async() => {
+		const START_TIME = 2
+		const END_TIME = 300
+		const role = await new RoleFactory()
+		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
+		.insertOne()
+		const userFactory = new UserFactory()
+		const admin = await userFactory.attach(role).insertOne()
+		const user = await userFactory.insertOne()
+		const model = await new Factory()
+		.user(() => Promise.resolve(user))
+		.scheduleStart(() => START_TIME)
+		.scheduleEnd(() => END_TIME)
+		.insertOne()
+		const value = Promise.resolve(makeInitialState(model.id))
+		const constraints = {
+			"field": "hello",
+			"manager": {
+				"className": Manager,
+				"columnName": "id"
+			},
+			"request": {
+				"user": userFactory.serialize(admin) as Serializable
+			} as AuthenticatedRequest,
+			"source": {}
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
+		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
+
+		try {
+			await doesBelongToUser(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
+	})
+
 	it("cannot accept invalid value", async() => {
 		const START_TIME = 3
 		const END_TIME = 300
@@ -135,9 +171,11 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const error = doesBelongToUser(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await doesBelongToUser(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

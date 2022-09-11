@@ -16,7 +16,7 @@
 	padding: 20px;
 
 	.container {
-		max-width: none;
+		max-width: 900px;
 	}
 }
 </style>

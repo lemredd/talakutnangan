@@ -2,7 +2,7 @@ import { UsableRoute } from "!/types/hybrid"
 import { RouteInformation } from "$/types/server"
 
 import ControllerLike from "!/bases/controller-like"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 export default abstract class Router extends RequestEnvironment {
 	private routes: UsableRoute[] = []

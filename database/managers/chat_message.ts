@@ -4,6 +4,7 @@ import type { ChatMessageQueryParameters } from "$/types/query"
 import type { ChatMessageAttributes } from "$/types/documents/chat_message"
 import type { AttachedChatFileDocument } from "$/types/documents/attached_chat_file"
 import type {
+	Model as BaseModel,
 	ModelCtor,
 	FindAndCountOptions,
 	Attributes,
@@ -195,6 +196,13 @@ export default class extends BaseManager<
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
+	}
+
+	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
+		return [
+			ChatMessageActivity,
+			User
+		]
 	}
 
 	private async insertModelWithUpdatedChatMessageActivity(

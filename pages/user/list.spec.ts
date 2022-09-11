@@ -12,7 +12,7 @@ import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
 
 import Manager from "$/helpers/manager"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS,

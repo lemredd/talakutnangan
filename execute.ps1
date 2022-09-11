@@ -375,8 +375,10 @@ if ($Pull) {
 
 	if ($Remote -eq "") {
 		& git pull --prune
+		& git fetch
 	} else {
 		& git pull --prune $($Remote) $($currentBranch)
+		& git fetch $($Remote)
 	}
 
 	$possibleBranches = & git branch -l --format='%(refname:lstrip=2)'
@@ -481,7 +483,7 @@ if ($Log) {
 	& git commit -m $("Update current version to v$version")
 	& git tag -s $("v$version")
 
-	$packageConfiguration.version = "v0.$nextVersion.0-dev"
+	$packageConfiguration.version = "0.$nextVersion.0-dev"
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration

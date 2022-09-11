@@ -5,9 +5,9 @@ import type {
 	ExternalPermissionDependencyInfo
 } from "$/types/permission"
 
-import makeUnique from "$/helpers/array/make_unique"
-import subtractArrays from "$/helpers/array/subtract"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import makeUnique from "$/array/make_unique"
+import subtractArrays from "$/array/subtract"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Base class for permission groups.

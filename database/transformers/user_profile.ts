@@ -10,9 +10,9 @@ import cloneDeep from "lodash.clonedeep"
 import User from "%/models/user"
 import UserTransformer from "%/transformers/user"
 import DatabaseError from "$!/errors/database"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import Serializer from "%/transformers/serializer"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import makeDefaultPassword from "$!/helpers/make_default_password"
 
 export default class extends UserTransformer {

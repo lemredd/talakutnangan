@@ -4,7 +4,12 @@ import type { UserQueryParameters } from "$/types/query"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
-import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
+import type {
+	Model as BaseModel,
+	ModelCtor,
+	FindAndCountOptions,
+	FindOptions
+} from "%/types/dependent"
 import type {
 	RawBulkData,
 	ProcessedDataForStudent,
@@ -13,11 +18,11 @@ import type {
 } from "%/types/independent"
 
 import Log from "$!/singletons/log"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"
-import User from "%/models/user"
+import Model from "%/models/user"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -39,12 +44,12 @@ import siftByDepartment from "%/queries/user/sift_by_department"
 import includeExclusiveDetails from "%/queries/user/include_exclusive_details"
 import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
 
-export default class UserManager extends BaseManager<User, RawUser, UserQueryParameters<number>> {
-	get model(): ModelCtor<User> { return User }
+export default class UserManager extends BaseManager<Model, RawUser, UserQueryParameters<number>> {
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, UserQueryParameters<number>>[] {
+	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, UserQueryParameters<number>>[] {
 		return [
 			includeRoleAndDepartment,
 			includeExclusiveDetails,
@@ -52,7 +57,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		]
 	}
 
-	get listPipeline(): Pipe<FindAndCountOptions<User>, UserQueryParameters<number>>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, UserQueryParameters<number>>[] {
 		return [
 			siftBySlug,
 			siftByRole,
@@ -67,7 +72,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		try {
 			const condition = new Condition()
 			condition.equal("email", email)
-			const whereOptions: FindOptions<User> = { "where": condition.build() }
+			const whereOptions: FindOptions<Model> = { "where": condition.build() }
 			const findOptions = runThroughPipeline(whereOptions, {}, [
 				includeExclusiveDetails,
 				includeRoleAndDepartment
@@ -267,6 +272,10 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		}
 	}
 
+	get modelChainToUser(): ModelCtor<BaseModel>[] {
+		return []
+	}
+
 	private async createStudents(
 		incompleteProfiles: ProcessedDataForStudent[],
 		departmentModels: { [key:string]: Department },
@@ -308,7 +317,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 		return this.serialize(completeUserInfo)
 	}
-
 
 	private async createReachableEmployees(
 		incompleteProfiles: ProcessedDataForEmployee[],

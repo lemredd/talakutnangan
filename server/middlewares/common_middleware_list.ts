@@ -9,7 +9,7 @@ import AuthenticationBasedPolicy from "!/policies/authentication-based"
 import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import mergeDeeply from "$!/helpers/merge_deeply"
 import { user } from "$/permissions/permission_list"
 import AuthorizationError from "$!/errors/authorization"

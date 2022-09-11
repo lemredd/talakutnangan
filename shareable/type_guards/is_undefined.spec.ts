@@ -1,6 +1,6 @@
 import isUndefined from "./is_undefined"
 
-describe("Helper: Is undefined", () => {
+describe("Type guard: Undefined", () => {
 	it("can check undefined", () => {
 		// eslint-disable-next-line no-undefined
 		const value = undefined

@@ -1,8 +1,13 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { ConsultationQueryParameters } from "$/types/query"
-import type { ModelCtor, FindAndCountOptions, CreationAttributes } from "%/types/dependent"
 import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
+import type {
+	ModelCtor,
+	Model as BaseModel,
+	CreationAttributes,
+	FindAndCountOptions
+} from "%/types/dependent"
 
 import User from "%/models/user"
 import Role from "%/models/role"
@@ -43,6 +48,13 @@ export default class extends BaseManager<
 			const isIncluded = !excludedColumns.includes(columnName)
 			return isIncluded
 		})
+	}
+
+	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
+		return [
+			ChatMessageActivity,
+			User
+		]
 	}
 
 	async createUsingResource(

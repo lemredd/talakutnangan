@@ -3,8 +3,10 @@ import BoundJSONController from "!/controllers/bound_json"
 import MatchedIDParameterValidation from "!/validations/matched_id_parameter"
 
 /**
- * Specialized controller class which accept JSON as their request body, and requires ID to match an
- * existing model in the database and the same with ID in the JSON.
+ * Specialized controller class which:
+ * - Requires ID parameter to match an existing model in the database
+ * - Accept JSON as their request body
+ * - The ID parameter is same with ID in the JSON
  *
  * Automatically casts the data ID to integer.
  */

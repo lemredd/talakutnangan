@@ -1,4 +1,5 @@
 import Model from "%/models/chat_message"
+import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ConsultationFactory from "~/factories/consultation"
@@ -8,6 +9,21 @@ import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import Manager from "./chat_message"
 
 describe("Database Manager: Chat message read operations", () => {
+	it("can check if model belongs to user", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const chatMessageActivityModel = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const model = await new Factory()
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModel))
+		.insertOne()
+
+		const doesBelong = await manager.isModelBelongsTo(model.id, user.id, manager.modelChainToUser)
+
+		expect(doesBelong).toBeTruthy()
+	})
+
 	it("can read preview messages", async() => {
 		const consultationModels = await new ConsultationFactory().insertMany(2)
 		const chatMessageActivityModelA = await new ChatMessageActivityFactory()

@@ -2,7 +2,7 @@
 import { createTransport, Transporter, TransportOptions, SentMessageInfo } from "nodemailer"
 
 import Log from "$!/singletons/log"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 import encapsulateFragment from "!/helpers/text/encapsulate_fragment"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"

@@ -6,9 +6,10 @@ import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Validation from "!/bases/validation"
-import deserialize from "$/helpers/deserialize"
-import SignatureManager from "%/managers/signature"
+import deserialize from "$/object/deserialize"
 import OkResponseInfo from "!/response_infos/ok"
+import SignatureManager from "%/managers/signature"
+import Merger from "!/middlewares/miscellaneous/merger"
 import MultipartController from "!/controllers/multipart"
 
 import {
@@ -30,11 +31,14 @@ export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			UPDATE_OWN_DATA,
-			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		return new Merger([
+			new PermissionBasedPolicy(permissionGroup, [
+				UPDATE_OWN_DATA,
+				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+			]),
+			new BelongsToCurrentUserPolicy(UserManager)
+		]) as unknown as Policy
 	}
 
 	get validations(): Validation[] {
@@ -64,12 +68,6 @@ export default class extends MultipartController {
 		return makeResourceDocumentRules("signature", attributes, {
 			"isNew": true
 		})
-	}
-
-	get postParseMiddlewares(): Policy[] {
-		return [
-			new BelongsToCurrentUserPolicy()
-		]
 	}
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)

@@ -2,7 +2,7 @@ import type { UserKind } from "$/types/database"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 

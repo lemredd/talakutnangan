@@ -3,7 +3,7 @@ import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Validation from "!/bases/validation"
-import deserialize from "$/helpers/deserialize"
+import deserialize from "$/object/deserialize"
 import BodyValidation from "!/validations/body"
 import IDParameterValidation from "!/validations/id_parameter"
 import ProfilePictureManager from "%/managers/profile_picture"
