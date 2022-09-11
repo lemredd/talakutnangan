@@ -6,13 +6,21 @@ import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedu
 import { DayValues } from "$/types/database"
 
 import Log from "$!/singletons/log"
-import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-import JSONController from "!/controllers/json"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+
+import Policy from "!/bases/policy"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_OWN_DATA,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
@@ -21,8 +29,9 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
-import makeResourceIdentifierRules from "!/rule_sets/make_resource_identifier"
+import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -33,7 +42,6 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		/*
-		 * TODO: Make validator if the schedule does not conflict with existing schedules
 		 * TODO: Make validator if the schedule start is less than schedule end
 		 * TODO: Make validator if the user is has a kind column with a value of "reachable_employee"
 		 */
@@ -66,30 +74,27 @@ export default class extends JSONController {
 			}
 		}
 
-		const relationships: Rules = {
-			"constraints": {
-				"object": {
-					"user": {
-						"constraints": {
-							"object": {
-								"data": {
-									"constraints": {
-										"object": makeResourceIdentifierRules("user", exists, UserManager)
-									},
-									"pipes": [ required, object ]
-								}
-							}
-						},
-						"pipes": [ required, object ]
-					}
-				}
-			},
-			"pipes": [ required, object ]
-		}
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": UserManager,
+				"isArray": false,
+				"relationshipName": "user",
+				"typeName": "user",
+				"validator": exists
+			}
+		])
 
 		return makeResourceDocumentRules("employee_schedule", attributes, {
-			"extraDataQueries": { relationships },
-			"isNew": true
+			"extraDataQueries": relationships,
+			"isNew": true,
+			"postAttributeValidation": {
+				"constraints": {
+					"uniqueEmployeeSchedule": {
+						"userIDPointer": "data.relationships.user.data.id"
+					}
+				},
+				"pipes": [ uniqueEmployeeSchedule ]
+			}
 		})
 	}
 
