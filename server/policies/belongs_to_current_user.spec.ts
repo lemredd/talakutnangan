@@ -30,12 +30,48 @@ describe("Policy: Belongs to current user", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot allow different user", async() => {
+	it("can allow different user if permitted", async() => {
+		const userFactory = new UserFactory()
+		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const adminRole = await new RoleFactory()
+		.userFlags(permissions.generateMask("readDepartmentScope"))
+		.insertOne()
+		const user = await userFactory.attach(role).serializedOne(true)
+		const otherUser = await userFactory.attach(adminRole).serializedOne(true)
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {
+			"bypassNecessarilyWith": {
+				"group": permissions,
+				"combinations": [
+					[ "readDepartmentScope" ]
+				]
+			}
+		})
+		requester.customizeRequest({
+			"isAuthenticated": jest.fn().mockReturnValue(true),
+			"params": {
+				"id": String(user.data.id)
+			},
+			"user": otherUser
+		})
+
+		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
+
+		requester.expectSuccess()
+	})
+
+	it("cannot allow different user without required permission", async() => {
 		const userFactory = new UserFactory()
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
 		const user = await userFactory.attach(role).serializedOne(true)
 		const otherUser = await userFactory.serializedOne(true)
-		const pageGuard = new BelongsToCurrentUserPolicy(UserManager)
+		const pageGuard = new BelongsToCurrentUserPolicy(UserManager,, {
+			"bypassNecessarilyWith": {
+				"group": permissions,
+				"combinations": [
+					[ "readDepartmentScope" ]
+				]
+			}
+		})
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"params": {
