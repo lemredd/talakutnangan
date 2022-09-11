@@ -1,10 +1,10 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RoleQueryParameters } from "$/types/query"
-import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
+import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"
 
-import Role from "%/models/role"
+import Model from "%/models/role"
 import BaseManager from "%/managers/base"
 import trimRight from "$/string/trim_right"
 import DatabaseError from "$!/errors/database"
@@ -15,28 +15,32 @@ import segragateIDs from "%/managers/helpers/segragate_IDs"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
 export default class extends BaseManager<
-	Role,
+	Model,
 	RoleAttributes<"deserialized">,
 	RoleQueryParameters<number>
 > {
-	get model(): ModelCtor<Role> { return Role }
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): RoleTransformer { return new RoleTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<Role>, RoleQueryParameters<number>>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, RoleQueryParameters<number>>[] {
 		return [
 			siftByDepartment,
 			...super.listPipeline
 		]
 	}
 
+	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
+		throw new DatabaseError("Role is not owned by any user. They are being attached.")
+	}
+
 	async countUsers(roleIDs: number[]): Promise<Serializable> {
 		try {
-			if (!Role.sequelize || !AttachedRole.sequelize) {
+			if (!Model.sequelize || !AttachedRole.sequelize) {
 				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
-			const subselectQuery = Role.sequelize.literal(`(${
+			const subselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -44,7 +48,7 @@ export default class extends BaseManager<
 							"attributes": [ AttachedRole.sequelize.fn("count", "*") ],
 							"where": new Condition().equal(
 								"roleID",
-								AttachedRole.sequelize.col(`${Role.tableName}.id`)
+								AttachedRole.sequelize.col(`${Model.tableName}.id`)
 							)
 							.build()
 						}
@@ -52,10 +56,10 @@ export default class extends BaseManager<
 					";"
 				)
 			})`)
-			const [ counts ] = await Role.sequelize.query(
+			const [ counts ] = await Model.sequelize.query(
 				// @ts-ignore
-				Role.sequelize.getQueryInterface().queryGenerator.selectQuery(
-					Role.tableName, {
+				Model.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					Model.tableName, {
 						"attributes": [ "id", [ subselectQuery, "count" ] ],
 						"where": new Condition().or(
 							...roleIDs.map(roleID => new Condition().equal("id", roleID))
@@ -68,11 +72,11 @@ export default class extends BaseManager<
 			const identifierObjects: RoleResourceIdentifier<"read">[] = []
 			counts.forEach(countInfo => {
 				identifierObjects.push({
-					"type": "role",
 					"id": String(countInfo.id),
 					"meta": {
 						"userCount": Number(countInfo.count)
-					}
+					},
+					"type": "role"
 				})
 			})
 
@@ -108,8 +112,8 @@ export default class extends BaseManager<
 				new Condition().or(...conditionedDeletedIDs)
 			)
 			await AttachedRole.destroy({
-				"where": deleteCondition.build(),
-				"force": true
+				"force": true,
+				"where": deleteCondition.build()
 			})
 		}
 	}
