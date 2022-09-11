@@ -16,10 +16,13 @@ import convertTimeToMinutes from "$/helpers/time/convert_time_to_minutes"
 
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
+import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
 
 export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
@@ -31,7 +34,6 @@ export default class extends DoubleBoundJSONController {
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		/*
-		 * TODO: Make validator if the schedule does not conflict with existing schedules
 		 * TODO: Make validator if the schedule start is less than schedule end
 		 */
 		const attributes: FieldRules = {
@@ -63,7 +65,28 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-		return makeResourceDocumentRules("employee_schedule", attributes)
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": UserManager,
+				"isArray": false,
+				"relationshipName": "user",
+				"typeName": "user",
+				"validator": exists
+			}
+		])
+
+		return makeResourceDocumentRules("employee_schedule", attributes, {
+			"extraDataQueries": relationships,
+			"postAttributeValidation": {
+				"constraints": {
+					"uniqueEmployeeSchedule": {
+						"employeeScheduleIDPointer": "data.id",
+						"userIDPointer": "data.relationships.user.data.id"
+					}
+				},
+				"pipes": [ uniqueEmployeeSchedule ]
+			}
+		})
 	}
 
 	get manager(): BaseManagerClass { return UserManager }
