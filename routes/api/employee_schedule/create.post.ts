@@ -30,6 +30,7 @@ import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
+import doesBelongToUser from "!/validators/manager/does_belong_to_user"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
@@ -88,12 +89,19 @@ export default class extends JSONController {
 				"options": {
 					"postIDRules": {
 						"constraints": {
+							"doesBelongToUser": {
+								"anyPermissionCombinationForBypass": [
+									UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+									UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+								],
+								permissionGroup
+							},
 							"sameAttribute": {
 								"columnName": "kind",
 								"value": "reachable_employee"
 							}
 						},
-						"pipes": [ existWithSameAttribute ]
+						"pipes": [ existWithSameAttribute, doesBelongToUser ]
 					}
 				},
 				"relationshipName": "user",
@@ -118,7 +126,6 @@ export default class extends JSONController {
 
 	get manager(): BaseManagerClass { return UserManager }
 
-	// TODO: Limit the creation to current user unless there is enough permission to update user info
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
