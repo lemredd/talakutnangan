@@ -23,7 +23,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 						"attachedRoleID": newModel.attachedRoleID,
 						"finishedAt": null,
 						"reason": newModel.reason,
-						"scheduledStartAt": newModel.scheduledStartAt,
+						"scheduledStartAt": newModel.scheduledStartAt.toJSON(),
 						"startedAt": newModel.startedAt
 					},
 					"id": String(model.id),
@@ -51,7 +51,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 						"attachedRoleID": consultation.attachedRoleID,
 						"finishedAt": consultation.finishedAt,
 						"reason": consultation.reason,
-						"scheduledStartAt": consultation.scheduledStartAt,
+						"scheduledStartAt": consultation.scheduledStartAt.toJSON(),
 						"startedAt": consultation.startedAt
 					},
 					"id": String(consultation.id),
