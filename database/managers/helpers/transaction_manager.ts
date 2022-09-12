@@ -34,6 +34,7 @@ export default class implements TransactionManagerInterface {
 		if (this.hasDestroyed || !this.isPermitted) {
 			return {}
 		}
+
 		return {
 			"transaction": this.transaction
 		}
@@ -77,7 +78,7 @@ export default class implements TransactionManagerInterface {
 			throw new DatabaseError("Transaction is not initiated.")
 		}
 
-		return this.transaction
+		return this.rawTransaction as Transaction
 	}
 
 	private get mayDestroy(): boolean {
