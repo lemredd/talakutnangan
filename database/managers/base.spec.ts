@@ -59,7 +59,10 @@ class MockUserManager extends BaseManager<User, RawUser> {
 			"setCache": jest.fn()
 		})))() as unknown as CacheClient
 	) {
-		super(transaction, cache)
+		super({
+			cache,
+			transaction
+		})
 		this.customReadPipe = customReadPipe
 	}
 
