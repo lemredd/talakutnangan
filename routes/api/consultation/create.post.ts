@@ -1,4 +1,4 @@
-import type { FieldRules } from "!/types/validation"
+import type { Rules, FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
@@ -36,23 +36,21 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
+		const pureNull: Rules = {
+			"constraints": {
+				"nullable": {
+					"defaultValue": null
+				},
+				"same": {
+					"value": null
+				}
+			},
+			"pipes": [ nullable, same ]
+		}
+
 		const attributes: FieldRules = {
-			"actionTaken": {
-				"constraints": {
-					"same": {
-						"value": null
-					}
-				},
-				"pipes": [ nullable, same ]
-			},
-			"finishedAt": {
-				"constraints": {
-					"same": {
-						"value": null
-					}
-				},
-				"pipes": [ nullable, same ]
-			},
+			"actionTaken": pureNull,
+			"finishedAt": pureNull,
 			"reason": {
 				"constraints": {
 					"length": {
@@ -73,16 +71,9 @@ export default class extends JSONController {
 						"userIDPointer": "meta.reachableEmployeeID"
 					}
 				},
-				"pipes": [ required, date, uniqueConsultationSchedule ]
+				"pipes": [ required, string, date, uniqueConsultationSchedule ]
 			},
-			"startedAt": {
-				"constraints": {
-					"same": {
-						"value": null
-					}
-				},
-				"pipes": [ nullable, same ]
-			}
+			"startedAt": pureNull
 		}
 
 		const relationships: FieldRules = makeRelationshipRules([
