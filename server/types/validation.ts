@@ -1,6 +1,6 @@
 import type { Pipe as BasePipe } from "$/types/database"
 import type BasePermissionGroup from "$/permissions/base"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
