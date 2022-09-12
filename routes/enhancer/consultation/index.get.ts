@@ -22,7 +22,7 @@ export default class extends PageMiddleware {
 		return [
 			new DynamicGatedRedirector(async(request: AuthenticatedRequest) => {
 				const user = deserialize(request.user) as DeserializedUserProfile
-				const manager = new Manager(request.transaction, request.cache)
+				const manager = new Manager(request)
 
 				const consultations = await manager.list({
 					"filter": {

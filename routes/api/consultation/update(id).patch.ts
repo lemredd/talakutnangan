@@ -1,6 +1,6 @@
 import type { Request, Response } from "!/types/dependent"
 import type { Rules, FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Merger from "!/middlewares/miscellaneous/merger"
@@ -115,7 +115,7 @@ export default class extends DoubleBoundJSONController {
 	get manager(): BaseManagerClass { return ConsultationManager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new ConsultationManager(request.transaction, request.cache)
+		const manager = new ConsultationManager(request)
 		const { id } = request.params
 		await manager.update(Number(id), request.body.data.attributes)
 

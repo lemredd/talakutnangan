@@ -149,7 +149,7 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const user = deserialize(request.user) as DeserializedUserProfile
-		const manager = new ConsultationManager(request.transaction, request.cache)
+		const manager = new ConsultationManager(request)
 
 		const consultationInfo = await manager.createUsingResource(
 			request.body as ConsultationResource<"create">,

@@ -1,4 +1,4 @@
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { SignatureDocument } from "$/types/documents/signature"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
@@ -33,7 +33,7 @@ export default class extends BoundController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
-		const manager = new SignatureManager(request.transaction, request.cache)
+		const manager = new SignatureManager(request)
 		const { id } = request.params
 
 		const signatureDocument = await manager.findWithID(

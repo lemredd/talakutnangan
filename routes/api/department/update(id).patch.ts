@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -87,7 +87,7 @@ export default class extends DoubleBoundJSONController {
 	get manager(): BaseManagerClass { return DepartmentManager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new DepartmentManager(request.transaction, request.cache)
+		const manager = new DepartmentManager(request)
 		const id = Number(request.params.id)
 		await manager.update(id, request.body.data.attributes)
 

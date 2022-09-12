@@ -1,5 +1,5 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 
@@ -130,7 +130,7 @@ export default class extends DoubleBoundJSONController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
+		const manager = new EmployeeScheduleManager(request)
 		const { data } = request.body as EmployeeScheduleDocument<"update">
 		const { id, attributes } = data
 

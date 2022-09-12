@@ -32,7 +32,7 @@ export default class extends JSONController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new UserManager(request.transaction, request.cache)
+		const manager = new UserManager(request)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
 		await manager.archiveBatch(IDs)
