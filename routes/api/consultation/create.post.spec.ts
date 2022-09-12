@@ -82,7 +82,7 @@ describe("Controller: POST /api/consultation", () => {
 						"attachedRoleID": model.attachedRoleID,
 						"finishedAt": model.finishedAt?.toJSON(),
 						"reason": model.reason,
-						"scheduledStartAt": model.scheduledStartAt
+						"scheduledStartAt": model.scheduledStartAt.toJSON()
 					},
 					"type": "consultation"
 				}
