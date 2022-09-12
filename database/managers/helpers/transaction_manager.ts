@@ -1,6 +1,10 @@
 import { Transaction } from "sequelize"
 
-import type { TransactionObject, LockedTransactionObject } from "$!/types/dependent"
+import type {
+	TransactionObject,
+	LockedTransactionObject,
+	TransactionManagerInterface
+} from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Database from "%/data_source/database"
@@ -9,7 +13,7 @@ import DatabaseError from "$!/errors/database"
 /**
  * Manages the transaction to be implementation-agnostic
  */
-export default class {
+export default class implements TransactionManagerInterface {
 	private rawTransaction: Transaction|null = null
 
 	async initialize() {
