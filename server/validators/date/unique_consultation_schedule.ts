@@ -35,10 +35,7 @@ export default async function(
 		minimumPossiblePreviousSchedule.getMinutes() - ESTIMATED_CONSULTATION_MINUTE_DURATION
 	)
 
-	const manager = new Manager(
-		constraints.request.transaction,
-		constraints.request.cache
-	)
+	const manager = new Manager(constraints.request)
 
 	const userID = Number(accessDeepPath(
 		constraints.source, constraints.uniqueConsultationSchedule.userIDPointer

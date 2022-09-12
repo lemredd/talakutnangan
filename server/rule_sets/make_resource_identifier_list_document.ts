@@ -1,5 +1,5 @@
 import type { FieldRules, Pipe } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { IdentifierDocumentOptions } from "!/types/rule_set"
 
 import makeDataDocumentRules from "!/rule_sets/make_data_document"

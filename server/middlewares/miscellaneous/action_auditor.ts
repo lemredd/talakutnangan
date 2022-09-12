@@ -17,7 +17,7 @@ export default class ActionAuditor extends RequestFilter {
 	}
 
 	async filterRequest(request: Request): Promise<void> {
-		const manager = new AuditTrailManager(request.transaction, request.cache)
+		const manager = new AuditTrailManager(request)
 		const user = request.user
 			? deserialize(request.user) as DeserializedUserProfile
 			: null
