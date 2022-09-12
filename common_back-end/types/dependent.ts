@@ -11,7 +11,9 @@ export interface TransactionManagerInterface {
 	lockedTransactionObject: LockedTransactionObject
 }
 
-export interface SharedManagerState {
+export interface SharedManagerState<
+	T extends TransactionManagerInterface = TransactionManagerInterface
+> {
 	cache: CacheClient,
-	transaction: TransactionManagerInterface
+	transaction: T
 }
