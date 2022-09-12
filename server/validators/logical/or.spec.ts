@@ -27,8 +27,8 @@ describe("Validator pipe: or", () => {
 		expect(sanitizeValue).toStrictEqual(3)
 	})
 
-	it("cannot accept invalid input", () => {
-		const value = Promise.resolve(makeInitialState([]))
+	it("cannot accept invalid input", async () => {
+		const value = Promise.resolve(makeInitialState([ "invalid" ]))
 		const constraints = {
 			"field": "hello",
 			"or": {
@@ -45,8 +45,10 @@ describe("Validator pipe: or", () => {
 			"source": null
 		}
 
-		const error = or(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
+		try {
+			await or(value, constraints)
+		} catch (errors) {
+			expect(errors).toHaveProperty("0.field", "hello")
+		}
 	})
 })
