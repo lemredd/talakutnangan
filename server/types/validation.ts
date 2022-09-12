@@ -64,6 +64,11 @@ export interface NotRuleConstraints {
 	not: Rules
 }
 
+export interface OrRuleConstraints {
+	// eslint-disable-next-line no-use-before-define
+	or: Rules[]
+}
+
 export interface UniqueEmployeeScheduleRuleConstraint {
 	uniqueEmployeeSchedule: {
 		userIDPointer: string
@@ -124,7 +129,8 @@ export type RuleContraints = Partial<
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
-	& DoesBelongToCurrentUserConstraints<any>
+	& DoesBelongToCurrentUserConstraints<unknown>
+	& OrRuleConstraints
 >
 
 /**
