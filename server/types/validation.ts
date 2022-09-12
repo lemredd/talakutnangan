@@ -65,8 +65,10 @@ export interface NotRuleConstraints {
 }
 
 export interface OrRuleConstraints {
-	// eslint-disable-next-line no-use-before-define
-	or: Rules[]
+	or: {
+		// eslint-disable-next-line no-use-before-define
+		rules: Rules[]
+	}
 }
 
 export interface UniqueEmployeeScheduleRuleConstraint {
