@@ -41,7 +41,6 @@ export default async function(
 					constraints.source
 				)
 
-				console.log("verified", value, subrules)
 				return {
 					"maySkip": true,
 					"value": value[constraints.field]
