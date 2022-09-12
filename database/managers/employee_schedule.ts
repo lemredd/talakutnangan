@@ -146,8 +146,6 @@ export default class extends BaseManager<
 			throw new DatabaseError("Developer may have forgot to register the models.")
 		}
 
-		console.log(JSON.stringify({ targetTimes }), "\n\n\n\n\n")
-
 		const futureConsultations = await Consultation.findAll({
 			"include": [
 				{
@@ -171,7 +169,6 @@ export default class extends BaseManager<
 			const hours = scheduledStartAt.getHours()
 			const minutes = scheduledStartAt.getMinutes()
 			for (const [ userID, targetDay, targetStartTime, targetEndTime ] of targetTimes) {
-				console.log(targetTimes, { day, hours, minutes }, "\n\n\n\n")
 				if (
 					consultantInfo?.userID === userID
 					&& targetDay === day
@@ -184,11 +181,11 @@ export default class extends BaseManager<
 						)
 					)
 					&& (
-						targetEndTime.hours > hours
+						hours < targetEndTime.hours
 						// eslint-disable-next-line no-extra-parens
 						|| (
 							targetEndTime.hours === hours
-							&& targetEndTime.minutes >= minutes
+							&& minutes <= targetEndTime.minutes
 						)
 					)
 				) {
