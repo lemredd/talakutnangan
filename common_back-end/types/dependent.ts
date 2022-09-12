@@ -12,6 +12,6 @@ export interface TransactionManagerInterface {
 }
 
 export interface SharedManagerState {
-	client: CacheClient,
+	cache: CacheClient,
 	transaction: TransactionManagerInterface
 }
