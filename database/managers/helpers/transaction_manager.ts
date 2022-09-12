@@ -1,5 +1,7 @@
 import { Transaction } from "sequelize"
 
+import type { TransactionObject, LockedTransactionObject } from "$!/types/dependent"
+
 import Log from "$!/singletons/log"
 import Database from "%/data_source/database"
 import DatabaseError from "$!/errors/database"
@@ -24,7 +26,7 @@ export default class {
 		}
 	}
 
-	get transactionObject(): { transaction?: Transaction } {
+	get transactionObject(): TransactionObject {
 		if (this.hasDestroyed || !this.isPermitted) {
 			return {}
 		}
@@ -33,7 +35,7 @@ export default class {
 		}
 	}
 
-	get lockedTransactionObject(): { lock?: boolean, transaction?: Transaction } {
+	get lockedTransactionObject(): LockedTransactionObject {
 		if (this.hasDestroyed || !this.isPermitted) {
 			return {}
 		}
