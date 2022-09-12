@@ -1,5 +1,5 @@
-import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
+import type { Rules, FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
@@ -11,6 +11,7 @@ import { UPDATE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
+import or from "!/validators/logical/or"
 import date from "!/validators/base/date"
 import string from "!/validators/base/string"
 import same from "!/validators/comparison/same"
@@ -31,22 +32,49 @@ export default class extends DoubleBoundJSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+		const pureNull: Rules = {
+			"constraints": {
+				"nullable": {
+					"defaultValue": null
+				},
+				"same": {
+					"value": null
+				}
+			},
+			"pipes": [ nullable, same ]
+		}
+
+		const pureDate: Rules = {
+			"pipes": [ required, string, date ]
+		}
+
 		const attributes: FieldRules = {
 			"actionTaken": {
 				"constraints": {
-					"same": {
-						"value": null
+					"or": {
+						"rules": [
+							{
+								"constraints": {
+									"length": {
+										"maximum": 255,
+										"minimum": 10
+									}
+								},
+								"pipes": [ required, string, length ]
+							},
+							pureNull
+						]
 					}
 				},
-				"pipes": [ nullable, same ]
+				"pipes": [ or ]
 			},
 			"finishedAt": {
 				"constraints": {
-					"same": {
-						"value": null
+					"or": {
+						"rules": [ pureDate, pureNull ]
 					}
 				},
-				"pipes": [ nullable, same ]
+				"pipes": [ or ]
 			},
 			"reason": {
 				"constraints": {
@@ -68,15 +96,15 @@ export default class extends DoubleBoundJSONController {
 						"userIDPointer": "meta.reachableEmployeeID"
 					}
 				},
-				"pipes": [ required, date, uniqueConsultationSchedule ]
+				"pipes": [ required, string, date, uniqueConsultationSchedule ]
 			},
 			"startedAt": {
 				"constraints": {
-					"same": {
-						"value": null
+					"or": {
+						"rules": [ pureDate, pureNull ]
 					}
 				},
-				"pipes": [ nullable, same ]
+				"pipes": [ or ]
 			}
 		}
 
