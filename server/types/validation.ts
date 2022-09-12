@@ -73,7 +73,8 @@ export interface OrRuleConstraints {
 
 export interface UniqueEmployeeScheduleRuleConstraint {
 	uniqueEmployeeSchedule: {
-		userIDPointer: string
+		userIDPointer: string,
+		employeeScheduleIDPointer?: string
 	}
 }
 

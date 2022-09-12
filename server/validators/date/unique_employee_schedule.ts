@@ -39,16 +39,17 @@ export default async function(
 		throw error
 	}
 
-	const userID = accessDeepPath(
+	const userID = Number(accessDeepPath(
 		constraints.source,
 		constraints.uniqueEmployeeSchedule.userIDPointer
-	)
+	))
 
-	if (userID) {
+	if (userID && !Number.isNaN(userID)) {
 		const manager = new EmployeeScheduleManager(
 			constraints.request.transaction,
 			constraints.request.cache
 		)
+
 		const foundModels = await manager.list({
 			"filter": {
 				"day": value.dayName,
@@ -85,15 +86,31 @@ export default async function(
 					&& foundModel.attributes.scheduleEnd <= value.scheduleEnd
 				)
 			) {
-				const error = {
-					"field": constraints.field,
-				"friendlyName": constraints.friendlyName,
-					"messageMaker": (
-						unusedField: string,
-						unusedValue: string
-					) => "The new schedule should not conflict with the existing schedule."
+				let doesConflictCompletely = true
+
+				// Condition below is for updates of the same employee schedule
+				if (!isUndefined(constraints.uniqueEmployeeSchedule.employeeScheduleIDPointer)) {
+					const employeeScheduleID = accessDeepPath(
+						constraints.source,
+						constraints.uniqueEmployeeSchedule.employeeScheduleIDPointer
+					)
+
+					const areTheSame = foundModel.id === employeeScheduleID
+					doesConflictCompletely = !areTheSame
 				}
-				throw error
+
+				if (doesConflictCompletely) {
+					const error = {
+						"field": constraints.field,
+						"friendlyName": constraints.friendlyName,
+						"messageMaker": (
+							unusedField: string,
+							unusedValue: string
+						) => "The new schedule should not conflict with the existing schedule."
+					}
+
+					throw error
+				}
 			}
 		}
 
