@@ -3,13 +3,13 @@ import type { Rules, FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/independent"
 
 import Policy from "!/bases/policy"
+import Merger from "!/middlewares/miscellaneous/merger"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
-import { UPDATE } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import or from "!/validators/logical/or"
 import date from "!/validators/base/date"
@@ -26,9 +26,10 @@ export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			UPDATE
-		])
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(this.manager)
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
