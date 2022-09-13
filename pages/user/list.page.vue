@@ -44,8 +44,22 @@ const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 
 if (currentResourceManager.isAdmin()) {
+	const tabs = [
+		{
+			"label": "Users",
+			"path": "/user/list"
+		},
+		{
+			"label": "Roles",
+			"path": "/role/list"
+		},
+		{
+			"label": "Departments",
+			"path": "/department/list"
+		}
+	]
 	provide("managerKind", new Manager(userProfile))
-	provide("tabs", [ "Users", "Roles", "Departments" ])
+	provide("tabs", tabs)
 }
 
 UserFetcher.initialize("/api")
