@@ -13,7 +13,11 @@ import stringArray from "!/validators/hybrid/string_array"
 export default function(
 	ClassName: BaseManagerClass<any>,
 	extraFilters: FieldRules,
-	extraQueries: FieldRules = {}
+	{
+		extraQueries = {}
+	}: Partial<{
+		extraQueries: FieldRules
+	}> = {}
 ): FieldRules {
 	return {
 		...makeFilterRules(extraFilters),
