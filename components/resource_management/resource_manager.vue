@@ -45,6 +45,7 @@ import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
 import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import Manager from "$/helpers/manager"
 
@@ -66,9 +67,7 @@ const isResourceTypeUser = computed(() => resource.some(usersResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
-const { "departments": rawDepartments } = pageProps as PageProps<"deserialized", AdditionalFilter>
-const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
-
+let departmentFilterOptions: OptionInfo[] = []
 
 function getFilterOptions(resources: PossibleResources[]) {
 	const filterOptions = resources.map(resourceFilterOption => {
@@ -84,7 +83,15 @@ function getFilterOptions(resources: PossibleResources[]) {
 	})
 	return filterOptions
 }
-const departmentFilterOptions = getFilterOptions(rawDepartments.data) as OptionInfo[]
+
+if (managerKind.isAdmin()) {
+	const { "departments": rawDepartments }
+	= pageProps as PageProps<"deserialized", AdditionalFilter>
+	departmentFilterOptions
+	= getFilterOptions((rawDepartments as DeserializedDepartmentListDocument).data) as OptionInfo[]
+}
+const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
+
 const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
 const selectedDepartment = ref("")
 const selectedRole = ref("")
