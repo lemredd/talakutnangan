@@ -4,6 +4,7 @@ import type {
 	OneOfRuleConstraints
 } from "!/types/validation"
 
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -15,22 +16,25 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (constraints.oneOf === undefined) {
+	if (isUndefined(constraints.oneOf)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const values = constraints.oneOf.values
+	const { values } = constraints.oneOf
 
 	if (values.includes(state.value)) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be one of these: ${
-				values.map(value => `"${value}"`).join(", ")
-			}".`
-		}
 	}
+
+	const error = {
+		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
+		"messageMaker": (field: string) => `Field "${field}" must be one of these: ${
+			values.map(value => `"${value}"`).join(", ")
+		}".`
+	}
+
+	throw error
 }

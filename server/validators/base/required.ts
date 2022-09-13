@@ -1,5 +1,7 @@
 import type { ValidationState, ValidationConstraints } from "!/types/validation"
 
+import isUndefined from "$/type_guards/is_undefined"
+
 /**
  * Validator to require the data
  */
@@ -9,14 +11,17 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
-	if (state.value !== undefined && state.value !== null) {
+	if (!isUndefined(state.value) && state.value !== null) {
 		return state
-	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" is required.`
-		}
 	}
+
+	const error = {
+		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
+		"messageMaker": (field: string) => `Field "${field}" is required.`
+	}
+
+	throw error
 }

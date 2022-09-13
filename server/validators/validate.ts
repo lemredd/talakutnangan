@@ -4,8 +4,8 @@ import type { ErrorPointer } from "!/types/independent"
 import type { FieldRules, ValidationConstraints } from "!/types/validation"
 
 import unifyErrors from "!/validators/unify_errors"
-import runThroughPipeline from "$/helpers/run_through_pipeline"
 import makeInitialState from "!/validators/make_initial_state"
+import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 export default async function(
 	fields: FieldRules,
@@ -13,43 +13,55 @@ export default async function(
 	input: GeneralObject,
 	originalInput: GeneralObject = input
 ): Promise<GeneralObject> {
-	const sanitizedInputs: { [key:string]: any } = {}
-	const errors: ErrorPointer[] = []
+	type SuccessfulValidation = [ true, string, any ]
+	type FailedValidation = [ false, string, ErrorPointer|ErrorPointer[] ]
+	const fieldValidations: Promise<SuccessfulValidation|FailedValidation>[] = []
 
 	for (const field in fields) {
-		const rules = fields[field]
-
-		try {
+		if (Object.hasOwn(fields, field)) {
+			const rules = fields[field]
 			const constraints: ValidationConstraints = {
-				request,
-				source: originalInput,
 				field,
-				...(rules.constraints ?? {})
+				"friendlyName": rules.friendlyName,
+				request,
+				"source": originalInput,
+				...rules.constraints ?? {}
 			}
-			const sanitizedInput = await runThroughPipeline(
+
+			const promise = runThroughPipeline(
 				Promise.resolve(makeInitialState(input[field])),
 				constraints,
 				rules.pipes
 			)
+			.then(sanitizedValue => [ true, field, sanitizedValue.value ] as SuccessfulValidation)
+			.catch(error => [ false, field, error ] as FailedValidation)
 
-			sanitizedInputs[field] = sanitizedInput.value
-		} catch(error) {
-			const flattendedErrors: (ErrorPointer|Error)[] = []
-
-			if (Array.isArray(error)) {
-				flattendedErrors.push(...error)
-			} else {
-				flattendedErrors.push(error as ErrorPointer)
-			}
-
-			errors.push(...unifyErrors(field, flattendedErrors))
+			fieldValidations.push(promise)
 		}
 	}
 
+	const sanitizedInputs: { [key:string]: any } = {}
+	const errors: ErrorPointer[] = []
+
+	const sanitizedRecords = await Promise.all(fieldValidations)
+	sanitizedRecords.forEach(([ isSuccess, fieldName, value ]) => {
+		if (isSuccess) {
+			sanitizedInputs[fieldName] = value
+		} else {
+			const flattendedErrors: (ErrorPointer|Error)[] = []
+
+			if (Array.isArray(value)) {
+				flattendedErrors.push(...value)
+			} else {
+				flattendedErrors.push(value as ErrorPointer)
+			}
+
+			errors.push(...unifyErrors(fieldName, flattendedErrors))
+		}
+	})
+
 	if (errors.length > 0) {
-		throw errors.sort((errorA, errorB) => {
-			return errorA.field.localeCompare(errorB.field)
-		})
+		throw errors.sort((errorA, errorB) => errorA.field.localeCompare(errorB.field))
 	}
 
 	return sanitizedInputs

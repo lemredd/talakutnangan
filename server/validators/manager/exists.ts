@@ -5,6 +5,7 @@ import type {
 	ManagerBasedRuleConstraints
 } from "!/types/validation"
 
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -18,7 +19,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.manager === "undefined") {
+	if (isUndefined(constraints.manager)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -35,13 +36,16 @@ export default async function(
 
 	// TODO: Store found model in cache
 	if (foundModel.data === null) {
-		throw {
+		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
 			) => `The ${value} in field "${field}" does not exists in the database".`
 		}
+
+		throw error
 	} else {
 		return state
 	}

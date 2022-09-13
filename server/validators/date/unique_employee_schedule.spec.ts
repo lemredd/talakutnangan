@@ -24,17 +24,17 @@ describe("Validator: unique employee schedule", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		}))
 		const constraints = {
+			"field": "hello",
 			"request": {} as Request,
 			"source": {
 				"user": {
 					"id": user.id
 				}
 			},
-			"field": "hello",
 			"uniqueEmployeeSchedule": {
 				"userIDPointer": "user.id"
 			}
@@ -44,8 +44,8 @@ describe("Validator: unique employee schedule", () => {
 
 		expect(sanitizeValue).toStrictEqual({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		})
 	})
 
@@ -65,17 +65,17 @@ describe("Validator: unique employee schedule", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState({
 			"dayName": schedule.dayName,
-			"scheduleStart": schedule.scheduleStart,
-			"scheduleEnd": schedule.scheduleEnd
+			"scheduleEnd": schedule.scheduleEnd,
+			"scheduleStart": schedule.scheduleStart
 		}))
 		const constraints = {
+			"field": "hello",
 			"request": {} as Request,
 			"source": {
 				"user": {
 					"id": user.id
 				}
 			},
-			"field": "hello",
 			"uniqueEmployeeSchedule": {
 				"userIDPointer": "user.id"
 			}

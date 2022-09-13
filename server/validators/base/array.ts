@@ -7,6 +7,7 @@ import type {
 
 import validate from "!/validators/validate"
 import unifyErrors from "!/validators/unify_errors"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -18,10 +19,10 @@ export default async function(
 ): Promise<ValidationState> {
 	const state = await currentState
 
-	if(state.maySkip) return state
+	if (state.maySkip) return state
 
 	if (Array.isArray(state.value)) {
-		if (constraints.array === undefined) {
+		if (isUndefined(constraints.array)) {
 			throw makeDeveloperError(constraints.field)
 		}
 
@@ -29,7 +30,7 @@ export default async function(
 		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = state.value.length
 
-		for (let i = 0; i < expectedSanitizeLength; ++i ) {
+		for (let i = 0; i < expectedSanitizeLength; ++i) {
 			const subvalue = state.value[i]
 			try {
 				const sanitizedInput = await validate({
@@ -39,29 +40,35 @@ export default async function(
 				}, constraints.source) as { [key:number]: any }
 
 				sanitizedInputs.push(sanitizedInput[i])
-			} catch(error) {
-				let flattendedErrors = []
+			} catch (error) {
+				const flattendedErrors = []
 				if (Array.isArray(error)) {
 					flattendedErrors.push(...error)
 				} else {
 					flattendedErrors.push(error as ErrorPointer|Error)
 				}
-				errors.push(...unifyErrors(i+"", flattendedErrors))
+				errors.push(...unifyErrors(`${i}`, flattendedErrors))
 			}
 		}
 
 		if (errors.length > 0) {
 			throw errors.map(error => ({
-				field: `${constraints.field}.${error.field}`,
-				messageMaker: error.messageMaker
+				"field": `${constraints.field}.${error.field}`,
+				"messageMaker": error.messageMaker
 			}))
 		} else {
-			return { value: sanitizedInputs, maySkip: false }
+			return {
+				"maySkip": false,
+				"value": sanitizedInputs
+			}
 		}
 	} else {
-		throw {
-			field: constraints.field,
-			messageMaker: (field: string) => `Field "${field}" must be an array.`
+		const error = {
+			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
+			"messageMaker": (field: string) => `Field "${field}" must be an array.`
 		}
+
+		throw error
 	}
 }

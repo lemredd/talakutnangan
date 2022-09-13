@@ -1,22 +1,11 @@
 import type { Express as ExpressApp } from "express"
-
 import type { RequestHandler } from "!/types/dependent"
-import Session from "!/middlewares/miscellaneous/session"
-import Compression from "!/middlewares/miscellaneous/compression"
-import AuthenticationSession from "!/middlewares/authentication/session"
-import CacheInitializer from "!/middlewares/miscellaneous/cache_initializer"
-import AuthenticationInitializer from "!/middlewares/authentication/initializer"
-import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
-export default async function(app: ExpressApp) {
-	const middlewares = [
-		new Compression(),
-		new CacheInitializer(),
-		new TransactionInitializer(),
-		new Session(),
-		new AuthenticationInitializer(),
-		new AuthenticationSession()
-	]
+import makeGlobalMiddlewares from "!/helpers/make_global_middlewares"
+
+// eslint-disable-next-line require-await
+export default async function(app: ExpressApp): Promise<void> {
+	const middlewares = makeGlobalMiddlewares()
 
 	middlewares.forEach(middleware => {
 		app.use(middleware.intermediate.bind(middleware) as unknown as RequestHandler)

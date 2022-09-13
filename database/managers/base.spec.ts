@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Pipe } from "$/types/database"
 import type { RawUser } from "$!/types/independent"
 import type {
@@ -146,52 +147,52 @@ describe("Database Manager: Base Read Operations", () => {
 		const manager = new MockUserManager()
 		await new UserFactory().insertMany(5)
 
-		const users = await manager.list({
+		const models = await manager.list({
 			"filter": {
 				"existence": "exists"
 			},
-			"sort": [ "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 3
-			}
+				"limit": 3,
+				"offset": 0
+			},
+			"sort": [ "name" ]
 		})
 
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(3)
+		expect(models).toHaveProperty("data")
+		expect(models.data).toHaveLength(3)
 	})
 
 	it("can search with pipelines", async() => {
 		const manager = new MockUserManager()
 		await new UserFactory().insertMany(10)
 
-		const users = await manager.list({
+		const models = await manager.list({
 			"filter": {
 				"existence": "exists"
 			},
-			"sort": [ "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 5
-			}
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": [ "name" ]
 		})
 
-		expect(users).toHaveProperty("data")
-		expect(users.data).toHaveLength(5)
+		expect(models).toHaveProperty("data")
+		expect(models.data).toHaveLength(5)
 	})
 
 	it("can find on one column with existing", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
 	})
 
 	it("cannot find on one column with existing if destroyed already", async() => {
@@ -199,14 +200,14 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 		await base.destroy({ "force": false })
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toBeNull()
+		expect(model).toHaveProperty("data")
+		expect(model.data).toBeNull()
 	})
 
 	it("can find on one column with archived", async() => {
@@ -214,28 +215,28 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 		await base.destroy({ "force": false })
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "archived"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
 	})
 
 	it("cannot find on one column with archived if still exists", async() => {
 		const manager = new MockUserManager()
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "archived"
 			}
 		})
 
-		expect(user).toHaveProperty("data")
-		expect(user.data).toBeNull()
+		expect(model).toHaveProperty("data")
+		expect(model.data).toBeNull()
 	})
 
 	it("can find on one column with existing that is cached", async() => {
@@ -252,7 +253,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const manager = new MockUserManager(null, undefined, new Cache() as unknown as CacheClient)
 		const base = await new UserFactory().insertOne()
 
-		const user = await manager.findOneOnColumn("name", base.name, {
+		const model = await manager.findOneOnColumn("name", base.name, {
 			"filter": {
 				"existence": "exists"
 			}
@@ -265,9 +266,31 @@ describe("Database Manager: Base Read Operations", () => {
 
 		expect(getCache).toHaveBeenCalledTimes(2)
 		expect(setCache).toHaveBeenCalledTimes(1)
-		expect(user).toHaveProperty("data")
-		expect(user.data).toHaveProperty("type", "user")
-		expect(user).toStrictEqual(sameUser)
+		expect(model).toHaveProperty("data")
+		expect(model.data).toHaveProperty("type", "user")
+		expect(model).toStrictEqual(sameUser)
+	})
+
+	it("can check if model belongs to a user", async() => {
+		const manager = new MockUserManager()
+		const model = await new UserFactory().insertOne()
+		const IDOfModelToCheck = model.id
+		const ownerIDToMatch = model.id
+
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch, [])
+
+		expect(hasFound).toBeTruthy()
+	})
+
+	it("can check if model not belongs to a user", async() => {
+		const manager = new MockUserManager()
+		const model = await new UserFactory().insertOne()
+		const IDOfModelToCheck = model.id
+		const ownerIDToMatch = model.id + 1
+
+		const hasFound = await manager.isModelBelongsTo(IDOfModelToCheck, ownerIDToMatch, [])
+
+		expect(hasFound).toBeFalsy()
 	})
 })
 
@@ -311,7 +334,7 @@ describe("Database Manager: Base Update Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.name).not.toBe(base.name)
+		)?.name).not.toBe(base.name)
 	})
 
 	it("can update base through transaction", async() => {
@@ -333,7 +356,7 @@ describe("Database Manager: Base Update Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.name).not.toBe(base.name)
+		)?.name).not.toBe(base.name)
 	})
 })
 
@@ -347,8 +370,8 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				"where": { "id": base.id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": base.id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -364,7 +387,7 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.deletedAt).toBeNull()
+		)?.deletedAt).toBeNull()
 	})
 
 	it("can archive base through transaction", async() => {
@@ -381,8 +404,8 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(1)
 		expect((
 			await User.findOne({
-				"where": { "id": base.id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": base.id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -403,7 +426,7 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 			await User.findOne({
 				"where": { "id": base.id }
 			})
-		)!.deletedAt).toBeNull()
+		)?.deletedAt).toBeNull()
 	})
 
 	it("can archive multiple bases", async() => {
@@ -415,20 +438,20 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 		expect(deleteCount).toBe(3)
 		expect((
 			await User.findOne({
-				"where": { "id": bases[0].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[0].id }
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				"where": { "id": bases[1].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[1].id }
 			})
 		)?.deletedAt).not.toBeNull()
 		expect((
 			await User.findOne({
-				"where": { "id": bases[2].id },
-				"paranoid": true
+				"paranoid": true,
+				"where": { "id": bases[2].id }
 			})
 		)?.deletedAt).not.toBeNull()
 	})
@@ -442,21 +465,21 @@ describe("Database Manager: Base Archive and Restore Operations", () => {
 
 		await manager.restoreBatch(bases.map(base => base.id))
 
-		expect((
-			await User.findOne({
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[0].id }
-			})
-		)!.deletedAt).toBeNull()
-		expect((
-			await User.findOne({
+			}))?.deletedAt
+		).toBeNull()
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[1].id }
-			})
-		)!.deletedAt).toBeNull()
-		expect((
-			await User.findOne({
+			}))?.deletedAt
+		).toBeNull()
+		expect(
+			(await User.findOne({
 				"where": { "id": bases[2].id }
-			})
-		)!.deletedAt).toBeNull()
+			}))?.deletedAt
+		).toBeNull()
 	})
 })
 

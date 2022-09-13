@@ -27,6 +27,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			field: string
 		) => `Field "${field}" must match "${constraints.regex?.match}".`

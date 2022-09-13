@@ -5,6 +5,7 @@ import type {
 } from "!/types/validation"
 
 import validate from "!/validators/validate"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -21,7 +22,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.not === "undefined") {
+	if (isUndefined(constraints.not)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -38,6 +39,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (field: string) => `Field "${field}" is invalid.`
 	}
 	throw error

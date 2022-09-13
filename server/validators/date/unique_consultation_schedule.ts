@@ -8,6 +8,7 @@ import type {
 
 import Manager from "%/managers/consultation"
 import accessDeepPath from "$!/helpers/access_deep_path"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -23,7 +24,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.uniqueConsultationSchedule === "undefined") {
+	if (isUndefined(constraints.uniqueConsultationSchedule)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -46,6 +47,7 @@ export default async function(
 	if (Number.isNaN(userID)) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
@@ -88,6 +90,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			field: string,
 			value: string

@@ -16,8 +16,12 @@ export default async function(
 	if (isString(state.value)) {
 		return state
 	}
-	throw {
+
+	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (field: string) => `Field "${field}" must be a string.`
 	}
+
+	throw error
 }

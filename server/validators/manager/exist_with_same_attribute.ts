@@ -7,6 +7,7 @@ import type {
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -20,8 +21,8 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.manager === "undefined"
-	|| typeof constraints.sameAttribute === "undefined") {
+	if (isUndefined(constraints.manager)
+	|| isUndefined(constraints.sameAttribute)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -40,6 +41,7 @@ export default async function(
 	if (foundModel.data === null) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
 				value: string
@@ -49,24 +51,26 @@ export default async function(
 	} else {
 		const castData = foundModel.data as GeneralObject
 		const targetData = castData.attributes[constraints.sameAttribute.columnName]
-		if (typeof constraints.sameAttribute.value !== "undefined") {
+		if (!isUndefined(constraints.sameAttribute.value)) {
 			if (targetData == constraints.sameAttribute.value) {
 				return state
 			}
 			const error = {
 				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
 				"messageMaker": (field: string) => `Field "${field}" must be "${
 					constraints.sameAttribute?.value
 				}".`
 			}
 			throw error
-		} else if (typeof constraints.sameAttribute.pointer !== "undefined") {
+		} else if (!isUndefined(constraints.sameAttribute.pointer)) {
 			const accessedValue = accessDeepPath(constraints.source, constraints.sameAttribute.pointer)
 			if (state.value == accessedValue) {
 				return state
 			}
 			const error = {
 				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
 				"messageMaker": (field: string) => `Field "${field}" must be "${accessedValue}".`
 			}
 			throw error

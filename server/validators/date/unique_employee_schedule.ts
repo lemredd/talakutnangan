@@ -6,6 +6,7 @@ import type {
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
+import isUndefined from "$/type_guards/is_undefined"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
 import makeDeveloperError from "!/validators/make_developer_error"
 
@@ -20,7 +21,7 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.uniqueEmployeeSchedule === "undefined") {
+	if (isUndefined(constraints.uniqueEmployeeSchedule)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
@@ -29,6 +30,7 @@ export default async function(
 	if (value.scheduleStart > value.scheduleEnd) {
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				unusedField: string,
 				unusedValue: string
@@ -85,6 +87,7 @@ export default async function(
 			) {
 				const error = {
 					"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
 					"messageMaker": (
 						unusedField: string,
 						unusedValue: string
@@ -99,6 +102,7 @@ export default async function(
 
 	const error = {
 		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			unusedField: string,
 			unusedValue: string

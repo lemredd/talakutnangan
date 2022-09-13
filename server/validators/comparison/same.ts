@@ -6,6 +6,7 @@ import type {
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
+import isUndefined from "$/type_guards/is_undefined"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -22,28 +23,30 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (typeof constraints.same === "undefined") {
+	if (isUndefined(constraints.same)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
-	if (typeof constraints.same.value !== "undefined") {
+	if (!isUndefined(constraints.same.value)) {
 		if (state.value == constraints.same.value) {
 			return state
 		}
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be "${
 				constraints.same?.value
 			}".`
 		}
 		throw error
-	} else if (typeof constraints.same.pointer !== "undefined") {
+	} else if (!isUndefined(constraints.same.pointer)) {
 		const accessedValue = accessDeepPath(constraints.source, constraints.same.pointer)
 		if (state.value == accessedValue) {
 			return state
 		}
 		const error = {
 			"field": constraints.field,
+			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be "${accessedValue}".`
 		}
 		throw error

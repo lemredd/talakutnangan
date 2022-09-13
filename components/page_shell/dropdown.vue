@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { onUpdated, ref } from "vue"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 const emit = defineEmits([ "toggle", "resize" ])
 const isDropdownShown = ref(false)
