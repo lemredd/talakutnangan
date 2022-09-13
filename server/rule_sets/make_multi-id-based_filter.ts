@@ -11,11 +11,11 @@ import stringArray from "!/validators/hybrid/string_array"
 export default function(
 	ClassName: BaseManagerClass,
 	{
-		initialPipe = nullable,
+		initialPipes = [ nullable ],
 		multipleIDKey = "IDs",
 		mustCast = true
 	}: Partial<{
-		initialPipe: Pipe,
+		initialPipes: Pipe[],
 		multipleIDKey: string,
 		mustCast: boolean
 	}> = {}
@@ -39,7 +39,7 @@ export default function(
 					"minimum": 1
 				}
 			},
-			"pipes": [ initialPipe, stringArray, length ]
+			"pipes": [ ...initialPipes, stringArray, length ]
 		}
 	}
 }
