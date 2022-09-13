@@ -55,7 +55,7 @@ describe("Component: consultation/chat_window/chat_message", () => {
 		const messageItemName = wrapper.find(".message-item-name")
 		const messageItemContent = wrapper.find(".message-item-content")
 
-		expect(messageItem.find(".place-right").exists()).toBeTruthy()
+		expect(messageItem.find(".align-right").exists()).toBeTruthy()
 		expect(messageItemName.html()).toContain(user.data.name)
 		expect(messageItemContent.html()).toContain(textValue)
 	})
@@ -126,7 +126,7 @@ describe("Component: consultation/chat_window/chat_message", () => {
 		const messageItemName = wrapper.find(".message-item-name")
 		const messageItemContent = wrapper.find(".message-item-content")
 
-		expect(messageItem.find(".place-left").exists()).toBeTruthy()
+		expect(messageItem.find(".align-left").exists()).toBeTruthy()
 		expect(messageItemName.html()).toContain(other.data.name)
 		expect(messageItemContent.html()).toContain(textValue)
 	})

@@ -18,15 +18,15 @@
 	@apply flex
 }
 
-.place-left {
+.align-left {
 	@apply flex-1 mr-auto
 }
 
-.place-right {
+.align-right {
 	@apply flex-1 ml-auto
 }
 
-.place-center {
+.align-center {
 	@apply flex-1 mx-auto
 }
 </style>
@@ -47,7 +47,7 @@ const { chatMessage } = defineProps<{
 	chatMessage: DeserializedChatMessageResource<"user">
 }>()
 
-type Alignment = "place-left"|"place-center"|"place-right"
+type Alignment = "align-left"|"align-center"|"align-right"
 
 function isStatusMessage(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & StatusMessage {
@@ -56,12 +56,12 @@ function isStatusMessage(value: DeserializedChatMessageResource<"user">)
 
 const messageAlignment = computed<Alignment>(() => {
 	if (isStatusMessage(chatMessage)) {
-		return "place-center"
+		return "align-center"
 	} else if (userProfile.data.id === chatMessage.user.data.id) {
-		return "place-right"
+		return "align-right"
 	}
 
-	return "place-left"
+	return "align-left"
 })
 
 function isTextMessage(value: DeserializedChatMessageResource<"user">)
