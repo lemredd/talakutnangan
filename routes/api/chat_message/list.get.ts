@@ -7,9 +7,7 @@ import Manager from "%/managers/chat_message"
 import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
 
-import { READ } from "$/permissions/audit_trail_combinations"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { auditTrail as permissionGroup } from "$/permissions/permission_list"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import required from "!/validators/base/required"
 import makeListRules from "!/rule_sets/make_list"
@@ -20,9 +18,7 @@ export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ
-		])
+		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
@@ -44,8 +40,8 @@ export default class extends QueryController {
 		const constraints = { ...request.query }
 
 		const manager = new Manager(request)
-		const auditTrails = await manager.list(constraints as ChatMessageQueryParameters<number>)
+		const chatMessages = await manager.list(constraints as ChatMessageQueryParameters<number>)
 
-		return new ListResponse(auditTrails)
+		return new ListResponse(chatMessages)
 	}
 }
