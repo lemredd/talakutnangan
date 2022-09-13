@@ -4,15 +4,20 @@ import type { UserIdentifierDocument } from "$/types/documents/user"
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Relationships,
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface EmployeeScheduleResourceIdentifier<T extends Completeness = "read">
@@ -66,3 +71,9 @@ export type DeserializedEmployeeScheduleListDocument = DeserializedResourceListD
 	EmployeeScheduleAttributes<"deserialized">,
 	DeserializedEmployeeScheduleResource
 >
+
+export type EmployeeScheduleIdentifierDocument
+= IdentifierDocument<EmployeeScheduleResourceIdentifier<"read">>
+
+export type EmployeeScheduleIdentifierListDocument
+= IdentifierListDocument<EmployeeScheduleResourceIdentifier<"read">>
