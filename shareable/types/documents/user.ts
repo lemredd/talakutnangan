@@ -180,24 +180,41 @@ export type UserListDocument<T extends Completeness = "read"> = ResourceListDocu
 	UserResource<T>
 >
 
-export type DeserializedUserDocument = DeserializedResourceDocument<
+export type DeserializedUserDocument<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
 	DeserializedUserResource
+> & PartialOrPickDeserializedRelationship<
+	UserRelationshipData<"read">,
+	DeserializedUserRelationships<"read">,
+	UserRelationshipNames,
+	T extends UserRelationshipNames ? true : false,
+	T extends UserRelationshipNames ? T : UserRelationshipNames
 >
 
-export type DeserializedUserListDocument = DeserializedResourceListDocument<
+export type DeserializedUserListDocument<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
 	DeserializedUserResource
+> & PartialOrPickDeserializedRelationship<
+	UserRelationshipData<"read">,
+	DeserializedUserRelationships<"read">,
+	UserRelationshipNames,
+	T extends UserRelationshipNames ? true : false,
+	T extends UserRelationshipNames ? T : UserRelationshipNames
 >
 
 interface GeneralUserProfileMetaProperties extends Serializable {
 	hasDefaultPassword?: boolean
 }
 
-export interface DeserializedUserProfile
-extends DeserializedUserDocument, MetaDocument<GeneralUserProfileMetaProperties> {}
+export type DeserializedUserProfile<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedUserDocument<T> & MetaDocument<GeneralUserProfileMetaProperties>
 
 export type UserIdentifierDocument
 = IdentifierDocument<UserResourceIdentifier<"read">>
