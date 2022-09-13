@@ -14,8 +14,10 @@ export default function(
 	ClassName: BaseManagerClass<any>,
 	extraFilters: FieldRules,
 	{
+		defaultSortColumn = "id",
 		extraQueries = {}
 	}: Partial<{
+		defaultSortColumn: string
 		extraQueries: FieldRules
 	}> = {}
 ): FieldRules {
@@ -55,7 +57,7 @@ export default function(
 					},
 					"pipes": [ string, oneOf ]
 				},
-				"nullable": { "defaultValue": "id" }
+				"nullable": { "defaultValue": defaultSortColumn }
 			},
 			"pipes": [ nullable, stringArray ]
 		},
