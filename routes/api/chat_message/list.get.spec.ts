@@ -61,7 +61,7 @@ describe("Controller: GET /api/chat_message", () => {
 		await requester.runMiddleware(queryValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(1)
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.parameter", "filter.consultationIDs")
 		expect(body).toHaveProperty("1.source.parameter", "filter.existence")
 	})
