@@ -5,8 +5,15 @@
 			<!-- purpose: place search filter component properly in the UI -->
 		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
-			<SelectableFilter :options="roleFilterOptions" label="Role"/>
-			<SelectableFilter v-if="managerKind.isAdmin()" :options="departmentFilterOptions"/>
+			<SelectableFilter
+				v-model="selectedRole"
+				:options="roleFilterOptions"
+				label="Role"/>
+			<SelectableFilter
+				v-if="managerKind.isAdmin()"
+				v-model="selectedDepartment"
+				:options="departmentFilterOptions"
+				label="Department"/>
 		</div>
 	</div>
 	<Suspensible :is-loaded="!!resource.length">
@@ -32,7 +39,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject } from "vue"
+import { computed, inject, ref } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
@@ -77,8 +84,11 @@ function getFilterOptions(resources: PossibleResources[]) {
 	})
 	return filterOptions
 }
-const departmentFilterOptions = getFilterOptions(rawDepartments.data) as OptionInfo[]
+const departmentFilterOptions
+	= getFilterOptions(rawDepartments.data) as OptionInfo[]
 const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
+const selectedDepartment = ref("")
+const selectedRole = ref("")
 
 console.log(departmentFilterOptions)
 </script>
