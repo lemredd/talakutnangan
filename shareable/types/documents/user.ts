@@ -1,10 +1,28 @@
 import type { Serializable } from "$/types/general"
-import type { DeserializedRoleListDocument } from "$/types/documents/role"
-import type { DeserializedSignatureDocument } from "$/types/documents/signature"
-import type { DeserializedDepartmentDocument } from "$/types/documents/department"
-import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
-import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
-import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
+import type {
+	RoleIdentifierListDocument,
+	DeserializedRoleListDocument
+} from "$/types/documents/role"
+import type {
+	SignatureIdentifierDocument,
+	DeserializedSignatureDocument
+} from "$/types/documents/signature"
+import type {
+	DepartmentIdentifierDocument,
+	DeserializedDepartmentDocument
+} from "$/types/documents/department"
+import type {
+	StudentDetailIdentifierDocument,
+	DeserializedStudentDetailDocument
+} from "$/types/documents/student_detail"
+import type {
+	ProfilePictureIdentifierDocument,
+	DeserializedProfilePictureDocument
+} from "$/types/documents/profile_picture"
+import type {
+	EmployeeScheduleIdentifierListDocument,
+	DeserializedEmployeeScheduleListDocument
+} from "$/types/documents/employee_schedule"
 import type {
 	Completeness,
 	Format,
@@ -20,9 +38,51 @@ import type {
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
 
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
+
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
+
+interface UserRelationshipData<T extends Completeness = "read">
+extends GeneralRelationshipData {
+	department: {
+		serialized: DepartmentIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
+		deserialized: DeserializedDepartmentDocument<"attached">
+	},
+	role: {
+		serialized: RoleIdentifierListDocument<T extends "create"|"update" ? "attached" : T>,
+		deserialized: DeserializedRoleListDocument<"attached">
+	},
+	profilePicture: {
+		serialized: ProfilePictureIdentifierDocument,
+		deserialized: DeserializedProfilePictureDocument
+	},
+	signature: {
+		serialized: SignatureIdentifierDocument,
+		deserialized: DeserializedSignatureDocument
+	},
+	studentDetail: {
+		serialized: StudentDetailIdentifierDocument,
+		deserialized: DeserializedStudentDetailDocument
+	},
+	employeeSchedule: {
+		serialized: EmployeeScheduleIdentifierListDocument,
+		deserialized: DeserializedEmployeeScheduleListDocument
+	}
+}
+
+export type UserRelationshipNames = DeriveRelationshipNames<UserRelationshipData>
+
+export type UserRelationships<T extends Completeness = "read">
+= DeriveRelationships<UserRelationshipData<T>>
+
+export type DeserializedUserRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<UserRelationshipData<T>>
 
 export interface UserResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
@@ -56,8 +116,8 @@ export type UserAttributes<T extends Format = "serialized"> =
 	| UnreachableEmployeesAttributes<T>
 
 interface DeserializedGeneralUserAttributes extends GeneralUserAttributes<"deserialized"> {
-	department: DeserializedDepartmentDocument<"attached">,
-	roles: DeserializedRoleListDocument<"attached">,
+	department?: DeserializedDepartmentDocument<"attached">,
+	roles?: DeserializedRoleListDocument<"attached">,
 	profilePicture?: DeserializedProfilePictureDocument,
 	signature?: DeserializedSignatureDocument
 }
