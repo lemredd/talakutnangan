@@ -1,39 +1,52 @@
-import RoleFactory from "~/factories/role"
+import Factory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import Condition from "%/managers/helpers/condition"
 
-import RoleManager from "./role"
+import Manager from "./role"
 
 describe("Database Manager: Role read operations", () => {
-	it("can count single role", async() => {
-		const manager = new RoleManager()
-		const role = await new RoleFactory().insertOne()
-		await new UserFactory().attach(role).insertOne()
-		await new UserFactory().attach(role).insertOne()
+	it("can check if model belongs to user", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		const user = await new UserFactory().attach(model).insertOne()
 
-		const counts = await manager.countUsers([ role.id ])
+		try {
+			await manager.isModelBelongsTo(model.id, user.id, manager.modelChainToUser)
+		} catch (error) {
+			expect(error).toBeInstanceOf(DatabaseError)
+		}
+	})
 
-		expect(counts).toHaveProperty("data.0.id", String(role.id))
+	it("can count single model", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+		await new UserFactory().attach(model).insertOne()
+
+		const counts = await manager.countUsers([ model.id ])
+
+		expect(counts).toHaveProperty("data.0.id", String(model.id))
 		expect(counts).toHaveProperty("data.0.type", "role")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
-	it("can count single role with zero users", async() => {
-		const manager = new RoleManager()
-		const role = await new RoleFactory().insertOne()
+	it("can count single model with zero users", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
 
-		const counts = await manager.countUsers([ role.id ])
+		const counts = await manager.countUsers([ model.id ])
 
-		expect(counts).toHaveProperty("data.0.id", String(role.id))
+		expect(counts).toHaveProperty("data.0.id", String(model.id))
 		expect(counts).toHaveProperty("data.0.type", "role")
 		expect(counts).toHaveProperty("data.0.meta.userCount", 0)
 	})
 
 	it("can count multiple roles", async() => {
-		const manager = new RoleManager()
-		const roleA = await new RoleFactory().insertOne()
-		const roleB = await new RoleFactory().insertOne()
+		const manager = new Manager()
+		const roleA = await new Factory().insertOne()
+		const roleB = await new Factory().insertOne()
 		await new UserFactory().attach(roleA).insertOne()
 		await new UserFactory().attach(roleA).insertOne()
 		await new UserFactory().attach(roleA).insertOne()
@@ -53,8 +66,8 @@ describe("Database Manager: Role read operations", () => {
 
 describe("Database Manager: Role update operations", () => {
 	it("can reattach roles", async() => {
-		const roles = await new RoleFactory().insertMany(4)
-		const manager = new RoleManager()
+		const roles = await new Factory().insertMany(4)
+		const manager = new Manager()
 		const user = await new UserFactory().attach(roles[0]).attach(roles[1]).insertOne()
 
 		await manager.reattach(user.id, [

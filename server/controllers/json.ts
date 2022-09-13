@@ -8,7 +8,9 @@ import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 /**
- * Specialized controller class which accept JSON as their request body.
+ * Specialized controller class which:
+ * - Requires ID parameter to match an existing model in the database
+ * - Accept JSON as their request body
  */
 export default abstract class extends Controller {
 	get bodyParser(): Middleware {

@@ -19,9 +19,9 @@ export default abstract class extends ControllerLike {
 
 	async intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		return await this.handle(request, response)
-			.then(responseInfo => this.respond(response, responseInfo))
-			.then(() => next())
-			.catch(next)
+		.then(responseInfo => this.respond(response, responseInfo))
+		.then(() => next())
+		.catch(next)
 	}
 
 	private respond(response: Response, responseInfo: ResponseInfo|void): void {

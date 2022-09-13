@@ -13,12 +13,14 @@ export default function(
 		isNew = false,
 		mustCastID = false,
 		postAttributeValidation = { "pipes": [] } as Rules,
+		postIDRules = { "pipes": [] } as Rules,
 		extraDataQueries = {} as FieldRules,
 		extraQueries = {} as FieldRules
 	}: Partial<{
 		isNew: boolean
 		mustCastID: boolean
 		postAttributeValidation: Rules,
+		postIDRules: Rules,
 		extraDataQueries: FieldRules
 		extraQueries: FieldRules
 	}> = {}
@@ -28,7 +30,8 @@ export default function(
 			? {}
 			: makeIDRules({
 				"IDName": "id",
-				"mustCast": mustCastID
+				"mustCast": mustCastID,
+				"postRules": postIDRules
 			}),
 		...makeTypeRules(typeName),
 		"attributes": {

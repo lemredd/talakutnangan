@@ -1,4 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
+import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
 import MockRequester from "~/set-ups/mock_requester"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -15,7 +16,9 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const userFactory = new UserFactory()
 		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const { user } = chatMessageActivity
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.makeOne()
@@ -44,7 +47,8 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 						}
 					}
 				}
-			}
+			},
+			"user": userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -59,7 +63,9 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const userFactory = new UserFactory()
 		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const { user } = chatMessageActivity
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -85,7 +91,8 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 						}
 					}
 				}
-			}
+			},
+			"user": userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)

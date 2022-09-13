@@ -1,20 +1,21 @@
+/* eslint-disable no-magic-numbers */
 import type { RawBulkDataForStudents, RawBulkDataForEmployees } from "%/types/independent"
 
-import User from "%/models/user"
-import UserManager from "./user"
-import UserFactory from "~/factories/user"
-import RoleFactory from "~/factories/role"
+import Model from "%/models/user"
+import Manager from "./user"
 import compare from "$!/auth/compare"
+import Factory from "~/factories/user"
+import RoleFactory from "~/factories/role"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import DepartmentFactory from "~/factories/department"
 import EmployeeSchedule from "%/models/employee_schedule"
 
-describe("Database Manager: User Authentication Operations", () => {
+describe("Database Manager: User authentication operations", () => {
 	it("can find user using credentials", async() => {
 		const role = await new RoleFactory().insertOne()
-		const manager = new UserManager()
-		const user = await new UserFactory().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
 		await AttachedRole.create({
 			"roleID": role.id,
 			"userID": user.id
@@ -32,8 +33,8 @@ describe("Database Manager: User Authentication Operations", () => {
 	})
 
 	it("cannot search user with incorrect credentials", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().makeOne()
+		const manager = new Manager()
+		const user = await new Factory().makeOne()
 		const { email, password } = user
 
 		const foundUser = await manager.findWithCredentials(email, password)
@@ -42,14 +43,14 @@ describe("Database Manager: User Authentication Operations", () => {
 	})
 
 	it("can reset password of existing user", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
 		const newPassword = "12345678"
 
 		const isResetSuccess = await manager.resetPassword(user.id, newPassword)
 
 		expect(isResetSuccess).toBeTruthy()
-		const foundUser = await User.findByPk(user.id) as User
+		const foundUser = await Model.findByPk(user.id) as Model
 		expect(compare(
 			newPassword,
 			foundUser.password
@@ -57,14 +58,14 @@ describe("Database Manager: User Authentication Operations", () => {
 	})
 
 	it("can reset password of non-existing user", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
 		const newPassword = "12345678"
 
 		const isResetSuccess = await manager.resetPassword(user.id + 1, newPassword)
 
 		expect(isResetSuccess).toBeFalsy()
-		const foundUser = await User.findOne({ "where": { "id": user.id } }) as User
+		const foundUser = await Model.findOne({ "where": { "id": user.id } }) as Model
 		expect(compare(
 			newPassword,
 			foundUser.password
@@ -73,9 +74,18 @@ describe("Database Manager: User Authentication Operations", () => {
 })
 
 describe("Database Manager: User read operations", () => {
+	it("can check if model belongs to user", async() => {
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
+
+		const doesBelong = await manager.isModelBelongsTo(user.id, user.id, manager.modelChainToUser)
+
+		expect(doesBelong).toBeTruthy()
+	})
+
 	it("can search user with matching query", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
 		const incompleteName = user.name.slice(0, user.name.length - 2)
 
 		const users = await manager.list({
@@ -98,8 +108,8 @@ describe("Database Manager: User read operations", () => {
 	})
 
 	it("cannot search user with non-matching query", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
 		const incorrectName = `${user.name}133`
 
 		const users = await manager.list({
@@ -122,8 +132,8 @@ describe("Database Manager: User read operations", () => {
 	})
 
 	it("can get unreachable employees", async() => {
-		const manager = new UserManager()
-		await new UserFactory().beUnreachableEmployee().insertOne()
+		const manager = new Manager()
+		await new Factory().beUnreachableEmployee().insertOne()
 
 		const users = await manager.list({
 			"filter": {
@@ -145,13 +155,13 @@ describe("Database Manager: User read operations", () => {
 	})
 })
 
-describe("Database Manager: User Create Operations", () => {
+describe("Database Manager: User create operations", () => {
 	it("can create students in bulk", async() => {
 		const roles = await new RoleFactory().insertMany(3)
 		const departments = await new DepartmentFactory().insertMany(2)
-		const fakeUserA = await new UserFactory().in(departments[0]).makeOne()
-		const fakeUserB = await new UserFactory().in(departments[1]).makeOne()
-		const manager = new UserManager()
+		const fakeUserA = await new Factory().in(departments[0]).makeOne()
+		const fakeUserB = await new Factory().in(departments[1]).makeOne()
+		const manager = new Manager()
 		const bulkData: RawBulkDataForStudents = {
 			"importedCSV": [
 				{
@@ -194,10 +204,10 @@ describe("Database Manager: User Create Operations", () => {
 	it("can create reachable employees in bulk", async() => {
 		const roles = await new RoleFactory().insertMany(2)
 		const departments = await new DepartmentFactory().insertMany(3)
-		const fakeUserA = await new UserFactory().in(departments[0]).makeOne()
-		const fakeUserB = await new UserFactory().in(departments[1]).makeOne()
-		const fakeUserC = await new UserFactory().in(departments[2]).makeOne()
-		const manager = new UserManager()
+		const fakeUserA = await new Factory().in(departments[0]).makeOne()
+		const fakeUserB = await new Factory().in(departments[1]).makeOne()
+		const fakeUserC = await new Factory().in(departments[2]).makeOne()
+		const manager = new Manager()
 		const bulkData: RawBulkDataForEmployees = {
 			"importedCSV": [
 				{
@@ -258,10 +268,10 @@ describe("Database Manager: User Create Operations", () => {
 	it("can create unreachable employees in bulk", async() => {
 		const roles = await new RoleFactory().insertMany(2)
 		const departments = await new DepartmentFactory().insertMany(3)
-		const fakeUserA = await new UserFactory().in(departments[0]).makeOne()
-		const fakeUserB = await new UserFactory().in(departments[1]).makeOne()
-		const fakeUserC = await new UserFactory().in(departments[2]).makeOne()
-		const manager = new UserManager()
+		const fakeUserA = await new Factory().in(departments[0]).makeOne()
+		const fakeUserB = await new Factory().in(departments[1]).makeOne()
+		const fakeUserC = await new Factory().in(departments[2]).makeOne()
+		const manager = new Manager()
 		const bulkData: RawBulkDataForEmployees = {
 			"importedCSV": [
 				{
@@ -305,15 +315,15 @@ describe("Database Manager: User Create Operations", () => {
 	})
 })
 
-describe("Database Manager: User Update Operations", () => {
+describe("Database Manager: User update operations", () => {
 	it("can verify user", async() => {
-		const manager = new UserManager()
-		const user = await new UserFactory().notVerified().insertOne()
+		const manager = new Manager()
+		const user = await new Factory().notVerified().insertOne()
 
 		const verifiedUserCount = await manager.verify(user.id)
 
 		expect(verifiedUserCount).toBe(1)
-		const foundUser = await User.findOne({ "where": { "id": user.id } }) as User
+		const foundUser = await Model.findOne({ "where": { "id": user.id } }) as Model
 		expect(foundUser.emailVerifiedAt).not.toBeNull()
 	})
 })
@@ -321,7 +331,7 @@ describe("Database Manager: User Update Operations", () => {
 describe("Database Manager: Miscellaneous operations", () => {
 	it("can get sortable columns", () => {
 		// Include in test to alert in case there are new columns to decide whether to expose or not
-		const manager = new UserManager()
+		const manager = new Manager()
 
 		const { sortableColumns } = manager
 

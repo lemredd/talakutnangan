@@ -18,10 +18,12 @@ describe("POST /api/chat_message/create_with_file", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const normalRole = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { user, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
 		const resource = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.serializedOne()
