@@ -8,7 +8,7 @@ import Manager from "%/managers/chat_message"
 import { chatMessageKind } from "!/constants/regex"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import TripleBoundJSONController from "!/controllers/triple_bound_json"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
@@ -22,7 +22,7 @@ import required from "!/validators/base/required"
 import anyObject from "!/validators/base/any_object"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends TripleBoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {

@@ -66,7 +66,8 @@ export interface NotRuleConstraints {
 
 export interface UniqueEmployeeScheduleRuleConstraint {
 	uniqueEmployeeSchedule: {
-		userIDPointer: string
+		userIDPointer: string,
+		employeeScheduleIDPointer?: string
 	}
 }
 
