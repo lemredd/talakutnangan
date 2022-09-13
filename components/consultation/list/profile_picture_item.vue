@@ -1,34 +1,17 @@
 <template>
-	<img :src="profilePictureURL"/>
+	<ProfilePicture :user="activity.user"/>
 </template>
-<script setup lang="ts">
-import { computed } from "vue"
 
-import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
+<script setup lang="ts">
 import type {
-	ChatMessageActivityRelationshipNames,
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
-import Icon from "@assets/icon.png"
+
+import ProfilePicture from "@/helpers/profile_picture.vue"
 
 const {
 	activity
 } = defineProps<{
-	activity: DeserializedChatMessageActivityResource<ChatMessageActivityRelationshipNames>
+	activity: DeserializedChatMessageActivityResource<"user">
 }>()
-
-function isDeserializedProfilePictureDocument(value: any)
-: value is DeserializedProfilePictureDocument {
-	return typeof value === "object"
-}
-
-const profilePictureURL = computed(() => {
-	const { profilePicture } = activity.user.data
-
-	if (isDeserializedProfilePictureDocument(profilePicture)) {
-		return profilePicture.data.fileContents
-	}
-
-	return Icon
-})
 </script>
