@@ -2,13 +2,18 @@ import type { FileLikeAttributes } from "$/types/documents/file-like"
 import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
 	Completeness,
+
 	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface ProfilePictureResourceIdentifier<T extends Completeness = "read">
@@ -66,3 +71,9 @@ export type DeserializedProfilePictureListDocument<T extends Format = "serialize
 	ProfilePictureAttributes<T>,
 	DeserializedProfilePictureResource<T>
 >
+
+export type ProfilePictureIdentifierDocument
+= IdentifierDocument<ProfilePictureResourceIdentifier<"read">>
+
+export type ProfilePictureIdentifierListDocument
+= IdentifierListDocument<ProfilePictureResourceIdentifier<"read">>
