@@ -47,4 +47,9 @@ describe("UI Component: Resource Manager", () => {
 			expect(filters.exists()).toBeTruthy()
 		})
 	})
+
+	it("Should update users with given selectable filters", async() => {
+		await
+		console.log("test")
+	})
 })

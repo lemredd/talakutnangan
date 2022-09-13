@@ -1,6 +1,6 @@
 <template>
 	<div class="content">
-		<div class="container">
+		<div class="wrapper">
 			<slot></slot>
 		</div>
 	</div>
@@ -15,8 +15,15 @@
 	margin-top: $navHeight;
 	padding: 20px;
 
-	.container {
+	.wrapper {
+		margin: 0 auto;
 		max-width: 900px;
+	}
+
+	&.login-content {
+		.wrapper {
+			max-width: initial;
+		}
 	}
 }
 </style>

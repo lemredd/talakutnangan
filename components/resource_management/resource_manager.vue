@@ -84,8 +84,7 @@ function getFilterOptions(resources: PossibleResources[]) {
 	})
 	return filterOptions
 }
-const departmentFilterOptions
-	= getFilterOptions(rawDepartments.data) as OptionInfo[]
+const departmentFilterOptions = getFilterOptions(rawDepartments.data) as OptionInfo[]
 const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
 const selectedDepartment = ref("")
 const selectedRole = ref("")
