@@ -14,7 +14,7 @@ import { auditTrail as permissionGroup } from "$/permissions/permission_list"
 import required from "!/validators/base/required"
 import makeListRules from "!/rule_sets/make_list"
 import makeMultiIDBasedFilterRules from "!/rule_sets/make_multi-id-based_filter"
-import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_user"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }

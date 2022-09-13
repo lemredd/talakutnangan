@@ -1,7 +1,6 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
 
@@ -30,10 +29,10 @@ import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
-import doesBelongToUser from "!/validators/manager/does_belong_to_user"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -89,7 +88,7 @@ export default class extends JSONController {
 				"options": {
 					"postIDRules": {
 						"constraints": {
-							"doesBelongToUser": {
+							"doesBelongToCurrentUser": {
 								"anyPermissionCombinationForBypass": [
 									UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 									UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -101,7 +100,7 @@ export default class extends JSONController {
 								"value": "reachable_employee"
 							}
 						},
-						"pipes": [ existWithSameAttribute, doesBelongToUser ]
+						"pipes": [ existWithSameAttribute, doesBelongToCurrentUser ]
 					}
 				},
 				"relationshipName": "user",

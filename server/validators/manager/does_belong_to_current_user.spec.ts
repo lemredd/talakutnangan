@@ -18,7 +18,7 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import doesBelongToUser from "./does_belong_to_user"
+import doesBelongToCurrentUser from "./does_belong_to_current_user"
 
 describe("Validator: does belong to user", () => {
 	it("can accept valid input", async() => {
@@ -36,7 +36,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -55,7 +55,7 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
+		const sanitizeValue = (await doesBelongToCurrentUser(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(model.id)
 	})
@@ -76,7 +76,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -95,7 +95,7 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
+		const sanitizeValue = (await doesBelongToCurrentUser(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(model.id)
 	})
@@ -129,7 +129,7 @@ describe("Validator: does belong to user", () => {
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
 		try {
-			await doesBelongToUser(value, constraints)
+			await doesBelongToCurrentUser(value, constraints)
 		} catch (error) {
 			expect(error).toHaveProperty("field", "hello")
 			expect(error).toHaveProperty("messageMaker")
@@ -152,7 +152,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -172,7 +172,7 @@ describe("Validator: does belong to user", () => {
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
 		try {
-			await doesBelongToUser(value, constraints)
+			await doesBelongToCurrentUser(value, constraints)
 		} catch (error) {
 			expect(error).toHaveProperty("field", "hello")
 			expect(error).toHaveProperty("messageMaker")
