@@ -5,8 +5,8 @@
 			<!-- purpose: place search filter component properly in the UI -->
 		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
-			<DropdownFilter by="Role"/>
-			<DropdownFilter v-if="managerKind.isAdmin()" by="Department"/>
+			<SelectableFilter :options="roleFilterOptions" label="Role"/>
+			<SelectableFilter v-if="managerKind.isAdmin()" :options="departmentFilterOptions"/>
 		</div>
 	</div>
 	<Suspensible :is-loaded="!!resource.length">
@@ -34,12 +34,17 @@
 <script setup lang="ts">
 import { computed, inject } from "vue"
 
+import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
+import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
 import Manager from "$/helpers/manager"
+
 import Suspensible from "@/suspensible.vue"
-import DropdownFilter from "@/resource_management/resource_manager/dropdown_filter.vue"
+import SelectableFilter from "@/fields/selectable_options.vue"
+
+type AdditionalFilter = "departments" | "roles"
 
 const { resource } = defineProps<{
 	resource: PossibleResources[]
@@ -50,7 +55,30 @@ function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUs
 	return deserializedResourceItem.type === "user"
 }
 
-const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
+const isResourceTypeUser = computed(() => resource.some(usersResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
+const pageContext = inject("pageContext") as PageContext
+const { pageProps } = pageContext
+const { "departments": rawDepartments } = pageProps as PageProps<"deserialized", AdditionalFilter>
+const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
 
+
+function getFilterOptions(resources: PossibleResources[]) {
+	const filterOptions = resources.map(resourceFilterOption => {
+		const resourceType = resourceFilterOption.type
+		return {
+			"label": String(
+				resourceType === "department"
+					? resourceFilterOption.acronym
+					: resourceFilterOption.name
+			),
+			"value": String(resourceFilterOption.id)
+		}
+	})
+	return filterOptions
+}
+const departmentFilterOptions = getFilterOptions(rawDepartments.data) as OptionInfo[]
+const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
+
+console.log(departmentFilterOptions)
 </script>
