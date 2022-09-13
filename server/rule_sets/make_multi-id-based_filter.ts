@@ -11,13 +11,15 @@ import stringArray from "!/validators/hybrid/string_array"
 export default function(
 	ClassName: BaseManagerClass,
 	{
+		multipleIDKey = "IDs",
 		mustCast = true
 	}: Partial<{
+		multipleIDKey: string,
 		mustCast: boolean
 	}> = {}
 ): FieldRules {
 	return {
-		"IDs": {
+		[multipleIDKey]: {
 			"constraints": {
 				"array": {
 					"constraints": {
