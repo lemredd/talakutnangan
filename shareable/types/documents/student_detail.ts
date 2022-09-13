@@ -1,14 +1,19 @@
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface StudentDetailResourceIdentifier<T extends Completeness = "read">
@@ -56,3 +61,9 @@ export type DeserializedStudentDetailListDocument = DeserializedResourceListDocu
 	StudentDetailAttributes<"deserialized">,
 	DeserializedStudentDetailResource
 >
+
+export type StudentDetailIdentifierDocument
+= IdentifierDocument<StudentDetailResourceIdentifier<"read">>
+
+export type StudentDetailIdentifierListDocument
+= IdentifierListDocument<StudentDetailResourceIdentifier<"read">>
