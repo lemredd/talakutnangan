@@ -30,7 +30,7 @@ describe("Controller: GET /api/chat_message", () => {
 		requester.customizeRequest({
 			"query": {
 				"filter": {
-					"consultationIDs": [ String(consultation.id) ],
+					"consultationIDs": String(consultation.id),
 					"existence": "*"
 				}
 			},
