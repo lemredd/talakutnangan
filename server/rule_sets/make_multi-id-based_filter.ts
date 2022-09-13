@@ -1,5 +1,5 @@
-import type { Pipe, FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/dependent"
+import type { Pipe, Rules, FieldRules } from "!/types/validation"
 
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
@@ -11,15 +11,20 @@ import stringArray from "!/validators/hybrid/string_array"
 export default function(
 	ClassName: BaseManagerClass,
 	{
+		postIDRules = { "pipes": [] },
 		initialPipes = [ nullable ],
 		multipleIDKey = "IDs",
 		mustCast = true
 	}: Partial<{
+		postIDRules: Rules,
 		initialPipes: Pipe[],
 		multipleIDKey: string,
 		mustCast: boolean
 	}> = {}
 ): FieldRules {
+	const postIDConstraints = postIDRules.constraints || {}
+	const postIDPipes = postIDRules.pipes
+
 	return {
 		[multipleIDKey]: {
 			"constraints": {
@@ -29,9 +34,10 @@ export default function(
 						"manager": {
 							"className": ClassName,
 							"columnName": "id"
-						}
+						},
+						...postIDConstraints
 					},
-					"pipes": [ string, integer, exists ]
+					"pipes": [ string, integer, exists, ...postIDPipes ]
 				},
 				"length": {
 					// TODO: Find the best length
