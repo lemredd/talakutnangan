@@ -27,6 +27,15 @@ describe("Component: consultation/chat_window/chat_message", () => {
 		} as DeserializedUserDocument<"profilePicture">
 		const textValue = "Hello world!"
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"userProfile": user
+						}
+					}
+				}
+			},
 			"props": {
 				"chatMessage": {
 					"createdAt": CURRENT_TIME,
@@ -38,8 +47,7 @@ describe("Component: consultation/chat_window/chat_message", () => {
 					"type": "chat_message",
 					"updatedAt": CURRENT_TIME,
 					user
-				} as DeserializedChatMessageResource<"user"> & TextMessage<"deserialized">,
-				user
+				} as DeserializedChatMessageResource<"user"> & TextMessage<"deserialized">
 			}
 		})
 
@@ -90,6 +98,15 @@ describe("Component: consultation/chat_window/chat_message", () => {
 		} as DeserializedUserDocument<"profilePicture">
 		const textValue = "Foo bar!"
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"userProfile": user
+						}
+					}
+				}
+			},
 			"props": {
 				"chatMessage": {
 					"createdAt": CURRENT_TIME,
@@ -101,8 +118,7 @@ describe("Component: consultation/chat_window/chat_message", () => {
 					"type": "chat_message",
 					"updatedAt": CURRENT_TIME,
 					"user": other
-				} as DeserializedChatMessageResource<"user"> & TextMessage<"deserialized">,
-				user
+				} as DeserializedChatMessageResource<"user"> & TextMessage<"deserialized">
 			}
 		})
 
