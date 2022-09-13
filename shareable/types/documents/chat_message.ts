@@ -53,7 +53,7 @@ interface ChatMessageRelationshipData<unusedT extends Completeness = "read">
 extends GeneralRelationshipData {
 	user: {
 		serialized: UserIdentifierDocument,
-		deserialized: DeserializedUserDocument
+		deserialized: DeserializedUserDocument<"profilePicture">
 	},
 	consultation: {
 		serialized: ConsultationIdentifierDocument,
