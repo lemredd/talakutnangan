@@ -65,9 +65,12 @@
 	z-index: 1;
 	background-color: white;
 
-	padding: 0 .75em;
+	margin: 0 auto;
 	border-bottom: 1px solid hsla(0,0%,0%, 0.1);
+	padding: 0 .75em;
+
 	height: $navHeight;
+	max-width: 900px;
 
 	.container {
 		@apply grid grid-cols-[1fr,repeat(3,min-content)] flex-1;
