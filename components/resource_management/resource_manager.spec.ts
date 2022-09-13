@@ -38,6 +38,9 @@ describe("UI Component: Resource Manager", () => {
 				},
 				"global": {
 					"provide": {
+						"pageContext": {
+							"pageProps": {}
+						},
 						"managerKind": new Manager(user as DeserializedUserProfile)
 					}
 				}
@@ -48,8 +51,10 @@ describe("UI Component: Resource Manager", () => {
 		})
 	})
 
-	it("Should update users with given selectable filters", async() => {
-		await
-		console.log("test")
+	describe("Additional Filters", () => {
+		it("Should update users with given selectable filters", async() => {
+			await
+			console.log("test")
+		})
 	})
 })
