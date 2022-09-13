@@ -10,6 +10,7 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back.config.json'
       - 'jest.back.unit_ci.config.json'
       - 'jest.back_database.unit_ci.config.json'
   pull_request:
@@ -25,6 +26,7 @@ on:
       - 'routes/**'
       - 't/helpers/**'
       - '.github/workflows/back-end.unit.yml'
+      - 'jest.back.config.json'
       - 'jest.back.unit_ci.config.json'
       - 'jest.back_database.unit_ci.config.json'
 
@@ -42,9 +44,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back.unit_ci.config.json') }}
         restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back.unit_ci.config.json') }}
     - run: npm install
     - run: ./execute.ps1 -test unit_ci:back -compile
       shell: pwsh
@@ -63,9 +65,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back_database.unit_ci.config.json') }}
         restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back_database.unit_ci.config.json') }}
     - run: npm install
     - run: ./execute.ps1 -test unit_ci:back_database
       shell: pwsh

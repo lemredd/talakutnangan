@@ -114,8 +114,14 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
-			const departmentManager = new DepartmentManager(this.transaction, this.cache)
-			const roleManager = new RoleManager(this.transaction, this.cache)
+			const departmentManager = new DepartmentManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
+			const roleManager = new RoleManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
 
 			// Get the department name firsts
 			const departmentNames = bulkData.importedCSV.map(data => data.department)
@@ -138,9 +144,9 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 						rawDepartment
 					) as DeserializedDepartmentDocument
 					return Department.build({
-						"id": deserializedDepartment.data.id,
-						"fullName": deserializedDepartment.data.fullName,
 						"acronym": deserializedDepartment.data.acronym,
+						"fullName": deserializedDepartment.data.fullName,
+						"id": deserializedDepartment.data.id,
 						"mayAdmit": deserializedDepartment.data.mayAdmit
 					})
 				})
@@ -192,10 +198,10 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 				const { password, department, ...securedData } = data
 				return {
 					...securedData,
-					"kind": bulkData.kind,
-					"password": await hash(password),
+					"attachedRoles": rolesToAttach,
 					"departmentID": departmentIDs[department],
-					"attachedRoles": rolesToAttach
+					"kind": bulkData.kind,
+					"password": await hash(password)
 				} as ProcessedData
 			}))
 
@@ -296,12 +302,12 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				},
 				{
-					"model": StudentDetail,
-					"as": "studentDetail"
+					"as": "studentDetail",
+					"model": StudentDetail
 				}
 			],
 			...this.transaction.transactionObject
@@ -334,9 +340,9 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 				// End at 5pm
 				const scheduleEnd = 60 * 60 * (12 + 5)
 				return [ ...previousSchedule, {
-					scheduleStart,
+					dayName,
 					scheduleEnd,
-					dayName
+					scheduleStart
 				} ]
 			}
 			return previousSchedule
@@ -352,12 +358,12 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				},
 				{
-					"model": EmployeeSchedule,
-					"as": "employeeSchedules"
+					"as": "employeeSchedules",
+					"model": EmployeeSchedule
 				}
 			],
 			...this.transaction.transactionObject
@@ -396,8 +402,8 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				}
 			],
 			...this.transaction.transactionObject

@@ -54,7 +54,7 @@ export default class extends CreateRoute {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const { data, meta } = request.body as ChatMessageDocument<"create"> & AttachedFile<"raw">
 		const { attributes, relationships } = data
 		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)

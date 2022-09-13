@@ -79,7 +79,7 @@ export default class extends MultipartController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
-		const manager = new ProfilePictureManager(request.transaction, request.cache)
+		const manager = new ProfilePictureManager(request)
 		const { fileContents } = request.body.data.attributes
 		const userID = Number(request.params.id)
 

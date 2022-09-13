@@ -172,10 +172,10 @@ export default class extends BaseManager<
 		try {
 			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
 
-			const attachedChatFileManager = new AttachedChatFileManager(
-				this.transaction,
-				this.cache
-			)
+			const attachedChatFileManager = new AttachedChatFileManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
 
 			const attachedDocument = await attachedChatFileManager.create({
 				"chatMessageID": model.id,
@@ -210,10 +210,10 @@ export default class extends BaseManager<
 	): Promise<Model> {
 		const model = await this.model.create(details, this.transaction.transactionObject)
 
-		const activityManager = new ChatMessageActivityManager(
-			this.transaction,
-			this.cache
-		)
+		const activityManager = new ChatMessageActivityManager({
+			"cache": this.cache,
+			"transaction": this.transaction
+		})
 
 		await activityManager.update(details.chatMessageActivityID, {
 			"receivedMessageAt": new Date()

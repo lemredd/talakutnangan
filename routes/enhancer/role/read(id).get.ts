@@ -31,7 +31,7 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const { id } = request.params
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 
 		const role = await manager.findWithID(Number(id), {
 			"filter": {

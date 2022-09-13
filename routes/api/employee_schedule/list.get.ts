@@ -93,7 +93,7 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query } as EmployeeScheduleQueryParameters<number>
 
-		const manager = new EmployeeScheduleManager(request.transaction, request.cache)
+		const manager = new EmployeeScheduleManager(request)
 		const roles = await manager.list(constraints)
 
 		return new ListResponse(roles)

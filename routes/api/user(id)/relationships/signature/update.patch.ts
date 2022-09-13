@@ -72,7 +72,7 @@ export default class extends MultipartController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
-		const manager = new SignatureManager(request.transaction, request.cache)
+		const manager = new SignatureManager(request)
 		const { signature } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id

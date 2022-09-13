@@ -1,5 +1,5 @@
 import type { GeneralObject } from "$/types/general"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -59,7 +59,7 @@ export default class <
 		}
 
 		const user = deserialize(request.user) as DeserializedUserProfile
-		const manager = new this.Class(request.transaction, request.cache)
+		const manager = new this.Class(request)
 		if (!await manager.isModelBelongsTo(
 			Number(request.params.id),
 			Number(user.data.id),
