@@ -3,9 +3,9 @@ import type { TextMessage } from "$/types/message"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
-import Component from "./chat_message.vue"
+import Component from "./chat_message_item.vue"
 
-describe("Component: consultation/chat_window/chat_message", () => {
+describe("Component: consultation/chat_window/chat_message_item", () => {
 	it("should show self's text message properly", () => {
 		const CURRENT_TIME = new Date()
 		const user = {
