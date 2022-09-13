@@ -152,10 +152,19 @@ export type DeserializedUnreachableEmployeesResource = DeserializedResource<
 	DeserializedUnreachableEmployeesAttributes
 >
 
-export type DeserializedUserResource =
+export type DeserializedUserResource<
+	T extends UserRelationshipNames|undefined = undefined
+> = (
 	| DeserializedStudentResource
 	| DeserializedReachableEmployeesResource
 	| DeserializedUnreachableEmployeesResource
+) & PartialOrPickDeserializedRelationship<
+	UserRelationshipData<"read">,
+	DeserializedUserRelationships<"read">,
+	UserRelationshipNames,
+	T extends UserRelationshipNames ? true : false,
+	T extends UserRelationshipNames ? T : UserRelationshipNames
+>
 
 export type UserDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
@@ -176,13 +185,7 @@ export type DeserializedUserDocument<
 > = DeserializedResourceDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
-	DeserializedUserResource
-> & PartialOrPickDeserializedRelationship<
-	UserRelationshipData<"read">,
-	DeserializedUserRelationships<"read">,
-	UserRelationshipNames,
-	T extends UserRelationshipNames ? true : false,
-	T extends UserRelationshipNames ? T : UserRelationshipNames
+	DeserializedUserResource<T>
 >
 
 export type DeserializedUserListDocument<
@@ -190,13 +193,7 @@ export type DeserializedUserListDocument<
 > = DeserializedResourceListDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
-	DeserializedUserResource
-> & PartialOrPickDeserializedRelationship<
-	UserRelationshipData<"read">,
-	DeserializedUserRelationships<"read">,
-	UserRelationshipNames,
-	T extends UserRelationshipNames ? true : false,
-	T extends UserRelationshipNames ? T : UserRelationshipNames
+	DeserializedUserResource<T>
 >
 
 interface GeneralUserProfileMetaProperties extends Serializable {
