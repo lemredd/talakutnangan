@@ -115,22 +115,13 @@ export type UserAttributes<T extends Format = "serialized"> =
 	| ReachableEmployeesAttributes<T>
 	| UnreachableEmployeesAttributes<T>
 
-interface DeserializedGeneralUserAttributes extends GeneralUserAttributes<"deserialized"> {
-	department?: DeserializedDepartmentDocument<"attached">,
-	roles?: DeserializedRoleListDocument<"attached">,
-	profilePicture?: DeserializedProfilePictureDocument,
-	signature?: DeserializedSignatureDocument
-}
+type DeserializedGeneralUserAttributes = GeneralUserAttributes<"deserialized">
 
 interface DeserializedStudentAttributes
-extends DeserializedGeneralUserAttributes, StudentAttributes<"deserialized"> {
-	studentDetail: DeserializedStudentDetailDocument
-}
+extends DeserializedGeneralUserAttributes, StudentAttributes<"deserialized"> {}
 
 interface DeserializedReachableEmployeesAttributes
-extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes<"deserialized"> {
-	employeeSchedules: DeserializedEmployeeScheduleListDocument
-}
+extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes<"deserialized"> {}
 
 interface DeserializedUnreachableEmployeesAttributes
 extends DeserializedGeneralUserAttributes, UnreachableEmployeesAttributes<"deserialized"> {}
