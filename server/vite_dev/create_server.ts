@@ -74,7 +74,6 @@ export default async function(app: ExpressApp) {
 					...request.pageProps,
 					parsedUnitError
 				},
-				url,
 				"urlOriginal": url
 			}
 			const pageContext: Awaited<ReturnType<typeof renderPage>> & { errorStatus?: number }
