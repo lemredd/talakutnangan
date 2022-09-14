@@ -1,6 +1,5 @@
-import type { Request, Response } from "!/types/dependent"
 import type { Rules, FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Merger from "!/middlewares/miscellaneous/merger"
