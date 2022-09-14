@@ -1,6 +1,9 @@
+/* eslint-disable vue/sort-keys */
 import { mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
+
+import ResourceManager from "./resource_manager.vue"
 
 import "~/set-ups/database.set_up"
 import Manager from "$/helpers/manager"
@@ -11,7 +14,6 @@ import DepartmentFactory from "~/factories/department"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
-import ResourceManager from "./resource_manager.vue"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
@@ -30,6 +32,7 @@ describe("UI Component: Resource Manager", () => {
 			.deserializedOne()
 
 			const sampleUserList = await listUsers()
+			const deserializedRoles = await new RoleFactory().deserializedMany(9)
 
 			const wrapper = mount(ResourceManager as object, {
 				"shallow": true,
@@ -39,7 +42,9 @@ describe("UI Component: Resource Manager", () => {
 				"global": {
 					"provide": {
 						"pageContext": {
-							"pageProps": {}
+							"pageProps": {
+								"roles": deserializedRoles
+							}
 						},
 						"managerKind": new Manager(user as DeserializedUserProfile)
 					}
