@@ -43,7 +43,10 @@ import { computed, inject, ref } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
+
+import Manager from "$/helpers/manager"
 import type { PageContext, PageProps } from "$/types/renderer"
+import RequestEnvironment from "$/singletons/request_environment"
 import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
@@ -78,7 +81,9 @@ function getFilterOptions(resources: PossibleResources[]) {
 					? resourceFilterOption.acronym
 					: resourceFilterOption.name
 			),
-			"value": String(resourceFilterOption.id)
+			"value": String(RequestEnvironment.isOnTest
+				? resources.indexOf(resourceFilterOption)
+				: resourceFilterOption.id)
 		}
 	})
 	return filterOptions
