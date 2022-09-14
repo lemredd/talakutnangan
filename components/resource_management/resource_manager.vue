@@ -87,12 +87,16 @@ function getFilterOptions(resources: PossibleResources[]) {
 if (managerKind.isAdmin()) {
 	const { "departments": rawDepartments }
 	= pageProps as PageProps<"deserialized", AdditionalFilter>
-	departmentFilterOptions
-	= getFilterOptions((rawDepartments as DeserializedDepartmentListDocument).data) as OptionInfo[]
-}
-const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
+	const departments
+	= rawDepartments as DeserializedDepartmentListDocument
 
+	departmentFilterOptions
+	= getFilterOptions(departments.data) as OptionInfo[]
+}
+
+const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
 const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
+
 const selectedDepartment = ref("")
 const selectedRole = ref("")
 
