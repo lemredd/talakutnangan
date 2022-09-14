@@ -1,5 +1,6 @@
 import type { Rules, Pipe } from "!/types/validation"
-import type { BaseManagerClass, OptionalMiddleware } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Validation from "!/bases/validation"
 import present from "!/validators/manager/present"

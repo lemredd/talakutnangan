@@ -1,5 +1,5 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { RoleIdentifierListDocument } from "$/types/documents/role"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
@@ -50,7 +50,7 @@ export default class extends BoundJSONController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 		const { data } = request.body as RoleIdentifierListDocument<"read">
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = Number(userData.data.id)

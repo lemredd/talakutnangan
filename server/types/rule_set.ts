@@ -1,4 +1,4 @@
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { FieldRules, Rules, Pipe } from "!/types/validation"
 
 export type IdentifierDocumentOptions = Partial<{

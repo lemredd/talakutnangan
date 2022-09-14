@@ -1,8 +1,13 @@
 import type { Serializable } from "$/types/general"
 import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { EmailVerificationArguments, BaseManagerClass } from "!/types/independent"
-import type { AuthenticatedIDRequest, PreprocessedRequest, Response } from "!/types/dependent"
+import type { EmailVerificationArguments } from "!/types/independent"
+import type {
+	AuthenticatedIDRequest,
+	PreprocessedRequest,
+	Response,
+	BaseManagerClass
+} from "!/types/dependent"
 
 import { personName } from "!/constants/regex"
 
@@ -78,7 +83,7 @@ export default class extends DoubleBoundJSONController {
 		request: AuthenticatedIDRequest & PreprocessedRequest<EmailVerificationArguments>,
 		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
-		const manager = new UserManager(request.transaction, request.cache)
+		const manager = new UserManager(request)
 		const { id } = request.body.data
 		const { email } = request.body.data.attributes
 

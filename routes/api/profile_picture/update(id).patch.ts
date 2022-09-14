@@ -30,7 +30,7 @@ export default class extends CreateController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new ProfilePictureManager(request.transaction, request.cache)
+		const manager = new ProfilePictureManager(request)
 		const { fileContents } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id

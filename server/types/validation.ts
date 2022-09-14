@@ -1,6 +1,6 @@
 import type { Pipe as BasePipe } from "$/types/database"
 import type BasePermissionGroup from "$/permissions/base"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
@@ -64,6 +64,13 @@ export interface NotRuleConstraints {
 	not: Rules
 }
 
+export interface OrRuleConstraints {
+	or: {
+		// eslint-disable-next-line no-use-before-define
+		rules: Rules[]
+	}
+}
+
 export interface UniqueEmployeeScheduleRuleConstraint {
 	uniqueEmployeeSchedule: {
 		userIDPointer: string,
@@ -93,7 +100,7 @@ export interface UniqueConsultationScheduleConstraints {
 }
 
 export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleConstraints {
-	doesBelongToUser?: {
+	doesBelongToCurrentUser?: {
 		permissionGroup: BasePermissionGroup<any, U>,
 		anyPermissionCombinationForBypass: U[][]
 	}
@@ -125,7 +132,8 @@ export type RuleContraints = Partial<
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
-	& DoesBelongToCurrentUserConstraints<any>
+	& DoesBelongToCurrentUserConstraints<unknown>
+	& OrRuleConstraints
 >
 
 /**

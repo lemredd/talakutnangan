@@ -211,7 +211,7 @@ export default class extends DevController {
 
 		Log.success("controller", "attached test secretary role to test secretary user")
 
-		const consultationManager = new ConsultationManager(request.transaction, request.cache)
+		const consultationManager = new ConsultationManager(request)
 
 		const createdConsultation = await consultationManager.createUsingResource({
 			"attributes": {

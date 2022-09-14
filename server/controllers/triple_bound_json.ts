@@ -1,6 +1,6 @@
 import type { Rules } from "!/types/validation"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
-import doesBelongToUser from "!/validators/manager/does_belong_to_user"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
 /**
  * Specialized controller class which:
@@ -14,7 +14,7 @@ import doesBelongToUser from "!/validators/manager/does_belong_to_user"
 export default abstract class extends DoubleBoundJSONController {
 	protected get extraIDParameterValidation(): Rules {
 		return {
-			"pipes": [ doesBelongToUser ]
+			"pipes": [ doesBelongToCurrentUser ]
 		}
 	}
 }

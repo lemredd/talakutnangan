@@ -6,12 +6,12 @@ import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import siftByConsultation from "./sift_by_consultation"
 
 describe("Database Pipe: Sift by consultation", () => {
-	it("can find on specific consultation", async() => {
+	it("can find on specific model", async() => {
 		const consultation = await new ConsultationFactory().insertOne()
 		const activity = await new ChatMessageActivityFactory()
 		.consultation(() => Promise.resolve(consultation))
 		.insertOne()
-		const model = await new Factory()
+		await new Factory()
 		.chatMessageActivity(() => Promise.resolve(activity))
 		.insertOne()
 
@@ -27,10 +27,10 @@ describe("Database Pipe: Sift by consultation", () => {
 		expect(foundModels).toHaveProperty("0.id", activity.id)
 	})
 
-	it("cannot find on specific consultation", async() => {
+	it("cannot find on specific model", async() => {
 		const consultation = await new ConsultationFactory().insertOne()
 		const otherConsultation = await new ConsultationFactory().insertOne()
-		const activity = await new ChatMessageActivityFactory()
+		await new ChatMessageActivityFactory()
 		.consultation(() => Promise.resolve(consultation))
 		.insertOne()
 

@@ -20,7 +20,7 @@ export default async function(
 	const { email } = userProfile.data
 	const password = state.value
 
-	const manager = new UserManager(constraints.request.transaction, constraints.request.cache)
+	const manager = new UserManager(constraints.request)
 	const foundModel = await manager.findWithCredentials(email, password)
 
 	if (foundModel !== null) {

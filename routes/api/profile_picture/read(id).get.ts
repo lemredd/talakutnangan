@@ -1,4 +1,4 @@
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
 
@@ -33,7 +33,7 @@ export default class extends BoundController {
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
-		const manager = new ProfilePictureManager(request.transaction, request.cache)
+		const manager = new ProfilePictureManager(request)
 		const { id } = request.params
 
 		const profilePictureDocument = await manager.findWithID(

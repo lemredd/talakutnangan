@@ -1,7 +1,7 @@
 import { FieldRules } from "!/types/validation"
+import type { PasswordResetArguments } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { PasswordResetArguments, BaseManagerClass } from "!/types/independent"
-import type { Request, PreprocessedRequest, Response } from "!/types/dependent"
+import type { Request, PreprocessedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -51,7 +51,7 @@ export default class extends DoubleBoundJSONController {
 		request: Request & PreprocessedRequest<PasswordResetArguments>,
 		unusedResponse: Response
 	): Promise<NoContentResponseInfo> {
-		const manager = new UserManager(request.transaction, request.cache)
+		const manager = new UserManager(request)
 		const { id } = request.body.data
 		const userProfile = deserialize(await manager.findWithID(id)) as DeserializedUserProfile
 		const newPassword = makeDefaultPassword(userProfile)

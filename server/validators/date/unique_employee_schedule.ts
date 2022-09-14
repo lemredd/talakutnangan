@@ -45,10 +45,7 @@ export default async function(
 	))
 
 	if (userID && !Number.isNaN(userID)) {
-		const manager = new EmployeeScheduleManager(
-			constraints.request.transaction,
-			constraints.request.cache
-		)
+		const manager = new EmployeeScheduleManager(constraints.request)
 
 		const foundModels = await manager.list({
 			"filter": {

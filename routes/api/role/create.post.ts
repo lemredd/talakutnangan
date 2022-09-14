@@ -61,7 +61,7 @@ export default class extends JSONController {
 	}
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 		request.body.data.attributes.departmentFlags = 1
 		request.body.data.attributes.roleFlags = 1
 		const roleInfo = await manager.create(request.body.data.attributes)

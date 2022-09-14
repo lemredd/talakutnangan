@@ -67,7 +67,7 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const query = request.query as unknown as Pick<DepartmentQueryParameters<number>, "filter">
 
-		const manager = new DepartmentManager(request.transaction, request.cache)
+		const manager = new DepartmentManager(request)
 		const departmentWithUserCount = await manager
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		.countUsers(query.filter.IDs!) as DepartmentResourceIdentifier<"read">

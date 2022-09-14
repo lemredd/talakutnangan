@@ -24,7 +24,7 @@ export default class extends PageMiddleware {
 	get validations(): Validation[] { return [] }
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 		const pageProps: Partial<PageProps> = {
 			"roles": await manager.list({
 				"filter": {

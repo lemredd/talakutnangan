@@ -181,11 +181,11 @@ export default class extends BaseManager<
 						)
 					)
 					&& (
-						targetEndTime.hours > hours
+						hours < targetEndTime.hours
 						// eslint-disable-next-line no-extra-parens
 						|| (
 							targetEndTime.hours === hours
-							&& targetEndTime.minutes >= minutes
+							&& minutes <= targetEndTime.minutes
 						)
 					)
 				) {

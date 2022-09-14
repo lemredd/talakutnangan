@@ -1,7 +1,6 @@
 import type { FieldRules } from "!/types/validation"
-import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
@@ -21,8 +20,8 @@ import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import anyObject from "!/validators/base/any_object"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
-import doesBelongToUser from "!/validators/manager/does_belong_to_user"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -52,7 +51,7 @@ export default class extends JSONController {
 				"isArray": false,
 				"options": {
 					"postIDRules": {
-						"pipes": [ doesBelongToUser ]
+						"pipes": [ doesBelongToCurrentUser ]
 					}
 				},
 				"relationshipName": "chatMessageActivity",
@@ -70,7 +69,7 @@ export default class extends JSONController {
 	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const { data } = request.body as ChatMessageDocument<"create">
 		const { attributes, relationships } = data
 		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)

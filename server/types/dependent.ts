@@ -12,12 +12,15 @@ import type {
 } from "express"
 import type { ExpressPeerServer } from "peer"
 import type { Session } from "express-session"
+
 import type { Serializable } from "$/types/general"
-import CacheClient from "$!/helpers/cache_client"
+import type { SharedManagerState } from "$!/types/dependent"
+
+import BaseManager from "%/managers/base"
 import TransactionManager from "%/managers/helpers/transaction_manager"
 
 // @ts-ignore
-export interface Request extends BaseRequest {
+export interface Request extends BaseRequest, SharedManagerState<TransactionManager> {
 	// Added due to `express-session` package
 	session: Session & {
 		token?: string
@@ -27,12 +30,6 @@ export interface Request extends BaseRequest {
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
 	logout: () => void
-
-	// Added to manage the transactions
-	transaction: TransactionManager
-
-	// Added to manage the cache
-	cache: CacheClient
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -68,3 +65,14 @@ export interface AuthenticatedIDRequest extends AuthenticatedRequest {
 }
 
 export type PeerServer = ReturnType<typeof ExpressPeerServer>
+
+/**
+ * Useful when passing a base manager to other functions/methods
+ */
+export type BaseManagerClass<T extends SharedManagerState = SharedManagerState>
+= new(state?: Partial<T>) => BaseManager<
+	any,
+	any,
+	any,
+	any
+ >

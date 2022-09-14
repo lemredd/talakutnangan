@@ -30,10 +30,7 @@ export default async function(
 	}
 
 	const userProfile = deserialize(constraints.request.user) as DeserializedUserProfile
-	const manager = new constraints.manager.className(
-		constraints.request.transaction,
-		constraints.request.cache
-	)
+	const manager = new constraints.manager.className(constraints.request)
 
 	const userID = Number(userProfile.data.id)
 	const modelID = Number(state.value)
@@ -59,7 +56,7 @@ export default async function(
 
 	if (doesBelong) return state
 
-	if (isUndefined(constraints.doesBelongToUser)) {
+	if (isUndefined(constraints.doesBelongToCurrentUser)) {
 		const error = {
 			"field": constraints.field,
 			"friendlyName": constraints.friendlyName,
@@ -77,7 +74,10 @@ export default async function(
 		throw error
 	}
 
-	const { permissionGroup, anyPermissionCombinationForBypass } = constraints.doesBelongToUser
+	const {
+		permissionGroup,
+		anyPermissionCombinationForBypass
+	} = constraints.doesBelongToCurrentUser
 	const roles = userProfile.data.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, anyPermissionCombinationForBypass)
 	if (isPermitted) return state
