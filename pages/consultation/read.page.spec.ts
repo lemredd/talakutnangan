@@ -430,7 +430,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 
-	it("can start consultation", async() => {
+	it.skip("can start consultation", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
 		const INITIAL_MESSAGE_COUNT = 5
