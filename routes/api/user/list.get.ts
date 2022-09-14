@@ -56,7 +56,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const manager = new UserManager(request.transaction, request.cache)
+		const manager = new UserManager(request)
 		const users = await manager.list(request.query as UserQueryParameters<number>)
 
 		return new ListResponse(users)

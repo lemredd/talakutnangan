@@ -4,7 +4,12 @@ import type { UserQueryParameters } from "$/types/query"
 import type { GeneralObject, Serializable } from "$/types/general"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
-import type { ModelCtor, FindAndCountOptions, FindOptions } from "%/types/dependent"
+import type {
+	Model as BaseModel,
+	ModelCtor,
+	FindAndCountOptions,
+	FindOptions
+} from "%/types/dependent"
 import type {
 	RawBulkData,
 	ProcessedDataForStudent,
@@ -17,7 +22,7 @@ import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 
 import Role from "%/models/role"
-import User from "%/models/user"
+import Model from "%/models/user"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -39,12 +44,12 @@ import siftByDepartment from "%/queries/user/sift_by_department"
 import includeExclusiveDetails from "%/queries/user/include_exclusive_details"
 import includeRoleAndDepartment from "%/queries/user/include_role_and_department"
 
-export default class UserManager extends BaseManager<User, RawUser, UserQueryParameters<number>> {
-	get model(): ModelCtor<User> { return User }
+export default class UserManager extends BaseManager<Model, RawUser, UserQueryParameters<number>> {
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): UserTransformer { return new UserTransformer() }
 
-	get singleReadPipeline(): Pipe<FindAndCountOptions<User>, UserQueryParameters<number>>[] {
+	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, UserQueryParameters<number>>[] {
 		return [
 			includeRoleAndDepartment,
 			includeExclusiveDetails,
@@ -52,7 +57,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		]
 	}
 
-	get listPipeline(): Pipe<FindAndCountOptions<User>, UserQueryParameters<number>>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, UserQueryParameters<number>>[] {
 		return [
 			siftBySlug,
 			siftByRole,
@@ -67,7 +72,7 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		try {
 			const condition = new Condition()
 			condition.equal("email", email)
-			const whereOptions: FindOptions<User> = { "where": condition.build() }
+			const whereOptions: FindOptions<Model> = { "where": condition.build() }
 			const findOptions = runThroughPipeline(whereOptions, {}, [
 				includeExclusiveDetails,
 				includeRoleAndDepartment
@@ -109,8 +114,14 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 	async bulkCreate(bulkData: RawBulkData): Promise<Serializable> {
 		try {
-			const departmentManager = new DepartmentManager(this.transaction, this.cache)
-			const roleManager = new RoleManager(this.transaction, this.cache)
+			const departmentManager = new DepartmentManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
+			const roleManager = new RoleManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
 
 			// Get the department name firsts
 			const departmentNames = bulkData.importedCSV.map(data => data.department)
@@ -133,9 +144,9 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 						rawDepartment
 					) as DeserializedDepartmentDocument
 					return Department.build({
-						"id": deserializedDepartment.data.id,
-						"fullName": deserializedDepartment.data.fullName,
 						"acronym": deserializedDepartment.data.acronym,
+						"fullName": deserializedDepartment.data.fullName,
+						"id": deserializedDepartment.data.id,
 						"mayAdmit": deserializedDepartment.data.mayAdmit
 					})
 				})
@@ -187,10 +198,10 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 				const { password, department, ...securedData } = data
 				return {
 					...securedData,
-					"kind": bulkData.kind,
-					"password": await hash(password),
+					"attachedRoles": rolesToAttach,
 					"departmentID": departmentIDs[department],
-					"attachedRoles": rolesToAttach
+					"kind": bulkData.kind,
+					"password": await hash(password)
 				} as ProcessedData
 			}))
 
@@ -267,6 +278,10 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		}
 	}
 
+	get modelChainToUser(): ModelCtor<BaseModel>[] {
+		return []
+	}
+
 	private async createStudents(
 		incompleteProfiles: ProcessedDataForStudent[],
 		departmentModels: { [key:string]: Department },
@@ -287,12 +302,12 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				},
 				{
-					"model": StudentDetail,
-					"as": "studentDetail"
+					"as": "studentDetail",
+					"model": StudentDetail
 				}
 			],
 			...this.transaction.transactionObject
@@ -308,7 +323,6 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 
 		return this.serialize(completeUserInfo)
 	}
-
 
 	private async createReachableEmployees(
 		incompleteProfiles: ProcessedDataForEmployee[],
@@ -326,9 +340,9 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 				// End at 5pm
 				const scheduleEnd = 60 * 60 * (12 + 5)
 				return [ ...previousSchedule, {
-					scheduleStart,
+					dayName,
 					scheduleEnd,
-					dayName
+					scheduleStart
 				} ]
 			}
 			return previousSchedule
@@ -344,12 +358,12 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				},
 				{
-					"model": EmployeeSchedule,
-					"as": "employeeSchedules"
+					"as": "employeeSchedules",
+					"model": EmployeeSchedule
 				}
 			],
 			...this.transaction.transactionObject
@@ -388,8 +402,8 @@ export default class UserManager extends BaseManager<User, RawUser, UserQueryPar
 		const users = await this.model.bulkCreate(normalizedProfiles, {
 			"include": [
 				{
-					"model": AttachedRole,
-					"as": "attachedRoles"
+					"as": "attachedRoles",
+					"model": AttachedRole
 				}
 			],
 			...this.transaction.transactionObject

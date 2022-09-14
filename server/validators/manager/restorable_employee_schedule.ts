@@ -30,10 +30,7 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const manager = new Manager(
-		constraints.request.transaction,
-		constraints.request.cache
-	)
+	const manager = new Manager(constraints.request)
 	const foundModel = await manager.findOneOnColumn(
 		constraints.manager.columnName,
 		state.value,

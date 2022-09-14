@@ -1,5 +1,5 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
@@ -11,9 +11,15 @@ import makeFilterRules from "!/rule_sets/make_filter"
 import stringArray from "!/validators/hybrid/string_array"
 
 export default function(
-	ClassName: BaseManagerClass,
+	ClassName: BaseManagerClass<any>,
 	extraFilters: FieldRules,
-	extraQueries: FieldRules = {}
+	{
+		defaultSortColumn = "id",
+		extraQueries = {}
+	}: Partial<{
+		defaultSortColumn: string
+		extraQueries: FieldRules
+	}> = {}
 ): FieldRules {
 	return {
 		...makeFilterRules(extraFilters),
@@ -51,7 +57,7 @@ export default function(
 					},
 					"pipes": [ string, oneOf ]
 				},
-				"nullable": { "defaultValue": "id" }
+				"nullable": { "defaultValue": defaultSortColumn }
 			},
 			"pipes": [ nullable, stringArray ]
 		},

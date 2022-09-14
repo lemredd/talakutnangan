@@ -4,6 +4,7 @@ import type { ChatMessageQueryParameters } from "$/types/query"
 import type { ChatMessageAttributes } from "$/types/documents/chat_message"
 import type { AttachedChatFileDocument } from "$/types/documents/attached_chat_file"
 import type {
+	Model as BaseModel,
 	ModelCtor,
 	FindAndCountOptions,
 	Attributes,
@@ -171,10 +172,10 @@ export default class extends BaseManager<
 		try {
 			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
 
-			const attachedChatFileManager = new AttachedChatFileManager(
-				this.transaction,
-				this.cache
-			)
+			const attachedChatFileManager = new AttachedChatFileManager({
+				"cache": this.cache,
+				"transaction": this.transaction
+			})
 
 			const attachedDocument = await attachedChatFileManager.create({
 				"chatMessageID": model.id,
@@ -197,15 +198,22 @@ export default class extends BaseManager<
 		}
 	}
 
+	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
+		return [
+			ChatMessageActivity,
+			User
+		]
+	}
+
 	private async insertModelWithUpdatedChatMessageActivity(
 		details: RawChatMessageAttributes & CreationAttributes<Model>
 	): Promise<Model> {
 		const model = await this.model.create(details, this.transaction.transactionObject)
 
-		const activityManager = new ChatMessageActivityManager(
-			this.transaction,
-			this.cache
-		)
+		const activityManager = new ChatMessageActivityManager({
+			"cache": this.cache,
+			"transaction": this.transaction
+		})
 
 		await activityManager.update(details.chatMessageActivityID, {
 			"receivedMessageAt": new Date()

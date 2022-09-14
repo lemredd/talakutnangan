@@ -18,7 +18,7 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-import doesBelongToUser from "./does_belong_to_user"
+import doesBelongToCurrentUser from "./does_belong_to_current_user"
 
 describe("Validator: does belong to user", () => {
 	it("can accept valid input", async() => {
@@ -36,7 +36,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -55,12 +55,12 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
+		const sanitizeValue = (await doesBelongToCurrentUser(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(model.id)
 	})
 
-	it("can bypass if it does not own the resurce", async() => {
+	it("can bypass if user does not own the resource", async() => {
 		const START_TIME = 2
 		const END_TIME = 300
 		const role = await new RoleFactory()
@@ -76,7 +76,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -95,9 +95,45 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const sanitizeValue = (await doesBelongToUser(value, constraints)).value
+		const sanitizeValue = (await doesBelongToCurrentUser(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(model.id)
+	})
+
+	it("cannot bypass if user does not own the resource", async() => {
+		const START_TIME = 2
+		const END_TIME = 300
+		const role = await new RoleFactory()
+		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
+		.insertOne()
+		const userFactory = new UserFactory()
+		const admin = await userFactory.attach(role).insertOne()
+		const user = await userFactory.insertOne()
+		const model = await new Factory()
+		.user(() => Promise.resolve(user))
+		.scheduleStart(() => START_TIME)
+		.scheduleEnd(() => END_TIME)
+		.insertOne()
+		const value = Promise.resolve(makeInitialState(model.id))
+		const constraints = {
+			"field": "hello",
+			"manager": {
+				"className": Manager,
+				"columnName": "id"
+			},
+			"request": {
+				"user": userFactory.serialize(admin) as Serializable
+			} as AuthenticatedRequest,
+			"source": {}
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
+		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
+
+		try {
+			await doesBelongToCurrentUser(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 
 	it("cannot accept invalid value", async() => {
@@ -116,7 +152,7 @@ describe("Validator: does belong to user", () => {
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
-			"doesBelongToUser": {
+			"doesBelongToCurrentUser": {
 				"anyPermissionCombinationForBypass": [
 					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -135,9 +171,11 @@ describe("Validator: does belong to user", () => {
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
 		& Partial<DoesBelongToCurrentUserConstraints<UserPermissions>>
 
-		const error = doesBelongToUser(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await doesBelongToCurrentUser(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

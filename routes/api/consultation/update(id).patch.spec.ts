@@ -23,7 +23,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 						"attachedRoleID": newModel.attachedRoleID,
 						"finishedAt": null,
 						"reason": newModel.reason,
-						"scheduledStartAt": newModel.scheduledStartAt,
+						"scheduledStartAt": newModel.scheduledStartAt.toJSON(),
 						"startedAt": newModel.startedAt
 					},
 					"id": String(model.id),
@@ -51,7 +51,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 						"attachedRoleID": consultation.attachedRoleID,
 						"finishedAt": consultation.finishedAt,
 						"reason": consultation.reason,
-						"scheduledStartAt": consultation.scheduledStartAt,
+						"scheduledStartAt": consultation.scheduledStartAt.toJSON(),
 						"startedAt": consultation.startedAt
 					},
 					"id": String(consultation.id),
@@ -63,7 +63,9 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(1)
+		// There are two errors due to `or` validator
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.finishedAt")
+		expect(body).toHaveProperty("1.source.pointer", "data.attributes.finishedAt")
 	})
 })

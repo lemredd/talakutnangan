@@ -1,11 +1,12 @@
-import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
+import type { FieldRules } from "!/types/validation"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
 import { chatMessageKind } from "!/constants/regex"
+import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
@@ -13,6 +14,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import string from "!/validators/base/string"
 import regex from "!/validators/comparison/regex"
@@ -24,7 +26,10 @@ export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(this.manager)
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
@@ -42,18 +47,17 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-
 		return makeResourceDocumentRules("chat_message", attributes)
 	}
 
 	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const { id } = request.params
 		await manager.update(Number(id), request.body.data.attributes)
 
-		const activityManager = new ChatMessageActivityManager(request.transaction, request.cache)
+		const activityManager = new ChatMessageActivityManager(request)
 
 		const activity = await activityManager.findWithID(Number(id)) as ChatMessageActivityDocument
 

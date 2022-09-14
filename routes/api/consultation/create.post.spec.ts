@@ -27,7 +27,7 @@ describe("Controller: POST /api/consultation", () => {
 						"attachedRoleID": model.attachedRoleID,
 						"finishedAt": model.finishedAt,
 						"reason": model.reason,
-						"scheduledStartAt": model.scheduledStartAt
+						"scheduledStartAt": model.scheduledStartAt.toJSON()
 					},
 					"relationships": {
 						"consultant": {
@@ -80,9 +80,9 @@ describe("Controller: POST /api/consultation", () => {
 					"attributes": {
 						"actionTaken": model.actionTaken,
 						"attachedRoleID": model.attachedRoleID,
-						"finishedAt": model.finishedAt,
+						"finishedAt": model.finishedAt?.toJSON(),
 						"reason": model.reason,
-						"scheduledStartAt": model.scheduledStartAt
+						"scheduledStartAt": model.scheduledStartAt.toJSON()
 					},
 					"type": "consultation"
 				}

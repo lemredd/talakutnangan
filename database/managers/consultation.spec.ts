@@ -6,9 +6,26 @@ import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
+import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import type { UserIdentifierDocument } from "$/types/documents/user"
 import Manager from "./consultation"
+
+describe("Database Manager: Consultation read operations", () => {
+	it("can check if model belongs to user", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const model = await new Factory().insertOne()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(model))
+		.insertOne()
+
+		const doesBelong = await manager.isModelBelongsTo(model.id, user.id, manager.modelChainToUser)
+
+		expect(doesBelong).toBeTruthy()
+	})
+})
 
 describe("Database Manager: Consultation create operations", () => {
 	it("can create resource", async() => {
