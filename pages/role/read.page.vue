@@ -91,7 +91,7 @@ import {
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
 
-import RoleNameField from "@/fields/textual.vue"
+import RoleNameField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
 type RequiredExtraProps = "role"

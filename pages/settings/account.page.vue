@@ -55,7 +55,7 @@ form {
 import { provide } from "vue"
 import type { TabInfo } from "$@/types/component"
 
-import TextualField from "@/fields/textual.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 
 const accountInfo = {

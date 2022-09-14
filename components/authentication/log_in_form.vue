@@ -4,7 +4,7 @@
 			v-model="email"
 			label="E-mail"
 			type="email"/>
-		<TextualField
+		<PasswordField
 			v-model="password"
 			label="Password"
 			type="password"/>
@@ -46,7 +46,8 @@ import { ref } from "vue"
 import UserFetcher from "$@/fetchers/user"
 import RequestEnvironment from "$/singletons/request_environment"
 
-import TextualField from "@/fields/textual.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
+import PasswordField from "@/fields/textual.vue"
 
 const email = ref("sample@example.com")
 const password = ref("12345678")
