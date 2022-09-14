@@ -1,6 +1,7 @@
 import type { Pipe } from "$/types/database"
 import type { CommonFilter } from "$/types/query"
 import type { GeneralObject, Serializable } from "$/types/general"
+import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 import type {
 	Model,
 	ModelCtor,
@@ -48,13 +49,13 @@ export default abstract class Manager<
 	X extends number|string= number,
 	Y extends CommonFilter = CommonFilter
 > extends RequestEnvironment {
-	protected transaction: TransactionManager
+	protected transaction: TransactionManagerInterface
 	protected cache: CacheClient
 
-	constructor(
-		transaction: TransactionManager = new TransactionManager(),
-		cache: CacheClient = new CacheClient(Symbol("unknown client"))
-	) {
+	constructor({
+		transaction = new TransactionManager(),
+		cache = new CacheClient(Symbol("unknown client"))
+	}: Partial<SharedManagerState> = {}) {
 		super()
 		this.transaction = transaction
 		this.cache = cache

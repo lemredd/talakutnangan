@@ -38,7 +38,7 @@ export default class extends PageMiddleware {
 		return [
 			new DynamicGatedRedirector(async(request: AuthenticatedRequest) => {
 				const { id } = request.params
-				const manager = new Manager(request.transaction, request.cache)
+				const manager = new Manager(request)
 
 				const consultation = await manager.findWithID(Number(id))
 
@@ -58,7 +58,7 @@ export default class extends PageMiddleware {
 		const user = deserialize(request.user) as DeserializedUserProfile
 
 		const { id } = request.params
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 
 		const consultations = await manager.list({
 			"filter": {
@@ -104,7 +104,7 @@ export default class extends PageMiddleware {
 		})
 
 
-		const chatMessageManager = new ChatMessageManager(request.transaction, request.cache)
+		const chatMessageManager = new ChatMessageManager(request)
 		const chatMessages = await chatMessageManager.list({
 			"filter": {
 				"consultationIDs": [ Number(consultation.data.id) ],

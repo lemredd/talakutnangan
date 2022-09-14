@@ -67,7 +67,7 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const query = request.query as unknown as Pick<RoleQueryParameters<number>, "filter">
 
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 		const rolesWithUserCount = await manager
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		.countUsers(query.filter.IDs!) as RoleResourceIdentifier

@@ -30,10 +30,7 @@ export default async function(
 	}
 
 	const userProfile = deserialize(constraints.request.user) as DeserializedUserProfile
-	const manager = new constraints.manager.className(
-		constraints.request.transaction,
-		constraints.request.cache
-	)
+	const manager = new constraints.manager.className(constraints.request)
 
 	const userID = Number(userProfile.data.id)
 	const modelID = Number(state.value)

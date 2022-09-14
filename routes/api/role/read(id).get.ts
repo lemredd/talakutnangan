@@ -1,5 +1,5 @@
 import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
@@ -22,7 +22,7 @@ export default class extends BoundController {
 	get manager(): BaseManagerClass { return RoleManager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<OkResponseInfo> {
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 		const { id } = request.params
 
 		const document = await manager.findWithID(Number(id), {

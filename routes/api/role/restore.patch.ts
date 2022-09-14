@@ -30,7 +30,7 @@ export default class extends JSONController {
 
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new RoleManager(request.transaction, request.cache)
+		const manager = new RoleManager(request)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
 		await manager.restoreBatch(IDs)

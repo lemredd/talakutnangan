@@ -29,7 +29,7 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new AuditTrailManager(request.transaction, request.cache)
+		const manager = new AuditTrailManager(request)
 		const auditTrails = await manager.list(constraints as CommonQueryParameters)
 
 		return new ListResponse(auditTrails)

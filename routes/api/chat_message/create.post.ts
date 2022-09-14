@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
 import Socket from "!/ws/socket"
@@ -70,7 +70,7 @@ export default class extends JSONController {
 	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const { data } = request.body as ChatMessageDocument<"create">
 		const { attributes, relationships } = data
 		const chatMessageActivityID = Number(relationships.chatMessageActivity.data.id)

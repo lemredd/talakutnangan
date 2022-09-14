@@ -1,6 +1,6 @@
 import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/independent"
+import type { BaseManagerClass } from "!/types/dependent"
 import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 
 import Socket from "!/ws/socket"
@@ -53,11 +53,11 @@ export default class extends DoubleBoundJSONController {
 	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new Manager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const { id } = request.params
 		await manager.update(Number(id), request.body.data.attributes)
 
-		const activityManager = new ChatMessageActivityManager(request.transaction, request.cache)
+		const activityManager = new ChatMessageActivityManager(request)
 
 		const activity = await activityManager.findWithID(Number(id)) as ChatMessageActivityDocument
 
