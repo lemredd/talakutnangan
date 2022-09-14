@@ -54,7 +54,7 @@ extends GeneralRelationshipData {
 		serialized: DepartmentIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedDepartmentDocument<"attached">
 	},
-	role: {
+	roles: {
 		serialized: RoleIdentifierListDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedRoleListDocument<"attached">
 	},
