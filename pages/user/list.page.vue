@@ -43,6 +43,7 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 
+provide("managerKind", new Manager(userProfile))
 if (currentResourceManager.isAdmin()) {
 	const tabs = [
 		{
@@ -58,7 +59,6 @@ if (currentResourceManager.isAdmin()) {
 			"path": "/department/list"
 		}
 	]
-	provide("managerKind", new Manager(userProfile))
 	provide("tabs", tabs)
 }
 

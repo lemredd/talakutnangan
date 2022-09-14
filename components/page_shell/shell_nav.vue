@@ -1,6 +1,6 @@
 <template>
 	<div class="navigation">
-		<div class="container">
+		<div class="wrapper">
 			<a href="/" class="logo">
 				<img src="@assets/logo_navbar.svg" alt="logo"/>
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
@@ -72,7 +72,7 @@
 	height: $navHeight;
 	max-width: 900px;
 
-	.container {
+	.wrapper {
 		@apply grid grid-cols-[1fr,repeat(3,min-content)] flex-1;
 	}
 
@@ -93,7 +93,7 @@
 }
 
 @media screen and (min-width: $desktopViewportMinimum) {
-	.container {
+	.wrapper {
 		margin: auto;
 	}
 
