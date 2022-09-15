@@ -13,7 +13,13 @@ import stringArray from "!/validators/hybrid/string_array"
 export default function(
 	ClassName: BaseManagerClass<any>,
 	extraFilters: FieldRules,
-	extraQueries: FieldRules = {}
+	{
+		defaultSortColumn = "id",
+		extraQueries = {}
+	}: Partial<{
+		defaultSortColumn: string
+		extraQueries: FieldRules
+	}> = {}
 ): FieldRules {
 	return {
 		...makeFilterRules(extraFilters),
@@ -51,7 +57,7 @@ export default function(
 					},
 					"pipes": [ string, oneOf ]
 				},
-				"nullable": { "defaultValue": "id" }
+				"nullable": { "defaultValue": defaultSortColumn }
 			},
 			"pipes": [ nullable, stringArray ]
 		},
