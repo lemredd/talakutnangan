@@ -9,7 +9,7 @@ describe("Database Pipe: Sift by kind", () => {
 
 		const options = siftByKind({}, {
 			"filter": {
-				"chatMessageKind": "*"
+				"chatMessageKinds": "*"
 			}
 		})
 		const foundModels = await Model.findAll(options)
@@ -23,7 +23,7 @@ describe("Database Pipe: Sift by kind", () => {
 
 		const options = siftByKind({}, {
 			"filter": {
-				"chatMessageKind": model.kind
+				"chatMessageKinds": [ model.kind ]
 			}
 		})
 		const foundModels = await Model.findAll(options)
@@ -39,7 +39,7 @@ describe("Database Pipe: Sift by kind", () => {
 		const options = siftByKind({}, {
 			"filter": {
 				// Repeat the kind name so there will be no match
-				"chatMessageKind": model.kind + model.kind
+				"chatMessageKinds": [ model.kind + model.kind ]
 			}
 		})
 		const foundModels = await Model.findAll(options)
