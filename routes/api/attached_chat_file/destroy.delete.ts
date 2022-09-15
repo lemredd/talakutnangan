@@ -1,15 +1,14 @@
 import { FieldRules } from "!/types/validation"
 import { Request, Response } from "!/types/dependent"
 
-import Policy from "!/bases/policy"
-import Manager from "%/managers/role"
 import JSONController from "!/controllers/json"
+import Manager from "%/managers/attached_chat_file"
+import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
+import Policy from "!/bases/policy"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierListDocumentRules
@@ -19,13 +18,14 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			ARCHIVE_AND_RESTORE
-		])
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(Manager)
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeResourceIdentifierListDocumentRules("role", exists, Manager)
+		return makeResourceIdentifierListDocumentRules("attached_chat_file", exists, Manager)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
@@ -35,11 +35,5 @@ export default class extends JSONController {
 		await manager.archiveBatch(IDs)
 
 		return new NoContentResponseInfo()
-	}
-
-	get postJobs(): ActionAuditor[] {
-		return [
-			new ActionAuditor("role.archive")
-		]
 	}
 }
