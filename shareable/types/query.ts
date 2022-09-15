@@ -106,7 +106,7 @@ export interface ChatMessageLKindFilter extends Serializable {
 		/**
 		 * Kind of messages to get from server
 		 */
-		chatMessageKind: "*"|Message["kind"]
+		chatMessageKinds: "*"|Message["kind"][]
 	}
 }
 
