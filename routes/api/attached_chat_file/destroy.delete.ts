@@ -11,6 +11,7 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import exists from "!/validators/manager/exists"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
 
@@ -18,14 +19,15 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new Merger([
-			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
-			new BelongsToCurrentUserPolicy(Manager)
-		]) as unknown as Policy
+		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeResourceIdentifierListDocumentRules("attached_chat_file", exists, Manager)
+		return makeResourceIdentifierListDocumentRules("attached_chat_file", exists, Manager, {
+			"postIDRules": {
+				"pipes": [ doesBelongToCurrentUser ]
+			}
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
