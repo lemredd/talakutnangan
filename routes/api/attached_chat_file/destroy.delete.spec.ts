@@ -1,12 +1,12 @@
-import Factory from "~/factories/role"
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/set-ups/mock_requester"
+import Factory from "~/factories/attached_chat_file"
 
-import Controller from "./archive.delete"
+import Controller from "./destroy.delete"
 
 const BODY_VALIDATION_INDEX = 0
 
-describe("Controller: DELETE /api/role", () => {
+describe("Controller: DELETE /api/attached_chat_file", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
@@ -14,13 +14,13 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new Factory().insertOne()
+		const model = await new Factory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "attached_chat_file"
 					}
 				]
 			}
@@ -31,19 +31,19 @@ describe("Controller: DELETE /api/role", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept already-archived resources", async() => {
+	it("cannot accept already-destroyed resources", async() => {
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new Factory().insertOne()
-		await role.destroy({ "force": false })
+		const model = await new Factory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "attached_chat_file"
 					}
 				]
 			}
@@ -61,14 +61,14 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new Factory().insertOne()
-		await role.destroy({ "force": true })
+		const model = await new Factory().insertOne()
+		await model.destroy({ "force": true })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "attached_chat_file"
 					}
 				]
 			}
