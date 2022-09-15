@@ -40,7 +40,7 @@ describe("UI Component: Resource Manager", () => {
 				"props": {
 					"resource": sampleUserList
 				},
-				"shallow": true,
+				"shallow": true
 			})
 
 			const filters = wrapper.find(".filters")

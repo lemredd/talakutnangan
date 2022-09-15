@@ -27,7 +27,7 @@ function makeList() {
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 		], (request: AuthenticatedRequest) => {
-			const currentUser = deserialize(request.user) as DeserializedUserDocument
+			const currentUser = deserialize(request.user) as DeserializedUserDocument<"roles">
 			const roles = currentUser.data.roles.data
 			const hasWidePermission = user.hasOneRoleAllowed(
 				roles,
