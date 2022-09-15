@@ -1,8 +1,6 @@
 import UserFactory from "~/factories/user"
-import Model from "%/models/attached_chat_file"
 import Factory from "~/factories/attached_chat_file"
 import ChatMessageFactory from "~/factories/chat_message"
-import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import Manager from "./attached_chat_file"
 
