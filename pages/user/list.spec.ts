@@ -138,7 +138,9 @@ describe("Page: user/list", () => {
 			})
 			const fetchedData = (await response).body.data
 
-			expect(fetchedData).toStrictEqual([ userProfile.data as DeserializedUserResource ])
+			expect(fetchedData).toStrictEqual([
+				JSON.parse(JSON.stringify(userProfile.data)) as DeserializedUserResource
+			])
 
 			// TODO(lead): ensure user is in list
 			/*

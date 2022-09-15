@@ -305,9 +305,11 @@ describe("UI Page: Read resource by ID", () => {
 		) as ChatMessageActivity
 		const chatMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.kind(() => "text")
 		.insertMany(INITIAL_MESSAGE_COUNT)
 		const sampleChatMessageModel = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.kind(() => "text")
 		.insertOne()
 
 		const userResource = userFactory.deserialize(
@@ -371,6 +373,9 @@ describe("UI Page: Read resource by ID", () => {
 					"updatedAt": new Date().toJSON()
 				},
 				"id": chatMessageResources.data[0].id,
+				"relationships": {
+					"user": sampleChatMessageResource.data.user
+				},
 				"type": "chat_message"
 			}
 		} as ChatMessageDocument)
@@ -378,9 +383,9 @@ describe("UI Page: Read resource by ID", () => {
 		await nextTick()
 
 		const chatEntries = wrapper.findAll(".chat-entry")
-		expect(chatEntries[0].text()).toContain(sampleUpdatedChatMessageResource.data.data.value)
-		expect(chatEntries[1].text()).toContain(chatMessageResources.data[1].data.value)
-		expect(chatEntries[2].text()).toContain(sampleChatMessageResource.data.data.value)
+		expect(chatEntries[0].html()).toContain(sampleUpdatedChatMessageResource.data.data.value)
+		expect(chatEntries[1].html()).toContain(chatMessageResources.data[1].data.value)
+		expect(chatEntries[2].html()).toContain(sampleChatMessageResource.data.data.value)
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
