@@ -1,10 +1,11 @@
+import type { PageContext } from "$/types/renderer"
 import type PermissionGroup from "$/permissions/base"
-import type { DeserializedPageContext, ConditionalLinkInfo, LinkInfo } from "$@/types/independent"
+import type { ConditionalLinkInfo, LinkInfo } from "$@/types/independent"
 
 import isUndefined from "$/type_guards/is_undefined"
 
 export default function<T, U extends PermissionGroup<any, T>>(
-	context: DeserializedPageContext,
+	context: PageContext<"deserialized">,
 	conditionalLinkInfos: ConditionalLinkInfo<T, U>[]
 ): LinkInfo[] {
 	const { userProfile } = context.pageProps
