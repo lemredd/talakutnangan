@@ -101,7 +101,7 @@ export interface ConsultationFilter<T extends number|string = string> extends Se
 	}
 }
 
-export interface ChatMessageLKindFilter extends Serializable {
+export interface ChatMessageKindFilter extends Serializable {
 	filter: {
 		/**
 		 * Kind of messages to get from server
@@ -171,4 +171,4 @@ export type ChatMessageActivityQueryParameters<T extends number|string = string>
 export type ChatMessageQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& ConsultationFilter<T>
-	& ChatMessageLKindFilter
+	& ChatMessageKindFilter
