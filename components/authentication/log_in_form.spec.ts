@@ -21,8 +21,8 @@ describe("Component: Log In Form", () => {
 
 		const wrapper = shallowMount(LogInForm)
 
-		const textualFields = wrapper.findAllComponents({ "name": "TextualField" })
-		const [ emailField, passwordField ] = textualFields
+		const emailField = wrapper.findComponent({ "name": "TextualField" })
+		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find("#submit-btn")
 
 		await emailField.setValue("dean@example.net")
@@ -98,8 +98,8 @@ describe("Component: Log In Form", () => {
 
 		const wrapper = shallowMount(LogInForm)
 
-		const textualFields = wrapper.findAllComponents({ "name": "TextualField" })
-		const [ emailField, passwordField ] = textualFields
+		const emailField = wrapper.findComponent({ "name": "TextualField" })
+		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find("#submit-btn")
 
 		await emailField.setValue("dean@example.net")
