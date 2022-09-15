@@ -1,9 +1,11 @@
+import type { Message } from "$/types/message"
+
 import Model from "%/models/chat_message"
 import Factory from "~/factories/chat_message"
 
-import siftByKind from "./sift_by_kind"
+import siftByKind from "./sift_by_kinds"
 
-describe("Database Pipe: Sift by kind", () => {
+describe("Database Pipe: Sift by kinds", () => {
 	it("can find all models", async() => {
 		const model = await new Factory().insertOne()
 
@@ -23,7 +25,7 @@ describe("Database Pipe: Sift by kind", () => {
 
 		const options = siftByKind({}, {
 			"filter": {
-				"chatMessageKinds": [ model.kind ]
+				"chatMessageKinds": [ model.kind ] as Message["kind"][]
 			}
 		})
 		const foundModels = await Model.findAll(options)
@@ -39,7 +41,7 @@ describe("Database Pipe: Sift by kind", () => {
 		const options = siftByKind({}, {
 			"filter": {
 				// Repeat the kind name so there will be no match
-				"chatMessageKinds": [ model.kind + model.kind ]
+				"chatMessageKinds": [ model.kind + model.kind ] as Message["kind"][]
 			}
 		})
 		const foundModels = await Model.findAll(options)
