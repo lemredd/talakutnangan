@@ -30,7 +30,7 @@ describe("Database Pipe: Sift by kinds", () => {
 		})
 		const foundModels = await Model.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where")
+		expect(options).toHaveProperty("where")
 		expect(foundModels).toHaveLength(1)
 		expect(foundModels).toHaveProperty("0.id", model.id)
 	})
@@ -46,7 +46,7 @@ describe("Database Pipe: Sift by kinds", () => {
 		})
 		const foundModels = await Model.findAll(options)
 
-		expect(options).toHaveProperty("include.0.where")
+		expect(options).toHaveProperty("where")
 		expect(foundModels).toHaveLength(0)
 	})
 })
