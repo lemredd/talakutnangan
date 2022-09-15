@@ -1,5 +1,6 @@
 import type { Serializable } from "$/types/general"
 import type { UserKind, Day } from "$/types/database"
+import type { Message } from "$/types/message"
 
 export interface ExistenceFilter extends Serializable {
 	filter: {
@@ -100,6 +101,15 @@ export interface ConsultationFilter<T extends number|string = string> extends Se
 	}
 }
 
+export interface ChatMessageLKindFilter extends Serializable {
+	filter: {
+		/**
+		 * Kind of messages to get from server
+		 */
+		chatMessageKind: "*"|Message["kind"]
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -161,3 +171,4 @@ export type ChatMessageActivityQueryParameters<T extends number|string = string>
 export type ChatMessageQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& ConsultationFilter<T>
+	& ChatMessageLKindFilter
