@@ -10,7 +10,7 @@ import findMinutesAfterMidnight from "%/managers/helpers/find_minutes_after_midn
 
 import Manager from "./employee_schedule"
 
-describe("Database Manager: Employee schedule update operations", () => {
+describe.skip("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
@@ -88,7 +88,7 @@ describe("Database Manager: Employee schedule update operations", () => {
 	})
 })
 
-describe("Database Manager: Employee schedule archive operations", () => {
+describe.skip("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resources", async() => {
 		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
 		FUTURE_DATE.setHours(8)

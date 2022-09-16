@@ -1,10 +1,28 @@
 import type { Serializable } from "$/types/general"
-import type { DeserializedRoleListDocument } from "$/types/documents/role"
-import type { DeserializedSignatureDocument } from "$/types/documents/signature"
-import type { DeserializedDepartmentDocument } from "$/types/documents/department"
-import type { DeserializedStudentDetailDocument } from "$/types/documents/student_detail"
-import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
-import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
+import type {
+	RoleIdentifierListDocument,
+	DeserializedRoleListDocument
+} from "$/types/documents/role"
+import type {
+	SignatureIdentifierDocument,
+	DeserializedSignatureDocument
+} from "$/types/documents/signature"
+import type {
+	DepartmentIdentifierDocument,
+	DeserializedDepartmentDocument
+} from "$/types/documents/department"
+import type {
+	StudentDetailIdentifierDocument,
+	DeserializedStudentDetailDocument
+} from "$/types/documents/student_detail"
+import type {
+	ProfilePictureIdentifierDocument,
+	DeserializedProfilePictureDocument
+} from "$/types/documents/profile_picture"
+import type {
+	EmployeeScheduleIdentifierListDocument,
+	DeserializedEmployeeScheduleListDocument
+} from "$/types/documents/employee_schedule"
 import type {
 	Completeness,
 	Format,
@@ -20,9 +38,51 @@ import type {
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
 
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
+
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
+
+interface UserRelationshipData<T extends Completeness = "read">
+extends GeneralRelationshipData {
+	department: {
+		serialized: DepartmentIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
+		deserialized: DeserializedDepartmentDocument<"attached">
+	},
+	roles: {
+		serialized: RoleIdentifierListDocument<T extends "create"|"update" ? "attached" : T>,
+		deserialized: DeserializedRoleListDocument<"attached">
+	},
+	profilePicture: {
+		serialized: ProfilePictureIdentifierDocument,
+		deserialized: DeserializedProfilePictureDocument
+	},
+	signature: {
+		serialized: SignatureIdentifierDocument,
+		deserialized: DeserializedSignatureDocument
+	},
+	studentDetail: {
+		serialized: StudentDetailIdentifierDocument,
+		deserialized: DeserializedStudentDetailDocument
+	},
+	employeeSchedule: {
+		serialized: EmployeeScheduleIdentifierListDocument,
+		deserialized: DeserializedEmployeeScheduleListDocument
+	}
+}
+
+export type UserRelationshipNames = DeriveRelationshipNames<UserRelationshipData>
+
+export type UserRelationships<T extends Completeness = "read">
+= DeriveRelationships<UserRelationshipData<T>>
+
+export type DeserializedUserRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<UserRelationshipData<T>>
 
 export interface UserResourceIdentifier<T extends Completeness = "read">
 extends ResourceIdentifier<T> {
@@ -55,22 +115,13 @@ export type UserAttributes<T extends Format = "serialized"> =
 	| ReachableEmployeesAttributes<T>
 	| UnreachableEmployeesAttributes<T>
 
-interface DeserializedGeneralUserAttributes extends GeneralUserAttributes<"deserialized"> {
-	department: DeserializedDepartmentDocument<"attached">,
-	roles: DeserializedRoleListDocument<"attached">,
-	profilePicture?: DeserializedProfilePictureDocument,
-	signature?: DeserializedSignatureDocument
-}
+type DeserializedGeneralUserAttributes = GeneralUserAttributes<"deserialized">
 
 interface DeserializedStudentAttributes
-extends DeserializedGeneralUserAttributes, StudentAttributes<"deserialized"> {
-	studentDetail: DeserializedStudentDetailDocument
-}
+extends DeserializedGeneralUserAttributes, StudentAttributes<"deserialized"> {}
 
 interface DeserializedReachableEmployeesAttributes
-extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes<"deserialized"> {
-	employeeSchedules: DeserializedEmployeeScheduleListDocument
-}
+extends DeserializedGeneralUserAttributes, ReachableEmployeesAttributes<"deserialized"> {}
 
 interface DeserializedUnreachableEmployeesAttributes
 extends DeserializedGeneralUserAttributes, UnreachableEmployeesAttributes<"deserialized"> {}
@@ -101,10 +152,19 @@ export type DeserializedUnreachableEmployeesResource = DeserializedResource<
 	DeserializedUnreachableEmployeesAttributes
 >
 
-export type DeserializedUserResource =
+export type DeserializedUserResource<
+	T extends UserRelationshipNames|undefined = undefined
+> = (
 	| DeserializedStudentResource
 	| DeserializedReachableEmployeesResource
 	| DeserializedUnreachableEmployeesResource
+) & PartialOrPickDeserializedRelationship<
+	UserRelationshipData<"read">,
+	DeserializedUserRelationships<"read">,
+	UserRelationshipNames,
+	T extends UserRelationshipNames ? true : false,
+	T extends UserRelationshipNames ? T : UserRelationshipNames
+>
 
 export type UserDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
@@ -120,24 +180,29 @@ export type UserListDocument<T extends Completeness = "read"> = ResourceListDocu
 	UserResource<T>
 >
 
-export type DeserializedUserDocument = DeserializedResourceDocument<
+export type DeserializedUserDocument<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
-	DeserializedUserResource
+	DeserializedUserResource<T>
 >
 
-export type DeserializedUserListDocument = DeserializedResourceListDocument<
+export type DeserializedUserListDocument<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	UserResourceIdentifier<"read">,
 	DeserializedUserAttributes,
-	DeserializedUserResource
+	DeserializedUserResource<T>
 >
 
 interface GeneralUserProfileMetaProperties extends Serializable {
 	hasDefaultPassword?: boolean
 }
 
-export interface DeserializedUserProfile
-extends DeserializedUserDocument, MetaDocument<GeneralUserProfileMetaProperties> {}
+export type DeserializedUserProfile<
+	T extends UserRelationshipNames|undefined = undefined
+> = DeserializedUserDocument<T> & MetaDocument<GeneralUserProfileMetaProperties>
 
 export type UserIdentifierDocument
 = IdentifierDocument<UserResourceIdentifier<"read">>

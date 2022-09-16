@@ -1,7 +1,7 @@
 /* eslint-disable no-tabs */
 /* eslint-disable no-undef */
 /* eslint-disable vue/sort-keys */
-import { mount, flushPromises } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
@@ -33,7 +33,7 @@ describe("Page: user/list", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
-			const userProfile = user as DeserializedUserProfile
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
 			fetchMock.mockResponse(
 				JSON.stringify({
@@ -71,7 +71,7 @@ describe("Page: user/list", () => {
 			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne()
-			const userProfile = user as DeserializedUserProfile
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
 			fetchMock.mockResponse(
 				JSON.stringify({
@@ -112,7 +112,7 @@ describe("Page: user/list", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
-			const userProfile = user as DeserializedUserProfile
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
 			fetchMock.mockResponse(
 				JSON.stringify({
@@ -138,7 +138,9 @@ describe("Page: user/list", () => {
 			})
 			const fetchedData = (await response).body.data
 
-			expect(fetchedData).toStrictEqual([ userProfile.data as DeserializedUserResource ])
+			expect(fetchedData).toStrictEqual([
+				JSON.parse(JSON.stringify(userProfile.data)) as DeserializedUserResource
+			])
 
 			// TODO(lead): ensure user is in list
 			/*

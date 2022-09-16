@@ -65,7 +65,9 @@ type OptionalPageProps<
 
 interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	// Added to pass data from server to client
-	userProfile: T extends "deserialized" ? DeserializedUserProfile : Serializable|null
+	userProfile: T extends "deserialized"
+		? DeserializedUserProfile<"roles"|"department">
+		: Serializable|null
 
 	roles: OptionalPageProps<T, DeserializedRoleListDocument>,
 	role: OptionalPageProps<T, DeserializedRoleDocument>

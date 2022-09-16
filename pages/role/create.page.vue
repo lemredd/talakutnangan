@@ -65,7 +65,7 @@ import {
 	profanity,
 	auditTrail
 } from "$/permissions/permission_list"
-import TextualField from "@/fields/textual.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
 const roleName = ref("")

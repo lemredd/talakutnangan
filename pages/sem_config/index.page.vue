@@ -42,7 +42,7 @@ main {
 
 <script setup lang="ts">
 import { ref } from "vue"
-import TextualField from "@/fields/textual.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
 
 const sd= ref("Start date")
 const ed = ref("End date")

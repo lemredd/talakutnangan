@@ -30,12 +30,12 @@ describe("Component: Resource List", () => {
 			const wrapper = mount(ResourceList, {
 				"global": {
 					"provide": {
-						"managerKind": new Manager(user as DeserializedUserProfile)
+						"managerKind": new Manager(user as DeserializedUserProfile<"roles"|"department">)
 					}
 				},
 				"props": {
-					"searchFilter": "",
-					"filteredList": sampleUserList.data
+					"filteredList": sampleUserList.data,
+					"searchFilter": ""
 				}
 			})
 

@@ -55,72 +55,9 @@ describe("UI Component: Resource Manager", () => {
 								"roles": deserializedRoles
 							}
 						},
-						"managerKind": new Manager(user as DeserializedUserProfile)
-					}
-				}
-			})
-
-			const filters = wrapper.find(".filters")
-			expect(filters.exists()).toBeTruthy()
-		})
-	})
-
-	describe("Additional Filters", () => {
-		it("Should update users with given role filters", async() => {
-			async function listUser() {
-				const department = await new DepartmentFactory().mayAdmit().insertOne()
-				const role = await new RoleFactory()
-				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-				.insertOne()
-
-				return (
-					await new UserFactory()
-					.in(department)
-					.attach(role)
-					.deserializedOne()
-				).data
-			}
-
-			const managerDept = await new DepartmentFactory().mayAdmit()
-			.insertOne()
-			const managerRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-			.insertOne()
-			const user = await new UserFactory().in(managerDept)
-			.attach(managerRole)
-			.deserializedOne()
-
-			const sampleUserList = []
-			for (let i = 0; i < 5; i++) {
-				// eslint-disable-next-line no-await-in-loop
-				sampleUserList.push(await listUser())
-			}
-
-			const deserializedRoles = {
-				"data": [] as any[]
-			}
-			sampleUserList.forEach(sampleUser => {
-				sampleUser.roles.data.forEach(sampleRole => deserializedRoles.data.push(sampleRole))
-			})
-
-			const deserializedDepartments = await new DepartmentFactory()
-			.mayAdmit()
-			.deserializedMany(7)
-
-			const wrapper = mount(ResourceManager, {
-				"shallow": true,
-				"props": {
-					"resource": sampleUserList
-				},
-				"global": {
-					"provide": {
-						"pageContext": {
-							"pageProps": {
-								"roles": deserializedRoles,
-								"departments": deserializedDepartments
-							}
-						},
-						"managerKind": new Manager(user as DeserializedUserProfile)
+						"managerKind": new Manager(
+							user as DeserializedUserProfile<"roles" | "department">
+						)
 					}
 				}
 			})

@@ -20,26 +20,8 @@ describe("Component: consultation/list/profile_picture_item", () => {
 			}
 		})
 
-		const image = wrapper.find("img")
-		const source = image.attributes("src")
+		const profilePicture = wrapper.findComponent({ "name": "ProfilePicture" })
 
-		expect(source).toBe("/images/profile.png")
-	})
-
-	it("should show if user has profile picture", () => {
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"activity": {
-					"user": {
-						"data": {}
-					}
-				}
-			}
-		})
-
-		const image = wrapper.find("img")
-		const source = image.attributes("src")
-
-		expect(source).toBe("stub")
+		expect(profilePicture.exists()).toBeTruthy()
 	})
 })
