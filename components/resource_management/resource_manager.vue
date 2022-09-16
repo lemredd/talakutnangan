@@ -59,8 +59,8 @@ import SelectableFilter from "@/fields/selectable_options.vue"
 
 type AdditionalFilter = "departments" | "roles"
 type DefinedEmits = {
-	(e: "filterByRole", id: string | number): void
-	(e: "filterByDept", id: string | number): void
+	(e: "filterByRole", id: string): void
+	(e: "filterByDept", id: string): void
 }
 
 const { resource } = defineProps<{
