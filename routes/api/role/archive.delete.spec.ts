@@ -1,5 +1,6 @@
+import Factory from "~/factories/role"
 import ErrorBag from "$!/errors/error_bag"
-import RoleFactory from "~/factories/role"
+import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"
 
 import Controller from "./archive.delete"
@@ -14,13 +15,14 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
+		const model = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "role"
 					}
 				]
 			}
@@ -36,14 +38,14 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
-		await role.destroy({ "force": false })
+		const model = await new Factory().insertOne()
+		await model.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "role"
 					}
 				]
 			}
@@ -61,14 +63,14 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
-		await role.destroy({ "force": true })
+		const model = await new Factory().insertOne()
+		await model.destroy({ "force": true })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "role",
-						"id": String(role.id)
+						"id": String(model.id),
+						"type": "role"
 					}
 				]
 			}
