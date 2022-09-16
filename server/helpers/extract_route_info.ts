@@ -24,11 +24,11 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 			break
 		case "api":
 			/*
-			 * Trim "list", "create", "read", "update", "archive", or "restore" suffix for API routes
-			 * ID parameter is the only parameter that can be retained if is a suffix
+			 * Trim "list", "create", "read", "update", "archive", "restore", or "destroy" suffix for
+			 * API routes ID parameter is the only parameter that can be retained if is a suffix
 			 */
 			path = path.replace(
-				/^\/(.*?)\/?(list|create|read|update|archive|restore)(\/:id)?$/u,
+				/^\/(.*?)\/?(list|create|read|update|archive|restore|destroy)(\/:id)?$/u,
 				"/$1$3"
 			)
 			break
