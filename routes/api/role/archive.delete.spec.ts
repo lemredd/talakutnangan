@@ -16,7 +16,8 @@ describe("Controller: DELETE /api/role", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const model = await new Factory().insertOne()
-		await new UserFactory().attach(model).insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(model).attach(otherModel).insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
