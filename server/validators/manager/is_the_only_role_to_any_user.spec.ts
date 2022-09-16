@@ -2,7 +2,6 @@ import type { Request } from "!/types/dependent"
 
 import "~/set-ups/database.set_up"
 import Factory from "~/factories/role"
-import Manager from "%/managers/role"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
 import IsTheOnlyRoleToAnyUser from "./is_the_only_role_to_any_user"
@@ -14,10 +13,6 @@ describe("Validator: Is the only role to any user", () => {
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
 			"field": "hello",
-			"manager": {
-				"className": Manager,
-				"columnName": "id"
-			},
 			"request": {} as Request,
 			"source": null
 		}
@@ -34,10 +29,6 @@ describe("Validator: Is the only role to any user", () => {
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
 			"field": "hello",
-			"manager": {
-				"className": Manager,
-				"columnName": "id"
-			},
 			"request": {} as Request,
 			"source": null
 		}
