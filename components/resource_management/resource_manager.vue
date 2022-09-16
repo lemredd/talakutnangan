@@ -103,7 +103,7 @@ function getFilterOptions(resources: PossibleResources[]) {
 
 function filterByAdditional(selectedFilterId: string, filterKind: AdditionalFilter) {
 	if (filterKind === "roles") emit("filterByRole", selectedFilterId)
-	if (filterKind === "departments") emit("filterByRole", selectedFilterId)
+	if (filterKind === "departments") emit("filterByDept", selectedFilterId)
 }
 
 onUpdated(() => {

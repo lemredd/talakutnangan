@@ -12,7 +12,10 @@ import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
@@ -133,6 +136,76 @@ describe("UI Component: Resource Manager", () => {
 			await roleFilter.setValue("1")
 			expect(roleFilter.emitted("update:modelValue")).toStrictEqual([ [ "1" ] ])
 			expect(wrapper.emitted("filterByRole")).toStrictEqual([ [ "1" ] ])
+		})
+
+		it("Should update users with given department filters", async() => {
+			async function listUser() {
+				const department = await new DepartmentFactory().mayAdmit().insertOne()
+				const role = await new RoleFactory()
+				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+				.insertOne()
+
+				return (
+					await new UserFactory()
+					.in(department)
+					.attach(role)
+					.deserializedOne()
+				).data
+			}
+
+			const managerDept = await new DepartmentFactory().mayAdmit()
+			.insertOne()
+			const managerRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+			.insertOne()
+			const user = await new UserFactory().in(managerDept)
+			.attach(managerRole)
+			.deserializedOne()
+
+			const sampleUserList = []
+			for (let i = 0; i < 5; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				sampleUserList.push(await listUser())
+			}
+
+			const deserializedRoles = {
+				"data": [] as any[]
+			}
+			sampleUserList.forEach(sampleUser => {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				sampleUser.roles!.data.forEach(sampleRole => deserializedRoles.data.push(sampleRole))
+			})
+
+			const deserializedDepartments = await new DepartmentFactory()
+			.mayAdmit()
+			.deserializedMany(7)
+
+			const wrapper = mount(ResourceManager, {
+				"shallow": true,
+				"props": {
+					"resource": sampleUserList
+				},
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"roles": deserializedRoles,
+								"departments": deserializedDepartments
+							}
+						},
+						"managerKind": new Manager(
+							user as DeserializedUserProfile<"roles" | "department">
+						)
+					}
+				}
+			})
+			const [
+				unusedRoleFilter,
+				deptFilter
+			] = wrapper.findAllComponents({ "name": "SelectableFilter" })
+
+			await deptFilter.setValue("1")
+			expect(wrapper.emitted("filterByDept")).toStrictEqual([ [ "1" ] ])
 		})
 	})
 })
