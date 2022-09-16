@@ -3,12 +3,17 @@ import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
 	Completeness,
 	Resource,
+
 	ResourceIdentifier,
 	DeserializedResource,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
-	DeserializedResourceListDocument
+	DeserializedResourceListDocument,
+
+	IdentifierDocument,
+	IdentifierListDocument
 } from "$/types/documents/base"
 
 export interface SignatureResourceIdentifier<T extends Completeness = "read">
@@ -67,3 +72,9 @@ export type DeserializedSignatureListDocument<T extends Format = "serialized">
 	SignatureAttributes<T>,
 	DeserializedSignatureResource<T>
 >
+
+export type SignatureIdentifierDocument
+= IdentifierDocument<SignatureResourceIdentifier<"read">>
+
+export type SignatureIdentifierListDocument
+= IdentifierListDocument<SignatureResourceIdentifier<"read">>

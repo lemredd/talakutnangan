@@ -3,33 +3,21 @@ import makeDefaultPassword from "./make_default_password"
 
 describe("Helpers: Make default password", () => {
 	it("can generate for student", () => {
-		const userProfile: DeserializedUserProfile = {
+		const userProfile: DeserializedUserProfile<"studentDetail"> = {
 			"data": {
-				"type": "user",
-				"id": "1",
-				"name": "",
 				"email": "",
+				"id": "1",
 				"kind": "student",
+				"name": "",
 				"prefersDark": false,
-				"roles": {
-					"data": []
-				},
 				"studentDetail": {
 					"data": {
 						"id": "1",
-						"type": "student_detail",
-						"studentNumber": "0000-000"
+						"studentNumber": "0000-000",
+						"type": "student_detail"
 					}
 				},
-				"department": {
-					"data": {
-						"id": "1",
-						"type": "department",
-						"mayAdmit": true,
-						"acronym": "A",
-						"fullName": "A"
-					}
-				}
+				"type": "user"
 			},
 			"meta": {
 				"hasDefaultPassword": false
@@ -44,27 +32,12 @@ describe("Helpers: Make default password", () => {
 	it("can generate for reachable employee", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
-				"type": "user",
-				"id": "1",
-				"name": "",
 				"email": "hello.world@example.com",
+				"id": "1",
 				"kind": "reachable_employee",
+				"name": "",
 				"prefersDark": false,
-				"roles": {
-					"data": []
-				},
-				"employeeSchedules": {
-					"data": []
-				},
-				"department": {
-					"data": {
-						"id": "1",
-						"type": "department",
-						"mayAdmit": true,
-						"acronym": "A",
-						"fullName": "A"
-					}
-				}
+				"type": "user"
 			},
 			"meta": {
 				"hasDefaultPassword": false
@@ -79,24 +52,12 @@ describe("Helpers: Make default password", () => {
 	it("can generate for unreachable employee", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
-				"type": "user",
-				"id": "1",
-				"name": "",
 				"email": "foo.bar@example.com",
+				"id": "1",
 				"kind": "unreachable_employee",
+				"name": "",
 				"prefersDark": false,
-				"roles": {
-					"data": []
-				},
-				"department": {
-					"data": {
-						"id": "1",
-						"type": "department",
-						"mayAdmit": true,
-						"acronym": "A",
-						"fullName": "A"
-					}
-				}
+				"type": "user"
 			},
 			"meta": {
 				"hasDefaultPassword": false

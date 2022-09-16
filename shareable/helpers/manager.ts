@@ -8,10 +8,10 @@ import {
 } from "$/permissions/user_combinations"
 
 export default class {
-	readonly user: DeserializedUserProfile
+	readonly user: DeserializedUserProfile<"roles"|"department">
 	readonly permission: UserPermission = new UserPermission()
 
-	constructor(user: DeserializedUserProfile) {
+	constructor(user: DeserializedUserProfile<"roles"|"department">) {
 		this.user = user
 	}
 

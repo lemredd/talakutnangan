@@ -32,15 +32,15 @@ describe("UI Component: Dropdown Filter", () => {
 			.deserializedOne()
 
 			const wrapper = mount(DropdownFilter, {
-				"shallow": true,
+				"global": {
+					"provide": {
+						"managerKind": new Manager(user as DeserializedUserProfile<"roles"|"department">)
+					}
+				},
 				"props": {
 					"by": "Role"
 				},
-				"global": {
-					"provide": {
-						"managerKind": new Manager(user as DeserializedUserProfile)
-					}
-				}
+				"shallow": true
 			})
 
 			// Await for roles to be rendered

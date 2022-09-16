@@ -59,7 +59,7 @@ export default class <
 	}
 
 	async checkLimitation(request: V): Promise<void> {
-		const user = deserialize(request.user) as DeserializedUserDocument
+		const user = deserialize(request.user) as DeserializedUserDocument<"roles">
 		const roles = user.data.roles.data as unknown as T[]
 		const hasPublicPermission = this.permissionGroup.hasOneRoleAllowed(
 			roles,

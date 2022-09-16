@@ -27,7 +27,7 @@ import type {
  */
 export interface DeserializedPageContext extends Serializable {
 	pageProps: {
-		userProfile: DeserializedUserProfile|null
+		userProfile: DeserializedUserProfile<"roles"|"department">|null
 	}
 }
 

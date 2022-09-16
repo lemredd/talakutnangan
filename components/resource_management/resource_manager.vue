@@ -50,7 +50,7 @@ function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUs
 	return deserializedResourceItem.type === "user"
 }
 
-const isResourceTypeUser = computed(() => (resource.some(usersResourceEnsurer)))
+const isResourceTypeUser = computed(() => resource.some(usersResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
 
 </script>

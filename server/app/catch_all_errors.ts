@@ -1,7 +1,5 @@
-import { Buffer } from "buffer"
-import { UnitError } from "$/types/server"
-import { Request, Response, NextFunction } from "!/types/dependent"
-import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
+import type { Request, Response, NextFunction } from "!/types/dependent"
+import { UnitError, HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
@@ -30,10 +28,10 @@ export default async function(
 	} else {
 		if (request.accepts(HTML_MEDIA_TYPE)) {
 			let unitError: UnitError|UnitError[] = {
-				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
-				code: "-1",
-				title: "Unknown",
-				detail: error.message
+				"code": "-1",
+				"detail": error.message,
+				"status": RequestEnvironment.status.INTERNAL_SERVER_ERROR,
+				"title": "Unknown"
 			}
 			let redirectURL = URLMaker.makeBaseURL()
 
@@ -49,16 +47,17 @@ export default async function(
 			response.redirect(`${redirectURL}?error=${getEncodedError}`)
 		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
 			let unitError: UnitError|UnitError[] = {
-				status: RequestEnvironment.status.INTERNAL_SERVER_ERROR,
-				code: "-1",
-				title: "Unknown",
-				detail: error.message
+				"code": "-1",
+				"detail": error.message,
+				"status": RequestEnvironment.status.INTERNAL_SERVER_ERROR,
+				"title": "Unknown"
 			}
 
-			let status = unitError.status
+			let { status } = unitError
 			if (error instanceof BaseError) {
 				unitError = error.toJSON()
-				status = unitError.status
+				const errorsStatus = unitError.status
+				status = errorsStatus
 			} else if (error instanceof ErrorBag) {
 				unitError = error.toJSON()
 				// TODO: Base the status from errors
@@ -69,12 +68,12 @@ export default async function(
 			response.type(JSON_API_MEDIA_TYPE)
 			if (unitError instanceof Array) {
 				response.send({
-					errors: unitError
+					"errors": unitError
 				})
 				Log.errorMessage("middleware", "Error: Output multiple errors")
 			} else {
 				response.send({
-					errors: [ unitError ]
+					"errors": [ unitError ]
 				})
 				Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}`)
 			}

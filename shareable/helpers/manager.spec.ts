@@ -24,7 +24,7 @@ describe("Resource management: Kind manager", () => {
 		.attach(adminRole)
 		.deserializedOne()
 
-		const manager = new KindManager(user as DeserializedUserProfile)
+		const manager = new KindManager(user as DeserializedUserProfile<"roles"|"department">)
 
 		expect(manager.isAdmin()).toBeTruthy()
 		expect(manager.isInstituteLimited()).toBeFalsy()
@@ -41,7 +41,7 @@ describe("Resource management: Kind manager", () => {
 		.attach(deanRole)
 		.deserializedOne()
 
-		const manager = new KindManager(user as DeserializedUserProfile)
+		const manager = new KindManager(user as DeserializedUserProfile<"roles"|"department">)
 
 		expect(manager.isAdmin()).toBeFalsy()
 		expect(manager.isInstituteLimited()).toBeTruthy()
@@ -58,7 +58,7 @@ describe("Resource management: Kind manager", () => {
 		.attach(serviceHeadRole)
 		.deserializedOne()
 
-		const manager = new KindManager(user as DeserializedUserProfile)
+		const manager = new KindManager(user as DeserializedUserProfile<"roles"|"department">)
 
 		expect(manager.isAdmin()).toBeFalsy()
 		expect(manager.isInstituteLimited()).toBeFalsy()
