@@ -1,5 +1,3 @@
-import { Op } from "sequelize"
-
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RoleQueryParameters } from "$/types/query"
@@ -126,22 +124,6 @@ export default class extends BaseManager<
 				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
-			const subselectQuery = Model.sequelize.literal(`(${
-				trimRight(
-					// @ts-ignore
-					AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
-						AttachedRole.tableName, {
-							"attributes": [ "userID" ],
-							"where": new Condition().equal(
-								"roleID",
-								roleID
-							)
-							.build()
-						}
-					),
-					";"
-				)
-			})`)
 			const [ rawUserIDs ] = await AttachedRole.sequelize.query(
 				// @ts-ignore
 				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
