@@ -80,22 +80,26 @@ const determineTitle = computed(() => {
 const users = ref<DeserializedUserResource[]>([])
 const filteredList = ref<DeserializedUserResource[]>([])
 
+const roleId = ref("*")
+const depId = ref("*")
+const windowOffset = ref(0)
+
 function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedUserResource[]
 }
 
-onMounted(() => {
+function fetchUserInfo() {
 	new UserFetcher().list({
 		"filter": {
-			"department": currentResourceManager.isAdmin() ? "*" : currentUserDepartment.id,
+			"department": currentResourceManager.isAdmin() ? depId.value : currentUserDepartment.id,
 			"existence": "exists",
 			"kind": "*",
-			"role": "*",
+			"role": roleId.value,
 			"slug": ""
 		},
 		"page": {
 			"limit": 10,
-			"offset": 0
+			"offset": windowOffset.value
 		},
 		"sort": [ "name" ]
 	}).then(({ "body": deserializedUserList }) => {
