@@ -7,5 +7,5 @@ export default function(): SourceType {
 		return "unit_test"
 	}
 
-	return process.env.DATABASE_TYPE as SourceType
+	return process.env.DATABASE_TEST_TYPE as SourceType
 }
