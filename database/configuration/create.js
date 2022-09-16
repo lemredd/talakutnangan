@@ -36,7 +36,13 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 
 		case "filed_sqlite": {
 			configuration.dialect = "sqlite"
-			configuration.storage = process.env.DATABASE_PATH
+
+			if (process.env.NODE_ENV === "intg_test") {
+				configuration.storage = process.env.DATABASE_TEST_PATH
+			} else {
+				configuration.storage = process.env.DATABASE_PATH
+			}
+
 			break
 		}
 
