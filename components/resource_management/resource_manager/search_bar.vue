@@ -1,11 +1,13 @@
 <template>
 	<div class="search-bar">
 		<input
-			type="text"
 			id="search-filter"
-			class="search-filter"
-			v-model="searchFilterText">
-		<button class="material-icons">search</button>
+			v-model="searchFilterText"
+			type="text"
+			class="search-filter"/>
+		<button class="material-icons">
+			search
+		</button>
 	</div>
 </template>
 
@@ -28,7 +30,7 @@
 </style>
 
 <script setup lang = ts>
-import { PossibleResources } from "$@/types/independent";
+import { PossibleResources } from "$@/types/independent"
 import { computed, onUpdated, ref } from "vue"
 
 const { resource } = defineProps<{
@@ -36,8 +38,9 @@ const { resource } = defineProps<{
 }>()
 const searchFilterText = ref("")
 
+// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
-	(e: "filterResourceBySearch", resource: PossibleResources[] ): void
+	(e: "filterResourceBySearch", filteredResource: PossibleResources[]): void
 }>()
 
 const filteredList = computed(() => {
@@ -45,6 +48,7 @@ const filteredList = computed(() => {
 		let name = ""
 
 		if (resourceToFilter.type === "department") name = resourceToFilter.fullName
+		// eslint-disable-next-line prefer-destructuring
 		else name = resourceToFilter.name
 
 		return name.toLowerCase().includes(searchFilterText.value.toLowerCase())
