@@ -1,5 +1,5 @@
+import Factory from "~/factories/role"
 import ErrorBag from "$!/errors/error_bag"
-import RoleFactory from "~/factories/role"
 import MockRequester from "~/set-ups/mock_requester"
 
 import Controller from "./archive.delete"
@@ -14,7 +14,7 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
+		const role = await new Factory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
@@ -36,7 +36,7 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
+		const role = await new Factory().insertOne()
 		await role.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
@@ -61,7 +61,7 @@ describe("Controller: DELETE /api/role", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const role = await new RoleFactory().insertOne()
+		const role = await new Factory().insertOne()
 		await role.destroy({ "force": true })
 		requester.customizeRequest({
 			"body": {

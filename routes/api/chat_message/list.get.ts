@@ -10,7 +10,11 @@ import QueryController from "!/controllers/query"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
 import makeListRules from "!/rule_sets/make_list"
+import length from "!/validators/comparison/length"
+import stringArray from "!/validators/hybrid/string_array"
+import skipAsterisk from "!/validators/comparison/skip_asterisk"
 import makeMultiIDBasedFilterRules from "!/rule_sets/make_multi-id-based_filter"
 import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
@@ -30,7 +34,18 @@ export default class extends QueryController {
 				"postIDRules": {
 					"pipes": [ doesBelongToCurrentUser ]
 				}
-			})
+			}),
+			"chatMessageKind": {
+				"constraints": {
+					"length": {
+						// TODO: Find the best length
+						"maximum": 24,
+						"minimum": 1
+					},
+					"nullable": { "defaultValue": "*" }
+				},
+				"pipes": [ nullable, skipAsterisk, stringArray, length ]
+			}
 		}, {
 			"defaultSortColumn": "-createdAt"
 		})

@@ -11,7 +11,7 @@ describe("Database Pipe: Sift by consultation", () => {
 		const activity = await new ChatMessageActivityFactory()
 		.consultation(() => Promise.resolve(consultation))
 		.insertOne()
-		await new Factory()
+		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(activity))
 		.insertOne()
 
@@ -24,7 +24,7 @@ describe("Database Pipe: Sift by consultation", () => {
 
 		expect(options).toHaveProperty("include.0.where")
 		expect(foundModels).toHaveLength(1)
-		expect(foundModels).toHaveProperty("0.id", activity.id)
+		expect(foundModels).toHaveProperty("0.id", model.id)
 	})
 
 	it("cannot find on specific model", async() => {

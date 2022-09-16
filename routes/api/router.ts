@@ -9,6 +9,7 @@ import ChatMessageRouter from "!%/api/chat_message/router"
 import ConsultationRouter from "!%/api/consultation/router"
 import ProfilePictureRouter from "!%/api/profile_picture/router"
 import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
+import AttachedChatFileRouter from "!%/api/attached_chat_file/router"
 import ChatMessageActivityRouter from "!%/api/chat_message_activity/router"
 
 export default class extends Router {
@@ -26,6 +27,7 @@ export default class extends Router {
 			new ConsultationRouter(),
 			new ProfilePictureRouter(),
 			new EmployeeScheduleRouter(),
+			new AttachedChatFileRouter(),
 			new ChatMessageActivityRouter()
 		])
 	}

@@ -232,6 +232,13 @@ export default abstract class Manager<
 		}
 	}
 
+	/**
+	 * Destroys or archives the models with the passed IDs.
+	 *
+	 * If the model is a paranoid, they will be archived which can be restored later.
+	 *
+	 * If the model is not paranoid, they will be deleetd permanently.
+	 */
 	async archiveBatch(IDs: X[]): Promise<number> {
 		try {
 			const destroyCount = await this.model.destroy(<DestroyOptions<T>>{
