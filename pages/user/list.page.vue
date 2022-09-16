@@ -103,7 +103,16 @@ function fetchUserInfo() {
 		},
 		"sort": [ "name" ]
 	}).then(({ "body": deserializedUserList }) => {
-		users.value = deserializedUserList.data
-	})
+		const deserializedData = deserializedUserList.data as DeserializedUserResource[]
+		const offsetIncrement = 10
+
+		if (!deserializedData.length) return Promise.resolve()
+
+		users.value = deserializedData
+
+		// eslint-disable-next-line no-use-before-define
+		windowOffset.value += offsetIncrement
+
+		return Promise.resolve()
 })
 </script>
