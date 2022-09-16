@@ -80,7 +80,7 @@ const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
 }>()
 
-const resourceType = ref("")
+const resourceType = computed(() => filteredList[0].type)
 const resourceProperties = ref<string[]>([])
 const tableHeaders = computed(() => {
 	let headers: string[] = []
@@ -93,8 +93,6 @@ const tableHeaders = computed(() => {
 onUpdated(() => {
 	// Displays retrieved data from database properly
 	if (filteredList.length) {
-		resourceType.value = filteredList[0].type
-
 		filteredList.forEach((element:any) => {
 			const nonIDProperties = new Set<string>([])
 			Object.keys(element).forEach(key => {
