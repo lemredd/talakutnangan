@@ -53,23 +53,28 @@ import RequestEnvironment from "$/singletons/request_environment"
 import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
-import Manager from "$/helpers/manager"
 
 import Suspensible from "@/suspensible.vue"
 import SelectableFilter from "@/fields/selectable_options.vue"
 
 type AdditionalFilter = "departments" | "roles"
+type DefinedEmits = {
+	(e: "filterByRole", id: string | number): void
+	(e: "filterByDept", id: string | number): void
+}
 
 const { resource } = defineProps<{
 	resource: PossibleResources[]
 }>()
 
-function usersResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
+const emit = defineEmits<DefinedEmits>()
+
+function userResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
 	const deserializedResourceItem = resourceItem as DeserializedUserResource
 	return deserializedResourceItem.type === "user"
 }
 
-const isResourceTypeUser = computed(() => resource.some(usersResourceEnsurer))
+const isResourceTypeUser = computed(() => resource.some(userResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
@@ -93,6 +98,11 @@ function getFilterOptions(resources: PossibleResources[]) {
 		}
 	})
 	return filterOptions
+}
+
+function filterByAdditional(selectedFilterId: string, filterKind: AdditionalFilter) {
+	if (filterKind === "roles") emit("filterByRole", selectedFilterId)
+	if (filterKind === "departments") emit("filterByRole", selectedFilterId)
 }
 
 onUpdated(() => {
