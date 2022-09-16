@@ -72,7 +72,7 @@ export default class Condition<T = any> {
 		return this
 	}
 
-	isIncludedIn(column: string, value: any[]): Condition {
+	isIncludedIn(column: string, value: any[]|Literal): Condition {
 		this.currentCondition[column] = { [Op.in]: value }
 		return this
 	}

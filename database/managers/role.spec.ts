@@ -40,6 +40,17 @@ describe("Database Manager: Role read operations", () => {
 		expect(isTheOnlyRole).toBeFalsy()
 	})
 
+	it("cannot check for unattached user", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(otherModel.id)
+
+		expect(isTheOnlyRole).toBeFalsy()
+	})
+
 	it("can count single model", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()
