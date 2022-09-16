@@ -5,7 +5,7 @@ import type { ChatMessageActivityDocument } from "$/types/documents/chat_message
 
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
-import { chatMessageKind } from "!/constants/regex"
+import { chatMessageKind } from "$!/constants/regex"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
