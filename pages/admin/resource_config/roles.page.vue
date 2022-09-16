@@ -27,7 +27,9 @@ import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
 const pageContext = inject("pageContext") as PageContext
 
-provide("managerKind", new Manager(pageContext.pageProps.userProfile as DeserializedUserProfile))
+provide("managerKind", new Manager(
+	pageContext.pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
+))
 provide("tabs", [ "Users", "Roles", "Roles" ])
 
 RoleFetcher.initialize("/api")
