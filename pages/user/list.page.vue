@@ -21,7 +21,7 @@
 }
 </style>
 <script setup lang="ts">
-import { computed, inject, onMounted, provide, ref } from "vue"
+import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
@@ -114,5 +114,21 @@ function fetchUserInfo() {
 		windowOffset.value += offsetIncrement
 
 		return Promise.resolve()
+	})
+}
+
+function filterByRole(id: string) {
+	roleId.value = id
+	windowOffset.value = 0
+}
+
+onMounted(() => {
+	fetchUserInfo()
+})
+watch(roleId, () => {
+	fetchUserInfo()
+})
+watch(windowOffset, () => {
+	fetchUserInfo()
 })
 </script>
