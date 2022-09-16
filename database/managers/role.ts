@@ -138,8 +138,6 @@ export default class extends BaseManager<
 			) as unknown as [ { id: number, userID: string }[] ]
 			const userIDs = rawUserIDs.map(info => info.userID)
 
-			if (userIDs.length === 0) return false
-
 			const [ counts ] = await Model.sequelize.query(
 				// @ts-ignore
 				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -157,10 +155,11 @@ export default class extends BaseManager<
 							[ "userID" ]
 						],
 						"having": new Condition().equal("roleIDCount", 1).build(),
-						"where": new Condition().isIncludedIn("userID", userIDs)
+						"where": new Condition().isIncludedIn("userID", userIDs).build()
 					}
 				)
 			) as unknown as [ { id: number, count: string }[] ]
+
 			return counts.length > 0
 		} catch (error) {
 			throw this.makeBaseError(error)
