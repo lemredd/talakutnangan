@@ -4,7 +4,7 @@
 		{{ determineTitle }}
 	</h1>
 
-	<UsersManager :resource="users">
+	<UsersManager :resource="users" @filter-by-role="filterByRole">
 		<template #search-filter>
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
@@ -39,7 +39,7 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
+const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 
