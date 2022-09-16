@@ -4,7 +4,8 @@
 			id="search-filter"
 			v-model="searchFilterText"
 			type="text"
-			class="search-filter"/>
+			class="search-filter"
+			@change="emit('filterByGivenSlug', searchFilterText)"/>
 		<button class="material-icons">
 			search
 		</button>
@@ -30,35 +31,12 @@
 </style>
 
 <script setup lang = ts>
-import { PossibleResources } from "$@/types/independent"
-import { computed, onUpdated, ref } from "vue"
+import { ref } from "vue"
 
-const { resource } = defineProps<{
-	resource: PossibleResources[]
-}>()
 const searchFilterText = ref("")
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
-	(e: "filterResourceBySearch", filteredResource: PossibleResources[]): void
+	(e: "filterByGivenSlug", slug: string): void
 }>()
-
-const filteredList = computed(() => {
-	const filteredBySearchResult = resource.filter((resourceToFilter: PossibleResources) => {
-		let name = ""
-
-		if (resourceToFilter.type === "department") name = resourceToFilter.fullName
-		// eslint-disable-next-line prefer-destructuring
-		else name = resourceToFilter.name
-
-		return name.toLowerCase().includes(searchFilterText.value.toLowerCase())
-	})
-
-	return filteredBySearchResult
-})
-
-
-onUpdated(() => {
-	emit("filterResourceBySearch", filteredList.value)
-})
 </script>
