@@ -4,7 +4,10 @@
 		{{ determineTitle }}
 	</h1>
 
-	<UsersManager :resource="users" @filter-by-role="filterByRole">
+	<UsersManager
+		:resource="users"
+		@filter-by-role="filterByAdditionalResource($event, 'role')"
+		@filter-by-dept="filterByAdditionalResource($event, 'department')">
 		<template #search-filter>
 			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
 		</template>
@@ -117,18 +120,17 @@ function fetchUserInfo() {
 	})
 }
 
-function filterByRole(id: string) {
-	roleId.value = id
+function filterByAdditionalResource(id: string, filterKind: "role" | "department") {
+	if (filterKind === "role") roleId.value = id
+	else depId.value = id
+
 	windowOffset.value = 0
 }
 
 onMounted(() => {
 	fetchUserInfo()
 })
-watch(roleId, () => {
-	fetchUserInfo()
-})
-watch(windowOffset, () => {
+watch([ roleId, windowOffset, depId ], () => {
 	fetchUserInfo()
 })
 </script>
