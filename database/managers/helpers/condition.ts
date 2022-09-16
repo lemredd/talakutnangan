@@ -10,6 +10,7 @@ import DatabaseError from "$!/errors/database"
 import isUndefined from "$/type_guards/is_undefined"
 import cleanQuery from "%/managers/helpers/clean_query"
 
+type Column = string
 type Literal = ReturnType<typeof literal>
 type Where = ReturnType<typeof Sequelize["where"]>
 
@@ -32,32 +33,32 @@ export default class Condition<T = any> {
 		}
 	}
 
-	not(column: string, value: any): Condition {
+	not(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.not]: value }
 		return this
 	}
 
-	is(column: string, value: any): Condition {
+	is(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.is]: value }
 		return this
 	}
 
-	equal(column: string, value: any): Condition {
+	equal(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.eq]: value }
 		return this
 	}
 
-	greaterThanOrEqual(column: string, value: any): Condition {
+	greaterThanOrEqual(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.gte]: value }
 		return this
 	}
 
-	lessThanOrEqual(column: string, value: any): Condition {
+	lessThanOrEqual(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.lte]: value }
 		return this
 	}
 
-	search(column: string, value: string): Condition {
+	search(column: Column, value: string): Condition {
 		/*
 		 * `findAndCountAll` uses `findAll`. See
 		 * https://github.com/sequelize/sequelize/blob/0c5ca3fc398a99eddb412fe3b2aba99f157bf59d/src/model.js#L2070
@@ -72,12 +73,12 @@ export default class Condition<T = any> {
 		return this
 	}
 
-	isIncludedIn(column: string, value: any[]|Literal): Condition {
+	isIncludedIn(column: Column, value: any[]|Literal): Condition {
 		this.currentCondition[column] = { [Op.in]: value }
 		return this
 	}
 
-	isOnDay(column: string, value: Day): Condition {
+	isOnDay(column: Column, value: Day): Condition {
 		let query: any = ""
 		const escapedColumn = Sequelize.col(column)
 
@@ -105,7 +106,7 @@ export default class Condition<T = any> {
 		return this
 	}
 
-	onOrAfterTime(column: string, time: Time): Condition {
+	onOrAfterTime(column: Column, time: Time): Condition {
 		let hourQuery: any = ""
 		let minuteQuery: any = ""
 		const escapedColumn = Sequelize.col(column)
@@ -148,7 +149,7 @@ export default class Condition<T = any> {
 		)
 	}
 
-	onOrBeforeTime(column: string, time: Time): Condition {
+	onOrBeforeTime(column: Column, time: Time): Condition {
 		let hourQuery: any = ""
 		let minuteQuery: any = ""
 		const escapedColumn = Sequelize.col(column)

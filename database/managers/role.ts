@@ -1,3 +1,5 @@
+import { Op } from "sequelize"
+
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RoleQueryParameters } from "$/types/query"
@@ -115,6 +117,71 @@ export default class extends BaseManager<
 				"force": true,
 				"where": deleteCondition.build()
 			})
+		}
+	}
+
+	async isTheOnlyRoleToAnyUser(roleID: number): Promise<boolean> {
+		try {
+			if (!Model.sequelize || !AttachedRole.sequelize) {
+				throw new DatabaseError("Developer may have forgot to register the models.")
+			}
+
+			const subselectQuery = Model.sequelize.literal(`(${
+				trimRight(
+					// @ts-ignore
+					AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+						AttachedRole.tableName, {
+							"attributes": [ "userID" ],
+							"where": new Condition().equal(
+								"roleID",
+								roleID
+							)
+							.build()
+						}
+					),
+					";"
+				)
+			})`)
+			const [ rawUserIDs ] = await AttachedRole.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							"roleID"
+						],
+						"where": new Condition().equal("roleID", roleID).build()
+					}
+				)
+			) as unknown as [ { id: number, userID: string }[] ]
+			const userIDs = rawUserIDs.map(info => info.userID)
+
+			if (userIDs.length === 0) return false
+
+			const [ counts ] = await Model.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							[
+								AttachedRole.sequelize.fn(
+									"count", "roleID"
+								),
+								"roleIDCount"
+							]
+						],
+						"group": [
+							[ "userID" ]
+						],
+						"having": new Condition().equal("roleIDCount", 1).build(),
+						"where": new Condition().isIncludedIn("userID", userIDs)
+					}
+				)
+			) as unknown as [ { id: number, count: string }[] ]
+			return counts.length > 0
+		} catch (error) {
+			throw this.makeBaseError(error)
 		}
 	}
 }
