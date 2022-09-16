@@ -19,6 +19,27 @@ describe("Database Manager: Role read operations", () => {
 		}
 	})
 
+	it("can check if there is an attached user with only one role", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(model.id)
+
+		expect(isTheOnlyRole).toBeTruthy()
+	})
+
+	it("can check if there is an attached user with many role", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(model).attach(otherModel).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(model.id)
+
+		expect(isTheOnlyRole).toBeFalsy()
+	})
+
 	it("can count single model", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()
