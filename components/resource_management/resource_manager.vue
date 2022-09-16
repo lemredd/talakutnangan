@@ -6,11 +6,14 @@
 		</slot>
 		<div v-if="isResourceTypeUser" class="filters">
 			<SelectableFilter
+				id="role-filter"
 				v-model="selectedRole"
 				:options="roleFilterOptions"
-				label="Role"/>
+				label="Role"
+				@update:model-value="filterByAdditional($event, 'roles')"/>
 			<SelectableFilter
 				v-if="managerKind.isAdmin()"
+				id="dept-filter"
 				v-model="selectedDepartment"
 				:options="departmentFilterOptions"
 				label="Department"/>
