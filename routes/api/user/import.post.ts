@@ -102,9 +102,9 @@ export default class extends MultipartController {
 				}
 
 				return makeResourceDocumentRules("user", attributes, {
-					"isNew": true,
 					"extraDataQueries": { relationships },
-					"extraQueries": { meta }
+					"extraQueries": { meta },
+					"isNew": true
 				})
 			}),
 			new CSVParser("meta.importedCSV")
@@ -125,6 +125,25 @@ export default class extends MultipartController {
 								"array": {
 									"constraints": {
 										"object": {
+											"department": {
+												// TODO: Add validator to match if department may admit
+												"constraints": {
+													"manager": {
+														"className": DepartmentManager,
+														"columnName": "acronym"
+													}
+												},
+												"pipes": [ required, string, exists ]
+											},
+											"email": {
+												"constraints": {
+													"manager": {
+														"className": UserManager,
+														"columnName": "email"
+													}
+												},
+												"pipes": [ required, string, notExists ]
+											},
 											"name": {
 												"constraints": {
 													"manager": {
@@ -136,25 +155,6 @@ export default class extends MultipartController {
 													}
 												},
 												"pipes": [ required, string, regex, notExists ]
-											},
-											"email": {
-												"constraints": {
-													"manager": {
-														"className": UserManager,
-														"columnName": "email"
-													}
-												},
-												"pipes": [ required, string, notExists ]
-											},
-											"department": {
-												// TODO: Add validator to match if department may admit
-												"constraints": {
-													"manager": {
-														"className": DepartmentManager,
-														"columnName": "acronym"
-													}
-												},
-												"pipes": [ required, string, exists ]
 											},
 											"studentNumber": {
 												"constraints": {
@@ -221,9 +221,9 @@ export default class extends MultipartController {
 		Log.success("controller", "created users in bulk")
 
 		const userDetails = body.importedCSV.map(data => ({
-			"name": data.name,
 			"email": data.email,
 			"kind": body.kind as UserKind,
+			"name": data.name,
 			"password": data.password
 		}))
 		request.nextMiddlewareArguments = { userDetails }

@@ -4,7 +4,7 @@ import Factory from "~/factories/consultation"
 import siftByRange from "./sift_by_range"
 
 describe("Database Pipe: Sift by range", () => {
-	it("can find on all consultation", async() => {
+	it("can find on all models", async() => {
 		const model = await new Factory().insertOne()
 
 		const options = siftByRange({}, {

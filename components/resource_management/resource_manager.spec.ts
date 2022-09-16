@@ -32,15 +32,15 @@ describe("UI Component: Resource Manager", () => {
 			const sampleUserList = await listUsers()
 
 			const wrapper = mount(ResourceManager as object, {
-				"shallow": true,
+				"global": {
+					"provide": {
+						"managerKind": new Manager(user as DeserializedUserProfile<"roles"|"department">)
+					}
+				},
 				"props": {
 					"resource": sampleUserList
 				},
-				"global": {
-					"provide": {
-						"managerKind": new Manager(user as DeserializedUserProfile)
-					}
-				}
+				"shallow": true
 			})
 
 			const filters = wrapper.find(".filters")

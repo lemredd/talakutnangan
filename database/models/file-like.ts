@@ -8,7 +8,7 @@ import {
 
 export default abstract class extends Model {
 	@Column({
-		type: DataType.BLOB("medium")
+		"type": DataType.BLOB("medium")
 	})
-	fileContents!: Buffer
+		fileContents!: Buffer
 }

@@ -58,7 +58,7 @@ export default class <
 			throw new AuthorizationError("Resource ID should be provided.")
 		}
 
-		const user = deserialize(request.user) as DeserializedUserProfile
+		const user = deserialize(request.user) as DeserializedUserProfile<"roles">
 		const manager = new this.Class(request)
 		if (!await manager.isModelBelongsTo(
 			Number(request.params.id),

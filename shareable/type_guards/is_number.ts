@@ -1,3 +1,4 @@
+import isNumber from "lodash.isnumber"
 export default function(value: any): value is number {
-	return typeof value === "number"
+	return isNumber(value)
 }

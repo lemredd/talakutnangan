@@ -1,6 +1,5 @@
-import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 
 import Socket from "!/ws/socket"

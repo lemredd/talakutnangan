@@ -29,7 +29,7 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const userProfile = deserialize(constraints.request.user) as DeserializedUserProfile
+	const userProfile = deserialize(constraints.request.user) as DeserializedUserProfile<"roles">
 	const manager = new constraints.manager.className(constraints.request)
 
 	const userID = Number(userProfile.data.id)

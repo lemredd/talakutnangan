@@ -38,8 +38,7 @@
 				v-for="message in chatMessages.data"
 				:key="message.id"
 				class="chat-entry">
-				<!-- TODO(others): properly place chat entries -->
-				{{ JSON.stringify(message.data) }}
+				<ChatMessageItem :chat-message="message"/>
 			</div>
 		</div>
 		<UserController :consultation="consultation" @start-consultation="startConsultation"/>
@@ -56,6 +55,7 @@ import type {
 
 import ConsultationFetcher from "$@/fetchers/consultation"
 import UserController from "@/consultation/chat_window/user_controller.vue"
+import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
 const {
 	consultation,

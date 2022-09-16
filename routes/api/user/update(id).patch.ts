@@ -87,7 +87,7 @@ export default class extends DoubleBoundJSONController {
 		const { id } = request.body.data
 		const { email } = request.body.data.attributes
 
-		const userData = deserialize(request.user) as DeserializedUserProfile
+		const userData = deserialize(request.user) as DeserializedUserProfile<"roles">
 		const updateData: Serializable = request.body.data.attributes
 
 		if (
