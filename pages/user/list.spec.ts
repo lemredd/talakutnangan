@@ -1,7 +1,7 @@
 /* eslint-disable no-tabs */
 /* eslint-disable no-undef */
 /* eslint-disable vue/sort-keys */
-import { mount } from "@vue/test-utils"
+import { mount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
@@ -35,9 +35,15 @@ describe("Page: user/list", () => {
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
-			fetchMock.mockResponse(
+			fetchMock.mockResponseOnce(
 				JSON.stringify({
 					"data": [ userProfile.data ]
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
@@ -73,9 +79,15 @@ describe("Page: user/list", () => {
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
-			fetchMock.mockResponse(
+			fetchMock.mockResponseOnce(
 				JSON.stringify({
 					"data": [ userProfile.data ]
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
@@ -114,9 +126,15 @@ describe("Page: user/list", () => {
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
-			fetchMock.mockResponse(
+			fetchMock.mockResponseOnce(
 				JSON.stringify({
 					"data": [ userProfile.data ]
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
@@ -143,27 +161,26 @@ describe("Page: user/list", () => {
 			])
 
 			// TODO(lead): ensure user is in list
-			/*
-			 * Const wrapper = mount(Page, {
-			 * 	"global": {
-			 * 		"provide": {
-			 * 			"pageContext": {
-			 * 				"pageProps": {
-			 * 					userProfile
-			 * 				}
-			 * 			},
-			 * 			"managerKind": new Manager(userProfile)
-			 * 		},
-			 * 		"stubs": {
-			 * 			"UsersManager": false,
-			 * 			"Suspensible": false
-			 * 		}
-			 * 	},
-			 * 	"shallow": true
-			 * })
-			 * flushPromises()
-			 * console.log(wrapper.html(), "\n\n\n\n")
-			 */
+
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								userProfile
+							}
+						},
+						"managerKind": new Manager(userProfile)
+					},
+					"stubs": {
+						"UsersManager": false,
+						"Suspensible": false
+					}
+				},
+				"shallow": true
+			})
+			flushPromises()
+			console.log(wrapper.html(), "\n\n\n\n")
 		})
 	})
 })
