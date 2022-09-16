@@ -16,7 +16,8 @@
 				id="dept-filter"
 				v-model="selectedDepartment"
 				:options="departmentFilterOptions"
-				label="Department"/>
+				label="Department"
+				@update:model-value="filterByAdditional($event, 'departments')"/>
 		</div>
 	</div>
 	<Suspensible :is-loaded="!!resource.length">
