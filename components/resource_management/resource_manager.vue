@@ -42,7 +42,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { computed, inject, ref, onUpdated } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
@@ -73,7 +73,10 @@ const isResourceTypeUser = computed(() => resource.some(usersResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
-let departmentFilterOptions: OptionInfo[] = []
+const selectedDepartment = ref("")
+const selectedRole = ref("")
+const departmentFilterOptions = ref<OptionInfo[]>([])
+const roleFilterOptions = ref<OptionInfo[]>([])
 
 function getFilterOptions(resources: PossibleResources[]) {
 	const filterOptions = resources.map(resourceFilterOption => {
@@ -92,21 +95,20 @@ function getFilterOptions(resources: PossibleResources[]) {
 	return filterOptions
 }
 
-if (managerKind.isAdmin()) {
-	const { "departments": rawDepartments }
-	= pageProps as PageProps<"deserialized", AdditionalFilter>
-	const departments
-	= rawDepartments as DeserializedDepartmentListDocument
+onUpdated(() => {
+	if (isResourceTypeUser.value) {
+		if (managerKind.isAdmin()) {
+			const { "departments": rawDepartments }
+			= pageProps as PageProps<"deserialized", AdditionalFilter>
+			const departments
+			= rawDepartments as DeserializedDepartmentListDocument
 
-	departmentFilterOptions
-	= getFilterOptions(departments.data) as OptionInfo[]
-}
+			departmentFilterOptions.value
+			= getFilterOptions(departments.data) as OptionInfo[]
+		}
 
-const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
-const roleFilterOptions = getFilterOptions(rawRoles.data) as OptionInfo[]
-
-const selectedDepartment = ref("")
-const selectedRole = ref("")
-
-console.log(departmentFilterOptions)
+		const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
+		roleFilterOptions.value = getFilterOptions(rawRoles.data) as OptionInfo[]
+	}
+})
 </script>
