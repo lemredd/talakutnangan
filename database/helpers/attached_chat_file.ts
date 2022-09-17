@@ -4,7 +4,7 @@ import type { FileLikeTransformerOptions } from "%/types/independent"
 import type { ModelCtor, Model as BaseModel } from "%/types/dependent"
 
 import User from "%/models/user"
-import BaseManager from "%/managers/base"
+import BaseManager from "%/helpers/base"
 import ChatMessage from "%/models/chat_message"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"

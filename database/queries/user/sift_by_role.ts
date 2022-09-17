@@ -4,7 +4,7 @@ import type { FindOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import Role from "%/models/role"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 
 /**
  * Sift user model which has a certain role.

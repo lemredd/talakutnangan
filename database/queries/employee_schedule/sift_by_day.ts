@@ -3,7 +3,7 @@ import type { EmployeeScheduleDayFilter } from "$/types/query"
 
 import Log from "$!/singletons/log"
 
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 import isUndefined from "$/type_guards/is_undefined"
 
 /**

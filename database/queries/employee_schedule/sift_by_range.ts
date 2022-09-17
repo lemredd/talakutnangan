@@ -3,7 +3,7 @@ import type { EmployeeScheduleRangeFilter } from "$/types/query"
 
 import Log from "$!/singletons/log"
 
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 
 /**
  * Sift employee schedule models which within a certain range.

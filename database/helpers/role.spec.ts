@@ -2,7 +2,7 @@ import Factory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 
 import Manager from "./role"
 

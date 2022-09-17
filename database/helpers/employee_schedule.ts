@@ -10,17 +10,17 @@ import type {
 } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
-import BaseManager from "%/managers/base"
+import BaseManager from "%/helpers/base"
 import Model from "%/models/employee_schedule"
 import DatabaseError from "$!/errors/database"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
 import siftByRange from "%/queries/employee_schedule/sift_by_range"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
-import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
+import convertMinutesToTimeObject from "%/helpers/helpers/convert_minutes_to_time_object"
 
 interface RawEmployeeScheduleAttributes extends EmployeeScheduleAttributes<"serialized"> {
 	userID: number

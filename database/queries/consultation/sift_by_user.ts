@@ -3,7 +3,7 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
