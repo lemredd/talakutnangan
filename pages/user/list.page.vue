@@ -128,12 +128,13 @@ function fetchUserInfo() {
 function filterByAdditionalResource(id: string, filterKind: "role" | "department") {
 	if (filterKind === "role") roleId.value = id
 	else depId.value = id
-
-	windowOffset.value = 0
 }
 
 onMounted(() => {
 	fetchUserInfo()
 })
-watch(watchableFilters, () => fetchUserInfo())
+watch(watchableFilters, () => {
+	windowOffset.value = 0
+	fetchUserInfo()
+})
 </script>
