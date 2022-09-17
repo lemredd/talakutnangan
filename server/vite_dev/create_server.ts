@@ -62,9 +62,6 @@ export default async function(app: ExpressApp) {
 					"description": castParsedUnitError.detail,
 					"title": castParsedUnitError.title
 				}
-			} else if (isUndefined(request.documentProps)) {
-				// TODO: Remove in v0.15
-				Log.errorMessage("middleware", `Document props must be provided in ${request.url}.`)
 			}
 
 			const url = request.originalUrl
