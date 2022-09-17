@@ -1,19 +1,17 @@
 import { FieldRules } from "!/types/validation"
 import { Request, Response } from "!/types/dependent"
 
-import Policy from "!/bases/policy"
-import Manager from "%/managers/role"
 import JSONController from "!/controllers/json"
+import Manager from "%/managers/attached_chat_file"
+import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 
-import PermissionBasedPolicy from "!/policies/permission-based"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
+import Policy from "!/bases/policy"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
-import not from "!/validators/comparison/not"
-import isTheOnlyRoleToAnyUser from "!/validators/manager/is_the_only_role_to_any_user"
 import exists from "!/validators/manager/exists"
+import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
 
@@ -21,20 +19,13 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			ARCHIVE_AND_RESTORE
-		])
+		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeResourceIdentifierListDocumentRules("role", exists, Manager, {
+		return makeResourceIdentifierListDocumentRules("attached_chat_file", exists, Manager, {
 			"postIDRules": {
-				"constraints": {
-					"not": {
-						"pipes": [ isTheOnlyRoleToAnyUser ]
-					}
-				},
-				"pipes": [ not ]
+				"pipes": [ doesBelongToCurrentUser ]
 			}
 		})
 	}
@@ -46,11 +37,5 @@ export default class extends JSONController {
 		await manager.archiveBatch(IDs)
 
 		return new NoContentResponseInfo()
-	}
-
-	get postJobs(): ActionAuditor[] {
-		return [
-			new ActionAuditor("role.archive")
-		]
 	}
 }

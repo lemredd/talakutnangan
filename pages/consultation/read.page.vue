@@ -14,7 +14,10 @@
 				@picked-consultation="visitConsultation"/>
 		</template>
 		<template #chat-window>
-			<ChatWindow :consultation="consultation" :chat-messages="chatMessages"/>
+			<ChatWindow
+				:consultation="consultation"
+				:chat-messages="chatMessages"
+				@updated-consultation-attributes="updateConsultationAttributes"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -41,6 +44,7 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
+	ConsultationAttributes,
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
@@ -107,6 +111,14 @@ function visitConsultation(consultationID: string): void {
 	assignPath(path)
 }
 
+function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<"deserialized">)
+: void {
+	consultation.value = {
+		...consultation.value,
+		...updatedAttributes
+	}
+}
+
 function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"user">[]): void {
 	chatMessages.value = {
 		...chatMessages.value,
@@ -119,7 +131,7 @@ function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"us
 				second.createdAt
 			))
 
-			return comparison || Math.sign(Number(first.id) - Number(second.id))
+			return comparison || first.id.localeCompare(second.id)
 		})
 	}
 }
@@ -130,9 +142,9 @@ function createMessage(message: ChatMessageDocument<"read">): void {
 }
 
 function updateMessage(message: ChatMessageDocument<"read">): void {
-	const IDofMessageToRemove = message.data.id
+	const IDOfMessageToRemove = message.data.id
 	chatMessages.value.data = chatMessages.value.data.filter(
-		chatMessage => chatMessage.id !== IDofMessageToRemove
+		chatMessage => chatMessage.id !== IDOfMessageToRemove
 	)
 
 	createMessage(message)
@@ -198,6 +210,7 @@ async function loadPreviousChatMessages(): Promise<void> {
 
 	const { body } = await chatMessageFetcher.list({
 		"filter": {
+			"chatMessageKinds": [ "text", "status" ],
 			"consultationIDs": [ consultation.value.id ],
 			"existence": "exists"
 		},

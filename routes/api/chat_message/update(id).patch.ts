@@ -1,11 +1,10 @@
-import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
-import { chatMessageKind } from "!/constants/regex"
+import { chatMessageKind } from "$!/constants/regex"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"

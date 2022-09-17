@@ -209,6 +209,28 @@ describe("Helpers: Extract route info", () => {
 		expect(purpose).toBe("api")
 	})
 
+	it("can trim destroy route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/destroy.delete.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("delete")
+		expect(path).toBe("/api")
+		expect(purpose).toBe("api")
+	})
+
+	it("can trim subdestroy route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user/destroy.delete.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("delete")
+		expect(path).toBe("/api/user")
+		expect(purpose).toBe("api")
+	})
+
 	it("can trim restore route", () => {
 		const root = "/sample"
 		const currentPath = `${root}/api/restore.patch.ts`
