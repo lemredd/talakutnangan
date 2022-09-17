@@ -11,21 +11,21 @@ import type {
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
 
+import Stub from "$/singletons/stub"
 import Socket from "$@/external/socket"
 import UserFactory from "~/factories/user"
-import Stub from "$/singletons/stub"
 import Factory from "~/factories/consultation"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import ChatMessageFactory from "~/factories/chat_message"
-import RequestEnvironment from "$/singletons/request_environment"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"
+import RequestEnvironment from "$/singletons/request_environment"
+import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
-
 
 describe("UI Page: Read resource by ID", () => {
 	it("should load resource by ID", async() => {
@@ -307,7 +307,7 @@ describe("UI Page: Read resource by ID", () => {
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.kind(() => "text")
 		.insertMany(INITIAL_MESSAGE_COUNT)
-		const sampleChatMessageModel = await chatMessageFactory
+		const sampleChatTextMessageModel = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.kind(() => "text")
 		.insertOne()
@@ -328,8 +328,8 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		const chatMessageResources = chatMessageFactory
 		.deserialize(chatMessageModels) as DeserializedChatMessageListDocument
-		const sampleChatMessageResource = chatMessageFactory
-		.deserialize(sampleChatMessageModel) as DeserializedChatMessageDocument
+		const sampleChatTextMessageResource = chatMessageFactory
+		.deserialize(sampleChatTextMessageModel) as DeserializedChatMessageDocument
 		const sampleUpdatedChatMessageResource = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.deserializedOne()
@@ -362,7 +362,7 @@ describe("UI Page: Read resource by ID", () => {
 			}
 		})
 
-		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatMessageResource)
+		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatTextMessageResource)
 		await nextTick()
 		Socket.emitMockEvent(consultationChatNamespace, "update", {
 			"data": {
@@ -374,7 +374,7 @@ describe("UI Page: Read resource by ID", () => {
 				},
 				"id": chatMessageResources.data[0].id,
 				"relationships": {
-					"user": sampleChatMessageResource.data.user
+					"user": sampleChatTextMessageResource.data.user
 				},
 				"type": "chat_message"
 			}
@@ -385,7 +385,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatEntries = wrapper.findAll(".chat-entry")
 		expect(chatEntries[0].html()).toContain(sampleUpdatedChatMessageResource.data.data.value)
 		expect(chatEntries[1].html()).toContain(chatMessageResources.data[1].data.value)
-		expect(chatEntries[2].html()).toContain(sampleChatMessageResource.data.data.value)
+		expect(chatEntries[2].html()).toContain(sampleChatTextMessageResource.data.data.value)
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
@@ -435,7 +435,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 
-	it.skip("can start consultation", async() => {
+	it("can start consultation", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
 		const INITIAL_MESSAGE_COUNT = 5
@@ -459,9 +459,13 @@ describe("UI Page: Read resource by ID", () => {
 		const activityOfModel = chatMessageActivityModels.find(
 			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
 		) as ChatMessageActivity
-		const chatMessageModels = await chatMessageFactory
+		const chatTextMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.insertMany(INITIAL_MESSAGE_COUNT)
+		const chatStatusMessageModel = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.kind(() => "status")
+		.insertOne()
 
 		const userResource = userFactory.deserialize(
 			userModel,
@@ -477,8 +481,19 @@ describe("UI Page: Read resource by ID", () => {
 			{} as unknown as void,
 			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
 		)
-		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
+		const chatTextMessageResources = chatMessageFactory.deserialize(chatTextMessageModels)
+		const chatStatusMessageResource = chatMessageFactory.deserialize(chatStatusMessageModel)
+		const consultationChatNamespace = makeConsultationChatNamespace(model.id)
 
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
@@ -497,7 +512,7 @@ describe("UI Page: Read resource by ID", () => {
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
-							"chatMessages": chatMessageResources,
+							"chatMessages": chatTextMessageResources,
 							"consultation": resource,
 							"consultations": resources,
 							"previewMessages": previewMessageResources,
@@ -508,11 +523,14 @@ describe("UI Page: Read resource by ID", () => {
 			}
 		})
 		const startButton = wrapper.find(".user-controls .start")
+		const messageBox = wrapper.find(".user-controls .message-box")
 
 		await flushPromises()
 		await startButton.trigger("click")
 		await flushPromises()
+		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 
+		expect(messageBox.exists()).toBeTruthy()
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
@@ -523,8 +541,6 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		expect(previousCalls).toHaveProperty("1.arguments.1.create")
 		expect(previousCalls).toHaveProperty("1.arguments.1.update")
-		expect(previousCalls).toHaveProperty("2.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("2.arguments", [ `/consultation/${models[0].id}` ])
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
@@ -562,8 +578,176 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(thirdRequest).toHaveProperty("method", "PATCH")
-		expect(thirdRequest).toHaveProperty("url", "/api/consultation")
+		expect(thirdRequest).toHaveProperty("url", `/api/consultation/${model.id}`)
 		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		const thirdRequestBody = await thirdRequest.json()
+		expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+	})
+
+	describe("Auto-termination", () => {
+		jest.useFakeTimers()
+
+		it("can terminate consultation automatically", async() => {
+			const OTHER_CONSULTATION_COUNT = 3
+			const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
+			const INITIAL_MESSAGE_COUNT = 5
+
+			const userFactory = new UserFactory()
+			const userModel = await userFactory.insertOne()
+			const factory = new Factory()
+			const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
+			const model = await factory.startedAt(() => null).insertOne()
+			const allModels = [ model, ...models ]
+			const allModelIterator = allModels.values()
+			const chatMessageActivityFactory = new ChatMessageActivityFactory()
+			const chatMessageActivityModels = await chatMessageActivityFactory
+			.consultation(() => Promise.resolve(allModelIterator.next().value))
+			.insertMany(allModels.length)
+			const chatMessageActivityModelIterator = chatMessageActivityModels.values()
+			const chatMessageFactory = new ChatMessageFactory()
+			const previewMessageModels = await chatMessageFactory
+			.chatMessageActivity(() => Promise.resolve(chatMessageActivityModelIterator.next().value))
+			.insertMany(chatMessageActivityModels.length)
+			const activityOfModel = chatMessageActivityModels.find(
+				chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
+			) as ChatMessageActivity
+			const chatTextMessageModels = await chatMessageFactory
+			.chatMessageActivity(() => Promise.resolve(activityOfModel))
+			.insertMany(INITIAL_MESSAGE_COUNT)
+			const chatStatusMessageModel = await chatMessageFactory
+			.chatMessageActivity(() => Promise.resolve(activityOfModel))
+			.kind(() => "status")
+			.insertOne()
+
+			const userResource = userFactory.deserialize(
+				userModel,
+				{} as unknown as void,
+				new UserProfileTransformer()
+			)
+			const resource = factory.deserialize(model) as DeserializedConsultationDocument
+			const resources = factory.deserialize([ model, ...models ])
+			const chatMessageActivityResources = chatMessageActivityFactory
+			.deserialize(chatMessageActivityModels)
+			const previewMessageResources = chatMessageFactory.deserialize(
+				previewMessageModels,
+				{} as unknown as void,
+				new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
+			)
+			const chatTextMessageResources = chatMessageFactory.deserialize(chatTextMessageModels)
+			const chatStatusMessageResource = chatMessageFactory.deserialize(chatStatusMessageModel)
+			const consultationChatNamespace = makeConsultationChatNamespace(model.id)
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+
+			fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"chatMessageActivities": chatMessageActivityResources,
+								"chatMessages": chatTextMessageResources,
+								"consultation": resource,
+								"consultations": resources,
+								"previewMessages": previewMessageResources,
+								"userProfile": userResource
+							}
+						}
+					}
+				}
+			})
+			const startButton = wrapper.find(".user-controls .start")
+
+			await flushPromises()
+			await startButton.trigger("click")
+			await flushPromises()
+			Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
+			jest.advanceTimersByTime(convertTimeToMinutes("05:00"))
+
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "initialize")
+			expect(previousCalls).toHaveProperty("0.arguments", [])
+			expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+			expect(previousCalls).toHaveProperty(
+				"1.arguments.0",
+				consultationChatNamespace
+			)
+			expect(previousCalls).toHaveProperty("1.arguments.1.create")
+			expect(previousCalls).toHaveProperty("1.arguments.1.update")
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ firstRequest ],
+				[ secondRequest ],
+				[ thirdRequest ],
+				[ fourthRequest ]
+			] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "GET")
+			expect(firstRequest).toHaveProperty("url", `/api/consultation?${
+				stringifyQuery({
+					"filter": {
+						"consultationScheduleRange": "*",
+						"existence": "exists",
+						"user": userModel.id
+					},
+					"page": {
+						"limit": 10,
+						"offset": ALL_CONSULTATION_COUNT
+					},
+					"sort": "-updatedAt"
+				})
+			}`)
+			expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			expect(secondRequest).toHaveProperty("method", "GET")
+			expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
+				stringifyQuery({
+					"filter": {
+						"consultationIDs": [ resource.data.id ],
+						"existence": "exists"
+					},
+					"page": {
+						"limit": 10,
+						"offset": INITIAL_MESSAGE_COUNT
+					},
+					"sort": [ "-createdAt" ]
+				} as ChatMessageQueryParameters)
+			}`)
+			expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			expect(thirdRequest).toHaveProperty("method", "PATCH")
+			expect(thirdRequest).toHaveProperty("url", `/api/consultation/${model.id}`)
+			expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			const thirdRequestBody = await thirdRequest.json()
+			expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(thirdRequestBody).toHaveProperty("data.attributes.finsihedAt", null)
+			expect(fourthRequest).toHaveProperty("method", "PATCH")
+			expect(fourthRequest).toHaveProperty("url", `/api/consultation/${model.id}`)
+			expect(fourthRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(fourthRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			const fourthRequestBody = await thirdRequest.json()
+			expect(fourthRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(fourthRequestBody).not.toHaveProperty("data.attributes.finsihedAt", null)
+		})
 	})
 })
