@@ -23,7 +23,7 @@ import Page from "./list.page.vue"
 
 describe("Page: user/list", () => {
 	describe("Content header", () => {
-		it("Should display correct header for admin", async() => {
+		it("should display correct header for admin", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
@@ -67,7 +67,7 @@ describe("Page: user/list", () => {
 
 			expect(header.text()).toContain("Admin")
 		})
-		it("Should display correct header for department limited resource manager", async() => {
+		it("should display correct header for department limited resource manager", async() => {
 			const department = await new DepartmentFactory().mayAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
@@ -114,7 +114,7 @@ describe("Page: user/list", () => {
 	})
 
 	describe("User listing", () => {
-		it("Should include current user in the list", async() => {
+		it("should include current user in the list", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
