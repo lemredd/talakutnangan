@@ -29,15 +29,22 @@
 
 	.content {
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+		inset: 0;
 		padding: 1em;
 		max-width: 900px;
-		height: max-content;
+
+		height: 100vh;
+
+		@screen sm{
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			overflow: initial;
+			height: max-content;
+		}
 
 		header {
-			display: flex;
+			@apply flex;
 			justify-content: space-between;
 			margin-bottom: .5em;
 			border-bottom: 1px solid white;
@@ -45,9 +52,18 @@
 
 		}
 
+		main{
+			padding: 15px;
+			max-height: 300px;
+			overflow: scroll;
+		}
+
 		footer {
-			display: flex;
-			flex-direction: row-reverse;
+			@apply flex justify-between;
+			padding:0 .5em .5em;
+			border-bottom: 1px solid white;
+			padding-bottom: .5em;
+
 		}
 	}
 }
