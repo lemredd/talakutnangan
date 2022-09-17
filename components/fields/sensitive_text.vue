@@ -19,6 +19,7 @@
 				edit
 			</button>
 		</div>
+		<slot name="hidden-dialog"></slot>
 	</div>
 </template>
 
