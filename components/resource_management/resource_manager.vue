@@ -85,9 +85,7 @@ function makeFilterOptions(resources: PossibleResources[]) {
 					? resourceFilterOption.acronym
 					: resourceFilterOption.name
 			),
-			"value": String(RequestEnvironment.isOnTest
-				? resources.indexOf(resourceFilterOption)
-				: resourceFilterOption.id)
+			"value": String(resourceFilterOption.id)
 		}
 	})
 	filterOptions.unshift({
