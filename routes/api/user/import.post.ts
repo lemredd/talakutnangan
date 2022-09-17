@@ -9,7 +9,7 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import { personName } from "!/constants/regex"
+import { personName } from "$!/constants/regex"
 
 import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
