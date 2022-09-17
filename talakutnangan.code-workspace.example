@@ -1,31 +1,42 @@
 {
 	"folders": [
 		// { "name": "root", 							"path": "." },
+
 		// { "name": "shareable",						"path": "shareable" },
 		// { "name": "shareable types",				"path": "shareable/types" },
 		// { "name": "shareable helpers",			"path": "shareable/helpers" },
 		// { "name": "shareable permissions",	 	"path": "shareable/permissions" },
 		// { "name": "shareable namespace makers","path": "shareable/namespace_makers" },
+
 		// { "name": "common front-end",				"path": "common_front-end" },
+
 		// { "name": "pages",							"path": "pages" },
+		// { "name": "consultation pages",			"path": "pages/consultation" },
+		// { "name": "role pages",						"path": "pages/role" },
+
 		// { "name": "renderer",						"path": "renderer" },
+
 		// { "name": "components",						"path": "components" },
-		// { "name": "helper components",			"path": "components/helpers" },
+		// { "name": "helper components",			"path": "components/helpers" }
 		// { "name": "page shell components",		"path": "components/page_shell" },
 		// { "name": "field components",				"path": "components/fields" },
 		// { "name": "consultation components",	"path": "components/consultation" },
+		// { "name": "role components",				"path": "components/role" },
+
 		// { "name": "routes",							"path": "routes" },
 		// { "name": "Enhancer routes",				"path": "routes/enhancer" },
 		// { "name": "API routes",						"path": "routes/api" },
 		// { "name": "Development routes",			"path": "routes/dev" },
 		// { "name": "Test routes",					"path": "routes/t" },
 		// { "name": "routes",							"path": "routes" },
+
 		// { "name": "common back-end",				"path": "common_back-end" },
 		// { "name": "back-end types",				"path": "common_back-end/types" },
 		// { "name": "back-end errors",				"path": "common_back-end/errors" },
 		// { "name": "back-end helpers",				"path": "common_back-end/helpers" },
 		// { "name": "back-end singletons",			"path": "common_back-end/singletons" },
 		// { "name": "back-end auth helpers",		"path": "common_back-end/auth" },
+
 		// { "name": "server",							"path": "server" },
 		// { "name": "server types",					"path": "server/types" },
 		// { "name": "server helpers",				"path": "server/helpers" },
@@ -42,6 +53,7 @@
 		// { "name": "vite dev",						"path": "server/vite_dev" },
 		// { "name": "web socket",						"path": "server/ws" },
 		// { "name": "peer",								"path": "server/peer" },
+
 		// { "name": "database",						"path": "database" },
 		// { "name": "database types",				"path": "database/types" },
 		// { "name": "database configuration",		"path": "database/configuration" },
@@ -52,7 +64,10 @@
 		// { "name": "transformers",					"path": "database/transformers" },
 		// { "name": "queries",							"path": "database/queries" },
 		// { "name": "managers",						"path": "database/managers" },
+
 		// { "name": "test utilities",				"path": "t/helpers" },
+		// { "name": "set-ups",							"path": "t/helpers/set-ups" },
+		// { "name": "factories",						"path": "t/helpers/factories" },
 		// { "name": "integration tests",			"path": "t/integration" }
 	],
 	"extensions": {
