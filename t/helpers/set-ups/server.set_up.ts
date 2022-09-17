@@ -6,11 +6,11 @@ import startServer from "!/start_server"
 
 let server: HTTPServer|null = null
 
-beforeAll(async () => {
+beforeAll(async() => {
 	server = await startServer()
 })
 
-beforeAll(async () => {
+beforeAll(() => {
 	if (server !== null) {
 		server.close()
 	}
