@@ -139,6 +139,8 @@ describe("Page: user/list", () => {
 				{ "status": RequestEnvironment.status.OK }
 			)
 			UserFetcher.initialize("/api")
+			const roleFilter = await new RoleFactory().deserializedMany(5)
+			const deptFilter = await new DepartmentFactory().deserializedMany(5)
 
 			// TODO(lead): ensure user is in list
 
@@ -147,23 +149,23 @@ describe("Page: user/list", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								userProfile,
+								"departments": deptFilter,
+								"roles": roleFilter
 							}
 						},
 						"managerKind": new Manager(userProfile)
 					},
 					"stubs": {
-						"UsersManager": false,
-						"Suspensible": false,
-						"UsersList": false
+						"UsersManager": false
 					}
 				},
 				"shallow": true
 			})
 			await flushPromises()
 
-			const suspensible = wrapper.find(".suspensible")
-			expect(suspensible.html()).not.toContain("no results found")
+			const usersManager = wrapper.findComponent({ "name": "UsersManager" })
+			expect(usersManager.props().resource).toEqual([ user ])
 		})
 	})
 })
