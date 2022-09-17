@@ -128,7 +128,7 @@ describe("Page: user/list", () => {
 
 			fetchMock.mockResponseOnce(
 				JSON.stringify({
-					"data": [ userProfile.data ]
+					"data": [ user ]
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
@@ -139,26 +139,6 @@ describe("Page: user/list", () => {
 				{ "status": RequestEnvironment.status.OK }
 			)
 			UserFetcher.initialize("/api")
-
-			const response = new UserFetcher().list({
-				"filter": {
-					"department": userProfile.data.department.data.id,
-					"existence": "exists",
-					"kind": "*",
-					"role": "*",
-					"slug": ""
-				},
-				"page": {
-					"limit": 10,
-					"offset": 0
-				},
-				"sort": [ "name" ]
-			})
-			const fetchedData = (await response).body.data
-
-			expect(fetchedData).toStrictEqual([
-				JSON.parse(JSON.stringify(userProfile.data)) as DeserializedUserResource
-			])
 
 			// TODO(lead): ensure user is in list
 
@@ -174,13 +154,16 @@ describe("Page: user/list", () => {
 					},
 					"stubs": {
 						"UsersManager": false,
-						"Suspensible": false
+						"Suspensible": false,
+						"UsersList": false
 					}
 				},
 				"shallow": true
 			})
-			flushPromises()
-			console.log(wrapper.html(), "\n\n\n\n")
+			await flushPromises()
+
+			const suspensible = wrapper.find(".suspensible")
+			expect(suspensible.html()).not.toContain("no results found")
 		})
 	})
 })
