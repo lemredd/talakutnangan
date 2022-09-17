@@ -66,13 +66,12 @@ const differenceFromSchedule = computed<number>(() => calculateMillisecondDiffer
 	props.consultation.scheduledStartAt,
 	currentTime.value
 ))
-const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value
-< 0)
+const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value < 0)
 const hasStarted = computed<boolean>(() => props.consultation.startedAt !== null)
 const hasFinished = computed<boolean>(() => props.consultation.finishedAt !== null)
 const hasDeleted = computed<boolean>(() => props.consultation.deletedAt !== null)
 
-const willSoonStart = computed<boolean>(() => differenceFromSchedule.value < 0)
+const willSoonStart = computed<boolean>(() => differenceFromSchedule.value > 0)
 const willStart = computed<boolean>(() => {
 	const mayStart = differenceFromSchedule.value === 0 || isAfterScheduledStart.value
 	return mayStart && !hasStarted.value

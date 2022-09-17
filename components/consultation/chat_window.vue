@@ -84,7 +84,6 @@ function finishConsultation() {
 	const { startedAt } = consultation
 
 	if (startedAt instanceof Date) {
-		console.log("after update but bfore reupdate", props, startedAt, "\n\n\n\n")
 		const newConsultationData: ConsultationAttributes<"serialized"> = {
 			"actionTaken": null,
 			"deletedAt": consultation.deletedAt?.toISOString() ?? null,
