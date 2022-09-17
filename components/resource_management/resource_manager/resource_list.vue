@@ -70,7 +70,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, onUpdated, ref } from "vue"
+import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
@@ -81,25 +81,11 @@ const { filteredList } = defineProps<{
 }>()
 
 const resourceType = computed(() => filteredList[0].type)
-const resourceProperties = ref<string[]>([])
 const tableHeaders = computed(() => {
 	let headers: string[] = []
 	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
 	else headers = [ "Name", "no. of users", "" ]
 
 	return headers
-})
-
-onUpdated(() => {
-	// Displays retrieved data from database properly
-	if (filteredList.length) {
-		filteredList.forEach((element:any) => {
-			const nonIDProperties = new Set<string>([])
-			Object.keys(element).forEach(key => {
-				nonIDProperties.add(key)
-			})
-			resourceProperties.value = [ ...nonIDProperties ]
-		})
-	}
 })
 </script>
