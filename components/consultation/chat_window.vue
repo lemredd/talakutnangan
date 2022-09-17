@@ -129,7 +129,7 @@ function startConsultation() {
 			"finishedAt": consultation.finishedAt,
 			"reason": consultation.reason,
 			"scheduledStartAt": consultation.scheduledStartAt,
-			"startedAt": consultation.startedAt
+			"startedAt": new Date(newConsultationData.startedAt as string)
 		}
 
 		interval.value = setInterval(() => {
