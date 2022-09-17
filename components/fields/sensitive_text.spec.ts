@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils"
-import Component from "@/fields/sensitive_text.vue"
+import Component from "./sensitive_text.vue"
 
 describe("Component: fields/sensitive_text", () => {
 	it("can update", async() => {

@@ -10,7 +10,6 @@ import { Response, NextFunction } from "!/types/dependent"
 import Log from "$!/singletons/log"
 import getRoot from "$!/helpers/get_root"
 import getEnvironment from "$/helpers/get_environment"
-import isUndefined from "$/type_guards/is_undefined"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()

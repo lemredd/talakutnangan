@@ -1,6 +1,6 @@
 import { shallowMount } from "@vue/test-utils"
 import { faker } from "@faker-js/faker"
-import Component from "@/fields/non-sensitive_text.vue"
+import Component from "./non-sensitive_text.vue"
 
 describe("Component: fields/non-sensitive_text", () => {
 	it("can update", async() => {
