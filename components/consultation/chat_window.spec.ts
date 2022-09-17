@@ -7,6 +7,8 @@ import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
+	jest.useFakeTimers()
+
 	it("should start consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
@@ -55,6 +57,7 @@ describe("Component: consultation/chat_window", () => {
 	it("should automatically terminate the consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeConsultation = {
 			"actionTaken": null,
 			"finishedAt": null,
@@ -77,11 +80,19 @@ describe("Component: consultation/chat_window", () => {
 		const userController = wrapper.findComponent({ "name": "UserController" })
 		await userController.trigger("start-consultation")
 		await flushPromises()
-		jest.advanceTimersByTime(convertTimeToMinutes("05:00"))
+		await wrapper.setProps({
+			"chatMessages": fakeChatMessage,
+			"consultation": {
+				...fakeConsultation,
+				"startedAt": new Date()
+			}
+		})
+		const MILLISECONDS_PER_MINUTE = 60_000
+		jest.advanceTimersByTime(convertTimeToMinutes("00:05") * MILLISECONDS_PER_MINUTE)
 		await flushPromises()
 
 		const events = wrapper.emitted("updatedConsultationAttributes")
-		expect(events).toHaveLength(1)
+		expect(events).toHaveLength(2)
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
@@ -95,21 +106,19 @@ describe("Component: consultation/chat_window", () => {
 			scheduledStartAt.toJSON()
 		)
 		expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.finsihedAt", null)
 		expect(firstRequestBody).toHaveProperty("data.id", "1")
 		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		expect(secondRequest).toHaveProperty("method", "PATCH")
 		expect(secondRequest).toHaveProperty("url", "/api/consultation/1")
 		const secondRequestBody = await secondRequest.json()
 		expect(secondRequestBody).toHaveProperty("data.attributes.actionTaken", null)
-		expect(secondRequestBody).toHaveProperty("data.attributes.finishedAt", null)
+		expect(secondRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
 		expect(secondRequestBody).toHaveProperty("data.attributes.reason", "")
 		expect(secondRequestBody).toHaveProperty(
 			"data.attributes.scheduledStartAt",
 			scheduledStartAt.toJSON()
 		)
 		expect(secondRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(secondRequestBody).not.toHaveProperty("data.attributes.finsihedAt", null)
 		expect(secondRequestBody).toHaveProperty("data.id", "1")
 		expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 	})
