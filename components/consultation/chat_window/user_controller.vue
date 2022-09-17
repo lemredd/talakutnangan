@@ -56,22 +56,23 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
-const { consultation } = defineProps<{
+const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 }>()
 
 const currentTime = ref<Date>(new Date())
 
 const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
-	consultation.scheduledStartAt,
+	props.consultation.scheduledStartAt,
 	currentTime.value
 ))
-const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value < 0)
-const hasStarted = computed<boolean>(() => consultation.startedAt !== null)
-const hasFinished = computed<boolean>(() => consultation.finishedAt !== null)
-const hasDeleted = computed<boolean>(() => consultation.deletedAt !== null)
+const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value
+< 0)
+const hasStarted = computed<boolean>(() => props.consultation.startedAt !== null)
+const hasFinished = computed<boolean>(() => props.consultation.finishedAt !== null)
+const hasDeleted = computed<boolean>(() => props.consultation.deletedAt !== null)
 
-const willSoonStart = computed<boolean>(() => differenceFromSchedule.value > 0)
+const willSoonStart = computed<boolean>(() => differenceFromSchedule.value < 0)
 const willStart = computed<boolean>(() => {
 	const mayStart = differenceFromSchedule.value === 0 || isAfterScheduledStart.value
 	return mayStart && !hasStarted.value
@@ -87,8 +88,12 @@ const unusedIsDone = computed<boolean>(() => {
 const unusedIsCanceled = computed<boolean>(() => !isAfterScheduledStart.value && hasDeleted.value)
 const unusedIsAutoTerminated = computed<boolean>(() => {
 	const hasTerminated = isAfterScheduledStart.value && hasDeleted.value
-	return hasTerminated && consultation.actionTaken === null
+	return hasTerminated && props.consultation.actionTaken === null
 })
+
+setInterval(() => {
+	currentTime.value = new Date()
+}, 1000)
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
