@@ -25,6 +25,7 @@
 	},
 
 	"setupFilesAfterEnv": [
+		"./t/helpers/set-ups/stub.set_up.ts",
 		"./t/helpers/set-ups/fetch.set_up.ts",
 		"./t/helpers/set-ups/fetcher.set_up.ts",
 		"./t/helpers/set-ups/form_data.set_up.ts",
