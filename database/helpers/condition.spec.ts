@@ -1,7 +1,7 @@
 import { Op, Sequelize } from "sequelize"
 import { DayValues } from "$/types/database"
 
-import cleanQuery from "%/helpers/clean_query"
+import cleanQuery from "%/helpers/helpers/clean_query"
 import Condition from "./condition"
 
 describe("Database: Condition builder", () => {

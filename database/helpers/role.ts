@@ -10,8 +10,8 @@ import trimRight from "$/string/trim_right"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
-import Condition from "%/helpers/condition"
-import segragateIDs from "%/helpers/segragate_IDs"
+import Condition from "%/helpers/helpers/condition"
+import segragateIDs from "%/helpers/helpers/segragate_IDs"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
 export default class extends BaseManager<

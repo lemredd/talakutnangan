@@ -3,7 +3,7 @@ import type { FindOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
-import Condition from "%/helpers/condition"
+import Condition from "%/helpers/helpers/condition"
 
 /**
  * Sift user model which matches a certain column.
