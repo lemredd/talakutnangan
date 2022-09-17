@@ -94,11 +94,18 @@ const watchableFilters = [
 	slug
 ]
 
+function resetUsersList() {
+	windowOffset.value = 0
+	users.value = []
+}
+
 function filterByGivenSlug(searchInput: string) {
+	resetUsersList()
 	slug.value = searchInput
 }
 
 function fetchUserInfo() {
+	isLoaded.value = false
 	new UserFetcher().list({
 		"filter": {
 			"department": currentResourceManager.isAdmin() ? depId.value : currentUserDepartment.id,
@@ -129,6 +136,7 @@ function fetchUserInfo() {
 }
 
 function filterByAdditionalResource(id: string, filterKind: "role" | "department") {
+	resetUsersList()
 	if (filterKind === "role") roleId.value = id
 	else depId.value = id
 }
