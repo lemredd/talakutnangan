@@ -60,3 +60,8 @@ appropriate.
 
 ### Further Reading
 There is also a good [article] to read about the Conventional Commits.
+A [guide] for these commits has been provided to better understand their usage.
+
+[specification]: https://www.conventionalcommits.org/en/v1.0.0/
+[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
+[guide]: ./commit_type_guide.png
