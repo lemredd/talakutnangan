@@ -53,8 +53,6 @@ import SelectableFilter from "@/fields/selectable_options.vue"
 
 import Manager from "$/helpers/manager"
 import type { PageContext, PageProps } from "$/types/renderer"
-import RequestEnvironment from "$/singletons/request_environment"
-
 
 type AdditionalFilter = "departments" | "roles"
 type DefinedEmits = {
