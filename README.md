@@ -97,8 +97,6 @@ what to add at the end of the messages.
 - John Jerome Pertez
 - Kenneth Trecy Tobias
 
-[specification]: https://www.conventionalcommits.org/en/v1.0.0/
-[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
 [BCP 14]: https://www.rfc-editor.org/info/bcp14
 [RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174

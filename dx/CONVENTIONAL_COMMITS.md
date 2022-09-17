@@ -60,3 +60,6 @@ appropriate.
 
 ### Further Reading
 There is also a good [article] to read about the Conventional Commits.
+
+[specification]: https://www.conventionalcommits.org/en/v1.0.0/
+[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
