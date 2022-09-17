@@ -5,6 +5,7 @@
 	</h1>
 
 	<UsersManager
+		:is-loaded="isLoaded"
 		:resource="users"
 		@filter-by-role="filterByAdditionalResource($event, 'role')"
 		@filter-by-dept="filterByAdditionalResource($event, 'department')">
@@ -44,6 +45,7 @@ const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
+const isLoaded = ref(false)
 
 provide("managerKind", new Manager(userProfile))
 if (currentResourceManager.isAdmin()) {
@@ -111,6 +113,7 @@ function fetchUserInfo() {
 		},
 		"sort": [ "name" ]
 	}).then(({ "body": deserializedUserList }) => {
+		isLoaded.value = true
 		const deserializedData = deserializedUserList.data as DeserializedUserResource[]
 		const offsetIncrement = 10
 
