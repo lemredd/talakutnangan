@@ -15,7 +15,7 @@ import UserFactory from "~/factories/user"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"
 import Serializer from "%/transformers/serializer"
-import TransactionManager from "%/managers/helpers/transaction_manager"
+import TransactionManager from "%/helpers/transaction_manager"
 
 import BaseManager from "./base"
 
