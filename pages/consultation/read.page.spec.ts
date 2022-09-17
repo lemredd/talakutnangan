@@ -503,7 +503,6 @@ describe("UI Page: Read resource by ID", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
-
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const wrapper = mount(Page, {
