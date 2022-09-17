@@ -20,7 +20,7 @@ import {
 describe("UI Component: Resource Manager", () => {
 	describe("User Management", () => {
 		it("Should identify if resource type is of user profile", async() => {
-			async function listUsers() {
+			async function generateUser() {
 				const department = await new DepartmentFactory().mayAdmit().insertOne()
 				const role = await new RoleFactory()
 				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
@@ -43,7 +43,7 @@ describe("UI Component: Resource Manager", () => {
 			.attach(deanRole)
 			.deserializedOne()
 
-			const sampleUserList = await listUsers()
+			const sampleUserList = await generateUser()
 			const deserializedRoles = await new RoleFactory().deserializedMany(9)
 
 			const wrapper = mount(ResourceManager as object, {
@@ -71,7 +71,7 @@ describe("UI Component: Resource Manager", () => {
 
 	describe("Additional Filters", () => {
 		it("Should update users with given role filters", async() => {
-			async function listUser() {
+			async function generateUser() {
 				const department = await new DepartmentFactory().mayAdmit().insertOne()
 				const role = await new RoleFactory()
 				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
@@ -97,7 +97,7 @@ describe("UI Component: Resource Manager", () => {
 			const sampleUserList = []
 			for (let i = 0; i < 5; i++) {
 				// eslint-disable-next-line no-await-in-loop
-				sampleUserList.push(await listUser())
+				sampleUserList.push(await generateUser())
 			}
 
 			const deserializedRoles = {
@@ -139,7 +139,7 @@ describe("UI Component: Resource Manager", () => {
 		})
 
 		it("Should update users with given department filters", async() => {
-			async function listUser() {
+			async function generateUser() {
 				const department = await new DepartmentFactory().mayAdmit().insertOne()
 				const role = await new RoleFactory()
 				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
@@ -165,7 +165,7 @@ describe("UI Component: Resource Manager", () => {
 			const sampleUserList = []
 			for (let i = 0; i < 5; i++) {
 				// eslint-disable-next-line no-await-in-loop
-				sampleUserList.push(await listUser())
+				sampleUserList.push(await generateUser())
 			}
 
 			const deserializedRoles = {
