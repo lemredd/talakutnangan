@@ -7,6 +7,7 @@
 	<UsersManager
 		:is-loaded="isLoaded"
 		:resource="users"
+		:is-resource-type-user="true"
 		@filter-by-role="filterByAdditionalResource($event, 'role')"
 		@filter-by-dept="filterByAdditionalResource($event, 'department')">
 		<template #search-filter>

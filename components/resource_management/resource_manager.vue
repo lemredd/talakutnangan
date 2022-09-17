@@ -4,7 +4,7 @@
 			<!-- TODO: search filter rearrangement - unuse slot -->
 			<!-- purpose: place search filter component properly in the UI -->
 		</slot>
-		<div v-if="isResourceTypeUser" class="filters">
+		<div v-if="props.isResourceTypeUser" class="filters">
 			<SelectableFilter
 				id="role-filter"
 				v-model="selectedRole"
@@ -43,20 +43,18 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, onUpdated } from "vue"
+import { computed, inject, ref } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
 import type { PossibleResources } from "$@/types/independent"
 
+import Suspensible from "@/suspensible.vue"
+import SelectableFilter from "@/fields/selectable_options.vue"
+
 import Manager from "$/helpers/manager"
 import type { PageContext, PageProps } from "$/types/renderer"
 import RequestEnvironment from "$/singletons/request_environment"
-import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
-
-import Suspensible from "@/suspensible.vue"
-import SelectableFilter from "@/fields/selectable_options.vue"
 
 type AdditionalFilter = "departments" | "roles"
 type DefinedEmits = {
@@ -67,16 +65,11 @@ type DefinedEmits = {
 const props = defineProps<{
 	isLoaded: boolean
 	resource: PossibleResources[]
+	isResourceTypeUser?: boolean
 }>()
 
 const emit = defineEmits<DefinedEmits>()
 
-function userResourceEnsurer(resourceItem: any): resourceItem is DeserializedUserResource {
-	const deserializedResourceItem = resourceItem as DeserializedUserResource
-	return deserializedResourceItem.type === "user"
-}
-
-const isResourceTypeUser = computed(() => resource.some(userResourceEnsurer))
 const managerKind = inject("managerKind") as Manager
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
