@@ -3,7 +3,7 @@ import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Model from "%/models/consultation"
 import UserFactory from "~/factories/user"
-import Manager from "%/helpers/consultation"
+import Manager from "%/managers/consultation"
 import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"

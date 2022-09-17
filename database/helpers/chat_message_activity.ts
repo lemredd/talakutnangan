@@ -3,7 +3,7 @@ import type { ChatMessageActivityQueryParameters } from "$/types/query"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { ChatMessageActivityAttributes } from "$/types/documents/chat_message_activity"
 
-import BaseManager from "%/helpers/base"
+import BaseManager from "%/managers/base"
 import Model from "%/models/chat_message_activity"
 import Transformer from "%/transformers/chat_message_activity"
 

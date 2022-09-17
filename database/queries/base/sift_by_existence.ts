@@ -1,7 +1,7 @@
 import type { ExistenceFilter } from "$/types/query"
 import type { FindOptions, Model } from "%/types/dependent"
 
-import Condition from "%/helpers/helpers/condition"
+import Condition from "%/managers/helpers/condition"
 import Log from "$!/singletons/log"
 
 /**

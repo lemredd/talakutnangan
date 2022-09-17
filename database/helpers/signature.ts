@@ -4,7 +4,7 @@ import type { GeneralObject, Serializable } from "$/types/general"
 import type { SignatureTransformerOptions } from "%/types/independent"
 
 import Log from "$!/singletons/log"
-import BaseManager from "%/helpers/base"
+import BaseManager from "%/managers/base"
 import Signature from "%/models/signature"
 import SignatureTransformer from "%/transformers/signature"
 

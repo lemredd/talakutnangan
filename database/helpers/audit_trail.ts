@@ -3,7 +3,7 @@ import type { CommonQueryParameters } from "$/types/query"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { AuditTrailAttributes } from "$/types/documents/audit_trail"
 
-import BaseManager from "%/helpers/base"
+import BaseManager from "%/managers/base"
 import AuditTrail from "%/models/audit_trail"
 import includeUser from "%/queries/audit_trail/include_user"
 import AuditTrailTransformer from "%/transformers/audit_trail"

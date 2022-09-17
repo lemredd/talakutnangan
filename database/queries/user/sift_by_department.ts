@@ -4,7 +4,7 @@ import type { DepartmentFilter } from "$/types/query"
 import Log from "$!/singletons/log"
 
 import Department from "%/models/department"
-import Condition from "%/helpers/helpers/condition"
+import Condition from "%/managers/helpers/condition"
 
 /**
  * Sift user model which belong to a certain department.
