@@ -72,7 +72,16 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
 
-		fetchMock.mockResponse(
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
 				"meta": {
@@ -140,6 +149,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
+					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
 					"existence": "exists"
 				},
@@ -198,7 +208,16 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
 
-		fetchMock.mockResponse(
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
 				"meta": {
@@ -265,6 +284,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
+					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
 					"existence": "exists"
 				},
@@ -303,7 +323,7 @@ describe("UI Page: Read resource by ID", () => {
 		const activityOfModel = chatMessageActivityModels.find(
 			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
 		) as ChatMessageActivity
-		const chatMessageModels = await chatMessageFactory
+		const chatTextMessageModels = await chatMessageFactory
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.kind(() => "text")
 		.insertMany(INITIAL_MESSAGE_COUNT)
@@ -327,7 +347,7 @@ describe("UI Page: Read resource by ID", () => {
 			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
 		)
 		const chatMessageResources = chatMessageFactory
-		.deserialize(chatMessageModels) as DeserializedChatMessageListDocument
+		.deserialize(chatTextMessageModels) as DeserializedChatMessageListDocument
 		const sampleChatTextMessageResource = chatMessageFactory
 		.deserialize(sampleChatTextMessageModel) as DeserializedChatMessageDocument
 		const sampleUpdatedChatMessageResource = await chatMessageFactory
@@ -335,7 +355,16 @@ describe("UI Page: Read resource by ID", () => {
 		.deserializedOne()
 		const consultationChatNamespace = makeConsultationChatNamespace(model.id)
 
-		fetchMock.mockResponse(
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
 				"meta": {
@@ -379,10 +408,11 @@ describe("UI Page: Read resource by ID", () => {
 				"type": "chat_message"
 			}
 		} as ChatMessageDocument)
-		await flushPromises()
 		await nextTick()
+		await flushPromises()
 
 		const chatEntries = wrapper.findAll(".chat-entry")
+		expect(chatEntries).toHaveLength(3)
 		expect(chatEntries[0].html()).toContain(sampleUpdatedChatMessageResource.data.data.value)
 		expect(chatEntries[1].html()).toContain(chatMessageResources.data[1].data.value)
 		expect(chatEntries[2].html()).toContain(sampleChatTextMessageResource.data.data.value)
@@ -421,6 +451,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
+					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
 					"existence": "exists"
 				},
@@ -444,7 +475,7 @@ describe("UI Page: Read resource by ID", () => {
 		const userModel = await userFactory.insertOne()
 		const factory = new Factory()
 		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
-		const model = await factory.startedAt(() => null).insertOne()
+		const model = await factory.startedAt(() => null).finishedAt(() => null).insertOne()
 		const allModels = [ model, ...models ]
 		const allModelIterator = allModels.values()
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
@@ -505,6 +536,7 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
+		jest.useRealTimers()
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -522,12 +554,19 @@ describe("UI Page: Read resource by ID", () => {
 			}
 		})
 		const startButton = wrapper.find(".user-controls .start")
-		const messageBox = wrapper.find(".user-controls .message-box")
 
+		const SLEEP_DURATION = 1500
+		await new Promise<void>(resolve => {
+			setTimeout(() => resolve(), SLEEP_DURATION)
+		})
 		await flushPromises()
 		await startButton.trigger("click")
 		await flushPromises()
+		await nextTick()
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
+		await nextTick()
+		await flushPromises()
+		const messageBox = wrapper.find(".user-controls .message-box")
 
 		expect(messageBox.exists()).toBeTruthy()
 		const previousCalls = Stub.consumePreviousCalls()
@@ -564,6 +603,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 			stringifyQuery({
 				"filter": {
+					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
 					"existence": "exists"
 				},
@@ -582,11 +622,9 @@ describe("UI Page: Read resource by ID", () => {
 		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		const thirdRequestBody = await thirdRequest.json()
 		expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-	})
+	}, 6000)
 
 	describe("Auto-termination", () => {
-		jest.useFakeTimers()
-
 		it("can terminate consultation automatically", async() => {
 			const OTHER_CONSULTATION_COUNT = 3
 			const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
@@ -596,7 +634,7 @@ describe("UI Page: Read resource by ID", () => {
 			const userModel = await userFactory.insertOne()
 			const factory = new Factory()
 			const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
-			const model = await factory.startedAt(() => null).insertOne()
+			const model = await factory.startedAt(() => null).finishedAt(() => null).insertOne()
 			const allModels = [ model, ...models ]
 			const allModelIterator = allModels.values()
 			const chatMessageActivityFactory = new ChatMessageActivityFactory()
@@ -657,7 +695,9 @@ describe("UI Page: Read resource by ID", () => {
 			)
 
 			fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
+			jest.useRealTimers()
 			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
@@ -678,9 +718,11 @@ describe("UI Page: Read resource by ID", () => {
 
 			await flushPromises()
 			await startButton.trigger("click")
+			jest.useFakeTimers()
 			await flushPromises()
 			Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
-			jest.advanceTimersByTime(convertTimeToMinutes("05:00"))
+			const MILLISECONDS_PER_MINUTE = 60_000
+			jest.advanceTimersByTime(convertTimeToMinutes("00:05") * MILLISECONDS_PER_MINUTE)
 
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "initialize")
@@ -721,6 +763,7 @@ describe("UI Page: Read resource by ID", () => {
 			expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
 				stringifyQuery({
 					"filter": {
+						"chatMessageKinds": [ "text", "status" ],
 						"consultationIDs": [ resource.data.id ],
 						"existence": "exists"
 					},
@@ -739,14 +782,14 @@ describe("UI Page: Read resource by ID", () => {
 			expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 			const thirdRequestBody = await thirdRequest.json()
 			expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-			expect(thirdRequestBody).toHaveProperty("data.attributes.finsihedAt", null)
+			expect(thirdRequestBody).toHaveProperty("data.attributes.finishedAt", null)
 			expect(fourthRequest).toHaveProperty("method", "PATCH")
 			expect(fourthRequest).toHaveProperty("url", `/api/consultation/${model.id}`)
 			expect(fourthRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 			expect(fourthRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-			const fourthRequestBody = await thirdRequest.json()
+			const fourthRequestBody = await fourthRequest.json()
 			expect(fourthRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-			expect(fourthRequestBody).not.toHaveProperty("data.attributes.finsihedAt", null)
+			expect(fourthRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
 		})
 	})
 })
