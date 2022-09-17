@@ -3,7 +3,7 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
-import Component from "./change_password_field.vue"
+import Component from "./update_password_field.vue"
 
 describe("Component: settings/change_password_field", () => {
 	it("should verify user password", async() => {
