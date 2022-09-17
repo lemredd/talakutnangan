@@ -6,7 +6,7 @@ import Consultation from "%/models/consultation"
 import Factory from "~/factories/employee_schedule"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
-import findMinutesAfterMidnight from "%/helpers/helpers/find_minutes_after_midnight"
+import findMinutesAfterMidnight from "%/helpers/find_minutes_after_midnight"
 
 import Manager from "./employee_schedule"
 

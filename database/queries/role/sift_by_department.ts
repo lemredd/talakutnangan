@@ -5,7 +5,7 @@ import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Department from "%/models/department"
-import Condition from "%/helpers/helpers/condition"
+import Condition from "%/helpers/condition"
 
 /**
  * Sift role models which the associated user belongs to a certain department.

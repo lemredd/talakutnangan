@@ -8,7 +8,7 @@ import type { WhereOptions } from "%/types/dependent"
 import Database from "%/data_source/database"
 import DatabaseError from "$!/errors/database"
 import isUndefined from "$/type_guards/is_undefined"
-import cleanQuery from "%/helpers/helpers/clean_query"
+import cleanQuery from "%/helpers/clean_query"
 
 type Literal = ReturnType<typeof literal>
 type Where = ReturnType<typeof Sequelize["where"]>

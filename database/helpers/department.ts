@@ -11,7 +11,7 @@ import BaseManager from "%/helpers/base"
 import trimRight from "$/string/trim_right"
 import Department from "%/models/department"
 import DatabaseError from "$!/errors/database"
-import Condition from "%/helpers/helpers/condition"
+import Condition from "%/helpers/condition"
 import DepartmentTransformer from "%/transformers/department"
 
 export default class extends BaseManager<
