@@ -35,7 +35,7 @@
 			</div>
 
 			<div
-				v-for="message in chatMessages.data"
+				v-for="message in props.chatMessages.data"
 				:key="message.id"
 				class="chat-entry">
 				<ChatMessageItem :chat-message="message"/>
@@ -65,7 +65,6 @@ const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
-const { chatMessages } = props
 
 const consultationID = computed<string>(() => props.consultation.id)
 const consultationStatus = computed<string>(() => props.consultation.status)
