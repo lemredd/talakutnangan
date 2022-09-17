@@ -81,10 +81,8 @@ const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
 const selectedDepartment = ref("")
 const selectedRole = ref("")
-const departmentFilterOptions = ref<OptionInfo[]>([])
-const roleFilterOptions = ref<OptionInfo[]>([])
 
-function getFilterOptions(resources: PossibleResources[]) {
+function makeFilterOptions(resources: PossibleResources[]) {
 	const filterOptions = resources.map(resourceFilterOption => {
 		const resourceType = resourceFilterOption.type
 		return {
@@ -101,25 +99,24 @@ function getFilterOptions(resources: PossibleResources[]) {
 	return filterOptions
 }
 
+const departmentFilterOptions = computed<OptionInfo[]>(() => {
+	if (managerKind.isAdmin()) {
+		const {
+			"departments": rawDepartments
+		} = pageProps as PageProps<"deserialized", AdditionalFilter>
+		return makeFilterOptions(rawDepartments.data)
+	}
+	return []
+})
+const roleFilterOptions = computed<OptionInfo[]>(() => {
+	const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
+
+	return makeFilterOptions(rawRoles.data)
+})
+
+
 function filterByAdditional(selectedFilterId: string, filterKind: AdditionalFilter) {
 	if (filterKind === "roles") emit("filterByRole", selectedFilterId)
 	if (filterKind === "departments") emit("filterByDept", selectedFilterId)
 }
-
-onUpdated(() => {
-	if (isResourceTypeUser.value) {
-		if (managerKind.isAdmin()) {
-			const { "departments": rawDepartments }
-			= pageProps as PageProps<"deserialized", AdditionalFilter>
-			const departments
-			= rawDepartments as DeserializedDepartmentListDocument
-
-			departmentFilterOptions.value
-			= getFilterOptions(departments.data) as OptionInfo[]
-		}
-
-		const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
-		roleFilterOptions.value = getFilterOptions(rawRoles.data) as OptionInfo[]
-	}
-})
 </script>
