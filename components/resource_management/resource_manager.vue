@@ -90,6 +90,11 @@ function makeFilterOptions(resources: PossibleResources[]) {
 				: resourceFilterOption.id)
 		}
 	})
+	filterOptions.unshift({
+		"label": "All",
+		"value": "*"
+	})
+
 	return filterOptions
 }
 
