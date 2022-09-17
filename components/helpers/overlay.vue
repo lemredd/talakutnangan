@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="isShown"
-		class="overlay bg-[rgba(0,0,0,0.3)]"
+		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "
 		@click.self="emitClose">
 		<div class="content bg-dark-200 text-white">
 			<header>
@@ -13,7 +13,7 @@
 			<main>
 				<slot></slot>
 			</main>
-			<footer>
+			<footer class="overlay-footer">
 				<slot name="footer"></slot>
 			</footer>
 		</div>
