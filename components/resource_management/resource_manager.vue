@@ -20,7 +20,7 @@
 				@update:model-value="filterByAdditional($event, 'departments')"/>
 		</div>
 	</div>
-	<Suspensible :is-loaded="!!resource.length">
+	<Suspensible :is-loaded="props.isLoaded">
 		<slot>
 		</slot>
 	</Suspensible>
@@ -64,7 +64,8 @@ type DefinedEmits = {
 	(e: "filterByDept", id: string): void
 }
 
-const { resource } = defineProps<{
+const props = defineProps<{
+	isLoaded: boolean
 	resource: PossibleResources[]
 }>()
 
