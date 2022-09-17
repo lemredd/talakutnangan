@@ -36,6 +36,7 @@ describe("Component: settings/change_password_field", () => {
 	})
 
 	it("can save user password", async() => {
+		const OLD_PASSWORD = "Hello"
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"stubs": {
@@ -50,12 +51,15 @@ describe("Component: settings/change_password_field", () => {
 			}
 		})
 		const editButton = wrapper.find(".input-and-controls button")
+		const oldInput = wrapper.find("input:nth-child(1)")
 		const saveButton = wrapper.find(".overlay-footer button")
 
 		await editButton.trigger("click")
+		await oldInput.setValue(OLD_PASSWORD)
 		await saveButton.trigger("click")
 
 		const updates = wrapper.emitted()
 		expect(updates).toHaveProperty("savePassword")
+		expect(oldInput.attributes("value")).toBe("")
 	})
 })
