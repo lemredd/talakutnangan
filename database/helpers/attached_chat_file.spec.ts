@@ -2,7 +2,7 @@ import UserFactory from "~/factories/user"
 import Factory from "~/factories/attached_chat_file"
 import ChatMessageFactory from "~/factories/chat_message"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
-import Manager from "./attached_chat_file"
+import Manager from "../managers./helpers/attached_chat_file"
 
 describe("Database Manager: Attached chat file read operations", () => {
 	it("can check if model belongs to user", async() => {
