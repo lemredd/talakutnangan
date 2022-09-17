@@ -168,4 +168,125 @@ describe("Page: user/list", () => {
 			expect(usersManager.props().resource).toEqual([ user ])
 		})
 	})
+	describe("User Filtering", () => {
+		it("should filter users based on given role", async() => {
+			const managerDepartment = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const managerRole = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+			.insertOne()
+			const managerUser = await new UserFactory().in(managerDepartment)
+			.beUnreachableEmployee()
+			.attach(managerRole)
+			.deserializedOne()
+			const userProfile = managerUser as DeserializedUserProfile<"roles"|"department">
+
+			async function generateUser() {
+				const department = await new DepartmentFactory().mayAdmit().insertOne()
+				const role = await new RoleFactory()
+				.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+				.insertOne()
+
+				return (
+					await new UserFactory()
+					.in(department)
+					.attach(role)
+					.deserializedOne()
+				).data
+			}
+			const users: DeserializedUserResource[] = []
+			for (let i = 0, limit = 5; i < limit; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				users.push(await generateUser())
+			}
+			const existingUserRoles = {
+				"data": [] as any[]
+			}
+			users.forEach(sampleUser => {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				sampleUser.roles!.data.forEach(
+					sampleRole => existingUserRoles.data.push(sampleRole)
+				)
+			})
+			const existingUserDepartments = {
+				"data": [] as any[]
+			}
+			users.forEach(sampleUser => {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				existingUserDepartments.data.push(sampleUser.department!.data)
+			})
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [ ...users, managerUser ]
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			UserFetcher.initialize("/api")
+
+			// TODO(lead): ensure user is in list
+
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								userProfile,
+								"departments": existingUserDepartments,
+								"roles": existingUserRoles
+							}
+						},
+						"managerKind": new Manager(userProfile)
+					},
+					"stubs": {
+						"UsersManager": false,
+						"SelectableFilter": false
+					}
+				},
+				"shallow": true
+			})
+			await flushPromises()
+			const usersManager = wrapper.findComponent({ "name": "UsersManager" })
+			const roleFilter = usersManager
+			.findComponent({ "name": "SelectableFilter" })
+			.find("select")
+			const selectedRoleId = "5"
+
+			function filterUsersByGivenRole() {
+				const filteredUsers: DeserializedUserResource[] = []
+
+				users.forEach(user => {
+					user.roles?.data.forEach(role => {
+						if (String(role.id) === selectedRoleId) {
+							filteredUsers.push(user)
+						}
+					})
+				})
+
+				return filteredUsers
+			}
+			const filteredUsers = filterUsersByGivenRole()
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [ ...filteredUsers, managerUser ]
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+
+			await roleFilter.setValue(selectedRoleId)
+			await flushPromises()
+			expect(usersManager.props().resource).toEqual([ ...filteredUsers, managerUser ])
+		})
+	})
 })
