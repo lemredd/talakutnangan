@@ -29,10 +29,6 @@ a {
 	text-decoration: none;
 }
 
-:root, html, body, #app {
-	width: 100%;
-	height: 100%;
-}
 </style>
 
 <style scoped lang="scss">
