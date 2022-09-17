@@ -198,6 +198,7 @@ async function loadPreviousChatMessages(): Promise<void> {
 
 	const { body } = await chatMessageFetcher.list({
 		"filter": {
+			"chatMessageKinds": [ "text", "status" ],
 			"consultationIDs": [ consultation.value.id ],
 			"existence": "exists"
 		},
