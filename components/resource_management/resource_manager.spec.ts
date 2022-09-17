@@ -48,7 +48,9 @@ describe("UI Component: Resource Manager", () => {
 
 			const wrapper = mount(ResourceManager as object, {
 				"props": {
-					"resource": sampleUserList
+					"isLoaded": true,
+					"resource": sampleUserList,
+					"isResourceTypeUser": true
 				},
 				"global": {
 					"provide": {
@@ -115,7 +117,9 @@ describe("UI Component: Resource Manager", () => {
 			const wrapper = mount(ResourceManager, {
 				"shallow": true,
 				"props": {
-					"resource": sampleUserList
+					"isLoaded": true,
+					"resource": sampleUserList,
+					"isResourceTypeUser": true
 				},
 				"global": {
 					"provide": {
@@ -183,7 +187,9 @@ describe("UI Component: Resource Manager", () => {
 			const wrapper = mount(ResourceManager, {
 				"shallow": true,
 				"props": {
-					"resource": sampleUserList
+					"isLoaded": true,
+					"resource": sampleUserList,
+					"isResourceTypeUser": true
 				},
 				"global": {
 					"provide": {
