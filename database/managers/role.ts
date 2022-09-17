@@ -117,4 +117,52 @@ export default class extends BaseManager<
 			})
 		}
 	}
+
+	async isTheOnlyRoleToAnyUser(roleID: number): Promise<boolean> {
+		try {
+			if (!Model.sequelize || !AttachedRole.sequelize) {
+				throw new DatabaseError("Developer may have forgot to register the models.")
+			}
+
+			const [ rawUserIDs ] = await AttachedRole.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							"roleID"
+						],
+						"where": new Condition().equal("roleID", roleID).build()
+					}
+				)
+			) as unknown as [ { id: number, userID: string }[] ]
+			const userIDs = rawUserIDs.map(info => info.userID)
+
+			const [ counts ] = await Model.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							[
+								AttachedRole.sequelize.fn(
+									"count", "roleID"
+								),
+								"roleIDCount"
+							]
+						],
+						"group": [
+							[ "userID" ]
+						],
+						"having": new Condition().equal("roleIDCount", 1).build(),
+						"where": new Condition().isIncludedIn("userID", userIDs).build()
+					}
+				)
+			) as unknown as [ { id: number, count: string }[] ]
+
+			return counts.length > 0
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
 }
