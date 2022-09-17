@@ -9,10 +9,10 @@
 		@filter-by-role="filterByAdditionalResource($event, 'role')"
 		@filter-by-dept="filterByAdditionalResource($event, 'department')">
 		<template #search-filter>
-			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter @filter-by-given-slug="filterByGivenSlug"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList"/>
+		<UsersList :filtered-list="users"/>
 	</UsersManager>
 </template>
 
@@ -27,7 +27,6 @@
 import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
 import Manager from "$/helpers/manager"
@@ -81,14 +80,20 @@ const determineTitle = computed(() => {
 })
 
 const users = ref<DeserializedUserResource[]>([])
-const filteredList = ref<DeserializedUserResource[]>([])
 
 const roleId = ref("*")
 const depId = ref("*")
 const windowOffset = ref(0)
+const slug = ref("")
+const watchableFilters = [
+	roleId,
+	windowOffset,
+	depId,
+	slug
+]
 
-function getFilteredList(resource: PossibleResources[]) {
-	filteredList.value = resource as DeserializedUserResource[]
+function filterByGivenSlug(searchInput: string) {
+	slug.value = searchInput
 }
 
 function fetchUserInfo() {
@@ -98,7 +103,7 @@ function fetchUserInfo() {
 			"existence": "exists",
 			"kind": "*",
 			"role": roleId.value,
-			"slug": ""
+			"slug": slug.value
 		},
 		"page": {
 			"limit": 10,
@@ -130,7 +135,5 @@ function filterByAdditionalResource(id: string, filterKind: "role" | "department
 onMounted(() => {
 	fetchUserInfo()
 })
-watch([ roleId, windowOffset, depId ], () => {
-	fetchUserInfo()
-})
+watch(watchableFilters, () => fetchUserInfo())
 </script>
