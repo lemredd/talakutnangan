@@ -146,7 +146,6 @@ onMounted(() => {
 	fetchUserInfo()
 })
 watch(watchableFilters, () => {
-	windowOffset.value = 0
 	fetchUserInfo()
 })
 </script>
