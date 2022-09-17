@@ -14,8 +14,8 @@ as shown here.
 - [Docker]
 - [DB Browser for SQLite] if `filed_sqlite` is preferred.
 - [PostgreSQL]. [v14.3] is recommended.
-- [Python]. [v3 or higher]
-- [Visual Studio Build Tools]. [v2017 or higher] with desktop development with C++
+- [Python v3 or higher].
+- [Visual Studio Build Tools (v2017 or higher)] with desktop development with C++
 
 ### General Development Instruction
 1. Run `npm install`
@@ -65,28 +65,10 @@ as shown here.
 8. Visit http://localhost:16000
 
 ## Conventional Commits
-Visit [this detailed instructions](./CONVENTIONAL_COMMITS.md) for more details
+Visit [this detailed instructions](./dx/CONVENTIONAL_COMMITS.md) for more details
 
 ## Development
-There is a custom script in this repository to aid the development. Here are some of the custom commands:
-- `./execute -help`. Show the full information about the script. Run this command to know other commands.
-- `./execute -push`. Push the current branch to remote _origin_.
-- `./execute -pull`. Pulls the current branch and prunes other branches from remote _origin_.
-- `./execute -test [-suitename <suitename>]`. Run certain tests indicated by a configuration. Suite
-  name can be `unit:front` to run the front-end tests, `unit:back` to run common back-end tests, or
-  others.
-- `./execute -test [-suitename <suitename>] -watch`. Same as above yet it watches the files related
-  to the tests.
-
-### Pair Programming
-When doing pair programming, it is recommended to attach the [co-authors]. Below are examples of
-what to add at the end of the messages.
-
-- `Co-authored-by: Angelo Magtoto <19201.magtoto.angelo.l@gmail.com>`
-- `Co-authored-by: AteKitty07 <kiritogregorio@gmail.com>`
-- `Co-authored-by: IKnightSKyl <johnjeromepertez@yahoo.com>`
-- `Co-authored-by: Jarlem Red de Peralta <lmoa.jhdp@gmail.com>`
-- `Co-authored-by: Kenneth Trecy Tobias <19201.tobias.kennethtrecy.c@gmail.com>`
+Visit [this detailed instructions](./dx/DEVELOPMENT.md) for more details
 
 ## Notes
 
@@ -97,8 +79,6 @@ what to add at the end of the messages.
 - John Jerome Pertez
 - Kenneth Trecy Tobias
 
-[specification]: https://www.conventionalcommits.org/en/v1.0.0/
-[article]: https://medium.com/neudesic-innovation/conventional-commits-a-better-way-78d6785c2e08
 [BCP 14]: https://www.rfc-editor.org/info/bcp14
 [RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
@@ -107,5 +87,6 @@ what to add at the end of the messages.
 [DB Browser for SQLite]: https://www.w.co
 [PostgreSQL]: https://www.postgresql.org/download/windows/
 [v14.3]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+[Python v3 or higher]: https://www.python.org/downloads/
+[Visual Studio Build Tools (v2017 or higher)]: https://visualstudio.microsoft.com/downloads/
 [installer]: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
-[co-authors]: https://github.blog/2018-01-29-commit-together-with-co-authors/

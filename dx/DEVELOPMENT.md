@@ -17,3 +17,5 @@ what to add at the end of the messages.
 - `Co-authored-by: IKnightSKyl <johnjeromepertez@yahoo.com>`
 - `Co-authored-by: Jarlem Red de Peralta <lmoa.jhdp@gmail.com>`
 - `Co-authored-by: Kenneth Trecy Tobias <19201.tobias.kennethtrecy.c@gmail.com>`
+
+[co-authors]: https://github.blog/2018-01-29-commit-together-with-co-authors/
