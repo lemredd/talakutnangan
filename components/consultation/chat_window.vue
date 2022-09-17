@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed } from "vue"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
@@ -54,25 +54,65 @@ import type {
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
+import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
-const {
-	consultation,
-	chatMessages
-} = defineProps<{
+type Timer = ReturnType<typeof setInterval>
+
+const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
-const consultationID = computed<string>(() => consultation.id)
-const consultationStatus = computed<string>(() => consultation.status)
+const { chatMessages } = props
+
+const consultationID = computed<string>(() => props.consultation.id)
+const consultationStatus = computed<string>(() => props.consultation.status)
+const SECONDS_PER_MINUTE = 60
+const remainingSecondsBeforeInactivity = ref<number>(
+	convertTimeToMinutes("00:05") * SECONDS_PER_MINUTE
+)
+const interval = ref<Timer|null>(null)
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 }
 const emit = defineEmits<CustomEvents>()
 
+function finishConsultation() {
+	const { consultation } = props
+	const { startedAt } = consultation
+
+	if (startedAt instanceof Date) {
+		console.log("after update but bfore reupdate", props, startedAt, "\n\n\n\n")
+		const newConsultationData: ConsultationAttributes<"serialized"> = {
+			"actionTaken": null,
+			"deletedAt": consultation.deletedAt?.toISOString() ?? null,
+			"finishedAt": new Date().toISOString(),
+			"reason": consultation.reason,
+			"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
+			"startedAt": startedAt.toISOString()
+		}
+		clearInterval(interval.value as Timer)
+		interval.value = null
+		new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
+			const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
+				"actionTaken": consultation.actionTaken,
+				"deletedAt": consultation.deletedAt ?? null,
+				"finishedAt": consultation.finishedAt,
+				"reason": consultation.reason,
+				"scheduledStartAt": consultation.scheduledStartAt,
+				startedAt
+			}
+			emit("updatedConsultationAttributes", deserializedConsultationData)
+		})
+	}
+}
+
 function startConsultation() {
+	const { consultation } = props
+
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": null,
 		"deletedAt": consultation.deletedAt?.toISOString() ?? null,
@@ -81,6 +121,7 @@ function startConsultation() {
 		"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
 		"startedAt": new Date().toISOString()
 	}
+
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
 			"actionTaken": consultation.actionTaken,
@@ -90,7 +131,14 @@ function startConsultation() {
 			"scheduledStartAt": consultation.scheduledStartAt,
 			"startedAt": consultation.startedAt
 		}
-		// TODO: Start the timer
+
+		interval.value = setInterval(() => {
+			remainingSecondsBeforeInactivity.value--
+			if (remainingSecondsBeforeInactivity.value === 0) {
+				finishConsultation()
+			}
+		}, 1000)
+
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
