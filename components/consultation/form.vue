@@ -4,6 +4,48 @@
 			<h1>Enter the consultation details</h1>
 		</template>
 		<template #default>
+			<div class="employee p-5">
+				<h2>Employee</h2>
+				<div class="chip-employee">
+					Employee Full Name
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+			</div>
+			<div class="members p-5">
+				<h2>Members</h2>
+				<div class="chip-members">
+					Student Name1
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+				<div class="chip-members">
+					Student Name2
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+				<div class="chip-members">
+					Student Name3
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+				<div class="chip-members">
+					Student Name4
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+				<div class="chip-members">
+					Student Name5
+					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+						&times;
+					</span>
+				</div>
+			</div>
 			<form>
 				<SelectableOptionsField
 					v-model="chosenReason"
@@ -18,14 +60,54 @@
 			</form>
 		</template>
 		<template #footer>
-			<button type="button">
-				Set the schedule
+			<button class="btn btn-back" type="button">
+				Back
+			</button>
+			<button class="btn btn-primary" type="button">
+				Submit
 			</button>
 		</template>
 	</Overlay>
 </template>
 
 <style lang="scss">
+@import "@styles/btn.scss";
+
+.chip-employee, .chip-members {
+  display: inline-block;
+  padding: 0 15px;
+  margin:5px;
+  height: 30px;
+  font-size: 18px;
+  color: black;
+  line-height: 30px;
+  border-radius: 25px;
+  background-color:#f1f1f1;
+}
+
+.closebtn {
+  padding-left: 10px;
+  color: #888;
+  font-weight: bold;
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.closebtn:hover {
+  color: #000;
+}
+
+.btn{
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
 
 </style>
 
