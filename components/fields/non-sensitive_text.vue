@@ -10,13 +10,17 @@
 				:class="inputClasses"
 				:type="type"
 				:required="required"
-				:disabled="disabled || editable"/>
+				:disabled="isCurrentlyDisabled"/>
 			<button
 				v-if="editable"
 				type="button"
 				class="material-icons"
-				@click="editField">
-				edit
+				@click="toggleEditableField">
+				{{
+					isCurrentlyDisabled
+						? "edit"
+						: "save"
+				}}
 			</button>
 		</div>
 	</div>
@@ -56,7 +60,7 @@
 }
 </style>
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed } from "vue"
 
 import type { Textual } from "@/fields/types"
 
@@ -74,12 +78,15 @@ const {
 	label,
 	type,
 	required = true,
-	disabled,
 	editable,
 	inputClasses
 } = props
 
-const emit = defineEmits<{(e: "update:modelValue", newModelValue: string): void}>()
+interface CustomEvents {
+	(event: "update:modelValue", newModelValue: string): void
+	(event: "save")
+}
+const emit = defineEmits<CustomEvents>()
 
 const modelValue = computed<string>({
 	"get": () => props.modelValue,
@@ -87,12 +94,13 @@ const modelValue = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
+const isCurrentlyDisabled = ref<boolean>(props.disabled || props.editable)
 
-function editField(event: Event) {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const castTarget = event.target as HTMLButtonElement
-	const inputSibling = castTarget.previousSibling as HTMLInputElement
+function toggleEditableField() {
+	isCurrentlyDisabled.value = !isCurrentlyDisabled.value
 
-	inputSibling.disabled = !inputSibling.disabled
+	if (isCurrentlyDisabled.value) {
+		emit("save")
+	}
 }
 </script>
