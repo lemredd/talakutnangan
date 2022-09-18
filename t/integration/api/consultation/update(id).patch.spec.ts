@@ -168,7 +168,7 @@ describe("PATCH /api/consultation/:id", () => {
 			"namespace",
 			makeConsultationChatNamespace(String(chatMessageActivityModel.id))
 		)
-		expect(previousCalls[0].arguments).toHaveProperty(
+		expect(previousCalls[1].arguments).toHaveProperty(
 			"data.0.data.attributes.kind",
 			"status"
 		)
@@ -252,7 +252,7 @@ describe("PATCH /api/consultation/:id", () => {
 			"namespace",
 			makeConsultationChatNamespace(String(chatMessageActivityModel.id))
 		)
-		expect(previousCalls[0].arguments).toHaveProperty(
+		expect(previousCalls[1].arguments).toHaveProperty(
 			"data.0.data.attributes.kind",
 			"status"
 		)
