@@ -41,6 +41,10 @@ describe("PATCH /api/consultation/:id", () => {
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.makeOne()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(consultant))
+		.consultation(() => Promise.resolve(model))
+		.insertOne()
 
 		const response = await App.request
 		.patch(`/api/consultation/${model.id}`)
