@@ -1,35 +1,30 @@
 <template>
 	<SettingsHeader title="User Settings"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
-		<TextualField
-			v-model="accountInfo.email"
+		<NonSensitiveTextualField
+			v-model="email"
 			label="E-mail"
 			type="email"
 			:editable="true"
-			:verify="true"/>
-		<TextualField
-			v-model="accountInfo.password"
-			label="Password"
-			type="password"
-			:editable="true"
-			:verify="true"/>
+			@save="updateEmail"/>
+		<UpdatePasswordField/>
 
-		<TextualField
-			v-if="accountInfo.role === 'student'"
-			v-model="accountInfo.studentNumber"
+		<NonSensitiveTextualField
+			v-if="isCurrentlyStudent"
+			v-model="studentNumber"
 			label="Student Number"
 			type="text"
 			:disabled="true"/>
-		<TextualField
-			v-model="accountInfo.institute"
-			label="Institute"
+		<NonSensitiveTextualField
+			v-model="groupName"
+			:label="groupKind"
 			type="text"
 			:disabled="true"/>
 		<div>
 			<h3 class="input-header">
 				Roles
 			</h3>
-			<span class="role bg-white text-black">{{ accountInfo.role }}</span>
+			<span class="role bg-white text-black">{{ roles }}</span>
 		</div>
 	</form>
 </template>
@@ -52,18 +47,72 @@ form {
 </style>
 
 <script setup lang="ts">
-import { provide } from "vue"
+import { inject, provide, ref, computed, onBeforeMount, onMounted } from "vue"
+
 import type { TabInfo } from "$@/types/component"
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
+import Fetcher from "$@/fetchers/user"
+
 import SettingsHeader from "@/tabbed_page_header.vue"
+import UpdatePasswordField from "@/settings/update_password_field.vue"
+import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
 
-const accountInfo = {
-	"email": "email@example.com",
-	"password": "password",
-	"role": "student",
-	"studentNumber": "1920-9999",
-	"institute": "INS"
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+const { userProfile } = pageProps
+const email = ref<string>(userProfile.data.email)
+
+const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
+const studentNumber = computed<string>(() => {
+	if (isCurrentlyStudent.value) {
+		const castUserProfile = userProfile as DeserializedUserProfile<
+			"department"|"roles"|"studentDetail"
+		>
+
+		return castUserProfile.data.studentDetail.data.studentNumber
+	}
+
+	return ""
+})
+
+const isCurrentlyUnreachableEmployee = computed<boolean>(
+	() => userProfile.data.kind === "unreachable_employee"
+)
+const groupKind = computed<string>(() => {
+	if (isCurrentlyUnreachableEmployee.value) return "Department"
+	return "Institute"
+})
+const groupName = computed<string>(() => userProfile.data.department.data.acronym)
+
+const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
+
+onBeforeMount(() => {
+	Fetcher.initialize("/api")
+})
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
+
+	throw new Error("Users cannot be processed to server yet")
+}
+
+function updateEmail(): void {
+	fetcher().update(userProfile.data.id, {
+		"email": email.value,
+		"kind": userProfile.data.kind,
+		"name": userProfile.data.name,
+		"prefersDark": userProfile.data.prefersDark
+	})
+	.then(() => {
+		//
+	})
+	.catch(() => {
+		//
+	})
 }
 
 const tabs: TabInfo[] = [
@@ -78,4 +127,8 @@ const tabs: TabInfo[] = [
 ]
 
 provide("tabs", tabs)
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
+})
 </script>

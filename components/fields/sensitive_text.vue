@@ -1,30 +1,29 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container">
+	<div :class="{ 'default': !(props.editable ?? false) }" class="input-container">
 		<label v-if="label" class="input-header">
-			<h2>{{ label }}</h2>
+			<h2>{{ props.label }}</h2>
 		</label>
 		<div class="input-and-controls">
 			<input
 				v-model="modelValue"
 				class="bg-transparent"
-				:class="inputClasses"
-				:type="type"
-				:required="required"
-				:disabled="isCurrentlyDisabled"/>
+				:class="props.inputClasses ?? []"
+				type="password"
+				:placeholder="props.placeholder ?? ''"
+				:required="props.required"
+				:disabled="props.editable ?? false"/>
 			<button
-				v-if="editable"
+				v-if="props.editable ?? false"
 				type="button"
 				class="material-icons"
-				@click="toggleEditableField">
-				{{
-					isCurrentlyDisabled
-						? "edit"
-						: "save"
-				}}
+				@click="requestForEdit">
+				edit
 			</button>
 		</div>
+		<slot name="hidden-dialog"></slot>
 	</div>
 </template>
+
 <style scoped lang="scss">
 .input-container {
 	@apply flex flex-col;
@@ -60,31 +59,20 @@
 }
 </style>
 <script setup lang="ts">
-import { ref, computed } from "vue"
-
-import type { Textual } from "@/fields/types"
+import { computed } from "vue"
 
 const props = defineProps<{
-	label?: string
-	type: Textual
-	modelValue: string
-	required?: boolean
-	disabled?: boolean
-	editable?: boolean
-	inputClasses?: string
+	label?: string,
+	modelValue: string,
+	placeholder?: string,
+	required?: boolean,
+	editable?: boolean,
+	inputClasses?: string[]
 }>()
 
-const {
-	label,
-	type,
-	required = true,
-	editable,
-	inputClasses
-} = props
-
 interface CustomEvents {
+	(event: "requestEdit"): void,
 	(event: "update:modelValue", newModelValue: string): void
-	(event: "save")
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -94,13 +82,8 @@ const modelValue = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
-const isCurrentlyDisabled = ref<boolean>(props.disabled || props.editable)
 
-function toggleEditableField() {
-	isCurrentlyDisabled.value = !isCurrentlyDisabled.value
-
-	if (isCurrentlyDisabled.value) {
-		emit("save")
-	}
+function requestForEdit() {
+	emit("requestEdit")
 }
 </script>

@@ -79,7 +79,7 @@ import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
-import RoleFetcher from "$@/fetchers/role"
+import Fetcher from "$@/fetchers/role"
 import makeUnique from "$/array/make_unique"
 import {
 	semester as semesterPermissions,
@@ -104,13 +104,13 @@ const role = ref<DeserializedRoleDocument<"read">>(
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
 
 onBeforeMount(() => {
-	RoleFetcher.initialize("/api")
+	Fetcher.initialize("/api")
 })
 
-let rawRoleFetcher: RoleFetcher|null = null
+let rawFetcher: Fetcher|null = null
 
-function roleFetcher(): RoleFetcher {
-	if (rawRoleFetcher) return rawRoleFetcher
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
 
 	throw new Error("Roles cannot be retrived/sent to server yet")
 }
@@ -193,7 +193,7 @@ function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<
 }
 
 async function updateRole() {
-	await roleFetcher().update(role.value.data.id, {
+	await fetcher().update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
 		"commentFlags": role.value.data.commentFlags,
 		"deletedAt": role.value.data.deletedAt?.toJSON() || null,
@@ -212,20 +212,20 @@ async function updateRole() {
 }
 
 async function archiveRole() {
-	await roleFetcher().archive([ role.value.data.id ])
+	await fetcher().archive([ role.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 async function restoreRole() {
-	await roleFetcher().restore([ role.value.data.id ])
+	await fetcher().restore([ role.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 onMounted(() => {
-	rawRoleFetcher = new RoleFetcher()
+	rawFetcher = new Fetcher()
 })
 </script>
