@@ -91,12 +91,12 @@ describe("Component: fields/non-sensitive_text", () => {
 		})
 
 		const editButton = wrapper.find("button")
+
+		await editButton.trigger("click")
+		await editButton.trigger("click")
+
 		const field = wrapper.find("input")
-
-		await editButton.trigger("click")
-		await editButton.trigger("click")
-
-		expect(field.attributes("disabled")).toBeTruthy()
+		expect(field.attributes("disabled")).toEqual("")
 		expect(wrapper.emitted("save")).toHaveLength(1)
 	})
 })
