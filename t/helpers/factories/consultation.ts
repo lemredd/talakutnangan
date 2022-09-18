@@ -17,7 +17,6 @@ import User from "%/models/user"
 import Role from "%/models/role"
 import BaseFactory from "~/factories/base"
 import UserFactory from "~/factories/user"
-import Consulter from "%/models/consulter"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import AttachedRoleFactory from "~/factories/attached_role"
@@ -44,7 +43,6 @@ export default class ConsultationFactory extends BaseFactory<
 			return attachedRole
 		}
 
-	#consultersGenerator: () => Promise<User[]> = () => new UserFactory().insertMany(1)
 	#reasonGenerator: () => string = () => `${
 		faker.hacker.noun()
 	}-${
@@ -70,25 +68,11 @@ export default class ConsultationFactory extends BaseFactory<
 			"finishedAt": this.#finishedAtGenerator(),
 			"reason": this.#reasonGenerator(),
 			"scheduledStartAt": this.#scheduledStartAtGenerator(),
-			"staredAt": this.#startedAtGenerator()
+			"startedAt": this.#startedAtGenerator()
 		}
 	}
 
 	async attachRelatedModels(model: Consultation): Promise<Consultation> {
-		const consulters = await this.#consultersGenerator()
-
-		if (model.id) {
-			const rawConsulters: { userID: number, consultationID: number }[] = consulters
-			.map(consulter => ({
-				"consultationID": model.id as number,
-				"userID": consulter.id as number
-			}))
-
-			await Consulter.bulkCreate(rawConsulters)
-		}
-
-		model.consulters = consulters
-
 		const consultantInfo = await AttachedRole.findByPk(model.attachedRoleID, {
 			"include": [ User, Role ]
 		}) as AttachedRole
@@ -125,11 +109,6 @@ export default class ConsultationFactory extends BaseFactory<
 
 	consultantInfo(generator: () => Promise<AttachedRole>): ConsultationFactory {
 		this.#consultantInfoGenerator = generator
-		return this
-	}
-
-	consulters(generator: () => Promise<User[]>): ConsultationFactory {
-		this.#consultersGenerator = generator
 		return this
 	}
 }

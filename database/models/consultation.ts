@@ -12,7 +12,6 @@ import {
 
 import User from "%/models/user"
 import Role from "%/models/role"
-import Consulter from "%/models/consulter"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
@@ -64,9 +63,6 @@ export default class Consultation extends Model {
 	@BelongsTo(() => AttachedRole)
 		consultantInfo?: AttachedRole
 
-	@BelongsToMany(() => User, () => Consulter)
-		consulters!: User[]
-
 	get consultant(): User|undefined { return this.consultantInfo?.user }
 
 	get consultantRole(): Role|undefined { return this.consultantInfo?.role }
@@ -98,6 +94,7 @@ export default class Consultation extends Model {
 			)
 		}
 
+		// eslint-disable-next-line no-undefined
 		if (chatMessages.length === 0) return undefined
 
 		return chatMessages

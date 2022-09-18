@@ -66,7 +66,7 @@ extends GeneralRelationshipData {
 		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedRoleDocument
 	},
-	consulters: {
+	participants: {
 		serialized: UserIdentifierListDocument,
 		deserialized: DeserializedUserListDocument
 	},

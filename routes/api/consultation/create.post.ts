@@ -16,7 +16,6 @@ import date from "!/validators/base/date"
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import boolean from "!/validators/base/boolean"
-import integer from "!/validators/base/integer"
 import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
@@ -68,7 +67,7 @@ export default class extends JSONController {
 					// TODO: Check if the schedule fits within the schedule of employee
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
-						"userIDPointer": "meta.reachableEmployeeID"
+						"userIDPointer": "data.relationships.consultant.data.id"
 					}
 				},
 				"pipes": [ required, string, date, uniqueConsultationSchedule ]
@@ -80,9 +79,20 @@ export default class extends JSONController {
 			{
 				"ClassName": UserManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"sameAttribute": {
+								"columnName": "kind",
+								"value": "reachable_employee"
+							}
+						},
+						"pipes": []
+					}
+				},
 				"relationshipName": "consultant",
 				"typeName": "user",
-				"validator": exists
+				"validator": existWithSameAttribute
 			},
 			{
 				"ClassName": RoleManager,
@@ -94,7 +104,7 @@ export default class extends JSONController {
 			{
 				"ClassName": UserManager,
 				"isArray": true,
-				"relationshipName": "consulters",
+				"relationshipName": "participants",
 				"typeName": "user",
 				"validator": exists
 			}
@@ -111,22 +121,6 @@ export default class extends JSONController {
 								}
 							},
 							"pipes": [ required, boolean ]
-						},
-						"reachableEmployeeID": {
-							"constraints": {
-								"integer": {
-									"mustCast": true
-								},
-								"manager": {
-									"className": UserManager,
-									"columnName": "id"
-								},
-								"sameAttribute": {
-									"columnName": "kind",
-									"value": "reachable_employee"
-								}
-							},
-							"pipes": [ required, string, integer, existWithSameAttribute ]
 						}
 					}
 				},
@@ -152,7 +146,7 @@ export default class extends JSONController {
 		const manager = new ConsultationManager(request)
 
 		const consultationInfo = await manager.createUsingResource(
-			request.body as ConsultationResource<"create">,
+			request.body.data as ConsultationResource<"create">,
 			Number(user.data.id)
 		)
 

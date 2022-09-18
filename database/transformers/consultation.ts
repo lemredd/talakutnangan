@@ -12,7 +12,6 @@ import ChatMessageActivityTransformer from "%/transformers/chat_message_activity
 type Relationships =
 	|"consultant"
 	|"consultantRole"
-	|"consulters"
 	|"chatMessageActivities"
 	|"chatMessages"
 
@@ -33,12 +32,6 @@ export default class extends Transformer<Consultation, void> {
 				? {
 					"attribute": "consultantRole",
 					"transformer": new RoleTransformer()
-				}
-				: null,
-			included.indexOf("consulters") > -1
-				? {
-					"attribute": "consulters",
-					"transformer": new UserTransformer()
 				}
 				: null,
 			included.indexOf("chatMessageActivities") > -1

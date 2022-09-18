@@ -1,11 +1,11 @@
 import ErrorBag from "$!/errors/error_bag"
+import Factory from "~/factories/consultation"
 import MockRequester from "~/set-ups/mock_requester"
-import ConsultationFactory from "~/factories/consultation"
 import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/consultation/:id", () => {
+describe("Controller: PATCH /api/model/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async() => {
@@ -13,8 +13,11 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new ConsultationFactory().insertOne()
-		const newModel = await new ConsultationFactory().makeOne()
+		const model = await new Factory().insertOne()
+		const newModel = await new Factory()
+		.startedAt(() => new Date())
+		.finishedAt(() => null)
+		.makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -24,10 +27,21 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 						"finishedAt": null,
 						"reason": newModel.reason,
 						"scheduledStartAt": newModel.scheduledStartAt.toJSON(),
-						"startedAt": newModel.startedAt
+						"startedAt": newModel.startedAt?.toJSON()
 					},
 					"id": String(model.id),
+					"relationships": {
+						"consultant": {
+							"data": {
+								"id": String(model.consultant?.id),
+								"type": "user"
+							}
+						}
+					},
 					"type": "consultation"
+				},
+				"meta": {
+					"doesAllowConflicts": true
 				}
 			}
 		})
@@ -42,20 +56,31 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new Factory().startedAt(() => null).insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"actionTaken": consultation.actionTaken,
-						"attachedRoleID": consultation.attachedRoleID,
-						"finishedAt": consultation.finishedAt,
-						"reason": consultation.reason,
-						"scheduledStartAt": consultation.scheduledStartAt.toJSON(),
-						"startedAt": consultation.startedAt
+						"actionTaken": model.actionTaken,
+						"attachedRoleID": model.attachedRoleID,
+						"finishedAt": model.finishedAt,
+						"reason": model.reason,
+						"scheduledStartAt": model.scheduledStartAt.toJSON(),
+						"startedAt": model.startedAt
 					},
-					"id": String(consultation.id),
+					"id": String(model.id),
+					"relationships": {
+						"consultant": {
+							"data": {
+								"id": String(model.consultant?.id),
+								"type": "user"
+							}
+						}
+					},
 					"type": "consultation"
+				},
+				"meta": {
+					"doesAllowConflicts": true
 				}
 			}
 		})

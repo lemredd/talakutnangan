@@ -42,7 +42,7 @@ describe("Controller: POST /api/consultation", () => {
 								"type": "role"
 							}
 						},
-						"consulters": {
+						"participants": {
 							"data": [
 								{
 									"id": String(user.id),
@@ -54,8 +54,7 @@ describe("Controller: POST /api/consultation", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": false,
-					"reachableEmployeeID": String(model.consultant?.id)
+					"doesAllowConflicts": false
 				}
 			}
 		})

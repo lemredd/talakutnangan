@@ -33,7 +33,6 @@ describe("Database Manager: Consultation create operations", () => {
 		const user = await new UserFactory().insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.consulters(() => Promise.resolve([ user ]))
 		.makeOne()
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
@@ -63,7 +62,7 @@ describe("Database Manager: Consultation create operations", () => {
 						"type": "role"
 					}
 				},
-				"consulters": {
+				"participants": {
 					"data": [
 						{
 							"id": String(user.id),

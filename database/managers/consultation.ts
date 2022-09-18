@@ -76,8 +76,8 @@ export default class extends BaseManager<
 						"id": consultantRoleID
 					}
 				},
-				"consulters": {
-					"data": rawConsulters
+				"participants": {
+					"data": rawParticipants
 				}
 			} = relationships
 
@@ -111,8 +111,8 @@ export default class extends BaseManager<
 
 			model.consultantInfo = attachedRole
 
-			const rawChatMessageActivities = rawConsulters.map(consulter => {
-				const userID = Number(consulter.id)
+			const rawChatMessageActivities = rawParticipants.map(participant => {
+				const userID = Number(participant.id)
 				const rawChatMessageActivityAttributes: CreationAttributes<ChatMessageActivity> = {
 					"consultationID": Number(model.id),
 					"receivedMessageAt": null,

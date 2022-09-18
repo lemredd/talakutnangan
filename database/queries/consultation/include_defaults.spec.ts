@@ -18,7 +18,6 @@ describe("Database Pipe: Include defaults", () => {
 		const user = await new UserFactory().insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.consulters(() => Promise.resolve([ user ]))
 		.makeOne()
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
@@ -48,7 +47,7 @@ describe("Database Pipe: Include defaults", () => {
 						"type": "role"
 					}
 				},
-				"consulters": {
+				"participants": {
 					"data": [
 						{
 							"id": String(user.id),
@@ -60,7 +59,7 @@ describe("Database Pipe: Include defaults", () => {
 			"type": "consultation"
 		}
 		const manager = new Manager()
-		const createdData = await manager.createUsingResource(resource, user.id)
+		await manager.createUsingResource(resource, user.id)
 
 		const options = includeDefaults({}, {})
 		const foundModels = await Model.findAll(options)
