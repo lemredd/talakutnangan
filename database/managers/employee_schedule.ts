@@ -32,14 +32,14 @@ export default class extends BaseManager<
 	RawEmployeeScheduleAttributes,
 	EmployeeScheduleQueryParameters<number>
 > {
-	private currentDatetime: Date
+	private currentDateTime: Date
 
 	constructor({
-		currentDatetime = new Date(),
+		currentDateTime = new Date(),
 		...sharedState
-	}: Partial<SharedManagerState & { currentDatetime: Date }> = {}) {
+	}: Partial<SharedManagerState & { currentDateTime: Date }> = {}) {
 		super(sharedState)
-		this.currentDatetime = currentDatetime
+		this.currentDateTime = currentDateTime
 	}
 
 	get model(): ModelCtor<Model> { return Model }
@@ -147,7 +147,7 @@ export default class extends BaseManager<
 
 	private async removePossibleConsultations(targetTimes: [ number, Day, Time, Time ][])
 	: Promise<void> {
-		const { currentDatetime } = this
+		const { currentDateTime } = this
 
 		if (!Consultation.sequelize) {
 			throw new DatabaseError("Developer may have forgot to register the models.")
@@ -166,7 +166,7 @@ export default class extends BaseManager<
 					).build()
 				}
 			],
-			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentDatetime).build(),
+			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentDateTime).build(),
 			...this.transaction.transactionObject
 		})
 
