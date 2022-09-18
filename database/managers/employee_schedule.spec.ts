@@ -91,10 +91,11 @@ describe("Database Manager: Employee schedule update operations", () => {
 	})
 })
 
-describe.skip("Database Manager: Employee schedule archive operations", () => {
+describe("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resources", async() => {
-		const FUTURE_DATE_TIME = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE_TIME.setHours(8)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 90
@@ -133,8 +134,9 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 	})
 
 	it("cannot archive consultations with unaffected schedules", async() => {
-		const FUTURE_DATE_TIME = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE_TIME.setHours(8)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 80
@@ -163,7 +165,7 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.archiveBatch([ Number(model.id) ])
 
@@ -172,7 +174,9 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 	})
 
 	it("cannot archive unowned consultations", async() => {
-		const FUTURE_DATE_TIME = new Date(Date.now() + 10 * 60 * 1000)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
 		FUTURE_DATE_TIME.setHours(8)
 		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
 		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
@@ -195,7 +199,7 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.archiveBatch([ Number(model.id) ])
 
