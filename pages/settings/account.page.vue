@@ -5,7 +5,8 @@
 			v-model="email"
 			label="E-mail"
 			type="email"
-			:editable="true"/>
+			:editable="true"
+			@save="updateEmail"/>
 		<UpdatePasswordField/>
 
 		<NonSensitiveTextualField
@@ -97,6 +98,21 @@ function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
 
 	throw new Error("Users cannot be processed to server yet")
+}
+
+function updateEmail(): void {
+	fetcher().update(userProfile.data.id, {
+		"email": email.value,
+		"kind": userProfile.data.kind,
+		"name": userProfile.data.name,
+		"prefersDark": userProfile.data.prefersDark
+	})
+	.then(() => {
+		//
+	})
+	.catch(() => {
+		//
+	})
 }
 
 const tabs: TabInfo[] = [
