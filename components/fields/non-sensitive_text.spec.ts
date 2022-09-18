@@ -78,4 +78,25 @@ describe("Component: fields/non-sensitive_text", () => {
 		expect(editButton.exists()).toBeFalsy()
 		expect(field.attributes("disabled")).toBeFalsy()
 	})
+
+	it("may be saved", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"editable": true,
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const editButton = wrapper.find("button")
+		const field = wrapper.find("input")
+
+		await editButton.trigger("click")
+		await editButton.trigger("click")
+
+		expect(field.attributes("disabled")).toBeTruthy()
+		expect(wrapper.emitted("save")).toHaveLength(1)
+	})
 })
