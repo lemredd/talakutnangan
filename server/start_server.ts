@@ -10,10 +10,15 @@ import URLMaker from "$!/singletons/url_maker"
 import createWSServer from "!/ws/create_server"
 import createAppHandler from "!/app/create_handler"
 import createPeerServer from "!/peer/create_server_middleware"
+import RequestEnvironment from "$/singletons/request_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"
 
 export default async function startServer(): Promise<HTTPServer> {
-	await initializeSingletons(process.env.DATABASE_TYPE as SourceType)
+	await initializeSingletons(
+		RequestEnvironment.isOnTest
+			? process.env.DATABASE_TEST_TYPE as SourceType
+			: process.env.DATABASE_TYPE as SourceType
+	)
 
 	const customRouter = new Router()
 
