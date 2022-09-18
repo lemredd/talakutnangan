@@ -2,6 +2,7 @@ import type { Rules, FieldRules } from "!/types/validation"
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
+import UserManager from "%/managers/user"
 import Merger from "!/middlewares/miscellaneous/merger"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -12,13 +13,17 @@ import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import or from "!/validators/logical/or"
 import date from "!/validators/base/date"
+import object from "!/validators/base/object"
 import string from "!/validators/base/string"
+import boolean from "!/validators/base/boolean"
 import same from "!/validators/comparison/same"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
 import regex from "!/validators/comparison/regex"
 import length from "!/validators/comparison/length"
+import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
 
 export default class extends DoubleBoundJSONController {
@@ -93,7 +98,7 @@ export default class extends DoubleBoundJSONController {
 					// TODO: Check if the schedule fits within the schedule of employee
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
-						"userIDPointer": "meta.reachableEmployeeID"
+						"userIDPointer": "data.relationships.consultant.data.id"
 					}
 				},
 				"pipes": [ required, string, date, uniqueConsultationSchedule ]
@@ -108,7 +113,55 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-		return makeResourceDocumentRules("consultation", attributes)
+		const relationships: FieldRules = makeRelationshipRules([
+			{
+				"ClassName": UserManager,
+				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"sameAttribute": {
+								"columnName": "kind",
+								"value": "reachable_employee"
+							}
+						},
+						"pipes": []
+					}
+				},
+				"relationshipName": "consultant",
+				"typeName": "user",
+				"validator": existWithSameAttribute
+			}
+		])
+
+		const meta: FieldRules = {
+			"meta": {
+				"constraints": {
+					"object": {
+						"doesAllowConflicts": {
+							"constraints": {
+								"boolean": {
+									"loose": false
+								}
+							},
+							"pipes": [ required, boolean ]
+						}
+					}
+				},
+				"pipes": [ required, object ]
+			}
+		}
+
+		return makeResourceDocumentRules(
+			"consultation",
+			attributes,
+			{
+				"extraDataQueries": relationships,
+				"extraQueries": meta,
+				"isNew": false,
+				"mustCastID": true
+			}
+		)
 	}
 
 	get manager(): BaseManagerClass { return ConsultationManager }
