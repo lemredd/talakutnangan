@@ -42,7 +42,7 @@ describe("Controller: POST /api/consultation", () => {
 								"type": "role"
 							}
 						},
-						"consulters": {
+						"participants": {
 							"data": [
 								{
 									"id": String(user.id),
