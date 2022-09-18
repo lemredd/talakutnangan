@@ -1,12 +1,14 @@
 import type { Rules, FieldRules } from "!/types/validation"
-import type { Request, Response, BaseManagerClass } from "!/types/dependent"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Merger from "!/middlewares/miscellaneous/merger"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
+import makeConsultationNamespace from "$/namespace_makers/consultation"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
@@ -36,7 +38,7 @@ export default class extends DoubleBoundJSONController {
 		]) as unknown as Policy
 	}
 
-	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		const pureNull: Rules = {
 			"constraints": {
 				"nullable": {
@@ -159,17 +161,25 @@ export default class extends DoubleBoundJSONController {
 				"extraDataQueries": relationships,
 				"extraQueries": meta,
 				"isNew": false,
-				"mustCastID": true
+				"mustCastID": false
 			}
 		)
 	}
 
 	get manager(): BaseManagerClass { return ConsultationManager }
 
-	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
+	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
+	: Promise<NoContentResponseInfo> {
 		const manager = new ConsultationManager(request)
-		const { id } = request.params
-		await manager.update(Number(id), request.body.data.attributes)
+		const id = Number(request.params.id)
+
+		await manager.update(id, request.body.data.attributes)
+
+		Socket.emitToClients(
+			makeConsultationNamespace(String(id)),
+			"update",
+			request.body
+		)
 
 		return new NoContentResponseInfo()
 	}
