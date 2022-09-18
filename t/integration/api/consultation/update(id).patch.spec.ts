@@ -83,7 +83,7 @@ describe("PATCH /api/consultation/:id", () => {
 		expect(previousCalls[0].arguments).toHaveProperty("eventName", "update")
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"namespace",
-			makeConsultationChatNamespace(String(model.id))
+			makeConsultationNamespace(String(model.id))
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"data.0.data.attributes.reason",
