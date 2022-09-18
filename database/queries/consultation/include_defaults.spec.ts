@@ -46,6 +46,14 @@ describe("Database Pipe: Include defaults", () => {
 						"id": String(attachedRole.roleID),
 						"type": "role"
 					}
+				},
+				"participants": {
+					"data": [
+						{
+							"id": String(user.id),
+							"type": "user"
+						}
+					]
 				}
 			},
 			"type": "consultation"
