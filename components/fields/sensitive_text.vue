@@ -9,6 +9,7 @@
 				class="bg-transparent"
 				:class="props.inputClasses ?? []"
 				type="password"
+				:placeholder="props.placeholder ?? ''"
 				:required="props.required"
 				:disabled="props.editable ?? false"/>
 			<button
@@ -63,6 +64,7 @@ import { computed } from "vue"
 const props = defineProps<{
 	label?: string,
 	modelValue: string,
+	placeholder?: string,
 	required?: boolean,
 	editable?: boolean,
 	inputClasses?: string[]
