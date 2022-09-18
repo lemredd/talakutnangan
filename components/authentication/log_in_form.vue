@@ -6,8 +6,7 @@
 			type="email"/>
 		<PasswordField
 			v-model="password"
-			label="Password"
-			type="password"/>
+			label="Password"/>
 		<div v-if="RequestEnvironment.isNotOnProduction">
 			<button type="button" @click="fillStudent">
 				Fill Student Details
@@ -46,8 +45,8 @@ import { ref } from "vue"
 import UserFetcher from "$@/fetchers/user"
 import RequestEnvironment from "$/singletons/request_environment"
 
+import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
-import PasswordField from "@/fields/textual.vue"
 
 const email = ref("sample@example.com")
 const password = ref("12345678")
