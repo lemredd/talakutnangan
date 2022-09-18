@@ -14,7 +14,10 @@ describe("Controller: PATCH /api/model/:id", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const model = await new Factory().insertOne()
-		const newModel = await new Factory().startedAt(() => new Date()).makeOne()
+		const newModel = await new Factory()
+		.startedAt(() => new Date())
+		.finishedAt(() => null)
+		.makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -24,7 +27,7 @@ describe("Controller: PATCH /api/model/:id", () => {
 						"finishedAt": null,
 						"reason": newModel.reason,
 						"scheduledStartAt": newModel.scheduledStartAt.toJSON(),
-						"startedAt": newModel.startedAt
+						"startedAt": newModel.startedAt?.toJSON()
 					},
 					"id": String(model.id),
 					"relationships": {
@@ -53,7 +56,7 @@ describe("Controller: PATCH /api/model/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().insertOne()
+		const model = await new Factory().startedAt(() => null).insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
