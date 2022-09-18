@@ -1,6 +1,9 @@
 import { nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
+import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./update_password_field.vue"
@@ -17,7 +20,7 @@ describe("Component: settings/update_password_field", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"user": {
+							"userProfile": {
 								"data": {
 									"id": userID
 								}
@@ -37,7 +40,7 @@ describe("Component: settings/update_password_field", () => {
 
 		const overlayInputs = wrapper.findAll(".overlay input")
 		const [ currentInput, newInput, confirmationInput ] = overlayInputs
-		const saveButton = wrapper.find(".overlay-footer button")
+		const saveButton = wrapper.find(".overlay-footer button:nth-of-type(2)")
 		await currentInput.setValue(CURRENT_PASSWORD)
 		await newInput.setValue(NEW_PASSWORD)
 		await confirmationInput.setValue(CONFIRM_NEW_PASSWORD)
@@ -48,7 +51,9 @@ describe("Component: settings/update_password_field", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", `/api/user/${userID}/update_password`)
+		expect(firstRequest).toHaveProperty("url", specializePath(UPDATE_PASSWORD_PATH, {
+			"id": userID
+		}))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.password", NEW_PASSWORD)
 		expect(firstRequestBody).toHaveProperty("data.id", userID)
