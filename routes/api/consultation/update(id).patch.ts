@@ -1,14 +1,19 @@
 import type { Rules, FieldRules } from "!/types/validation"
+import type { ConsultationDocument } from "$/types/documents/consultation"
+import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import Manager from "%/managers/consultation"
 import Merger from "!/middlewares/miscellaneous/merger"
-import ConsultationManager from "%/managers/consultation"
+import ChatMessageManager from "%/managers/chat_message"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
+import ChatMessageActivityManager from "%/managers/chat_message_activity"
+import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
@@ -166,20 +171,70 @@ export default class extends DoubleBoundJSONController {
 		)
 	}
 
-	get manager(): BaseManagerClass { return ConsultationManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new ConsultationManager(request)
+		const manager = new Manager(request)
 		const id = Number(request.params.id)
+		const oldVersion = await manager.findWithID(id) as ConsultationDocument
+		const newVersion = request.body as ConsultationDocument
 
-		await manager.update(id, request.body.data.attributes)
+		await manager.update(id, newVersion.data.attributes)
 
 		Socket.emitToClients(
 			makeConsultationNamespace(String(id)),
 			"update",
 			request.body
 		)
+
+		const chatMessageManager = new ChatMessageManager(request)
+		if (
+			oldVersion.data.attributes.startedAt === null
+			|| oldVersion.data.attributes.finishedAt === null
+		) {
+			let value: string|null = null
+
+			if (
+				oldVersion.data.attributes.startedAt === null
+				&& newVersion.data.attributes.startedAt !== null
+			) {
+				value = "Consultation has started."
+			} else if (
+				oldVersion.data.attributes.finishedAt === null
+				&& newVersion.data.attributes.finishedAt !== null
+			) {
+				value = "Consultation has finished."
+			}
+
+			if (value !== null) {
+				const activityManager = new ChatMessageActivityManager(request)
+
+				const activity = await activityManager.findOneOnColumn(
+					"consultationID",
+					id,
+					{
+						"filter": {
+							"existence": "exists"
+						}
+					}
+				) as ChatMessageActivityDocument
+
+				const chatMessage = await chatMessageManager.create({
+					"chatMessageActivityID": Number(activity.data.id),
+					"data": {
+						value
+					},
+					"kind": "status"
+				})
+
+				Socket.emitToClients(
+					makeConsultationChatNamespace(String(id)),
+					"create",
+					chatMessage
+				)
+			}
+		}
 
 		return new NoContentResponseInfo()
 	}
