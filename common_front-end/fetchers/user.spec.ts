@@ -1,7 +1,10 @@
 /* eslint-disable no-undef */
 import type { UnitError } from "$/types/server"
 
+import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+
 import UserFetcher from "$@/fetchers/user"
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Communicator: UserFetcher", () => {
@@ -122,7 +125,9 @@ describe("Communicator: UserFetcher", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", `/api/user/${USER_ID}/update_password`)
+		expect(request).toHaveProperty("url", specializePath(UPDATE_PASSWORD_PATH, {
+			"id": USER_ID
+		}))
 		expect(await request.json()).toStrictEqual({
 			"data": {
 				"attributes": {
