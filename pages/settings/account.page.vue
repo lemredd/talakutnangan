@@ -46,11 +46,13 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, provide, ref, computed } from "vue"
+import { inject, provide, ref, computed, onBeforeMount, onMounted } from "vue"
 
 import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+
+import Fetcher from "$@/fetchers/user"
 
 import SettingsHeader from "@/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
@@ -84,6 +86,19 @@ const groupKind = computed<string>(() => {
 const groupName = computed<string>(() => userProfile.data.department.data.acronym)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
+
+onBeforeMount(() => {
+	Fetcher.initialize("/api")
+})
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
+
+	throw new Error("Users cannot be processed to server yet")
+}
+
 const tabs: TabInfo[] = [
 	{
 		"label": "Account",
@@ -96,4 +111,8 @@ const tabs: TabInfo[] = [
 ]
 
 provide("tabs", tabs)
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
+})
 </script>
