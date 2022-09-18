@@ -10,7 +10,7 @@ import findMinutesAfterMidnight from "%/managers/helpers/find_minutes_after_midn
 
 import Manager from "./employee_schedule"
 
-describe.skip("Database Manager: Employee schedule update operations", () => {
+describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
 		jest.useRealTimers()
 		const CURRENT_DATETIME = new Date()
