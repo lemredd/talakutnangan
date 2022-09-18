@@ -94,12 +94,9 @@ describe("PATCH /api/consultation/:id", () => {
 	it("can be accessed by authenticated user with updated started time", async() => {
 		jest.useRealTimers()
 		const normalRole = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
-			userFactory => userFactory.beStudent())
-		const consultant = await new UserFactory()
-		.beReachableEmployee()
-		.insertOne()
+			userFactory => userFactory.beReachableEmployee())
 		const consultantInfo = await AttachedRole.findOne({
 			"where": {
 				"roleID": normalRole.id,
@@ -180,12 +177,9 @@ describe("PATCH /api/consultation/:id", () => {
 		jest.useRealTimers()
 		const STARTED_TIME = new Date()
 		const normalRole = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
-			userFactory => userFactory.beStudent())
-		const consultant = await new UserFactory()
-		.beReachableEmployee()
-		.insertOne()
+			userFactory => userFactory.beReachableEmployee())
 		const consultantInfo = await AttachedRole.findOne({
 			"where": {
 				"roleID": normalRole.id,
