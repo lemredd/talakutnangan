@@ -93,6 +93,7 @@ describe("PATCH /api/consultation/:id", () => {
 
 	it("can be accessed by authenticated user with updated started time", async() => {
 		jest.useRealTimers()
+		const STARTED_TIME = new Date()
 		const normalRole = await new RoleFactory().insertOne()
 		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
@@ -114,7 +115,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.insertOne()
 		const newModel = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
-		.startedAt(() => new Date())
+		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => null)
 		.makeOne()
 
@@ -159,7 +160,7 @@ describe("PATCH /api/consultation/:id", () => {
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"data.0.data.attributes.startedAt",
-			newModel.startedAt
+			STARTED_TIME.toJSON()
 		)
 		expect(previousCalls[1].functionName).toBe("emitToClients")
 		expect(previousCalls[1].arguments).toHaveProperty("eventName", "create")
@@ -176,6 +177,7 @@ describe("PATCH /api/consultation/:id", () => {
 	it("can be accessed by authenticated user with updated finished time", async() => {
 		jest.useRealTimers()
 		const STARTED_TIME = new Date()
+		const FINISHED_TIME = new Date()
 		const normalRole = await new RoleFactory().insertOne()
 		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
@@ -198,7 +200,7 @@ describe("PATCH /api/consultation/:id", () => {
 		const newModel = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => STARTED_TIME)
-		.finishedAt(() => new Date())
+		.finishedAt(() => FINISHED_TIME)
 		.makeOne()
 
 		const response = await App.request
@@ -242,7 +244,7 @@ describe("PATCH /api/consultation/:id", () => {
 		)
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"data.0.data.attributes.finishedAt",
-			newModel.finishedAt
+			FINISHED_TIME.toJSON()
 		)
 		expect(previousCalls[1].functionName).toBe("emitToClients")
 		expect(previousCalls[1].arguments).toHaveProperty("eventName", "create")
