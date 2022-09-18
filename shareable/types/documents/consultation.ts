@@ -66,10 +66,6 @@ extends GeneralRelationshipData {
 		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedRoleDocument
 	},
-	consulters: {
-		serialized: UserIdentifierListDocument,
-		deserialized: DeserializedUserListDocument
-	},
 	chatMessageActivities: {
 		serialized: T extends "create" ? undefined : ChatMessageActivityIdentifierListDocument,
 		deserialized: DeserializedChatMessageActivityListDocument
