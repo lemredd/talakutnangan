@@ -146,7 +146,7 @@ export default class extends JSONController {
 		const manager = new ConsultationManager(request)
 
 		const consultationInfo = await manager.createUsingResource(
-			request.body as ConsultationResource<"create">,
+			request.body.data as ConsultationResource<"create">,
 			Number(user.data.id)
 		)
 
