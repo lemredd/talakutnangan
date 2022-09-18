@@ -1,5 +1,5 @@
 <template>
-	<SensitiveText
+	<SensitiveTextField
 		v-model="mockPassword"
 		label="Password"
 		:editable="true"
@@ -11,15 +11,15 @@
 				</template>
 				<template #default>
 					<form class="verification">
-						<SensitiveText
+						<SensitiveTextField
 							v-model="currentPassword"
 							label="Current password"
 							placeholder="enter your current password"/>
-						<SensitiveText
+						<SensitiveTextField
 							v-model="newPassword"
 							label="New password"
 							placeholder="enter your new password"/>
-						<SensitiveText
+						<SensitiveTextField
 							v-model="confirmNewPassword"
 							label="Confirm new password"
 							placeholder="confirm your new password"/>
@@ -35,7 +35,7 @@
 				</template>
 			</Overlay>
 		</template>
-	</SensitiveText>
+	</SensitiveTextField>
 </template>
 
 <style scoped lang="scss">
@@ -53,16 +53,32 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, inject, onMounted } from "vue"
+
+import type { PageContext } from "$/types/renderer"
+
+import Fetcher from "$@/fetchers/user"
 
 import Overlay from "@/helpers/overlay.vue"
-import SensitiveText from "@/fields/sensitive_text.vue"
+import SensitiveTextField from "@/fields/sensitive_text.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const mockPassword = ref<string>("00000000")
 const isOverlayShown = ref<boolean>(false)
 const currentPassword = ref<string>("")
 const newPassword = ref<string>("")
 const confirmNewPassword = ref<string>("")
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
+
+	throw new Error("Users cannot be processed to server yet")
+}
 
 function clearPasswords(): void {
 	[
@@ -84,6 +100,15 @@ function cancel(): void {
 }
 
 function savePassword() {
-	//
+	fetcher().updatePassword(
+		userProfile.data.id,
+		currentPassword.value,
+		newPassword.value,
+		confirmNewPassword.value
+	).then(cancel)
 }
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
+})
 </script>
