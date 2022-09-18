@@ -34,11 +34,11 @@ describe("Page: settings/account", () => {
 		const inputs = wrapper.findAll("input")
 
 		expect(inputs).toHaveLength(4)
-		expect(inputs[0].attributes("value")).toBe(userProfileResource.data.email)
-		expect(inputs[2].attributes("value")).toBe(
+		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
+		expect(inputs[2].element.value).toBe(
 			userProfileResource.data.studentDetail.data.studentNumber
 		)
-		expect(inputs[3].attributes("value")).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputs[3].element.value).toBe(userProfileResource.data.department.data.acronym)
 	})
 
 	it("should show basic details for employees", async() => {
@@ -61,14 +61,14 @@ describe("Page: settings/account", () => {
 		const inputs = wrapper.findAll("input")
 
 		expect(inputs).toHaveLength(3)
-		expect(inputs[0].attributes("value")).toBe(userProfileResource.data.email)
-		expect(inputs[2].attributes("value")).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
+		expect(inputs[2].element.value).toBe(userProfileResource.data.department.data.acronym)
 	})
 
 	it("should send updated email", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const userProfile = await new Factory()
-		.beStudent()
+		.beUnreachableEmployee()
 		.deserializedOne(true) as DeserializedUserProfile
 		const fakeNewEmail = faker.internet.exampleEmail()
 		const wrapper = mount(Page, {
