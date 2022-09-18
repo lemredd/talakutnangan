@@ -6,7 +6,7 @@ import Socket from "!/ws/socket"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
-import AttachedRoleFactory from "~/factories/attached_role"
+import AttachedRole from "%/models/attached_role"
 import RequestEnvironment from "$!/singletons/request_environment"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -25,10 +25,12 @@ describe("PATCH /api/consultation/:id", () => {
 		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const consultantInfo = await new AttachedRoleFactory()
-		.role(() => Promise.resolve(normalRole))
-		.user(() => Promise.resolve(consultant))
-		.insertOne()
+		const consultantInfo = await AttachedRole.findOne({
+			"where": {
+				"roleID": normalRole.id,
+				"userID": consultant.id
+			}
+		}) as AttachedRole
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => null)
@@ -94,10 +96,12 @@ describe("PATCH /api/consultation/:id", () => {
 		const consultant = await new UserFactory()
 		.beReachableEmployee()
 		.insertOne()
-		const consultantInfo = await new AttachedRoleFactory()
-		.role(() => Promise.resolve(normalRole))
-		.user(() => Promise.resolve(consultant))
-		.insertOne()
+		const consultantInfo = await AttachedRole.findOne({
+			"where": {
+				"roleID": normalRole.id,
+				"userID": consultant.id
+			}
+		}) as AttachedRole
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => null)
@@ -178,10 +182,12 @@ describe("PATCH /api/consultation/:id", () => {
 		const consultant = await new UserFactory()
 		.beReachableEmployee()
 		.insertOne()
-		const consultantInfo = await new AttachedRoleFactory()
-		.role(() => Promise.resolve(normalRole))
-		.user(() => Promise.resolve(consultant))
-		.insertOne()
+		const consultantInfo = await AttachedRole.findOne({
+			"where": {
+				"roleID": normalRole.id,
+				"userID": consultant.id
+			}
+		}) as AttachedRole
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => STARTED_TIME)
