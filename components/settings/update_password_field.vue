@@ -2,7 +2,8 @@
 	<SensitiveText
 		v-model="mockPassword"
 		label="Password"
-		:editable="true">
+		:editable="true"
+		@request-edit="openDialog">
 		<template #hidden-dialog>
 			<Overlay :is-shown="isOverlayShown" @close="cancel">
 				<template #header>
@@ -71,6 +72,10 @@ function clearPasswords(): void {
 	].forEach(password => {
 		password.value = ""
 	})
+}
+
+function openDialog(): void {
+	isOverlayShown.value = true
 }
 
 function cancel(): void {
