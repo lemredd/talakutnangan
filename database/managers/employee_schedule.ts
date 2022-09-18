@@ -1,5 +1,6 @@
-import { Pipe, Day, DayValues } from "$/types/database"
 import type { Time } from "%/types/independent"
+import { Pipe, Day, DayValues } from "$/types/database"
+import type { SharedManagerState } from "$!/types/dependent"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type { EmployeeScheduleAttributes } from "$/types/documents/employee_schedule"
 import type {
@@ -31,6 +32,16 @@ export default class extends BaseManager<
 	RawEmployeeScheduleAttributes,
 	EmployeeScheduleQueryParameters<number>
 > {
+	private currentDatetime: Date
+
+	constructor({
+		currentDatetime = new Date(),
+		...sharedState
+	}: Partial<SharedManagerState & { currentDatetime: Date }> = {}) {
+		super(sharedState)
+		this.currentDatetime = currentDatetime
+	}
+
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): EmployeeScheduleTransformer { return new EmployeeScheduleTransformer() }
@@ -136,11 +147,7 @@ export default class extends BaseManager<
 
 	private async removePossibleConsultations(targetTimes: [ number, Day, Time, Time ][])
 	: Promise<void> {
-		const currentTime = new Date()
-		if (this.isOnTest) {
-			const TEST_HOURS = 8
-			currentTime.setHours(TEST_HOURS)
-		}
+		const { currentDatetime } = this
 
 		if (!Consultation.sequelize) {
 			throw new DatabaseError("Developer may have forgot to register the models.")
@@ -159,7 +166,7 @@ export default class extends BaseManager<
 					).build()
 				}
 			],
-			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentTime).build(),
+			"where": new Condition().greaterThanOrEqual("scheduledStartAt", currentDatetime).build(),
 			...this.transaction.transactionObject
 		})
 
