@@ -54,8 +54,7 @@ describe("Controller: POST /api/consultation", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": false,
-					"reachableEmployeeID": String(model.consultant?.id)
+					"doesAllowConflicts": false
 				}
 			}
 		})
