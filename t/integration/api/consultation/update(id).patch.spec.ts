@@ -54,7 +54,18 @@ describe("PATCH /api/consultation/:id", () => {
 					"startedAt": model.startedAt
 				},
 				"id": String(model.id),
+				"relationships": {
+					"consultant": {
+						"data": {
+							"id": String(consultant.id),
+							"type": "user"
+						}
+					}
+				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
@@ -116,7 +127,18 @@ describe("PATCH /api/consultation/:id", () => {
 					"startedAt": newModel.startedAt
 				},
 				"id": String(model.id),
+				"relationships": {
+					"consultant": {
+						"data": {
+							"id": String(consultant.id),
+							"type": "user"
+						}
+					}
+				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
@@ -189,7 +211,18 @@ describe("PATCH /api/consultation/:id", () => {
 					"startedAt": model.startedAt
 				},
 				"id": String(model.id),
+				"relationships": {
+					"consultant": {
+						"data": {
+							"id": String(consultant.id),
+							"type": "user"
+						}
+					}
+				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
