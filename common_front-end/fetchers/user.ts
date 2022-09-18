@@ -13,7 +13,9 @@ import type {
 	DeserializedUserListDocument
 } from "$/types/documents/user"
 
-import specializedPath from "$/helpers/specialize_path"
+import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+
+import specializePath from "$/helpers/specialize_path"
 
 import BaseFetcher from "$@/fetchers/base"
 
@@ -85,7 +87,7 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserListDocument
 	>> {
 		const pathTemplate = ":type/import"
-		const path = specializedPath(pathTemplate, { "type": this.type })
+		const path = specializePath(pathTemplate, { "type": this.type })
 		const headers = new Headers({
 			"Accept": JSON_API_MEDIA_TYPE
 		})
@@ -97,6 +99,45 @@ export default class UserFetcher extends BaseFetcher<
 			UserResource,
 			DeserializedUserResource,
 			DeserializedUserListDocument
+		>
+	}
+
+	async updatePassword(
+		id: string,
+		currentPassword: string,
+		newPassword: string,
+		confirmNewPassword: string
+	): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON(UPDATE_PASSWORD_PATH.slice("/api/".length), {
+				id
+			}, {
+				"data": {
+					"attributes": {
+						"password": newPassword
+					},
+					id,
+					"type": "user"
+				},
+				"meta": {
+					"confirmPassword": confirmNewPassword,
+					currentPassword
+				}
+			})
+		) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			null
 		>
 	}
 }
