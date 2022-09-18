@@ -31,13 +31,13 @@ describe("Component: settings/update_password_field", () => {
 				}
 			}
 		})
-		const editButton = wrapper.find(".input-and-controls button")
-		const currentInput = wrapper.find("input:nth-child(1)")
-		const newInput = wrapper.find("input:nth-child(2)")
-		const confirmationInput = wrapper.find("input:nth-child(3)")
-		const saveButton = wrapper.find(".overlay-footer button")
 
+		const editButton = wrapper.find(".input-and-controls button")
 		await editButton.trigger("click")
+
+		const overlayInputs = wrapper.findAll(".overlay input")
+		const [ currentInput, newInput, confirmationInput ] = overlayInputs
+		const saveButton = wrapper.find(".overlay-footer button")
 		await currentInput.setValue(CURRENT_PASSWORD)
 		await newInput.setValue(NEW_PASSWORD)
 		await confirmationInput.setValue(CONFIRM_NEW_PASSWORD)
