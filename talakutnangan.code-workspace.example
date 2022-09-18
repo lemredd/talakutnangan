@@ -5,6 +5,7 @@
 		// { "name": "shareable",						"path": "shareable" },
 		// { "name": "shareable types",				"path": "shareable/types" },
 		// { "name": "shareable helpers",			"path": "shareable/helpers" },
+		// { "name": "shareable constants",			"path": "shareable/constants" },
 		// { "name": "shareable permissions",	 	"path": "shareable/permissions" },
 		// { "name": "shareable namespace makers","path": "shareable/namespace_makers" },
 
@@ -13,7 +14,6 @@
 		// { "name": "front-end helpers",			"path": "common_front-end/helpers" },
 		// { "name": "front-end fetchers",			"path": "common_front-end/fetchers" },
 		// { "name": "front-end external",			"path": "common_front-end/external" },
-		// { "name": "front-end constants",			"path": "common_front-end/constants" },
 
 		// { "name": "pages",							"path": "pages" },
 		// { "name": "consultation pages",			"path": "pages/consultation" },
