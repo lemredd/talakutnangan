@@ -10,11 +10,13 @@ import findMinutesAfterMidnight from "%/managers/helpers/find_minutes_after_midn
 
 import Manager from "./employee_schedule"
 
-describe.skip("Database Manager: Employee schedule update operations", () => {
+describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 120
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 3 * 4
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 4
@@ -24,7 +26,7 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => FUTURE_DATE)
+		.scheduledStartAt(() => FUTURE_DATE_TIME)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -35,7 +37,7 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.update(model.id, {
 			"dayName": CONSULTATION_DAY,
@@ -49,10 +51,11 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 	})
 
 	it("can update resource and retain other consultations", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 5 * 60 * 1000)
-		FUTURE_DATE.setHours(8)
-		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 5 * 60 * 1000)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 100
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 3 * 4
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 4
@@ -63,7 +66,7 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => FUTURE_DATE)
+		.scheduledStartAt(() => FUTURE_DATE_TIME)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -74,7 +77,7 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.update(model.id, {
 			"dayName": CONSULTATION_DAY,
@@ -88,26 +91,27 @@ describe.skip("Database Manager: Employee schedule update operations", () => {
 	})
 })
 
-describe.skip("Database Manager: Employee schedule archive operations", () => {
+describe("Database Manager: Employee schedule archive operations", () => {
 	it("can archive multiple resources", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setHours(8)
-		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 90
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const SECOND_FUTURE_DATE = new Date(
-			FUTURE_DATE.getFullYear(),
-			FUTURE_DATE.getMonth(),
-			FUTURE_DATE.getDate() + 7,
-			FUTURE_DATE.getHours(),
-			FUTURE_DATE.getMinutes(),
-			FUTURE_DATE.getSeconds()
+			FUTURE_DATE_TIME.getFullYear(),
+			FUTURE_DATE_TIME.getMonth(),
+			FUTURE_DATE_TIME.getDate() + 7,
+			FUTURE_DATE_TIME.getHours(),
+			FUTURE_DATE_TIME.getMinutes(),
+			FUTURE_DATE_TIME.getSeconds()
 		)
-		const dates = [ FUTURE_DATE, SECOND_FUTURE_DATE ].values()
+		const dates = [ FUTURE_DATE_TIME, SECOND_FUTURE_DATE ].values()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.scheduledStartAt(() => dates.next().value)
@@ -130,22 +134,23 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 	})
 
 	it("cannot archive consultations with unaffected schedules", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setHours(8)
-		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 80
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
 
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const UNAFFECTED_FUTURE_DATE = new Date(
-			FUTURE_DATE.getFullYear(),
-			FUTURE_DATE.getMonth(),
-			FUTURE_DATE.getDate() + 4,
-			FUTURE_DATE.getHours(),
-			FUTURE_DATE.getMinutes(),
-			FUTURE_DATE.getSeconds()
+			FUTURE_DATE_TIME.getFullYear(),
+			FUTURE_DATE_TIME.getMonth(),
+			FUTURE_DATE_TIME.getDate() + 4,
+			FUTURE_DATE_TIME.getHours(),
+			FUTURE_DATE_TIME.getMinutes(),
+			FUTURE_DATE_TIME.getSeconds()
 		)
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
@@ -160,7 +165,7 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.archiveBatch([ Number(model.id) ])
 
@@ -169,10 +174,12 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 	})
 
 	it("cannot archive unowned consultations", async() => {
-		const FUTURE_DATE = new Date(Date.now() + 10 * 60 * 1000)
-		FUTURE_DATE.setHours(8)
-		const CONSULTATION_DAY = DayValues[FUTURE_DATE.getDay()]
-		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE)
+		jest.useRealTimers()
+		const CURRENT_DATE_TIME = new Date()
+		const FUTURE_DATE_TIME = new Date(CURRENT_DATE_TIME.valueOf() + 10 * 60 * 1000)
+		FUTURE_DATE_TIME.setHours(8)
+		const CONSULTATION_DAY = DayValues[FUTURE_DATE_TIME.getDay()]
+		const START_DATETIME = findMinutesAfterMidnight(FUTURE_DATE_TIME)
 		const FREE_DURATION_IN_MINUTES = 70
 		const EMPLOYEE_SCHEDULE_START = START_DATETIME - FREE_DURATION_IN_MINUTES / 2
 		const EMPLOYEE_SCHEDULE_END = START_DATETIME + FREE_DURATION_IN_MINUTES / 2
@@ -181,7 +188,7 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		await new ConsultationFactory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
-		.scheduledStartAt(() => FUTURE_DATE)
+		.scheduledStartAt(() => FUTURE_DATE_TIME)
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -192,7 +199,7 @@ describe.skip("Database Manager: Employee schedule archive operations", () => {
 		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
 		.insertOne()
 
-		const manager = new Manager()
+		const manager = new Manager({ "currentDateTime": CURRENT_DATE_TIME })
 
 		await manager.archiveBatch([ Number(model.id) ])
 
