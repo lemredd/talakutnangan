@@ -68,7 +68,7 @@ export default class ConsultationFactory extends BaseFactory<
 			"finishedAt": this.#finishedAtGenerator(),
 			"reason": this.#reasonGenerator(),
 			"scheduledStartAt": this.#scheduledStartAtGenerator(),
-			"staredAt": this.#startedAtGenerator()
+			"startedAt": this.#startedAtGenerator()
 		}
 	}
 
