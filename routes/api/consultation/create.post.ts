@@ -94,7 +94,7 @@ export default class extends JSONController {
 			{
 				"ClassName": UserManager,
 				"isArray": true,
-				"relationshipName": "consulters",
+				"relationshipName": "participants",
 				"typeName": "user",
 				"validator": exists
 			}
