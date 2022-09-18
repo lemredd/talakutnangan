@@ -2,12 +2,10 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/set-ups/app"
 
-import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
+import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
 import RequestEnvironment from "$!/singletons/request_environment"
-import ChatMessageActivityFactory from "~/factories/chat_message_activity"
-import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Route from "!%/api/consultation/create.post"
 
@@ -20,7 +18,11 @@ describe("POST /api/consultation", () => {
 		const normalRole = await new RoleFactory().insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
-			userFactory => userFactory.beReachableEmployee())
+			userFactory => userFactory.beStudent())
+		const consultant = await new UserFactory()
+		.beReachableEmployee()
+		.attach(normalRole)
+		.insertOne()
 		const model = await new Factory()
 		.startedAt(() => null)
 		.finishedAt(() => null)
@@ -41,13 +43,13 @@ describe("POST /api/consultation", () => {
 				"relationships": {
 					"consultant": {
 						"data": {
-							"id": String(user.id),
+							"id": String(consultant.id),
 							"type": "user"
 						}
 					},
 					"consultantRole": {
 						"data": {
-							"id": String(normalRole),
+							"id": String(normalRole.id),
 							"type": "role"
 						}
 					},
@@ -61,23 +63,15 @@ describe("POST /api/consultation", () => {
 					}
 				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
-		expect(response.body.data.attributes.data).toStrictEqual(model.data.attributes.data)
-		const previousCalls = Socket.consumePreviousCalls()
-		expect(previousCalls[0].functionName).toBe("emitToClients")
-		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
-		expect(previousCalls[0].arguments).toHaveProperty(
-			"namespace",
-			makeConsultationChatNamespace(String(chatMessageActivity.consultationID))
-		)
-		expect(previousCalls[0].arguments).toHaveProperty(
-			"data.0.data.attributes.data",
-			model.data.attributes.data
-		)
+		expect(response.body.data.attributes.reason).toStrictEqual(model.reason)
 	})
 })
