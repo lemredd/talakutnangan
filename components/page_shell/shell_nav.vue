@@ -1,6 +1,6 @@
 <template>
 	<div class="navigation">
-		<div class="container">
+		<div class="wrapper">
 			<a href="/" class="logo">
 				<img src="@assets/logo_navbar.svg" alt="logo"/>
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
@@ -65,11 +65,14 @@
 	z-index: 1;
 	background-color: white;
 
-	padding: 0 .75em;
+	margin: 0 auto;
 	border-bottom: 1px solid hsla(0,0%,0%, 0.1);
-	height: $navHeight;
+	padding: 0 .75em;
 
-	.container {
+	height: $navHeight;
+	max-width: 900px;
+
+	.wrapper {
 		@apply grid grid-cols-[1fr,repeat(3,min-content)] flex-1;
 	}
 
@@ -90,7 +93,7 @@
 }
 
 @media screen and (min-width: $desktopViewportMinimum) {
-	.container {
+	.wrapper {
 		margin: auto;
 	}
 

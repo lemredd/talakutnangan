@@ -4,12 +4,17 @@
 		{{ determineTitle }}
 	</h1>
 
-	<UsersManager :resource="users">
+	<UsersManager
+		:is-loaded="isLoaded"
+		:resource="users"
+		:is-resource-type-user="true"
+		@filter-by-role="filterByAdditionalResource($event, 'role')"
+		@filter-by-dept="filterByAdditionalResource($event, 'department')">
 		<template #search-filter>
-			<SearchFilter :resource="users" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter @filter-by-given-slug="filterByGivenSlug"/>
 		</template>
 
-		<UsersList :filtered-list="filteredList"/>
+		<UsersList :filtered-list="users"/>
 	</UsersManager>
 </template>
 
@@ -21,10 +26,9 @@
 }
 </style>
 <script setup lang="ts">
-import { computed, inject, onMounted, provide, ref } from "vue"
+import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
 import Manager from "$/helpers/manager"
@@ -39,13 +43,28 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
+const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
+const isLoaded = ref(false)
 
+provide("managerKind", new Manager(userProfile))
 if (currentResourceManager.isAdmin()) {
-	provide("managerKind", new Manager(userProfile))
-	provide("tabs", [ "Users", "Roles", "Departments" ])
+	const tabs = [
+		{
+			"label": "Users",
+			"path": "/user/list"
+		},
+		{
+			"label": "Roles",
+			"path": "/role/list"
+		},
+		{
+			"label": "Departments",
+			"path": "/department/list"
+		}
+	]
+	provide("tabs", tabs)
 }
 
 UserFetcher.initialize("/api")
@@ -64,28 +83,69 @@ const determineTitle = computed(() => {
 })
 
 const users = ref<DeserializedUserResource[]>([])
-const filteredList = ref<DeserializedUserResource[]>([])
 
-function getFilteredList(resource: PossibleResources[]) {
-	filteredList.value = resource as DeserializedUserResource[]
+const roleId = ref("*")
+const depId = ref("*")
+const windowOffset = ref(0)
+const slug = ref("")
+const watchableFilters = [
+	roleId,
+	windowOffset,
+	depId,
+	slug
+]
+
+function resetUsersList() {
+	windowOffset.value = 0
+	users.value = []
 }
 
-onMounted(() => {
+function filterByGivenSlug(searchInput: string) {
+	resetUsersList()
+	slug.value = searchInput
+}
+
+function fetchUserInfo() {
+	isLoaded.value = false
 	new UserFetcher().list({
 		"filter": {
-			"department": currentResourceManager.isAdmin() ? "*" : currentUserDepartment.id,
+			"department": currentResourceManager.isAdmin() ? depId.value : currentUserDepartment.id,
 			"existence": "exists",
 			"kind": "*",
-			"role": "*",
-			"slug": ""
+			"role": roleId.value,
+			"slug": slug.value
 		},
 		"page": {
 			"limit": 10,
-			"offset": 0
+			"offset": windowOffset.value
 		},
 		"sort": [ "name" ]
 	}).then(({ "body": deserializedUserList }) => {
-		users.value = deserializedUserList.data
+		isLoaded.value = true
+		const deserializedData = deserializedUserList.data as DeserializedUserResource[]
+		const offsetIncrement = 10
+
+		if (!deserializedData.length) return Promise.resolve()
+
+		users.value = deserializedData
+
+		// eslint-disable-next-line no-use-before-define
+		windowOffset.value += offsetIncrement
+
+		return Promise.resolve()
 	})
+}
+
+function filterByAdditionalResource(id: string, filterKind: "role" | "department") {
+	resetUsersList()
+	if (filterKind === "role") roleId.value = id
+	else depId.value = id
+}
+
+onMounted(() => {
+	fetchUserInfo()
+})
+watch(watchableFilters, () => {
+	fetchUserInfo()
 })
 </script>
