@@ -21,7 +21,7 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"
 import RequestEnvironment from "$/singletons/request_environment"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 

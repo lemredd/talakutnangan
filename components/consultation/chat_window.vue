@@ -54,7 +54,7 @@ import type {
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"

@@ -10,7 +10,7 @@ import UserManager from "%/managers/user"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import Policy from "!/bases/policy"
