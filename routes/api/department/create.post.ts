@@ -40,7 +40,7 @@ export default class extends JSONController {
 					},
 					"manager": {
 						"className": DepartmentManager,
-						"columnName": "fullName"
+						"columnName": "acronym"
 					},
 					"regex": { "match": departmentAcronym }
 				},
