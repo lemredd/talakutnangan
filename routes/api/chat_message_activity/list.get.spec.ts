@@ -27,7 +27,7 @@ describe("Controller: GET /api/chat_message_activity", () => {
 			"query": {
 				"filter": {
 					"consultationIDs": String(consultation.id),
-					"existence": "present"
+					"existence": "exists"
 				}
 			},
 			"user": userFactory.serialize(user)
