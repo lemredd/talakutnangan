@@ -110,7 +110,7 @@ const currentChatMessageActivityResource = computed<
 >(() => {
 	const foundChatActivity = chatMessageActivities.value.data.find(activity => {
 		const ownerID = activity.user.data.id
-		return ownerID === userProfile.data.id
+		return String(ownerID) === String(userProfile.data.id)
 	}) as DeserializedChatMessageActivityResource<"user"|"consultation">
 
 	return foundChatActivity
