@@ -9,6 +9,11 @@ import Component from "./user_controller.vue"
 describe("Component: consultation/chat_window/user_controller", () => {
 	it("should show main controllers if ongoing", () => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
@@ -36,6 +41,11 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 	it("should show start button if consultation will start", () => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
@@ -63,6 +73,11 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 	it("should start upon pressing the button", async() => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
