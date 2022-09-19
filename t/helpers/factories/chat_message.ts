@@ -39,10 +39,15 @@ export default class ChatMessageFactory extends BaseFactory<
 	#chatMessageActivityGenerator: () => Promise<ChatMessageActivity>
 		= async() => await new ChatMessageActivityFactory().insertOne()
 
-	#kindGenerator: () => string = () => faker.word.adjective().split("").filter(character => {
-		const isValid = chatMessageKind.test(character)
-		return isValid
-	}).join("").repeat(2)
+	#kindGenerator: () => string = () => {
+		const rawKind = faker.word.adjective().split("").filter(character => {
+			const isValid = chatMessageKind.test(character)
+			return isValid
+		}).join("").repeat(2)
+
+		const MAX_CHARACTERS = 255
+		return rawKind.substring(0, Math.min(rawKind.length, MAX_CHARACTERS))
+	}
 
 	#dataGenerator: () => Message["data"] = () => ({
 		"value": faker.lorem.sentence()

@@ -1,6 +1,7 @@
 import type { FieldRules } from "!/types/validation"
-import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
+
+import { departmentAcronym, departmentFullName } from "$!/constants/regex"
 
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -32,21 +33,6 @@ export default class extends DoubleBoundJSONController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes = {
-			"fullName": {
-				"constraints": {
-					"length": {
-						"maximum": 255,
-						"minimum": 10
-					},
-					"manager": {
-						"className": DepartmentManager,
-						"columnName": "fullName"
-					},
-					"regex": { "match": /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/u },
-					"unique": { "IDPath": "data.id" }
-				},
-				"pipes": [ required, string, length, regex, unique ]
-			},
 			"acronym": {
 				"constraints": {
 					"acronym": { "spelledOutPath": "data.attributes.fullName" },
@@ -58,10 +44,25 @@ export default class extends DoubleBoundJSONController {
 						"className": DepartmentManager,
 						"columnName": "acronym"
 					},
-					"regex": { "match": /([A-Z][a-z]*)+/u },
+					"regex": { "match": departmentAcronym },
 					"unique": { "IDPath": "data.id" }
 				},
 				"pipes": [ required, string, length, regex, acronym, unique ]
+			},
+			"fullName": {
+				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 10
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "fullName"
+					},
+					"regex": { "match": departmentFullName },
+					"unique": { "IDPath": "data.id" }
+				},
+				"pipes": [ required, string, length, regex, unique ]
 			},
 			"mayAdmit": {
 				"pipes": [ required, boolean ]
