@@ -24,7 +24,10 @@
 			</button>
 		</div>
 		<div v-if="isOngoing" class="message-box">
-			<input type="text"/>
+			<input
+				v-model="textInput"
+				type="text"
+				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
 			<!-- TODO(lead/button): Apply functionality -->
@@ -50,17 +53,30 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, inject, ComputedRef, DeepReadonly, computed, onMounted } from "vue"
 
+import type { TextMessage } from "$/types/message"
+import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type {
+	DeserializedChatMessageActivityResource
+} from "$/types/documents/chat_message_activity"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
+import Fetcher from "$@/fetchers/chat_message"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+
+const currentChatMessageActivity = inject(
+	CHAT_MESSAGE_ACTIVITY
+) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 }>()
 
 const currentTime = ref<Date>(new Date())
+const textInput = ref<string>("")
 
 const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
 	props.consultation.scheduledStartAt,
@@ -100,4 +116,36 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
+
+	throw new Error("Messages cannot be sent to server yet.")
+}
+
+function send(): void {
+	fetcher().create({
+		"data": {
+			"value": textInput.value
+		},
+		"kind": "text"
+	} as TextMessage, {
+		"relationships": {
+			"chatMessageActivity": {
+				"data": {
+					"id": currentChatMessageActivity.value.id,
+					"type": "chat_message_activity"
+				}
+			}
+		}
+	} as ChatMessageRelationships).then(() => {
+		textInput.value = ""
+	})
+}
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
+})
 </script>

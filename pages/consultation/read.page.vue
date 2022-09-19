@@ -37,10 +37,11 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { inject, ref, onBeforeMount, onMounted } from "vue"
+import { provide, inject, ref, readonly, computed, onBeforeMount, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
+	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
@@ -54,6 +55,8 @@ import type {
 	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
+
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Socket from "$@/external/socket"
 import deserialize from "$/object/deserialize"
@@ -103,6 +106,19 @@ const chatMessageActivities = ref<
 		"user"|"consultation"
 	>
 )
+
+const currentChatMessageActivityResource = computed<
+	DeserializedChatMessageActivityResource<"user"|"consultation">
+>(() => {
+	const foundChatActivity = chatMessageActivities.value.data.find(activity => {
+		const ownerID = activity.user.data.id
+		return String(ownerID) === String(userProfile.data.id)
+	}) as DeserializedChatMessageActivityResource<"user"|"consultation">
+
+	return foundChatActivity
+})
+
+provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
 
 function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {

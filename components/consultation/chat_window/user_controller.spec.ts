@@ -1,11 +1,21 @@
-import { shallowMount } from "@vue/test-utils"
+import { ref, readonly } from "vue"
+import { shallowMount, flushPromises } from "@vue/test-utils"
+
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
+import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
 	it("should show main controllers if ongoing", () => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
@@ -33,6 +43,11 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 	it("should show start button if consultation will start", () => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
@@ -60,6 +75,11 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 	it("should start upon pressing the button", async() => {
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+				}
+			},
 			"props": {
 				"consultation": {
 					"actionTaken": null,
@@ -79,5 +99,51 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 		const events = wrapper.emitted("startConsultation")
 		expect(events).toHaveLength(1)
+	})
+
+	it("can send upon pressing enter", async() => {
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const message = "Hello"
+		const userID = "1"
+
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
+						"id": userID
+					}))
+				}
+			},
+			"props": {
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": new Date(),
+					"type": "consultation"
+				} as DeserializedConsultationResource
+			}
+		})
+		const messageInputBox = wrapper.find(".message-box input")
+
+		await messageInputBox.setValue(message)
+		await messageInputBox.trigger("keyup.enter")
+		await flushPromises()
+
+		const castMessageInputBox = messageInputBox.element as HTMLInputElement
+		expect(castMessageInputBox.value).toBe("")
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ firstRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "POST")
+		expect(firstRequest).toHaveProperty("url", "/api/chat_message")
+		const firstRequestBody = await firstRequest.json()
+		expect(firstRequestBody).toHaveProperty("data.type", "chat_message")
+		expect(firstRequestBody).toHaveProperty(
+			"data.relationships.chatMessageActivity.data.id",
+			userID
+		)
 	})
 })
