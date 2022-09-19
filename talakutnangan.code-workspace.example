@@ -2,31 +2,43 @@
 	"folders": [
 		// { "name": "root", 							"path": "." },
 
-		// { "name": "shareable",						"path": "shareable" },
-		// { "name": "shareable types",				"path": "shareable/types" },
-		// { "name": "shareable helpers",			"path": "shareable/helpers" },
-		// { "name": "shareable constants",			"path": "shareable/constants" },
-		// { "name": "shareable permissions",	 	"path": "shareable/permissions" },
-		// { "name": "shareable namespace makers","path": "shareable/namespace_makers" },
-
 		// { "name": "common front-end",				"path": "common_front-end" },
 		// { "name": "front-end types",				"path": "common_front-end/types" },
 		// { "name": "front-end helpers",			"path": "common_front-end/helpers" },
 		// { "name": "front-end fetchers",			"path": "common_front-end/fetchers" },
 		// { "name": "front-end external",			"path": "common_front-end/external" },
 
-		// { "name": "pages",							"path": "pages" },
-		// { "name": "consultation pages",			"path": "pages/consultation" },
-		// { "name": "role pages",						"path": "pages/role" },
-
-		// { "name": "renderer",						"path": "renderer" },
-
 		// { "name": "components",						"path": "components" },
-		// { "name": "helper components",			"path": "components/helpers" }
+		// { "name": "helper components",			"path": "components/helpers" },
 		// { "name": "page shell components",		"path": "components/page_shell" },
+		// { "name": "authentication components",	"path": "components/authentication" },
 		// { "name": "field components",				"path": "components/fields" },
 		// { "name": "consultation components",	"path": "components/consultation" },
 		// { "name": "role components",				"path": "components/role" },
+
+		// { "name": "renderer",						"path": "renderer" },
+
+		// { "name": "pages",							"path": "pages" },
+		// { "name": "consultation pages",			"path": "pages/consultation" },
+		// { "name": "role pages",						"path": "pages/role" },
+		// { "name": "settings pages",				"path": "pages/settings" },
+
+		// { "name": "shareable",						"path": "shareable" },
+		// { "name": "shareable types",				"path": "shareable/types" },
+		// { "name": "shareable array function",	"path": "shareable/array" },
+		// { "name": "shareable object function",	"path": "shareable/object" },
+		// { "name": "shareable string function",	"path": "shareable/string" },
+		// { "name": "shareable helpers",			"path": "shareable/helpers" },
+		// { "name": "shareable constants",			"path": "shareable/constants" },
+		// { "name": "shareable type guards",		"path": "shareable/type_guards" },
+		// { "name": "shareable singletons",		"path": "shareable/singletons" },
+		// { "name": "shareable permissions",	 	"path": "shareable/permissions" },
+		// { "name": "shareable namespace makers","path": "shareable/namespace_makers" },
+
+		// { "name": "test utilities",				"path": "t/helpers" },
+		// { "name": "set-ups",							"path": "t/helpers/set-ups" },
+		// { "name": "factories",						"path": "t/helpers/factories" },
+		// { "name": "integration tests",			"path": "t/integration" },
 
 		// { "name": "routes",							"path": "routes" },
 		// { "name": "Enhancer routes",				"path": "routes/enhancer" },
@@ -68,12 +80,7 @@
 		// { "name": "models",							"path": "database/models" },
 		// { "name": "transformers",					"path": "database/transformers" },
 		// { "name": "queries",							"path": "database/queries" },
-		// { "name": "managers",						"path": "database/managers" },
-
-		// { "name": "test utilities",				"path": "t/helpers" },
-		// { "name": "set-ups",							"path": "t/helpers/set-ups" },
-		// { "name": "factories",						"path": "t/helpers/factories" },
-		// { "name": "integration tests",			"path": "t/integration" }
+		// { "name": "managers",						"path": "database/managers" }
 	],
 	"extensions": {
 		"recommendations": [
