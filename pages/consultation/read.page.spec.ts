@@ -43,6 +43,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
 		const chatMessageActivityModels = await chatMessageActivityFactory
 		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
 		.insertMany(allModels.length)
 		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
 		const chatMessageFactory = new ChatMessageFactory()
@@ -179,6 +180,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
 		const chatMessageActivityModels = await chatMessageActivityFactory
 		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
 		.insertMany(allModels.length)
 		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
 		const chatMessageFactory = new ChatMessageFactory()
@@ -314,6 +316,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
 		const chatMessageActivityModels = await chatMessageActivityFactory
 		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
 		.insertMany(allModels.length)
 		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
 		const chatMessageFactory = new ChatMessageFactory()
@@ -481,6 +484,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
 		const chatMessageActivityModels = await chatMessageActivityFactory
 		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
 		.insertMany(allModels.length)
 		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
 		const chatMessageFactory = new ChatMessageFactory()
@@ -812,6 +816,7 @@ describe("UI Page: Read resource by ID", () => {
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
 		const chatMessageActivityModels = await chatMessageActivityFactory
 		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
 		.insertMany(allModels.length)
 		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
 		const chatMessageFactory = new ChatMessageFactory()
