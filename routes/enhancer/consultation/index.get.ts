@@ -1,3 +1,4 @@
+import type { DocumentProps } from "$/types/server"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationListDocument } from "$/types/documents/consultation"
@@ -16,6 +17,13 @@ export default class extends PageMiddleware {
 
 	get policy(): Policy {
 		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+	}
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Consultation chat platform for MCC",
+			"title": "Consultations | Talakutnangan"
+		}
 	}
 
 	get postValidationMiddlewares(): Middleware[] {

@@ -1,3 +1,5 @@
+import type { DocumentProps } from "$/types/server"
+
 import Policy from "!/bases/policy"
 import { CREATE } from "$/permissions/department_combinations"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
@@ -11,5 +13,12 @@ export default class extends PageMiddleware {
 		return new PermissionBasedPolicy(permissionGroup, [
 			CREATE
 		])
+	}
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Consultation chat platform for MCC",
+			"title": "Create Department | Talakutnangan"
+		}
 	}
 }
