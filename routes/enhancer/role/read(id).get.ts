@@ -1,4 +1,5 @@
 import type { Serializable } from "$/types/general"
+import type { DocumentProps } from "$/types/server"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -27,6 +28,13 @@ export default class extends PageMiddleware {
 				[ "id", Manager, present ]
 			])
 		]
+	}
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Consultation chat platform for MCC",
+			"title": "Edit Role | Talakutnangan"
+		}
 	}
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
