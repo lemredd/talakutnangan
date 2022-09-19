@@ -1,6 +1,8 @@
-import { shallowMount } from "@vue/test-utils"
+import { shallowMount, flushPromises } from "@vue/test-utils"
+
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
@@ -79,5 +81,84 @@ describe("Component: consultation/chat_window/user_controller", () => {
 
 		const events = wrapper.emitted("startConsultation")
 		expect(events).toHaveLength(1)
+	})
+
+	it("can send upon pressing enter", async() => {
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const message = "Hello"
+		const userID = "1"
+
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"currentChatMessageActivity": {
+							"data": {
+								"id": userID
+							}
+						}
+					}
+				}
+			},
+			"props": {
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": new Date(),
+					"type": "consultation"
+				} as DeserializedConsultationResource
+			}
+		})
+		const messageInputBox = wrapper.find(".message-box input")
+
+		await messageInputBox.setValue(message)
+		await messageInputBox.trigger("keyup.enter")
+		await flushPromises()
+
+		const castMessageInputBox = messageInputBox.element as HTMLInputElement
+		expect(castMessageInputBox.value).toBe("")
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ firstRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "POST")
+		expect(firstRequest).toHaveProperty("url", "/api/chat_message")
+		const firstRequestBody = await firstRequest.json()
+		expect(firstRequestBody).toHaveProperty("data.type", "chat_message")
+		expect(firstRequestBody).toHaveProperty(
+			"data.relationships.chatMessageActivity.data.id",
+			userID
+		)
+	})
+
+	it("can add new line upon pressing shift with enter", async() => {
+		const message = "World"
+
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"consultation": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": null,
+					"id": "1",
+					"reason": "",
+					"scheduledStartAt": new Date(),
+					"startedAt": new Date(),
+					"type": "consultation"
+				} as DeserializedConsultationResource
+			}
+		})
+		const messageInputBox = wrapper.find(".message-box input")
+
+		await messageInputBox.setValue(message)
+		await messageInputBox.trigger("keyup.shift.enter")
+
+		const castMessageInputBox = messageInputBox.element as HTMLInputElement
+		expect(castMessageInputBox.value).toBe(`${message}\n`)
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ firstRequestArguments ] = castFetch.mock.calls
+		expect(firstRequestArguments).toHaveLength(0)
 	})
 })

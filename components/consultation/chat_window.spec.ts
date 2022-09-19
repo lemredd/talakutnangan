@@ -1,8 +1,8 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
-import RequestEnvironment from "$/singletons/request_environment"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
+import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 import Component from "./chat_window.vue"
 
