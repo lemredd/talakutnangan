@@ -64,12 +64,12 @@ describe("Controller: POST /api/department", () => {
 		const department = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
 			"body": {
-				"attributes": {
-					"acronym": department.acronym,
-					"fullName": `${department.fullName}1`,
-					"mayAdmit": department.mayAdmit
-				},
 				"data": {
+					"attributes": {
+						"acronym": department.acronym,
+						"fullName": `${department.fullName}1`,
+						"mayAdmit": department.mayAdmit
+					},
 					"type": "department"
 				}
 			}
@@ -78,6 +78,7 @@ describe("Controller: POST /api/department", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
+		console.log(body, "\n\n\n")
 		expect(body).toHaveLength(1)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.fullName")
 	})
