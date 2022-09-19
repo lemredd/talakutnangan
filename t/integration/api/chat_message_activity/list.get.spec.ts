@@ -3,13 +3,13 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/set-ups/app"
 
 import RoleFactory from "~/factories/role"
-import Factory from "~/factories/consultation"
+import ConsultationFactory from "~/factories/consultation"
 import RequestEnvironment from "$!/singletons/request_environment"
-import ChatMessageActivityFactory from "~/factories/chat_message_activity"
+import Factory from "~/factories/chat_message_activity"
 
-import Route from "!%/api/consultation/list.get"
+import Route from "!%/api/chat_message_activity/list.get"
 
-describe("GET /api/consultation", () => {
+describe("GET /api/chat_message_activity", () => {
 	beforeAll(async() => {
 		await App.create(new Route())
 	})
@@ -19,19 +19,19 @@ describe("GET /api/consultation", () => {
 		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const model = await new Factory().insertOne()
-		await new ChatMessageActivityFactory()
+		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new Factory()
 		.user(() => Promise.resolve(employee))
-		.consultation(() => Promise.resolve(model))
+		.consultation(() => Promise.resolve(consultation))
 		.insertOne()
 
 		const response = await App.request
-		.get("/api/consultation")
+		.get("/api/chat_message_activity")
 		.set("Cookie", cookie)
 		.query({
 			"filter": {
-				"existence": "exists",
-				"user": String(employee.id)
+				"consultationIDs": String(consultation.id),
+				"existence": "exists"
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)

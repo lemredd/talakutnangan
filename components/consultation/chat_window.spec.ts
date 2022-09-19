@@ -3,7 +3,7 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
 import RequestEnvironment from "$/singletons/request_environment"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
@@ -87,8 +87,7 @@ describe("Component: consultation/chat_window", () => {
 				"startedAt": new Date()
 			}
 		})
-		const MILLISECONDS_PER_MINUTE = 60_000
-		jest.advanceTimersByTime(convertTimeToMinutes("00:05") * MILLISECONDS_PER_MINUTE)
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
 		await flushPromises()
 
 		const events = wrapper.emitted("updatedConsultationAttributes")

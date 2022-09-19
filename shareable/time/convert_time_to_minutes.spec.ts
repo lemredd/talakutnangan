@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import convertTimeToMinutes from "./convert_time_to_minutes"
 
 describe("Helpers: Convert hours to minutes", () => {

@@ -10,7 +10,7 @@ import JSONController from "!/controllers/json"
 import Merger from "!/middlewares/miscellaneous/merger"
 import CreatedResponseInfo from "!/response_infos/created"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Policy from "!/bases/policy"
 import PermissionBasedPolicy from "!/policies/permission-based"

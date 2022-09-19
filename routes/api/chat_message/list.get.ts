@@ -9,6 +9,7 @@ import QueryController from "!/controllers/query"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
+import boolean from "!/validators/base/boolean"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
 import makeListRules from "!/rule_sets/make_list"
@@ -45,6 +46,15 @@ export default class extends QueryController {
 					"nullable": { "defaultValue": "*" }
 				},
 				"pipes": [ nullable, skipAsterisk, stringArray, length ]
+			},
+			"previewMessageOnly": {
+				"constraints": {
+					"boolean": {
+						"loose": true
+					},
+					"nullable": { "defaultValue": "false" }
+				},
+				"pipes": [ nullable, skipAsterisk, boolean ]
 			}
 		}, {
 			"defaultSortColumn": "-createdAt"
@@ -52,10 +62,19 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const constraints = { ...request.query }
+		const constraints = { ...request.query } as ChatMessageQueryParameters<number>
 
 		const manager = new Manager(request)
-		const chatMessages = await manager.list(constraints as ChatMessageQueryParameters<number>)
+
+		if (constraints.filter.previewMessageOnly) {
+			const chatMessages = await manager.findPreviews(
+				constraints.filter.consultationIDs as number[]
+			)
+
+			return new ListResponse(chatMessages)
+		}
+
+		const chatMessages = await manager.list(constraints)
 
 		return new ListResponse(chatMessages)
 	}

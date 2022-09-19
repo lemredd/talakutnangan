@@ -54,7 +54,7 @@ import type {
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
@@ -68,9 +68,8 @@ const props = defineProps<{
 
 const consultationID = computed<string>(() => props.consultation.id)
 const consultationStatus = computed<string>(() => props.consultation.status)
-const SECONDS_PER_MINUTE = 60
-const remainingSecondsBeforeInactivity = ref<number>(
-	convertTimeToMinutes("00:05") * SECONDS_PER_MINUTE
+const remainingMillisecondsBeforeInactivity = ref<number>(
+	convertTimeToMilliseconds("00:05")
 )
 const interval = ref<Timer|null>(null)
 
@@ -131,11 +130,11 @@ function startConsultation() {
 		}
 
 		interval.value = setInterval(() => {
-			remainingSecondsBeforeInactivity.value--
-			if (remainingSecondsBeforeInactivity.value === 0) {
+			remainingMillisecondsBeforeInactivity.value -= convertTimeToMilliseconds("00:00:01")
+			if (remainingMillisecondsBeforeInactivity.value === 0) {
 				finishConsultation()
 			}
-		}, 1000)
+		}, convertTimeToMilliseconds("00:00:01"))
 
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
