@@ -43,4 +43,10 @@ Put your additions and compatible changes here...
 6. If there are lacking mechanism, pull requester should create issues for lacking mechanisms, then just link the issue number.
 7. Remove any badge that have no executed test. Replace the `<username>` and `<branch_name>` with
    your username and the branch name of your PR respectively.
+8. Add informed discussions if necessary.
+
+## Informed Discussions
+- Database migration: lemredd/talakutnangan#311
+- Environment variables: lemredd/talakutnangan#506
+- Applied practices gradually: lemredd/talakutnangan#466
 -->
