@@ -1,4 +1,4 @@
-import { ref, readonly } from "vue"
+import { ref, readonly, nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
@@ -128,34 +128,5 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			"data.relationships.chatMessageActivity.data.id",
 			userID
 		)
-	})
-
-	it("can add new line upon pressing shift with enter", async() => {
-		const message = "World"
-
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"consultation": {
-					"actionTaken": null,
-					"deletedAt": null,
-					"finishedAt": null,
-					"id": "1",
-					"reason": "",
-					"scheduledStartAt": new Date(),
-					"startedAt": new Date(),
-					"type": "consultation"
-				} as DeserializedConsultationResource
-			}
-		})
-		const messageInputBox = wrapper.find(".message-box input")
-
-		await messageInputBox.setValue(message)
-		await messageInputBox.trigger("keyup.shift.enter")
-
-		const castMessageInputBox = messageInputBox.element as HTMLInputElement
-		expect(castMessageInputBox.value).toBe(`${message}\n`)
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ firstRequestArguments ] = castFetch.mock.calls
-		expect(firstRequestArguments).toHaveLength(0)
 	})
 })
