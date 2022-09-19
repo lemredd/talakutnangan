@@ -3,6 +3,8 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
 import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./user_controller.vue"
 
@@ -11,7 +13,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
 				}
 			},
 			"props": {
@@ -43,7 +45,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
 				}
 			},
 			"props": {
@@ -75,7 +77,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"currentChatMessageActivityResource": readonly(ref({ "id": "1" }))
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
 				}
 			},
 			"props": {
@@ -107,7 +109,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"currentChatMessageActivityResource": readonly(ref({
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 						"id": userID
 					}))
 				}

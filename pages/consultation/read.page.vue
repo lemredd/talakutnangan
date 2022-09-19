@@ -56,6 +56,8 @@ import type {
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
 import Socket from "$@/external/socket"
 import deserialize from "$/object/deserialize"
 import assignPath from "$@/external/assign_path"
@@ -116,7 +118,7 @@ const currentChatMessageActivityResource = computed<
 	return foundChatActivity
 })
 
-provide("currentChatMessageActivityResource", readonly(currentChatMessageActivityResource))
+provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
 
 function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {

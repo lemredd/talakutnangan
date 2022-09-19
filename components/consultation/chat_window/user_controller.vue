@@ -62,11 +62,13 @@ import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
 import Fetcher from "$@/fetchers/chat_message"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 const currentChatMessageActivity = inject(
-	"currentChatMessageActivityResource"
+	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
 const props = defineProps<{
