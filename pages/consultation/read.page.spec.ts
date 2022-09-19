@@ -892,6 +892,7 @@ describe("UI Page: Read resource by ID", () => {
 		})
 		const messageInputBox = wrapper.find(".message-box input")
 
+		await flushPromises()
 		await messageInputBox.setValue(sampleChatTextMessageResource.data.data.value)
 		await messageInputBox.trigger("keyup.enter")
 		await flushPromises()
