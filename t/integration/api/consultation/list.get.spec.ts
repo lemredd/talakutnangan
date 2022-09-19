@@ -37,7 +37,6 @@ describe("GET /api/consultation", () => {
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
-		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("data.0.id", String(model.id))
 		expect(response.body).not.toHaveProperty("data.1")
