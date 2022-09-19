@@ -3,16 +3,16 @@ import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
 import ProfilePictureFetcher from "./profile_picture"
 
-describe("Communicator: ProfilePictureFetcher", () => {
+describe("Fetcher: Profile Picture", () => {
 	it("can create file", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"id": "1",
-					"type": "profile_picture",
 					"attributes": {
 						"fileContents": "http://localhost:16000/api/profile_picture/1"
-					}
+					},
+					"id": "1",
+					"type": "profile_picture"
 				}
 			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
@@ -37,11 +37,11 @@ describe("Communicator: ProfilePictureFetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"id": "1",
-					"type": "profile_picture",
 					"attributes": {
 						"fileContents": "http://localhost:16000/api/profile_picture/1"
-					}
+					},
+					"id": "1",
+					"type": "profile_picture"
 				}
 			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }

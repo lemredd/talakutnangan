@@ -7,7 +7,7 @@ import UserFetcher from "$@/fetchers/user"
 import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
-describe("Communicator: UserFetcher", () => {
+describe("Fetcher: User", () => {
 	it("can log in", async() => {
 		fetchMock.mockResponse(
 			JSON.stringify({

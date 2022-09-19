@@ -9,8 +9,8 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"type": "user",
-					"attributes": {}
+					"attributes": {},
+					"type": "user"
 				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
@@ -29,10 +29,10 @@ describe("Communicator: Fetcher", () => {
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
-				"type": "user",
 				"attributes": {
 					"name": "A"
-				}
+				},
+				"type": "user"
 			}
 		})
 	})
@@ -41,8 +41,10 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [
-					{ "type": "user",
-						"attributes": {} }
+					{
+						"attributes": {},
+						"type": "user"
+					}
 				]
 			}),
 			{ "status": RequestEnvironment.status.OK }
@@ -52,11 +54,11 @@ describe("Communicator: Fetcher", () => {
 			"filter": {
 				"existence": "exists"
 			},
-			"sort": [ "id", "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 5
-			}
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": [ "id", "name" ]
 		}
 		const fetcher = new Fetcher("/api", "user")
 		const response = await fetcher.list(queryObject)
@@ -78,8 +80,8 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"type": "user",
-					"attributes": {}
+					"attributes": {},
+					"type": "user"
 				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
@@ -98,11 +100,11 @@ describe("Communicator: Fetcher", () => {
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
-				"type": "user",
-				"id": "1",
 				"attributes": {
 					"name": "A"
-				}
+				},
+				"id": "1",
+				"type": "user"
 			}
 		})
 	})
@@ -111,8 +113,8 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"type": "user",
-					"attributes": {}
+					"attributes": {},
+					"type": "user"
 				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
@@ -132,8 +134,8 @@ describe("Communicator: Fetcher", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
 				{
-					"type": "user",
-					"id": "1"
+					"id": "1",
+					"type": "user"
 				}
 			]
 		})
@@ -143,8 +145,8 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": {
-					"type": "user",
-					"attributes": {}
+					"attributes": {},
+					"type": "user"
 				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
@@ -164,8 +166,8 @@ describe("Communicator: Fetcher", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
 				{
-					"type": "user",
-					"id": "2"
+					"id": "2",
+					"type": "user"
 				}
 			]
 		})
@@ -174,8 +176,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by GET", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "user",
-				"attributes": {}
+				"attributes": {},
+				"type": "user"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
@@ -194,8 +196,10 @@ describe("Communicator: Fetcher", () => {
 
 	it("can retrieve JSON from server by POST", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "role",
-				"attributes": {} }
+			"data": {
+				"attributes": {},
+				"type": "role"
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -215,8 +219,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by PATCH", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "department",
-				"attributes": {}
+				"attributes": {},
+				"type": "department"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
@@ -237,8 +241,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by DELETE", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "department",
-				"attributes": {}
+				"attributes": {},
+				"type": "department"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
@@ -269,8 +273,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by GET manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "user",
-				"attributes": {}
+				"attributes": {},
+				"type": "user"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
@@ -289,8 +293,10 @@ describe("Communicator: Fetcher", () => {
 
 	it("can retrieve JSON from server by POST manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
-			"data": { "type": "role",
-				"attributes": {} }
+			"data": {
+				"attributes": {},
+				"type": "role"
+			}
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher("/api", "user")
@@ -310,8 +316,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by PATCH manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "department",
-				"attributes": {}
+				"attributes": {},
+				"type": "department"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
@@ -332,8 +338,8 @@ describe("Communicator: Fetcher", () => {
 	it("can retrieve JSON from server by DELETE manually", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "department",
-				"attributes": {}
+				"attributes": {},
+				"type": "department"
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
