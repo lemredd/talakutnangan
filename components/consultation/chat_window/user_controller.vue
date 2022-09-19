@@ -50,10 +50,11 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import Fetcher from "$@/fetchers/chat_message"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 const props = defineProps<{
@@ -100,4 +101,16 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher) return rawFetcher
+
+	throw new Error("Messages cannot be sent to server yet.")
+}
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
+})
 </script>
