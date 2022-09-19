@@ -21,8 +21,8 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"
 import RequestEnvironment from "$/singletons/request_environment"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
@@ -622,7 +622,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		const thirdRequestBody = await thirdRequest.json()
 		expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-	}, 6000)
+	}, convertTimeToMilliseconds("00:00:06"))
 
 	describe("Auto-termination", () => {
 		it("can terminate consultation automatically", async() => {
@@ -721,8 +721,7 @@ describe("UI Page: Read resource by ID", () => {
 			jest.useFakeTimers()
 			await flushPromises()
 			Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
-			const MILLISECONDS_PER_MINUTE = 60_000
-			jest.advanceTimersByTime(convertTimeToMinutes("00:05") * MILLISECONDS_PER_MINUTE)
+			jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
 
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "initialize")
