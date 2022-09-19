@@ -39,7 +39,7 @@ describe("GET /api/consultation", () => {
 
 		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
-		expect(response.body).toHaveProperty("data.0.id", model.id)
+		expect(response.body).toHaveProperty("data.0.id", String(model.id))
 		expect(response.body).not.toHaveProperty("data.1")
 	})
 })
