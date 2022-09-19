@@ -110,6 +110,16 @@ export interface ChatMessageKindFilter extends Serializable {
 	}
 }
 
+export interface PreviewMessageOnlyFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		/**
+		 * Setting this to true ignores most query parameters and returns last messages of each
+		 * consultation specified on other filters.
+		 */
+		previewMessageOnly: boolean
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -168,9 +178,8 @@ export type ChatMessageActivityQueryParameters<T extends number|string = string>
 	& CommonQueryParameters
 	& ConsultationFilter<T>
 
-export type PreviewMessageQueryParameters<T extends number|string = string> = ConsultationFilter<T>
-
 export type ChatMessageQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& ConsultationFilter<T>
 	& ChatMessageKindFilter
+	& PreviewMessageOnlyFilter
