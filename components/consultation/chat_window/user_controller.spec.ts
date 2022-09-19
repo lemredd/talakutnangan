@@ -91,12 +91,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": {
-						"currentChatMessageActivity": {
-							"data": {
-								"id": userID
-							}
-						}
+					"currentChatMessageActivityResource": {
+						"id": userID
 					}
 				}
 			},
