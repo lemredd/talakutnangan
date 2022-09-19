@@ -1,3 +1,4 @@
+import { ref, readonly } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
@@ -91,9 +92,9 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"currentChatMessageActivityResource": {
+					"currentChatMessageActivityResource": readonly(ref({
 						"id": userID
-					}
+					}))
 				}
 			},
 			"props": {
