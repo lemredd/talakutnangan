@@ -1,6 +1,8 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
+import { departmentAcronym, departmentFullName } from "$!/constants/regex"
+
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
 import JSONController from "!/controllers/json"
@@ -18,7 +20,6 @@ import acronym from "!/validators/comparison/acronym"
 import notExists from "!/validators/manager/not_exists"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
@@ -30,20 +31,6 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		const attributes = {
-			"fullName": {
-				"constraints": {
-					"length": {
-						"maximum": 255,
-						"minimum": 10
-					},
-					"manager": {
-						"className": DepartmentManager,
-						"columnName": "fullName"
-					},
-					"regex": { "match": /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/u }
-				},
-				"pipes": [ required, string, length, regex, notExists ]
-			},
 			"acronym": {
 				"constraints": {
 					"acronym": { "spelledOutPath": "data.attributes.fullName" },
@@ -55,9 +42,23 @@ export default class extends JSONController {
 						"className": DepartmentManager,
 						"columnName": "fullName"
 					},
-					"regex": { "match": /([A-Z][a-z]*)+/u }
+					"regex": { "match": departmentAcronym }
 				},
 				"pipes": [ required, string, length, regex, acronym, notExists ]
+			},
+			"fullName": {
+				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 10
+					},
+					"manager": {
+						"className": DepartmentManager,
+						"columnName": "fullName"
+					},
+					"regex": { "match": departmentFullName }
+				},
+				"pipes": [ required, string, length, regex, notExists ]
 			},
 			"mayAdmit": {
 				"pipes": [ required, boolean ]

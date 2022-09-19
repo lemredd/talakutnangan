@@ -17,12 +17,12 @@ describe("Controller: POST /api/department", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "department",
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"type": "department"
 				}
 			}
 		})
@@ -41,12 +41,12 @@ describe("Controller: POST /api/department", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "department",
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"type": "department"
 				}
 			}
 		})
@@ -64,13 +64,13 @@ describe("Controller: POST /api/department", () => {
 		const department = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
 			"body": {
+				"attributes": {
+					"acronym": department.acronym,
+					"fullName": `${department.fullName}1`,
+					"mayAdmit": department.mayAdmit
+				},
 				"data": {
-					"type": "department",
-					"attributes": {
-						"acronym": department.acronym,
-						"fullName": `${department.fullName}1`,
-						"mayAdmit": department.mayAdmit
-					}
+					"type": "department"
 				}
 			}
 		})
@@ -93,12 +93,12 @@ describe("Controller: POST /api/department", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "department",
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": `${department.fullName}1`,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"type": "department"
 				}
 			}
 		})
@@ -121,12 +121,12 @@ describe("Controller: POST /api/department", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "department",
 					"attributes": {
 						"acronym": department.acronym + randomData.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"type": "department"
 				}
 			}
 		})
@@ -148,12 +148,12 @@ describe("Controller: POST /api/department", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "department",
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": "123"
-					}
+					},
+					"type": "department"
 				}
 			}
 		})
