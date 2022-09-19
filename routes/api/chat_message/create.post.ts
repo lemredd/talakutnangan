@@ -18,6 +18,7 @@ import string from "!/validators/base/string"
 import exists from "!/validators/manager/exists"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
+import length from "!/validators/comparison/length"
 import anyObject from "!/validators/base/any_object"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
@@ -37,11 +38,15 @@ export default class extends JSONController {
 			},
 			"kind": {
 				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 5
+					},
 					"regex": {
 						"match": chatMessageKind
 					}
 				},
-				"pipes": [ required, string, regex ]
+				"pipes": [ required, string, length, regex ]
 			}
 		}
 
