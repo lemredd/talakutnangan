@@ -1,7 +1,6 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
 
