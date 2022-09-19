@@ -1,4 +1,4 @@
-import { ref, readonly, nextTick } from "vue"
+import { ref, readonly } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
