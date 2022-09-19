@@ -937,7 +937,7 @@ describe("UI Page: Read resource by ID", () => {
 				},
 				"page": {
 					"limit": 10,
-					"offset": INITIAL_MESSAGE_COUNT + 1
+					"offset": INITIAL_MESSAGE_COUNT
 				},
 				"sort": [ "-createdAt" ]
 			} as ChatMessageQueryParameters)
@@ -950,7 +950,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(thirdRequestBody).toHaveProperty("data.type", "chat_message")
 		expect(thirdRequestBody).toHaveProperty(
 			"data.relationships.chatMessageActivity.data.id",
-			activityOfModel.id
+			String(activityOfModel.id)
 		)
 	})
 })
