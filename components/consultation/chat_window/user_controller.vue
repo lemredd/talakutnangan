@@ -27,8 +27,7 @@
 			<input
 				v-model="textInput"
 				type="text"
-				@keyup.enter.exact="send"
-				@keyup.shift.enter="addNewLine"/>
+				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
 			<!-- TODO(lead/button): Apply functionality -->
@@ -142,10 +141,6 @@ function send(): void {
 	} as ChatMessageRelationships).then(() => {
 		textInput.value = ""
 	})
-}
-
-function addNewLine(): void {
-
 }
 
 onMounted(() => {
