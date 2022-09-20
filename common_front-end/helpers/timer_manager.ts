@@ -51,7 +51,13 @@ export default class TimerManager extends RequestEnvironment {
 	}
 
 	static nextInterval(): void {
-		//
+		TimerManager.listeners.forEach(listener => {
+			if (--listener.remainingMillisecondsBeforeInactivity > 0) {
+				// Consume time
+			} else {
+				// Finish the consultation if permitted
+			}
+		})
 	}
 
 	static clearAllListeners(): void {
