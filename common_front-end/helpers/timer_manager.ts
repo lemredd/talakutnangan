@@ -1,15 +1,29 @@
-import type { Timer } from "$@/types/independent"
+import type {
+	TimerListeners,
+	ConsultationEventNames,
+	ConsultationEventListeners
+} from "$@/types/dependent"
 
-import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+/**
+ * Manages the timers of different consultations.
+ *
+ * It must be manually ticked to reduce the number running timers.
+ */
 export default class TimerManager extends RequestEnvironment {
-	private static currentTimer:Timer|null = null
+	private static listeners: TimerListeners = []
 
-	static initialize() {
-		Stub.runConditionally(
-			() => { },
-			() => { }
-		)
+	static listenConsultationTimeEvent<T extends ConsultationEventNames>(
+		unusedresource: DeserializedConsultationResource,
+		unusedeventName: T,
+		unusedlistener: ConsultationEventListeners[T]
+	): void {
+		//
+	}
+
+	static nextInterval(): void {
+		//
 	}
 }

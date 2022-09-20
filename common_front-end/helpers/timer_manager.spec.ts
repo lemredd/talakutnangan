@@ -1,5 +1,4 @@
 import flushPromises from "flush-promises"
-import type { ConsultationListeners } from "$@/types/dependent"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
@@ -31,7 +30,7 @@ describe("Helper: Timer manager", () => {
 		expect(mockConsumedTime.mock.calls).toEqual([ [ consultationResource ] ])
 	})
 
-	it("can remove listeners on successful update of finished consultation", async () => {
+	it("can remove listeners on successful update of finished consultation", async() => {
 		const mockFinish = jest.fn().mockResolvedValueOnce(true)
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
