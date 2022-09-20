@@ -62,8 +62,10 @@ import Socket from "$@/external/socket"
 import deserialize from "$/object/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
-import ConsultationFetcher from "$@/fetchers/consultation"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
+import ConsultationFetcher from "$@/fetchers/consultation"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
@@ -228,7 +230,8 @@ async function loadPreviousChatMessages(): Promise<void> {
 		"filter": {
 			"chatMessageKinds": [ "text", "status" ],
 			"consultationIDs": [ consultation.value.id ],
-			"existence": "exists"
+			"existence": "exists",
+			"previewMessageOnly": false
 		},
 		"page": {
 			"limit": 10,
@@ -253,5 +256,9 @@ onMounted(async() => {
 
 	await loadConsultations()
 	await loadPreviousChatMessages()
+
+	setInterval(() => {
+		ConsultationTimerManager.nextInterval()
+	}, convertTimeToMilliseconds("00:00:01"))
 })
 </script>
