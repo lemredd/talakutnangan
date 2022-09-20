@@ -8,8 +8,6 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
-	jest.useFakeTimers()
-
 	it("should request to start consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })

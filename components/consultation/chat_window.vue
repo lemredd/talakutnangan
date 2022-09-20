@@ -46,9 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed } from "vue"
 
-import type { Timer } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
@@ -56,7 +55,7 @@ import type {
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
-import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
@@ -68,17 +67,13 @@ const props = defineProps<{
 
 const consultationID = computed<string>(() => props.consultation.id)
 const consultationStatus = computed<string>(() => props.consultation.status)
-const remainingMillisecondsBeforeInactivity = ref<number>(
-	convertTimeToMilliseconds("00:05")
-)
-const interval = ref<Timer|null>(null)
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 }
 const emit = defineEmits<CustomEvents>()
 
-function finishConsultation() {
+function finishConsultation(): Promise<boolean> {
 	const { consultation } = props
 	const { startedAt } = consultation
 
@@ -91,9 +86,8 @@ function finishConsultation() {
 			"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
 			"startedAt": startedAt.toISOString()
 		}
-		clearInterval(interval.value as Timer)
-		interval.value = null
-		new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
+		return new ConsultationFetcher().update(consultationID.value, newConsultationData)
+		.then(() => {
 			const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
 				"actionTaken": consultation.actionTaken,
 				"deletedAt": consultation.deletedAt ?? null,
@@ -103,8 +97,12 @@ function finishConsultation() {
 				startedAt
 			}
 			emit("updatedConsultationAttributes", deserializedConsultationData)
+			return true
 		})
+		.catch(() => false)
 	}
+
+	return Promise.resolve(false)
 }
 
 function startConsultation() {
@@ -129,12 +127,18 @@ function startConsultation() {
 			"startedAt": new Date(newConsultationData.startedAt as string)
 		}
 
-		interval.value = setInterval(() => {
-			remainingMillisecondsBeforeInactivity.value -= convertTimeToMilliseconds("00:00:01")
-			if (remainingMillisecondsBeforeInactivity.value === 0) {
-				finishConsultation()
-			}
-		}, convertTimeToMilliseconds("00:00:01"))
+		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
+			"consultant"|"consultantRole"
+		> = {
+			...consultation,
+			...deserializedConsultationData
+		}
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			expectedDeserializedConsultationResource,
+			"finish",
+			finishConsultation
+		)
 
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
