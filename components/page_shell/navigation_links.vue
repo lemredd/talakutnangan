@@ -109,10 +109,9 @@ import { computed, inject, Ref } from "vue"
 
 import type { DeserializedPageContext } from "$@/types/independent"
 
-import sanitizeArray from "$@/helpers/sanitize_array"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
 import RequestEnvironment from "$/singletons/request_environment"
-
+import disableScroll from "$@/helpers/disable_scroll"
 import linkInfos from "@/page_shell/navigation_link_infos"
 
 import Anchor from "@/anchor.vue"
@@ -134,19 +133,8 @@ const desktopRoleLinks = computed(() => roleLinks.value.filter(
 
 const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
-function disableScroll() {
-	const bodyClasses = Array.from(rawBodyClasses.value)
-	if (bodyClasses.includes("unscrollable")) {
-		delete bodyClasses[bodyClasses.indexOf("unscrollable")]
-	} else {
-		bodyClasses.push("unscrollable")
-	}
-
-	rawBodyClasses.value = sanitizeArray(bodyClasses)
-}
-
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	disableScroll()
+	disableScroll(rawBodyClasses)
 }
 </script>
