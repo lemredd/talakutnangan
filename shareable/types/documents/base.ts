@@ -104,11 +104,11 @@ export type DeriveDeserializedRelationships<T extends GeneralRelationshipData> =
 } & Serializable
 
 export type PartialOrPickDeserializedRelationship<
- T extends GeneralRelationshipData,
- U extends DeriveDeserializedRelationships<T>,
- V extends DeriveRelationshipNames<T>,
- W extends boolean,
- X extends V = V
+	T extends GeneralRelationshipData,
+	U extends DeriveDeserializedRelationships<T>,
+	V extends DeriveRelationshipNames<T>,
+	W extends boolean,
+	X extends V = V
 > = W extends true ? Pick<U, X> : Partial<U>
 
 /**

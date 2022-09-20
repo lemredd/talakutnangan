@@ -5,15 +5,19 @@ export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
 
 type ConsultationListener<T> = (consultation: DeserializedConsultationResource) => Promise<T>
 
-export type ConsultationListeners = {
+export type ConsultationEventListeners = {
 	"finish": ConsultationListener<boolean>,
 	"consumedTime": ConsultationListener<void>
 }
 
-interface TimerListener extends ConsultationListeners {
+export type ConsultationEventNames = keyof ConsultationEventListeners
+
+interface TimerListener extends ConsultationEventListeners {
 	"consultation": DeserializedConsultationResource,
 	"remainingMillisecondsBeforeInactivity": number,
-	"listeners": ConsultationListeners
+	"listeners": {
+		[Property in keyof ConsultationEventListeners]: ConsultationEventListeners[Property][]
+	}
 }
 
 export type TimerListeners = TimerListener[]
