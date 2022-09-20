@@ -15,7 +15,7 @@ import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_dif
  *
  * It must be manually ticked to reduce the number running timers.
  */
-export default class TimerManager extends RequestEnvironment {
+export default class ConsultationTimerManager extends RequestEnvironment {
 	private static listeners: TimerListeners = []
 
 	static listenConsultationTimeEvent<T extends ConsultationEventNames>(
@@ -29,7 +29,7 @@ export default class TimerManager extends RequestEnvironment {
 			throw new Error("Consultation should have started before it can be managed.")
 		}
 
-		let foundIndex = TimerManager.listeners.findIndex(existingListener => {
+		let foundIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
 			const doesMatchResource = existingListener.consultation.id === resourceID
 			return doesMatchResource
 		})
@@ -38,7 +38,7 @@ export default class TimerManager extends RequestEnvironment {
 			let differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
 			const extraMilliseconds = differenceFromNow % convertTimeToMilliseconds("00:00:01")
 			differenceFromNow -= extraMilliseconds
-			TimerManager.listeners.push({
+			ConsultationTimerManager.listeners.push({
 				"consultation": resource,
 				"consultationListeners": {
 					"consumedTime": [] as ConsultationEventListeners["consumedTime"][],
@@ -47,14 +47,14 @@ export default class TimerManager extends RequestEnvironment {
 				"remainingMillisecondsBeforeInactivity": differenceFromNow
 			})
 
-			foundIndex = TimerManager.listeners.length - 1
+			foundIndex = ConsultationTimerManager.listeners.length - 1
 		}
 
-		TimerManager.listeners[foundIndex].consultationListeners[eventName].push(listener)
+		ConsultationTimerManager.listeners[foundIndex].consultationListeners[eventName].push(listener)
 	}
 
 	static nextInterval(): void {
-		TimerManager.listeners.forEach(async listener => {
+		ConsultationTimerManager.listeners.forEach(async listener => {
 			const { consultation } = listener
 			listener.remainingMillisecondsBeforeInactivity -= convertTimeToMilliseconds("00:00:01")
 			if (listener.remainingMillisecondsBeforeInactivity > 0) {
@@ -95,7 +95,7 @@ export default class TimerManager extends RequestEnvironment {
 				throw new Error("It is impossible to clear all consultation time listeners forcefully.")
 			},
 			() => {
-				TimerManager.listeners = []
+				ConsultationTimerManager.listeners = []
 				return [ {} as unknown as void, null ]
 			}
 		)

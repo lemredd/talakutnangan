@@ -1,5 +1,5 @@
-import TimerManager from "$@/helpers/timer_manager"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 
 afterEach(() => {
-	TimerManager.clearAllListeners()
+	ConsultationTimerManager.clearAllListeners()
 })

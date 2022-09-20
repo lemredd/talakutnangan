@@ -3,7 +3,7 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 
 import "~/setups/consultation_timer.setup"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
-import TimerManager from "./timer_manager"
+import ConsultationTimerManager from "./consultation_timer_manager"
 
 describe("Helper: Timer manager", () => {
 	it("can add event listeners and handle events", () => {
@@ -14,17 +14,17 @@ describe("Helper: Timer manager", () => {
 			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 		} as DeserializedConsultationResource
 
-		TimerManager.listenConsultationTimeEvent(
+		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
 			"consumedTime",
 			mockConsumedTime
 		)
-		TimerManager.listenConsultationTimeEvent(
+		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
 			"finish",
 			mockFinish
 		)
-		TimerManager.nextInterval()
+		ConsultationTimerManager.nextInterval()
 
 		expect(mockFinish).not.toHaveBeenCalled()
 		expect(mockConsumedTime).toHaveBeenCalled()
@@ -42,19 +42,19 @@ describe("Helper: Timer manager", () => {
 			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 		} as DeserializedConsultationResource
 
-		TimerManager.listenConsultationTimeEvent(
+		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
 			"consumedTime",
 			mockConsumedTime
 		)
-		TimerManager.listenConsultationTimeEvent(
+		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
 			"finish",
 			mockFinish
 		)
-		TimerManager.nextInterval()
+		ConsultationTimerManager.nextInterval()
 		await flushPromises()
-		TimerManager.nextInterval()
+		ConsultationTimerManager.nextInterval()
 
 		expect(mockConsumedTime).not.toHaveBeenCalled()
 		expect(mockFinish).toHaveBeenCalledTimes(1)
