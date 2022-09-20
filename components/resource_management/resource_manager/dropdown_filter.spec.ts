@@ -2,7 +2,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import { mount, flushPromises } from "@vue/test-utils"
 
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Manager from "$/helpers/manager"

@@ -1,4 +1,4 @@
-import "~/set-ups/email.set_up"
+import "~/set-ups/email.setup"
 import MockRequester from "~/set-ups/mock_requester"
 
 import type { PreprocessedRequest } from "!/types/dependent"

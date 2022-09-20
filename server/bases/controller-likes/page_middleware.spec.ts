@@ -4,7 +4,7 @@ import type { PageRequest } from "!/types/hybrid"
 import type { Serializable } from "$/types/general"
 import type { DocumentProps } from "$/types/server"
 
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import Policy from "!/bases/policy"
 import UserFactory from "~/factories/user"
 import MockRequester from "~/set-ups/mock_requester"

@@ -2,7 +2,7 @@ import flushPromises from "flush-promises"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
-import "~/set-ups/email.set_up"
+import "~/set-ups/email.setup"
 import App from "~/set-ups/app"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"

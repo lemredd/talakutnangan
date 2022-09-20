@@ -4,7 +4,7 @@ import type {
 	UniqueConsultationScheduleConstraints
 } from "!/types/validation"
 
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import Factory from "~/factories/consultation"
 import ChatMessageFactory from "~/factories/chat_message"
 import makeInitialState from "!/validators/make_initial_state"

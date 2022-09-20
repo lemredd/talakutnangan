@@ -1,4 +1,4 @@
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import UserPermissions from "$/permissions/user"

@@ -18,8 +18,8 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/singletons.set_up.ts",
-		"./t/helpers/set-ups/cache_manager.set_up.ts"
+		"./t/helpers/set-ups/singletons.setup.ts",
+		"./t/helpers/set-ups/cache_manager.setup.ts"
 	],
 
 	"transformIgnorePatterns": [],

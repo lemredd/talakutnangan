@@ -5,7 +5,7 @@ import type {
 	DoesBelongToCurrentUserConstraints
 } from "!/types/validation"
 
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Manager from "%/managers/employee_schedule"

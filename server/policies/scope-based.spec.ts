@@ -1,7 +1,7 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import deserialize from "$/object/deserialize"

@@ -1,4 +1,4 @@
-import "~/set-ups/database.set_up"
+import "~/set-ups/database.setup"
 import UserFactory from "~/factories/user"
 import UserTransformer from "%/transformers/user"
 import Serializer from "%/transformers/serializer"
