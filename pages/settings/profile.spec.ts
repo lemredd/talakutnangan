@@ -13,6 +13,7 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
 import Page from "./profile.page.vue"
+import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Page: settings/profile", () => {
 	describe("User data placement", () => {
@@ -98,4 +99,49 @@ describe("Page: settings/profile", () => {
 
 			expect(displayNameField.props().modelValue).toEqual("Something")
 		})
+		it("can edit dark mode preference", async() => {
+			const department = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const role = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.insertOne()
+			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
+			.attach(role)
+			.deserializedOne()
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+
+			const wrapper = shallowMount(Page, {
+				"global": {
+					"provide": {
+						"bodyClasses": ref([]),
+						"pageContext": {
+							"pageProps": {
+								userProfile
+							}
+						}
+					},
+					"stubs": {
+						"TextualField": false
+					}
+				}
+			})
+
+			const darkModeBtn = wrapper.find("#dark-mode-toggle")
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({}),
+				{ "status": RequestEnvironment.status.NO_CONTENT }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			await darkModeBtn.trigger("click")
+
+			expect(wrapper.emitted()).toHaveProperty("toggleDarkMode")
+		})
+	})
 })
