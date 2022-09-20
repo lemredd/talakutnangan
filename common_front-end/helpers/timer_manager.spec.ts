@@ -1,6 +1,7 @@
 import flushPromises from "flush-promises"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import "~/setups/consultation_time.setup"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import TimerManager from "./timer_manager"
 
