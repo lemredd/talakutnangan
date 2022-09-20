@@ -11,16 +11,11 @@
 		</h3>
 		<label class="flex">
 			<span>From:</span>
-			<div id="start">
+			<div id="start" class="flex">
 				<Selectable
-					v-model="startHour"
+					v-model="startTime"
 					class="inline"
-					:options="hours"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
-				<Selectable
-					v-model="startMinute"
-					class="inline"
-					:options="minutes"
+					:options="time"
 					@change="setNewTime(startHour, startMinute, startMidDay)"/>
 				<Selectable
 					v-model="startMidDay"
@@ -31,17 +26,13 @@
 		</label>
 		<label class="flex">
 			<span>to:</span>
-			<div id="end">
+			<div id="end" class="flex">
 				<Selectable
-					v-model="endHour"
+					v-model="endTime"
 					class="inline"
-					:options="hours"
+					:options="time"
 					@change="setNewTime(endHour, endMinute, endMidDay)"/>
-				<Selectable
-					v-model="endMinute"
-					class="inline"
-					:options="minutes"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
+
 				<Selectable
 					v-model="endMidDay"
 					class="inline"
@@ -54,6 +45,7 @@
 
 <style scoped lang="scss">
 .schedule-picker {
+	@apply flex flex-col justify-between;
 	margin: 1em 0;
 }
 </style>
@@ -66,23 +58,14 @@ import { DayValues } from "$/types/database"
 import Selectable from "@/fields/selectable_options.vue"
 import convertForSentence from "$/string/convert_for_sentence"
 
-const { day, startTime, endTime } = defineProps<{
+const props = defineProps<{
 	day: string
-	startTime: string | number
-	endTime: string | number
+	startTime: string
+	endTime: string
 }>()
 
 function twoDigits(number: number) {
 	return number < 10 ? `0${number}` : number.toString()
-}
-
-function generateNumberRange(start: number, end: number) {
-	const numbers = []
-	for (let i = start; i < end; i++) {
-		numbers.push({ "value": twoDigits(i) })
-	}
-
-	return numbers
 }
 
 function makeOptions(values: any[]): any[] {
@@ -113,19 +96,34 @@ function getTimePart(time: string, part: "hour" | "minute" | "midday") {
 	return partToGive
 }
 
-const hours = generateNumberRange(1, 13)
-const minutes = generateNumberRange(0, 60)
+function generateNumberRange() {
+	const hourEnd = 11
+	const minuteEnd = 60
+	const start = 0
+	const time = []
+
+	for (let i = start; i <= hourEnd; i++) {
+		for (let j = start; j < minuteEnd; j += 15) {
+			time.push(`${i === 0 ? 12 : twoDigits(i)}:${twoDigits(j)}`)
+		}
+	}
+
+	return time
+}
+const time = makeOptions(generateNumberRange())
 const midDay = makeOptions([ "AM", "PM" ])
 const unuseddays = [ ...DayValues ]
 
-const rawStartTime = startTime as string
+const rawStartTime = props.startTime as string
 const startHour = ref(getTimePart(rawStartTime, "hour"))
 const startMinute = ref(getTimePart(rawStartTime, "minute"))
+const { startTime } = props
 const startMidDay = ref(getTimePart(rawStartTime, "midday"))
 
-const rawEndTime = endTime as string
+const rawEndTime = props.endTime as string
 const endHour = ref(getTimePart(rawEndTime, "hour"))
 const endMinute = ref(getTimePart(rawEndTime, "minute"))
+const { endTime } = props
 const endMidDay = ref(getTimePart(rawEndTime, "midday"))
 
 function setNewTime(hour: string, minute: string, oldMidDay: string) {
