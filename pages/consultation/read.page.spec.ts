@@ -543,7 +543,7 @@ describe("UI Page: Read resource by ID", () => {
 		)
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
-		jest.useRealTimers()
+		jest.useFakeTimers()
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -563,10 +563,6 @@ describe("UI Page: Read resource by ID", () => {
 		})
 		const startButton = wrapper.find(".user-controls .start")
 
-		const SLEEP_DURATION = 1500
-		await new Promise<void>(resolve => {
-			setTimeout(() => resolve(), SLEEP_DURATION)
-		})
 		await flushPromises()
 		await startButton.trigger("click")
 		await flushPromises()
@@ -574,8 +570,8 @@ describe("UI Page: Read resource by ID", () => {
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 		await nextTick()
 		await flushPromises()
-		const messageBox = wrapper.find(".user-controls .message-box")
 
+		const messageBox = wrapper.find(".user-controls .message-box")
 		expect(messageBox.exists()).toBeTruthy()
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
@@ -630,7 +626,11 @@ describe("UI Page: Read resource by ID", () => {
 		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		const thirdRequestBody = await thirdRequest.json()
 		expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-	}, convertTimeToMilliseconds("00:00:06"))
+
+		// End the pending finished listener
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
+	})
 
 	it("can insert messages to server", async() => {
 		jest.useRealTimers()
