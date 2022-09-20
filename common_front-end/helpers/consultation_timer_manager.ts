@@ -44,7 +44,12 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 					"consumedTime": [] as ConsultationEventListeners["consumedTime"][],
 					"finish": [] as ConsultationEventListeners["finish"][]
 				},
-				"remainingMillisecondsBeforeInactivity": differenceFromNow
+				"remainingMillisecondsBeforeInactivity": this.isOnIntegration
+					? Math.max(
+						differenceFromNow,
+						convertTimeToMilliseconds("00:05:00")
+					)
+					: differenceFromNow
 			})
 
 			foundIndex = ConsultationTimerManager.listeners.length - 1
