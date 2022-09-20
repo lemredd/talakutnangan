@@ -100,7 +100,7 @@ import type { PageContext } from "$/types/renderer"
 
 import ConsultationForm from "@/consultation/form.vue"
 
-import sanitizeArray from "$@/helpers/sanitize_array"
+import disableScroll from "$@/helpers/disable_scroll"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -113,18 +113,8 @@ const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
 const isAddingSchedule = ref<boolean>(false)
 
-function disableScroll() {
-	const bodyClasses = Array.from(rawBodyClasses.value)
-	if (bodyClasses.includes("unscrollable")) {
-		delete bodyClasses[bodyClasses.indexOf("unscrollable")]
-	} else {
-		bodyClasses.push("unscrollable")
-	}
-
-	rawBodyClasses.value = sanitizeArray(bodyClasses)
-}
 function toggleAddingSchedule() {
-	disableScroll()
+	disableScroll(rawBodyClasses, [ "unscrollable" ])
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
