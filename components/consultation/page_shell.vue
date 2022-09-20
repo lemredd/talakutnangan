@@ -114,7 +114,7 @@ const isUserAStudent = computed(() => userProfile.data.kind === "student")
 const isAddingSchedule = ref<boolean>(false)
 
 function toggleAddingSchedule() {
-	disableScroll(rawBodyClasses)
+	disableScroll(rawBodyClasses, [ "unscrollable" ])
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 

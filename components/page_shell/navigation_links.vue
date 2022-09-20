@@ -135,6 +135,6 @@ const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
 
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	disableScroll(rawBodyClasses)
+	disableScroll(rawBodyClasses, [ "unscrollable" ])
 }
 </script>
