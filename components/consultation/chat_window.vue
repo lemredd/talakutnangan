@@ -73,7 +73,7 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-function finishConsultation(): Promise<boolean> {
+function finishConsultation(): void {
 	const { consultation } = props
 	const { startedAt } = consultation
 
@@ -86,23 +86,34 @@ function finishConsultation(): Promise<boolean> {
 			"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
 			"startedAt": startedAt.toISOString()
 		}
-		return new ConsultationFetcher().update(consultationID.value, newConsultationData)
+
+		new ConsultationFetcher().update(consultationID.value, newConsultationData)
 		.then(() => {
 			const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
 				"actionTaken": consultation.actionTaken,
 				"deletedAt": consultation.deletedAt ?? null,
-				"finishedAt": consultation.finishedAt,
+				"finishedAt": new Date(newConsultationData.finishedAt as string),
 				"reason": consultation.reason,
 				"scheduledStartAt": consultation.scheduledStartAt,
 				startedAt
 			}
-			emit("updatedConsultationAttributes", deserializedConsultationData)
-			return true
-		})
-		.catch(() => false)
-	}
 
-	return Promise.resolve(false)
+			const expectedDeserializedConsultationResource: DeserializedConsultationResource<
+				"consultant"|"consultantRole"
+			> = {
+				...consultation,
+				...deserializedConsultationData
+			}
+
+			ConsultationTimerManager.unlistenConsultationTimeEvent(
+				expectedDeserializedConsultationResource,
+				"finish",
+				finishConsultation
+			)
+
+			emit("updatedConsultationAttributes", deserializedConsultationData)
+		})
+	}
 }
 
 function startConsultation() {
