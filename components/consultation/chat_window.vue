@@ -87,30 +87,30 @@ function finishConsultation(): void {
 			"startedAt": startedAt.toISOString()
 		}
 
+		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
+			"actionTaken": consultation.actionTaken,
+			"deletedAt": consultation.deletedAt ?? null,
+			"finishedAt": new Date(newConsultationData.finishedAt as string),
+			"reason": consultation.reason,
+			"scheduledStartAt": consultation.scheduledStartAt,
+			startedAt
+		}
+
+		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
+			"consultant"|"consultantRole"
+		> = {
+			...consultation,
+			...deserializedConsultationData
+		}
+
+		ConsultationTimerManager.unlistenConsultationTimeEvent(
+			expectedDeserializedConsultationResource,
+			"finish",
+			finishConsultation
+		)
+
 		new ConsultationFetcher().update(consultationID.value, newConsultationData)
 		.then(() => {
-			const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-				"actionTaken": consultation.actionTaken,
-				"deletedAt": consultation.deletedAt ?? null,
-				"finishedAt": new Date(newConsultationData.finishedAt as string),
-				"reason": consultation.reason,
-				"scheduledStartAt": consultation.scheduledStartAt,
-				startedAt
-			}
-
-			const expectedDeserializedConsultationResource: DeserializedConsultationResource<
-				"consultant"|"consultantRole"
-			> = {
-				...consultation,
-				...deserializedConsultationData
-			}
-
-			ConsultationTimerManager.unlistenConsultationTimeEvent(
-				expectedDeserializedConsultationResource,
-				"finish",
-				finishConsultation
-			)
-
 			emit("updatedConsultationAttributes", deserializedConsultationData)
 		})
 	}
