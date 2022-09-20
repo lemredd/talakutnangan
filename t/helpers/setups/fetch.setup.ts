@@ -5,10 +5,8 @@ beforeAll(() => {
 	FetchMock.enableMocks()
 })
 
+// See https://www.npmjs.com/package/jest-fetch-mock#reset-mocks-between-tests-with-fetchresetmocks
 beforeEach(() => {
-	/*
-	 * See https://www.npmjs.com/package/jest-fetch-mock#reset-mocks-between-tests-with-fetchresetmocks
-	 * @ts-ignore
-	 */
+	// @ts-ignore
 	fetch.resetMocks()
 })
