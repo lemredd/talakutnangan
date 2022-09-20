@@ -1,3 +1,4 @@
+import flushPromises from "flush-promises"
 import type { ConsultationListeners } from "$@/types/dependent"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
@@ -10,7 +11,7 @@ describe("Helper: Timer manager", () => {
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
 			"id": "1",
-			"scheduledStartAt": new Date(Date.now() - convertTimeToMilliseconds("00:04:58"))
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 		} as DeserializedConsultationResource
 		const listeners: ConsultationListeners = {
 			"consumedTime": mockConsumedTime,
@@ -20,16 +21,17 @@ describe("Helper: Timer manager", () => {
 		TimerManager.listenAllConsultationTimeEvents(consultationResource, listeners)
 		TimerManager.nextInterval()
 
-		expect(mockFinish).toHaveBeenCalled()
-		expect(mockFinish.mock.calls).toEqual([ [ consultationResource ] ])
+		expect(mockFinish).not.toHaveBeenCalled()
+		expect(mockConsumedTime).toHaveBeenCalled()
+		expect(mockConsumedTime.mock.calls).toEqual([ [ consultationResource ] ])
 	})
 
-	it("can remove listeners on successful update of finished consultation", () => {
+	it("can remove listeners on successful update of finished consultation", async () => {
 		const mockFinish = jest.fn().mockResolvedValueOnce(true)
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
 			"id": "1",
-			"scheduledStartAt": new Date(Date.now() - convertTimeToMilliseconds("00:04:59"))
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 		} as DeserializedConsultationResource
 		const listeners: ConsultationListeners = {
 			"consumedTime": mockConsumedTime,
@@ -38,8 +40,10 @@ describe("Helper: Timer manager", () => {
 
 		TimerManager.listenAllConsultationTimeEvents(consultationResource, listeners)
 		TimerManager.nextInterval()
+		await flushPromises()
+		TimerManager.nextInterval()
 
-		expect(mockFinish).toHaveBeenCalled()
+		expect(mockFinish).toHaveBeenCalledTimes(1)
 		expect(mockFinish.mock.calls).toEqual([ [ consultationResource ] ])
 	})
 })
