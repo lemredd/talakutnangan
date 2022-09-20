@@ -1,22 +1,11 @@
 import type { ConsultationListeners } from "$@/types/dependent"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
-import Stub from "$/singletons/stub"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import TimerManager from "./timer_manager"
 
 describe("Helper: Timer manager", () => {
-	it("can initialize", () => {
-		TimerManager.initialize()
-
-		const previousCalls = Stub.consumePreviousCalls()
-
-		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
-		expect(previousCalls).toHaveProperty("0.arguments", [])
-	})
-
 	it("can add event listeners and handle events", () => {
-		TimerManager.initialize()
 		const mockFinish = jest.fn().mockResolvedValueOnce(false)
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
@@ -36,7 +25,6 @@ describe("Helper: Timer manager", () => {
 	})
 
 	it("can remove listeners on successful update of finished consultation", () => {
-		TimerManager.initialize()
 		const mockFinish = jest.fn().mockResolvedValueOnce(true)
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
