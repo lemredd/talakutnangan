@@ -153,7 +153,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
@@ -290,7 +291,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
@@ -459,7 +461,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
@@ -609,7 +612,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
@@ -769,7 +773,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
@@ -929,7 +934,8 @@ describe("UI Page: Read resource by ID", () => {
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
-					"existence": "exists"
+					"existence": "exists",
+					"previewMessageOnly": false
 				},
 				"page": {
 					"limit": 10,
