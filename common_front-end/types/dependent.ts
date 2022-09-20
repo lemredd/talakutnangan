@@ -4,11 +4,11 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
 
 export type ConsultationEventListeners = {
-	"finish": (consultation: DeserializedConsultationResource) => Promise<boolean>,
+	"finish": (consultation: DeserializedConsultationResource) => void,
 	"consumedTime": (
 		consultation: DeserializedConsultationResource,
 		remainingMillisecondsBeforeInactivity: number
-	) => Promise<void>
+	) => void
 }
 
 export type ConsultationEventNames = keyof ConsultationEventListeners
