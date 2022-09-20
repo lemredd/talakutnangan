@@ -26,11 +26,11 @@
 			</p>
 			<label for="dark-mode-toggle">
 				<span class="material-icons-outlined">
-					{{ `toggle_${userProfileData.prefersDark ? "on" : "off"}` }}
+					{{ `toggle_${prefersDark ? "on" : "off"}` }}
 				</span>
 				<input
 					id="dark-mode-toggle"
-					v-model="userProfileData.prefersDark"
+					v-model="prefersDark"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
@@ -91,7 +91,7 @@ import {
 	inject,
 	provide,
 	computed,
-	onBeforeMount
+	onMounted
 } from "vue"
 
 import type { TabInfo } from "$@/types/component"
@@ -105,6 +105,7 @@ import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
 import isUndefined from "$/type_guards/is_undefined"
+import RequestEnvironment from "$/singletons/request_environment"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext
@@ -114,16 +115,25 @@ const userProfileData = ref(userProfile.data)
 const { kind } = userProfile
 const isReachableEmployee = computed(() => kind === "reachable_employee")
 
-console.log(userProfileData.value.prefersDark)
 UserFetcher.initialize("/api")
 function updateUser() {
-	console.log(userProfileData.value.prefersDark)
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
 	})
 }
 
+onMounted(() => {
+	if (isUndefined(userProfileData.value.prefersDark)) userProfileData.value.prefersDark = false
+})
+
+const emit = defineEmits([ "toggleDarkMode" ])
+
+const prefersDark = ref(userProfileData.value.prefersDark)
 function toggleDarkMode() {
+	if (RequestEnvironment.isOnTest) {
+		emit("toggleDarkMode")
+	}
+
 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
 	if (mutatedBodyClasses.has("dark")) {
 		mutatedBodyClasses.delete("dark")
