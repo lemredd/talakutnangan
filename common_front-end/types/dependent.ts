@@ -3,10 +3,15 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 
 export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
 
-export type TimerListeners = ({
+export type ConsultationListeners = {
 	"consultation": DeserializedConsultationResource,
-	"remainingMillisecondsBeforeInactivity": number,
 	"listeners": {
 		"finish": ((consultation: DeserializedConsultationResource) => void)[]
 	}
-})[]
+}
+
+interface TimerListener extends ConsultationListeners {
+	"remainingMillisecondsBeforeInactivity": number
+}
+
+export type TimerListeners = TimerListener[]
