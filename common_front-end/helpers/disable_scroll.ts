@@ -2,13 +2,15 @@ import { Ref } from "vue"
 
 import sanitizeArray from "$@/helpers/sanitize_array"
 
-export default function(rawBodyClasses: Ref) {
-	const bodyClasses = Array.from(rawBodyClasses.value)
-	if (bodyClasses.includes("unscrollable")) {
-		delete bodyClasses[bodyClasses.indexOf("unscrollable")]
-	} else {
-		bodyClasses.push("unscrollable")
+export default function(rawClasses: Ref, classesToAdd: string[]) {
+	const classes = Array.from(rawClasses.value)
+	for (const elementClass of classesToAdd) {
+		if (classes.includes(elementClass)) {
+			delete classes[classes.indexOf("unscrollable")]
+		} else {
+			classes.push(elementClass)
+		}
 	}
 
-	rawBodyClasses.value = sanitizeArray(bodyClasses)
+	rawClasses.value = sanitizeArray(classes)
 }
