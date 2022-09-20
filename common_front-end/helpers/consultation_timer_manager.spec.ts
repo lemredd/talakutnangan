@@ -1,4 +1,3 @@
-import flushPromises from "flush-promises"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 import "~/setups/consultation_timer.setup"
@@ -7,7 +6,7 @@ import ConsultationTimerManager from "./consultation_timer_manager"
 
 describe("Helper: Timer manager", () => {
 	it("can add event listeners and handle events", () => {
-		const mockFinish = jest.fn().mockResolvedValueOnce(false)
+		const mockFinish = jest.fn()
 		const mockConsumedTime = jest.fn()
 		const consultationResource = {
 			"id": "1",
@@ -34,30 +33,33 @@ describe("Helper: Timer manager", () => {
 		] ])
 	})
 
-	it("can remove listeners on successful update of finished consultation", async() => {
-		const mockFinish = jest.fn().mockResolvedValueOnce(true)
-		const mockConsumedTime = jest.fn()
+	it("can remove listeners by force", () => {
+		const mockFinish = jest.fn()
+		const mockOtherFinish = jest.fn()
 		const consultationResource = {
-			"id": "1",
-			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			"finishedAt": new Date(),
+			"id": "1"
 		} as DeserializedConsultationResource
-
 		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
-			"consumedTime",
-			mockConsumedTime
+			"finish",
+			mockOtherFinish
 		)
 		ConsultationTimerManager.listenConsultationTimeEvent(
 			consultationResource,
 			"finish",
 			mockFinish
 		)
-		ConsultationTimerManager.nextInterval()
-		await flushPromises()
+
+		ConsultationTimerManager.unlistenConsultationTimeEvent(
+			consultationResource,
+			"finish",
+			mockFinish
+		)
 		ConsultationTimerManager.nextInterval()
 
-		expect(mockConsumedTime).not.toHaveBeenCalled()
-		expect(mockFinish).toHaveBeenCalledTimes(1)
-		expect(mockFinish.mock.calls).toEqual([ [ consultationResource ] ])
+		expect(mockFinish).not.toHaveBeenCalled()
+		expect(mockOtherFinish).toHaveBeenCalledTimes(1)
+		expect(mockOtherFinish.mock.calls).toEqual([ [ consultationResource ] ])
 	})
 })
