@@ -4,12 +4,13 @@ import type { DeserializedChatMessageListDocument } from "$/types/documents/chat
 
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
 	jest.useFakeTimers()
 
-	it("should start consultation", async() => {
+	it("should request to start consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeConsultation = {
@@ -84,10 +85,10 @@ describe("Component: consultation/chat_window", () => {
 			"chatMessages": fakeChatMessage,
 			"consultation": {
 				...fakeConsultation,
-				"startedAt": new Date()
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 			}
 		})
-		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
+		ConsultationTimerManager.nextInterval()
 		await flushPromises()
 
 		const events = wrapper.emitted("updatedConsultationAttributes")
