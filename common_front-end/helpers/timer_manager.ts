@@ -51,11 +51,36 @@ export default class TimerManager extends RequestEnvironment {
 	}
 
 	static nextInterval(): void {
-		TimerManager.listeners.forEach(listener => {
+		TimerManager.listeners.forEach(async listener => {
+			const { consultation } = listener
 			if (--listener.remainingMillisecondsBeforeInactivity > 0) {
-				// Consume time
+				listener.consultationListeners.consumedTime.forEach(consultationListener => {
+					consultationListener(consultation)
+				})
 			} else {
 				// Finish the consultation if permitted
+				const finishedListeners = listener.consultationListeners.finish
+				.map(
+					(consultationListener, i) => consultationListener(consultation)
+					.then(isSuccessful => ({
+						"index": i,
+						isSuccessful
+					}))
+				)
+
+				const awaitedListeners = await Promise.all(finishedListeners)
+
+				awaitedListeners.sort((leftArray, rightArray) => {
+					const leftSubindex = leftArray.index
+					const rightSubindex = rightArray.index
+					return Math.sign(rightSubindex - leftSubindex)
+				})
+
+				awaitedListeners.forEach(({ index, isSuccessful }) => {
+					if (isSuccessful) {
+						listener.consultationListeners.finish.splice(index, 1)
+					}
+				})
 			}
 		})
 	}
