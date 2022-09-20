@@ -12,7 +12,7 @@ export type ConsultationEventListeners = {
 
 export type ConsultationEventNames = keyof ConsultationEventListeners
 
-interface TimerListener extends ConsultationEventListeners {
+interface TimerListener {
 	"consultation": DeserializedConsultationResource,
 	"remainingMillisecondsBeforeInactivity": number,
 	"listeners": {
