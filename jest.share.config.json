@@ -16,7 +16,7 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/log.setup.ts"
+		"./t/helpers/setups/log.setup.ts"
 	],
 
 	"transformIgnorePatterns": [],

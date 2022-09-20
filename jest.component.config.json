@@ -25,10 +25,10 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/fetch.setup.ts",
-		"./t/helpers/set-ups/fetcher.setup.ts",
-		"./t/helpers/set-ups/form_data.setup.ts",
-		"./t/helpers/set-ups/log.setup.ts"
+		"./t/helpers/setups/fetch.setup.ts",
+		"./t/helpers/setups/fetcher.setup.ts",
+		"./t/helpers/setups/form_data.setup.ts",
+		"./t/helpers/setups/log.setup.ts"
 	],
 
 	"transformIgnorePatterns": [],

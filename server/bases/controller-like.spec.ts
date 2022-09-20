@@ -7,7 +7,7 @@ import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
 import endRequest from "!/helpers/end_request"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import ControllerLike from "./controller-like"
 

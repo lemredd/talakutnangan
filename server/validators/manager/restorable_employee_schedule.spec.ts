@@ -4,7 +4,7 @@ import type {
 	RestorableEmployeeScheduleConstraints
 } from "!/types/validation"
 
-import "~/set-ups/database.setup"
+import "~/setups/database.setup"
 import Manager from "%/managers/employee_schedule"
 import Factory from "~/factories/employee_schedule"
 import makeInitialState from "!/validators/make_initial_state"

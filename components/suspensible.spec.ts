@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils"
 
-import "~/set-ups/database.setup"
+import "~/setups/database.setup"
 import RoleFetcher from "$@/fetchers/role"
 import RoleFactory from "~/factories/role"
 import Suspensible from "./suspensible.vue"

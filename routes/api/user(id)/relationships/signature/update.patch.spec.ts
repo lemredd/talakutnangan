@@ -1,6 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import SignatureFactory from "~/factories/signature"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import Controller from "./update.patch"
 

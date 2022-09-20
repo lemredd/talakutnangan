@@ -1,7 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0

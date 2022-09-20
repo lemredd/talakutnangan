@@ -36,7 +36,7 @@
 		// { "name": "shareable namespace makers","path": "shareable/namespace_makers" },
 
 		// { "name": "test utilities",				"path": "t/helpers" },
-		// { "name": "set-ups",							"path": "t/helpers/set-ups" },
+		// { "name": "setups",							"path": "t/helpers/setups" },
 		// { "name": "factories",						"path": "t/helpers/factories" },
 		// { "name": "integration tests",			"path": "t/integration" },
 

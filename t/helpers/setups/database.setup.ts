@@ -1,7 +1,7 @@
 import "reflect-metadata"
 
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
-import Database from "./database"
+import Database from "~/setups/database"
 
 beforeAll(async() => {
 	await Database.create()

@@ -2,7 +2,7 @@ import { Buffer } from "buffer"
 import BaseError from "$!/errors/base"
 import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import RequestEnvironment from "$/singletons/request_environment"
 import { HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 

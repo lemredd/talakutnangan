@@ -1,6 +1,6 @@
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
-import "~/set-ups/database.setup"
+import "~/setups/database.setup"
 import AuditTrail from "%/models/audit_trail"
 
 import Middleware from "./action_auditor"

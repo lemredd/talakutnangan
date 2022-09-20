@@ -2,7 +2,7 @@ import "dotenv/config"
 import consola from "consola"
 
 import { Environment } from "$/types/server"
-import getDataSourceType from "~/set-ups/get_data_source_type"
+import getDataSourceType from "~/setups/get_data_source_type"
 import RequestEnvironment from "$/singletons/request_environment"
 import initializeSingletons from "!/helpers/initialize_singletons"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"

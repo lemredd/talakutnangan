@@ -1,6 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import Factory from "~/factories/consultation"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
