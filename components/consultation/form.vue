@@ -60,7 +60,10 @@
 			</form>
 		</template>
 		<template #footer>
-			<button class="btn btn-back" type="button">
+			<button
+				class="btn btn-back"
+				type="button"
+				@click="emitClose">
 				Back
 			</button>
 			<button class="btn btn-primary" type="button">
@@ -117,12 +120,17 @@ import Overlay from "@/helpers/overlay.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 
+
 const { isShown } = defineProps<{ isShown: boolean }>()
 
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
+const emit = defineEmits([ "close" ])
+function emitClose() {
+	emit("close")
+}
 const otherReason = ref<string>("")
 // TODO: Use the value below to create the consultation
 const unusedReason = computed<string>(() => {
