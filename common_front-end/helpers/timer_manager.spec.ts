@@ -13,12 +13,17 @@ describe("Helper: Timer manager", () => {
 			"id": "1",
 			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 		} as DeserializedConsultationResource
-		const listeners: ConsultationListeners = {
-			"consumedTime": mockConsumedTime,
-			"finish": mockFinish
-		}
 
-		TimerManager.listenAllConsultationTimeEvents(consultationResource, listeners)
+		TimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		TimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"finish",
+			mockFinish
+		)
 		TimerManager.nextInterval()
 
 		expect(mockFinish).not.toHaveBeenCalled()
@@ -33,16 +38,22 @@ describe("Helper: Timer manager", () => {
 			"id": "1",
 			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 		} as DeserializedConsultationResource
-		const listeners: ConsultationListeners = {
-			"consumedTime": mockConsumedTime,
-			"finish": mockFinish
-		}
 
-		TimerManager.listenAllConsultationTimeEvents(consultationResource, listeners)
+		TimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		TimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"finish",
+			mockFinish
+		)
 		TimerManager.nextInterval()
 		await flushPromises()
 		TimerManager.nextInterval()
 
+		expect(mockConsumedTime).not.toHaveBeenCalled()
 		expect(mockFinish).toHaveBeenCalledTimes(1)
 		expect(mockFinish.mock.calls).toEqual([ [ consultationResource ] ])
 	})
