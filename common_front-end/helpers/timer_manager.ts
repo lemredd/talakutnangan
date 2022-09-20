@@ -7,6 +7,7 @@ import type {
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 /**
@@ -53,7 +54,8 @@ export default class TimerManager extends RequestEnvironment {
 	static nextInterval(): void {
 		TimerManager.listeners.forEach(async listener => {
 			const { consultation } = listener
-			if (--listener.remainingMillisecondsBeforeInactivity > 0) {
+			listener.remainingMillisecondsBeforeInactivity -= convertTimeToMilliseconds("00:00:01")
+			if (listener.remainingMillisecondsBeforeInactivity > 0) {
 				listener.consultationListeners.consumedTime.forEach(consultationListener => {
 					consultationListener(consultation)
 				})
