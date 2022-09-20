@@ -15,7 +15,7 @@ describe("Helper: Timer manager", () => {
 		expect(previousCalls).toHaveProperty("0.arguments", [])
 	})
 
-	it("can add event listeners and handle events", async () => {
+	it("can add event listeners and handle events", async() => {
 		jest.useRealTimers()
 		TimerManager.initialize()
 		const mockFinish = jest.fn().mockResolvedValueOnce(false)
@@ -36,7 +36,7 @@ describe("Helper: Timer manager", () => {
 		expect(mockFinish.mock.calls).toEqual([ [ consultationResource ] ])
 	})
 
-	it("can remove listeners on successful update of finished consultation", async () => {
+	it("can remove listeners on successful update of finished consultation", async() => {
 		TimerManager.initialize()
 		const mockFinish = jest.fn().mockResolvedValueOnce(true)
 		const mockConsumedTime = jest.fn()

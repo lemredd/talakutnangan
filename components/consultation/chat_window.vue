@@ -47,6 +47,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
+
+import type { Timer } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
@@ -58,8 +60,6 @@ import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
-
-type Timer = ReturnType<typeof setInterval>
 
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">

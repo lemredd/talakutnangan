@@ -118,3 +118,5 @@ export type PossibleResources =
 	| DeserializedUserResource
 	| DeserializedDepartmentResource
 	| DeserializedRoleResource
+
+export type Timer = ReturnType<typeof setInterval>
