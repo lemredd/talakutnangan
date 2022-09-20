@@ -140,7 +140,19 @@ const schedules = [
 		"day": "wednesday",
 		"endTime": "17:00",
 		"startTime": "08:00"
+	},
+	{
+		"day": "thursday",
+		"endTime": "17:00",
+		"startTime": "08:00"
+	},
+	{
+		"day": "friday",
+		"endTime": "17:00",
+		"startTime": "08:00"
 	}
+
+
 ]
 
 const tabs: TabInfo[] = [
