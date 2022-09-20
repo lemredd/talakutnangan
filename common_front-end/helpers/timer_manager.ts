@@ -37,7 +37,7 @@ export default class TimerManager extends RequestEnvironment {
 			const differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
 			TimerManager.listeners.push({
 				"consultation": resource,
-				"listeners": {
+				"consultationListeners": {
 					"consumedTime": [] as ConsultationEventListeners["consumedTime"][],
 					"finish": [] as ConsultationEventListeners["finish"][]
 				},
@@ -47,7 +47,7 @@ export default class TimerManager extends RequestEnvironment {
 			foundIndex = TimerManager.listeners.length - 1
 		}
 
-		TimerManager.listeners[foundIndex].listeners[eventName].push(listener)
+		TimerManager.listeners[foundIndex].consultationListeners[eventName].push(listener)
 	}
 
 	static nextInterval(): void {

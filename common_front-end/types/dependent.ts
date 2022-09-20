@@ -15,7 +15,7 @@ export type ConsultationEventNames = keyof ConsultationEventListeners
 interface TimerListener {
 	"consultation": DeserializedConsultationResource,
 	"remainingMillisecondsBeforeInactivity": number,
-	"listeners": {
+	"consultationListeners": {
 		[Property in keyof ConsultationEventListeners]: ConsultationEventListeners[Property][]
 	}
 }
