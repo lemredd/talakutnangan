@@ -3,11 +3,11 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 
 export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
 
-type ConsultationListener = (consultation: DeserializedConsultationResource) => void
+type ConsultationListener<T> = (consultation: DeserializedConsultationResource) => Promise<T>
 
 export type ConsultationListeners = {
-	"finish": ConsultationListener[],
-	"consumedTime": ConsultationListener[]
+	"finish": ConsultationListener<boolean>,
+	"consumedTime": ConsultationListener<void>
 }
 
 interface TimerListener extends ConsultationListeners {
