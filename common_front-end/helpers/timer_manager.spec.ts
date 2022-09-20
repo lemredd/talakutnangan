@@ -28,7 +28,10 @@ describe("Helper: Timer manager", () => {
 
 		expect(mockFinish).not.toHaveBeenCalled()
 		expect(mockConsumedTime).toHaveBeenCalled()
-		expect(mockConsumedTime.mock.calls).toEqual([ [ consultationResource ] ])
+		expect(mockConsumedTime.mock.calls).toEqual([ [
+			consultationResource,
+			convertTimeToMilliseconds("00:00:01")
+		] ])
 	})
 
 	it("can remove listeners on successful update of finished consultation", async() => {

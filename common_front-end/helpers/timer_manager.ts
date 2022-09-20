@@ -35,7 +35,9 @@ export default class TimerManager extends RequestEnvironment {
 		})
 
 		if (foundIndex === -1) {
-			const differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
+			let differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
+			const extraMilliseconds = differenceFromNow % convertTimeToMilliseconds("00:00:01")
+			differenceFromNow -= extraMilliseconds
 			TimerManager.listeners.push({
 				"consultation": resource,
 				"consultationListeners": {
@@ -57,7 +59,7 @@ export default class TimerManager extends RequestEnvironment {
 			listener.remainingMillisecondsBeforeInactivity -= convertTimeToMilliseconds("00:00:01")
 			if (listener.remainingMillisecondsBeforeInactivity > 0) {
 				listener.consultationListeners.consumedTime.forEach(consultationListener => {
-					consultationListener(consultation)
+					consultationListener(consultation, listener.remainingMillisecondsBeforeInactivity)
 				})
 			} else {
 				// Finish the consultation if permitted
