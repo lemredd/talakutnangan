@@ -5,9 +5,12 @@ describe("Helper: Disable Scroll", () => {
 	it("Should add class", () => {
 		const classes = ref([])
 
-		const expectedClass = "unscrollable"
-		disableScroll(classes)
+		const classesToAdd = [ "unscrollable", "abc", "def", "fgh" ]
+		disableScroll(classes, classesToAdd)
 
-		expect(classes.value).toContain(expectedClass)
+		expect(classes.value).toContain(classesToAdd[0])
+		expect(classes.value).toContain(classesToAdd[1])
+		expect(classes.value).toContain(classesToAdd[2])
+		expect(classes.value).toContain(classesToAdd[3])
 	})
 })
