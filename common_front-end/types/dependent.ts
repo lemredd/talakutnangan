@@ -1,1 +1,12 @@
-export type SocketListeners = Record<string, (...parameters: any[]) => void>
+import type { GeneralObject } from "$/types/general"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+
+export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
+
+export type TimerListeners = GeneralObject<{
+	"consultation": DeserializedConsultationResource,
+	"remainingMillisecondsBeforeInactivity": number,
+	"listeners": {
+		"finish": ((consultation: DeserializedConsultationResource) => void)[]
+	}
+}>
