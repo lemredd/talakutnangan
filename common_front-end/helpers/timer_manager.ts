@@ -33,7 +33,7 @@ export default class TimerManager extends RequestEnvironment {
 			return doesMatchResource
 		})
 
-		if (foundIndex < -1) {
+		if (foundIndex === -1) {
 			const differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
 			TimerManager.listeners.push({
 				"consultation": resource,
@@ -44,7 +44,7 @@ export default class TimerManager extends RequestEnvironment {
 				"remainingMillisecondsBeforeInactivity": differenceFromNow
 			})
 
-			foundIndex = TimerManager.listeners.length
+			foundIndex = TimerManager.listeners.length - 1
 		}
 
 		TimerManager.listeners[foundIndex].listeners[eventName].push(listener)
