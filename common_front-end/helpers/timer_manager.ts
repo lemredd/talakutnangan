@@ -5,6 +5,7 @@ import type {
 	ConsultationEventListeners
 } from "$@/types/dependent"
 
+import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
@@ -51,5 +52,17 @@ export default class TimerManager extends RequestEnvironment {
 
 	static nextInterval(): void {
 		//
+	}
+
+	static clearAllListeners(): void {
+		Stub.runConditionally(
+			() => {
+				throw new Error("It is impossible to clear all consultation time listeners forcefully.")
+			},
+			() => {
+				TimerManager.listeners = []
+				return [ {} as unknown as void, null ]
+			}
+		)
 	}
 }
