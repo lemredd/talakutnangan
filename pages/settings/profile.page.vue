@@ -3,17 +3,18 @@
 	<form class="flex flex-col" @submit.prevent>
 		<div>
 			<TextualField
-				v-model="profileInfo.displayName"
+				v-model="userProfileData.name"
 				label="Display Name"
 				type="text"
-				:editable="true"/>
+				:editable="true"
+				@save="updateUser"/>
 		</div>
 
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
 		<!-- TODO: Refactor HTML to Vue Components if applicable -->
 		<div class="pictures">
-			<PicturePicker title="Profile Picture" :picture="profileInfo.profilePic"/>
-			<PicturePicker title="Signature" :picture="profileInfo.signature"/>
+			<PicturePicker title="Profile Picture" :picture="userProfileData.profilePicture"/>
+			<PicturePicker title="Signature" :picture="userProfileData.signature"/>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -25,11 +26,11 @@
 			</p>
 			<label for="dark-mode-toggle">
 				<span class="material-icons-outlined">
-					{{ `toggle_${isDarkModeEnabled ? "on" : "off"}` }}
+					{{ `toggle_${userProfileData.prefersDark ? "on" : "off"}` }}
 				</span>
 				<input
 					id="dark-mode-toggle"
-					v-model="isDarkModeEnabled"
+					v-model="userProfileData.prefersDark"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
@@ -89,7 +90,8 @@ import {
 	Ref,
 	inject,
 	provide,
-	computed
+	computed,
+	onBeforeMount
 } from "vue"
 
 import type { TabInfo } from "$@/types/component"
@@ -101,19 +103,26 @@ import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
+import UserFetcher from "$@/fetchers/user"
+import isUndefined from "$/type_guards/is_undefined"
+
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext
 
-const { "data": userProfile } = pageContext.pageProps.userProfile as DeserializedUserProfile
+const userProfile = pageContext.pageProps.userProfile as DeserializedUserProfile
+const userProfileData = ref(userProfile.data)
 const { kind } = userProfile
-const profileInfo = {
-	"displayName": userProfile.name,
-	"profilePic": null as string | null,
-	"signature": null as string | null
-}
 const isReachableEmployee = computed(() => kind === "reachable_employee")
 
-const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
+console.log(userProfileData.value.prefersDark)
+UserFetcher.initialize("/api")
+function updateUser() {
+	console.log(userProfileData.value.prefersDark)
+	new UserFetcher().update(userProfileData.value.id, {
+		...userProfileData.value
+	})
+}
+
 function toggleDarkMode() {
 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
 	if (mutatedBodyClasses.has("dark")) {
@@ -123,6 +132,8 @@ function toggleDarkMode() {
 	}
 
 	bodyClasses.value = [ ...mutatedBodyClasses ]
+	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
+	updateUser()
 }
 
 const schedules = [
@@ -153,6 +164,5 @@ const tabs: TabInfo[] = [
 		"path": "/settings/profile"
 	}
 ]
-
 provide("tabs", tabs)
 </script>
