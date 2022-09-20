@@ -95,6 +95,7 @@ describe("UI Page: Read resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -232,6 +233,7 @@ describe("UI Page: Read resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -380,6 +382,7 @@ describe("UI Page: Read resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -544,6 +547,7 @@ describe("UI Page: Read resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -708,6 +712,7 @@ describe("UI Page: Read resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -857,10 +862,11 @@ describe("UI Page: Read resource by ID", () => {
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
-		jest.useRealTimers()
+		jest.useFakeTimers()
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -878,7 +884,6 @@ describe("UI Page: Read resource by ID", () => {
 
 		await flushPromises()
 		await startButton.trigger("click")
-		jest.useFakeTimers()
 		await flushPromises()
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
