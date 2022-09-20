@@ -90,8 +90,7 @@ import {
 	Ref,
 	inject,
 	provide,
-	computed,
-	onMounted
+	computed
 } from "vue"
 
 import type { TabInfo } from "$@/types/component"
@@ -104,7 +103,6 @@ import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
-import isUndefined from "$/type_guards/is_undefined"
 import RequestEnvironment from "$/singletons/request_environment"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
@@ -121,10 +119,6 @@ function updateUser() {
 		...userProfileData.value
 	})
 }
-
-onMounted(() => {
-	if (isUndefined(userProfileData.value.prefersDark)) userProfileData.value.prefersDark = false
-})
 
 const emit = defineEmits([ "toggleDarkMode" ])
 
