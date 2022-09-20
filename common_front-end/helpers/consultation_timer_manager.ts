@@ -53,8 +53,39 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 		ConsultationTimerManager.listeners[foundIndex].consultationListeners[eventName].push(listener)
 	}
 
+	static unlistenConsultationTimeEvent<T extends ConsultationEventNames>(
+		resource: DeserializedConsultationResource,
+		eventName: T,
+		listener: ConsultationEventListeners[T]
+	): void {
+		const resourceID = resource.id
+
+		if (resource.finishedAt === null) {
+			throw new Error("Consultation should have started before it can be managed.")
+		}
+
+		const foundListenerIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
+			const doesMatchResource = existingListener.consultation.id === resourceID
+			return doesMatchResource
+		})
+
+		if (foundListenerIndex === -1) {
+			return
+		}
+
+		const listeners = ConsultationTimerManager
+		.listeners[foundListenerIndex]
+		.consultationListeners[eventName]
+		.filter(eventListener => listener !== eventListener)
+
+		ConsultationTimerManager.listeners[foundListenerIndex].consultationListeners[eventName] = []
+		ConsultationTimerManager.listeners[foundListenerIndex].consultationListeners[eventName].push(
+			...listeners
+		)
+	}
+
 	static nextInterval(): void {
-		ConsultationTimerManager.listeners.forEach(async listener => {
+		ConsultationTimerManager.listeners.forEach(listener => {
 			const { consultation } = listener
 			listener.remainingMillisecondsBeforeInactivity -= convertTimeToMilliseconds("00:00:01")
 			if (listener.remainingMillisecondsBeforeInactivity > 0) {
@@ -62,28 +93,8 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 					consultationListener(consultation, listener.remainingMillisecondsBeforeInactivity)
 				})
 			} else {
-				// Finish the consultation if permitted
-				const finishedListeners = listener.consultationListeners.finish
-				.map(
-					(consultationListener, i) => consultationListener(consultation)
-					.then(isSuccessful => ({
-						"index": i,
-						isSuccessful
-					}))
-				)
-
-				const awaitedListeners = await Promise.all(finishedListeners)
-
-				awaitedListeners.sort((leftArray, rightArray) => {
-					const leftSubindex = leftArray.index
-					const rightSubindex = rightArray.index
-					return Math.sign(rightSubindex - leftSubindex)
-				})
-
-				awaitedListeners.forEach(({ index, isSuccessful }) => {
-					if (isSuccessful) {
-						listener.consultationListeners.finish.splice(index, 1)
-					}
+				listener.consultationListeners.finish.forEach(consultationListener => {
+					consultationListener(consultation)
 				})
 			}
 		})
