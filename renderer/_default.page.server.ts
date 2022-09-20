@@ -26,7 +26,14 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 	const appHtml = await renderToString(app)
 
 	// See https://vite-plugin-ssr.com/head
-	const { documentProps } = pageContext
+	const { documentProps, pageProps } = pageContext as PageContext<"deserialized">
+
+	let isDark = false
+	if (pageProps.userProfile) {
+		const { "data": userProfile } = pageProps.userProfile
+		isDark = userProfile.prefersDark
+	}
+
 	const title = documentProps && documentProps.title || "Vite SSR app"
 	const desc = documentProps && documentProps.description || "App using Vite + vite-plugin-ssr"
 
@@ -40,7 +47,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<!--script defer src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script-->
 				<title>${title}</title>
 			</head>
-			<body>
+			<body class="${isDark ? "dark" : ""}">
 				<div id="app">${dangerouslySkipEscape(appHtml)}</div>
 			</body>
 		</html>`
