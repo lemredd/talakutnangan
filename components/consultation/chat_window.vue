@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -177,4 +177,11 @@ function startConsultation() {
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
+
+onMounted(() => {
+	if (props.consultation.startedAt instanceof Date && props.consultation.finishedAt === null) {
+		registerListeners(props.consultation)
+		ConsultationTimerManager.restartTimerFor(props.consultation)
+	}
+})
 </script>
