@@ -16,19 +16,19 @@
 			<div class="consulters p-5">
 				<h2>Consulters</h2>
 				<div
-					v-for="consulter in consulters"
-					:key="consulter.data.id"
+					v-for="consulter in selectedConsulters"
+					:key="consulter.id"
 					class="chip-consulters">
-					{{ consulter.data.name }}
+					{{ consulter.name }}
 					<span class="closebtn" @click="removeConsulter">
 						&times;
 					</span>
-					<NonSensitiveTextField
-						v-if="mayAddConsulters"
-						v-model="consulterSlug"
-						label="Type the students to add"
-						type="text"/>
 				</div>
+				<NonSensitiveTextField
+					v-if="mayAddConsulters"
+					v-model="consulterSlug"
+					label="Type the students to add"
+					type="text"/>
 			</div>
 			<form>
 				<SelectableOptionsField
