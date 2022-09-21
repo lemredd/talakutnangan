@@ -62,4 +62,24 @@ describe("Helper: Timer manager", () => {
 		expect(mockOtherFinish).toHaveBeenCalledTimes(1)
 		expect(mockOtherFinish.mock.calls).toEqual([ [ consultationResource ] ])
 	})
+
+	it("can restart time and call corresponding listeners", () => {
+		const mockReset = jest.fn()
+		const consultationResource = {
+			"id": "1",
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		} as DeserializedConsultationResource
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"restartTime",
+			mockReset
+		)
+		ConsultationTimerManager.restartTimerFor(consultationResource)
+
+		expect(mockReset).toHaveBeenCalled()
+		expect(mockReset.mock.calls).toEqual([ [
+			consultationResource
+		] ])
+	})
 })
