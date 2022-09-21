@@ -1062,6 +1062,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		await flushPromises()
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
+		await flushPromises()
 		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
