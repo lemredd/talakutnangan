@@ -27,7 +27,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
 
-describe("UI Page: Read resource by ID", () => {
+describe("UI Page: Read consultation resource by ID", () => {
 	it("should load resource by ID", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
@@ -304,7 +304,9 @@ describe("UI Page: Read resource by ID", () => {
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
+})
 
+describe("UI Page: Communicate with consultation resource", () => {
 	it("can insert messages from socket", async() => {
 		const OTHER_CONSULTATION_COUNT = 2
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
