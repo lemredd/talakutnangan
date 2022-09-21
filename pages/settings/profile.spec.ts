@@ -9,6 +9,7 @@ import Page from "./profile.page.vue"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import UserProfileTransformer from "%/transformers/user_profile"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
@@ -321,7 +322,7 @@ describe("Page: settings/profile", () => {
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
 			.attach(role)
-			.deserializedOne()
+			.deserializedOne(false, {} as unknown as void, new UserProfileTransformer())
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
 			const wrapper = shallowMount(Page, {
