@@ -1,17 +1,20 @@
-import { mount } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
 
-import PicturePicker from "@/settings/picture_picker.vue"
+import PicturePicker from "./picture_picker.vue"
 
 describe("Component: Picture Picker", () => {
 	it("should give the proper input ID", () => {
-		const title = "Sample Title"
-		const wrapper = mount(PicturePicker, {
+		const title = "sample-title"
+		const wrapper = shallowMount<any>(PicturePicker, {
 			"props": {
 				"picture": null,
 				title
 			}
 		})
 
-		console.log(wrapper.html())
+		const fileInput = wrapper.find(`#input-${title}`)
+
+		expect(wrapper.html()).toContain(fileInput.html())
+	})
 	})
 })
