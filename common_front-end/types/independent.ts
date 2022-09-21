@@ -120,3 +120,9 @@ export type PossibleResources =
 	| DeserializedRoleResource
 
 export type Timer = ReturnType<typeof setInterval>
+
+export type FullTime = {
+	hours: number,
+	minutes: number,
+	seconds: number
+}
