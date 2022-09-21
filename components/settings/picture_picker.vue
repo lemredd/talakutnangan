@@ -59,6 +59,6 @@ function loadImage(event: Event) {
 	const [ file ] = target.files as FileList
 	const fileObjectURL = URL.createObjectURL(file)
 
-	pictureToDisplay.value = fileObjectURL
+	emit("pickedFile", fileObjectURL)
 }
 </script>
