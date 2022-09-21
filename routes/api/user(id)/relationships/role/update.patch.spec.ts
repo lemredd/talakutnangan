@@ -1,7 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"

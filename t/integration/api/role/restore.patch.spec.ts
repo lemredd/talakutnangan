@@ -1,6 +1,6 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 import Role from "%/models/role"
 import RoleFactory from "~/factories/role"
 import RequestEnvironment from "$!/singletons/request_environment"

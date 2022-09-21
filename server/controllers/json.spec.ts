@@ -5,7 +5,7 @@ import type { Request, Response } from "!/types/dependent"
 
 import required from "!/validators/base/required"
 import regex from "!/validators/comparison/regex"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import JSONController from "./json"
 

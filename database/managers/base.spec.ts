@@ -10,7 +10,7 @@ import type {
 import type CacheClient from "$!/helpers/cache_client"
 
 import User from "%/models/user"
-import Database from "~/set-ups/database"
+import Database from "~/setups/database"
 import UserFactory from "~/factories/user"
 import Transformer from "%/transformers/base"
 import DatabaseError from "$!/errors/database"

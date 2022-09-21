@@ -1,4 +1,4 @@
-name: Web Front-end Tests
+name: Web Front-end Unit Tests
 
 on:
   push:

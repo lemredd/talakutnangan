@@ -1,5 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import DepartmentFactory from "~/factories/department"
 
 import Controller from "./archive.delete"

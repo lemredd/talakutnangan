@@ -65,6 +65,8 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
 const currentChatMessageActivity = inject(
@@ -108,7 +110,7 @@ const unusedIsAutoTerminated = computed<boolean>(() => {
 
 setInterval(() => {
 	currentTime.value = new Date()
-}, 1000)
+}, convertTimeToMilliseconds("00:00:01"))
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
@@ -142,6 +144,8 @@ function send(): void {
 		}
 	} as ChatMessageRelationships).then(() => {
 		textInput.value = ""
+	}).then(() => {
+		ConsultationTimerManager.restartTimerFor(props.consultation)
 	})
 }
 

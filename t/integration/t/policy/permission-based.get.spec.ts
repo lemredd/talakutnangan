@@ -1,7 +1,7 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_OWN } from "$/permissions/user_combinations"

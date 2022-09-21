@@ -1,17 +1,18 @@
 import { createTestAccount } from "nodemailer"
 
 import Transport from "!/helpers/email/transport"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
-beforeAll((done) => {
-	jest.setTimeout(7500)
-
+beforeAll(done => {
 	createTestAccount((_error, account) => {
+		const SMTP_PORT = 587
+
 		Transport.initialize(
 			"smtp.ethereal.email",
-			587,
+			SMTP_PORT,
 			account.user,
 			account.pass
 		)
 		done()
 	})
-})
+}, convertTimeToMilliseconds("00:00:10"))
