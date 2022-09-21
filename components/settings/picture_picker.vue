@@ -1,9 +1,11 @@
 <template>
 	<div>
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
-		<h3 class="display-name text-lg">{{ title }}</h3>
+		<h3 class="display-name text-lg">
+			{{ title }}
+		</h3>
 		<div class="picture-container">
-			<img v-if="pictureToDisplay" :src="pictureToDisplay"/>
+			<Picture v-if="picture"/>
 			<div v-else class="no-image flex justify-center">
 				<label :for="`input-${inputId}`" class="flex flex-col items-center justify-center">
 					<span class="material-icons">add_circle</span>
@@ -33,16 +35,24 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { DeserializedSignatureDocument } from "$/types/documents/signature"
+import { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
+
+import Picture from "@/helpers/picture.vue"
 import convertForParameter from "$/string/convert_for_parameter"
 
-const { title, picture } = defineProps<{
+type PossiblePictures = DeserializedProfilePictureDocument | DeserializedSignatureDocument
+
+const props = defineProps<{
 	title: string
-	picture: string | null
+	picture: PossiblePictures | undefined
+}>()
+// eslint-disable-next-line func-call-spacing
+const emit = defineEmits<{
+	(event: "pickedFile", pickedFile: string): void
 }>()
 
-const pictureToDisplay = ref(picture)
-const inputId = convertForParameter(title)
+const inputId = convertForParameter(props.title)
 
 function loadImage(event: Event) {
 	const target = event.target as HTMLInputElement
