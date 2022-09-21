@@ -20,10 +20,7 @@
 					:key="consulter.data.id"
 					class="chip-consulters">
 					{{ consulter.data.name }}
-					<span
-						class="closebtn"
-						:data-user-id="consulter.data.id"
-						@click="removeConsulter">
+					<span class="closebtn" @click="removeConsulter">
 						&times;
 					</span>
 					<NonSensitiveTextField
@@ -99,15 +96,19 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedUserDocument } from "$/types/documents/user"
+
+import Fetcher from "$@/fetchers/consultation"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
+
+let fetcher: Fetcher|null = null
 
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
@@ -135,4 +136,8 @@ function removeConsulter(event: Event): void {
 		return foundNameIndex === -1
 	})
 }
+
+onMounted(() => {
+	fetcher = new Fetcher()
+})
 </script>
