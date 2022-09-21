@@ -1,6 +1,6 @@
 <template>
 	<SettingsHeader title="User Settings"/>
-	<form class="flex flex-col" @submit.prevent>
+	<div class="flex flex-col">
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
@@ -16,11 +16,11 @@
 			<PicturePicker
 				title="Profile Picture"
 				:picture="userProfileData.profilePicture"
-				@picked-file="pickedPicture"/>
+				@submit-file="submitProfilePicture"/>
 			<PicturePicker
 				title="Signature"
 				:picture="userProfileData.signature"
-				@picked-file="pickedPicture"/>/>
+				@submit-file=""/>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -53,7 +53,7 @@
 				:start-time="schedule.startTime"
 				:end-time="schedule.endTime"/>
 		</div>
-	</form>
+	</div>
 </template>
 
 <style scoped lang="scss">
@@ -101,7 +101,7 @@ import {
 
 import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
@@ -109,7 +109,9 @@ import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
+import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
+import assignPath from "$@/external/assign_path"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -120,7 +122,25 @@ const userProfileData = ref(userProfile.data)
 const { kind } = userProfile
 const isReachableEmployee = computed(() => kind === "reachable_employee")
 
+
 UserFetcher.initialize("/api")
+ProfilePictureFetcher.initialize("/api")
+
+function submitProfilePicture(formData: FormData) {
+	const profilePictureFetcher = new ProfilePictureFetcher()
+
+	if (userProfileData.value.profilePicture) {
+		profilePictureFetcher.updateFile(
+			userProfileData.value.profilePicture.data.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	} else {
+		profilePictureFetcher.createFile(
+			userProfileData.value.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	}
+}
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
