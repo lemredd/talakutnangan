@@ -84,7 +84,7 @@ export default class extends MultipartController {
 		const userID = Number(request.params.id)
 
 		const profilePictureInfo = await manager.create({
-			fileContents,
+			"fileContents": fileContents.buffer,
 			userID
 		})
 
