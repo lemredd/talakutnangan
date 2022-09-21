@@ -105,9 +105,9 @@ describe("Component: consultation/form", () => {
 			}
 		})
 
-		const consulterBox = wrapper.find(".consultant")
-		const consulterSearchField = consulterBox.findComponent({ "name": "NonSensitiveTextField" })
-		await consulterSearchField.setValue(employees.data[0].attributes.name)
+		const consultantBox = wrapper.find(".consultant")
+		const consultantSearchField = consultantBox.findComponent({ "name": "NonSensitiveTextField" })
+		await consultantSearchField.setValue(employees.data[0].attributes.name)
 		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
 		const castFetch = fetch as jest.Mock<any, any>
