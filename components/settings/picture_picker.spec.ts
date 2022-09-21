@@ -16,5 +16,24 @@ describe("Component: Picture Picker", () => {
 
 		expect(wrapper.html()).toContain(fileInput.html())
 	})
+
+	it("should determine if user has profile picture", () => {
+		const title = "sample-title"
+		const sampleURL = "/images/profile.png"
+		const picture = {
+			"data": {
+				"fileContents": sampleURL
+			}
+		}
+		const wrapper = shallowMount<any>(PicturePicker, {
+			"props": {
+				picture,
+				title
+			}
+		})
+
+		const pictureComponent = wrapper.findComponent({ "name": "Picture" })
+
+		expect(pictureComponent).toBeTruthy()
 	})
 })
