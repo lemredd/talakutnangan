@@ -157,6 +157,8 @@ function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"us
 function createMessage(message: ChatMessageDocument<"read">): void {
 	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
 	mergeDeserializedMessages([ deserializedMessage.data ])
+
+	ConsultationTimerManager.restartTimerFor(consultation.value)
 }
 
 function updateMessage(message: ChatMessageDocument<"read">): void {
