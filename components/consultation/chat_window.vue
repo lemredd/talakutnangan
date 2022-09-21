@@ -133,6 +133,15 @@ function finishConsultation(): void {
 	}
 }
 
+function registerListeners(resource: DeserializedConsultationResource): void {
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
+	ConsultationTimerManager.listenConsultationTimeEvent(
+		resource,
+		"restartTime",
+		restartRemainingTime
+	)
+}
+
 function startConsultation() {
 	const { consultation } = props
 
@@ -162,16 +171,7 @@ function startConsultation() {
 			...deserializedConsultationData
 		}
 
-		ConsultationTimerManager.listenConsultationTimeEvent(
-			expectedDeserializedConsultationResource,
-			"finish",
-			finishConsultation
-		)
-		ConsultationTimerManager.listenConsultationTimeEvent(
-			expectedDeserializedConsultationResource,
-			"restartTime",
-			restartRemainingTime
-		)
+		registerListeners(expectedDeserializedConsultationResource)
 
 		remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		emit("updatedConsultationAttributes", deserializedConsultationData)
