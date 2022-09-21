@@ -16,6 +16,7 @@ import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_dif
  * It must be manually ticked to reduce the number running timers.
  */
 export default class ConsultationTimerManager extends RequestEnvironment {
+	static MAX_EXPIRATION_TIME: number = convertTimeToMilliseconds("00:05:00")
 	private static listeners: TimerListeners = []
 
 	static listenConsultationTimeEvent<T extends ConsultationEventNames>(
@@ -48,7 +49,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 				"remainingMillisecondsBeforeInactivity": this.isOnIntegration
 					? Math.max(
 						differenceFromNow,
-						convertTimeToMilliseconds("00:05:00")
+						ConsultationTimerManager.MAX_EXPIRATION_TIME
 					)
 					: differenceFromNow
 			})
@@ -134,7 +135,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 
 		const listener = ConsultationTimerManager.listeners[foundIndex]
 		listener.consultation = resource
-		listener.remainingMillisecondsBeforeInactivity = convertTimeToMilliseconds("00:05:00")
+		listener.remainingMillisecondsBeforeInactivity = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		listener.consultationListeners.restartTime.forEach(consultationListener => {
 			consultationListener(resource)
 		})
