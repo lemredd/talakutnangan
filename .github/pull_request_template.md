@@ -21,7 +21,7 @@ Put your additions and compatible changes here...
 ## Proof of Passing
 [![Shareable Tests](https://github.com/<username>/talakutnangan/actions/workflows/shareable.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/shareable.yml)
 
-[![Web Front-end Tests](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml)
+[![Web Front-end Unit Tests](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml)
 
 [![Web Front-end Integration Tests](https://github.com/<username>/talakutnangan/actions/workflows/front-end.intg.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/front-end.intg.yml)
 

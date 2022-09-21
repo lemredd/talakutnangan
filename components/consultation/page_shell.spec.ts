@@ -13,6 +13,7 @@ describe("Component: consultation/page_shell", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							consultations,
@@ -37,6 +38,7 @@ describe("Component: consultation/page_shell", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
+					"bodyClasses": [],
 					"pageContext": {
 						"pageProps": {
 							consultations,
