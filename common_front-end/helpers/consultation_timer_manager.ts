@@ -42,7 +42,8 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 				"consultation": resource,
 				"consultationListeners": {
 					"consumedTime": [] as ConsultationEventListeners["consumedTime"][],
-					"finish": [] as ConsultationEventListeners["finish"][]
+					"finish": [] as ConsultationEventListeners["finish"][],
+					"restartTime": [] as ConsultationEventListeners["restartTime"][]
 				},
 				"remainingMillisecondsBeforeInactivity": this.isOnIntegration
 					? Math.max(
@@ -66,7 +67,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 		const resourceID = resource.id
 
 		if (resource.finishedAt === null) {
-			throw new Error("Consultation should have started before it can be managed.")
+			throw new Error("Consultation should have finished before it can be managed.")
 		}
 
 		const foundListenerIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
@@ -115,5 +116,27 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 				return [ {} as unknown as void, null ]
 			}
 		)
+	}
+
+	static restartTimerFor(resource: DeserializedConsultationResource): void {
+		const resourceID = resource.id
+
+		if (resource.startedAt === null) {
+			throw new Error("Consultation should have started before it can be managed.")
+		}
+
+		const foundIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
+			const doesMatchResource = existingListener.consultation.id === resourceID
+			return doesMatchResource
+		})
+
+		if (foundIndex === -1) return
+
+		const listener = ConsultationTimerManager.listeners[foundIndex]
+		listener.consultation = resource
+		listener.remainingMillisecondsBeforeInactivity = convertTimeToMilliseconds("00:05:00")
+		listener.consultationListeners.restartTime.forEach(consultationListener => {
+			consultationListener(resource)
+		})
 	}
 }
