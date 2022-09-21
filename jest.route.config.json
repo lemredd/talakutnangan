@@ -28,9 +28,9 @@
 	},
 
 	"setupFilesAfterEnv": [
-		"./t/helpers/set-ups/singletons.set_up.ts",
-		"./t/helpers/set-ups/cache_manager.set_up.ts",
-		"./t/helpers/set-ups/database.set_up.ts"
+		"./t/helpers/setups/singletons.setup.ts",
+		"./t/helpers/setups/cache_manager.setup.ts",
+		"./t/helpers/setups/database.setup.ts"
 	],
 
 	"transformIgnorePatterns": [],

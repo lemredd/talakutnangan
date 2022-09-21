@@ -1,5 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Controller from "./archive.delete"

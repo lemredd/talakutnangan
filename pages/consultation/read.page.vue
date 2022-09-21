@@ -155,6 +155,8 @@ function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"us
 function createMessage(message: ChatMessageDocument<"read">): void {
 	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
 	mergeDeserializedMessages([ deserializedMessage.data ])
+
+	ConsultationTimerManager.restartTimerFor(consultation.value)
 }
 
 function updateMessage(message: ChatMessageDocument<"read">): void {
@@ -228,7 +230,8 @@ async function loadPreviousChatMessages(): Promise<void> {
 		"filter": {
 			"chatMessageKinds": [ "text", "status" ],
 			"consultationIDs": [ consultation.value.id ],
-			"existence": "exists"
+			"existence": "exists",
+			"previewMessageOnly": false
 		},
 		"page": {
 			"limit": 10,
@@ -253,5 +256,9 @@ onMounted(async() => {
 
 	await loadConsultations()
 	await loadPreviousChatMessages()
+
+	setInterval(() => {
+		ConsultationTimerManager.nextInterval()
+	}, convertTimeToMilliseconds("00:00:01"))
 })
 </script>

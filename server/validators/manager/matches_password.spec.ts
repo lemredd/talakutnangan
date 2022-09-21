@@ -1,6 +1,6 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
 import matchesPassword from "./matches_password"

@@ -1,9 +1,9 @@
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import UserManager from "%/managers/user"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import UserPermissions from "$/permissions/user"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 
 import BelongsToCurrentUserPolicy from "./belongs_to_current_user"

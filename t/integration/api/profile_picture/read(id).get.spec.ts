@@ -1,4 +1,4 @@
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import ProfilePictureFactory from "~/factories/profile_picture"
 import RequestEnvironment from "$!/singletons/request_environment"

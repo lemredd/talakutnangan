@@ -1,12 +1,12 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import deserialize from "$/object/deserialize"
 import UserPermissions from "$/permissions/user"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 
 import Middleware from "./scope-based"

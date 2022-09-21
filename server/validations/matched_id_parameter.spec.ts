@@ -1,6 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import Validation from "./matched_id_parameter"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 describe("Middleware: Matched ID parameter validation", () => {
 	const requester = new MockRequester()
