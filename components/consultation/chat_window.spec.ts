@@ -34,6 +34,9 @@ describe("Component: consultation/chat_window", () => {
 		await userController.trigger("start-consultation")
 		await flushPromises()
 
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("5m")
 		const events = wrapper.emitted("updatedConsultationAttributes")
 		expect(events).toHaveLength(1)
 		const castFetch = fetch as jest.Mock<any, any>
@@ -89,6 +92,9 @@ describe("Component: consultation/chat_window", () => {
 		ConsultationTimerManager.nextInterval()
 		await flushPromises()
 
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("0m")
 		const events = wrapper.emitted("updatedConsultationAttributes")
 		expect(events).toHaveLength(2)
 		const castFetch = fetch as jest.Mock<any, any>
