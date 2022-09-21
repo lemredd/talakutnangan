@@ -112,10 +112,11 @@ import UserFetcher from "$@/fetchers/user"
 import RequestEnvironment from "$/singletons/request_environment"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
-const pageContext = inject("pageContext") as PageContext
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 
-const userProfile = pageContext.pageProps.userProfile as DeserializedUserProfile
+const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
 const userProfileData = ref(userProfile.data)
+
 const { kind } = userProfile
 const isReachableEmployee = computed(() => kind === "reachable_employee")
 
