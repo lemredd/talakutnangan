@@ -98,9 +98,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
+import type { UserKind } from "$/types/database"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import Fetcher from "$@/fetchers/consultation"
+import Fetcher from "$@/fetchers/user"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
@@ -108,7 +109,13 @@ import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
-let fetcher: Fetcher|null = null
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher === null) throw new Error("User cannot be processed yet")
+
+	return rawFetcher
+}
 
 const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
@@ -126,6 +133,23 @@ const consulterSlug = ref<string>("")
 const consulters = ref<DeserializedUserDocument<"studentDetail">[]>([])
 const mayAddConsulters = computed<boolean>(() => consulters.value.length < MAX_CONSULTERS)
 
+function getMatchedUsers(kind: UserKind, slug: string) {
+	fetcher().list({
+		"filter": {
+			"department": "*",
+			"existence": "exists",
+			kind,
+			"role": "*",
+			slug
+		},
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	})
+}
+
 function removeConsulter(event: Event): void {
 	const { target } = event
 	const castTarget = target as HTMLButtonElement
@@ -138,6 +162,6 @@ function removeConsulter(event: Event): void {
 }
 
 onMounted(() => {
-	fetcher = new Fetcher()
+	rawFetcher = new Fetcher()
 })
 </script>
