@@ -44,7 +44,7 @@
 import type { DeserializedSignatureDocument } from "$/types/documents/signature"
 import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
 
-import Picture from "@/helpers/picture.vue"
+import Picture from "@/helpers/profile_picture.vue"
 import convertForParameter from "$/string/convert_for_parameter"
 
 type PossiblePictures = DeserializedProfilePictureDocument | DeserializedSignatureDocument

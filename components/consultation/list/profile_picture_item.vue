@@ -7,7 +7,7 @@ import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
-import ProfilePicture from "@/helpers/picture.vue"
+import ProfilePicture from "@/helpers/profile_picture.vue"
 
 const {
 	activity

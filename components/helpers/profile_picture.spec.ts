@@ -10,7 +10,7 @@ import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 
-import Component from "./picture.vue"
+import Component from "./profile_picture.vue"
 
 describe("Component: helpers/picture_item", () => {
 	it("should show if user has profile picture", async() => {
