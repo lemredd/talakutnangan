@@ -494,6 +494,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
 		const model = await factory
 		.startedAt(() => new Date(Date.now() - convertTimeToMilliseconds("00:03:00")))
+		.finishedAt(() => null)
 		.insertOne()
 		const allModels = [ model, ...models ]
 		const allModelIterator = allModels.values()
@@ -514,10 +515,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.kind(() => "text")
 		.insertMany(INITIAL_MESSAGE_COUNT)
-		const sampleChatTextMessageModel = await chatMessageFactory
-		.chatMessageActivity(() => Promise.resolve(activityOfModel))
-		.kind(() => "text")
-		.insertOne()
 
 		const userResource = userFactory.deserialize(
 			userModel,
@@ -535,12 +532,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 		)
 		const chatMessageResources = chatMessageFactory
 		.deserialize(chatTextMessageModels) as DeserializedChatMessageListDocument
-		const sampleChatTextMessageResource = chatMessageFactory
-		.deserialize(sampleChatTextMessageModel) as DeserializedChatMessageDocument
-		const sampleUpdatedChatMessageResource = await chatMessageFactory
-		.chatMessageActivity(() => Promise.resolve(activityOfModel))
-		.deserializedOne()
-		const consultationChatNamespace = makeConsultationChatNamespace(model.id)
 
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -579,18 +570,16 @@ describe("UI Page: Communicate with consultation resource", () => {
 			}
 		})
 
-		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatTextMessageResource)
-		await nextTick()
 		await flushPromises()
+		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
 		expect(consultationHeader.html()).toContain("5m")
 		const chatEntries = wrapper.findAll(".chat-entry")
-		expect(chatEntries).toHaveLength(3)
-		expect(chatEntries[0].html()).toContain(sampleUpdatedChatMessageResource.data.data.value)
+		expect(chatEntries).toHaveLength(2)
+		expect(chatEntries[0].html()).toContain(chatMessageResources.data[0].data.value)
 		expect(chatEntries[1].html()).toContain(chatMessageResources.data[1].data.value)
-		expect(chatEntries[2].html()).toContain(sampleChatTextMessageResource.data.data.value)
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
@@ -633,7 +622,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 				},
 				"page": {
 					"limit": 10,
-					"offset": INITIAL_MESSAGE_COUNT + 1
+					"offset": INITIAL_MESSAGE_COUNT
 				},
 				"sort": [ "-createdAt" ]
 			} as ChatMessageQueryParameters)
