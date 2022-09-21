@@ -26,6 +26,11 @@
 						@click="removeConsulter">
 						&times;
 					</span>
+					<NonSensitiveTextField
+						v-if="mayAddConsulters"
+						v-model="consulterSlug"
+						label="Type the students to add"
+						type="text"/>
 				</div>
 			</div>
 			<form>
@@ -115,7 +120,10 @@ const unusedReason = computed<string>(() => {
 	return chosenReason.value
 })
 
+const MAX_CONSULTERS = 5
+const consulterSlug = ref<string>("")
 const consulters = ref<DeserializedUserDocument<"studentDetail">[]>([])
+const mayAddConsulters = computed<boolean>(() => consulters.value.length < MAX_CONSULTERS)
 
 function removeConsulter(event: Event): void {
 	const { target } = event
