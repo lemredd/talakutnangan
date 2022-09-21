@@ -96,12 +96,15 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
 
 import type { UserKind } from "$/types/database"
-import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedUserResource } from "$/types/documents/user"
+
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/user"
+import debounce from "$@/helpers/debounce"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
@@ -128,12 +131,7 @@ const unusedReason = computed<string>(() => {
 	return chosenReason.value
 })
 
-const MAX_CONSULTERS = 5
-const consulterSlug = ref<string>("")
-const consulters = ref<DeserializedUserDocument<"studentDetail">[]>([])
-const mayAddConsulters = computed<boolean>(() => consulters.value.length < MAX_CONSULTERS)
-
-function getMatchedUsers(kind: UserKind, slug: string) {
+function findMatchedUsers(kind: UserKind, slug: string) {
 	fetcher().list({
 		"filter": {
 			"department": "*",
@@ -149,6 +147,17 @@ function getMatchedUsers(kind: UserKind, slug: string) {
 		"sort": [ "name" ]
 	})
 }
+
+const MAX_CONSULTERS = 5
+const consulterSlug = ref<string>("")
+const findMatchedConsulters = debounce(() => {
+	findMatchedUsers("student", consulterSlug.value)
+}, DEBOUNCED_WAIT_DURATION)
+const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
+const mayAddConsulters = computed<boolean>(() => selectedConsulters.value.length < MAX_CONSULTERS)
+const consulters = ref<DeserializedUserResource<"studentDetail">[]>([])
+
+watch(consulterSlug, () => findMatchedConsulters())
 
 function removeConsulter(event: Event): void {
 	const { target } = event

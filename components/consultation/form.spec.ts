@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
@@ -8,7 +9,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
 
-import Component from "./chat_message_item.vue"
+import Component from "./form.vue"
 
 describe("Component: consultation/form", () => {
 	it("can search students", async() => {
@@ -46,8 +47,9 @@ describe("Component: consultation/form", () => {
 
 		const consulterBox = wrapper.find(".consulters")
 		const consulterSearchField = consulterBox.findComponent({ "name": "NonSensitiveTextField" })
-		await consulterSearchField.setValue(students.data[0].attributes.name)
+		await consulterSearchField.vm.$emit("update:modelValue", students.data[0].attributes.name)
 		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+		await nextTick()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
