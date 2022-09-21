@@ -9,9 +9,9 @@
 		<h3 class="day">
 			{{ convertForSentence(day) }}
 		</h3>
-		<label class="flex">
+		<label class="space">
 			<span>From:</span>
-			<div id="start" class="flex">
+			<div id="start" class="start flex">
 				<Selectable
 					v-model="startTime"
 					class="inline"
@@ -24,9 +24,9 @@
 					@change="setNewTime(startHour, startMinute, startMidDay)"/>
 			</div>
 		</label>
-		<label class="flex">
-			<span>to:</span>
-			<div id="end" class="flex">
+		<label class="space">
+			<span class="to">To:</span>
+			<div id="end" class="end flex">
 				<Selectable
 					v-model="endTime"
 					class="inline"
@@ -45,8 +45,12 @@
 
 <style scoped lang="scss">
 .schedule-picker {
-	@apply flex flex-col justify-between;
-	margin: 1em 0;
+	@apply flex flex-col;
+	margin: 2em 0;
+}
+
+.space{
+	@apply flex justify-between;
 }
 </style>
 
