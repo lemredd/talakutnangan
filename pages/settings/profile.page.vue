@@ -57,37 +57,37 @@
 </template>
 
 <style scoped lang="scss">
-form {
-	max-width: 640px;
+	form {
+		max-width: 640px;
 
-	.input-pic {
-		display: none;
-	}
-}
-
-.dark-mode-toggle {
-	@apply p-5 grid;
-	grid-template:
-		"formHeader formHeader"
-		"subtitle toggle";
-
-	h3 {
-		grid-area: formHeader;
-	}
-
-	h5 {
-		grid-area: subtitle;
-	}
-
-	label {
-		@apply flex flex-row-reverse;
-		cursor: pointer;
-
-		input {
-			appearance: none;
+		.input-pic {
+			display: none;
 		}
 	}
-}
+
+	.dark-mode-toggle {
+		@apply p-5 grid;
+		grid-template:
+			"formHeader formHeader"
+			"subtitle toggle";
+
+		h3 {
+			grid-area: formHeader;
+		}
+
+		h5 {
+			grid-area: subtitle;
+		}
+
+		label {
+			@apply flex flex-row-reverse;
+			cursor: pointer;
+
+			input {
+				appearance: none;
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
