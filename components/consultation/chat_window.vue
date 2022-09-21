@@ -123,6 +123,7 @@ function finishConsultation(): void {
 
 		new ConsultationFetcher().update(consultationID.value, newConsultationData)
 		.then(() => {
+			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
 		})
 	}
@@ -163,6 +164,7 @@ function startConsultation() {
 			finishConsultation
 		)
 
+		remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
