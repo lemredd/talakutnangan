@@ -166,7 +166,7 @@ describe("Component: consultation/chat_window", () => {
 		expect(consultationHeader.exists()).toBeTruthy()
 		expect(consultationHeader.html()).toContain("5m")
 		const events = wrapper.emitted("updatedConsultationAttributes")
-		expect(events).toHaveLength(2)
+		expect(events).toHaveLength(1)
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")

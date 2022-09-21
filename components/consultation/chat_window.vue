@@ -163,6 +163,13 @@ function startConsultation() {
 			"finish",
 			finishConsultation
 		)
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			expectedDeserializedConsultationResource,
+			"restartTime",
+			() => {
+				remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
+			}
+		)
 
 		remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		emit("updatedConsultationAttributes", deserializedConsultationData)
