@@ -6,6 +6,11 @@
 			<div class="selected-consultation-title">
 				{{ consultation.reason }}
 			</div>
+			<div class="selected-consultation-remaining-time">
+				<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
+				<span>{{ remainingTime.minutes }}m</span>
+				<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
+			</div>
 			<div class="selected-consultation-user-status row-start-2">
 				<!-- TODO(lead): must base on user active status -->
 				User is online
@@ -46,8 +51,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed } from "vue"
 
+import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
@@ -56,6 +62,8 @@ import type {
 
 import ConsultationFetcher from "$@/fetchers/consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+import convertMillisecondsToFullTimeObject
+	from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
@@ -65,6 +73,10 @@ const props = defineProps<{
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
 
+const remainingMilliseconds = ref<number>(0)
+const remainingTime = computed<FullTime>(
+	() => convertMillisecondsToFullTimeObject(remainingMilliseconds.value)
+)
 const consultationID = computed<string>(() => props.consultation.id)
 const consultationStatus = computed<string>(() => props.consultation.status)
 
