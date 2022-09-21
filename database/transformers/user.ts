@@ -45,8 +45,7 @@ export default class extends Transformer<User, void> {
 			"id",
 			"name",
 			"email",
-			"kind",
-			"prefersDark"
+			"kind"
 		])
 
 		return safeObject
