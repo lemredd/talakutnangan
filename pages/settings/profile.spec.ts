@@ -91,7 +91,7 @@ describe("Page: settings/profile", () => {
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
-		it("can display signature", async() => {
+		it.skip("can display signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
 				"data": {
@@ -250,7 +250,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
-		it("can create signature", async() => {
+		it.skip("can create signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
