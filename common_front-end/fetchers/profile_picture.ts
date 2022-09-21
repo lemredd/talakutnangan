@@ -11,8 +11,7 @@ import type {
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument
 } from "$/types/documents/profile_picture"
-import { MULTIPART_MEDIA_TYPE } from "$/types/server"
-
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
@@ -50,7 +49,8 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 			"id": userID,
 			"type": this.type
 		})
-		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+
+		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 
 		return await this.handleResponse(
 			this.postTo(path, details, headers)
@@ -77,7 +77,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 			"id": profilePictureID,
 			"type": this.type
 		})
-		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
