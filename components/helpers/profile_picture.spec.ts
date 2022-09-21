@@ -5,7 +5,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
