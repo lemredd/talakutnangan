@@ -4,14 +4,22 @@
 			<h1>Enter the consultation details</h1>
 		</template>
 		<template #default>
-			<div class="employee p-5">
-				<h2>Employee</h2>
-				<div class="chip-employee">
-					Employee Full Name
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+			<div class="consultant p-5">
+				<h2>Consultants</h2>
+				<div
+					v-for="consultant in selectedConsultants"
+					:key="consultant.id"
+					class="chip-consultants">
+					{{ consultant.name }}
+					<span class="closebtn" @click="removeConsultant">
 						&times;
 					</span>
 				</div>
+				<NonSensitiveTextField
+					v-if="mayAddConsultants"
+					v-model="consultantSlug"
+					label="Type the employee to add"
+					type="text"/>
 			</div>
 			<div class="consulters p-5">
 				<h2>Consulters</h2>
@@ -57,7 +65,7 @@
 <style lang="scss">
 @import "@styles/btn.scss";
 
-.chip-employee, .chip-consulters {
+.chip-consultant, .chip-consulters {
   display: inline-block;
   padding: 0 15px;
   margin:5px;
@@ -148,6 +156,19 @@ function findMatchedUsers(kind: UserKind, slug: string) {
 	})
 }
 
+const MAX_CONSULTANTS = 1
+const consultantSlug = ref<string>("")
+const findMatchedConsultants = debounce(() => {
+	findMatchedUsers("reachable_employee", consultantSlug.value)
+}, DEBOUNCED_WAIT_DURATION)
+const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
+const mayAddConsultants = computed<boolean>(
+	() => selectedConsultants.value.length < MAX_CONSULTANTS
+)
+const consultants = ref<DeserializedUserResource<"roles">[]>([])
+
+watch(consultantSlug, () => findMatchedConsultants())
+
 const MAX_CONSULTERS = 5
 const consulterSlug = ref<string>("")
 const findMatchedConsulters = debounce(() => {
@@ -158,6 +179,17 @@ const mayAddConsulters = computed<boolean>(() => selectedConsulters.value.length
 const consulters = ref<DeserializedUserResource<"studentDetail">[]>([])
 
 watch(consulterSlug, () => findMatchedConsulters())
+
+function removeConsultant(event: Event): void {
+	const { target } = event
+	const castTarget = target as HTMLButtonElement
+	const text = castTarget.innerHTML
+
+	consultants.value = consultants.value.filter(user => {
+		const foundNameIndex = text.indexOf(user.data.name)
+		return foundNameIndex === -1
+	})
+}
 
 function removeConsulter(event: Event): void {
 	const { target } = event
