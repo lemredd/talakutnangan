@@ -33,6 +33,32 @@ describe("Helper: Timer manager", () => {
 		] ])
 	})
 
+	it("can ignore already added event listener", () => {
+		const mockConsumedTime = jest.fn()
+		const consultationResource = {
+			"id": "1",
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		} as DeserializedConsultationResource
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		ConsultationTimerManager.nextInterval()
+
+		expect(mockConsumedTime).toHaveBeenCalled()
+		expect(mockConsumedTime.mock.calls).toEqual([ [
+			consultationResource,
+			convertTimeToMilliseconds("00:00:01")
+		] ])
+	})
+
 	it("can remove listeners by force", () => {
 		const mockFinish = jest.fn()
 		const mockOtherFinish = jest.fn()
