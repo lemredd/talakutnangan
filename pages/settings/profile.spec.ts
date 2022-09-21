@@ -91,6 +91,51 @@ describe("Page: settings/profile", () => {
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
+		it("can display signature", async() => {
+			const sampleURL = "/images/signature.png"
+			const signature = {
+				"data": {
+					"attributes": {
+						"fileContents": sampleURL
+					}
+				}
+			}
+			const department = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const role = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.insertOne()
+			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
+			.attach(role)
+			.deserializedOne(true)
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+
+			const wrapper = shallowMount(Page, {
+				"global": {
+					"provide": {
+						"bodyClasses": ref([]),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										...userProfile,
+										signature
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"PicturePicker": false,
+						"Picture": false
+					}
+				}
+			})
+			const picture = wrapper.findComponent({ "name": "Picture" })
+
+			expect(picture.attributes().src).toEqual(sampleURL)
+		})
 	})
 
 	describe("Editing", () => {
@@ -199,6 +244,68 @@ describe("Page: settings/profile", () => {
 			expect(request).toHaveProperty(
 				"url",
 				`/api/user/${user.data.id}/relationships/profile_picture`
+			)
+
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+		})
+		it("can create signature", async() => {
+			const sampleURL = "/images/signature.png"
+			const department = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const role = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.insertOne()
+			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
+			.attach(role)
+			.deserializedOne(true)
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+
+			const wrapper = shallowMount(Page, {
+				"global": {
+					"provide": {
+						"bodyClasses": ref([]),
+						"pageContext": {
+							"pageProps": {
+								userProfile
+							}
+						}
+					},
+					"stubs": {
+						"PicturePicker": false
+					}
+				}
+			})
+			const fileInput = wrapper.find("#input-signature")
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": {
+						"type": "signature",
+						"id": 1,
+						"attributes": {
+							"fileContents": sampleURL
+						}
+					}
+				}),
+				{ "status": RequestEnvironment.status.CREATED }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": []
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			await fileInput.setValue("")
+			await flushPromises()
+
+			const fetcher = fetch as jest.Mock<any, any>
+			const [ [ request ] ] = fetcher.mock.calls
+			expect(request).toHaveProperty(
+				"url",
+				`/api/user/${user.data.id}/relationships/signature`
 			)
 
 			const previousCalls = Stub.consumePreviousCalls()
