@@ -574,6 +574,9 @@ describe("UI Page: Read resource by ID", () => {
 		await nextTick()
 		await flushPromises()
 
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("5m")
 		const messageBox = wrapper.find(".user-controls .message-box")
 		expect(messageBox.exists()).toBeTruthy()
 		const previousCalls = Stub.consumePreviousCalls()
@@ -892,7 +895,11 @@ describe("UI Page: Read resource by ID", () => {
 		await flushPromises()
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05"))
+		await nextTick()
 
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("0m")
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
