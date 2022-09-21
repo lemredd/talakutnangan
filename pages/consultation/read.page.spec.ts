@@ -807,7 +807,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 	})
 
 	it("can insert messages to server", async() => {
-		jest.useRealTimers()
+		jest.useFakeTimers()
 		const OTHER_CONSULTATION_COUNT = 2
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
 		const INITIAL_MESSAGE_COUNT = 2
@@ -817,7 +817,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		const factory = new Factory()
 		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
 		const model = await factory
-		.startedAt(() => new Date())
+		.startedAt(() => new Date(Date.now() - convertTimeToMilliseconds("00:00:10")))
 		.finishedAt(() => null)
 		.insertOne()
 		const allModels = [ model, ...models ]
@@ -900,13 +900,18 @@ describe("UI Page: Communicate with consultation resource", () => {
 				}
 			}
 		})
-		const messageInputBox = wrapper.find(".message-box input")
 
 		await flushPromises()
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:03"))
+		await nextTick()
+		const messageInputBox = wrapper.find(".message-box input")
 		await messageInputBox.setValue(sampleChatTextMessageResource.data.data.value)
 		await messageInputBox.trigger("keyup.enter")
 		await flushPromises()
 
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("5m")
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
