@@ -1,6 +1,6 @@
 import convertMillisecondsToFullTimeObject from "./convert_milliseconds_to_full_time_object"
 
-describe("Database: Convert milliseconds to time object", () => {
+describe("Database: Convert milliseconds to full time object", () => {
 	it("can convert minutes to time object", () => {
 		const ONE_MINUTE_AND_THIRTY_SECONDS = 90_000
 
