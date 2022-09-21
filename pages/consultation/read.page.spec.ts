@@ -13,6 +13,7 @@ import type {
 
 import Stub from "$/singletons/stub"
 import Socket from "$@/external/socket"
+import "~/setups/consultation_timer.setup"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -317,7 +318,10 @@ describe("UI Page: Communicate with consultation resource", () => {
 		const userModel = await userFactory.insertOne()
 		const factory = new Factory()
 		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
-		const model = await factory.insertOne()
+		const model = await factory
+		.startedAt(() => new Date(Date.now() - convertTimeToMilliseconds("00:03:00")))
+		.finishedAt(() => null)
+		.insertOne()
 		const allModels = [ model, ...models ]
 		const allModelIterator = allModels.values()
 		const chatMessageActivityFactory = new ChatMessageActivityFactory()
@@ -402,7 +406,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 			}
 		})
 
-		jest.advanceTimersByTime(convertTimeToMilliseconds("00:03:00"))
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
 		Socket.emitMockEvent(consultationChatNamespace, "create", sampleChatTextMessageResource)
 		await nextTick()
 		Socket.emitMockEvent(consultationChatNamespace, "update", {
@@ -420,8 +424,8 @@ describe("UI Page: Communicate with consultation resource", () => {
 				"type": "chat_message"
 			}
 		} as ChatMessageDocument)
-		await nextTick()
 		await flushPromises()
+		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
@@ -480,6 +484,10 @@ describe("UI Page: Communicate with consultation resource", () => {
 		}`)
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		// End the pending finished listener
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
 	})
 
 	it("can continue started consultation", async() => {
@@ -629,6 +637,10 @@ describe("UI Page: Communicate with consultation resource", () => {
 		}`)
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		// End the pending finished listener
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
 	})
 
 	it("can start consultation", async() => {
@@ -725,10 +737,10 @@ describe("UI Page: Communicate with consultation resource", () => {
 		await flushPromises()
 		await startButton.trigger("click")
 		await flushPromises()
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
 		await nextTick()
 		Socket.emitMockEvent(consultationChatNamespace, "create", chatStatusMessageResource)
 		await nextTick()
-		await flushPromises()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
@@ -806,7 +818,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		const factory = new Factory()
 		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
 		const model = await factory
-		.startedAt(() => new Date(Date.now() - convertTimeToMilliseconds("00:00:10")))
+		.startedAt(() => new Date(Date.now() - convertTimeToMilliseconds("00:01:00")))
 		.finishedAt(() => null)
 		.insertOne()
 		const allModels = [ model, ...models ]
@@ -891,7 +903,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		})
 
 		await flushPromises()
-		jest.advanceTimersByTime(convertTimeToMilliseconds("00:03"))
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
 		await nextTick()
 		const messageInputBox = wrapper.find(".message-box input")
 		await messageInputBox.setValue(sampleChatTextMessageResource.data.data.value)
@@ -957,6 +969,10 @@ describe("UI Page: Communicate with consultation resource", () => {
 			"data.relationships.chatMessageActivity.data.id",
 			String(activityOfModel.id)
 		)
+
+		// End the pending finished listener
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
 	})
 
 	it("can terminate consultation automatically", async() => {
