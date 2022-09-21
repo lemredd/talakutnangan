@@ -57,7 +57,10 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 			foundIndex = ConsultationTimerManager.listeners.length - 1
 		}
 
-		ConsultationTimerManager.listeners[foundIndex].consultationListeners[eventName].push(listener)
+		const { consultationListeners } = ConsultationTimerManager.listeners[foundIndex]
+		if (consultationListeners[eventName].indexOf(listener) === -1) {
+			consultationListeners[eventName].push(listener)
+		}
 	}
 
 	static unlistenConsultationTimeEvent<T extends ConsultationEventNames>(
