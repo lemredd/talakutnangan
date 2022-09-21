@@ -1,7 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
 import Controller from "./create.post"

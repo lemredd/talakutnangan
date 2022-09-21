@@ -1,6 +1,6 @@
 import type { Request } from "!/types/dependent"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import Factory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"

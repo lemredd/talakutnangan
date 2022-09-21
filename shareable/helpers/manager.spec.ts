@@ -1,6 +1,6 @@
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
