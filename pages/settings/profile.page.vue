@@ -13,8 +13,14 @@
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
 		<!-- TODO: Refactor HTML to Vue Components if applicable -->
 		<div class="pictures">
-			<PicturePicker title="Profile Picture" :picture="userProfileData.profilePicture"/>
-			<PicturePicker title="Signature" :picture="userProfileData.signature"/>
+			<PicturePicker
+				title="Profile Picture"
+				:picture="userProfileData.profilePicture"
+				@picked-file="pickedPicture"/>
+			<PicturePicker
+				title="Signature"
+				:picture="userProfileData.signature"
+				@picked-file="pickedPicture"/>/>
 		</div>
 
 		<div class="dark-mode-toggle">
