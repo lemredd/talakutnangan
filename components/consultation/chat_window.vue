@@ -85,6 +85,10 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+function restartRemainingTime(): void {
+	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
+}
+
 function finishConsultation(): void {
 	const { consultation } = props
 	const { startedAt } = consultation
@@ -166,9 +170,7 @@ function startConsultation() {
 		ConsultationTimerManager.listenConsultationTimeEvent(
 			expectedDeserializedConsultationResource,
 			"restartTime",
-			() => {
-				remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
-			}
+			restartRemainingTime
 		)
 
 		remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
