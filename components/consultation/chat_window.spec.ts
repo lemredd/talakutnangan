@@ -128,7 +128,7 @@ describe("Component: consultation/chat_window", () => {
 		expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 	})
 
-	it("should continue to started consultation", () => {
+	it("should continue to started consultation", async() => {
 		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeConsultation = {
@@ -149,6 +149,8 @@ describe("Component: consultation/chat_window", () => {
 				"consultation": fakeConsultation
 			}
 		})
+
+		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
