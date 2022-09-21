@@ -13,35 +13,17 @@
 					</span>
 				</div>
 			</div>
-			<div class="members p-5">
-				<h2>Members</h2>
-				<div class="chip-members">
-					Student Name1
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
-						&times;
-					</span>
-				</div>
-				<div class="chip-members">
-					Student Name2
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
-						&times;
-					</span>
-				</div>
-				<div class="chip-members">
-					Student Name3
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
-						&times;
-					</span>
-				</div>
-				<div class="chip-members">
-					Student Name4
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
-						&times;
-					</span>
-				</div>
-				<div class="chip-members">
-					Student Name5
-					<span class="closebtn" onclick="this.parentElement.style.display='none'">
+			<div class="consulters p-5">
+				<h2>Consulters</h2>
+				<div
+					v-for="consulter in consulters"
+					:key="consulter.data.id"
+					class="chip-consulters">
+					{{ consulter.data.name }}
+					<span
+						class="closebtn"
+						:data-user-id="consulter.data.id"
+						@click="removeConsulter">
 						&times;
 					</span>
 				</div>
@@ -73,7 +55,7 @@
 <style lang="scss">
 @import "@styles/btn.scss";
 
-.chip-employee, .chip-members {
+.chip-employee, .chip-consulters {
   display: inline-block;
   padding: 0 15px;
   margin:5px;
@@ -113,9 +95,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
+
+import type { DeserializedUserDocument } from "$/types/documents/user"
+
 import Overlay from "@/helpers/overlay.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -129,4 +114,17 @@ const unusedReason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
+
+const consulters = ref<DeserializedUserDocument<"studentDetail">[]>([])
+
+function removeConsulter(event: Event): void {
+	const { target } = event
+	const castTarget = target as HTMLButtonElement
+	const text = castTarget.innerHTML
+
+	consulters.value = consulters.value.filter(user => {
+		const foundNameIndex = text.indexOf(user.data.name)
+		return foundNameIndex === -1
+	})
+}
 </script>
