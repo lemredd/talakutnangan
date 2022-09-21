@@ -2,17 +2,15 @@
 	<img :src="profilePictureURL"/>
 </template>
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, inject } from "vue"
 
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
 import Icon from "@assets/icon.png"
+import { PageContext } from "$/types/renderer";
 
-const {
-	user
-} = defineProps<{
-	user: DeserializedUserDocument<"profilePicture">
-}>()
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const user = pageContext.pageProps.userProfile as DeserializedUserDocument
 
 function isDeserializedProfilePictureDocument(value: any)
 : value is DeserializedProfilePictureDocument {
