@@ -12,7 +12,7 @@ import DepartmentFactory from "~/factories/department"
 
 import Component from "./profile_picture.vue"
 
-describe("Component: helpers/picture_item", () => {
+describe("Component: helpers/picture_picture", () => {
 	it("should show if user has profile picture", async() => {
 		const sampleURL = "/images/profile.png"
 		const profilePicture = {
