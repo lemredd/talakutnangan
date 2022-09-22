@@ -4,7 +4,7 @@
 		"module": "ES2020",
 		"moduleResolution": "Node",
 		"allowJs": true,
-		"target": "ES2017",
+		"target": "ESNext",
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"types": ["vite/client", "jest"],
 		"skipLibCheck": true,
