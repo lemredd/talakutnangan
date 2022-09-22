@@ -116,6 +116,10 @@ export default abstract class Manager<
 		}
 	}
 
+	/*
+	 * ! Does not differentiate if there is a different transformer used. The cached model that uses
+	 * ! a different transformer will still be returned.
+	 */
 	async findOneOnColumn(
 		columnName: string,
 		value: any,
