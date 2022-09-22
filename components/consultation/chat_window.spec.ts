@@ -158,7 +158,7 @@ describe("Component: consultation/chat_window", () => {
 		expect(consultationHeader.html()).toContain("5m")
 	})
 
-	it("should start consultation on update", async() => {
+	it("should start consultation on other source's update", async() => {
 		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const fakeConsultation = {
@@ -183,14 +183,16 @@ describe("Component: consultation/chat_window", () => {
 		await wrapper.setProps({
 			"consultation": {
 				...fakeConsultation,
-				"startedAt": new Date()
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:05:00"))
 			}
 		})
+		ConsultationTimerManager.nextInterval()
 		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
+		expect(consultationHeader.html()).toContain("4m")
+		expect(consultationHeader.html()).toContain("59s")
 	})
 
 	it("should restart the timer", async() => {
