@@ -5,6 +5,8 @@ on:
     paths:
       - 'shareable/**'
       - 'common_front-end/**'
+      - 'common_back-end/**'
+      - 'database/**'
       - 'components/**'
       - 'pages/**'
       - 't/helpers/**'
@@ -20,6 +22,8 @@ on:
     paths:
       - 'shareable/**'
       - 'common_front-end/**'
+      - 'common_back-end/**'
+      - 'database/**'
       - 'components/**'
       - 'pages/**'
       - 't/helpers/**'
