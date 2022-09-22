@@ -268,8 +268,8 @@ describe("UI Page: Read consultation resource by ID", () => {
 		)
 		expect(previousCalls).toHaveProperty("1.arguments.1.create")
 		expect(previousCalls).toHaveProperty("1.arguments.1.update")
-		expect(previousCalls).toHaveProperty("2.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("2.arguments", [ `/consultation/${models[0].id}` ])
+		expect(previousCalls).toHaveProperty("3.functionName", "assignPath")
+		expect(previousCalls).toHaveProperty("3.arguments", [ `/consultation/${models[0].id}` ])
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
@@ -630,6 +630,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 	})
 
 	it("can start consultation from others", async() => {
+		jest.useFakeTimers()
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
 		const INITIAL_MESSAGE_COUNT = 5
@@ -716,7 +717,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 		})
 
 		await flushPromises()
-		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
 		await nextTick()
 		Socket.emitMockEvent(consultationNamespace, "update", {
 			"data": {
@@ -728,10 +728,14 @@ describe("UI Page: Communicate with consultation resource", () => {
 			}
 		} as ConsultationDocument)
 		await nextTick()
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
+		await nextTick()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
+		expect(consultationHeader.html()).toContain("4m")
+		// ! It should be 59 seconds but test trigger `nextInterval` method thrice
+		expect(consultationHeader.html()).toContain("57s")
 		const messageBox = wrapper.find(".user-controls .message-box")
 		expect(messageBox.exists()).toBeTruthy()
 		const previousCalls = Stub.consumePreviousCalls()
