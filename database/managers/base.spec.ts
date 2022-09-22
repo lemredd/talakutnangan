@@ -229,7 +229,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const model = await manager.findOneOnColumn("name", base.name, {
 			"constraints": {
 				"filter": {
-					"existence": "exists"
+					"existence": "archived"
 				}
 			}
 		})
@@ -245,7 +245,7 @@ describe("Database Manager: Base Read Operations", () => {
 		const model = await manager.findOneOnColumn("name", base.name, {
 			"constraints": {
 				"filter": {
-					"existence": "exists"
+					"existence": "archived"
 				}
 			}
 		})
