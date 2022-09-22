@@ -92,6 +92,13 @@ function restartRemainingTime(): void {
 	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
 }
 
+function changeTime(
+	unusedResource: DeserializedConsultationResource,
+	remainingMillisecondduration: number
+): void {
+	remainingMilliseconds.value = remainingMillisecondduration
+}
+
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
@@ -142,6 +149,7 @@ function registerListeners(resource: DeserializedConsultationResource): void {
 		"restartTime",
 		restartRemainingTime
 	)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
 }
 
 function startConsultation() {
