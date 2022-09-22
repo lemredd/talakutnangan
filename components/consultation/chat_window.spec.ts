@@ -157,6 +157,41 @@ describe("Component: consultation/chat_window", () => {
 		expect(consultationHeader.html()).toContain("5m")
 	})
 
+	it("should start consultation on update", async() => {
+		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const fakeConsultation = {
+			"actionTaken": null,
+			"finishedAt": null,
+			"id": "1",
+			"reason": "",
+			scheduledStartAt,
+			"startedAt": null,
+			"type": "consultation"
+		} as DeserializedConsultationResource
+		const fakeChatMessage = {
+			"data": []
+		} as DeserializedChatMessageListDocument
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"chatMessages": fakeChatMessage,
+				"consultation": fakeConsultation
+			}
+		})
+
+		await wrapper.setProps({
+			"consultation": {
+				...fakeConsultation,
+				"startedAt": new Date()
+			}
+		})
+		await nextTick()
+
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("5m")
+	})
+
 	it("should restart the timer", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
