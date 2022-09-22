@@ -45,7 +45,9 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
+	ConsultationResource,
 	ConsultationAttributes,
+	DeserializedConsultationDocument,
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
@@ -64,6 +66,7 @@ import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import makeConsultationNamespace from "$/namespace_makers/consultation"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -170,6 +173,17 @@ function updateMessage(message: ChatMessageDocument<"read">): void {
 	createMessage(message)
 }
 
+function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
+	const deserializedConsultation = deserialize(
+		updatedConsultation
+	) as DeserializedConsultationDocument<"read">
+
+	consultation.value = {
+		...consultation.value,
+		...deserializedConsultation.data
+	}
+}
+
 onBeforeMount(() => {
 	ConsultationFetcher.initialize("/api")
 	ChatMessageFetcher.initialize("/api")
@@ -179,6 +193,10 @@ onBeforeMount(() => {
 	Socket.addEventListeners(chatNamespace, {
 		"create": createMessage,
 		"update": updateMessage
+	})
+	const consultationNamespace = makeConsultationNamespace(consultation.value.id)
+	Socket.addEventListeners(consultationNamespace, {
+		"update": updateConsultation
 	})
 })
 
