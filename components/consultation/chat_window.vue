@@ -186,9 +186,11 @@ function startConsultation() {
 	})
 }
 
-watch(consultation, (newConsultation, oldConsultation) => {
+const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
 		registerListeners(newConsultation)
+
+		startWatcher()
 	}
 }, { "deep": true })
 
