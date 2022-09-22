@@ -1,6 +1,5 @@
-import type { BaseManagerClass } from "!/types/dependent"
 import type { SignatureDocument } from "$/types/documents/signature"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -39,11 +38,15 @@ export default class extends BoundController {
 		const signatureDocument = await manager.findWithID(
 			Number(id),
 			{
-				"filter": {
-					"existence": "*"
+				"constraints": {
+					"filter": {
+						"existence": "*"
+					}
+				},
+				"transformerOptions": {
+					"raw": true
 				}
-			},
-			{ "raw": true }
+			}
 		) as SignatureDocument<"read", "raw">
 
 		const signature = signatureDocument.data.attributes.fileContents

@@ -42,8 +42,10 @@ export default class extends PageMiddleware {
 		const manager = new Manager(request)
 
 		const role = await manager.findWithID(Number(id), {
-			"filter": {
-				"existence": "*"
+			"constraints": {
+				"filter": {
+					"existence": "*"
+				}
 			}
 		})
 

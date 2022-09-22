@@ -85,8 +85,13 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: X,
-		constraints: Y = {} as Y,
-		transformerOptions: W = {} as W
+		{
+			constraints = {} as Y,
+			transformerOptions = {} as W
+		}: Partial<{
+			constraints: Y,
+			transformerOptions: W
+		}> = {}
 	): Promise<Serializable> {
 		try {
 			{

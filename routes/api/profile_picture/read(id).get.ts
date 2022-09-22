@@ -41,11 +41,15 @@ export default class extends BoundController {
 		const profilePictureDocument = await manager.findWithID(
 			Number(id),
 			{
-				"filter": {
-					"existence": "*"
+				"constraints": {
+					"filter": {
+						"existence": "*"
+					}
+				},
+				"transformerOptions": {
+					"raw": true
 				}
-			},
-			{ "raw": true }
+			}
 		) as ProfilePictureDocument<"read", "raw">
 
 		const profilePicture = profilePictureDocument.data.attributes.fileContents
