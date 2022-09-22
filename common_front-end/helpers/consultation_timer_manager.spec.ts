@@ -141,7 +141,10 @@ describe("Helper: Timer manager", () => {
 			"consumedTime",
 			mockConsumedTime
 		)
-		ConsultationTimerManager.travelTimeBy(convertTimeToMilliseconds("00:00:10"))
+		ConsultationTimerManager.travelTimeTo(
+			consultationResource,
+			convertTimeToMilliseconds("00:00:10")
+		)
 		ConsultationTimerManager.nextInterval()
 
 		expect(mockConsumedTime).toHaveBeenCalled()
@@ -170,7 +173,10 @@ describe("Helper: Timer manager", () => {
 			mockFinish
 		)
 		ConsultationTimerManager.nextInterval()
-		ConsultationTimerManager.travelTimeBy(convertTimeToMilliseconds("00:00:10"))
+		ConsultationTimerManager.travelTimeTo(
+			consultationResource,
+			convertTimeToMilliseconds("00:00:10")
+		)
 		ConsultationTimerManager.nextInterval()
 
 		expect(mockFinish).toHaveBeenCalled()
