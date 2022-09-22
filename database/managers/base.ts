@@ -100,7 +100,10 @@ export default abstract class Manager<
 				if (!constraints.filter.existence) constraints.filter.existence = "exists"
 			}
 
-			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
+			const foundModel = await this.findOneOnColumn("id", id, {
+				constraints,
+				transformerOptions
+			})
 
 			Log.success("manager", "done searching for a model using ID")
 
@@ -113,8 +116,13 @@ export default abstract class Manager<
 	async findOneOnColumn(
 		columnName: string,
 		value: any,
-		constraints: Y = {} as Y,
-		transformerOptions: W = {} as W
+		{
+			constraints = {} as Y,
+			transformerOptions = {} as W
+		}: Partial<{
+			constraints: Y,
+			transformerOptions: W
+		}> = {}
 	): Promise<Serializable> {
 		try {
 			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`

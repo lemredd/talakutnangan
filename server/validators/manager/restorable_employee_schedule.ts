@@ -35,8 +35,10 @@ export default async function(
 		constraints.manager.columnName,
 		state.value,
 		{
-			"filter": {
-				"existence": "archived"
+			"constraints": {
+				"filter": {
+					"existence": "archived"
+				}
 			}
 		}
 	) as EmployeeScheduleDocument

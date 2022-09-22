@@ -87,8 +87,10 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 
 		const foundUser = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -138,8 +140,10 @@ describe("Database Manager: Base Read Operations", () => {
 		const manager = new MockUserManager()
 
 		const foundUser = await manager.findOneOnColumn("name", "Hello", {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -189,8 +193,10 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 
 		const model = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -204,8 +210,10 @@ describe("Database Manager: Base Read Operations", () => {
 		await base.destroy({ "force": false })
 
 		const model = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -219,8 +227,10 @@ describe("Database Manager: Base Read Operations", () => {
 		await base.destroy({ "force": false })
 
 		const model = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "archived"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -233,8 +243,10 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 
 		const model = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "archived"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
@@ -257,13 +269,17 @@ describe("Database Manager: Base Read Operations", () => {
 		const base = await new UserFactory().insertOne()
 
 		const model = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 		const sameUser = await manager.findOneOnColumn("name", base.name, {
-			"filter": {
-				"existence": "exists"
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
 			}
 		})
 
