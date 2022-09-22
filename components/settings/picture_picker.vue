@@ -13,7 +13,7 @@
 					<input
 						type="hidden"
 						name="data[type]"
-						value="profile_picture"/>
+						:value="resourceType"/>
 					<input
 						:id="`input-${inputId}`"
 						type="file"
@@ -51,6 +51,7 @@ type PossiblePictures = DeserializedProfilePictureDocument | DeserializedSignatu
 
 const props = defineProps<{
 	title: string
+	resourceType: "profile_picture" | "signature"
 	picture: PossiblePictures | undefined
 }>()
 // eslint-disable-next-line func-call-spacing

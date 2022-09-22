@@ -16,10 +16,12 @@
 			<PicturePicker
 				title="Profile Picture"
 				:picture="userProfileData.profilePicture"
+				resource-type="profile_picture"
 				@submit-file="submitProfilePicture"/>
 			<PicturePicker
 				title="Signature"
 				:picture="userProfileData.signature"
+				resource-type="signature"
 				@submit-file="submitSignature"/>
 		</div>
 
