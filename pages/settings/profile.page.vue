@@ -125,6 +125,7 @@ const isReachableEmployee = computed(() => kind === "reachable_employee")
 
 
 UserFetcher.initialize("/api")
+SignatureFetcher.initialize("/api")
 ProfilePictureFetcher.initialize("/api")
 
 function submitProfilePicture(formData: FormData) {
@@ -146,12 +147,12 @@ function submitSignature(formData: FormData) {
 	const signatureFetcher = new SignatureFetcher()
 
 	if (userProfileData.value.profilePicture) {
-		signatureFetcher.update(
-			userProfileData.value.profilePicture.data.id,
+		signatureFetcher.renew(
+			userProfileData.value.id,
 			formData
 		).then(() => assignPath("/settings/profile"))
 	} else {
-		signatureFetcher.update(
+		signatureFetcher.renew(
 			userProfileData.value.id,
 			formData
 		).then(() => assignPath("/settings/profile"))
