@@ -148,17 +148,10 @@ function submitProfilePicture(formData: FormData) {
 function submitSignature(formData: FormData) {
 	const signatureFetcher = new SignatureFetcher()
 
-	if (userProfileData.value.profilePicture) {
-		signatureFetcher.renew(
-			userProfileData.value.id,
-			formData
-		).then(() => assignPath("/settings/profile"))
-	} else {
-		signatureFetcher.renew(
-			userProfileData.value.id,
-			formData
-		).then(() => assignPath("/settings/profile"))
-	}
+	signatureFetcher.renew(
+		userProfileData.value.id,
+		formData
+	).then(() => assignPath("/settings/profile"))
 }
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
