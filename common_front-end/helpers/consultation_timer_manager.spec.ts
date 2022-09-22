@@ -145,12 +145,11 @@ describe("Helper: Timer manager", () => {
 			consultationResource,
 			convertTimeToMilliseconds("00:00:10")
 		)
-		ConsultationTimerManager.nextInterval()
 
 		expect(mockConsumedTime).toHaveBeenCalled()
 		expect(mockConsumedTime.mock.calls).toEqual([ [
 			consultationResource,
-			convertTimeToMilliseconds("00:00:09")
+			convertTimeToMilliseconds("00:00:10")
 		] ])
 	})
 
@@ -177,9 +176,9 @@ describe("Helper: Timer manager", () => {
 			consultationResource,
 			convertTimeToMilliseconds("00:00:10")
 		)
-		ConsultationTimerManager.nextInterval()
 
 		expect(mockFinish).toHaveBeenCalled()
+		expect(mockConsumedTime).toHaveBeenCalled()
 		expect(mockConsumedTime).toHaveBeenCalledTimes(1)
 	})
 })
