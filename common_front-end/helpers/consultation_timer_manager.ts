@@ -168,6 +168,24 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 	}
 
 	static forceFinish(resource: DeserializedConsultationResource): void {
+		const resourceID = resource.id
 
+		if (resource.startedAt === null) {
+			throw new Error("Consultation should have started before it can be managed.")
+		}
+
+		const foundIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
+			const doesMatchResource = existingListener.consultation.id === resourceID
+			return doesMatchResource
+		})
+
+		if (foundIndex === -1) return
+
+		const listener = ConsultationTimerManager.listeners[foundIndex]
+		listener.consultation = resource
+		listener.remainingMillisecondsBeforeInactivity = 0
+		listener.consultationListeners.finish.forEach(consultationListener => {
+			consultationListener(resource)
+		})
 	}
 }
