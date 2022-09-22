@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -77,8 +77,11 @@ const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(
 	() => convertMillisecondsToFullTimeObject(remainingMilliseconds.value)
 )
-const consultationID = computed<string>(() => props.consultation.id)
-const consultationStatus = computed<string>(() => props.consultation.status)
+const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
+	() => props.consultation
+)
+const consultationID = computed<string>(() => consultation.value.id)
+const consultationStatus = computed<string>(() => consultation.value.status)
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
@@ -90,32 +93,31 @@ function restartRemainingTime(): void {
 }
 
 function finishConsultation(): void {
-	const { consultation } = props
-	const { startedAt } = consultation
+	const { startedAt } = consultation.value
 
 	if (startedAt instanceof Date) {
 		const newConsultationData: ConsultationAttributes<"serialized"> = {
 			"actionTaken": null,
-			"deletedAt": consultation.deletedAt?.toISOString() ?? null,
+			"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
 			"finishedAt": new Date().toISOString(),
-			"reason": consultation.reason,
-			"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt.toISOString(),
 			"startedAt": startedAt.toISOString()
 		}
 
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-			"actionTaken": consultation.actionTaken,
-			"deletedAt": consultation.deletedAt ?? null,
+			"actionTaken": consultation.value.actionTaken,
+			"deletedAt": consultation.value.deletedAt ?? null,
 			"finishedAt": new Date(newConsultationData.finishedAt as string),
-			"reason": consultation.reason,
-			"scheduledStartAt": consultation.scheduledStartAt,
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt,
 			startedAt
 		}
 
 		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
 			"consultant"|"consultantRole"
 		> = {
-			...consultation,
+			...consultation.value,
 			...deserializedConsultationData
 		}
 
@@ -143,31 +145,29 @@ function registerListeners(resource: DeserializedConsultationResource): void {
 }
 
 function startConsultation() {
-	const { consultation } = props
-
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": null,
-		"deletedAt": consultation.deletedAt?.toISOString() ?? null,
+		"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
 		"finishedAt": null,
-		"reason": consultation.reason,
-		"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
+		"reason": consultation.value.reason,
+		"scheduledStartAt": consultation.value.scheduledStartAt.toISOString(),
 		"startedAt": new Date().toISOString()
 	}
 
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-			"actionTaken": consultation.actionTaken,
-			"deletedAt": consultation.deletedAt ?? null,
-			"finishedAt": consultation.finishedAt,
-			"reason": consultation.reason,
-			"scheduledStartAt": consultation.scheduledStartAt,
+			"actionTaken": consultation.value.actionTaken,
+			"deletedAt": consultation.value.deletedAt ?? null,
+			"finishedAt": consultation.value.finishedAt,
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt,
 			"startedAt": new Date(newConsultationData.startedAt as string)
 		}
 
 		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
 			"consultant"|"consultantRole"
 		> = {
-			...consultation,
+			...consultation.value,
 			...deserializedConsultationData
 		}
 
@@ -177,6 +177,12 @@ function startConsultation() {
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
+
+watch(consultation, (newConsultation, oldConsultation) => {
+	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
+		registerListeners(newConsultation)
+	}
+}, { "deep": true })
 
 onMounted(() => {
 	if (props.consultation.startedAt instanceof Date && props.consultation.finishedAt === null) {
