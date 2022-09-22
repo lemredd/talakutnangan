@@ -4,7 +4,10 @@ import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { ChatMessageQueryParameters } from "$/types/query"
-import type { DeserializedConsultationDocument } from "$/types/documents/consultation"
+import type {
+	ConsultationDocument,
+	DeserializedConsultationDocument
+} from "$/types/documents/consultation"
 import type {
 	ChatMessageDocument,
 	DeserializedChatMessageDocument,
@@ -22,6 +25,7 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 import UserProfileTransformer from "%/transformers/user_profile"
 import ChatMessageTransformer from "%/transformers/chat_message"
 import RequestEnvironment from "$/singletons/request_environment"
+import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -461,7 +465,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
 	})
 
-	it("can start consultation", async() => {
+	it("can start consultation by own", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
 		const INITIAL_MESSAGE_COUNT = 5
@@ -619,6 +623,165 @@ describe("UI Page: Communicate with consultation resource", () => {
 		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		const thirdRequestBody = await thirdRequest.json()
 		expect(thirdRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+
+		// End the pending finished listener
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:05:00"))
+	})
+
+	it("can start consultation from others", async() => {
+		const OTHER_CONSULTATION_COUNT = 3
+		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
+		const INITIAL_MESSAGE_COUNT = 5
+
+		const userFactory = new UserFactory()
+		const userModel = await userFactory.insertOne()
+		const factory = new Factory()
+		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
+		const model = await factory.startedAt(() => null).finishedAt(() => null).insertOne()
+		const allModels = [ model, ...models ]
+		const allModelIterator = allModels.values()
+		const chatMessageActivityFactory = new ChatMessageActivityFactory()
+		const chatMessageActivityModels = await chatMessageActivityFactory
+		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
+		.insertMany(allModels.length)
+		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
+		const chatMessageFactory = new ChatMessageFactory()
+		const previewMessageModels = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModelIterator.next().value))
+		.insertMany(chatMessageActivityModels.length)
+		const activityOfModel = chatMessageActivityModels.find(
+			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
+		) as ChatMessageActivity
+		const chatTextMessageModels = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.insertMany(INITIAL_MESSAGE_COUNT)
+
+		const userResource = userFactory.deserialize(
+			userModel,
+			{} as unknown as void,
+			new UserProfileTransformer()
+		)
+		const serializedResource = factory.serialize(model) as ConsultationDocument
+		const resource = factory.deserialize(model) as DeserializedConsultationDocument
+		const resources = factory.deserialize([ model, ...models ])
+		const chatMessageActivityResources = chatMessageActivityFactory
+		.deserialize(chatMessageActivityModels)
+		const previewMessageResources = chatMessageFactory.deserialize(
+			previewMessageModels,
+			{} as unknown as void,
+			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
+		)
+		const chatTextMessageResources = chatMessageFactory.deserialize(chatTextMessageModels)
+		const consultationChatNamespace = makeConsultationChatNamespace(model.id)
+		const consultationNamespace = makeConsultationNamespace(model.id)
+
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+
+		jest.useFakeTimers()
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"bodyClasses": [],
+					"pageContext": {
+						"pageProps": {
+							"chatMessageActivities": chatMessageActivityResources,
+							"chatMessages": chatTextMessageResources,
+							"consultation": resource,
+							"consultations": resources,
+							"previewMessages": previewMessageResources,
+							"userProfile": userResource
+						}
+					}
+				}
+			}
+		})
+
+		await flushPromises()
+		jest.advanceTimersByTime(convertTimeToMilliseconds("00:00:01"))
+		await nextTick()
+		Socket.emitMockEvent(consultationNamespace, "update", {
+			"data": {
+				...serializedResource.data,
+				"attributes": {
+					...serializedResource.data.attributes,
+					"startedAt": new Date().toJSON()
+				}
+			}
+		} as ConsultationDocument)
+		await nextTick()
+
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("5m")
+		const messageBox = wrapper.find(".user-controls .message-box")
+		expect(messageBox.exists()).toBeTruthy()
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
+		expect(previousCalls).toHaveProperty("0.arguments", [])
+		expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("1.arguments.0", consultationChatNamespace)
+		expect(previousCalls).toHaveProperty("1.arguments.1.create")
+		expect(previousCalls).toHaveProperty("1.arguments.1.update")
+		expect(previousCalls).toHaveProperty("2.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("2.arguments.0", consultationNamespace)
+		expect(previousCalls).toHaveProperty("2.arguments.1.update")
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "GET")
+		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
+			stringifyQuery({
+				"filter": {
+					"consultationScheduleRange": "*",
+					"existence": "exists",
+					"user": userModel.id
+				},
+				"page": {
+					"limit": 10,
+					"offset": ALL_CONSULTATION_COUNT
+				},
+				"sort": "-updatedAt"
+			})
+		}`)
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
+			stringifyQuery({
+				"filter": {
+					"chatMessageKinds": [ "text", "status" ],
+					"consultationIDs": [ resource.data.id ],
+					"existence": "exists",
+					"previewMessageOnly": false
+				},
+				"page": {
+					"limit": 10,
+					"offset": INITIAL_MESSAGE_COUNT
+				},
+				"sort": [ "-createdAt" ]
+			} as ChatMessageQueryParameters)
+		}`)
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
 		// End the pending finished listener
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
