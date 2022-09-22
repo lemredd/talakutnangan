@@ -1,19 +1,26 @@
 <template>
 	<SettingsHeader title="User Settings"/>
-	<form class="flex flex-col" @submit.prevent>
+	<div class="flex flex-col">
 		<div>
 			<TextualField
-				v-model="profileInfo.displayName"
+				v-model="userProfileData.name"
 				label="Display Name"
 				type="text"
-				:editable="true"/>
+				:editable="true"
+				@save="updateUser"/>
 		</div>
 
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
 		<!-- TODO: Refactor HTML to Vue Components if applicable -->
 		<div class="pictures">
-			<PicturePicker title="Profile Picture" :picture="profileInfo.profilePic"/>
-			<PicturePicker title="Signature" :picture="profileInfo.signature"/>
+			<PicturePicker
+				title="Profile Picture"
+				:picture="userProfileData.profilePicture"
+				@submit-file="submitProfilePicture"/>
+			<PicturePicker
+				title="Signature"
+				:picture="userProfileData.signature"
+				@submit-file=""/>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -25,11 +32,11 @@
 			</p>
 			<label for="dark-mode-toggle">
 				<span class="material-icons-outlined">
-					{{ `toggle_${isDarkModeEnabled ? "on" : "off"}` }}
+					{{ `toggle_${prefersDark ? "on" : "off"}` }}
 				</span>
 				<input
 					id="dark-mode-toggle"
-					v-model="isDarkModeEnabled"
+					v-model="prefersDark"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
@@ -46,41 +53,41 @@
 				:start-time="schedule.startTime"
 				:end-time="schedule.endTime"/>
 		</div>
-	</form>
+	</div>
 </template>
 
 <style scoped lang="scss">
-form {
-	max-width: 640px;
+	form {
+		max-width: 640px;
 
-	.input-pic {
-		display: none;
-	}
-}
-
-.dark-mode-toggle {
-	@apply p-5 grid;
-	grid-template:
-		"formHeader formHeader"
-		"subtitle toggle";
-
-	h3 {
-		grid-area: formHeader;
-	}
-
-	h5 {
-		grid-area: subtitle;
-	}
-
-	label {
-		@apply flex flex-row-reverse;
-		cursor: pointer;
-
-		input {
-			appearance: none;
+		.input-pic {
+			display: none;
 		}
 	}
-}
+
+	.dark-mode-toggle {
+		@apply p-5 grid;
+		grid-template:
+			"formHeader formHeader"
+			"subtitle toggle";
+
+		h3 {
+			grid-area: formHeader;
+		}
+
+		h5 {
+			grid-area: subtitle;
+		}
+
+		label {
+			@apply flex flex-row-reverse;
+			cursor: pointer;
+
+			input {
+				appearance: none;
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
@@ -94,27 +101,60 @@ import {
 
 import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
-const bodyClasses = inject("bodyClasses") as Ref<string[]>
-const pageContext = inject("pageContext") as PageContext
+import UserFetcher from "$@/fetchers/user"
+import ProfilePictureFetcher from "$@/fetchers/profile_picture"
+import RequestEnvironment from "$/singletons/request_environment"
+import assignPath from "$@/external/assign_path"
 
-const { "data": userProfile } = pageContext.pageProps.userProfile as DeserializedUserProfile
+const bodyClasses = inject("bodyClasses") as Ref<string[]>
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+
+const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
+const userProfileData = ref(userProfile.data)
+
 const { kind } = userProfile
-const profileInfo = {
-	"displayName": userProfile.name,
-	"profilePic": null as string | null,
-	"signature": null as string | null
-}
 const isReachableEmployee = computed(() => kind === "reachable_employee")
 
-const isDarkModeEnabled = ref(bodyClasses.value.includes("dark"))
+
+UserFetcher.initialize("/api")
+ProfilePictureFetcher.initialize("/api")
+
+function submitProfilePicture(formData: FormData) {
+	const profilePictureFetcher = new ProfilePictureFetcher()
+
+	if (userProfileData.value.profilePicture) {
+		profilePictureFetcher.updateFile(
+			userProfileData.value.profilePicture.data.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	} else {
+		profilePictureFetcher.createFile(
+			userProfileData.value.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	}
+}
+function updateUser() {
+	new UserFetcher().update(userProfileData.value.id, {
+		...userProfileData.value
+	})
+}
+
+const emit = defineEmits([ "toggleDarkMode" ])
+
+const prefersDark = ref(userProfileData.value.prefersDark)
 function toggleDarkMode() {
+	if (RequestEnvironment.isOnTest) {
+		emit("toggleDarkMode")
+	}
+
 	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
 	if (mutatedBodyClasses.has("dark")) {
 		mutatedBodyClasses.delete("dark")
@@ -123,6 +163,8 @@ function toggleDarkMode() {
 	}
 
 	bodyClasses.value = [ ...mutatedBodyClasses ]
+	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
+	updateUser()
 }
 
 const schedules = [
@@ -153,6 +195,5 @@ const tabs: TabInfo[] = [
 		"path": "/settings/profile"
 	}
 ]
-
 provide("tabs", tabs)
 </script>

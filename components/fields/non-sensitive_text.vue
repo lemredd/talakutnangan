@@ -84,7 +84,7 @@ const {
 
 interface CustomEvents {
 	(event: "update:modelValue", newModelValue: string): void
-	(event: "save")
+	(event: "save"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -94,7 +94,7 @@ const modelValue = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
-const isCurrentlyDisabled = ref<boolean>(props.disabled || props.editable)
+const isCurrentlyDisabled = ref<boolean>(props.disabled as boolean || props.editable as boolean)
 
 function toggleEditableField() {
 	isCurrentlyDisabled.value = !isCurrentlyDisabled.value

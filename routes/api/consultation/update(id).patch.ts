@@ -214,8 +214,10 @@ export default class extends DoubleBoundJSONController {
 					"consultationID",
 					id,
 					{
-						"filter": {
-							"existence": "exists"
+						"constraints": {
+							"filter": {
+								"existence": "exists"
+							}
 						}
 					}
 				) as ChatMessageActivityDocument

@@ -85,8 +85,15 @@ export default abstract class Manager<
 
 	async findWithID(
 		id: X,
-		constraints: Y = {} as Y,
-		transformerOptions: W = {} as W
+		{
+			constraints = {} as Y,
+			transformerOptions = {} as W,
+			transformer = this.transformer
+		}: Partial<{
+			constraints: Y,
+			transformerOptions: W,
+			transformer: Transformer<T, W>
+		}> = {}
 	): Promise<Serializable> {
 		try {
 			{
@@ -95,7 +102,11 @@ export default abstract class Manager<
 				if (!constraints.filter.existence) constraints.filter.existence = "exists"
 			}
 
-			const foundModel = await this.findOneOnColumn("id", id, constraints, transformerOptions)
+			const foundModel = await this.findOneOnColumn("id", id, {
+				constraints,
+				transformer,
+				transformerOptions
+			})
 
 			Log.success("manager", "done searching for a model using ID")
 
@@ -105,11 +116,22 @@ export default abstract class Manager<
 		}
 	}
 
+	/*
+	 * ! Does not differentiate if there is a different transformer used. The cached model that uses
+	 * ! a different transformer will still be returned.
+	 */
 	async findOneOnColumn(
 		columnName: string,
 		value: any,
-		constraints: Y = {} as Y,
-		transformerOptions: W = {} as W
+		{
+			constraints = {} as Y,
+			transformerOptions = {} as W,
+			transformer = this.transformer
+		}: Partial<{
+			constraints: Y,
+			transformerOptions: W,
+			transformer: Transformer<T, W>
+		}> = {}
 	): Promise<Serializable> {
 		try {
 			const uniquePairSubstring = `column_${columnName}_value_${encodeToBase64(value)}`
@@ -140,7 +162,7 @@ export default abstract class Manager<
 
 				Log.success("manager", "done searching for a model on a certain column")
 
-				cachedModel = this.serialize(model, transformerOptions)
+				cachedModel = this.serialize(model, transformerOptions, transformer)
 
 				this.cache.setCache(uniquePath, cachedModel)
 
