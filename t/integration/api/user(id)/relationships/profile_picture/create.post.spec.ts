@@ -5,6 +5,7 @@ import RoleFactory from "~/factories/role"
 import URLMaker from "$!/singletons/url_maker"
 import ProfilePictureFactory from "~/factories/profile_picture"
 import RequestEnvironment from "$!/singletons/request_environment"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -17,7 +18,8 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 	})
 
 	it("can create profile picture", async() => {
-		URLMaker.initialize("http", "localhost", 16000, "/")
+		const PORT = 16000
+		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const studentRole = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
@@ -41,12 +43,13 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		expect(response.body).toHaveProperty("data.id")
 		expect(response.body).toHaveProperty(
 			"data.attributes.fileContents",
-			`http://localhost:16000/api/profile_picture/${response.body.data.id}`
+			`http://localhost:${PORT}/api/profile_picture/${response.body.data.id}`
 		)
-	}, 10000)
+	}, convertTimeToMilliseconds("00:00:10"))
 
 	it("cannot create multiple profile picture", async() => {
-		URLMaker.initialize("http", "localhost", 16000, "/")
+		const PORT = 16000
+		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const studentRole = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
