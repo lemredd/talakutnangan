@@ -20,7 +20,7 @@
 			<PicturePicker
 				title="Signature"
 				:picture="userProfileData.signature"
-				@submit-file=""/>
+				@submit-file="submitSignature"/>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -109,9 +109,10 @@ import PicturePicker from "@/settings/picture_picker.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
+import SignatureFetcher from "$@/fetchers/signature"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
-import assignPath from "$@/external/assign_path"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -136,6 +137,21 @@ function submitProfilePicture(formData: FormData) {
 		).then(() => assignPath("/settings/profile"))
 	} else {
 		profilePictureFetcher.createFile(
+			userProfileData.value.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	}
+}
+function submitSignature(formData: FormData) {
+	const signatureFetcher = new SignatureFetcher()
+
+	if (userProfileData.value.profilePicture) {
+		signatureFetcher.update(
+			userProfileData.value.profilePicture.data.id,
+			formData
+		).then(() => assignPath("/settings/profile"))
+	} else {
+		signatureFetcher.update(
 			userProfileData.value.id,
 			formData
 		).then(() => assignPath("/settings/profile"))
