@@ -2,10 +2,10 @@
 	<div class="field p-5">
 		<h2>{{ header }}</h2>
 		<div
-			v-for="consultant in selectedParticipants"
-			:key="consultant.id"
+			v-for="participant in selectedParticipants"
+			:key="participant.id"
 			class="chip">
-			{{ consultant.name }}
+			{{ participant.name }}
 			<span class="closebtn" @click="removeParticipant">
 				&times;
 			</span>
@@ -13,8 +13,17 @@
 		<NonSensitiveTextField
 			v-if="mayAddOtherParticipants"
 			v-model="slug"
-			label="Type the employee to add"
+			:label="textFieldLabel"
 			type="text"/>
+		<div
+			v-for="participant in selectedParticipants"
+			:key="participant.id"
+			class="chip">
+			{{ participant.name }}
+			<span class="closebtn" @click="addParticipant">
+				&check;
+			</span>
+		</div>
 	</div>
 </template>
 
@@ -59,6 +68,7 @@ const props = defineProps<{
 	header: string,
 	modelValue: DeserializedUserResource[],
 	maximumParticipants: number,
+	textFieldLabel: string,
 	kind: UserKind
 }>()
 
@@ -117,6 +127,21 @@ function removeParticipant(event: Event): void {
 		const foundNameIndex = text.indexOf(user.data.name)
 		return foundNameIndex === -1
 	})
+}
+
+function addParticipant(event: Event): void {
+	const { target } = event
+	const castTarget = target as HTMLButtonElement
+	const text = castTarget.innerHTML
+
+	const foundParticipant = otherParticipants.value.find(user => {
+		const foundNameIndex = text.indexOf(user.data.name)
+		return foundNameIndex === -1
+	})
+
+	if (foundParticipant) {
+		selectedParticipants.value.push(foundParticipant)
+	}
 }
 
 onMounted(() => {
