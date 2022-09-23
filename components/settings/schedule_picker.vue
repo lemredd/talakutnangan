@@ -30,8 +30,9 @@
 				</button>
 			</div>
 		</div>
+		<label class="time-selectors">
 			<span>From:</span>
-			<div id="start" class="start flex">
+			<div id="start" class="start">
 				<Selectable
 					v-model="startTime"
 					class="inline"
@@ -44,9 +45,9 @@
 					:disabled="!isEditing"/>
 			</div>
 		</label>
-		<label class="space">
+		<label class="time-selectors">
 			<span class="to">To:</span>
-			<div id="end" class="end flex">
+			<div id="end" class="end">
 				<Selectable
 					v-model="endTime"
 					class="inline"
@@ -64,14 +65,19 @@
 </template>
 
 <style scoped lang="scss">
-.schedule-picker {
-	@apply flex flex-col;
-	margin: 2em 0;
-}
+	@import "@styles/btn.scss";
+	.schedule-picker {
+		@apply flex flex-col;
+		margin: 2em 0;
+	}
 
-.space{
-	@apply flex justify-between;
-}
+	.time-selectors{
+		@apply flex flex-col justify-between mb-5;
+
+		.start, .end {
+			@apply flex justify-between;
+		}
+	}
 </style>
 
 <script setup lang="ts">
@@ -144,14 +150,10 @@ const midDay = makeOptions([ "AM", "PM" ])
 const unuseddays = [ ...DayValues ]
 
 const rawStartTime = props.startTime as string
-const startHour = ref(getTimePart(rawStartTime, "hour"))
-const startMinute = ref(getTimePart(rawStartTime, "minute"))
 const { startTime } = props
 const startMidDay = ref(getTimePart(rawStartTime, "midday"))
 
 const rawEndTime = props.endTime as string
-const endHour = ref(getTimePart(rawEndTime, "hour"))
-const endMinute = ref(getTimePart(rawEndTime, "minute"))
 const { endTime } = props
 const endMidDay = ref(getTimePart(rawEndTime, "midday"))
 
