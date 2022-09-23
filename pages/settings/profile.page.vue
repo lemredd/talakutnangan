@@ -142,7 +142,7 @@ import type { DeserializedUserDocument } from "$/types/documents/user"
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import Signature from "@/helpers/signature.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
-import PicturePicker from "@/settings/picture_picker.vue"
+import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 

@@ -19,7 +19,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Page: settings/profile", () => {
 	describe("Reading", () => {
-		it("should place display name", async() => {
+		it("should read display name and dark mode", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
@@ -37,7 +37,12 @@ describe("Page: settings/profile", () => {
 						"bodyClasses": ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": {
+									"data": {
+										...userProfile.data,
+										"prefersDark": true
+									}
+								}
 							}
 						}
 					}
@@ -45,9 +50,12 @@ describe("Page: settings/profile", () => {
 			})
 
 			const displayNameField = wrapper.findComponent({ "name": "TextualField" })
+			const [ darkMode ] = wrapper.find("#dark-mode-toggle").getRootNodes()
+			const darkModeCheckbox = darkMode as HTMLInputElement
 
 			expect(displayNameField.props().modelValue).toEqual(user.data.name)
 			expect(displayNameField.html()).toContain(user.data.name)
+			expect(darkModeCheckbox.value).toBe("on")
 		})
 		it("can display profile picture", async() => {
 			const sampleURL = "/images/profile.png"
@@ -84,21 +92,19 @@ describe("Page: settings/profile", () => {
 					},
 					"stubs": {
 						"PicturePicker": false,
-						"Picture": false
+						"ProfilePicture": false
 					}
 				}
 			})
-			const picture = wrapper.findComponent({ "name": "Picture" })
+			const picture = wrapper.find("img")
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
-		it.skip("can display signature", async() => {
+		it("can display signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
 				"data": {
-					"attributes": {
-						"fileContents": sampleURL
-					}
+					"fileContents": sampleURL
 				}
 			}
 			const department = await new DepartmentFactory().mayNotAdmit()
@@ -129,11 +135,11 @@ describe("Page: settings/profile", () => {
 					},
 					"stubs": {
 						"PicturePicker": false,
-						"Picture": false
+						"Signature": false
 					}
 				}
 			})
-			const picture = wrapper.findComponent({ "name": "Picture" })
+			const picture = wrapper.find("img")
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
@@ -251,7 +257,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
-		it.skip("can create signature", async() => {
+		it("can create signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
