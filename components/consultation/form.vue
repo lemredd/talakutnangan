@@ -93,11 +93,11 @@ function emitClose() {
 	emit("close")
 }
 const otherReason = ref<string>("")
-// TODO: Use the value below to create the consultation
 const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
+const doesAllowConflicts = ref<boolean>(true)
 
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
@@ -109,6 +109,10 @@ function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
 		"type": "user"
+	}
+
+	const unusedMeta = {
+		"doesAllowConflicts": doesAllowConflicts.value
 	}
 
 	fetcher().create({
