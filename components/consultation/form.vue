@@ -28,6 +28,9 @@
 				v-model="otherReason"
 				label="What are the other reasons(s)?"
 				type="text"/>
+			<button type="button" @click="addConsultation">
+				Add consultation
+			</button>
 		</template>
 		<template #footer>
 			<button
@@ -62,10 +65,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
-import type { UserKind } from "$/types/database"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
-import Fetcher from "$@/fetchers/user"
+import Fetcher from "$@/fetchers/consultation"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
@@ -77,7 +79,7 @@ const { isShown } = defineProps<{ isShown: boolean }>()
 let rawFetcher: Fetcher|null = null
 
 function fetcher(): Fetcher {
-	if (rawFetcher === null) throw new Error("User cannot be processed yet")
+	if (rawFetcher === null) throw new Error("Consultation cannot be processed yet")
 
 	return rawFetcher
 }
@@ -92,7 +94,7 @@ function emitClose() {
 }
 const otherReason = ref<string>("")
 // TODO: Use the value below to create the consultation
-const unusedReason = computed<string>(() => {
+const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
@@ -102,6 +104,44 @@ const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
 
 const MAX_CONSULTERS = 5
 const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
+
+function addConsultation(): void {
+	const consultant = {
+		"id": selectedConsultants.value[0]?.id,
+		"type": "user"
+	}
+
+	fetcher().create({
+		"actionTaken": null,
+		"deletedAt": null,
+		"finishedAt": null,
+		"reason": reason.value,
+		// TODO: Make the schedule selector
+		"scheduledStartAt": new Date().toJSON(),
+		"startedAt": null
+	}, {
+		"relationships": {
+			"consultant": {
+				"data": consultant
+			},
+			"consultantRole": {
+				"data": {
+					"id": "",
+					"type": "role"
+				}
+			},
+			"participants": {
+				"data": [
+					...selectedConsulters.value.map(consulter => ({
+						"id": consulter.id,
+						"type": "user"
+					})),
+					consultant
+				]
+			}
+		}
+	})
+}
 
 onMounted(() => {
 	rawFetcher = new Fetcher()
