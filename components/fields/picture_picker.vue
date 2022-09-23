@@ -28,7 +28,7 @@
 import convertForParameter from "$/string/convert_for_parameter"
 
 const props = defineProps<{
-	resourceType: "profile_picture" | "signature"
+	resourceType: string
 }>()
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
