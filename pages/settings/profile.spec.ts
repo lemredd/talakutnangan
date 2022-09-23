@@ -12,7 +12,10 @@ import DepartmentFactory from "~/factories/department"
 import UserProfileTransformer from "%/transformers/user_profile"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	READ_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/user_combinations"
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -83,7 +86,7 @@ describe("Page: settings/profile", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
-										...userProfile,
+										...userProfile.data,
 										profilePicture
 									}
 								}
@@ -113,7 +116,7 @@ describe("Page: settings/profile", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 			.insertOne()
 			const user = await new UserFactory().in(department)
-			.beUnreachableEmployee()
+			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
@@ -126,7 +129,7 @@ describe("Page: settings/profile", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
-										...userProfile,
+										...userProfile.data,
 										signature
 									}
 								}
@@ -142,6 +145,48 @@ describe("Page: settings/profile", () => {
 			const picture = wrapper.find("img")
 
 			expect(picture.attributes().src).toEqual(sampleURL)
+		})
+		it("can not display signature user is admin", async() => {
+			const sampleURL = "/images/signature.png"
+			const signature = {
+				"data": {
+					"fileContents": sampleURL
+				}
+			}
+			const department = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const role = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+			.insertOne()
+			const user = await new UserFactory().in(department)
+			.beUnreachableEmployee()
+			.attach(role)
+			.deserializedOne(true)
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+
+			const wrapper = shallowMount(Page, {
+				"global": {
+					"provide": {
+						"bodyClasses": ref([]),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										...userProfile.data,
+										signature
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"PicturePicker": false,
+						"Signature": false
+					}
+				}
+			})
+
+			expect(wrapper.html()).not.toContain("img")
 		})
 	})
 
@@ -265,7 +310,7 @@ describe("Page: settings/profile", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 			.insertOne()
 			const user = await new UserFactory().in(department)
-			.beUnreachableEmployee()
+			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
