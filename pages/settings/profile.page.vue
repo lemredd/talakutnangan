@@ -158,10 +158,8 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
 const userProfileData = ref(userProfile.data)
-
-const { kind } = userProfile
-const isReachableEmployee = computed(() => kind === "reachable_employee")
-const isUnReachableEmployee = computed(() => kind === "unreachable_employee")
+const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
+const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
 
 UserFetcher.initialize("/api")
