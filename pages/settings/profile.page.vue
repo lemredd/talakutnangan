@@ -102,7 +102,7 @@
 	}
 
 	.dark-mode-toggle {
-		@apply p-5 grid;
+		@apply py-5 grid;
 		grid-template:
 			"formHeader formHeader"
 			"subtitle toggle";
