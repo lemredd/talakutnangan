@@ -62,9 +62,8 @@ export default class extends MultipartController {
 			"fileContents": {
 				"constraints": {
 					"buffer": {
-						// TODO: Think of maximum size of picture
-						"allowedMimeTypes": [ "image/png" ],
-						// 10 MB
+						"allowedMimeTypes": [ "image/png", "image/jpg" ],
+						// 10 MB is the size limit
 						"maxSize": 1024 * 1024 * 10
 					}
 				},
