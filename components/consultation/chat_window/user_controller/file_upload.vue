@@ -47,7 +47,7 @@
 	</Overlay>
 </template>
 
-<style lang="css">
+<style lang="scss">
 @import "@styles/btn.scss";
 
 #choose-file-btn {
