@@ -83,14 +83,15 @@ describe("Component: consultation/chat_window", () => {
 		const userController = wrapper.findComponent({ "name": "UserController" })
 		await userController.trigger("start-consultation")
 		await flushPromises()
+		const updatedFakeConsultation = {
+			...fakeConsultation,
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+		} as DeserializedConsultationResource
 		await wrapper.setProps({
 			"chatMessages": fakeChatMessage,
-			"consultation": {
-				...fakeConsultation,
-				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
-			}
+			"consultation": updatedFakeConsultation
 		})
-		ConsultationTimerManager.nextInterval()
+		ConsultationTimerManager.forceFinish(updatedFakeConsultation)
 		await flushPromises()
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
@@ -155,6 +156,43 @@ describe("Component: consultation/chat_window", () => {
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
 		expect(consultationHeader.html()).toContain("5m")
+	})
+
+	it("should start consultation on other source's update", async() => {
+		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const fakeConsultation = {
+			"actionTaken": null,
+			"finishedAt": null,
+			"id": "1",
+			"reason": "",
+			scheduledStartAt,
+			"startedAt": null,
+			"type": "consultation"
+		} as DeserializedConsultationResource
+		const fakeChatMessage = {
+			"data": []
+		} as DeserializedChatMessageListDocument
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"chatMessages": fakeChatMessage,
+				"consultation": fakeConsultation
+			}
+		})
+
+		await wrapper.setProps({
+			"consultation": {
+				...fakeConsultation,
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:05:00"))
+			}
+		})
+		ConsultationTimerManager.nextInterval()
+		await nextTick()
+
+		const consultationHeader = wrapper.find(".selected-consultation-header")
+		expect(consultationHeader.exists()).toBeTruthy()
+		expect(consultationHeader.html()).toContain("4m")
+		expect(consultationHeader.html()).toContain("59s")
 	})
 
 	it("should restart the timer", async() => {
