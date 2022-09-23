@@ -11,7 +11,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./form.vue"
 
-describe("Component: consultation/form", () => {
+describe.skip("Component: consultation/form", () => {
 	it("can search students", async() => {
 		jest.useFakeTimers()
 		const students = {
