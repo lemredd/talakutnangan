@@ -2,11 +2,11 @@
 	<div class="field p-5">
 		<h2>{{ header }}</h2>
 		<div
-			v-for="consultant in selectedConsultants"
+			v-for="consultant in selectedParticipants"
 			:key="consultant.id"
 			class="chip">
 			{{ consultant.name }}
-			<span class="closebtn" @click="removeConsultant">
+			<span class="closebtn" @click="removeParticipant">
 				&times;
 			</span>
 		</div>
@@ -46,32 +46,80 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
+
+import type { UserKind } from "$/types/database"
 import type { DeserializedUserResource } from "$/types/documents/user"
+
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import Fetcher from "$@/fetchers/user"
+import debounce from "$@/helpers/debounce"
 
 const props = defineProps<{
 	header: string,
-	selectedPartipants: DeserializedUserResource[],
-	otherPartipants: DeserializedUserResource[],
+	modelValue: DeserializedUserResource[],
 	maximumParticipants: number,
-	modelValue: string
+	kind: UserKind
 }>()
 
-const mayAddOtherParticipants = computed<boolean>(
-	() => props.selectedPartipants.length < props.maximumParticipants
-)
-
 interface CustomEvents {
-	(eventName: "update:modelValue", string: string): void
+	(eventName: "update:modelValue", resource: DeserializedUserResource[]): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const slug = computed<string>({
-	get(): string {
+const otherParticipants = ref<DeserializedUserResource[]>([])
+const slug = ref<string>("")
+const selectedParticipants = computed<DeserializedUserResource[]>({
+	get(): DeserializedUserResource[] {
 		return props.modelValue
 	},
-	set(newValue: string): void {
+	set(newValue: DeserializedUserResource[]): void {
 		emit("update:modelValue", newValue)
 	}
+})
+const mayAddOtherParticipants = computed<boolean>(
+	() => props.modelValue.length < props.maximumParticipants
+)
+
+let rawFetcher: Fetcher|null = null
+
+function fetcher(): Fetcher {
+	if (rawFetcher === null) throw new Error("User cannot be processed yet")
+
+	return rawFetcher
+}
+
+function findMatchedUsers() {
+	fetcher().list({
+		"filter": {
+			"department": "*",
+			"existence": "exists",
+			"kind": props.kind,
+			"role": "*",
+			"slug": slug.value
+		},
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	})
+}
+
+watch(slug, debounce(findMatchedUsers, DEBOUNCED_WAIT_DURATION))
+
+function removeParticipant(event: Event): void {
+	const { target } = event
+	const castTarget = target as HTMLButtonElement
+	const text = castTarget.innerHTML
+
+	selectedParticipants.value = selectedParticipants.value.filter(user => {
+		const foundNameIndex = text.indexOf(user.data.name)
+		return foundNameIndex === -1
+	})
+}
+
+onMounted(() => {
+	rawFetcher = new Fetcher()
 })
 </script>
