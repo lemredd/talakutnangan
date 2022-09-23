@@ -18,10 +18,10 @@
 			<button class="material-icons">
 				photo_camera
 			</button>
-			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<button class="material-icons" @click="showFileUpload">
 				image
 			</button>
+			<FileUpload is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
@@ -69,6 +69,8 @@ import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
+import FileUpload from "$@/consultation/file_upload.vue"
+
 const currentChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
@@ -79,6 +81,7 @@ const props = defineProps<{
 
 const currentTime = ref<Date>(new Date())
 const textInput = ref<string>("")
+const isFileUploadFormShown = ref<boolean>(false)
 
 const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
 	props.consultation.scheduledStartAt,
@@ -125,6 +128,13 @@ function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
 
 	throw new Error("Messages cannot be sent to server yet.")
+}
+
+function showFileUpload() {
+	isFileUploadFormShown.value = true
+}
+function hideFileUpload() {
+	isFileUploadFormShown.value = false
 }
 
 function send(): void {

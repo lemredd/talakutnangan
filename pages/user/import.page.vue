@@ -160,7 +160,7 @@ const kindNames = UserKindValues.map(kind => ({
 }))
 const chosenKind = ref<string>(kindNames[0].value)
 
-const createdUsers = ref<DeserializedUserResource[]>([])
+const createdUsers = ref<DeserializedUserResource<"roles"|"department">[]>([])
 
 UserFetcher.initialize("/api")
 const fetcher = new UserFetcher()
@@ -171,7 +171,7 @@ function importData(event: Event) {
 
 	fetcher.import(formData).then(({ body }) => {
 		const { data } = body
-		createdUsers.value = data
+		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
 	}).catch(({ body }) => {
 		const unusedCastBody = body as ErrorDocument
 		// Process the error
