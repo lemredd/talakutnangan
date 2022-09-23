@@ -41,6 +41,7 @@ import { provide, inject, ref, readonly, computed, onBeforeMount, onMounted } fr
 
 import type { PageContext } from "$/types/renderer"
 import type {
+	ChatMessageActivityDocument,
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
@@ -68,6 +69,7 @@ import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+import makeConsultationChatActivityNamespace from "$/namespace_makers/consultation_chat_activity"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
@@ -170,15 +172,38 @@ function updateMessage(message: ChatMessageDocument<"read">): void {
 	createMessage(message)
 }
 
+function updateMessageActivity(activity: ChatMessageActivityDocument<"read">): void {
+	const deserializedActivity = deserialize(activity) as ChatMessageActivityDocument<"read">
+	const receivedData = deserializedActivity.data
+	const receivedID = receivedData.id
+
+	chatMessageActivities.value.data = chatMessageActivities.value.data.map(resource => {
+		const activityID = resource.id
+
+		if (activityID === receivedID) {
+			return {
+				...resource,
+				...receivedData
+			}
+		}
+
+		return resource
+	})
+}
+
 onBeforeMount(() => {
-	ConsultationFetcher.initialize("/api")
 	ChatMessageFetcher.initialize("/api")
+	ConsultationFetcher.initialize("/api")
 	Socket.initialize()
 
 	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
+	const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
 	Socket.addEventListeners(chatNamespace, {
 		"create": createMessage,
 		"update": updateMessage
+	})
+	Socket.addEventListeners(chatActivityNamespace, {
+		"update": updateMessageActivity
 	})
 })
 
