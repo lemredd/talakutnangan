@@ -11,18 +11,52 @@
 		</div>
 
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
-		<!-- TODO: Refactor HTML to Vue Components if applicable -->
 		<div class="pictures">
 			<PicturePicker
-				title="Profile Picture"
-				:picture="userProfileData.profilePicture"
 				resource-type="profile_picture"
-				@submit-file="submitProfilePicture"/>
+				@submit-file="submitProfilePicture">
+				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+					<div class="picture-picker-header">
+						<h3 class="text-[1.5em]">
+							Profile Picture
+						</h3>
+					</div>
+
+					<label
+						for="input-file"
+						class="cursor-pointer flex items-center">
+						<span class="material-icons">add_circle</span>
+						<small class="text-center ml-1">
+							upload or replace image
+						</small>
+					</label>
+				</div>
+
+				<ProfilePicture class="max-w-30 <sm:mx-auto"/>
+			</PicturePicker>
+
 			<PicturePicker
-				title="Signature"
-				:picture="userProfileData.signature"
 				resource-type="signature"
-				@submit-file="submitSignature"/>
+				@submit-file="submitSignature">
+				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+					<div class="picture-picker-header">
+						<h3 class="text-[1.5em]">
+							Signature
+						</h3>
+					</div>
+
+					<label
+						for="input-file"
+						class="cursor-pointer flex items-center">
+						<span class="material-icons">add_circle</span>
+						<small class="text-center ml-1 underline">
+							upload or replace image
+						</small>
+					</label>
+				</div>
+
+				<Signature class="max-w-30 <sm:mx-auto"/>
+			</PicturePicker>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -156,7 +190,7 @@ function submitSignature(formData: FormData) {
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
-	})
+	}).then(() => assignPath("/settings/profile"))
 }
 
 const emit = defineEmits([ "toggleDarkMode" ])
