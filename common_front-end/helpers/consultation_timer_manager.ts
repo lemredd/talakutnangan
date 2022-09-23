@@ -39,6 +39,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 			let differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
 			const extraMilliseconds = differenceFromNow % convertTimeToMilliseconds("00:00:01")
 			differenceFromNow -= extraMilliseconds
+			differenceFromNow = Math.max(0, differenceFromNow)
 			ConsultationTimerManager.listeners.push({
 				"consultation": resource,
 				"consultationListeners": {
@@ -140,6 +141,51 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 		listener.consultation = resource
 		listener.remainingMillisecondsBeforeInactivity = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		listener.consultationListeners.restartTime.forEach(consultationListener => {
+			consultationListener(resource)
+		})
+	}
+
+	static travelTimeTo(resource: DeserializedConsultationResource, remainingMilliseconds: number)
+	: void {
+		const resourceID = resource.id
+
+		if (resource.startedAt === null) {
+			throw new Error("Consultation should have started before it can be managed.")
+		}
+
+		const foundIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
+			const doesMatchResource = existingListener.consultation.id === resourceID
+			return doesMatchResource
+		})
+
+		if (foundIndex === -1) return
+
+		const listener = ConsultationTimerManager.listeners[foundIndex]
+		listener.consultation = resource
+		listener.remainingMillisecondsBeforeInactivity = remainingMilliseconds
+		listener.consultationListeners.consumedTime.forEach(consultationListener => {
+			consultationListener(resource, listener.remainingMillisecondsBeforeInactivity)
+		})
+	}
+
+	static forceFinish(resource: DeserializedConsultationResource): void {
+		const resourceID = resource.id
+
+		if (resource.startedAt === null) {
+			throw new Error("Consultation should have started before it can be managed.")
+		}
+
+		const foundIndex = ConsultationTimerManager.listeners.findIndex(existingListener => {
+			const doesMatchResource = existingListener.consultation.id === resourceID
+			return doesMatchResource
+		})
+
+		if (foundIndex === -1) return
+
+		const listener = ConsultationTimerManager.listeners[foundIndex]
+		listener.consultation = resource
+		listener.remainingMillisecondsBeforeInactivity = 0
+		listener.consultationListeners.finish.forEach(consultationListener => {
 			consultationListener(resource)
 		})
 	}

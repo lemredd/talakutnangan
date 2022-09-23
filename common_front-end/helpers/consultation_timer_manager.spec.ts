@@ -108,4 +108,77 @@ describe("Helper: Timer manager", () => {
 			consultationResource
 		] ])
 	})
+
+	it("can force finish the consultation and call corresponding listeners", () => {
+		const mockFinish = jest.fn()
+		const consultationResource = {
+			"id": "1",
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		} as DeserializedConsultationResource
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"finish",
+			mockFinish
+		)
+		ConsultationTimerManager.forceFinish(consultationResource)
+
+		expect(mockFinish).toHaveBeenCalled()
+		expect(mockFinish.mock.calls).toEqual([ [
+			consultationResource
+		] ])
+	})
+
+	it("can renew remaining seconds", () => {
+		const mockConsumedTime = jest.fn()
+		const consultationResource = {
+			"id": "1",
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+		} as DeserializedConsultationResource
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		ConsultationTimerManager.travelTimeTo(
+			consultationResource,
+			convertTimeToMilliseconds("00:00:10")
+		)
+
+		expect(mockConsumedTime).toHaveBeenCalled()
+		expect(mockConsumedTime.mock.calls).toEqual([ [
+			consultationResource,
+			convertTimeToMilliseconds("00:00:10")
+		] ])
+	})
+
+	it("should ignore renewal if it is already finished", () => {
+		const mockConsumedTime = jest.fn()
+		const mockFinish = jest.fn()
+		const consultationResource = {
+			"id": "1",
+			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+		} as DeserializedConsultationResource
+
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"consumedTime",
+			mockConsumedTime
+		)
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			consultationResource,
+			"finish",
+			mockFinish
+		)
+		ConsultationTimerManager.nextInterval()
+		ConsultationTimerManager.travelTimeTo(
+			consultationResource,
+			convertTimeToMilliseconds("00:00:10")
+		)
+
+		expect(mockFinish).toHaveBeenCalled()
+		expect(mockConsumedTime).toHaveBeenCalled()
+		expect(mockConsumedTime).toHaveBeenCalledTimes(1)
+	})
 })
