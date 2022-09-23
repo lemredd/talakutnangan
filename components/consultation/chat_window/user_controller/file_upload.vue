@@ -11,7 +11,7 @@
 				<input
 					type="hidden"
 					name="data[attributes][data][name]"
-					:value="fileName"/>
+					:value="filename"/>
 				<input
 					type="hidden"
 					name="data[attributes][kind]"
@@ -21,9 +21,13 @@
 						id="choose-file-btn"
 						type="file"
 						name="meta[fileContents]"
-						accept="image/*"/>
+						accept="image/png"
+						@change="extractFilename"/>
 					CHOOSE FILE
 				</label>
+				<button v-if="hasExtracted" type="button">
+					Send file
+				</button>
 			</form>
 		</template>
 		<template #footer>
@@ -59,10 +63,27 @@ let rawFetcher: Fetcher|null = null
 
 const props = defineProps<{ isShown: boolean }>()
 
+const filename = ref<string|null>(null)
+const hasExtracted = computed<boolean>(() => filename.value !== null)
+
+interface CustomEvents {
+	(event: "close"): void
+}
+const emit = defineEmits<CustomEvents>()
+function emitClose() {
+	emit("close")
+}
+
 function fetcher(): Fetcher {
 	if (rawFetcher === null) throw new Error("Chat cannot be processed yet")
 
 	return rawFetcher
+}
+
+function extractFilename(event: Event) {
+	const target = event.target as HTMLInputElement
+	const rawFilename = target.files?.item(0)?.name as ""
+	filename.value = rawFilename
 }
 
 onMounted(() => {
