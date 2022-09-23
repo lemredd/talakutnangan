@@ -22,7 +22,6 @@ import ProfilePicture from "%/models/profile_picture"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import AttachedChatFileManager from "%/managers/attached_chat_file"
-import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
 import siftByKinds from "%/queries/chat_message/sift_by_kinds"
 import includeDefaults from "%/queries/chat_message/include_defaults"
