@@ -139,9 +139,11 @@ import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
+import ProfilePicture from "@/helpers/profile_picture.vue"
+import Signature from "@/helpers/signature.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/settings/picture_picker.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
