@@ -26,8 +26,10 @@ export default async function(
 	// eslint-disable-next-line new-cap
 	const manager = new constraints.manager.className(constraints.request)
 	const foundModel = await manager.findOneOnColumn(constraints.manager.columnName, state.value, {
-		"filter": {
-			"existence": "exists"
+		"constraints": {
+			"filter": {
+				"existence": "exists"
+			}
 		}
 	})
 

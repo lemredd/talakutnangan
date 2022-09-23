@@ -18,6 +18,11 @@
 					<td :title="resource.department.data.fullName">
 						{{ resource.department.data.acronym }}
 					</td>
+					<td>
+						<button class="btn" type="button">
+							edit
+						</button>
+					</td>
 				</tr>
 			</template>
 
@@ -49,6 +54,7 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 .resource-list {
 	margin-top: 1em;
 
@@ -65,6 +71,15 @@
 
 	.no-results {
 		text-align: center;
+	}
+	.btn{
+		border: none;
+		border-radius: 5px;
+		padding: 8px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 12px;
 	}
 }
 </style>

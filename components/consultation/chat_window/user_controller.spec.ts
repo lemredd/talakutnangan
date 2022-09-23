@@ -6,6 +6,7 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import RequestEnvironment from "$/singletons/request_environment"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import Component from "./user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
@@ -105,6 +106,17 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const message = "Hello"
 		const userID = "1"
+		const mockRestart = jest.fn()
+		const resource = {
+			"actionTaken": null,
+			"deletedAt": null,
+			"finishedAt": null,
+			"id": "1",
+			"reason": "",
+			"scheduledStartAt": new Date(),
+			"startedAt": new Date(),
+			"type": "consultation"
+		} as DeserializedConsultationResource
 
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
@@ -115,24 +127,21 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				}
 			},
 			"props": {
-				"consultation": {
-					"actionTaken": null,
-					"deletedAt": null,
-					"finishedAt": null,
-					"id": "1",
-					"reason": "",
-					"scheduledStartAt": new Date(),
-					"startedAt": new Date(),
-					"type": "consultation"
-				} as DeserializedConsultationResource
+				"consultation": resource
 			}
 		})
 		const messageInputBox = wrapper.find(".message-box input")
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			resource,
+			"restartTime",
+			mockRestart
+		)
 
 		await messageInputBox.setValue(message)
 		await messageInputBox.trigger("keyup.enter")
 		await flushPromises()
 
+		expect(mockRestart).toHaveBeenCalled()
 		const castMessageInputBox = messageInputBox.element as HTMLInputElement
 		expect(castMessageInputBox.value).toBe("")
 		const castFetch = fetch as jest.Mock<any, any>

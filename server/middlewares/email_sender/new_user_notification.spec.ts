@@ -1,5 +1,5 @@
-import "~/set-ups/email.set_up"
-import MockRequester from "~/set-ups/mock_requester"
+import "~/setups/email.setup"
+import MockRequester from "~/setups/mock_requester"
 
 import type { PreprocessedRequest } from "!/types/dependent"
 import type { NewUserNotificationArguments } from "!/types/independent"

@@ -1,5 +1,4 @@
-import type { Request, Response } from "!/types/dependent"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
@@ -26,8 +25,10 @@ export default class extends BoundController {
 		const { id } = request.params
 
 		const document = await manager.findWithID(Number(id), {
-			"filter": {
-				"existence": "*"
+			"constraints": {
+				"filter": {
+					"existence": "*"
+				}
 			}
 		})
 

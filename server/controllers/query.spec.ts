@@ -1,7 +1,7 @@
 import type { Request, Response } from "!/types/dependent"
 import type { FieldRules } from "!/types/validation"
 
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"

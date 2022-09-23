@@ -18,10 +18,10 @@
 			<button class="material-icons">
 				photo_camera
 			</button>
-			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<button class="material-icons" @click="showFileUpload">
 				image
 			</button>
+			<FileUpload :is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
@@ -65,7 +65,11 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+
+import FileUpload from "@/consultation/chat_window/user_controller/file_upload.vue"
 
 const currentChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
@@ -77,6 +81,7 @@ const props = defineProps<{
 
 const currentTime = ref<Date>(new Date())
 const textInput = ref<string>("")
+const isFileUploadFormShown = ref<boolean>(false)
 
 const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
 	props.consultation.scheduledStartAt,
@@ -108,7 +113,7 @@ const unusedIsAutoTerminated = computed<boolean>(() => {
 
 setInterval(() => {
 	currentTime.value = new Date()
-}, 1000)
+}, convertTimeToMilliseconds("00:00:01"))
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
@@ -123,6 +128,13 @@ function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
 
 	throw new Error("Messages cannot be sent to server yet.")
+}
+
+function showFileUpload() {
+	isFileUploadFormShown.value = true
+}
+function hideFileUpload() {
+	isFileUploadFormShown.value = false
 }
 
 function send(): void {
@@ -142,6 +154,8 @@ function send(): void {
 		}
 	} as ChatMessageRelationships).then(() => {
 		textInput.value = ""
+	}).then(() => {
+		ConsultationTimerManager.restartTimerFor(props.consultation)
 	})
 }
 

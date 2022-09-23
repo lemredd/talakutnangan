@@ -1,4 +1,4 @@
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$/singletons/request_environment"

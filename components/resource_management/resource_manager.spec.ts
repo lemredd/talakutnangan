@@ -5,7 +5,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import ResourceManager from "./resource_manager.vue"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import Manager from "$/helpers/manager"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
