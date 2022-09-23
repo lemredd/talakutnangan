@@ -36,12 +36,12 @@
 					v-model="startTime"
 					class="inline"
 					:options="time"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
+					:disabled="!isEditing"/>
 				<Selectable
 					v-model="startMidDay"
 					class="inline"
 					:options="midDay"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
+					:disabled="!isEditing"/>
 			</div>
 		</label>
 		<label class="space">
@@ -51,13 +51,13 @@
 					v-model="endTime"
 					class="inline"
 					:options="time"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
+					:disabled="!isEditing"/>
 
 				<Selectable
 					v-model="endMidDay"
 					class="inline"
 					:options="midDay"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
+					:disabled="!isEditing"/>
 			</div>
 		</label>
 	</div>
