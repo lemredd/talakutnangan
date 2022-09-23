@@ -21,7 +21,7 @@
 			<button class="material-icons" @click="showFileUpload">
 				image
 			</button>
-			<FileUpload is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
+			<FileUpload :is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
@@ -69,7 +69,7 @@ import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
 
-import FileUpload from "@/consultation/user_controller/file_upload.vue"
+import FileUpload from "@/consultation/chat_window/user_controller/file_upload.vue"
 
 const currentChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
