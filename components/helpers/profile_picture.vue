@@ -1,6 +1,13 @@
 <template>
 	<img :src="profilePictureURL"/>
 </template>
+
+<style scoped lang="scss">
+	img {
+		border-radius: 8px;
+	}
+</style>
+
 <script setup lang="ts">
 import { computed, inject } from "vue"
 
