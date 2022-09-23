@@ -4,21 +4,22 @@ import PicturePicker from "./picture_picker.vue"
 
 describe("Component: Picture Picker", () => {
 	it("should give the proper input ID", () => {
-		const title = "sample-title"
+		const resourceType = "profile-picture"
 		const wrapper = shallowMount<any>(PicturePicker, {
 			"props": {
 				"picture": null,
-				title
+				resourceType
 			}
 		})
 
-		const fileInput = wrapper.find(`#input-${title}`)
+		const fileInput = wrapper.find(`#input-${resourceType}`)
 
 		expect(wrapper.html()).toContain(fileInput.html())
 	})
 
+
 	it("should determine if user has profile picture", () => {
-		const title = "sample-title"
+		const resourceType = "profile-picture"
 		const sampleURL = "/images/profile.png"
 		const picture = {
 			"data": {
@@ -28,7 +29,7 @@ describe("Component: Picture Picker", () => {
 		const wrapper = shallowMount<any>(PicturePicker, {
 			"props": {
 				picture,
-				title
+				resourceType
 			}
 		})
 
@@ -38,15 +39,15 @@ describe("Component: Picture Picker", () => {
 	})
 
 	it("should emit event after uploading image", async() => {
-		const title = "sample-title"
+		const resourceType = "profile-picture"
 		const wrapper = shallowMount<any>(PicturePicker, {
 			"props": {
 				"picture": null,
-				title
+				resourceType
 			}
 		})
 
-		const fileInput = wrapper.find(`#input-${title}`)
+		const fileInput = wrapper.find(`#input-${resourceType}`)
 
 		await fileInput.setValue("")
 
