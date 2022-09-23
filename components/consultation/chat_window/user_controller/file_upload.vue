@@ -25,7 +25,10 @@
 						@change="extractFilename"/>
 					CHOOSE FILE
 				</label>
-				<button v-if="hasExtracted" type="button">
+				<button
+					v-if="hasExtracted"
+					type="button"
+					@click="sendFile">
 					Send file
 				</button>
 			</form>
@@ -54,14 +57,14 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
 
 let rawFetcher: Fetcher|null = null
 
-const props = defineProps<{ isShown: boolean }>()
+defineProps<{ isShown: boolean }>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
@@ -78,6 +81,17 @@ function fetcher(): Fetcher {
 	if (rawFetcher === null) throw new Error("Chat cannot be processed yet")
 
 	return rawFetcher
+}
+
+function sendFile(event: Event): void {
+	const button = event.target as HTMLButtonElement
+	const formData = new FormData(button.form as HTMLFormElement)
+
+	fetcher().createWithFile(formData).then(() => {
+		emitClose()
+	}).then(() => {
+		// Show errors
+	})
 }
 
 function extractFilename(event: Event) {
