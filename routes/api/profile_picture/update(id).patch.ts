@@ -37,7 +37,7 @@ export default class extends CreateController {
 		const id = Number(request.params.id)
 
 		await manager.update(id, {
-			fileContents,
+			"fileContents": fileContents.buffer,
 			userID
 		})
 
