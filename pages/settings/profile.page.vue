@@ -36,6 +36,7 @@
 			</PicturePicker>
 
 			<PicturePicker
+				v-if="!isUnReachableEmployee"
 				resource-type="signature"
 				@submit-file="submitSignature">
 				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
@@ -160,6 +161,7 @@ const userProfileData = ref(userProfile.data)
 
 const { kind } = userProfile
 const isReachableEmployee = computed(() => kind === "reachable_employee")
+const isUnReachableEmployee = computed(() => kind === "unreachable_employee")
 
 
 UserFetcher.initialize("/api")
