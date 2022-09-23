@@ -28,6 +28,8 @@
 </template>
 
 <style lang="scss">
+@import "@styles/btn.scss";
+
 .chip {
   display: inline-block;
   padding: 0 15px;
