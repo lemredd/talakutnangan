@@ -23,7 +23,7 @@
 					</div>
 
 					<label
-						for="input-file"
+						for="input-profile-picture"
 						class="cursor-pointer flex items-center">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1">
@@ -46,7 +46,7 @@
 					</div>
 
 					<label
-						for="input-file"
+						for="input-signature"
 						class="cursor-pointer flex items-center">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1 underline">

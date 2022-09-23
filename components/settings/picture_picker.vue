@@ -8,31 +8,40 @@
 				name="data[type]"
 				:value="resourceType"/>
 			<input
-				id="input-file"
+				:id="inputId"
 				type="file"
 				name="data[attributes][fileContents]"
-				accept="image/"
+				:accept="determineFilesToAccept"
 				class="input-pic"
 				@change="submitImage"/>
 		</form>
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .input-pic {
 	display: none;
 }
 </style>
 
 <script setup lang="ts">
+import convertForParameter from "$/string/convert_for_parameter"
 
-defineProps<{
+const props = defineProps<{
 	resourceType: "profile_picture" | "signature"
 }>()
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
 	(event: "submitFile", data: FormData): void
 }>()
+
+const inputId = `input-${convertForParameter(props.resourceType)}`
+
+function determineFilesToAccept() {
+	return props.resourceType === "profile_picture"
+		? "image/"
+		: "image/png"
+}
 
 function submitImage(event: Event) {
 	const target = event.target as HTMLInputElement
