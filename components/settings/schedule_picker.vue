@@ -6,10 +6,30 @@
 
 <template>
 	<div class="schedule-picker">
-		<h3 class="day">
-			{{ convertForSentence(day) }}
-		</h3>
-		<label class="space">
+		<div class="schedule-picker-header flex flex-col justify-between mb-5">
+			<h3 class="day mb-2">
+				{{ convertForSentence(day) }}
+			</h3>
+
+			<button
+				v-if="!isEditing"
+				class="edit-btn btn btn-primary w-[max-content]"
+				@click="toggleEditing">
+				edit
+			</button>
+			<div
+				v-else
+				class="buttons">
+				<button class="save-btn btn btn-primary">
+					save
+				</button>
+				<button
+					class="save-btn btn ml-5"
+					@click="toggleEditing">
+					Discard
+				</button>
+			</div>
+		</div>
 			<span>From:</span>
 			<div id="start" class="start flex">
 				<Selectable
@@ -67,6 +87,11 @@ const props = defineProps<{
 	startTime: string
 	endTime: string
 }>()
+
+const isEditing = ref(false)
+function toggleEditing() {
+	isEditing.value = !isEditing.value
+}
 
 function twoDigits(number: number) {
 	return number < 10 ? `0${number}` : number.toString()
