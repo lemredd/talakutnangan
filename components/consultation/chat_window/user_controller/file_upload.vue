@@ -1,11 +1,29 @@
 <template>
 	<Overlay :is-shown="isShown">
 		<template #header>
-
 		</template>
 		<template #default>
-			<form>
-				<input type="file" name=""/>
+			<form @submit.prevent>
+				<input
+					type="hidden"
+					name="data[attributes][data][subkind]"
+					value="image"/>
+				<input
+					type="hidden"
+					name="data[attributes][data][name]"
+					:value="fileName"/>
+				<input
+					type="hidden"
+					name="data[attributes][kind]"
+					value="file"/>
+				<label class="btn" for="choose-file-btn">
+					<input
+						id="choose-file-btn"
+						type="file"
+						name="meta[fileContents]"
+						accept="image/*"/>
+					CHOOSE FILE
+				</label>
 			</form>
 		</template>
 		<template #footer>
@@ -24,6 +42,11 @@
 
 <style lang="css">
 @import "@styles/btn.scss";
+
+#choose-file-btn {
+	display:none;
+	appearance: none;
+}
 </style>
 
 <script setup lang="ts">

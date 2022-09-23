@@ -121,7 +121,6 @@ import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
-
 const { isShown } = defineProps<{ isShown: boolean }>()
 
 let rawFetcher: Fetcher|null = null
