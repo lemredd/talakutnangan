@@ -156,7 +156,9 @@ export default class extends BaseManager<
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {
-			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
+			const model = await this.model.create(details, this.transaction.transactionObject)
+
+			Log.success("manager", "done creating a model")
 
 			return this.serialize(model, transformerOptions, new Transformer({
 				"included": [ "user", "consultation", "chatMessageActivity" ]
@@ -172,7 +174,7 @@ export default class extends BaseManager<
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {
-			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
+			const model = await this.model.create(details, this.transaction.transactionObject)
 
 			const attachedChatFileManager = new AttachedChatFileManager({
 				"cache": this.cache,
@@ -192,6 +194,8 @@ export default class extends BaseManager<
 
 			model.attachedChatFile = attachedChatFileModel
 
+			Log.success("manager", "done creating a model")
+
 			return this.serialize(model, transformerOptions, new Transformer({
 				"included": [ "user", "consultation", "chatMessageActivity", "attachedChatFile" ]
 			}))
@@ -205,40 +209,5 @@ export default class extends BaseManager<
 			ChatMessageActivity,
 			User
 		]
-	}
-
-	private async insertModelWithUpdatedChatMessageActivity(
-		details: RawChatMessageAttributes & CreationAttributes<Model>
-	): Promise<Model> {
-		const model = await this.model.create(details, this.transaction.transactionObject)
-
-		const activityManager = new ChatMessageActivityManager({
-			"cache": this.cache,
-			"transaction": this.transaction
-		})
-
-		await activityManager.update(details.chatMessageActivityID, {
-			"receivedMessageAt": new Date()
-		})
-
-		model.chatMessageActivity = await ChatMessageActivity.findByPk(
-			details.chatMessageActivityID,
-			{
-				"include": [
-					{
-						"model": User,
-						"required": true
-					},
-					{
-						"model": Consultation,
-						"required": true
-					}
-				]
-			}
-		) as ChatMessageActivity
-
-		Log.success("manager", "done creating a model")
-
-		return model
 	}
 }
