@@ -79,7 +79,7 @@
 					@click="toggleDarkMode"/>
 			</label>
 		</div>
-		<div v-if="isReachableEmployee" class="consultation-schedules p-5">
+		<div v-if="isReachableEmployee" class="consultation-schedules">
 			<h3 class="display-name text-lg col-span-full">
 				Consultation Schedules
 			</h3>
@@ -161,7 +161,6 @@ const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
-
 UserFetcher.initialize("/api")
 SignatureFetcher.initialize("/api")
 ProfilePictureFetcher.initialize("/api")
@@ -215,6 +214,7 @@ function toggleDarkMode() {
 	updateUser()
 }
 
+console.log(userProfileData.value.employeeSchedule)
 const schedules = [
 	{
 		"day": "monday",
@@ -241,8 +241,6 @@ const schedules = [
 		"endTime": "17:00",
 		"startTime": "08:00"
 	}
-
-
 ]
 
 const tabs: TabInfo[] = [

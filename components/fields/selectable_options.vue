@@ -4,6 +4,7 @@
 		<select
 			:id="selectID"
 			:value="modelValue"
+			:disabled="disabled"
 			@change="updateModelValue">
 			<option
 				value=""
@@ -37,19 +38,15 @@
 import { computed } from "vue"
 import type { OptionInfo } from "$@/types/component"
 
-const {
-	options,
-	modelValue,
-	label,
-	placeholder
-} = defineProps<{
+const props = defineProps<{
 	options: readonly OptionInfo[]
 	modelValue: string
 	label?: string
-	placeholder?: string
+	placeholder?: string,
+	disabled?: boolean
 }>()
 
-const selectID = computed(() => options.map(info => info.value).join(" ").replace(" ", "_"))
+const selectID = computed(() => props.options.map(info => info.value).join(" ").replace(" ", "_"))
 
 const emit = defineEmits<{(e: "update:modelValue", value: string): void}>()
 
