@@ -39,7 +39,7 @@ export default class extends DoubleBoundJSONController {
 		}
 
 		return makeResourceDocumentRules(
-			"consultation",
+			"chat_message_activity",
 			attributes,
 			{
 				"isNew": false,
