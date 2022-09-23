@@ -8,7 +8,7 @@ import Manager from "%/managers/chat_message_activity"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
-import makeConsultationNamespace from "$/namespace_makers/consultation"
+import makeConsultationChatActivityNamespace from "$/namespace_makers/consultation_chat_activity"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
@@ -54,14 +54,17 @@ export default class extends DoubleBoundJSONController {
 	: Promise<NoContentResponseInfo> {
 		const manager = new Manager(request)
 		const id = Number(request.params.id)
+		const oldDocument = await manager.findWithID(id) as ChatMessageActivityDocument
 		const updatedDocument = request.body as ChatMessageActivityDocument
 
 		await manager.update(id, updatedDocument.data.attributes)
 
 		Socket.emitToClients(
-			makeConsultationNamespace(String(id)),
+			makeConsultationChatActivityNamespace(String(
+				oldDocument.data.relationships.consultation.data.id
+			)),
 			"update",
-			request.body
+			updatedDocument
 		)
 
 		return new NoContentResponseInfo()
