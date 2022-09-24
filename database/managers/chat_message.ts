@@ -193,7 +193,7 @@ export default class extends BaseManager<
 			model.attachedChatFile = attachedChatFileModel
 
 			return this.serialize(model, transformerOptions, new Transformer({
-				"included": [ "user", "consultation", "chatMessageActivity", "attachedChatFile" ]
+				"included": [ "user", "consultation", "attachedChatFile" ]
 			}))
 		} catch (error) {
 			throw this.makeBaseError(error)
@@ -227,10 +227,6 @@ export default class extends BaseManager<
 				"include": [
 					{
 						"model": User,
-						"required": true
-					},
-					{
-						"model": Consultation,
 						"required": true
 					}
 				]
