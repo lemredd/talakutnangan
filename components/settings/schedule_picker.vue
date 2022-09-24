@@ -42,6 +42,7 @@
 				Discard
 			</button>
 		</div>
+
 		<div v-if="!isNew || (isNew && isAdding)" class="time-selectors">
 			<label class="time-selector">
 				<span>From:</span>
@@ -85,7 +86,7 @@
 		margin: 2em 0;
 	}
 
-	.time-selectors{
+	.time-selector{
 		@apply flex flex-col justify-between mb-5;
 
 		.start, .end {
