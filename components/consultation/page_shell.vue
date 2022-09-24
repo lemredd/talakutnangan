@@ -50,7 +50,7 @@
 		p-2
 		grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))]
 		justify-between
-		hover:bg-gray-300
+		hover:bg-gray-300;
 }
 
 .selected-consultation-header {
@@ -58,7 +58,7 @@
 		border-b
 		p-3
 		grid grid-rows-2 grid-cols-[repeat(2,minmax(0,max-content))]
-		justify-between
+		justify-between;
 }
 
 .consultations-container {
@@ -100,7 +100,7 @@ import type { PageContext } from "$/types/renderer"
 
 import ConsultationForm from "@/consultation/form.vue"
 
-import disableScroll from "$@/helpers/disable_scroll"
+import disableScroll from "$@/helpers/push_element_classes"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">

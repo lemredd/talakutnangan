@@ -55,7 +55,6 @@
 </template>
 
 <style lang="scss">
-// todo: use `@apply` to compatibility-stricted styles
 @import "@styles/variables.scss";
 
 .navigation {
@@ -112,8 +111,7 @@
 			width: max-content;
 
 			.settings-items {
-				display: flex;
-				flex-direction: column;
+				@apply flex flex-col;
 
 				.anchor, #log-out-btn {
 					margin-bottom: .5em;

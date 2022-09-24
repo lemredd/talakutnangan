@@ -1,9 +1,6 @@
-<!--
-	TODO: Refactor all WindiCSS inline classes using @apply directive
- -->
 <template>
 	<ul :id="`${header.toLocaleLowerCase()}-flags`" class="flags my-3">
-		<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">
+		<h2 class="flag-header">
 			{{ header }} Flags
 		</h2>
 
@@ -40,6 +37,9 @@
 
 .flag-header {
 	color: $color-primary;
+	font-size: 1.25rem;
+	margin-bottom: 0.75rem;
+	font-weight: 600;
 }
 
 .operational-flags {
