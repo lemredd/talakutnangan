@@ -32,7 +32,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
 
-describe("UI Page: Read consultation resource by ID", () => {
+describe.skip("UI Page: Read consultation resource by ID", () => {
 	it("should load resource by ID", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1
@@ -311,7 +311,7 @@ describe("UI Page: Read consultation resource by ID", () => {
 	})
 })
 
-describe("UI Page: Communicate with consultation resource", () => {
+describe.skip("UI Page: Communicate with consultation resource", () => {
 	it("can continue started consultation", async() => {
 		jest.useFakeTimers()
 		const OTHER_CONSULTATION_COUNT = 2
@@ -965,7 +965,7 @@ describe("UI Page: Communicate with consultation resource", () => {
 	})
 })
 
-describe("UI Page: Communicate with message resource", () => {
+describe.skip("UI Page: Communicate with message resource", () => {
 	it("can insert messages from socket", async() => {
 		jest.useFakeTimers()
 		const OTHER_CONSULTATION_COUNT = 2

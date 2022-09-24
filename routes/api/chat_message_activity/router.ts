@@ -1,6 +1,7 @@
 import Router from "!/bases/router"
 import GetList from "!%/api/chat_message_activity/list.get"
 import PatchRestore from "!%/api/chat_message_activity/restore.patch"
+import PatchUpdate from "!%/api/chat_message_activity/update(id).patch"
 import DeleteArchive from "!%/api/chat_message_activity/archive.delete"
 
 export default class extends Router {
@@ -9,6 +10,7 @@ export default class extends Router {
 
 		this.useControllers([
 			new GetList(),
+			new PatchUpdate(),
 			new PatchRestore(),
 			new DeleteArchive()
 		])
