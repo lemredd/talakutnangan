@@ -21,7 +21,10 @@ export default class <
 	private permissionGroup: PermissionGroup<T, U>
 	private socialPermissionCombination: U[]
 	private publicPermissionCombination: U[]
-	private readOwnerInfo: (request: V) => Promise<DeserializedUserDocument<"roles"|"department">>
+	private readOwnerInfo: (request: V) => Promise<
+		DeserializedUserDocument<"roles"|"department">|null
+	>
+
 	private checkOthers: (request: V) => Promise<void>
 
 	/**
@@ -29,7 +32,8 @@ export default class <
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
 	 * @param socialPermissionCombination Permission combination which may allow department heads.
 	 * @param publicPermissionCombination Permission combinations which may allow admin.
-	 * @param readOwnerInfo Callback to get the owner of the resource to edit.
+	 * @param readOwnerInfo Callback to get the owner of the resource to process. If null, user is
+	 * only required to have social permission or public permission.
 	 * @param checkOthers Extra function used for checking other constraints.
 	 */
 	constructor(
@@ -37,7 +41,7 @@ export default class <
 		permissionGroup: PermissionGroup<T, U>,
 		socialPermissionCombination: U[],
 		publicPermissionCombination: U[],
-		readOwnerInfo: (request: V) => Promise<DeserializedUserDocument<"roles"|"department">>,
+		readOwnerInfo: (request: V) => Promise<DeserializedUserDocument<"roles"|"department">|null>,
 		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
 			const promise = Promise.resolve()
 			return promise
@@ -66,22 +70,29 @@ export default class <
 		)
 
 		if (!hasPublicPermission) {
-			const owner = await this.readOwnerInfo(request)
+			const hasSocialPermission = this.permissionGroup.hasOneRoleAllowed(
+				roles,
+				[ this.socialPermissionCombination ]
+			)
 
-			if (user.data.id !== owner.data.id) {
-				const hasSocialPermission = this.permissionGroup.hasOneRoleAllowed(
-					roles,
-					[ this.socialPermissionCombination ]
-				)
-				if (
-					!hasSocialPermission
-					|| user.data.department.data.id !== owner.data.department.data.id
-				) {
+			if (!hasSocialPermission) {
+				const owner = await this.readOwnerInfo(request)
+
+				if (owner === null) {
+					return Promise.resolve()
+				}
+
+				if (user.data.id !== owner.data.id) {
 					return Promise.reject(new AuthorizationError(
-						"There is no sufficient permission to invoke action for others."
+						"You should be the wner of the resource."
 					))
 				}
 			}
+
+
+			return Promise.reject(new AuthorizationError(
+				"There is no sufficient permission to invoke action for others."
+			))
 		}
 
 		return Promise.resolve()
