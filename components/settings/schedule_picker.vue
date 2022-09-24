@@ -179,6 +179,28 @@ function generateNumberRange() {
 const availableTimes = makeOptions(generateNumberRange())
 const midDay = makeOptions([ "AM", "PM" ])
 
+function getTimePart(time: number, part: "hour" | "minute" | "midday") {
+	const timeObject = convertMinutesToTimeObject(time)
+	let partToGive = ""
+
+	switch (part) {
+		case "hour":
+			partToGive = twoDigits(formatTo12Hours(timeObject.hours))
+			break
+		case "minute":
+			partToGive = twoDigits(timeObject.minutes)
+			break
+		case "midday":
+			if (timeObject.hours < noon) partToGive = "AM"
+			else partToGive = "PM"
+			break
+
+		default:
+			break
+	}
+
+	return partToGive
+}
 const startTime = ref(convertTimeObjectToTimeString(
 	convertMinutesToTimeObject(props.scheduleStart)
 ))
