@@ -7,11 +7,12 @@ import UserFactory from "~/factories/user"
 import deserialize from "$/object/deserialize"
 import UserPermissions from "$/permissions/user"
 import MockRequester from "~/setups/mock_requester"
+import DepartmentFactory from "~/factories/department"
 import AuthorizationError from "$!/errors/authorization"
 
 import Middleware from "./scope-based"
 
-describe("Middleware: Permission-Based Policy", () => {
+describe("Middleware: Scope-Based Policy", () => {
 	const requester = new MockRequester()
 	const permissions = new UserPermissions()
 
@@ -45,17 +46,18 @@ describe("Middleware: Permission-Based Policy", () => {
 	})
 
 	it("can allow users with social scope to invoke for others", async() => {
+		const department = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory()
 		.userFlags(permissions.generateMask("update", "writeDepartmentScope"))
 		.insertOne()
-		const user = await new UserFactory().attach(role).insertOne()
+		const user = await new UserFactory().attach(role).in(department).insertOne()
 		const pageGuard = new Middleware(
 			permissions,
 			[ "update", "writeOwnScope" ],
 			[ "update", "writeDepartmentScope" ],
 			[ "update", "writeOverallScope" ],
 			async(): Promise<DeserializedUserDocument<"roles"|"department">> => {
-				const owner = await new UserFactory().attach(role).insertOne()
+				const owner = await new UserFactory().attach(role).in(department).insertOne()
 				return new UserFactory().deserialize(owner) as DeserializedUserDocument<
 					"roles"|"department"
 				>
