@@ -83,12 +83,11 @@
 			<h3 class="display-name text-lg col-span-full">
 				Consultation Schedules
 			</h3>
-			<SchedulePicker
-				v-for="schedule in schedules"
-				:key="schedules.indexOf(schedule)"
-				:day="schedule.day"
-				:start-time="schedule.startTime"
-				:end-time="schedule.endTime"/>
+			<SchedulePickerGroup
+				v-for="day in DayValues"
+				:key="day"
+				:day-name="day"
+				:schedules="schedules"/>
 		</div>
 	</div>
 </template>
@@ -145,13 +144,16 @@ import Signature from "@/helpers/signature.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
-import SchedulePicker from "@/settings/schedule_picker.vue"
+import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 import SignatureFetcher from "$@/fetchers/signature"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
+import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
+
+import { DayValues } from "$/types/database"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -214,34 +216,13 @@ function toggleDarkMode() {
 	updateUser()
 }
 
-console.log(userProfileData.value.employeeSchedule)
-const schedules = [
-	{
-		"day": "monday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "tuesday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "wednesday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "thursday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "friday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	}
-]
+const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
+const sortedSchedulesByDay = ref(schedules.sort((left, right) => {
+	const leftIndex = DayValues.indexOf(left.dayName)
+	const rightIndex = DayValues.indexOf(right.dayName)
+
+	return Math.sign(leftIndex - rightIndex)
+}))
 
 const tabs: TabInfo[] = [
 	{
