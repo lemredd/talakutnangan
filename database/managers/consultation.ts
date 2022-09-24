@@ -167,4 +167,52 @@ export default class extends BaseManager<
 			throw this.makeBaseError(error)
 		}
 	}
+
+	async canStart(consultationID: number): Promise<boolean> {
+		try {
+			const model = await this.model.findByPk(consultationID, {
+				"include": [
+					{
+						"include": [
+							{
+								"model": User,
+								"required": true
+							}
+						],
+						"model": AttachedRole,
+						"required": true
+					}
+				],
+				...this.transaction.transactionObject
+			})
+
+			const activeConsultations = await this.model.findAll({
+				"include": [
+					{
+						"include": [
+							{
+								"model": User,
+								"required": true,
+								"where": new Condition().equal("id", model?.consultant?.id).build()
+							}
+						],
+						"model": AttachedRole,
+						"required": true
+					}
+				],
+				"where": new Condition().not("startedAt", null).build()
+			})
+
+			let canStart = activeConsultations.length === 0
+
+			if (!canStart) {
+				canStart = activeConsultations.length === 1
+					&& activeConsultations[0].id === consultationID
+			}
+
+			return canStart
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
 }
