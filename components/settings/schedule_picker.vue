@@ -81,23 +81,16 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { ref } from "vue"
 
 import Selectable from "@/fields/selectable_options.vue"
-
-import Fetcher from "$@/fetchers/employee_schedule"
-
 import convertForSentence from "$/string/convert_for_sentence"
-import { DayValues } from "$/types/database"
 
-import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
-import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
-
-Fetcher.initialize("/api")
-
-const props = defineProps<{ userId: string }>()
-
-const schedules = ref<DeserializedEmployeeScheduleResource[]|null>(null)
+const props = defineProps<{
+	day: string
+	startTime: string
+	endTime: string
+}>()
 
 const isEditing = ref(false)
 function toggleEditing() {
