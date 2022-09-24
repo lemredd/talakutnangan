@@ -124,14 +124,13 @@ const emit = defineEmits<CustomEvents>()
 const startConsultation = () => emit("startConsultation")
 
 let rawFetcher: Fetcher|null = null
-let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
-
 function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
 
 	throw new Error("Messages cannot be sent to server yet.")
 }
 
+let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
 function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
 	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
 
@@ -164,8 +163,8 @@ function send(): void {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
 		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
-			"receivedMessageAt": new Date(currentChatMessageActivity.value.receivedMessageAt),
-			"sentMessageAt": new Date()
+			"receivedMessageAt": currentChatMessageActivity.value.receivedMessageAt.toString(),
+			"seenMessageAt": new Date().toJSON()
 		})
 	})
 }
