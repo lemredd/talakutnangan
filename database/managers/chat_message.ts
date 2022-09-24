@@ -193,7 +193,7 @@ export default class extends BaseManager<
 			model.attachedChatFile = attachedChatFileModel
 
 			return this.serialize(model, transformerOptions, new Transformer({
-				"included": [ "user", "consultation", "attachedChatFile" ]
+				"included": [ "user", "consultation", "chatMessageActivity", "attachedChatFile" ]
 			}))
 		} catch (error) {
 			throw this.makeBaseError(error)
@@ -212,21 +212,16 @@ export default class extends BaseManager<
 	): Promise<Model> {
 		const model = await this.model.create(details, this.transaction.transactionObject)
 
-		const activityManager = new ChatMessageActivityManager({
-			"cache": this.cache,
-			"transaction": this.transaction
-		})
-
-		await activityManager.update(details.chatMessageActivityID, {
-			"receivedMessageAt": new Date()
-		})
-
 		model.chatMessageActivity = await ChatMessageActivity.findByPk(
 			details.chatMessageActivityID,
 			{
 				"include": [
 					{
 						"model": User,
+						"required": true
+					},
+					{
+						"model": Consultation,
 						"required": true
 					}
 				]
