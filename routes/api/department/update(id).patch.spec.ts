@@ -1,6 +1,6 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import DepartmentFactory from "~/factories/department"
 import Controller from "./update(id).patch"
 
@@ -18,21 +18,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const department = await new DepartmentFactory().insertOne()
 		const newDepartment = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": newDepartment.acronym,
 						"fullName": newDepartment.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -48,21 +48,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().fullName(() => "Abc Def GHIJ").insertOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -79,21 +79,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const department = await new DepartmentFactory().insertOne()
 		const otherDepartment = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": otherDepartment.acronym,
 						"fullName": otherDepartment.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -112,21 +112,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": `${department.fullName}1`,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -146,21 +146,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		.fullName(() => "Hacking Lavender Throughway1")
 		.insertOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": `${department.fullName}1`,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -180,21 +180,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		// Used for generate random data
 		const randomData = await new DepartmentFactory().makeOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": department.acronym + randomData.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": department.mayAdmit
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -212,21 +212,21 @@ describe("Controller: PATCH /api/department/:id", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const department = await new DepartmentFactory().insertOne()
 		requester.customizeRequest({
-			"user": profile,
 			"body": {
 				"data": {
-					"type": "department",
-					"id": String(department.id),
 					"attributes": {
 						"acronym": department.acronym,
 						"fullName": department.fullName,
 						"mayAdmit": "123"
-					}
+					},
+					"id": String(department.id),
+					"type": "department"
 				},
 				"meta": {
 					password
 				}
-			}
+			},
+			"user": profile
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)

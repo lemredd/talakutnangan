@@ -19,6 +19,15 @@ Put your additions and compatible changes here...
 - lemredd/talakutnangan#
 
 ## Proof of Passing
+[![Shareable Tests](https://github.com/<username>/talakutnangan/actions/workflows/shareable.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/shareable.yml)
+
+[![Web Front-end Unit Tests](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/front-end.unit.yml)
+
+[![Web Front-end Integration Tests](https://github.com/<username>/talakutnangan/actions/workflows/front-end.intg.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/front-end.intg.yml)
+
+[![Web Back-end Unit Tests](https://github.com/<username>/talakutnangan/actions/workflows/back-end.unit.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/back-end.unit.yml)
+
+[![Web Back-end Integration Tests](https://github.com/<username>/talakutnangan/actions/workflows/back-end.intg.yml/badge.svg?branch=<branch_name>)](https://github.com/<username>/talakutnangan/actions/workflows/back-end.intg.yml)
 
 <!--
 ## Rules
@@ -32,4 +41,12 @@ Put your additions and compatible changes here...
    is because it can affect the code or experience greatly in the future. Enhancements (such as refactoring) can be
    deferred.
 6. If there are lacking mechanism, pull requester should create issues for lacking mechanisms, then just link the issue number.
+7. Remove any badge that have no executed test. Replace the `<username>` and `<branch_name>` with
+   your username and the branch name of your PR respectively.
+8. Add informed discussions if necessary.
+
+## Informed Discussions
+- Database migration: lemredd/talakutnangan#311
+- Environment variables: lemredd/talakutnangan#506
+- Applied practices gradually: lemredd/talakutnangan#466
 -->

@@ -10,7 +10,6 @@ import { Response, NextFunction } from "!/types/dependent"
 import Log from "$!/singletons/log"
 import getRoot from "$!/helpers/get_root"
 import getEnvironment from "$/helpers/get_environment"
-import isUndefined from "$/type_guards/is_undefined"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
@@ -62,9 +61,6 @@ export default async function(app: ExpressApp) {
 					"description": castParsedUnitError.detail,
 					"title": castParsedUnitError.title
 				}
-			} else if (isUndefined(request.documentProps)) {
-				// TODO: Remove in v0.15
-				Log.errorMessage("middleware", `Document props must be provided in ${request.url}.`)
 			}
 
 			const url = request.originalUrl

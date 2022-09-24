@@ -1,14 +1,16 @@
-import type { BaseManagerClass } from "!/types/dependent"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
+import type {
+	Response,
+	BaseManagerClass,
+	AuthenticatedIDRequest
+} from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
+import Manager from "%/managers/profile_picture"
 import OkResponseInfo from "!/response_infos/ok"
 import BoundController from "!/controllers/bound"
 import sniffMediaType from "!/helpers/sniff_media_type"
-import ProfilePictureManager from "%/managers/profile_picture"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -29,21 +31,25 @@ export default class extends BoundController {
 		])
 	}
 
-	get manager(): BaseManagerClass { return UserManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
-		const manager = new ProfilePictureManager(request)
+		const manager = new Manager(request)
 		const { id } = request.params
 
 		const profilePictureDocument = await manager.findWithID(
 			Number(id),
 			{
-				"filter": {
-					"existence": "*"
+				"constraints": {
+					"filter": {
+						"existence": "*"
+					}
+				},
+				"transformerOptions": {
+					"raw": true
 				}
-			},
-			{ "raw": true }
+			}
 		) as ProfilePictureDocument<"read", "raw">
 
 		const profilePicture = profilePictureDocument.data.attributes.fileContents

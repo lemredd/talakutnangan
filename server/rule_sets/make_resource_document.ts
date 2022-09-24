@@ -42,5 +42,5 @@ export default function(
 			"pipes": [ required, object, ...postAttributeValidation.pipes ]
 		},
 		...extraDataQueries
-	}, extraQueries)
+	}, { extraQueries })
 }

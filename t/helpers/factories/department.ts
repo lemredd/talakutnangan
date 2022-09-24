@@ -31,7 +31,7 @@ export default class DepartmentFactory extends BaseFactory<
 	DeserializedDepartmentListDocument
 > {
 	#fullName = () => `${
-		faker.commerce.department()
+		convertForSentence(faker.random.alpha(10))
 	} ${
 		convertForSentence(faker.random.alpha(10))
 	}`

@@ -108,6 +108,12 @@ export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleC
 
 export interface SizeConstraints { size: { minimum?: number, maximum?: number } }
 
+export interface DivisibleByConstraints {
+	divisibleBy: {
+		value: number
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -134,6 +140,7 @@ export type RuleContraints = Partial<
 	& UniqueConsultationScheduleConstraints
 	& DoesBelongToCurrentUserConstraints<unknown>
 	& OrRuleConstraints
+	& DivisibleByConstraints
 >
 
 /**

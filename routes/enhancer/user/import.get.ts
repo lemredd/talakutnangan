@@ -1,6 +1,6 @@
 import type { Request } from "!/types/dependent"
-import type { PageProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { DocumentProps } from "$/types/server"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
@@ -23,9 +23,16 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] { return [] }
 
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Consultation chat platform for MCC",
+			"title": "Import Users | Talakutnangan"
+		}
+	}
+
 	async getPageProps(request: Request): Promise<Serializable> {
 		const manager = new RoleManager(request)
-		const pageProps: Partial<PageProps> = {
+		const pageProps = {
 			"roles": await manager.list({
 				"filter": {
 					"department": "*",

@@ -1,4 +1,4 @@
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import ProfilePictureFactory from "~/factories/profile_picture"
 import RequestEnvironment from "$!/singletons/request_environment"
@@ -9,24 +9,22 @@ import { user as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/profile_picture/read(id).get"
 
 describe("GET /api/profile_picture/:id", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can read profile picture", async () => {
+	it("can read profile picture", async() => {
 		const profilePicture = await new ProfilePictureFactory().insertOne()
 		const studentRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_OWN))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(
+		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,
-			userFactory => {
-				return userFactory.beStudent()
-			})
+			userFactory => userFactory.beStudent())
 
 		const response = await App.request
-			.get(`/api/profile_picture/${profilePicture.id}`)
-			.set("Cookie", cookie)
+		.get(`/api/profile_picture/${profilePicture.id}`)
+		.set("Cookie", cookie)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toStrictEqual(profilePicture.fileContents)

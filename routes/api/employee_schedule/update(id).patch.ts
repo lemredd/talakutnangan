@@ -1,7 +1,6 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
 
@@ -10,7 +9,7 @@ import UserManager from "%/managers/user"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import Policy from "!/bases/policy"
@@ -30,6 +29,7 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import divisibleBy from "!/validators/date/divisible_by"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
@@ -73,21 +73,27 @@ export default class extends DoubleBoundJSONController {
 			},
 			"scheduleEnd": {
 				"constraints": {
+					"divisibleBy": {
+						"value": 15
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:59"),
 						"minimum": convertTimeToMinutes("00:01")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			},
 			"scheduleStart": {
 				"constraints": {
+					"divisibleBy": {
+						"value": 15
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:58"),
 						"minimum": convertTimeToMinutes("00:00")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			}
 		}
 

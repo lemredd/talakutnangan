@@ -9,7 +9,7 @@ import type {
 	BaseManagerClass
 } from "!/types/dependent"
 
-import { personName } from "!/constants/regex"
+import { personName } from "$!/constants/regex"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"

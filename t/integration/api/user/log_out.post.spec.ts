@@ -1,7 +1,7 @@
 import { JSON_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 
 import Route from "!%/api/user/log_out.post"
 

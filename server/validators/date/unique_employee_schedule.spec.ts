@@ -1,10 +1,10 @@
 import type { Request } from "!/types/dependent"
 
-import "~/set-ups/database.set_up"
+import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
 import makeInitialState from "!/validators/make_initial_state"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
-import convertTimeToMinutes from "$/object/convert_time_to_minutes"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import uniqueEmployeeSchedule from "./unique_employee_schedule"
 
 describe("Validator: unique employee schedule", () => {

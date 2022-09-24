@@ -2,7 +2,7 @@ import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Controller from "./update(id).patch"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 const BODY_VALIDATION_INDEX = 1
 

@@ -192,7 +192,7 @@ export default class Fetcher<
 		mustBeDeserialize = true
 	): Promise<Response<T, U, V, W, X, F>> {
 		return response.then(({ body, status }) => {
-			if (status >= 200 || status <= 299) {
+			if (status >= 200 && status <= 299) {
 				return {
 					"body": mustBeDeserialize ? deserialize(body) as F : body as F,
 					status

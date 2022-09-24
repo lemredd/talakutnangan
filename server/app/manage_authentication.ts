@@ -5,14 +5,16 @@ import { Strategy as LocalStrategy } from "passport-local"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
+import UserProfileTransformer from "%/transformers/user_profile"
 
-export default async function() {
+// eslint-disable-next-line require-await
+export default async function(): Promise<void> {
 	passport.use(new LocalStrategy(
 		{
-			usernameField: "email",
-			passwordField: "password"
+			"passwordField": "password",
+			"usernameField": "email"
 		},
-		async (email: string, password: string, done: Function) => {
+		async(email: string, password: string, done: (...allArguments: any) => void) => {
 			const manager = new UserManager()
 			const foundUser = await manager.findWithCredentials(email, password)
 
@@ -32,13 +34,16 @@ export default async function() {
 	passport.serializeUser((user: Serializable, done: (error: any, id: number) => void): void => {
 		Log.success("middleware", "serializing user for session")
 
-		done(null, (user!.data as Serializable)!.id as number)
+		const castUserData = user.data as Serializable
+		done(null, castUserData.id as number)
 	})
 
-	passport.deserializeUser(async (id: number, done: Function) => {
+	passport.deserializeUser(async(id: number, done: (...allArguments: any) => void) => {
 		const manager = new UserManager()
 
-		const user = await manager.findWithID(id)
+		const user = await manager.findWithID(id, {
+			"transformer": new UserProfileTransformer()
+		})
 
 		Log.success("middleware", "deserializing user from session")
 

@@ -15,10 +15,11 @@ import type {
 
 import { faker } from "@faker-js/faker"
 
-import BaseFactory from "~/factories/base"
 import User from "%/models/user"
+import BaseFactory from "~/factories/base"
 import Consultation from "%/models/consultation"
 import ChatMessage from "%/models/chat_message"
+import { chatMessageKind } from "$!/constants/regex"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -38,7 +39,16 @@ export default class ChatMessageFactory extends BaseFactory<
 	#chatMessageActivityGenerator: () => Promise<ChatMessageActivity>
 		= async() => await new ChatMessageActivityFactory().insertOne()
 
-	#kindGenerator: () => string = () => faker.word.adjective()
+	#kindGenerator: () => string = () => {
+		const rawKind = faker.word.adjective().split("").filter(character => {
+			const isValid = chatMessageKind.test(character)
+			return isValid
+		}).join("").repeat(2)
+
+		const MAX_CHARACTERS = 255
+		return rawKind.substring(0, Math.min(rawKind.length, MAX_CHARACTERS))
+	}
+
 	#dataGenerator: () => Message["data"] = () => ({
 		"value": faker.lorem.sentence()
 	} as TextMessage["data"])

@@ -1,4 +1,4 @@
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 
 import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "./authentication-based"

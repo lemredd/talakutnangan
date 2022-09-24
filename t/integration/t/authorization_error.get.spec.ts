@@ -1,6 +1,6 @@
 import RequestEnvironment from "$!/singletons/request_environment"
 
-import App from "~/set-ups/app"
+import App from "~/setups/app"
 
 import Route from "!%/t/authorization_error.get"
 

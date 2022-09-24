@@ -18,6 +18,11 @@
 					<td :title="resource.department.data.fullName">
 						{{ resource.department.data.acronym }}
 					</td>
+					<td>
+						<button class="btn" type="button">
+							edit
+						</button>
+					</td>
 				</tr>
 			</template>
 
@@ -49,6 +54,7 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 .resource-list {
 	margin-top: 1em;
 
@@ -66,11 +72,20 @@
 	.no-results {
 		text-align: center;
 	}
+	.btn{
+		border: none;
+		border-radius: 5px;
+		padding: 8px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 12px;
+	}
 }
 </style>
 
 <script setup lang="ts">
-import { computed, onUpdated, ref } from "vue"
+import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
@@ -80,29 +95,12 @@ const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
 }>()
 
-const resourceType = ref("")
-const resourceProperties = ref<string[]>([])
+const resourceType = computed(() => filteredList[0].type)
 const tableHeaders = computed(() => {
 	let headers: string[] = []
 	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
 	else headers = [ "Name", "no. of users", "" ]
 
 	return headers
-})
-
-onUpdated(() => {
-	// Displays retrieved data from database properly
-	if (filteredList.length) {
-		resourceType.value = filteredList[0].type
-
-		filteredList.forEach((element:any) => {
-			const nonIDProperties = new Set<string>([])
-			Object.keys(element).forEach(key => {
-				nonIDProperties.add(key)
-			})
-			console.log(element)
-			resourceProperties.value = [ ...nonIDProperties ]
-		})
-	}
 })
 </script>

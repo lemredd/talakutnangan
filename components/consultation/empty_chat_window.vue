@@ -1,5 +1,5 @@
 <template>
-	<section class="flex flex-col right">
+	<section class="empty-chat-window  right">
 		<h1 v-if="isUserAStudent" class="student">
 			Need help?
 		</h1>
@@ -14,6 +14,16 @@
 		</p>
 	</section>
 </template>
+
+<style scoped lang="scss">
+.empty-chat-window{
+	display: none;
+
+	@screen sm{
+		@apply flex flex-col;
+	}
+}
+</style>
 
 <script setup lang="ts">
 import { computed } from "vue"

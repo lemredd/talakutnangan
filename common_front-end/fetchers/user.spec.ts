@@ -1,10 +1,13 @@
 /* eslint-disable no-undef */
 import type { UnitError } from "$/types/server"
 
+import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+
 import UserFetcher from "$@/fetchers/user"
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
-describe("Communicator: UserFetcher", () => {
+describe("Fetcher: User", () => {
 	it("can log in", async() => {
 		fetchMock.mockResponse(
 			JSON.stringify({
@@ -102,5 +105,43 @@ describe("Communicator: UserFetcher", () => {
 				}
 			]
 		})
+	})
+
+	it("can update password", async() => {
+		const USER_ID = "1"
+		const CURRENT_PASSWORD = "Hello"
+		const NEW_PASSWORD = "World"
+		const CONFIRM_NEW_PASSWORD = "!"
+		fetchMock.mockResponse("", { "status": RequestEnvironment.status.NO_CONTENT })
+
+		const fetcher = new UserFetcher()
+		const response = await fetcher.updatePassword(
+			USER_ID,
+			CURRENT_PASSWORD,
+			NEW_PASSWORD,
+			CONFIRM_NEW_PASSWORD
+		)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", specializePath(UPDATE_PASSWORD_PATH, {
+			"id": USER_ID
+		}))
+		expect(await request.json()).toStrictEqual({
+			"data": {
+				"attributes": {
+					"password": NEW_PASSWORD
+				},
+				"id": USER_ID,
+				"type": "user"
+			},
+			"meta": {
+				"confirmPassword": CONFIRM_NEW_PASSWORD,
+				"currentPassword": CURRENT_PASSWORD
+			}
+		})
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
+		expect(response).toHaveProperty("body", null)
 	})
 })

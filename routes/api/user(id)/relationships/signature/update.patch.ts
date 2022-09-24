@@ -73,11 +73,11 @@ export default class extends MultipartController {
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
 		const manager = new SignatureManager(request)
-		const { signature } = request.body.data.attributes
+		const { fileContents } = request.body.data.attributes
 		const userData = deserialize(request.user) as DeserializedUserProfile
 		const userID = userData.data.id
 
-		const newSignature = await manager.attach(Number(userID), signature)
+		const newSignature = await manager.attach(Number(userID), fileContents.buffer as Buffer)
 		Log.success("controller", "successfully uploaded the signature")
 
 		return new OkResponseInfo(newSignature)

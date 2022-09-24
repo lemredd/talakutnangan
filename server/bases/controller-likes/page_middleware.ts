@@ -3,7 +3,6 @@ import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Log from "$!/singletons/log"
 import Validation from "!/bases/validation"
 import ControllerLike from "!/bases/controller-like"
 
@@ -17,15 +16,7 @@ export default abstract class extends ControllerLike {
 		return {}
 	}
 
-	getDocumentProps(request: Request): Promise<DocumentProps>|DocumentProps {
-		// TODO: Remove in v0.15
-		Log.errorMessage("controller", `Document props getter must be implemented in ${request.url}.`)
-
-		return {
-			"description": "App using Vite + vite-plugin-ssr",
-			"title": "Vite SSR app"
-		}
-	}
+	abstract getDocumentProps(request: Request): Promise<DocumentProps>|DocumentProps
 
 	get endHandler(): null { return null }
 

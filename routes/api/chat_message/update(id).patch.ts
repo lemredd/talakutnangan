@@ -4,7 +4,7 @@ import type { ChatMessageActivityDocument } from "$/types/documents/chat_message
 
 import Socket from "!/ws/socket"
 import Manager from "%/managers/chat_message"
-import { chatMessageKind } from "!/constants/regex"
+import { chatMessageKind } from "$!/constants/regex"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
@@ -18,6 +18,7 @@ import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 import string from "!/validators/base/string"
 import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
+import length from "!/validators/comparison/length"
 import anyObject from "!/validators/base/any_object"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
@@ -38,11 +39,15 @@ export default class extends DoubleBoundJSONController {
 			},
 			"kind": {
 				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 5
+					},
 					"regex": {
 						"match": chatMessageKind
 					}
 				},
-				"pipes": [ required, string, regex ]
+				"pipes": [ required, string, length, regex ]
 			}
 		}
 

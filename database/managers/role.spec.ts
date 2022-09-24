@@ -19,6 +19,71 @@ describe("Database Manager: Role read operations", () => {
 		}
 	})
 
+	it("can check if there is an attached user with only one role", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(model.id)
+
+		expect(isTheOnlyRole).toBeTruthy()
+	})
+
+	it("can check if there is an attached user with many role", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(model).attach(otherModel).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(model.id)
+
+		expect(isTheOnlyRole).toBeFalsy()
+	})
+
+	it("cannot check for unattached user", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+
+		const isTheOnlyRole = await manager.isTheOnlyRoleToAnyUser(otherModel.id)
+
+		expect(isTheOnlyRole).toBeFalsy()
+	})
+
+	it("can check if there is a user has surviving roles", async() => {
+		const manager = new Manager()
+		const modelA = await new Factory().insertOne()
+		const modelB = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModel).insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).insertOne()
+
+		const canRolesBeDeLeted = await manager.canRolesBeDeLeted([
+			modelA.id,
+			modelB.id
+		])
+
+		expect(canRolesBeDeLeted).toBeFalsy()
+	})
+
+	it("can check if there a user has other roles surviving", async() => {
+		const manager = new Manager()
+		const modelA = await new Factory().insertOne()
+		const modelB = await new Factory().insertOne()
+		const otherModelA = await new Factory().insertOne()
+		const otherModelB = await new Factory().insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModelA).insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModelB).insertOne()
+
+		const canRolesBeDeLeted = await manager.canRolesBeDeLeted([
+			modelA.id,
+			modelB.id
+		])
+
+		expect(canRolesBeDeLeted).toBeTruthy()
+	})
+
 	it("can count single model", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()

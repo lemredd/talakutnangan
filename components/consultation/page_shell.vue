@@ -95,20 +95,26 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { computed, inject, ref, Ref } from "vue"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import ConsultationForm from "@/consultation/form.vue"
 
+import disableScroll from "$@/helpers/disable_scroll"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+
 const pageContext = inject("pageContext") as PageContext<"deserialized">
+const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
 
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
 const isAddingSchedule = ref<boolean>(false)
+
 function toggleAddingSchedule() {
+	disableScroll(rawBodyClasses, [ "unscrollable" ])
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 

@@ -5,12 +5,16 @@ on:
     paths:
       - 'shareable/**'
       - 'common_back-end/**'
+      - 'common_front-end/**'
       - 'database/**'
       - 'server/**'
       - 'routes/**'
       - 't/helpers/**'
       - 't/integration/api/**'
       - 't/integration/t/**'
+      - 'renderer/**'
+      - 'pages/**'
+      - 'components/**'
       - '.github/workflows/back-end.intg.yml'
       - 'jest.back.intg.config.json'
   pull_request:
@@ -21,6 +25,7 @@ on:
     paths:
       - 'shareable/**'
       - 'common_back-end/**'
+      - 'common_front-end/**'
       - 'database/**'
       - 'server/**'
       - 'routes/**'

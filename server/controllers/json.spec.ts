@@ -1,11 +1,11 @@
+import { faker } from "@faker-js/faker"
+
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
-import { faker } from "@faker-js/faker"
-import MockRequester from "~/set-ups/mock_requester"
-
 import required from "!/validators/base/required"
 import regex from "!/validators/comparison/regex"
+import MockRequester from "~/setups/mock_requester"
 
 import JSONController from "./json"
 

@@ -1,6 +1,6 @@
 import { shallowMount } from "@vue/test-utils"
 import { faker } from "@faker-js/faker"
-import Component from "@/fields/non-sensitive_text.vue"
+import Component from "./non-sensitive_text.vue"
 
 describe("Component: fields/non-sensitive_text", () => {
 	it("can update", async() => {
@@ -77,5 +77,26 @@ describe("Component: fields/non-sensitive_text", () => {
 
 		expect(editButton.exists()).toBeFalsy()
 		expect(field.attributes("disabled")).toBeFalsy()
+	})
+
+	it("may be saved", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"editable": true,
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const editButton = wrapper.find("button")
+
+		await editButton.trigger("click")
+		await editButton.trigger("click")
+
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toEqual("")
+		expect(wrapper.emitted("save")).toHaveLength(1)
 	})
 })

@@ -1,7 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import Controller from "./create.post"
 
 const BODY_VALIDATION_INDEX = 0
@@ -42,7 +42,7 @@ describe("Controller: POST /api/consultation", () => {
 								"type": "role"
 							}
 						},
-						"consulters": {
+						"participants": {
 							"data": [
 								{
 									"id": String(user.id),
@@ -54,8 +54,7 @@ describe("Controller: POST /api/consultation", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": false,
-					"reachableEmployeeID": String(model.consultant?.id)
+					"doesAllowConflicts": false
 				}
 			}
 		})

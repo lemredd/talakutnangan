@@ -4,24 +4,24 @@ import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
 import DepartmentFetcher from "./department"
 
-describe("Communicator: Department", () => {
+describe("Fetcher: Department", () => {
 	it("can create resource", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": {
-				"type": "department",
-				"id": "1",
 				"attributes": {
-					"fullName": "A",
 					"acronym": "A",
+					"fullName": "A",
 					"mayAdmit": true
-				}
+				},
+				"id": "1",
+				"type": "department"
 			}
 		}), { "status": RequestEnvironment.status.CREATED })
 
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.create({
-			"fullName": "A",
 			"acronym": "A",
+			"fullName": "A",
 			"mayAdmit": true
 		})
 
@@ -31,21 +31,21 @@ describe("Communicator: Department", () => {
 		expect(request).toHaveProperty("url", "/api/department")
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
-				"type": "department",
 				"attributes": {
-					"fullName": "A",
 					"acronym": "A",
+					"fullName": "A",
 					"mayAdmit": true
-				}
+				},
+				"type": "department"
 			}
 		})
 		expect(response).toHaveProperty("body", {
 			"data": {
-				"type": "department",
-				"id": "1",
-				"fullName": "A",
 				"acronym": "A",
-				"mayAdmit": true
+				"fullName": "A",
+				"id": "1",
+				"mayAdmit": true,
+				"type": "department"
 			}
 		})
 		expect(response).toHaveProperty("status", RequestEnvironment.status.CREATED)
@@ -56,10 +56,12 @@ describe("Communicator: Department", () => {
 			JSON.stringify({
 				"data": [
 					{
-						"type": "department",
-						"fullName": "A",
-						"acronym": "A",
-						"mayAdmit": true
+						"attributes": {
+							"acronym": "A",
+							"fullName": "A",
+							"mayAdmit": true
+						},
+						"type": "department"
 					}
 				]
 			}),
@@ -68,14 +70,14 @@ describe("Communicator: Department", () => {
 
 		const queryObject: DepartmentQueryParameters = {
 			"filter": {
-				"existence": "exists",
-				"IDs": []
+				"IDs": [],
+				"existence": "exists"
 			},
-			"sort": [ "id", "name" ],
 			"page": {
-				"offset": 0,
-				"limit": 5
-			}
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": [ "id", "name" ]
 		}
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.list(queryObject)
@@ -98,8 +100,8 @@ describe("Communicator: Department", () => {
 
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.update("1", {
-			"fullName": "A",
 			"acronym": "A",
+			"fullName": "A",
 			"mayAdmit": true
 		})
 
@@ -111,13 +113,13 @@ describe("Communicator: Department", () => {
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
-				"type": "department",
-				"id": "1",
 				"attributes": {
-					"fullName": "A",
 					"acronym": "A",
+					"fullName": "A",
 					"mayAdmit": true
-				}
+				},
+				"id": "1",
+				"type": "department"
 			}
 		})
 		expect(response).toHaveProperty("body", null)
@@ -139,8 +141,8 @@ describe("Communicator: Department", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
 				{
-					"type": "department",
-					"id": "1"
+					"id": "1",
+					"type": "department"
 				}
 			]
 		})
@@ -163,8 +165,8 @@ describe("Communicator: Department", () => {
 		expect(request.json()).resolves.toStrictEqual({
 			"data": [
 				{
-					"type": "department",
-					"id": "2"
+					"id": "2",
+					"type": "department"
 				}
 			]
 		})

@@ -9,6 +9,10 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type {
+	DeserializedDepartmentDocument,
+	DeserializedDepartmentListDocument
+} from "$/types/documents/department"
+import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
@@ -71,6 +75,9 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	roles: OptionalPageProps<T, DeserializedRoleListDocument>,
 	role: OptionalPageProps<T, DeserializedRoleDocument>
+
+	departments: OptionalPageProps<T, DeserializedDepartmentListDocument>,
+	department: OptionalPageProps<T, DeserializedDepartmentDocument>
 
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
 	consultation: OptionalPageProps<T, DeserializedConsultationDocument>

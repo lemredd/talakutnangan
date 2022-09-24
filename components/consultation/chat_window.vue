@@ -6,6 +6,11 @@
 			<div class="selected-consultation-title">
 				{{ consultation.reason }}
 			</div>
+			<div class="selected-consultation-remaining-time">
+				<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
+				<span>{{ remainingTime.minutes }}m</span>
+				<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
+			</div>
 			<div class="selected-consultation-user-status row-start-2">
 				<!-- TODO(lead): must base on user active status -->
 				User is online
@@ -35,7 +40,7 @@
 			</div>
 
 			<div
-				v-for="message in chatMessages.data"
+				v-for="message in props.chatMessages.data"
 				:key="message.id"
 				class="chat-entry">
 				<ChatMessageItem :chat-message="message"/>
@@ -46,7 +51,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
+
+import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	ConsultationAttributes,
@@ -54,44 +61,143 @@ import type {
 } from "$/types/documents/consultation"
 
 import ConsultationFetcher from "$@/fetchers/consultation"
+import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+import convertMillisecondsToFullTimeObject
+	from "$@/helpers/convert_milliseconds_to_full_time_object"
+
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
-const {
-	consultation,
-	chatMessages
-} = defineProps<{
+const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
-const consultationID = computed<string>(() => consultation.id)
-const consultationStatus = computed<string>(() => consultation.status)
+
+const remainingMilliseconds = ref<number>(0)
+const remainingTime = computed<FullTime>(
+	() => convertMillisecondsToFullTimeObject(remainingMilliseconds.value)
+)
+const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
+	() => props.consultation
+)
+const consultationID = computed<string>(() => consultation.value.id)
+const consultationStatus = computed<string>(() => consultation.value.status)
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 }
 const emit = defineEmits<CustomEvents>()
 
+function restartRemainingTime(): void {
+	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
+}
+
+function changeTime(
+	unusedResource: DeserializedConsultationResource,
+	remainingMillisecondduration: number
+): void {
+	remainingMilliseconds.value = remainingMillisecondduration
+}
+
+function finishConsultation(): void {
+	const { startedAt } = consultation.value
+
+	if (startedAt instanceof Date) {
+		const newConsultationData: ConsultationAttributes<"serialized"> = {
+			"actionTaken": null,
+			"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
+			"finishedAt": new Date().toISOString(),
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt.toISOString(),
+			"startedAt": startedAt.toISOString()
+		}
+
+		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
+			"actionTaken": consultation.value.actionTaken,
+			"deletedAt": consultation.value.deletedAt ?? null,
+			"finishedAt": new Date(newConsultationData.finishedAt as string),
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt,
+			startedAt
+		}
+
+		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
+			"consultant"|"consultantRole"
+		> = {
+			...consultation.value,
+			...deserializedConsultationData
+		}
+
+		ConsultationTimerManager.unlistenConsultationTimeEvent(
+			expectedDeserializedConsultationResource,
+			"finish",
+			finishConsultation
+		)
+
+		new ConsultationFetcher().update(consultationID.value, newConsultationData)
+		.then(() => {
+			remainingMilliseconds.value = 0
+			emit("updatedConsultationAttributes", deserializedConsultationData)
+		})
+	}
+}
+
+function registerListeners(resource: DeserializedConsultationResource): void {
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
+	ConsultationTimerManager.listenConsultationTimeEvent(
+		resource,
+		"restartTime",
+		restartRemainingTime
+	)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
+}
+
 function startConsultation() {
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": null,
-		"deletedAt": consultation.deletedAt?.toISOString() ?? null,
+		"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
 		"finishedAt": null,
-		"reason": consultation.reason,
-		"scheduledStartAt": consultation.scheduledStartAt.toISOString(),
+		"reason": consultation.value.reason,
+		"scheduledStartAt": consultation.value.scheduledStartAt.toISOString(),
 		"startedAt": new Date().toISOString()
 	}
+
 	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-			"actionTaken": consultation.actionTaken,
-			"deletedAt": consultation.deletedAt ?? null,
-			"finishedAt": consultation.finishedAt,
-			"reason": consultation.reason,
-			"scheduledStartAt": consultation.scheduledStartAt,
-			"startedAt": consultation.startedAt
+			"actionTaken": consultation.value.actionTaken,
+			"deletedAt": consultation.value.deletedAt ?? null,
+			"finishedAt": consultation.value.finishedAt,
+			"reason": consultation.value.reason,
+			"scheduledStartAt": consultation.value.scheduledStartAt,
+			"startedAt": new Date(newConsultationData.startedAt as string)
 		}
-		// TODO: Start the timer
+
+		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
+			"consultant"|"consultantRole"
+		> = {
+			...consultation.value,
+			...deserializedConsultationData
+		}
+
+		registerListeners(expectedDeserializedConsultationResource)
+
+		remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
 		emit("updatedConsultationAttributes", deserializedConsultationData)
 	})
 }
+
+const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
+	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
+		registerListeners(newConsultation)
+
+		startWatcher()
+	}
+}, { "deep": true })
+
+onMounted(() => {
+	if (props.consultation.startedAt instanceof Date && props.consultation.finishedAt === null) {
+		registerListeners(props.consultation)
+		ConsultationTimerManager.restartTimerFor(props.consultation)
+	}
+})
 </script>

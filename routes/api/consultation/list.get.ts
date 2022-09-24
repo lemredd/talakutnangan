@@ -7,27 +7,46 @@ import UserManager from "%/managers/user"
 import Manager from "%/managers/consultation"
 import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import { READ } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
-
+import date from "!/validators/base/date"
+import object from "!/validators/base/object"
 import makeListRules from "!/rule_sets/make_list"
+import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
+import skipAsterisk from "!/validators/comparison/skip_asterisk"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
 export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ
-		])
+		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
 	}
 
 	makeQueryRuleGenerator(): FieldRules {
 		return makeListRules(
 			Manager,
-			makeIDBasedFilterRules("user", UserManager, true)
+			{
+				...makeIDBasedFilterRules("user", UserManager, true),
+				"consultationScheduleRange": {
+					"constraints": {
+						"nullable": {
+							"defaultValue": "*"
+						},
+						"object": {
+							"end": {
+								// TODO: Ensure this is greater than the start
+								"pipes": [ required, date ]
+							},
+							"start": {
+								"pipes": [ required, date ]
+							}
+						}
+					},
+					"pipes": [ nullable, skipAsterisk, object ]
+				}
+			}
 		)
 	}
 

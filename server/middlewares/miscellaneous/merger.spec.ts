@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import MockRequester from "~/set-ups/mock_requester"
+import MockRequester from "~/setups/mock_requester"
 import Middleware from "!/bases/middleware"
 
 import Merger from "./merger"

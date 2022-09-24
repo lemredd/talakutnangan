@@ -135,8 +135,10 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 					"acronym",
 					departmentName,
 					{
-						"filter": {
-							"existence": "exists"
+						"constraints": {
+							"filter": {
+								"existence": "exists"
+							}
 						}
 					}
 				).then(rawDepartment => {
@@ -172,8 +174,10 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 				const pendingRole = roleManager.findWithID(
 					roleID,
 					{
-						"filter": {
-							"existence": "exists"
+						"constraints": {
+							"filter": {
+								"existence": "exists"
+							}
 						}
 					}
 				).then(rawRole => {
