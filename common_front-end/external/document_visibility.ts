@@ -11,8 +11,8 @@ export default class DocumentVisibility extends RequestEnvironment {
 		Stub.runConditionally(
 			() => {
 				document.addEventListener("visibilitychange", () => {
-					const currentState = document.visibilityState
-					this.rawListeners.forEach(rawListener => rawListener(currentState))
+					const newState = document.visibilityState
+					this.rawListeners.forEach(rawListener => rawListener(newState))
 				})
 			},
 			() => [ {} as unknown as void, {

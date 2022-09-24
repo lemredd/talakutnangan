@@ -69,6 +69,7 @@ import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import DocumentVisibility from "$@/external/document_visibility"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
@@ -137,7 +138,7 @@ function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
 	throw new Error("Chat message activities cannot be processed yet.")
 }
 
-const isWindowShown = false
+let isWindowShown = false
 function updateReceivedMessageAt(): void {
 	const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt as Date
 	chatMessageActivityFetcher().update(currentChatMessageActivityResource.value.id, {
@@ -149,6 +150,10 @@ function updateReceivedMessageAt(): void {
 const debounceUpdateReceivedMessageAt = debounce(() => {
 	if (isWindowShown) updateReceivedMessageAt()
 }, DEBOUNCED_WAIT_DURATION)
+
+DocumentVisibility.addEventListener(newState => {
+	isWindowShown = newState === "visible"
+})
 
 function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {
