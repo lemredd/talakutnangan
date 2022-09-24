@@ -3,9 +3,8 @@
 		<label v-if="label" :for="selectID">{{ label }}</label>
 		<select
 			:id="selectID"
-			:value="modelValue"
-			:disabled="disabled"
-			@change="updateModelValue">
+			v-model="value"
+			:disabled="disabled">
 			<option
 				value=""
 				disabled>
@@ -46,12 +45,15 @@ const props = defineProps<{
 	disabled?: boolean
 }>()
 
-const selectID = computed(() => props.options.map(info => info.value).join(" ").replace(" ", "_"))
-
 const emit = defineEmits<{(e: "update:modelValue", value: string): void}>()
 
-function updateModelValue(event: Event) {
-	const element = event.target as HTMLSelectElement
-	emit("update:modelValue", element.value)
-}
+const selectID = computed(() => props.options.map(info => info.value).join(" ").replace(" ", "_"))
+const value = computed({
+	get() {
+		return props.modelValue
+	},
+	set(newValue: string): void {
+		emit("update:modelValue", newValue)
+	}
+})
 </script>
