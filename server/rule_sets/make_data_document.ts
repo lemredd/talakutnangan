@@ -8,7 +8,11 @@ import length from "!/validators/comparison/length"
 export default function(
 	isObject: boolean,
 	unitDataRules: FieldRules,
-	extraQueries: FieldRules = {}
+	{
+		extraQueries = {}
+	}:	Partial<{
+		extraQueries: FieldRules
+	}> = {}
 ): FieldRules {
 	const constraints: RuleContraints = isObject
 		? { "object": unitDataRules }
