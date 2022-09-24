@@ -25,6 +25,62 @@ describe("Database Manager: Consultation read operations", () => {
 
 		expect(doesBelong).toBeTruthy()
 	})
+
+	it("can start without other started consultation", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const model = await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => null)
+		.insertOne()
+
+		const canStart = await manager.canStart(model.id)
+
+		expect(canStart).toBeTruthy()
+	})
+
+	it("can start because same consultation already starts", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const model = await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date())
+		.insertOne()
+		await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => null)
+		.insertOne()
+
+		const canStart = await manager.canStart(model.id)
+
+		expect(canStart).toBeTruthy()
+	})
+
+	it("cannot start because other consultation already starts", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const model = await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => null)
+		.insertOne()
+		await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date())
+		.insertOne()
+
+		const canStart = await manager.canStart(model.id)
+
+		expect(canStart).toBeFalsy()
+	})
 })
 
 describe("Database Manager: Consultation create operations", () => {
