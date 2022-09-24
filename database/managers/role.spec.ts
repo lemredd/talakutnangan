@@ -51,7 +51,7 @@ describe("Database Manager: Role read operations", () => {
 		expect(isTheOnlyRole).toBeFalsy()
 	})
 
-	it("can check if there is an attached user with many role", async() => {
+	it("can check if there is a user has surviving roles", async() => {
 		const manager = new Manager()
 		const modelA = await new Factory().insertOne()
 		const modelB = await new Factory().insertOne()

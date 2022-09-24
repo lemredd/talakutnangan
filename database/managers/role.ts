@@ -7,6 +7,7 @@ import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/r
 import Model from "%/models/role"
 import BaseManager from "%/managers/base"
 import trimRight from "$/string/trim_right"
+import makeUnique from "$/array/make_unique"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
@@ -161,6 +162,54 @@ export default class extends BaseManager<
 			) as unknown as [ { id: number, count: string }[] ]
 
 			return counts.length > 0
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async canRolesBeDeLeted(roleIDs: number[]): Promise<boolean> {
+		try {
+			if (!Model.sequelize || !AttachedRole.sequelize) {
+				throw new DatabaseError("Developer may have forgot to register the models.")
+			}
+
+			const [ rawUserIDs ] = await AttachedRole.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							"roleID"
+						],
+						"where": new Condition().or(
+							...roleIDs.map(roleID => new Condition().equal("roleID", roleID))
+						).build()
+					}
+				)
+			) as unknown as [ { id: number, userID: string }[] ]
+			const userIDs = makeUnique(rawUserIDs.map(info => info.userID))
+
+			const [ survivingAttachments ] = await Model.sequelize.query(
+				// @ts-ignore
+				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					AttachedRole.tableName, {
+						"attributes": [
+							"userID",
+							"roleID"
+						],
+						"group": [
+							[ "userID" ]
+						],
+						"where": new Condition().and(
+							new Condition().isIncludedIn("userID", userIDs),
+							new Condition().isNotIncludedIn("roleID", roleIDs)
+						).build()
+					}
+				)
+			) as unknown as [ { id: number, userID: string }[] ]
+			const survivingUserIDs = survivingAttachments.map(info => info.userID)
+
+			return userIDs.length === survivingUserIDs.length
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
