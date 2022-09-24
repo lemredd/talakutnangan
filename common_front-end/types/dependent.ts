@@ -24,5 +24,4 @@ interface TimerListener {
 
 export type TimerListeners = TimerListener[]
 
-type VisibilityListener = (currentVisibility: Document["visibilityState"]) => void
-export type VisibilityListeners = VisibilityListener[]
+export type VisibilityListener = (currentVisibility: Document["visibilityState"]) => void
