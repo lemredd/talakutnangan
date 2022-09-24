@@ -38,6 +38,7 @@ describe("DELETE /api/role", () => {
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
+		console.log(response.body, "\n\n\n\n")
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		expect(await Model.findOne({ "where": { "id": model.id } })).toBeNull()
 	})
