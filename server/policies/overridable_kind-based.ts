@@ -50,6 +50,7 @@ export default class <
 	}
 
 	async authorize(request: V): Promise<void> {
+		await super.authorize(request)
 		await this.checkLimitation(request)
 		await this.checkOthers(request)
 	}
