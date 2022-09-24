@@ -6,29 +6,41 @@
 
 <template>
 	<div class="schedule-picker">
-		<div class="schedule-picker-header flex flex-col justify-between mb-5">
-			<h3 class="day mb-2">
-				{{ convertForSentence(day) }}
-			</h3>
-
-			<button
-				v-if="!isEditing"
-				class="edit-btn btn btn-primary w-[max-content]"
-				@click="toggleEditing">
-				edit
+		<button
+			v-if="!isNew && !isEditing"
+			class="edit-btn btn btn-primary w-[max-content]"
+			@click="toggleEditing">
+			edit
+		</button>
+		<div
+			v-if="!isNew && isEditing"
+			class="buttons">
+			<button class="save-btn btn btn-primary">
+				save
 			</button>
-			<div
-				v-else
-				class="buttons">
-				<button class="save-btn btn btn-primary">
-					save
-				</button>
-				<button
-					class="save-btn btn ml-5"
-					@click="toggleEditing">
-					Discard
-				</button>
-			</div>
+			<button
+				class="save-btn btn ml-5"
+				@click="toggleEditing">
+				Discard
+			</button>
+		</div>
+		<button
+			v-if="isNew && !isAdding"
+			class="edit-btn btn btn-primary w-[max-content]"
+			@click="toggleAdding">
+			Add
+		</button>
+		<div
+			v-if="isNew && isAdding"
+			class="buttons">
+			<button class="save-btn btn btn-primary">
+				save
+			</button>
+			<button
+				class="save-btn btn ml-5"
+				@click="toggleAdding">
+				Discard
+			</button>
 		</div>
 		<label class="time-selectors">
 			<span>From:</span>
