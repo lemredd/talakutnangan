@@ -167,6 +167,18 @@ export default class extends DevController {
 				.scheduleStart(() => convertTimeToMinutes("08:00"))
 				.scheduleEnd(() => convertTimeToMinutes("17:00"))
 				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "saturday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "sunday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
 
 				Log.success("controller", "created test dean")
 
