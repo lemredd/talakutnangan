@@ -48,7 +48,7 @@
 				<span>From:</span>
 				<div id="start" class="start">
 					<Selectable
-						v-model="scheduleStart"
+						v-model="startTime"
 						class="inline"
 						:options="availableTimes"
 						:disabled="!isEditing"/>
@@ -63,7 +63,7 @@
 				<span class="to">To:</span>
 				<div id="end" class="end">
 					<Selectable
-						v-model="scheduleEnd"
+						v-model="endTime"
 						class="inline"
 						:options="availableTimes"
 						:disabled="!isEditing"/>
@@ -171,6 +171,12 @@ function generateNumberRange() {
 const availableTimes = makeOptions(generateNumberRange())
 const midDay = makeOptions([ "AM", "PM" ])
 
+const startTime = ref(convertTimeObjectToTimeString(
+	convertMinutesToTimeObject(props.scheduleStart)
+))
+const endTime = ref(convertTimeObjectToTimeString(
+	convertMinutesToTimeObject(props.scheduleEnd)
+))
 const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
 const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
