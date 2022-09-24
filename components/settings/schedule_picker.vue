@@ -109,20 +109,20 @@ function makeOptions(values: any[]): any[] {
 	return options
 }
 
-function getTimePart(time: string, part: "hour" | "minute" | "midday") {
+function getTimePart(time: number, part: "hour" | "minute" | "midday") {
 	const noon = 12
-	const [ hour, minute ] = time.split(":")
+	const timeObject = convertMinutesToTimeObject(time)
 	let partToGive = ""
 
 	if (part === "hour") {
-		if (Number(hour) <= noon) partToGive = hour
-		else partToGive = twoDigits(Number(hour) - noon) as string
+		if (timeObject.hours <= noon) partToGive = String(timeObject.hours)
+		else partToGive = twoDigits(timeObject.hours - noon)
 	}
 
-	if (part === "minute") partToGive = minute
+	if (part === "minute") partToGive = String(timeObject.minutes)
 
 	if (part === "midday") {
-		if (Number(hour) < 12) partToGive = "AM"
+		if (timeObject.hours < noon) partToGive = "AM"
 		else partToGive = "PM"
 	}
 
