@@ -194,8 +194,7 @@ export default class extends BaseManager<
 				AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
 					AttachedRole.tableName, {
 						"attributes": [
-							"userID",
-							"roleID"
+							"userID"
 						],
 						"group": [
 							[ "userID" ]
