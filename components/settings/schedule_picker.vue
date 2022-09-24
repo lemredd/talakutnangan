@@ -87,9 +87,9 @@ import Selectable from "@/fields/selectable_options.vue"
 import convertForSentence from "$/string/convert_for_sentence"
 
 const props = defineProps<{
-	day: string
-	startTime: string
-	endTime: string
+	isNew?: boolean
+	scheduleStart: number
+	scheduleEnd: number
 }>()
 
 const isEditing = ref(false)
@@ -146,12 +146,8 @@ function generateNumberRange() {
 const availableTimes = makeOptions(generateNumberRange())
 const midDay = makeOptions([ "AM", "PM" ])
 
-const { startTime } = props
-const startMidDay = ref(getTimePart(startTime, "midday"))
-
-const rawEndTime = props.endTime as string
-const { endTime } = props
-const endMidDay = ref(getTimePart(rawEndTime, "midday"))
+const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
+const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
 function setNewTime(hour: string, minute: string, oldMidDay: string) {
 	const newHour = oldMidDay === "PM"
