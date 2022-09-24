@@ -15,7 +15,7 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & DivisibleByConstraints
+	constraints: ValidationConstraints & Partial<DivisibleByConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
