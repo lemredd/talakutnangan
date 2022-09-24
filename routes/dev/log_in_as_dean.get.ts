@@ -10,6 +10,7 @@ import AttachedRole from "%/models/attached_role"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import EmployeeScheduleFactory from "~/factories/employee_schedule"
 import {
 	tag,
 	user,
@@ -127,6 +128,10 @@ export default class extends DevController {
 				.email(() => testDeanEmail)
 				.beReachableEmployee()
 				.in(testInstituteDepartment)
+				.insertOne()
+
+				const employeeSchedule = await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
 				.insertOne()
 
 				Log.success("controller", "created test dean")
