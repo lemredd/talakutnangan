@@ -42,37 +42,39 @@
 				Discard
 			</button>
 		</div>
-		<label class="time-selectors">
-			<span>From:</span>
-			<div id="start" class="start">
-				<Selectable
-					v-model="startTime"
-					class="inline"
-					:options="availableTimes"
-					:disabled="!isEditing"/>
-				<Selectable
-					v-model="startMidDay"
-					class="inline"
-					:options="midDay"
-					:disabled="!isEditing"/>
-			</div>
-		</label>
-		<label class="time-selectors">
-			<span class="to">To:</span>
-			<div id="end" class="end">
-				<Selectable
-					v-model="endTime"
-					class="inline"
-					:options="availableTimes"
-					:disabled="!isEditing"/>
+		<div v-if="!isNew || (isNew && isAdding)" class="time-selectors">
+			<label class="time-selector">
+				<span>From:</span>
+				<div id="start" class="start">
+					<Selectable
+						v-model="scheduleStart"
+						class="inline"
+						:options="availableTimes"
+						:disabled="!isEditing"/>
+					<Selectable
+						v-model="startMidDay"
+						class="inline"
+						:options="midDay"
+						:disabled="!isEditing"/>
+				</div>
+			</label>
+			<label class="time-selector">
+				<span class="to">To:</span>
+				<div id="end" class="end">
+					<Selectable
+						v-model="scheduleEnd"
+						class="inline"
+						:options="availableTimes"
+						:disabled="!isEditing"/>
 
-				<Selectable
-					v-model="endMidDay"
-					class="inline"
-					:options="midDay"
-					:disabled="!isEditing"/>
-			</div>
-		</label>
+					<Selectable
+						v-model="endMidDay"
+						class="inline"
+						:options="midDay"
+						:disabled="!isEditing"/>
+				</div>
+			</label>
+		</div>
 	</div>
 </template>
 
