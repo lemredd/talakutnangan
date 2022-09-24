@@ -36,10 +36,8 @@
 @import "@styles/variables.scss";
 
 .flag-header {
+	@apply text-size-[1.25rem] mb-3 font-600
 	color: $color-primary;
-	font-size: 1.25rem;
-	margin-bottom: 0.75rem;
-	font-weight: 600;
 }
 
 .operational-flags {
