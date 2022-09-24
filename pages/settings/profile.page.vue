@@ -84,11 +84,7 @@
 				Consultation Schedules
 			</h3>
 			<SchedulePicker
-				v-for="schedule in schedules"
-				:key="schedules.indexOf(schedule)"
-				:day="schedule.day"
-				:start-time="schedule.startTime"
-				:end-time="schedule.endTime"/>
+				:user-id="userProfileData.id"/>
 		</div>
 	</div>
 </template>
@@ -140,11 +136,11 @@ import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import ProfilePicture from "@/helpers/profile_picture.vue"
 import Signature from "@/helpers/signature.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
+import ProfilePicture from "@/helpers/profile_picture.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
@@ -213,35 +209,6 @@ function toggleDarkMode() {
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 	updateUser()
 }
-
-console.log(userProfileData.value.employeeSchedule)
-const schedules = [
-	{
-		"day": "monday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "tuesday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "wednesday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "thursday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	},
-	{
-		"day": "friday",
-		"endTime": "17:00",
-		"startTime": "08:00"
-	}
-]
 
 const tabs: TabInfo[] = [
 	{
