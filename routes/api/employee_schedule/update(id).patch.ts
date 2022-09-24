@@ -13,12 +13,10 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import Policy from "!/bases/policy"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import OverridableKindBasedPolicy from "!/policies/overridable_kind-based"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
@@ -40,12 +38,12 @@ export default class extends DoubleBoundJSONController {
 
 	get policy(): Policy {
 		return new Merger([
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy,
-			new PermissionBasedPolicy(permissionGroup, [
-				UPDATE_OWN_DATA,
+			new OverridableKindBasedPolicy(
+				[ "reachable_employee" ],
+				permissionGroup,
 				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			]),
+			),
 			new BelongsToCurrentUserPolicy(this.manager, {
 				"bypassNecessarilyWith": {
 					"combinations": [

@@ -1,7 +1,5 @@
 import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
 import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 
