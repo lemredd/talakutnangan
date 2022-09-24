@@ -33,6 +33,8 @@ export default function(
 			"mustCastID": false,
 			postIDRules
 		}),
-		extraQueries
+		{
+			extraQueries
+		}
 	)
 }

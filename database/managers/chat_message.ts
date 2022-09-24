@@ -212,15 +212,6 @@ export default class extends BaseManager<
 	): Promise<Model> {
 		const model = await this.model.create(details, this.transaction.transactionObject)
 
-		const activityManager = new ChatMessageActivityManager({
-			"cache": this.cache,
-			"transaction": this.transaction
-		})
-
-		await activityManager.update(details.chatMessageActivityID, {
-			"receivedMessageAt": new Date()
-		})
-
 		model.chatMessageActivity = await ChatMessageActivity.findByPk(
 			details.chatMessageActivityID,
 			{

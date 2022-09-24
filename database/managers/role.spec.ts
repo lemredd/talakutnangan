@@ -51,6 +51,39 @@ describe("Database Manager: Role read operations", () => {
 		expect(isTheOnlyRole).toBeFalsy()
 	})
 
+	it("can check if there is a user has surviving roles", async() => {
+		const manager = new Manager()
+		const modelA = await new Factory().insertOne()
+		const modelB = await new Factory().insertOne()
+		const otherModel = await new Factory().insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModel).insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).insertOne()
+
+		const canRolesBeDeLeted = await manager.canRolesBeDeLeted([
+			modelA.id,
+			modelB.id
+		])
+
+		expect(canRolesBeDeLeted).toBeFalsy()
+	})
+
+	it("can check if there a user has other roles surviving", async() => {
+		const manager = new Manager()
+		const modelA = await new Factory().insertOne()
+		const modelB = await new Factory().insertOne()
+		const otherModelA = await new Factory().insertOne()
+		const otherModelB = await new Factory().insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModelA).insertOne()
+		await new UserFactory().attach(modelA).attach(modelB).attach(otherModelB).insertOne()
+
+		const canRolesBeDeLeted = await manager.canRolesBeDeLeted([
+			modelA.id,
+			modelB.id
+		])
+
+		expect(canRolesBeDeLeted).toBeTruthy()
+	})
+
 	it("can count single model", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()

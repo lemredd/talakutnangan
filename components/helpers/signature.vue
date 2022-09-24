@@ -1,5 +1,5 @@
 <template>
-	<img :src="profilePictureURL"/>
+	<img :src="signatureURL"/>
 </template>
 
 <style scoped lang="scss">
@@ -12,25 +12,24 @@
 import { computed, inject } from "vue"
 
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
-import Icon from "@assets/icon.png"
+import type { DeserializedSignatureDocument } from "$/types/documents/signature"
 import { PageContext } from "$/types/renderer"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const user = pageContext.pageProps.userProfile as DeserializedUserDocument
 
-function isDeserializedProfilePictureDocument(value: any)
-: value is DeserializedProfilePictureDocument {
+function isDeserializedSignatureDocument(value: any)
+: value is DeserializedSignatureDocument {
 	return typeof value === "object"
 }
 
-const profilePictureURL = computed(() => {
-	const { profilePicture } = user.data
+const signatureURL = computed(() => {
+	const { signature } = user.data
 
-	if (isDeserializedProfilePictureDocument(profilePicture)) {
-		return profilePicture.data.fileContents
+	if (isDeserializedSignatureDocument(signature)) {
+		return signature.data.fileContents
 	}
 
-	return Icon
+	return ""
 })
 </script>

@@ -12,14 +12,17 @@ import DepartmentFactory from "~/factories/department"
 import UserProfileTransformer from "%/transformers/user_profile"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	READ_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/user_combinations"
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Page: settings/profile", () => {
 	describe("Reading", () => {
-		it("should place display name", async() => {
+		it("should read display name and dark mode", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
@@ -37,7 +40,12 @@ describe("Page: settings/profile", () => {
 						"bodyClasses": ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": {
+									"data": {
+										...userProfile.data,
+										"prefersDark": true
+									}
+								}
 							}
 						}
 					}
@@ -45,9 +53,12 @@ describe("Page: settings/profile", () => {
 			})
 
 			const displayNameField = wrapper.findComponent({ "name": "TextualField" })
+			const [ darkMode ] = wrapper.find("#dark-mode-toggle").getRootNodes()
+			const darkModeCheckbox = darkMode as HTMLInputElement
 
 			expect(displayNameField.props().modelValue).toEqual(user.data.name)
 			expect(displayNameField.html()).toContain(user.data.name)
+			expect(darkModeCheckbox.value).toBe("on")
 		})
 		it("can display profile picture", async() => {
 			const sampleURL = "/images/profile.png"
@@ -75,7 +86,7 @@ describe("Page: settings/profile", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
-										...userProfile,
+										...userProfile.data,
 										profilePicture
 									}
 								}
@@ -84,27 +95,68 @@ describe("Page: settings/profile", () => {
 					},
 					"stubs": {
 						"PicturePicker": false,
-						"Picture": false
+						"ProfilePicture": false
 					}
 				}
 			})
-			const picture = wrapper.findComponent({ "name": "Picture" })
+			const picture = wrapper.find("img")
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
-		it.skip("can display signature", async() => {
+		it("can display signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
 				"data": {
-					"attributes": {
-						"fileContents": sampleURL
-					}
+					"fileContents": sampleURL
 				}
 			}
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.insertOne()
+			const user = await new UserFactory().in(department)
+			.beReachableEmployee()
+			.attach(role)
+			.deserializedOne(true)
+			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+
+			const wrapper = shallowMount(Page, {
+				"global": {
+					"provide": {
+						"bodyClasses": ref([]),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										...userProfile.data,
+										signature
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"PicturePicker": false,
+						"Signature": false
+					}
+				}
+			})
+			const picture = wrapper.find("img")
+
+			expect(picture.attributes().src).toEqual(sampleURL)
+		})
+		it("can not display signature user is admin", async() => {
+			const sampleURL = "/images/signature.png"
+			const signature = {
+				"data": {
+					"fileContents": sampleURL
+				}
+			}
+			const department = await new DepartmentFactory().mayNotAdmit()
+			.insertOne()
+			const role = await new RoleFactory()
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
@@ -120,7 +172,7 @@ describe("Page: settings/profile", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
-										...userProfile,
+										...userProfile.data,
 										signature
 									}
 								}
@@ -129,13 +181,12 @@ describe("Page: settings/profile", () => {
 					},
 					"stubs": {
 						"PicturePicker": false,
-						"Picture": false
+						"Signature": false
 					}
 				}
 			})
-			const picture = wrapper.findComponent({ "name": "Picture" })
 
-			expect(picture.attributes().src).toEqual(sampleURL)
+			expect(wrapper.html()).not.toContain("img")
 		})
 	})
 
@@ -251,7 +302,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
-		it.skip("can create signature", async() => {
+		it("can create signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
@@ -259,7 +310,7 @@ describe("Page: settings/profile", () => {
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
 			.insertOne()
 			const user = await new UserFactory().in(department)
-			.beUnreachableEmployee()
+			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
