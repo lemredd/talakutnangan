@@ -78,6 +78,11 @@ export default class Condition<T = any> {
 		return this
 	}
 
+	isNotIncludedIn(column: Column, value: any[]|Literal): Condition {
+		this.currentCondition[column] = { [Op.notIn]: value }
+		return this
+	}
+
 	isOnDay(column: Column, value: Day): Condition {
 		let query: any = ""
 		const escapedColumn = Sequelize.col(column)
