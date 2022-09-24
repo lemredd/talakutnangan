@@ -126,7 +126,14 @@ function toggleAdding() {
 function twoDigits(number: number) {
 	return number < 10 ? `0${number}` : number.toString()
 }
+function formatTo12Hours(hour: number) {
+	let convertedHour = 0
 
+	if (hour <= noon) convertedHour = hour
+	else convertedHour = hour - noon
+
+	return convertedHour
+}
 function makeOptions(values: any[]): any[] {
 	const options: any[] = []
 	// eslint-disable-next-line object-shorthand
