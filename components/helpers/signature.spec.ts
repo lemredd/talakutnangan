@@ -10,12 +10,12 @@ import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 
-import Component from "./profile_picture.vue"
+import Component from "./signature.vue"
 
-describe("Component: helpers/profile_picture", () => {
-	it("should show if user has profile picture", async() => {
-		const sampleURL = "/images/profile.png"
-		const profilePicture = {
+describe("Component: helpers/signature", () => {
+	it("should show if user has signature", async() => {
+		const sampleURL = "/images/signature.png"
+		const signature = {
 			"data": {
 				"fileContents": sampleURL
 			}
@@ -38,8 +38,8 @@ describe("Component: helpers/profile_picture", () => {
 						"pageProps": {
 							"userProfile": {
 								"data": {
-									...userProfile,
-									profilePicture
+									...userProfile.data,
+									signature
 								}
 							}
 						}
@@ -50,11 +50,12 @@ describe("Component: helpers/profile_picture", () => {
 
 		const image = wrapper.find("img")
 		const source = image.attributes("src")
+		console.log(image.html(), "\n\n\n")
 
 		expect(source).toBe(sampleURL)
 	})
 
-	it("should not show if user has no profile picture", async() => {
+	it("should not show if user has no signature", async() => {
 		const department = await new DepartmentFactory().mayNotAdmit()
 		.insertOne()
 		const role = await new RoleFactory()
@@ -81,6 +82,6 @@ describe("Component: helpers/profile_picture", () => {
 		const image = wrapper.find("img")
 		const source = image.attributes("src")
 
-		expect(source).toBe("stub")
+		expect(source).toBe("")
 	})
 })

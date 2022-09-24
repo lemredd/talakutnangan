@@ -11,16 +11,53 @@
 		</div>
 
 		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
-		<!-- TODO: Refactor HTML to Vue Components if applicable -->
 		<div class="pictures">
 			<PicturePicker
-				title="Profile Picture"
-				:picture="userProfileData.profilePicture"
-				@submit-file="submitProfilePicture"/>
+				resource-type="profile_picture"
+				@submit-file="submitProfilePicture">
+				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+					<div class="picture-picker-header">
+						<h3 class="text-[1.5em]">
+							Profile Picture
+						</h3>
+					</div>
+
+					<label
+						for="input-profile-picture"
+						class="cursor-pointer flex items-center">
+						<span class="material-icons">add_circle</span>
+						<small class="text-center ml-1">
+							upload or replace image
+						</small>
+					</label>
+				</div>
+
+				<ProfilePicture class="max-w-30 <sm:mx-auto"/>
+			</PicturePicker>
+
 			<PicturePicker
-				title="Signature"
-				:picture="userProfileData.signature"
-				@submit-file=""/>
+				v-if="!isUnReachableEmployee"
+				resource-type="signature"
+				@submit-file="submitSignature">
+				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+					<div class="picture-picker-header">
+						<h3 class="text-[1.5em]">
+							Signature
+						</h3>
+					</div>
+
+					<label
+						for="input-signature"
+						class="cursor-pointer flex items-center">
+						<span class="material-icons">add_circle</span>
+						<small class="text-center ml-1 underline">
+							upload or replace image
+						</small>
+					</label>
+				</div>
+
+				<Signature class="max-w-30 <sm:mx-auto"/>
+			</PicturePicker>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -66,7 +103,7 @@
 	}
 
 	.dark-mode-toggle {
-		@apply p-5 grid;
+		@apply py-5 grid;
 		grid-template:
 			"formHeader formHeader"
 			"subtitle toggle";
@@ -103,27 +140,30 @@ import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
+import ProfilePicture from "@/helpers/profile_picture.vue"
+import Signature from "@/helpers/signature.vue"
 import SettingsHeader from "@/tabbed_page_header.vue"
-import PicturePicker from "@/settings/picture_picker.vue"
+import PicturePicker from "@/fields/picture_picker.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePicker from "@/settings/schedule_picker.vue"
 
 import UserFetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
+import SignatureFetcher from "$@/fetchers/signature"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
-import assignPath from "$@/external/assign_path"
 
 const bodyClasses = inject("bodyClasses") as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
 const userProfileData = ref(userProfile.data)
-
-const { kind } = userProfile
-const isReachableEmployee = computed(() => kind === "reachable_employee")
+const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
+const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
 
 UserFetcher.initialize("/api")
+SignatureFetcher.initialize("/api")
 ProfilePictureFetcher.initialize("/api")
 
 function submitProfilePicture(formData: FormData) {
@@ -141,10 +181,18 @@ function submitProfilePicture(formData: FormData) {
 		).then(() => assignPath("/settings/profile"))
 	}
 }
+function submitSignature(formData: FormData) {
+	const signatureFetcher = new SignatureFetcher()
+
+	signatureFetcher.renew(
+		userProfileData.value.id,
+		formData
+	).then(() => assignPath("/settings/profile"))
+}
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
-	})
+	}).then(() => assignPath("/settings/profile"))
 }
 
 const emit = defineEmits([ "toggleDarkMode" ])

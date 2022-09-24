@@ -11,7 +11,7 @@ import type {
 	DeserializedSignatureDocument,
 	DeserializedSignatureListDocument
 } from "$/types/documents/signature"
-import { MULTIPART_MEDIA_TYPE } from "$/types/server"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
@@ -47,7 +47,7 @@ export default class SignatureFetcher extends BaseFetcher<
 	>> {
 		const pathTemplate = `user/:id/relationships/${this.type}`
 		const path = specializedPath(pathTemplate, { "id": userID })
-		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 
 		return await this.handleResponse(
 			this.patchThrough(path, details, headers)
