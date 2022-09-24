@@ -32,6 +32,7 @@ import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
+import hasNoOtherActiveConsultation from "!/validators/manager/has_no_other_active_consultation"
 
 export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
@@ -166,7 +167,10 @@ export default class extends DoubleBoundJSONController {
 				"extraDataQueries": relationships,
 				"extraQueries": meta,
 				"isNew": false,
-				"mustCastID": false
+				"mustCastID": false,
+				"postIDRules": {
+					"pipes": [ hasNoOtherActiveConsultation ]
+				}
 			}
 		)
 	}
