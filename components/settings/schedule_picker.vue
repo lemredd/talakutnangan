@@ -101,12 +101,6 @@ import { ref } from "vue"
 import Selectable from "@/fields/selectable_options.vue"
 import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
 
-function convertTimeObjectToTimeString(
-	timeObject: ReturnType<typeof convertMinutesToTimeObject>
-) {
-	return `${timeObject.hours}:${timeObject.minutes}`
-}
-
 const props = defineProps<{
 	isNew?: boolean
 	scheduleStart: number
@@ -124,7 +118,8 @@ function toggleAdding() {
 }
 
 function twoDigits(number: number) {
-	return number < 10 ? `0${number}` : number.toString()
+	const twoDigitStart = 10
+	return number < twoDigitStart ? `0${number}` : number.toString()
 }
 function formatTo12Hours(hour: number) {
 	let convertedHour = 0
@@ -141,25 +136,10 @@ function makeOptions(values: any[]): any[] {
 
 	return options
 }
-
-function getTimePart(time: number, part: "hour" | "minute" | "midday") {
-	const noon = 12
-	const timeObject = convertMinutesToTimeObject(time)
-	let partToGive = ""
-
-	if (part === "hour") {
-		if (timeObject.hours <= noon) partToGive = String(timeObject.hours)
-		else partToGive = twoDigits(timeObject.hours - noon)
-	}
-
-	if (part === "minute") partToGive = String(timeObject.minutes)
-
-	if (part === "midday") {
-		if (timeObject.hours < noon) partToGive = "AM"
-		else partToGive = "PM"
-	}
-
-	return partToGive
+function convertTimeObjectToTimeString(
+	timeObject: ReturnType<typeof convertMinutesToTimeObject>
+) {
+	return `${twoDigits(formatTo12Hours(timeObject.hours))}:${twoDigits(timeObject.minutes)}`
 }
 
 function generateNumberRange() {
@@ -169,8 +149,8 @@ function generateNumberRange() {
 	const time = []
 
 	for (let i = start; i <= hourEnd; i++) {
-		for (let j = start; j < minuteEnd; j += 15) {
-			time.push(`${i === 0 ? 12 : twoDigits(i)}:${twoDigits(j)}`)
+		for (let interval = 15, j = start; j < minuteEnd; j += interval) {
+			time.push(`${i === 0 ? hourEnd + 1 : twoDigits(i)}:${twoDigits(j)}`)
 		}
 	}
 
@@ -212,7 +192,7 @@ const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
 function setNewTime(hour: string, minute: string, oldMidDay: string) {
 	const newHour = oldMidDay === "PM"
-		? Number(hour) + 12
+		? Number(hour) + noon
 		: Number(hour)
 
 	const newTime = `${newHour}:${minute}`
