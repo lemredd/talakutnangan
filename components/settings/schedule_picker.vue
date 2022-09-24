@@ -84,7 +84,13 @@
 import { ref } from "vue"
 
 import Selectable from "@/fields/selectable_options.vue"
-import convertForSentence from "$/string/convert_for_sentence"
+import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
+
+function convertTimeObjectToTimeString(
+	timeObject: ReturnType<typeof convertMinutesToTimeObject>
+) {
+	return `${timeObject.hours}:${timeObject.minutes}`
+}
 
 const props = defineProps<{
 	isNew?: boolean
