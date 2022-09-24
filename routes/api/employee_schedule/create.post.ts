@@ -28,6 +28,7 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import divisibleBy from "!/validators/date/divisible_by"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
@@ -63,21 +64,27 @@ export default class extends JSONController {
 			},
 			"scheduleEnd": {
 				"constraints": {
+					"divisibleBy": {
+						"value": 15
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:59"),
 						"minimum": convertTimeToMinutes("00:01")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			},
 			"scheduleStart": {
 				"constraints": {
+					"divisibleBy": {
+						"value": 15
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:58"),
 						"minimum": convertTimeToMinutes("00:00")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			}
 		}
 
