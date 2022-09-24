@@ -1,5 +1,5 @@
-import type { FieldRules, Pipe } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/dependent"
+import type { FieldRules, Rules, Pipe } from "!/types/validation"
 import type { IdentifierDocumentOptions } from "!/types/rule_set"
 
 import makeDataDocumentRules from "!/rule_sets/make_data_document"
@@ -22,9 +22,10 @@ export default function(
 	ClassName: BaseManagerClass,
 	{
 		postIDRules = { "pipes": [] },
+		postDataRules = { "pipes": [] },
 		extraIdentifierQueries = {},
 		extraQueries = {}
-	}: IdentifierDocumentOptions = {}
+	}: IdentifierDocumentOptions & Partial<{ postDataRules: Rules }> = {}
 ): FieldRules {
 	return makeDataDocumentRules(
 		false,
@@ -34,7 +35,8 @@ export default function(
 			postIDRules
 		}),
 		{
-			extraQueries
+			extraQueries,
+			postDataRules
 		}
 	)
 }
