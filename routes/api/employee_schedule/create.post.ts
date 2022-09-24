@@ -7,17 +7,14 @@ import { DayValues } from "$/types/database"
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
 import JSONController from "!/controllers/json"
-import Merger from "!/middlewares/miscellaneous/merger"
 import CreatedResponseInfo from "!/response_infos/created"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Policy from "!/bases/policy"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import { user as permissionGroup } from "$/permissions/permission_list"
+import OverridableKindBasedPolicy from "!/policies/overridable_kind-based"
 import {
-	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
@@ -38,14 +35,13 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new Merger([
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy,
-			new PermissionBasedPolicy(permissionGroup, [
-				UPDATE_OWN_DATA,
-				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			])
-		]) as unknown as Policy
+		return new OverridableKindBasedPolicy(
+			[ "reachable_employee" ],
+			permissionGroup,
+			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+			() => Promise.resolve(null)
+		)
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
