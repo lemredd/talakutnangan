@@ -6,7 +6,7 @@ import FileLike from "%/models/file-like"
 import Transformer from "%/transformers/base"
 import URLMaker from "$!/singletons/url_maker"
 import Serializer from "%/transformers/serializer"
-import processData from "%/transformers/helpers/process_data"
+import processData from "%/helpers/process_data"
 
 export default abstract class<
 	T extends FileLike,
