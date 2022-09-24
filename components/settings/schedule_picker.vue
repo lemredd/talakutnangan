@@ -113,6 +113,7 @@ const props = defineProps<{
 	scheduleEnd: number
 }>()
 
+const noon = 12
 const isEditing = ref(false)
 const isAdding = ref(false)
 function toggleEditing() {
