@@ -1,5 +1,4 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<Dropdown
 		class="links mobile"
 		@toggle="toggleRoleLinks"

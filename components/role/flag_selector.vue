@@ -1,9 +1,6 @@
-<!--
-	TODO: Refactor all WindiCSS inline classes using @apply directive
- -->
 <template>
 	<ul :id="`${header.toLocaleLowerCase()}-flags`" class="flags my-3">
-		<h2 class="flag-header text-size-[1.25rem] mb-3 font-600">
+		<h2 class="flag-header">
 			{{ header }} Flags
 		</h2>
 
@@ -39,6 +36,7 @@
 @import "@styles/variables.scss";
 
 .flag-header {
+	@apply text-size-[1.25rem] mb-3 font-600
 	color: $color-primary;
 }
 
