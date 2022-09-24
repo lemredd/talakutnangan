@@ -36,7 +36,7 @@
 				<Selectable
 					v-model="startTime"
 					class="inline"
-					:options="time"
+					:options="availableTimes"
 					:disabled="!isEditing"/>
 				<Selectable
 					v-model="startMidDay"
@@ -51,7 +51,7 @@
 				<Selectable
 					v-model="endTime"
 					class="inline"
-					:options="time"
+					:options="availableTimes"
 					:disabled="!isEditing"/>
 
 				<Selectable
@@ -82,8 +82,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-
-import { DayValues } from "$/types/database"
 
 import Selectable from "@/fields/selectable_options.vue"
 import convertForSentence from "$/string/convert_for_sentence"
@@ -145,13 +143,11 @@ function generateNumberRange() {
 
 	return time
 }
-const time = makeOptions(generateNumberRange())
+const availableTimes = makeOptions(generateNumberRange())
 const midDay = makeOptions([ "AM", "PM" ])
-const unuseddays = [ ...DayValues ]
 
-const rawStartTime = props.startTime as string
 const { startTime } = props
-const startMidDay = ref(getTimePart(rawStartTime, "midday"))
+const startMidDay = ref(getTimePart(startTime, "midday"))
 
 const rawEndTime = props.endTime as string
 const { endTime } = props
