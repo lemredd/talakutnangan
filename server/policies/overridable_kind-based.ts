@@ -21,9 +21,6 @@ export default class <
 	private permissionGroup: PermissionGroup<T, U>
 	private socialPermissionCombination: U[]
 	private publicPermissionCombination: U[]
-	private readOwnerInfo: (request: V) => Promise<
-		DeserializedUserDocument<"roles"|"department">|null
-	>
 
 	private checkOthers: (request: V) => Promise<void>
 
@@ -32,8 +29,6 @@ export default class <
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
 	 * @param socialPermissionCombination Permission combination which may allow department heads.
 	 * @param publicPermissionCombination Permission combinations which may allow admin.
-	 * @param readOwnerInfo Callback to get the owner of the resource to process. If null, user is
-	 * only required to have social permission or public permission.
 	 * @param checkOthers Extra function used for checking other constraints.
 	 */
 	constructor(
@@ -41,7 +36,6 @@ export default class <
 		permissionGroup: PermissionGroup<T, U>,
 		socialPermissionCombination: U[],
 		publicPermissionCombination: U[],
-		readOwnerInfo: (request: V) => Promise<DeserializedUserDocument<"roles"|"department">|null>,
 		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
 			const promise = Promise.resolve()
 			return promise
@@ -52,7 +46,6 @@ export default class <
 		this.permissionGroup = permissionGroup
 		this.socialPermissionCombination = socialPermissionCombination
 		this.publicPermissionCombination = publicPermissionCombination
-		this.readOwnerInfo = readOwnerInfo
 		this.checkOthers = checkOthers
 	}
 
@@ -61,7 +54,7 @@ export default class <
 		await this.checkOthers(request)
 	}
 
-	async checkLimitation(request: V): Promise<void> {
+	checkLimitation(request: V): Promise<void> {
 		const user = deserialize(request.user) as DeserializedUserDocument<"roles"|"department">
 		const roles = user.data.roles.data as unknown as T[]
 		const hasPublicPermission = this.permissionGroup.hasOneRoleAllowed(
@@ -76,23 +69,10 @@ export default class <
 			)
 
 			if (!hasSocialPermission) {
-				const owner = await this.readOwnerInfo(request)
-
-				if (owner === null) {
-					return Promise.resolve()
-				}
-
-				if (user.data.id !== owner.data.id) {
-					return Promise.reject(new AuthorizationError(
-						"You should be the wner of the resource."
-					))
-				}
+				return Promise.reject(new AuthorizationError(
+					"There is no sufficient permission to invoke action for others."
+				))
 			}
-
-
-			return Promise.reject(new AuthorizationError(
-				"There is no sufficient permission to invoke action for others."
-			))
 		}
 
 		return Promise.resolve()

@@ -39,8 +39,7 @@ export default class extends JSONController {
 			[ "reachable_employee" ],
 			permissionGroup,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
-			() => Promise.resolve(null)
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 		)
 	}
 
