@@ -99,8 +99,12 @@ const props = defineProps<{
 }>()
 
 const isEditing = ref(false)
+const isAdding = ref(false)
 function toggleEditing() {
 	isEditing.value = !isEditing.value
+}
+function toggleAdding() {
+	isAdding.value = !isAdding.value
 }
 
 function twoDigits(number: number) {
