@@ -14,11 +14,14 @@ import type {
 	EmployeeScheduleListDocument
 } from "$/types/documents/employee_schedule"
 
+import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
+
 import User from "%/models/user"
 import UserFactory from "~/factories/user"
 import BaseFactory from "~/factories/base"
 import EmployeeSchedule from "%/models/employee_schedule"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 export default class EmployeeScheduleFactory extends BaseFactory<
 	EmployeeSchedule,
@@ -34,12 +37,20 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 	#dayName: () => Day = () => faker.helpers.arrayElement(DayValues)
-	#scheduleStart: () => number = () => faker.datatype.number({ "max": 24 * 60 - 2 })
-	#scheduleEnd: (scheduleStart: number) => number
-		= (scheduleStart: number) => faker.datatype.number({
-			"min": scheduleStart + 1,
-			"max": 24 * 60 - 1
+	#scheduleStart: () => number = () => {
+		let raw = faker.datatype.number({ "max": convertTimeToMinutes("11:30") })
+		raw -= raw % MINUTE_SCHEDULE_INTERVAL
+		return raw
+	}
+
+	#scheduleEnd: (scheduleStart: number) => number = (scheduleStart: number) => {
+		let raw = faker.datatype.number({
+			"max": convertTimeToMinutes("11:59"),
+			"min": scheduleStart + 1
 		})
+		raw -= raw % MINUTE_SCHEDULE_INTERVAL
+		return raw
+	}
 
 	get model(): ModelCtor<EmployeeSchedule> { return EmployeeSchedule }
 
