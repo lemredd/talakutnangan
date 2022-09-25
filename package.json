@@ -12,7 +12,7 @@
 	"types": "module",
 	"scripts": {
 		"prod": "npm run build && npm run migrate:up && npm run server:prod",
-		"build": "vite build && npm run migrate:up",
+		"build": "vite build && npm run migrate:up && npx sequelize-cli db:seed:all",
 		"start": "npm run server:prod",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
