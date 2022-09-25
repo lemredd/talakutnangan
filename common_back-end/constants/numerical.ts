@@ -1,0 +1,1 @@
+export const MINUTE_SCHEDULE_INTERVAL = 15
