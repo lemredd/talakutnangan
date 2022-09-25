@@ -20,6 +20,15 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 			configuration.database = databaseURL.pathname.slice(1)
 			configuration.host = databaseURL.hostname
 			configuration.port = Number(databaseURL.port)
+
+			if (process.env.NODE_ENV === "production") {
+				configuration.dialectOptions = {
+					"ssl": {
+						"rejectUnauthorized": false
+					}
+				}
+			}
+
 			break
 		}
 

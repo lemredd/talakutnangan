@@ -4,7 +4,7 @@ import type { UserFilter } from "$/types/query"
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 
 /**
  * Sift employee schedule model which belong to a certain user.

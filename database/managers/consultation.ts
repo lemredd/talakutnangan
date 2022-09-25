@@ -16,7 +16,7 @@ import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 import Transformer from "%/transformers/consultation"
 import ChatMessageActivity from "%/models/chat_message_activity"
 

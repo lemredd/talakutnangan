@@ -15,7 +15,7 @@
 			<PicturePicker
 				resource-type="profile_picture"
 				@submit-file="submitProfilePicture">
-				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+				<div class="content">
 					<div class="picture-picker-header">
 						<h3 class="text-[1.5em]">
 							Profile Picture
@@ -39,7 +39,7 @@
 				v-if="!isUnReachableEmployee"
 				resource-type="signature"
 				@submit-file="submitSignature">
-				<div class="content flex flex-col sm:flex-row sm:justify-between my-7">
+				<div class="content">
 					<div class="picture-picker-header">
 						<h3 class="text-[1.5em]">
 							Signature
@@ -100,6 +100,10 @@
 		.input-pic {
 			display: none;
 		}
+	}
+
+	.content{
+		@apply flex flex-col sm:flex-row sm:justify-between my-7;
 	}
 
 	.dark-mode-toggle {

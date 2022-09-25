@@ -24,7 +24,7 @@ import {
 	role
 } from "$/permissions/permission_list"
 
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 import DevController from "!/controllers/dev"
 
 export default class extends DevController {

@@ -36,7 +36,7 @@ import UserProfileTransformer from "%/transformers/user_profile"
 
 import hash from "$!/auth/hash"
 import compare from "$!/auth/compare"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 import siftBySlug from "%/queries/user/sift_by_slug"
 import siftByRole from "%/queries/user/sift_by_role"
 import siftByKind from "%/queries/user/sift_by_kind"

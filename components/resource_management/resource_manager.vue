@@ -31,7 +31,6 @@
 	@apply dark:bg-dark-100 bg-light-600 gap-y-4 justify-between;
 
 	.search-bar {
-		// TODO: search filter rearrangement - utilize flex order and transfer styles to component
 		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
 		padding: .25em;
 	}
