@@ -22,7 +22,6 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7",
-		"@faker-js/faker": "^7.3.0",
 		"@jest-mock/express": "^2.0.1",
 		"@types/jest": "^27.5.2",
 		"@types/supertest": "^2.0.12",
@@ -49,6 +48,7 @@
 		"vue-eslint-parser": "^9.0.3"
 	},
 	"dependencies": {
+		"@faker-js/faker": "^7.5.0",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/busboy": "^1.5.0",
 		"@types/compression": "^1.7.2",
