@@ -13,6 +13,7 @@
 	"scripts": {
 		"prod": "npm run build && npm run migrate:up && npm run server:prod",
 		"build": "vite build",
+		"start": "npm run prod",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
 		"changelog:generate": "npx changelogen",
 		"migrate:up": "npx sequelize-cli db:migrate",
