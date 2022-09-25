@@ -24,7 +24,7 @@ module.exports = function(databaseType = process.env.DATABASE_TYPE) {
 			if (process.env.NODE_ENV === "production") {
 				configuration.dialectOptions = {
 					"ssl": {
-						"rejectUnauthorized": true
+						"rejectUnauthorized": false
 					}
 				}
 			}
