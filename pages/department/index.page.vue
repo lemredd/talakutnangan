@@ -35,7 +35,7 @@ provide("tabs", [ "Users", "Roles", "Departments" ])
 DepartmentFetcher.initialize("/api")
 const fetcher = new DepartmentFetcher()
 
-const isLoaded = ref<boolean>(true)
+const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
@@ -89,5 +89,6 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.map(item => item.id))
+	isLoaded.value = true
 })
 </script>
