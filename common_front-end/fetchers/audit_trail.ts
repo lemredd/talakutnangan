@@ -1,5 +1,3 @@
-import type { Serializable } from "$/types/general"
-import type { CommonQueryParameters } from "$/types/query"
 import type {
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
@@ -22,9 +20,7 @@ export default class AuditTrailFetcher extends BaseFetcher<
 	AuditTrailDocument,
 	AuditTrailListDocument,
 	DeserializedAuditTrailDocument,
-	DeserializedAuditTrailListDocument,
-	Serializable,
-	CommonQueryParameters
+	DeserializedAuditTrailListDocument
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "AuditTrail")

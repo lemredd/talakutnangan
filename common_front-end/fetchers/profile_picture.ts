@@ -1,6 +1,4 @@
-import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
-import type { CommonQueryParameters } from "$/types/query"
 import type {
 	ProfilePictureResourceIdentifier,
 	ProfilePictureAttributes,
@@ -24,9 +22,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	ProfilePictureDocument,
 	ProfilePictureListDocument,
 	DeserializedProfilePictureDocument,
-	DeserializedProfilePictureListDocument,
-	Serializable,
-	CommonQueryParameters
+	DeserializedProfilePictureListDocument
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "profile_picture")

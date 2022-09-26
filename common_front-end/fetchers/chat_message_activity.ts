@@ -1,4 +1,3 @@
-import type { Serializable } from "$/types/general"
 import type { ChatMessageActivityQueryParameters } from "$/types/query"
 import type {
 	ChatMessageActivityResourceIdentifier,
@@ -24,9 +23,10 @@ export default class ChatMessageActivityFetcher extends BaseFetcher<
 	ChatMessageActivityListDocument,
 	DeserializedChatMessageActivityDocument,
 	DeserializedChatMessageActivityListDocument,
-	Serializable,
-	ChatMessageActivityQueryParameters<string>,
-	ChatMessageActivityRelationships
+	{
+		"queryParameters": ChatMessageActivityQueryParameters<string>,
+		"extraCreateData": ChatMessageActivityRelationships<"create">
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "chat_message")

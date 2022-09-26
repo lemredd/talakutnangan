@@ -1,7 +1,15 @@
-import type { Response } from "$@/types/independent"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
-import type { CommonQueryParameters } from "$/types/query"
-import type { Serializable, GeneralObject } from "$/types/general"
+import type { Serializable } from "$/types/general"
+import type {
+	Response,
+	ArchiveMeta,
+	RestoreMeta,
+	QueryParameters,
+	ExtraCreateData,
+	OtherDocuments,
+	ExtraCreateDocumentProps,
+	GenericFetcherParameters
+} from "$@/types/independent"
 import type {
 	ResourceIdentifier,
 	Attributes,
@@ -42,11 +50,7 @@ export default class Fetcher<
 	// Type of desrialized resource list document to be returned by the `list()` and others
 	B extends DeserializedResourceListDocument<T, V, X>,
 	// Type of response other than resource document to be returned by the some possible readers
-	C extends Serializable,
-	// Query parameters to be used `list()` to filter, sort, and paginate resources
-	D extends CommonQueryParameters = CommonQueryParameters,
-	// Additional data required by `create()`
-	E extends Serializable = Serializable
+	C extends Partial<GenericFetcherParameters> = Record<string, unknown>
 > extends RequestEnvironment {
 	protected static basePath = ""
 	protected static type = ""
@@ -66,9 +70,11 @@ export default class Fetcher<
 	}
 
 	create(attributes: U, {
-		extraDataFields = {} as E
+		extraDataFields = {} as ExtraCreateData<C>,
+		extraCreateDocumentProps = {} as ExtraCreateDocumentProps<C>
 	}: Partial<{
-		extraDataFields: E
+		extraDataFields: ExtraCreateData<C>,
+		extraCreateDocumentProps: ExtraCreateDocumentProps<C>
 	}> = {}): Promise<Response<T, U, V, W, X, A>> {
 		return this.handleResponse(
 			this.postJSON(`${this.type}`, {
@@ -76,7 +82,8 @@ export default class Fetcher<
 					attributes,
 					"type": this.type,
 					...extraDataFields
-				}
+				},
+				...extraCreateDocumentProps
 			})
 		)
 	}
@@ -89,7 +96,7 @@ export default class Fetcher<
 		)
 	}
 
-	list(parameters: D): Promise<Response<T, U, V, W, X, B>> {
+	list(parameters: QueryParameters<C>): Promise<Response<T, U, V, W, X, B>> {
 		const commaDelimitedSort = {
 			...parameters,
 			"sort": parameters.sort.join(",")
@@ -113,7 +120,11 @@ export default class Fetcher<
 		)
 	}
 
-	archive(IDs: string[], meta?: GeneralObject): Promise<Response<T, U, V, W, X, null>> {
+	archive(IDs: string[], {
+		meta
+	}: Partial<{
+		meta: ArchiveMeta<C>
+	}> = {}): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
 			this.deleteJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -125,7 +136,11 @@ export default class Fetcher<
 		)
 	}
 
-	restore(IDs: string[], meta?: GeneralObject): Promise<Response<T, U, V, W, X, null>> {
+	restore(IDs: string[], {
+		meta
+	}: Partial<{
+		meta: RestoreMeta<C>
+	}> = {}): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}`, {}, {
 				"data": IDs.map(id => ({
@@ -137,14 +152,14 @@ export default class Fetcher<
 		)
 	}
 
-	getJSON(path: string): Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	getJSON(path: string): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.getFrom(path, this.makeJSONHeaders())
 	}
 
 	postJSON(
 		path: string,
 		data: Serializable
-	): Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.postTo(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
@@ -152,7 +167,7 @@ export default class Fetcher<
 		pathTemplate: string,
 		IDs: { [key:string]: string },
 		data: Serializable
-	): Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
 		return this.patchThrough(path, JSON.stringify(data), this.makeJSONHeaders())
@@ -162,14 +177,14 @@ export default class Fetcher<
 		pathTemplate: string,
 		IDs: { [key:string]: string },
 		data: Serializable
-	): Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		const path = specializedPath(pathTemplate, IDs)
 
 		return this.deleteThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
 	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			headers,
 			"method": "GET"
@@ -177,7 +192,7 @@ export default class Fetcher<
 	}
 
 	postTo(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			body,
 			headers,
@@ -186,7 +201,7 @@ export default class Fetcher<
 	}
 
 	patchThrough(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			body,
 			headers,
@@ -195,7 +210,7 @@ export default class Fetcher<
 	}
 
 	deleteThrough(path: string, body: string | FormData, headers: Headers = this.makeJSONHeaders())
-	: Promise<Response<T, U, V, W, X, Y | Z | C | null>> {
+	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			body,
 			headers,
@@ -203,8 +218,8 @@ export default class Fetcher<
 		})
 	}
 
-	protected handleResponse<F extends Y | Z | A | B | C | null>(
-		response: Promise<Response<T, U, V, W, X, Y | Z | C | null>>,
+	protected handleResponse<F extends Y | Z | A | B | OtherDocuments<C> | null>(
+		response: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>>,
 		mustBeDeserialize = true
 	): Promise<Response<T, U, V, W, X, F>> {
 		return response.then(({ body, status }) => {

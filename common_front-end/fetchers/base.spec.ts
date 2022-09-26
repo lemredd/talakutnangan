@@ -257,7 +257,7 @@ describe("Communicator: Fetcher", () => {
 		expect(request).toHaveProperty("url", "/api/sample/1")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.json()).resolves.toStrictEqual({ "hello": "world" })
+		expect(await request.json()).toStrictEqual({ "hello": "world" })
 	})
 
 	it("can have null body if server replied with no content", async() => {
