@@ -133,6 +133,8 @@ export interface GenericFetcherParameters {
 	"queryParameters": CommonQueryParameters,
 	"extraCreateData": Serializable,
 	"extraCreateDocumentProps": Serializable,
+	"extraUpdateData": Serializable,
+	"extraUpdateDocumentProps": Serializable,
 	"archiveMeta": Serializable,
 	"restoreMeta": Serializable
 }
@@ -148,6 +150,12 @@ export type ExtraCreateData<T extends Partial<GenericFetcherParameters>>
 
 export type ExtraCreateDocumentProps<T extends Partial<GenericFetcherParameters>>
 = T["extraCreateDocumentProps"] extends Serializable ? T["extraCreateDocumentProps"] : Serializable
+
+export type ExtraUpdateData<T extends Partial<GenericFetcherParameters>>
+= T["extraUpdateData"] extends Serializable ? T["extraUpdateData"] : Serializable
+
+export type ExtraUpdateDocumentProps<T extends Partial<GenericFetcherParameters>>
+= T["extraUpdateDocumentProps"] extends Serializable ? T["extraUpdateDocumentProps"] : Serializable
 
 export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
 = T["archiveMeta"] extends Serializable ? T["archiveMeta"] : Serializable
