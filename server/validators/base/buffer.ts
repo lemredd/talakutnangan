@@ -1,11 +1,12 @@
+import typeIs from "type-is"
 import type {
 	ValidationState,
 	ValidationConstraints,
 	BufferRuleConstraints
 } from "!/types/validation"
 
-import isPlainObject from "$/type_guards/is_plain_object"
 import isUndefined from "$/type_guards/is_undefined"
+import isPlainObject from "$/type_guards/is_plain_object"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -57,7 +58,7 @@ export default async function(
 			throw error
 		}
 
-		if (!constraints.buffer.allowedMimeTypes.includes(value.info.mimeType)) {
+		if (!typeIs.is(value.info.mimeType, constraints.buffer.allowedMimeTypes)) {
 			const error = {
 				"field": constraints.field,
 				"friendlyName": constraints.friendlyName,
