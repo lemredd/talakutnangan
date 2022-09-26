@@ -10,7 +10,7 @@ import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
-import RoleManager from "%/managers/role"
+import Manager from "%/managers/role"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
@@ -31,9 +31,9 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const roleManager = new RoleManager(request.transaction, request.cache)
+		const manager = new Manager(request)
 		const pageProps = {
-			"roles": await roleManager.list({
+			"roles": await manager.list({
 				"filter": {
 					"department": "*",
 					"existence": "exists"
