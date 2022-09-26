@@ -1,12 +1,12 @@
 <template>
 	<AdminSettingsHeader title="Admin Configuration"/>
 
-	<RolesManager :resource="roles" :is-loaded="isLoaded">
+	<RolesManager :resource="list" :is-loaded="isLoaded">
 		<template #search-filter>
-			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter :resource="list" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<RolesList :filtered-list="filteredList"/>
+		<RolesList :filtered-list="list"/>
 	</RolesManager>
 </template>
 
@@ -33,14 +33,15 @@ const { pageProps } = pageContext
 
 const { userProfile } = pageProps
 
-provide("managerKind", new Manager(userProfile))
+const classifier = new Manager(userProfile)
+provide("managerKind", classifier)
 provide("tabs", [ "Users", "Roles", "Roles" ])
 
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
 
 const isLoaded = ref<boolean>(true)
-const roles = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
+const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
 const filteredList = ref<DeserializedRoleResource[]>([])
 
 function getFilteredList(resource: PossibleResources[]) {
@@ -49,7 +50,7 @@ function getFilteredList(resource: PossibleResources[]) {
 async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
-			"department": "*",
+			"department": classifier.isAdmin() ? "*" : userProfile.data.department.data.id,
 			"existence": "exists"
 		},
 		"page": {
@@ -63,7 +64,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 
 		if (deserializedData.length === 0) return Promise.resolve()
 
-		roles.value = [ ...roles.value, ...deserializedData ]
+		list.value = [ ...list.value, ...deserializedData ]
 
 		// eslint-disable-next-line no-use-before-define
 		return countUsersPerRole(IDsToCount)
@@ -73,7 +74,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...roles.value ]
+		const originalData = [ ...list.value ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
@@ -82,13 +83,13 @@ async function countUsersPerRole(IDsToCount: string[]) {
 			originalData[index].meta = meta
 		}
 
-		roles.value = originalData
+		list.value = originalData
 
 		return fetchRoleInfos(originalData.length)
 	})
 }
 
 onMounted(async() => {
-	// await fetchRoleInfos(0)
+	await countUsersPerRole(list.value.map(item => item.id))
 })
 </script>
