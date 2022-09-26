@@ -74,7 +74,11 @@ export interface OrRuleConstraints {
 
 export interface ValidateExtensivelyIfRuleConstraints {
 	validateExtensivelyIf: {
-		condition: (value: any, request: Request, source: GeneralObject) => Promise<boolean>,
+		condition: (data: {
+			value: any,
+			request: Request,
+			source: GeneralObject
+		}) => Promise<boolean>,
 		// eslint-disable-next-line no-use-before-define
 		rules: Rules
 	}
