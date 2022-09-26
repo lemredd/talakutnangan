@@ -4,6 +4,7 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/role"
 import Validation from "!/bases/validation"
 import deserialize from "$/object/deserialize"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
@@ -12,8 +13,6 @@ import ManagerClassifier from "$/helpers/manager"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
-
-import Manager from "%/managers/role"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
