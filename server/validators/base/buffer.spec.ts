@@ -31,6 +31,34 @@ describe("Validator pipe: buffer", () => {
 		})
 	})
 
+	it("can accept media type from general type", async() => {
+		const value = Promise.resolve(makeInitialState({
+			"buffer": Buffer.from(""),
+			"info": {
+				"mimeType": "text/*"
+			}
+		}))
+		const constraints: ValidationConstraints & Partial<BufferRuleConstraints> = {
+			"buffer": {
+				"allowedMimeTypes": [ "text/css" ],
+				"maximumSize": 0,
+				"minimumSize": 0
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
+		}
+
+		const sanitizeValue = (await buffer(value, constraints)).value
+
+		expect(sanitizeValue).toStrictEqual({
+			"buffer": Buffer.from(""),
+			"info": {
+				"mimeType": "text/css"
+			}
+		})
+	})
+
 	it("cannot accept large buffer", async() => {
 		const value = Promise.resolve(makeInitialState({
 			"buffer": Buffer.from("000000"),
@@ -43,6 +71,32 @@ describe("Validator pipe: buffer", () => {
 				"allowedMimeTypes": [ "text/css" ],
 				"maximumSize": 5,
 				"minimumSize": 0
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
+		}
+
+		try {
+			await buffer(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
+	})
+
+	it("cannot accept small buffer", async() => {
+		const value = Promise.resolve(makeInitialState({
+			"buffer": Buffer.from("0000"),
+			"info": {
+				"mimeType": "text/plain"
+			}
+		}))
+		const constraints: ValidationConstraints & Partial<BufferRuleConstraints> = {
+			"buffer": {
+				"allowedMimeTypes": [ "text/css" ],
+				"maximumSize": 10,
+				"minimumSize": 5
 			},
 			"field": "hello",
 			"request": null,
