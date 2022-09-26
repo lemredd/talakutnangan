@@ -1,7 +1,7 @@
 import stringifyQuery from "./stringify_query"
 
-describe("Communicator: Stringify query", () => {
-	it("can stringify query object", async() => {
+describe("Fetcher: Stringify query", () => {
+	it("can stringify query object", () => {
 		const queryObject = {
 			"hello": "world",
 			"foo": {
@@ -15,11 +15,11 @@ describe("Communicator: Stringify query", () => {
 		expect(query).toEqual(encodeURI("hello=world&foo[bar]=true&foo[baz]=fum"))
 	})
 
-	it("can stringify with nested array", async () => {
+	it("can stringify with nested array", () => {
 		const queryObject = {
-			hello: [ "world", "universe" ],
-			foo: {
-				bar: [ "baz", "fuzz" ]
+			"hello": [ "world", "universe" ],
+			"foo": {
+				"bar": [ "baz", "fuzz" ]
 			}
 		}
 

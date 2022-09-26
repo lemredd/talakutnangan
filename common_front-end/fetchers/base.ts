@@ -23,17 +23,29 @@ import RequestEnvironment from "$/singletons/request_environment"
  * client-side code.
  */
 export default class Fetcher<
+	// Type of resource identifier necessary to fill other generics
 	T extends ResourceIdentifier<"read">,
+	// Type of serialized attribute necessary to fill other generics
 	U extends Attributes<"serialized">,
+	// Type of deserialized attribute necessary to fill other generics
 	V extends Attributes<"deserialized">,
+	// Type of resource necessary to fill other generics
 	W extends Resource<"read", T, U>,
+	// Type of deserialized resource necessary to fill other generics
 	X extends DeserializedResource<T, V>,
+	// Type of resource document to be returned by the some possible readers.
 	Y extends ResourceDocument<"read", T, U, W>,
+	// Type of resource list document to be returned by the some possible readers
 	Z extends ResourceListDocument<"read", T, U, W>,
+	// Type of deserialized resource document to be returned by the `read()` and other s
 	A extends DeserializedResourceDocument<T, V, X>,
+	// Type of desrialized resource list document to be returned by the `list()` and others
 	B extends DeserializedResourceListDocument<T, V, X>,
+	// Type of response other than resource document to be returned by the some possible readers
 	C extends Serializable,
+	// Query parameters to be used `list()` to filter, sort, and paginate resources
 	D extends CommonQueryParameters = CommonQueryParameters,
+	// Additional data required by `create()`
 	E extends Serializable = Serializable
 > extends RequestEnvironment {
 	protected static basePath = ""
