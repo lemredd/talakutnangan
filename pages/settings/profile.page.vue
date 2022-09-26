@@ -151,6 +151,7 @@ import assignPath from "$@/external/assign_path"
 import SignatureFetcher from "$@/fetchers/signature"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import { DayValues } from "$/types/database"
@@ -166,6 +167,7 @@ const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unr
 UserFetcher.initialize("/api")
 SignatureFetcher.initialize("/api")
 ProfilePictureFetcher.initialize("/api")
+EmployeeScheduleFetcher.initialize("/api")
 
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
@@ -217,12 +219,6 @@ function toggleDarkMode() {
 }
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
-const sortedSchedulesByDay = ref(schedules.sort((left, right) => {
-	const leftIndex = DayValues.indexOf(left.dayName)
-	const rightIndex = DayValues.indexOf(right.dayName)
-
-	return Math.sign(leftIndex - rightIndex)
-}))
 
 const tabs: TabInfo[] = [
 	{
