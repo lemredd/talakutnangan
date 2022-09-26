@@ -4,10 +4,12 @@ import type {
 	Response,
 	ArchiveMeta,
 	RestoreMeta,
-	QueryParameters,
-	ExtraCreateData,
 	OtherDocuments,
+	QueryParameters,
+	ExtraUpdateData,
+	ExtraCreateData,
 	ExtraCreateDocumentProps,
+	ExtraUpdateDocumentProps,
 	GenericFetcherParameters
 } from "$@/types/independent"
 import type {
@@ -108,14 +110,26 @@ export default class Fetcher<
 		)
 	}
 
-	update(id: string, attributes: U): Promise<Response<T, U, V, W, X, null>> {
+	update(
+		id: string,
+		attributes: U,
+		{
+			extraDataFields = {} as ExtraUpdateData<C>,
+			extraUpdateDocumentProps = {} as ExtraUpdateDocumentProps<C>
+		}: Partial<{
+			extraDataFields: ExtraUpdateData<C>,
+			extraUpdateDocumentProps: ExtraUpdateDocumentProps<C>
+		}> = {}
+	): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
 			this.patchJSON(`${this.type}/:id`, { id }, {
 				"data": {
 					attributes,
 					id,
-					"type": this.type
-				}
+					"type": this.type,
+					...extraDataFields
+				},
+				...extraUpdateDocumentProps
 			})
 		)
 	}
