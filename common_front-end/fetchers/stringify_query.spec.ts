@@ -12,7 +12,7 @@ describe("Fetcher: Stringify query", () => {
 
 		const query = stringifyQuery(queryObject)
 
-		expect(query).toEqual(encodeURI("hello=world&foo[bar]=true&foo[baz]=fum"))
+		expect(query).toEqual(encodeURI("foo[bar]=true&foo[baz]=fum&hello=world"))
 	})
 
 	it("can stringify with nested array", () => {
@@ -26,9 +26,9 @@ describe("Fetcher: Stringify query", () => {
 		const query = stringifyQuery(queryObject)
 
 		expect(query).toEqual(
-			`hello=${encodeURIComponent("world,universe")}&foo${
+			`foo${
 				encodeURIComponent("[bar]")
-			}=${encodeURIComponent("baz,fuzz")}`
+			}=${encodeURIComponent("baz,fuzz")}&hello=${encodeURIComponent("world,universe")}`
 		)
 	})
 })

@@ -3,15 +3,11 @@ import { stringify } from "qs"
 import type { GeneralObject } from "$/types/general"
 import isPlainObject from "$/type_guards/is_plain_object"
 
-export default function(query: object): string {
-	return stringify(compileArrays(query))
-}
-
 function compileArrays(query: GeneralObject): GeneralObject {
 	const semiSerializedObject: GeneralObject = {}
 
 	for (const field in query) {
-		if (Object.prototype.hasOwnProperty.call(query, field)) {
+		if (Object.hasOwn(query, field)) {
 			const value = query[field]
 
 			if (isPlainObject(value)) {
@@ -24,4 +20,8 @@ function compileArrays(query: GeneralObject): GeneralObject {
 		}
 	}
 	return semiSerializedObject
+}
+
+export default function(query: object): string {
+	return stringify(compileArrays(query))
 }
