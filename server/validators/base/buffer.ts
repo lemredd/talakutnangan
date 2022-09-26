@@ -37,8 +37,20 @@ export default async function(
 			const error = {
 				"field": constraints.field,
 				"friendlyName": constraints.friendlyName,
-				"messageMaker": (field: string) => `Field "${field}" must be less than ${
+				"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
 					constraints.buffer?.maximumSize
+				} bytes.`
+			}
+
+			throw error
+		}
+
+		if (!(castBuffer.byteLength >= constraints.buffer.minimumSize)) {
+			const error = {
+				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
+				"messageMaker": (field: string) => `Field "${field}" must be greater than or equal to ${
+					constraints.buffer?.minimumSize
 				} bytes.`
 			}
 
