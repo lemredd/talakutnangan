@@ -7,6 +7,7 @@
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
+import type { CommonQueryParameters } from "$/types/query"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
@@ -126,3 +127,27 @@ export type FullTime = {
 	minutes: number,
 	seconds: number
 }
+
+export type OptionalGenericFetcherParameters = {
+	"otherDocuments"?: Serializable,
+	"queryParameters"?: CommonQueryParameters,
+	"extraCreateData"?: Serializable,
+	"extraCreateDocumentProps"?: Serializable,
+	"archiveMeta"?: Serializable,
+	"restoreMeta"?: Serializable
+}
+
+export type QueryParameters<T extends OptionalGenericFetcherParameters>
+= T["queryParameters"] extends CommonQueryParameters ? T["queryParameters"] : CommonQueryParameters
+
+export type ExtraCreateData<T extends OptionalGenericFetcherParameters>
+= T["extraCreateData"] extends Serializable ? T["extraCreateData"] : Serializable
+
+export type ExtraCreateDocumentProps<T extends OptionalGenericFetcherParameters>
+= T["extraCreateDocumentProps"] extends Serializable ? T["extraCreateDocumentProps"] : Serializable
+
+export type ArchiveMeta<T extends OptionalGenericFetcherParameters>
+= T["archiveMeta"] extends Serializable ? T["archiveMeta"] : Serializable
+
+export type RestoreMeta<T extends OptionalGenericFetcherParameters>
+= T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
