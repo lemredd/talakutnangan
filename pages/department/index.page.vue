@@ -1,39 +1,51 @@
 <template>
 	<AdminSettingsHeader title="Admin Configuration"/>
 
-	<DeptManager :resource="departments">
+	<DeptManager :resource="list" :is-loaded="isLoaded">
 		<template #search-filter>
-			<SearchFilter :resource="departments" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter :resource="list" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<DeptList :filtered-list="filteredList"/>
+		<DeptList :filtered-list="list"/>
 	</DeptManager>
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue"
+import { onMounted, provide, inject, ref } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import DepartmentFetcher from "$@/fetchers/department"
+
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import DeptManager from "@/resource_management/resource_manager.vue"
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import DeptList from "@/resource_management/resource_manager/resource_list.vue"
+import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
+
+type RequiredExtraProps =
+	| "userProfile"
+	| "departments"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const { pageProps } = pageContext
+
 provide("tabs", [ "Users", "Roles", "Departments" ])
 
 DepartmentFetcher.initialize("/api")
 const fetcher = new DepartmentFetcher()
 
-const departments = ref<DeserializedDepartmentResource[]>([])
+const isLoaded = ref<boolean>(true)
+const list = ref<DeserializedDepartmentResource[]>(
+	pageProps.departments.data as DeserializedDepartmentResource[]
+)
 const filteredList = ref<DeserializedDepartmentResource[]>([])
 
 function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedDepartmentResource[]
 }
 
-async function fetchDepartmentInfos(offset: number) {
+async function fetchDepartmentInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"existence": "exists"
@@ -47,18 +59,19 @@ async function fetchDepartmentInfos(offset: number) {
 		const deserializedData = response.body.data as DeserializedDepartmentResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
 
-		if (deserializedData.length === 0) return
+		if (deserializedData.length === 0) return Promise.resolve()
 
-		departments.value = [ ...departments.value, ...deserializedData ]
+		list.value = [ ...list.value, ...deserializedData ]
 
+		// eslint-disable-next-line no-use-before-define
 		return countUsersPerDepartment(IDsToCount)
 	})
 }
 
-async function countUsersPerDepartment(IDsToCount: number[]) {
+async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...departments.value ]
+		const originalData = [ ...list.value ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
@@ -67,13 +80,13 @@ async function countUsersPerDepartment(IDsToCount: number[]) {
 			originalData[index].meta = meta
 		}
 
-		departments.value = originalData
+		list.value = originalData
 
 		return fetchDepartmentInfos(originalData.length)
 	})
 }
 
 onMounted(async() => {
-	await fetchDepartmentInfos(0)
+	await countUsersPerDepartment(list.value.map(item => item.id))
 })
 </script>

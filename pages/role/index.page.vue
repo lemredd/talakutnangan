@@ -17,8 +17,8 @@ import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
-import RoleFetcher from "$@/fetchers/role"
 import Manager from "$/helpers/manager"
+import RoleFetcher from "$@/fetchers/role"
 
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import RolesManager from "@/resource_management/resource_manager.vue"
