@@ -190,6 +190,23 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
 		registerListeners(newConsultation)
 
+		const finishWatcher = watch(consultation, (
+			newFinishedConsultation,
+			oldUnfinishedConsultation
+		) => {
+			if (
+				oldUnfinishedConsultation.finishedAt === null
+				&& newFinishedConsultation.finishedAt instanceof Date
+			) {
+				ConsultationTimerManager.unlistenConsultationTimeEvent(
+					newFinishedConsultation,
+					"finish",
+					finishConsultation
+				)
+				finishWatcher()
+			}
+		})
+
 		startWatcher()
 	}
 }, { "deep": true })
