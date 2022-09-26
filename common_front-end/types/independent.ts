@@ -128,26 +128,29 @@ export type FullTime = {
 	seconds: number
 }
 
-export type OptionalGenericFetcherParameters = {
-	"otherDocuments"?: Serializable,
-	"queryParameters"?: CommonQueryParameters,
-	"extraCreateData"?: Serializable,
-	"extraCreateDocumentProps"?: Serializable,
-	"archiveMeta"?: Serializable,
-	"restoreMeta"?: Serializable
+export interface GenericFetcherParameters {
+	"otherDocuments": Serializable,
+	"queryParameters": CommonQueryParameters,
+	"extraCreateData": Serializable,
+	"extraCreateDocumentProps": Serializable,
+	"archiveMeta": Serializable,
+	"restoreMeta": Serializable
 }
 
-export type QueryParameters<T extends OptionalGenericFetcherParameters>
+export type OtherDocuments<T extends Partial<GenericFetcherParameters>>
+= T["otherDocuments"] extends Serializable ? T["otherDocuments"] : Serializable
+
+export type QueryParameters<T extends Partial<GenericFetcherParameters>>
 = T["queryParameters"] extends CommonQueryParameters ? T["queryParameters"] : CommonQueryParameters
 
-export type ExtraCreateData<T extends OptionalGenericFetcherParameters>
+export type ExtraCreateData<T extends Partial<GenericFetcherParameters>>
 = T["extraCreateData"] extends Serializable ? T["extraCreateData"] : Serializable
 
-export type ExtraCreateDocumentProps<T extends OptionalGenericFetcherParameters>
+export type ExtraCreateDocumentProps<T extends Partial<GenericFetcherParameters>>
 = T["extraCreateDocumentProps"] extends Serializable ? T["extraCreateDocumentProps"] : Serializable
 
-export type ArchiveMeta<T extends OptionalGenericFetcherParameters>
+export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
 = T["archiveMeta"] extends Serializable ? T["archiveMeta"] : Serializable
 
-export type RestoreMeta<T extends OptionalGenericFetcherParameters>
+export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
 = T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
