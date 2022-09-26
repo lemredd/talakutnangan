@@ -3,6 +3,7 @@ import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedu
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
+import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
@@ -60,7 +61,7 @@ export default class extends JSONController {
 			"scheduleEnd": {
 				"constraints": {
 					"divisibleBy": {
-						"value": 15
+						"value": MINUTE_SCHEDULE_INTERVAL
 					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:59"),
@@ -72,7 +73,7 @@ export default class extends JSONController {
 			"scheduleStart": {
 				"constraints": {
 					"divisibleBy": {
-						"value": 15
+						"value": MINUTE_SCHEDULE_INTERVAL
 					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:58"),
