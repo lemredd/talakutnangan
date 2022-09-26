@@ -6,7 +6,7 @@ import Manager from "%/managers/consultation"
 /**
  * Validator to check if a consultation has no other consultation activated.
  *
- * Note: The validator only works for resources with numerical role IDs only.
+ * Note: The validator only works for resources with numerical consultation IDs only.
  */
 export default async function(
 	currentState: Promise<ValidationState>,
@@ -19,7 +19,7 @@ export default async function(
 	const manager = new Manager(constraints.request)
 
 	const modelID = state.value
-	const canStart = await manager.canStart(modelID)
+	const canStart = await manager.canStart(Number(modelID))
 
 	if (canStart) return state
 
