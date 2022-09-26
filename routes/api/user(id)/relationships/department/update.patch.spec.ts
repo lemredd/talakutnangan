@@ -3,7 +3,7 @@ import ErrorBag from "$!/errors/error_bag"
 import DepartmentFactory from "~/factories/department"
 import MockRequester from "~/setups/mock_requester"
 
-import Controller from "./update(id).patch"
+import Controller from "./update.patch"
 
 const BODY_VALIDATION_INDEX = 1
 
