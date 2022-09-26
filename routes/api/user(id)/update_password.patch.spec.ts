@@ -1,3 +1,5 @@
+import type { DeserializedUserDocument } from "$/types/documents/user"
+
 import Factory from "~/factories/user"
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/setups/mock_requester"
@@ -14,21 +16,22 @@ describe("Controller: PATCH /api/user/:id/update_password", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().insertOne()
+		const model = await new Factory().serializedOne(true)
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
 						"password": "12345678"
 					},
-					"id": String(model.id),
+					"id": String(model.data.id),
 					"type": "user"
 				},
 				"meta": {
 					"confirmPassword": "12345678",
 					"currentPassword": "password"
 				}
-			}
+			},
+			"user": model
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -41,21 +44,22 @@ describe("Controller: PATCH /api/user/:id/update_password", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().insertOne()
+		const model = await new Factory().serializedOne(true)
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
 						"password": "12345678"
 					},
-					"id": String(model.id),
+					"id": String(model.data.id),
 					"type": "user"
 				},
 				"meta": {
-					"confirmPassword": "1234567",
-					"currentPassword": "passwor"
+					"confirmPassword": "12345679",
+					"currentPassword": "passworx"
 				}
-			}
+			},
+			"user": model
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
