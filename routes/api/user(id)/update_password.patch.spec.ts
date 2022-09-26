@@ -1,5 +1,3 @@
-import type { DeserializedUserDocument } from "$/types/documents/user"
-
 import Factory from "~/factories/user"
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/setups/mock_requester"
