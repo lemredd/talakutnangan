@@ -25,8 +25,8 @@ export default class extends PageMiddleware {
 
 	getDocumentProps(): DocumentProps {
 		return {
-			"description": "Consultation chat platform for MCC",
-			"title": "Edit Role | Talakutnangan"
+			"description": "List of roles available that can be attached to users",
+			"title": "Role list | Talakutnangan"
 		}
 	}
 
