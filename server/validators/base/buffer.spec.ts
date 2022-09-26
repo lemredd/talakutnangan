@@ -35,12 +35,12 @@ describe("Validator pipe: buffer", () => {
 		const value = Promise.resolve(makeInitialState({
 			"buffer": Buffer.from(""),
 			"info": {
-				"mimeType": "text/*"
+				"mimeType": "text/css"
 			}
 		}))
 		const constraints: ValidationConstraints & Partial<BufferRuleConstraints> = {
 			"buffer": {
-				"allowedMimeTypes": [ "text/css" ],
+				"allowedMimeTypes": [ "text/*" ],
 				"maximumSize": 0,
 				"minimumSize": 0
 			},
