@@ -1,7 +1,7 @@
 <template>
 	<AdminSettingsHeader title="Admin Configuration"/>
 
-	<RolesManager :resource="roles">
+	<RolesManager :resource="roles" :is-loaded="isLoaded">
 		<template #search-filter>
 			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
 		</template>
@@ -15,7 +15,6 @@ import { inject, onMounted, provide, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import RoleFetcher from "$@/fetchers/role"
@@ -26,17 +25,22 @@ import RolesManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
-const pageContext = inject("pageContext") as PageContext
+type RequiredExtraProps =
+	| "userProfile"
+	| "roles"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const { pageProps } = pageContext
 
-provide("managerKind", new Manager(
-	pageContext.pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
-))
+const { userProfile } = pageProps
+
+provide("managerKind", new Manager(userProfile))
 provide("tabs", [ "Users", "Roles", "Roles" ])
 
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
 
-const roles = ref<DeserializedRoleResource[]>([])
+const isLoaded = ref<boolean>(true)
+const roles = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
 const filteredList = ref<DeserializedRoleResource[]>([])
 
 function getFilteredList(resource: PossibleResources[]) {
@@ -85,6 +89,6 @@ async function countUsersPerRole(IDsToCount: string[]) {
 }
 
 onMounted(async() => {
-	await fetchRoleInfos(0)
+	// await fetchRoleInfos(0)
 })
 </script>
