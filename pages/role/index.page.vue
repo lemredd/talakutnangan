@@ -40,7 +40,7 @@ provide("tabs", [ "Users", "Roles", "Departments" ])
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
 
-const isLoaded = ref<boolean>(true)
+const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
 const filteredList = ref<DeserializedRoleResource[]>([])
 
@@ -91,5 +91,6 @@ async function countUsersPerRole(IDsToCount: string[]) {
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
+	isLoaded.value = true
 })
 </script>
