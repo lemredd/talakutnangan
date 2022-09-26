@@ -6,17 +6,15 @@ import Policy from "!/bases/policy"
 import Manager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
+import { CREATE } from "$/permissions/department_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
-import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
+import { department as permissionGroup } from "$/permissions/permission_list"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		return new PermissionBasedPolicy(permissionGroup, [ CREATE ])
 	}
 
 	getDocumentProps(): DocumentProps {
