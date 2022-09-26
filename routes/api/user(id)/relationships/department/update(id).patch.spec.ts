@@ -1,12 +1,13 @@
-import ErrorBag from "$!/errors/error_bag"
 import Factory from "~/factories/user"
+import ErrorBag from "$!/errors/error_bag"
+import DepartmentFactory from "~/factories/department"
 import MockRequester from "~/setups/mock_requester"
 
 import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/user/:id", () => {
+describe("Controller: PATCH /api/model/:id/department", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
@@ -14,20 +15,16 @@ describe("Controller: PATCH /api/user/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new Factory().insertOne()
-		const newUser = await new Factory().makeOne()
+		const model = await new Factory().beStudent().serializedOne()
+		const department = await new DepartmentFactory().mayAdmit().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"attributes": {
-						"email": newUser.email,
-						"name": newUser.name,
-						"prefersDark": newUser.prefersDark
-					},
-					"id": String(user.id),
-					"type": "user"
+					"id": String(department.id),
+					"type": "department"
 				}
-			}
+			},
+			"user": model
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -40,26 +37,22 @@ describe("Controller: PATCH /api/user/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new Factory().insertOne()
-		const newUser = await new Factory().makeOne()
+		const model = await new Factory().beStudent().serializedOne()
+		const department = await new DepartmentFactory().mayNotAdmit().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"attributes": {
-						"email": "random",
-						"name": newUser.name,
-						"prefersDark": newUser.prefersDark
-					},
-					"id": String(user.id),
-					"type": "user"
+					"id": String(department.id),
+					"type": "department"
 				}
-			}
+			},
+			"user": model
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.pointer", "data.attributes.email")
+		expect(body).toHaveProperty("0.source.pointer", "body.data.id")
 	})
 })
