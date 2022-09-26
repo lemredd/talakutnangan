@@ -7,7 +7,7 @@ import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: PATCH /api/model/:id/department", () => {
+describe("Controller: PATCH /api/user/:id/department", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info", async() => {
