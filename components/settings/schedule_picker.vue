@@ -1,7 +1,6 @@
 <!--
 	TODO: Refactor all WindiCSS inline classes using @apply directive
 	TODO(lead): Use `employee_schedule` fetcher to modify data
-
  -->
 
 <template>
@@ -15,7 +14,9 @@
 		<div
 			v-if="!isNew && isEditing"
 			class="buttons">
-			<button class="save-btn btn btn-primary">
+			<button
+				class="save-btn btn btn-primary"
+				@click="updateTime">
 				save
 			</button>
 			<button
@@ -98,7 +99,14 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
+import type { Day } from "$/types/database"
+
 import Selectable from "@/fields/selectable_options.vue"
+
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
 import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
 
 const props = defineProps<{
@@ -116,6 +124,7 @@ function toggleEditing() {
 	isEditing.value = !isEditing.value
 }
 function toggleAdding() {
+	toggleEditing()
 	isAdding.value = !isAdding.value
 }
 
@@ -192,13 +201,21 @@ const endTime = ref(convertTimeObjectToTimeString(
 const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
 const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
-function setNewTime(hour: string, minute: string, oldMidDay: string) {
-	const newHour = oldMidDay === "PM"
-		? Number(hour) + noon
-		: Number(hour)
+function updateTime() {
+	const fetcher = new EmployeeScheduleFetcher()
+	// eslint-disable-next-line prefer-const
+	let [ startHour, startMinute ] = startTime.value.split(":")
+	// eslint-disable-next-line prefer-const
+	let [ endHour, endMinute ] = endTime.value.split(":")
 
-	const newTime = `${newHour}:${minute}`
-	emit("passNewTime", newTime)
+	if (startMidDay.value === "PM") startHour = String(Number(startHour) + noon)
+	if (endMidDay.value === "PM") endHour = String(Number(endHour) + noon)
+
+	fetcher.update(props.scheduleId as string, {
+		"dayName": props.dayName as Day,
+		"scheduleEnd": convertTimeToMinutes(`${endHour}:${endMinute}`),
+		"scheduleStart": convertTimeToMinutes(`${startHour}:${startMinute}`)
+	})
 }
 
 const emit = defineEmits<{(e: "passNewTime", newTime: string): void }>()
