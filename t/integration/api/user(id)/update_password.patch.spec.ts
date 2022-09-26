@@ -20,17 +20,17 @@ describe("PATCH /api/user/:id/update_password", () => {
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 		.insertOne()
 
-		const { "user": student, cookie } = await App.makeAuthenticatedCookie(studentRole)
+		const { "user": model, cookie } = await App.makeAuthenticatedCookie(studentRole)
 
 		const response = await App.request
-		.patch(`/api/user/${student.id}/update_password`)
+		.patch(`/api/user/${model.id}/update_password`)
 		.set("Cookie", cookie)
 		.send({
 			"data": {
 				"attributes": {
 					"password": "12345678"
 				},
-				"id": String(student.id),
+				"id": String(model.id),
 				"type": "user"
 			},
 			"meta": {
