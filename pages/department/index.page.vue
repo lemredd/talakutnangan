@@ -39,6 +39,7 @@ const isLoaded = ref<boolean>(true)
 const list = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
+
 const filteredList = ref<DeserializedDepartmentResource[]>([])
 
 function getFilteredList(resource: PossibleResources[]) {

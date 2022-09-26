@@ -35,7 +35,7 @@ const { userProfile } = pageProps
 
 const classifier = new Manager(userProfile)
 provide("managerKind", classifier)
-provide("tabs", [ "Users", "Roles", "Roles" ])
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
