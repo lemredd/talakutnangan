@@ -15,6 +15,7 @@
 		<SchedulePicker
 			v-for="schedule in daySchedules"
 			:key="schedule.id"
+			:schedule-id="schedule.id"
 			:day-name="schedule.dayName"
 			:schedule-start="schedule.scheduleStart"
 			:schedule-end="schedule.scheduleEnd"/>

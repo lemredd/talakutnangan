@@ -102,7 +102,9 @@ import Selectable from "@/fields/selectable_options.vue"
 import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
 
 const props = defineProps<{
+	scheduleId?: string
 	isNew?: boolean
+	dayName: string
 	scheduleStart: number
 	scheduleEnd: number
 }>()
