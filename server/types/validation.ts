@@ -55,7 +55,14 @@ export interface AcronymRuleConstraints {
 export interface BufferRuleConstraints {
 	buffer: {
 		allowedMimeTypes: string[],
-		maxSize: number
+		maximumSize: number,
+		minimumSize: number
+	} | {
+		allowedMimeTypes: string[],
+		minimumSize: number
+	} | {
+		allowedMimeTypes: string[],
+		maximumSize: number
 	}
 }
 
