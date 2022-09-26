@@ -27,7 +27,7 @@ describe("Validator pipe: or", () => {
 		expect(sanitizeValue).toStrictEqual(3)
 	})
 
-	it("cannot accept invalid input", async () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState([ "invalid" ]))
 		const constraints = {
 			"field": "hello",
