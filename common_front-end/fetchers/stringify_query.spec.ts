@@ -3,11 +3,11 @@ import stringifyQuery from "./stringify_query"
 describe("Fetcher: Stringify query", () => {
 	it("can stringify query object", () => {
 		const queryObject = {
-			"hello": "world",
 			"foo": {
 				"bar": true,
 				"baz": "fum"
-			}
+			},
+			"hello": "world"
 		}
 
 		const query = stringifyQuery(queryObject)
@@ -17,10 +17,10 @@ describe("Fetcher: Stringify query", () => {
 
 	it("can stringify with nested array", () => {
 		const queryObject = {
-			"hello": [ "world", "universe" ],
 			"foo": {
 				"bar": [ "baz", "fuzz" ]
-			}
+			},
+			"hello": [ "world", "universe" ]
 		}
 
 		const query = stringifyQuery(queryObject)
