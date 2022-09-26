@@ -1,12 +1,15 @@
-import type { Request } from "!/types/dependent"
 import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { AuthenticatedRequest } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
+import deserialize from "$/object/deserialize"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
+import ManagerClassifier from "$/helpers/manager"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 
@@ -30,12 +33,14 @@ export default class extends PageMiddleware {
 		}
 	}
 
-	async getPageProps(request: Request): Promise<Serializable> {
+	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
+		const user = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
+		const classifer = new ManagerClassifier(user)
 		const pageProps = {
 			"roles": await manager.list({
 				"filter": {
-					"department": "*",
+					"department": classifer.isAdmin() ? "*" : Number(user.data.department.data.id),
 					"existence": "exists"
 				},
 				"page": {
