@@ -33,12 +33,12 @@ export default async function(
 		&& !isUndefined(value.info?.mimeType)
 	) {
 		const castBuffer = value.buffer as Buffer
-		if (!(castBuffer.byteLength <= constraints.buffer.maxSize)) {
+		if (!(castBuffer.byteLength <= constraints.buffer.maximumSize)) {
 			const error = {
 				"field": constraints.field,
 				"friendlyName": constraints.friendlyName,
 				"messageMaker": (field: string) => `Field "${field}" must be less than ${
-					constraints.buffer?.maxSize
+					constraints.buffer?.maximumSize
 				} bytes.`
 			}
 

@@ -10,6 +10,7 @@ import type {
 } from "%/types/independent"
 
 import { personName } from "$!/constants/regex"
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
 
 import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
@@ -53,8 +54,6 @@ export default class extends MultipartController {
 	}
 
 	get postParseMiddlewares(): OptionalMiddleware[] {
-		// TODO: Think of the maximum size of the CSV file. currently accepting 1MB.
-		const maxSize = 1 * 1000
 		return [
 			new BodyValidation((unusedRequest: Request): FieldRules => {
 				const attributes = {
@@ -91,7 +90,8 @@ export default class extends MultipartController {
 								"constraints": {
 									"buffer": {
 										"allowedMimeTypes": [ "text/csv", "application/vnd.ms-excel" ],
-										maxSize
+										"maximumSize": MAXIMUM_FILE_SIZE,
+										"minimumSize": MINIMUM_FILE_SIZE
 									}
 								},
 								"pipes": [ required, buffer ]
@@ -112,7 +112,6 @@ export default class extends MultipartController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		// TODO: Make validator to validate name
 		return {
 			"data": {
 				"pipes": [ required ]

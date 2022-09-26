@@ -57,12 +57,6 @@ export interface BufferRuleConstraints {
 		allowedMimeTypes: string[],
 		maximumSize: number,
 		minimumSize: number
-	} | {
-		allowedMimeTypes: string[],
-		minimumSize: number
-	} | {
-		allowedMimeTypes: string[],
-		maximumSize: number
 	}
 }
 

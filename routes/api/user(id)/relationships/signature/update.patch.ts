@@ -2,6 +2,8 @@ import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -55,10 +57,9 @@ export default class extends MultipartController {
 			"fileContents": {
 				"constraints": {
 					"buffer": {
-						// TODO: Think of maximum size of picture
 						"allowedMimeTypes": [ "image/png" ],
-						// 10 MB
-						"maxSize": 1024 * 1024 * 10
+						"maximumSize": MAXIMUM_FILE_SIZE,
+						"minimumSize": MINIMUM_FILE_SIZE
 					}
 				},
 				"pipes": [ required, buffer ]
