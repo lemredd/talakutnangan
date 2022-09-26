@@ -53,13 +53,17 @@ export default class Fetcher<
 		this.type = type
 	}
 
-	create(attributes: U, otherDataFields: E = {} as E): Promise<Response<T, U, V, W, X, A>> {
+	create(attributes: U, {
+		extraDataFields = {} as E
+	}: Partial<{
+		extraDataFields: E
+	}> = {}): Promise<Response<T, U, V, W, X, A>> {
 		return this.handleResponse(
 			this.postJSON(`${this.type}`, {
 				"data": {
 					attributes,
 					"type": this.type,
-					...otherDataFields
+					...extraDataFields
 				}
 			})
 		)

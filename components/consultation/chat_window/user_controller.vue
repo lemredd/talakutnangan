@@ -151,15 +151,17 @@ function send(): void {
 		},
 		"kind": "text"
 	} as TextMessage, {
-		"relationships": {
-			"chatMessageActivity": {
-				"data": {
-					"id": currentChatMessageActivity.value.id,
-					"type": "chat_message_activity"
+		"extraDataFields": {
+			"relationships": {
+				"chatMessageActivity": {
+					"data": {
+						"id": currentChatMessageActivity.value.id,
+						"type": "chat_message_activity"
+					}
 				}
 			}
-		}
-	} as ChatMessageRelationships).then(() => {
+		} as ChatMessageRelationships
+	}).then(() => {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
 		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
