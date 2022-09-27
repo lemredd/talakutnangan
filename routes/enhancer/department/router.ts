@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import GetIndex from "!%/enhancer/department/index.get"
+import GetList from "!%/enhancer/department/list.get"
 import GetCreate from "!%/enhancer/department/create.get"
 
 export default class extends Router {
@@ -7,7 +7,7 @@ export default class extends Router {
 		super()
 
 		this.useControllers([
-			new GetIndex(),
+			new GetList(),
 			new GetCreate()
 		])
 	}
