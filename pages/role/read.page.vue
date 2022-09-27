@@ -59,9 +59,9 @@
 				Archive
 			</button>
 		</div>
-		<Overlay :is-shown="isBeingConfirmed">
-			// Log in form
-		</Overlay>
+		<ConfirmationPassword
+			v-model="password"
+			:must-confirm="isBeingConfirmed"/>
 	</form>
 </template>
 
@@ -70,13 +70,7 @@
 </style>
 
 <script setup lang="ts">
-import {
-	ref,
-	inject,
-	computed,
-	onMounted,
-	onBeforeMount
-} from "vue"
+import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -94,9 +88,9 @@ import {
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
 
-import Overlay from "@/helpers/overlay.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
+import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 
 Fetcher.initialize("/api")
 
@@ -108,7 +102,8 @@ const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
 )
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
-const isBeingConfirmed = ref<boolean>(true)
+const isBeingConfirmed = ref<boolean>(false)
+const password = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
 
