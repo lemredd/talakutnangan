@@ -19,10 +19,10 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 
 import DepartmentFetcher from "$@/fetchers/department"
 
+import SearchFilter from "@/helpers/search_bar.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import DeptManager from "@/resource_management/resource_manager.vue"
 import DeptList from "@/resource_management/resource_manager/resource_list.vue"
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
