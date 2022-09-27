@@ -37,7 +37,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed } from "vue"
 
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
@@ -53,6 +53,4 @@ const props = defineProps<{
 const daySchedules = computed<DeserializedEmployeeScheduleResource[]>(
 	() => props.schedules.filter(schedule => schedule.dayName === props.dayName)
 )
-
-const emit = defineEmits<{(e: "passNewTime", newTime: string): void }>()
 </script>
