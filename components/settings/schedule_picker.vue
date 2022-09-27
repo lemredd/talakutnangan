@@ -100,6 +100,8 @@
 import { inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
+import type { PageContext } from "$/types/renderer"
+
 
 import Selectable from "@/fields/selectable_options.vue"
 
@@ -109,7 +111,8 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
-const userId = inject("userId") as string
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
 
 const props = defineProps<{
 	scheduleId?: string
@@ -230,6 +233,4 @@ function updateTime() {
 		}
 	})
 }
-
-const emit = defineEmits<{(e: "passNewTime", newTime: string): void }>()
 </script>
