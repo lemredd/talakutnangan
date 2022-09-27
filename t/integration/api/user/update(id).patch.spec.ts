@@ -12,6 +12,7 @@ import Transport from "!/helpers/email/transport"
 import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 describe("PATCH /api/user/:id", () => {
 	beforeAll(async() => {
@@ -31,13 +32,13 @@ describe("PATCH /api/user/:id", () => {
 		.set("Cookie", cookie)
 		.send({
 			"data": {
-				"type": "user",
-				"id": String(student.id),
 				"attributes": {
-					"name": student.name,
 					"email": newStudent.email,
+					"name": student.name,
 					"prefersDark": newStudent.prefersDark
-				}
+				},
+				"id": String(student.id),
+				"type": "user"
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
@@ -70,7 +71,7 @@ describe("PATCH /api/user/:id", () => {
 		await flushPromises()
 		// Wait for complete transmission
 		await new Promise(resolve => {
-			setTimeout(resolve, 1000)
+			setTimeout(resolve, convertTimeToMilliseconds("00:00:01"))
 		})
 		const previousMessages = Transport.consumePreviousMessages()
 		expect(previousMessages).toHaveLength(1)
@@ -78,7 +79,7 @@ describe("PATCH /api/user/:id", () => {
 		expect(previousMessages[0]).toHaveProperty("message.subject", "Email Verification")
 		expect(previousMessages[0].message.text).toContain(updatedStudent?.email)
 		expect(previousMessages[0].message.text).toContain("/user/verify")
-	}, 10000)
+	}, convertTimeToMilliseconds("00:00:10"))
 
 	it("can be accessed by student and retain email verification after update", async() => {
 		const studentRole = await new RoleFactory()
@@ -93,13 +94,13 @@ describe("PATCH /api/user/:id", () => {
 		.set("Cookie", cookie)
 		.send({
 			"data": {
-				"type": "user",
-				"id": String(student.id),
 				"attributes": {
-					"name": newStudent.name,
 					"email": student.email,
+					"name": newStudent.name,
 					"prefersDark": newStudent.prefersDark
-				}
+				},
+				"id": String(student.id),
+				"type": "user"
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)

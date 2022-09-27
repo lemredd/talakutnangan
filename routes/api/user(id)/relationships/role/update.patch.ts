@@ -1,8 +1,7 @@
 import type { FieldRules } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { RoleIdentifierListDocument } from "$/types/documents/role"
-import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"

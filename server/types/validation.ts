@@ -1,6 +1,7 @@
+import type { GeneralObject } from "$/types/general"
 import type { Pipe as BasePipe } from "$/types/database"
 import type BasePermissionGroup from "$/permissions/base"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { BaseManagerClass, Request } from "!/types/dependent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
@@ -69,6 +70,18 @@ export interface OrRuleConstraints {
 	or: {
 		// eslint-disable-next-line no-use-before-define
 		rules: Rules[]
+	}
+}
+
+export interface ValidateExtensivelyIfRuleConstraints {
+	validateExtensivelyIf: {
+		condition: (data: {
+			value: any,
+			request: Request,
+			source: GeneralObject
+		}) => Promise<boolean>,
+		// eslint-disable-next-line no-use-before-define
+		rules: Rules
 	}
 }
 
@@ -142,6 +155,7 @@ export type RuleContraints = Partial<
 	& DoesBelongToCurrentUserConstraints<unknown>
 	& OrRuleConstraints
 	& DivisibleByConstraints
+	& ValidateExtensivelyIfRuleConstraints
 >
 
 /**

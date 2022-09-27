@@ -3,12 +3,10 @@ import { Request, Response } from "!/types/dependent"
 
 import JSONController from "!/controllers/json"
 import Manager from "%/managers/attached_chat_file"
-import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
 import Policy from "!/bases/policy"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import exists from "!/validators/manager/exists"
 import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
