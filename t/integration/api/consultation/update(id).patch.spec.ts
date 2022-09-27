@@ -3,7 +3,6 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/setups/app"
 
 import Socket from "!/ws/socket"
-import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
 import AttachedRole from "%/models/attached_role"

@@ -27,20 +27,20 @@ export default async function(
 		}
 
 		const sanitizedInputs = []
+		const unorderedInputs = new Map<number, any>()
 		const errors: ErrorPointer[] = []
 		const expectedSanitizeLength = state.value.length
+		const promises: Promise<void>[] = []
 
 		for (let i = 0; i < expectedSanitizeLength; ++i) {
 			const subvalue = state.value[i]
-			try {
-				const sanitizedInput = await validate({
-					[i]: constraints.array
-				}, constraints.request, {
-					[i]: subvalue
-				}, constraints.source) as { [key:number]: any }
-
-				sanitizedInputs.push(sanitizedInput[i])
-			} catch (error) {
+			const promise = validate({
+				[i]: constraints.array
+			}, constraints.request, {
+				[i]: subvalue
+			}, constraints.source).then((input: { [key:number]: any }) => {
+				unorderedInputs.set(i, input[i])
+			}).catch(error => {
 				const flattendedErrors = []
 				if (Array.isArray(error)) {
 					flattendedErrors.push(...error)
@@ -48,8 +48,12 @@ export default async function(
 					flattendedErrors.push(error as ErrorPointer|Error)
 				}
 				errors.push(...unifyErrors(`${i}`, flattendedErrors))
-			}
+			})
+
+			promises.push(promise)
 		}
+
+		await Promise.all(promises)
 
 		if (errors.length > 0) {
 			throw errors.map(error => ({
@@ -57,6 +61,10 @@ export default async function(
 				"messageMaker": error.messageMaker
 			}))
 		} else {
+			for (let i = 0, limit = unorderedInputs.size; i < limit; ++i) {
+				sanitizedInputs.push(unorderedInputs.get(i))
+			}
+
 			return {
 				"maySkip": false,
 				"value": sanitizedInputs
