@@ -23,6 +23,11 @@
 				@click="toggleEditing">
 				Discard
 			</button>
+			<button
+				class="save-btn btn ml-5"
+				@click="deleteSchedule">
+				Delete
+			</button>
 		</div>
 		<button
 			v-if="isNew && !isAdding"
@@ -33,7 +38,9 @@
 		<div
 			v-if="isNew && isAdding"
 			class="buttons">
-			<button class="save-btn btn btn-primary">
+			<button
+				class="save-btn btn btn-primary"
+				@click="saveNewSchedule">
 				save
 			</button>
 			<button
@@ -55,7 +62,7 @@
 					<Selectable
 						v-model="startMidDay"
 						class="inline"
-						:options="midDay"
+						:options="midDays"
 						:disabled="!isEditing"/>
 				</div>
 			</label>
@@ -71,7 +78,7 @@
 					<Selectable
 						v-model="endMidDay"
 						class="inline"
-						:options="midDay"
+						:options="midDays"
 						:disabled="!isEditing"/>
 				</div>
 			</label>
@@ -96,7 +103,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { computed, inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
@@ -109,6 +116,9 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import assignPath from "$@/external/assign_path"
+
+const fetcher = new EmployeeScheduleFetcher()
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
@@ -172,7 +182,7 @@ function generateNumberRange() {
 	return time
 }
 const availableTimes = makeOptions(generateNumberRange())
-const midDay = makeOptions([ "AM", "PM" ])
+const midDays = makeOptions([ "AM", "PM" ])
 
 function getTimePart(time: number, part: "hour" | "minute" | "midday") {
 	const timeObject = convertMinutesToTimeObject(time)
@@ -242,5 +252,29 @@ function updateTime() {
 			}
 		}
 	})
+}
+
+function saveNewSchedule() {
+	fetcher.create({
+		"dayName": props.dayName as Day,
+		"scheduleEnd": convertTimeToMinutes(endTime24Hours.value),
+		"scheduleStart": convertTimeToMinutes(startTime24Hours.value)
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				"user": {
+					"data": {
+						"id": userId,
+						"type": "user"
+					}
+				}
+			}
+		}
+	}).then(() => assignPath("/settings/profile"))
+}
+
+function deleteSchedule() {
+	fetcher.archive([ String(props.scheduleId) ])
+	.then(() => assignPath("/settings/profile"))
 }
 </script>
