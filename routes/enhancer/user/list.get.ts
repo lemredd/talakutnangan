@@ -8,7 +8,10 @@ import PermissionBasedPolicy from "!/policies/permission-based"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 
 import RoleManager from "%/managers/role"
 import DepartmentManager from "%/managers/department"
@@ -17,7 +20,10 @@ export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [ READ_ANYONE_ON_OWN_DEPARTMENT ])
+		return new PermissionBasedPolicy(permissionGroup, [
+			READ_ANYONE_ON_OWN_DEPARTMENT,
+			READ_ANYONE_ON_ALL_DEPARTMENTS
+		])
 	}
 
 	get bodyParser(): null { return null }
@@ -32,8 +38,8 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const roleManager = new RoleManager(request.transaction, request.cache)
-		const departmentManager = new DepartmentManager(request.transaction, request.cache)
+		const roleManager = new RoleManager(request)
+		const departmentManager = new DepartmentManager(request)
 		const pageProps = {
 			"departments": await departmentManager.list({
 				"filter": {
