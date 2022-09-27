@@ -110,7 +110,7 @@ export interface ChatMessageKindFilter extends Serializable {
 	}
 }
 
-export interface PreviewMessageOnlyFilter<T extends number|string = string> extends Serializable {
+export interface PreviewMessageOnlyFilter extends Serializable {
 	filter: {
 		/**
 		 * Setting this to true ignores most query parameters and returns last messages of each
