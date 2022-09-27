@@ -3,6 +3,8 @@ import type { FieldRules, Rules } from "!/types/validation"
 import type { AttachedFile } from "$/types/documents/file-like"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
 import Manager from "%/managers/chat_message"
@@ -26,8 +28,6 @@ export default class extends CreateRoute {
 	}
 
 	makeBodyRuleGenerator(request: Request): FieldRules {
-		// 20 MB
-		const MAX_SIZE = 20 * 1024 * 1024
 		const meta: Rules = {
 			"constraints": {
 				"object": {
@@ -35,7 +35,8 @@ export default class extends CreateRoute {
 						"constraints": {
 							"buffer": {
 								"allowedMimeTypes": [ "text/plain", "image/png" ],
-								"maxSize": MAX_SIZE
+								"maximumSize": MAXIMUM_FILE_SIZE,
+								"minimumSize": MINIMUM_FILE_SIZE
 							}
 						},
 						"pipes": [ required, buffer ]

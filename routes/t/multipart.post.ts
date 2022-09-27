@@ -15,55 +15,59 @@ export default class extends MultipartController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
-			importedCSV: {
-				pipes: [ nullable, buffer ],
-				constraints: {
-					buffer: {
-						allowedMimeTypes: [ "text/csv" ],
-						maxSize: 1024 * 1024 * 10 // 10 MB
+			"importedCSV": {
+				"constraints": {
+					"buffer": {
+						"allowedMimeTypes": [ "text/csv" ],
+						// 10 MB
+						"maximumSize": 10_000_000,
+						"minimumSize": 0
 					}
-				}
+				},
+				"pipes": [ nullable, buffer ]
 			},
-			nestedImportedCSV: {
-				pipes: [ nullable, object ],
-				constraints: {
-					object: {
-						file: {
-							pipes: [ buffer ],
-							constraints: {
-								buffer: {
-									allowedMimeTypes: [ "text/csv" ],
-									maxSize: 1024 * 1024 * 10 // 10 MB
+			"nestedImportedCSV": {
+				"constraints": {
+					"object": {
+						"file": {
+							"constraints": {
+								"buffer": {
+									"allowedMimeTypes": [ "text/csv" ],
+									// 10 MB
+									"maximumSize": 10_000_000,
+									"minimumSize": 0
 								}
-							}
+							},
+							"pipes": [ buffer ]
 						}
 					}
-				}
+				},
+				"pipes": [ nullable, object ]
 			},
-			roles: {
-				pipes: [ nullable, array ],
-				constraints: {
-					nullable: { defaultValue: [] },
-					array: {
-						pipes: [ nullable ],
-						constraints: {}
-					}
-				}
+			"roles": {
+				"constraints": {
+					"array": {
+						"pipes": [ nullable ]
+					},
+					"nullable": { "defaultValue": [] }
+				},
+				"pipes": [ nullable, array ]
 			}
 		}
 	}
 
-	async handle(request: Request, response: Response): Promise<void> {
+	handle(request: Request, response: Response): Promise<void> {
 		const info: { [key:string]: string } = {}
-		const body = request.body
+		const { body } = request
 
 		for (const field in body) {
-			if (Object.prototype.hasOwnProperty.call(body, field)) {
-				const value = body[field];
+			if (Object.hasOwn(body, field)) {
+				const value = body[field]
 				info[field] = value
 			}
 		}
 
 		response.status(this.status.OK).json(info)
+		return Promise.resolve()
 	}
 }
