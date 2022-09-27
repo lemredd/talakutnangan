@@ -141,4 +141,31 @@ export default class UserFetcher extends BaseFetcher<
 			null
 		>
 	}
+
+	async updateAttachedRole(id: string, attachedRoleIDs: string[]): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON(`user/${id}/relationships/role`, {
+				id
+			}, {
+				"data": attachedRoleIDs.map(roleID => ({
+					"id": roleID,
+					"type": "role"
+				}))
+			})
+		) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			null
+		>
+	}
 }
