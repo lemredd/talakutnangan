@@ -123,7 +123,14 @@ function findMatchedUsers() {
 		},
 		"sort": [ "name" ]
 	}).then(({ body }) => {
-		otherParticipants.value = body.data
+		otherParticipants.value = body.data.filter(candidate => {
+			const isNotSelected = selectedParticipants.value.findIndex(selectedParticipant => {
+				const doesMatchSelectedParticipant = candidate.id === selectedParticipant.id
+				return doesMatchSelectedParticipant
+			}) === -1
+
+			return isNotSelected
+		})
 	})
 }
 
