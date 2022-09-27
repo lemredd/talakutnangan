@@ -36,9 +36,13 @@ import { inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import Fetcher from "$@/fetchers/consultation"
+
 import ConsultationShell from "@/consultation/page_shell.vue"
 import EmptyConsultationList from "@/consultation/empty_list.vue"
 import EmptyChatWindow from "@/consultation/empty_chat_window.vue"
+
+Fetcher.initialize("/api")
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { pageProps } = pageContext
