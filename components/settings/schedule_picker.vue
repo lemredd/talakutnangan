@@ -97,7 +97,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
 
@@ -107,7 +107,9 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
-import convertMinutesToTimeObject from "%/managers/helpers/convert_minutes_to_time_object"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+
+const userId = inject("userId") as string
 
 const props = defineProps<{
 	scheduleId?: string
@@ -211,10 +213,21 @@ function updateTime() {
 	if (startMidDay.value === "PM") startHour = String(Number(startHour) + noon)
 	if (endMidDay.value === "PM") endHour = String(Number(endHour) + noon)
 
-	fetcher.update(props.scheduleId as string, {
+	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
 		"scheduleEnd": convertTimeToMinutes(`${endHour}:${endMinute}`),
 		"scheduleStart": convertTimeToMinutes(`${startHour}:${startMinute}`)
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				"user": {
+					"data": {
+						"id": userId,
+						"type": "user"
+					}
+				}
+			}
+		}
 	})
 }
 
