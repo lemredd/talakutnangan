@@ -1,5 +1,5 @@
 <template>
-	<Overlay :is-shown="isShown">
+	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 			<h1>Enter the consultation details</h1>
 		</template>
@@ -17,7 +17,7 @@
 				header="Consulters"
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
-				kind="reachable_employee"/>
+				kind="student"/>
 			<SelectableOptionsField
 				v-model="chosenReason"
 				label="Kind of Reason: "
