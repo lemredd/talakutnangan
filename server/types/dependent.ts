@@ -17,7 +17,7 @@ import type { Serializable } from "$/types/general"
 import type { SharedManagerState } from "$!/types/dependent"
 
 import BaseManager from "%/managers/base"
-import TransactionManager from "%/managers/helpers/transaction_manager"
+import TransactionManager from "%/helpers/transaction_manager"
 
 // @ts-ignore
 export interface Request extends BaseRequest, SharedManagerState<TransactionManager> {

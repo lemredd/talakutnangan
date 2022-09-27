@@ -124,24 +124,26 @@ function addConsultation(): void {
 		"scheduledStartAt": new Date().toJSON(),
 		"startedAt": null
 	}, {
-		"relationships": {
-			"consultant": {
-				"data": consultant
-			},
-			"consultantRole": {
-				"data": {
-					"id": "",
-					"type": "role"
+		"extraDataFields": {
+			"relationships": {
+				"consultant": {
+					"data": consultant
+				},
+				"consultantRole": {
+					"data": {
+						"id": "",
+						"type": "role"
+					}
+				},
+				"participants": {
+					"data": [
+						...selectedConsulters.value.map(consulter => ({
+							"id": consulter.id,
+							"type": "user"
+						})),
+						consultant
+					]
 				}
-			},
-			"participants": {
-				"data": [
-					...selectedConsulters.value.map(consulter => ({
-						"id": consulter.id,
-						"type": "user"
-					})),
-					consultant
-				]
 			}
 		}
 	})

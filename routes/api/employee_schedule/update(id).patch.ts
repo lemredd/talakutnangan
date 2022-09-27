@@ -3,6 +3,7 @@ import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedu
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
+import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
@@ -13,12 +14,10 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import Policy from "!/bases/policy"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import OverridableKindBasedPolicy from "!/policies/overridable_kind-based"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	UPDATE_OWN_DATA,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
@@ -29,6 +28,7 @@ import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
+import divisibleBy from "!/validators/date/divisible_by"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
@@ -39,12 +39,12 @@ export default class extends DoubleBoundJSONController {
 
 	get policy(): Policy {
 		return new Merger([
-			CommonMiddlewareList.reachableEmployeeOnlyPolicy,
-			new PermissionBasedPolicy(permissionGroup, [
-				UPDATE_OWN_DATA,
+			new OverridableKindBasedPolicy(
+				[ "reachable_employee" ],
+				permissionGroup,
 				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			]),
+			),
 			new BelongsToCurrentUserPolicy(this.manager, {
 				"bypassNecessarilyWith": {
 					"combinations": [
@@ -72,21 +72,27 @@ export default class extends DoubleBoundJSONController {
 			},
 			"scheduleEnd": {
 				"constraints": {
+					"divisibleBy": {
+						"value": MINUTE_SCHEDULE_INTERVAL
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:59"),
 						"minimum": convertTimeToMinutes("00:01")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			},
 			"scheduleStart": {
 				"constraints": {
+					"divisibleBy": {
+						"value": MINUTE_SCHEDULE_INTERVAL
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:58"),
 						"minimum": convertTimeToMinutes("00:00")
 					}
 				},
-				"pipes": [ required, integer, range ]
+				"pipes": [ required, integer, divisibleBy, range ]
 			}
 		}
 

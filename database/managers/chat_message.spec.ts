@@ -93,14 +93,6 @@ describe("Database Manager: Chat message create operations", () => {
 			model.chatMessageActivity?.consultationID
 		)
 		expect(data).toHaveProperty("data.relationships.user")
-		expect(data).toHaveProperty("data.relationships.chatMessageActivity")
-		const activity = await ChatMessageActivity.findByPk(
-			model.chatMessageActivityID
-		) as ChatMessageActivity
-		expect(activity.seenMessageAt)
-		.toStrictEqual(chatMessageActivityModel.seenMessageAt)
-		expect(activity.receivedMessageAt)
-		.not.toStrictEqual(chatMessageActivityModel.receivedMessageAt)
 	})
 
 	it("can create message with file", async() => {
@@ -137,14 +129,6 @@ describe("Database Manager: Chat message create operations", () => {
 		)
 		expect(data).toHaveProperty("data.relationships.user")
 		expect(data).toHaveProperty("data.relationships.attachedChatFile")
-		expect(data).toHaveProperty("data.relationships.chatMessageActivity")
-		const activity = await ChatMessageActivity.findByPk(
-			model.chatMessageActivityID
-		) as ChatMessageActivity
-		expect(activity.seenMessageAt)
-		.toStrictEqual(chatMessageActivityModel.seenMessageAt)
-		expect(activity.receivedMessageAt)
-		.not.toStrictEqual(chatMessageActivityModel.receivedMessageAt)
 	})
 })
 

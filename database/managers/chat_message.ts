@@ -16,7 +16,7 @@ import Log from "$!/singletons/log"
 import BaseManager from "%/managers/base"
 import Model from "%/models/chat_message"
 import Consultation from "%/models/consultation"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 import Transformer from "%/transformers/chat_message"
 import ProfilePicture from "%/models/profile_picture"
 import AttachedChatFile from "%/models/attached_chat_file"
@@ -211,15 +211,6 @@ export default class extends BaseManager<
 		details: RawChatMessageAttributes & CreationAttributes<Model>
 	): Promise<Model> {
 		const model = await this.model.create(details, this.transaction.transactionObject)
-
-		const activityManager = new ChatMessageActivityManager({
-			"cache": this.cache,
-			"transaction": this.transaction
-		})
-
-		await activityManager.update(details.chatMessageActivityID, {
-			"receivedMessageAt": new Date()
-		})
 
 		model.chatMessageActivity = await ChatMessageActivity.findByPk(
 			details.chatMessageActivityID,

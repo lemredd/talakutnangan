@@ -10,12 +10,7 @@ import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
 import QueryController from "!/controllers/query"
 
-import { user as permissionGroup } from "$/permissions/permission_list"
-import PermissionBasedPolicy from "!/policies/permission-based"
-import {
-	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
-} from "$/permissions/user_combinations"
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
@@ -29,10 +24,7 @@ export default class extends QueryController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ_ANYONE_ON_OWN_DEPARTMENT,
-			READ_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		return CommonMiddlewareList.knownOnlyPolicy
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {

@@ -11,6 +11,7 @@ import Transport from "!/helpers/email/transport"
 import Route from "!%/api/user/import.post"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 describe("POST /api/user/import", () => {
 	beforeAll(async() => {
@@ -36,6 +37,7 @@ describe("POST /api/user/import", () => {
 		.field("data[relationships][roles][data][0][id]", sampleRole.id)
 		.attach("meta[importedCSV]", path)
 		.set("Cookie", cookie)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data).toHaveLength(3)
@@ -60,7 +62,7 @@ describe("POST /api/user/import", () => {
 
 		// Waiting for all transmissions to finish
 		await new Promise(resolve => {
-			setTimeout(resolve, 1000)
+			setTimeout(resolve, convertTimeToMilliseconds("00:00:01"))
 		})
 
 		const previousMessages = Transport.consumePreviousMessages()
@@ -81,7 +83,7 @@ describe("POST /api/user/import", () => {
 		expect(previousMessages[2].message.text).toContain("n.marquis20113@mcc.edu.ph")
 		expect(previousMessages[2].message.text).toContain("student")
 		expect(previousMessages[2].message.text).toContain("1920-113")
-	}, 10000)
+	}, convertTimeToMilliseconds("00:00:10"))
 
 	it("cannot upload by text field", async() => {
 		const adminRole = await new RoleFactory()
@@ -137,5 +139,5 @@ describe("POST /api/user/import", () => {
 			"errors.0.source.pointer",
 			"meta.importedCSV.0.studentNumber"
 		)
-	}, 10000)
+	}, convertTimeToMilliseconds("00:00:10"))
 })

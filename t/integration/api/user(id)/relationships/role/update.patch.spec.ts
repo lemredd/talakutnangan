@@ -1,7 +1,7 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/setups/app"
-import UserFactory from "~/factories/user"
+import Factory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import RequestEnvironment from "$!/singletons/request_environment"
 
@@ -21,19 +21,19 @@ describe("PATCH /api/user/:id/relationships/role", () => {
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const roles = await new RoleFactory().insertMany(3)
-		const user = await new UserFactory().attach(roles[0]).attach(roles[1]).insertOne()
+		const model = await new Factory().attach(roles[0]).attach(roles[1]).insertOne()
 
 		const response = await App.request
-		.patch(`/api/user/${user.id}/relationships/role`)
+		.patch(`/api/user/${model.id}/relationships/role`)
 		.send({
 			"data": [
 				{
-					"type": "role",
-					"id": String(roles[1].id)
+					"id": String(roles[1].id),
+					"type": "role"
 				},
 				{
-					"type": "role",
-					"id": String(roles[2].id)
+					"id": String(roles[2].id),
+					"type": "role"
 				}
 			]
 		})

@@ -1,6 +1,7 @@
+import type { GeneralObject } from "$/types/general"
 import type { Pipe as BasePipe } from "$/types/database"
 import type BasePermissionGroup from "$/permissions/base"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { BaseManagerClass, Request } from "!/types/dependent"
 
 export interface NullableConstraints { nullable?: { defaultValue: any } }
 
@@ -55,7 +56,8 @@ export interface AcronymRuleConstraints {
 export interface BufferRuleConstraints {
 	buffer: {
 		allowedMimeTypes: string[],
-		maxSize: number
+		maximumSize: number,
+		minimumSize: number
 	}
 }
 
@@ -68,6 +70,18 @@ export interface OrRuleConstraints {
 	or: {
 		// eslint-disable-next-line no-use-before-define
 		rules: Rules[]
+	}
+}
+
+export interface ValidateExtensivelyIfRuleConstraints {
+	validateExtensivelyIf: {
+		condition: (data: {
+			value: any,
+			request: Request,
+			source: GeneralObject
+		}) => Promise<boolean>,
+		// eslint-disable-next-line no-use-before-define
+		rules: Rules
 	}
 }
 
@@ -108,6 +122,12 @@ export interface DoesBelongToCurrentUserConstraints<U> extends ManagerBasedRuleC
 
 export interface SizeConstraints { size: { minimum?: number, maximum?: number } }
 
+export interface DivisibleByConstraints {
+	divisibleBy: {
+		value: number
+	}
+}
+
 /**
  * Union of rule contraints
  */
@@ -134,6 +154,8 @@ export type RuleContraints = Partial<
 	& UniqueConsultationScheduleConstraints
 	& DoesBelongToCurrentUserConstraints<unknown>
 	& OrRuleConstraints
+	& DivisibleByConstraints
+	& ValidateExtensivelyIfRuleConstraints
 >
 
 /**

@@ -1,11 +1,8 @@
-<!--
-	TODO: Refactor all WindiCSS inline classes using @apply directive
- -->
 <template>
 	<div class="input-container">
 		<input
 			v-model="proxiedValue"
-			class="bg-transparent mr-2"
+			class="checkbox"
 			type="checkbox"
 			:class="inputClasses"
 			:checked="modelValue.includes(value)"
@@ -17,7 +14,10 @@
 	</div>
 </template>
 
-<style>
+<style scoped lang = "scss">
+	.checkbox{
+		@apply bg-transparent mr-2;
+	}
 </style>
 
 <script setup lang="ts">

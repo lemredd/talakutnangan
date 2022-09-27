@@ -16,3 +16,4 @@ LICENSE*				text eol=lf
 *.yml					text eol=lf
 .sequelizerc		text eol=lf
 execute				text eol=lf
+Procfile				text eol=lf

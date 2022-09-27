@@ -5,9 +5,11 @@
 			v-for="participant in selectedParticipants"
 			:key="participant.id"
 			class="chip">
-			{{ participant.name }}
-			<span class="closebtn" @click="removeParticipant">
-				&times;
+			<span>
+				{{ participant.name }}
+			</span>
+			<span class="material-icons closebtn" @click="removeParticipant">
+				close
 			</span>
 		</div>
 		<NonSensitiveTextField
@@ -16,12 +18,14 @@
 			:label="textFieldLabel"
 			type="text"/>
 		<div
-			v-for="participant in selectedParticipants"
+			v-for="participant in otherParticipants"
 			:key="participant.id"
 			class="chip">
-			{{ participant.name }}
-			<span class="closebtn" @click="addParticipant">
-				&check;
+			<span>
+				{{ participant.name }}
+			</span>
+			<span class="material-icons closebtn" @click="addParticipant">
+				check
 			</span>
 		</div>
 	</div>
@@ -63,8 +67,11 @@ import type { UserKind } from "$/types/database"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
 import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
+
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 
 const props = defineProps<{
 	header: string,
@@ -115,6 +122,8 @@ function findMatchedUsers() {
 			"offset": 0
 		},
 		"sort": [ "name" ]
+	}).then(({ body }) => {
+		otherParticipants.value = body.data
 	})
 }
 
@@ -122,30 +131,35 @@ watch(slug, debounce(findMatchedUsers, DEBOUNCED_WAIT_DURATION))
 
 function removeParticipant(event: Event): void {
 	const { target } = event
-	const castTarget = target as HTMLButtonElement
-	const text = castTarget.innerHTML
+	const castTarget = target as HTMLSpanElement
+	const button = castTarget.previousElementSibling as HTMLButtonElement
+	const text = button.innerHTML
 
 	selectedParticipants.value = selectedParticipants.value.filter(user => {
-		const foundNameIndex = text.indexOf(user.data.name)
+		const foundNameIndex = text.indexOf(user.name)
 		return foundNameIndex === -1
 	})
 }
 
 function addParticipant(event: Event): void {
 	const { target } = event
-	const castTarget = target as HTMLButtonElement
-	const text = castTarget.innerHTML
+	const castTarget = target as HTMLSpanElement
+	const button = castTarget.previousElementSibling as HTMLButtonElement
+	const text = button.innerHTML
 
 	const foundParticipant = otherParticipants.value.find(user => {
-		const foundNameIndex = text.indexOf(user.data.name)
-		return foundNameIndex === -1
+		const foundNameIndex = text.indexOf(user.name)
+		console.log(user, text)
+		return foundNameIndex > -1
 	})
 
 	if (foundParticipant) {
 		selectedParticipants.value.push(foundParticipant)
 	}
-}
 
+	otherParticipants.value = []
+}
+Fetcher.initialize("/api")
 onMounted(() => {
 	rawFetcher = new Fetcher()
 })

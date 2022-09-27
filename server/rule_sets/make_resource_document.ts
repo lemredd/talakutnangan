@@ -14,6 +14,7 @@ export default function(
 		mustCastID = false,
 		postAttributeValidation = { "pipes": [] } as Rules,
 		postIDRules = { "pipes": [] } as Rules,
+		postDataRules = { "pipes": [] } as Rules,
 		extraDataQueries = {} as FieldRules,
 		extraQueries = {} as FieldRules
 	}: Partial<{
@@ -21,7 +22,8 @@ export default function(
 		mustCastID: boolean
 		postAttributeValidation: Rules,
 		postIDRules: Rules,
-		extraDataQueries: FieldRules
+		extraDataQueries: FieldRules,
+		postDataRules: Rules,
 		extraQueries: FieldRules
 	}> = {}
 ): FieldRules {
@@ -42,5 +44,8 @@ export default function(
 			"pipes": [ required, object, ...postAttributeValidation.pipes ]
 		},
 		...extraDataQueries
-	}, extraQueries)
+	}, {
+		extraQueries,
+		postDataRules
+	})
 }

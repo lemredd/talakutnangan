@@ -1,5 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
-import UserFactory from "~/factories/user"
+import Factory from "~/factories/user"
 import MockRequester from "~/setups/mock_requester"
 
 import Controller from "./update(id).patch"
@@ -14,8 +14,8 @@ describe("Controller: PATCH /api/user/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().insertOne()
-		const newUser = await new UserFactory().makeOne()
+		const user = await new Factory().insertOne()
+		const newUser = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
@@ -40,8 +40,8 @@ describe("Controller: PATCH /api/user/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const user = await new UserFactory().insertOne()
-		const newUser = await new UserFactory().makeOne()
+		const user = await new Factory().insertOne()
+		const newUser = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {

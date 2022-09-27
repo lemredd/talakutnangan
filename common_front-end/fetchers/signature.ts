@@ -1,6 +1,4 @@
-import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
-import type { CommonQueryParameters } from "$/types/query"
 import type {
 	SignatureResourceIdentifier,
 	SignatureAttributes,
@@ -25,9 +23,7 @@ export default class SignatureFetcher extends BaseFetcher<
 	SignatureDocument,
 	SignatureListDocument,
 	DeserializedSignatureDocument,
-	DeserializedSignatureListDocument,
-	Serializable,
-	CommonQueryParameters
+	DeserializedSignatureListDocument
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "signature")

@@ -1,11 +1,12 @@
+import typeIs from "type-is"
 import type {
 	ValidationState,
 	ValidationConstraints,
 	BufferRuleConstraints
 } from "!/types/validation"
 
-import isPlainObject from "$/type_guards/is_plain_object"
 import isUndefined from "$/type_guards/is_undefined"
+import isPlainObject from "$/type_guards/is_plain_object"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -33,19 +34,31 @@ export default async function(
 		&& !isUndefined(value.info?.mimeType)
 	) {
 		const castBuffer = value.buffer as Buffer
-		if (!(castBuffer.byteLength <= constraints.buffer.maxSize)) {
+		if (!(castBuffer.byteLength <= constraints.buffer.maximumSize)) {
 			const error = {
 				"field": constraints.field,
 				"friendlyName": constraints.friendlyName,
-				"messageMaker": (field: string) => `Field "${field}" must be less than ${
-					constraints.buffer?.maxSize
+				"messageMaker": (field: string) => `Field "${field}" must be less than or equal to ${
+					constraints.buffer?.maximumSize
 				} bytes.`
 			}
 
 			throw error
 		}
 
-		if (!constraints.buffer.allowedMimeTypes.includes(value.info.mimeType)) {
+		if (!(castBuffer.byteLength >= constraints.buffer.minimumSize)) {
+			const error = {
+				"field": constraints.field,
+				"friendlyName": constraints.friendlyName,
+				"messageMaker": (field: string) => `Field "${field}" must be greater than or equal to ${
+					constraints.buffer?.minimumSize
+				} bytes.`
+			}
+
+			throw error
+		}
+
+		if (!typeIs.is(value.info.mimeType, constraints.buffer.allowedMimeTypes)) {
 			const error = {
 				"field": constraints.field,
 				"friendlyName": constraints.friendlyName,

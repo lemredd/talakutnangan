@@ -11,7 +11,7 @@ import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
 
 import Middleware from "!/bases/middleware"
-import Condition from "%/managers/helpers/condition"
+import Condition from "%/helpers/condition"
 import DevController from "!/controllers/dev"
 import LocalLogInMiddleware from "!/middlewares/authentication/local_log_in"
 import Department from "%/models/department"

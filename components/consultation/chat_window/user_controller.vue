@@ -65,6 +65,7 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
+import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
@@ -123,11 +124,17 @@ const emit = defineEmits<CustomEvents>()
 const startConsultation = () => emit("startConsultation")
 
 let rawFetcher: Fetcher|null = null
-
 function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
 
 	throw new Error("Messages cannot be sent to server yet.")
+}
+
+let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
+function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
+	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
+
+	throw new Error("Chat message activities cannot be processed yet.")
 }
 
 function showFileUpload() {
@@ -144,22 +151,28 @@ function send(): void {
 		},
 		"kind": "text"
 	} as TextMessage, {
-		"relationships": {
-			"chatMessageActivity": {
-				"data": {
-					"id": currentChatMessageActivity.value.id,
-					"type": "chat_message_activity"
+		"extraDataFields": {
+			"relationships": {
+				"chatMessageActivity": {
+					"data": {
+						"id": currentChatMessageActivity.value.id,
+						"type": "chat_message_activity"
+					}
 				}
 			}
-		}
-	} as ChatMessageRelationships).then(() => {
-		textInput.value = ""
+		} as ChatMessageRelationships
 	}).then(() => {
+		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
+		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
+			"receivedMessageAt": currentChatMessageActivity.value.receivedMessageAt.toString(),
+			"seenMessageAt": new Date().toJSON()
+		})
 	})
 }
 
 onMounted(() => {
 	rawFetcher = new Fetcher()
+	rawChatMessageActivityFetcher = new ChatMessageActivityFetcher()
 })
 </script>

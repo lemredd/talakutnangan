@@ -10,7 +10,7 @@ import type {
 } from "%/types/dependent"
 
 import Serializer from "%/transformers/serializer"
-import processData from "%/transformers/helpers/process_data"
+import processData from "%/helpers/process_data"
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**

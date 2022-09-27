@@ -7,6 +7,7 @@ import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 
 beforeEach(() => {
 	BaseFetcher.initialize("/api")
@@ -18,4 +19,5 @@ beforeEach(() => {
 	ConsultationFetcher.initialize("/api")
 	ProfilePictureFetcher.initialize("/api")
 	EmployeeScheduleFetcher.initialize("/api")
+	ChatMessageActivityFetcher.initialize("/api")
 })

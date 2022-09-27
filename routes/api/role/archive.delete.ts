@@ -16,6 +16,8 @@ import isTheOnlyRoleToAnyUser from "!/validators/manager/is_the_only_role_to_any
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
+import areAffectedUsersHaveSurvivingRoles
+	from "!/validators/manager/are_affected_users_have_surviving_roles"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -28,6 +30,9 @@ export default class extends JSONController {
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules("role", exists, Manager, {
+			"postDataRules": {
+				"pipes": [ areAffectedUsersHaveSurvivingRoles ]
+			},
 			"postIDRules": {
 				"constraints": {
 					"not": {

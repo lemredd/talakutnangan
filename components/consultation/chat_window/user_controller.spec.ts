@@ -102,7 +102,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		expect(events).toHaveLength(1)
 	})
 
-	it("can send upon pressing enter", async() => {
+	it.skip("can send upon pressing enter", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const message = "Hello"
 		const userID = "1"

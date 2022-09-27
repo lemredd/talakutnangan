@@ -1,4 +1,3 @@
-import type { Serializable } from "$/types/general"
 import type { EmployeeScheduleQueryParameters } from "$/types/query"
 import type {
 	EmployeeScheduleResourceIdentifier,
@@ -23,9 +22,10 @@ export default class EmployeeScheduleFetcher extends BaseFetcher<
 	EmployeeScheduleListDocument,
 	DeserializedEmployeeScheduleDocument,
 	DeserializedEmployeeScheduleListDocument,
-	Serializable,
-	EmployeeScheduleQueryParameters,
-	EmployeeScheduleRelationships
+	{
+		"queryParameters": EmployeeScheduleQueryParameters,
+		"extraCreateData": EmployeeScheduleRelationships<"create">
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "employee_schedule")
