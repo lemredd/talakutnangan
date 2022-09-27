@@ -1,14 +1,16 @@
 import Router from "!/bases/router"
-import GetReadRoute from "!%/enhancer/role/read(id).get"
-import GetCreateRoute from "!%/enhancer/role/create.get"
+import GetList from "!%/enhancer/role/list.get"
+import GetRead from "!%/enhancer/role/read(id).get"
+import GetCreate from "!%/enhancer/role/create.get"
 
 export default class extends Router {
 	constructor() {
 		super()
 
 		this.useControllers([
-			new GetReadRoute(),
-			new GetCreateRoute()
+			new GetList(),
+			new GetRead(),
+			new GetCreate()
 		])
 	}
 }
