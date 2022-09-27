@@ -7,9 +7,9 @@ import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
+import Manager from "%/managers/employee_schedule"
 import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import EmployeeScheduleManager from "%/managers/employee_schedule"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
@@ -131,11 +131,11 @@ export default class extends DoubleBoundJSONController {
 		})
 	}
 
-	get manager(): BaseManagerClass { return UserManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new EmployeeScheduleManager(request)
+		const manager = new Manager(request)
 		const { data } = request.body as EmployeeScheduleDocument<"update">
 		const { id, attributes } = data
 

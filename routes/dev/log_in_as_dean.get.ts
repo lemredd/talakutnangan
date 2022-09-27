@@ -6,10 +6,12 @@ import User from "%/models/user"
 import Role from "%/models/role"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import EmployeeScheduleFactory from "~/factories/employee_schedule"
 import {
 	tag,
 	user,
@@ -127,6 +129,55 @@ export default class extends DevController {
 				.email(() => testDeanEmail)
 				.beReachableEmployee()
 				.in(testInstituteDepartment)
+				.insertOne()
+
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "monday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("12:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "monday")
+				.scheduleStart(() => convertTimeToMinutes("13:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "tuesday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "thursday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "friday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "wednesday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "saturday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
+				.insertOne()
+				await new EmployeeScheduleFactory()
+				.user(() => Promise.resolve(createdUser))
+				.dayName(() => "sunday")
+				.scheduleStart(() => convertTimeToMinutes("08:00"))
+				.scheduleEnd(() => convertTimeToMinutes("17:00"))
 				.insertOne()
 
 				Log.success("controller", "created test dean")

@@ -1,90 +1,169 @@
 <!--
 	TODO: Refactor all WindiCSS inline classes using @apply directive
-	TODO(lead): Use `employee_schedule` fetcher to modify data
-
  -->
 
 <template>
 	<div class="schedule-picker">
-		<h3 class="day">
-			{{ convertForSentence(day) }}
-		</h3>
-		<label class="flex">
-			<span>From:</span>
-			<div id="start">
-				<Selectable
-					v-model="startHour"
-					class="inline"
-					:options="hours"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
-				<Selectable
-					v-model="startMinute"
-					class="inline"
-					:options="minutes"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
-				<Selectable
-					v-model="startMidDay"
-					class="inline"
-					:options="midDay"
-					@change="setNewTime(startHour, startMinute, startMidDay)"/>
-			</div>
-		</label>
-		<label class="flex">
-			<span>to:</span>
-			<div id="end">
-				<Selectable
-					v-model="endHour"
-					class="inline"
-					:options="hours"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
-				<Selectable
-					v-model="endMinute"
-					class="inline"
-					:options="minutes"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
-				<Selectable
-					v-model="endMidDay"
-					class="inline"
-					:options="midDay"
-					@change="setNewTime(endHour, endMinute, endMidDay)"/>
-			</div>
-		</label>
+		<button
+			v-if="!isNew && !isEditing"
+			id="edit-btn"
+			class="btn btn-primary w-[max-content]"
+			@click="toggleEditing">
+			edit
+		</button>
+		<div
+			v-if="!isNew && isEditing"
+			class="buttons">
+			<button
+				id="save-btn"
+				class="btn btn-primary"
+				@click="updateTime">
+				save
+			</button>
+			<button
+				id="discard-btn"
+				class="btn ml-5"
+				@click="toggleEditing">
+				Discard
+			</button>
+			<button
+				id="delete-btn"
+				class="btn ml-5"
+				@click="deleteSchedule">
+				Delete
+			</button>
+		</div>
+		<button
+			v-if="isNew && !isAdding"
+			id="add-btn"
+			class="btn btn-primary w-[max-content]"
+			@click="toggleAdding">
+			Add
+		</button>
+		<div
+			v-if="isNew && isAdding"
+			class="buttons">
+			<button
+				id="save-new-btn"
+				class="btn btn-primary"
+				@click="saveNewSchedule">
+				save
+			</button>
+			<button
+				id="discard-new-btn"
+				class="btn ml-5"
+				@click="toggleAdding">
+				Discard
+			</button>
+		</div>
+
+		<div
+			v-if="!isNew || (isNew && isAdding)"
+			:class="{ 'is-new': isNew && isAdding }"
+			class="time-selectors">
+			<label class="time-selector">
+				<span>From:</span>
+				<div id="start" class="start">
+					<Selectable
+						v-model="startTime"
+						class="inline"
+						:options="availableTimes"
+						:disabled="!isEditing"/>
+					<Selectable
+						v-model="startMidDay"
+						class="inline"
+						:options="midDays"
+						:disabled="!isEditing"/>
+				</div>
+			</label>
+			<label class="time-selector">
+				<span class="to">To:</span>
+				<div id="end" class="end">
+					<Selectable
+						v-model="endTime"
+						class="inline"
+						:options="availableTimes"
+						:disabled="!isEditing"/>
+
+					<Selectable
+						v-model="endMidDay"
+						class="inline"
+						:options="midDays"
+						:disabled="!isEditing"/>
+				</div>
+			</label>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-.schedule-picker {
-	margin: 1em 0;
-}
+	@import "@styles/btn.scss";
+	.schedule-picker {
+		@apply flex flex-col;
+		margin: 2em 0;
+	}
+
+	.time-selector{
+		@apply flex flex-col justify-between mb-5;
+
+		.start, .end {
+			@apply flex justify-between;
+		}
+	}
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { computed, inject, ref } from "vue"
 
-import { DayValues } from "$/types/database"
+import type { Day } from "$/types/database"
+import type { PageContext } from "$/types/renderer"
+
 
 import Selectable from "@/fields/selectable_options.vue"
-import convertForSentence from "$/string/convert_for_sentence"
 
-const { day, startTime, endTime } = defineProps<{
-	day: string
-	startTime: string | number
-	endTime: string | number
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import assignPath from "$@/external/assign_path"
+
+const fetcher = new EmployeeScheduleFetcher()
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
+
+const props = defineProps<{
+	scheduleId?: string
+	isNew?: boolean
+	dayName: string
+	scheduleStart: number
+	scheduleEnd: number
 }>()
 
+const noon = 12
+const isEditing = ref(false)
+const isAdding = ref(false)
+function toggleEditing() {
+	isEditing.value = !isEditing.value
+}
+function toggleAdding() {
+	toggleEditing()
+	isAdding.value = !isAdding.value
+}
+
 function twoDigits(number: number) {
-	return number < 10 ? `0${number}` : number.toString()
+	const twoDigitStart = 10
+	return number < twoDigitStart ? `0${number}` : number.toString()
 }
+function formatTo12Hours(hour: number) {
+	let convertedHour = 0
 
-function generateNumberRange(start: number, end: number) {
-	const numbers = []
-	for (let i = start; i < end; i++) {
-		numbers.push({ "value": twoDigits(i) })
-	}
+	if (hour <= noon) convertedHour = hour
+	else convertedHour = hour - noon
 
-	return numbers
+	return convertedHour
 }
-
 function makeOptions(values: any[]): any[] {
 	const options: any[] = []
 	// eslint-disable-next-line object-shorthand
@@ -92,50 +171,121 @@ function makeOptions(values: any[]): any[] {
 
 	return options
 }
+function convertTimeObjectToTimeString(
+	timeObject: ReturnType<typeof convertMinutesToTimeObject>
+) {
+	return `${twoDigits(formatTo12Hours(timeObject.hours))}:${twoDigits(timeObject.minutes)}`
+}
 
-function getTimePart(time: string, part: "hour" | "minute" | "midday") {
-	const noon = 12
-	const [ hour, minute ] = time.split(":")
-	let partToGive = ""
+function generateNumberRange() {
+	const hourEnd = 11
+	const minuteEnd = 60
+	const start = 0
+	const time = []
 
-	if (part === "hour") {
-		if (Number(hour) <= noon) partToGive = hour
-		else partToGive = twoDigits(Number(hour) - noon) as string
+	for (let i = start; i <= hourEnd; i++) {
+		for (let interval = 15, j = start; j < minuteEnd; j += interval) {
+			time.push(`${i === 0 ? hourEnd + 1 : twoDigits(i)}:${twoDigits(j)}`)
+		}
 	}
 
-	if (part === "minute") partToGive = minute
+	return time
+}
+const availableTimes = makeOptions(generateNumberRange())
+const midDays = makeOptions([ "AM", "PM" ])
 
-	if (part === "midday") {
-		if (Number(hour) < 12) partToGive = "AM"
-		else partToGive = "PM"
+function getTimePart(time: number, part: "hour" | "minute" | "midday") {
+	const timeObject = convertMinutesToTimeObject(time)
+	let partToGive = ""
+
+	switch (part) {
+		case "hour":
+			partToGive = twoDigits(formatTo12Hours(timeObject.hours))
+			break
+		case "minute":
+			partToGive = twoDigits(timeObject.minutes)
+			break
+		case "midday":
+			if (timeObject.hours < noon) partToGive = "AM"
+			else partToGive = "PM"
+			break
+
+		default:
+			break
 	}
 
 	return partToGive
 }
+const startTime = ref(convertTimeObjectToTimeString(
+	convertMinutesToTimeObject(props.scheduleStart)
+))
+const endTime = ref(convertTimeObjectToTimeString(
+	convertMinutesToTimeObject(props.scheduleEnd)
+))
+const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
+const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
-const hours = generateNumberRange(1, 13)
-const minutes = generateNumberRange(0, 60)
-const midDay = makeOptions([ "AM", "PM" ])
-const unuseddays = [ ...DayValues ]
+function formatTo24Hours(time: string) {
+	// eslint-disable-next-line prefer-const
+	let [ hour, minute ] = time.split(":")
+	hour = String(Number(hour) + noon)
 
-const rawStartTime = startTime as string
-const startHour = ref(getTimePart(rawStartTime, "hour"))
-const startMinute = ref(getTimePart(rawStartTime, "minute"))
-const startMidDay = ref(getTimePart(rawStartTime, "midday"))
+	return `${hour}:${minute}`
+}
+const startTime24Hours = computed(() => {
+	let formattedTime = startTime.value
+	if (startMidDay.value === "PM") formattedTime = formatTo24Hours(startTime.value)
 
-const rawEndTime = endTime as string
-const endHour = ref(getTimePart(rawEndTime, "hour"))
-const endMinute = ref(getTimePart(rawEndTime, "minute"))
-const endMidDay = ref(getTimePart(rawEndTime, "midday"))
+	return formattedTime
+})
+const endTime24Hours = computed(() => {
+	let formattedTime = endTime.value
+	if (endMidDay.value === "PM") formattedTime = formatTo24Hours(endTime.value)
 
-function setNewTime(hour: string, minute: string, oldMidDay: string) {
-	const newHour = oldMidDay === "PM"
-		? Number(hour) + 12
-		: Number(hour)
+	return formattedTime
+})
 
-	const newTime = `${newHour}:${minute}`
-	emit("passNewTime", newTime)
+function updateTime() {
+	fetcher.update(String(props.scheduleId), {
+		"dayName": props.dayName as Day,
+		"scheduleEnd": convertTimeToMinutes(endTime24Hours.value),
+		"scheduleStart": convertTimeToMinutes(startTime24Hours.value)
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				"user": {
+					"data": {
+						"id": userId,
+						"type": "user"
+					}
+				}
+			}
+		}
+	})
 }
 
-const emit = defineEmits<{(e: "passNewTime", newTime: string): void }>()
+function saveNewSchedule() {
+	fetcher.create({
+		"dayName": props.dayName as Day,
+		"scheduleEnd": convertTimeToMinutes(endTime24Hours.value),
+		"scheduleStart": convertTimeToMinutes(startTime24Hours.value)
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				"user": {
+					"data": {
+						"id": userId,
+						"type": "user"
+					}
+				}
+			}
+		}
+	})
+	.then(() => assignPath("/settings/profile"))
+}
+
+function deleteSchedule() {
+	fetcher.archive([ String(props.scheduleId) ])
+	.then(() => assignPath("/settings/profile"))
+}
 </script>
