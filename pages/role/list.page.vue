@@ -3,7 +3,12 @@
 
 	<RolesManager :resource="list" :is-loaded="isLoaded">
 		<template #search-filter>
-			<SearchFilter :resource="list" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter
+				:resource="list"
+				@filter-resource-by-search="getFilteredList"/>
+			<SelectableOptionsField
+				v-model="chosenDepartment"
+				:options="departmentNames"/>
 		</template>
 
 		<RolesList :filtered-list="list"/>
@@ -11,10 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, provide, ref } from "vue"
+import { inject, onMounted, provide, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { PossibleResources } from "$@/types/independent"
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
@@ -22,6 +27,7 @@ import Manager from "$/helpers/manager"
 import RoleFetcher from "$@/fetchers/role"
 
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import RolesManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
@@ -47,14 +53,22 @@ const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as Deserialize
 const departmentList = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
+const chosenDepartment = ref<string>("*")
+const departmentNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "All",
+		"value": "*"
+	},
+	...departmentList.value.map(data => ({
+		"label": data.fullName,
+		"value": data.id
+	}))
+])
 
-function getFilteredList(resource: PossibleResources[]) {
-	filteredList.value = resource as DeserializedRoleResource[]
-}
 async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
-			"department": classifier.isAdmin() ? "*" : userProfile.data.department.data.id,
+			"department": chosenDepartment.value,
 			"existence": "exists"
 		},
 		"page": {
@@ -92,6 +106,10 @@ async function countUsersPerRole(IDsToCount: string[]) {
 		return fetchRoleInfos(originalData.length)
 	})
 }
+
+watch(chosenDepartment, () => {
+	fetchRoleInfos(0)
+})
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
