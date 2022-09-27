@@ -28,9 +28,6 @@
 				v-model="otherReason"
 				label="What are the other reasons(s)?"
 				type="text"/>
-			<button type="button" @click="addConsultation">
-				Add consultation
-			</button>
 		</template>
 		<template #footer>
 			<button
@@ -39,7 +36,10 @@
 				@click="emitClose">
 				Back
 			</button>
-			<button class="btn btn-primary" type="button">
+			<button
+				class="btn btn-primary"
+				type="button"
+				@click="addConsultation">
 				Submit
 			</button>
 		</template>
