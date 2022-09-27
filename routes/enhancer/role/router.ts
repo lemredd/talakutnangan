@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import GetIndex from "!%/enhancer/role/index.get"
+import GetIndex from "!%/enhancer/role/list.get"
 import GetRead from "!%/enhancer/role/read(id).get"
 import GetCreate from "!%/enhancer/role/create.get"
 
