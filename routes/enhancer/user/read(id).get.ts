@@ -1,0 +1,62 @@
+import type { Serializable } from "$/types/general"
+import type { DocumentProps } from "$/types/server"
+import type { AuthenticatedRequest } from "!/types/dependent"
+
+import Policy from "!/bases/policy"
+import Manager from "%/managers/user"
+import Validation from "!/bases/validation"
+import present from "!/validators/manager/present"
+import IDParameterValidator from "!/validations/id_parameter"
+import PageMiddleware from "!/bases/controller-likes/page_middleware"
+
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	READ_OWN,
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
+
+export default class extends PageMiddleware {
+	get filePath(): string { return __filename }
+
+	get policy(): Policy {
+		return new PermissionBasedPolicy(permissionGroup, [
+			READ_OWN,
+			READ_ANYONE_ON_OWN_DEPARTMENT,
+			READ_ANYONE_ON_ALL_DEPARTMENTS
+		])
+	}
+
+	get validations(): Validation[] {
+		return [
+			new IDParameterValidator([
+				[ "id", Manager, present ]
+			])
+		]
+	}
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Info about the user",
+			"title": "Edit Role | Talakutnangan"
+		}
+	}
+
+	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
+		const { id } = request.params
+		const manager = new Manager(request)
+
+		const user = await manager.findWithID(Number(id), {
+			"constraints": {
+				"filter": {
+					"existence": "*"
+				}
+			}
+		})
+
+		return {
+			user
+		}
+	}
+}
