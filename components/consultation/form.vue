@@ -15,7 +15,7 @@
 				v-model="selectedConsulters"
 				class="consulters"
 				header="Consulters"
-				:maximum-participants="MAX_CONSULTERS"
+				:maximum-participants="MAX_ADDITIONAL_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>
 			<SelectableOptionsField
@@ -102,7 +102,7 @@ const doesAllowConflicts = ref<boolean>(true)
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
 
-const MAX_CONSULTERS = 5
+const MAX_ADDITIONAL_CONSULTERS = 4
 const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
 
 function addConsultation(): void {
