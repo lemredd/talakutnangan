@@ -101,6 +101,7 @@ const tableHeaders = computed(() => {
 	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
 	else headers = [ "Name", "no. of users", "" ]
 
+
 	return headers
 })
 </script>

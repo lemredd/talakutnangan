@@ -1,22 +1,24 @@
-import type { Request } from "!/types/dependent"
 import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { AuthenticatedRequest } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/role"
 import Validation from "!/bases/validation"
-import PermissionBasedPolicy from "!/policies/permission-based"
+import deserialize from "$/object/deserialize"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
-import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
-
-import RoleManager from "%/managers/role"
+import ManagerClassifier from "$/helpers/manager"
+import { CREATE } from "$/permissions/role_combinations"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { role as permissionGroup } from "$/permissions/permission_list"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [ READ_ANYONE_ON_OWN_DEPARTMENT ])
+		return new PermissionBasedPolicy(permissionGroup, [ CREATE ])
 	}
 
 	get bodyParser(): null { return null }
@@ -25,17 +27,19 @@ export default class extends PageMiddleware {
 
 	getDocumentProps(): DocumentProps {
 		return {
-			"description": "Consultation chat platform for MCC",
-			"title": "Edit Role | Talakutnangan"
+			"description": "List of roles available that can be attached to users",
+			"title": "Role list | Talakutnangan"
 		}
 	}
 
-	async getPageProps(request: Request): Promise<Serializable> {
-		const roleManager = new RoleManager(request.transaction, request.cache)
+	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
+		const manager = new Manager(request)
+		const user = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
+		const classifer = new ManagerClassifier(user)
 		const pageProps = {
-			"roles": await roleManager.list({
+			"roles": await manager.list({
 				"filter": {
-					"department": "*",
+					"department": classifer.isAdmin() ? "*" : Number(user.data.department.data.id),
 					"existence": "exists"
 				},
 				"page": {

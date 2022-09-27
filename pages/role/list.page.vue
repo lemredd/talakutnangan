@@ -1,12 +1,12 @@
 <template>
 	<AdminSettingsHeader title="Admin Configuration"/>
 
-	<RolesManager :resource="roles">
+	<RolesManager :resource="list" :is-loaded="isLoaded">
 		<template #search-filter>
-			<SearchFilter :resource="roles" @filter-resource-by-search="getFilteredList"/>
+			<SearchFilter :resource="list" @filter-resource-by-search="getFilteredList"/>
 		</template>
 
-		<RolesList :filtered-list="filteredList"/>
+		<RolesList :filtered-list="list"/>
 	</RolesManager>
 </template>
 
@@ -15,27 +15,33 @@ import { inject, onMounted, provide, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 
-import RoleFetcher from "$@/fetchers/role"
 import Manager from "$/helpers/manager"
+import RoleFetcher from "$@/fetchers/role"
+
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import RolesManager from "@/resource_management/resource_manager.vue"
 import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
-const pageContext = inject("pageContext") as PageContext
+type RequiredExtraProps =
+	| "userProfile"
+	| "roles"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const { pageProps } = pageContext
 
-provide("managerKind", new Manager(
-	pageContext.pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
-))
-provide("tabs", [ "Users", "Roles", "Roles" ])
+const { userProfile } = pageProps
+
+const classifier = new Manager(userProfile)
+provide("managerKind", classifier)
+provide("tabs", [ "Users", "Roles", "Departments" ])
 
 RoleFetcher.initialize("/api")
 const fetcher = new RoleFetcher()
 
-const roles = ref<DeserializedRoleResource[]>([])
+const isLoaded = ref<boolean>(false)
+const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
 const filteredList = ref<DeserializedRoleResource[]>([])
 
 function getFilteredList(resource: PossibleResources[]) {
@@ -44,7 +50,7 @@ function getFilteredList(resource: PossibleResources[]) {
 async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
-			"department": "*",
+			"department": classifier.isAdmin() ? "*" : userProfile.data.department.data.id,
 			"existence": "exists"
 		},
 		"page": {
@@ -58,7 +64,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 
 		if (deserializedData.length === 0) return Promise.resolve()
 
-		roles.value = [ ...roles.value, ...deserializedData ]
+		list.value = [ ...list.value, ...deserializedData ]
 
 		// eslint-disable-next-line no-use-before-define
 		return countUsersPerRole(IDsToCount)
@@ -68,7 +74,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...roles.value ]
+		const originalData = [ ...list.value ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
@@ -77,13 +83,14 @@ async function countUsersPerRole(IDsToCount: string[]) {
 			originalData[index].meta = meta
 		}
 
-		roles.value = originalData
+		list.value = originalData
 
 		return fetchRoleInfos(originalData.length)
 	})
 }
 
 onMounted(async() => {
-	await fetchRoleInfos(0)
+	await countUsersPerRole(list.value.map(item => item.id))
+	isLoaded.value = true
 })
 </script>
