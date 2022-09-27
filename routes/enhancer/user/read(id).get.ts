@@ -39,7 +39,7 @@ export default class extends PageMiddleware {
 	getDocumentProps(): DocumentProps {
 		return {
 			"description": "Info about the user",
-			"title": "Edit Role | Talakutnangan"
+			"title": "Edit User | Talakutnangan"
 		}
 	}
 
