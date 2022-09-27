@@ -1,4 +1,3 @@
-import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import type { DepartmentQueryParameters } from "$/types/query"
 import type {
@@ -25,8 +24,9 @@ export default class DepartmentFetcher extends BaseFetcher<
 	DepartmentListDocument,
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument,
-	Serializable,
-	DepartmentQueryParameters
+	{
+		"queryParameters": DepartmentQueryParameters
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "department")

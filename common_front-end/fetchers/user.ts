@@ -29,8 +29,9 @@ export default class UserFetcher extends BaseFetcher<
 	UserListDocument,
 	DeserializedUserDocument,
 	DeserializedUserListDocument,
-	Serializable,
-	UserQueryParameters
+	{
+		"queryParameters": UserQueryParameters
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "user")

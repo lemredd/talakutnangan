@@ -1,4 +1,3 @@
-import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import type { RoleQueryParameters } from "$/types/query"
 import type {
@@ -25,8 +24,9 @@ export default class RoleFetcher extends BaseFetcher<
 	RoleListDocument,
 	DeserializedRoleDocument,
 	DeserializedRoleListDocument,
-	Serializable,
-	RoleQueryParameters
+	{
+		"queryParameters": RoleQueryParameters
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "role")

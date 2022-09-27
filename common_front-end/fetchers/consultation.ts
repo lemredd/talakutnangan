@@ -1,4 +1,3 @@
-import type { Serializable } from "$/types/general"
 import type { ConsultationQueryParameters } from "$/types/query"
 import type {
 	ConsultationResourceIdentifier,
@@ -22,8 +21,9 @@ export default class ConsultationFetcher extends BaseFetcher<
 	ConsultationListDocument,
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument,
-	Serializable,
-	ConsultationQueryParameters
+	{
+		"queryParameters": ConsultationQueryParameters
+	}
 > {
 	static initialize(basePath: string) {
 		super.initialize(basePath, "consultation")

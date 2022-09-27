@@ -3,7 +3,7 @@ import type { SignatureDocument } from "$/types/documents/signature"
 import RequestEnvironment from "$/singletons/request_environment"
 import SignatureFetcher from "./signature"
 
-describe("Fetcher: S", () => {
+describe("Fetcher: Signature", () => {
 	it("can get signature URL", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({

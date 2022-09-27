@@ -7,6 +7,7 @@
 import type { UserKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
+import type { CommonQueryParameters } from "$/types/query"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
@@ -126,3 +127,38 @@ export type FullTime = {
 	minutes: number,
 	seconds: number
 }
+
+export interface GenericFetcherParameters {
+	"otherDocuments": Serializable,
+	"queryParameters": CommonQueryParameters,
+	"extraCreateData": Serializable,
+	"extraCreateDocumentProps": Serializable,
+	"extraUpdateData": Serializable,
+	"extraUpdateDocumentProps": Serializable,
+	"archiveMeta": Serializable,
+	"restoreMeta": Serializable
+}
+
+export type OtherDocuments<T extends Partial<GenericFetcherParameters>>
+= T["otherDocuments"] extends Serializable ? T["otherDocuments"] : Serializable
+
+export type QueryParameters<T extends Partial<GenericFetcherParameters>>
+= T["queryParameters"] extends CommonQueryParameters ? T["queryParameters"] : CommonQueryParameters
+
+export type ExtraCreateData<T extends Partial<GenericFetcherParameters>>
+= T["extraCreateData"] extends Serializable ? T["extraCreateData"] : Serializable
+
+export type ExtraCreateDocumentProps<T extends Partial<GenericFetcherParameters>>
+= T["extraCreateDocumentProps"] extends Serializable ? T["extraCreateDocumentProps"] : Serializable
+
+export type ExtraUpdateData<T extends Partial<GenericFetcherParameters>>
+= T["extraUpdateData"] extends Serializable ? T["extraUpdateData"] : Serializable
+
+export type ExtraUpdateDocumentProps<T extends Partial<GenericFetcherParameters>>
+= T["extraUpdateDocumentProps"] extends Serializable ? T["extraUpdateDocumentProps"] : Serializable
+
+export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
+= T["archiveMeta"] extends Serializable ? T["archiveMeta"] : Serializable
+
+export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
+= T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
