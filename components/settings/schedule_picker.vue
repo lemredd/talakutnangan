@@ -6,7 +6,8 @@
 	<div class="schedule-picker">
 		<button
 			v-if="!isNew && !isEditing"
-			class="edit-btn btn btn-primary w-[max-content]"
+			id="edit-btn"
+			class="btn btn-primary w-[max-content]"
 			@click="toggleEditing">
 			edit
 		</button>
@@ -14,24 +15,28 @@
 			v-if="!isNew && isEditing"
 			class="buttons">
 			<button
-				class="save-btn btn btn-primary"
+				id="save-btn"
+				class="btn btn-primary"
 				@click="updateTime">
 				save
 			</button>
 			<button
-				class="save-btn btn ml-5"
+				id="discard-btn"
+				class="btn ml-5"
 				@click="toggleEditing">
 				Discard
 			</button>
 			<button
-				class="save-btn btn ml-5"
+				id="delete-btn"
+				class="btn ml-5"
 				@click="deleteSchedule">
 				Delete
 			</button>
 		</div>
 		<button
 			v-if="isNew && !isAdding"
-			class="edit-btn btn btn-primary w-[max-content]"
+			id="add-btn"
+			class="btn btn-primary w-[max-content]"
 			@click="toggleAdding">
 			Add
 		</button>
@@ -39,18 +44,23 @@
 			v-if="isNew && isAdding"
 			class="buttons">
 			<button
-				class="save-btn btn btn-primary"
+				id="save-new-btn"
+				class="btn btn-primary"
 				@click="saveNewSchedule">
 				save
 			</button>
 			<button
-				class="save-btn btn ml-5"
+				id="discard-new-btn"
+				class="btn ml-5"
 				@click="toggleAdding">
 				Discard
 			</button>
 		</div>
 
-		<div v-if="!isNew || (isNew && isAdding)" class="time-selectors">
+		<div
+			v-if="!isNew || (isNew && isAdding)"
+			:class="{ 'is-new': isNew && isAdding }"
+			class="time-selectors">
 			<label class="time-selector">
 				<span>From:</span>
 				<div id="start" class="start">
@@ -270,7 +280,8 @@ function saveNewSchedule() {
 				}
 			}
 		}
-	}).then(() => assignPath("/settings/profile"))
+	})
+	.then(() => assignPath("/settings/profile"))
 }
 
 function deleteSchedule() {
