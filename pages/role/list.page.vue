@@ -16,6 +16,7 @@ import { inject, onMounted, provide, ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import Manager from "$/helpers/manager"
 import RoleFetcher from "$@/fetchers/role"
@@ -28,6 +29,7 @@ import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 type RequiredExtraProps =
 	| "userProfile"
 	| "roles"
+	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
@@ -42,7 +44,9 @@ const fetcher = new RoleFetcher()
 
 const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
-const filteredList = ref<DeserializedRoleResource[]>([])
+const departmentList = ref<DeserializedDepartmentResource[]>(
+	pageProps.departments.data as DeserializedDepartmentResource[]
+)
 
 function getFilteredList(resource: PossibleResources[]) {
 	filteredList.value = resource as DeserializedRoleResource[]
