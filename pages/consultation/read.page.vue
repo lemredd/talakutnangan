@@ -236,10 +236,6 @@ function updateConsultation(updatedConsultation: ConsultationResource<"read">): 
 
 const chatMessageFetcher = new ChatMessageFetcher()
 async function loadPreviousChatMessages(): Promise<void> {
-	if (chatMessageFetcher === null) {
-		throw new Error("Consultations cannot be loaded yet.")
-	}
-
 	const { body } = await chatMessageFetcher.list({
 		"filter": {
 			"chatMessageKinds": [ "text", "status" ],
@@ -263,12 +259,32 @@ async function loadPreviousChatMessages(): Promise<void> {
 	}
 }
 
-const fetcher = new ConsultationFetcher()
-async function loadConsultations(): Promise<string[]> {
-	if (fetcher === null) {
-		throw new Error("Consultations cannot be loaded yet.")
-	}
+async function loadPreviewMessages(consultationIDs: string[]): Promise<void> {
+	const { body } = await chatMessageFetcher.list({
+		"filter": {
+			"chatMessageKinds": "*",
+			consultationIDs,
+			"existence": "exists",
+			"previewMessageOnly": true
+		},
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "-createdAt" ]
+	})
 
+	const { data, meta } = body
+
+	if (meta?.count ?? data.length > 0) {
+		previewMessages.value.data.push(
+			...data as DeserializedChatMessageResource<"user"|"consultation">[]
+		)
+	}
+}
+
+const fetcher = new ConsultationFetcher()
+async function loadConsultations(): Promise<void> {
 	const { body } = await fetcher.list({
 		"filter": {
 			"consultationScheduleRange": "*",
@@ -283,7 +299,6 @@ async function loadConsultations(): Promise<string[]> {
 	})
 
 	const { data, meta } = body
-	const consultationIDs: string[] = []
 
 	if (meta?.count ?? data.length > 0) {
 		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
@@ -293,11 +308,8 @@ async function loadConsultations(): Promise<string[]> {
 			...castData
 		]
 
-		// TODO: Get preview messages per consultation
-		return consultationIDs
+		await loadPreviewMessages(castData.map(resource => resource.id))
 	}
-
-	return consultationIDs
 }
 
 const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
