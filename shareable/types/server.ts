@@ -5,7 +5,6 @@
  */
 
 import type { Serializable } from "$/types/general"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type {
@@ -24,6 +23,11 @@ import type {
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
+import type {
+	DeserializedUserProfile,
+	DeserializedUserDocument,
+	DeserializedUserListDocument
+} from "$/types/documents/user"
 
 /**
  * Used to indicate the type of current environment where the script is running.
@@ -73,10 +77,13 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 		? DeserializedUserProfile<"roles"|"department">
 		: Serializable|null
 
-	roles: OptionalPageProps<T, DeserializedRoleListDocument>,
+	users: OptionalPageProps<T, DeserializedUserListDocument>
+	user: OptionalPageProps<T, DeserializedUserDocument>
+
+	roles: OptionalPageProps<T, DeserializedRoleListDocument>
 	role: OptionalPageProps<T, DeserializedRoleDocument>
 
-	departments: OptionalPageProps<T, DeserializedDepartmentListDocument>,
+	departments: OptionalPageProps<T, DeserializedDepartmentListDocument>
 	department: OptionalPageProps<T, DeserializedDepartmentDocument>
 
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>

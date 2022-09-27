@@ -5,16 +5,22 @@ import Manager from "%/managers/role"
 import OkResponseInfo from "!/response_infos/ok"
 import BoundController from "!/controllers/bound"
 
-import { UPDATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
-import { role as permissionGroup } from "$/permissions/permission_list"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	READ_OWN,
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 
 export default class extends BoundController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			UPDATE
+			READ_OWN,
+			READ_ANYONE_ON_OWN_DEPARTMENT,
+			READ_ANYONE_ON_ALL_DEPARTMENTS
 		])
 	}
 
