@@ -205,20 +205,31 @@ const endTime = ref(convertTimeObjectToTimeString(
 const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
 const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 
+function formatTo24Hours(time: string) {
+	// eslint-disable-next-line prefer-const
+	let [ hour, minute ] = time.split(":")
+	hour = String(Number(hour) + noon)
+
+	return `${hour}:${minute}`
+}
+const startTime24Hours = computed(() => {
+	let formattedTime = startTime.value
+	if (startMidDay.value === "PM") formattedTime = formatTo24Hours(startTime.value)
+
+	return formattedTime
+})
+const endTime24Hours = computed(() => {
+	let formattedTime = endTime.value
+	if (endMidDay.value === "PM") formattedTime = formatTo24Hours(endTime.value)
+
+	return formattedTime
+})
+
 function updateTime() {
-	const fetcher = new EmployeeScheduleFetcher()
-	// eslint-disable-next-line prefer-const
-	let [ startHour, startMinute ] = startTime.value.split(":")
-	// eslint-disable-next-line prefer-const
-	let [ endHour, endMinute ] = endTime.value.split(":")
-
-	if (startMidDay.value === "PM") startHour = String(Number(startHour) + noon)
-	if (endMidDay.value === "PM") endHour = String(Number(endHour) + noon)
-
 	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
-		"scheduleEnd": convertTimeToMinutes(`${endHour}:${endMinute}`),
-		"scheduleStart": convertTimeToMinutes(`${startHour}:${startMinute}`)
+		"scheduleEnd": convertTimeToMinutes(endTime24Hours.value),
+		"scheduleStart": convertTimeToMinutes(startTime24Hours.value)
 	}, {
 		"extraDataFields": {
 			"relationships": {
