@@ -96,10 +96,10 @@ module.exports = {
 					// @ts-ignore
 					[
 						{
+							"createdAt": new Date(),
 							roleID,
-							userID,
-							createdAt: new Date(),
-							updatedAt: new Date()
+							"updatedAt": new Date(),
+							userID
 						}
 					],
 					{ transaction }
