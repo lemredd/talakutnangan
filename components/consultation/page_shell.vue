@@ -6,31 +6,40 @@
 -->
 <template>
 	<div class="consultations-container">
-		<section class="consultations-picker left">
+		<section class="consultations-picker left relative">
 			<div class="consultations-list-header p-3">
-				<h2 class="flex-1">
-					Consultations
-				</h2>
-				<!-- TODO(lead/button): apply functionality -->
-				<button class="material-icons expand-or-collapse">
-					chevron_left
-				</button>
+				<div v-if="!isSearching" class="no-search-bar flex flex-1">
+					<h2 class="flex-1">
+						Consultations
+					</h2>
 
-				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons search">
-					search
-				</button>
-				<button
-					v-if="isUserAStudent"
-					class="material-icons add"
-					@click="toggleAddingSchedule">
-					add
-				</button>
+					<!-- TODO(lead/button): Apply functionality -->
+					<button
+						class="material-icons search"
+						@click="toggleSearch">
+						search
+					</button>
+				</div>
+				<div
+					v-else
+					class="is-searching flex flex-1">
+					<SearchBar v-model="slug" class="flex flex-1"/>
+					<button class="material-icons text-xs" @click="toggleSearch">
+						close
+					</button>
+				</div>
 			</div>
 
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<slot name="list"></slot>
+
+			<button
+				v-if="isUserAStudent"
+				class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
+				@click="toggleAddingSchedule">
+				add
+			</button>
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -86,7 +95,7 @@
 		display: inline !important;
 	}
 	.left {
-		min-width: 40% !important;
+		min-width: 20% !important;
 	}
 	.right {
 		display: flex !important;
@@ -98,6 +107,7 @@
 import { computed, inject, ref, Ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 
+import SearchBar from "@/helpers/search_bar.vue"
 import ConsultationForm from "@/consultation/form.vue"
 
 import disableScroll from "$@/helpers/push_element_classes"
@@ -112,6 +122,12 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
 const isAddingSchedule = ref<boolean>(false)
+
+const slug = ref("")
+const isSearching = ref(false)
+function toggleSearch() {
+	isSearching.value = !isSearching.value
+}
 
 function toggleAddingSchedule() {
 	disableScroll(rawBodyClasses, [ "unscrollable" ])
