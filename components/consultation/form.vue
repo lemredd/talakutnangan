@@ -20,6 +20,7 @@
 				kind="student"/>
 			<SelectableOptionsField
 				v-model="chosenReason"
+				class="reason"
 				label="Kind of Reason: "
 				placeholder="Choose your reason"
 				:options="reasonOptions"/>
@@ -28,6 +29,10 @@
 				v-model="otherReason"
 				label="What are the other reasons(s)?"
 				type="text"/>
+
+			<div class="signature-message text-xs mt-5">
+				By submitting, you are granting permission to use the participants' signatures.
+			</div>
 		</template>
 		<template #footer>
 			<button
