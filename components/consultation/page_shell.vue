@@ -13,7 +13,6 @@
 						Consultations
 					</h2>
 
-					<!-- TODO(lead/button): Apply functionality -->
 					<button
 						class="material-icons search"
 						@click="toggleSearch">
@@ -23,6 +22,8 @@
 				<div
 					v-else
 					class="is-searching flex flex-1">
+					<!-- TODO(lead/button): search existing consultations -->
+
 					<SearchBar v-model="slug" class="flex flex-1"/>
 					<button class="material-icons text-xs" @click="toggleSearch">
 						close
