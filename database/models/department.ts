@@ -2,8 +2,8 @@ import { Table, Model, Column, HasMany } from "sequelize-typescript"
 import User from "%/models/user"
 
 @Table({
-	"timestamps": true,
-	"paranoid": true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class Department extends Model {
 	@Column({
@@ -12,8 +12,8 @@ export default class Department extends Model {
 		acronym!: string
 
 	@Column({
-		"unique": true,
-		"allowNull": false
+		"allowNull": false,
+		"unique": true
 	})
 		fullName!: string
 
