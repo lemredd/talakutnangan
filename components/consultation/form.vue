@@ -65,6 +65,10 @@
   font-size: 16px;
 }
 
+.reason {
+	@apply flex justify-between;
+	max-width: initial !important;
+}
 </style>
 
 <script setup lang="ts">

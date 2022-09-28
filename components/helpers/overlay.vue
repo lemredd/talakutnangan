@@ -3,7 +3,7 @@
 		v-if="isShown"
 		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "
 		@click.self="emitClose">
-		<div class="content bg-dark-200 text-white">
+		<div class="content dark:bg-dark-200 bg-white text-black text-white">
 			<header>
 				<slot name="header"></slot>
 				<button class="close-btn material-icons-outlined" @click="emitClose">
@@ -24,10 +24,10 @@
 .overlay {
 	position:fixed;
 	inset: 0;
-	height: 100vh;
 	width: 100%;
 
 	.content {
+		@apply flex flex-col justify-between;
 		position: absolute;
 		inset: 0;
 		padding: 1em;
@@ -44,26 +44,22 @@
 		}
 
 		header {
-			@apply flex;
+			@apply flex items-center;
 			justify-content: space-between;
-			margin-bottom: .5em;
+			padding: 1em .5em;
 			border-bottom: 1px solid white;
-			padding-bottom: .5em;
-
 		}
 
 		main{
+			margin-bottom: 1em;
 			padding: 15px;
 			max-height: 300px;
-			overflow: scroll;
+			overflow-y: scroll;
 		}
 
 		footer {
 			@apply flex justify-between;
 			padding:0 .5em .5em;
-			border-bottom: 1px solid white;
-			padding-bottom: .5em;
-
 		}
 	}
 }

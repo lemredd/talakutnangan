@@ -1,6 +1,6 @@
 <template>
-	<div class="field p-5">
-		<h2>{{ header }}</h2>
+	<div class="field pb-5">
+		<h2 class="text-lg uppercase">{{ header }}</h2>
 		<div
 			v-for="participant in selectedParticipants"
 			:key="participant.id"
@@ -20,7 +20,7 @@
 		<div
 			v-for="participant in otherParticipants"
 			:key="participant.id"
-			class="chip">
+			class="chip text-xs inline-flex items-center">
 			<span>
 				{{ participant.name }}
 			</span>
