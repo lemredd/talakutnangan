@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="updateRole">
+	<form @submit.prevent="openConfirmation">
 		<div class="role-name">
 			<RoleNameField
 				v-model="role.data.name"
@@ -61,7 +61,9 @@
 		</div>
 		<ConfirmationPassword
 			v-model="password"
-			:must-confirm="isBeingConfirmed"/>
+			:must-confirm="isBeingConfirmed"
+			@cancel="closeConfirmation"
+			@confirm="updateRole"/>
 	</form>
 </template>
 
@@ -102,7 +104,6 @@ const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
 )
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
-const isBeingConfirmed = ref<boolean>(false)
 const password = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
@@ -184,6 +185,14 @@ function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<
 	uncheckExternalDependents(subdependents)
 }
 
+const isBeingConfirmed = ref<boolean>(false)
+function openConfirmation() {
+	isBeingConfirmed.value = true
+}
+function closeConfirmation() {
+	isBeingConfirmed.value = false
+}
+
 async function updateRole() {
 	await fetcher.update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
@@ -197,8 +206,16 @@ async function updateRole() {
 		"semesterFlags": role.value.data.semesterFlags,
 		"tagFlags": role.value.data.tagFlags,
 		"userFlags": role.value.data.userFlags
+	}, {
+		"extraDataFields": {
+			"meta": {
+				"password": password.value
+			}
+		}
 	})
 	.then(({ body, status }) => {
+		closeConfirmation()
+		password.value = ""
 		console.log(body, status)
 	})
 }
