@@ -141,4 +141,58 @@ export default class UserFetcher extends BaseFetcher<
 			null
 		>
 	}
+
+	async updateAttachedRole(id: string, attachedRoleIDs: string[]): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON("user/:id/relationships/role", {
+				id
+			}, {
+				"data": attachedRoleIDs.map(roleID => ({
+					"id": roleID,
+					"type": "role"
+				}))
+			})
+		) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			null
+		>
+	}
+
+	async updateDepartment(id: string, departmentID: string): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON("user/:id/relationships/department", {
+				id
+			}, {
+				"data": {
+					"id": departmentID,
+					"type": "department"
+				}
+			})
+		) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			null
+		>
+	}
 }
