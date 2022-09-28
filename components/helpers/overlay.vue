@@ -27,7 +27,7 @@
 	width: 100%;
 
 	.content {
-		@apply flex flex-col justify-between;
+		@apply flex flex-col;
 		position: absolute;
 		inset: 0;
 		padding: 1em;
@@ -36,11 +36,11 @@
 		height: 100vh;
 
 		@screen sm{
-			top: 50%;
+			margin: auto 0;
 			left: 50%;
-			transform: translate(-50%, -50%);
+			transform: translateX(-50%);
 			overflow: initial;
-			height: max-content;
+			height: 90vh;
 		}
 
 		header {
@@ -51,9 +51,9 @@
 		}
 
 		main{
+			@apply flex-1;
 			margin-bottom: 1em;
 			padding: 15px;
-			max-height: 300px;
 			overflow-y: scroll;
 		}
 
