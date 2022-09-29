@@ -4,7 +4,7 @@
 		<div
 			v-for="participant in selectedParticipants"
 			:key="participant.id"
-			class="chip">
+			class="chip selected-participants">
 			<span>
 				{{ participant.name }}
 			</span>
@@ -20,7 +20,7 @@
 		<div
 			v-for="participant in otherParticipants"
 			:key="participant.id"
-			class="chip text-xs inline-flex items-center">
+			class="chip other-participants cursor-pointer hover:bg-gray-300"
 			<span>
 				{{ participant.name }}
 			</span>
