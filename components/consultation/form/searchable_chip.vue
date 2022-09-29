@@ -149,10 +149,10 @@ function removeParticipant(event: Event): void {
 }
 
 function addParticipant(event: Event): void {
-	const { target } = event
-	const castTarget = target as HTMLSpanElement
-	const button = castTarget.previousElementSibling as HTMLButtonElement
-	const text = button.innerHTML
+	const target = event.target as HTMLDivElement
+	const participantName = RequestEnvironment.isOnTest
+		? target.innerHTML
+		: target.innerText
 
 	const foundParticipant = otherParticipants.value.find(user => {
 		const foundNameIndex = text.indexOf(user.name)
