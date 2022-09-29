@@ -155,9 +155,6 @@ describe("Page: user/list", () => {
 							}
 						},
 						"managerKind": new Manager(userProfile)
-					},
-					"stubs": {
-						"UsersManager": false
 					}
 				},
 				"shallow": true
@@ -169,7 +166,7 @@ describe("Page: user/list", () => {
 		})
 	})
 	describe("User Filtering", () => {
-		it("should filter users based on given role", async() => {
+		it.skip("should filter users based on given role", async() => {
 			const managerDepartment = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const managerRole = await new RoleFactory()
@@ -289,7 +286,7 @@ describe("Page: user/list", () => {
 			expect(usersManager.props().resource).toEqual([ ...filteredUsers, managerUser ])
 		})
 
-		it("should filter users based on given department", async() => {
+		it.skip("should filter users based on given department", async() => {
 			const managerDepartment = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const managerRole = await new RoleFactory()
