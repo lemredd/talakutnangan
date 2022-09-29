@@ -46,9 +46,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.front.unit_ci.config.json') }}
         restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}
+          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.front.unit_ci.config.json') }}
     - run: npm install
     - run: ./execute.ps1 -test unit_ci:front
       shell: pwsh
