@@ -20,7 +20,6 @@ describe("Component: fields/multi-selectable_options", () => {
 		})
 
 		const dropdown = wrapper.findComponent({ "name": "SelectableOptionsField" })
-		console.log(dropdown.html(), "\n\n\n")
 		const addButton = dropdown.find("button")
 		await dropdown.setValue("2")
 		await addButton.trigger("click")
