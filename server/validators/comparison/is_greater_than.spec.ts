@@ -15,7 +15,7 @@ describe("Validator pipe: Is greater than", () => {
 
 		const sanitizeValue = (await isGreaterThan(value, constraints)).value
 
-		expect(sanitizeValue).toEqual(3)
+		expect(sanitizeValue).toEqual(5)
 	})
 
 	it("can accept valid pointer", async() => {
@@ -23,7 +23,7 @@ describe("Validator pipe: Is greater than", () => {
 		const constraints = {
 			"field": "hello",
 			"isGreaterThan": {
-				"value": "user.id"
+				"pointer": "user.id"
 			},
 			"request": null,
 			"source": {
@@ -44,7 +44,7 @@ describe("Validator pipe: Is greater than", () => {
 		const constraints = {
 			"field": "hello",
 			"isGreaterThan": {
-				"value": "user.id"
+				"pointer": "user.id"
 			},
 			"request": null,
 			"source": {

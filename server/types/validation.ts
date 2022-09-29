@@ -21,7 +21,10 @@ export interface SameRuleConstraints {
 }
 
 export interface IsGreaterThanRuleConstraints {
-	isGreaterThan: { value: any } | { pointer: string }
+	isGreaterThan: {
+		value?: any,
+		pointer?: string
+	}
 }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
