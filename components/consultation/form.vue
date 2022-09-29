@@ -1,4 +1,5 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 			<h1>Enter the consultation details</h1>
@@ -56,7 +57,6 @@
 
 .btn{
   border: none;
-  border-radius: 5px;
   color: white;
   padding: 10px;
   text-align: center;

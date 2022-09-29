@@ -1,6 +1,9 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="field pb-5">
-		<h2 class="text-lg uppercase">{{ header }}</h2>
+		<h2 class="text-lg uppercase">
+			{{ header }}
+		</h2>
 		<div
 			v-for="participant in selectedParticipants"
 			:key="participant.id"
@@ -8,7 +11,10 @@
 			<span>
 				{{ participant.name }}
 			</span>
-			<span class="material-icons closebtn" @click="removeParticipant">
+			<span
+				id="close-btn"
+				class="material-icons"
+				@click="removeParticipant">
 				close
 			</span>
 		</div>
@@ -21,12 +27,8 @@
 			v-for="participant in otherParticipants"
 			:key="participant.id"
 			class="chip other-participants cursor-pointer hover:bg-gray-300"
-			<span>
-				{{ participant.name }}
-			</span>
-			<span class="material-icons closebtn" @click="addParticipant">
-				check
-			</span>
+			@click="addParticipant">
+			{{ participant.name }}
 		</div>
 	</div>
 </template>
@@ -35,18 +37,19 @@
 @import "@styles/btn.scss";
 
 .chip {
-  display: inline-block;
-  padding: 0 15px;
-  margin:5px;
-  height: 30px;
-  font-size: 18px;
-  color: black;
-  line-height: 30px;
-  border-radius: 25px;
-  background-color:#f1f1f1;
+	@apply inline-flex items-center text-sm;
+
+	margin:5px;
+	border-radius: 25px;
+	padding: 0 15px;
+
+	height: 30px;
+
+	color: black;
+	background-color:#f1f1f1;
 }
 
-.closebtn {
+#close-btn {
   padding-left: 10px;
   color: #888;
   font-weight: bold;
@@ -55,7 +58,7 @@
   cursor: pointer;
 }
 
-.closebtn:hover {
+#close-btn:hover {
   color: #000;
 }
 </style>
@@ -72,6 +75,7 @@ import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import RequestEnvironment from "$/singletons/request_environment"
 
 const props = defineProps<{
 	header: string,

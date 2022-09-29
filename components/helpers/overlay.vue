@@ -1,9 +1,10 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div
 		v-if="isShown"
 		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "
 		@click.self="emitClose">
-		<div class="content dark:bg-dark-200 bg-white text-black text-white">
+		<div class="content bg-white text-black dark:bg-dark-200 dark:text-white">
 			<header>
 				<slot name="header"></slot>
 				<button class="close-btn material-icons-outlined" @click="emitClose">
@@ -54,7 +55,7 @@
 			@apply flex-1;
 			margin-bottom: 1em;
 			padding: 15px;
-			overflow-y: scroll;
+			overflow-y: auto;
 		}
 
 		footer {
