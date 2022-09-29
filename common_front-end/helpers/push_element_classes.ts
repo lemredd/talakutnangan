@@ -6,7 +6,7 @@ export default function(rawClasses: Ref, classesToAdd: string[]) {
 	const classes = Array.from(rawClasses.value)
 	for (const elementClass of classesToAdd) {
 		if (classes.includes(elementClass)) {
-			delete classes[classes.indexOf("unscrollable")]
+			delete classes[classes.indexOf(elementClass)]
 		} else {
 			classes.push(elementClass)
 		}

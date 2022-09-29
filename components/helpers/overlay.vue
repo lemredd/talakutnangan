@@ -38,10 +38,9 @@
 
 		@screen sm{
 			margin: auto 0;
+			max-height: 50vh;
 			left: 50%;
 			transform: translateX(-50%);
-			overflow: initial;
-			height: 90vh;
 		}
 
 		header {
