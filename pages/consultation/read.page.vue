@@ -35,7 +35,6 @@ import { provide, inject, ref, readonly, computed, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
-	ChatMessageActivityDocument,
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
@@ -52,7 +51,6 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Socket from "$@/external/socket"
-import deserialize from "$/object/deserialize"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
@@ -61,7 +59,6 @@ import ConsultationFetcher from "$@/fetchers/consultation"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import makeConsultationChatActivityNamespace from "$/namespace_makers/consultation_chat_activity"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
@@ -69,6 +66,7 @@ import ConsultationShell from "@/consultation/page_shell.vue"
 import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerChatListeners from "@/consultation/listeners/register_chat"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
+import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
 
 ChatMessageFetcher.initialize("/api")
 ConsultationFetcher.initialize("/api")
@@ -126,7 +124,6 @@ const currentChatMessageActivityResource = computed<
 
 provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
 
-
 function visitConsultation(consultationID: string): void {
 	const path = specializePath("/consultation/:id", {
 		"id": consultationID
@@ -141,25 +138,6 @@ function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<
 		...updatedAttributes
 	}
 }
-function updateMessageActivity(activity: ChatMessageActivityDocument<"read">): void {
-	const deserializedActivity = deserialize(activity) as ChatMessageActivityDocument<"read">
-	const receivedData = deserializedActivity.data
-	const receivedID = receivedData.id
-
-	chatMessageActivities.value.data = chatMessageActivities.value.data.map(resource => {
-		const activityID = resource.id
-
-		if (activityID === receivedID) {
-			return {
-				...resource,
-				...receivedData
-			}
-		}
-
-		return resource
-	})
-}
-
 
 const chatMessageFetcher = new ChatMessageFetcher()
 async function loadPreviousChatMessages(): Promise<void> {
@@ -245,13 +223,8 @@ registerChatListeners(
 	currentChatMessageActivityResource,
 	chatMessageActivityFetcher
 )
-
 registerConsultationListeners(consultation)
-
-const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
-Socket.addEventListeners(chatActivityNamespace, {
-	"update": updateMessageActivity
-})
+registerChatActivityListeners(consultation, chatMessageActivities)
 
 onMounted(async() => {
 	await loadConsultations()
