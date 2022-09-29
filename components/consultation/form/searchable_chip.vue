@@ -140,11 +140,13 @@ function removeParticipant(event: Event): void {
 	const { target } = event
 	const castTarget = target as HTMLSpanElement
 	const button = castTarget.previousElementSibling as HTMLButtonElement
-	const text = button.innerHTML
+	const text = RequestEnvironment.isOnTest
+		? button.innerHTML
+		: button.innerText
 
 	selectedParticipants.value = selectedParticipants.value.filter(user => {
-		const foundNameIndex = text.indexOf(user.name)
-		return foundNameIndex === -1
+		const isNameMatching = text.includes(user.name)
+		return !isNameMatching
 	})
 }
 
@@ -155,9 +157,8 @@ function addParticipant(event: Event): void {
 		: target.innerText
 
 	const foundParticipant = otherParticipants.value.find(user => {
-		const foundNameIndex = text.indexOf(user.name)
-		console.log(user, text)
-		return foundNameIndex > -1
+		const isNameMatching = participantName.includes(user.name)
+		return isNameMatching
 	})
 
 	if (foundParticipant) {
