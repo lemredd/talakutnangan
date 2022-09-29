@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils"
+import { shallowMount, mount } from "@vue/test-utils"
 
 import type { OptionInfo } from "$@/types/component"
 
@@ -6,7 +6,7 @@ import Component from "./multi-selectable_options.vue"
 
 describe("Component: fields/multi-selectable_options", () => {
 	it("should emit custom event", async() => {
-		const wrapper = shallowMount<any>(Component, {
+		const wrapper = mount<any>(Component, {
 			"global": {
 				"stubs": {
 					"SelectableOptionsField": false
