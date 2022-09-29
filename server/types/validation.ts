@@ -20,6 +20,10 @@ export interface SameRuleConstraints {
 	}
 }
 
+export interface IsGreaterThanRuleConstraints {
+	isGreaterThan: { value: any } | { pointer: string }
+}
+
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface RegexRuleConstraints { regex: { match: RegExp } }
@@ -138,6 +142,7 @@ export type RuleContraints = Partial<
 	& LengthConstraints
 	& RangeConstraints
 	& SameRuleConstraints
+	& IsGreaterThanRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
