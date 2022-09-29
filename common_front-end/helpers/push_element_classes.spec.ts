@@ -13,6 +13,5 @@ describe("Helper: Disable Scroll", () => {
 		expect(classes.value).toContain(classesToAdd[2])
 		expect(classes.value).toContain(classesToAdd[3])
 
-		console.log(classes.value, "\n\n\n")
 	})
 })
