@@ -12,7 +12,7 @@
 		<div v-if="RequestEnvironment.isNotOnProduction">
 			Fill details for:
 
-			<Selectable
+			<RoleSelector
 				v-model="selectedRole"
 				:options="selectableRoles"
 				@update:model-value="fillDetails"/>
@@ -83,7 +83,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
-import Selectable from "@/fields/selectable_options.vue"
+import RoleSelector from "@/fields/selectable_options.vue"
 
 const email = ref("sample@example.com")
 const password = ref("12345678")
