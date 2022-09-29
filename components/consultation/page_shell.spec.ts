@@ -27,7 +27,8 @@ describe("Component: consultation/page_shell", () => {
 			}
 		})
 
-		const addConsultatonButton = wrapper.find(".consultations-list-header .add")
+
+		const addConsultatonButton = wrapper.find(".consultations-list-header ~.add")
 
 		expect(addConsultatonButton.exists()).toBeTruthy()
 	})
