@@ -1,5 +1,6 @@
 import type { Response } from "$@/types/independent"
 import type { RoleQueryParameters } from "$/types/query"
+import type { RequirePassword } from "$/types/documents/security"
 import type {
 	RoleResourceIdentifier,
 	RoleAttributes,
@@ -11,6 +12,7 @@ import type {
 	DeserializedRoleListDocument,
 	RoleIdentifierListDocument
 } from "$/types/documents/role"
+
 import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
@@ -25,7 +27,8 @@ export default class RoleFetcher extends BaseFetcher<
 	DeserializedRoleDocument,
 	DeserializedRoleListDocument,
 	{
-		"queryParameters": RoleQueryParameters
+		"queryParameters": RoleQueryParameters,
+		"extraUpdateData": RequirePassword
 	}
 > {
 	static initialize(basePath: string) {

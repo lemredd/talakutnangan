@@ -37,7 +37,7 @@ footer {
 </style>
 
 <script setup lang="ts">
-import { provide, inject, ref, readonly, computed, onBeforeMount, onMounted } from "vue"
+import { provide, inject, ref, readonly, computed, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
@@ -81,6 +81,11 @@ import makeConsultationChatActivityNamespace from "$/namespace_makers/consultati
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
+
+ChatMessageFetcher.initialize("/api")
+ConsultationFetcher.initialize("/api")
+ChatMessageActivityFetcher.initialize("/api")
+Socket.initialize()
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -131,17 +136,12 @@ const currentChatMessageActivityResource = computed<
 
 provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
 
-let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
-function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
-	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
-
-	throw new Error("Chat message activities cannot be processed yet.")
-}
+const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 let isWindowShown = false
 function updateReceivedMessageAt(): void {
 	const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt as Date
-	chatMessageActivityFetcher().update(currentChatMessageActivityResource.value.id, {
+	chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
 		"receivedMessageAt": new Date().toJSON(),
 		"seenMessageAt": lastSeenMessageAt.toJSON()
 	})
@@ -234,72 +234,8 @@ function updateConsultation(updatedConsultation: ConsultationResource<"read">): 
 	}
 }
 
-onBeforeMount(() => {
-	ChatMessageFetcher.initialize("/api")
-	ConsultationFetcher.initialize("/api")
-	ChatMessageActivityFetcher.initialize("/api")
-	Socket.initialize()
-
-	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
-	Socket.addEventListeners(chatNamespace, {
-		"create": createMessage,
-		"update": updateMessage
-	})
-
-	const consultationNamespace = makeConsultationNamespace(consultation.value.id)
-	Socket.addEventListeners(consultationNamespace, {
-		"update": updateConsultation
-	})
-
-	const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
-	Socket.addEventListeners(chatActivityNamespace, {
-		"update": updateMessageActivity
-	})
-})
-
-let fetcher: ConsultationFetcher|null = null
-async function loadConsultations(): Promise<string[]> {
-	if (fetcher === null) {
-		throw new Error("Consultations cannot be loaded yet.")
-	}
-
-	const { body } = await fetcher.list({
-		"filter": {
-			"consultationScheduleRange": "*",
-			"existence": "exists",
-			"user": userProfile.data.id
-		},
-		"page": {
-			"limit": 10,
-			"offset": consultations.value.data.length
-		},
-		"sort": [ "-updatedAt" ]
-	})
-
-	const { data, meta } = body
-	const consultationIDs: string[] = []
-
-	if (meta?.count ?? data.length > 0) {
-		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
-
-		consultations.value.data = [
-			...consultations.value.data,
-			...castData
-		]
-
-		// TODO: Get preview messages per consultation
-		return consultationIDs
-	}
-
-	return consultationIDs
-}
-
-let chatMessageFetcher: ChatMessageFetcher|null = null
+const chatMessageFetcher = new ChatMessageFetcher()
 async function loadPreviousChatMessages(): Promise<void> {
-	if (chatMessageFetcher === null) {
-		throw new Error("Consultations cannot be loaded yet.")
-	}
-
 	const { body } = await chatMessageFetcher.list({
 		"filter": {
 			"chatMessageKinds": [ "text", "status" ],
@@ -323,12 +259,76 @@ async function loadPreviousChatMessages(): Promise<void> {
 	}
 }
 
-onMounted(async() => {
-	// Reinitialize since fetchers were now initialized properly
-	fetcher = new ConsultationFetcher()
-	chatMessageFetcher = new ChatMessageFetcher()
-	rawChatMessageActivityFetcher = new ChatMessageActivityFetcher()
+async function loadPreviewMessages(consultationIDs: string[]): Promise<void> {
+	const { body } = await chatMessageFetcher.list({
+		"filter": {
+			"chatMessageKinds": "*",
+			consultationIDs,
+			"existence": "exists",
+			"previewMessageOnly": true
+		},
+		"page": {
+			"limit": 10,
+			"offset": 0
+		},
+		"sort": [ "-createdAt" ]
+	})
 
+	const { data, meta } = body
+
+	if (meta?.count ?? data.length > 0) {
+		previewMessages.value.data.push(
+			...data as DeserializedChatMessageResource<"user"|"consultation">[]
+		)
+	}
+}
+
+const fetcher = new ConsultationFetcher()
+async function loadConsultations(): Promise<void> {
+	const { body } = await fetcher.list({
+		"filter": {
+			"consultationScheduleRange": "*",
+			"existence": "exists",
+			"user": userProfile.data.id
+		},
+		"page": {
+			"limit": 10,
+			"offset": consultations.value.data.length
+		},
+		"sort": [ "-updatedAt" ]
+	})
+
+	const { data, meta } = body
+
+	if (meta?.count ?? data.length > 0) {
+		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
+
+		consultations.value.data = [
+			...consultations.value.data,
+			...castData
+		]
+
+		await loadPreviewMessages(castData.map(resource => resource.id))
+	}
+}
+
+const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
+Socket.addEventListeners(chatNamespace, {
+	"create": createMessage,
+	"update": updateMessage
+})
+
+const consultationNamespace = makeConsultationNamespace(consultation.value.id)
+Socket.addEventListeners(consultationNamespace, {
+	"update": updateConsultation
+})
+
+const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
+Socket.addEventListeners(chatActivityNamespace, {
+	"update": updateMessageActivity
+})
+
+onMounted(async() => {
 	await loadConsultations()
 	await loadPreviousChatMessages()
 

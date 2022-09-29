@@ -1,5 +1,6 @@
 import type { Response } from "$@/types/independent"
 import type { DepartmentQueryParameters } from "$/types/query"
+import type { RequirePassword } from "$/types/documents/security"
 import type {
 	DepartmentResourceIdentifier,
 	DepartmentAttributes,
@@ -11,6 +12,7 @@ import type {
 	DeserializedDepartmentListDocument,
 	DepartmentIdentifierListDocument
 } from "$/types/documents/department"
+
 import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
@@ -25,7 +27,8 @@ export default class DepartmentFetcher extends BaseFetcher<
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument,
 	{
-		"queryParameters": DepartmentQueryParameters
+		"queryParameters": DepartmentQueryParameters,
+		"extraUpdateData": RequirePassword
 	}
 > {
 	static initialize(basePath: string) {

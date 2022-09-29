@@ -1,15 +1,13 @@
 import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/role"
 import Validation from "!/bases/validation"
-import deserialize from "$/object/deserialize"
+import DepartmentManager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
-import ManagerClassifier from "$/helpers/manager"
 import { CREATE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
@@ -34,12 +32,21 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
-		const user = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
-		const classifer = new ManagerClassifier(user)
+		const departmentManager = new DepartmentManager(request)
 		const pageProps = {
+			"departments": await departmentManager.list({
+				"filter": {
+					"existence": "exists"
+				},
+				"page": {
+					"limit": 10,
+					"offset": 0
+				},
+				"sort": [ "fullName" ]
+			}),
 			"roles": await manager.list({
 				"filter": {
-					"department": classifer.isAdmin() ? "*" : Number(user.data.department.data.id),
+					"department": "*",
 					"existence": "exists"
 				},
 				"page": {
