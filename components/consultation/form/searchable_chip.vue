@@ -161,7 +161,7 @@ function addParticipant(event: Event): void {
 	})
 
 	if (foundParticipant) {
-		selectedParticipants.value.push(foundParticipant)
+		selectedParticipants.value = [ ...selectedParticipants.value, foundParticipant ]
 	}
 
 	otherParticipants.value = []
