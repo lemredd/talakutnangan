@@ -13,18 +13,17 @@ export interface LengthConstraints { length: { minimum?: number, maximum?: numbe
 
 export interface RangeConstraints { range: { minimum?: number, maximum?: number } }
 
+export interface DynamicValue<T> {
+	value?: T,
+	pointer?: string
+}
+
 export interface SameRuleConstraints {
-	same: {
-		value?: any,
-		pointer?: string
-	}
+	same: DynamicValue<any>
 }
 
 export interface IsGreaterThanRuleConstraints {
-	isGreaterThan: {
-		value?: any,
-		pointer?: string
-	}
+	isGreaterThan: DynamicValue<number|Date>
 }
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
