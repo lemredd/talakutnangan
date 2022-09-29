@@ -1,6 +1,5 @@
 import { ComputedRef, Ref } from "vue"
 
-
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type {
 	DeserializedChatMessageActivityResource

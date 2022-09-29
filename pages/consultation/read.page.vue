@@ -40,9 +40,7 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
-	ConsultationResource,
 	ConsultationAttributes,
-	DeserializedConsultationDocument,
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
@@ -59,7 +57,6 @@ import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
-import makeConsultationNamespace from "$/namespace_makers/consultation"
 
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
@@ -71,6 +68,7 @@ import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
 import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerChatListeners from "@/consultation/listeners/register_chat"
+import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 
 ChatMessageFetcher.initialize("/api")
 ConsultationFetcher.initialize("/api")
@@ -162,16 +160,6 @@ function updateMessageActivity(activity: ChatMessageActivityDocument<"read">): v
 	})
 }
 
-function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
-	const deserializedConsultation = deserialize(
-		updatedConsultation
-	) as DeserializedConsultationDocument<"read">
-
-	consultation.value = {
-		...consultation.value,
-		...deserializedConsultation.data
-	}
-}
 
 const chatMessageFetcher = new ChatMessageFetcher()
 async function loadPreviousChatMessages(): Promise<void> {
@@ -258,10 +246,7 @@ registerChatListeners(
 	chatMessageActivityFetcher
 )
 
-const consultationNamespace = makeConsultationNamespace(consultation.value.id)
-Socket.addEventListeners(consultationNamespace, {
-	"update": updateConsultation
-})
+registerConsultationListeners(consultation)
 
 const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
 Socket.addEventListeners(chatActivityNamespace, {
