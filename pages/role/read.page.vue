@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="updateRole">
+	<form @submit.prevent="openConfirmation">
 		<div class="role-name">
 			<RoleNameField
 				v-model="role.data.name"
@@ -59,6 +59,11 @@
 				Archive
 			</button>
 		</div>
+		<ConfirmationPassword
+			v-model="password"
+			:must-confirm="isBeingConfirmed"
+			@cancel="closeConfirmation"
+			@confirm="updateRole"/>
 	</form>
 </template>
 
@@ -67,13 +72,7 @@
 </style>
 
 <script setup lang="ts">
-import {
-	ref,
-	inject,
-	computed,
-	onMounted,
-	onBeforeMount
-} from "vue"
+import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -91,8 +90,11 @@ import {
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
 
-import RoleNameField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
+import RoleNameField from "@/fields/non-sensitive_text.vue"
+import ConfirmationPassword from "@/authentication/confirmation_password.vue"
+
+Fetcher.initialize("/api")
 
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -102,18 +104,9 @@ const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
 )
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
+const password = ref<string>("")
 
-onBeforeMount(() => {
-	Fetcher.initialize("/api")
-})
-
-let rawFetcher: Fetcher|null = null
-
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
-
-	throw new Error("Roles cannot be retrived/sent to server yet")
-}
+const fetcher: Fetcher = new Fetcher()
 
 function checkExternalDependencies(dependencies: ExternalPermissionDependencyInfo<any, any>[])
 : void {
@@ -192,8 +185,16 @@ function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<
 	uncheckExternalDependents(subdependents)
 }
 
+const isBeingConfirmed = ref<boolean>(false)
+function openConfirmation() {
+	isBeingConfirmed.value = true
+}
+function closeConfirmation() {
+	isBeingConfirmed.value = false
+}
+
 async function updateRole() {
-	await fetcher().update(role.value.data.id, {
+	await fetcher.update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
 		"commentFlags": role.value.data.commentFlags,
 		"deletedAt": role.value.data.deletedAt?.toJSON() || null,
@@ -205,27 +206,31 @@ async function updateRole() {
 		"semesterFlags": role.value.data.semesterFlags,
 		"tagFlags": role.value.data.tagFlags,
 		"userFlags": role.value.data.userFlags
+	}, {
+		"extraDataFields": {
+			"meta": {
+				"password": password.value
+			}
+		}
 	})
 	.then(({ body, status }) => {
+		closeConfirmation()
+		password.value = ""
 		console.log(body, status)
 	})
 }
 
 async function archiveRole() {
-	await fetcher().archive([ role.value.data.id ])
+	await fetcher.archive([ role.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 async function restoreRole() {
-	await fetcher().restore([ role.value.data.id ])
+	await fetcher.restore([ role.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>

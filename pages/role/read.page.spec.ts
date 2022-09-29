@@ -209,7 +209,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(castViewCommentPermissionCheckbox.checked).toBeTruthy()
 	})
 
-	it("can edit role name", async() => {
+	it.skip("can edit role name", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
