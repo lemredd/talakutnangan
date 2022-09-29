@@ -6,8 +6,8 @@
 		<template #default>
 			<SearchableChip
 				v-model="selectedConsultants"
-				class="consultants"
-				header="Consultants"
+				class="consultant"
+				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
