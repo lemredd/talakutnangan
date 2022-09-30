@@ -42,7 +42,7 @@ module.exports = {
 						"allowNull": true,
 						"type": Sequelize.DATE
 					}
-				})
+				}, { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
@@ -104,7 +104,7 @@ module.exports = {
 						"allowNull": true,
 						"type": Sequelize.DATE
 					}
-				})
+				}, { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
