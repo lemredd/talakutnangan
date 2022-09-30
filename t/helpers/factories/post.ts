@@ -29,7 +29,8 @@ export default class PostFactory extends TextContentLikeFactory<
 	DeserializedPostDocument,
 	DeserializedPostListDocument
 > {
-	#posterInfo: () => Promise<AttachedRole> = () => new AttachedRoleFactory().insertOne()
+	private posterInfoGenerator: () => Promise<AttachedRole>
+		= () => new AttachedRoleFactory().insertOne()
 
 	get model(): ModelCtor<Model> { return Model }
 
@@ -37,13 +38,13 @@ export default class PostFactory extends TextContentLikeFactory<
 
 	async generate(): GeneratedData<Model> {
 		return {
-			"attachedRoleID": (await this.#posterInfo()).id,
-			"fileContents": this.contents()
+			"attachedRoleID": (await this.posterInfoGenerator()).id,
+			"fileContents": this.contentGenerator()
 		}
 	}
 
 	posterInfo(generator: () => Promise<AttachedRole>): PostFactory {
-		this.#posterInfo = generator
+		this.posterInfoGenerator = generator
 		return this
 	}
 }

@@ -26,10 +26,10 @@ export default abstract class TextContentLikeFactory<
 	B extends DeserializedResourceDocument<U, W, Y>,
 	C extends DeserializedResourceListDocument<U, W, Y>
 > extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C> {
-	protected contents: () => string = () => faker.lorem.paragraphs(3)
+	protected contentGenerator: () => string = () => faker.lorem.paragraphs(3)
 
-	fileContents(generator: () => string): TextContentLikeFactory<T, U, V, W, X, Y, Z, A, B, C> {
-		this.contents = generator
+	content(generator: () => string): TextContentLikeFactory<T, U, V, W, X, Y, Z, A, B, C> {
+		this.contentGenerator = generator
 		return this
 	}
 }
