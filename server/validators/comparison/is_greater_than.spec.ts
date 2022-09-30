@@ -60,7 +60,7 @@ describe("Validator pipe: Is greater than", () => {
 	})
 
 	it("can ignore pointed null", async() => {
-		const value = Promise.resolve(makeInitialState(3))
+		const value = Promise.resolve(makeInitialState(-1))
 		const constraints = {
 			"field": "hello",
 			"isGreaterThan": {
@@ -76,10 +76,10 @@ describe("Validator pipe: Is greater than", () => {
 
 		const sanitizeValue = (await isGreaterThan(value, constraints)).value
 
-		expect(sanitizeValue).toEqual(3)
+		expect(sanitizeValue).toEqual(-1)
 	})
 
-	it("cannot ignore undefined", async() => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState(3))
 		const constraints = {
 			"field": "hello",
@@ -93,25 +93,6 @@ describe("Validator pipe: Is greater than", () => {
 					"id": undefined
 				}
 			}
-		}
-
-		try {
-			await isGreaterThan(value, constraints)
-		} catch (error) {
-			expect(error).toHaveProperty("field", "hello")
-			expect(error).toHaveProperty("messageMaker")
-		}
-	})
-
-	it("cannot accept invalid input", async() => {
-		const value = Promise.resolve(makeInitialState("foo"))
-		const constraints = {
-			"field": "hello",
-			"isGreaterThan": {
-				"value": "world"
-			},
-			"request": null,
-			"source": null
 		}
 
 		try {

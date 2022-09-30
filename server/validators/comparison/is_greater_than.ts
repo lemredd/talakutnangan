@@ -6,7 +6,7 @@ import type {
 } from "!/types/validation"
 
 import isUndefined from "$/type_guards/is_undefined"
-import accessDeepPath from "$!/helpers/access_deep_path"
+import ensureUnequal from "!/validators/comparison/unequal_base"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -24,33 +24,15 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	if (!isUndefined(constraints.isGreaterThan.value)) {
-		if (state.value > constraints.isGreaterThan.value) {
-			return state
-		}
-
-		const error = {
-			"field": constraints.field,
-			"friendlyName": constraints.friendlyName,
-			"messageMaker": (field: string) => `Field "${field}" must be greater than "${
-				constraints.isGreaterThan?.value
-			}".`
-		}
-		throw error
-	} else if (!isUndefined(constraints.isGreaterThan.pointer)) {
-		const accessedValue = accessDeepPath(constraints.source, constraints.isGreaterThan.pointer)
-		if (state.value > accessedValue) {
-			return state
-		}
-		const error = {
-			"field": constraints.field,
-			"friendlyName": constraints.friendlyName,
-			"messageMaker": (field: string) => `Field "${field}" must be greater than "${
-				accessedValue
-			}".`
-		}
-		throw error
-	} else {
-		throw makeDeveloperError(constraints.field)
-	}
+	return ensureUnequal(
+		state,
+		constraints as ValidationConstraints,
+		constraints.isGreaterThan,
+		"greater",
+		accessedValue => !Number.isNaN(Number(accessedValue)),
+		(
+			currentValue,
+			targetValue
+		) => targetValue === null || Number(currentValue) > Number(targetValue)
+	)
 }
