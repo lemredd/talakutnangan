@@ -28,10 +28,10 @@ export default async function(
 		constraints as ValidationConstraints,
 		constraints.isGreaterThan,
 		"greater",
-		accessedValue => !Number.isNaN(Number(accessedValue)),
+		accessedValue => !Number.isNaN(Number(new Date(accessedValue))),
 		(
 			currentValue,
 			targetValue
-		) => targetValue === null || Number(currentValue) > Number(targetValue)
+		) => targetValue === null || Number(new Date(currentValue)) > Number(new Date(targetValue))
 	)
 }
