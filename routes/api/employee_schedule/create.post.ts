@@ -27,6 +27,7 @@ import required from "!/validators/base/required"
 import range from "!/validators/comparison/range"
 import oneOf from "!/validators/comparison/one-of"
 import divisibleBy from "!/validators/date/divisible_by"
+import isLessThan from "!/validators/comparison/is_less_than"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import uniqueEmployeeSchedule from "!/validators/date/unique_employee_schedule"
@@ -46,9 +47,6 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
-		/*
-		 * TODO: Make validator if the schedule start is less than schedule end
-		 */
 		const attributes: FieldRules = {
 			"dayName": {
 				"constraints": {
@@ -75,12 +73,15 @@ export default class extends JSONController {
 					"divisibleBy": {
 						"value": MINUTE_SCHEDULE_INTERVAL
 					},
+					"isLessThan": {
+						"pointer": "data.attributes.scheduleEnd"
+					},
 					"range": {
 						"maximum": convertTimeToMinutes("23:58"),
 						"minimum": convertTimeToMinutes("00:00")
 					}
 				},
-				"pipes": [ required, integer, divisibleBy, range ]
+				"pipes": [ required, integer, divisibleBy, range, isLessThan ]
 			}
 		}
 
