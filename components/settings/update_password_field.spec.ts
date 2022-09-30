@@ -1,7 +1,7 @@
 import { nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
-import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -51,7 +51,7 @@ describe("Component: settings/update_password_field", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(UPDATE_PASSWORD_PATH, {
+		expect(firstRequest).toHaveProperty("url", specializePath(UPDATE_PASSWORD_LINK, {
 			"id": userID
 		}))
 		const firstRequestBody = await firstRequest.json()

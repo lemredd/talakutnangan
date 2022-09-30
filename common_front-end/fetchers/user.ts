@@ -13,7 +13,7 @@ import type {
 	DeserializedUserListDocument
 } from "$/types/documents/user"
 
-import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 
@@ -117,7 +117,7 @@ export default class UserFetcher extends BaseFetcher<
 		null
 	>> {
 		return await this.handleResponse(
-			this.patchJSON(UPDATE_PASSWORD_PATH.slice("/api/".length), {
+			this.patchJSON(UPDATE_PASSWORD_LINK.slice("/api/".length), {
 				id
 			}, {
 				"data": {
