@@ -17,12 +17,23 @@ export default function<T>(
 	constraints: ValidationConstraints,
 	dynamicValue: DynamicValue<T>,
 	comparisonWord: string,
-	comparisonFunction: (state: T, target: T) => boolean,
 	typeCompatibilityCheckFunction: (accessedValue: any) => boolean,
+	comparisonFunction: (state: T, target: T) => boolean
 ): ValidationState {
 	const state = currentState
+
+	let targetValue: any = null
+
 	if (!isUndefined(dynamicValue.value)) {
-		if (comparisonFunction(state.value, dynamicValue.value)) {
+		targetValue = dynamicValue.value
+	} else if (!isUndefined(dynamicValue.pointer)) {
+		targetValue = accessDeepPath(constraints.source, dynamicValue.pointer)
+	} else {
+		throw makeDeveloperError(constraints.field)
+	}
+
+	if (typeCompatibilityCheckFunction(targetValue)) {
+		if (comparisonFunction(state.value, targetValue)) {
 			return state
 		}
 
@@ -30,36 +41,18 @@ export default function<T>(
 			"field": constraints.field,
 			"friendlyName": constraints.friendlyName,
 			"messageMaker": (field: string) => `Field "${field}" must be ${comparisonWord} than "${
-				dynamicValue?.value
+				targetValue
 			}".`
 		}
 		throw error
-	} else if (!isUndefined(dynamicValue.pointer)) {
-		const accessedValue = accessDeepPath(constraints.source, dynamicValue.pointer)
-		if (typeCompatibilityCheckFunction(accessedValue)) {
-			if (comparisonFunction(state.value, accessedValue)) {
-				return state
-			}
-
-			const error = {
-				"field": constraints.field,
-				"friendlyName": constraints.friendlyName,
-				"messageMaker": (field: string) => `Field "${field}" must be ${comparisonWord} than "${
-					accessedValue
-				}".`
-			}
-			throw error
-		}
-
-		const error = {
-			"field": constraints.field,
-			"friendlyName": constraints.friendlyName,
-			"messageMaker": (field: string) => `"${accessedValue}" cannot be compared to field "${
-				field
-			}".`
-		}
-		throw error
-	} else {
-		throw makeDeveloperError(constraints.field)
 	}
+
+	const error = {
+		"field": constraints.field,
+		"friendlyName": constraints.friendlyName,
+		"messageMaker": (field: string) => `"${targetValue}" cannot be compared to field "${
+			field
+		}".`
+	}
+	throw error
 }
