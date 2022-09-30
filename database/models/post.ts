@@ -24,7 +24,7 @@ export default class Post extends TextContentLike {
 	@BelongsTo(() => AttachedRole)
 		posterInfo?: AttachedRole
 
-	get consultant(): User|undefined { return this.posterInfo?.user }
+	get poster(): User|undefined { return this.posterInfo?.user }
 
-	get consultantRole(): Role|undefined { return this.posterInfo?.role }
+	get posterRole(): Role|undefined { return this.posterInfo?.role }
 }
