@@ -1,10 +1,7 @@
 <template>
 	<div class="login-container">
 		<div class="image"></div>
-		<div class="login-form ">
-			<h1>Login</h1>
-			<LogInForm :received-error-from-page-context="receivedError"/>
-		</div>
+		<LogInForm :received-error-from-page-context="receivedError"/>
 	</div>
 </template>
 
@@ -30,22 +27,6 @@ body {
 		background-repeat: no-repeat;
 		background-size: cover;
 	}
-
-	.login-form {
-		@apply dark:bg-dark-700;
-		background: white;
-		width: 100%;
-		max-width: 1200px;
-		margin: 0 2em;
-		padding: 1em 2em;
-		z-index: 1;
-
-		h1 {
-			font-size: 2em;
-			text-transform: uppercase;
-		}
-	}
-
 }
 
 @media (min-width: $mobileViewportMaximum) {
@@ -58,11 +39,6 @@ body {
 		.image {
 			position: initial;
 			width: 100%;
-		}
-
-		.login-form {
-			width: initial;
-			margin: auto 0;
 		}
 	}
 }
