@@ -9,6 +9,7 @@ import AttachedRole from "%/models/attached_role"
 import RequestEnvironment from "$!/singletons/request_environment"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Route from "!%/api/consultation/update(id).patch"
@@ -92,7 +93,8 @@ describe("PATCH /api/consultation/:id", () => {
 
 	it("can be accessed by authenticated user with updated started time", async() => {
 		jest.useRealTimers()
-		const STARTED_TIME = new Date()
+		const SCHEDULED_START_TIME = new Date()
+		const STARTED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:01"))
 		const normalRole = await new RoleFactory().insertOne()
 		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
@@ -114,6 +116,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.insertOne()
 		const newModel = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.scheduledStartAt(() => SCHEDULED_START_TIME)
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => null)
 		.makeOne()
@@ -129,7 +132,7 @@ describe("PATCH /api/consultation/:id", () => {
 					"finishedAt": model.finishedAt,
 					"reason": model.reason,
 					"scheduledStartAt": model.scheduledStartAt.toJSON(),
-					"startedAt": newModel.startedAt
+					"startedAt": newModel.startedAt?.toJSON()
 				},
 				"id": String(model.id),
 				"relationships": {
@@ -175,8 +178,9 @@ describe("PATCH /api/consultation/:id", () => {
 
 	it("can be accessed by authenticated user with updated finished time", async() => {
 		jest.useRealTimers()
-		const STARTED_TIME = new Date()
-		const FINISHED_TIME = new Date()
+		const SCHEDULED_START_TIME = new Date()
+		const STARTED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:01"))
+		const FINISHED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:02"))
 		const normalRole = await new RoleFactory().insertOne()
 		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
@@ -198,6 +202,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.insertOne()
 		const newModel = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.scheduledStartAt(() => SCHEDULED_START_TIME)
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => FINISHED_TIME)
 		.makeOne()

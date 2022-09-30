@@ -46,6 +46,44 @@ describe("Controller: POST /api/employee_schedule", () => {
 		requester.expectSuccess()
 	})
 
+	it("can accept same with archived ones", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const userFactory = new UserFactory()
+		const user = await userFactory.beReachableEmployee().insertOne()
+		const employeeeSchedule = await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		await employeeeSchedule.destroy({ "force": false })
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"dayName": employeeeSchedule.dayName,
+						"scheduleEnd": employeeeSchedule.scheduleEnd,
+						"scheduleStart": employeeeSchedule.scheduleStart
+					},
+					"relationships": {
+						"user": {
+							"data": {
+								"id": String(user.id),
+								"type": "user"
+							}
+						}
+					},
+					"type": "employee_schedule"
+				}
+			},
+			"user": userFactory.serialize(user)
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
 	it("cannot accept details for other users", async() => {
 		const controller = new Controller()
 		const { validations } = controller

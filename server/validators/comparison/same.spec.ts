@@ -5,12 +5,12 @@ describe("Validator pipe: same", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world"))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
+			"request": null,
 			"same": {
 				"value": "world"
-			}
+			},
+			"source": null
 		}
 
 		const sanitizeValue = (await same(value, constraints)).value
@@ -21,12 +21,12 @@ describe("Validator pipe: same", () => {
 	it("cannot accept invalid input", () => {
 		const value = Promise.resolve(makeInitialState("foo"))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
+			"request": null,
 			"same": {
 				"value": "world"
-			}
+			},
+			"source": null
 		}
 
 		const error = same(value, constraints)

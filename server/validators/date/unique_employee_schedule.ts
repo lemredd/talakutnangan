@@ -51,7 +51,7 @@ export default async function(
 			"filter": {
 				"day": value.dayName,
 				"employeeScheduleRange": "*",
-				"existence": "*",
+				"existence": "exists",
 				"user": userID
 			},
 			"page": {

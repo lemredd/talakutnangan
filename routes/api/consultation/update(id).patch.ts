@@ -28,6 +28,7 @@ import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
 import regex from "!/validators/comparison/regex"
 import length from "!/validators/comparison/length"
+import isLessThan from "!/validators/comparison/is_less_than"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
@@ -59,6 +60,15 @@ export default class extends DoubleBoundJSONController {
 
 		const pureDate: Rules = {
 			"pipes": [ required, string, date ]
+		}
+
+		const correctStartDate: Rules = {
+			"constraints": {
+				"isLessThan": {
+					"pointer": "data.attributes.finishedAt"
+				}
+			},
+			"pipes": [ ...pureDate.pipes, isLessThan ]
 		}
 
 		const attributes: FieldRules = {
@@ -103,18 +113,21 @@ export default class extends DoubleBoundJSONController {
 			},
 			"scheduledStartAt": {
 				"constraints": {
+					"isLessThan": {
+						"pointer": "data.attributes.startedAt"
+					},
 					// TODO: Check if the schedule fits within the schedule of employee
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
 						"userIDPointer": "data.relationships.consultant.data.id"
 					}
 				},
-				"pipes": [ required, string, date, uniqueConsultationSchedule ]
+				"pipes": [ required, string, date, isLessThan, uniqueConsultationSchedule ]
 			},
 			"startedAt": {
 				"constraints": {
 					"or": {
-						"rules": [ pureDate, pureNull ]
+						"rules": [ correctStartDate, pureNull ]
 					}
 				},
 				"pipes": [ or ]

@@ -9,13 +9,15 @@ describe("Controller: PATCH /api/model/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async() => {
+		const currentTime = Date.now()
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const model = await new Factory().insertOne()
 		const newModel = await new Factory()
-		.startedAt(() => new Date())
+		.scheduledStartAt(() => new Date(currentTime - 1))
+		.startedAt(() => new Date(currentTime))
 		.finishedAt(() => null)
 		.makeOne()
 		requester.customizeRequest({
