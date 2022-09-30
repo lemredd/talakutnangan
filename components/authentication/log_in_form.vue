@@ -34,10 +34,15 @@
 			Forgot Password?
 		</a>
 	</div>
+
+	<div v-if="receivedError" class="error">
+		{{ receivedError }}
+	</div>
 </template>
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/error.scss";
 
 form {
 	@apply text-sm;
@@ -78,6 +83,9 @@ form {
 <script setup lang="ts">
 import { ref } from "vue"
 
+import type { UnitError } from "$/types/server"
+import type { Serializable } from "$/types/general"
+
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -86,11 +94,16 @@ import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
 
+UserFetcher.initialize("/api")
+
+const props = defineProps<{
+	receivedErrorFromPageContext?: UnitError & Serializable
+}>()
+
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-
-UserFetcher.initialize("/api")
+const receivedError = ref("")
 
 function logIn() {
 	const details = {
@@ -100,8 +113,9 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(unusedErrors => {
-		// Show error infos
+	.catch(({ "body": { errors } }) => {
+		const error = errors[0].detail
+		receivedError.value = error
 	})
 }
 

@@ -2,11 +2,8 @@
 	<div class="login-container">
 		<div class="image"></div>
 		<div class="login-form ">
-			<div v-if="receivedError" class="error">
-				<span class="description">{{ receivedError.detail }}</span>
-			</div>
 			<h1>Login</h1>
-			<LogInForm/>
+			<LogInForm :received-error-from-page-context="receivedError"/>
 		</div>
 	</div>
 </template>
@@ -19,7 +16,6 @@ body {
 
 <style scoped lang="scss">
 @import "@styles/variables.scss";
-@import "@styles/error.scss";
 
 .login-container {
 	@apply flex items-center justify-center;
@@ -81,5 +77,4 @@ import LogInForm from "@/authentication/log_in_form.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const receivedError = pageContext.pageProps.parsedUnitError
-
 </script>
