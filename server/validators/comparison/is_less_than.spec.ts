@@ -1,28 +1,28 @@
 import makeInitialState from "!/validators/make_initial_state"
-import isGreaterThan from "./is_greater_than"
+import isLessThan from "./is_less_than"
 
-describe("Validator pipe: Is greater than", () => {
+describe("Validator pipe: Is less than", () => {
 	it("can accept valid input", async() => {
-		const value = Promise.resolve(makeInitialState(4))
+		const value = Promise.resolve(makeInitialState(2))
 		const constraints = {
 			"field": "hello",
-			"isGreaterThan": {
+			"isLessThan": {
 				"value": 3
 			},
 			"request": null,
 			"source": null
 		}
 
-		const sanitizeValue = (await isGreaterThan(value, constraints)).value
+		const sanitizeValue = (await isLessThan(value, constraints)).value
 
-		expect(sanitizeValue).toEqual(4)
+		expect(sanitizeValue).toEqual(2)
 	})
 
 	it("can accept valid pointer", async() => {
-		const value = Promise.resolve(makeInitialState(3))
+		const value = Promise.resolve(makeInitialState(-1))
 		const constraints = {
 			"field": "hello",
-			"isGreaterThan": {
+			"isLessThan": {
 				"pointer": "user.id"
 			},
 			"request": null,
@@ -33,9 +33,9 @@ describe("Validator pipe: Is greater than", () => {
 			}
 		}
 
-		const sanitizeValue = (await isGreaterThan(value, constraints)).value
+		const sanitizeValue = (await isLessThan(value, constraints)).value
 
-		expect(sanitizeValue).toEqual(3)
+		expect(sanitizeValue).toEqual(-1)
 	})
 
 	it("can accept date", async() => {
@@ -43,27 +43,27 @@ describe("Validator pipe: Is greater than", () => {
 		const value = Promise.resolve(makeInitialState(new Date()))
 		const constraints = {
 			"field": "hello",
-			"isGreaterThan": {
+			"isLessThan": {
 				"pointer": "user.id"
 			},
 			"request": null,
 			"source": {
 				"user": {
-					"id": new Date(Date.now() - 1)
+					"id": new Date(Date.now() + 1)
 				}
 			}
 		}
 
-		const sanitizeValue = (await isGreaterThan(value, constraints)).value
+		const sanitizeValue = (await isLessThan(value, constraints)).value
 
 		expect(sanitizeValue).toEqual(currentDate)
 	})
 
 	it("can ignore pointed null", async() => {
-		const value = Promise.resolve(makeInitialState(-1))
+		const value = Promise.resolve(makeInitialState(4))
 		const constraints = {
 			"field": "hello",
-			"isGreaterThan": {
+			"isLessThan": {
 				"pointer": "user.id"
 			},
 			"request": null,
@@ -74,16 +74,16 @@ describe("Validator pipe: Is greater than", () => {
 			}
 		}
 
-		const sanitizeValue = (await isGreaterThan(value, constraints)).value
+		const sanitizeValue = (await isLessThan(value, constraints)).value
 
-		expect(sanitizeValue).toEqual(-1)
+		expect(sanitizeValue).toEqual(4)
 	})
 
 	it("cannot accept invalid input", async() => {
-		const value = Promise.resolve(makeInitialState(3))
+		const value = Promise.resolve(makeInitialState(2))
 		const constraints = {
 			"field": "hello",
-			"isGreaterThan": {
+			"isLessThan": {
 				"pointer": "user.id"
 			},
 			"request": null,
@@ -96,7 +96,7 @@ describe("Validator pipe: Is greater than", () => {
 		}
 
 		try {
-			await isGreaterThan(value, constraints)
+			await isLessThan(value, constraints)
 		} catch (error) {
 			expect(error).toHaveProperty("field", "hello")
 			expect(error).toHaveProperty("messageMaker")
