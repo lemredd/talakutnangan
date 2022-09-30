@@ -26,12 +26,13 @@ describe("Database Manager: Miscellaneous post operations", () => {
 
 		expect(sortableColumns).toStrictEqual([
 			"-createdAt",
-			"-contents",
+			"-content",
+			"-id",
 			"-updatedAt",
-			"-deletedAt",
 			"createdAt",
-			"contents",
-			"deletedAt"
+			"content",
+			"id",
+			"updatedAt"
 		])
 	})
 })

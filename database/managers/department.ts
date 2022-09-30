@@ -12,7 +12,7 @@ import BaseManager from "%/managers/base"
 import trimRight from "$/string/trim_right"
 import Condition from "%/helpers/condition"
 import DatabaseError from "$!/errors/database"
-import DepartmentTransformer from "%/transformers/department"
+import Transformer from "%/transformers/department"
 
 export default class extends BaseManager<
 	Model,
@@ -21,7 +21,7 @@ export default class extends BaseManager<
 > {
 	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
+	get transformer(): Transformer { return new Transformer() }
 
 	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
 		throw new DatabaseError("Departments are not owned by any user.")

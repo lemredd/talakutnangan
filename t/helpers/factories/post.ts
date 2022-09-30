@@ -39,7 +39,7 @@ export default class PostFactory extends TextContentLikeFactory<
 	async generate(): GeneratedData<Model> {
 		return {
 			"attachedRoleID": (await this.posterInfoGenerator()).id,
-			"fileContents": this.contentGenerator()
+			"content": this.contentGenerator()
 		}
 	}
 
