@@ -79,6 +79,7 @@ form {
 import { ref } from "vue"
 
 import UserFetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import PasswordField from "@/fields/sensitive_text.vue"
@@ -98,9 +99,8 @@ function logIn() {
 	}
 
 	new UserFetcher().logIn(details)
-	.then(unusedData => {
-		window.location.assign("/")
-	}).catch(unusedErrors => {
+	.then(() => assignPath("/"))
+	.catch(unusedErrors => {
 		// Show error infos
 	})
 }

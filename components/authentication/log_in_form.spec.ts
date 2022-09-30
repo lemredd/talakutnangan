@@ -1,6 +1,7 @@
 import { v4 } from "uuid"
-import { shallowMount } from "@vue/test-utils"
+import { flushPromises, shallowMount } from "@vue/test-utils"
 
+import Stub from "$/singletons/stub"
 import type { UnitError } from "$/types/server"
 import type { GeneralObject } from "$/types/general"
 
@@ -30,19 +31,17 @@ describe("Component: Log In Form", () => {
 			await emailField.setValue("dean@example.net")
 			await passwordField.setValue("password")
 			await submitBtn.trigger("click")
+			await flushPromises()
 
 			const castFetch = fetch as jest.Mock<any, any>
 			const [ [ request ] ] = castFetch.mock.calls
 			expect(request).toHaveProperty("method", "POST")
 			expect(request).toHaveProperty("url", "/api/user/log_in")
 
-			const response = new UserFetcher().logIn(await request.json())
-			const responseBody = (await response).body
-			const { token } = responseBody.body as { token: string }
-			const { status } = responseBody
-			expect(responseBody).toHaveProperty("body")
-			expect(token).toBeTruthy()
-			expect(status).toEqual(200)
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("0.arguments.0", "/")
+			expect(previousCalls).not.toHaveProperty("0.arguments.1")
 		})
 
 		it("should not log in with non-existing credentials", async() => {
