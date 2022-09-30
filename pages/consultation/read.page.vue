@@ -4,8 +4,7 @@
 			<ConsultationList
 				:consultations="consultations"
 				:chat-message-activities="chatMessageActivities"
-				:preview-messages="previewMessages"
-				@picked-consultation="visitConsultation"/>
+				:preview-messages="previewMessages"/>
 		</template>
 		<template #chat-window>
 			<ChatWindow
@@ -51,8 +50,6 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Socket from "$@/external/socket"
-import assignPath from "$@/external/assign_path"
-import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
 
@@ -123,13 +120,6 @@ const currentChatMessageActivityResource = computed<
 })
 
 provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
-
-function visitConsultation(consultationID: string): void {
-	const path = specializePath("/consultation/:id", {
-		"id": consultationID
-	})
-	assignPath(path)
-}
 
 function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<"deserialized">)
 : void {
