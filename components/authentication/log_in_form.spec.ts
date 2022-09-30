@@ -71,16 +71,48 @@ describe("Component: Log In Form", () => {
 			const [ [ request ] ] = castFetch.mock.calls
 			expect(request).toHaveProperty("method", "POST")
 			expect(request).toHaveProperty("url", "/api/user/log_in")
+			await flushPromises()
 
-			try {
-				const response = new UserFetcher().logIn(await request.json())
-				await response
-			} catch (response) {
-				const castResponse = response as GeneralObject
-				const responseErrors = castResponse.body.errors as unknown as UnitError[]
-				const { status } = responseErrors[0] as unknown as UnitError
-				expect(status).toEqual(RequestEnvironment.status.BAD_REQUEST)
-			}
+			const error = wrapper.find(".error")
+			console.log(error.html())
+		})
+
+		it.only("should not log in with non-existing credentials", async() => {
+			fetchMock.mockResponse(
+				JSON.stringify({
+					"errors": [
+						{
+							"status": RequestEnvironment.status.BAD_REQUEST,
+							"code": "3",
+							"title": "Validation Error",
+							// eslint-disable-next-line max-len
+							"detail": "The sample@example.com in field \"email\" does not exists in the database\".",
+							"source": {
+								"pointer": "email"
+							}
+						}
+					] as UnitError[]
+				}),
+				{ "status": RequestEnvironment.status.BAD_REQUEST })
+
+			const wrapper = shallowMount(Component)
+
+			const submitBtn = wrapper.find("#submit-btn")
+			await submitBtn.trigger("click")
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ request ] ] = castFetch.mock.calls
+			expect(request).toHaveProperty("method", "POST")
+			expect(request).toHaveProperty("url", "/api/user/log_in")
+			await flushPromises()
+
+
+			const error = wrapper.find(".error")
+			const errorDetails
+			= "The sample@example.com in field \"email\" does not exists in the database\"."
+			console.log(errorDetails, "\n\n\n\n")
+			expect(error.exists()).toBeTruthy()
+			expect(error.html()).toContain(errorDetails)
 		})
 
 		it("should not log in if user is already logged in", async() => {
