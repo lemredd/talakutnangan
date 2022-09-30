@@ -1,17 +1,10 @@
-<!--
-	General tasks for other members:
-	TODO(others): Refactor all WindiCSS inline classes using @apply directive
-	TODO(others): Refactor HTML to Vue Components if applicable
-	TODO(others): Make use of mixins if applicable
--->
 <template>
 	<ConsultationShell>
 		<template #list>
 			<ConsultationList
 				:consultations="consultations"
 				:chat-message-activities="chatMessageActivities"
-				:preview-messages="previewMessages"
-				@picked-consultation="visitConsultation"/>
+				:preview-messages="previewMessages"/>
 		</template>
 		<template #chat-window>
 			<ChatWindow
@@ -41,51 +34,43 @@ import { provide, inject, ref, readonly, computed, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
-	ChatMessageActivityDocument,
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
-	ConsultationResource,
 	ConsultationAttributes,
-	DeserializedConsultationDocument,
 	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 import type {
-	ChatMessageDocument,
 	DeserializedChatMessageResource,
-	DeserializedChatMessageDocument,
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
 
-import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Socket from "$@/external/socket"
-import debounce from "$@/helpers/debounce"
-import deserialize from "$/object/deserialize"
-import assignPath from "$@/external/assign_path"
-import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
-import DocumentVisibility from "$@/external/document_visibility"
-import makeConsultationNamespace from "$/namespace_makers/consultation"
+
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
-import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
-import makeConsultationChatActivityNamespace from "$/namespace_makers/consultation_chat_activity"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
+import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
+import registerChatListeners from "@/consultation/listeners/register_chat"
+import registerConsultationListeners from "@/consultation/listeners/register_consultation"
+import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
 
 ChatMessageFetcher.initialize("/api")
 ConsultationFetcher.initialize("/api")
 ChatMessageActivityFetcher.initialize("/api")
 Socket.initialize()
+
+const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -136,101 +121,11 @@ const currentChatMessageActivityResource = computed<
 
 provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
 
-const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
-
-let isWindowShown = false
-function updateReceivedMessageAt(): void {
-	const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt as Date
-	chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
-		"receivedMessageAt": new Date().toJSON(),
-		"seenMessageAt": lastSeenMessageAt.toJSON()
-	})
-}
-
-const debounceUpdateReceivedMessageAt = debounce(() => {
-	if (isWindowShown) updateReceivedMessageAt()
-}, DEBOUNCED_WAIT_DURATION)
-
-DocumentVisibility.addEventListener(newState => {
-	isWindowShown = newState === "visible"
-})
-
-function visitConsultation(consultationID: string): void {
-	const path = specializePath("/consultation/:id", {
-		"id": consultationID
-	})
-	assignPath(path)
-}
-
 function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<"deserialized">)
 : void {
 	consultation.value = {
 		...consultation.value,
 		...updatedAttributes
-	}
-}
-
-function mergeDeserializedMessages(messages: DeserializedChatMessageResource<"user">[]): void {
-	chatMessages.value = {
-		...chatMessages.value,
-		"data": [
-			...chatMessages.value.data,
-			...messages
-		].sort((first, second) => {
-			const comparison = Math.sign(calculateMillisecondDifference(
-				first.createdAt,
-				second.createdAt
-			))
-
-			return comparison || first.id.localeCompare(second.id)
-		})
-	}
-}
-
-function createMessage(message: ChatMessageDocument<"read">): void {
-	const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
-	mergeDeserializedMessages([ deserializedMessage.data ])
-
-	ConsultationTimerManager.restartTimerFor(consultation.value)
-	debounceUpdateReceivedMessageAt()
-}
-
-function updateMessage(message: ChatMessageDocument<"read">): void {
-	const IDOfMessageToRemove = message.data.id
-	chatMessages.value.data = chatMessages.value.data.filter(
-		chatMessage => chatMessage.id !== IDOfMessageToRemove
-	)
-
-	createMessage(message)
-}
-
-function updateMessageActivity(activity: ChatMessageActivityDocument<"read">): void {
-	const deserializedActivity = deserialize(activity) as ChatMessageActivityDocument<"read">
-	const receivedData = deserializedActivity.data
-	const receivedID = receivedData.id
-
-	chatMessageActivities.value.data = chatMessageActivities.value.data.map(resource => {
-		const activityID = resource.id
-
-		if (activityID === receivedID) {
-			return {
-				...resource,
-				...receivedData
-			}
-		}
-
-		return resource
-	})
-}
-
-function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
-	const deserializedConsultation = deserialize(
-		updatedConsultation
-	) as DeserializedConsultationDocument<"read">
-
-	consultation.value = {
-		...consultation.value,
-		...deserializedConsultation.data
 	}
 }
 
@@ -255,7 +150,7 @@ async function loadPreviousChatMessages(): Promise<void> {
 	if (meta?.count ?? data.length > 0) {
 		const castData = data as DeserializedChatMessageResource<"user">[]
 
-		mergeDeserializedMessages(castData)
+		mergeDeserializedMessages(chatMessages, castData)
 	}
 }
 
@@ -312,21 +207,14 @@ async function loadConsultations(): Promise<void> {
 	}
 }
 
-const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
-Socket.addEventListeners(chatNamespace, {
-	"create": createMessage,
-	"update": updateMessage
-})
-
-const consultationNamespace = makeConsultationNamespace(consultation.value.id)
-Socket.addEventListeners(consultationNamespace, {
-	"update": updateConsultation
-})
-
-const chatActivityNamespace = makeConsultationChatActivityNamespace(consultation.value.id)
-Socket.addEventListeners(chatActivityNamespace, {
-	"update": updateMessageActivity
-})
+registerChatListeners(
+	consultation,
+	chatMessages,
+	currentChatMessageActivityResource,
+	chatMessageActivityFetcher
+)
+registerConsultationListeners(consultation)
+registerChatActivityListeners(consultation, chatMessageActivities)
 
 onMounted(async() => {
 	await loadConsultations()

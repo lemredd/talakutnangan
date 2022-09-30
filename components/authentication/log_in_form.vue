@@ -1,43 +1,72 @@
 <template>
-	<form>
-		<TextualField
-			v-model="email"
-			label="E-mail"
-			class="field email-field"
-			type="email"/>
-		<PasswordField
-			v-model="password"
-			label="Password"
-			class="field pass-field"/>
-		<div v-if="RequestEnvironment.isNotOnProduction">
-			Fill details for:
-
-			<RoleSelector
-				v-model="selectedRole"
-				:options="selectableRoles"
-				@update:model-value="fillDetails"/>
+	<div class="login-form">
+		<div v-if="receivedError" class="error">
+			{{ receivedError }}
 		</div>
-	</form>
-	<div class="controls">
-		<!-- TODO: add reset password functionality -->
-		<button
-			v-if="email && !token"
-			id="submit-btn"
-			class="btn btn-primary"
-			@click="logIn">
-			Log in
-		</button>
-		<a
-			id="forgot-btn"
-			role="button"
-			href="">
-			Forgot Password?
-		</a>
+		<h1>log in</h1>
+
+		<form>
+			<TextualField
+				v-model="email"
+				label="E-mail"
+				class="field email-field"
+				type="email"/>
+			<PasswordField
+				v-model="password"
+				label="Password"
+				class="field pass-field"/>
+			<div v-if="RequestEnvironment.isNotOnProduction">
+				Fill details for:
+
+				<RoleSelector
+					v-model="selectedRole"
+					:options="selectableRoles"
+					@update:model-value="fillDetails"/>
+			</div>
+		</form>
+		<div class="controls">
+			<!-- TODO: add reset password functionality -->
+			<button
+				v-if="email && !token"
+				id="submit-btn"
+				class="btn btn-primary"
+				@click="logIn">
+				Log in
+			</button>
+			<a
+				id="forgot-btn"
+				role="button"
+				href="">
+				Forgot Password?
+			</a>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/error.scss";
+@import "@styles/variables.scss";
+
+.login-form {
+	@apply dark:bg-dark-700;
+	background: white;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 2em;
+	padding: 1em 2em;
+	z-index: 1;
+
+	@screen sm {
+		width: initial;
+		margin: auto 0;
+	}
+
+	h1 {
+		font-size: 2em;
+		text-transform: uppercase;
+	}
+}
 
 form {
 	@apply text-sm;
@@ -78,18 +107,31 @@ form {
 <script setup lang="ts">
 import { ref } from "vue"
 
+import type { UnitError } from "$/types/server"
+import type { Serializable } from "$/types/general"
+
 import UserFetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
 
+UserFetcher.initialize("/api")
+
+const props = defineProps<{
+	receivedErrorFromPageContext?: UnitError & Serializable
+}>()
+
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-
-UserFetcher.initialize("/api")
+const receivedError = ref(
+	props.receivedErrorFromPageContext
+		? props.receivedErrorFromPageContext.detail
+		: ""
+)
 
 function logIn() {
 	const details = {
@@ -98,10 +140,10 @@ function logIn() {
 	}
 
 	new UserFetcher().logIn(details)
-	.then(unusedData => {
-		window.location.assign("/")
-	}).catch(unusedErrors => {
-		// Show error infos
+	.then(() => assignPath("/"))
+	.catch(({ "body": { errors } }) => {
+		const error = errors[0].detail
+		receivedError.value = error
 	})
 }
 

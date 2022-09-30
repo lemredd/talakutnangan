@@ -102,7 +102,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		expect(events).toHaveLength(1)
 	})
 
-	it.skip("can send upon pressing enter", async() => {
+	it("can send upon pressing enter", async() => {
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const message = "Hello"
 		const userID = "1"
@@ -122,7 +123,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			"global": {
 				"provide": {
 					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
-						"id": userID
+						"id": userID,
+						"receivedMessageAt": new Date()
 					}))
 				}
 			},

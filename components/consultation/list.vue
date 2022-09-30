@@ -39,6 +39,8 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import assignPath from "$@/external/assign_path"
+
 import LastChat from "@/consultation/list/last_chat.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
@@ -85,12 +87,7 @@ function getPreviewMessage(
 	return previewMessages.data[index]
 }
 
-interface CustomEvents {
-	(eventName: "pickedConsultation", ID: string): void
-}
-const emit = defineEmits<CustomEvents>()
-
 function pickConsultation(consultationID: string) {
-	emit("pickedConsultation", consultationID)
+	assignPath(`/consultation/${consultationID}`)
 }
 </script>
