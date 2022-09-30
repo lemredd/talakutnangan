@@ -28,7 +28,7 @@ module.exports = {
 					},
 					"approvedAt": {
 						"type": Sequelize.DATE,
-						"allowNull": false
+						"allowNull": true
 					},
 					"createdAt": {
 						"allowNull": false,
