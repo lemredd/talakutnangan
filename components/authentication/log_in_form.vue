@@ -103,7 +103,11 @@ const props = defineProps<{
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-const receivedError = ref("")
+const receivedError = ref(
+	props.receivedErrorFromPageContext
+		? props.receivedErrorFromPageContext.detail
+		: ""
+)
 
 function logIn() {
 	const details = {
