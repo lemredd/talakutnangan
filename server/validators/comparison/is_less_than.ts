@@ -1,7 +1,7 @@
 import type {
 	ValidationState,
 	ValidationConstraints,
-	IsGreaterThanRuleConstraints
+	IsLessThanRuleConstraints
 } from "!/types/validation"
 
 import isUndefined from "$/type_guards/is_undefined"
@@ -9,29 +9,29 @@ import ensureUnequal from "!/validators/comparison/unequal_base"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
- * Validator to check if data is the greater than the data passed or pointed.
+ * Validator to check if data is the less than the data passed or pointed.
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<IsGreaterThanRuleConstraints>
+	constraints: ValidationConstraints & Partial<IsLessThanRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
 	if (state.maySkip) return state
 
-	if (isUndefined(constraints.isGreaterThan)) {
+	if (isUndefined(constraints.isLessThan)) {
 		throw makeDeveloperError(constraints.field)
 	}
 
 	return ensureUnequal(
 		state,
 		constraints as ValidationConstraints,
-		constraints.isGreaterThan,
-		"greater",
+		constraints.isLessThan,
+		"less",
 		accessedValue => !Number.isNaN(Number(accessedValue)),
 		(
 			currentValue,
 			targetValue
-		) => targetValue === null || Number(currentValue) > Number(targetValue)
+		) => targetValue === null || Number(currentValue) < Number(targetValue)
 	)
 }
