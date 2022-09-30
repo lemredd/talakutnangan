@@ -11,7 +11,7 @@ import makeConsultationNamespace from "$/namespace_makers/consultation"
 
 import listener from "./register_consultation"
 
-describe("UI Page: Read consultation resource by ID", () => {
+describe("Listener: Consultation", () => {
 	it("can start consultation from others", async() => {
 		Socket.initialize()
 
