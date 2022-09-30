@@ -1,59 +1,30 @@
 import {
 	Table,
-	Model,
 	Column,
-	DataType,
 	BelongsTo,
-	AllowNull,
-	ForeignKey,
-	BelongsToMany
+	ForeignKey
 } from "sequelize-typescript"
+
 import User from "%/models/user"
 import Role from "%/models/role"
-
+import AttachedRole from "%/models/attached_role"
+import TextContentLike from "%/models/text_content-like"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"paranoid": true,
+	"timestamps": true
 })
-//title, desc, badword, user id, role id
-export default class Post extends Model {
-
+export default class Post extends TextContentLike {
+	@ForeignKey(() => AttachedRole)
 	@Column({
-		unique: true,
-		allowNull: false
+		"allowNull": false
 	})
-    title!: string
+		attachedRoleID!: number
 
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    desc!: string
+	@BelongsTo(() => AttachedRole)
+		posterInfo?: AttachedRole
 
-	@Column({
-		unique: true,
-		allowNull: false
-	})
-    badWordExist!: boolean
+	get consultant(): User|undefined { return this.posterInfo?.user }
 
-	@ForeignKey(() => User)
-	@Column({
-		allowNull: false,
-		type: DataType.BIGINT
-	})
-	userID!: number
-
-	@BelongsTo(() => User)
-	user!: User
-
-	@ForeignKey(() => Role)
-	@Column({
-		allowNull: false,
-		type: DataType.BIGINT
-	})
-	roleID!: number
-
-	@BelongsTo(() => Role)
-	role!: Role
+	get consultantRole(): Role|undefined { return this.posterInfo?.role }
 }
