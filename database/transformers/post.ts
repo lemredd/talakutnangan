@@ -11,11 +11,7 @@ export default class extends Transformer<Post, void> {
 	transform(model: Post|Post[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-			"title",
-			"desc",
-			"badWordExist",
-			"userID",
-			"roleID"
+			"content"
 		])
 
 		return safeObject
