@@ -237,10 +237,14 @@ export default class extends DevController {
 						"type": "role"
 					}
 				},
-				"consulters": {
+				"participants": {
 					"data": [
 						{
 							"id": previousStudentUser.id,
+							"type": "user"
+						},
+						{
+							"id": previousSecretaryUser.id,
 							"type": "user"
 						}
 					]
