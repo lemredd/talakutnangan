@@ -7,19 +7,19 @@ import type {
 } from "$/types/documents/department"
 
 import User from "%/models/user"
+import Model from "%/models/department"
 import BaseManager from "%/managers/base"
 import trimRight from "$/string/trim_right"
-import Department from "%/models/department"
-import DatabaseError from "$!/errors/database"
 import Condition from "%/helpers/condition"
+import DatabaseError from "$!/errors/database"
 import DepartmentTransformer from "%/transformers/department"
 
 export default class extends BaseManager<
-	Department,
+	Model,
 	DepartmentAttributes<"deserialized">,
 	DepartmentQueryParameters<number>
 > {
-	get model(): ModelCtor<Department> { return Department }
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): DepartmentTransformer { return new DepartmentTransformer() }
 
@@ -29,11 +29,11 @@ export default class extends BaseManager<
 
 	async countUsers(departmentIDs: number[]): Promise<Serializable> {
 		try {
-			if (!Department.sequelize || !User.sequelize) {
+			if (!Model.sequelize || !User.sequelize) {
 				throw new DatabaseError("Developer may have forgot to register the models.")
 			}
 
-			const subselectQuery = Department.sequelize.literal(`(${
+			const subselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					User.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -41,7 +41,7 @@ export default class extends BaseManager<
 							"attributes": [ User.sequelize.fn("count", "*") ],
 							"where": new Condition().equal(
 								"departmentID",
-								User.sequelize.col(`${Department.tableName}.id`)
+								User.sequelize.col(`${Model.tableName}.id`)
 							)
 							.build()
 						}
@@ -49,10 +49,10 @@ export default class extends BaseManager<
 					";"
 				)
 			})`)
-			const [ counts ] = await Department.sequelize.query(
+			const [ counts ] = await Model.sequelize.query(
 				// @ts-ignore
-				Department.sequelize.getQueryInterface().queryGenerator.selectQuery(
-					Department.tableName, {
+				Model.sequelize.getQueryInterface().queryGenerator.selectQuery(
+					Model.tableName, {
 						"attributes": [ "id", [ subselectQuery, "count" ] ],
 						"where": new Condition().or(
 							...departmentIDs.map(departmentID => new Condition().equal("id", departmentID))
