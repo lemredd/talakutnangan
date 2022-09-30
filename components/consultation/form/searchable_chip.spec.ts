@@ -15,7 +15,7 @@ import Component from "./searchable_chip.vue"
 import RequestEnvironment from "$/singletons/request_environment"
 import { DeserializedUserResource } from "$/types/documents/user"
 
-describe("Component: Log In Form", () => {
+describe("Component: Searchable Chip", () => {
 	it("should search and add users in a given kind", async() => {
 		jest.useFakeTimers()
 
