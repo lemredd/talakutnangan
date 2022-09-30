@@ -26,6 +26,10 @@ export interface IsGreaterThanRuleConstraints {
 	isGreaterThan: DynamicValue<number|Date>
 }
 
+export interface IsLessThanRuleConstraints {
+	isLessThan: DynamicValue<number|Date>
+}
+
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
 export interface RegexRuleConstraints { regex: { match: RegExp } }
@@ -145,6 +149,7 @@ export type RuleContraints = Partial<
 	& RangeConstraints
 	& SameRuleConstraints
 	& IsGreaterThanRuleConstraints
+	& IsLessThanRuleConstraints
 	& OneOfRuleConstraints
 	& ArrayRuleConstraints
 	& ObjectRuleConstraints
