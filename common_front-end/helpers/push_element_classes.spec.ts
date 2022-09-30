@@ -12,5 +12,6 @@ describe("Helper: Disable Scroll", () => {
 		expect(classes.value).toContain(classesToAdd[1])
 		expect(classes.value).toContain(classesToAdd[2])
 		expect(classes.value).toContain(classesToAdd[3])
+
 	})
 })

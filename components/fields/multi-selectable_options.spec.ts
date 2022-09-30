@@ -19,8 +19,8 @@ describe("Component: fields/multi-selectable_options", () => {
 			}
 		})
 
-		const dropdown = wrapper.findComponent({ "name": "SelectableOptionsField" })
-		const addButton = dropdown.find("button")
+		const dropdown = wrapper.find(".selectable select")
+		const addButton = wrapper.find(".selectable button")
 		await dropdown.setValue("2")
 		await addButton.trigger("click")
 
@@ -42,8 +42,8 @@ describe("Component: fields/multi-selectable_options", () => {
 			}
 		})
 
-		const dropdown = wrapper.findComponent({ "name": "SelectableOptionsField" })
-		const addButton = dropdown.find("button")
+		const dropdown = wrapper.find(".selectable select")
+		const addButton = wrapper.find(".selectable button")
 		await dropdown.setValue("1")
 		await addButton.trigger("click")
 
@@ -97,7 +97,7 @@ describe("Component: fields/multi-selectable_options", () => {
 			}
 		})
 
-		const dropdown = wrapper.findComponent({ "name": "SelectableOptionsField" })
+		const dropdown = wrapper.find(".selectable select")
 		const options = dropdown.findAll("option")
 
 		// `Disabled` option + 2 remaining options

@@ -1,14 +1,20 @@
 <template>
-	<div class="field p-5">
-		<h2>{{ header }}</h2>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
+	<div class="field pb-5">
+		<h2 class="text-lg uppercase">
+			{{ header }}
+		</h2>
 		<div
 			v-for="participant in selectedParticipants"
 			:key="participant.id"
-			class="chip">
+			class="chip selected-participants">
 			<span>
 				{{ participant.name }}
 			</span>
-			<span class="material-icons closebtn" @click="removeParticipant">
+			<span
+				id="close-btn"
+				class="material-icons"
+				@click="removeParticipant">
 				close
 			</span>
 		</div>
@@ -20,13 +26,9 @@
 		<div
 			v-for="participant in otherParticipants"
 			:key="participant.id"
-			class="chip">
-			<span>
-				{{ participant.name }}
-			</span>
-			<span class="material-icons closebtn" @click="addParticipant">
-				check
-			</span>
+			class="chip other-participants cursor-pointer hover:bg-gray-300"
+			@click="addParticipant">
+			{{ participant.name }}
 		</div>
 	</div>
 </template>
@@ -35,18 +37,19 @@
 @import "@styles/btn.scss";
 
 .chip {
-  display: inline-block;
-  padding: 0 15px;
-  margin:5px;
-  height: 30px;
-  font-size: 18px;
-  color: black;
-  line-height: 30px;
-  border-radius: 25px;
-  background-color:#f1f1f1;
+	@apply inline-flex items-center text-sm;
+
+	margin:5px;
+	border-radius: 25px;
+	padding: 0 15px;
+
+	height: 30px;
+
+	color: black;
+	background-color:#f1f1f1;
 }
 
-.closebtn {
+#close-btn {
   padding-left: 10px;
   color: #888;
   font-weight: bold;
@@ -55,7 +58,7 @@
   cursor: pointer;
 }
 
-.closebtn:hover {
+#close-btn:hover {
   color: #000;
 }
 </style>
@@ -72,6 +75,7 @@ import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import RequestEnvironment from "$/singletons/request_environment"
 
 const props = defineProps<{
 	header: string,
@@ -123,7 +127,14 @@ function findMatchedUsers() {
 		},
 		"sort": [ "name" ]
 	}).then(({ body }) => {
-		otherParticipants.value = body.data
+		otherParticipants.value = body.data.filter(candidate => {
+			const isNotSelected = selectedParticipants.value.findIndex(selectedParticipant => {
+				const doesMatchSelectedParticipant = candidate.id === selectedParticipant.id
+				return doesMatchSelectedParticipant
+			}) === -1
+
+			return isNotSelected
+		})
 	})
 }
 
@@ -133,28 +144,29 @@ function removeParticipant(event: Event): void {
 	const { target } = event
 	const castTarget = target as HTMLSpanElement
 	const button = castTarget.previousElementSibling as HTMLButtonElement
-	const text = button.innerHTML
+	const text = RequestEnvironment.isOnTest
+		? button.innerHTML
+		: button.innerText
 
 	selectedParticipants.value = selectedParticipants.value.filter(user => {
-		const foundNameIndex = text.indexOf(user.name)
-		return foundNameIndex === -1
+		const isNameMatching = text.includes(user.name)
+		return !isNameMatching
 	})
 }
 
 function addParticipant(event: Event): void {
-	const { target } = event
-	const castTarget = target as HTMLSpanElement
-	const button = castTarget.previousElementSibling as HTMLButtonElement
-	const text = button.innerHTML
+	const target = event.target as HTMLDivElement
+	const participantName = RequestEnvironment.isOnTest
+		? target.innerHTML
+		: target.innerText
 
 	const foundParticipant = otherParticipants.value.find(user => {
-		const foundNameIndex = text.indexOf(user.name)
-		console.log(user, text)
-		return foundNameIndex > -1
+		const isNameMatching = participantName.includes(user.name)
+		return isNameMatching
 	})
 
 	if (foundParticipant) {
-		selectedParticipants.value.push(foundParticipant)
+		selectedParticipants.value = [ ...selectedParticipants.value, foundParticipant ]
 	}
 
 	otherParticipants.value = []

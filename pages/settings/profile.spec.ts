@@ -12,10 +12,7 @@ import DepartmentFactory from "~/factories/department"
 import UserProfileTransformer from "%/transformers/user_profile"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import {
-	READ_ANYONE_ON_ALL_DEPARTMENTS,
-	READ_ANYONE_ON_OWN_DEPARTMENT
-} from "$/permissions/user_combinations"
+import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -26,7 +23,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
@@ -52,6 +49,7 @@ describe("Page: settings/profile", () => {
 				}
 			})
 
+
 			const displayNameField = wrapper.findComponent({ "name": "TextualField" })
 			const [ darkMode ] = wrapper.find("#dark-mode-toggle").getRootNodes()
 			const darkModeCheckbox = darkMode as HTMLInputElement
@@ -70,7 +68,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
@@ -113,7 +111,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beReachableEmployee()
@@ -195,7 +193,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
@@ -219,7 +217,7 @@ describe("Page: settings/profile", () => {
 				}
 			})
 
-			const displayNameField = wrapper.findComponent({ "name": "TextualField" })
+			const displayNameField = wrapper.find(".input-container")
 			const displayNameBtn = displayNameField.find("button")
 			const displayNameInput = displayNameField.find("input")
 
@@ -237,15 +235,21 @@ describe("Page: settings/profile", () => {
 			await displayNameBtn.trigger("click")
 			await displayNameInput.setValue("Something")
 			await displayNameBtn.trigger("click")
+			await flushPromises()
 
-			expect(displayNameField.props().modelValue).toEqual("Something")
+			const displayNameInputElement = displayNameInput.getRootNodes()[0] as HTMLInputElement
+			expect(displayNameInputElement.value).toEqual("Something")
+
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
 		it("can create profile picture", async() => {
 			const sampleURL = "/images/profile.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
@@ -307,7 +311,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beReachableEmployee()
@@ -368,7 +372,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()

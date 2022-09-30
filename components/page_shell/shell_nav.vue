@@ -69,7 +69,6 @@
 	padding: 0 .75em;
 
 	height: $navHeight;
-	max-width: 900px;
 
 	.wrapper {
 		@apply grid grid-cols-[1fr,repeat(3,min-content)] flex-1;
@@ -94,6 +93,7 @@
 @media screen and (min-width: $desktopViewportMinimum) {
 	.wrapper {
 		margin: auto;
+		max-width: 900px;
 	}
 
 	.user-settings {

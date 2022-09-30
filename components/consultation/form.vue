@@ -1,13 +1,14 @@
 <template>
-	<Overlay :is-shown="isShown">
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
+	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 			<h1>Enter the consultation details</h1>
 		</template>
 		<template #default>
 			<SearchableChip
 				v-model="selectedConsultants"
-				class="consultants"
-				header="Consultants"
+				class="consultant"
+				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
@@ -15,11 +16,12 @@
 				v-model="selectedConsulters"
 				class="consulters"
 				header="Consulters"
-				:maximum-participants="MAX_CONSULTERS"
+				:maximum-participants="MAX_ADDITIONAL_CONSULTERS"
 				text-field-label="Type the students to add"
-				kind="reachable_employee"/>
+				kind="student"/>
 			<SelectableOptionsField
 				v-model="chosenReason"
+				class="reason"
 				label="Kind of Reason: "
 				placeholder="Choose your reason"
 				:options="reasonOptions"/>
@@ -28,9 +30,10 @@
 				v-model="otherReason"
 				label="What are the other reasons(s)?"
 				type="text"/>
-			<button type="button" @click="addConsultation">
-				Add consultation
-			</button>
+
+			<div class="signature-message text-xs mt-5">
+				By submitting, you are granting permission to use the participants' signatures.
+			</div>
 		</template>
 		<template #footer>
 			<button
@@ -39,7 +42,10 @@
 				@click="emitClose">
 				Back
 			</button>
-			<button class="btn btn-primary" type="button">
+			<button
+				class="btn btn-primary"
+				type="button"
+				@click="addConsultation">
 				Submit
 			</button>
 		</template>
@@ -51,7 +57,6 @@
 
 .btn{
   border: none;
-  border-radius: 5px;
   color: white;
   padding: 10px;
   text-align: center;
@@ -60,6 +65,10 @@
   font-size: 16px;
 }
 
+.reason {
+	@apply flex justify-between;
+	max-width: initial !important;
+}
 </style>
 
 <script setup lang="ts">
@@ -102,7 +111,7 @@ const doesAllowConflicts = ref<boolean>(true)
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
 
-const MAX_CONSULTERS = 5
+const MAX_ADDITIONAL_CONSULTERS = 4
 const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
 
 function addConsultation(): void {

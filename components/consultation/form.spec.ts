@@ -11,7 +11,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./form.vue"
 
-describe.skip("Component: consultation/form", () => {
+describe("Component: consultation/form", () => {
 	it("can search students", async() => {
 		jest.useFakeTimers()
 		const students = {
@@ -37,7 +37,8 @@ describe.skip("Component: consultation/form", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
-					"Overlay": false
+					"Overlay": false,
+					"SearchableChip": false
 				}
 			},
 			"props": {
@@ -94,10 +95,12 @@ describe.skip("Component: consultation/form", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
+
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
-					"Overlay": false
+					"Overlay": false,
+					"SearchableChip": false
 				}
 			},
 			"props": {

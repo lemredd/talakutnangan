@@ -1,29 +1,31 @@
 <template>
-	<div class="controls-bar">
-		<slot name="search-filter">
+	<div class="resource-manager">
+		<div class="controls-bar">
+			<slot name="search-filter">
 			<!-- TODO: search filter rearrangement - unuse slot -->
 			<!-- purpose: place search filter component properly in the UI -->
-		</slot>
-		<div v-if="props.isResourceTypeUser" class="filters">
-			<SelectableFilter
-				id="role-filter"
-				v-model="selectedRole"
-				:options="roleFilterOptions"
-				label="Role"
-				@update:model-value="filterByAdditional($event, 'roles')"/>
-			<SelectableFilter
-				v-if="managerKind.isAdmin()"
-				id="dept-filter"
-				v-model="selectedDepartment"
-				:options="departmentFilterOptions"
-				label="Department"
-				@update:model-value="filterByAdditional($event, 'departments')"/>
+			</slot>
+			<div v-if="props.isResourceTypeUser" class="filters">
+				<SelectableFilter
+					id="role-filter"
+					v-model="selectedRole"
+					:options="roleFilterOptions"
+					label="Role"
+					@update:model-value="filterByAdditional($event, 'roles')"/>
+				<SelectableFilter
+					v-if="managerKind.isAdmin()"
+					id="dept-filter"
+					v-model="selectedDepartment"
+					:options="departmentFilterOptions"
+					label="Department"
+					@update:model-value="filterByAdditional($event, 'departments')"/>
+			</div>
 		</div>
+		<Suspensible :is-loaded="props.isLoaded">
+			<slot>
+			</slot>
+		</Suspensible>
 	</div>
-	<Suspensible :is-loaded="props.isLoaded">
-		<slot>
-		</slot>
-	</Suspensible>
 </template>
 
 <style lang="scss">

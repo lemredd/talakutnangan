@@ -26,10 +26,10 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 import Manager from "$/helpers/manager"
 import RoleFetcher from "$@/fetchers/role"
 
+import SearchFilter from "@/helpers/search_bar.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import RolesManager from "@/resource_management/resource_manager.vue"
-import SearchFilter from "@/resource_management/resource_manager/search_bar.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =

@@ -1,7 +1,7 @@
 <template>
 	<div :class="{ 'default': !editable }" class="input-container">
 		<label v-if="label" class="input-header">
-			<h2>{{ label }}</h2>
+			{{ label }}
 		</label>
 		<div class="input-and-controls">
 			<input

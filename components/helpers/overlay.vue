@@ -1,9 +1,10 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div
 		v-if="isShown"
 		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "
 		@click.self="emitClose">
-		<div class="content bg-dark-200 text-white">
+		<div class="content bg-white text-black dark:bg-dark-200 dark:text-white">
 			<header>
 				<slot name="header"></slot>
 				<button class="close-btn material-icons-outlined" @click="emitClose">
@@ -24,10 +25,10 @@
 .overlay {
 	position:fixed;
 	inset: 0;
-	height: 100vh;
 	width: 100%;
 
 	.content {
+		@apply flex flex-col;
 		position: absolute;
 		inset: 0;
 		padding: 1em;
@@ -36,34 +37,29 @@
 		height: 100vh;
 
 		@screen sm{
-			top: 50%;
+			margin: auto 0;
+			max-height: 50vh;
 			left: 50%;
-			transform: translate(-50%, -50%);
-			overflow: initial;
-			height: max-content;
+			transform: translateX(-50%);
 		}
 
 		header {
-			@apply flex;
+			@apply flex items-center;
 			justify-content: space-between;
-			margin-bottom: .5em;
+			padding: 1em .5em;
 			border-bottom: 1px solid white;
-			padding-bottom: .5em;
-
 		}
 
 		main{
+			@apply flex-1;
+			margin-bottom: 1em;
 			padding: 15px;
-			max-height: 300px;
-			overflow: scroll;
+			overflow-y: auto;
 		}
 
 		footer {
 			@apply flex justify-between;
 			padding:0 .5em .5em;
-			border-bottom: 1px solid white;
-			padding-bottom: .5em;
-
 		}
 	}
 }
