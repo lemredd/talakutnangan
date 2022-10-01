@@ -8,6 +8,7 @@
 		</template>
 		<template #chat-window>
 			<ChatWindow
+				class="flex-1"
 				:consultation="consultation"
 				:chat-messages="chatMessages"
 				@updated-consultation-attributes="updateConsultationAttributes"/>
@@ -207,16 +208,16 @@ async function loadConsultations(): Promise<void> {
 	}
 }
 
-registerChatListeners(
-	consultation,
-	chatMessages,
-	currentChatMessageActivityResource,
-	chatMessageActivityFetcher
-)
-registerConsultationListeners(consultation)
-registerChatActivityListeners(consultation, chatMessageActivities)
-
 onMounted(async() => {
+	registerChatListeners(
+		consultation,
+		chatMessages,
+		currentChatMessageActivityResource,
+		chatMessageActivityFetcher
+	)
+	registerConsultationListeners(consultation)
+	registerChatActivityListeners(consultation, chatMessageActivities)
+
 	await loadConsultations()
 	await loadPreviousChatMessages()
 

@@ -91,11 +91,6 @@
 }
 
 @media screen and (min-width: $desktopViewportMinimum) {
-	.wrapper {
-		margin: auto;
-		max-width: 900px;
-	}
-
 	.user-settings {
 		@apply self-center;
 
