@@ -6,7 +6,7 @@
 
 <template>
 	<div class="schedule-picker-group">
-		<div class="schedule-picker-header flex flex-col justify-between mb-5">
+		<div class="schedule-picker-header">
 			<h3 class="day mb-2">
 				{{ convertForSentence(dayName) }}
 			</h3>
@@ -33,6 +33,10 @@
 	.schedule-picker-group {
 		border-bottom: 1px solid black;
 		margin-bottom: 1em;
+	}
+
+	.schedule-picker-header {
+		@apply flex flex-col justify-between mb-5;
 	}
 </style>
 
