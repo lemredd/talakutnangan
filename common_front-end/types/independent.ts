@@ -162,8 +162,3 @@ export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
 
 export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
 = T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
-
-export interface FetcherLinks {
-	bound: string,
-	unbound: string
-}

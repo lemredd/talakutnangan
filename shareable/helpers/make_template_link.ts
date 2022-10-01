@@ -1,4 +1,4 @@
-import { FetcherLinks } from "$@/types/independent"
+import { FetcherLinks } from "$/types/general"
 
 export default function(prefix: string, type: string): FetcherLinks {
 	return {

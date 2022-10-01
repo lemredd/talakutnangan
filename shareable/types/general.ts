@@ -26,3 +26,8 @@ export type PartialOrPickObject<
 	U extends string,
 	V extends GeneralObject
 > = T extends U ? Pick<V, U> : Partial<V>
+
+export interface FetcherLinks {
+	bound: string,
+	unbound: string
+}
