@@ -183,7 +183,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.getJSON("sample")
+		const response = await fetcher.getJSON("/api/sample")
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -204,7 +204,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.postJSON("sample", { "hello": "world" })
+		const response = await fetcher.postJSON("/api/sample", { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -226,7 +226,11 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.patchJSON("sample/:id", { "id": "1" }, { "hello": "world" })
+		const response = await fetcher.patchJSON(
+			"/api/sample/:id",
+			{ "id": "1" },
+			{ "hello": "world" }
+		)
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -248,7 +252,11 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.deleteJSON("sample/:id", { "id": "1" }, { "hello": "world" })
+		const response = await fetcher.deleteJSON(
+			"/api/sample/:id",
+			{ "id": "1" },
+			{ "hello": "world" }
+		)
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -265,7 +273,7 @@ describe("Communicator: Fetcher", () => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.postJSON("sample", { "hello": "world" })
+		const response = await fetcher.postJSON("/api/sample", { "hello": "world" })
 
 		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
@@ -280,7 +288,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.getFrom("sample")
+		const response = await fetcher.getFrom("/api/sample")
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -301,7 +309,7 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.postTo("sample", JSON.stringify({ "hello": "world" }))
+		const response = await fetcher.postTo("/api/sample", JSON.stringify({ "hello": "world" }))
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -323,7 +331,10 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.patchThrough("sample/1", JSON.stringify({ "hello": "world" }))
+		const response = await fetcher.patchThrough(
+			"/api/sample/1",
+			JSON.stringify({ "hello": "world" })
+		)
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
@@ -345,7 +356,10 @@ describe("Communicator: Fetcher", () => {
 		}), { "status": RequestEnvironment.status.OK })
 
 		const fetcher = new Fetcher(USER_LINK)
-		const response = await fetcher.deleteThrough("sample/1", JSON.stringify({ "hello": "world" }))
+		const response = await fetcher.deleteThrough(
+			"/api/sample/1",
+			JSON.stringify({ "hello": "world" })
+		)
 
 		expect(response).toHaveProperty("body.data")
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
