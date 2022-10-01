@@ -34,6 +34,7 @@
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
+				class="other-reason"
 				label="What are the other reasons(s)?"
 				type="text"/>
 
