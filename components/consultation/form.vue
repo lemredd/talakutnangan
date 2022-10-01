@@ -49,7 +49,7 @@
 				Back
 			</button>
 			<button
-				class="btn btn-primary"
+				class="btn submit-btn btn-primary"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -84,6 +84,8 @@ import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
+import { reasons } from "$@/constants/options"
+
 import Fetcher from "$@/fetchers/consultation"
 
 import Overlay from "@/helpers/overlay.vue"
@@ -91,6 +93,7 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import assignPath from "$@/external/assign_path"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -105,7 +108,6 @@ function fetcher(): Fetcher {
 	return rawFetcher
 }
 
-const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
@@ -184,6 +186,7 @@ function addConsultation(): void {
 			}
 		}
 	})
+	.then(() => assignPath("/consultation"))
 }
 
 onMounted(() => {
