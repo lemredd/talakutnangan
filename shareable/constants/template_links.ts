@@ -22,17 +22,7 @@ export const LOG_IN_LINK = `${USER_LINK.unbound}/log_in`
  */
 export const LOG_OUT_LINK = `${USER_LINK.bound}/log_out`
 
-export const IMPORT_USER_LINK = `${USER_LINK.unbound}/import_user`
-
-/**
- * Requires the `id` of the user
- */
-export const UPDATE_DEPARTMENT_OF_USER_LINK = `${USER_LINK.bound}/relationships/department`
-
-/**
- * Requires the `id` of the user
- */
-export const UPDATE_ROLE_OF_USER_LINK = `${USER_LINK.bound}/relationships/role`
+export const IMPORT_USER_LINK = `${USER_LINK.unbound}/import`
 
 export const ROLE_LINK = makeTemplateLink(LINK_PREFIX, "role")
 
@@ -49,3 +39,20 @@ export const CONSULTATION_LINK = makeTemplateLink(LINK_PREFIX, "consultation")
 export const CHAT_MESSAGE_LINK = makeTemplateLink(LINK_PREFIX, "chat_message")
 
 export const CHAT_MESSAGE_ACTIVITY_LINK = makeTemplateLink(LINK_PREFIX, "chat_message_activity")
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_DEPARTMENT_OF_USER_LINK
+ = `${USER_LINK.bound}/relationships/${DEPARTMENT_LINK.type}`
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_ROLE_OF_USER_LINK = `${USER_LINK.bound}/relationships/${ROLE_LINK.type}`
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_SIGNATURE_OF_USER_LINK
+ = `${USER_LINK.bound}/relationships/${SIGNATURE_LINK.type}`
