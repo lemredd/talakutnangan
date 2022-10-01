@@ -38,14 +38,14 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 	#dayName: () => Day = () => faker.helpers.arrayElement(DayValues)
 	#scheduleStart: () => number = () => {
-		let raw = faker.datatype.number({ "max": convertTimeToMinutes("11:30") })
+		let raw = faker.datatype.number({ "max": convertTimeToMinutes("10:00") })
 		raw -= raw % MINUTE_SCHEDULE_INTERVAL
 		return raw
 	}
 
 	#scheduleEnd: (scheduleStart: number) => number = (scheduleStart: number) => {
 		let raw = faker.datatype.number({
-			"max": convertTimeToMinutes("11:59"),
+			"max": convertTimeToMinutes("20:30"),
 			"min": scheduleStart + 1
 		})
 		raw -= raw % MINUTE_SCHEDULE_INTERVAL
