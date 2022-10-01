@@ -1,4 +1,4 @@
-import makeTemplateLink from "$/helpers/MAKE_TEMPLATE_LINK"
+import makeTemplateLink from "$/helpers/make_template_link"
 
 /**
  * Use by most of the template links.
