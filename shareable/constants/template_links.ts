@@ -44,7 +44,7 @@ export const CHAT_MESSAGE_ACTIVITY_LINK = makeTemplateLink(LINK_PREFIX, "chat_me
  * Requires the `id` of the user
  */
 export const UPDATE_DEPARTMENT_OF_USER_LINK
- = `${USER_LINK.bound}/relationships/${DEPARTMENT_LINK.type}`
+= `${USER_LINK.bound}/relationships/${DEPARTMENT_LINK.type}`
 
 /**
  * Requires the `id` of the user
@@ -55,4 +55,10 @@ export const UPDATE_ROLE_OF_USER_LINK = `${USER_LINK.bound}/relationships/${ROLE
  * Requires the `id` of the user
  */
 export const UPDATE_SIGNATURE_OF_USER_LINK
- = `${USER_LINK.bound}/relationships/${SIGNATURE_LINK.type}`
+= `${USER_LINK.bound}/relationships/${SIGNATURE_LINK.type}`
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
+= `${USER_LINK.bound}/relationships/${PROFILE_PICTURE_LINK.type}`
