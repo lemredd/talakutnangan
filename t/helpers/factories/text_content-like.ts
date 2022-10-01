@@ -1,5 +1,4 @@
 import type { Model } from "%/types/dependent"
-import type { FileLikeTransformerOptions } from "%/types/independent"
 import type {
 	ResourceIdentifier,
 	Attributes,
@@ -12,11 +11,10 @@ import type {
 } from "$/types/documents/base"
 
 import { faker } from "@faker-js/faker"
-import dataURIToBuffer, { MimeBuffer } from "data-uri-to-buffer"
 
 import BaseFactory from "~/factories/base"
 
-export default abstract class FileLikeFactory<
+export default abstract class TextContentLikeFactory<
 	T extends Model,
 	U extends ResourceIdentifier<"read">,
 	V extends Attributes<"serialized">,
@@ -26,15 +24,12 @@ export default abstract class FileLikeFactory<
 	Z extends ResourceDocument<"read", U, V, X>,
 	A extends ResourceListDocument<"read", U, V, X>,
 	B extends DeserializedResourceDocument<U, W, Y>,
-	C extends DeserializedResourceListDocument<U, W, Y>,
-	D extends FileLikeTransformerOptions = FileLikeTransformerOptions
-> extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
-	protected fileContentsGenerator: () => MimeBuffer = () => dataURIToBuffer(
-		faker.image.dataUri()
-	)
+	C extends DeserializedResourceListDocument<U, W, Y>
+> extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C> {
+	protected contentGenerator: () => string = () => faker.lorem.paragraphs(3)
 
-	fileContents(generator: () => MimeBuffer): FileLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
-		this.fileContentsGenerator = generator
+	content(generator: () => string): TextContentLikeFactory<T, U, V, W, X, Y, Z, A, B, C> {
+		this.contentGenerator = generator
 		return this
 	}
 }

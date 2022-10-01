@@ -13,13 +13,13 @@ import type {
 } from "$/types/documents/signature"
 
 import User from "%/models/user"
-import Signature from "%/models/signature"
+import Model from "%/models/signature"
 import UserFactory from "~/factories/user"
+import Transformer from "%/transformers/signature"
 import FileLikeFactory from "~/factories/file-like"
-import SignatureTransformer from "%/transformers/signature"
 
 export default class SignatureFactory extends FileLikeFactory<
-	Signature,
+	Model,
 	SignatureResourceIdentifier<"read">,
 	SignatureAttributes<"raw">,
 	SignatureAttributes<"raw">,
@@ -33,11 +33,11 @@ export default class SignatureFactory extends FileLikeFactory<
 > {
 	#user: () => Promise<User> = async() => await new UserFactory().insertOne()
 
-	get model(): ModelCtor<Signature> { return Signature }
+	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): SignatureTransformer { return new SignatureTransformer() }
+	get transformer(): Transformer { return new Transformer() }
 
-	async generate(): GeneratedData<Signature> {
+	async generate(): GeneratedData<Model> {
 		return {
 			"fileContents": this.fileContentsGenerator(),
 			"userID": (await this.#user()).id

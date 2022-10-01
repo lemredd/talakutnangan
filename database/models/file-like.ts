@@ -1,9 +1,7 @@
 import {
-	Table,
 	Model,
 	Column,
-	DataType,
-	AllowNull
+	DataType
 } from "sequelize-typescript"
 
 export default abstract class extends Model {
