@@ -12,11 +12,17 @@
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
+			<SelectableOptionsField
+				v-if="selectedConsultants.length"
+				v-model="addressConsultantAs"
+				class="consultant-roles"
+				label="Address consultant as:"
+				:options="consultantRoles"/>
 			<SearchableChip
 				v-model="selectedConsulters"
 				class="consulters"
 				header="Consulters"
-				:maximum-participants="MAX_ADDITIONAL_CONSULTERS"
+				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>
 			<SelectableOptionsField
@@ -28,6 +34,7 @@
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
+				class="other-reason"
 				label="What are the other reasons(s)?"
 				type="text"/>
 
@@ -43,7 +50,7 @@
 				Back
 			</button>
 			<button
-				class="btn btn-primary"
+				class="btn submit-btn btn-primary"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -72,9 +79,13 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
+
+import { reasons } from "$@/constants/options"
 
 import Fetcher from "$@/fetchers/consultation"
 
@@ -82,8 +93,13 @@ import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import makeOptionInfo from "$@/helpers/make_option_info"
+import assignPath from "$@/external/assign_path"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
+
+const { "pageProps": { "userProfile": { "data": userProfileData } } }
+= inject("pageContext") as PageContext<"deserialized", "consultations">
 
 let rawFetcher: Fetcher|null = null
 
@@ -93,7 +109,6 @@ function fetcher(): Fetcher {
 	return rawFetcher
 }
 
-const reasons = [ "Grade-related", "Task-related", "Exam-related", "Others" ] as const
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
@@ -110,9 +125,24 @@ const doesAllowConflicts = ref<boolean>(true)
 
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
+const consultantRoles = computed(() => {
+	const roleIDs: string[] = []
+	const labels: string[] = []
 
-const MAX_ADDITIONAL_CONSULTERS = 4
-const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
+	if (selectedConsultants.value.length) {
+		const [ consultant ] = selectedConsultants.value
+		consultant.roles.data.forEach(role => roleIDs.push(String(role.id)))
+		consultant.roles.data.forEach(role => labels.push(role.name))
+	}
+
+	return makeOptionInfo(roleIDs, labels) as OptionInfo[]
+})
+const addressConsultantAs = ref("")
+
+const MAX_CONSULTERS = 5
+const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
+	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
+])
 
 function addConsultation(): void {
 	const consultant = {
@@ -120,7 +150,7 @@ function addConsultation(): void {
 		"type": "user"
 	}
 
-	const unusedMeta = {
+	const meta = {
 		"doesAllowConflicts": doesAllowConflicts.value
 	}
 
@@ -133,6 +163,7 @@ function addConsultation(): void {
 		"scheduledStartAt": new Date().toJSON(),
 		"startedAt": null
 	}, {
+		"extraCreateDocumentProps": { meta },
 		"extraDataFields": {
 			"relationships": {
 				"consultant": {
@@ -140,7 +171,7 @@ function addConsultation(): void {
 				},
 				"consultantRole": {
 					"data": {
-						"id": "",
+						"id": String(addressConsultantAs.value),
 						"type": "role"
 					}
 				},
@@ -156,6 +187,7 @@ function addConsultation(): void {
 			}
 		}
 	})
+	.then(() => assignPath("/consultation"))
 }
 
 onMounted(() => {
