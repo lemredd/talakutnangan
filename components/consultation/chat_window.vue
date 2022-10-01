@@ -167,11 +167,18 @@ function startConsultation() {
 		newConsultationData,
 		{
 			"extraDataFields": {
-				"consultant": {
-					"data": {
-						"id": consultation.value.consultant.data.id,
-						"type": "user"
+				"relationships": {
+					"consultant": {
+						"data": {
+							"id": consultation.value.consultant.data.id,
+							"type": "user"
+						}
 					}
+				}
+			},
+			"extraUpdateDocumentProps": {
+				"meta": {
+					"doesAllowConflicts": true
 				}
 			}
 		}
