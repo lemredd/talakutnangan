@@ -11,6 +11,8 @@ import type {
 } from "$/types/documents/signature"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
+import { SIGNATURE_LINK, UPDATE_SIGNATURE_OF_USER_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
@@ -25,12 +27,8 @@ export default class SignatureFetcher extends BaseFetcher<
 	DeserializedSignatureDocument,
 	DeserializedSignatureListDocument
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "signature")
-	}
-
 	constructor() {
-		super(SignatureFetcher.basePath, SignatureFetcher.type)
+		super(SIGNATURE_LINK)
 	}
 
 	async renew(userID: string, details: FormData): Promise<Response<
@@ -41,8 +39,7 @@ export default class SignatureFetcher extends BaseFetcher<
 		DeserializedSignatureResource,
 		DeserializedSignatureDocument
 	>> {
-		const pathTemplate = `user/:id/relationships/${this.type}`
-		const path = specializedPath(pathTemplate, { "id": userID })
+		const path = specializedPath(UPDATE_SIGNATURE_OF_USER_LINK, { "id": userID })
 		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 
 		return await this.handleResponse(

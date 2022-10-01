@@ -1,11 +1,13 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import App from "~/setups/app"
+import { CONSULTATION_LINK } from "$/constants/template_links"
 
+import App from "~/setups/app"
 import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
 import AttachedRole from "%/models/attached_role"
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$!/singletons/request_environment"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -47,7 +49,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.insertOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -122,7 +124,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.makeOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -208,7 +210,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.makeOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {

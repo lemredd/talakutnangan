@@ -27,7 +27,6 @@
 	"setupFilesAfterEnv": [
 		"./t/helpers/setups/stub.setup.ts",
 		"./t/helpers/setups/fetch.setup.ts",
-		"./t/helpers/setups/fetcher.setup.ts",
 		"./t/helpers/setups/form_data.setup.ts",
 		"./t/helpers/setups/log.setup.ts",
 		"./t/helpers/setups/cache_manager.setup.ts",

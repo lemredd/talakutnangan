@@ -162,7 +162,6 @@ const chosenKind = ref<string>(kindNames[0].value)
 
 const createdUsers = ref<DeserializedUserResource<"roles"|"department">[]>([])
 
-UserFetcher.initialize("/api")
 const fetcher = new UserFetcher()
 
 function importData(event: Event) {

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import type { UnitError } from "$/types/server"
 
-import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import UserFetcher from "$@/fetchers/user"
 import specializePath from "$/helpers/specialize_path"
@@ -125,7 +125,7 @@ describe("Fetcher: User", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", specializePath(UPDATE_PASSWORD_PATH, {
+		expect(request).toHaveProperty("url", specializePath(UPDATE_PASSWORD_LINK, {
 			"id": USER_ID
 		}))
 		expect(await request.json()).toStrictEqual({

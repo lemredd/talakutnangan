@@ -54,8 +54,8 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from "vue"
-import RoleFetcher from "$@/fetchers/role"
+import { ref } from "vue"
+import Fetcher from "$@/fetchers/role"
 import {
 	tag,
 	user,
@@ -65,6 +65,7 @@ import {
 	profanity,
 	auditTrail
 } from "$/permissions/permission_list"
+
 import TextualField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
@@ -78,20 +79,10 @@ const profanityFlags = ref<number>(0)
 const userFlags = ref<number>(0)
 const auditTrailFlags = ref<number>(0)
 
-onBeforeMount(() => {
-	RoleFetcher.initialize("/api")
-})
-
-let rawRoleFetcher: RoleFetcher|null = null
-
-function roleFetcher(): RoleFetcher {
-	if (rawRoleFetcher) return rawRoleFetcher
-
-	throw new Error("Roles cannot be retrived/sent to server yet")
-}
+const roleFetcher = new Fetcher()
 
 function createRole() {
-	roleFetcher().create({
+	roleFetcher.create({
 		"auditTrailFlags": auditTrailFlags.value,
 		"commentFlags": commentFlags.value,
 		"deletedAt": null,
@@ -109,8 +100,4 @@ function createRole() {
 		// Fail
 	})
 }
-
-onMounted(() => {
-	rawRoleFetcher = new RoleFetcher()
-})
 </script>

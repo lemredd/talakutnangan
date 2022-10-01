@@ -66,9 +66,6 @@ import registerChatListeners from "@/consultation/listeners/register_chat"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
 
-ChatMessageFetcher.initialize("/api")
-ConsultationFetcher.initialize("/api")
-ChatMessageActivityFetcher.initialize("/api")
 Socket.initialize()
 
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()

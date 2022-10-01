@@ -13,6 +13,7 @@ import type {
 	RoleIdentifierListDocument
 } from "$/types/documents/role"
 
+import { ROLE_LINK } from "$/constants/template_links"
 import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
@@ -31,12 +32,8 @@ export default class RoleFetcher extends BaseFetcher<
 		"extraUpdateData": RequirePassword
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "role")
-	}
-
 	constructor() {
-		super(RoleFetcher.basePath, RoleFetcher.type)
+		super(ROLE_LINK)
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
@@ -49,7 +46,7 @@ export default class RoleFetcher extends BaseFetcher<
 	>> {
 		return this.handleResponse(
 			this.getJSON(
-				`${this.type}/count_users?${stringifyQuery({
+				`${this.links.type}/count_users?${stringifyQuery({
 					"filter": {
 						IDs
 					}

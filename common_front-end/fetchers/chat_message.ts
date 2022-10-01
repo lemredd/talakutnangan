@@ -13,6 +13,8 @@ import type {
 } from "$/types/documents/chat_message"
 import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 
+import { CHAT_MESSAGE_LINK, CREATE_CHAT_MESSAGE_WITH_FILE_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class ChatMessageFetcher extends BaseFetcher<
@@ -30,12 +32,8 @@ export default class ChatMessageFetcher extends BaseFetcher<
 		"extraCreateData": ChatMessageRelationships<"create">
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "chat_message")
-	}
-
 	constructor() {
-		super(ChatMessageFetcher.basePath, ChatMessageFetcher.type)
+		super(CHAT_MESSAGE_LINK)
 	}
 
 	async createWithFile(document: FormData): Promise<Response<
@@ -49,7 +47,7 @@ export default class ChatMessageFetcher extends BaseFetcher<
 		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
 
 		return await this.handleResponse(
-			this.postTo("chat_message/create_with_file", document, headers)
+			this.postTo(CREATE_CHAT_MESSAGE_WITH_FILE_LINK, document, headers)
 		) as Response<
 			ChatMessageResourceIdentifier,
 			ChatMessageAttributes<"serialized">,

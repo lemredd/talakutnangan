@@ -1,3 +1,4 @@
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { Response } from "$@/types/independent"
 import type {
 	ProfilePictureResourceIdentifier,
@@ -9,7 +10,12 @@ import type {
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument
 } from "$/types/documents/profile_picture"
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
+
+import {
+	PROFILE_PICTURE_LINK,
+	UPDATE_PROFILE_PICTURE_OF_USER_LINK
+} from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
 
@@ -24,12 +30,8 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "profile_picture")
-	}
-
 	constructor() {
-		super(ProfilePictureFetcher.basePath, ProfilePictureFetcher.type)
+		super(PROFILE_PICTURE_LINK)
 	}
 
 	async createFile(userID: string, details: FormData): Promise<Response<
@@ -40,10 +42,9 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		DeserializedProfilePictureResource,
 		DeserializedProfilePictureDocument
 	>> {
-		const pathTemplate = "user/:id/relationships/:type"
-		const path = specializedPath(pathTemplate, {
+		const path = specializedPath(UPDATE_PROFILE_PICTURE_OF_USER_LINK, {
 			"id": userID,
-			"type": this.type
+			"type": this.links.type
 		})
 
 		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
@@ -68,10 +69,8 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		DeserializedProfilePictureResource,
 		DeserializedProfilePictureDocument
 	>> {
-		const pathTemplate = ":type/:id"
-		const path = specializedPath(pathTemplate, {
-			"id": profilePictureID,
-			"type": this.type
+		const path = specializedPath(this.links.bound, {
+			"id": profilePictureID
 		})
 		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 

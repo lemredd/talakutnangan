@@ -171,7 +171,6 @@ function addParticipant(event: Event): void {
 
 	otherParticipants.value = []
 }
-Fetcher.initialize("/api")
 onMounted(() => {
 	rawFetcher = new Fetcher()
 })
