@@ -127,6 +127,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import assignPath from "$@/external/assign_path"
+import makeOptionInfo from "$@/helpers/make_option_info"
 
 const fetcher = new EmployeeScheduleFetcher()
 
@@ -164,13 +165,6 @@ function formatTo12Hours(hour: number) {
 
 	return convertedHour
 }
-function makeOptions(values: any[]): any[] {
-	const options: any[] = []
-	// eslint-disable-next-line object-shorthand
-	values.map(value => options.push({ "value": value }))
-
-	return options
-}
 function convertTimeObjectToTimeString(
 	timeObject: ReturnType<typeof convertMinutesToTimeObject>
 ) {
@@ -191,8 +185,8 @@ function generateNumberRange() {
 
 	return time
 }
-const availableTimes = makeOptions(generateNumberRange())
-const midDays = makeOptions([ "AM", "PM" ])
+const availableTimes = makeOptionInfo(generateNumberRange())
+const midDays = makeOptionInfo([ "AM", "PM" ])
 
 function getTimePart(time: number, part: "hour" | "minute" | "midday") {
 	const timeObject = convertMinutesToTimeObject(time)
