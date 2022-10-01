@@ -30,10 +30,6 @@ export default class ChatMessageActivityFetcher extends BaseFetcher<
 		"extraCreateData": ChatMessageActivityRelationships<"create">
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "chat_message")
-	}
-
 	constructor() {
 		super(CHAT_MESSAGE_ACTIVITY_LINK)
 	}

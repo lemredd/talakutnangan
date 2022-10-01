@@ -39,8 +39,7 @@ import {
 	ref,
 	inject,
 	computed,
-	onMounted,
-	onBeforeMount
+	onMounted
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
@@ -58,10 +57,6 @@ const user = ref<DeserializedUserDocument>(
 	pageProps.user as DeserializedUserDocument
 )
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
-
-onBeforeMount(() => {
-	Fetcher.initialize("/api")
-})
 
 let rawFetcher: Fetcher|null = null
 

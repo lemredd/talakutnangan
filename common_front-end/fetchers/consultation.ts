@@ -28,10 +28,6 @@ export default class ConsultationFetcher extends BaseFetcher<
 		"queryParameters": ConsultationQueryParameters
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "consultation")
-	}
-
 	constructor() {
 		super(CONSULTATION_LINK)
 	}

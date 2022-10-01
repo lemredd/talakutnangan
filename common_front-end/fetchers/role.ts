@@ -32,10 +32,6 @@ export default class RoleFetcher extends BaseFetcher<
 		"extraUpdateData": RequirePassword
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "role")
-	}
-
 	constructor() {
 		super(DEPARTMENT_LINK)
 	}

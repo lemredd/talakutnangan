@@ -54,14 +54,6 @@ export default class Fetcher<
 	// Type of response other than resource document to be returned by the some possible readers
 	C extends Partial<GenericFetcherParameters> = Record<string, unknown>
 > extends RequestEnvironment {
-	protected static basePath = ""
-	protected static type = ""
-
-	static initialize(basePath: string, type = "") {
-		this.basePath = basePath
-		this.type = type
-	}
-
 	protected links: FetcherLinks
 
 	constructor(links: FetcherLinks) {

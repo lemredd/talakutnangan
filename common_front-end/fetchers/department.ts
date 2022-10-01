@@ -33,10 +33,6 @@ export default class DepartmentFetcher extends BaseFetcher<
 		"extraUpdateData": RequirePassword
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "department")
-	}
-
 	constructor() {
 		super(DEPARTMENT_LINK)
 	}

@@ -17,9 +17,6 @@ describe("Fetcher: Profile Picture", () => {
 			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
-
-		ProfilePictureFetcher.initialize("/api")
-
 		const fetcher = new ProfilePictureFetcher()
 		const response = await fetcher.createFile("1", {} as FormData)
 
@@ -46,8 +43,6 @@ describe("Fetcher: Profile Picture", () => {
 			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
-
-		ProfilePictureFetcher.initialize("/api")
 
 		const fetcher = new ProfilePictureFetcher()
 		const response = await fetcher.updateFile("1", {} as FormData)

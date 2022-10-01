@@ -32,10 +32,6 @@ export default class ChatMessageFetcher extends BaseFetcher<
 		"extraCreateData": ChatMessageRelationships<"create">
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "chat_message")
-	}
-
 	constructor() {
 		super(CHAT_MESSAGE_LINK)
 	}

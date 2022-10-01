@@ -24,10 +24,6 @@ export default class AuditTrailFetcher extends BaseFetcher<
 	DeserializedAuditTrailDocument,
 	DeserializedAuditTrailListDocument
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "AuditTrail")
-	}
-
 	constructor() {
 		super(AUDIT_TRAIL_LINK)
 	}

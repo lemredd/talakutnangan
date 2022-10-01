@@ -27,10 +27,6 @@ export default class SignatureFetcher extends BaseFetcher<
 	DeserializedSignatureDocument,
 	DeserializedSignatureListDocument
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "signature")
-	}
-
 	constructor() {
 		super(SIGNATURE_LINK)
 	}

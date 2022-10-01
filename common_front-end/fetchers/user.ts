@@ -33,10 +33,6 @@ export default class UserFetcher extends BaseFetcher<
 		"queryParameters": UserQueryParameters
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "user")
-	}
-
 	constructor() {
 		super(USER_LINK)
 	}

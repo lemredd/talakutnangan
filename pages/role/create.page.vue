@@ -54,7 +54,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from "vue"
+import { ref, onMounted } from "vue"
 import RoleFetcher from "$@/fetchers/role"
 import {
 	tag,
@@ -77,10 +77,6 @@ const commentFlags = ref<number>(0)
 const profanityFlags = ref<number>(0)
 const userFlags = ref<number>(0)
 const auditTrailFlags = ref<number>(0)
-
-onBeforeMount(() => {
-	RoleFetcher.initialize("/api")
-})
 
 let rawRoleFetcher: RoleFetcher|null = null
 

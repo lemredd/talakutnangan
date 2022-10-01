@@ -25,10 +25,6 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "profile_picture")
-	}
-
 	constructor() {
 		super(PROFILE_PICTURE_LINK)
 	}

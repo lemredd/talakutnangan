@@ -118,8 +118,6 @@ import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
 
-UserFetcher.initialize("/api")
-
 const props = defineProps<{
 	receivedErrorFromPageContext?: UnitError & Serializable
 }>()

@@ -94,8 +94,6 @@ import FlagSelector from "@/role/flag_selector.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 
-Fetcher.initialize("/api")
-
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext

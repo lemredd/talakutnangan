@@ -1,4 +1,5 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import { USER_LINK } from "$/constants/template_links"
 import type { CommonQueryParameters } from "$/types/query"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -16,7 +17,7 @@ describe("Communicator: Fetcher", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.create({ "name": "A" })
 
 		expect(response).toHaveProperty("body.data")
@@ -60,7 +61,7 @@ describe("Communicator: Fetcher", () => {
 			},
 			"sort": [ "id", "name" ]
 		}
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.list(queryObject)
 
 		const castFetch = fetch as jest.Mock<any, any>
@@ -87,7 +88,7 @@ describe("Communicator: Fetcher", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.update("1", { "name": "A" })
 
 		expect(response).toHaveProperty("body.data")
@@ -120,7 +121,7 @@ describe("Communicator: Fetcher", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.archive([ "1" ])
 
 		expect(response).toHaveProperty("body.data")
@@ -152,7 +153,7 @@ describe("Communicator: Fetcher", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.restore([ "2" ])
 
 		expect(response).toHaveProperty("body.data")
@@ -181,7 +182,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.getJSON("sample")
 
 		expect(response).toHaveProperty("body.data")
@@ -202,7 +203,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.postJSON("sample", { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -224,7 +225,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.patchJSON("sample/:id", { "id": "1" }, { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -246,7 +247,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.deleteJSON("sample/:id", { "id": "1" }, { "hello": "world" })
 
 		expect(response).toHaveProperty("body.data")
@@ -263,7 +264,7 @@ describe("Communicator: Fetcher", () => {
 	it("can have null body if server replied with no content", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.postJSON("sample", { "hello": "world" })
 
 		expect(response).toHaveProperty("body", null)
@@ -278,7 +279,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.getFrom("sample")
 
 		expect(response).toHaveProperty("body.data")
@@ -299,7 +300,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.postTo("sample", JSON.stringify({ "hello": "world" }))
 
 		expect(response).toHaveProperty("body.data")
@@ -321,7 +322,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.patchThrough("sample/1", JSON.stringify({ "hello": "world" }))
 
 		expect(response).toHaveProperty("body.data")
@@ -343,7 +344,7 @@ describe("Communicator: Fetcher", () => {
 			}
 		}), { "status": RequestEnvironment.status.OK })
 
-		const fetcher = new Fetcher("/api", "user")
+		const fetcher = new Fetcher(USER_LINK)
 		const response = await fetcher.deleteThrough("sample/1", JSON.stringify({ "hello": "world" }))
 
 		expect(response).toHaveProperty("body.data")

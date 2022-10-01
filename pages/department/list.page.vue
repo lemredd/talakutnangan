@@ -32,7 +32,6 @@ const { pageProps } = pageContext
 
 provide("tabs", [ "Users", "Roles", "Departments" ])
 
-DepartmentFetcher.initialize("/api")
 const fetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)

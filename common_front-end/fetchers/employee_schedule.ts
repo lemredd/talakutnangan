@@ -29,10 +29,6 @@ export default class EmployeeScheduleFetcher extends BaseFetcher<
 		"extraCreateData": EmployeeScheduleRelationships<"create">
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "employee_schedule")
-	}
-
 	constructor() {
 		super(EMPLOYEE_SCHEDULE_LINK)
 	}
