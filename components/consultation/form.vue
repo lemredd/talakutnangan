@@ -72,7 +72,7 @@
   font-size: 16px;
 }
 
-.reason {
+.selectable {
 	@apply flex justify-between;
 	max-width: initial !important;
 }
