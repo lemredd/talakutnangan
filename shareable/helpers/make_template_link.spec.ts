@@ -7,6 +7,7 @@ describe("Helper: Make link", () => {
 
 		const { bound, unbound, query } = makeTemplateLink(prefix, type)
 
+		expect(type).toBe(type)
 		expect(bound).toBe(`${prefix}/${type}`)
 		expect(unbound).toBe(`${prefix}/${type}/:id`)
 		expect(query).toBe(`${prefix}/${type}?:query`)

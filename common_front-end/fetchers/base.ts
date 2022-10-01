@@ -63,12 +63,10 @@ export default class Fetcher<
 	}
 
 	protected links: FetcherLinks
-	protected type: string
 
-	constructor(type: string, links: FetcherLinks) {
+	constructor(links: FetcherLinks) {
 		super()
 		this.links = links
-		this.type = type
 	}
 
 	create(attributes: U, {
@@ -82,7 +80,7 @@ export default class Fetcher<
 			this.postJSON(this.links.unbound, {
 				"data": {
 					attributes,
-					"type": this.type,
+					"type": this.links.type,
 					...extraDataFields
 				},
 				...extraCreateDocumentProps
@@ -126,7 +124,7 @@ export default class Fetcher<
 				"data": {
 					attributes,
 					id,
-					"type": this.type,
+					"type": this.links.type,
 					...extraDataFields
 				},
 				...extraUpdateDocumentProps
@@ -143,7 +141,7 @@ export default class Fetcher<
 			this.deleteJSON(this.links.unbound, {}, {
 				"data": IDs.map(id => ({
 					id,
-					"type": this.type
+					"type": this.links.type
 				})),
 				meta
 			})
@@ -159,7 +157,7 @@ export default class Fetcher<
 			this.patchJSON(this.links.unbound, {}, {
 				"data": IDs.map(id => ({
 					id,
-					"type": this.type
+					"type": this.links.type
 				})),
 				meta
 			})
