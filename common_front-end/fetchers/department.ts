@@ -13,6 +13,8 @@ import type {
 	DepartmentIdentifierListDocument
 } from "$/types/documents/department"
 
+import { DEPARTMENT_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
@@ -36,7 +38,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(DepartmentFetcher.basePath, DepartmentFetcher.type)
+		super(DEPARTMENT_LINK)
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
@@ -49,7 +51,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 	>> {
 		return this.handleResponse(
 			this.getJSON(
-				`${this.type}/count_users?${stringifyQuery({
+				`${this.links.type}/count_users?${stringifyQuery({
 					"filter": {
 						IDs
 					}

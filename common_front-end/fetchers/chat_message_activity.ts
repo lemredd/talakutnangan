@@ -11,6 +11,8 @@ import type {
 	ChatMessageActivityRelationships
 } from "$/types/documents/chat_message_activity"
 
+import { CHAT_MESSAGE_ACTIVITY_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class ChatMessageActivityFetcher extends BaseFetcher<
@@ -33,6 +35,6 @@ export default class ChatMessageActivityFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(ChatMessageActivityFetcher.basePath, ChatMessageActivityFetcher.type)
+		super(CHAT_MESSAGE_ACTIVITY_LINK)
 	}
 }

@@ -10,6 +10,8 @@ export const LINK_PREFIX = "/api"
  */
 export const UPDATE_PASSWORD_LINK = "/api/user/:id/update_password"
 
+export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_triail")
+
 export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 export const ROLE_LINK = makeTemplateLink(LINK_PREFIX, "role")

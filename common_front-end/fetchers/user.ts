@@ -13,7 +13,7 @@ import type {
 	DeserializedUserListDocument
 } from "$/types/documents/user"
 
-import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
+import { USER_LINK, UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 
@@ -38,7 +38,7 @@ export default class UserFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(UserFetcher.basePath, UserFetcher.type)
+		super(USER_LINK)
 	}
 
 	async logIn(details: LogInDetails): Promise<Response<
@@ -50,7 +50,7 @@ export default class UserFetcher extends BaseFetcher<
 		Serializable
 	>> {
 		return await this.handleResponse(
-			this.postJSON(`${this.type}/log_in`, details)
+			this.postJSON(`${this.links.type}/log_in`, details)
 		) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
@@ -69,7 +69,7 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserResource,
 		Serializable
 	>> {
-		return await this.postJSON(`${this.type}/log_out`, {}) as Response<
+		return await this.postJSON(`${this.links.type}/log_out`, {}) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
 			UserAttributes<"deserialized">,
@@ -88,7 +88,7 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserListDocument
 	>> {
 		const pathTemplate = ":type/import"
-		const path = specializePath(pathTemplate, { "type": this.type })
+		const path = specializePath(pathTemplate, { "type": this.links.type })
 		const headers = new Headers({
 			"Accept": JSON_API_MEDIA_TYPE
 		})

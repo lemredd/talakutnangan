@@ -13,6 +13,8 @@ import type {
 } from "$/types/documents/chat_message"
 import { MULTIPART_MEDIA_TYPE } from "$/types/server"
 
+import { CHAT_MESSAGE_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class ChatMessageFetcher extends BaseFetcher<
@@ -35,7 +37,7 @@ export default class ChatMessageFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(ChatMessageFetcher.basePath, ChatMessageFetcher.type)
+		super(CHAT_MESSAGE_LINK)
 	}
 
 	async createWithFile(document: FormData): Promise<Response<

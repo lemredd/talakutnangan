@@ -9,6 +9,7 @@ import type {
 	DeserializedProfilePictureDocument,
 	DeserializedProfilePictureListDocument
 } from "$/types/documents/profile_picture"
+import { PROFILE_PICTURE_LINK } from "$/constants/template_links"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import BaseFetcher from "$@/fetchers/base"
 import specializedPath from "$/helpers/specialize_path"
@@ -29,7 +30,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(ProfilePictureFetcher.basePath, ProfilePictureFetcher.type)
+		super(PROFILE_PICTURE_LINK)
 	}
 
 	async createFile(userID: string, details: FormData): Promise<Response<
@@ -43,7 +44,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		const pathTemplate = "user/:id/relationships/:type"
 		const path = specializedPath(pathTemplate, {
 			"id": userID,
-			"type": this.type
+			"type": this.links.type
 		})
 
 		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
@@ -71,7 +72,7 @@ export default class ProfilePictureFetcher extends BaseFetcher<
 		const pathTemplate = ":type/:id"
 		const path = specializedPath(pathTemplate, {
 			"id": profilePictureID,
-			"type": this.type
+			"type": this.links.type
 		})
 		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 

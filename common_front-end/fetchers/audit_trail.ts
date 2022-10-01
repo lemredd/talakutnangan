@@ -9,6 +9,8 @@ import type {
 	DeserializedAuditTrailListDocument
 } from "$/types/documents/audit_trail"
 
+import { AUDIT_TRAIL_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class AuditTrailFetcher extends BaseFetcher<
@@ -27,6 +29,6 @@ export default class AuditTrailFetcher extends BaseFetcher<
 	}
 
 	constructor() {
-		super(AuditTrailFetcher.basePath, AuditTrailFetcher.type)
+		super(AUDIT_TRAIL_LINK)
 	}
 }
