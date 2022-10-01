@@ -4,7 +4,7 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
-import { BOUND_CONSULTATION_LINK } from "$/constants/template_links"
+import { CONSULTATION_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -48,7 +48,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(BOUND_CONSULTATION_LINK, { id }))
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
@@ -108,7 +108,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(BOUND_CONSULTATION_LINK, { id }))
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
@@ -121,7 +121,7 @@ describe("Component: consultation/chat_window", () => {
 		expect(firstRequestBody).toHaveProperty("data.id", "1")
 		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		expect(secondRequest).toHaveProperty("method", "PATCH")
-		expect(secondRequest).toHaveProperty("url", specializePath(BOUND_CONSULTATION_LINK, { id }))
+		expect(secondRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const secondRequestBody = await secondRequest.json()
 		expect(secondRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(secondRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
@@ -244,7 +244,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(BOUND_CONSULTATION_LINK, { id }))
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)

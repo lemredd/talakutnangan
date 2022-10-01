@@ -1,9 +1,12 @@
+import makeTemplateLink from "$/helpers/make_template_link"
+/**
+ * Use by most of the template links.
+ */
+export const LINK_PREFIX = "/api"
+
 /**
  * Requires the `id` of the user
  */
 export const UPDATE_PASSWORD_LINK = "/api/user/:id/update_password"
 
-/**
- * Requires the `id` of consultation
- */
-export const BOUND_CONSULTATION_LINK = "/api/consultation/:id"
+export const CONSULTATION_LINK = makeTemplateLink(LINK_PREFIX, "consultation")

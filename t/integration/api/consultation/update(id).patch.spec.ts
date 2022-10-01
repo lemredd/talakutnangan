@@ -1,6 +1,6 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import { BOUND_CONSULTATION_LINK } from "$/constants/template_links"
+import { CONSULTATION_LINK } from "$/constants/template_links"
 
 import App from "~/setups/app"
 import Socket from "!/ws/socket"
@@ -49,7 +49,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.insertOne()
 
 		const response = await App.request
-		.patch(specializePath(BOUND_CONSULTATION_LINK, { "id": model.id }))
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -124,7 +124,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.makeOne()
 
 		const response = await App.request
-		.patch(specializePath(BOUND_CONSULTATION_LINK, { "id": model.id }))
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -210,7 +210,7 @@ describe("PATCH /api/consultation/:id", () => {
 		.makeOne()
 
 		const response = await App.request
-		.patch(specializePath(BOUND_CONSULTATION_LINK, { "id": model.id }))
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
