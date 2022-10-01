@@ -5,14 +5,34 @@ import makeTemplateLink from "$/helpers/make_template_link"
  */
 export const LINK_PREFIX = "/api"
 
-/**
- * Requires the `id` of the user
- */
-export const UPDATE_PASSWORD_LINK = "/api/user/:id/update_password"
 
 export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_trail")
 
 export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_PASSWORD_LINK = `${USER_LINK.bound}/update_password`
+
+export const LOG_IN_LINK = `${USER_LINK.unbound}/log_in`
+
+/**
+ * Requires the `id` of the user
+ */
+export const LOG_OUT_LINK = `${USER_LINK.bound}/log_out`
+
+export const IMPORT_USER_LINK = `${USER_LINK.unbound}/import_user`
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_DEPARTMENT_OF_USER_LINK = `${USER_LINK.bound}/relationships/department`
+
+/**
+ * Requires the `id` of the user
+ */
+export const UPDATE_ROLE_OF_USER_LINK = `${USER_LINK.bound}/relationships/role`
 
 export const ROLE_LINK = makeTemplateLink(LINK_PREFIX, "role")
 
