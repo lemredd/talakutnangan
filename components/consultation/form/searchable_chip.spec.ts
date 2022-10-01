@@ -16,9 +16,9 @@ import RequestEnvironment from "$/singletons/request_environment"
 import { DeserializedUserResource } from "$/types/documents/user"
 
 describe("Component: Searchable Chip", () => {
-	it("should search and add users in a given kind", async() => {
-		jest.useFakeTimers()
+	jest.useFakeTimers()
 
+	it("should search and add users in a given kind", async() => {
 		const department = await new DepartmentFactory().mayAdmit().insertOne()
 		const role = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...READ_OWN))
@@ -61,8 +61,6 @@ describe("Component: Searchable Chip", () => {
 	})
 
 	it("should not show user in candidates if already selected", async() => {
-		jest.useFakeTimers()
-
 		const department = await new DepartmentFactory().mayAdmit().insertOne()
 		const role = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...READ_OWN))
@@ -115,9 +113,40 @@ describe("Component: Searchable Chip", () => {
 
 		expect(isSelectedUserPresentInCandidates).toBeFalsy()
 	})
-	it("should remove selected participant", async() => {
-		jest.useFakeTimers()
 
+	it("should remove selected participant", async() => {
+		const department = await new DepartmentFactory().mayAdmit().insertOne()
+		const role = await new RoleFactory()
+		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.insertOne()
+
+		const users = await new UserFactory()
+		.in(department)
+		.attach(role)
+		.deserializedMany(5, true)
+		const [ userToSelect ] = users.data
+		users.data.shift()
+
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"header": "",
+				"modelValue": [ userToSelect ],
+				"maximumParticipants": 1,
+				"textFieldLabel": "",
+				"kind": "student"
+			}
+		})
+		const deselectUserBtn = wrapper.find("#close-btn")
+
+		await deselectUserBtn.trigger("click")
+		await wrapper.setProps({
+			"modelValue": []
+		})
+
+		expect(wrapper.emitted()).toHaveProperty("update:modelValue[0][0]", [])
+	})
+
+	it("should not remove current user participant", async() => {
 		const department = await new DepartmentFactory().mayAdmit().insertOne()
 		const role = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...READ_OWN))
