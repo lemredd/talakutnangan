@@ -146,7 +146,7 @@ describe("Component: Searchable Chip", () => {
 		expect(wrapper.emitted()).toHaveProperty("update:modelValue[0][0]", [])
 	})
 
-	it("should not remove current user participant", async() => {
+	it.only("should not remove current user participant", async() => {
 		const department = await new DepartmentFactory().mayAdmit().insertOne()
 		const role = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...READ_OWN))
@@ -161,6 +161,7 @@ describe("Component: Searchable Chip", () => {
 
 		const wrapper = shallowMount(Component, {
 			"props": {
+				"currentUserId": "1",
 				"header": "",
 				"modelValue": [ userToSelect ],
 				"maximumParticipants": 1,
@@ -170,11 +171,6 @@ describe("Component: Searchable Chip", () => {
 		})
 		const deselectUserBtn = wrapper.find("#close-btn")
 
-		await deselectUserBtn.trigger("click")
-		await wrapper.setProps({
-			"modelValue": []
-		})
-
-		expect(wrapper.emitted()).toHaveProperty("update:modelValue[0][0]", [])
+		expect(deselectUserBtn.exists()).toBeFalsy()
 	})
 })

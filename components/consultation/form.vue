@@ -20,6 +20,7 @@
 				:options="consultantRoles"/>
 			<SearchableChip
 				v-model="selectedConsulters"
+				:current-user-id="userProfileData.id"
 				class="consulters"
 				header="Consulters"
 				:maximum-participants="MAX_CONSULTERS"

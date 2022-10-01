@@ -12,6 +12,7 @@
 				{{ participant.name }}
 			</span>
 			<span
+				v-if="!isChipForCurrentUser(participant.id)"
 				id="close-btn"
 				class="material-icons"
 				@click="removeParticipant">
@@ -78,6 +79,7 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import RequestEnvironment from "$/singletons/request_environment"
 
 const props = defineProps<{
+	currentUserId?: string
 	header: string,
 	modelValue: DeserializedUserResource[],
 	maximumParticipants: number,
@@ -110,6 +112,10 @@ function fetcher(): Fetcher {
 	if (rawFetcher === null) throw new Error("User cannot be processed yet")
 
 	return rawFetcher
+}
+
+function isChipForCurrentUser(participantId: string) {
+	return props.currentUserId === participantId
 }
 
 function findMatchedUsers() {
