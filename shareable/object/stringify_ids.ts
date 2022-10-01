@@ -13,6 +13,10 @@ export default function stringifyIDs(value: GeneralObject): GeneralObject {
 				objectName[property] = String(objectName[property])
 			} else if (isPlainObject(objectName[property])) {
 				objectName[property] = stringifyIDs(objectName[property])
+			} else if (Array.isArray(objectName[property])) {
+				objectName[property] = objectName[property].map(
+					(element: GeneralObject) => stringifyIDs(element)
+				)
 			}
 		}
 	}
