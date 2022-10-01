@@ -8,7 +8,7 @@
 	<div class="consultations-container">
 		<section class="consultations-picker left relative">
 			<div class="consultations-list-header p-3">
-				<div v-if="!isSearching" class="no-search-bar flex flex-1">
+				<div v-if="!isSearching" class="no-search-bar">
 					<h2 class="flex-1">
 						Consultations
 					</h2>
@@ -21,10 +21,10 @@
 				</div>
 				<div
 					v-else
-					class="is-searching flex flex-1">
+					class="is-searching">
 					<!-- TODO(lead/button): search existing consultations -->
 
-					<SearchBar v-model="slug" class="flex flex-1"/>
+					<SearchBar v-model="slug" class="search-bar"/>
 					<button class="material-icons text-xs" @click="toggleSearch">
 						close
 					</button>
@@ -37,7 +37,10 @@
 
 			<button
 				v-if="isUserAStudent"
-				class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
+				class="material-icons add
+				absolute bottom-5 right-5
+				text-lg rounded-full
+				border border-gray-600 p-3"
 				@click="toggleAddingSchedule">
 				add
 			</button>
@@ -55,6 +58,9 @@
 	@apply flex;
 }
 
+.no-search-bar, .is-searching, .search-bar{
+	@apply flex flex-1;
+}
 .consultation {
 	@apply
 		p-2
