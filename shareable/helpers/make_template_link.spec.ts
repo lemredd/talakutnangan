@@ -5,9 +5,10 @@ describe("Helper: Make link", () => {
 		const prefix = "/api/v1"
 		const type = "user"
 
-		const { bound, unbound } = makeTemplateLink(prefix, type)
+		const { bound, unbound, query } = makeTemplateLink(prefix, type)
 
 		expect(bound).toBe(`${prefix}/${type}`)
 		expect(unbound).toBe(`${prefix}/${type}/:id`)
+		expect(query).toBe(`${prefix}/${type}?:query`)
 	})
 })

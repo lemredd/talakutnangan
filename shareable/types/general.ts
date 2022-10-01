@@ -29,5 +29,6 @@ export type PartialOrPickObject<
 
 export interface FetcherLinks {
 	bound: string,
-	unbound: string
+	unbound: string,
+	query: string
 }
