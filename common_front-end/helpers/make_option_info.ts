@@ -1,10 +1,10 @@
 import type { OptionInfo } from "$@/types/component"
 
-export default function(value: any | any[]) {
+export default function(value: any | any[], label?: string | string[]) {
 	if (Array.isArray(value)) {
 		const optionInfos: OptionInfo[] = []
-		value.forEach(valueToMutate => optionInfos.push({
-			"label": String(valueToMutate),
+		value.forEach((valueToMutate, index) => optionInfos.push({
+			"label": Array.isArray(label) ? label[index] : String(valueToMutate),
 			"value": valueToMutate
 		}))
 
@@ -12,7 +12,7 @@ export default function(value: any | any[]) {
 	}
 
 	return {
-		"label": String(value),
+		"label": label ? label : String(value),
 		value
 	}
 }
