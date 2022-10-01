@@ -40,7 +40,7 @@
 				type="text"/>
 
 			<div class="signature-message text-xs mt-5">
-				By submitting, you are granting permission to use the participants' signatures.
+				By submitting, your signatures will be applied on the printable consultation form.
 			</div>
 		</template>
 		<template #footer>

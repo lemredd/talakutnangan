@@ -202,7 +202,7 @@ describe("Component: consultation/form", () => {
 			expect(otherReasonField.exists()).toBeTruthy()
 		})
 
-		it("can search students", async() => {
+		it.only("can select within employee's schedules", async() => {
 			const students = {
 				"data": [
 					{
@@ -255,27 +255,8 @@ describe("Component: consultation/form", () => {
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			await nextTick()
 
-			const castFetch = fetch as jest.Mock<any, any>
-			const [ [ firstRequest ] ] = castFetch.mock.calls
-			expect(firstRequest).toHaveProperty("method", "GET")
-			expect(firstRequest).toHaveProperty("url", `/api/user?${
-				stringifyQuery({
-					"filter": {
-						"department": "*",
-						"existence": "exists",
-						"kind": "student",
-						"role": "*",
-						"slug": students.data[0].attributes.name
-					},
-					"page": {
-						"limit": 10,
-						"offset": 0
-					},
-					"sort": [ "name" ]
-				})
-			}`)
-			expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-			expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			const scheduleSelector = wrapper.find(".schedule-selector")
+			expect(scheduleSelector.exists()).toBeTruthy()
 		})
 	})
 
