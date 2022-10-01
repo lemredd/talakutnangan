@@ -1,5 +1,5 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
-import type { Serializable } from "$/types/general"
+import type { Serializable, FetcherLinks } from "$/types/general"
 import type {
 	Response,
 	ArchiveMeta,
@@ -62,12 +62,12 @@ export default class Fetcher<
 		this.type = type
 	}
 
-	protected basePath = ""
-	protected type = ""
+	protected links: FetcherLinks
+	protected type: string
 
-	constructor(basePath: string = Fetcher.basePath, type: string = Fetcher.type) {
+	constructor(type: string, links: FetcherLinks) {
 		super()
-		this.basePath = basePath
+		this.links = links
 		this.type = type
 	}
 
@@ -79,7 +79,7 @@ export default class Fetcher<
 		extraCreateDocumentProps: ExtraCreateDocumentProps<C>
 	}> = {}): Promise<Response<T, U, V, W, X, A>> {
 		return this.handleResponse(
-			this.postJSON(`${this.type}`, {
+			this.postJSON(this.links.unbound, {
 				"data": {
 					attributes,
 					"type": this.type,
@@ -91,7 +91,7 @@ export default class Fetcher<
 	}
 
 	read(id: string): Promise<Response<T, U, V, W, X, A>> {
-		const path = specializedPath(`${this.type}/:id`, { id })
+		const path = specializedPath(this.links.bound, { id })
 
 		return this.handleResponse(
 			this.getJSON(path)
@@ -104,9 +104,9 @@ export default class Fetcher<
 			"sort": parameters.sort.join(",")
 		}
 		return this.handleResponse(
-			this.getJSON(
-				`${this.type}?${stringifyQuery(commaDelimitedSort)}`
-			)
+			this.getJSON(specializedPath(this.links.query, {
+				"query": stringifyQuery(commaDelimitedSort)
+			}))
 		)
 	}
 
@@ -122,7 +122,7 @@ export default class Fetcher<
 		}> = {}
 	): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}/:id`, { id }, {
+			this.patchJSON(this.links.bound, { id }, {
 				"data": {
 					attributes,
 					id,
@@ -140,7 +140,7 @@ export default class Fetcher<
 		meta: ArchiveMeta<C>
 	}> = {}): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
-			this.deleteJSON(`${this.type}`, {}, {
+			this.deleteJSON(this.links.unbound, {}, {
 				"data": IDs.map(id => ({
 					id,
 					"type": this.type
@@ -156,7 +156,7 @@ export default class Fetcher<
 		meta: RestoreMeta<C>
 	}> = {}): Promise<Response<T, U, V, W, X, null>> {
 		return this.handleResponse(
-			this.patchJSON(`${this.type}`, {}, {
+			this.patchJSON(this.links.unbound, {}, {
 				"data": IDs.map(id => ({
 					id,
 					"type": this.type
@@ -253,10 +253,10 @@ export default class Fetcher<
 		})
 	}
 
+	// eslint-disable-next-line no-undef
 	private async requestJSON(path: string, request: RequestInit)
 	: Promise<Response<any, any, any, any, any, any>> {
-		const completePath = `${this.basePath}/${path}`
-		const parsedResponse = await fetch(new Request(completePath, request))
+		const parsedResponse = await fetch(new Request(path, request))
 		.then(async response => ({
 			"body": response.status === this.status.NO_CONTENT ? null : await response.json(),
 			"status": response.status
