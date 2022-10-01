@@ -22,7 +22,7 @@
 				v-model="selectedConsulters"
 				class="consulters"
 				header="Consulters"
-				:maximum-participants="MAX_ADDITIONAL_CONSULTERS"
+				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>
 			<SelectableOptionsField
@@ -78,8 +78,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
@@ -92,6 +93,9 @@ import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import makeOptionInfo from "$@/helpers/make_option_info"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
+
+const { "pageProps": { "userProfile": { "data": userProfileData } } }
+= inject("pageContext") as PageContext<"deserialized", "consultations">
 
 let rawFetcher: Fetcher|null = null
 
@@ -124,7 +128,7 @@ const consultantRoles = computed(() => {
 
 	if (selectedConsultants.value.length) {
 		const [ consultant ] = selectedConsultants.value
-		consultant.roles.data.forEach(role => roleIDs.push(role.id))
+		consultant.roles.data.forEach(role => roleIDs.push(String(role.id)))
 		consultant.roles.data.forEach(role => labels.push(role.name))
 	}
 
@@ -132,8 +136,10 @@ const consultantRoles = computed(() => {
 })
 const addressConsultantAs = ref("")
 
-const MAX_ADDITIONAL_CONSULTERS = 4
-const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
+const MAX_CONSULTERS = 5
+const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
+	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
+])
 
 function addConsultation(): void {
 	const consultant = {
@@ -141,7 +147,7 @@ function addConsultation(): void {
 		"type": "user"
 	}
 
-	const unusedMeta = {
+	const meta = {
 		"doesAllowConflicts": doesAllowConflicts.value
 	}
 
@@ -154,6 +160,7 @@ function addConsultation(): void {
 		"scheduledStartAt": new Date().toJSON(),
 		"startedAt": null
 	}, {
+		"extraCreateDocumentProps": { meta },
 		"extraDataFields": {
 			"relationships": {
 				"consultant": {
@@ -161,7 +168,7 @@ function addConsultation(): void {
 				},
 				"consultantRole": {
 					"data": {
-						"id": addressConsultantAs.value,
+						"id": String(addressConsultantAs.value),
 						"type": "role"
 					}
 				},
