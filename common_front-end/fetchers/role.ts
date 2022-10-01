@@ -13,7 +13,7 @@ import type {
 	RoleIdentifierListDocument
 } from "$/types/documents/role"
 
-import { DEPARTMENT_LINK } from "$/constants/template_links"
+import { ROLE_LINK } from "$/constants/template_links"
 import BaseFetcher from "$@/fetchers/base"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
@@ -33,7 +33,7 @@ export default class RoleFetcher extends BaseFetcher<
 	}
 > {
 	constructor() {
-		super(DEPARTMENT_LINK)
+		super(ROLE_LINK)
 	}
 
 	countUsers(IDs: string[]): Promise<Response<
