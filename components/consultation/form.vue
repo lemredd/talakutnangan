@@ -12,6 +12,12 @@
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
+			<SelectableOptionsField
+				v-if="selectedConsultants.length"
+				v-model="addressConsultantAs"
+				class="consultant-roles"
+				label="Address consultant as:"
+				:options="consultantRoles"/>
 			<SearchableChip
 				v-model="selectedConsulters"
 				class="consulters"
@@ -74,6 +80,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/consultation"
@@ -82,6 +89,7 @@ import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import makeOptionInfo from "$@/helpers/make_option_info"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -110,6 +118,19 @@ const doesAllowConflicts = ref<boolean>(true)
 
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
+const consultantRoles = computed(() => {
+	const roleIDs: string[] = []
+	const labels: string[] = []
+
+	if (selectedConsultants.value.length) {
+		const [ consultant ] = selectedConsultants.value
+		consultant.roles.data.forEach(role => roleIDs.push(role.id))
+		consultant.roles.data.forEach(role => labels.push(role.name))
+	}
+
+	return makeOptionInfo(roleIDs, labels) as OptionInfo[]
+})
+const addressConsultantAs = ref("")
 
 const MAX_ADDITIONAL_CONSULTERS = 4
 const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([])
@@ -140,7 +161,7 @@ function addConsultation(): void {
 				},
 				"consultantRole": {
 					"data": {
-						"id": "",
+						"id": addressConsultantAs.value,
 						"type": "role"
 					}
 				},
