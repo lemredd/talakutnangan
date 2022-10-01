@@ -162,7 +162,20 @@ function startConsultation() {
 		"startedAt": new Date().toISOString()
 	}
 
-	new ConsultationFetcher().update(consultationID.value, newConsultationData).then(() => {
+	new ConsultationFetcher().update(
+		consultationID.value,
+		newConsultationData,
+		{
+			"extraDataFields": {
+				"consultant": {
+					"data": {
+						"id": consultation.value.consultant.data.id,
+						"type": "user"
+					}
+				}
+			}
+		}
+	).then(() => {
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
 			"actionTaken": consultation.value.actionTaken,
 			"deletedAt": consultation.value.deletedAt ?? null,
