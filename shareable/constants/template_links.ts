@@ -17,10 +17,7 @@ export const UPDATE_PASSWORD_LINK = `${USER_LINK.bound}/update_password`
 
 export const LOG_IN_LINK = `${USER_LINK.unbound}/log_in`
 
-/**
- * Requires the `id` of the user
- */
-export const LOG_OUT_LINK = `${USER_LINK.bound}/log_out`
+export const LOG_OUT_LINK = `${USER_LINK.unbound}/log_out`
 
 export const IMPORT_USER_LINK = `${USER_LINK.unbound}/import`
 
