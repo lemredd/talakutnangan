@@ -1,6 +1,8 @@
 import {
 	Table,
 	Column,
+	DataType,
+	AllowNull,
 	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
@@ -16,7 +18,8 @@ import TextContentLike from "%/models/text_content-like"
 export default class Comment extends TextContentLike {
 	@ForeignKey(() => User)
 	@Column({
-		"allowNull": false
+		"allowNull": false,
+		"type": DataType.BIGINT
 	})
 		userID!: number
 
@@ -25,20 +28,22 @@ export default class Comment extends TextContentLike {
 
 	@ForeignKey(() => Post)
 	@Column({
-		"allowNull": false
+		"allowNull": false,
+		"type": DataType.BIGINT
 	})
 		postID!: number
 
 	@BelongsTo(() => User)
 		post!: Post
 
+	@AllowNull
 	@ForeignKey(() => Comment)
 	@Column({
-		"allowNull": true
+		"type": DataType.BIGINT
 	})
-		commentID?: number
+		commentID?: number|null
 
 	@BelongsTo(() => Comment)
 		// eslint-disable-next-line no-use-before-define
-		comment?: Comment
+		comment?: Comment|null
 }
