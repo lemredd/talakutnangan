@@ -38,7 +38,7 @@ export default class Comment extends TextContentLike {
 	})
 		commentID?: number
 
-	@BelongsTo(() => User)
+	@BelongsTo(() => Comment)
 		// eslint-disable-next-line no-use-before-define
 		comment?: Comment
 }
