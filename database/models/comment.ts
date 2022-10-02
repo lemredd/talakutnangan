@@ -39,11 +39,12 @@ export default class Comment extends TextContentLike {
 	@AllowNull
 	@ForeignKey(() => Comment)
 	@Column({
+		"field": "commentID",
 		"type": DataType.BIGINT
 	})
-		commentID?: number|null
+		parentCommentID?: number|null
 
-	@BelongsTo(() => Comment)
+	@BelongsTo(() => Comment, "commentID")
 		// eslint-disable-next-line no-use-before-define
-		comment?: Comment|null
+		parentComment?: Comment|null
 }
