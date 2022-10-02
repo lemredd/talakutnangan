@@ -22,8 +22,8 @@ import EmployeeSchedule from "%/models/employee_schedule"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 @Table({
-	"timestamps": true,
-	"paranoid": true
+	"paranoid": true,
+	"timestamps": true
 })
 export default class User extends Model {
 	@Column({
@@ -32,8 +32,8 @@ export default class User extends Model {
 		name!: string
 
 	@Column({
-		"unique": true,
-		"allowNull": false
+		"allowNull": false,
+		"unique": true
 	})
 		email!: string
 
@@ -52,8 +52,8 @@ export default class User extends Model {
 
 	@AllowNull
 	@Column({
-		"type": DataType.DATE,
-		"defaultValue": null
+		"defaultValue": null,
+		"type": DataType.DATE
 	})
 		emailVerifiedAt!: Date|null
 
