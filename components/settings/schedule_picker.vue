@@ -119,7 +119,7 @@ import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
-import { noon } from "$@/constants/time"
+import { NOON } from "$@/constants/time"
 
 import Selectable from "@/fields/selectable_options.vue"
 
@@ -172,7 +172,7 @@ const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
 function formatTo24Hours(time: string) {
 	// eslint-disable-next-line prefer-const
 	let [ hour, minute ] = time.split(":")
-	hour = String(Number(hour) + noon)
+	hour = String(Number(hour) + NOON)
 
 	return `${hour}:${minute}`
 }

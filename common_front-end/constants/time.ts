@@ -1,2 +1,2 @@
 export const DEBOUNCED_WAIT_DURATION = 500
-export const noon = 12
+export const NOON = 12
