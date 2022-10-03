@@ -38,6 +38,15 @@
 				class="other-reason"
 				label="What are the other reasons(s)?"
 				type="text"/>
+			<div
+				v-if="selectedConsultants.length"
+				class="schedule-selector">
+				<SelectableOptionsField
+					v-model="selectedDay"
+					class="selectable-day"
+					label="Day:"
+					:options="selectableDays"/>
+			</div>
 
 			<div class="signature-message text-xs mt-5">
 				By submitting, your signatures will be applied on the printable consultation form.
@@ -80,27 +89,33 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, inject } from "vue"
+import { ref, computed, onMounted, inject, watch } from "vue"
 
+import { Day, DayValues } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import { reasons } from "$@/constants/options"
 
 import Fetcher from "$@/fetchers/consultation"
 
 import Overlay from "@/helpers/overlay.vue"
+import assignPath from "$@/external/assign_path"
+import makeOptionInfo from "$@/helpers/make_option_info"
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
-import makeOptionInfo from "$@/helpers/make_option_info"
-import assignPath from "$@/external/assign_path"
+import makeUnique from "$/array/make_unique"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
-const { "pageProps": { "userProfile": { "data": userProfileData } } }
+const { pageProps }
 = inject("pageContext") as PageContext<"deserialized", "consultations">
+const { "userProfile": { "data": userProfileData } }
+= pageProps
 
 let rawFetcher: Fetcher|null = null
 
@@ -145,6 +160,40 @@ const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
 	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
 ])
 
+const consultantSchedules = ref<DeserializedEmployeeScheduleResource[]>([])
+function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
+	new EmployeeScheduleFetcher().list({
+		"filter": {
+			"day": "*",
+			"employeeScheduleRange": "*",
+			"existence": "*",
+			"user": selectedConsultant.id
+		},
+		"page": {
+			"limit": 20,
+			"offset": 0
+		},
+		"sort": [ "dayName" ]
+	}).then(({ body }) => {
+		const { "data": schedules } = body
+		consultantSchedules.value = schedules
+	})
+}
+
+const selectedDay = ref("")
+const selectableDays = computed(() => {
+	const days: string[] = []
+	if (consultantSchedules.value.length) {
+		consultantSchedules.value.map(schedule => days.push(schedule.dayName))
+		days.sort((element1, element2) => {
+			const element1Index = DayValues.indexOf(element1 as Day)
+			const element2Index = DayValues.indexOf(element2 as Day)
+
+			return Math.sign(element1Index - element2Index)
+		})
+	}
+	return makeOptionInfo(makeUnique(days)) as OptionInfo[]
+})
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
@@ -193,5 +242,10 @@ function addConsultation(): void {
 
 onMounted(() => {
 	rawFetcher = new Fetcher()
+})
+
+watch(selectedConsultants, () => {
+	const [ selectedConsultant ] = selectedConsultants.value
+	fetchConsultantSchedules(selectedConsultant)
 })
 </script>
