@@ -7,7 +7,7 @@
 			<div class="col-75">
 				<textarea
 					id="content"
-					v-model="content"
+					name="data[attributes][content]"
 					placeholder="Write something.."
 					style="height:200px">
 				</textarea>
@@ -22,34 +22,14 @@
 @import "../index";
 </style>
 <script setup lang="ts">
-import { ref } from "vue"
+interface CustomEvents {
+	(event: "submitPost", data: FormData): void
+}
+const emit = defineEmits<CustomEvents>()
+function submitPostDetails(event: Event) {
+	const form = event.target as HTMLFormElement
+	const formData = new FormData(form)
 
-const content = ref("")
-
-// Post submit
-function submitPostDetails() {
-	const titleText = title.value.trim()
-	// Creation
-	const descriptionText = content.value.trim()
-	if (titleText.valueOf() == "" || descriptionText.valueOf() == "") {
-		alert("Fields are empty!")
-	} else {
-		createPost(1, dummyUserDemo[0].userName, titleText, descriptionText, [], [], false, true, false)
-		// Seclusion
-		posts.value.forEach((post: Post, i: number) => {
-			getSecludedPost(post, secludedPosts.value, i)
-		})
-		// Finishing
-		alert("Successfully posted!")
-		// Console.log(secludedPosts.value);
-		isCreateShown.value = true
-		title.value = ""
-		content.value = ""
-	}
-
-	// Checking posts creation
-	for (let i = 0; i < posts.value.length; i++) {
-		console.log("creation ", posts.value[i])
-	}
+	emit("submitPost", formData)
 }
 </script>
