@@ -116,8 +116,8 @@
 import { computed, inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
+import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
-
 
 import Selectable from "@/fields/selectable_options.vue"
 
@@ -125,9 +125,10 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
-import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import formatTo12Hours from "$@/helpers/format_to_12_hours"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
 const fetcher = new EmployeeScheduleFetcher()
 
@@ -157,14 +158,6 @@ function twoDigits(number: number) {
 	const twoDigitStart = 10
 	return number < twoDigitStart ? `0${number}` : number.toString()
 }
-function formatTo12Hours(hour: number) {
-	let convertedHour = 0
-
-	if (hour <= noon) convertedHour = hour
-	else convertedHour = hour - noon
-
-	return convertedHour
-}
 function convertTimeObjectToTimeString(
 	timeObject: ReturnType<typeof convertMinutesToTimeObject>
 ) {
@@ -185,8 +178,8 @@ function generateNumberRange() {
 
 	return time
 }
-const availableTimes = makeOptionInfo(generateNumberRange())
-const midDays = makeOptionInfo([ "AM", "PM" ])
+const availableTimes = makeOptionInfo(generateNumberRange()) as OptionInfo[]
+const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
 function getTimePart(time: number, part: "hour" | "minute" | "midday") {
 	const timeObject = convertMinutesToTimeObject(time)
