@@ -64,7 +64,7 @@ const roleFetcher = new Fetcher()
 function createRole() {
 	roleFetcher.create({
 		...role.value,
-		"deletedAt": ""
+		"deletedAt": null
 	}).then(({ unusedBody, unusedStatus }) => {
 		// Success
 	}).catch(({ unusedBody, unusedStatus }) => {
