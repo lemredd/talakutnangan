@@ -5,6 +5,7 @@ import makeTemplateLink from "$/helpers/make_template_link"
  */
 export const LINK_PREFIX = "/api"
 
+export const POST_LINK = makeTemplateLink(LINK_PREFIX, "post")
 
 export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_trail")
 
