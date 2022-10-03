@@ -11,7 +11,7 @@
 		<FlagSelector
 			v-for="flagSelector in flagSelectors"
 			:key="flagSelector.permissionGroup.name"
-			v-model="flagSelector.model.value"
+			v-model="role.data[flagSelector.permissionGroup.name]"
 			:header="flagSelector.header"
 			:base-permission-group="flagSelector.permissionGroup"
 			:dependent-permission-groups="flagSelector.dependentGroups"

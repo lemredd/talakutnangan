@@ -1,5 +1,3 @@
-import { Ref } from "vue"
-
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
@@ -17,9 +15,7 @@ export interface TabInfo {
 	"path": string
 }
 
-
 export interface FlagSelectorInfo {
-	"model": Ref<number>,
 	"header": string,
 	"permissionGroup": PermissionGroup<any, any>,
 	"dependentGroups": PermissionGroup<any, any>[],

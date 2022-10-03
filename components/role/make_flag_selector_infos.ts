@@ -1,4 +1,4 @@
-import { computed, Ref } from "vue"
+import { Ref } from "vue"
 
 import type { FlagSelectorInfo } from "$@/types/component"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -113,10 +113,6 @@ export default function(role: Ref<DeserializedRoleDocument<"read">>): FlagSelect
 			checkExternal,
 			dependentGroups,
 			header,
-			"model": computed<number>({
-				get(): number { return role.value.data[permissionGroup.name] },
-				set(newValue: number): void { role.value.data[permissionGroup.name] = newValue }
-			}),
 			permissionGroup,
 			uncheckExternal
 		}
