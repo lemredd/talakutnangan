@@ -17,6 +17,14 @@ describe("Helper: 24 Hour formatter", () => {
 		expect(helper(hour, midDay)).toEqual(expectedValue)
 	})
 
+	it("can convert noon time to 24 hour format", () => {
+		const hour = 12
+		const midDay = "PM"
+		const expectedValue = hour
+
+		expect(helper(hour, midDay)).toEqual(expectedValue)
+	})
+
 	it("should remain for morning hours", () => {
 		const hour = 11
 		const midDay = "AM"

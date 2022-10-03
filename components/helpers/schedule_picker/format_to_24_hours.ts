@@ -6,5 +6,6 @@ export default function(hour: number, midday: "AM" | "PM") {
 		return hour
 	}
 
+	if (hour === NOON) return NOON
 	return hour + NOON
 }
