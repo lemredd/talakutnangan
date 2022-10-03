@@ -46,7 +46,7 @@ export default class EmployeeScheduleFactory extends BaseFactory<
 	#scheduleEnd: (scheduleStart: number) => number = (scheduleStart: number) => {
 		let raw = faker.datatype.number({
 			"max": convertTimeToMinutes("20:30"),
-			"min": scheduleStart + 1
+			"min": scheduleStart + MINUTE_SCHEDULE_INTERVAL
 		})
 		raw -= raw % MINUTE_SCHEDULE_INTERVAL
 		return raw
