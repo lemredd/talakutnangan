@@ -13,6 +13,15 @@
 					style="height:200px">
 				</textarea>
 			</div>
+			<input
+				type="hidden"
+				name="data[type]"
+				value="post"/>
+			<input
+				v-if="modelValue.data.id"
+				type="hidden"
+				name="data[id]"
+				value="modelValue.data.id"/>
 		</div>
 		<div class="row">
 			<input type="submit" value="Submit"/>
