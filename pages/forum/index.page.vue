@@ -20,16 +20,12 @@
 					<h1>What's on your mind?</h1>
 				</div>
 				<div class="right">
-					<button @click="showCreate()">
+					<button @click="showCreateForm()">
 						Create
 					</button>
 				</div>
 			</div>
-			<div class="post-container" :hidden="isCreateShown">
-				<div class="container">
-					<DraftForm/>
-				</div>
-			</div>
+			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 
 			<div
 				v-for="(post, i) in posts"
@@ -179,20 +175,23 @@ import {
 	downVote,
 	totalVotes,
 	secludePostDiv,
-	dummyUserDemo} from "./post"
+	dummyUserDemo
+} from "./post"
 
-import DraftForm from "@/post/draft_form.vue"
+import makeSwitch from "$@/helpers/make_switch"
 import PostMenu from "@/page_shell/dropdown.vue"
+import CreatePostForm from "@/post/create_post_form.vue"
 
 import type { Post } from "./data"
-
-const title = ref("")
-const description = ref("")
 
 const titleToEdit = ref("")
 const descToEdit = ref("")
 
-const isCreateShown = ref(true)
+const {
+	"state": isCreateShown,
+	"on": showCreateForm,
+	"off": hideCreateForm
+} = makeSwitch(true)
 
 
 // Post edit
@@ -213,11 +212,6 @@ function editPostDetails(currentPost: Post) {
 
 function turnOffAllDropdown() {
 
-}
-
-
-function showCreate() {
-	isCreateShown.value = !isCreateShown.value
 }
 
 function togglePostMenu(post: Post) {
