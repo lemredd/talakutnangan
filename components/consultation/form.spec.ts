@@ -115,7 +115,6 @@ describe("Component: consultation/form", () => {
 				{ "status": RequestEnvironment.status.OK }
 			)
 
-
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -234,7 +233,7 @@ describe("Component: consultation/form", () => {
 					{
 						"dayName": "monday",
 						"id": "1",
-						"scheduleEnd": 720,
+						"scheduleEnd": 540,
 						"scheduleStart": 480,
 						"type": "employee_schedule"
 					}
@@ -292,7 +291,8 @@ describe("Component: consultation/form", () => {
 			await selectableDay.setValue("monday")
 			const selectableTime = wrapper.findComponent(".selectable-time")
 			expect(selectableTime.exists()).toBeTruthy()
-			expect(selectableTime.attributes("options")).toEqual("[object Object]")
+			const availableTimes = selectableTime.attributes("options")?.split(",")
+			expect(availableTimes).toHaveLength(5)
 		})
 	})
 
