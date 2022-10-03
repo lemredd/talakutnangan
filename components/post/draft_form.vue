@@ -2,15 +2,15 @@
 	<form @submit.prevent="submitPostDetails">
 		<div class="row">
 			<div class="col-25">
-				<label for="desc">Description</label>
+				<label for="content">Content</label>
 			</div>
 			<div class="col-75">
 				<textarea
-					id="desc"
-					v-model="description"
-					name="desc"
+					id="content"
+					v-model="content"
 					placeholder="Write something.."
-					style="height:200px"></textarea>
+					style="height:200px">
+				</textarea>
 			</div>
 		</div>
 		<div class="row">
@@ -19,18 +19,18 @@
 	</form>
 </template>
 <style lang="scss">
-@import "./index";
+@import "../index";
 </style>
 <script setup lang="ts">
 import { ref } from "vue"
 
-const description = ref("")
+const content = ref("")
 
 // Post submit
 function submitPostDetails() {
 	const titleText = title.value.trim()
 	// Creation
-	const descriptionText = description.value.trim()
+	const descriptionText = content.value.trim()
 	if (titleText.valueOf() == "" || descriptionText.valueOf() == "") {
 		alert("Fields are empty!")
 	} else {
@@ -44,7 +44,7 @@ function submitPostDetails() {
 		// Console.log(secludedPosts.value);
 		isCreateShown.value = true
 		title.value = ""
-		description.value = ""
+		content.value = ""
 	}
 
 	// Checking posts creation
