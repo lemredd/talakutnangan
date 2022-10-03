@@ -5,8 +5,6 @@ import makeTemplateLink from "$/helpers/make_template_link"
  */
 export const LINK_PREFIX = "/api"
 
-export const POST_LINK = makeTemplateLink(LINK_PREFIX, "post")
-
 export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_trail")
 
 export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
@@ -37,6 +35,8 @@ export const CONSULTATION_LINK = makeTemplateLink(LINK_PREFIX, "consultation")
 export const CHAT_MESSAGE_LINK = makeTemplateLink(LINK_PREFIX, "chat_message")
 
 export const CHAT_MESSAGE_ACTIVITY_LINK = makeTemplateLink(LINK_PREFIX, "chat_message_activity")
+
+export const POST_LINK = makeTemplateLink(LINK_PREFIX, "post")
 
 /**
  * Requires the `id` of the user
