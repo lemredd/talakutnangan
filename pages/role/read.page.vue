@@ -80,6 +80,7 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import Fetcher from "$@/fetchers/role"
 import makeUnique from "$/array/make_unique"
+import makeSwitch from "$@/helpers/make_switch"
 import {
 	semester as semesterPermissions,
 	tag as tagPermissions,
@@ -183,13 +184,11 @@ function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<
 	uncheckExternalDependents(subdependents)
 }
 
-const isBeingConfirmed = ref<boolean>(false)
-function openConfirmation() {
-	isBeingConfirmed.value = true
-}
-function closeConfirmation() {
-	isBeingConfirmed.value = false
-}
+const {
+	"state": isBeingConfirmed,
+	"on": openConfirmation,
+	"off": closeConfirmation
+} = makeSwitch(false)
 
 async function updateRole() {
 	await fetcher.update(role.value.data.id, {
