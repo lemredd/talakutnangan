@@ -78,6 +78,7 @@
 			</button>
 			<button
 				class="btn submit-btn btn-primary"
+				:disabled="!isConsultantAvailable"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -246,6 +247,9 @@ const selectableTimes = computed(() => {
 	return availableTimes
 })
 
+const isConsultantAvailable = computed(
+	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
+)
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
