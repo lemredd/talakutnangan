@@ -157,7 +157,13 @@ function toggleAdding() {
 	isAdding.value = !isAdding.value
 }
 
-const availableTimes = makeOptionInfo(makeUnique(generateTimeRange())) as OptionInfo[]
+const availableTimeObjects = generateTimeRange().map(
+	timeInMinutes => convertMinutesToTimeObject(timeInMinutes)
+)
+const availableTimeStrings = availableTimeObjects.map(
+	timeObject => convertToTimeString(timeObject)
+)
+const availableTimes = makeOptionInfo(makeUnique(availableTimeStrings)) as OptionInfo[]
 const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
 const startTime = ref(convertToTimeString(
