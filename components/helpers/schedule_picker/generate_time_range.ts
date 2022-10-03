@@ -1,4 +1,4 @@
-import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
+import { MINUTE_SCHEDULE_INTERVAL } from "$/constants/numerical"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"

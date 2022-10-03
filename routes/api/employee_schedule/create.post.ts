@@ -3,7 +3,7 @@ import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedu
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { DayValues } from "$/types/database"
-import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
+import { MINUTE_SCHEDULE_INTERVAL } from "$/constants/numerical"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
