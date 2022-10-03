@@ -130,7 +130,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import twoDigits from "@/helpers/schedule_picker/two_digits"
-import formatTo12Hours from "@/helpers/schedule_picker/format_to_12_hours"
+import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
@@ -174,28 +174,6 @@ function generateNumberRange() {
 const availableTimes = makeOptionInfo(generateNumberRange()) as OptionInfo[]
 const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
-function getTimePart(time: number, part: "hour" | "minute" | "midday") {
-	const timeObject = convertMinutesToTimeObject(time)
-	let partToGive = ""
-
-	switch (part) {
-		case "hour":
-			partToGive = twoDigits(formatTo12Hours(timeObject.hours))
-			break
-		case "minute":
-			partToGive = twoDigits(timeObject.minutes)
-			break
-		case "midday":
-			if (timeObject.hours < noon) partToGive = "AM"
-			else partToGive = "PM"
-			break
-
-		default:
-			break
-	}
-
-	return partToGive
-}
 const startTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleStart)
 ))
