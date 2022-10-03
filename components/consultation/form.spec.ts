@@ -203,25 +203,43 @@ describe("Component: consultation/form", () => {
 		})
 
 		it.only("can select within employee's schedules", async() => {
-			const students = {
+			const roles = {
+				"data": [
+					{
+						"id": 0,
+						"name": "Role A"
+					}
+				]
+			}
+			const employees = {
 				"data": [
 					{
 						"attributes": {
 							"email": "",
-							"kind": "student",
-							"name": "Student A",
-							"prefersDark": true
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
 						},
-						"id": "1",
+						"id": "2",
 						"type": "user"
 					}
 				]
-			} as UserListDocument
-
+			}
 			fetchMock.mockResponseOnce(
-				JSON.stringify(students),
+				JSON.stringify(employees),
 				{ "status": RequestEnvironment.status.OK }
 			)
+			const schedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+					}
+				]
+			}
 
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -247,16 +265,25 @@ describe("Component: consultation/form", () => {
 				}
 			})
 
-			const consulterBox = wrapper.find(".consulters")
-			const consulterSearchField = consulterBox.findComponent({
+			const consultantBox = wrapper.find(".consultant")
+			const consultantSearchField = consultantBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consulterSearchField.vm.$emit("update:modelValue", students.data[0].attributes.name)
+			await consultantSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
-			await nextTick()
 
-			const scheduleSelector = wrapper.find(".schedule-selector")
-			expect(scheduleSelector.exists()).toBeTruthy()
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+
+			const selectableDay = wrapper.findComponent(".selectable-day")
+			// const selectableTime = wrapper.findComponent(".selectable-time")
+			expect(selectableDay.exists()).toBeTruthy()
+			// expect(selectableTime.exists()).toBeTruthy()
 		})
 	})
 
