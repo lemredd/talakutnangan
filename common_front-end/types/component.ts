@@ -1,3 +1,9 @@
+import { Ref } from "vue"
+
+import type { ExternalPermissionDependencyInfo } from "$/types/permission"
+
+import PermissionGroup from "$/permissions/base"
+
 export interface OptionInfo {
 	// Value of the option to render
 	value: string,
@@ -9,4 +15,14 @@ export interface OptionInfo {
 export interface TabInfo {
 	"label": string,
 	"path": string
+}
+
+
+export interface FlagSelectorInfo {
+	"model": Ref<number>,
+	"header": string,
+	"permissionGroup": PermissionGroup<any, any>,
+	"dependentGroups": PermissionGroup<any, any>[],
+	"uncheckExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void,
+	"checkExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void
 }
