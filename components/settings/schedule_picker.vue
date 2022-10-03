@@ -119,10 +119,6 @@ import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
-import { NOON } from "$@/constants/time"
-
-import Selectable from "@/fields/selectable_options.vue"
-
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
@@ -132,8 +128,11 @@ import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
+import formatHourTo24Hours from "@/helpers/schedule_picker/format_to_24_hours"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
+
+import Selectable from "@/fields/selectable_options.vue"
 
 const fetcher = new EmployeeScheduleFetcher()
 
