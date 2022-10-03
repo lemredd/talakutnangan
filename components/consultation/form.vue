@@ -15,7 +15,7 @@
 			<SelectableOptionsField
 				v-if="selectedConsultants.length"
 				v-model="addressConsultantAs"
-				class="consultant-roles"
+				class="consultant-roles mb-5"
 				label="Address consultant as:"
 				:options="consultantRoles"/>
 			<SearchableChip
@@ -106,6 +106,14 @@
 }
 </style>
 
+<style scoped lang="scss">
+.schedule-selector {
+	.selectable-day, .selectable-time {
+		margin: 1em 0 1em;
+	}
+}
+</style>
+
 <script setup lang="ts">
 import { ref, computed, onMounted, inject, watch } from "vue"
 
@@ -130,7 +138,7 @@ import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
-import convertTimeObjectToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
+import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -234,7 +242,7 @@ const selectableTimes = computed(() => {
 			times.forEach(time => {
 				const timeObject = convertMinutesToTimeObject(time)
 				const midday = getTimePart(time, "midday")
-				const label = `${convertTimeObjectToTimeString(timeObject)} ${midday}`
+				const label = `${convertToTimeString(timeObject)} ${midday}`
 
 				availableTimes.push({
 					label,
@@ -301,7 +309,9 @@ onMounted(() => {
 })
 
 watch(selectedConsultants, () => {
-	const [ selectedConsultant ] = selectedConsultants.value
-	fetchConsultantSchedules(selectedConsultant)
+	if (selectedConsultants.value.length) {
+		const [ selectedConsultant ] = selectedConsultants.value
+		fetchConsultantSchedules(selectedConsultant)
+	}
 })
 </script>
