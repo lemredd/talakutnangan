@@ -9,6 +9,14 @@ describe("Helper: 12 Hour formatter", () => {
 
 		expect(helper(hour)).toEqual(expectedValue)
 	})
+
+	it("should return 12 for the first hour", () => {
+		const hour = 0
+		const expectedValue = 12
+
+		expect(helper(hour)).toEqual(expectedValue)
+	})
+
 	it("should remain the same if hour is less than or equal to NOON", () => {
 		const hour = 11
 
