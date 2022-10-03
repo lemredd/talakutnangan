@@ -129,8 +129,8 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
-import twoDigits from "@/helpers/schedule_picker/two_digits"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
+import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
@@ -157,21 +157,7 @@ function toggleAdding() {
 	isAdding.value = !isAdding.value
 }
 
-function generateNumberRange() {
-	const hourEnd = 11
-	const minuteEnd = 60
-	const start = 0
-	const time = []
-
-	for (let i = start; i <= hourEnd; i++) {
-		for (let interval = 15, j = start; j < minuteEnd; j += interval) {
-			time.push(`${i === 0 ? hourEnd + 1 : twoDigits(i)}:${twoDigits(j)}`)
-		}
-	}
-
-	return time
-}
-const availableTimes = makeOptionInfo(generateNumberRange()) as OptionInfo[]
+const availableTimes = makeOptionInfo(generateTimeRange()) as OptionInfo[]
 const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
 const startTime = ref(convertToTimeString(
