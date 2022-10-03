@@ -1,7 +1,7 @@
 import type { ProfilePictureDocument } from "$/types/documents/profile_picture"
 
 import RequestEnvironment from "$/singletons/request_environment"
-import ProfilePictureFetcher from "./profile_picture"
+import Fetcher from "./profile_picture"
 
 describe("Fetcher: Profile Picture", () => {
 	it("can create file", async() => {
@@ -17,7 +17,7 @@ describe("Fetcher: Profile Picture", () => {
 			} as ProfilePictureDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
-		const fetcher = new ProfilePictureFetcher()
+		const fetcher = new Fetcher()
 		const response = await fetcher.createFile("1", {} as FormData)
 
 		const castFetch = fetch as jest.Mock<any, any>
@@ -44,7 +44,7 @@ describe("Fetcher: Profile Picture", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new ProfilePictureFetcher()
+		const fetcher = new Fetcher()
 		const response = await fetcher.updateFile("1", {} as FormData)
 
 		const castFetch = fetch as jest.Mock<any, any>

@@ -1,7 +1,7 @@
 import type { IncludedRelationships } from "%/types/independent"
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
-import Post from "%/models/post"
+import Model from "%/models/post"
 import Transformer from "%/transformers/base"
 import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
@@ -11,7 +11,7 @@ type Relationships =
 	|"poster"
 	|"posterRole"
 
-export default class extends Transformer<Post, void> {
+export default class extends Transformer<Model, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
 			"included": [ "poster", "posterRole" ]
@@ -33,7 +33,7 @@ export default class extends Transformer<Post, void> {
 		])
 	}
 
-	transform(model: Post|Post[], unusedOptions: TransformerOptions): AttributesObject {
+	transform(model: Model|Model[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"content"
