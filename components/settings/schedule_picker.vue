@@ -166,25 +166,23 @@ const startTime = ref(convertToTimeString(
 const endTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleEnd)
 ))
-const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
-const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
+const startMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleStart, "midday") as "AM"|"PM")
+const endMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleEnd, "midday") as "AM"|"PM")
 
-function formatTo24Hours(time: string) {
+function formatTo24Hours(time: string, midday: "AM" | "PM") {
 	// eslint-disable-next-line prefer-const
 	let [ hour, minute ] = time.split(":")
-	hour = String(Number(hour) + NOON)
+	hour = String(formatHourTo24Hours(Number(hour), midday))
 
 	return `${hour}:${minute}`
 }
 const startTime24Hours = computed(() => {
-	let formattedTime = startTime.value
-	if (startMidDay.value === "PM") formattedTime = formatTo24Hours(startTime.value)
+	const formattedTime = formatTo24Hours(startTime.value, startMidDay.value)
 
 	return formattedTime
 })
 const endTime24Hours = computed(() => {
-	let formattedTime = endTime.value
-	if (endMidDay.value === "PM") formattedTime = formatTo24Hours(endTime.value)
+	const formattedTime = formatTo24Hours(endTime.value, endMidDay.value)
 
 	return formattedTime
 })
