@@ -127,6 +127,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
+import makeUnique from "$/array/make_unique"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
@@ -157,7 +158,7 @@ function toggleAdding() {
 	isAdding.value = !isAdding.value
 }
 
-const availableTimes = makeOptionInfo(generateTimeRange()) as OptionInfo[]
+const availableTimes = makeOptionInfo(makeUnique(generateTimeRange())) as OptionInfo[]
 const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
 const startTime = ref(convertToTimeString(
