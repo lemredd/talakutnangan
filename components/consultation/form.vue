@@ -40,17 +40,29 @@
 				type="text"/>
 			<div
 				v-if="selectedConsultants.length"
-				class="schedule-selector">
-				<SelectableOptionsField
-					v-model="selectedDay"
-					class="selectable-day"
-					label="Day:"
-					:options="selectableDays"/>
-				<SelectableOptionsField
-					v-if="selectedDay"
-					v-model="selectedTime"
-					class="selectable-time"
-					:options="selectableTimes"/>
+				class="schedule-selector mt-5">
+				<div
+					v-if="consultantSchedules.length"
+					class="consultant-has-schedules">
+					<p>Please select the day and time from the consultant's available schedules</p>
+					<SelectableOptionsField
+						v-model="selectedDay"
+						class="selectable-day"
+						label="Day:"
+						:options="selectableDays"/>
+					<SelectableOptionsField
+						v-if="selectedDay"
+						v-model="selectedTime"
+						class="selectable-time"
+						label="Time:"
+						:options="selectableTimes"/>
+				</div>
+
+				<div v-else class="consultant-no-schedules">
+					<p class="text-red-500">
+						This consultant has not set any schedules yet.
+					</p>
+				</div>
 			</div>
 
 			<div class="signature-message text-xs mt-5">
