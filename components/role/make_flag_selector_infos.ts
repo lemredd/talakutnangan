@@ -1,7 +1,7 @@
 import { Ref } from "vue"
 
 import type { FlagSelectorInfo } from "$@/types/component"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { RoleAttributes } from "$/types/documents/role"
 import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 import makeUnique from "$/array/make_unique"
@@ -16,7 +16,7 @@ import {
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
 
-export default function(role: Ref<DeserializedRoleDocument<"read">>): FlagSelectorInfo[] {
+export default function(role: Ref<RoleAttributes<"deserialized">>): FlagSelectorInfo[] {
 	function checkExternalDependencies(dependencies: ExternalPermissionDependencyInfo<any, any>[])
 	: void {
 		for (const dependency of dependencies) {
@@ -27,8 +27,8 @@ export default function(role: Ref<DeserializedRoleDocument<"read">>): FlagSelect
 
 			const flagsToAdd = group.generateMask(...permissionDependencies)
 
-			const newFlags = role.value.data[group.name] | flagsToAdd
-			role.value.data[group.name] = newFlags
+			const newFlags = role.value[group.name] | flagsToAdd
+			role.value[group.name] = newFlags
 
 			const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
 			checkExternalDependencies(externalDependencies)
@@ -56,8 +56,8 @@ export default function(role: Ref<DeserializedRoleDocument<"read">>): FlagSelect
 			const flagsToRemove = group.generateMask(...allDependents)
 
 			// eslint-disable-next-line no-bitwise
-			const filteredFlags = role.value.data[group.name] & ~flagsToRemove
-			role.value.data[group.name] = filteredFlags
+			const filteredFlags = role.value[group.name] & ~flagsToRemove
+			role.value[group.name] = filteredFlags
 
 			dependentNames.push(group.name)
 			const externalDependencies = group.identifyExternalDependencies(permissionDependencies)

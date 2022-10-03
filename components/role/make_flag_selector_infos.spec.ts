@@ -1,7 +1,7 @@
 import { ref } from "vue"
 import type { Permissions } from "$/permissions/post"
 import type { FlagSelectorInfo } from "$@/types/component"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { RoleAttributes } from "$/types/documents/role"
 
 import { post, comment } from "$/permissions/permission_list"
 
@@ -13,10 +13,8 @@ describe("Helper: Make flag selector infos", () => {
 		const targetFlags = post.name
 		const targetPermissions: Permissions[] = [ "view", "create" ]
 		const role = ref({
-			"data": {
-				[targetFlags]: 0
-			}
-		} as DeserializedRoleDocument)
+			[targetFlags]: 0
+		} as RoleAttributes<"deserialized">)
 		const infos = helper(role)
 		const targetInfo = infos.find(
 			info => info.permissionGroup.name === sourceFlags
@@ -29,7 +27,7 @@ describe("Helper: Make flag selector infos", () => {
 			}
 		])
 
-		expect(role.value.data[targetFlags]).toBe(post.generateMask(...targetPermissions))
+		expect(role.value[targetFlags]).toBe(post.generateMask(...targetPermissions))
 	})
 
 	it("should uncheck internal dependent flags", () => {
@@ -37,10 +35,8 @@ describe("Helper: Make flag selector infos", () => {
 		const sourcePermissions: Permissions[] = [ "view" ]
 		const targetFlags = comment.name
 		const role = ref({
-			"data": {
-				[targetFlags]: comment.generateMask("view")
-			}
-		} as DeserializedRoleDocument)
+			[targetFlags]: comment.generateMask("view")
+		} as RoleAttributes<"deserialized">)
 		const infos = helper(role)
 		const targetInfo = infos.find(
 			info => info.permissionGroup.name === sourceFlags
@@ -53,6 +49,6 @@ describe("Helper: Make flag selector infos", () => {
 			}
 		])
 
-		expect(role.value.data[targetFlags]).toBe(0)
+		expect(role.value[targetFlags]).toBe(0)
 	})
 })

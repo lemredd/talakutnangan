@@ -53,7 +53,7 @@
 import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
@@ -70,11 +70,20 @@ const { pageProps } = pageContext
 const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
 )
+const roleData = computed<RoleAttributes<"deserialized">>({
+	get(): RoleAttributes<"deserialized"> { return role.value.data },
+	set(newResource: RoleAttributes<"deserialized">): void {
+		role.value.data = {
+			...role.value.data,
+			...newResource
+		}
+	}
+})
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
 const password = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
-const flagSelectors = makeFlagSelectorInfos(role)
+const flagSelectors = makeFlagSelectorInfos(roleData)
 
 const {
 	"state": isBeingConfirmed,
