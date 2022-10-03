@@ -23,14 +23,13 @@
 				name="data[id]"
 				value="modelValue.data.id"/>
 		</div>
-		<div class="row">
-			<input type="submit" value="Submit"/>
-		</div>
 	</form>
 </template>
+
 <style lang="scss">
 @import "../index";
 </style>
+
 <script setup lang="ts">
 import { computed } from "vue"
 
