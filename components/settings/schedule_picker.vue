@@ -132,6 +132,7 @@ import makeOptionInfo from "$@/helpers/make_option_info"
 import twoDigits from "@/helpers/schedule_picker/two_digits"
 import formatTo12Hours from "@/helpers/schedule_picker/format_to_12_hours"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 const fetcher = new EmployeeScheduleFetcher()
 
@@ -154,11 +155,6 @@ function toggleEditing() {
 function toggleAdding() {
 	toggleEditing()
 	isAdding.value = !isAdding.value
-}
-function convertTimeObjectToTimeString(
-	timeObject: ReturnType<typeof convertMinutesToTimeObject>
-) {
-	return `${twoDigits(formatTo12Hours(timeObject.hours))}:${twoDigits(timeObject.minutes)}`
 }
 
 function generateNumberRange() {
@@ -200,10 +196,10 @@ function getTimePart(time: number, part: "hour" | "minute" | "midday") {
 
 	return partToGive
 }
-const startTime = ref(convertTimeObjectToTimeString(
+const startTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleStart)
 ))
-const endTime = ref(convertTimeObjectToTimeString(
+const endTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleEnd)
 ))
 const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
