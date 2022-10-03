@@ -115,6 +115,9 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import convertTimeObjectToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -204,27 +207,31 @@ const selectableDays = computed(() => {
 
 const selectedTime = ref("")
 const selectableTimes = computed(() => {
-	const startTimes: OptionInfo[] = []
+	const availableTimes: OptionInfo[] = []
 	if (consultantSchedules.value.length && selectedDay.value) {
 		const schedulesByDay = consultantSchedules.value.filter(
 			schedule => schedule.dayName === selectedDay.value
 		)
-		schedulesByDay.map(schedule => {
-			const hour = getTimePart(schedule.scheduleStart, "hour")
-			const minute = getTimePart(schedule.scheduleStart, "minute")
-			const midday = getTimePart(schedule.scheduleStart, "midday")
-			const label = `${hour}:${minute} ${midday}`
+		schedulesByDay.forEach(schedule => {
+			const times = generateTimeRange({
+				"end": schedule.scheduleEnd,
+				"start": schedule.scheduleStart
+			})
 
-			return startTimes.push(
-				{
+			times.forEach(time => {
+				const timeObject = convertMinutesToTimeObject(time)
+				const midday = getTimePart(time, "midday")
+				const label = `${convertTimeObjectToTimeString(timeObject)} ${midday}`
+
+				availableTimes.push({
 					label,
-					"value": String(schedule.scheduleStart)
-				}
-			)
+					"value": String(time)
+				})
+			})
 		})
 	}
 
-	return startTimes
+	return availableTimes
 })
 
 function addConsultation(): void {
