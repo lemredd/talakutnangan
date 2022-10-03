@@ -116,8 +116,10 @@
 import { computed, inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
+import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
+import { noon } from "$@/constants/time"
 
 import Selectable from "@/fields/selectable_options.vue"
 
@@ -125,9 +127,12 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
-import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import twoDigits from "@/helpers/schedule_picker/two_digits"
+import getTimePart from "@/helpers/schedule_picker/get_time_part"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 const fetcher = new EmployeeScheduleFetcher()
 
@@ -142,7 +147,6 @@ const props = defineProps<{
 	scheduleEnd: number
 }>()
 
-const noon = 12
 const isEditing = ref(false)
 const isAdding = ref(false)
 function toggleEditing() {
@@ -151,24 +155,6 @@ function toggleEditing() {
 function toggleAdding() {
 	toggleEditing()
 	isAdding.value = !isAdding.value
-}
-
-function twoDigits(number: number) {
-	const twoDigitStart = 10
-	return number < twoDigitStart ? `0${number}` : number.toString()
-}
-function formatTo12Hours(hour: number) {
-	let convertedHour = 0
-
-	if (hour <= noon) convertedHour = hour
-	else convertedHour = hour - noon
-
-	return convertedHour
-}
-function convertTimeObjectToTimeString(
-	timeObject: ReturnType<typeof convertMinutesToTimeObject>
-) {
-	return `${twoDigits(formatTo12Hours(timeObject.hours))}:${twoDigits(timeObject.minutes)}`
 }
 
 function generateNumberRange() {
@@ -185,35 +171,13 @@ function generateNumberRange() {
 
 	return time
 }
-const availableTimes = makeOptionInfo(generateNumberRange())
-const midDays = makeOptionInfo([ "AM", "PM" ])
+const availableTimes = makeOptionInfo(generateNumberRange()) as OptionInfo[]
+const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
-function getTimePart(time: number, part: "hour" | "minute" | "midday") {
-	const timeObject = convertMinutesToTimeObject(time)
-	let partToGive = ""
-
-	switch (part) {
-		case "hour":
-			partToGive = twoDigits(formatTo12Hours(timeObject.hours))
-			break
-		case "minute":
-			partToGive = twoDigits(timeObject.minutes)
-			break
-		case "midday":
-			if (timeObject.hours < noon) partToGive = "AM"
-			else partToGive = "PM"
-			break
-
-		default:
-			break
-	}
-
-	return partToGive
-}
-const startTime = ref(convertTimeObjectToTimeString(
+const startTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleStart)
 ))
-const endTime = ref(convertTimeObjectToTimeString(
+const endTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleEnd)
 ))
 const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))

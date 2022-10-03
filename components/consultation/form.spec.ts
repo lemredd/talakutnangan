@@ -202,26 +202,44 @@ describe("Component: consultation/form", () => {
 			expect(otherReasonField.exists()).toBeTruthy()
 		})
 
-		it("can search students", async() => {
-			const students = {
+		it.only("can select within employee's schedules", async() => {
+			const roles = {
+				"data": [
+					{
+						"id": 0,
+						"name": "Role A"
+					}
+				]
+			}
+			const employees = {
 				"data": [
 					{
 						"attributes": {
 							"email": "",
-							"kind": "student",
-							"name": "Student A",
-							"prefersDark": true
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
 						},
-						"id": "1",
+						"id": "2",
 						"type": "user"
 					}
 				]
-			} as UserListDocument
-
+			}
 			fetchMock.mockResponseOnce(
-				JSON.stringify(students),
+				JSON.stringify(employees),
 				{ "status": RequestEnvironment.status.OK }
 			)
+			const schedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+					}
+				]
+			}
 
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -247,35 +265,34 @@ describe("Component: consultation/form", () => {
 				}
 			})
 
-			const consulterBox = wrapper.find(".consulters")
-			const consulterSearchField = consulterBox.findComponent({
+			const consultantBox = wrapper.find(".consultant")
+			const consultantSearchField = consultantBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consulterSearchField.vm.$emit("update:modelValue", students.data[0].attributes.name)
+			await consultantSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
-			await nextTick()
 
-			const castFetch = fetch as jest.Mock<any, any>
-			const [ [ firstRequest ] ] = castFetch.mock.calls
-			expect(firstRequest).toHaveProperty("method", "GET")
-			expect(firstRequest).toHaveProperty("url", `/api/user?${
-				stringifyQuery({
-					"filter": {
-						"department": "*",
-						"existence": "exists",
-						"kind": "student",
-						"role": "*",
-						"slug": students.data[0].attributes.name
-					},
-					"page": {
-						"limit": 10,
-						"offset": 0
-					},
-					"sort": [ "name" ]
-				})
-			}`)
-			expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-			expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			// Display consultant chip
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.findComponent(".selectable-day")
+			expect(selectableDay.exists()).toBeTruthy()
+			expect(selectableDay.attributes("options")).toEqual("[object Object]")
+
+			// Load selectable times and its options
+			await flushPromises()
+			await selectableDay.setValue("monday")
+			const selectableTime = wrapper.findComponent(".selectable-time")
+			expect(selectableTime.exists()).toBeTruthy()
+			expect(selectableTime.attributes("options")).toEqual("[object Object]")
 		})
 	})
 
