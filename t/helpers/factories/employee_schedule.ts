@@ -14,7 +14,7 @@ import type {
 	EmployeeScheduleListDocument
 } from "$/types/documents/employee_schedule"
 
-import { MINUTE_SCHEDULE_INTERVAL } from "$!/constants/numerical"
+import { MINUTE_SCHEDULE_INTERVAL } from "$/constants/numerical"
 
 import User from "%/models/user"
 import UserFactory from "~/factories/user"

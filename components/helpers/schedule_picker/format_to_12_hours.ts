@@ -1,10 +1,11 @@
-import { noon } from "$@/constants/time"
+import { NOON } from "$@/constants/time"
 
 export default function(hour: number) {
 	let convertedHour = 0
 
-	if (hour <= noon) convertedHour = hour
-	else convertedHour = hour - noon
+	if (hour === 0) convertedHour = NOON
+	else if (hour <= NOON) convertedHour = hour
+	else convertedHour = hour - NOON
 
 	return convertedHour
 }

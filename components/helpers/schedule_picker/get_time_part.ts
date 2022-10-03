@@ -1,4 +1,4 @@
-import { noon } from "$@/constants/time"
+import { NOON } from "$@/constants/time"
 
 import twoDigits from "./two_digits"
 import formatTo12Hours from "./format_to_12_hours"
@@ -16,7 +16,7 @@ export default function(timeInMinutes: number, part: "hour" | "minute" | "midday
 			partToGive = twoDigits(timeObject.minutes)
 			break
 		case "midday":
-			if (timeObject.hours < noon) partToGive = "AM"
+			if (timeObject.hours < NOON) partToGive = "AM"
 			else partToGive = "PM"
 			break
 
