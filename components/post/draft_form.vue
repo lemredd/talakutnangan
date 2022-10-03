@@ -2,19 +2,6 @@
 	<form @submit.prevent="submitPostDetails">
 		<div class="row">
 			<div class="col-25">
-				<label for="title">Title</label>
-			</div>
-			<div class="col-75">
-				<input
-					id="title"
-					v-model="title"
-					type="text"
-					name="title"
-					placeholder="Your title.."/>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-25">
 				<label for="desc">Description</label>
 			</div>
 			<div class="col-75">
@@ -37,7 +24,6 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-const title = ref("")
 const description = ref("")
 
 // Post submit
