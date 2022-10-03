@@ -211,6 +211,10 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 	})
 }
 
+const dateToday = new Date()
+const dayToday = Intl.DateTimeFormat("en-US", {
+	"weekday": "long"
+}).format(dateToday).toLocaleLowerCase()
 const selectedDay = ref("")
 const selectableDays = computed(() => {
 	const days: string[] = []
@@ -223,7 +227,23 @@ const selectableDays = computed(() => {
 			return Math.sign(element1Index - element2Index)
 		})
 	}
-	return makeOptionInfo(makeUnique(days)) as OptionInfo[]
+
+	const actualSelectableDays = makeUnique(days).map(day => {
+		const dateTodayString = dateToday.toDateString()
+		dateTodayString.split(" ").shift()
+
+		if (dayToday === day) {
+			return {
+				"label": `${day} (${dateTodayString})`,
+				"value": day
+			}
+		}
+
+		return { "value": day }
+	})
+
+
+	return actualSelectableDays as OptionInfo[]
 })
 
 const selectedTime = ref("")
