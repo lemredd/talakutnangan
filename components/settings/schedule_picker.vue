@@ -129,8 +129,8 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
-import twoDigits from "$@/helpers/two_digits"
-import formatTo12Hours from "$@/helpers/format_to_12_hours"
+import twoDigits from "@/helpers/schedule_picker/two_digits"
+import formatTo12Hours from "@/helpers/schedule_picker/format_to_12_hours"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
 const fetcher = new EmployeeScheduleFetcher()
