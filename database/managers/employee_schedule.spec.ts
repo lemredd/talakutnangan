@@ -9,6 +9,52 @@ import AttachedRoleFactory from "~/factories/attached_role"
 import findMinutesAfterMidnight from "%/helpers/find_minutes_after_midnight"
 
 import Manager from "./employee_schedule"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
+describe("Database Manager: Employee schedule read operations", () => {
+	it("can check if a schedule is available at employee's scheduled time", async() => {
+		// The schedule is in GMT+0 but it will be extracted with native `get` methods
+		const CONSULTATION_SCHEDULED_START = new Date("2022-10-03T00:30:00.000Z")
+		const EMPLOYEE_SCHEDULE_START = convertTimeToMinutes("08:00")
+		const EMPLOYEE_SCHEDULE_END = convertTimeToMinutes("12:00")
+		const EMPLOYEE_SCHEDULE_DAY = DayValues[CONSULTATION_SCHEDULED_START.getDay()]
+
+		const user = await new UserFactory().beReachableEmployee().insertOne()
+		await new Factory()
+		.user(() => Promise.resolve(user))
+		.dayName(() => EMPLOYEE_SCHEDULE_DAY)
+		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
+		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
+		.insertOne()
+
+		const manager = new Manager()
+
+		const isWithinSchedule = await manager.isWithinSchedule(user.id, CONSULTATION_SCHEDULED_START)
+
+		expect(isWithinSchedule).toBeTruthy()
+	})
+
+	it("can check if a schedule is not available at employee's unscheduled time", async() => {
+		const CONSULTATION_SCHEDULED_START = new Date("2022-10-03T08:30:00.001Z")
+		const EMPLOYEE_SCHEDULE_START = convertTimeToMinutes("08:00")
+		const EMPLOYEE_SCHEDULE_END = convertTimeToMinutes("11:00")
+		const EMPLOYEE_SCHEDULE_DAY = DayValues[CONSULTATION_SCHEDULED_START.getDay() - 1]
+
+		const user = await new UserFactory().beReachableEmployee().insertOne()
+		await new Factory()
+		.user(() => Promise.resolve(user))
+		.dayName(() => EMPLOYEE_SCHEDULE_DAY)
+		.scheduleStart(() => EMPLOYEE_SCHEDULE_START)
+		.scheduleEnd(() => EMPLOYEE_SCHEDULE_END)
+		.insertOne()
+
+		const manager = new Manager()
+
+		const isWithinSchedule = await manager.isWithinSchedule(user.id, CONSULTATION_SCHEDULED_START)
+
+		expect(isWithinSchedule).toBeFalsy()
+	})
+})
 
 describe("Database Manager: Employee schedule update operations", () => {
 	it("can update resource and delete other consultations", async() => {
