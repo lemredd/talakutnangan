@@ -46,6 +46,11 @@
 					class="selectable-day"
 					label="Day:"
 					:options="selectableDays"/>
+				<SelectableOptionsField
+					v-if="selectedDay"
+					v-model="selectedTime"
+					class="selectable-time"
+					:options="selectableTimes"/>
 			</div>
 
 			<div class="signature-message text-xs mt-5">
@@ -102,13 +107,14 @@ import { reasons } from "$@/constants/options"
 import Fetcher from "$@/fetchers/consultation"
 
 import Overlay from "@/helpers/overlay.vue"
+import makeUnique from "$/array/make_unique"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
-import makeUnique from "$/array/make_unique"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -160,9 +166,10 @@ const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
 	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
 ])
 
+const employeeScheduleFetcher = new EmployeeScheduleFetcher()
 const consultantSchedules = ref<DeserializedEmployeeScheduleResource[]>([])
 function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
-	new EmployeeScheduleFetcher().list({
+	employeeScheduleFetcher.list({
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
@@ -194,6 +201,32 @@ const selectableDays = computed(() => {
 	}
 	return makeOptionInfo(makeUnique(days)) as OptionInfo[]
 })
+
+const selectedTime = ref("")
+const selectableTimes = computed(() => {
+	const startTimes: OptionInfo[] = []
+	if (consultantSchedules.value.length && selectedDay.value) {
+		const schedulesByDay = consultantSchedules.value.filter(
+			schedule => schedule.dayName === selectedDay.value
+		)
+		schedulesByDay.map(schedule => {
+			const hour = getTimePart(schedule.scheduleStart, "hour")
+			const minute = getTimePart(schedule.scheduleStart, "minute")
+			const midday = getTimePart(schedule.scheduleStart, "midday")
+			const label = `${hour}:${minute} ${midday}`
+
+			return startTimes.push(
+				{
+					label,
+					"value": String(schedule.scheduleStart)
+				}
+			)
+		})
+	}
+
+	return startTimes
+})
+
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,

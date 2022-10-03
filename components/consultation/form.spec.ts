@@ -276,14 +276,23 @@ describe("Component: consultation/form", () => {
 				JSON.stringify(schedules),
 				{ "status": RequestEnvironment.status.OK }
 			)
+			// Display consultant chip
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
 
+			// Load selectable days and its options
+			await flushPromises()
 			const selectableDay = wrapper.findComponent(".selectable-day")
-			// const selectableTime = wrapper.findComponent(".selectable-time")
 			expect(selectableDay.exists()).toBeTruthy()
-			// expect(selectableTime.exists()).toBeTruthy()
+			expect(selectableDay.attributes("options")).toEqual("[object Object]")
+
+			// Load selectable times and its options
+			await flushPromises()
+			await selectableDay.setValue("monday")
+			const selectableTime = wrapper.findComponent(".selectable-time")
+			expect(selectableTime.exists()).toBeTruthy()
+			expect(selectableTime.attributes("options")).toEqual("[object Object]")
 		})
 	})
 
