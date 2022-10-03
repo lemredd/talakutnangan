@@ -119,6 +119,8 @@ import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
+import { noon } from "$@/constants/time"
+
 import Selectable from "@/fields/selectable_options.vue"
 
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
@@ -143,7 +145,6 @@ const props = defineProps<{
 	scheduleEnd: number
 }>()
 
-const noon = 12
 const isEditing = ref(false)
 const isAdding = ref(false)
 function toggleEditing() {
