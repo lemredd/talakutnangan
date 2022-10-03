@@ -16,7 +16,7 @@ import {
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
 
-export default function(role: Ref<DeserializedRoleDocument<"read">>) {
+export default function(role: Ref<DeserializedRoleDocument<"read">>): FlagSelectorInfo[] {
 	function checkExternalDependencies(dependencies: ExternalPermissionDependencyInfo<any, any>[])
 	: void {
 		for (const dependency of dependencies) {
