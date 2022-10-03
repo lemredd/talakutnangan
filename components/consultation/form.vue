@@ -15,7 +15,7 @@
 			<SelectableOptionsField
 				v-if="selectedConsultants.length"
 				v-model="addressConsultantAs"
-				class="consultant-roles"
+				class="consultant-roles mb-5"
 				label="Address consultant as:"
 				:options="consultantRoles"/>
 			<SearchableChip
@@ -40,17 +40,29 @@
 				type="text"/>
 			<div
 				v-if="selectedConsultants.length"
-				class="schedule-selector">
-				<SelectableOptionsField
-					v-model="selectedDay"
-					class="selectable-day"
-					label="Day:"
-					:options="selectableDays"/>
-				<SelectableOptionsField
-					v-if="selectedDay"
-					v-model="selectedTime"
-					class="selectable-time"
-					:options="selectableTimes"/>
+				class="schedule-selector mt-5">
+				<div
+					v-if="consultantSchedules.length"
+					class="consultant-has-schedules">
+					<p>Please select the day and time from the consultant's available schedules</p>
+					<SelectableOptionsField
+						v-model="selectedDay"
+						class="selectable-day"
+						label="Day:"
+						:options="selectableDays"/>
+					<SelectableOptionsField
+						v-if="selectedDay"
+						v-model="selectedTime"
+						class="selectable-time"
+						label="Time:"
+						:options="selectableTimes"/>
+				</div>
+
+				<div v-else class="consultant-no-schedules">
+					<p class="text-red-500">
+						This consultant has not set any schedules yet.
+					</p>
+				</div>
 			</div>
 
 			<div class="signature-message text-xs mt-5">
@@ -66,6 +78,7 @@
 			</button>
 			<button
 				class="btn submit-btn btn-primary"
+				:disabled="!isConsultantAvailable"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -93,6 +106,14 @@
 }
 </style>
 
+<style scoped lang="scss">
+.schedule-selector {
+	.selectable-day, .selectable-time {
+		margin: 1em 0 1em;
+	}
+}
+</style>
+
 <script setup lang="ts">
 import { ref, computed, onMounted, inject, watch } from "vue"
 
@@ -115,6 +136,9 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -204,29 +228,36 @@ const selectableDays = computed(() => {
 
 const selectedTime = ref("")
 const selectableTimes = computed(() => {
-	const startTimes: OptionInfo[] = []
+	const availableTimes: OptionInfo[] = []
 	if (consultantSchedules.value.length && selectedDay.value) {
 		const schedulesByDay = consultantSchedules.value.filter(
 			schedule => schedule.dayName === selectedDay.value
 		)
-		schedulesByDay.map(schedule => {
-			const hour = getTimePart(schedule.scheduleStart, "hour")
-			const minute = getTimePart(schedule.scheduleStart, "minute")
-			const midday = getTimePart(schedule.scheduleStart, "midday")
-			const label = `${hour}:${minute} ${midday}`
+		schedulesByDay.forEach(schedule => {
+			const times = generateTimeRange({
+				"end": schedule.scheduleEnd,
+				"start": schedule.scheduleStart
+			})
 
-			return startTimes.push(
-				{
+			times.forEach(time => {
+				const timeObject = convertMinutesToTimeObject(time)
+				const midday = getTimePart(time, "midday")
+				const label = `${convertToTimeString(timeObject)} ${midday}`
+
+				availableTimes.push({
 					label,
-					"value": String(schedule.scheduleStart)
-				}
-			)
+					"value": String(time)
+				})
+			})
 		})
 	}
 
-	return startTimes
+	return availableTimes
 })
 
+const isConsultantAvailable = computed(
+	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
+)
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
@@ -278,7 +309,9 @@ onMounted(() => {
 })
 
 watch(selectedConsultants, () => {
-	const [ selectedConsultant ] = selectedConsultants.value
-	fetchConsultantSchedules(selectedConsultant)
+	if (selectedConsultants.value.length) {
+		const [ selectedConsultant ] = selectedConsultants.value
+		fetchConsultantSchedules(selectedConsultant)
+	}
 })
 </script>
