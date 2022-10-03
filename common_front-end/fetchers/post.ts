@@ -30,7 +30,7 @@ export default class PostFetcher extends BaseFetcher<
 		super(POST_LINK)
 	}
 
-	async createFile(details: FormData): Promise<Response<
+	async createWithFile(details: FormData): Promise<Response<
 		PostResourceIdentifier<"read">,
 		PostAttributes<"serialized">,
 		PostAttributes<"deserialized">,
