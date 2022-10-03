@@ -9,36 +9,14 @@
 		</div>
 
 		<FlagSelector
-			v-model="role.data.semesterFlags"
-			header="Semester"
-			:base-permission-group="semesterPermissions"/>
-		<FlagSelector
-			v-model="role.data.tagFlags"
-			header="Tag"
-			:base-permission-group="tagPermissions"/>
-		<FlagSelector
-			v-model="role.data.postFlags"
-			header="Post"
-			:base-permission-group="postPermissions"
-			:dependent-permission-groups="[ commentPermissions ]"
-			@uncheck-externally-dependent-flags="uncheckExternalDependents"/>
-		<FlagSelector
-			v-model="role.data.commentFlags"
-			header="Comment"
-			:base-permission-group="commentPermissions"
-			@check-external-dependency-flags="checkExternalDependencies"/>
-		<FlagSelector
-			v-model="role.data.profanityFlags"
-			header="Profanity"
-			:base-permission-group="profanityPermissions"/>
-		<FlagSelector
-			v-model="role.data.userFlags"
-			header="User"
-			:base-permission-group="userPermissions"/>
-		<FlagSelector
-			v-model="role.data.auditTrailFlags"
-			header="Audit Trail"
-			:base-permission-group="auditTrailPermissions"/>
+			v-for="flagSelector in flagSelectors"
+			:key="flagSelector.permissionGroup.name"
+			v-model="flagSelector.model.value"
+			:header="flagSelector.header"
+			:base-permission-group="flagSelector.permissionGroup"
+			:dependent-permission-groups="flagSelector.dependentGroups"
+			@check-external-dependency-flags="flagSelector.checkExternal"
+			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
 		<div class="controls flex justify-between">
 			<button type="submit" class="btn btn-primary">
@@ -72,7 +50,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, computed } from "vue"
+import { ref, inject, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
@@ -81,6 +59,7 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 import Fetcher from "$@/fetchers/role"
 import makeUnique from "$/array/make_unique"
 import makeSwitch from "$@/helpers/make_switch"
+import PermissionGroup from "$/permissions/base"
 import {
 	semester as semesterPermissions,
 	tag as tagPermissions,
@@ -183,6 +162,58 @@ function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<
 
 	uncheckExternalDependents(subdependents)
 }
+
+interface FlagSelectorInfo {
+	"model": Ref<number>,
+	"header": string,
+	"permissionGroup": PermissionGroup<any, any>,
+	"dependentGroups": PermissionGroup<any, any>[],
+	"uncheckExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void,
+	"checkExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void
+}
+
+function makeFlagSelectorInfo(
+	header: string,
+	permissionGroup: PermissionGroup<any, any>,
+	{
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		uncheckExternal = () => {},
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		checkExternal = () => {},
+		dependentGroups = []
+	}: Partial<{
+		"dependentGroups": PermissionGroup<any, any>[]
+		"uncheckExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void,
+		"checkExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void
+	}> = {}
+): FlagSelectorInfo {
+	return {
+		checkExternal,
+		dependentGroups,
+		header,
+		"model": computed<number>({
+			get(): number { return role.value.data[permissionGroup.name] },
+			set(newValue: number): void { role.value.data[permissionGroup.name] = newValue }
+		}),
+		permissionGroup,
+		uncheckExternal
+	}
+}
+
+const flagSelectors: FlagSelectorInfo[] = [
+	makeFlagSelectorInfo("Semester", semesterPermissions),
+	makeFlagSelectorInfo("Tag", tagPermissions),
+	makeFlagSelectorInfo("Post", postPermissions, {
+		"dependentGroups": [ commentPermissions ],
+		"uncheckExternal": uncheckExternalDependents
+	}),
+	makeFlagSelectorInfo("Comment", commentPermissions, {
+		"checkExternal": checkExternalDependencies
+	}),
+	makeFlagSelectorInfo("Profanity", profanityPermissions),
+	makeFlagSelectorInfo("User", userPermissions),
+	makeFlagSelectorInfo("Audit Trail", auditTrailPermissions)
+]
 
 const {
 	"state": isBeingConfirmed,
