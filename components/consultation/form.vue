@@ -86,7 +86,7 @@
 			</button>
 			<button
 				class="btn submit-btn btn-primary"
-				:disabled="!isConsultantAvailable"
+				:disabled="!isRequiredInfoCompleted"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -317,8 +317,13 @@ const scheduledStartAt = computed(() => {
 	return chosenDate.toJSON()
 })
 
-const isConsultantAvailable = computed(
-	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
+
+const isRequiredInfoCompleted = computed(
+	() => Boolean(selectedConsultants.value.length)
+		&& Boolean(addressConsultantAs.value)
+		&& Boolean(consultantSchedules.value.length)
+		&& Boolean(reason.value)
+		&& Boolean(chosenTime.value)
 )
 function addConsultation(): void {
 	const consultant = {
