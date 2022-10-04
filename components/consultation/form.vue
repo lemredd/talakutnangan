@@ -215,7 +215,7 @@ const dateToday = new Date()
 const dayIndex = dateToday.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
-const selectedDay = ref("")
+const chosenDay = ref("")
 const selectableDays = computed(() => {
 	const dates: Date[] = []
 	if (consultantSchedules.value.length) {
@@ -286,6 +286,17 @@ const selectableTimes = computed(() => {
 	return availableTimes
 })
 
+const scheduledStartAt = computed(() => {
+	const chosenDate = new Date(chosenDay.value)
+	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+
+	chosenDate.setHours(timeObject.hours)
+	chosenDate.setMinutes(timeObject.minutes)
+	chosenDate.setSeconds(0)
+
+	return chosenDate.toJSON()
+})
+
 const isConsultantAvailable = computed(
 	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
 )
@@ -304,8 +315,7 @@ function addConsultation(): void {
 		"deletedAt": null,
 		"finishedAt": null,
 		"reason": reason.value,
-		// TODO: Make the schedule selector
-		"scheduledStartAt": new Date().toJSON(),
+		"scheduledStartAt": scheduledStartAt.value,
 		"startedAt": null
 	}, {
 		"extraCreateDocumentProps": { meta },
