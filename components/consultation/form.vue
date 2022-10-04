@@ -212,34 +212,43 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 }
 
 const dateToday = new Date()
-const dayToday = Intl.DateTimeFormat("en-US", {
-	"weekday": "long"
-}).format(dateToday).toLocaleLowerCase()
+const dayIndex = dateToday.getDay()
+const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
+
 const selectedDay = ref("")
 const selectableDays = computed(() => {
-	const days: string[] = []
+	const dates: Date[] = []
 	if (consultantSchedules.value.length) {
-		consultantSchedules.value.map(schedule => days.push(schedule.dayName))
-		days.sort((element1, element2) => {
-			const element1Index = DayValues.indexOf(element1 as Day)
-			const element2Index = DayValues.indexOf(element2 as Day)
+		const consultantDays = makeUnique(consultantSchedules.value.map(schedule => schedule.dayName))
+
+		consultantDays.sort((element1, element2) => {
+			const element1Index = reorderedDays.indexOf(element1 as Day)
+			const element2Index = reorderedDays.indexOf(element2 as Day)
 
 			return Math.sign(element1Index - element2Index)
 		})
+
+		for (const day of consultantDays) {
+			const dateCounter = new Date()
+			const reorderedDayIndex = reorderedDays.indexOf(day)
+			dateCounter.setDate(dateCounter.getDate() + reorderedDayIndex)
+
+			dates.push(dateCounter)
+		}
 	}
 
-	const actualSelectableDays = makeUnique(days).map(day => {
-		const dateTodayString = dateToday.toDateString()
-		dateTodayString.split(" ").shift()
+	const actualSelectableDays = dates.map(date => {
+		const previewDate = date.toDateString().split(" ")
+		previewDate.shift()
 
-		if (dayToday === day) {
-			return {
-				"label": `${day} (${dateTodayString})`,
-				"value": day
-			}
+		return {
+			"label": `${DayValues[date.getDay()]} (${previewDate.join(" ")})`,
+			"value": date.toJSON()
 		}
-
-		return { "value": day }
+	})
+	actualSelectableDays.push({
+		"label": "Custom...",
+		"value": "custom"
 	})
 
 
@@ -332,6 +341,8 @@ watch(selectedConsultants, () => {
 	if (selectedConsultants.value.length) {
 		const [ selectedConsultant ] = selectedConsultants.value
 		fetchConsultantSchedules(selectedConsultant)
+	} else {
+		consultantSchedules.value = []
 	}
 })
 </script>
