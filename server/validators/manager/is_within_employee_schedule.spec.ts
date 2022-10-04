@@ -47,7 +47,7 @@ describe("Validator: Is within employee schedule", () => {
 		const CONSULTATION_SCHEDULED_START = new Date("2022-10-02T23:30:00.000Z")
 		const EMPLOYEE_SCHEDULE_START = convertTimeToMinutes("07:00")
 		const EMPLOYEE_SCHEDULE_END = convertTimeToMinutes("11:00")
-		const EMPLOYEE_SCHEDULE_DAY = DayValues[CONSULTATION_SCHEDULED_START.getDay()]
+		const EMPLOYEE_SCHEDULE_DAY = DayValues[CONSULTATION_SCHEDULED_START.getDay() - 1]
 
 		const user = await new UserFactory().beReachableEmployee().insertOne()
 		await new Factory()
