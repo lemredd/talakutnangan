@@ -148,6 +148,7 @@ import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
+import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -221,7 +222,7 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 }
 
 const dateToday = new Date()
-const dateInNextMonth = new Date(dateToday.getFullYear(), dateToday.getMonth() + 1)
+const dateInNextMonth = jumpNextMonth(dateToday)
 const dayIndex = dateToday.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
