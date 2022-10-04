@@ -5,8 +5,6 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { UserListDocument } from "$/types/documents/user"
 
-import { reasons } from "$@/constants/options"
-
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -308,7 +306,7 @@ describe("Component: consultation/form", () => {
 	})
 
 	describe("Form submission", () => {
-		it.only("should not submit with incomplete required information", async() => {
+		it("should not submit with incomplete required information", async() => {
 			const roles = {
 				"data": [
 					{
@@ -389,24 +387,28 @@ describe("Component: consultation/form", () => {
 
 			await consultantSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			expect(submitBtn.attributes("disabled")).toBeTruthy()
 			// Select consultant
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
+			expect(submitBtn.attributes("disabled")).toBeDefined()
 
 			// Load selectable days and its options
 			await flushPromises()
 			const selectableDay = wrapper.find(".selectable-day")
 			const dayOptions = selectableDay.findAll("option")
+			expect(submitBtn.attributes("disabled")).toBeDefined()
 
 			// Load selectable times and its options
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			expect(submitBtn.attributes("disabled")).toBeFalsy()
 		})
-		it("should submit successfully and refresh the page with other consulters", async() => {
+
+		it.only("should submit with other consulters", async() => {
 			const roles = {
 				"data": [
 					{
@@ -519,6 +521,10 @@ describe("Component: consultation/form", () => {
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
+			const selectableTimeField = selectableTime.find("select")
+			await selectableTimeField.setValue(timeOptions[1].attributes("value"))
 
 			await consulterSearchField.setValue(students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
@@ -632,6 +638,10 @@ describe("Component: consultation/form", () => {
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
+			const selectableTimeField = selectableTime.find("select")
+			await selectableTimeField.setValue(timeOptions[1].attributes("value"))
 
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
