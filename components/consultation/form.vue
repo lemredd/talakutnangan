@@ -46,13 +46,13 @@
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
 					<SelectableOptionsField
-						v-model="selectedDay"
+						v-model="chosenDay"
 						class="selectable-day"
 						label="Day:"
 						:options="selectableDays"/>
 					<SelectableOptionsField
-						v-if="selectedDay"
-						v-model="selectedTime"
+						v-if="chosenDay"
+						v-model="chosenTime"
 						class="selectable-time"
 						label="Time:"
 						:options="selectableTimes"/>
