@@ -95,7 +95,7 @@ export interface ValidateExtensivelyIfRuleConstraints {
 	}
 }
 
-export interface UniqueEmployeeScheduleRuleConstraint {
+export interface UniqueEmployeeScheduleRuleConstraints {
 	uniqueEmployeeSchedule: {
 		userIDPointer: string,
 		employeeScheduleIDPointer?: string
@@ -114,7 +114,7 @@ export interface RestorableEmployeeScheduleConstraints extends ManagerBasedRuleC
 	}
 }
 
-export interface ExistWithSameAttributeConstraint extends ManagerBasedRuleConstraints {
+export interface ExistWithSameAttributeConstraints extends ManagerBasedRuleConstraints {
 	sameAttribute: {
 		columnName: string,
 		pointer?: string
@@ -165,8 +165,8 @@ export type RuleContraints = Partial<
 	& BufferRuleConstraints
 	& RegexRuleConstraints
 	& NotRuleConstraints
-	& UniqueEmployeeScheduleRuleConstraint
-	& ExistWithSameAttributeConstraint
+	& UniqueEmployeeScheduleRuleConstraints
+	& ExistWithSameAttributeConstraints
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
