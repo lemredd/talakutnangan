@@ -86,9 +86,9 @@ describe("Controller: POST /api/consultation", () => {
 		.makeOne()
 		await new EmployeeScheduleFactory()
 		.user(() => Promise.resolve(model.consultant as User))
-		.dayName(() => DayValues[model.scheduledStartAt.getDay() - 1])
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:00"))
-		.scheduleEnd(() => convertTimeToMinutes("23:59"))
+		.scheduleEnd(() => convertTimeToMinutes("23:58"))
 		.insertOne()
 		requester.customizeRequest({
 			"body": {
@@ -108,8 +108,9 @@ describe("Controller: POST /api/consultation", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(2)
-		expect(body).toHaveProperty("0.source.pointer", "data.relationships")
-		expect(body).toHaveProperty("1.source.pointer", "meta")
+		expect(body).toHaveLength(3)
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.scheduledStartAt")
+		expect(body).toHaveProperty("1.source.pointer", "data.relationships")
+		expect(body).toHaveProperty("2.source.pointer", "meta")
 	})
 })
