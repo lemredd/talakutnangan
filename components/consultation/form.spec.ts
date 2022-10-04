@@ -14,6 +14,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./form.vue"
 import Stub from "$/singletons/stub"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 jest.useFakeTimers()
 
@@ -231,10 +232,12 @@ describe("Component: consultation/form", () => {
 			const schedules = {
 				"data": [
 					{
-						"dayName": "monday",
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
 						"id": "1",
-						"scheduleEnd": 540,
-						"scheduleStart": 480,
 						"type": "employee_schedule"
 					}
 				]
@@ -256,7 +259,8 @@ describe("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
-						"SearchableChip": false
+						"SearchableChip": false,
+						"SelectableOptionsField": false
 					}
 				},
 				"props": {
@@ -282,17 +286,19 @@ describe("Component: consultation/form", () => {
 
 			// Load selectable days and its options
 			await flushPromises()
-			const selectableDay = wrapper.findComponent(".selectable-day")
+			const selectableDay = wrapper.find(".selectable-day")
 			expect(selectableDay.exists()).toBeTruthy()
-			expect(selectableDay.attributes("options")).toEqual("[object Object]")
+			const dayOptions = selectableDay.findAll("option")
+			expect(dayOptions).toHaveLength(3)
 
 			// Load selectable times and its options
 			await flushPromises()
-			await selectableDay.setValue("monday")
-			const selectableTime = wrapper.findComponent(".selectable-time")
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
 			expect(selectableTime.exists()).toBeTruthy()
-			const availableTimes = selectableTime.attributes("options")?.split(",")
-			expect(availableTimes).toHaveLength(5)
+
+			console.log(wrapper.html(), "\n\n\n")
 		})
 	})
 
