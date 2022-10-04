@@ -4,7 +4,9 @@
 		<template #header>
 			<h1>Enter the consultation details</h1>
 		</template>
+
 		<template #default>
+			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant"
@@ -12,12 +14,15 @@
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
+
+			<!-- TODO: style required field -->
 			<SelectableOptionsField
 				v-if="selectedConsultants.length"
 				v-model="addressConsultantAs"
 				class="consultant-roles mb-5"
 				label="Address consultant as:"
 				:options="consultantRoles"/>
+
 			<SearchableChip
 				v-model="selectedConsulters"
 				:current-user-id="userProfileData.id"
@@ -26,18 +31,23 @@
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>
+
+			<!-- TODO: style required field -->
 			<SelectableOptionsField
 				v-model="chosenReason"
 				class="reason"
 				label="Kind of Reason: "
 				placeholder="Choose your reason"
 				:options="reasonOptions"/>
+
+			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
 				class="other-reason"
 				label="What are the other reasons(s)?"
 				type="text"/>
+
 			<div
 				v-if="selectedConsultants.length"
 				class="schedule-selector mt-5">
@@ -45,6 +55,7 @@
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
+					<!-- TODO: style required field -->
 					<SelectableOptionsField
 						v-model="chosenDay"
 						class="selectable-day"
@@ -58,6 +69,8 @@
 							:max="castToCompatibleDate(dateInNextMonth)"
 							type="date"/>
 					</div>
+
+					<!-- TODO: style required field -->
 					<SelectableOptionsField
 						v-if="chosenDay"
 						v-model="chosenTime"
@@ -77,6 +90,7 @@
 				By submitting, your signatures will be applied on the printable consultation form.
 			</div>
 		</template>
+
 		<template #footer>
 			<button
 				class="btn btn-back"
