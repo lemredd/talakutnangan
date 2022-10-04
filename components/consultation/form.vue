@@ -50,6 +50,14 @@
 						class="selectable-day"
 						label="Day:"
 						:options="selectableDays"/>
+					<div v-if="isCustomDate" class="selectable date-picker">
+						<span>Select a date:</span>
+						<input
+							v-model="customDate"
+							:min="castToCompatibleDate(dateToday)"
+							:max="castToCompatibleDate(dateInNextMonth)"
+							type="date"/>
+					</div>
 					<SelectableOptionsField
 						v-if="chosenDay"
 						v-model="chosenTime"
@@ -139,6 +147,7 @@ import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
+import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -212,10 +221,13 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 }
 
 const dateToday = new Date()
+const dateInNextMonth = new Date(dateToday.getFullYear(), dateToday.getMonth() + 1)
 const dayIndex = dateToday.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
 const chosenDay = ref("")
+const customDate = ref("")
+const isCustomDate = computed(() => chosenDay.value === "custom")
 const selectableDays = computed(() => {
 	const dates: Date[] = []
 	if (consultantSchedules.value.length) {
@@ -258,8 +270,12 @@ const selectableDays = computed(() => {
 const chosenTime = ref("")
 const selectableTimes = computed(() => {
 	const availableTimes: OptionInfo[] = []
-	if (consultantSchedules.value.length && chosenDay.value) {
-		const convertedDate = new Date(chosenDay.value)
+	const dayToDerive = isCustomDate.value && customDate.value
+		? customDate.value
+		: chosenDay.value
+
+	if (consultantSchedules.value.length && dayToDerive) {
+		const convertedDate = new Date(dayToDerive)
 		const day = DayValues[convertedDate.getDay()]
 		const schedulesByDay = consultantSchedules.value.filter(
 			schedule => schedule.dayName === day
@@ -287,12 +303,15 @@ const selectableTimes = computed(() => {
 })
 
 const scheduledStartAt = computed(() => {
-	const chosenDate = new Date(chosenDay.value)
-	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+	const chosenDate = isCustomDate.value && customDate.value
+		? new Date(customDate.value)
+		: new Date(chosenDay.value)
 
+	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
 	chosenDate.setMinutes(timeObject.minutes)
 	chosenDate.setSeconds(0)
+	chosenDate.setMilliseconds(0)
 
 	return chosenDate.toJSON()
 })
