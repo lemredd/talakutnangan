@@ -296,9 +296,14 @@ describe("Component: consultation/form", () => {
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
 			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
 			expect(selectableTime.exists()).toBeTruthy()
+			expect(timeOptions.length).toBeGreaterThan(0)
 
-			console.log(wrapper.html(), "\n\n\n")
+			// Customizable date
+			await selectableDayField.setValue(dayOptions[2].attributes("value"))
+			expect(selectableTime.exists()).toBeTruthy()
+			expect(timeOptions.length).toBeGreaterThan(0)
 		})
 	})
 
