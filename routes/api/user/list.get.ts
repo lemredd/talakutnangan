@@ -35,8 +35,8 @@ export default class extends QueryController {
 				},
 				"pipes": [ nullable, string ]
 			},
-			...makeIDBasedFilterRules("department", DepartmentManager, true),
-			...makeIDBasedFilterRules("role", RoleManager, true),
+			...makeIDBasedFilterRules("department", DepartmentManager, { "mustCast": true }),
+			...makeIDBasedFilterRules("role", RoleManager, { "mustCast": true }),
 			"kind": {
 				"constraints": {
 					"nullable": { "defaultValue": "*" },
