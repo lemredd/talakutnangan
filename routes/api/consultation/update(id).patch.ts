@@ -33,6 +33,7 @@ import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
+import isWithinEmployeeSchedule from "!/validators/manager/is_within_employee_schedule"
 import hasNoOtherActiveConsultation from "!/validators/manager/has_no_other_active_consultation"
 
 export default class extends DoubleBoundJSONController {
@@ -116,13 +117,22 @@ export default class extends DoubleBoundJSONController {
 					"isLessThan": {
 						"pointer": "data.attributes.startedAt"
 					},
-					// TODO: Check if the schedule fits within the schedule of employee
+					"isWithinEmployeeSchedule": {
+						"userIDPointer": "data.relationships.consultant.data.id"
+					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
 						"userIDPointer": "data.relationships.consultant.data.id"
 					}
 				},
-				"pipes": [ required, string, date, isLessThan, uniqueConsultationSchedule ]
+				"pipes": [
+					required,
+					string,
+					date,
+					isLessThan,
+					isWithinEmployeeSchedule,
+					uniqueConsultationSchedule
+				]
 			},
 			"startedAt": {
 				"constraints": {
