@@ -202,7 +202,7 @@ describe("Component: consultation/form", () => {
 			expect(otherReasonField.exists()).toBeTruthy()
 		})
 
-		it.only("can select within employee's schedules", async() => {
+		it("can select within employee's schedules", async() => {
 			const roles = {
 				"data": [
 					{
@@ -319,14 +319,26 @@ describe("Component: consultation/form", () => {
 							"email": "",
 							"kind": "reachable_employee",
 							"name": "Employee A",
-							"prefersDark": true,
 							roles
 						},
 						"id": "2",
 						"type": "user"
 					}
 				]
-			} as UserListDocument
+			}
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				]
+			}
 			const students = {
 				"data": [
 					{
@@ -341,6 +353,22 @@ describe("Component: consultation/form", () => {
 					}
 				]
 			} as UserListDocument
+			fetchMock.mockResponseOnce(
+				JSON.stringify(employees),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(students),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				"",
+				{ "status": RequestEnvironment.status.NO_CONTENT }
+			)
 
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -358,7 +386,8 @@ describe("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
-						"SearchableChip": false
+						"SearchableChip": false,
+						"SelectableOptionsField": false
 					}
 				},
 				"props": {
@@ -370,26 +399,23 @@ describe("Component: consultation/form", () => {
 				"name": "NonSensitiveTextField"
 			})
 
-			fetchMock.mockResponseOnce(
-				JSON.stringify(employees),
-				{ "status": RequestEnvironment.status.OK }
-			)
 			await consultantSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+
+			// Display consultant chip
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
-			await nextTick()
-			const [ selectableConsultantRoles, selectableReason ] = wrapper.findAllComponents({
-				"name": "SelectableOptionsField"
-			})
-			await selectableConsultantRoles.setValue(roles.data[0].name)
-			await selectableReason.setValue(reasons[0])
 
-			fetchMock.mockResponseOnce(
-				JSON.stringify(students),
-				{ "status": RequestEnvironment.status.OK }
-			)
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			const dayOptions = selectableDay.findAll("option")
+
+			// Load selectable times and its options
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
 
 			await consulterSearchField.setValue(students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
@@ -398,11 +424,6 @@ describe("Component: consultation/form", () => {
 			await studentChip.trigger("click")
 			await nextTick()
 
-
-			fetchMock.mockResponseOnce(
-				"",
-				{ "status": RequestEnvironment.status.NO_CONTENT }
-			)
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
 			await flushPromises()
@@ -413,7 +434,7 @@ describe("Component: consultation/form", () => {
 			expect(previousCalls).not.toHaveProperty("0.arguments.1")
 		})
 
-		it("should submit successfully and refresh the page without other consulters", async() => {
+		it("should submit without other consulters", async() => {
 			const roles = {
 				"data": [
 					{
@@ -429,17 +450,37 @@ describe("Component: consultation/form", () => {
 							"email": "",
 							"kind": "reachable_employee",
 							"name": "Employee A",
-							"prefersDark": true,
 							roles
 						},
 						"id": "2",
 						"type": "user"
 					}
 				]
-			} as UserListDocument
+			}
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				]
+			}
 			fetchMock.mockResponseOnce(
 				JSON.stringify(employees),
 				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				"",
+				{ "status": RequestEnvironment.status.NO_CONTENT }
 			)
 
 			const wrapper = shallowMount<any>(Component, {
@@ -458,7 +499,8 @@ describe("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
-						"SearchableChip": false
+						"SearchableChip": false,
+						"SelectableOptionsField": false
 					}
 				},
 				"props": {
@@ -473,20 +515,21 @@ describe("Component: consultation/form", () => {
 			await consultantSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
+			// Display consultant chip
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
-			await nextTick()
-			const [ selectableConsultantRoles, selectableReason ] = wrapper.findAllComponents({
-				"name": "SelectableOptionsField"
-			})
-			await selectableConsultantRoles.setValue(roles.data[0].name)
-			await selectableReason.setValue(reasons[0])
 
-			fetchMock.mockResponseOnce(
-				"",
-				{ "status": RequestEnvironment.status.NO_CONTENT }
-			)
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			const dayOptions = selectableDay.findAll("option")
+
+			// Load selectable times and its options
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
 			await flushPromises()
