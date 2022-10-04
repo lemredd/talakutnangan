@@ -4,7 +4,9 @@
 		<template #header>
 			<h1>Enter the consultation details</h1>
 		</template>
+
 		<template #default>
+			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant"
@@ -12,12 +14,15 @@
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
+
+			<!-- TODO: style required field -->
 			<SelectableOptionsField
 				v-if="selectedConsultants.length"
 				v-model="addressConsultantAs"
 				class="consultant-roles mb-5"
 				label="Address consultant as:"
 				:options="consultantRoles"/>
+
 			<SearchableChip
 				v-model="selectedConsulters"
 				:current-user-id="userProfileData.id"
@@ -26,18 +31,23 @@
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>
+
+			<!-- TODO: style required field -->
 			<SelectableOptionsField
 				v-model="chosenReason"
 				class="reason"
 				label="Kind of Reason: "
 				placeholder="Choose your reason"
 				:options="reasonOptions"/>
+
+			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
 				class="other-reason"
 				label="What are the other reasons(s)?"
 				type="text"/>
+
 			<div
 				v-if="selectedConsultants.length"
 				class="schedule-selector mt-5">
@@ -45,11 +55,22 @@
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
+					<!-- TODO: style required field -->
 					<SelectableOptionsField
 						v-model="chosenDay"
 						class="selectable-day"
 						label="Day:"
 						:options="selectableDays"/>
+					<div v-if="isCustomDate" class="selectable date-picker">
+						<span>Select a date:</span>
+						<input
+							v-model="customDate"
+							:min="castToCompatibleDate(dateToday)"
+							:max="castToCompatibleDate(dateInNextMonth)"
+							type="date"/>
+					</div>
+
+					<!-- TODO: style required field -->
 					<SelectableOptionsField
 						v-if="chosenDay"
 						v-model="chosenTime"
@@ -69,6 +90,7 @@
 				By submitting, your signatures will be applied on the printable consultation form.
 			</div>
 		</template>
+
 		<template #footer>
 			<button
 				class="btn btn-back"
@@ -78,7 +100,7 @@
 			</button>
 			<button
 				class="btn submit-btn btn-primary"
-				:disabled="!isConsultantAvailable"
+				:disabled="!isRequiredInfoCompleted"
 				type="button"
 				@click="addConsultation">
 				Submit
@@ -139,6 +161,8 @@ import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
+import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
+import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -212,10 +236,13 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 }
 
 const dateToday = new Date()
+const dateInNextMonth = jumpNextMonth(dateToday)
 const dayIndex = dateToday.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
 const chosenDay = ref("")
+const customDate = ref("")
+const isCustomDate = computed(() => chosenDay.value === "custom")
 const selectableDays = computed(() => {
 	const dates: Date[] = []
 	if (consultantSchedules.value.length) {
@@ -258,8 +285,12 @@ const selectableDays = computed(() => {
 const chosenTime = ref("")
 const selectableTimes = computed(() => {
 	const availableTimes: OptionInfo[] = []
-	if (consultantSchedules.value.length && chosenDay.value) {
-		const convertedDate = new Date(chosenDay.value)
+	const dayToDerive = isCustomDate.value && customDate.value
+		? customDate.value
+		: chosenDay.value
+
+	if (consultantSchedules.value.length && dayToDerive) {
+		const convertedDate = new Date(dayToDerive)
 		const day = DayValues[convertedDate.getDay()]
 		const schedulesByDay = consultantSchedules.value.filter(
 			schedule => schedule.dayName === day
@@ -287,18 +318,26 @@ const selectableTimes = computed(() => {
 })
 
 const scheduledStartAt = computed(() => {
-	const chosenDate = new Date(chosenDay.value)
-	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+	const chosenDate = isCustomDate.value && customDate.value
+		? new Date(customDate.value)
+		: new Date(chosenDay.value)
 
+	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
 	chosenDate.setMinutes(timeObject.minutes)
 	chosenDate.setSeconds(0)
+	chosenDate.setMilliseconds(0)
 
 	return chosenDate.toJSON()
 })
 
-const isConsultantAvailable = computed(
-	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
+
+const isRequiredInfoCompleted = computed(
+	() => Boolean(selectedConsultants.value.length)
+		&& Boolean(addressConsultantAs.value)
+		&& Boolean(consultantSchedules.value.length)
+		&& Boolean(reason.value)
+		&& Boolean(chosenTime.value)
 )
 function addConsultation(): void {
 	const consultant = {
