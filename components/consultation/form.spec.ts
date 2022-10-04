@@ -308,6 +308,104 @@ describe("Component: consultation/form", () => {
 	})
 
 	describe("Form submission", () => {
+		it.only("should not submit with incomplete required information", async() => {
+			const roles = {
+				"data": [
+					{
+						"id": 1,
+						"name": "role"
+					}
+				]
+			}
+			const employees = {
+				"data": [
+					{
+						"attributes": {
+							"email": "",
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
+						},
+						"id": "2",
+						"type": "user"
+					}
+				]
+			}
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				]
+			}
+			fetchMock.mockResponseOnce(
+				JSON.stringify(employees),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				"",
+				{ "status": RequestEnvironment.status.NO_CONTENT }
+			)
+
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"id": "1",
+										"type": "user"
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"Overlay": false,
+						"SearchableChip": false,
+						"SelectableOptionsField": false
+					}
+				},
+				"props": {
+					"isShown": true
+				}
+			})
+
+			const [ consultantSearchField ] = wrapper.findAllComponents({
+				"name": "NonSensitiveTextField"
+			})
+			const submitBtn = wrapper.find(".submit-btn")
+
+			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+
+			expect(submitBtn.attributes("disabled")).toBeTruthy()
+			// Select consultant
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			const dayOptions = selectableDay.findAll("option")
+
+			// Load selectable times and its options
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+		})
 		it("should submit successfully and refresh the page with other consulters", async() => {
 			const roles = {
 				"data": [
