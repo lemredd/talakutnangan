@@ -102,6 +102,12 @@ export interface UniqueEmployeeScheduleRuleConstraint {
 	}
 }
 
+export interface IsWithinEmployeeScheduleRuleConstraints {
+	isWithinEmployeeSchedule: {
+		userIDPointer: string
+	}
+}
+
 export interface RestorableEmployeeScheduleConstraints extends ManagerBasedRuleConstraints {
 	restorableEmployeeSchedule: {
 		userIDPointer: string
@@ -164,6 +170,7 @@ export type RuleContraints = Partial<
 	& SizeConstraints
 	& RestorableEmployeeScheduleConstraints
 	& UniqueConsultationScheduleConstraints
+	& IsWithinEmployeeScheduleRuleConstraints
 	& DoesBelongToCurrentUserConstraints<unknown>
 	& OrRuleConstraints
 	& DivisibleByConstraints
