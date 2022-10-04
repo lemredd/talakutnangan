@@ -255,12 +255,14 @@ const selectableDays = computed(() => {
 	return actualSelectableDays as OptionInfo[]
 })
 
-const selectedTime = ref("")
+const chosenTime = ref("")
 const selectableTimes = computed(() => {
 	const availableTimes: OptionInfo[] = []
-	if (consultantSchedules.value.length && selectedDay.value) {
+	if (consultantSchedules.value.length && chosenDay.value) {
+		const convertedDate = new Date(chosenDay.value)
+		const day = DayValues[convertedDate.getDay()]
 		const schedulesByDay = consultantSchedules.value.filter(
-			schedule => schedule.dayName === selectedDay.value
+			schedule => schedule.dayName === day
 		)
 		schedulesByDay.forEach(schedule => {
 			const times = generateTimeRange({
