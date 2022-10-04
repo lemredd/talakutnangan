@@ -46,13 +46,13 @@
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
 					<SelectableOptionsField
-						v-model="selectedDay"
+						v-model="chosenDay"
 						class="selectable-day"
 						label="Day:"
 						:options="selectableDays"/>
 					<SelectableOptionsField
-						v-if="selectedDay"
-						v-model="selectedTime"
+						v-if="chosenDay"
+						v-model="chosenTime"
 						class="selectable-time"
 						label="Time:"
 						:options="selectableTimes"/>
@@ -211,27 +211,58 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 	})
 }
 
-const selectedDay = ref("")
+const dateToday = new Date()
+const dayIndex = dateToday.getDay()
+const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
+
+const chosenDay = ref("")
 const selectableDays = computed(() => {
-	const days: string[] = []
+	const dates: Date[] = []
 	if (consultantSchedules.value.length) {
-		consultantSchedules.value.map(schedule => days.push(schedule.dayName))
-		days.sort((element1, element2) => {
-			const element1Index = DayValues.indexOf(element1 as Day)
-			const element2Index = DayValues.indexOf(element2 as Day)
+		const consultantDays = makeUnique(consultantSchedules.value.map(schedule => schedule.dayName))
+
+		consultantDays.sort((element1, element2) => {
+			const element1Index = reorderedDays.indexOf(element1 as Day)
+			const element2Index = reorderedDays.indexOf(element2 as Day)
 
 			return Math.sign(element1Index - element2Index)
 		})
+
+		for (const day of consultantDays) {
+			const dateCounter = new Date()
+			const reorderedDayIndex = reorderedDays.indexOf(day)
+			dateCounter.setDate(dateCounter.getDate() + reorderedDayIndex)
+
+			dates.push(dateCounter)
+		}
 	}
-	return makeOptionInfo(makeUnique(days)) as OptionInfo[]
+
+	const actualSelectableDays = dates.map(date => {
+		const previewDate = date.toDateString().split(" ")
+		previewDate.shift()
+
+		return {
+			"label": `${DayValues[date.getDay()]} (${previewDate.join(" ")})`,
+			"value": date.toJSON()
+		}
+	})
+	actualSelectableDays.push({
+		"label": "Custom...",
+		"value": "custom"
+	})
+
+
+	return actualSelectableDays as OptionInfo[]
 })
 
-const selectedTime = ref("")
+const chosenTime = ref("")
 const selectableTimes = computed(() => {
 	const availableTimes: OptionInfo[] = []
-	if (consultantSchedules.value.length && selectedDay.value) {
+	if (consultantSchedules.value.length && chosenDay.value) {
+		const convertedDate = new Date(chosenDay.value)
+		const day = DayValues[convertedDate.getDay()]
 		const schedulesByDay = consultantSchedules.value.filter(
-			schedule => schedule.dayName === selectedDay.value
+			schedule => schedule.dayName === day
 		)
 		schedulesByDay.forEach(schedule => {
 			const times = generateTimeRange({
@@ -255,6 +286,17 @@ const selectableTimes = computed(() => {
 	return availableTimes
 })
 
+const scheduledStartAt = computed(() => {
+	const chosenDate = new Date(chosenDay.value)
+	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+
+	chosenDate.setHours(timeObject.hours)
+	chosenDate.setMinutes(timeObject.minutes)
+	chosenDate.setSeconds(0)
+
+	return chosenDate.toJSON()
+})
+
 const isConsultantAvailable = computed(
 	() => Boolean(selectedConsultants.value.length) && Boolean(consultantSchedules.value.length)
 )
@@ -273,8 +315,7 @@ function addConsultation(): void {
 		"deletedAt": null,
 		"finishedAt": null,
 		"reason": reason.value,
-		// TODO: Make the schedule selector
-		"scheduledStartAt": new Date().toJSON(),
+		"scheduledStartAt": scheduledStartAt.value,
 		"startedAt": null
 	}, {
 		"extraCreateDocumentProps": { meta },
@@ -312,6 +353,8 @@ watch(selectedConsultants, () => {
 	if (selectedConsultants.value.length) {
 		const [ selectedConsultant ] = selectedConsultants.value
 		fetchConsultantSchedules(selectedConsultant)
+	} else {
+		consultantSchedules.value = []
 	}
 })
 </script>
