@@ -6,10 +6,10 @@ import Consultation from "%/models/consultation"
 import Factory from "~/factories/employee_schedule"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import findMinutesAfterMidnight from "%/helpers/find_minutes_after_midnight"
 
 import Manager from "./employee_schedule"
-import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 describe("Database Manager: Employee schedule read operations", () => {
 	it("can check if a schedule is available at employee's scheduled time", async() => {
