@@ -13,7 +13,7 @@ describe("Validator: Is within employee schedule", () => {
 		// The schedule is in GMT+0 but it will be extracted with native `get` methods
 		const CONSULTATION_SCHEDULED_START = new Date("2022-10-03T00:30:00.000Z")
 		const EMPLOYEE_SCHEDULE_START = convertTimeToMinutes("08:00")
-		const EMPLOYEE_SCHEDULE_END = convertTimeToMinutes("12:00")
+		const EMPLOYEE_SCHEDULE_END = convertTimeToMinutes("10:00")
 		const EMPLOYEE_SCHEDULE_DAY = DayValues[CONSULTATION_SCHEDULED_START.getDay()]
 
 		const user = await new UserFactory().beReachableEmployee().insertOne()
