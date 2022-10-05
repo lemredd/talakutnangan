@@ -2,6 +2,29 @@
 	<div class="consultations-list">
 		<!-- TODO(others): Refactor all WindiCSS inline classes using @apply directive -->
 		<!-- TODO(others): use grid if applicable -->
+		<div class="consultations-list-header p-3">
+			<div v-if="!isSearching" class="no-search-bar flex flex-1">
+				<h2 class="flex-1">
+					Consultations
+				</h2>
+
+				<button
+					class="material-icons search"
+					@click="toggleSearch">
+					search
+				</button>
+			</div>
+			<div
+				v-else
+				class="is-searching flex flex-1">
+				<!-- TODO(lead/button): search existing consultations -->
+
+				<SearchBar v-model="slug" class="flex flex-1"/>
+				<button class="material-icons text-xs" @click="toggleSearch">
+					close
+				</button>
+			</div>
+		</div>
 		<div
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
@@ -38,7 +61,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
@@ -62,6 +85,15 @@ import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 import makeUniqueBy from "$/helpers/make_unique_by"
+
+import SearchBar from "@/helpers/search_bar.vue"
+
+
+const slug = ref("")
+const isSearching = ref(false)
+function toggleSearch() {
+	isSearching.value = !isSearching.value
+}
 
 const pageContext = inject("pageContext") as PageContext
 

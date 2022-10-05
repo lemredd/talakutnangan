@@ -7,30 +7,6 @@
 <template>
 	<div class="consultations-container">
 		<section class="consultations-picker left relative">
-			<div class="consultations-list-header p-3">
-				<div v-if="!isSearching" class="no-search-bar flex flex-1">
-					<h2 class="flex-1">
-						Consultations
-					</h2>
-
-					<button
-						class="material-icons search"
-						@click="toggleSearch">
-						search
-					</button>
-				</div>
-				<div
-					v-else
-					class="is-searching flex flex-1">
-					<!-- TODO(lead/button): search existing consultations -->
-
-					<SearchBar v-model="slug" class="flex flex-1"/>
-					<button class="material-icons text-xs" @click="toggleSearch">
-						close
-					</button>
-				</div>
-			</div>
-
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<slot name="list"></slot>
@@ -96,7 +72,7 @@
 		display: inline !important;
 	}
 	.left {
-		min-width: 20% !important;
+		max-width: calc(1920px / 5);
 	}
 	.right {
 		display: flex !important;
@@ -108,7 +84,6 @@
 import { computed, inject, ref, Ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 
-import SearchBar from "@/helpers/search_bar.vue"
 import ConsultationForm from "@/consultation/form.vue"
 
 import disableScroll from "$@/helpers/push_element_classes"
@@ -123,12 +98,6 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
 const isAddingSchedule = ref<boolean>(false)
-
-const slug = ref("")
-const isSearching = ref(false)
-function toggleSearch() {
-	isSearching.value = !isSearching.value
-}
 
 function toggleAddingSchedule() {
 	disableScroll(rawBodyClasses, [ "unscrollable" ])
