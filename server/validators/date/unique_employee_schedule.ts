@@ -2,7 +2,7 @@ import type { EmployeeScheduleListDocument } from "$/types/documents/employee_sc
 import type {
 	ValidationState,
 	ValidationConstraints,
-	UniqueEmployeeScheduleRuleConstraint
+	UniqueEmployeeScheduleRuleConstraints
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
@@ -15,7 +15,7 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints & Partial<UniqueEmployeeScheduleRuleConstraint>
+	constraints: ValidationConstraints & Partial<UniqueEmployeeScheduleRuleConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 

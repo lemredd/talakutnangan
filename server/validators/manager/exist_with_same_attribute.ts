@@ -3,7 +3,7 @@ import type { GeneralObject } from "$/types/general"
 import type {
 	ValidationState,
 	ValidationConstraints,
-	ExistWithSameAttributeConstraint
+	ExistWithSameAttributeConstraints
 } from "!/types/validation"
 
 import accessDeepPath from "$!/helpers/access_deep_path"
@@ -15,7 +15,7 @@ import makeDeveloperError from "!/validators/make_developer_error"
  */
 export default async function(
 	currentState: Promise<ValidationState>,
-	constraints: ValidationConstraints<Request> & Partial<ExistWithSameAttributeConstraint>
+	constraints: ValidationConstraints<Request> & Partial<ExistWithSameAttributeConstraints>
 ): Promise<ValidationState> {
 	const state = await currentState
 
