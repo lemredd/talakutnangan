@@ -15,7 +15,7 @@ import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import Icon from "@assets/icon.png"
 import { PageContext } from "$/types/renderer"
-import isDeserializedProfilePictureDocument from "./profile_picture/has_uploaded_profile_picture"
+import hasProfilePicture from "@/helpers/profile_picture/has_uploaded_profile_picture"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const user = pageContext.pageProps.userProfile as DeserializedUserDocument
@@ -24,7 +24,7 @@ const user = pageContext.pageProps.userProfile as DeserializedUserDocument
 const profilePictureURL = computed(() => {
 	const { profilePicture } = user.data
 
-	if (isDeserializedProfilePictureDocument(profilePicture)) {
+	if (hasProfilePicture(profilePicture)) {
 		return profilePicture.data.fileContents
 	}
 
