@@ -10,7 +10,7 @@
 				<template #toggler>
 					<span class="material-icons">notifications</span>
 				</template>
-				<template #default>
+				<template #dropdown-contents>
 					<ul class="notification-items">
 						<a href="">
 							<li
@@ -100,53 +100,11 @@
 			right: 0;
 		}
 	}
-}
-
-		display: initial;
-		height: 30px;
-		padding: 3px 10px;
-		position: relative;
-
-		.dropdown-container {
-			position: absolute;
-			top: 56px;
-			right: 0;
-			width: max-content;
-
-			.settings-items {
-				@apply flex flex-col;
-
-				.anchor, #log-out-btn {
-					margin-bottom: .5em;
-
-					.label {
-						font-size: small;
-						text-transform: uppercase
-					}
-				}
-
-
-				#log-out-btn {
-					@apply flex items-center;
-					padding: 3px 10px;
-				}
-			}
-		}
-	}
 
 	.notifications {
 		@apply self-center;
-		display: initial;
-
-		height: 30px;
-		padding: 3px 10px;
-		position: relative;
 
 		.dropdown-container {
-			position: absolute;
-			top: 56px;
-			left: -50%;
-
 			.notification-items {
 				@apply flex flex-col justify-between;
 
