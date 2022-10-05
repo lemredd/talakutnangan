@@ -37,7 +37,7 @@
 
 			<button
 				v-if="isUserAStudent"
-				class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
+				class="add"
 				@click="toggleAddingSchedule">
 				add
 			</button>
@@ -50,6 +50,10 @@
 <style scoped lang="scss">
 @import "@styles/variables.scss";
 @import "@styles/mixins.scss";
+
+.add {
+	@apply material-icons absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3
+}
 
 .consultations-container, .consultations-list-header {
 	@apply flex;
@@ -107,15 +111,18 @@
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserProfile } from "$/types/documents/user"
+
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
+import makeSwitch from "$@/helpers/make_switch"
+import BodyCSSClasses from "$@/external/body_css_classes"
 
 import SearchBar from "@/helpers/search_bar.vue"
 import ConsultationForm from "@/consultation/form.vue"
 
-import disableScroll from "$@/helpers/push_element_classes"
-import type { DeserializedUserProfile } from "$/types/documents/user"
-
 const pageContext = inject("pageContext") as PageContext<"deserialized">
-const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile
@@ -125,14 +132,15 @@ const isUserAStudent = computed(() => userProfile.data.kind === "student")
 const isAddingSchedule = ref<boolean>(false)
 
 const slug = ref("")
-const isSearching = ref(false)
-function toggleSearch() {
-	isSearching.value = !isSearching.value
-}
+
+const {
+	"state": isAddingSchedule,
+	"toggle": toggleAddingScheduleState
+} = makeSwitch(false)
 
 function toggleAddingSchedule() {
-	disableScroll(rawBodyClasses, [ "unscrollable" ])
-	isAddingSchedule.value = !isAddingSchedule.value
+	bodyClasses.value.scroll(isAddingSchedule.value)
+	toggleAddingScheduleState()
 }
 
 </script>
