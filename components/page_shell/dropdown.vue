@@ -23,7 +23,7 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative block py-3px px-10px h-full flex items-center;
+	@apply relative block py-3px px-10px h-full flex;
 }
 
 .invisible-closer {
@@ -35,7 +35,7 @@
 
 	border-top: 1px solid #888;
 	box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-	inset: $navHeight 0 0;
+	inset: $navHeight 0 0 0;
 }
 
 @media screen and (min-width: $desktopViewportMinimum) {

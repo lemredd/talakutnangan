@@ -94,6 +94,14 @@
 	.user-settings {
 		@apply self-center;
 
+		&.parent-dropdown-container .dropdown-container {
+			transform: none;
+			left: unset;
+			right: 0;
+		}
+	}
+}
+
 		display: initial;
 		height: 30px;
 		padding: 3px 10px;
