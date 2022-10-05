@@ -45,7 +45,7 @@ describe("External: Body CSS Classes", () => {
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
 		expect(previousCalls).toHaveProperty("0.arguments.0", [ "dark" ])
 		expect(previousCalls).toHaveProperty("1.functionName", "scroll")
-		expect(previousCalls).toHaveProperty("1.arguments.0", [ false ])
+		expect(previousCalls).toHaveProperty("1.arguments.0", false)
 		expect(external.bodyClasses).toStrictEqual([ "dark", "unscrollable" ])
 	})
 
@@ -58,7 +58,7 @@ describe("External: Body CSS Classes", () => {
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
 		expect(previousCalls).toHaveProperty("0.arguments.0", [])
 		expect(previousCalls).toHaveProperty("1.functionName", "scroll")
-		expect(previousCalls).toHaveProperty("1.arguments.0", [ false ])
+		expect(previousCalls).toHaveProperty("1.arguments.0", false)
 		expect(external.bodyClasses).toStrictEqual([ "unscrollable" ])
 	})
 
@@ -69,9 +69,9 @@ describe("External: Body CSS Classes", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-		expect(previousCalls).toHaveProperty("0.arguments.0", [ "dark" ])
+		expect(previousCalls).toHaveProperty("0.arguments.0", [ "dark", "unscrollable" ])
 		expect(previousCalls).toHaveProperty("1.functionName", "scroll")
-		expect(previousCalls).toHaveProperty("1.arguments.0", [ true ])
+		expect(previousCalls).toHaveProperty("1.arguments.0", true)
 		expect(external.bodyClasses).toStrictEqual([ "dark" ])
 	})
 
@@ -82,9 +82,9 @@ describe("External: Body CSS Classes", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-		expect(previousCalls).toHaveProperty("0.arguments.0", [])
+		expect(previousCalls).toHaveProperty("0.arguments.0", [ "unscrollable" ])
 		expect(previousCalls).toHaveProperty("1.functionName", "scroll")
-		expect(previousCalls).toHaveProperty("1.arguments.0", [ true ])
+		expect(previousCalls).toHaveProperty("1.arguments.0", true)
 		expect(external.bodyClasses).toStrictEqual([])
 	})
 })

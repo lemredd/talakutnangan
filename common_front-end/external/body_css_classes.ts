@@ -3,7 +3,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import makeUnique from "$/array/make_unique"
 
 export default class BodyCSSClasses extends RequestEnvironment {
-	private CSSClasses: string[] = []
+	private CSSClasses: string[]
 	private body: HTMLBodyElement
 
 	constructor(body: HTMLBodyElement|string[]) {
@@ -20,7 +20,7 @@ export default class BodyCSSClasses extends RequestEnvironment {
 			},
 			() => [ [
 					{} as unknown as HTMLBodyElement,
-					[]
+					body as string[]
 			], {
 				"arguments": [ body ],
 				"functionName": "constructor"
@@ -59,6 +59,25 @@ export default class BodyCSSClasses extends RequestEnvironment {
 			() => [ {} as unknown as void, {
 				"arguments": [],
 				"functionName": "lighten"
+			} ]
+		)
+
+		this.CSSClasses = newClasses
+	}
+
+	scroll(mustScroll: boolean): void {
+		const newClasses = mustScroll
+			? this.CSSClasses.filter(CSSClass => CSSClass !== "unscrollable")
+			: makeUnique([ ...this.CSSClasses, "unscrollable" ])
+
+		Stub.runConditionally(
+			() => {
+				this.body.classList.remove(...this.CSSClasses)
+				this.body.classList.add(...newClasses)
+			},
+			() => [ {} as unknown as void, {
+				"arguments": [ mustScroll ],
+				"functionName": "scroll"
 			} ]
 		)
 
