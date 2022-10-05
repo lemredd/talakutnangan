@@ -110,6 +110,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, Ref } from "vue"
+
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -129,9 +130,11 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile
 
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 
-const isAddingSchedule = ref<boolean>(false)
-
 const slug = ref("")
+const {
+	"state": isSearching,
+	"toggle": toggleSearch
+} = makeSwitch(false)
 
 const {
 	"state": isAddingSchedule,
