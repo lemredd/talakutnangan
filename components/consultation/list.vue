@@ -14,11 +14,13 @@
 			</h3>
 			<!-- TODO(others): style arrangement of pictures -->
 			<div class="profile-pictures flex">
+				<span class="mr-3">participants:</span>
 				<ProfilePictureItem
 					v-for="activity in getProfilePictures(consultation)"
 					:key="activity.id"
 					:activity="activity"
-					class="rounded-full w-[50px] h-[50px]"/>
+					:title="activity.user.data.name"
+					class="rounded-full w-[20px] h-[20px]"/>
 			</div>
 
 			<LastChat
