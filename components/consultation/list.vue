@@ -8,9 +8,10 @@
 			<!-- TODO(others): must rearrange the pictures -->
 			<div class="profile-pictures">
 				<ProfilePictureItem
-					v-for="activity in getChatMessageActivities(consultation)"
+					v-for="activity in getProfilePictures(consultation)"
 					:key="activity.id"
-					:activity="activity"/>
+					:activity="activity"
+					class="rounded-full w-[50px] h-[50px]"/>
 			</div>
 			<h3 class="consultation-title col-span-full font-400">
 				#{{ consultation.id }} {{ consultation.reason }}
@@ -45,6 +46,7 @@ import LastChat from "@/consultation/list/last_chat.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
+import makeUniqueBy from "$/helpers/make_unique_by"
 const {
 	consultations,
 	chatMessageActivities,
@@ -61,6 +63,11 @@ function getChatMessageActivities(
 	return chatMessageActivities.data.filter(
 		activity => activity.consultation.data.id === consultation.id
 	)
+}
+function getProfilePictures(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+) {
+	return makeUniqueBy(getChatMessageActivities(consultation), "user.data.id")
 }
 
 function findPreviewMessageIndex(
