@@ -20,7 +20,7 @@
 					:key="activity.id"
 					:activity="activity"
 					:title="activity.user.data.name"
-					class="rounded-full w-[20px] h-[20px]"/>
+					class="profile-picture-item rounded-full w-[20px] h-[20px]"/>
 			</div>
 
 			<LastChat
