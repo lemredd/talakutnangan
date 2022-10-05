@@ -25,7 +25,7 @@
 		margin: 0 !important;
 	}
 }
-footer {
+footer:not(.overlay-footer) {
 	display: none !important;
 }
 </style>
