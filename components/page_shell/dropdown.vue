@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="parent-dropdown-container">
 		<div
 			v-if="isDropdownShown"
 			class="invisible-closer"
@@ -19,16 +19,21 @@
 	</div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@styles/variables.scss";
+
+.parent-dropdown-container {
+	@apply relative block py-3px px-10px
+}
 
 .invisible-closer {
 	position: fixed;
 	inset: 0;
 	z-index: 1000;
 }
+
 .dropdown-container {
-	@apply dark:bg-dark-400;
+	@apply dark:bg-dark-400 fixed bg-white
 
 	background-color: white;
 	border-top: 1px solid #888;
