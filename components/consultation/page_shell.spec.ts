@@ -1,5 +1,7 @@
 import { shallowMount } from "@vue/test-utils"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
 import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
 import ConsultationFactory from "~/factories/consultation"
@@ -13,7 +15,7 @@ describe("Component: consultation/page_shell", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": [],
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							consultations,
@@ -39,7 +41,7 @@ describe("Component: consultation/page_shell", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": [],
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							consultations,
