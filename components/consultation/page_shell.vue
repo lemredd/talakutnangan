@@ -7,16 +7,10 @@
 <template>
 	<div class="consultations-container">
 		<section class="consultations-picker relative">
-			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<slot name="list"></slot>
 
-			<button
-				v-if="isUserAStudent"
-				class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
-				@click="toggleAddingSchedule">
-				add
-			</button>
+
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -61,27 +55,4 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from "vue"
-import type { PageContext } from "$/types/renderer"
-
-import ConsultationForm from "@/consultation/form.vue"
-
-import disableScroll from "$@/helpers/push_element_classes"
-import type { DeserializedUserProfile } from "$/types/documents/user"
-
-const pageContext = inject("pageContext") as PageContext<"deserialized">
-const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
-
-const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
-
-const isUserAStudent = computed(() => userProfile.data.kind === "student")
-
-const isAddingSchedule = ref<boolean>(false)
-
-function toggleAddingSchedule() {
-	disableScroll(rawBodyClasses, [ "unscrollable" ])
-	isAddingSchedule.value = !isAddingSchedule.value
-}
-
 </script>

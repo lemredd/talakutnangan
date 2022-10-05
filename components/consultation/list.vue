@@ -25,6 +25,17 @@
 				</button>
 			</div>
 		</div>
+
+		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
+
+
+		<button
+			v-if="isUserAStudent"
+			class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
+			@click="toggleAddingSchedule">
+			add
+		</button>
+
 		<div
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
@@ -56,12 +67,15 @@
 
 <style scoped lang="scss">
 	.left {
-		width: 100vw;
-		border-right: 1px solid hsla(0,0%,0%,0.1);
+		@apply dark:bg-dark-600 bg-white;
+		position: fixed;
+		overflow-y: scroll;
+		inset: 0;
 
 		@screen md {
-			width: (1920px / 5) !important;
-
+			position: initial;
+			width: (1920px / 5);
+			@apply flex flex-col;
 		}
 	}
 
@@ -71,7 +85,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { computed, inject, Ref, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
@@ -91,13 +105,17 @@ import type {
 import assignPath from "$@/external/assign_path"
 
 import LastChat from "@/consultation/list/last_chat.vue"
+import disableScroll from "$@/helpers/push_element_classes"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 import makeUniqueBy from "$/helpers/make_unique_by"
 
-import SearchBar from "@/helpers/search_bar.vue"
 
+import SearchBar from "@/helpers/search_bar.vue"
+import ConsultationForm from "@/consultation/form.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const slug = ref("")
 const isSearching = ref(false)
@@ -105,7 +123,16 @@ function toggleSearch() {
 	isSearching.value = !isSearching.value
 }
 
-const pageContext = inject("pageContext") as PageContext
+const isAddingSchedule = ref<boolean>(false)
+const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+function toggleAddingSchedule() {
+	disableScroll(rawBodyClasses, [ "unscrollable" ])
+	isAddingSchedule.value = !isAddingSchedule.value
+}
+
+const { "pageProps": { userProfile } } = pageContext
+const isUserAStudent = computed(() => userProfile?.data?.kind === "student")
+
 
 const {
 	consultations,
