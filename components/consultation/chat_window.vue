@@ -1,5 +1,12 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<section class="chat-window flex flex-col right">
+		<button
+			class="toggle-list-btn material-icons"
+			title="Toggle consultation list"
+			@click="() => isConsultationListShown = !isConsultationListShown">
+			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
+		</button>
 		<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
 
 		<div class="selected-consultation-header">
@@ -52,16 +59,19 @@
 
 <style scoped lang="scss">
 	.right {
-		display: none;
-
-		@screen md {
-			@apply flex flex-1;
+		.toggle-list-btn {
+			@apply fixed opacity-15 hover:opacity-100;
+			@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
 		}
+
+		@apply flex-1;
+		width: 100%;
+		border-right: 1px solid hsla(0,0%,0%,0.1);
 	}
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, watch, onMounted, inject, Ref } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -82,6 +92,7 @@ const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 }>()
+const isConsultationListShown = inject("isConsultationListShown") as Ref<boolean>
 
 const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(

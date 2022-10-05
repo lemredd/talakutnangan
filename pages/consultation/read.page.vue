@@ -2,6 +2,7 @@
 	<ConsultationShell>
 		<template #list>
 			<ConsultationList
+				v-if="isConsultationListShown"
 				:consultations="consultations"
 				:chat-message-activities="chatMessageActivities"
 				:preview-messages="previewMessages"/>
@@ -29,7 +30,12 @@ footer:not(.overlay-footer) {
 }
 </style>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.toggle-list-btn {
+	@apply fixed opacity-15 hover:opacity-100;
+	@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
+}
+</style>
 
 <script setup lang="ts">
 import { provide, inject, ref, readonly, computed, onMounted } from "vue"
@@ -70,6 +76,8 @@ import registerChatActivityListeners from "@/consultation/listeners/register_cha
 Socket.initialize()
 
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
+const isConsultationListShown = ref(false)
+provide("isConsultationListShown", isConsultationListShown)
 
 type RequiredExtraProps =
 	| "userProfile"
