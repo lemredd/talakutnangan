@@ -6,7 +6,7 @@
 -->
 <template>
 	<div class="consultations-container">
-		<section class="consultations-picker left relative">
+		<section class="consultations-picker relative">
 			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
 			<slot name="list"></slot>
@@ -50,32 +50,12 @@
 .consultations-container {
 	section {
 		@include useContentBaseHeight;
-
-		&.left {
-			min-width: 100%;
-			border-right: 1px solid hsla(0,0%,0%,0.1);
-			.material-icons {
-				&.expand-or-collapse {
-					display: none;
-				}
-			}
-		}
-		&.right {
-			flex: 1;
-			display: none;
-		}
 	}
 }
 
-@media screen and (min-width: $mobileViewportMaximum) {
+@screen md {
 	.expand-or-collapse {
 		display: inline !important;
-	}
-	.left {
-		max-width: calc(1920px / 5);
-	}
-	.right {
-		display: flex !important;
 	}
 }
 </style>

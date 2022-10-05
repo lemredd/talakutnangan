@@ -1,5 +1,5 @@
 <template>
-	<div class="consultations-list">
+	<div class="consultations-list left">
 		<!-- TODO(others): Refactor all WindiCSS inline classes using @apply directive -->
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header p-3">
@@ -55,6 +55,16 @@
 </template>
 
 <style scoped lang="scss">
+	.left {
+		width: 100vw;
+		border-right: 1px solid hsla(0,0%,0%,0.1);
+
+		@screen md {
+			width: (1920px / 5) !important;
+
+		}
+	}
+
 	.consultation.active {
 		background-color: hsla(0, 0%, 50%, 0.1)
 	}

@@ -8,7 +8,6 @@
 		</template>
 		<template #chat-window>
 			<ChatWindow
-				class="flex-1"
 				:consultation="consultation"
 				:chat-messages="chatMessages"
 				@updated-consultation-attributes="updateConsultationAttributes"/>
@@ -29,6 +28,8 @@ footer:not(.overlay-footer) {
 	display: none !important;
 }
 </style>
+
+<style scoped lang="scss"></style>
 
 <script setup lang="ts">
 import { provide, inject, ref, readonly, computed, onMounted } from "vue"

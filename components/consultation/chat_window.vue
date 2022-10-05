@@ -50,6 +50,16 @@
 	</section>
 </template>
 
+<style scoped lang="scss">
+	.right {
+		display: none;
+
+		@screen md {
+			@apply flex flex-1;
+		}
+	}
+</style>
+
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
 
