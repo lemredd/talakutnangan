@@ -27,6 +27,7 @@
 			<input
 				v-model="textInput"
 				type="text"
+				placeholder="Enter your message here..."
 				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
@@ -48,7 +49,17 @@
 }
 
 .message-box {
-	@apply flex-1 border
+	@apply flex-1 mx-2 border-0;
+	height: max-content;
+	input {
+		@apply bg-transparent border-b px-2;
+		width: 100%;
+
+		&:focus {
+			@apply border-b-gray-500;
+			outline: none;
+		}
+	}
 }
 </style>
 
