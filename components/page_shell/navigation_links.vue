@@ -1,8 +1,9 @@
 <template>
 	<Dropdown
 		class="links mobile"
-		@toggle="toggleRoleLinks"
-		@resize="toggleRoleLinks">
+		:is-dropdown-shown="mustShowMobileMenu"
+		@toggle="toggleMobileMenu"
+		@resize="toggleMobileMenu">
 		<template #toggler>
 			<span id="menu-btn" class="material-icons">menu</span>
 		</template>
@@ -43,22 +44,15 @@ body.unscrollable {
 
 <style lang="scss">
 .links {
-	height: 100%;
-
 	&.mobile {
-		@apply flex items-center;
+		@apply items-center;
 	}
 	&.desktop {
-		display: none;
-	}
-
-	.dropdown-container {
-		position: fixed;
-		inset: 56px 0 0;
+		@apply none;
 	}
 
 	.mobile-role-links {
-		@flex flex-col
+		@apply flex flex-col
 		height: calc(100% - 56px);
 
 		.overlay {
@@ -77,16 +71,11 @@ body.unscrollable {
 
 		}
 	}
-	#logout-btn {
-		border-radius: 5px;
-		padding: .5em 1em;
-	}
 
 	.account-controls {
 		padding-left: 1em;
 	}
 }
-
 @media (min-width: 640px) {
 	.links{
 		&.mobile {
@@ -94,10 +83,6 @@ body.unscrollable {
 		}
 		&.desktop {
 			@apply flex;
-
-			.anchor[href="/settings"], .anchor[href="/notifications"] {
-				display: none;
-			}
 		}
 	}
 }
@@ -135,13 +120,13 @@ const desktopRoleLinks = computed(() => roleLinks.value.filter(
 
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const {
-	"state": isRoleLinksShown,
+	"state": mustShowMobileMenu,
 	"toggle": toggleVisibility
 } = makeSwitch(false)
 
-function toggleRoleLinks() {
+function toggleMobileMenu() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	toggleVisibility()
-	bodyClasses.value.scroll(isRoleLinksShown.value)
+	bodyClasses.value.scroll(mustShowMobileMenu.value)
 }
 </script>

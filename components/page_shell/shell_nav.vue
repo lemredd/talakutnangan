@@ -6,7 +6,12 @@
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
 			</a>
 
-			<Dropdown v-if="!isUserAGuest" class="notifications">
+			<Dropdown
+				v-if="!isUserAGuest"
+				:is-dropdown-shown="mustShowNotifications"
+				class="notifications"
+				@toggle="toggleNotificationsDedicatedly"
+				@resize="toggleNotificationsDedicatedly">
 				<template #toggler>
 					<span class="material-icons">notifications</span>
 				</template>
@@ -32,7 +37,12 @@
 				</template>
 			</Dropdown>
 			<CommonNavigationLinks/>
-			<Dropdown v-if="!isUserAGuest" class="user-settings">
+			<Dropdown
+				v-if="!isUserAGuest"
+				:is-dropdown-shown="mustShowSettings"
+				class="user-settings"
+				@toggle="toggleSettingsDedicatedly"
+				@resize="toggleSettingsDedicatedly">
 				<template #toggler>
 					<span class="material-icons">account_circle</span>
 				</template>
@@ -145,6 +155,8 @@ import { inject, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
+import makeSwitch from "$@/helpers/make_switch"
+
 import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
@@ -154,6 +166,28 @@ const { pageProps } = inject("pageContext") as PageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 
 const isUserAGuest = computed(() => userProfile === null)
+
+const {
+	"state": mustShowNotifications,
+	"toggle": toggleNotifications,
+	"off": closeNotifications
+} = makeSwitch(false)
+
+const {
+	"state": mustShowSettings,
+	"toggle": toggleSettings,
+	"off": closeSettings
+} = makeSwitch(false)
+
+function toggleNotificationsDedicatedly() {
+	closeSettings()
+	toggleNotifications()
+}
+
+function toggleSettingsDedicatedly() {
+	closeNotifications()
+	toggleSettings()
+}
 
 const notifications = [
 	{
