@@ -23,22 +23,28 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative block py-3px px-10px
+	@apply relative block py-3px px-10px h-full;
 }
 
 .invisible-closer {
-	position: fixed;
-	inset: 0;
-	z-index: 1000;
+	@apply fixed inset-[0] z-index-[1000];
 }
 
 .dropdown-container {
-	@apply dark:bg-dark-400 fixed bg-white
+	@apply dark:bg-dark-400 fixed bg-white h-full z-index-[1001];
 
-	background-color: white;
 	border-top: 1px solid #888;
 	box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-	z-index: 1001;
+	inset: $navHeight 0 0;
+}
+
+@media screen and (min-width: $desktopViewportMinimum) {
+	.dropdown-container {
+		@apply absolute top-[1.5em] bg-white;
+
+		transform: translateX(-50%);
+		width: max-content;
+	}
 }
 </style>
 
