@@ -42,12 +42,10 @@
 
 @media screen and (min-width: $desktopViewportMinimum) {
 	.dropdown-container {
-		@apply absolute bg-white h-full;
+		@apply absolute bg-white h-max w-max;
 
 		top: $navHeight;
 		transform: translateX(-50%);
-		width: max-content;
-		height: max-content;
 	}
 }
 </style>

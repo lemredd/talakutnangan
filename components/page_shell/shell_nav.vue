@@ -104,15 +104,23 @@
 	.user-settings {
 		@apply self-center;
 
-		&.parent-dropdown-container .dropdown-container {
-			transform: none;
-			left: unset;
-			right: 0;
+		&.parent-dropdown-container {
+			@apply flex items-center;
+
+			.dropdown-container {
+				right: 0;
+				transform: none;
+				left: unset;
+			}
 		}
 	}
 
 	.notifications {
 		@apply self-center;
+
+		&.parent-dropdown-container {
+			@apply flex items-center;
+		}
 
 		.dropdown-container {
 			.notification-items {
