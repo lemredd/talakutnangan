@@ -7,7 +7,7 @@ describe("External: Body CSS Classes", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-		expect(previousCalls).toHaveProperty("0.arguments", [])
+		expect(previousCalls).toHaveProperty("0.arguments.0", [])
 	})
 
 	it("can darken theme", () => {
@@ -17,10 +17,10 @@ describe("External: Body CSS Classes", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-		expect(previousCalls).toHaveProperty("0.arguments", [])
+		expect(previousCalls).toHaveProperty("0.arguments.0", [])
 		expect(previousCalls).toHaveProperty("1.functionName", "darken")
 		expect(previousCalls).toHaveProperty("1.arguments", [])
-		expect(external.mockBodyClasses).toBe([ "dark" ])
+		expect(external.bodyClasses).toStrictEqual([ "dark" ])
 	})
 
 	it("can lighten theme", () => {
@@ -30,9 +30,9 @@ describe("External: Body CSS Classes", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-		expect(previousCalls).toHaveProperty("0.arguments", [ "dark "])
+		expect(previousCalls).toHaveProperty("0.arguments.0", [ "dark" ])
 		expect(previousCalls).toHaveProperty("1.functionName", "lighten")
 		expect(previousCalls).toHaveProperty("1.arguments", [])
-		expect(external.mockBodyClasses).toBe([])
+		expect(external.bodyClasses).toStrictEqual([])
 	})
 })

@@ -1,25 +1,22 @@
-import type { GeneralObject } from "$/types/general"
-
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
+import makeUnique from "$/array/make_unique"
 
 export default class BodyCSSClasses extends RequestEnvironment {
 	private CSSClasses: string[] = []
 	private body: HTMLBodyElement
-	private fakeBody: Set<string>[]
 
-	constructor(body: HTMLBodyElement|GeneralObject) {
+	constructor(body: HTMLBodyElement|string[]) {
 		super()
 		const [
 			resolvedBody,
-			resolvedFakeBody
-		] = Stub.runConditionally<[HTMLBodyElement, Set<string>[]]>(
+			resolvedCSSClasses
+		] = Stub.runConditionally<[HTMLBodyElement, string[]]>(
 			() => {
 				const castBody = body as HTMLBodyElement
-				const CSSClasses = castBody.classList.value.split(" ")
+				const CSSClasses = [ ...castBody.classList.values() ]
 
-				this.CSSClasses = CSSClasses
-				return [ castBody, [] ]
+				return [ castBody, CSSClasses ]
 			},
 			() => [ [
 					{} as unknown as HTMLBodyElement,
@@ -31,6 +28,44 @@ export default class BodyCSSClasses extends RequestEnvironment {
 		)
 
 		this.body = resolvedBody
-		this.fakeBody = resolvedFakeBody
+		this.CSSClasses = resolvedCSSClasses
+	}
+
+	darken(): void {
+		const newClasses = makeUnique([ ...this.CSSClasses, "dark" ])
+
+		Stub.runConditionally(
+			() => {
+				this.body.classList.remove(...this.CSSClasses)
+				this.body.classList.add(...newClasses)
+			},
+			() => [ {} as unknown as void, {
+				"arguments": [],
+				"functionName": "darken"
+			} ]
+		)
+
+		this.CSSClasses = newClasses
+	}
+
+	lighten(): void {
+		const newClasses = this.CSSClasses.filter(CSSClass => CSSClass !== "dark")
+
+		Stub.runConditionally(
+			() => {
+				this.body.classList.remove(...this.CSSClasses)
+				this.body.classList.add(...newClasses)
+			},
+			() => [ {} as unknown as void, {
+				"arguments": [],
+				"functionName": "lighten"
+			} ]
+		)
+
+		this.CSSClasses = newClasses
+	}
+
+	get bodyClasses(): readonly string[] {
+		return [ ...this.CSSClasses ]
 	}
 }
