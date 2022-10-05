@@ -28,7 +28,7 @@ export default class extends QueryController {
 		return makeListRules(
 			Manager,
 			{
-				...makeIDBasedFilterRules("user", UserManager, true),
+				...makeIDBasedFilterRules("user", UserManager, { "mustCast": true }),
 				"consultationScheduleRange": {
 					"constraints": {
 						"nullable": {

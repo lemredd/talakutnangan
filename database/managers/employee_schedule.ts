@@ -19,6 +19,7 @@ import AttachedRole from "%/models/attached_role"
 import Condition from "%/helpers/condition"
 import siftByDay from "%/queries/employee_schedule/sift_by_day"
 import siftByUser from "%/queries/employee_schedule/sift_by_user"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import siftByRange from "%/queries/employee_schedule/sift_by_range"
 import EmployeeScheduleTransformer from "%/transformers/employee_schedule"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
@@ -140,6 +141,28 @@ export default class extends BaseManager<
 			Log.success("manager", "done archiving models")
 
 			return destroyCount
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	public async isWithinSchedule(userID: number, targetDatetime: Date): Promise<boolean> {
+		try {
+			const targetDay = DayValues[targetDatetime.getDay()]
+			const targetTimeInMinutes = convertTimeToMinutes(
+				`${targetDatetime.getHours()}:${targetDatetime.getMinutes()}`
+			)
+			const possibleScheduleCount = await this.model.findAll({
+				"where": new Condition().and(
+					new Condition().equal("userID", userID),
+					new Condition().equal("dayName", targetDay),
+					new Condition().lessThanOrEqual("scheduleStart", targetTimeInMinutes),
+					new Condition().greaterThanOrEqual("scheduleEnd", targetTimeInMinutes)
+				).build(),
+				...this.transaction.transactionObject
+			})
+
+			return possibleScheduleCount.length > 0
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}

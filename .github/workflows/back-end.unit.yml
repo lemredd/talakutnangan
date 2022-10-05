@@ -34,6 +34,10 @@ jobs:
   unit_tests_with_rarely_used_database:
     runs-on: ubuntu-latest
     steps:
+    - name: Change to appropriate timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "Asia/Singapore"
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
     - name: Testing on Node.js 16.x
@@ -55,6 +59,10 @@ jobs:
   unit_tests_with_necessary_database:
     runs-on: ubuntu-latest
     steps:
+    - name: Change to appropriate timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "Asia/Singapore"
     - name: Checking out from the pushed source
       uses: actions/checkout@v3
     - name: Testing on Node.js 16.x

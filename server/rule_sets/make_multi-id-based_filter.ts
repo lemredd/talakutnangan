@@ -14,7 +14,7 @@ export default function(
 		postIDRules = { "pipes": [] },
 		initialPipes = [ nullable ],
 		multipleIDKey = "IDs",
-		mustCast = true
+		mustCast = false
 	}: Partial<{
 		postIDRules: Rules,
 		initialPipes: Pipe[],

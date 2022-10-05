@@ -10,7 +10,11 @@ import skipAsterisk from "!/validators/comparison/skip_asterisk"
 export default function(
 	fieldName: string,
 	ClassName: BaseManagerClass,
-	mustCast = true
+	{
+		mustCast = false
+	}: Partial<{
+		mustCast: boolean
+	}> = {}
 ): FieldRules {
 	return {
 		[fieldName]: {
