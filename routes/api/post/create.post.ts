@@ -3,19 +3,22 @@ import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import RoleManager from "%/managers/role"
-import JSONController from "!/controllers/json"
 import PostManager from "%/managers/post"
+import RoleManager from "%/managers/role"
+import MultipartController from "!/controllers/multipart"
 import CreatedResponseInfo from "!/response_infos/created"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
+import string from "!/validators/base/string"
 import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
+import required from "!/validators/base/required"
+import length from "!/validators/comparison/length"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends JSONController {
+export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -36,18 +39,15 @@ export default class extends JSONController {
 		}
 
 		const attributes = {
-			"attachedRoleID": {
-				"constraints": {
-
-				},
-				"pipes": []
-			},
 			"approvedAt": pureNull,
 			"content": {
 				"constraints": {
-
+					"length": {
+						"maximum": 1000,
+						"minimum": 5
+					}
 				},
-				"pipes": []
+				"pipes": [ required, string, length ]
 			}
 		}
 
