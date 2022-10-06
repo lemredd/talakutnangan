@@ -33,13 +33,12 @@ export default function(
 ) {
 	let isWindowShown = false
 	function updateReceivedMessageAt(): void {
-		const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt as Date
+		const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt
 		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
 			"receivedMessageAt": new Date().toJSON(),
-			"seenMessageAt": lastSeenMessageAt.toJSON()
+			"seenMessageAt": lastSeenMessageAt?.toJSON() ?? null
 		})
 	}
-
 
 	DocumentVisibility.addEventListener(newState => {
 		isWindowShown = newState === "visible"
