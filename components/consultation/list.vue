@@ -74,7 +74,7 @@
 
 		@screen md {
 			position: initial;
-			width: (1920px / 5);
+			width: calc(1920px / 5);
 			@apply flex flex-col;
 		}
 	}
