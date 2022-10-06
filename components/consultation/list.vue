@@ -28,7 +28,6 @@
 
 		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-
 		<button
 			v-if="isUserAStudent"
 			class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"

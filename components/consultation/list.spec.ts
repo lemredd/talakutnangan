@@ -9,7 +9,17 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
@@ -46,7 +56,17 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
@@ -70,7 +90,9 @@ describe("Component: consultation/list", () => {
 				}
 			}
 		})
-		const consultationListItem = wrapper.find(".consultation:nth-child(2)")
+
+		// ! might be bug from vue/test-utils. nth-of-type should be 2
+		const consultationListItem = wrapper.find(".consultation:nth-of-type(3)")
 
 		await consultationListItem.trigger("click")
 		await flushPromises()
@@ -84,7 +106,17 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
