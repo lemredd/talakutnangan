@@ -20,11 +20,22 @@
 				<button class="material-icons">
 					video_camera_back
 				</button>
+				<Dropdown
+					@toggle="toggleConsultationSettings"
+					@resize="toggleConsultationSettings">
+					<template #toggler>
+						<!-- TODO(lead/button): Apply functionality -->
+						<button class="material-icons">
+							more_horiz
+						</button>
+					</template>
 
-				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons">
-					more_horiz
-				</button>
+					<template #dropdown-contents>
+						<div class="links">
+							<span>dngdsnglknkl</span>
+						</div>
+					</template>
+				</Dropdown>
 			</div>
 		</div>
 		<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
@@ -50,6 +61,59 @@
 	</section>
 </template>
 
+<style lang="scss">
+.links {
+	height: 100%;
+
+	&.mobile {
+		@apply flex items-center;
+	}
+	&.desktop {
+		display: none;
+	}
+
+	.dropdown-container {
+		position: fixed;
+		inset: 56px 0 0;
+	}
+
+	.mobile-role-links {
+		@flex flex-col
+		height: calc(100% - 56px);
+
+		.overlay {
+			position: absolute;
+			width: 100%;
+			height: 100vh;
+			z-index: -1;
+		}
+
+		.anchor {
+			padding: .5em;
+
+			.material-icons {
+				margin-right: .5em;
+			}
+
+		}
+	}
+	#logout-btn {
+		border-radius: 5px;
+		padding: .5em 1em;
+	}
+
+	.account-controls {
+		padding-left: 1em;
+	}
+}
+
+@media (min-width: 640px) {
+	.links {
+		@apply flex;
+	}
+}
+</style>
+
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
 
@@ -65,6 +129,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMillisecondsToFullTimeObject
 	from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Dropdown from "@/page_shell/dropdown.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
