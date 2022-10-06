@@ -26,6 +26,7 @@ import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
+import isWithinEmployeeSchedule from "!/validators/manager/is_within_employee_schedule"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -64,13 +65,21 @@ export default class extends JSONController {
 			},
 			"scheduledStartAt": {
 				"constraints": {
-					// TODO: Check if the schedule fits within the schedule of employee
+					"isWithinEmployeeSchedule": {
+						"userIDPointer": "data.relationships.consultant.data.id"
+					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
 						"userIDPointer": "data.relationships.consultant.data.id"
 					}
 				},
-				"pipes": [ required, string, date, uniqueConsultationSchedule ]
+				"pipes": [
+					required,
+					string,
+					date,
+					isWithinEmployeeSchedule,
+					uniqueConsultationSchedule
+				]
 			},
 			"startedAt": pureNull
 		}

@@ -1,5 +1,4 @@
 import type { Model } from "%/types/dependent"
-import type { MimeBuffer } from "data-uri-to-buffer"
 import type { FileLikeTransformerOptions } from "%/types/independent"
 import type {
 	ResourceIdentifier,
@@ -12,8 +11,8 @@ import type {
 	ResourceListDocument
 } from "$/types/documents/base"
 
-import dataURIToBuffer from "data-uri-to-buffer"
 import { faker } from "@faker-js/faker"
+import dataURIToBuffer, { MimeBuffer } from "data-uri-to-buffer"
 
 import BaseFactory from "~/factories/base"
 

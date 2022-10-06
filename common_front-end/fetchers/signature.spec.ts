@@ -18,8 +18,6 @@ describe("Fetcher: Signature", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		SignatureFetcher.initialize("/api")
-
 		const fetcher = new SignatureFetcher()
 		const response = await fetcher.renew("1", {} as FormData)
 

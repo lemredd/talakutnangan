@@ -9,36 +9,14 @@
 		</div>
 
 		<FlagSelector
-			v-model="role.data.semesterFlags"
-			header="Semester"
-			:base-permission-group="semesterPermissions"/>
-		<FlagSelector
-			v-model="role.data.tagFlags"
-			header="Tag"
-			:base-permission-group="tagPermissions"/>
-		<FlagSelector
-			v-model="role.data.postFlags"
-			header="Post"
-			:base-permission-group="postPermissions"
-			:dependent-permission-groups="[ commentPermissions ]"
-			@uncheck-externally-dependent-flags="uncheckExternalDependents"/>
-		<FlagSelector
-			v-model="role.data.commentFlags"
-			header="Comment"
-			:base-permission-group="commentPermissions"
-			@check-external-dependency-flags="checkExternalDependencies"/>
-		<FlagSelector
-			v-model="role.data.profanityFlags"
-			header="Profanity"
-			:base-permission-group="profanityPermissions"/>
-		<FlagSelector
-			v-model="role.data.userFlags"
-			header="User"
-			:base-permission-group="userPermissions"/>
-		<FlagSelector
-			v-model="role.data.auditTrailFlags"
-			header="Audit Trail"
-			:base-permission-group="auditTrailPermissions"/>
+			v-for="flagSelector in flagSelectors"
+			:key="flagSelector.permissionGroup.name"
+			v-model="role.data[flagSelector.permissionGroup.name]"
+			:header="flagSelector.header"
+			:base-permission-group="flagSelector.permissionGroup"
+			:dependent-permission-groups="flagSelector.dependentGroups"
+			@check-external-dependency-flags="flagSelector.checkExternal"
+			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
 		<div class="controls flex justify-between">
 			<button type="submit" class="btn btn-primary">
@@ -75,26 +53,15 @@
 import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { ExternalPermissionDependencyInfo } from "$/types/permission"
+import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
-import makeUnique from "$/array/make_unique"
-import {
-	semester as semesterPermissions,
-	tag as tagPermissions,
-	post as postPermissions,
-	comment as commentPermissions,
-	profanity as profanityPermissions,
-	user as userPermissions,
-	auditTrail as auditTrailPermissions
-} from "$/permissions/permission_list"
+import makeSwitch from "$@/helpers/make_switch"
+import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
 import FlagSelector from "@/role/flag_selector.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
-
-Fetcher.initialize("/api")
 
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -103,95 +70,26 @@ const { pageProps } = pageContext
 const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
 )
+const roleData = computed<RoleAttributes<"deserialized">>({
+	get(): RoleAttributes<"deserialized"> { return role.value.data },
+	set(newResource: RoleAttributes<"deserialized">): void {
+		role.value.data = {
+			...role.value.data,
+			...newResource
+		}
+	}
+})
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
 const password = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
+const flagSelectors = makeFlagSelectorInfos(roleData)
 
-function checkExternalDependencies(dependencies: ExternalPermissionDependencyInfo<any, any>[])
-: void {
-	for (const dependency of dependencies) {
-		const {
-			group,
-			permissionDependencies
-		} = dependency
-
-		const flagsToAdd = group.generateMask(...permissionDependencies)
-
-		const newFlags = role.value.data[group.name] | flagsToAdd
-		role.value.data[group.name] = newFlags
-
-		const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
-		checkExternalDependencies(externalDependencies)
-	}
-}
-
-function uncheckExternalDependents(dependents: ExternalPermissionDependencyInfo<any, any>[])
-: void {
-	if (dependents.length === 0) return
-
-	let externalDependencyNames: string[] = []
-	const dependentNames: string[] = []
-
-	for (const dependent of dependents) {
-		const {
-			group,
-			permissionDependencies
-		} = dependent
-
-		const internalDependents = group.identifyDependents(permissionDependencies)
-		const allDependents = makeUnique([
-			...permissionDependencies,
-			...internalDependents
-		])
-		const flagsToRemove = group.generateMask(...allDependents)
-
-		// eslint-disable-next-line no-bitwise
-		const filteredFlags = role.value.data[group.name] & ~flagsToRemove
-		role.value.data[group.name] = filteredFlags
-
-		dependentNames.push(group.name)
-		const externalDependencies = group.identifyExternalDependencies(permissionDependencies)
-
-		for (const dependency of externalDependencies) {
-			externalDependencyNames.push(dependency.group.name)
-		}
-	}
-
-	externalDependencyNames = makeUnique(externalDependencyNames)
-	const unsuspectedNames = makeUnique([ ...externalDependencyNames, ...dependentNames ])
-
-	const possibleDependents = [
-		semesterPermissions,
-		tagPermissions,
-		postPermissions,
-		commentPermissions,
-		profanityPermissions,
-		userPermissions,
-		auditTrailPermissions
-	].filter(info => !unsuspectedNames.includes(info.name))
-
-	const subdependents = possibleDependents
-	.map(subdependent => {
-		const permissionDependencies = subdependent.identifyExternallyDependents(dependents)
-
-		return {
-			"group": subdependent,
-			permissionDependencies
-		}
-	})
-	.filter(subdependentInfo => subdependentInfo.permissionDependencies.length > 0)
-
-	uncheckExternalDependents(subdependents)
-}
-
-const isBeingConfirmed = ref<boolean>(false)
-function openConfirmation() {
-	isBeingConfirmed.value = true
-}
-function closeConfirmation() {
-	isBeingConfirmed.value = false
-}
+const {
+	"state": isBeingConfirmed,
+	"on": openConfirmation,
+	"off": closeConfirmation
+} = makeSwitch(false)
 
 async function updateRole() {
 	await fetcher.update(role.value.data.id, {

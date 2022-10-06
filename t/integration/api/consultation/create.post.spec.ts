@@ -1,3 +1,4 @@
+import { DayValues } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import App from "~/setups/app"
@@ -5,7 +6,9 @@ import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$!/singletons/request_environment"
+import EmployeeScheduleFactory from "~/factories/employee_schedule"
 
 import Route from "!%/api/consultation/create.post"
 
@@ -27,6 +30,12 @@ describe("POST /api/consultation", () => {
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.makeOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(consultant))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
+		.scheduleStart(() => convertTimeToMinutes("00:01"))
+		.scheduleEnd(() => convertTimeToMinutes("23:59"))
+		.insertOne()
 
 		const response = await App.request
 		.post("/api/consultation")

@@ -38,12 +38,12 @@ describe("Helper: Deserialize", () => {
 		expect(deserializedObject).toStrictEqual({
 			"data": {
 				"createdAt": CURRENT_TIME,
-				"id": 1,
+				"id": "1",
 				"name": "A",
 				"role": {
 					"data": [
 						{
-							"id": 2,
+							"id": "2",
 							"name": "B",
 							"type": "role"
 						}

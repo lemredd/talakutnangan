@@ -1,12 +1,17 @@
+import { DayValues } from "$/types/database"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
-import App from "~/setups/app"
+import { CONSULTATION_LINK } from "$/constants/template_links"
 
+import App from "~/setups/app"
 import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
 import AttachedRole from "%/models/attached_role"
+import specializePath from "$/helpers/specialize_path"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$!/singletons/request_environment"
+import EmployeeScheduleFactory from "~/factories/employee_schedule"
 import makeConsultationNamespace from "$/namespace_makers/consultation"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
@@ -45,9 +50,15 @@ describe("PATCH /api/consultation/:id", () => {
 		.user(() => Promise.resolve(consultant))
 		.consultation(() => Promise.resolve(model))
 		.insertOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(consultant))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
+		.scheduleStart(() => convertTimeToMinutes("00:01"))
+		.scheduleEnd(() => convertTimeToMinutes("23:58"))
+		.insertOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -120,9 +131,15 @@ describe("PATCH /api/consultation/:id", () => {
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => null)
 		.makeOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(consultant))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
+		.scheduleStart(() => convertTimeToMinutes("00:01"))
+		.scheduleEnd(() => convertTimeToMinutes("23:57"))
+		.insertOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
@@ -206,9 +223,15 @@ describe("PATCH /api/consultation/:id", () => {
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => FINISHED_TIME)
 		.makeOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(consultant))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
+		.scheduleStart(() => convertTimeToMinutes("00:01"))
+		.scheduleEnd(() => convertTimeToMinutes("23:59"))
+		.insertOne()
 
 		const response = await App.request
-		.patch(`/api/consultation/${model.id}`)
+		.patch(specializePath(CONSULTATION_LINK.bound, { "id": model.id }))
 		.set("Cookie", cookie)
 		.send({
 			"data": {

@@ -40,9 +40,6 @@ describe("Fetcher: Chat message", () => {
 			} as ChatMessageDocument<"read">),
 			{ "status": RequestEnvironment.status.OK }
 		)
-
-		Fetcher.initialize("/api")
-
 		const fetcher = new Fetcher()
 		const response = await fetcher.createWithFile({} as FormData)
 

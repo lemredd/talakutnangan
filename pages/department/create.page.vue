@@ -30,7 +30,6 @@ const fullName = ref("")
 const acronym = ref("")
 const mayAdmit = ref(false)
 
-DepartmentFetcher.initialize("/api")
 const fetcher = new DepartmentFetcher()
 
 function createDepartment() {

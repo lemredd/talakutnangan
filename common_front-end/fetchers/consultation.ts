@@ -9,6 +9,9 @@ import type {
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
+
+import { CONSULTATION_LINK } from "$/constants/template_links"
+
 import BaseFetcher from "$@/fetchers/base"
 
 export default class ConsultationFetcher extends BaseFetcher<
@@ -25,11 +28,7 @@ export default class ConsultationFetcher extends BaseFetcher<
 		"queryParameters": ConsultationQueryParameters
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "consultation")
-	}
-
 	constructor() {
-		super(ConsultationFetcher.basePath, ConsultationFetcher.type)
+		super(CONSULTATION_LINK)
 	}
 }

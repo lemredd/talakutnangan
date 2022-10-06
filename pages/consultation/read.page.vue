@@ -8,6 +8,7 @@
 		</template>
 		<template #chat-window>
 			<ChatWindow
+				class="flex-1"
 				:consultation="consultation"
 				:chat-messages="chatMessages"
 				@updated-consultation-attributes="updateConsultationAttributes"/>
@@ -24,7 +25,7 @@
 		margin: 0 !important;
 	}
 }
-footer {
+footer:not(.overlay-footer) {
 	display: none !important;
 }
 </style>
@@ -60,14 +61,11 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
-import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerChatListeners from "@/consultation/listeners/register_chat"
+import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
 
-ChatMessageFetcher.initialize("/api")
-ConsultationFetcher.initialize("/api")
-ChatMessageActivityFetcher.initialize("/api")
 Socket.initialize()
 
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
@@ -207,16 +205,16 @@ async function loadConsultations(): Promise<void> {
 	}
 }
 
-registerChatListeners(
-	consultation,
-	chatMessages,
-	currentChatMessageActivityResource,
-	chatMessageActivityFetcher
-)
-registerConsultationListeners(consultation)
-registerChatActivityListeners(consultation, chatMessageActivities)
-
 onMounted(async() => {
+	registerChatListeners(
+		consultation,
+		chatMessages,
+		currentChatMessageActivityResource,
+		chatMessageActivityFetcher
+	)
+	registerConsultationListeners(consultation)
+	registerChatActivityListeners(consultation, chatMessageActivities)
+
 	await loadConsultations()
 	await loadPreviousChatMessages()
 

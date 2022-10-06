@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript"
 import User from "%/models/user"
 import Role from "%/models/role"
+import Post from "%/models/post"
 import Consultation from "%/models/consultation"
 
 @Table({
@@ -46,4 +47,7 @@ export default class AttachedRole extends Model {
 
 	@HasMany(() => Consultation)
 		consultation!: Consultation
+
+	@HasMany(() => Post)
+		posts!: Post
 }

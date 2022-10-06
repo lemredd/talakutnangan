@@ -15,8 +15,6 @@ import assignPath from "$@/external/assign_path"
 
 import Anchor from "@/anchor.vue"
 
-UserFetcher.initialize("/api")
-
 function logOut() {
 	new UserFetcher().logOut()
 	.then(() => {

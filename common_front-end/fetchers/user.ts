@@ -13,7 +13,15 @@ import type {
 	DeserializedUserListDocument
 } from "$/types/documents/user"
 
-import { UPDATE_PASSWORD_PATH } from "$/constants/template_paths"
+import {
+	USER_LINK,
+	UPDATE_PASSWORD_LINK,
+	LOG_IN_LINK,
+	LOG_OUT_LINK,
+	IMPORT_USER_LINK,
+	UPDATE_DEPARTMENT_OF_USER_LINK,
+	UPDATE_ROLE_OF_USER_LINK
+} from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 
@@ -33,12 +41,8 @@ export default class UserFetcher extends BaseFetcher<
 		"queryParameters": UserQueryParameters
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "user")
-	}
-
 	constructor() {
-		super(UserFetcher.basePath, UserFetcher.type)
+		super(USER_LINK)
 	}
 
 	async logIn(details: LogInDetails): Promise<Response<
@@ -50,7 +54,7 @@ export default class UserFetcher extends BaseFetcher<
 		Serializable
 	>> {
 		return await this.handleResponse(
-			this.postJSON(`${this.type}/log_in`, details)
+			this.postJSON(LOG_IN_LINK, details)
 		) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
@@ -69,7 +73,7 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserResource,
 		Serializable
 	>> {
-		return await this.postJSON(`${this.type}/log_out`, {}) as Response<
+		return await this.postJSON(LOG_OUT_LINK, {}) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,
 			UserAttributes<"deserialized">,
@@ -87,8 +91,7 @@ export default class UserFetcher extends BaseFetcher<
 		DeserializedUserResource,
 		DeserializedUserListDocument
 	>> {
-		const pathTemplate = ":type/import"
-		const path = specializePath(pathTemplate, { "type": this.type })
+		const path = specializePath(IMPORT_USER_LINK, { "type": this.links.type })
 		const headers = new Headers({
 			"Accept": JSON_API_MEDIA_TYPE
 		})
@@ -117,7 +120,7 @@ export default class UserFetcher extends BaseFetcher<
 		null
 	>> {
 		return await this.handleResponse(
-			this.patchJSON(UPDATE_PASSWORD_PATH.slice("/api/".length), {
+			this.patchJSON(UPDATE_PASSWORD_LINK, {
 				id
 			}, {
 				"data": {
@@ -151,7 +154,7 @@ export default class UserFetcher extends BaseFetcher<
 		null
 	>> {
 		return await this.handleResponse(
-			this.patchJSON("user/:id/relationships/role", {
+			this.patchJSON(UPDATE_ROLE_OF_USER_LINK, {
 				id
 			}, {
 				"data": attachedRoleIDs.map(roleID => ({
@@ -178,7 +181,7 @@ export default class UserFetcher extends BaseFetcher<
 		null
 	>> {
 		return await this.handleResponse(
-			this.patchJSON("user/:id/relationships/department", {
+			this.patchJSON(UPDATE_DEPARTMENT_OF_USER_LINK, {
 				id
 			}, {
 				"data": {

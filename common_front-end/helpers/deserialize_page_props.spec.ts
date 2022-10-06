@@ -1,32 +1,32 @@
 import deserializePageProps from "./deserialize_page_props"
 
 describe("Helper: Deserialize page props", () => {
-	it("should deserialize authenticated page context", async() => {
+	it("should deserialize authenticated page context", () => {
 		const userProfile = {
 			"data": {
-				"type": "user",
-				"id": 1,
 				"attributes": {
 					"name": "A"
 				},
+				"id": 1,
 				"relationships": {
 					"role": {
 						"data": [
 							{
-								"type": "role",
-								"id": 2
+								"id": 2,
+								"type": "role"
 							}
 						]
 					}
-				}
+				},
+				"type": "user"
 			},
 			"included": [
 				{
-					"type": "role",
-					"id": 2,
 					"attributes": {
 						"name": "B"
-					}
+					},
+					"id": 2,
+					"type": "role"
 				}
 			]
 		}
@@ -42,25 +42,25 @@ describe("Helper: Deserialize page props", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
-						"type": "user",
-						"id": 1,
+						"id": "1",
 						"name": "A",
 						"role": {
 							"data": [
 								{
-									"type": "role",
-									"id": 2,
-									"name": "B"
+									"id": "2",
+									"name": "B",
+									"type": "role"
 								}
 							]
-						}
+						},
+						"type": "user"
 					}
 				}
 			}
 		})
 	})
 
-	it("should not deserialize unauthenticated page context", async() => {
+	it("should not deserialize unauthenticated page context", () => {
 		const serializedObject = {
 			"pageProps": {
 				"userProfile": null
