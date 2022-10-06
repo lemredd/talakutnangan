@@ -175,9 +175,10 @@ function send(): void {
 	}).then(() => {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
+		const seenMessageAt = new Date().toJSON()
 		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
-			"receivedMessageAt": currentChatMessageActivity.value.receivedMessageAt.toString(),
-			"seenMessageAt": new Date().toJSON()
+			"receivedMessageAt": seenMessageAt,
+			seenMessageAt
 		})
 	})
 }
