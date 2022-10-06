@@ -11,6 +11,8 @@ import type {
 	PostListDocument
 } from "$/types/documents/post"
 
+import Role from "%/models/role"
+import User from "%/models/user"
 import Model from "%/models/post"
 import Transformer from "%/transformers/post"
 import AttachedRole from "%/models/attached_role"
@@ -41,6 +43,23 @@ export default class PostFactory extends TextContentLikeFactory<
 			"attachedRoleID": (await this.posterInfoGenerator()).id,
 			"content": this.contentGenerator()
 		}
+	}
+
+	async attachRelatedModels(model: Model): Promise<Model> {
+		model.posterInfo = await AttachedRole.findByPk(model.attachedRoleID, {
+			"include": [
+				{
+					"model": User,
+					"required": true
+				},
+				{
+					"model": Role,
+					"required": true
+				}
+			]
+		}) as AttachedRole
+
+		return model
 	}
 
 	posterInfo(generator: () => Promise<AttachedRole>): PostFactory {
