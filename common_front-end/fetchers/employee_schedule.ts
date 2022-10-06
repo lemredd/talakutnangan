@@ -12,6 +12,8 @@ import type {
 } from "$/types/documents/employee_schedule"
 import BaseFetcher from "$@/fetchers/base"
 
+import { EMPLOYEE_SCHEDULE_LINK } from "$/constants/template_links"
+
 export default class EmployeeScheduleFetcher extends BaseFetcher<
 	EmployeeScheduleResourceIdentifier,
 	EmployeeScheduleAttributes<"serialized">,
@@ -27,11 +29,7 @@ export default class EmployeeScheduleFetcher extends BaseFetcher<
 		"extraCreateData": EmployeeScheduleRelationships<"create">
 	}
 > {
-	static initialize(basePath: string) {
-		super.initialize(basePath, "employee_schedule")
-	}
-
 	constructor() {
-		super(EmployeeScheduleFetcher.basePath, EmployeeScheduleFetcher.type)
+		super(EMPLOYEE_SCHEDULE_LINK)
 	}
 }

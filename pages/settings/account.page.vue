@@ -47,7 +47,7 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, provide, ref, computed, onBeforeMount, onMounted } from "vue"
+import { inject, provide, ref, computed, onMounted } from "vue"
 
 import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
@@ -87,10 +87,6 @@ const groupKind = computed<string>(() => {
 const groupName = computed<string>(() => userProfile.data.department.data.acronym)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
-
-onBeforeMount(() => {
-	Fetcher.initialize("/api")
-})
 
 let rawFetcher: Fetcher|null = null
 

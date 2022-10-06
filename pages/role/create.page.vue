@@ -2,38 +2,19 @@
 	<form @submit.prevent="createRole">
 		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
-			v-model="roleName"
+			v-model="role.name"
 			label="Role Name"
 			type="text"/>
 
 		<FlagSelector
-			v-model="semesterFlags"
-			header="Semester"
-			:base-permission-group="semester"/>
-		<FlagSelector
-			v-model="tagFlags"
-			header="Tag"
-			:base-permission-group="tag"/>
-		<FlagSelector
-			v-model="postFlags"
-			header="Post"
-			:base-permission-group="post"/>
-		<FlagSelector
-			v-model="commentFlags"
-			header="Comment"
-			:base-permission-group="comment"/>
-		<FlagSelector
-			v-model="profanityFlags"
-			header="Profanity"
-			:base-permission-group="profanity"/>
-		<FlagSelector
-			v-model="userFlags"
-			header="User"
-			:base-permission-group="user"/>
-		<FlagSelector
-			v-model="auditTrailFlags"
-			header="Audit Trail"
-			:base-permission-group="auditTrail"/>
+			v-for="flagSelector in flagSelectors"
+			:key="flagSelector.permissionGroup.name"
+			v-model="role[flagSelector.permissionGroup.name]"
+			:header="flagSelector.header"
+			:base-permission-group="flagSelector.permissionGroup"
+			:dependent-permission-groups="flagSelector.dependentGroups"
+			@check-external-dependency-flags="flagSelector.checkExternal"
+			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
 		<input
 			class="btn btn-primary"
@@ -54,63 +35,40 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from "vue"
-import RoleFetcher from "$@/fetchers/role"
-import {
-	tag,
-	user,
-	post,
-	comment,
-	semester,
-	profanity,
-	auditTrail
-} from "$/permissions/permission_list"
+import { ref } from "vue"
+import type { RoleAttributes } from "$/types/documents/role"
+
+import Fetcher from "$@/fetchers/role"
+import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
+
 import TextualField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
 
-const roleName = ref("")
-
-const postFlags = ref<number>(0)
-const semesterFlags = ref<number>(0)
-const tagFlags = ref<number>(0)
-const commentFlags = ref<number>(0)
-const profanityFlags = ref<number>(0)
-const userFlags = ref<number>(0)
-const auditTrailFlags = ref<number>(0)
-
-onBeforeMount(() => {
-	RoleFetcher.initialize("/api")
+const role = ref<RoleAttributes<"deserialized">>({
+	"auditTrailFlags": 0,
+	"commentFlags": 0,
+	"deletedAt": null,
+	"departmentFlags": 1,
+	"name": "",
+	"postFlags": 0,
+	"profanityFlags": 0,
+	"roleFlags": 1,
+	"semesterFlags": 0,
+	"tagFlags": 0,
+	"userFlags": 0
 })
 
-let rawRoleFetcher: RoleFetcher|null = null
-
-function roleFetcher(): RoleFetcher {
-	if (rawRoleFetcher) return rawRoleFetcher
-
-	throw new Error("Roles cannot be retrived/sent to server yet")
-}
+const flagSelectors = makeFlagSelectorInfos(role)
+const roleFetcher = new Fetcher()
 
 function createRole() {
-	roleFetcher().create({
-		"auditTrailFlags": auditTrailFlags.value,
-		"commentFlags": commentFlags.value,
-		"deletedAt": null,
-		"departmentFlags": 1,
-		"name": roleName.value,
-		"postFlags": postFlags.value,
-		"profanityFlags": profanityFlags.value,
-		"roleFlags": 1,
-		"semesterFlags": semesterFlags.value,
-		"tagFlags": tagFlags.value,
-		"userFlags": userFlags.value
+	roleFetcher.create({
+		...role.value,
+		"deletedAt": null
 	}).then(({ unusedBody, unusedStatus }) => {
 		// Success
 	}).catch(({ unusedBody, unusedStatus }) => {
 		// Fail
 	})
 }
-
-onMounted(() => {
-	rawRoleFetcher = new RoleFetcher()
-})
 </script>

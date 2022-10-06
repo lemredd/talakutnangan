@@ -40,8 +40,8 @@ export default class StudentDetailFactory extends BaseFactory<
 
 	async generate(): GeneratedData<StudentDetail> {
 		return {
-			"userID": (await this.#user()).id,
-			"studentNumber": this.#studentNumber()
+			"studentNumber": this.#studentNumber(),
+			"userID": (await this.#user()).id
 		}
 	}
 

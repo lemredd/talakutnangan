@@ -4,7 +4,9 @@ import type { SourceType } from "$/types/database"
 
 import Role from "%/models/role"
 import User from "%/models/user"
+import Post from "%/models/post"
 import Log from "$!/singletons/log"
+import Comment from "%/models/comment"
 import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AuditTrail from "%/models/audit_trail"
@@ -20,31 +22,35 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 
 export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
+	const models = [
+		Role,
+		User,
+		Post,
+		Comment,
+		Signature,
+		AuditTrail,
+		Department,
+		ChatMessage,
+		Consultation,
+		AttachedRole,
+		StudentDetail,
+		ProfilePicture,
+		EmployeeSchedule,
+		AttachedChatFile,
+		ChatMessageActivity
+	]
+
 	const sequelize = new Sequelize({
 		...configuration,
 		"logging": (query: string) => {
 			Log.trace("query", query)
 		},
-		"models": [
-			Role,
-			User,
-			Signature,
-			AuditTrail,
-			Department,
-			ChatMessage,
-			Consultation,
-			AttachedRole,
-			StudentDetail,
-			ProfilePicture,
-			EmployeeSchedule,
-			AttachedChatFile,
-			ChatMessageActivity
-		]
+		models
 	})
 
 	try {
 		await sequelize.authenticate()
-		Log.success("server", "Connected to the database server")
+		Log.success("server", `Connected to the database server with ${models.length} models`)
 	} catch (error) {
 		Log.errorMessage("server", "Cannot connect to the database")
 		Log.error("server", error as Error)

@@ -1,21 +1,32 @@
 import { nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
+
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
+import { CONSULTATION_LINK } from "$/constants/template_links"
+
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
-	it("should request to start consultation", async() => {
+	it.only("should request to start consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const id = "1"
 		const fakeConsultation = {
 			"actionTaken": null,
+			"consultant": {
+				"data": {
+					"id": "1",
+					"type": "user"
+				}
+			},
 			"finishedAt": null,
-			"id": "1",
+			id,
 			"reason": "",
 			scheduledStartAt,
 			"startedAt": null,
@@ -43,7 +54,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", "/api/consultation/1")
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
@@ -61,10 +72,11 @@ describe("Component: consultation/chat_window", () => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const id = "1"
 		const fakeConsultation = {
 			"actionTaken": null,
 			"finishedAt": null,
-			"id": "1",
+			id,
 			"reason": "",
 			scheduledStartAt,
 			"startedAt": null,
@@ -102,7 +114,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", "/api/consultation/1")
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
@@ -115,7 +127,7 @@ describe("Component: consultation/chat_window", () => {
 		expect(firstRequestBody).toHaveProperty("data.id", "1")
 		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		expect(secondRequest).toHaveProperty("method", "PATCH")
-		expect(secondRequest).toHaveProperty("url", "/api/consultation/1")
+		expect(secondRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const secondRequestBody = await secondRequest.json()
 		expect(secondRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(secondRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
@@ -199,10 +211,11 @@ describe("Component: consultation/chat_window", () => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const id = "1"
 		const fakeConsultation = {
 			"actionTaken": null,
 			"finishedAt": null,
-			"id": "1",
+			id,
 			"reason": "",
 			scheduledStartAt,
 			"startedAt": null,
@@ -237,7 +250,7 @@ describe("Component: consultation/chat_window", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", "/api/consultation/1")
+		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
 		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)

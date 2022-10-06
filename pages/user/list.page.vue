@@ -38,8 +38,6 @@ import UsersManager from "@/resource_management/resource_manager.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 
 import UserFetcher from "$@/fetchers/user"
-import RoleFetcher from "$@/fetchers/role"
-import DepartmentFetcher from "$@/fetchers/department"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -66,10 +64,6 @@ if (currentResourceManager.isAdmin()) {
 	]
 	provide("tabs", tabs)
 }
-
-UserFetcher.initialize("/api")
-RoleFetcher.initialize("/api")
-DepartmentFetcher.initialize("/api")
 
 const determineTitle = computed(() => {
 	if (currentResourceManager.isInstituteLimited()) {

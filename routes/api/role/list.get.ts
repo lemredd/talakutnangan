@@ -29,7 +29,7 @@ export default class extends QueryController {
 		return makeListRules(
 			Manager,
 			{
-				...makeIDBasedFilterRules("department", DepartmentManager, true),
+				...makeIDBasedFilterRules("department", DepartmentManager, { "mustCast": true }),
 				...makeMultiIDBasedFilterRules(Manager, { "mustCast": true })
 			}
 		)

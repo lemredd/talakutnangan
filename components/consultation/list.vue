@@ -1,20 +1,27 @@
 <template>
 	<div class="consultations-list">
+		<!-- TODO(others): Refactor all WindiCSS inline classes using @apply directive -->
+		<!-- TODO(others): use grid if applicable -->
 		<div
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
-			class="consultation"
+			class="consultation p-3"
+			:class="getActivenessClass(consultation)"
 			@click="pickConsultation(consultation.id)">
-			<!-- TODO(others): must rearrange the pictures -->
-			<div class="profile-pictures">
-				<ProfilePictureItem
-					v-for="activity in getChatMessageActivities(consultation)"
-					:key="activity.id"
-					:activity="activity"/>
-			</div>
-			<h3 class="consultation-title col-span-full font-400">
-				#{{ consultation.id }} {{ consultation.reason }}
+			<h3 class="consultation-title col-span-full font-bold mb-3">
+				<span class="opacity-45">#{{ consultation.id }}</span>
+				{{ consultation.reason }}
 			</h3>
+			<!-- TODO(others): style arrangement of pictures -->
+			<div class="profile-pictures flex">
+				<span class="mr-3">participants:</span>
+				<ProfilePictureItem
+					v-for="activity in getProfilePictures(consultation)"
+					:key="activity.id"
+					:activity="activity"
+					:title="activity.user.data.name"
+					class="profile-picture-item rounded-full w-[20px] h-[20px]"/>
+			</div>
 
 			<LastChat
 				v-if="hasPreviewMessage(consultation)"
@@ -24,7 +31,16 @@
 	</div>
 </template>
 
+<style scoped lang="scss">
+	.consultation.active {
+		background-color: hsla(0, 0%, 50%, 0.1)
+	}
+</style>
+
 <script setup lang="ts">
+import { inject } from "vue"
+
+import type { PageContext } from "$/types/renderer"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
@@ -45,6 +61,10 @@ import LastChat from "@/consultation/list/last_chat.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
+import makeUniqueBy from "$/helpers/make_unique_by"
+
+const pageContext = inject("pageContext") as PageContext
+
 const {
 	consultations,
 	chatMessageActivities,
@@ -52,15 +72,25 @@ const {
 } = defineProps<{
 	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
 	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
-	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
+		previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
 }>()
 
+function getActivenessClass(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+) {
+	return { "active": pageContext.urlPathname === `/consultation/${consultation.id}` }
+}
 function getChatMessageActivities(
 	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
 ): DeserializedChatMessageActivityResource<"user">[] {
 	return chatMessageActivities.data.filter(
 		activity => activity.consultation.data.id === consultation.id
 	)
+}
+function getProfilePictures(
+	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
+) {
+	return makeUniqueBy(getChatMessageActivities(consultation), "user.data.id")
 }
 
 function findPreviewMessageIndex(

@@ -5,8 +5,6 @@ import { mount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedUserProfile, DeserializedUserResource } from "$/types/documents/user"
 
-import UserFetcher from "$@/fetchers/user"
-
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
@@ -138,7 +136,6 @@ describe("Page: user/list", () => {
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
-			UserFetcher.initialize("/api")
 			const roleFilter = await new RoleFactory().deserializedMany(5)
 			const deptFilter = await new DepartmentFactory().deserializedMany(5)
 
@@ -224,7 +221,6 @@ describe("Page: user/list", () => {
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
-			UserFetcher.initialize("/api")
 
 			// TODO(lead): ensure user is in list
 
@@ -344,8 +340,6 @@ describe("Page: user/list", () => {
 				}),
 				{ "status": RequestEnvironment.status.OK }
 			)
-			UserFetcher.initialize("/api")
-
 			// TODO(lead): ensure user is in list
 
 			const wrapper = mount(Page, {

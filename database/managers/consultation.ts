@@ -33,6 +33,14 @@ export default class extends BaseManager<
 
 	get transformer(): Transformer { return new Transformer() }
 
+	get singleReadPipeline()
+	: Pipe<FindAndCountOptions<Model>, ConsultationQueryParameters<number>>[] {
+		return [
+			includeDefaults,
+			...super.singleReadPipeline
+		]
+	}
+
 	get listPipeline(): Pipe<FindAndCountOptions<Model>, ConsultationQueryParameters<number>>[] {
 		return [
 			siftByUser,

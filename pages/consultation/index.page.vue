@@ -42,8 +42,6 @@ import ConsultationShell from "@/consultation/page_shell.vue"
 import EmptyConsultationList from "@/consultation/empty_list.vue"
 import EmptyChatWindow from "@/consultation/empty_chat_window.vue"
 
-Fetcher.initialize("/api")
-
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile

@@ -4,6 +4,8 @@ import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { ChatMessageActivityAttributes } from "$/types/documents/chat_message_activity"
 
 import BaseManager from "%/managers/base"
+import Condition from "%/helpers/condition"
+import Consultation from "%/models/consultation"
 import Model from "%/models/chat_message_activity"
 import Transformer from "%/transformers/chat_message_activity"
 
@@ -38,5 +40,39 @@ export default class extends BaseManager<
 			includeDefaults,
 			...super.listPipeline
 		]
+	}
+
+	get exposableColumns(): string[] {
+		const excludedColumns = [ "consultationID", "userID", "deletedAt" ]
+		return super.exposableColumns.filter(columnName => {
+			const isIncluded = !excludedColumns.includes(columnName)
+			return isIncluded
+		})
+	}
+
+	/**
+	 * Retrieves the IDs of consultation that are existing and associated with chat message
+	 * activities referenced by IDs passed.
+	 */
+	async retrieveExistingConsultationIDs(IDs: number[]): Promise<number[]> {
+		try {
+			const chatMessageActivities = await Model.findAll({
+				"include": [
+					{
+						"model": Consultation,
+						"required": true
+					}
+				],
+				"where": new Condition().isIncludedIn("id", IDs).build()
+			})
+
+			const consultationIDs = chatMessageActivities.map(
+				activity => activity.consultation.id
+			)
+
+			return consultationIDs
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 }

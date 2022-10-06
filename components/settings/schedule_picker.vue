@@ -116,17 +116,23 @@
 import { computed, inject, ref } from "vue"
 
 import type { Day } from "$/types/database"
+import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
-
-
-import Selectable from "@/fields/selectable_options.vue"
 
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
-import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import makeUnique from "$/array/make_unique"
 import assignPath from "$@/external/assign_path"
+import makeOptionInfo from "$@/helpers/make_option_info"
+import getTimePart from "@/helpers/schedule_picker/get_time_part"
+import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
+import formatHourTo24Hours from "@/helpers/schedule_picker/format_to_24_hours"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
+import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
+
+import Selectable from "@/fields/selectable_options.vue"
 
 const fetcher = new EmployeeScheduleFetcher()
 
@@ -141,7 +147,6 @@ const props = defineProps<{
 	scheduleEnd: number
 }>()
 
-const noon = 12
 const isEditing = ref(false)
 const isAdding = ref(false)
 function toggleEditing() {
@@ -152,95 +157,38 @@ function toggleAdding() {
 	isAdding.value = !isAdding.value
 }
 
-function twoDigits(number: number) {
-	const twoDigitStart = 10
-	return number < twoDigitStart ? `0${number}` : number.toString()
-}
-function formatTo12Hours(hour: number) {
-	let convertedHour = 0
+const availableTimeObjects = generateTimeRange().map(
+	timeInMinutes => convertMinutesToTimeObject(timeInMinutes)
+)
+const availableTimeStrings = availableTimeObjects.map(
+	timeObject => convertToTimeString(timeObject)
+)
+const availableTimes = makeOptionInfo(makeUnique(availableTimeStrings)) as OptionInfo[]
+const midDays = makeOptionInfo([ "AM", "PM" ]) as OptionInfo[]
 
-	if (hour <= noon) convertedHour = hour
-	else convertedHour = hour - noon
-
-	return convertedHour
-}
-function makeOptions(values: any[]): any[] {
-	const options: any[] = []
-	// eslint-disable-next-line object-shorthand
-	values.map(value => options.push({ "value": value }))
-
-	return options
-}
-function convertTimeObjectToTimeString(
-	timeObject: ReturnType<typeof convertMinutesToTimeObject>
-) {
-	return `${twoDigits(formatTo12Hours(timeObject.hours))}:${twoDigits(timeObject.minutes)}`
-}
-
-function generateNumberRange() {
-	const hourEnd = 11
-	const minuteEnd = 60
-	const start = 0
-	const time = []
-
-	for (let i = start; i <= hourEnd; i++) {
-		for (let interval = 15, j = start; j < minuteEnd; j += interval) {
-			time.push(`${i === 0 ? hourEnd + 1 : twoDigits(i)}:${twoDigits(j)}`)
-		}
-	}
-
-	return time
-}
-const availableTimes = makeOptions(generateNumberRange())
-const midDays = makeOptions([ "AM", "PM" ])
-
-function getTimePart(time: number, part: "hour" | "minute" | "midday") {
-	const timeObject = convertMinutesToTimeObject(time)
-	let partToGive = ""
-
-	switch (part) {
-		case "hour":
-			partToGive = twoDigits(formatTo12Hours(timeObject.hours))
-			break
-		case "minute":
-			partToGive = twoDigits(timeObject.minutes)
-			break
-		case "midday":
-			if (timeObject.hours < noon) partToGive = "AM"
-			else partToGive = "PM"
-			break
-
-		default:
-			break
-	}
-
-	return partToGive
-}
-const startTime = ref(convertTimeObjectToTimeString(
+const startTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleStart)
 ))
-const endTime = ref(convertTimeObjectToTimeString(
+const endTime = ref(convertToTimeString(
 	convertMinutesToTimeObject(props.scheduleEnd)
 ))
-const startMidDay = ref(getTimePart(props.scheduleStart, "midday"))
-const endMidDay = ref(getTimePart(props.scheduleEnd, "midday"))
+const startMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleStart, "midday") as "AM"|"PM")
+const endMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleEnd, "midday") as "AM"|"PM")
 
-function formatTo24Hours(time: string) {
+function formatTo24Hours(time: string, midday: "AM" | "PM") {
 	// eslint-disable-next-line prefer-const
 	let [ hour, minute ] = time.split(":")
-	hour = String(Number(hour) + noon)
+	hour = String(formatHourTo24Hours(Number(hour), midday))
 
 	return `${hour}:${minute}`
 }
 const startTime24Hours = computed(() => {
-	let formattedTime = startTime.value
-	if (startMidDay.value === "PM") formattedTime = formatTo24Hours(startTime.value)
+	const formattedTime = formatTo24Hours(startTime.value, startMidDay.value)
 
 	return formattedTime
 })
 const endTime24Hours = computed(() => {
-	let formattedTime = endTime.value
-	if (endMidDay.value === "PM") formattedTime = formatTo24Hours(endTime.value)
+	const formattedTime = formatTo24Hours(endTime.value, endMidDay.value)
 
 	return formattedTime
 })
