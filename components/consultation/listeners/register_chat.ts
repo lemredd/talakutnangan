@@ -69,6 +69,7 @@ export default function(
 
 	const chatNamespace = makeConsultationChatNamespace(consultation.value.id)
 	Socket.addEventListeners(chatNamespace, {
+		"connect_error": () => alert("cannot connect to server"),
 		"create": createMessage,
 		"update": updateMessage
 	})
