@@ -43,9 +43,12 @@ a {
 </style>
 
 <script lang="ts" setup>
-import { onMounted, provide, ref, watch } from "vue"
+import { onMounted, provide, ref } from "vue"
+
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import { usePageContext } from "#/usePageContext"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import deserializedPageProps from "$@/helpers/deserialize_page_props"
 
 import Footer from "@/page_shell/footer.vue"
@@ -57,18 +60,15 @@ const path = pageContext.urlPathname
 const isLoggingIn = ref<boolean>(path === "/user/log_in")
 
 const layout = ref<HTMLElement | null>(null)
-const body = ref<HTMLBodyElement | null>(null)
-const bodyClasses = ref<string[]>([])
+const bodyClasses = ref<BodyCSSClasses | null>(null)
 onMounted(() => {
 	if (layout.value) {
 		// ! Risky
-		body.value = layout.value.parentElement?.parentElement as HTMLBodyElement
+		bodyClasses.value = new BodyCSSClasses(
+			layout.value.parentElement?.parentElement as HTMLBodyElement
+		)
 	}
 })
-watch(bodyClasses, newSource => {
-	body.value?.classList.remove(...body.value?.classList.values() ?? [])
-	body.value?.classList.add(...newSource)
-})
 provide("pageContext", deserializedPageProps(pageContext))
-provide("bodyClasses", bodyClasses)
+provide(BODY_CLASSES, bodyClasses)
 </script>

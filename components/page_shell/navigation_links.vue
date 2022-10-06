@@ -108,10 +108,13 @@ import { computed, inject, Ref } from "vue"
 
 import type { DeserializedPageContext } from "$@/types/independent"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
+import makeSwitch from "$@/helpers/make_switch"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
-import RequestEnvironment from "$/singletons/request_environment"
-import disableScroll from "$@/helpers/disable_scroll"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import linkInfos from "@/page_shell/navigation_link_infos"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
@@ -130,10 +133,15 @@ const desktopRoleLinks = computed(() => roleLinks.value.filter(
 	info => info.viewportsAvailable.includes("desktop")
 ))
 
-const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
+const {
+	"state": isRoleLinksShown,
+	"toggle": toggleVisibility
+} = makeSwitch(false)
 
 function toggleRoleLinks() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	disableScroll(rawBodyClasses, [ "unscrollable" ])
+	toggleVisibility()
+	bodyClasses.value.scroll(isRoleLinksShown.value)
 }
 </script>

@@ -143,12 +143,7 @@ import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import ProfilePicture from "@/helpers/profile_picture.vue"
-import Signature from "@/helpers/signature.vue"
-import SettingsHeader from "@/tabbed_page_header.vue"
-import PicturePicker from "@/fields/picture_picker.vue"
-import TextualField from "@/fields/non-sensitive_text.vue"
-import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
@@ -157,9 +152,17 @@ import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
 import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
+import ProfilePicture from "@/helpers/profile_picture.vue"
+import Signature from "@/helpers/signature.vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
+import PicturePicker from "@/fields/picture_picker.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
+import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+
+
 import { DayValues } from "$/types/database"
 
-const bodyClasses = inject("bodyClasses") as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
