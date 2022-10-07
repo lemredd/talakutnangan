@@ -152,7 +152,7 @@ export default class extends BaseManager<
 			const initialChatMessage = await ChatMessage.create({
 				"chatMessageActivityID": chatMessageActivityOfRequester.id,
 				"data": {
-					"value": "Consultation has been prepared."
+					"value": "has prepared the consultation."
 				},
 				"kind": "status"
 			}, this.transaction.transactionObject)
