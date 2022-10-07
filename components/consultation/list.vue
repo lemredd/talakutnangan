@@ -2,9 +2,9 @@
 	<div class="consultations-list left">
 		<!-- TODO(others): Refactor all WindiCSS inline classes using @apply directive -->
 		<!-- TODO(others): use grid if applicable -->
-		<div class="consultations-list-header p-3">
-			<div v-if="!isSearching" class="no-search-bar flex flex-1">
-				<h2 class="flex-1">
+		<div class="consultations-list-header">
+			<div v-if="!isSearching" class="no-search-bar">
+				<h2>
 					Consultations
 				</h2>
 
@@ -16,10 +16,10 @@
 			</div>
 			<div
 				v-else
-				class="is-searching flex flex-1">
+				class="is-searching">
 				<!-- TODO(lead/button): search existing consultations -->
 
-				<SearchBar v-model="slug" class="flex flex-1"/>
+				<SearchBar v-model="slug" class="list-search-bar"/>
 				<button class="material-icons text-xs" @click="toggleSearch">
 					close
 				</button>
@@ -30,7 +30,7 @@
 
 		<button
 			v-if="isUserAStudent"
-			class="material-icons add absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3"
+			class="material-icons add-btn"
 			@click="toggleAddingSchedule">
 			add
 		</button>
@@ -38,22 +38,22 @@
 		<div
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
-			class="consultation p-3"
+			class="consultation"
 			:class="getActivenessClass(consultation)"
 			@click="pickConsultation(consultation.id)">
-			<h3 class="consultation-title col-span-full font-bold mb-3">
-				<span class="opacity-45">#{{ consultation.id }}</span>
+			<h3 class="consultation-title">
+				<span class="number-symbol">#{{ consultation.id }}</span>
 				{{ consultation.reason }}
 			</h3>
 			<!-- TODO(others): style arrangement of pictures -->
-			<div class="profile-pictures flex">
-				<span class="mr-3">participants:</span>
+			<div class="profile-pictures">
+				<span class="participant-label">participants:</span>
 				<ProfilePictureItem
 					v-for="activity in getProfilePictures(consultation)"
 					:key="activity.id"
 					:activity="activity"
 					:title="activity.user.data.name"
-					class="profile-picture-item rounded-full w-[20px] h-[20px]"/>
+					class="profile-picture-item"/>
 			</div>
 
 			<LastChat
@@ -70,16 +70,58 @@
 		position: fixed;
 		overflow-y: scroll;
 		inset: 0;
-
 		@screen md {
 			position: initial;
 			width: calc(1920px / 5);
 			@apply flex flex-col;
 		}
+
+		.consultation-list-header {
+			@apply p-3;
+
+			.no-search-bar {
+				@apply flex flex-1;
+
+				h2 { @apply flex-1; }
+			}
+
+			.is-searching {
+				@apply flex flex-1;
+
+				.list-search-bar { @apply flex flex-1; }
+			}
+		}
+
+		.add-btn {
+			@apply absolute bottom-5 right-5;
+			@apply rounded-full border border-gray-600 p-3;
+			@apply text-lg;
+		}
 	}
 
-	.consultation.active {
-		background-color: hsla(0, 0%, 50%, 0.1)
+	.consultation {
+		@apply p-3;
+
+		&.active {
+			background-color: hsla(0, 0%, 50%, 0.1)
+		}
+
+		.consultation-title {
+			@apply col-span-full font-bold mb-3;
+
+			.number-symbol { @apply opacity-45; }
+		}
+
+		.profile-pictures {
+			@apply flex;
+
+			.participant-label { @apply mr-3; }
+			.profile-picture-item {
+				@apply rounded-full;
+				width: 20px;
+				height: 20px;
+			}
+		}
 	}
 </style>
 
