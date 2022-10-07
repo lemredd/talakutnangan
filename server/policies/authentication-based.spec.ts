@@ -89,12 +89,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			"requireChangedPassword": true
 		})
 		requester.customizeRequest({
-			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": {
-				"meta": {
-					"hasDefaultPassword": true
-				}
-			}
+			"isAuthenticated": jest.fn().mockReturnValue(false)
 		})
 
 		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
