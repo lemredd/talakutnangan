@@ -84,6 +84,24 @@ describe("Middleware: Authenticated-Based Policy", () => {
 		requester.expectSuccess()
 	})
 
+	it("can allow guest users despite of requiring password", async() => {
+		const authenticatedGuard = new AuthenticationBasedPolicy(false, {
+			"requireChangedPassword": true
+		})
+		requester.customizeRequest({
+			"isAuthenticated": jest.fn().mockReturnValue(true),
+			"user": {
+				"meta": {
+					"hasDefaultPassword": true
+				}
+			}
+		})
+
+		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
+
+		requester.expectSuccess()
+	})
+
 	it("cannot allow known users with default password", async() => {
 		const authenticatedGuard = new AuthenticationBasedPolicy(true, {
 			"requireChangedPassword": true
