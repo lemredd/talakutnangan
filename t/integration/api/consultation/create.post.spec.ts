@@ -6,6 +6,7 @@ import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
+import StudentDetailFactory from "~/factories/student_detail"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$!/singletons/request_environment"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
@@ -36,6 +37,7 @@ describe("POST /api/consultation", () => {
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:59"))
 		.insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(user)).insertOne()
 
 		const response = await App.request
 		.post("/api/consultation")

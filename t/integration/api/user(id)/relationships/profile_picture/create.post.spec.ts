@@ -21,17 +21,17 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		const PORT = 16000
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
-		const studentRole = await new RoleFactory()
+		const employeeRole = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 		.insertOne()
-		const { "user": student, cookie } = await App.makeAuthenticatedCookie(
-			studentRole,
-			userFactory => userFactory.beStudent()
+		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
+			employeeRole,
+			userFactory => userFactory.beReachableEmployee()
 		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
 
 		const response = await App.request
-		.post(`/api/user/${student.id}/relationships/profile_picture`)
+		.post(`/api/user/${employee.id}/relationships/profile_picture`)
 		.field("data[type]", "profile_picture")
 		.attach("data[attributes][fileContents]", path)
 		.set("Cookie", cookie)
@@ -51,18 +51,18 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		const PORT = 16000
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
-		const studentRole = await new RoleFactory()
+		const employeeRole = await new RoleFactory()
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 		.insertOne()
-		const { "user": student, cookie } = await App.makeAuthenticatedCookie(
-			studentRole,
-			userFactory => userFactory.beStudent()
+		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
+			employeeRole,
+			userFactory => userFactory.beReachableEmployee()
 		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
-		await new ProfilePictureFactory().user(() => Promise.resolve(student)).insertOne()
+		await new ProfilePictureFactory().user(() => Promise.resolve(employee)).insertOne()
 
 		const response = await App.request
-		.post(`/api/user/${student.id}/relationships/profile_picture`)
+		.post(`/api/user/${employee.id}/relationships/profile_picture`)
 		.field("data[type]", "profile_picture")
 		.attach("data[attributes][fileContents]", path)
 		.set("Cookie", cookie)

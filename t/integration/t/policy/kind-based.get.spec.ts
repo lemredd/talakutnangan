@@ -3,6 +3,7 @@ import RequestEnvironment from "$!/singletons/request_environment"
 
 import App from "~/setups/app"
 import UserFactory from "~/factories/user"
+import StudentDetailFactory from "~/factories/student_detail"
 
 import Route from "!%/t/policy/kind-based.get"
 
@@ -12,10 +13,11 @@ describe("GET /t/policy/kind-based", () => {
 	})
 
 	it("can be accessed by permitted user", async() => {
-		const { cookie } = await App.makeAuthenticatedCookie(
+		const { user, cookie } = await App.makeAuthenticatedCookie(
 			null,
 			(factory: UserFactory) => factory.beStudent()
 		)
+		await new StudentDetailFactory().user(() => Promise.resolve(user)).insertOne()
 
 		const response = await App.request
 		.get("/t/policy/kind-based")

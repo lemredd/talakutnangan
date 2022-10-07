@@ -22,13 +22,21 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const adminRole = await new RoleFactory().userFlags(
 			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
-		const admin = await new UserFactory().attach(adminRole).serializedOne(true)
+		const admin = await new UserFactory()
+		.beReachableEmployee()
+		.attach(adminRole)
+		.serializedOne(true)
 		requester.customizeRequest({
+			"isAuthenticated": jest.fn(() => true),
 			"params": {
 				"id": student.id
 			},
-			"isAuthenticated": jest.fn(() => true),
-			"user": admin
+			"user": {
+				...admin,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)
@@ -43,13 +51,21 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const adminRole = await new RoleFactory().userFlags(
 			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
-		const admin = await new UserFactory().attach(adminRole).serializedOne(true)
+		const admin = await new UserFactory()
+		.beReachableEmployee()
+		.attach(adminRole)
+		.serializedOne(true)
 		requester.customizeRequest({
+			"isAuthenticated": jest.fn(() => true),
 			"params": {
 				"id": admin.data.id
 			},
-			"isAuthenticated": jest.fn(() => true),
-			"user": admin
+			"user": {
+				...admin,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)
@@ -89,7 +105,6 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const validation = validations[BODY_VALIDATION_INDEX]
 		const validationFunction = validation.intermediate.bind(validation)
 		const roles = await new RoleFactory().insertMany(2)
-
 		requester.customizeRequest({
 			"body": {
 				"data": [

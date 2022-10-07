@@ -19,7 +19,7 @@ export default class {
 
 	static async create(
 		controller: Controller,
-		needsAuthentication: boolean = true
+		needsAuthentication = true
 	) {
 		const router = new class extends Router {
 			constructor() {
@@ -27,7 +27,7 @@ export default class {
 				this.useController(controller)
 				if (needsAuthentication) this.useController(new LogInController())
 			}
-		}
+		}()
 		this.#app = await createAppHandler(router)
 		this.#request = supertest(this.#app)
 	}
@@ -41,6 +41,7 @@ export default class {
 		factoryModificationCallback: ((factory: UserFactory) => UserFactory)|null = null
 	) {
 		if (role === null) {
+			// eslint-disable-next-line no-param-reassign
 			role = await new RoleFactory().insertOne()
 		}
 
@@ -51,19 +52,20 @@ export default class {
 		const user = await userFactory.insertOne()
 
 		const response = await this.#request
-			.post("/api/user/log_in")
-			.type(JSON_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
-			.send({
-				email: user.email,
-				password: user.password
-			})
+		.post("/api/user/log_in")
+		.type(JSON_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
+		.send({
+			"email": user.email,
+			"password": user.password
+		})
 
+		console.log(response.body, "login\n\n\n")
 		expect(response.status).toBe(RequestEnvironment.status.OK)
 
 		return {
-			user,
-			cookie: response.headers["set-cookie"]
+			"cookie": response.headers["set-cookie"],
+			user
 		}
 	}
 }
