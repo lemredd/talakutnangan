@@ -7,7 +7,14 @@ import Manager from "%/managers/post"
 import RoleManager from "%/managers/role"
 import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { post as permissionGroup } from "$/permissions/permission_list"
+import {
+	CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+	CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT
+} from "$/permissions/post_combinations"
 
 import string from "!/validators/base/string"
 import same from "!/validators/comparison/same"
@@ -22,7 +29,11 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.studentOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
+			CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+			CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT
+		])
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
