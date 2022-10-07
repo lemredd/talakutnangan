@@ -42,14 +42,16 @@ export default abstract class Router extends RequestEnvironment {
 		this.asyncRegistrations.push(asyncRegistration)
 	}
 
-	get allRouteInformation(): RouteInformation[] {
+	get allRouteInformation(): Promise<RouteInformation[]> {
 		const allRouteInformation: RouteInformation[] = []
 
-		for (const { information } of this.routes) {
-			allRouteInformation.push(information)
-		}
+		return this.allUsableRoutes.then(routes => {
+			for (const { information } of routes) {
+				allRouteInformation.push(information)
+			}
 
-		return allRouteInformation
+			return allRouteInformation
+		})
 	}
 
 	get allUsableRoutes(): Promise<UsableRoute[]> {
