@@ -1,7 +1,10 @@
+import type { Serializable } from "$/types/general"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { Request, AuthenticatedIDRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import URLMaker from "$!/singletons/url_maker"
+import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 
 /**
@@ -11,14 +14,20 @@ import AuthorizationError from "$!/errors/authorization"
  */
 export default class extends Policy {
 	private targetAuthenticationState: boolean
+	private requireChangedPassword: boolean
 
 	/**
 	 * @param targetAuthenticationState Pass true if page only accepts authenticated users. False if
 	 * guest only.
 	 */
-	constructor(targetAuthenticationState: boolean) {
+	constructor(targetAuthenticationState: boolean, {
+		requireChangedPassword = true
+	}: Partial<{
+		requireChangedPassword: boolean
+	}> = {}) {
 		super()
 		this.targetAuthenticationState = targetAuthenticationState
+		this.requireChangedPassword = requireChangedPassword
 	}
 
 	authorize(request: Request | AuthenticatedIDRequest): Promise<void> {
@@ -32,6 +41,18 @@ export default class extends Policy {
 				: URLMaker.makeURLFromPath("/")
 
 			return Promise.reject(new AuthorizationError(reason, link))
+		}
+
+		if (request.isAuthenticated() && this.requireChangedPassword) {
+			const userProfile = deserialize(request.user as Serializable) as DeserializedUserProfile
+			const { hasDefaultPassword = false } = userProfile.meta
+
+			if (hasDefaultPassword) {
+				const reason = "The user must have no default password."
+				const link = URLMaker.makeURLFromPath("/")
+
+				return Promise.reject(new AuthorizationError(reason, link))
+			}
 		}
 
 		return Promise.resolve()
