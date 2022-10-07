@@ -9,10 +9,16 @@
 			:title="chatMessage.user.data.name"/>
 		<div>
 			<p
-				v-if="isTextMessage(chatMessage) || isStatusMessage(chatMessage)"
+				v-if="isTextMessage(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.data.value }}
+			</p>
+			<p
+				v-if="isStatusMessage(chatMessage)"
+				class="message-item-content"
+				:class="messageItemContent">
+				{{ chatMessage.user.data.name }} has {{ chatMessage.data.value }}
 			</p>
 		</div>
 		<ProfilePicture

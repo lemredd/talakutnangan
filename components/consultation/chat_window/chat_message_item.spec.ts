@@ -218,6 +218,6 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 
 		expect(messageItem.classes()).toContain("status-message")
 		expect(messageItemContent.html()).toContain(textValue)
-		expect(messageItemContent.html()).toContain(user.data.name)
+		expect(messageItemContent.html()).toContain(other.data.name)
 	})
 })
