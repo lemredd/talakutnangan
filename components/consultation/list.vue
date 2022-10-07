@@ -1,6 +1,5 @@
 <template>
 	<div class="consultations-list left">
-		<!-- TODO(others): Refactor all WindiCSS inline classes using @apply directive -->
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header">
 			<div v-if="!isSearching" class="no-search-bar">
@@ -65,24 +64,32 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/mixins.scss";
+
 	.left {
-		@apply dark:bg-dark-600 bg-white;
+		@apply dark:bg-dark-700 bg-white;
 		position: fixed;
 		overflow-y: scroll;
-		inset: 0;
+		left: 0; right: 0;
+		z-index: 1000;
+
+		// TODO: find a way to make mixin `useContentBaseHeight` work
+		height: calc(100vh - 56px);
+
 		@screen md {
-			position: initial;
-			width: calc(1920px / 5);
+			position: relative;
+			width: 40vw;
+			max-width: 360px;
 			@apply flex flex-col;
 		}
 
-		.consultation-list-header {
+		.consultations-list-header {
 			@apply p-3;
 
 			.no-search-bar {
 				@apply flex flex-1;
 
-				h2 { @apply flex-1; }
+				h2 { @apply flex-1 uppercase; }
 			}
 
 			.is-searching {
@@ -180,10 +187,10 @@ const {
 	chatMessageActivities,
 	previewMessages
 } = defineProps<{
-	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
-	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
-		previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
-}>()
+		chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
+		consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
+			previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
+	}>()
 
 function getActivenessClass(
 	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>

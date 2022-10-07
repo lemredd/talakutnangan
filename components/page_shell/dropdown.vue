@@ -1,7 +1,6 @@
 <template>
 	<div
-		class="parent-dropdown-container"
-		:class="{ 'flex': isDropdownShown, 'none': !isDropdownShown }">
+		class="parent-dropdown-container">
 		<div
 			v-if="isDropdownShown"
 			class="invisible-closer"
@@ -25,7 +24,7 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative block py-3px px-10px h-full;
+	@apply relative py-3px px-10px h-full;
 }
 
 .invisible-closer {
