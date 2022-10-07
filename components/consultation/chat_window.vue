@@ -27,11 +27,22 @@
 				<button class="material-icons">
 					video_camera_back
 				</button>
+				<Dropdown
+					@toggle="toggleConsultationSettings"
+					@resize="toggleConsultationSettings">
+					<template #toggler>
+						<!-- TODO(lead/button): Apply functionality -->
+						<button class="material-icons">
+							more_horiz
+						</button>
+					</template>
 
-				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons">
-					more_horiz
-				</button>
+					<template #dropdown-contents>
+						<div class="links">
+							<span>dngdsnglknkl</span>
+						</div>
+					</template>
+				</Dropdown>
 			</div>
 		</div>
 		<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
@@ -85,6 +96,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMillisecondsToFullTimeObject
 	from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Dropdown from "@/page_shell/dropdown.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 

@@ -2,28 +2,42 @@ import { shallowMount } from "@vue/test-utils"
 import Component from "./dropdown.vue"
 
 describe("Component: Dropdown", () => {
-	it("should show dropdown when toggled", async() => {
-		const wrapper = shallowMount(Component)
+	it("should toggle dropdown", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"isDropdownShown": false
+			}
+		})
 
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")
+		await wrapper.setProps({ "isDropdownShown": true })
 
-		expect(wrapper.html()).toContain("invisible-closer")
-		expect(wrapper.html()).toContain("dropdown-container")
+		const invisibleCloser = wrapper.find(".invisible-closer")
+		expect(invisibleCloser.exists()).toBeTruthy()
 	})
 
 	it("Should close if click emitted outside of dropdown", async() => {
-		const wrapper = shallowMount(Component)
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"isDropdownShown": true
+			}
+		})
+
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")
-		const invisibleCloser = wrapper.find(".invisible-closer")
-		await invisibleCloser.trigger("click")
+		await wrapper.setProps({ "isDropdownShown": false })
 
-		expect(wrapper.emitted()).toHaveProperty("click")
+		const invisibleCloser = wrapper.find(".invisible-closer")
+		expect(invisibleCloser.exists()).toBeFalsy()
 	})
 
 	it("Should close if window resized", async() => {
-		const wrapper = shallowMount(Component)
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"isDropdownShown": true
+			}
+		})
 
 		const toggler = wrapper.find("#dropdown-btn")
 		await toggler.trigger("click")
@@ -33,5 +47,9 @@ describe("Component: Dropdown", () => {
 
 		const updates = wrapper.emitted()
 		expect(updates).toHaveProperty("resize")
+
+		await wrapper.setProps({ "isDropdownShown": false })
+		const invisibleCloser = wrapper.find(".invisible-closer")
+		expect(invisibleCloser.exists()).toBeFalsy()
 	})
 })

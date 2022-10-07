@@ -21,6 +21,10 @@
 @import "@styles/variables.scss";
 @import "@styles/mixins.scss";
 
+.add {
+	@apply material-icons absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3
+}
+
 .consultations-container, .consultations-list-header {
 	@apply flex;
 }

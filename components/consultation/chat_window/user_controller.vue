@@ -64,7 +64,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, ComputedRef, DeepReadonly, computed, onMounted } from "vue"
+import { ref, inject, ComputedRef, DeepReadonly, onMounted } from "vue"
 
 import type { TextMessage } from "$/types/message"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
@@ -77,9 +77,8 @@ import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
-import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import FileUpload from "@/consultation/chat_window/user_controller/file_upload.vue"
 
@@ -91,41 +90,14 @@ const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 }>()
 
-const currentTime = ref<Date>(new Date())
 const textInput = ref<string>("")
 const isFileUploadFormShown = ref<boolean>(false)
 
-const differenceFromSchedule = computed<number>(() => calculateMillisecondDifference(
-	props.consultation.scheduledStartAt,
-	currentTime.value
-))
-const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value < 0)
-const hasStarted = computed<boolean>(() => props.consultation.startedAt !== null)
-const hasFinished = computed<boolean>(() => props.consultation.finishedAt !== null)
-const hasDeleted = computed<boolean>(() => props.consultation.deletedAt !== null)
-
-const willSoonStart = computed<boolean>(() => differenceFromSchedule.value > 0)
-const willStart = computed<boolean>(() => {
-	const mayStart = differenceFromSchedule.value === 0 || isAfterScheduledStart.value
-	return mayStart && !hasStarted.value
-})
-const isOngoing = computed<boolean>(() => {
-	const isInProgress = isAfterScheduledStart.value && hasStarted.value
-	return isInProgress && !hasFinished.value
-})
-const unusedIsDone = computed<boolean>(() => {
-	const isInProgress = isAfterScheduledStart.value && hasStarted.value
-	return isInProgress && hasFinished.value && hasDeleted.value
-})
-const unusedIsCanceled = computed<boolean>(() => !isAfterScheduledStart.value && hasDeleted.value)
-const unusedIsAutoTerminated = computed<boolean>(() => {
-	const hasTerminated = isAfterScheduledStart.value && hasDeleted.value
-	return hasTerminated && props.consultation.actionTaken === null
-})
-
-setInterval(() => {
-	currentTime.value = new Date()
-}, convertTimeToMilliseconds("00:00:01"))
+const {
+	willSoonStart,
+	willStart,
+	isOngoing
+} = makeConsultationStates(props)
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void

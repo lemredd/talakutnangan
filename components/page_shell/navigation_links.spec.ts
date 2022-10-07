@@ -1,6 +1,9 @@
 import { ref } from "vue"
 
 import { shallowMount } from "@vue/test-utils"
+
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
 import RoleSpecificLinks from "./navigation_links.vue"
 
 describe("Component: Page Shell/Role Specific Links", () => {
@@ -8,7 +11,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
 				"provide": {
-					"bodyClasses": ref<string[]>([ "dark" ]),
+					[BODY_CLASSES]: ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
 							"parsedUnitError": {},
@@ -40,7 +43,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
 				"provide": {
-					"bodyClasses": ref<string[]>([ "dark" ]),
+					[BODY_CLASSES]: ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
 							"parsedUnitError": {},
@@ -63,7 +66,7 @@ describe("Component: Page Shell/Role Specific Links", () => {
 		const wrapper = shallowMount(RoleSpecificLinks, {
 			"global": {
 				"provide": {
-					"bodyClasses": ref<string[]>([ "dark" ]),
+					[BODY_CLASSES]: ref<string[]>([ "dark" ]),
 					"pageContext": {
 						"pageProps": {
 							"parsedUnitError": {},
