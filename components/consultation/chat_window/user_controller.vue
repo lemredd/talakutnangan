@@ -35,8 +35,7 @@
 			<button class="material-icons">
 				sentiment_satisfied
 			</button>
-			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<button class="material-icons" @click="send">
 				send
 			</button>
 		</div>
