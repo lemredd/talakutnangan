@@ -2,8 +2,6 @@ import "~/setups/database.setup"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import UserPermissions from "$/permissions/user"
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
 import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 
@@ -11,18 +9,22 @@ import PermissionBasedPolicy from "./permission-based"
 
 describe("Middleware: Permission-Based Policy", () => {
 	const requester = new MockRequester()
-	const transformer = new UserTransformer()
 	const permissions = new UserPermissions()
 
 	it("can allow users with permission", async() => {
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
-		const user = await new UserFactory().attach(role).insertOne()
+		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "view" ]
 		])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": Serializer.serialize(user, transformer, {})
+			"user": {
+				...user,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -33,13 +35,18 @@ describe("Middleware: Permission-Based Policy", () => {
 	it("can execute extra checks", async() => {
 		const extraCheck = jest.fn()
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
-		const user = await new UserFactory().attach(role).insertOne()
+		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "view" ]
 		], extraCheck)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": Serializer.serialize(user, transformer, {})
+			"user": {
+				...user,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -55,14 +62,19 @@ describe("Middleware: Permission-Based Policy", () => {
 			"update",
 			"writeOwnScope"
 		)).insertOne()
-		const user = await new UserFactory().attach(role).insertOne()
+		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "create" ],
 			[ "update", "writeOwnScope" ]
 		])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": Serializer.serialize(user, transformer, {})
+			"user": {
+				...user,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -70,15 +82,20 @@ describe("Middleware: Permission-Based Policy", () => {
 		requester.expectSuccess()
 	})
 
-	it("can deny users without permission", async() => {
+	it("cannot allow users without permission", async() => {
 		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
-		const user = await new UserFactory().attach(role).insertOne()
+		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "create" ]
 		])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": Serializer.serialize(user, transformer, {})
+			"user": {
+				...user,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -90,7 +107,7 @@ describe("Middleware: Permission-Based Policy", () => {
 		])
 	})
 
-	it("can deny guest", async() => {
+	it("cannot allow guest", async() => {
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "create" ]
 		])

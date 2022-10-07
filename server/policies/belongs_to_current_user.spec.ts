@@ -22,7 +22,12 @@ describe("Policy: Belongs to current user", () => {
 			"params": {
 				"id": String(user.data.id)
 			},
-			user
+			"user": {
+				...user,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -51,7 +56,12 @@ describe("Policy: Belongs to current user", () => {
 			"params": {
 				"id": String(user.data.id)
 			},
-			"user": otherUser
+			"user": {
+				...otherUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -77,7 +87,12 @@ describe("Policy: Belongs to current user", () => {
 			"params": {
 				"id": String(user.data.id)
 			},
-			"user": otherUser
+			"user": {
+				...otherUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
