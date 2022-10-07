@@ -55,9 +55,14 @@ export default abstract class Router extends RequestEnvironment {
 	}
 
 	get allUsableRoutes(): Promise<UsableRoute[]> {
-		return Promise.all(this.asyncRegistrations).then(() => {
-			this.asyncRegistrations = []
-			return [ ...this.routes ]
-		})
+		return this.resolveAllRegistrations().then(() => [ ...this.routes ])
+	}
+
+	private async resolveAllRegistrations(): Promise<void> {
+		const { asyncRegistrations } = this
+		this.asyncRegistrations = []
+		await Promise.all(asyncRegistrations)
+
+		if (this.asyncRegistrations.length > 0) await this.resolveAllRegistrations()
 	}
 }
