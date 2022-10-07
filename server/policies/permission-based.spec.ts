@@ -38,7 +38,9 @@ describe("Middleware: Permission-Based Policy", () => {
 		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "view" ]
-		], extraCheck)
+		], {
+			"checkOthers": extraCheck
+		})
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
