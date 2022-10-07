@@ -12,16 +12,20 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRouters([
-			new UserRouter(),
-			new ConsultationRouter(),
-			new ChatRouter(),
-			new RoleRouter(),
-			new ForumRouter(),
-			new DepartmentRouter(),
-			new UserSettingsRouter()
-		])
+		this.useRoutersAsync(new Promise(resolve => {
+			resolve([
+				new UserRouter(),
+				new ConsultationRouter(),
+				new ChatRouter(),
+				new RoleRouter(),
+				new ForumRouter(),
+				new DepartmentRouter(),
+				new UserSettingsRouter()
+			])
+		}))
 
-		this.useController(new GetIndex())
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([ new GetIndex() ])
+		}))
 	}
 }
