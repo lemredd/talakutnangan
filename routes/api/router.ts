@@ -16,19 +16,21 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRouters([
-			new UserRouter(),
-			new RoleRouter(),
-			new SignatureRouter(),
-			new AuditTrailRouter(),
-			new DepartmentRouter(),
-			new UserBindedRouter(),
-			new ChatMessageRouter(),
-			new ConsultationRouter(),
-			new ProfilePictureRouter(),
-			new EmployeeScheduleRouter(),
-			new AttachedChatFileRouter(),
-			new ChatMessageActivityRouter()
-		])
+		this.useRoutersAsync(new Promise(resolve => {
+			resolve([
+				new UserRouter(),
+				new RoleRouter(),
+				new SignatureRouter(),
+				new AuditTrailRouter(),
+				new DepartmentRouter(),
+				new UserBindedRouter(),
+				new ChatMessageRouter(),
+				new ConsultationRouter(),
+				new ProfilePictureRouter(),
+				new EmployeeScheduleRouter(),
+				new AttachedChatFileRouter(),
+				new ChatMessageActivityRouter()
+			])
+		}))
 	}
 }

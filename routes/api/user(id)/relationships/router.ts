@@ -8,11 +8,13 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRouters([
-			new RoleRouter(),
-			new SignatureRouter(),
-			new DepartmentRouter(),
-			new ProfilePictureRouter()
-		])
+		this.useRoutersAsync(new Promise(resolve => {
+			resolve([
+				new RoleRouter(),
+				new SignatureRouter(),
+				new DepartmentRouter(),
+				new ProfilePictureRouter()
+			])
+		}))
 	}
 }

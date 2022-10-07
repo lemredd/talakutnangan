@@ -7,10 +7,12 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new GetIndex(),
-			new GetAccount(),
-			new GetProfile()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new GetIndex(),
+				new GetAccount(),
+				new GetProfile()
+			])
+		}))
 	}
 }
