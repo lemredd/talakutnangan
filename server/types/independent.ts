@@ -71,3 +71,7 @@ export interface RedirectInfo {
 	location: string,
 	status?: number
 }
+
+export interface AuthenticationOptions {
+	requireChangedPassword: boolean
+}

@@ -1,4 +1,5 @@
 import type { Serializable } from "$/types/general"
+import type { AuthenticationOptions } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { Request, AuthenticatedIDRequest } from "!/types/dependent"
 
@@ -22,9 +23,7 @@ export default class extends Policy {
 	 */
 	constructor(targetAuthenticationState: boolean, {
 		requireChangedPassword = true
-	}: Partial<{
-		requireChangedPassword: boolean
-	}> = {}) {
+	}: Partial<AuthenticationOptions> = {}) {
 		super()
 		this.targetAuthenticationState = targetAuthenticationState
 		this.requireChangedPassword = requireChangedPassword
