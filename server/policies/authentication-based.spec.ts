@@ -66,7 +66,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 		])
 	})
 
-	it("can allow known users with no default password", async() => {
+	it("can allow known users with default password", async() => {
 		const authenticatedGuard = new AuthenticationBasedPolicy(true, {
 			"requireChangedPassword": false
 		})
@@ -74,21 +74,17 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
 				"meta": {
-					"hasDefaultPassword": false
+					"hasDefaultPassword": true
 				}
 			}
 		})
 
 		await requester.runMiddleware(authenticatedGuard.intermediate.bind(authenticatedGuard))
 
-		requester.expectNext([
-			[
-				(error: any) => expect(error).toBeInstanceOf(AuthorizationError)
-			]
-		])
+		requester.expectSuccess()
 	})
 
-	it("cannot allow known users with no default password", async() => {
+	it("cannot allow known users with default password", async() => {
 		const authenticatedGuard = new AuthenticationBasedPolicy(true, {
 			"requireChangedPassword": true
 		})
@@ -96,7 +92,7 @@ describe("Middleware: Authenticated-Based Policy", () => {
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
 				"meta": {
-					"hasDefaultPassword": false
+					"hasDefaultPassword": true
 				}
 			}
 		})
