@@ -19,8 +19,12 @@ describe("DELETE /api/chat_message_activity", () => {
 
 	it("can be archived by consulter", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beReachableEmployee())
+		const { "user": consulter, cookie } = await App.makeAuthenticatedCookie(
+			role,
+			user => user.beStudent()
+		)
 		const model = await new Factory().insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(consulter)).insertOne()
 
 		const response = await App.request
 		.delete("/api/chat_message_activity")
@@ -55,7 +59,6 @@ describe("DELETE /api/chat_message_activity", () => {
 		.consultantInfo(() => consultantInfo)
 		.insertOne()
 		const model = await new Factory().consultation(() => consultation).insertOne()
-		await new StudentDetailFactory().user(() => Promise.resolve(consultant)).insertOne()
 
 		const response = await App.request
 		.delete("/api/chat_message_activity")
