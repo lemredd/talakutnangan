@@ -143,15 +143,16 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
 import assignPath from "$@/external/assign_path"
+import BodyCSSClasses from "$@/external/body_css_classes"
 
 import LastChat from "@/consultation/list/last_chat.vue"
-import disableScroll from "$@/helpers/push_element_classes"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 import makeUniqueBy from "$/helpers/make_unique_by"
-
 
 import SearchBar from "@/helpers/search_bar.vue"
 import ConsultationForm from "@/consultation/form.vue"
@@ -165,15 +166,14 @@ function toggleSearch() {
 }
 
 const isAddingSchedule = ref<boolean>(false)
-const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+const rawBodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 function toggleAddingSchedule() {
-	disableScroll(rawBodyClasses, [ "unscrollable" ])
+	rawBodyClasses.value.scroll(isAddingSchedule.value)
 	isAddingSchedule.value = !isAddingSchedule.value
 }
 
 const { "pageProps": { userProfile } } = pageContext
 const isUserAStudent = computed(() => userProfile?.data?.kind === "student")
-
 
 const {
 	consultations,
