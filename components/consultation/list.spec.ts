@@ -1,15 +1,16 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import Stub from "$/singletons/stub"
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import Component from "./list.vue"
 
 describe("Component: consultation/list", () => {
-	it("should show add consultation button for student", () => {
+	it("should be able to add consultation for student", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": {},
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -44,8 +45,8 @@ describe("Component: consultation/list", () => {
 			}
 		})
 
-		const addConsultatonButton = wrapper.find(".consultations-list-header ~.add")
-		expect(addConsultatonButton.exists()).toBeTruthy()
+		const addConsultationButton = wrapper.find(".add-btn")
+		expect(addConsultationButton.exists()).toBeTruthy()
 	})
 
 	it("should show multiple chats", () => {
