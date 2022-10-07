@@ -1,6 +1,7 @@
 import { FieldRules } from "!/types/validation"
 import { Request, Response } from "!/types/dependent"
 
+import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -20,7 +21,7 @@ import makeResourceIdentifierListDocumentRules
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
-	get policy(): PermissionBasedPolicy<any, any> {
+	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT

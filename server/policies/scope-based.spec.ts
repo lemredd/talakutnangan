@@ -37,7 +37,12 @@ describe("Middleware: Scope-Based Policy", () => {
 		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": new UserFactory().serialize(user)
+			"user": {
+				...new UserFactory().serialize(user),
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -65,7 +70,12 @@ describe("Middleware: Scope-Based Policy", () => {
 		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": new UserFactory().serialize(user)
+			"user": {
+				...new UserFactory().serialize(user),
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -92,7 +102,12 @@ describe("Middleware: Scope-Based Policy", () => {
 		)
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": new UserFactory().serialize(user)
+			"user": {
+				...new UserFactory().serialize(user),
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(middleware.intermediate.bind(middleware))

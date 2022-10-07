@@ -8,11 +8,13 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new GetList(),
-			new PostCreate(),
-			new PatchUpdate(),
-			new DeleteArchive()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new GetList(),
+				new PostCreate(),
+				new PatchUpdate(),
+				new DeleteArchive()
+			])
+		}))
 	}
 }

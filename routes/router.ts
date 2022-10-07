@@ -9,10 +9,12 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRouters([
-			new APIRouter(),
-			new EnhancerRouter()
-		])
+		this.useRoutersAsync(new Promise(resolve => {
+			resolve([
+				new APIRouter(),
+				new EnhancerRouter()
+			])
+		}))
 
 		switch (this.environment) {
 			case Environment.Development:

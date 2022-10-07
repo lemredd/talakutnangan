@@ -46,8 +46,8 @@ export default class UserFactory extends BaseFactory<
 	prefersDarkGenerator = () => false
 	emailGenerator = () => faker.internet.exampleEmail()
 	roles: Role[] = []
+	private passwordGenerator = () => "password"
 
-	#password = "password"
 	#kind = "student"
 	#mustBeVerified = true
 	#department: Department|null = null
@@ -68,7 +68,7 @@ export default class UserFactory extends BaseFactory<
 			"emailVerifiedAt": this.#mustBeVerified ? new Date() : null,
 			"kind": this.#kind,
 			"name": this.nameGenerator(),
-			"password": await hash(this.#password),
+			"password": await hash(this.passwordGenerator()),
 			"prefersDark": this.prefersDarkGenerator()
 		}
 	}
@@ -82,7 +82,7 @@ export default class UserFactory extends BaseFactory<
 		}
 		user.roles = this.roles
 		user.department = this.#department as Department
-		user.password = this.#password
+		user.password = this.passwordGenerator()
 
 		return user
 	}
@@ -140,6 +140,11 @@ export default class UserFactory extends BaseFactory<
 
 	attach(role: Role): UserFactory {
 		this.roles.push(role)
+		return this
+	}
+
+	password(generator: () => string): UserFactory {
+		this.passwordGenerator = generator
 		return this
 	}
 }
