@@ -124,6 +124,16 @@
 
 .selectable {
 	@apply flex justify-between;
+
+	select {
+		// TODO: hide top and bottom borders that are not styled
+		@apply dark:bg-transparent dark:text-white;
+
+		option {
+			@apply dark:bg-dark-200 dark:text-white
+		}
+	}
+
 	max-width: initial !important;
 }
 </style>

@@ -18,7 +18,7 @@
 				v-if="isStatusMessage(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
-				{{ chatMessage.user.data.name }} has {{ chatMessage.data.value }}
+				{{ chatMessage.user.data.name }} {{ chatMessage.data.value }}
 			</p>
 		</div>
 		<ProfilePicture
