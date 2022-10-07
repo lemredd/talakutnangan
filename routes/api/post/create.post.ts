@@ -3,9 +3,9 @@ import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import PostManager from "%/managers/post"
+import Manager from "%/managers/post"
 import RoleManager from "%/managers/role"
-import MultipartController from "!/controllers/multipart"
+import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -18,7 +18,7 @@ import length from "!/validators/comparison/length"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends MultipartController {
+export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
@@ -51,6 +51,7 @@ export default class extends MultipartController {
 			}
 		}
 
+		// TODO: Validate for relationships to post attachments
 		const relationships: FieldRules = makeRelationshipRules([
 			{
 				"ClassName": UserManager,
@@ -73,15 +74,14 @@ export default class extends MultipartController {
 			attributes,
 			{
 				"extraDataQueries": relationships,
-				"isNew": true,
-				"mustCastID": true
+				"isNew": true
 			}
 		)
 	}
 
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
-		const manager = new PostManager(request)
+		const manager = new Manager(request)
 		const postInfo = await manager.create(request.body.data.attributes)
 
 		return new CreatedResponseInfo(postInfo)
