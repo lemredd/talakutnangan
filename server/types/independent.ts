@@ -75,3 +75,7 @@ export interface RedirectInfo {
 export interface AuthenticationOptions {
 	requireChangedPassword: boolean
 }
+
+export interface AdvanceAuthenticationOptions<V> extends AuthenticationOptions {
+	checkOthers: (request: V) => Promise<void>
+}
