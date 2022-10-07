@@ -14,6 +14,7 @@ import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
 
 import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
+import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import Middleware from "!/bases/middleware"
@@ -47,7 +48,7 @@ import makeResourceIdentifierListDocumentRules
 export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
-	get policy(): PermissionBasedPolicy<any, any> {
+	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			IMPORT_USERS
 		])
