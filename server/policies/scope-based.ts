@@ -1,6 +1,7 @@
 import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { AdvanceAuthenticationOptions } from "!/types/independent"
 
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
@@ -35,10 +36,13 @@ export default class <
 		socialPermissionCombination: U[],
 		publicPermissionCombination: U[],
 		readOwnerInfo: (request: V) => Promise<DeserializedUserDocument<"roles"|"department">>,
-		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
-			const promise = Promise.resolve()
-			return promise
-		}
+		{
+			checkOthers = (): Promise<void> => {
+				const promise = Promise.resolve()
+				return promise
+			},
+			...otherOptions
+		}: Partial<AdvanceAuthenticationOptions<V>> = {}
 	) {
 		super(
 			permissionGroup,
@@ -47,9 +51,12 @@ export default class <
 				socialPermissionCombination,
 				publicPermissionCombination
 			],
-			async(request: V): Promise<void> => {
-				await this.checkLimitation(request)
-				await checkOthers(request)
+			{
+				"checkOthers": async(request: V): Promise<void> => {
+					await this.checkLimitation(request)
+					await checkOthers(request)
+				},
+				...otherOptions
 			}
 		)
 
