@@ -157,4 +157,61 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			userID
 		)
 	})
+
+	it("can send upon pressing send button", async() => {
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const message = "Hello"
+		const userID = "1"
+		const mockRestart = jest.fn()
+		const resource = {
+			"actionTaken": null,
+			"deletedAt": null,
+			"finishedAt": null,
+			"id": "1",
+			"reason": "",
+			"scheduledStartAt": new Date(),
+			"startedAt": new Date(),
+			"type": "consultation"
+		} as DeserializedConsultationResource
+
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
+						"id": userID,
+						"receivedMessageAt": new Date()
+					}))
+				}
+			},
+			"props": {
+				"consultation": resource
+			}
+		})
+		const messageInputBox = wrapper.find(".message-box input")
+		const sendBtn = wrapper.find(".send-btn")
+		ConsultationTimerManager.listenConsultationTimeEvent(
+			resource,
+			"restartTime",
+			mockRestart
+		)
+
+		await messageInputBox.setValue(message)
+		await sendBtn.trigger("click")
+		await flushPromises()
+
+		expect(mockRestart).toHaveBeenCalled()
+		const castMessageInputBox = messageInputBox.element as HTMLInputElement
+		expect(castMessageInputBox.value).toBe("")
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ firstRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "POST")
+		expect(firstRequest).toHaveProperty("url", "/api/chat_message")
+		const firstRequestBody = await firstRequest.json()
+		expect(firstRequestBody).toHaveProperty("data.type", "chat_message")
+		expect(firstRequestBody).toHaveProperty(
+			"data.relationships.chatMessageActivity.data.id",
+			userID
+		)
+	})
 })

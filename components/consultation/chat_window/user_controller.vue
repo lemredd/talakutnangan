@@ -35,7 +35,7 @@
 			<button class="material-icons">
 				sentiment_satisfied
 			</button>
-			<button class="material-icons" @click="send">
+			<button class="send-btn material-icons" @click="send">
 				send
 			</button>
 		</div>
