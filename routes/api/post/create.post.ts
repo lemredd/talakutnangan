@@ -62,7 +62,7 @@ export default class extends JSONController {
 			}
 		}
 
-		// TODO: Validate for relationships to post attachments
+		// TODO: Validate for relationships to post attachments and department
 		const relationships: FieldRules = makeRelationshipRules([
 			{
 				"ClassName": UserManager,
@@ -93,6 +93,7 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new Manager(request)
+		// TODO: Make method to create using resource
 		const postInfo = await manager.create(request.body.data.attributes)
 
 		return new CreatedResponseInfo(postInfo)
