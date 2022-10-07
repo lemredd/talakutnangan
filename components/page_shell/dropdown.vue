@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import isUndefined from "$/type_guards/is_undefined"
+import { onUpdated } from "vue"
 
 const emit = defineEmits([ "toggle", "resize" ])
 const props = defineProps<{
@@ -62,11 +63,13 @@ function toggleDropdown() {
 	emit("toggle")
 }
 
-if (!isUndefined(window)) {
-	window.onresize = () => {
-		if (props.isDropdownShown) {
-			emit("resize")
+onUpdated(() => {
+	if (!isUndefined(window)) {
+		window.onresize = () => {
+			if (props.isDropdownShown) {
+				emit("resize")
+			}
 		}
 	}
-}
+})
 </script>

@@ -1,4 +1,5 @@
-import { shallowMount } from "@vue/test-utils"
+import { flushPromises, shallowMount } from "@vue/test-utils"
+import { nextTick } from "vue"
 import Component from "./dropdown.vue"
 
 describe("Component: Dropdown", () => {
@@ -32,24 +33,15 @@ describe("Component: Dropdown", () => {
 		expect(invisibleCloser.exists()).toBeFalsy()
 	})
 
-	it("Should close if window resized", async() => {
+	it("Should close if window resized", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"isDropdownShown": true
 			}
 		})
 
-		const toggler = wrapper.find("#dropdown-btn")
-		await toggler.trigger("click")
-
-		window.innerWidth = 800
-		window.dispatchEvent(new Event("resize"))
-
+		wrapper.vm.$emit("resize")
 		const updates = wrapper.emitted()
 		expect(updates).toHaveProperty("resize")
-
-		await wrapper.setProps({ "isDropdownShown": false })
-		const invisibleCloser = wrapper.find(".invisible-closer")
-		expect(invisibleCloser.exists()).toBeFalsy()
 	})
 })
