@@ -50,7 +50,7 @@
 				<ProfilePictureItem
 					v-for="activity in getProfilePictures(consultation)"
 					:key="activity.id"
-					:activity="activity"
+					:user="activity.user"
 					:title="activity.user.data.name"
 					class="profile-picture-item"/>
 			</div>

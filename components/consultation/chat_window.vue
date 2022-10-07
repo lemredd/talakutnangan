@@ -80,6 +80,8 @@
 
 	.right {
 		@apply flex flex-col;
+		@apply flex-1;
+		border-right: 1px solid hsla(0,0%,0%,0.1);
 		position: relative;
 
 		// TODO: find a way to make mixin `useContentBaseHeight` work
@@ -115,10 +117,6 @@
 				@apply dark:bg-transparent;
 			}
 		}
-
-		@apply flex-1;
-		width: 100%;
-		border-right: 1px solid hsla(0,0%,0%,0.1);
 	}
 </style>
 
