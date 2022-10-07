@@ -7,10 +7,7 @@
 <template>
 	<div class="consultations-container">
 		<section class="consultations-picker relative">
-
 			<slot name="list"></slot>
-
-
 		</section>
 
 		<slot name="chat-window"></slot>

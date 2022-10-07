@@ -5,6 +5,49 @@ import Stub from "$/singletons/stub"
 import Component from "./list.vue"
 
 describe("Component: consultation/list", () => {
+	it("should show add consultation button for student", () => {
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
+				}
+			},
+			"props": {
+				"consultations": {
+					"data": [
+						{
+							"id": "1",
+							"reason": "Reason A"
+						},
+						{
+							"id": "2",
+							"reason": "Reason B"
+						}
+					]
+				},
+				"chatMessageActivities": {
+					"data": []
+				},
+				"previewMessages": {
+					"data": []
+				}
+			}
+		})
+
+		const addConsultatonButton = wrapper.find(".consultations-list-header ~.add")
+		expect(addConsultatonButton.exists()).toBeTruthy()
+	})
+
 	it("should show multiple chats", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
