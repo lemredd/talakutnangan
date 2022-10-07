@@ -58,7 +58,12 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 			"params": {
 				"id": String(model.id)
 			},
-			"user": new UserFactory().serialize(user)
+			"user": {
+				...new UserFactory().serialize(user),
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)
@@ -82,7 +87,12 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 			"params": {
 				"id": String(model.id)
 			},
-			"user": otherUser
+			"user": {
+				...otherUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)
