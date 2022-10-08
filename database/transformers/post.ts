@@ -6,15 +6,17 @@ import Transformer from "%/transformers/base"
 import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
+import DepartmentTransformer from "%/transformers/department"
 
 type Relationships =
 	|"poster"
 	|"posterRole"
+	|"department"
 
 export default class extends Transformer<Model, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "poster", "posterRole" ]
+			"included": [ "poster", "posterRole", "department" ]
 		}
 	) {
 		super("post", [
@@ -28,6 +30,12 @@ export default class extends Transformer<Model, void> {
 				? {
 					"attribute": "posterRole",
 					"transformer": new RoleTransformer()
+				}
+				: null,
+			included.indexOf("department") > -1
+				? {
+					"attribute": "department",
+					"transformer": new DepartmentTransformer()
 				}
 				: null
 		])
