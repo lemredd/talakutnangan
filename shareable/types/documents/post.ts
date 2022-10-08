@@ -9,6 +9,10 @@ import type {
 	DeserializedUserDocument
 } from "$/types/documents/user"
 import type {
+	DepartmentIdentifierDocument,
+	DeserializedDepartmentDocument
+} from "$/types/documents/department"
+import type {
 	Completeness,
 	Format,
 
@@ -40,6 +44,12 @@ export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAtt
 
 interface PostRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
+	department: {
+		serialized: T extends "create"
+			? DepartmentIdentifierDocument<"attached">
+			: DepartmentIdentifierDocument,
+		deserialized: DeserializedDepartmentDocument
+	},
 	poster: {
 		serialized: T extends "create" ? UserIdentifierDocument : undefined,
 		deserialized: DeserializedUserDocument
