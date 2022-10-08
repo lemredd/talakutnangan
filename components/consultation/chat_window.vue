@@ -3,7 +3,7 @@
 		<button
 			class="toggle-list-btn material-icons"
 			title="Toggle consultation list"
-			@click="() => isConsultationListShown = !isConsultationListShown">
+			@click="toggleConsultationList">
 			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
 		</button>
 		<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
@@ -31,9 +31,7 @@
 				</button>
 				<Dropdown
 					:is-dropdown-shown="isHeaderControlDropdownShown"
-					class="additional-controls"
-					@toggle="toggleConsultationSettings"
-					@resize="toggleConsultationSettings">
+					class="additional-controls">
 					<template #toggler>
 						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">
@@ -121,7 +119,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, inject, Ref } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
@@ -139,12 +137,22 @@ import Dropdown from "@/page_shell/dropdown.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
+interface CustomEvents {
+	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
+	(eventName: "toggleConsultationList"): void
+}
+
+const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	isConsultationListShown: boolean
 }>()
 
-const isConsultationListShown = inject("isConsultationListShown") as Ref<boolean>
+function toggleConsultationList() {
+	emit("toggleConsultationList")
+}
+
 const isHeaderControlDropdownShown = ref(false)
 
 const remainingMilliseconds = ref<number>(0)
@@ -156,11 +164,6 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 )
 const consultationID = computed<string>(() => consultation.value.id)
 const consultationStatus = computed<string>(() => consultation.value.status)
-
-interface CustomEvents {
-	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
-}
-const emit = defineEmits<CustomEvents>()
 
 function restartRemainingTime(): void {
 	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
