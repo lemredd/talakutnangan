@@ -76,7 +76,8 @@ describe("Component: consultation/chat_window", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation
+				"consultation": fakeConsultation,
+				"isConsultationListShown": false
 			}
 		})
 
