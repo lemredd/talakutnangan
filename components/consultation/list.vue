@@ -1,4 +1,5 @@
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="consultations-list left">
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header">
@@ -8,8 +9,8 @@
 				</h2>
 
 				<button
-					class="material-icons search"
-					@click="toggleSearch">
+					class="material-icons search-btn"
+					@click="toggleSearching">
 					search
 				</button>
 			</div>
@@ -19,7 +20,7 @@
 				<!-- TODO(lead/button): search existing consultations -->
 
 				<SearchBar v-model="slug" class="list-search-bar"/>
-				<button class="material-icons text-xs" @click="toggleSearch">
+				<button class="close-search-btn material-icons text-xs" @click="toggleSearching">
 					close
 				</button>
 			</div>
@@ -168,10 +169,10 @@ import ConsultationForm from "@/consultation/form.vue"
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const slug = ref("")
-const isSearching = ref(false)
-function toggleSearch() {
-	isSearching.value = !isSearching.value
-}
+const {
+	"toggle": toggleSearching,
+	"state": isSearching
+} = makeSwitch(false)
 
 const {
 	"toggle": toggleAddingScheduleState,

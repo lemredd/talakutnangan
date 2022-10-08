@@ -216,4 +216,53 @@ describe("Component: consultation/list", () => {
 		const lengthOfUniqueUsers = wrapper.props("chatMessageActivities").data.length - 1
 		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
 	})
+
+	it("toggle search button", async () => {
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[BODY_CLASSES]: [],
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
+				}
+			},
+			"props": {
+				"consultations": {
+					"data": [
+						{
+							"id": "1",
+							"reason": "Reason A"
+						},
+						{
+							"id": "2",
+							"reason": "Reason B"
+						}
+					]
+				},
+				"chatMessageActivities": {
+					"data": []
+				},
+				"previewMessages": {
+					"data": []
+				}
+			}
+		})
+
+		const searchBtn = wrapper.find(".search-btn")
+		expect(searchBtn.exists()).toBeTruthy()
+
+		await searchBtn.trigger("click")
+		const closeSearchBtn = wrapper.find(".close-search-btn")
+		expect(closeSearchBtn.exists()).toBeTruthy()
+
+		// TODO(lead): ensure searching functionality
+	})
 })
