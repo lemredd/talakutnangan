@@ -12,7 +12,8 @@ module.exports = {
 						"type": Sequelize.BIGINT
 					},
 					"postID": {
-						"allowNull": false,
+						"allowNull": true,
+						"defaultValue": null,
 						"onDelete": "cascade",
 						"onUpdate": "cascade",
 						"references": {
