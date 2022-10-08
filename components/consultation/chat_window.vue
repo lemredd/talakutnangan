@@ -31,6 +31,7 @@
 				</button>
 				<Dropdown
 					:is-dropdown-shown="isHeaderControlDropdownShown"
+					@toggle="toggleHeaderControlDropdownShown"
 					class="additional-controls">
 					<template #toggler>
 						<!-- TODO(lead/button): Apply functionality -->
@@ -128,10 +129,10 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
+import makeSwitch from "$@/helpers/make_switch"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import convertMillisecondsToFullTimeObject
-	from "$@/helpers/convert_milliseconds_to_full_time_object"
+import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Dropdown from "@/page_shell/dropdown.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
@@ -153,11 +154,14 @@ function toggleConsultationList() {
 	emit("toggleConsultationList")
 }
 
-const isHeaderControlDropdownShown = ref(false)
+const {
+	"toggle": toggleHeaderControlDropdownShown,
+	"state": isHeaderControlDropdownShown
+} = makeSwitch(false)
 
 const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(
-	() => convertMillisecondsToFullTimeObject(remainingMilliseconds.value)
+	() => convertMStoTimeObject(remainingMilliseconds.value)
 )
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation

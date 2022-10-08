@@ -27,7 +27,97 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
 
-describe.skip("UI Page: Read consultation resource by ID", () => {
+describe("UI Page: Read consultation resource by ID", () => {
+	it.only("can toggle state of consultation list", async() => {
+		const OTHER_CONSULTATION_COUNT = 3
+		const INITIAL_MESSAGE_COUNT = 5
+
+		const userFactory = new UserFactory()
+		const userModel = await userFactory.insertOne()
+		const factory = new Factory()
+		const models = await factory.insertMany(OTHER_CONSULTATION_COUNT)
+		const model = await factory.insertOne()
+		const allModels = [ model, ...models ]
+		const allModelIterator = allModels.values()
+		const chatMessageActivityFactory = new ChatMessageActivityFactory()
+		const chatMessageActivityModels = await chatMessageActivityFactory
+		.consultation(() => Promise.resolve(allModelIterator.next().value))
+		.user(() => Promise.resolve(userModel))
+		.insertMany(allModels.length)
+		const chatMessageActivityModelIterator = chatMessageActivityModels.values()
+		const chatMessageFactory = new ChatMessageFactory()
+		const previewMessageModels = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(chatMessageActivityModelIterator.next().value))
+		.insertMany(chatMessageActivityModels.length)
+		const activityOfModel = chatMessageActivityModels.find(
+			chatMessageActivityModel => Number(chatMessageActivityModel.consultationID) === model.id
+		) as ChatMessageActivity
+		const chatMessageModels = await chatMessageFactory
+		.chatMessageActivity(() => Promise.resolve(activityOfModel))
+		.insertMany(INITIAL_MESSAGE_COUNT)
+
+		const userResource = userFactory.deserialize(
+			userModel,
+			{} as unknown as void,
+			new UserProfileTransformer()
+		)
+		const resource = factory.deserialize(model) as DeserializedConsultationDocument
+		const resources = factory.deserialize([ model, ...models ])
+		const chatMessageActivityResources = chatMessageActivityFactory
+		.deserialize(chatMessageActivityModels)
+		const previewMessageResources = chatMessageFactory.deserialize(
+			previewMessageModels,
+			{} as unknown as void,
+			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
+		)
+		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
+
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					[BODY_CLASSES]: [],
+					"pageContext": {
+						"pageProps": {
+							"chatMessageActivities": chatMessageActivityResources,
+							"chatMessages": chatMessageResources,
+							"consultation": resource,
+							"consultations": resources,
+							"previewMessages": previewMessageResources,
+							"userProfile": userResource
+						}
+					}
+				}
+			}
+		})
+		const toggleListBtn = wrapper.find(".toggle-list-btn")
+
+		expect(toggleListBtn.html()).toContain("right")
+
+		await toggleListBtn.trigger("click")
+		const consultationsList = wrapper.find(".consultations-list")
+		expect(toggleListBtn.html()).toContain("left")
+		expect(consultationsList.exists()).toBeTruthy()
+	})
+
 	it("should load resource by ID", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const ALL_CONSULTATION_COUNT = OTHER_CONSULTATION_COUNT + 1

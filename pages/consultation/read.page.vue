@@ -11,7 +11,9 @@
 			<ChatWindow
 				:consultation="consultation"
 				:chat-messages="chatMessages"
-				@updated-consultation-attributes="updateConsultationAttributes"/>
+				:is-consultation-list-shown="isConsultationListShown"
+				@updated-consultation-attributes="updateConsultationAttributes"
+				@toggle-consultation-list="toggleConsultationList"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -72,12 +74,16 @@ import registerChatListeners from "@/consultation/listeners/register_chat"
 import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
+import makeSwitch from "$@/helpers/make_switch"
 
 Socket.initialize()
 
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
-const isConsultationListShown = ref(false)
-provide("isConsultationListShown", isConsultationListShown)
+
+const {
+	"toggle": toggleConsultationList,
+	"state": isConsultationListShown
+} = makeSwitch(false)
 
 type RequiredExtraProps =
 	| "userProfile"
