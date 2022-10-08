@@ -5,8 +5,10 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new DeleteDestroy()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new DeleteDestroy()
+			])
+		}))
 	}
 }

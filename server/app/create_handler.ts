@@ -4,6 +4,7 @@ import express from "express"
 import type { RequestHandler } from "!/types/dependent"
 
 import Router from "!/bases/router"
+import Middleware from "!/bases/middleware"
 import catchAllErrors from "!/app/catch_all_errors"
 import createViteDevServer from "!/vite_dev/create_server"
 import makeGlobalPostJobs from "!/app/make_global_post_jobs"
@@ -22,19 +23,25 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	const globalPostJobs = await makeGlobalPostJobs()
 	const rawGlobalPostJobs = globalPostJobs
 	.filter(postJob => postJob !== null)
-	.map(postJob => postJob!.intermediate!.bind(postJob))
+	.map((postJob: Middleware) => postJob.intermediate.bind(postJob))
 
-	const allRouteInformation = customRoutes.allUsableRoutes
+	const allRouteInformation = await customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
 		const { method, path } = information
 		const { middlewares, controller, postJobs, endHandler } = handlers
 
 		const rawMiddlewares = middlewares
 		.filter(middleware => middleware !== null)
-		.map(middleware => middleware!.intermediate.bind(middleware))
+		.map(middleware => {
+			const castMiddleware = middleware as Middleware
+			return castMiddleware.intermediate.bind(middleware)
+		})
 		const rawPostJobs = postJobs
 		.filter(postJob => postJob !== null)
-		.map(postJob => postJob!.intermediate!.bind(postJob))
+		.map(postJob => {
+			const castPostJob = postJob as Middleware
+			return castPostJob.intermediate.bind(postJob)
+		})
 		const rawHandlers = [
 			...rawMiddlewares,
 			controller,

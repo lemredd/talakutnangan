@@ -5,6 +5,7 @@ import RoleFactory from "~/factories/role"
 import Model from "%/models/attached_chat_file"
 import Factory from "~/factories/attached_chat_file"
 import ChatMessageFactory from "~/factories/chat_message"
+import StudentDetailFactory from "~/factories/student_detail"
 import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
@@ -17,9 +18,10 @@ describe("DELETE /api/attached_chat_file", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory().insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole, userFactory => {
-			return userFactory.beStudent()
-		})
+		const { user, cookie } = await App.makeAuthenticatedCookie(
+			adminRole,
+			userFactory => userFactory.beStudent()
+		)
 
 		const chatMessageActivity = await new ChatMessageActivityFactory()
 		.user(() => Promise.resolve(user))
@@ -28,6 +30,7 @@ describe("DELETE /api/attached_chat_file", () => {
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.insertOne()
 		const model = await new Factory().chatMessage(() => Promise.resolve(chatMessage)).insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(user)).insertOne()
 
 		const response = await App.request
 		.delete("/api/attached_chat_file")
@@ -44,6 +47,6 @@ describe("DELETE /api/attached_chat_file", () => {
 		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(await Model.findOne({ "where": { "id": model.id } } )).toBeNull()
+		expect(await Model.findOne({ "where": { "id": model.id } })).toBeNull()
 	})
 })

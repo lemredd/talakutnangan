@@ -8,11 +8,13 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new GetList(),
-			new GetLogIn(),
-			new GetImport(),
-			new GetVerify()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new GetList(),
+				new GetLogIn(),
+				new GetImport(),
+				new GetVerify()
+			])
+		}))
 	}
 }

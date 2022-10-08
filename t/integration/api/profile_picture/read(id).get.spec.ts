@@ -20,7 +20,8 @@ describe("GET /api/profile_picture/:id", () => {
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,
-			userFactory => userFactory.beStudent())
+			userFactory => userFactory.beReachableEmployee()
+		)
 
 		const response = await App.request
 		.get(`/api/profile_picture/${profilePicture.id}`)

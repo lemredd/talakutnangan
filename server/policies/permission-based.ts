@@ -1,6 +1,7 @@
 import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { AdvanceAuthenticationOptions } from "!/types/independent"
 
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
@@ -29,12 +30,15 @@ export default class <
 	constructor(
 		permissionGroup: PermissionGroup<T, U>,
 		permissionCombinations: U[][],
-		checkOthers: (request: V) => Promise<void> = (): Promise<void> => {
-			const promise = Promise.resolve()
-			return promise
-		}
+		{
+			checkOthers = (): Promise<void> => {
+				const promise = Promise.resolve()
+				return promise
+			},
+			...otherAuthenticationOptions
+		}: Partial<AdvanceAuthenticationOptions<V>> = {}
 	) {
-		super(true)
+		super(true, otherAuthenticationOptions)
 		this.permissionGroup = permissionGroup
 		this.permissionCombinations = permissionCombinations
 		this.checkOthers = checkOthers
