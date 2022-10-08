@@ -11,13 +11,13 @@ module.exports = {
 						"primaryKey": true,
 						"type": Sequelize.BIGINT
 					},
-					"userID": {
+					"postID": {
 						"allowNull": false,
 						"onDelete": "cascade",
 						"onUpdate": "cascade",
 						"references": {
 							"key": "id",
-							"model": "Users"
+							"model": "Posts"
 						},
 						"type": Sequelize.BIGINT
 					},
