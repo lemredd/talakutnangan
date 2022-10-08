@@ -31,6 +31,7 @@ export default class PostAttachmentFactory extends FileLikeFactory<
 	FileLikeTransformerOptions
 > {
 	postGenerator: () => Promise<Post|null> = () => Promise.resolve(null)
+	fileTypeGenerator: () => string = () => "text/plain"
 
 	get model(): ModelCtor<PostAttachment> { return PostAttachment }
 
@@ -39,12 +40,18 @@ export default class PostAttachmentFactory extends FileLikeFactory<
 	async generate(): GeneratedData<PostAttachment> {
 		return {
 			"fileContents": this.fileContentsGenerator(),
+			"fileType": this.fileTypeGenerator(),
 			"userID": (await this.postGenerator())?.id ?? null
 		}
 	}
 
 	post(generator: () => Promise<Post>): PostAttachmentFactory {
 		this.postGenerator = generator
+		return this
+	}
+
+	fileType(generator: () => string): PostAttachmentFactory {
+		this.fileTypeGenerator = generator
 		return this
 	}
 }
