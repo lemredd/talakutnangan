@@ -152,6 +152,7 @@ import type {
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 
+import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
@@ -172,11 +173,14 @@ function toggleSearch() {
 	isSearching.value = !isSearching.value
 }
 
-const isAddingSchedule = ref<boolean>(false)
+const {
+	"toggle": toggleAddingScheduleState,
+	"state": isAddingSchedule
+} = makeSwitch(false)
 const rawBodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 function toggleAddingSchedule() {
 	rawBodyClasses.value.scroll(isAddingSchedule.value)
-	isAddingSchedule.value = !isAddingSchedule.value
+	toggleAddingScheduleState()
 }
 
 const { "pageProps": { userProfile } } = pageContext
