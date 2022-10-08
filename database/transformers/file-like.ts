@@ -20,7 +20,7 @@ export default abstract class<
 			options.extra = { "raw": false }
 		}
 
-		const whiteListedAttributes = [ "id" ]
+		const whiteListedAttributes = [ "id", ...this.otherWhiteListedAttributes ]
 
 		if (options.extra.raw) {
 			whiteListedAttributes.push("fileContents")
@@ -38,5 +38,9 @@ export default abstract class<
 			}
 		})
 		return safeObjects
+	}
+
+	protected get otherWhiteListedAttributes(): string[] {
+		return []
 	}
 }

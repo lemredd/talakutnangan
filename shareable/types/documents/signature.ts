@@ -38,7 +38,6 @@ export type DeserializedSignatureResource<T extends Format = "serialized">
 	SignatureAttributes<T>
 >
 
-
 export type SignatureDocument<
 	T extends Completeness = "read",
 	U extends Format = "serialized"
