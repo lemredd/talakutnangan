@@ -12,7 +12,7 @@
 					class="material-icons search-btn"
 					@click="toggleSearching">
 					search
-				</button>
+			</button>
 			</div>
 			<div
 				v-else
