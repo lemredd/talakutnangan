@@ -24,7 +24,7 @@
 
 					<label
 						for="input-profile-picture"
-						class="cursor-pointer">
+						class="input-profile-picture">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1">
 							upload or replace image
@@ -48,7 +48,7 @@
 
 					<label
 						for="input-signature"
-						class="cursor-pointer">
+						class="input-signature">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1 underline">
 							upload or replace image
@@ -109,7 +109,7 @@
 		@apply flex flex-col sm:flex-row sm:justify-between my-7;
 	}
 
-	.cursor-pointer{
+	.input-profile-picture,.input-signature{
 		@apply flex flex items-center;
 	}
 
