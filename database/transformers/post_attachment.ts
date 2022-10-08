@@ -9,6 +9,6 @@ export default class extends FileLikeTransformer<Model, FileLikeTransformerOptio
 	}
 
 	protected get otherWhiteListedAttributes(): string[] {
-		return [ "type" ]
+		return [ "fileType" ]
 	}
 }

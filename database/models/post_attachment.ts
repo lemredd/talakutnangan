@@ -28,5 +28,5 @@ export default class PostAttachment extends FileLike {
 	@Column({
 		"allowNull": false
 	})
-		type!: string
+		fileType!: string
 }

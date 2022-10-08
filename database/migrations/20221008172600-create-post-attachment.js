@@ -26,7 +26,7 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.BLOB
 					},
-					"type": {
+					"fileType": {
 						"allowNull": false,
 						"type": Sequelize.STRING
 					},
