@@ -36,8 +36,12 @@ export default class extends DoubleBoundJSONController {
 				UPDATE_OWN_DATA,
 				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			]),
-			new BelongsToCurrentUserPolicy(Manager)
+			], {
+				"requireChangedPassword": false
+			}),
+			new BelongsToCurrentUserPolicy(Manager, {
+				"requireChangedPassword": false
+			})
 		]) as unknown as Policy
 	}
 

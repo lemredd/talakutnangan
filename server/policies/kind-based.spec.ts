@@ -14,7 +14,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("unreachable_employee")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -28,7 +33,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("reachable_employee")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -42,7 +52,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("student")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -56,7 +71,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("reachable_employee")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -74,7 +94,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("student", "reachable_employee")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))
@@ -88,7 +113,12 @@ describe("Middleware: Kind-Based Policy", () => {
 		const pageGuard = new KindBasedPolicy("student", "reachable_employee")
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
-			"user": serializedUser
+			"user": {
+				...serializedUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(pageGuard.intermediate.bind(pageGuard))

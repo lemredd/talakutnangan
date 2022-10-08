@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker"
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
+import Validation from "!/bases/validation"
 import required from "!/validators/base/required"
 import regex from "!/validators/comparison/regex"
 import MockRequester from "~/setups/mock_requester"
@@ -40,14 +41,14 @@ describe("Back-end: JSON Controller Special Validation", () => {
 		}()
 
 		const { middlewares } = controller
-		const validationMiddleware = middlewares[middlewares.length - 1]
+		const validationMiddleware = middlewares[middlewares.length - 1] as Validation
 		requester.customizeRequest({
 			"body": {
 				"email": faker.internet.exampleEmail()
 			}
 		})
 
-		await requester.runMiddleware(validationMiddleware!.intermediate.bind(validationMiddleware))
+		await requester.runMiddleware(validationMiddleware.intermediate.bind(validationMiddleware))
 
 		requester.expectSuccess()
 	})

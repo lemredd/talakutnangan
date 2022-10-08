@@ -15,7 +15,7 @@ describe("PATCH /api/chat_message_activity", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beStudent())
+		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beReachableEmployee())
 		const model = await new Factory().insertOne()
 		await model.destroy()
 

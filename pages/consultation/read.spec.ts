@@ -4,10 +4,12 @@ import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { ChatMessageQueryParameters } from "$/types/query"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedConsultationDocument
 } from "$/types/documents/consultation"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import Stub from "$/singletons/stub"
 import "~/setups/consultation_timer.setup"
@@ -93,7 +95,7 @@ describe.skip("UI Page: Read consultation resource by ID", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
-					"bodyClasses": [],
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,
@@ -240,7 +242,7 @@ describe.skip("UI Page: Communicate with consultation resource", () => {
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
-					"bodyClasses": [],
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"chatMessageActivities": chatMessageActivityResources,

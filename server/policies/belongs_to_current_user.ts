@@ -1,7 +1,7 @@
 import type { GeneralObject } from "$/types/general"
-import type { BaseManagerClass } from "!/types/dependent"
-import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { AdvanceAuthenticationOptions } from "!/types/independent"
+import type { BaseManagerClass, AuthenticatedRequest } from "!/types/dependent"
 
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
@@ -34,16 +34,16 @@ export default class <
 			checkOthers = (): Promise<void> => {
 				const promise = Promise.resolve()
 				return promise
-			}
-		}: Partial<{
+			},
+			...otherOptions
+		}: Partial<AdvanceAuthenticationOptions<V> & {
 			bypassNecessarilyWith: {
 				group: PermissionGroup<T, U>,
 				combinations: U[][]
-			},
-			checkOthers: (request: V) => Promise<void>
+			}
 		}> = {}
 	) {
-		super(true)
+		super(true, otherOptions)
 
 		this.Class = managerClass
 		this.permissionGroup = bypassNecessarilyWith?.group

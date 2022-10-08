@@ -71,3 +71,11 @@ export interface RedirectInfo {
 	location: string,
 	status?: number
 }
+
+export interface AuthenticationOptions {
+	requireChangedPassword: boolean
+}
+
+export interface AdvanceAuthenticationOptions<V> extends AuthenticationOptions {
+	checkOthers: (request: V) => Promise<void>
+}

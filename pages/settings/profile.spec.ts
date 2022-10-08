@@ -4,7 +4,7 @@ import { flushPromises, shallowMount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
-import Page from "./profile.page.vue"
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
@@ -13,6 +13,8 @@ import UserProfileTransformer from "%/transformers/user_profile"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
+
+import Page from "./profile.page.vue"
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -34,7 +36,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -79,7 +81,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -122,7 +124,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -165,7 +167,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -204,7 +206,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								userProfile
@@ -260,7 +262,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								userProfile
@@ -322,7 +324,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								userProfile
@@ -383,7 +385,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						"bodyClasses": ref([]),
+						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
 								userProfile

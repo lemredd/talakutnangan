@@ -26,18 +26,20 @@ export default class extends BoundJSONController {
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-		], (request: AuthenticatedIDRequest): Promise<void> => {
-			const userData = deserialize(request.user) as DeserializedUserProfile
-			const userID = Number(userData.data.id)
-			const targetUserID = Number(request.params.id)
+		], {
+			"checkOthers": (request: AuthenticatedIDRequest): Promise<void> => {
+				const userData = deserialize(request.user) as DeserializedUserProfile
+				const userID = Number(userData.data.id)
+				const targetUserID = Number(request.params.id)
 
-			if (userID === targetUserID) {
-				return Promise.reject(
-					new AuthorizationError("Users cannot edit the attached roles to themselves.")
-				)
+				if (userID === targetUserID) {
+					return Promise.reject(
+						new AuthorizationError("Users cannot edit the attached roles to themselves.")
+					)
+				}
+
+				return Promise.resolve()
 			}
-
-			return Promise.resolve()
 		})
 	}
 
