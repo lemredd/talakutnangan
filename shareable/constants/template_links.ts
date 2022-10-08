@@ -7,6 +7,8 @@ export const LINK_PREFIX = "/api"
 
 export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_trail")
 
+export const SEMESTER_LINK = makeTemplateLink(LINK_PREFIX, "semester")
+
 export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 /**
