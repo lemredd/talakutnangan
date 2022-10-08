@@ -18,7 +18,7 @@ export const UserKindValues = [ "unreachable_employee", "reachable_employee", "s
 
 export const StatusValues = [ "will_start", "ongoing", "done" ]
 
-export const OrderValues = [ "first", "second", "third" ]
+export const OrderValues = [ "first", "second", "third" ] as const
 /**
  * Possible kinds of user that the system can handle
  */
