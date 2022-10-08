@@ -2,6 +2,7 @@ import {
 	Table,
 	Column,
 	HasMany,
+	DataType,
 	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
@@ -27,8 +28,16 @@ export default class Post extends TextContentLike {
 	@BelongsTo(() => AttachedRole)
 		posterInfo?: AttachedRole
 
+	@ForeignKey(() => Department)
+	@Column({
+		"allowNull": true,
+		"defaultValue": null,
+		"type": DataType.BIGINT
+	})
+		departmentID!: number|null
+
 	@BelongsTo(() => Department)
-		department!: Department
+		department!: Department|null
 
 	get poster(): User|undefined { return this.posterInfo?.user }
 
