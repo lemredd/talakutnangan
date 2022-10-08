@@ -1,6 +1,6 @@
 <template>
 	<SettingsHeader title="User Settings"/>
-	<div class="flex flex-col">
+	<div class="profile-account">
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
@@ -17,14 +17,14 @@
 				@submit-file="submitProfilePicture">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="text-[1.5em]">
+						<h3 class="profile">
 							Profile Picture
 						</h3>
 					</div>
 
 					<label
 						for="input-profile-picture"
-						class="cursor-pointer flex items-center">
+						class="input-profile-picture">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1">
 							upload or replace image
@@ -32,7 +32,7 @@
 					</label>
 				</div>
 
-				<ProfilePicture class="max-w-30 <sm:mx-auto"/>
+				<ProfilePicture class="profile-picker-sm"/>
 			</PicturePicker>
 
 			<PicturePicker
@@ -41,14 +41,14 @@
 				@submit-file="submitSignature">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="text-[1.5em]">
+						<h3 class="signature">
 							Signature
 						</h3>
 					</div>
 
 					<label
 						for="input-signature"
-						class="cursor-pointer flex items-center">
+						class="input-signature">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1 underline">
 							upload or replace image
@@ -56,12 +56,12 @@
 					</label>
 				</div>
 
-				<Signature class="max-w-30 <sm:mx-auto"/>
+				<Signature class="schedule-picker-sm"/>
 			</PicturePicker>
 		</div>
 
 		<div class="dark-mode-toggle">
-			<h3 class="display-name text-lg col-span-full">
+			<h3 class="display-name">
 				Dark Mode
 			</h3>
 			<p class="name">
@@ -80,7 +80,7 @@
 			</label>
 		</div>
 		<div v-if="isReachableEmployee" class="consultation-schedules">
-			<h3 class="display-name text-lg col-span-full">
+			<h3 class="display-name">
 				Consultation Schedules
 			</h3>
 			<SchedulePickerGroup
@@ -101,8 +101,24 @@
 		}
 	}
 
+	.profile-account{
+		@apply flex flex-col;
+	}
+
 	.content{
 		@apply flex flex-col sm:flex-row sm:justify-between my-7;
+	}
+
+	.input-profile-picture,.input-signature{
+		@apply flex flex items-center;
+	}
+
+	.profile, .signature{
+		font-size: 1.5em;
+	}
+
+	.profile-picker-sm, .schedule-picker-sm{
+		@apply flex flex-row sm:flex-row max-w-30;
 	}
 
 	.dark-mode-toggle {
@@ -127,6 +143,11 @@
 				appearance: none;
 			}
 		}
+	}
+
+	.display-name{
+		@apply flex flex-col;
+		font-size: large;
 	}
 </style>
 

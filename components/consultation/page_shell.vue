@@ -26,6 +26,9 @@
 	@apply flex;
 }
 
+.no-search-bar, .is-searching, .search-bar{
+	@apply flex flex-1;
+}
 .consultation {
 	@apply
 		p-2
