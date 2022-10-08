@@ -22,7 +22,7 @@
 						type="file"
 						name="meta[fileContents]"
 						accept="image/png"
-						@change="extractFilename"/>
+						@change="extractFile"/>
 					CHOOSE FILE
 				</label>
 				<button
@@ -32,6 +32,11 @@
 					Send file
 				</button>
 			</form>
+
+			<div v-if="hasExtracted" class="preview-file">
+				<h6>{{ filename }}</h6>
+				<img :src="previewFile"/>
+			</div>
 		</template>
 		<template #footer>
 			<button
@@ -68,6 +73,7 @@ defineProps<{ isShown: boolean }>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
+const previewFile = ref<any>(null)
 
 interface CustomEvents {
 	(event: "close"): void
@@ -94,9 +100,12 @@ function sendFile(event: Event): void {
 	})
 }
 
-function extractFilename(event: Event) {
+function extractFile(event: Event) {
 	const target = event.target as HTMLInputElement
 	const rawFilename = target.files?.item(0)?.name as ""
+	const file = target.files?.item(0)
+
+	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
 }
 
