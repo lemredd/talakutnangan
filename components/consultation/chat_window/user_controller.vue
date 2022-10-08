@@ -18,10 +18,13 @@
 			<button class="material-icons">
 				photo_camera
 			</button>
-			<button class="material-icons" @click="showFileUpload">
+			<button class="add-image-btn material-icons" @click="showFileUpload">
 				image
 			</button>
-			<FileUpload :is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
+			<FileUpload
+				class="file-upload"
+				:is-shown="isFileUploadFormShown"
+				@close="hideFileUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
