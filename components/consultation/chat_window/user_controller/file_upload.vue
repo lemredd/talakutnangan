@@ -1,5 +1,5 @@
 <template>
-	<Overlay :is-shown="isShown">
+	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 		</template>
 		<template #default>
@@ -93,9 +93,11 @@ function sendFile(event: Event): void {
 	const button = event.target as HTMLButtonElement
 	const formData = new FormData(button.form as HTMLFormElement)
 
-	fetcher().createWithFile(formData).then(() => {
+	fetcher().createWithFile(formData)
+	.then(() => {
 		emitClose()
-	}).then(() => {
+	})
+	.catch(() => {
 		// Show errors
 	})
 }
