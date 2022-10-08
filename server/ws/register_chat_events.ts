@@ -1,49 +1,31 @@
+import Log from "$!/singletons/log"
 import { Server } from "socket.io"
 
 export default function(wsServer: Server) {
-	const messages: string[] = []
-
 	wsServer.on("connection", (socket) => {
-		const connectionInfo = {
-			roomID: "",
-			userID: "",
-			userName: ""
-		}
-
-		socket.on("set_user_id", userID => {
-			connectionInfo.userID = userID;
+		socket.onAny((event, ...args) => {
+			Log.debug("server", `Listening ${event} with ${JSON.stringify(args)}`)
 		})
 
-		socket.on("join_room", (roomID, userName) => {
-			connectionInfo.roomID = roomID
-			connectionInfo.userName = userName
-			socket.join(connectionInfo.roomID)
-			console.log(`User ${connectionInfo.userName} joined in ${connectionInfo.roomID}`)
-
-			socket.to(connectionInfo.roomID)
-				.emit("connect_user", connectionInfo.userName, connectionInfo.userID)
-
-			socket.on("call_on_room", function(peerUserID) {
-				console.log(peerUserID, "initiated call")
-				socket.to(connectionInfo.roomID).emit("user_connected", peerUserID)
-			})
-			socket.on("disconnect", () => {
-				console.log(`User ${connectionInfo.userName} leaved`)
-				socket.to(connectionInfo.roomID).emit("disconnect_user", connectionInfo.userName)
-			})
-		})
-
-		socket.on("console", function (message) {
-			console.log("message from client:", message)
-		})
-
-		socket.on("get_last_messages", function (fn) {
-			fn(messages.slice(-50))
-		})
-
-		socket.on("send_message", function (message) {
-			messages.push(message)
-			wsServer.sockets.in(connectionInfo.roomID).emit("receive_message", message)
-		})
+		Log.debug("server", "catch all handle")
 	})
+
+	function listenOnDynamicNamespace(namespace: RegExp, logMessage: string) {
+		wsServer.of(namespace).on("connection", () => {
+			Log.debug("server", logMessage)
+		})
+	}
+
+	listenOnDynamicNamespace(
+		/^\/consultation\/\d+\/chat$/u,
+		"listening for chat"
+	)
+	listenOnDynamicNamespace(
+		/^\/consultation\/\d+\/self$/u,
+		"listening for consultation in self"
+	)
+	listenOnDynamicNamespace(
+		/^\/consultation\/\d+\/chat_activity$/u,
+		"listening for consultation chat activity"
+	)
 }

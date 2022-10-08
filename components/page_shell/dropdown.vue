@@ -1,7 +1,6 @@
 <template>
 	<div
-		class="parent-dropdown-container"
-		:class="{ 'flex': isDropdownShown, 'none': !isDropdownShown }">
+		class="parent-dropdown-container">
 		<div
 			v-if="isDropdownShown"
 			class="invisible-closer"
@@ -25,7 +24,7 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative block py-3px px-10px h-full;
+	@apply relative py-3px px-10px h-full;
 }
 
 .invisible-closer {
@@ -52,6 +51,7 @@
 
 <script setup lang="ts">
 import isUndefined from "$/type_guards/is_undefined"
+import { onUpdated } from "vue"
 
 const emit = defineEmits([ "toggle", "resize" ])
 const props = defineProps<{
@@ -62,11 +62,13 @@ function toggleDropdown() {
 	emit("toggle")
 }
 
-if (!isUndefined(window)) {
-	window.onresize = () => {
-		if (props.isDropdownShown) {
-			emit("resize")
+onUpdated(() => {
+	if (!isUndefined(window)) {
+		window.onresize = () => {
+			if (props.isDropdownShown) {
+				emit("resize")
+			}
 		}
 	}
-}
+})
 </script>

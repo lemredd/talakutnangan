@@ -45,14 +45,14 @@ body.unscrollable {
 <style lang="scss">
 .links {
 	&.mobile {
-		@apply items-center;
+		@apply flex items-center;
 	}
 	&.desktop {
-		@apply none;
+		display: none;
 	}
 
 	.mobile-role-links {
-		@apply flex flex-col
+		@apply flex flex-col;
 		height: calc(100% - 56px);
 
 		.overlay {
@@ -76,7 +76,7 @@ body.unscrollable {
 		padding-left: 1em;
 	}
 }
-@media (min-width: 640px) {
+@screen sm {
 	.links{
 		&.mobile {
 			display: none;

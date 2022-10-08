@@ -58,14 +58,13 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 		})
 
 		const messageItem = wrapper.find(".message-item")
-		const messageItemName = wrapper.find(".message-item-name")
 		const messageItemContent = wrapper.find(".message-item-content")
-		const messageItemProfilePicture = wrapper.find(".message-item .align-right + img")
+		const messageItemProfilePicture = wrapper.find(".message-item .self")
 
-		expect(messageItem.find(".align-right").exists()).toBeTruthy()
-		expect(messageItemName.html()).toContain(user.data.name)
+		expect(messageItem.find(".self").exists()).toBeTruthy()
 		expect(messageItemContent.html()).toContain(textValue)
 		expect(messageItemProfilePicture.exists()).toBeTruthy()
+		expect(messageItemProfilePicture.attributes("title")).toEqual(user.data.name)
 	})
 
 	it("should show other's text message properly", () => {
@@ -137,17 +136,16 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 		})
 
 		const messageItem = wrapper.find(".message-item")
-		const messageItemName = wrapper.find(".message-item-name")
 		const messageItemContent = wrapper.find(".message-item-content")
-		const messageItemProfilePicture = wrapper.find(".message-item img:first-child")
+		const messageItemProfilePicture = wrapper.find(".message-item .other")
 
-		expect(messageItem.find(".align-left").exists()).toBeTruthy()
-		expect(messageItemName.html()).toContain(other.data.name)
+		expect(messageItem.find(".other").exists()).toBeTruthy()
 		expect(messageItemContent.html()).toContain(textValue)
 		expect(messageItemProfilePicture.exists()).toBeTruthy()
+		expect(messageItemProfilePicture.attributes("title")).toEqual(other.data.name)
 	})
 
-	it("should show other's status message properly", () => {
+	it.only("should show other's status message properly", () => {
 		const CURRENT_TIME = new Date()
 		const user = {
 			"data": {
@@ -216,13 +214,10 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 		})
 
 		const messageItem = wrapper.find(".message-item")
-		const messageItemName = wrapper.find(".message-item-name")
 		const messageItemContent = wrapper.find(".message-item-content")
-		const messageItemProfilePicture = wrapper.find(".message-item img")
 
-		expect(messageItem.find(".align-center").exists()).toBeTruthy()
-		expect(messageItemName.html()).toContain(other.data.name)
+		expect(messageItem.classes()).toContain("status-message")
 		expect(messageItemContent.html()).toContain(textValue)
-		expect(messageItemProfilePicture.exists()).toBeFalsy()
+		expect(messageItemContent.html()).toContain(other.data.name)
 	})
 })

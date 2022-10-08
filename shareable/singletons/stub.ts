@@ -7,7 +7,7 @@ type PreviousCallInfo = { functionName: string, arguments: GeneralObject<any> }
 /**
  * Handler for stubbed mechnisms to spy on procedures.
  *
- * Based from `Socket` sinfgleton in server.
+ * Based from `Socket` singleton in server.
  */
 export default class Stub extends RequestEnvironment {
 	private static previousCallInfos: (PreviousCallInfo|null)[] = []

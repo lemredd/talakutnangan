@@ -10,9 +10,47 @@ import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
+	it.only("can toggle consultation list state", async() => {
+		const scheduledStartAt = new Date()
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		const id = "1"
+		const fakeConsultation = {
+			"actionTaken": null,
+			"consultant": {
+				"data": {
+					"id": "1",
+					"type": "user"
+				}
+			},
+			"finishedAt": null,
+			id,
+			"reason": "",
+			scheduledStartAt,
+			"startedAt": null,
+			"type": "consultation"
+		} as DeserializedConsultationResource
+		const fakeChatMessage = {
+			"data": []
+		} as DeserializedChatMessageListDocument
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"chatMessages": fakeChatMessage,
+				"consultation": fakeConsultation,
+				"isConsultationListShown": false
+			}
+		})
+		const toggleListBtn = wrapper.find(".toggle-list-btn")
+		expect(toggleListBtn.exists()).toBeTruthy()
+
+		await toggleListBtn.trigger("click")
+		const emits = wrapper.emitted()
+		expect(emits).toHaveProperty("toggleConsultationList")
+	})
+
 	it.only("should request to start consultation", async() => {
 		const scheduledStartAt = new Date()
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })

@@ -2,16 +2,18 @@
 	<ConsultationShell>
 		<template #list>
 			<ConsultationList
+				v-if="isConsultationListShown"
 				:consultations="consultations"
 				:chat-message-activities="chatMessageActivities"
 				:preview-messages="previewMessages"/>
 		</template>
 		<template #chat-window>
 			<ChatWindow
-				class="flex-1"
 				:consultation="consultation"
 				:chat-messages="chatMessages"
-				@updated-consultation-attributes="updateConsultationAttributes"/>
+				:is-consultation-list-shown="isConsultationListShown"
+				@updated-consultation-attributes="updateConsultationAttributes"
+				@toggle-consultation-list="toggleConsultationList"/>
 		</template>
 	</ConsultationShell>
 </template>
@@ -27,6 +29,13 @@
 }
 footer:not(.overlay-footer) {
 	display: none !important;
+}
+</style>
+
+<style scoped lang="scss">
+.toggle-list-btn {
+	@apply fixed opacity-15 hover:opacity-100;
+	@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
 }
 </style>
 
@@ -65,10 +74,16 @@ import registerChatListeners from "@/consultation/listeners/register_chat"
 import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
+import makeSwitch from "$@/helpers/make_switch"
 
 Socket.initialize()
 
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
+
+const {
+	"toggle": toggleConsultationList,
+	"state": isConsultationListShown
+} = makeSwitch(false)
 
 type RequiredExtraProps =
 	| "userProfile"

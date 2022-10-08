@@ -27,6 +27,7 @@
 			<input
 				v-model="textInput"
 				type="text"
+				placeholder="Enter your message here..."
 				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
@@ -34,8 +35,7 @@
 			<button class="material-icons">
 				sentiment_satisfied
 			</button>
-			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<button class="send-btn material-icons" @click="send">
 				send
 			</button>
 		</div>
@@ -48,7 +48,17 @@
 }
 
 .message-box {
-	@apply flex-1 border
+	@apply flex-1 mx-2 border-0;
+	height: max-content;
+	input {
+		@apply bg-transparent border-b px-2;
+		width: 100%;
+
+		&:focus {
+			@apply border-b-gray-500;
+			outline: none;
+		}
+	}
 }
 </style>
 
@@ -136,9 +146,10 @@ function send(): void {
 	}).then(() => {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
+		const seenMessageAt = new Date().toJSON()
 		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
-			"receivedMessageAt": currentChatMessageActivity.value.receivedMessageAt.toString(),
-			"seenMessageAt": new Date().toJSON()
+			"receivedMessageAt": seenMessageAt,
+			seenMessageAt
 		})
 	})
 }

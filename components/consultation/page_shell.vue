@@ -6,41 +6,8 @@
 -->
 <template>
 	<div class="consultations-container">
-		<section class="consultations-picker left relative">
-			<div class="consultations-list-header p-3">
-				<div v-if="!isSearching" class="no-search-bar">
-					<h2 class="flex-1">
-						Consultations
-					</h2>
-
-					<button
-						class="material-icons search"
-						@click="toggleSearch">
-						search
-					</button>
-				</div>
-				<div
-					v-else
-					class="is-searching">
-					<!-- TODO(lead/button): search existing consultations -->
-
-					<SearchBar v-model="slug" class="search-bar"/>
-					<button class="material-icons text-xs" @click="toggleSearch">
-						close
-					</button>
-				</div>
-			</div>
-
-			<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
-
+		<section class="consultations-picker relative">
 			<slot name="list"></slot>
-
-			<button
-				v-if="isUserAStudent"
-				class="add"
-				@click="toggleAddingSchedule">
-				add
-			</button>
 		</section>
 
 		<slot name="chat-window"></slot>
@@ -81,72 +48,15 @@
 .consultations-container {
 	section {
 		@include useContentBaseHeight;
-
-		&.left {
-			min-width: 100%;
-			border-right: 1px solid hsla(0,0%,0%,0.1);
-			.material-icons {
-				&.expand-or-collapse {
-					display: none;
-				}
-			}
-		}
-		&.right {
-			flex: 1;
-			display: none;
-		}
 	}
 }
 
-@media screen and (min-width: $mobileViewportMaximum) {
+@screen md {
 	.expand-or-collapse {
 		display: inline !important;
-	}
-	.left {
-		min-width: 20% !important;
-	}
-	.right {
-		display: flex !important;
 	}
 }
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from "vue"
-
-import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserProfile } from "$/types/documents/user"
-
-import { BODY_CLASSES } from "$@/constants/provided_keys"
-
-import makeSwitch from "$@/helpers/make_switch"
-import BodyCSSClasses from "$@/external/body_css_classes"
-
-import SearchBar from "@/helpers/search_bar.vue"
-import ConsultationForm from "@/consultation/form.vue"
-
-const pageContext = inject("pageContext") as PageContext<"deserialized">
-const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
-
-const { pageProps } = pageContext
-const userProfile = pageProps.userProfile as DeserializedUserProfile
-
-const isUserAStudent = computed(() => userProfile.data.kind === "student")
-
-const slug = ref("")
-const {
-	"state": isSearching,
-	"toggle": toggleSearch
-} = makeSwitch(false)
-
-const {
-	"state": isAddingSchedule,
-	"toggle": toggleAddingScheduleState
-} = makeSwitch(false)
-
-function toggleAddingSchedule() {
-	bodyClasses.value.scroll(isAddingSchedule.value)
-	toggleAddingScheduleState()
-}
-
 </script>

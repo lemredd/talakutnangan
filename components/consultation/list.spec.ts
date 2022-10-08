@@ -1,15 +1,69 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import Stub from "$/singletons/stub"
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import Component from "./list.vue"
 
 describe("Component: consultation/list", () => {
+	it("should be able to add consultation for student", () => {
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[BODY_CLASSES]: [],
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
+				}
+			},
+			"props": {
+				"consultations": {
+					"data": [
+						{
+							"id": "1",
+							"reason": "Reason A"
+						},
+						{
+							"id": "2",
+							"reason": "Reason B"
+						}
+					]
+				},
+				"chatMessageActivities": {
+					"data": []
+				},
+				"previewMessages": {
+					"data": []
+				}
+			}
+		})
+
+		const addConsultationButton = wrapper.find(".add-btn")
+		expect(addConsultationButton.exists()).toBeTruthy()
+	})
+
 	it("should show multiple chats", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
@@ -46,7 +100,17 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
@@ -70,7 +134,9 @@ describe("Component: consultation/list", () => {
 				}
 			}
 		})
-		const consultationListItem = wrapper.find(".consultation:nth-child(2)")
+
+		// ! might be bug from vue/test-utils. nth-of-type should be 2
+		const consultationListItem = wrapper.find(".consultation:nth-of-type(3)")
 
 		await consultationListItem.trigger("click")
 		await flushPromises()
@@ -84,7 +150,17 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"pageContext": { "urlPathname": "/" }
+					"bodyClasses": {},
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
 				}
 			},
 			"props": {
@@ -139,5 +215,54 @@ describe("Component: consultation/list", () => {
 		const profilePictures = wrapper.findAllComponents(".profile-picture-item")
 		const lengthOfUniqueUsers = wrapper.props("chatMessageActivities").data.length - 1
 		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
+	})
+
+	it("toggle search button", async () => {
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[BODY_CLASSES]: [],
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/"
+					}
+				}
+			},
+			"props": {
+				"consultations": {
+					"data": [
+						{
+							"id": "1",
+							"reason": "Reason A"
+						},
+						{
+							"id": "2",
+							"reason": "Reason B"
+						}
+					]
+				},
+				"chatMessageActivities": {
+					"data": []
+				},
+				"previewMessages": {
+					"data": []
+				}
+			}
+		})
+
+		const searchBtn = wrapper.find(".search-btn")
+		expect(searchBtn.exists()).toBeTruthy()
+
+		await searchBtn.trigger("click")
+		const closeSearchBtn = wrapper.find(".close-search-btn")
+		expect(closeSearchBtn.exists()).toBeTruthy()
+
+		// TODO(lead): ensure searching functionality
 	})
 })

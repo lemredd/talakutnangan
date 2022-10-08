@@ -34,10 +34,9 @@ extends ResourceIdentifier<T> {
 
 export interface ChatMessageActivityAttributes<T extends Format = "serialized">
 extends Attributes<T> {
-	receivedMessageAt: T extends "deserialized" ? Date : string,
+	receivedMessageAt: (T extends "deserialized" ? Date : string)|null,
 	seenMessageAt: (T extends "deserialized" ? Date : string)|null
 }
-
 
 interface ChatMessageActivityRelationshipData<unusedT extends Completeness = "read">
 extends GeneralRelationshipData {
