@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 
+import { Order } from "$/types/database"
 import type { ModelCtor } from "%/types/dependent"
 import type { GeneratedData } from "~/types/dependent"
 import type {
@@ -36,7 +37,7 @@ export default class SemesterFactory extends BaseFactory<
 		convertForSentence(faker.random.alpha(faker.mersenne.rand(10, 7)))
 	}`
 
-	#semesterOrder = "first"
+	#semesterOrder = () => "first"
 	#startAtGenerator: () => Date = () => new Date()
 	#endAtGenerator: () => Date = () => new Date()
 
@@ -46,10 +47,10 @@ export default class SemesterFactory extends BaseFactory<
 
 	async generate(): GeneratedData<Semester> {
 		return {
-			"name": await this.nameGenerator,
-			"semesterOrder": await this.#semesterOrder,
-			"startAt": this.#startAtGenerator(),
-			"endAt": this.#endAtGenerator()
+			"endAt": this.#endAtGenerator(),
+			"name": await this.nameGenerator(),
+			"semesterOrder": this.#semesterOrder(),
+			"startAt": this.#startAtGenerator()
 		}
 	}
 
@@ -58,18 +59,8 @@ export default class SemesterFactory extends BaseFactory<
 		return this
 	}
 
-	beFirst(): SemesterFactory {
-		this.#semesterOrder = "first"
-		return this
-	}
-
-	beSecond(): SemesterFactory {
-		this.#semesterOrder = "second"
-		return this
-	}
-
-	beThird(): SemesterFactory {
-		this.#semesterOrder = "third"
+	semesterOrder(generator: () => Order): SemesterFactory {
+		this.#semesterOrder = generator
 		return this
 	}
 
