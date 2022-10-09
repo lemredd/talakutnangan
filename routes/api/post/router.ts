@@ -1,8 +1,8 @@
 import Router from "!/bases/router"
-import PostCreate from "!%/api/department/create.post"
-import DeleteArchive from "!%/api/department/archive.delete"
-import PatchUpdate from "!%/api/department/update(id).patch"
-import PatchRestore from "!%/api/department/restore.patch"
+import PostCreate from "!%/api/post/create.post"
+import DeleteArchive from "!%/api/post/archive.delete"
+import PatchUpdate from "!%/api/post/update(id).patch"
+import PatchRestore from "!%/api/post/restore.patch"
 
 export default class extends Router {
 	constructor() {
@@ -14,6 +14,6 @@ export default class extends Router {
 			new DeleteArchive(),
 			new PatchUpdate(),
 			new PatchRestore()
-		])
+		]))
 	}
 }
