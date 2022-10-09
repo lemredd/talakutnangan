@@ -16,7 +16,7 @@ export default class extends Transformer<Semester, void> {
 			"semesterOrder",
 			"startAt",
 			"endAt",
-			"createdAt"
+			"deletedAt"
 		])
 
 		return safeObject
