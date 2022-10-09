@@ -226,7 +226,7 @@ export default class extends DoubleBoundJSONController {
 				oldVersion.data.attributes.startedAt === null
 				&& newVersion.data.attributes.startedAt !== null
 			) {
-				value = "Consultation has started."
+				value = "has started the consultation."
 			} else if (
 				oldVersion.data.attributes.finishedAt === null
 				&& newVersion.data.attributes.finishedAt !== null

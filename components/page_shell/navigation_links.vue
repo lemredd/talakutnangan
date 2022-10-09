@@ -1,8 +1,9 @@
 <template>
 	<Dropdown
 		class="links mobile"
-		@toggle="toggleRoleLinks"
-		@resize="toggleRoleLinks">
+		:is-dropdown-shown="mustShowMobileMenu"
+		@toggle="toggleMobileMenu"
+		@resize="toggleMobileMenu">
 		<template #toggler>
 			<span id="menu-btn" class="material-icons">menu</span>
 		</template>
@@ -43,8 +44,6 @@ body.unscrollable {
 
 <style lang="scss">
 .links {
-	height: 100%;
-
 	&.mobile {
 		@apply flex items-center;
 	}
@@ -52,13 +51,8 @@ body.unscrollable {
 		display: none;
 	}
 
-	.dropdown-container {
-		position: fixed;
-		inset: 56px 0 0;
-	}
-
 	.mobile-role-links {
-		@flex flex-col
+		@apply flex flex-col;
 		height: calc(100% - 56px);
 
 		.overlay {
@@ -77,27 +71,18 @@ body.unscrollable {
 
 		}
 	}
-	#logout-btn {
-		border-radius: 5px;
-		padding: .5em 1em;
-	}
 
 	.account-controls {
 		padding-left: 1em;
 	}
 }
-
-@media (min-width: 640px) {
+@screen sm {
 	.links{
 		&.mobile {
 			display: none;
 		}
 		&.desktop {
 			@apply flex;
-
-			.anchor[href="/settings"], .anchor[href="/notifications"] {
-				display: none;
-			}
 		}
 	}
 }
@@ -108,10 +93,13 @@ import { computed, inject, Ref } from "vue"
 
 import type { DeserializedPageContext } from "$@/types/independent"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+
+import makeSwitch from "$@/helpers/make_switch"
 import filterLinkInfo from "$@/helpers/filter_link_infos"
-import RequestEnvironment from "$/singletons/request_environment"
-import disableScroll from "$@/helpers/disable_scroll"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import linkInfos from "@/page_shell/navigation_link_infos"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import Anchor from "@/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
@@ -130,10 +118,15 @@ const desktopRoleLinks = computed(() => roleLinks.value.filter(
 	info => info.viewportsAvailable.includes("desktop")
 ))
 
-const rawBodyClasses = inject("bodyClasses") as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
+const {
+	"state": mustShowMobileMenu,
+	"toggle": toggleVisibility
+} = makeSwitch(false)
 
-function toggleRoleLinks() {
+function toggleMobileMenu() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
-	disableScroll(rawBodyClasses, [ "unscrollable" ])
+	toggleVisibility()
+	bodyClasses.value.scroll(mustShowMobileMenu.value)
 }
 </script>

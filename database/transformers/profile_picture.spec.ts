@@ -5,7 +5,8 @@ import Transformer from "./profile_picture"
 
 describe("Transformer: Profile picture", () => {
 	beforeEach(() => {
-		URLMaker.initialize("http", "localhost", 16000, "/")
+		const PORT = 16000
+		URLMaker.initialize("http", "localhost", PORT, "/")
 	})
 
 	it("can transform into normal resource object", async() => {

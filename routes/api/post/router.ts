@@ -8,7 +8,8 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
 			new PostCreate(),
 			new DeleteArchive(),
 			new PatchUpdate(),

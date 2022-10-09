@@ -6,12 +6,16 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new PatchUpdatePassword()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new PatchUpdatePassword()
+			])
+		}))
 
-		this.useRouters([
-			new RelationshipRouter()
-		])
+		this.useRoutersAsync(new Promise(resolve => {
+			resolve([
+				new RelationshipRouter()
+			])
+		}))
 	}
 }

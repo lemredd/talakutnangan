@@ -7,6 +7,7 @@ import Model from "%/models/chat_message_activity"
 import Factory from "~/factories/chat_message_activity"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
+import StudentDetailFactory from "~/factories/student_detail"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import Route from "!%/api/chat_message_activity/archive.delete"
@@ -18,8 +19,12 @@ describe("DELETE /api/chat_message_activity", () => {
 
 	it("can be archived by consulter", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beStudent())
+		const { "user": consulter, cookie } = await App.makeAuthenticatedCookie(
+			role,
+			user => user.beStudent()
+		)
 		const model = await new Factory().insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(consulter)).insertOne()
 
 		const response = await App.request
 		.delete("/api/chat_message_activity")

@@ -6,9 +6,11 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new GetReadRoute(),
-			new GetIndexRoute()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new GetReadRoute(),
+				new GetIndexRoute()
+			])
+		}))
 	}
 }

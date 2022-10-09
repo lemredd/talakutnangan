@@ -40,7 +40,7 @@ export default class extends JSONController {
 				"constraints": {
 					"length": {
 						"maximum": 255,
-						"minimum": 5
+						"minimum": 3
 					},
 					"regex": {
 						"match": chatMessageKind

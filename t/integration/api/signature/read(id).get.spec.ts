@@ -20,7 +20,8 @@ describe("GET /api/signature/:id", () => {
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,
-			userFactory => userFactory.beStudent())
+			userFactory => userFactory.beReachableEmployee()
+		)
 
 		const response = await App.request
 		.get(`/api/signature/${signature.id}`)

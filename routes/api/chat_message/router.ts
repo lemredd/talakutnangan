@@ -7,10 +7,12 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new PostCreate(),
-			new PatchUpdate(),
-			new PostCreateWithFile()
-		])
+		this.useControllersAsync(new Promise(resolve => {
+			resolve([
+				new PostCreate(),
+				new PatchUpdate(),
+				new PostCreateWithFile()
+			])
+		}))
 	}
 }

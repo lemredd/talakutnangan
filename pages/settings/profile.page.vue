@@ -1,6 +1,6 @@
 <template>
 	<SettingsHeader title="User Settings"/>
-	<div class="flex flex-col">
+	<div class="profile-account">
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
@@ -17,14 +17,14 @@
 				@submit-file="submitProfilePicture">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="text-[1.5em]">
+						<h3 class="profile">
 							Profile Picture
 						</h3>
 					</div>
 
 					<label
 						for="input-profile-picture"
-						class="cursor-pointer flex items-center">
+						class="input-profile-picture">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1">
 							upload or replace image
@@ -32,7 +32,7 @@
 					</label>
 				</div>
 
-				<ProfilePicture class="max-w-30 <sm:mx-auto"/>
+				<ProfilePicture class="profile-picker-sm"/>
 			</PicturePicker>
 
 			<PicturePicker
@@ -41,14 +41,14 @@
 				@submit-file="submitSignature">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="text-[1.5em]">
+						<h3 class="signature">
 							Signature
 						</h3>
 					</div>
 
 					<label
 						for="input-signature"
-						class="cursor-pointer flex items-center">
+						class="input-signature">
 						<span class="material-icons">add_circle</span>
 						<small class="text-center ml-1 underline">
 							upload or replace image
@@ -56,12 +56,12 @@
 					</label>
 				</div>
 
-				<Signature class="max-w-30 <sm:mx-auto"/>
+				<Signature class="schedule-picker-sm"/>
 			</PicturePicker>
 		</div>
 
 		<div class="dark-mode-toggle">
-			<h3 class="display-name text-lg col-span-full">
+			<h3 class="display-name">
 				Dark Mode
 			</h3>
 			<p class="name">
@@ -80,7 +80,7 @@
 			</label>
 		</div>
 		<div v-if="isReachableEmployee" class="consultation-schedules">
-			<h3 class="display-name text-lg col-span-full">
+			<h3 class="display-name">
 				Consultation Schedules
 			</h3>
 			<SchedulePickerGroup
@@ -101,8 +101,24 @@
 		}
 	}
 
+	.profile-account{
+		@apply flex flex-col;
+	}
+
 	.content{
 		@apply flex flex-col sm:flex-row sm:justify-between my-7;
+	}
+
+	.input-profile-picture,.input-signature{
+		@apply flex flex items-center;
+	}
+
+	.profile, .signature{
+		font-size: 1.5em;
+	}
+
+	.profile-picker-sm, .schedule-picker-sm{
+		@apply flex flex-row sm:flex-row max-w-30;
 	}
 
 	.dark-mode-toggle {
@@ -128,6 +144,11 @@
 			}
 		}
 	}
+
+	.display-name{
+		@apply flex flex-col;
+		font-size: large;
+	}
 </style>
 
 <script setup lang="ts">
@@ -143,12 +164,7 @@ import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
-import ProfilePicture from "@/helpers/profile_picture.vue"
-import Signature from "@/helpers/signature.vue"
-import SettingsHeader from "@/tabbed_page_header.vue"
-import PicturePicker from "@/fields/picture_picker.vue"
-import TextualField from "@/fields/non-sensitive_text.vue"
-import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
@@ -157,9 +173,17 @@ import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
 import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
+import ProfilePicture from "@/helpers/profile_picture.vue"
+import Signature from "@/helpers/signature.vue"
+import SettingsHeader from "@/tabbed_page_header.vue"
+import PicturePicker from "@/fields/picture_picker.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
+import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+
+
 import { DayValues } from "$/types/database"
 
-const bodyClasses = inject("bodyClasses") as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<string[]>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument

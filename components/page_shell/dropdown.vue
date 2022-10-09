@@ -1,5 +1,6 @@
 <template>
-	<div>
+	<div
+		class="parent-dropdown-container">
 		<div
 			v-if="isDropdownShown"
 			class="invisible-closer"
@@ -19,42 +20,53 @@
 	</div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@styles/variables.scss";
 
-.invisible-closer {
-	position: fixed;
-	inset: 0;
-	z-index: 1000;
+.parent-dropdown-container {
+	@apply relative py-3px px-10px h-full;
 }
-.dropdown-container {
-	@apply dark:bg-dark-400;
 
-	background-color: white;
+.invisible-closer {
+	@apply fixed inset-[0] z-index-[1000];
+}
+
+.dropdown-container {
+	@apply dark:bg-dark-400 fixed bg-white h-full z-index-[1001];
+
 	border-top: 1px solid #888;
 	box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-	z-index: 1001;
+	inset: $navHeight 0 0 0;
+}
+
+@media screen and (min-width: $desktopViewportMinimum) {
+	.dropdown-container {
+		@apply absolute bg-white h-max w-max;
+
+		top: $navHeight;
+		transform: translateX(-50%);
+	}
 }
 </style>
 
 <script setup lang="ts">
-import { onUpdated, ref } from "vue"
 import isUndefined from "$/type_guards/is_undefined"
+import { onUpdated } from "vue"
 
 const emit = defineEmits([ "toggle", "resize" ])
-const isDropdownShown = ref(false)
+const props = defineProps<{
+	isDropdownShown: boolean
+}>()
 
 function toggleDropdown() {
-	isDropdownShown.value = !isDropdownShown.value
 	emit("toggle")
 }
 
 onUpdated(() => {
 	if (!isUndefined(window)) {
 		window.onresize = () => {
-			if (isDropdownShown.value) {
+			if (props.isDropdownShown) {
 				emit("resize")
-				isDropdownShown.value = false
 			}
 		}
 	}

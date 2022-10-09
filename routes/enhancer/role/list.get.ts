@@ -1,5 +1,5 @@
-import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { DocumentProps } from "$/types/server"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"

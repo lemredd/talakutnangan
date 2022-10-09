@@ -5,10 +5,21 @@ import ControllerLike from "!/bases/controller-like"
 import RequestEnvironment from "$/singletons/request_environment"
 
 export default abstract class Router extends RequestEnvironment {
+	private asyncRegistrations: Promise<void>[] = []
 	private routes: UsableRoute[] = []
+
+	useControllersAsync(promise: Promise<ControllerLike[]>): void {
+		const asyncRegistration = promise.then(controllers => this.useControllers(controllers))
+		this.asyncRegistrations.push(asyncRegistration)
+	}
 
 	useControllers(controllers: ControllerLike[]): void {
 		controllers.forEach(controller => this.useController(controller))
+	}
+
+	useRoutersAsync(promise: Promise<Router[]>): void {
+		const asyncRegistration = promise.then(routers => this.useRouters(routers))
+		this.asyncRegistrations.push(asyncRegistration)
 	}
 
 	useRouters(routers: Router[]): void {
@@ -17,28 +28,41 @@ export default abstract class Router extends RequestEnvironment {
 
 	useController(controller: ControllerLike): void {
 		const information = controller.routeInformation
-		const handlers = controller.handlers
+		const { handlers } = controller
 		this.routes.push({
-			information,
-			handlers
+			handlers,
+			information
 		})
 	}
 
 	useRouter(router: Router): void {
-		this.routes.push(...router.allUsableRoutes)
+		const asyncRegistration = router.allUsableRoutes.then(allUsableRoutes => {
+			this.routes.push(...allUsableRoutes)
+		})
+		this.asyncRegistrations.push(asyncRegistration)
 	}
 
-	get allRouteInformation(): RouteInformation[] {
+	get allRouteInformation(): Promise<RouteInformation[]> {
 		const allRouteInformation: RouteInformation[] = []
 
-		for (const { information } of this.routes) {
-			allRouteInformation.push(information)
-		}
+		return this.allUsableRoutes.then(routes => {
+			for (const { information } of routes) {
+				allRouteInformation.push(information)
+			}
 
-		return allRouteInformation
+			return allRouteInformation
+		})
 	}
 
-	get allUsableRoutes(): UsableRoute[] {
-		return [ ...this.routes ]
+	get allUsableRoutes(): Promise<UsableRoute[]> {
+		return this.resolveAllRegistrations().then(() => [ ...this.routes ])
+	}
+
+	private async resolveAllRegistrations(): Promise<void> {
+		const { asyncRegistrations } = this
+		this.asyncRegistrations = []
+		await Promise.all(asyncRegistrations)
+
+		if (this.asyncRegistrations.length > 0) await this.resolveAllRegistrations()
 	}
 }

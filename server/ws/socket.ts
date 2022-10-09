@@ -20,7 +20,7 @@ export default class Socket extends RequestEnvironment {
 
 	static emitToClients(namespace: string, eventName: string, ...data: any): void {
 		this.runDependingOnEnvironment(
-			() => this.server.of(namespace).emit(eventName, data),
+			() => this.server.of(namespace).emit(eventName, ...data),
 			() => {
 				this.previousCallInfos.push({
 					"arguments": {

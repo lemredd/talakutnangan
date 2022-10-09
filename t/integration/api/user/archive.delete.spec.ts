@@ -11,29 +11,32 @@ import { ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT } from "$/permissions/user
 import Route from "!%/api/user/archive.delete"
 
 describe("DELETE /api/user", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by authenticated user", async () => {
+	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT))
-			.insertOne()
-		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const user = await (new UserFactory()).insertOne()
+		.userFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const user = await new UserFactory().insertOne()
 
 		const response = await App.request
-			.delete("/api/user")
-			.send({
-				data: [
-					{ type: "user", id: String(user.id) }
-				]
-			})
-			.set("Cookie", cookie)
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+		.delete("/api/user")
+		.send({
+			"data": [
+				{
+					"id": String(user.id),
+					"type": "user"
+				}
+			]
+		})
+		.set("Cookie", cookie)
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect(await User.findOne({ where: { id: user.id } })).toBeNull()
+		expect(await User.findOne({ "where": { "id": user.id } })).toBeNull()
 	})
 })

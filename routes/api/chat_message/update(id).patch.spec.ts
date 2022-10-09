@@ -46,7 +46,9 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const controller = new Controller()
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.user(() => new UserFactory().beReachableEmployee().insertOne())
+		.insertOne()
 		const { user } = chatMessageActivity
 		const model = await new Factory().chatMessageActivity(
 			() => Promise.resolve(chatMessageActivity)
@@ -56,7 +58,12 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 			"params": {
 				"id": String(model.id)
 			},
-			"user": new UserFactory().serialize(user)
+			"user": {
+				...new UserFactory().serialize(user),
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)
@@ -69,7 +76,9 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
 		const otherUser = await new UserFactory().beReachableEmployee().serializedOne(true)
-		const chatMessageActivity = await new ChatMessageActivityFactory().insertOne()
+		const chatMessageActivity = await new ChatMessageActivityFactory()
+		.user(() => new UserFactory().beReachableEmployee().insertOne())
+		.insertOne()
 		const model = await new Factory().chatMessageActivity(
 			() => Promise.resolve(chatMessageActivity)
 		).insertOne()
@@ -78,7 +87,12 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 			"params": {
 				"id": String(model.id)
 			},
-			"user": otherUser
+			"user": {
+				...otherUser,
+				"meta": {
+					"hasDefaultPassword": false
+				}
+			}
 		})
 
 		await requester.runMiddleware(policyFunction)

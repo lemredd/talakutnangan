@@ -1,41 +1,65 @@
 <template>
-	<section class="chat-window flex flex-col right">
+	<section class="chat-window right">
+		<button
+			class="toggle-list-btn material-icons"
+			title="Toggle consultation list"
+			@click="toggleConsultationList">
+			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
+		</button>
 		<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
 
-		<div class="selected-consultation-header">
-			<div class="selected-consultation-title">
-				{{ consultation.reason }}
+		<div class="selected-consultation-header dark:bg-true-gray-800">
+			<div class="text">
+				<div class="selected-consultation-title">
+					{{ consultation.reason }}
+				</div>
+				<div class="selected-consultation-remaining-time">
+					Time remaining:
+					<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
+					<span>{{ remainingTime.minutes }}m left</span>
+					<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
+				</div>
+				<div class="selected-consultation-user-status">
+					<!-- TODO(lead): must base on user active status -->
+					User is online
+				</div>
 			</div>
-			<div class="selected-consultation-remaining-time">
-				<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
-				<span>{{ remainingTime.minutes }}m</span>
-				<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
-			</div>
-			<div class="selected-consultation-user-status row-start-2">
-				<!-- TODO(lead): must base on user active status -->
-				User is online
-			</div>
-			<div class="controls row-span-full self-center">
+			<div class="controls">
 				<!-- TODO(lead/button): Apply functionality -->
 				<button class="material-icons">
 					video_camera_back
 				</button>
+				<Dropdown
+					:is-dropdown-shown="isHeaderControlDropdownShown"
+					@toggle="toggleHeaderControlDropdownShown"
+					class="additional-controls">
+					<template #toggler>
+						<!-- TODO(lead/button): Apply functionality -->
+						<button class="material-icons">
+							more_horiz
+						</button>
+					</template>
 
-				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons">
-					more_horiz
-				</button>
+					<template #dropdown-contents>
+						<div class="links">
+							<span>dngdsnglknkl</span>
+						</div>
+					</template>
+				</Dropdown>
 			</div>
 		</div>
-		<div class="selected-consultation-chats px-3 py-5 flex-1 overflow-y-scroll">
-			<div class="selected-consultation-new">
-				<p><strong>This is a new consultation.</strong> here are some additional details</p>
-				<ul class="selected-consultation-additional-details bg-gray-300 p-5">
+		<div class="selected-consultation-chats">
+			<div class="selected-consultation-new flex flex-col align-center justify-center">
+				<p class="text-center">
+					<strong>This is a new consultation.</strong>
+					here are some additional details
+				</p>
+				<ul class="selected-consultation-additional-details my-5 w-[max-content] mx-auto">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 
 					<!-- TODO(lead/button): Apply functionality -->
-					<li><a href="#">View printable form (PDF)</a></li>
+					<li><a class="underline" href="#">View printable form (PDF)</a></li>
 				</ul>
 			</div>
 
@@ -50,6 +74,51 @@
 	</section>
 </template>
 
+<style scoped lang="scss">
+@import "@styles/mixins.scss";
+
+	.right {
+		@apply flex flex-col;
+		@apply flex-1;
+		border-right: 1px solid hsla(0,0%,0%,0.1);
+		position: relative;
+
+		// TODO: find a way to make mixin `useContentBaseHeight` work
+		height: calc(100vh - 56px);
+
+		.toggle-list-btn {
+			@apply fixed opacity-15 hover:opacity-100;
+			@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
+			z-index: 1001;
+		}
+
+		.selected-consultation-header {
+			@apply flex py-4 px-2;
+			.text {
+				@apply flex-1;
+				.selected-consultation-user-status { @apply row-start-2; }
+			}
+			.controls {
+				@apply flex items-center;
+
+				.additional-controls {
+					display: inline;
+					height: min-content;
+				}
+			}
+		}
+
+		.selected-consultation-chats {
+			@apply px-3 py-5 flex-1 overflow-y-scroll;
+
+			ul.selected-consultation-additional-details {
+				@apply bg-true-gray-600 border border-true-gray-600 rounded-md p-5;
+				@apply dark:bg-transparent;
+			}
+		}
+	}
+</style>
+
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
 
@@ -60,33 +129,45 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
+import makeSwitch from "$@/helpers/make_switch"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import convertMillisecondsToFullTimeObject
-	from "$@/helpers/convert_milliseconds_to_full_time_object"
+import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Dropdown from "@/page_shell/dropdown.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
+interface CustomEvents {
+	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
+	(eventName: "toggleConsultationList"): void
+}
+
+const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	isConsultationListShown: boolean
 }>()
+
+function toggleConsultationList() {
+	emit("toggleConsultationList")
+}
+
+const {
+	"toggle": toggleHeaderControlDropdownShown,
+	"state": isHeaderControlDropdownShown
+} = makeSwitch(false)
 
 const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(
-	() => convertMillisecondsToFullTimeObject(remainingMilliseconds.value)
+	() => convertMStoTimeObject(remainingMilliseconds.value)
 )
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
 const consultationID = computed<string>(() => consultation.value.id)
 const consultationStatus = computed<string>(() => consultation.value.status)
-
-interface CustomEvents {
-	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
-}
-const emit = defineEmits<CustomEvents>()
 
 function restartRemainingTime(): void {
 	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
