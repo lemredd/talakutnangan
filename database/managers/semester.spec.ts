@@ -1,4 +1,4 @@
-import Manager from "./post"
+import Manager from "./semester"
 
 describe("Database Manager: Miscellaneous semester operations", () => {
 	it("can get sortable columns", () => {
@@ -8,13 +8,21 @@ describe("Database Manager: Miscellaneous semester operations", () => {
 		const { sortableColumns } = manager
 
 		expect(sortableColumns).toStrictEqual([
-			"-content",
 			"-createdAt",
+			"-deletedAt",
+			"-endAt",
 			"-id",
+			"-name",
+			"-semesterOrder",
+			"-startAt",
 			"-updatedAt",
-			"content",
 			"createdAt",
+			"deletedAt",
+			"endAt",
 			"id",
+			"name",
+			"semesterOrder",
+			"startAt",
 			"updatedAt"
 		])
 	})
