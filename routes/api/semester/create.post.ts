@@ -8,9 +8,10 @@ import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
-import oneOf from "!/validators/comparison/one-of"
+import date from "!/validators/base/date"
 import string from "!/validators/base/string"
 import required from "!/validators/base/required"
+import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
@@ -39,6 +40,12 @@ export default class extends JSONController {
 					}
 				},
 				"pipes": [ required, string, oneOf ]
+			},
+			"startAt": {
+				"pipes": [ required, string, date ]
+			},
+			"endAt": {
+				"pipes": [ required, string, date ]
 			}
 		}
 
