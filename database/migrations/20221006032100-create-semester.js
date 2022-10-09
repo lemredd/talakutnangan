@@ -4,7 +4,6 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Semesters", { transaction })
 				await queryInterface.createTable("Semesters", {
 					"id": {
 						"allowNull": false,
