@@ -9,6 +9,7 @@ import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import BoundJSONController from "!/controllers/bound_json"
 
+import date from "!/validators/base/date"
 import string from "!/validators/base/string"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
@@ -44,6 +45,12 @@ export default class extends BoundJSONController {
 					}
 				},
 				"pipes": [ required, string, oneOf ]
+			},
+			"startAt": {
+				"pipes": [ required, string, date ]
+			},
+			"endAt": {
+				"pipes": [ required, string, date ]
 			}
 		}
 
