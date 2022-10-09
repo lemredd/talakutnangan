@@ -15,7 +15,7 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.STRING
 					},
-					"semesterOrders": {
+					"semesterOrder": {
 						"allowNull": false,
 						"type": Sequelize.ENUM([ "first", "second", "third" ])
 					},
