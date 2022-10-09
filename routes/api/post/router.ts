@@ -14,6 +14,6 @@ export default class extends Router {
 			new DeleteArchive(),
 			new PatchUpdate(),
 			new PatchRestore()
-		])
+		]))
 	}
 }
