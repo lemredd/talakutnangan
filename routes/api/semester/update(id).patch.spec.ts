@@ -20,8 +20,8 @@ describe("Controller: POST /api/semester/:id", () => {
 				"data": {
 					"attributes": {
 						"name": String(newPost.name),
-						"startAt": newPost.startAt,
-						"endAt": newPost.endAt,
+						"startAt": String(newPost.startAt),
+						"endAt": String(newPost.endAt),
 						"semesterOrder": newPost.semesterOrder
 					},
 					"id": String(semester.id),
@@ -46,8 +46,8 @@ describe("Controller: POST /api/semester/:id", () => {
 				"data": {
 					"attributes": {
 						"name": 1,
-						"startAt": "not a date",
-						"endAt": "not a date",
+						"startAt": 1,
+						"endAt": 1,
 						"semesterOrder": 1
 					},
 					"id": String(semester.id),
@@ -59,8 +59,10 @@ describe("Controller: POST /api/semester/:id", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 
-		expect(body).toHaveLength(2)
-		expect(body).toHaveProperty("0.source.pointer", "data.attributes.name")
-		expect(body).toHaveProperty("1.source.pointer", "data.attributes.semesterOrder")
+		expect(body).toHaveLength(4)
+		expect(body).toHaveProperty("0.source.pointer", "data.attributes.endAt")
+		expect(body).toHaveProperty("1.source.pointer", "data.attributes.name")
+		expect(body).toHaveProperty("2.source.pointer", "data.attributes.semesterOrder")
+		expect(body).toHaveProperty("3.source.pointer", "data.attributes.startAt")
 	})
 })
