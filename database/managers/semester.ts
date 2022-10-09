@@ -7,13 +7,9 @@ import Semester from "%/models/semester"
 
 import SemesterTransformer from "%/transformers/semester"
 
-interface RawSemesterAttributes extends SemesterAttributes<"serialized"> {
-	userID: number|null
-}
-
 export default class extends BaseManager<
 	Semester,
-	RawSemesterAttributes,
+	SemesterAttributes<"deserialized">,
 	CommonQueryParameters
 > {
 	get model(): ModelCtor<Semester> { return Semester }
