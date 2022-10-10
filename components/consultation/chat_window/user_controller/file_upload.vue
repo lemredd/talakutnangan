@@ -70,18 +70,23 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
+
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
-
-let rawFetcher: Fetcher|null = null
+import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 defineProps<{ isShown: boolean }>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
+const fileUploadForm = ref()
+const ownChatMessageActivity = inject(
+	CHAT_MESSAGE_ACTIVITY
+) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
 interface CustomEvents {
 	(event: "close"): void
@@ -91,17 +96,11 @@ function emitClose() {
 	emit("close")
 }
 
-function fetcher(): Fetcher {
-	if (rawFetcher === null) throw new Error("Chat cannot be processed yet")
+function sendFile() {
+	const fetcher = new Fetcher()
+	const formData = new FormData(fileUploadForm.value as HTMLFormElement)
 
-	return rawFetcher
-}
-
-function sendFile(event: Event): void {
-	const button = event.target as HTMLButtonElement
-	const formData = new FormData(button.form as HTMLFormElement)
-
-	fetcher().createWithFile(formData)
+	fetcher.createWithFile(formData)
 	.then(() => {
 		emitClose()
 	})
