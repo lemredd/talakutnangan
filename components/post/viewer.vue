@@ -119,5 +119,5 @@ import {
 	totalVotes
 } from "./post"
 
-import Menu from "@/post/post_viewer/menu.vue"
+import Menu from "@/post/viewer/menu.vue"
 </script>
