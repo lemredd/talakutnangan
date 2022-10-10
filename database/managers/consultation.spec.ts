@@ -123,6 +123,10 @@ describe("Database Manager: Consultation create operations", () => {
 						{
 							"id": String(user.id),
 							"type": "user"
+						},
+						{
+							"id": String(attachedRole.userID),
+							"type": "user"
 						}
 					]
 				}
