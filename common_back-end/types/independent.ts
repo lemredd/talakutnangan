@@ -40,7 +40,7 @@ export interface RawAttachedChatFile {
 }
 
 export interface RawPostAttachment {
-	postID: number,
-	fileTyye: string
+	postID: number|null,
+	fileType: string
 	fileContents: Buffer
 }
