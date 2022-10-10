@@ -280,11 +280,11 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const fileMessageContent = wrapper.find(".file-message-content")
 			// TODO(lead): display other elements for other file types
 			const actualFile = fileMessageContent.find("img")
-			// expect(fileMessageContent.exists()).toBeTruthy()
-			// expect(actualFile.exists()).toBeTruthy()
-			// expect(actualFile.attributes("src")).toBeDefined()
+			expect(fileMessageContent.exists()).toBeTruthy()
+			expect(actualFile.exists()).toBeTruthy()
+			expect(actualFile.attributes("src")).toBeDefined()
 
-			// console.log(wrapper.html())
+			console.log(wrapper.html())
 		})
 	})
 })
