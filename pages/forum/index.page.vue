@@ -94,38 +94,9 @@ function togglePostMenu(post: Post) {
 	post.isMenuShown = !post.isMenuShown
 }
 
-// Post edit
-function editPost(post: Post) {
-	console.log(post)
-	post.isPostShown = !post.isPostShown
-	post.isEditShown = !post.isEditShown
-
-	titleToEdit.value = post.title
-	descToEdit.value = post.desc
-}
 
 
-// Post delete
-function deletePost(post: Post, index: number) {
-	const postClones = [ ...posts.value ]
-	const deletedPosts = postClones.splice(index, 1)
-	posts.value = postClones
 
-	// Checking'
-	for (let i = 0; i < deletedPosts.length; i++) {
-		console.log("post deleted", deletedPosts[i])
-	}
-
-	for (let i = 0; i < posts.value.length; i++) {
-		console.log("all posts", posts.value[i])
-	}
-	alert("Successfully deleted!")
-}
-
-// Reprt post
-function reportPost(post: Post) {
-	alert("Post reported!")
-}
 
 /*
  * To create a post, the needed variables are

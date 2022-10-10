@@ -12,25 +12,7 @@
 				</div>
 				<div class="">
 				</div>
-				<div class="controls relative">
-					<button class="material-icons" @click="togglePostMenu(post)">
-						more_vert
-					</button>
-					<Dropdown
-						v-if="post.isMenuShown"
-						class="postmenu absolute top-[2em] right-0 flex flex-col"
-						@close="togglePostMenu(post)">
-						<button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
-							Edit
-						</button>
-						<button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post,i)">
-							Delete
-						</button>
-						<button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
-							Report
-						</button>
-					</Dropdown>
-				</div>
+				<Menu/>
 			</div>
 			<!--  -->
 			<div class="post-container" :hidden="post.isEditShown">
@@ -137,5 +119,5 @@ import {
 	totalVotes
 } from "./post"
 
-import Dropdown from "@/page_shell/dropdown.vue"
+import Menu from "@/post/post_viewer/menu.vue"
 </script>
