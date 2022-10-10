@@ -9,13 +9,20 @@
 			:title="chatMessage.user.data.name"/>
 		<div>
 			<p
-				v-if="isTextMessage(chatMessage)"
+				v-if="isMessageKindText(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.data.value }}
 			</p>
 			<p
-				v-if="isStatusMessage(chatMessage)"
+				v-if="isMessageKindFile(chatMessage)"
+				class="message-item-content"
+				:class="messageItemContent">
+				<!-- TODO(lead): use appropriate elements for other file types  -->
+				<img :src="fileURL">
+			</p>
+			<p
+				v-if="isMessageKindStatus(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.user.data.name }} {{ chatMessage.data.value }}
@@ -60,8 +67,9 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject } from "vue"
+import { computed, inject, onMounted, ref } from "vue"
 
+import Fetcher from "$@/fetchers/chat_message"
 import type { PageContext } from "$/types/renderer"
 import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
@@ -77,35 +85,46 @@ const { chatMessage } = defineProps<{
 	chatMessage: DeserializedChatMessageResource<"user">
 }>()
 
-function isStatusMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageKindStatus(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & StatusMessage {
 	return value.kind === "status"
 }
 
 const isSelfMessage = computed<boolean>(() => {
-	const isMessageCameFromSelf = !isStatusMessage(chatMessage)
+	const isMessageCameFromSelf = !isMessageKindStatus(chatMessage)
 		&& userProfile.data.id === chatMessage.user.data.id
 
 	return isMessageCameFromSelf
 })
 
 const isOtherMessage = computed<boolean>(() => {
-	const isMessageCameFromOther = !isStatusMessage(chatMessage)
+	const isMessageCameFromOther = !isMessageKindStatus(chatMessage)
 		&& userProfile.data.id !== chatMessage.user.data.id
 
 	return isMessageCameFromOther
 })
 
-function isTextMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageKindText(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & TextMessage {
 	return value.kind === "text"
+}
+function isMessageKindFile(value: DeserializedChatMessageResource<"user">)
+: value is DeserializedChatMessageResource<"user"> & TextMessage {
+	return value.kind === "file"
 }
 
 const messageItem = {
 	"own-message": isSelfMessage.value,
-	"status-message": isStatusMessage(chatMessage)
+	"status-message": isMessageKindStatus(chatMessage)
 }
 const messageItemContent = {
-	"text-message-content": isTextMessage(chatMessage)
+	"file-message-content": isMessageKindFile(chatMessage),
+	"status-message-content": isMessageKindStatus(chatMessage),
+	"text-message-content": isMessageKindText(chatMessage)
 }
+
+const fileURL = ref<string|null>(null)
+onMounted(() => {
+	// new Fetcher().
+})
 </script>

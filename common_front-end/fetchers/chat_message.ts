@@ -11,7 +11,7 @@ import type {
 	DeserializedChatMessageListDocument,
 	ChatMessageRelationships
 } from "$/types/documents/chat_message"
-import { MULTIPART_MEDIA_TYPE } from "$/types/server"
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import { CHAT_MESSAGE_LINK, CREATE_CHAT_MESSAGE_WITH_FILE_LINK } from "$/constants/template_links"
 
@@ -44,7 +44,7 @@ export default class ChatMessageFetcher extends BaseFetcher<
 		DeserializedChatMessageResource,
 		DeserializedChatMessageDocument<"attachedChatFile"|"user">
 	>> {
-		const headers = this.makeJSONHeaders(MULTIPART_MEDIA_TYPE)
+		const headers = new Headers({ "Accept": JSON_API_MEDIA_TYPE })
 
 		return await this.handleResponse(
 			this.postTo(CREATE_CHAT_MESSAGE_WITH_FILE_LINK, document, headers)
