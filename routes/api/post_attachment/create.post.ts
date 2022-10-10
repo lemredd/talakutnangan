@@ -1,5 +1,4 @@
 import type { FieldRules, Rules } from "!/types/validation"
-import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
@@ -7,13 +6,12 @@ import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import PostManager from "%/managers/post"
-import deserialize from "$/object/deserialize"
 import Manager from "%/managers/post_attachment"
 import MultipartController from "!/controllers/multipart"
 import CreatedResponseInfo from "!/response_infos/created"
 
-import ScopeBasedPolicy from "!/policies/scope-based"
-import { role as permissionGroup } from "$/permissions/permission_list"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { post as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -35,15 +33,11 @@ export default class extends MultipartController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new ScopeBasedPolicy(
-			permissionGroup,
+		return new PermissionBasedPolicy(permissionGroup, [
 			CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 			CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
-			CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
-			(request: AuthenticatedRequest) => Promise.resolve(
-				deserialize(request.user) as DeserializedUserDocument<"roles"|"department">
-			)
-		)
+			CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+		])
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedRequest): FieldRules {
