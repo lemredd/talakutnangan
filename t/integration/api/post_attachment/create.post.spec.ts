@@ -39,11 +39,10 @@ describe("POST /api/post_attachment", () => {
 		.type(MULTIPART_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
-		console.log(response.body, "body\n\n\n")
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body).toHaveProperty("data.type", "post_attachment")
-		expect(response.body).toHaveProperty("data.fileType", fileType)
 		expect(response.body).toHaveProperty("data.id")
+		expect(response.body).toHaveProperty("data.attributes.fileType", fileType)
 		expect(response.body).toHaveProperty(
 			"data.attributes.fileContents",
 			`http://localhost:${PORT}/api/post_attachment/${response.body.data.id}`
