@@ -1,8 +1,10 @@
 <template>
 	<div class="controls relative">
 		<Dropdown
+			:is-dropdown-shown="isDropdownShown"
 			class="postmenu absolute top-[2em] right-0 flex flex-col"
-			@close="togglePostMenu(post)">
+			@toggle="toggleDropdown"
+			@resize="toggleDropdown">
 			<template #toggler>
 				<button class="material-icons">
 					more_vert
@@ -30,6 +32,7 @@ import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
+import makeSwitch from "$@/helpers/make_switch"
 import PermissionGroup from "$/permissions/post"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
@@ -57,6 +60,11 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 
 const { userProfile } = pageProps
+
+const {
+	"state": isDropdownShown,
+	"toggle": toggleDropdown
+} = makeSwitch(false)
 
 const poster = computed<DeserializedUserResource<"department">>(
 	() => props.post.poster.data as DeserializedUserResource<"department">
@@ -121,7 +129,6 @@ const mayRestorePost = computed<boolean>(() => {
 	return isPermitted && props.post.deletedAt !== null
 })
 
-// Post edit
 function updatePost() {
 	emit("updatePost", props.post.id)
 }
