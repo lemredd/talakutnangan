@@ -5,9 +5,15 @@ import Policy from "!/bases/policy"
 import PostManager from "%/managers/post"
 import UserManager from "%/managers/user"
 import Manager from "%/managers/comment"
-import BoundJSONController from "!/controllers/bound_json"
+import PermissionBasedPolicy from "!/policies/permission-based"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import DoubleBoundJSONController from "!/controllers/double_bound_json"
+import { comment as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+} from "$/permissions/comment_combinations"
 
 import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
@@ -18,11 +24,15 @@ import length from "!/validators/comparison/length"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
-export default class extends BoundJSONController {
+export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.studentOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+		])
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
@@ -67,7 +77,7 @@ export default class extends BoundJSONController {
 				"validator": exists
 			},
 			{
-				"ClassName": UserManager,
+				"ClassName": Manager,
 				"isOptional": true,
 				"isArray": false,
 				"relationshipName": "comment",
