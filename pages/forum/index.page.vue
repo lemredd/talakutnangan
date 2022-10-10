@@ -27,80 +27,7 @@
 			</div>
 			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 
-			<div
-				v-for="(post, i) in posts"
-				class="post"
-				:hidden="secludePostDiv(post)">
-				<div v-if="post">
-					<div class="post-container flex justify-between w-[100%] pb-[5em]">
-						<div class="post-title">
-							<h2 class="font-bold">
-								Post
-							</h2>
-						</div>
-						<div class="">
-						</div>
-						<div class="controls relative">
-							<button class="material-icons" @click="togglePostMenu(post)">
-								more_vert
-							</button>
-							<PostMenu
-								v-if="post.isMenuShown"
-								class="postmenu absolute top-[2em] right-0 flex flex-col"
-								@close="togglePostMenu(post)">
-								<button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
-									Edit
-								</button>
-								<button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post,i)">
-									Delete
-								</button>
-								<button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
-									Report
-								</button>
-							</PostMenu>
-						</div>
-					</div>
-					<!--  -->
-					<div class="post-container" :hidden="post.isEditShown">
-						<div class="container">
-							<form @submit.prevent="editPostDetails(post)">
-								<div class="row">
-									<div class="col-25">
-										<label for="title">Edit Title</label>
-									</div>
-									<div class="col-75">
-										<input
-											id="title"
-											v-model="titleToEdit"
-											type="text"
-											name="title"
-											placeholder="Your title.."/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-25">
-										<label for="desc">Edit Description</label>
-									</div>
-									<div class="col-75">
-										<textarea
-											id="desc"
-											v-model="descToEdit"
-											name="desc"
-											placeholder="Write something.."
-											style="height:200px"></textarea>
-									</div>
-								</div>
-								<div class="row">
-									<input type="submit" value="Submit"/>
-								</div>
-							</form>
-						</div>
-					</div>
-					<!--  -->
-					<PostViewer/>
-				</div>
-				<br/>
-			</div>
+			<PostViewer/>
 		</div>
 		<!--body end-->
 
@@ -123,14 +50,12 @@
 import { ref } from "vue"
 import {
 	posts,
-	secludePostDiv,
 	dummyUserDemo
 } from "./post"
 
 import makeSwitch from "$@/helpers/make_switch"
 
 import PostViewer from "@/post/post_viewer.vue"
-import PostMenu from "@/page_shell/dropdown.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 
 import type { Post } from "./data"
