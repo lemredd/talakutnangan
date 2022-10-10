@@ -37,12 +37,6 @@
 						@change="extractFile"/>
 					CHOOSE FILE
 				</label>
-				<button
-					v-if="hasExtracted"
-					type="button"
-					@click="sendFile">
-					Send file
-				</button>
 			</form>
 
 			<div v-if="hasExtracted" class="preview-file mt-5">
@@ -129,8 +123,4 @@ function extractFile(event: Event) {
 	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>
