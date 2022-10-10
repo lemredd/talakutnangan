@@ -33,19 +33,27 @@
 				</button>
 			</form>
 
-			<div v-if="hasExtracted" class="preview-file">
-				<h6>{{ filename }}</h6>
-				<img :src="previewFile"/>
+			<div v-if="hasExtracted" class="preview-file mt-5">
+				<div class="preview-img-container">
+					<img class="preview-img max-w-30" :src="previewFile"/>
+					<small class="preview-title max-w-30 text-xs">
+						{{ filename }}
+					</small>
+				</div>
 			</div>
 		</template>
 		<template #footer>
 			<button
-				class="btn btn-back"
+				class="btn back-btn"
 				type="button"
 				@click="emitClose">
 				Back
 			</button>
-			<button class="btn btn-primary" type="button">
+			<button
+				:disabled="!hasExtracted"
+				class="send-btn btn btn-primary"
+				type="button"
+				@click="sendFile">
 				Send
 			</button>
 		</template>
@@ -104,8 +112,8 @@ function sendFile(event: Event): void {
 
 function extractFile(event: Event) {
 	const target = event.target as HTMLInputElement
-	const rawFilename = target.files?.item(0)?.name as ""
 	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
 
 	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
