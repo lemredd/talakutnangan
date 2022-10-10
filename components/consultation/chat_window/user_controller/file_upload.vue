@@ -3,11 +3,23 @@
 		<template #header>
 		</template>
 		<template #default>
-			<form @submit.prevent>
+			<form ref="fileUploadForm" @submit.prevent>
+				<input
+					type="hidden"
+					name="data[type]"
+					value="chat_message"/>
 				<input
 					type="hidden"
 					name="data[attributes][data][subkind]"
 					value="image"/>
+				<input
+					type="hidden"
+					name="data[relationships][chatMessageActivity][data][id]"
+					:value="ownChatMessageActivity.id"/>
+				<input
+					type="hidden"
+					name="data[relationships][chatMessageActivity][data][type]"
+					:value="ownChatMessageActivity.type"/>
 				<input
 					type="hidden"
 					name="data[attributes][data][name]"
