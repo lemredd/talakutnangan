@@ -52,10 +52,13 @@
 			margin: 0 auto;
 		}
 
-		.text-message-content {
-			@apply ml-2 py-1 px-2;
-			@apply border rounded-lg border-true-gray-600 border-opacity-50;
-			@apply dark:border-opacity-100;
+		.message-item-content {
+			max-width: 40vh;
+			&.text-message-content {
+				@apply ml-2 py-1 px-2;
+				@apply border rounded-lg border-true-gray-600 border-opacity-50;
+				@apply dark:border-opacity-100;
+			}
 		}
 
 		.other, .self {
