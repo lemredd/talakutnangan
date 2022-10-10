@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils"
-import type { TextMessage, StatusMessage, FileMessage } from "$/types/message"
+import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
@@ -267,6 +267,13 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 				},
 				"props": {
 					"chatMessage": {
+						"attachedChatFile": {
+							"data": {
+								"fileContents": "http://localhost:16000/api/attached_chat_file/1",
+								"id": "1",
+								"type": "attached_chat_file"
+							}
+						},
 						"createdAt": CURRENT_TIME,
 						"data": { value },
 						"id": "0",
@@ -283,8 +290,6 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			expect(fileMessageContent.exists()).toBeTruthy()
 			expect(actualFile.exists()).toBeTruthy()
 			expect(actualFile.attributes("src")).toBeDefined()
-
-			console.log(wrapper.html())
 		})
 	})
 })
