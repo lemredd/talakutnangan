@@ -38,12 +38,12 @@
 
 <style scoped lang="scss">
 	.message-item {
-		@apply flex items-center w-max;
+		@apply flex items-end w-max mb-5;
 
 		&.own-message {
 			margin-left: auto;
 
-			.text-message-content {
+			.message-item-content {
 				@apply mr-2 ml-0;
 			}
 		}
@@ -55,13 +55,13 @@
 		.text-message-content {
 			@apply ml-2 py-1 px-2;
 			@apply border rounded-lg border-true-gray-600 border-opacity-50;
-			@apply dark:border-opacity-100
+			@apply dark:border-opacity-100;
 		}
 
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;
-			width: 50px;
-			height: 50px;
+			width: 40px;
+			height: 40px;
 		}
 	}
 </style>
