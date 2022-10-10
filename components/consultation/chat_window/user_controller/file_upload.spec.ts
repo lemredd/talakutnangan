@@ -1,5 +1,5 @@
 import { nextTick } from "vue"
-import { shallowMount } from "@vue/test-utils"
+import { flushPromises, shallowMount } from "@vue/test-utils"
 
 import type { AttachedChatFileResource } from "$/types/documents/attached_chat_file"
 import type {
@@ -33,7 +33,7 @@ describe("Component: User controlller/File Upload", () => {
 		expect(previewImg.attributes("src")).toBeDefined()
 	})
 
-	it.only("can send selected file", async () => {
+	it.only("can send selected file", async() => {
 		const fileContents = "http://localhost:16000/api/attached_chat_file/1"
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -99,5 +99,10 @@ describe("Component: User controlller/File Upload", () => {
 		const sendBtn = wrapper.find(".send-btn")
 		await nextTick()
 		expect(sendBtn.attributes("src")).toBeUndefined()
+
+		await sendBtn.trigger("click")
+		await flushPromises()
+
+		expect(wrapper.emitted()).toHaveProperty("close")
 	})
 })
