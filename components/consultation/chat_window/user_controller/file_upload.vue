@@ -88,7 +88,7 @@ defineProps<{ isShown: boolean }>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
-const previewFile = ref<any>(null)
+const previewFile = ref<File|null>(null)
 const fileUploadForm = ref()
 const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
