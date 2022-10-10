@@ -189,3 +189,7 @@ export type ChatMessageQueryParameters<T extends number|string = string> =
 	& ConsultationFilter<T>
 	& ChatMessageKindFilter
 	& PreviewMessageOnlyFilter
+
+export type PostQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& NullableDepartmentFilter<T>
