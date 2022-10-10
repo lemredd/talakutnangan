@@ -20,11 +20,14 @@ import {
 	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
 } from "$/permissions/post_combinations"
 
+import string from "!/validators/base/string"
 import object from "!/validators/base/object"
 import buffer from "!/validators/base/buffer"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
+import length from "!/validators/comparison/length"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import makeResourceIdentifierDocumentRules from "!/rule_sets/make_resource_identifier_document"
 
@@ -54,14 +57,23 @@ export default class extends MultipartController {
 					}
 				},
 				"pipes": [ required, buffer ]
+			},
+			"fileType": {
+				"constraints": {
+					"length": {
+						"maximum": 255,
+						"minimum": 5
+					},
+					"regex": {
+						"match": /(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?/u
+					}
+				},
+				"pipes": [ required, string, length, regex ]
 			}
 		}
 
 		const relationships: Rules = {
 			"constraints": {
-				"nullable": {
-					"defaultValue": null
-				},
 				"object": {
 					"post": {
 						"constraints": {
