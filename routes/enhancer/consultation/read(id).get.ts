@@ -95,10 +95,7 @@ export default class extends PageMiddleware {
 		const MAXIMUM_REACHABLE_EMPLOYEE_COUNT = 1
 		const MAXIMUM_PARTICIPANT_COUNT = MAXIMUM_STUDENT_COUNT + MAXIMUM_REACHABLE_EMPLOYEE_COUNT
 
-		const chatMessageActivityManager = new ChatMessageActivityManager(
-			request.transaction,
-			request.cache
-		)
+		const chatMessageActivityManager = new ChatMessageActivityManager(request)
 		const chatMessageActivities = await chatMessageActivityManager.list({
 			"filter": {
 				"consultationIDs": allConsultationIDs,
@@ -115,14 +112,16 @@ export default class extends PageMiddleware {
 		const chatMessageManager = new ChatMessageManager(request)
 		const chatMessages = await chatMessageManager.list({
 			"filter": {
+				"chatMessageKinds": "*",
 				"consultationIDs": [ Number(consultation.data.id) ],
-				"existence": "exists"
+				"existence": "exists",
+				"previewMessageOnly": false
 			},
 			"page": {
 				"limit": 10,
 				"offset": 0
 			},
-			"sort": [ "-createdAt" ]
+			"sort": [ "createdAt" ]
 		})
 
 		const previewMessages = await chatMessageManager.findPreviews(allConsultationIDs)

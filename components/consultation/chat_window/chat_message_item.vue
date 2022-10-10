@@ -9,13 +9,20 @@
 			:title="chatMessage.user.data.name"/>
 		<div>
 			<p
-				v-if="isTextMessage(chatMessage)"
+				v-if="isMessageKindText(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.data.value }}
 			</p>
 			<p
-				v-if="isStatusMessage(chatMessage)"
+				v-if="isMessageKindFile(chatMessage)"
+				class="message-item-content"
+				:class="messageItemContent">
+				<!-- TODO(lead): use appropriate elements for other file types  -->
+				<img :src="fileURL"/>
+			</p>
+			<p
+				v-if="isMessageKindStatus(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.user.data.name }} {{ chatMessage.data.value }}
@@ -31,12 +38,12 @@
 
 <style scoped lang="scss">
 	.message-item {
-		@apply flex items-center w-max;
+		@apply flex items-end w-max mb-5;
 
 		&.own-message {
 			margin-left: auto;
 
-			.text-message-content {
+			.message-item-content {
 				@apply mr-2 ml-0;
 			}
 		}
@@ -45,16 +52,19 @@
 			margin: 0 auto;
 		}
 
-		.text-message-content {
-			@apply ml-2 py-1 px-2;
-			@apply border rounded-lg border-true-gray-600 border-opacity-50;
-			@apply dark:border-opacity-100
+		.message-item-content {
+			max-width: 40vh;
+			&.text-message-content {
+				@apply ml-2 py-1 px-2;
+				@apply border rounded-lg border-true-gray-600 border-opacity-50;
+				@apply dark:border-opacity-100;
+			}
 		}
 
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;
-			width: 50px;
-			height: 50px;
+			width: 40px;
+			height: 40px;
 		}
 	}
 </style>
@@ -77,35 +87,43 @@ const { chatMessage } = defineProps<{
 	chatMessage: DeserializedChatMessageResource<"user">
 }>()
 
-function isStatusMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageKindStatus(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & StatusMessage {
 	return value.kind === "status"
 }
 
 const isSelfMessage = computed<boolean>(() => {
-	const isMessageCameFromSelf = !isStatusMessage(chatMessage)
+	const isMessageCameFromSelf = !isMessageKindStatus(chatMessage)
 		&& userProfile.data.id === chatMessage.user.data.id
 
 	return isMessageCameFromSelf
 })
 
 const isOtherMessage = computed<boolean>(() => {
-	const isMessageCameFromOther = !isStatusMessage(chatMessage)
+	const isMessageCameFromOther = !isMessageKindStatus(chatMessage)
 		&& userProfile.data.id !== chatMessage.user.data.id
 
 	return isMessageCameFromOther
 })
 
-function isTextMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageKindText(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & TextMessage {
 	return value.kind === "text"
+}
+function isMessageKindFile(value: DeserializedChatMessageResource<"user">)
+: value is DeserializedChatMessageResource<"user"> & TextMessage {
+	return value.kind === "file"
 }
 
 const messageItem = {
 	"own-message": isSelfMessage.value,
-	"status-message": isStatusMessage(chatMessage)
+	"status-message": isMessageKindStatus(chatMessage)
 }
 const messageItemContent = {
-	"text-message-content": isTextMessage(chatMessage)
+	"file-message-content": isMessageKindFile(chatMessage),
+	"status-message-content": isMessageKindStatus(chatMessage),
+	"text-message-content": isMessageKindText(chatMessage)
 }
+
+const fileURL = computed(() => chatMessage.attachedChatFile?.data.fileContents)
 </script>

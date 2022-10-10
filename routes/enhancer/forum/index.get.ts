@@ -67,7 +67,7 @@ export default class extends PageMiddleware {
 					"limit": 10,
 					"offset": 0
 				},
-				"sort": [ "name" ]
+				"sort": [ "-createdAt" ]
 			})
 		}
 

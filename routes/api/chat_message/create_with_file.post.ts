@@ -63,7 +63,7 @@ export default class extends CreateRoute {
 		const document = await manager.createWithFile({
 			...attributes,
 			chatMessageActivityID
-		}, meta.fileContents) as ChatMessageDocument<"create">
+		}, meta.fileContents.buffer as Buffer) as ChatMessageDocument<"create">
 
 		Socket.emitToClients(
 			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),

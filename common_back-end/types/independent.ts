@@ -38,3 +38,9 @@ export interface RawAttachedChatFile {
 	chatMessageID: number,
 	fileContents: Buffer
 }
+
+export interface RawPostAttachment {
+	postID: number|null,
+	fileType: string
+	fileContents: Buffer
+}

@@ -38,6 +38,8 @@ export const CHAT_MESSAGE_ACTIVITY_LINK = makeTemplateLink(LINK_PREFIX, "chat_me
 
 export const POST_LINK = makeTemplateLink(LINK_PREFIX, "post")
 
+export const SEMESTER_LINK = makeTemplateLink(LINK_PREFIX, "semester")
+
 /**
  * Requires the `id` of the user
  */
