@@ -9,14 +9,14 @@
 				</button>
 			</template>
 			<template #dropdown-contents>
-				<button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
+				<button v-if="mayUpdatePost" @click="updatePost">
 					Edit
 				</button>
-				<button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post,i)">
-					Delete
+				<button v-if="mayArchivePost" @click="archivePost">
+					Archive
 				</button>
-				<button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
-					Report
+				<button v-if="mayRestorePost" @click="restorePost">
+					Restore
 				</button>
 			</template>
 		</Dropdown>
@@ -34,7 +34,10 @@ import PermissionGroup from "$/permissions/post"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
-	UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+	UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PUBLIC_POST_ON_ANY_DEPARTMENT
 } from "$/permissions/post_combinations"
 
 import Dropdown from "@/page_shell/dropdown.vue"
@@ -44,8 +47,9 @@ const props = defineProps<{
 }>()
 
 interface CustomEvents {
-	(event: "editPost", postID: string): void
-	(event: "deletePost", postID: string): void
+	(event: "updatePost", postID: string): void
+	(event: "archivePost", postID: string): void
+	(event: "restorePost", postID: string): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -78,37 +82,55 @@ const mayUpdatePost = computed<boolean>(() => {
 			UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT
 		])
 
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	return isPermitted && props.post.deletedAt === null
+})
+
+const mayArchiveOrRestorePost = computed<boolean>(() => {
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
+	])
+
+	const isOwned = userProfile.data.id === props.post.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
+		])
+		&& (
+			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+		)
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_PUBLIC_POST_ON_ANY_DEPARTMENT
+		])
+
 	return isLimitedPersonalScope || isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
+
+const mayArchivePost = computed<boolean>(() => {
+	const isPermitted = mayArchiveOrRestorePost.value
+	return isPermitted && props.post.deletedAt === null
+})
+
+const mayRestorePost = computed<boolean>(() => {
+	const isPermitted = mayArchiveOrRestorePost.value
+	return isPermitted && props.post.deletedAt !== null
+})
+
 // Post edit
-function editPost(post: Post) {
-	console.log(post)
-	post.isPostShown = !post.isPostShown
-	post.isEditShown = !post.isEditShown
-
-	titleToEdit.value = post.title
-	descToEdit.value = post.desc
+function updatePost() {
+	emit("updatePost", props.post.id)
 }
 
-// Post delete
-function deletePost(post: Post, index: number) {
-	const postClones = [ ...posts.value ]
-	const deletedPosts = postClones.splice(index, 1)
-	posts.value = postClones
-
-	// Checking'
-	for (let i = 0; i < deletedPosts.length; i++) {
-		console.log("post deleted", deletedPosts[i])
-	}
-
-	for (let i = 0; i < posts.value.length; i++) {
-		console.log("all posts", posts.value[i])
-	}
-	alert("Successfully deleted!")
+function archivePost() {
+	emit("archivePost", props.post.id)
 }
 
-// Reprt post
-function reportPost(post: Post) {
-	alert("Post reported!")
+function restorePost() {
+	emit("restorePost", props.post.id)
 }
 </script>
