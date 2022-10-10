@@ -120,3 +120,8 @@ export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }
 export interface IncludedRelationships<T extends string = string> {
 	included: T[]
 }
+
+export interface Time {
+	hours: number,
+	minutes: number
+}

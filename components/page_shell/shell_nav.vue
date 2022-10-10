@@ -36,7 +36,7 @@
 				<template #toggler>
 					<span class="material-icons">account_circle</span>
 				</template>
-				<template #default>
+				<template #dropdown-contents>
 					<ul class="settings-items">
 						<Anchor href="/settings/account">
 							<span class="material-icons">settings</span>

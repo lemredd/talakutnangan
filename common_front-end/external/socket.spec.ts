@@ -1,9 +1,9 @@
 import { SocketListeners } from "$@/types/dependent"
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 import Socket from "./socket"
 
 describe("External: Socket", () => {
-	it("can intiialize", () => {
+	it("can initialize", () => {
 		Socket.initialize()
 
 		const previousCalls = Stub.consumePreviousCalls()

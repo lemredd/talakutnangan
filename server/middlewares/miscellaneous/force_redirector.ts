@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import redirect from "!/helpers/redirect"
 import Middleware from "!/bases/middleware"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 export default class ForceRedirector extends Middleware {
 	private location: string

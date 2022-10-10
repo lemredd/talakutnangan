@@ -1,8 +1,10 @@
-import { Op } from "sequelize"
+import { Op, Sequelize } from "sequelize"
+import { DayValues } from "$/types/database"
 
+import cleanQuery from "%/managers/helpers/clean_query"
 import Condition from "./condition"
 
-describe("Database: Condition Builder", () => {
+describe("Database: Condition builder", () => {
 	it("can retain built condition", () => {
 		const builtCondition = { "sample": { [Op.eq]: 3 } }
 
@@ -68,6 +70,90 @@ describe("Database: Condition Builder", () => {
 
 		expect(builtCondition).toStrictEqual({
 			"name": { [Op.like]: "%abcd%" }
+		})
+	})
+
+	it("can make 'is included in' operation", () => {
+		const condition = new Condition()
+		const set = [ 0, 1, 2, 3, 4 ]
+
+		const builtCondition = condition.isIncludedIn("name", set).build()
+
+		expect(builtCondition).toStrictEqual({
+			"name": { [Op.in]: set }
+		})
+	})
+
+	it.skip("can make 'is on day' operation", () => {
+		const condition = new Condition()
+		const targetDay = "monday"
+
+		const builtCondition = condition.isOnDay("startAt", targetDay).build()
+
+		expect(builtCondition).toStrictEqual({
+			[
+				Sequelize.literal(cleanQuery(`
+					CAST(STRFTIME('%w', ${Sequelize.col("startAt").col}) AS INTEGER)
+				`)).val as string
+			]: { [Op.eq]: DayValues.indexOf(targetDay) }
+		})
+	})
+
+	it.skip("can make 'on or after time' operation", () => {
+		const condition = new Condition()
+		const TIME = {
+			"hours": 6,
+			"minutes": 0
+		}
+
+		const builtCondition = condition.onOrAfterTime("startAt", TIME).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{
+					[
+						Sequelize.literal(cleanQuery(`
+							CAST(STRFTIME('%H', ${Sequelize.col("startAt").col}) AS INTEGER)
+						`)).val as string
+					]: { [Op.gte]: TIME.hours }
+				},
+				{
+					[
+						Sequelize.literal(cleanQuery(`
+							CAST(STRFTIME('%M', ${Sequelize.col("startAt").col}) AS INTEGER)
+						`)).val as string
+					]: { [Op.gte]: TIME.minutes }
+				}
+			]
+		})
+	})
+
+	it.skip("can make 'on or before time' operation", () => {
+		const condition = new Condition()
+		const TIME = {
+			"hours": 6,
+			"minutes": 0
+		}
+
+		const builtCondition = condition.onOrBeforeTime("startAt", TIME).build()
+
+		expect(builtCondition).toStrictEqual({
+			[Op.and]: [
+				{
+					[
+						Sequelize.literal(cleanQuery(`
+							CAST(STRFTIME('%H', ${Sequelize.col("startAt").col}) AS INTEGER)
+						`)).val as string
+					]: { [Op.lte]: TIME.hours }
+				},
+				{
+					[
+						Sequelize.literal(cleanQuery(`
+							CAST(STRFTIME('%M', ${Sequelize.col("startAt").col}) AS INTEGER)
+						`)).val as string
+					]: { [Op.lte]: TIME.minutes }
+				}
+			]
 		})
 	})
 

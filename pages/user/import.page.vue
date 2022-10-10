@@ -111,12 +111,12 @@
 <script setup lang="ts">
 import { inject, ref, computed, provide } from "vue"
 
-import type { PageContext, PageProps } from "$/types/renderer"
-import type { OptionInfo } from "$@/types/component"
+import { UserKindValues } from "$/types/database"
 import type { ErrorDocument } from "$/types/documents/base"
+import type { OptionInfo, TabInfo } from "$@/types/component"
+import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedUserResource, DeserializedStudentResource } from "$/types/documents/user"
-import { UserKindValues } from "$/types/database"
 
 import UserFetcher from "$@/fetchers/user"
 import convertForSentence from "$/string/convert_for_sentence"
@@ -126,7 +126,22 @@ import OutputTable from "@/helpers/overflowing_table.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
-provide("tabs", [ "Users", "Roles", "Departments" ])
+const tabs: TabInfo[] = [
+	{
+		"label": "Users",
+		"path": "user/list"
+	},
+	{
+		"label": "Roles",
+		"path": "role/list"
+	},
+	{
+		"label": "Departments",
+		"path": "department/list"
+	}
+]
+
+provide("tabs", tabs)
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext

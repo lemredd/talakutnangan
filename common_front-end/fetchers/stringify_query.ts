@@ -12,7 +12,7 @@ function compileArrays(query: GeneralObject): GeneralObject {
 
 	for (const field in query) {
 		if (Object.prototype.hasOwnProperty.call(query, field)) {
-			const value = query[field];
+			const value = query[field]
 
 			if (isPlainObject(value)) {
 				semiSerializedObject[field] = compileArrays(value)

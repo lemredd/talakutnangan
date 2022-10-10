@@ -1,4 +1,4 @@
-import type { Serializable, PartialOrPickObject } from "$/types/general"
+import type { Serializable } from "$/types/general"
 import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/documents/user"
 import type {
 	ChatMessageActivityIdentifierDocument,
@@ -9,15 +9,23 @@ import type {
 	DeserializedConsultationDocument
 } from "$/types/documents/consultation"
 import type {
+	AttachedChatFileIdentifierDocument,
+	DeserializedAttachedChatFileDocument
+} from "$/types/documents/attached_chat_file"
+import type {
 	Completeness,
 	Format,
 
-	Relationships,
-	DeserializedRelationships,
 	Resource,
 	Attributes,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -41,43 +49,53 @@ extends Attributes<T> {
 	updatedAt: T extends "deserialized" ? Date : string
 }
 
-export type ChatMessageRelationships = Relationships<{
-	"user": UserIdentifierDocument,
-	"consultation": ConsultationIdentifierDocument,
-	"chatMessageActivity": ChatMessageActivityIdentifierDocument
-}>
+interface ChatMessageRelationshipData<unusedT extends Completeness = "read">
+extends GeneralRelationshipData {
+	user: {
+		serialized: UserIdentifierDocument,
+		deserialized: DeserializedUserDocument
+	},
+	consultation: {
+		serialized: ConsultationIdentifierDocument,
+		deserialized: DeserializedConsultationDocument
+	},
+	chatMessageActivity: {
+		serialized: ChatMessageActivityIdentifierDocument,
+		deserialized: DeserializedChatMessageActivityDocument
+	},
+	attachedChatFile: {
+		serialized: AttachedChatFileIdentifierDocument,
+		deserialized: DeserializedAttachedChatFileDocument
+	}
+}
+
+export type ChatMessageRelationshipNames = DeriveRelationshipNames<ChatMessageRelationshipData>
+
+export type ChatMessageRelationships<T extends Completeness = "read">
+= DeriveRelationships<ChatMessageRelationshipData<T>>
+
+export type DeserializedChatMessageRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<ChatMessageRelationshipData<T>>
 
 export type ChatMessageResource<T extends Completeness = "read"> = Resource<
 	T,
 	ChatMessageResourceIdentifier<T>,
 	ChatMessageAttributes<"serialized">
 > & (
-	T extends "create" ? ChatMessageRelationships : Serializable
+	T extends "create" ? ChatMessageRelationships<T> : Serializable
 )
-
-type RawDeserializedChatMessageRelationships = [
-	[ "user", DeserializedUserDocument ],
-	[ "consultation", DeserializedConsultationDocument ],
-	[ "chatMessageActivity", DeserializedChatMessageActivityDocument ]
-]
-
-export type DeserializedChatMessageRelationships = DeserializedRelationships & {
-	[Property in RawDeserializedChatMessageRelationships[number][0]]
-	: RawDeserializedChatMessageRelationships[number][1]
-}
-
-export type ChatMessageRelationshipNames
-= RawDeserializedChatMessageRelationships[number][0]
 
 export type DeserializedChatMessageResource<
 	T extends ChatMessageRelationshipNames|undefined = undefined
 > = DeserializedResource<
 	ChatMessageResourceIdentifier<"read">,
 	ChatMessageAttributes<"deserialized">
-> & PartialOrPickObject<
-	T,
+> & PartialOrPickDeserializedRelationship<
+	ChatMessageRelationshipData<"read">,
+	DeserializedChatMessageRelationships<"read">,
 	ChatMessageRelationshipNames,
-	DeserializedChatMessageRelationships
+	T extends ChatMessageRelationshipNames ? true : false,
+	T extends ChatMessageRelationshipNames ? T : ChatMessageRelationshipNames
 >
 
 export type ChatMessageDocument<T extends Completeness = "read"> = ResourceDocument<

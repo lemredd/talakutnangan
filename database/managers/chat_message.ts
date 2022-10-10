@@ -2,6 +2,7 @@ import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { ChatMessageQueryParameters } from "$/types/query"
 import type { ChatMessageAttributes } from "$/types/documents/chat_message"
+import type { AttachedChatFileDocument } from "$/types/documents/attached_chat_file"
 import type {
 	ModelCtor,
 	FindAndCountOptions,
@@ -17,8 +18,9 @@ import Consultation from "%/models/consultation"
 import Condition from "%/managers/helpers/condition"
 import Transformer from "%/transformers/chat_message"
 import ProfilePicture from "%/models/profile_picture"
-import isUndefined from "$/type_guards/is_undefined"
+import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
+import AttachedChatFileManager from "%/managers/attached_chat_file"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 
 import includeDefaults from "%/queries/chat_message/include_defaults"
@@ -68,12 +70,12 @@ export default class extends BaseManager<
 					{
 						"include": [
 							{
+								"limit": 1,
 								"model": Model,
-								"required": true,
 								"order": [
 									[ "createdAt", "DESC" ]
 								],
-								"limit": 1
+								"required": true
 							}
 						],
 						"model": ChatMessageActivity,
@@ -89,9 +91,10 @@ export default class extends BaseManager<
 					const messages = consultation.chatMessages
 
 					if (messages) {
-						const latestMessage = messages.sort((messageA, messageB) => {
-							return -Math.sign(messageA.createdAt - messageB.createdAt)
-						})[0]
+						const [ latestMessage ] = messages.sort((messageA, messageB) => {
+							const comparison = -Math.sign(messageA.createdAt - messageB.createdAt)
+							return comparison
+						})
 
 						return [
 							...previousMessages,
@@ -150,34 +153,7 @@ export default class extends BaseManager<
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {
-			const model = await this.model.create(details, this.transaction.transactionObject)
-
-			const activityManager = new ChatMessageActivityManager(
-				this.transaction,
-				this.cache
-			)
-
-			await activityManager.update(details.chatMessageActivityID, {
-				"receivedMessageAt": new Date()
-			})
-
-			model.chatMessageActivity = await ChatMessageActivity.findByPk(
-				details.chatMessageActivityID,
-				{
-					"include": [
-						{
-							"model": User,
-							"required": true
-						},
-						{
-							"model": Consultation,
-							"required": true
-						}
-					]
-				}
-			) as ChatMessageActivity
-
-			Log.success("manager", "done creating a model")
+			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
 
 			return this.serialize(model, transformerOptions, new Transformer({
 				"included": [ "user", "consultation", "chatMessageActivity" ]
@@ -185,5 +161,74 @@ export default class extends BaseManager<
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
+	}
+
+	async createWithFile(
+		details: RawChatMessageAttributes & CreationAttributes<Model>,
+		fileContents: Buffer,
+		transformerOptions: void = {} as unknown as void
+	): Promise<Serializable> {
+		try {
+			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
+
+			const attachedChatFileManager = new AttachedChatFileManager(
+				this.transaction,
+				this.cache
+			)
+
+			const attachedDocument = await attachedChatFileManager.create({
+				"chatMessageID": model.id,
+				fileContents
+			}) as AttachedChatFileDocument
+
+			const attachedChatFileModel = AttachedChatFile.build({
+				"chatMessageID": model.id,
+				fileContents,
+				"id": attachedDocument.data.id
+			})
+
+			model.attachedChatFile = attachedChatFileModel
+
+			return this.serialize(model, transformerOptions, new Transformer({
+				"included": [ "user", "consultation", "chatMessageActivity", "attachedChatFile" ]
+			}))
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	private async insertModelWithUpdatedChatMessageActivity(
+		details: RawChatMessageAttributes & CreationAttributes<Model>
+	): Promise<Model> {
+		const model = await this.model.create(details, this.transaction.transactionObject)
+
+		const activityManager = new ChatMessageActivityManager(
+			this.transaction,
+			this.cache
+		)
+
+		await activityManager.update(details.chatMessageActivityID, {
+			"receivedMessageAt": new Date()
+		})
+
+		model.chatMessageActivity = await ChatMessageActivity.findByPk(
+			details.chatMessageActivityID,
+			{
+				"include": [
+					{
+						"model": User,
+						"required": true
+					},
+					{
+						"model": Consultation,
+						"required": true
+					}
+				]
+			}
+		) as ChatMessageActivity
+
+		Log.success("manager", "done creating a model")
+
+		return model
 	}
 }

@@ -1,18 +1,25 @@
 /**
  * @description This module should not be used in production code. It only for testing purposes.
  */
-import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedRoleDocument, RoleIdentifierDocument } from "$/types/documents/role"
+import type { DeserializedUserDocument, UserIdentifierDocument } from "$/types/documents/user"
 import type {
 	Completeness,
 	Format,
+
 	Resource,
 	Attributes,
 	ResourceDocument,
 	ResourceIdentifier,
+
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
+
 	DeserializedResource,
 	ResourceListDocument,
-	DeserializedRelationships,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
@@ -24,15 +31,26 @@ extends ResourceIdentifier<T> {
 
 export type AttachedRoleAttributes<T extends Format = "serialized"> = Attributes<T>
 
-type RawDeserializedAttachedRoleRelationships = [
-	[ "user", DeserializedUserDocument ],
-	[ "role", DeserializedRoleDocument ]
-]
-
-export type DeserializedAttachedRoleelationships = DeserializedRelationships & {
-	[Property in RawDeserializedAttachedRoleRelationships[number][0]]
-	: RawDeserializedAttachedRoleRelationships[number][1]
+interface AttachedRoleRelationshipData<unusedT extends Completeness = "read">
+extends GeneralRelationshipData {
+	user: {
+		serialized: UserIdentifierDocument,
+		deserialized: DeserializedUserDocument,
+	},
+	role: {
+		serialized: RoleIdentifierDocument,
+		deserialized: DeserializedRoleDocument
+	}
 }
+
+export type AttachedRoleRelationshipNames
+= DeriveRelationshipNames<AttachedRoleRelationshipData>
+
+export type AttachedRoleRelationships<T extends Completeness = "read">
+= DeriveRelationships<AttachedRoleRelationshipData<T>>
+
+export type DeserializedAttachedRoleRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<AttachedRoleRelationshipData<T>>
 
 export type AttachedRoleResource<T extends Completeness = "read"> = Resource<
 	T,
@@ -40,10 +58,18 @@ export type AttachedRoleResource<T extends Completeness = "read"> = Resource<
 	AttachedRoleAttributes<"serialized">
 >
 
-export type DeserializedAttachedRoleResource = DeserializedResource<
+export type DeserializedAttachedRoleResource<
+T extends AttachedRoleRelationshipNames|undefined = undefined
+> = DeserializedResource<
 	AttachedRoleResourceIdentifier<"read">,
 	AttachedRoleAttributes<"deserialized">
-> & DeserializedAttachedRoleelationships
+> & PartialOrPickDeserializedRelationship<
+	AttachedRoleRelationshipData<"read">,
+	DeserializedAttachedRoleRelationships<"read">,
+	AttachedRoleRelationshipNames,
+	T extends AttachedRoleRelationshipNames ? true : false,
+	T extends AttachedRoleRelationshipNames ? T : AttachedRoleRelationshipNames
+>
 
 export type AttachedRoleDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
@@ -59,14 +85,18 @@ export type AttachedRoleListDocument<T extends Completeness = "read"> = Resource
 	AttachedRoleResource<T>
 >
 
-export type DeserializedAttachedRoleDocument = DeserializedResourceDocument<
+export type DeserializedAttachedRoleDocument<
+	T extends AttachedRoleRelationshipNames|undefined = undefined
+> = DeserializedResourceDocument<
 	AttachedRoleResourceIdentifier<"read">,
 	AttachedRoleAttributes<"deserialized">,
-	DeserializedAttachedRoleResource
+	DeserializedAttachedRoleResource<T>
 >
 
-export type DeserializedAttachedRoleListDocument = DeserializedResourceListDocument<
+export type DeserializedAttachedRoleListDocument<
+	T extends AttachedRoleRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	AttachedRoleResourceIdentifier<"read">,
 	AttachedRoleAttributes<"deserialized">,
-	DeserializedAttachedRoleResource
+	DeserializedAttachedRoleResource<T>
 >

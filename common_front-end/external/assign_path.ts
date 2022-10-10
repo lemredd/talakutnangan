@@ -1,4 +1,4 @@
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 
 export default function(path: string): void {
 	Stub.runConditionally(

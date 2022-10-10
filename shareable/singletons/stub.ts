@@ -1,6 +1,6 @@
 import type { GeneralObject } from "$/types/general"
 
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 type PreviousCallInfo = { functionName: string, arguments: GeneralObject<any> }
 

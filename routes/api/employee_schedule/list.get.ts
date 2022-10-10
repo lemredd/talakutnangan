@@ -9,7 +9,7 @@ import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
 import EmployeeScheduleManager from "%/managers/employee_schedule"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import convertTimeToMinutes from "$/helpers/time/convert_time_to_minutes"
+import convertTimeToMinutes from "$/object/convert_time_to_minutes"
 
 import makeIDRules from "!/rule_sets/make_id"
 import object from "!/validators/base/object"

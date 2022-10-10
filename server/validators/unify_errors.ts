@@ -1,5 +1,5 @@
 import type { ErrorPointer } from "!/types/independent"
-import RequestEnvironment from "$/helpers/request_environment"
+import RequestEnvironment from "$/singletons/request_environment"
 
 export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPointer[] {
 	return errors.map(error => {

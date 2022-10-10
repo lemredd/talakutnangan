@@ -2,12 +2,12 @@ import { mount } from "@vue/test-utils"
 import Tab from "./tab.vue"
 
 const Tab1 = {
-	"name": "Tab1",
-	"template": "<div>hello from Tab1</div>"
+	"label": "Tab1",
+	"path": "/tabbed_page/tab1"
 }
 const Tab2 = {
-	"name": "Tab2",
-	"template": "<div>hello from Tab2</div>"
+	"label": "Tab2",
+	"path": "/tabbed_page/tab2"
 }
 
 describe("Component: Tab", () => {
@@ -18,12 +18,31 @@ describe("Component: Tab", () => {
 					"pageContext": {
 						"urlPathname": "/tabbed_page/tab1"
 					},
-					"tabs": [ Tab1.name, Tab2.name ]
+					"tabs": [ Tab1, Tab2 ]
 				}
 			}
 		})
 
 		const firstLink = wrapper.find(".anchor")
 		expect(firstLink.classes()).toContain("active")
+	})
+
+	it.skip("Should have first tab initially active", async() => {
+		const wrapper = mount(Tab, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"urlPathname": "/tabbed_page/tab1"
+					},
+					"tabs": [ Tab1, Tab2 ]
+				}
+			}
+		})
+
+		const secondLink = wrapper.find(".anchor:not(.active)")
+
+		await secondLink.trigger("click")
+		window.location.href = `${window.location.href}/tabbed_page/tab2`
+		// expect(secondLink.classes()).not.toContain("active")
 	})
 })

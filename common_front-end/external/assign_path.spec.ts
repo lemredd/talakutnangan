@@ -1,4 +1,4 @@
-import Stub from "$/helpers/singletons/stub"
+import Stub from "$/singletons/stub"
 import assignPath from "./assign_path"
 
 describe("External: Assign path", () => {
