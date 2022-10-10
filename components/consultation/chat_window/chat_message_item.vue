@@ -9,13 +9,13 @@
 			:title="chatMessage.user.data.name"/>
 		<div>
 			<p
-				v-if="isTextMessage(chatMessage)"
+				v-if="isMessageTypeOfText(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.data.value }}
 			</p>
 			<p
-				v-if="isStatusMessage(chatMessage)"
+				v-if="isMessageTypeOfStatus(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
 				{{ chatMessage.user.data.name }} {{ chatMessage.data.value }}
@@ -77,35 +77,35 @@ const { chatMessage } = defineProps<{
 	chatMessage: DeserializedChatMessageResource<"user">
 }>()
 
-function isStatusMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageTypeOfStatus(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & StatusMessage {
 	return value.kind === "status"
 }
 
 const isSelfMessage = computed<boolean>(() => {
-	const isMessageCameFromSelf = !isStatusMessage(chatMessage)
+	const isMessageCameFromSelf = !isMessageTypeOfStatus(chatMessage)
 		&& userProfile.data.id === chatMessage.user.data.id
 
 	return isMessageCameFromSelf
 })
 
 const isOtherMessage = computed<boolean>(() => {
-	const isMessageCameFromOther = !isStatusMessage(chatMessage)
+	const isMessageCameFromOther = !isMessageTypeOfStatus(chatMessage)
 		&& userProfile.data.id !== chatMessage.user.data.id
 
 	return isMessageCameFromOther
 })
 
-function isTextMessage(value: DeserializedChatMessageResource<"user">)
+function isMessageTypeOfText(value: DeserializedChatMessageResource<"user">)
 : value is DeserializedChatMessageResource<"user"> & TextMessage {
 	return value.kind === "text"
 }
 
 const messageItem = {
 	"own-message": isSelfMessage.value,
-	"status-message": isStatusMessage(chatMessage)
+	"status-message": isMessageTypeOfStatus(chatMessage)
 }
 const messageItemContent = {
-	"text-message-content": isTextMessage(chatMessage)
+	"text-message-content": isMessageTypeOfText(chatMessage)
 }
 </script>
