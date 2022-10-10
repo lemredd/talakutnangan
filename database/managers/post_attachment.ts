@@ -4,8 +4,8 @@ import type { RawPostAttachment } from "$!/types/independent"
 import type { FileLikeTransformerOptions } from "%/types/independent"
 
 import BaseManager from "%/managers/base"
-import Model from "%/models/profile_picture"
-import Transformer from "%/transformers/profile_picture"
+import Model from "%/models/post_attachment"
+import Transformer from "%/transformers/post_attachment"
 
 export default class extends BaseManager<
 	Model,
