@@ -26,7 +26,7 @@ async function main() {
 		)
 	}
 
-	console.log(`Duration of listing the routes: ${end.valueOf() - start.valueOf()} milliseconds`)
+	console.log(`Duration of listing the routes: ${end.valueOf() - start.valueOf()} seconds`)
 }
 
 main()

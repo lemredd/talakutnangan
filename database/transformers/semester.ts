@@ -1,21 +1,22 @@
 import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
+import Semester from "%/models/semester"
 import Transformer from "%/transformers/base"
-import Model from "%/models/employee_schedule"
 import Serializer from "%/transformers/serializer"
 
-export default class extends Transformer<Model, void> {
+export default class extends Transformer<Semester, void> {
 	constructor() {
-		super("employee_schedule")
+		super("semester")
 	}
 
-	transform(model: Model|Model[], unusedOptions: TransformerOptions)
-	: AttributesObject {
+	transform(model: Semester|Semester[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-			"scheduleStart",
-			"scheduleEnd",
-			"dayName"
+			"name",
+			"semesterOrder",
+			"startAt",
+			"endAt",
+			"deletedAt"
 		])
 
 		return safeObject

@@ -17,12 +17,16 @@ export const DayValues = [
 export const UserKindValues = [ "unreachable_employee", "reachable_employee", "student" ] as const
 
 export const StatusValues = [ "will_start", "ongoing", "done" ]
+
+export const OrderValues = [ "first", "second", "third" ] as const
 /**
  * Possible kinds of user that the system can handle
  */
 export type UserKind = typeof UserKindValues[number]
 
 export type Status = typeof StatusValues[number]
+
+export type Order = typeof OrderValues[number]
 
 /**
  * Type of databases this application can handle
