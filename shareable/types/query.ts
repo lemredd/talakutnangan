@@ -23,6 +23,12 @@ export interface DepartmentFilter<T extends number|string = string> extends Seri
 	}
 }
 
+export interface NullableDepartmentFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		departmentID: "*"|null|T
+	}
+}
+
 export interface RoleFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
