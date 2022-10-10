@@ -72,11 +72,11 @@ const poster = computed<DeserializedUserResource<"department">>(
 
 const permissionGroup = new PermissionGroup()
 const mayUpdatePost = computed<boolean>(() => {
+	const isOwned = userProfile.data.id === poster.value.id
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
-	])
+	]) && isOwned
 
-	const isOwned = userProfile.data.id === props.post.id
 	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
 		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 			UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT
@@ -98,11 +98,11 @@ const mayUpdatePost = computed<boolean>(() => {
 })
 
 const mayArchiveOrRestorePost = computed<boolean>(() => {
+	const isOwned = userProfile.data.id === poster.value.id
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
-	])
+	]) && isOwned
 
-	const isOwned = userProfile.data.id === props.post.id
 	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
 		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 			ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
