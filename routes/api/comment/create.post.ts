@@ -7,7 +7,14 @@ import UserManager from "%/managers/user"
 import Manager from "%/managers/comment"
 import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { comment as permissionGroup } from "$/permissions/permission_list"
+import {
+	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+} from "$/permissions/comment_combinations"
 
 import same from "!/validators/comparison/same"
 import exists from "!/validators/manager/exists"
@@ -22,7 +29,11 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.studentOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+		])
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
@@ -67,7 +78,7 @@ export default class extends JSONController {
 				"validator": exists
 			},
 			{
-				"ClassName": UserManager,
+				"ClassName": Manager,
 				"isOptional": true,
 				"isArray": false,
 				"relationshipName": "comment",
