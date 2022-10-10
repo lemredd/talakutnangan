@@ -19,7 +19,7 @@
 				class="message-item-content"
 				:class="messageItemContent">
 				<!-- TODO(lead): use appropriate elements for other file types  -->
-				<img :src="fileURL">
+				<img :src="fileURL"/>
 			</p>
 			<p
 				v-if="isMessageKindStatus(chatMessage)"
@@ -67,9 +67,8 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from "vue"
+import { computed, inject } from "vue"
 
-import Fetcher from "$@/fetchers/chat_message"
 import type { PageContext } from "$/types/renderer"
 import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
@@ -123,8 +122,5 @@ const messageItemContent = {
 	"text-message-content": isMessageKindText(chatMessage)
 }
 
-const fileURL = ref<string|null>(null)
-onMounted(() => {
-	// new Fetcher().
-})
+const fileURL = computed(() => chatMessage.attachedChatFile?.data.fileContents)
 </script>
