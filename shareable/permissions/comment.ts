@@ -6,12 +6,7 @@ import {
 	VIEW,
 	CREATE,
 	UPDATE,
-	WRITE_OWN_SCOPE,
-	ARCHIVE_AND_RESTORE,
-	WRITE_OVERALL_SCOPE,
-	READ_OVERALL_SCOPE,
-	READ_DEPARTMENT_SCOPE,
-	WRITE_DEPARTMENT_SCOPE
+	ARCHIVE_AND_RESTORE
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
@@ -56,42 +51,6 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 			} ],
 			[ "archiveAndRestore", {
 				"flag": ARCHIVE_AND_RESTORE,
-				"permissionDependencies": [ "view" ]
-			} ],
-			[ "readDepartmentScope", {
-				"externalPermissionDependencies": [
-					{
-						"group": post,
-						"permissionDependencies": [ "readDepartmentScope" ] as PostPermissions[]
-					}
-				],
-				"flag": READ_DEPARTMENT_SCOPE,
-				"permissionDependencies": [ ]
-			} ],
-			[ "readOverallScope", {
-				"externalPermissionDependencies": [
-					{
-						"group": post,
-						"permissionDependencies": [ "readOverallScope" ] as PostPermissions[]
-					}
-				],
-				"flag": READ_OVERALL_SCOPE,
-				"permissionDependencies": [ ]
-			} ],
-			[ "writeOwnScope", {
-				"flag": WRITE_OWN_SCOPE,
-				"permissionDependencies": [ ]
-			} ],
-			[ "writeDepartmentScope", {
-				"flag": WRITE_DEPARTMENT_SCOPE,
-				"permissionDependencies": [ "readDepartmentScope" ]
-			} ],
-			[ "writeOverallScope", {
-				"flag": WRITE_OVERALL_SCOPE,
-				"permissionDependencies": [ "readOverallScope" ]
-			} ],
-			[ "vote", {
-				"flag": 0x0100,
 				"permissionDependencies": [ "view" ]
 			} ]
 		])
