@@ -14,292 +14,299 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import Component from "./chat_window.vue"
 
 describe("Component: consultation/chat_window", () => {
-	it.only("can toggle consultation list state", async() => {
-		const scheduledStartAt = new Date()
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const id = "1"
-		const fakeConsultation = {
-			"actionTaken": null,
-			"consultant": {
-				"data": {
-					"id": "1",
-					"type": "user"
+	describe("before", () => {
+		it("can toggle consultation list state", async() => {
+			const scheduledStartAt = new Date()
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				"consultant": {
+					"data": {
+						"id": "1",
+						"type": "user"
+					}
+				},
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation,
+					"isConsultationListShown": false
 				}
-			},
-			"finishedAt": null,
-			id,
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": null,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation,
-				"isConsultationListShown": false
-			}
+			})
+			const toggleListBtn = wrapper.find(".toggle-list-btn")
+			expect(toggleListBtn.exists()).toBeTruthy()
+
+			await toggleListBtn.trigger("click")
+			const emits = wrapper.emitted()
+			expect(emits).toHaveProperty("toggleConsultationList")
 		})
-		const toggleListBtn = wrapper.find(".toggle-list-btn")
-		expect(toggleListBtn.exists()).toBeTruthy()
 
-		await toggleListBtn.trigger("click")
-		const emits = wrapper.emitted()
-		expect(emits).toHaveProperty("toggleConsultationList")
-	})
-
-	it.only("should request to start consultation", async() => {
-		const scheduledStartAt = new Date()
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const id = "1"
-		const fakeConsultation = {
-			"actionTaken": null,
-			"consultant": {
-				"data": {
-					"id": "1",
-					"type": "user"
+		it("should request to start consultation", async() => {
+			const scheduledStartAt = new Date()
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				"consultant": {
+					"data": {
+						"id": "1",
+						"type": "user"
+					}
+				},
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation,
+					"isConsultationListShown": false
 				}
-			},
-			"finishedAt": null,
-			id,
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": null,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation,
-				"isConsultationListShown": false
-			}
+			})
+
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+
+			const consultationHeader = wrapper.find(".selected-consultation-header")
+			expect(consultationHeader.exists()).toBeTruthy()
+			expect(consultationHeader.html()).toContain("5m")
+			const events = wrapper.emitted("updatedConsultationAttributes")
+			expect(events).toHaveLength(1)
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ firstRequest ] ] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "PATCH")
+			expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
+			const firstRequestBody = await firstRequest.json()
+			expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
+			expect(firstRequestBody).toHaveProperty(
+				"data.attributes.scheduledStartAt",
+				scheduledStartAt.toJSON()
+			)
+			expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.id", "1")
+			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		})
-
-		const userController = wrapper.findComponent({ "name": "UserController" })
-		await userController.trigger("start-consultation")
-		await flushPromises()
-
-		const consultationHeader = wrapper.find(".selected-consultation-header")
-		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
-		const events = wrapper.emitted("updatedConsultationAttributes")
-		expect(events).toHaveLength(1)
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ] ] = castFetch.mock.calls
-		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
-		const firstRequestBody = await firstRequest.json()
-		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
-		expect(firstRequestBody).toHaveProperty(
-			"data.attributes.scheduledStartAt",
-			scheduledStartAt.toJSON()
-		)
-		expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.id", "1")
-		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 	})
 
-	it("should automatically terminate the consultation", async() => {
-		const scheduledStartAt = new Date()
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const id = "1"
-		const fakeConsultation = {
-			"actionTaken": null,
-			"finishedAt": null,
-			id,
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": null,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation
-			}
-		})
+	describe("during", () => {
+		it.only("should automatically terminate the consultation", async() => {
+			const scheduledStartAt = new Date()
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
 
-		const userController = wrapper.findComponent({ "name": "UserController" })
-		await userController.trigger("start-consultation")
-		await flushPromises()
-		const updatedFakeConsultation = {
-			...fakeConsultation,
-			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
-		} as DeserializedConsultationResource
-		await wrapper.setProps({
-			"chatMessages": fakeChatMessage,
-			"consultation": updatedFakeConsultation
-		})
-		ConsultationTimerManager.forceFinish(updatedFakeConsultation)
-		await flushPromises()
-
-		const consultationHeader = wrapper.find(".selected-consultation-header")
-		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("0m")
-		const events = wrapper.emitted("updatedConsultationAttributes")
-		expect(events).toHaveLength(2)
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
-		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
-		const firstRequestBody = await firstRequest.json()
-		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
-		expect(firstRequestBody).toHaveProperty(
-			"data.attributes.scheduledStartAt",
-			scheduledStartAt.toJSON()
-		)
-		expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.id", "1")
-		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
-		expect(secondRequest).toHaveProperty("method", "PATCH")
-		expect(secondRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
-		const secondRequestBody = await secondRequest.json()
-		expect(secondRequestBody).toHaveProperty("data.attributes.actionTaken", null)
-		expect(secondRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
-		expect(secondRequestBody).toHaveProperty("data.attributes.reason", "")
-		expect(secondRequestBody).toHaveProperty(
-			"data.attributes.scheduledStartAt",
-			scheduledStartAt.toJSON()
-		)
-		expect(secondRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(secondRequestBody).toHaveProperty("data.id", "1")
-		expect(secondRequestBody).toHaveProperty("data.type", "consultation")
-	})
-
-	it("should continue to started consultation", async() => {
-		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const fakeConsultation = {
-			"actionTaken": null,
-			"finishedAt": null,
-			"id": "1",
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": scheduledStartAt,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation
-			}
-		})
-
-		await nextTick()
-
-		const consultationHeader = wrapper.find(".selected-consultation-header")
-		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
-	})
-
-	it("should start consultation on other source's update", async() => {
-		const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const fakeConsultation = {
-			"actionTaken": null,
-			"finishedAt": null,
-			"id": "1",
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": null,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation
-			}
-		})
-
-		await wrapper.setProps({
-			"consultation": {
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+			const updatedFakeConsultation = {
 				...fakeConsultation,
-				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:05:00"))
-			}
-		})
-		ConsultationTimerManager.nextInterval()
-		await nextTick()
-
-		const consultationHeader = wrapper.find(".selected-consultation-header")
-		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("4m")
-		expect(consultationHeader.html()).toContain("59s")
-	})
-
-	it("should restart the timer", async() => {
-		const scheduledStartAt = new Date()
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const id = "1"
-		const fakeConsultation = {
-			"actionTaken": null,
-			"finishedAt": null,
-			id,
-			"reason": "",
-			scheduledStartAt,
-			"startedAt": null,
-			"type": "consultation"
-		} as DeserializedConsultationResource
-		const fakeChatMessage = {
-			"data": []
-		} as DeserializedChatMessageListDocument
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			} as DeserializedConsultationResource
+			await wrapper.setProps({
 				"chatMessages": fakeChatMessage,
-				"consultation": fakeConsultation
-			}
+				"consultation": updatedFakeConsultation
+			})
+			ConsultationTimerManager.forceFinish(updatedFakeConsultation)
+			await flushPromises()
+
+			const consultationHeader = wrapper.find(".selected-consultation-header")
+			expect(consultationHeader.exists()).toBeTruthy()
+			expect(consultationHeader.html()).toContain("0m")
+			const events = wrapper.emitted("updatedConsultationAttributes")
+			expect(events).toHaveLength(2)
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "PATCH")
+			expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
+			const firstRequestBody = await firstRequest.json()
+			expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
+			expect(firstRequestBody).toHaveProperty(
+				"data.attributes.scheduledStartAt",
+				scheduledStartAt.toJSON()
+			)
+			expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.id", "1")
+			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
+			expect(secondRequest).toHaveProperty("method", "PATCH")
+			expect(secondRequest).toHaveProperty(
+				"url",
+				specializePath(CONSULTATION_LINK.bound, { id })
+			)
+			const secondRequestBody = await secondRequest.json()
+			expect(secondRequestBody).toHaveProperty("data.attributes.actionTaken", null)
+			expect(secondRequestBody).not.toHaveProperty("data.attributes.finishedAt", null)
+			expect(secondRequestBody).toHaveProperty("data.attributes.reason", "")
+			expect(secondRequestBody).toHaveProperty(
+				"data.attributes.scheduledStartAt",
+				scheduledStartAt.toJSON()
+			)
+			expect(secondRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(secondRequestBody).toHaveProperty("data.id", "1")
+			expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 		})
 
-		const userController = wrapper.findComponent({ "name": "UserController" })
-		await userController.trigger("start-consultation")
-		await flushPromises()
-		const updatedFakeConsultation = {
-			...fakeConsultation,
-			"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
-		} as DeserializedConsultationResource
-		await wrapper.setProps({ "consultation": updatedFakeConsultation })
-		ConsultationTimerManager.restartTimerFor(updatedFakeConsultation)
-		await nextTick()
+		it("should continue to started consultation", async() => {
+			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const fakeConsultation = {
+				"actionTaken": null,
+				"finishedAt": null,
+				"id": "1",
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": scheduledStartAt,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
 
-		const consultationHeader = wrapper.find(".selected-consultation-header")
-		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
-		const events = wrapper.emitted("updatedConsultationAttributes")
-		expect(events).toHaveLength(1)
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ] ] = castFetch.mock.calls
-		expect(firstRequest).toHaveProperty("method", "PATCH")
-		expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
-		const firstRequestBody = await firstRequest.json()
-		expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
-		expect(firstRequestBody).toHaveProperty(
-			"data.attributes.scheduledStartAt",
-			scheduledStartAt.toJSON()
-		)
-		expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
-		expect(firstRequestBody).toHaveProperty("data.id", "1")
-		expect(firstRequestBody).toHaveProperty("data.type", "consultation")
+			await nextTick()
+
+			const consultationHeader = wrapper.find(".selected-consultation-header")
+			expect(consultationHeader.exists()).toBeTruthy()
+			expect(consultationHeader.html()).toContain("5m")
+		})
+
+		it("should start consultation on other source's update", async() => {
+			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const fakeConsultation = {
+				"actionTaken": null,
+				"finishedAt": null,
+				"id": "1",
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
+
+			await wrapper.setProps({
+				"consultation": {
+					...fakeConsultation,
+					"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:05:00"))
+				}
+			})
+			ConsultationTimerManager.nextInterval()
+			await nextTick()
+
+			const consultationHeader = wrapper.find(".selected-consultation-header")
+			expect(consultationHeader.exists()).toBeTruthy()
+			expect(consultationHeader.html()).toContain("4m")
+			expect(consultationHeader.html()).toContain("59s")
+		})
+
+		it("should restart the timer", async() => {
+			const scheduledStartAt = new Date()
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
+
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+			const updatedFakeConsultation = {
+				...fakeConsultation,
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			} as DeserializedConsultationResource
+			await wrapper.setProps({ "consultation": updatedFakeConsultation })
+			ConsultationTimerManager.restartTimerFor(updatedFakeConsultation)
+			await nextTick()
+
+			const consultationHeader = wrapper.find(".selected-consultation-header")
+			expect(consultationHeader.exists()).toBeTruthy()
+			expect(consultationHeader.html()).toContain("5m")
+			const events = wrapper.emitted("updatedConsultationAttributes")
+			expect(events).toHaveLength(1)
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ firstRequest ] ] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "PATCH")
+			expect(firstRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.bound, { id }))
+			const firstRequestBody = await firstRequest.json()
+			expect(firstRequestBody).toHaveProperty("data.attributes.actionTaken", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.finishedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.attributes.reason", "")
+			expect(firstRequestBody).toHaveProperty(
+				"data.attributes.scheduledStartAt",
+				scheduledStartAt.toJSON()
+			)
+			expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
+			expect(firstRequestBody).toHaveProperty("data.id", "1")
+			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
+		})
 	})
 })
