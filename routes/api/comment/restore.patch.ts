@@ -3,11 +3,16 @@ import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import JSONController from "!/controllers/json"
-import NoContentResponseInfo from "!/response_infos/no_content"
 import CommentManager from "%/managers/comment"
+import NoContentResponseInfo from "!/response_infos/no_content"
 
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { comment as permissionGroup } from "$/permissions/permission_list"
+import {
+	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+} from "$/permissions/comment_combinations"
 import archived from "!/validators/manager/archived"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
@@ -16,7 +21,11 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+		])
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
