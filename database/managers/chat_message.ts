@@ -17,7 +17,7 @@ import Consultation from "%/models/consultation"
 import Condition from "%/managers/helpers/condition"
 import Transformer from "%/transformers/chat_message"
 import ProfilePicture from "%/models/profile_picture"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 

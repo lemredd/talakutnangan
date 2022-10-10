@@ -7,7 +7,7 @@ import type {
 
 import makeUnique from "$/helpers/array/make_unique"
 import subtractArrays from "$/helpers/array/subtract"
-import isUndefined from "$/helpers/type_guards/is_undefined"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Base class for permission groups.

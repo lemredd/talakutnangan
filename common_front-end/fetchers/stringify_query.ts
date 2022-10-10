@@ -1,7 +1,7 @@
 import { stringify } from "qs"
 
 import type { GeneralObject } from "$/types/general"
-import isPlainObject from "$/helpers/is_plain_object"
+import isPlainObject from "$/type_guards/is_object"
 
 export default function(query: object): string {
 	return stringify(compileArrays(query))

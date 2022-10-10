@@ -1,4 +1,4 @@
-import isPlainObject from "./is_plain_object"
+import isPlainObject from "../type_guards/is_object"
 
 describe("Helper: Is plain object", () => {
 	it("can check plain object", () => {

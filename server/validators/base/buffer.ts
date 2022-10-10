@@ -4,7 +4,7 @@ import type {
 	BufferRuleConstraints
 } from "!/types/validation"
 
-import isPlainObject from "$/helpers/is_plain_object"
+import isPlainObject from "$/type_guards/is_object"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**

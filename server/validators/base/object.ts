@@ -6,7 +6,7 @@ import type {
 } from "!/types/validation"
 
 import validate from "!/validators/validate"
-import isPlainObject from "$/helpers/is_plain_object"
+import isPlainObject from "$/type_guards/is_object"
 import unifyErrors from "!/validators/unify_errors"
 import makeDeveloperError from "!/validators/make_developer_error"
 
