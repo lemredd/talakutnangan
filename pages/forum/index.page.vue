@@ -2,7 +2,7 @@
 	<div>
 		<!--header start-->
 		<div class="top-bar">
-			<div><img src="./images/emptyImage.png"/></div>
+			<div><img src="@assets/emptyImage.png"/></div>
 			<h4>
 				Forum App
 			</h4>

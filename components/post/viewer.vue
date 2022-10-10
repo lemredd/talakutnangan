@@ -52,7 +52,7 @@
 			</div>
 			<div class="post-container" :hidden="post.isPostShown">
 				<div class="left">
-					<div><img src="./images/emptyUser.png"/></div>
+					<div><img src="@assets/emptyUser.png"/></div>
 					<h2 class="title">
 						{{ post.user }}
 					</h2>
@@ -117,7 +117,7 @@ import {
 	secludePostDiv,
 	downVote,
 	totalVotes
-} from "./post"
+} from "./../../pages/forum/post"
 
 import Menu from "@/post/viewer/menu.vue"
 </script>
