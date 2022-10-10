@@ -19,7 +19,7 @@
 				class="message-item-content"
 				:class="messageItemContent">
 				<!-- TODO(lead): use appropriate elements for other file types  -->
-				<img :src="fileURL">
+				<img :src="fileURL"/>
 			</p>
 			<p
 				v-if="isMessageKindStatus(chatMessage)"
@@ -38,12 +38,12 @@
 
 <style scoped lang="scss">
 	.message-item {
-		@apply flex items-center w-max;
+		@apply flex items-end w-max mb-5;
 
 		&.own-message {
 			margin-left: auto;
 
-			.text-message-content {
+			.message-item-content {
 				@apply mr-2 ml-0;
 			}
 		}
@@ -52,24 +52,26 @@
 			margin: 0 auto;
 		}
 
-		.text-message-content {
-			@apply ml-2 py-1 px-2;
-			@apply border rounded-lg border-true-gray-600 border-opacity-50;
-			@apply dark:border-opacity-100
+		.message-item-content {
+			max-width: 40vh;
+			&.text-message-content {
+				@apply ml-2 py-1 px-2;
+				@apply border rounded-lg border-true-gray-600 border-opacity-50;
+				@apply dark:border-opacity-100;
+			}
 		}
 
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;
-			width: 50px;
-			height: 50px;
+			width: 40px;
+			height: 40px;
 		}
 	}
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from "vue"
+import { computed, inject } from "vue"
 
-import Fetcher from "$@/fetchers/chat_message"
 import type { PageContext } from "$/types/renderer"
 import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
@@ -123,8 +125,5 @@ const messageItemContent = {
 	"text-message-content": isMessageKindText(chatMessage)
 }
 
-const fileURL = ref<string|null>(null)
-onMounted(() => {
-	// new Fetcher().
-})
+const fileURL = computed(() => chatMessage.attachedChatFile?.data.fileContents)
 </script>
