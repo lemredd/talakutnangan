@@ -9,7 +9,7 @@ import type {
 	DeserializedCommentListDocument
 } from "$/types/documents/comment"
 
-import { POST_LINK } from "$/constants/template_links"
+import { COMMENT_LINK } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
 
@@ -25,6 +25,6 @@ export default class CommentFetcher extends BaseFetcher<
 	DeserializedCommentListDocument
 > {
 	constructor() {
-		super(POST_LINK)
+		super(COMMENT_LINK)
 	}
 }
