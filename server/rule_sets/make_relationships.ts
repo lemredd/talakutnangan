@@ -3,6 +3,7 @@ import type { FieldRules, Rules, ObjectRuleConstraints } from "!/types/validatio
 
 import object from "!/validators/base/object"
 import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
 import makeResourceIdentifierDocumentRules from "!/rule_sets/make_resource_identifier_document"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
@@ -21,6 +22,7 @@ export default function(
 				"object": relationships.map(relationship => {
 					const {
 						isArray,
+						isOptional,
 						relationshipName,
 						typeName,
 						validator,
@@ -51,7 +53,10 @@ export default function(
 							"constraints": {
 								"object": objectConstraints
 							},
-							"pipes": [ required, object ]
+							"pipes": [
+								isOptional ? nullable : required,
+								object
+							]
 						}
 					}
 				}).reduce((previousFields, currentField) => ({
