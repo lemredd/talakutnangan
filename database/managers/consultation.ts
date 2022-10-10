@@ -131,13 +131,6 @@ export default class extends BaseManager<
 				return rawChatMessageActivityAttributes
 			})
 
-			rawChatMessageActivities.push({
-				"consultationID": Number(model.id),
-				"receivedMessageAt": null,
-				"seenMessageAt": null,
-				"userID": Number(consultantID)
-			})
-
 			const chatMessageActivities = await ChatMessageActivity.bulkCreate(
 				rawChatMessageActivities,
 				this.transaction.transactionObject
