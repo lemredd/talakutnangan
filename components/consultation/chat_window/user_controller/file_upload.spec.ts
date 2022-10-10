@@ -1,4 +1,4 @@
-import { nextTick } from "vue"
+import { nextTick, readonly, ref } from "vue"
 import { flushPromises, shallowMount } from "@vue/test-utils"
 
 import type { AttachedChatFileResource } from "$/types/documents/attached_chat_file"
@@ -11,11 +11,15 @@ import type {
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./file_upload.vue"
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 describe("Component: User controlller/File Upload", () => {
 	it("can preview uploaded file", async() => {
 		const wrapper = shallowMount(Component, {
 			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+				},
 				"stubs": {
 					"Overlay": false
 				}
@@ -33,7 +37,7 @@ describe("Component: User controlller/File Upload", () => {
 		expect(previewImg.attributes("src")).toBeDefined()
 	})
 
-	it.only("can send selected file", async() => {
+	it("can send selected file", async() => {
 		const fileContents = "http://localhost:16000/api/attached_chat_file/1"
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -80,6 +84,9 @@ describe("Component: User controlller/File Upload", () => {
 		}
 		const wrapper = shallowMount(Component, {
 			"global": {
+				"provide": {
+					[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+				},
 				"stubs": {
 					"Overlay": false
 				}
@@ -103,6 +110,10 @@ describe("Component: User controlller/File Upload", () => {
 		await sendBtn.trigger("click")
 		await flushPromises()
 
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "POST")
+		expect(request).toHaveProperty("url", "/api/chat_message/create_with_file")
 		expect(wrapper.emitted()).toHaveProperty("close")
 	})
 })
