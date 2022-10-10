@@ -1,27 +1,85 @@
 <template>
 	<div class="controls relative">
-		<button class="material-icons" @click="togglePostMenu(post)">
-			more_vert
-		</button>
 		<Dropdown
-			v-if="post.isMenuShown"
 			class="postmenu absolute top-[2em] right-0 flex flex-col"
 			@close="togglePostMenu(post)">
-			<button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
-				Edit
-			</button>
-			<button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post,i)">
-				Delete
-			</button>
-			<button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
-				Report
-			</button>
+			<template #toggler>
+				<button class="material-icons">
+					more_vert
+				</button>
+			</template>
+			<template #dropdown-contents>
+				<button v-if="dummyUserDemo[0].userName===post.user" @click="editPost(post)">
+					Edit
+				</button>
+				<button v-if="dummyUserDemo[0].userName===post.user" @click="deletePost(post,i)">
+					Delete
+				</button>
+				<button v-if="dummyUserDemo[0].userName!==post.user" @click="reportPost(post)">
+					Report
+				</button>
+			</template>
 		</Dropdown>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { computed, inject } from "vue"
+
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedPostResource } from "$/types/documents/post"
+import type { DeserializedUserResource } from "$/types/documents/user"
+
+import PermissionGroup from "$/permissions/post"
+import {
+	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+} from "$/permissions/post_combinations"
+
 import Dropdown from "@/page_shell/dropdown.vue"
+
+const props = defineProps<{
+	post: DeserializedPostResource<"poster">
+}>()
+
+interface CustomEvents {
+	(event: "editPost", postID: string): void
+	(event: "deletePost", postID: string): void
+}
+const emit = defineEmits<CustomEvents>()
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+
+const { userProfile } = pageProps
+
+const poster = computed<DeserializedUserResource<"department">>(
+	() => props.post.poster.data as DeserializedUserResource<"department">
+)
+
+const permissionGroup = new PermissionGroup()
+const mayUpdatePost = computed<boolean>(() => {
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
+	])
+
+	const isOwned = userProfile.data.id === props.post.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT
+		])
+		&& (
+			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+		)
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+		])
+
+	return isLimitedPersonalScope || isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
 // Post edit
 function editPost(post: Post) {
 	console.log(post)
