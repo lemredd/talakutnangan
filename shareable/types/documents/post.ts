@@ -13,6 +13,10 @@ import type {
 	DeserializedDepartmentDocument
 } from "$/types/documents/department"
 import type {
+	PostAttachmentIdentifierListDocument,
+	DeserializedPostAttachmentListDocument
+} from "$/types/documents/post_attachment"
+import type {
 	Completeness,
 	Format,
 
@@ -58,7 +62,11 @@ extends GeneralRelationshipData {
 		serialized: T extends "create"
 			? RoleIdentifierDocument<"attached">
 			: RoleIdentifierDocument,
-		deserialized: DeserializedRoleDocument
+			deserialized: DeserializedRoleDocument
+	},
+	postAttachments: {
+		"serialized": PostAttachmentIdentifierListDocument,
+		"deserialized": DeserializedPostAttachmentListDocument
 	}
 }
 

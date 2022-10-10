@@ -4,31 +4,28 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Posts", { transaction })
-				await queryInterface.createTable("Posts", {
+				await queryInterface.createTable("Semesters", {
 					"id": {
 						"allowNull": false,
 						"autoIncrement": true,
 						"primaryKey": true,
 						"type": Sequelize.BIGINT
 					},
-					"attachedRoleID": {
+					"name": {
 						"allowNull": false,
-						"type": Sequelize.BIGINT,
-						"references": {
-							"model": "AttachedRoles",
-							"key": "id"
-						},
-						"onDelete": "cascade",
-						"onUpdate": "cascade"
+						"type": Sequelize.STRING
 					},
-					"content": {
-						"type": Sequelize.TEXT,
-						"allowNull": false
+					"semesterOrder": {
+						"allowNull": false,
+						"type": Sequelize.ENUM([ "first", "second", "third" ])
 					},
-					"approvedAt": {
-						"type": Sequelize.DATE,
-						"allowNull": true
+					"startAt": {
+						"allowNull": false,
+						"type": Sequelize.DATE
+					},
+					"endAt": {
+						"allowNull": false,
+						"type": Sequelize.DATE
 					},
 					"createdAt": {
 						"allowNull": false,
@@ -52,7 +49,7 @@ module.exports = {
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Posts", { transaction })
+				await queryInterface.dropTable("Semesters", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err

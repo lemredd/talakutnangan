@@ -7,6 +7,7 @@ import User from "%/models/user"
 import Post from "%/models/post"
 import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
+import Semester from "%/models/semester"
 import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AuditTrail from "%/models/audit_trail"
@@ -15,6 +16,7 @@ import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
+import PostAttachment from "%/models/post_attachment"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
 import AttachedChatFile from "%/models/attached_chat_file"
@@ -27,6 +29,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		User,
 		Post,
 		Comment,
+		Semester,
 		Signature,
 		AuditTrail,
 		Department,
@@ -35,6 +38,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		AttachedRole,
 		StudentDetail,
 		ProfilePicture,
+		PostAttachment,
 		EmployeeSchedule,
 		AttachedChatFile,
 		ChatMessageActivity
