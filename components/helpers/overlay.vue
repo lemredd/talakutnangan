@@ -1,5 +1,4 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div
 		v-if="isShown"
 		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "

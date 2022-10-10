@@ -1,5 +1,4 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="field pb-5">
 		<h2 class="text-lg uppercase">
 			{{ header }}
