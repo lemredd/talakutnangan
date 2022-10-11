@@ -1,5 +1,4 @@
 <!--
-	TODO: Refactor all WindiCSS inline classes using @apply directive
  -->
 
 <template>

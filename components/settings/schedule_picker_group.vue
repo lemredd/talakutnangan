@@ -1,5 +1,4 @@
 <!--
-	TODO: Refactor all WindiCSS inline classes using @apply directive
 	TODO(lead): Use `employee_schedule` fetcher to modify data
 
  -->
