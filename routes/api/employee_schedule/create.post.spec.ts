@@ -38,7 +38,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 					"type": "employee_schedule"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -76,7 +76,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 					"type": "employee_schedule"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -153,7 +153,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 					"type": "employee_schedule"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -192,7 +192,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 					"type": "employee_schedule"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -231,7 +231,7 @@ describe("Controller: POST /api/employee_schedule", () => {
 					"type": "employee_schedule"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
