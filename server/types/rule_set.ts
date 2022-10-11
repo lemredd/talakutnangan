@@ -9,6 +9,7 @@ export type IdentifierDocumentOptions = Partial<{
 
 export interface Relationship{
 	isArray: boolean,
+	isOptional?: boolean,
 	relationshipName: string,
 	validator: Pipe,
 	ClassName: BaseManagerClass,

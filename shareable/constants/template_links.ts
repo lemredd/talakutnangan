@@ -9,6 +9,8 @@ export const AUDIT_TRAIL_LINK = makeTemplateLink(LINK_PREFIX, "audit_trail")
 
 export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
+export const COMMENT_LINK = makeTemplateLink(LINK_PREFIX, "comment")
+
 /**
  * Requires the `id` of the user
  */
