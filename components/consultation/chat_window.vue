@@ -217,12 +217,14 @@ const {
 	"state": isActionTakenOverlayShown
 } = makeSwitch(false)
 const actionTaken = ref("")
+
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
 	if (startedAt instanceof Date) {
+		const finalActionTaken = actionTaken.value ? actionTaken.value : null
 		const newConsultationData: ConsultationAttributes<"serialized"> = {
-			"actionTaken": null,
+			"actionTaken": finalActionTaken,
 			"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
 			"finishedAt": new Date().toISOString(),
 			"reason": consultation.value.reason,
@@ -231,7 +233,7 @@ function finishConsultation(): void {
 		}
 
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-			"actionTaken": consultation.value.actionTaken,
+			"actionTaken": finalActionTaken,
 			"deletedAt": consultation.value.deletedAt ?? null,
 			"finishedAt": new Date(newConsultationData.finishedAt as string),
 			"reason": consultation.value.reason,
