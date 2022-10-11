@@ -1,4 +1,4 @@
-import { ref, readonly } from "vue"
+import { ref, readonly, nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
@@ -135,6 +135,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 					"consultation": resource
 				}
 			})
+			await nextTick()
 			const messageInputBox = wrapper.find(".message-box input")
 			ConsultationTimerManager.listenConsultationTimeEvent(
 				resource,
@@ -142,6 +143,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				mockRestart
 			)
 
+			await nextTick()
 			await messageInputBox.setValue(message)
 			await messageInputBox.trigger("keyup.enter")
 			await flushPromises()
