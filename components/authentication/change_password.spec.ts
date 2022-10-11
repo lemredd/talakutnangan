@@ -37,6 +37,7 @@ describe("Component: authentication/change_password", () => {
 			}
 		})
 
+		await nextTick()
 		const overlay = wrapper.find(".overlay")
 		const overlayInputs = overlay.findAllComponents({ "name": "SensitiveTextField" })
 		const [ currentInput, newInput, confirmationInput ] = overlayInputs
@@ -62,7 +63,7 @@ describe("Component: authentication/change_password", () => {
 		expect(firstRequestBody).toHaveProperty("meta.currentPassword", CURRENT_PASSWORD)
 	})
 
-	it("cannot prompt for new user password or already-changed", () => {
+	it("cannot prompt for new user password or already-changed", async() => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
@@ -85,6 +86,7 @@ describe("Component: authentication/change_password", () => {
 			}
 		})
 
+		await nextTick()
 		const overlay = wrapper.find(".overlay")
 
 		expect(overlay.exists()).toBe(false)
