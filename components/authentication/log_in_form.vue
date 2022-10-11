@@ -145,15 +145,17 @@ function logIn() {
 	})
 }
 
+const defaultProfessor = "default_professor"
 const selectableRoles = [
 	{ "value": "student" },
 	{ "value": "dean" },
 	{ "value": "secretary" },
-	{ "value": "admin" }
+	{ "value": "admin" },
+	{ "value": "default_professor" }
 ]
 const selectedRole = ref("")
 function fillDetails() {
 	email.value = `${selectedRole.value}@example.net`
-	password.value = "password"
+	password.value = selectedRole.value === defaultProfessor ? defaultProfessor : "password"
 }
 </script>
