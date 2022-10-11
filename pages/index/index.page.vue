@@ -20,5 +20,7 @@ import ChangePassword from "@/authentication/change_password.vue"
 const { pageProps } = inject("pageContext") as PageContext<"deserialized">
 const { userProfile } = pageProps
 
-const hasDefaultPassword = userProfile !== null && !isUndefined(userProfile.meta.hasDefaultPassword)
+const hasDefaultPassword = userProfile !== null
+	&& !isUndefined(userProfile.meta.hasDefaultPassword)
+	&& userProfile.meta.hasDefaultPassword
 </script>
