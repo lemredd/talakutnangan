@@ -35,7 +35,7 @@ export default class extends UserTransformer {
 		const addPasswordStatus = async(targetModel: User, data: Serializable) => {
 			const userProfile = deserialize(cloneDeep(data)) as DeserializedUserProfile
 			const defaultPassword = makeDefaultPassword(userProfile)
-			const hasDefaultPassword = await compare(targetModel.password, defaultPassword)
+			const hasDefaultPassword = await compare(defaultPassword, targetModel.password)
 
 			data.meta = {
 				hasDefaultPassword
