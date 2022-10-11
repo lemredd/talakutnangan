@@ -15,8 +15,7 @@
 				</div>
 				<div class="selected-consultation-remaining-time">
 					Time remaining:
-					<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
-					<span>{{ remainingTime.minutes }}m left</span>
+					<span>{{ remainingTime.minutes }}m</span>
 					<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
 				</div>
 				<div class="selected-consultation-user-status">
@@ -31,8 +30,8 @@
 				</button>
 				<Dropdown
 					:is-dropdown-shown="isHeaderControlDropdownShown"
-					@toggle="toggleHeaderControlDropdownShown"
-					class="additional-controls">
+					class="additional-controls"
+					@toggle="toggleHeaderControlDropdownShown">
 					<template #toggler>
 						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons">
@@ -215,7 +214,27 @@ function finishConsultation(): void {
 			finishConsultation
 		)
 
-		new ConsultationFetcher().update(consultationID.value, newConsultationData)
+		new ConsultationFetcher().update(
+			consultationID.value,
+			newConsultationData,
+			{
+				"extraDataFields": {
+					"relationships": {
+						"consultant": {
+							"data": {
+								"id": consultation.value.consultant.data.id,
+								"type": "user"
+							}
+						}
+					}
+				},
+				"extraUpdateDocumentProps": {
+					"meta": {
+						"doesAllowConflicts": true
+					}
+				}
+			}
+		)
 		.then(() => {
 			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
@@ -299,6 +318,7 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 				oldUnfinishedConsultation.finishedAt === null
 				&& newFinishedConsultation.finishedAt instanceof Date
 			) {
+				ConsultationTimerManager.forceFinish(newFinishedConsultation)
 				ConsultationTimerManager.unlistenConsultationTimeEvent(
 					newFinishedConsultation,
 					"finish",

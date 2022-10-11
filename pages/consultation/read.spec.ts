@@ -28,7 +28,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 import Page from "./read.page.vue"
 
 describe("UI Page: Read consultation resource by ID", () => {
-	it.only("can toggle state of consultation list", async() => {
+	it("can toggle state of consultation list", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const INITIAL_MESSAGE_COUNT = 5
 
@@ -200,8 +200,10 @@ describe("UI Page: Read consultation resource by ID", () => {
 			}
 		})
 
-		const consultationList = wrapper.find(".consultations-list")
 		const chatWindow = wrapper.find(".chat-window")
+		const toggleListBtn = wrapper.find(".toggle-list-btn")
+		await toggleListBtn.trigger("click")
+		const consultationList = wrapper.find(".consultations-list")
 		await flushPromises()
 
 		expect(consultationList.exists()).toBeTruthy()
@@ -210,13 +212,14 @@ describe("UI Page: Read consultation resource by ID", () => {
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
-		expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("1.functionName", "addEventListener")
+		expect(previousCalls).toHaveProperty("2.functionName", "addEventListeners")
 		expect(previousCalls).toHaveProperty(
-			"1.arguments.0",
+			"2.arguments.0",
 			makeConsultationChatNamespace(model.id)
 		)
-		expect(previousCalls).toHaveProperty("1.arguments.1.create")
-		expect(previousCalls).toHaveProperty("1.arguments.1.update")
+		expect(previousCalls).toHaveProperty("2.arguments.1.create")
+		expect(previousCalls).toHaveProperty("2.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
@@ -258,7 +261,7 @@ describe("UI Page: Read consultation resource by ID", () => {
 	})
 })
 
-describe.skip("UI Page: Communicate with consultation resource", () => {
+describe("UI Page: Communicate with consultation resource", () => {
 	it("can continue started consultation", async() => {
 		jest.useFakeTimers()
 		const OTHER_CONSULTATION_COUNT = 2
@@ -319,6 +322,7 @@ describe.skip("UI Page: Communicate with consultation resource", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
@@ -361,13 +365,15 @@ describe.skip("UI Page: Communicate with consultation resource", () => {
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
-		expect(previousCalls).toHaveProperty("1.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("1.functionName", "addEventListener")
+		expect(previousCalls).toHaveProperty("2.functionName", "addEventListeners")
 		expect(previousCalls).toHaveProperty(
-			"1.arguments.0",
+			"2.arguments.0",
 			makeConsultationChatNamespace(model.id)
 		)
-		expect(previousCalls).toHaveProperty("1.arguments.1.create")
-		expect(previousCalls).toHaveProperty("1.arguments.1.update")
+		expect(previousCalls).toHaveProperty("2.arguments.1.connect_error")
+		expect(previousCalls).toHaveProperty("2.arguments.1.create")
+		expect(previousCalls).toHaveProperty("2.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
