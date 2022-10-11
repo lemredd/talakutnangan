@@ -107,7 +107,7 @@
 
 </style>
 <script lang="ts" setup>
-import { inject } from "vue"
+import { inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
@@ -125,9 +125,11 @@ const { userProfile } = pageProps
 
 const hasDefaultPassword = userProfile !== null && !isUndefined(userProfile.meta.hasDefaultPassword)
 
-if (hasDefaultPassword) {
-	setTimeout(() => {
-		assignPath("/")
-	}, convertTimeToMinutes("00:00:05"))
-}
+onMounted(() => {
+	if (hasDefaultPassword) {
+		setTimeout(() => {
+			assignPath("/")
+		}, convertTimeToMinutes("00:00:05"))
+	}
+})
 </script>
