@@ -34,7 +34,7 @@ describe("Controller: GET /api/chat_message", () => {
 					"existence": "*"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(queryValidationFunction)
@@ -55,7 +55,7 @@ describe("Controller: GET /api/chat_message", () => {
 					"existence": "hello"
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(queryValidationFunction)

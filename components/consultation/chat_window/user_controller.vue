@@ -4,7 +4,8 @@
 			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
 			<button
 				:disabled="!willStart"
-				class="start"
+				type="button"
+				class="start btn btn-primary"
 				@click="startConsultation">
 				Start consultation
 			</button>
@@ -46,8 +47,10 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 .user-controls {
 	@apply border-t p-3 flex
+
 }
 
 .message-box {

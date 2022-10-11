@@ -107,10 +107,31 @@
 
 </style>
 <script lang="ts" setup>
-import { inject } from "vue"
-import { PageContext } from "$/types/renderer"
+import { inject, onMounted } from "vue"
 
-defineProps([ "is404" ])
+import type { PageContext } from "$/types/renderer"
+
+import assignPath from "$@/external/assign_path"
+import isUndefined from "$/type_guards/is_undefined"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+
+defineProps<{
+	"is404": boolean
+}>()
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+const { userProfile } = pageProps
+
+const hasDefaultPassword = userProfile !== null
+	&& !isUndefined(userProfile.meta.hasDefaultPassword)
+	&& userProfile.meta.hasDefaultPassword
+
+onMounted(() => {
+	if (hasDefaultPassword) {
+		setTimeout(() => {
+			assignPath("/")
+		}, convertTimeToMilliseconds("00:00:05"))
+	}
+})
 </script>

@@ -1,5 +1,6 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { Response } from "$@/types/independent"
+import type { PostQueryParameters } from "$/types/query"
 import type {
 	PostResourceIdentifier,
 	PostAttributes,
@@ -24,7 +25,10 @@ export default class PostFetcher extends BaseFetcher<
 	PostDocument,
 	PostListDocument,
 	DeserializedPostDocument,
-	DeserializedPostListDocument
+	DeserializedPostListDocument,
+	{
+		"queryParameters": PostQueryParameters<string>
+	}
 > {
 	constructor() {
 		super(POST_LINK)

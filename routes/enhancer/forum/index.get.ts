@@ -43,7 +43,7 @@ export default class extends PageMiddleware {
 			roles,
 			[ READ_ANYONE_ON_ALL_DEPARTMENTS ]
 		)
-		const unusedDepartment = mayViewAllDepartments ? "*" : userProfile.data.department.data.id
+		const department = mayViewAllDepartments ? null : Number(userProfile.data.department.data.id)
 
 		const pageProps = {
 			"departments": mayViewAllDepartments
@@ -60,7 +60,7 @@ export default class extends PageMiddleware {
 				: [],
 			"posts": await manager.list({
 				"filter": {
-					// TODO: Filter the posts by department
+					"departmentID": department,
 					"existence": "exists"
 				},
 				"page": {

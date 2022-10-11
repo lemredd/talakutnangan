@@ -10,7 +10,7 @@ import type {
 } from "%/types/dependent"
 
 import Serializer from "%/transformers/serializer"
-import processData from "%/helpers/process_data"
+import processDataAsync from "%/helpers/process_data_async"
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	/**
@@ -48,34 +48,38 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		}
 	}
 
-	finalizeTransform(model: T|T[]|null, transformedData: Serializable): Serializable {
+	async finalizeTransform(model: T|T[]|null, transformedData: Serializable)
+	: Promise<Serializable> {
 		if (model !== null && transformedData.included) {
 			const newIncluded: Resource<any, any, any>[] = []
 
-			const relationshipProcessor = (rawUnitData: any) => {
+			const relationshipProcessor = async(rawUnitData: any) => {
 				const unitData = rawUnitData as GeneralObject
 				if (unitData.relationships) {
 					const { relationships } = unitData as { relationships: GeneralObject }
 
+					let previousOperation = Promise.resolve()
 					for (const relationshipName in relationships) {
 						if (Object.hasOwn(relationships, relationshipName)) {
 							const relationship = relationships[relationshipName]
-							processData(
+							previousOperation = previousOperation.then(() => processDataAsync(
 								relationship.data,
-								relationshipUnit => this.processLinkage(
+								async relationshipUnit => await this.processLinkage(
 									model,
 									transformedData,
 									newIncluded,
 									relationshipUnit as ResourceIdentifier<any>,
 									relationshipName
 								)
-							)
+							))
 						}
 					}
+
+					await previousOperation
 				}
 			}
 
-			processData(transformedData.data as GeneralObject[], relationshipProcessor)
+			await processDataAsync(transformedData.data as GeneralObject[], relationshipProcessor)
 
 			const includedData = [
 				...transformedData.included as any[],
@@ -190,13 +194,13 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 		return relatedModel
 	}
 
-	private processLinkage(
+	private async processLinkage(
 		model: T|T[]|null,
 		transformedData: Serializable,
 		newIncluded: Resource<any, any, any>[],
 		resourceLinkage: ResourceIdentifier<any>,
 		attributeName: string
-	): void {
+	): Promise<void> {
 		const resourceObject = this.findResource(
 			transformedData.included as Resource<any, any, any>[],
 			resourceLinkage
@@ -212,7 +216,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 			if (transformer && model !== null && resourceObject !== null) {
 				const relatedModel = this.findModel(model, transformerInfo.attribute, resourceObject.id)
 
-				const newResourceDocument = transformer.finalizeTransform(
+				const newResourceDocument = await transformer.finalizeTransform(
 					relatedModel,
 					{
 						"data": resourceObject,

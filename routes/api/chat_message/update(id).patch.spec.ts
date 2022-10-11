@@ -34,7 +34,7 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 					"type": "chat_message"
 				}
 			},
-			"user": new UserFactory().serialize(user)
+			"user": await new UserFactory().serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -59,7 +59,7 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 				"id": String(model.id)
 			},
 			"user": {
-				...new UserFactory().serialize(user),
+				...await new UserFactory().serialize(user),
 				"meta": {
 					"hasDefaultPassword": false
 				}
