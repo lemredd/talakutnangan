@@ -12,7 +12,7 @@
 		</small>
 
 		<div class="last-chat-time-sent">
-			{{ time }} {{ midDay }} - {{ lastChat.createdAt.toDateString() }}
+			{{ lastChatTimeSent }}
 		</div>
 	</div>
 </template>
@@ -65,5 +65,5 @@ const midDay = computed(() => {
 
 	return value
 })
-
+const lastChatTimeSent = `${time.value} ${midDay.value} - ${lastChat.createdAt.toDateString()}`
 </script>
