@@ -1,13 +1,25 @@
 <template>
-	<Overlay :is-shown="isShown">
+	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 		</template>
 		<template #default>
-			<form @submit.prevent>
+			<form ref="fileUploadForm" @submit.prevent>
+				<input
+					type="hidden"
+					name="data[type]"
+					value="chat_message"/>
 				<input
 					type="hidden"
 					name="data[attributes][data][subkind]"
 					value="image"/>
+				<input
+					type="hidden"
+					name="data[relationships][chatMessageActivity][data][id]"
+					:value="ownChatMessageActivity.id"/>
+				<input
+					type="hidden"
+					name="data[relationships][chatMessageActivity][data][type]"
+					:value="ownChatMessageActivity.type"/>
 				<input
 					type="hidden"
 					name="data[attributes][data][name]"
@@ -22,25 +34,32 @@
 						type="file"
 						name="meta[fileContents]"
 						accept="image/png"
-						@change="extractFilename"/>
+						@change="extractFile"/>
 					CHOOSE FILE
 				</label>
-				<button
-					v-if="hasExtracted"
-					type="button"
-					@click="sendFile">
-					Send file
-				</button>
 			</form>
+
+			<div v-if="hasExtracted" class="preview-file mt-5">
+				<div class="preview-img-container">
+					<img class="preview-img max-w-30" :src="previewFile"/>
+					<small class="preview-title max-w-30 text-xs">
+						{{ filename }}
+					</small>
+				</div>
+			</div>
 		</template>
 		<template #footer>
 			<button
-				class="btn btn-back"
+				class="btn back-btn"
 				type="button"
 				@click="emitClose">
 				Back
 			</button>
-			<button class="btn btn-primary" type="button">
+			<button
+				:disabled="!hasExtracted"
+				class="send-btn btn btn-primary"
+				type="button"
+				@click="sendFile">
 				Send
 			</button>
 		</template>
@@ -57,17 +76,23 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
+
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
-
-let rawFetcher: Fetcher|null = null
+import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 defineProps<{ isShown: boolean }>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
+const previewFile = ref<File|null>(null)
+const fileUploadForm = ref()
+const ownChatMessageActivity = inject(
+	CHAT_MESSAGE_ACTIVITY
+) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
 interface CustomEvents {
 	(event: "close"): void
@@ -77,30 +102,25 @@ function emitClose() {
 	emit("close")
 }
 
-function fetcher(): Fetcher {
-	if (rawFetcher === null) throw new Error("Chat cannot be processed yet")
+function sendFile() {
+	const fetcher = new Fetcher()
+	const formData = new FormData(fileUploadForm.value as HTMLFormElement)
 
-	return rawFetcher
-}
-
-function sendFile(event: Event): void {
-	const button = event.target as HTMLButtonElement
-	const formData = new FormData(button.form as HTMLFormElement)
-
-	fetcher().createWithFile(formData).then(() => {
+	fetcher.createWithFile(formData)
+	.then(() => {
 		emitClose()
-	}).then(() => {
+	})
+	.catch(() => {
 		// Show errors
 	})
 }
 
-function extractFilename(event: Event) {
+function extractFile(event: Event) {
 	const target = event.target as HTMLInputElement
-	const rawFilename = target.files?.item(0)?.name as ""
+	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
+
+	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>

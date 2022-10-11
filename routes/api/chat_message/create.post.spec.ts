@@ -39,7 +39,7 @@ describe("Controller: POST /api/chat_message", () => {
 					"type": "chat_message"
 				}
 			},
-			"user": new UserFactory().serialize(user)
+			"user": await new UserFactory().serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)

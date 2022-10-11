@@ -3,7 +3,7 @@ import { MULTIPART_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import URLMaker from "$!/singletons/url_maker"
-import ProfilePictureFactory from "~/factories/profile_picture"
+import Factory from "~/factories/profile_picture"
 import RequestEnvironment from "$!/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
@@ -59,7 +59,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 			userFactory => userFactory.beReachableEmployee()
 		)
 		const path = `${RequestEnvironment.root}/t/data/logo_bg_transparent.png`
-		await new ProfilePictureFactory().user(() => Promise.resolve(employee)).insertOne()
+		await new Factory().user(() => Promise.resolve(employee)).insertOne()
 
 		const response = await App.request
 		.post(`/api/user/${employee.id}/relationships/profile_picture`)

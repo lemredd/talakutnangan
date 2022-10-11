@@ -2,7 +2,7 @@
 	<div>
         <!--header start-->
         <div class="top-bar">
-            <div><img src="../images/emptyImage.png"></div>
+            <div><img src="@assets/emptyImage.png"></div>
             <h4>
                 Secluded Posts
             </h4>
@@ -16,7 +16,7 @@
             <div class="post" v-for="post in secludedPosts" v-bind:key="post.id">
                 <div class="post-container">
                     <div class="left">
-                        <div><img src="../images/emptyUser.png"></div>
+                        <div><img src="@assets/emptyUser.png"></div>
                         <h2 class = "title">
                         {{ post.user }}
                         </h2>
@@ -25,7 +25,7 @@
                         <h2 class = "title">
                         {{ post.title }}
                         {{ post.badWordExist() }}
-                        
+
                         </h2>
                     </div>
                     <div class="right">

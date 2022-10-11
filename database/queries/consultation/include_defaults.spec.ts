@@ -52,6 +52,10 @@ describe("Database Pipe: Include defaults", () => {
 						{
 							"id": String(user.id),
 							"type": "user"
+						},
+						{
+							"id": String(attachedRole.userID),
+							"type": "user"
 						}
 					]
 				}

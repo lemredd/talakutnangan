@@ -90,7 +90,11 @@ export default class UserFactory extends BaseFactory<
 	async insertProfile(): Promise<{ profile: Serializable, password: string }> {
 		const user = await this.insertOne()
 		const { password } = user
-		const profile = this.serialize(user, {} as unknown as void, new UserProfileTransformer())
+		const profile = await this.serialize(
+			user,
+			{} as unknown as void,
+			new UserProfileTransformer()
+		)
 
 		return {
 			password,
