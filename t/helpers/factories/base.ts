@@ -83,7 +83,7 @@ export default abstract class Factory<
 		transformer: Transformer<T, D> = this.transformer
 	): Promise<Z> {
 		const model = mustInsert ? await this.insertOne() : await this.makeOne()
-		return this.serialize(model, options, transformer) as Z
+		return await this.serialize(model, options, transformer) as Z
 	}
 
 	async serializedMany(
@@ -93,27 +93,27 @@ export default abstract class Factory<
 		transformer: Transformer<T, D> = this.transformer
 	): Promise<A> {
 		const model = mustInsert ? await this.insertMany(count) : await this.makeMany(count)
-		return this.serialize(model, options, transformer) as A
+		return await this.serialize(model, options, transformer) as A
 	}
 
-	public serialize(
+	public async serialize(
 		models: T|T[]|null,
 		options: D = {} as D,
 		transformer: Transformer<T, D> = this.transformer
-	): Z|A {
-		return Serializer.serialize(
+	): Promise<Z|A> {
+		return await Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
 		) as Z|A
 	}
 
-	public deserialize(
+	public async deserialize(
 		models: T|T[]|null,
 		options: D = {} as D,
 		transformer: Transformer<T, D> = this.transformer
-	): B|C {
-		return deserialize(this.serialize(models, options, transformer)) as B|C
+	): Promise<B|C> {
+		return deserialize(await this.serialize(models, options, transformer)) as B|C
 	}
 
 	async deserializedOne(

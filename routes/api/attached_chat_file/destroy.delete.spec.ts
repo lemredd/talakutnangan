@@ -35,7 +35,7 @@ describe("Controller: DELETE /api/attached_chat_file", () => {
 					}
 				]
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -67,7 +67,7 @@ describe("Controller: DELETE /api/attached_chat_file", () => {
 					}
 				]
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)

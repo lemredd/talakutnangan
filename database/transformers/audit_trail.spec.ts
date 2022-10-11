@@ -15,7 +15,7 @@ describe("Transformer: Audit trail", () => {
 		model.user.profilePicture = profilePicture
 		const transformer = new Transformer()
 
-		const object = Serializer.serialize(model, transformer)
+		const object = await Serializer.serialize(model, transformer)
 
 		expect(object).toHaveProperty("data.type", "audit_trail")
 		expect(object).toHaveProperty("data.id", String(model.id))

@@ -89,7 +89,11 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 			if (foundUser !== null && await compare(password, foundUser.password)) {
 				Log.success("manager", "found a matching user")
-				return this.serialize(foundUser, {} as unknown as void, new UserProfileTransformer())
+				return await this.serialize(
+					foundUser,
+					{} as unknown as void,
+					new UserProfileTransformer()
+				)
 			}
 			Log.errorMessage("manager", "matching user not found")
 			return null
@@ -325,7 +329,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 			return user
 		})
 
-		return this.serialize(completeUserInfo)
+		return await this.serialize(completeUserInfo)
 	}
 
 	private async createReachableEmployees(
@@ -385,7 +389,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 			"manager",
 			"exiting user manager -> bulk create method with serialized reachable employee info")
 
-		return this.serialize(completeUserInfo)
+		return await this.serialize(completeUserInfo)
 	}
 
 	private async createUnreachableEmployees(
@@ -426,6 +430,6 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 			"exiting user manager -> bulk create method with serialized unreachable employee info")
 
 
-		return this.serialize(completeUserInfo)
+		return await this.serialize(completeUserInfo)
 	}
 }

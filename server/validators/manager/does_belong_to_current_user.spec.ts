@@ -49,7 +49,7 @@ describe("Validator: does belong to user", () => {
 				"columnName": "id"
 			},
 			"request": {
-				"user": userFactory.serialize(user) as Serializable
+				"user": await userFactory.serialize(user) as Serializable
 			} as AuthenticatedRequest,
 			"source": {}
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
@@ -89,7 +89,7 @@ describe("Validator: does belong to user", () => {
 				"columnName": "id"
 			},
 			"request": {
-				"user": userFactory.serialize(admin) as Serializable
+				"user": await userFactory.serialize(admin) as Serializable
 			} as AuthenticatedRequest,
 			"source": {}
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
@@ -122,7 +122,7 @@ describe("Validator: does belong to user", () => {
 				"columnName": "id"
 			},
 			"request": {
-				"user": userFactory.serialize(admin) as Serializable
+				"user": await userFactory.serialize(admin) as Serializable
 			} as AuthenticatedRequest,
 			"source": {}
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
@@ -165,7 +165,7 @@ describe("Validator: does belong to user", () => {
 				"columnName": "id"
 			},
 			"request": {
-				"user": userFactory.serialize(otherUser) as Serializable
+				"user": await userFactory.serialize(otherUser) as Serializable
 			} as AuthenticatedRequest,
 			"source": {}
 		} as unknown as ValidationConstraints<AuthenticatedRequest>
