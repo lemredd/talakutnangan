@@ -200,6 +200,9 @@ describe("UI Page: Read consultation resource by ID", () => {
 			}
 		})
 
+		const chatWindow = wrapper.find(".chat-window")
+		const toggleListBtn = wrapper.find(".toggle-list-btn")
+		await toggleListBtn.trigger("click")
 		const consultationList = wrapper.find(".consultations-list")
 		const chatWindow = wrapper.find(".chat-window")
 		await flushPromises()
