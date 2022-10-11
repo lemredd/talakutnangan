@@ -56,7 +56,7 @@ describe("UI Page: Read consultation resource by ID", () => {
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.insertMany(INITIAL_MESSAGE_COUNT)
 
-		const userResource = userFactory.deserialize(
+		const userResource = await userFactory.deserialize(
 			userModel,
 			{} as unknown as void,
 			new UserProfileTransformer()
