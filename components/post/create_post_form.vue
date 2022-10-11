@@ -4,10 +4,8 @@
 			<h1>Enter the post details</h1>
 		</template>
 		<template #default>
-			<DraftForm
-				:id="CREATE_POST_FORM_ID"
-				v-model="content"
-				@submit-post="createPost"/>
+			<DraftForm v-model="content" @submit-post="createPost"/>
+			<input type="file" @change="uploadPostAttachment"/>
 		</template>
 		<template #footer>
 			<button
@@ -33,14 +31,19 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
+import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
+
 import Fetcher from "$@/fetchers/post"
+import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
+const postAttachmentFetcher = new PostAttachmentFetcher()
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
 const content = ref("")
+const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
 interface CustomEvents {
 	(event: "close"): void
@@ -51,7 +54,23 @@ function close() {
 	emit("close")
 }
 
+function uploadPostAttachment(event: Event): void {
+	const target = event.target as HTMLInputElement
+	const files = target.files as FileList
+	const fileCount = files.length
+	const latestSelectedFile = files.item(fileCount - 1) as File
+	const formData = new FormData()
+	formData.set("data[attributes][fileContent]", latestSelectedFile)
+	formData.set("data[attributes][fileType]", latestSelectedFile.type)
+	formData.set("data[type]", "post_attachment")
+
+	postAttachmentFetcher.createWithFile(formData).then(({ body }) => {
+		const { data } = body
+		attachmentResources.value.push(data)
+	})
+}
+
 function createPost(data: FormData): void {
-	fetcher.createWithFile(data).then()
+	fetcher.create(data).then()
 }
 </script>
