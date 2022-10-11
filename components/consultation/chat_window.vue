@@ -33,13 +33,14 @@
 					class="additional-controls"
 					@toggle="toggleHeaderControlDropdownShown">
 					<template #toggler>
-						<!-- TODO(lead/button): Apply functionality -->
 						<button class="material-icons toggle-controls-btn">
 							more_horiz
 						</button>
 					</template>
 
 					<template #dropdown-contents>
+						<!-- TODO: make absolute -->
+
 						<div class="links">
 							<a href="#">View consultation form</a>
 							<a

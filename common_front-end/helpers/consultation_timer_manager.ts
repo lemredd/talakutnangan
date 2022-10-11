@@ -104,6 +104,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 					consultationListener(consultation, listener.remainingMillisecondsBeforeInactivity)
 				})
 			} else {
+				listener.remainingMillisecondsBeforeInactivity = 0
 				listener.consultationListeners.finish.forEach(consultationListener => {
 					consultationListener(consultation)
 				})
