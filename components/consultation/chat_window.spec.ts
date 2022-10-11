@@ -223,6 +223,7 @@ describe("Component: consultation/chat_window", () => {
 			const consultationHeader = wrapper.find(".selected-consultation-header")
 			expect(consultationHeader.exists()).toBeTruthy()
 			expect(consultationHeader.html()).toContain("5m")
+			ConsultationTimerManager.clearAllListeners()
 		})
 
 		it("should start consultation on other source's update", async() => {
@@ -260,6 +261,7 @@ describe("Component: consultation/chat_window", () => {
 			expect(consultationHeader.exists()).toBeTruthy()
 			expect(consultationHeader.html()).toContain("4m")
 			expect(consultationHeader.html()).toContain("59s")
+			ConsultationTimerManager.clearAllListeners()
 		})
 
 		it("should restart the timer", async() => {
@@ -333,7 +335,9 @@ describe("Component: consultation/chat_window", () => {
 			expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
 			expect(firstRequestBody).toHaveProperty("data.id", "1")
 			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
+			ConsultationTimerManager.clearAllListeners()
 		})
+	})
 
 	describe("after", () => {
 		it("should automatically terminate the consultation", async() => {
