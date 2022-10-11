@@ -53,7 +53,7 @@
 		}
 
 		.message-item-content {
-			inline-size: 100vh;
+			max-width: 45vw;
 			overflow-wrap: break-word;
 
 			&.text-message-content {
