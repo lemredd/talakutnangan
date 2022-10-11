@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
@@ -333,10 +334,82 @@ describe("Component: consultation/chat_window", () => {
 			expect(firstRequestBody).toHaveProperty("data.id", "1")
 			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		})
+
+		it.only("can be terminated by consultant with action taken", async() => {
+			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"type": "user"
+				}
+			}
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				consultant,
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"stubs": {
+						"Dropdown": false
+					}
+				},
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
+
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+			const updatedFakeConsultation = {
+				...fakeConsultation,
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			} as DeserializedConsultationResource
+			await wrapper.setProps({
+				"chatMessages": fakeChatMessage,
+				"consultation": updatedFakeConsultation,
+				"isConsultationListShown": false
+			})
+			ConsultationTimerManager.forceFinish(updatedFakeConsultation)
+			await flushPromises()
+
+			const additionalControls = wrapper.find(".additional-controls")
+			const additionalControlsBtn = wrapper.find("#dropdown-btn")
+			await additionalControlsBtn.trigger("click")
+			console.log(additionalControls.html(), "\n\n\n")
+			const finishBtn = additionalControls.find(".finish-btn")
+			await finishBtn.trigger("click")
+			// const actionTakenOverlay = wrapper.find(".action-taken")
+			// expect(actionTakenOverlay.exists()).toBeTruthy()
+
+			// const castFetch = fetch as jest.Mock<any, any>
+			// const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+			// expect(firstRequest).toHaveProperty("method", "PATCH")
+			// expect(firstRequest).toHaveProperty(
+			// 	"url",
+			// 	specializePath(CONSULTATION_LINK.bound, { id })
+			// )
+			// expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			// expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		})
 	})
 
 	describe("after", () => {
-		it.only("should automatically terminate the consultation", async() => {
+		it("should automatically terminate the consultation", async() => {
 			const scheduledStartAt = new Date()
 			const consultant = {
 				"data": {
