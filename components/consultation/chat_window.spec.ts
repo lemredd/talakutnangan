@@ -110,13 +110,20 @@ describe("Component: consultation/chat_window", () => {
 	})
 
 	describe("during", () => {
-		it.only("should automatically terminate the consultation", async() => {
+		it("should automatically terminate the consultation", async() => {
 			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const id = "1"
 			const fakeConsultation = {
 				"actionTaken": null,
+				consultant,
 				"finishedAt": null,
 				id,
 				"reason": "",
@@ -253,6 +260,7 @@ describe("Component: consultation/chat_window", () => {
 		})
 
 		it("should restart the timer", async() => {
+			jest.useFakeTimers()
 			const scheduledStartAt = new Date()
 			const consultant = {
 				"data": {
@@ -294,6 +302,13 @@ describe("Component: consultation/chat_window", () => {
 			await wrapper.setProps({ "consultation": updatedFakeConsultation })
 			ConsultationTimerManager.restartTimerFor(updatedFakeConsultation)
 			await nextTick()
+
+			const castedWrapper = wrapper.vm as any
+			expect(castedWrapper.remainingTime.minutes).toEqual(5)
+			expect(castedWrapper.remainingTime.seconds).toEqual(0)
+			ConsultationTimerManager.nextInterval()
+			expect(castedWrapper.remainingTime.minutes).toEqual(4)
+			expect(castedWrapper.remainingTime.seconds).toEqual(59)
 
 			const consultationHeader = wrapper.find(".selected-consultation-header")
 			expect(consultationHeader.exists()).toBeTruthy()

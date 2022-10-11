@@ -15,8 +15,7 @@
 				</div>
 				<div class="selected-consultation-remaining-time">
 					Time remaining:
-					<span v-if="remainingTime.hours > 0">{{ remainingTime.hours }}s</span>
-					<span>{{ remainingTime.minutes }}m left</span>
+					<span>{{ remainingTime.minutes }}m</span>
 					<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
 				</div>
 				<div class="selected-consultation-user-status">
