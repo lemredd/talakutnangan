@@ -10,10 +10,11 @@ export default class extends Router {
 
 		this.useControllersAsync(new Promise(resolve => {
 			resolve([
-			new PostCreate(),
-			new DeleteArchive(),
-			new PatchUpdate(),
-			new PatchRestore()
-		]))
+				new PostCreate(),
+				new DeleteArchive(),
+				new PatchUpdate(),
+				new PatchRestore()
+			])
+		}))
 	}
 }
