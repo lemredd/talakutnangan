@@ -90,7 +90,7 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions, this.transformer)
+			return await this.serialize(model, transformerOptions, this.transformer)
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
