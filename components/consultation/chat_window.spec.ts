@@ -4,6 +4,8 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
+
 import { CONSULTATION_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
@@ -389,8 +391,30 @@ describe("Component: consultation/chat_window", () => {
 				"consultation": secondUpdatedFakeConsultation
 			})
 			await flushPromises()
+
 			const events = wrapper.emitted("updatedConsultationAttributes")
 			expect(events).toHaveLength(2)
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "PATCH")
+			expect(firstRequest).toHaveProperty(
+				"url",
+				specializePath(CONSULTATION_LINK.bound, { id })
+			)
+			expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+			expect(secondRequest).toHaveProperty("method", "PATCH")
+			expect(secondRequest).toHaveProperty(
+				"url",
+				specializePath(CONSULTATION_LINK.bound, { id })
+			)
+			expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+			const body = await secondRequest.json()
+			expect(body).toHaveProperty("data.relationships.consultant.data.id")
+			expect(body).toHaveProperty("meta.doesAllowConflicts")
 		})
 	})
 })
