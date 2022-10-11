@@ -332,4 +332,65 @@ describe("Component: consultation/chat_window", () => {
 			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		})
 	})
+
+	describe("after", () => {
+		it.only("should automatically terminate the consultation", async() => {
+			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"type": "user"
+				}
+			}
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				consultant,
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation
+				}
+			})
+
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+			const firstUpdatedFakeConsultation = {
+				...fakeConsultation,
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			} as DeserializedConsultationResource
+			await wrapper.setProps({
+				"chatMessages": fakeChatMessage,
+				"consultation": firstUpdatedFakeConsultation
+			})
+			ConsultationTimerManager.forceFinish(firstUpdatedFakeConsultation)
+			await flushPromises()
+
+			const secondUpdatedFakeConsultation = {
+				...firstUpdatedFakeConsultation,
+				"finishedAt": new Date()
+			} as DeserializedConsultationResource
+			await wrapper.setProps({
+				"chatMessages": fakeChatMessage,
+				"consultation": secondUpdatedFakeConsultation
+			})
+			await flushPromises()
+			const events = wrapper.emitted("updatedConsultationAttributes")
+			expect(events).toHaveLength(2)
+		})
+	})
 })
