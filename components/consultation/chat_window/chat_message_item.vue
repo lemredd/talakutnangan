@@ -53,7 +53,9 @@
 		}
 
 		.message-item-content {
-			max-width: 40vh;
+			max-width: 45vw;
+			overflow-wrap: break-word;
+
 			&.text-message-content {
 				@apply ml-2 py-1 px-2;
 				@apply border rounded-lg border-true-gray-600 border-opacity-50;
