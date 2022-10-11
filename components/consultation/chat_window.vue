@@ -43,6 +43,7 @@
 						<div class="links">
 							<a href="#">View consultation form</a>
 							<a
+								v-if="isCurrentUserConsultant"
 								href="#"
 								class="view-action-taken-overlay-btn"
 								@click="showActionTakenOverlay">Finish consultation</a>
@@ -51,7 +52,7 @@
 				</Dropdown>
 
 				<Overlay
-					:is-shown="isActionTakenOverlayShown"
+					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
 					class="action-taken"
 					@close="hideActionTakenOverlay">
 					<template #header>
@@ -149,8 +150,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, watch, onMounted, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
@@ -180,6 +182,10 @@ const props = defineProps<{
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	isConsultationListShown: boolean
 }>()
+
+const { "pageProps": { "userProfile": { "data": { kind } } } }
+= inject("pageContext") as PageContext<"deserialized">
+const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 
 function toggleConsultationList() {
 	emit("toggleConsultationList")
