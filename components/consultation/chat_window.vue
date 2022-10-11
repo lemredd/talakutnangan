@@ -94,7 +94,7 @@
 			</div>
 
 			<div
-				v-for="message in props.chatMessages.data"
+				v-for="message in sortedMessagesByTime"
 				:key="message.id"
 				class="chat-entry">
 				<ChatMessageItem :chat-message="message"/>
@@ -187,6 +187,15 @@ const props = defineProps<{
 const { "pageProps": { "userProfile": { "data": { kind } } } }
 = inject("pageContext") as PageContext<"deserialized">
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+const sortedMessagesByTime = computed(() => {
+	const { "chatMessages": { "data": rawData } } = props
+	return [ ...rawData ].sort((left, right) => {
+		const leftSeconds = left.createdAt.valueOf()
+		const rightSeconds = right.createdAt.valueOf()
+
+		return Math.sign(leftSeconds - rightSeconds)
+	})
+})
 
 function toggleConsultationList() {
 	emit("toggleConsultationList")
