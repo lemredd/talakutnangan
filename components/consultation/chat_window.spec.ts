@@ -254,11 +254,18 @@ describe("Component: consultation/chat_window", () => {
 
 		it("should restart the timer", async() => {
 			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const id = "1"
 			const fakeConsultation = {
 				"actionTaken": null,
+				consultant,
 				"finishedAt": null,
 				id,
 				"reason": "",
@@ -272,7 +279,8 @@ describe("Component: consultation/chat_window", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"props": {
 					"chatMessages": fakeChatMessage,
-					"consultation": fakeConsultation
+					"consultation": fakeConsultation,
+					"isConsultationListShown": false
 				}
 			})
 
