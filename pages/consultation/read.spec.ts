@@ -61,16 +61,16 @@ describe("UI Page: Read consultation resource by ID", () => {
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model) as DeserializedConsultationDocument
-		const resources = factory.deserialize([ model, ...models ])
-		const chatMessageActivityResources = chatMessageActivityFactory
+		const resource = await factory.deserialize(model) as DeserializedConsultationDocument
+		const resources = await factory.deserialize([ model, ...models ])
+		const chatMessageActivityResources = await chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
-		const previewMessageResources = chatMessageFactory.deserialize(
+		const previewMessageResources = await chatMessageFactory.deserialize(
 			previewMessageModels,
 			{} as unknown as void,
 			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
 		)
-		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
+		const chatMessageResources = await chatMessageFactory.deserialize(chatMessageModels)
 
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -147,21 +147,21 @@ describe("UI Page: Read consultation resource by ID", () => {
 		.chatMessageActivity(() => Promise.resolve(activityOfModel))
 		.insertMany(INITIAL_MESSAGE_COUNT)
 
-		const userResource = userFactory.deserialize(
+		const userResource = await userFactory.deserialize(
 			userModel,
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model) as DeserializedConsultationDocument
-		const resources = factory.deserialize([ model, ...models ])
-		const chatMessageActivityResources = chatMessageActivityFactory
+		const resource = await factory.deserialize(model) as DeserializedConsultationDocument
+		const resources = await factory.deserialize([ model, ...models ])
+		const chatMessageActivityResources = await chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
-		const previewMessageResources = chatMessageFactory.deserialize(
+		const previewMessageResources = await chatMessageFactory.deserialize(
 			previewMessageModels,
 			{} as unknown as void,
 			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
 		)
-		const chatMessageResources = chatMessageFactory.deserialize(chatMessageModels)
+		const chatMessageResources = await chatMessageFactory.deserialize(chatMessageModels)
 
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -293,21 +293,21 @@ describe.skip("UI Page: Communicate with consultation resource", () => {
 		.kind(() => "text")
 		.insertMany(INITIAL_MESSAGE_COUNT)
 
-		const userResource = userFactory.deserialize(
+		const userResource = await userFactory.deserialize(
 			userModel,
 			{} as unknown as void,
 			new UserProfileTransformer()
 		)
-		const resource = factory.deserialize(model) as DeserializedConsultationDocument
-		const resources = factory.deserialize([ model, ...models ])
-		const chatMessageActivityResources = chatMessageActivityFactory
+		const resource = await factory.deserialize(model) as DeserializedConsultationDocument
+		const resources = await factory.deserialize([ model, ...models ])
+		const chatMessageActivityResources = await chatMessageActivityFactory
 		.deserialize(chatMessageActivityModels)
-		const previewMessageResources = chatMessageFactory.deserialize(
+		const previewMessageResources = await chatMessageFactory.deserialize(
 			previewMessageModels,
 			{} as unknown as void,
 			new ChatMessageTransformer({ "included": [ "user", "consultation" ] })
 		)
-		const chatMessageResources = chatMessageFactory
+		const chatMessageResources = await chatMessageFactory
 		.deserialize(chatTextMessageModels) as DeserializedChatMessageListDocument
 
 		fetchMock.mockResponseOnce(
