@@ -2,21 +2,22 @@
 	<div>
 		<Opening/>
 		<Instructions/>
-		<ChangePassword v-if="isLoggedIn"/>
+		<ChangePassword v-if="hasDefaultPassword"/>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { usePageContext } from "#/usePageContext"
+import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
 import Opening from "@/guest_homepage/Opening.vue"
 import Instructions from "@/guest_homepage/Instructions.vue"
 import ChangePassword from "@/authentication/change_password.vue"
+import isUndefined from "$/type_guards/is_undefined"
 
-const { pageProps } = usePageContext() as PageContext<"serialized">
+const { pageProps } = inject("pageContext") as PageContext<"deserialized">
 const { userProfile } = pageProps
 
-const isLoggedIn = userProfile === null
+const hasDefaultPassword = userProfile !== null && !isUndefined(userProfile.meta.hasDefaultPassword)
 </script>
