@@ -7,7 +7,8 @@ import type {
 	PostDocument,
 	PostListDocument,
 	DeserializedPostDocument,
-	DeserializedPostListDocument
+	DeserializedPostListDocument,
+	PostRelationships
 } from "$/types/documents/post"
 
 import { POST_LINK } from "$/constants/template_links"
@@ -25,7 +26,8 @@ export default class PostFetcher extends BaseFetcher<
 	DeserializedPostDocument,
 	DeserializedPostListDocument,
 	{
-		"queryParameters": PostQueryParameters<string>
+		"queryParameters": PostQueryParameters<string>,
+		"extraCreateDocumentProps": PostRelationships<"create">
 	}
 > {
 	constructor() {
