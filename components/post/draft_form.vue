@@ -41,7 +41,7 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(event: "update:modelValue", data: DeserializedPostDocument<"create"|"update">): void
-	(event: "submitPost", data: FormData): void
+	(event: "submitPost"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -58,10 +58,7 @@ const content = computed<string>({
 	}
 })
 
-function submitPostDetails(event: Event) {
-	const form = event.target as HTMLFormElement
-	const formData = new FormData(form)
-
-	emit("submitPost", formData)
+function submitPostDetails() {
+	emit("submitPost")
 }
 </script>
