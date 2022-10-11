@@ -42,6 +42,9 @@ const postAttachmentFetcher = new PostAttachmentFetcher()
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
+const departmentID = ref("")
+const userID = ref("")
+const roleID = ref("")
 const content = ref("")
 const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
@@ -70,7 +73,41 @@ function uploadPostAttachment(event: Event): void {
 	})
 }
 
-function createPost(data: FormData): void {
-	fetcher.create(data).then()
+function createPost(): void {
+	fetcher.create({
+		"content": content.value,
+		"deletedAt": null
+	}, {
+		"extraCreateDocumentProps": {
+			"relationships": {
+				"department": {
+					"data": {
+						"id": departmentID.value,
+						"type": "department"
+					}
+				},
+				"postAttachments": {
+					"data": attachmentResources.value.map(resource => ({
+						"id": resource.id,
+						"type": "post_attachment"
+					}))
+				},
+				"poster": {
+					"data": {
+						"id": userID.value,
+						"type": "user"
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": roleID.value,
+						"type": "role"
+					}
+				}
+			}
+		}
+	}).then(() => {
+		close()
+	}).catch(console.log)
 }
 </script>
