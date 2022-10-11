@@ -335,79 +335,6 @@ describe("Component: consultation/chat_window", () => {
 			expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 		})
 
-		it.only("can be terminated by consultant with action taken", async() => {
-			const scheduledStartAt = new Date()
-			const consultant = {
-				"data": {
-					"id": "10",
-					"type": "user"
-				}
-			}
-			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-			const id = "1"
-			const fakeConsultation = {
-				"actionTaken": null,
-				consultant,
-				"finishedAt": null,
-				id,
-				"reason": "",
-				scheduledStartAt,
-				"startedAt": null,
-				"type": "consultation"
-			} as DeserializedConsultationResource
-			const fakeChatMessage = {
-				"data": []
-			} as DeserializedChatMessageListDocument
-			const wrapper = shallowMount<any>(Component, {
-				"global": {
-					"stubs": {
-						"Dropdown": false
-					}
-				},
-				"props": {
-					"chatMessages": fakeChatMessage,
-					"consultation": fakeConsultation
-				}
-			})
-
-			const userController = wrapper.findComponent({ "name": "UserController" })
-			await userController.trigger("start-consultation")
-			await flushPromises()
-			const updatedFakeConsultation = {
-				...fakeConsultation,
-				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
-			} as DeserializedConsultationResource
-			await wrapper.setProps({
-				"chatMessages": fakeChatMessage,
-				"consultation": updatedFakeConsultation,
-				"isConsultationListShown": false
-			})
-			ConsultationTimerManager.forceFinish(updatedFakeConsultation)
-			await flushPromises()
-
-			const additionalControls = wrapper.find(".additional-controls")
-			const additionalControlsBtn = wrapper.find("#dropdown-btn")
-			await additionalControlsBtn.trigger("click")
-			console.log(additionalControls.html(), "\n\n\n")
-			const finishBtn = additionalControls.find(".finish-btn")
-			await finishBtn.trigger("click")
-			// const actionTakenOverlay = wrapper.find(".action-taken")
-			// expect(actionTakenOverlay.exists()).toBeTruthy()
-
-			// const castFetch = fetch as jest.Mock<any, any>
-			// const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
-			// expect(firstRequest).toHaveProperty("method", "PATCH")
-			// expect(firstRequest).toHaveProperty(
-			// 	"url",
-			// 	specializePath(CONSULTATION_LINK.bound, { id })
-			// )
-			// expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-			// expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		})
-	})
-
 	describe("after", () => {
 		it("should automatically terminate the consultation", async() => {
 			const scheduledStartAt = new Date()
@@ -417,7 +344,6 @@ describe("Component: consultation/chat_window", () => {
 					"type": "user"
 				}
 			}
-			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const id = "1"
@@ -488,6 +414,105 @@ describe("Component: consultation/chat_window", () => {
 			const body = await secondRequest.json()
 			expect(body).toHaveProperty("data.relationships.consultant.data.id")
 			expect(body).toHaveProperty("meta.doesAllowConflicts")
+			ConsultationTimerManager.clearAllListeners()
+		})
+
+		it("can be terminated by consultant with action taken", async() => {
+			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"type": "user"
+				}
+			}
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				consultant,
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": []
+			} as DeserializedChatMessageListDocument
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"stubs": {
+						"Dropdown": false,
+						"Overlay": false
+					}
+				},
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation,
+					"isConsultationListShown": false
+				}
+			})
+
+			const userController = wrapper.findComponent({ "name": "UserController" })
+			await userController.trigger("start-consultation")
+			await flushPromises()
+			const firstUpdatedFakeConsultation = {
+				...fakeConsultation,
+				"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
+			} as DeserializedConsultationResource
+			await wrapper.setProps({
+				"chatMessages": fakeChatMessage,
+				"consultation": firstUpdatedFakeConsultation
+			})
+			await flushPromises()
+
+			const additionalControls = wrapper.find(".additional-controls")
+			const additionalControlsBtn = wrapper.find("#dropdown-btn")
+			await additionalControlsBtn.trigger("click")
+			const viewOverlayBtn = additionalControls.find(".view-action-taken-overlay-btn")
+			await viewOverlayBtn.trigger("click")
+			const actionTakenOverlay = wrapper.find(".action-taken")
+			const actionTakenField = actionTakenOverlay.findComponent(".action-taken-field")
+			await actionTakenField.setValue("action taken")
+			const secondUpdatedFakeConsultation = {
+				...firstUpdatedFakeConsultation,
+				"actionTaken": actionTakenField.attributes("modelvalue")
+			}
+			await wrapper.setProps({
+				"chatMessages": fakeChatMessage,
+				"consultation": secondUpdatedFakeConsultation
+			})
+			const finishBtn = actionTakenOverlay.find(".finish-btn")
+			await finishBtn.trigger("click")
+			await flushPromises()
+
+			const events = wrapper.emitted("updatedConsultationAttributes")
+			expect(events).toHaveLength(2)
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+			expect(firstRequest).toHaveProperty("method", "PATCH")
+			expect(firstRequest).toHaveProperty(
+				"url",
+				specializePath(CONSULTATION_LINK.bound, { id })
+			)
+			expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+
+			expect(secondRequest).toHaveProperty("method", "PATCH")
+			expect(secondRequest).toHaveProperty(
+				"url",
+				specializePath(CONSULTATION_LINK.bound, { id })
+			)
+			expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+			expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+			const body = await secondRequest.json()
+			const { actionTaken } = body.data.attributes
+			expect(actionTaken).toEqual(actionTakenField.attributes("modelvalue"))
+			ConsultationTimerManager.clearAllListeners()
 		})
 	})
 })
