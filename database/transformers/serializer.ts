@@ -26,11 +26,11 @@ export default class Serializer {
 		return builder
 	}
 
-	static serialize<T extends Model, U = void>(
+	static async serialize<T extends Model, U = void>(
 		model: T|T[]|null,
 		transformer: Transformer<T, U>,
 		options?: object
-	): Serializable {
+	): Promise<Serializable> {
 		const builder = Serializer.build(model, transformer, options)
 		const resources = builder.serialize() as GeneralObject
 
@@ -44,7 +44,7 @@ export default class Serializer {
 			resources.data.id = String(resources.data.id)
 		}
 
-		return transformer.finalizeTransform(model, resources as Serializable)
+		return await transformer.finalizeTransform(model, resources as Serializable)
 	}
 
 	static makeContext<T extends Model, U = void>(
