@@ -20,6 +20,13 @@ describe("Component: consultation/chat_window", () => {
 	describe("before", () => {
 		it("can toggle consultation list state", async() => {
 			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"kind": "reachable_employee",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const id = "1"
 			const fakeConsultation = {
@@ -41,6 +48,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
@@ -57,6 +73,13 @@ describe("Component: consultation/chat_window", () => {
 
 		it("should request to start consultation", async() => {
 			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"kind": "reachable_employee",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const id = "1"
 			const fakeConsultation = {
@@ -78,6 +101,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
@@ -118,6 +150,7 @@ describe("Component: consultation/chat_window", () => {
 			const consultant = {
 				"data": {
 					"id": "10",
+					"kind": "reachable_employee",
 					"type": "user"
 				}
 			}
@@ -138,6 +171,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation
@@ -198,6 +240,13 @@ describe("Component: consultation/chat_window", () => {
 
 		it("should continue to started consultation", async() => {
 			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+			const consultant = {
+				"data": {
+					"id": "10",
+					"kind": "reachable_employee",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const fakeConsultation = {
 				"actionTaken": null,
@@ -212,6 +261,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation
@@ -228,6 +286,13 @@ describe("Component: consultation/chat_window", () => {
 
 		it("should start consultation on other source's update", async() => {
 			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+			const consultant = {
+				"data": {
+					"id": "10",
+					"kind": "reachable_employee",
+					"type": "user"
+				}
+			}
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			const fakeConsultation = {
 				"actionTaken": null,
@@ -242,6 +307,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation
@@ -270,6 +344,7 @@ describe("Component: consultation/chat_window", () => {
 			const consultant = {
 				"data": {
 					"id": "10",
+					"kind": "reachable_employee",
 					"type": "user"
 				}
 			}
@@ -290,6 +365,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
@@ -345,6 +429,7 @@ describe("Component: consultation/chat_window", () => {
 			const consultant = {
 				"data": {
 					"id": "10",
+					"kind": "reachable_employee",
 					"type": "user"
 				}
 			}
@@ -365,6 +450,15 @@ describe("Component: consultation/chat_window", () => {
 				"data": []
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation
@@ -426,6 +520,7 @@ describe("Component: consultation/chat_window", () => {
 			const consultant = {
 				"data": {
 					"id": "10",
+					"kind": "reachable_employee",
 					"type": "user"
 				}
 			}
@@ -447,6 +542,13 @@ describe("Component: consultation/chat_window", () => {
 			} as DeserializedChatMessageListDocument
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					},
 					"stubs": {
 						"Dropdown": false,
 						"Overlay": false
