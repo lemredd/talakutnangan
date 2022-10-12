@@ -8,20 +8,21 @@
 			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
-				class="consultant"
+				class="consultant required"
 				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
 
 			<!-- TODO: style required field -->
-			<SelectableOptionsField
-				v-if="selectedConsultants.length"
-				v-model="addressConsultantAs"
-				class="consultant-roles mb-5"
-				label="Address consultant as:"
-				:options="consultantRoles"/>
-
+			<div class="required">
+				<SelectableOptionsField
+					v-if="selectedConsultants.length"
+					v-model="addressConsultantAs"
+					class="consultant-roles mb-5"
+					label="Address consultant as:"
+					:options="consultantRoles"/>
+			</div>
 			<SearchableChip
 				v-model="selectedConsulters"
 				:current-user-id="userProfileData.id"
@@ -32,21 +33,22 @@
 				kind="student"/>
 
 			<!-- TODO: style required field -->
-			<SelectableOptionsField
-				v-model="chosenReason"
-				class="reason"
-				label="Kind of Reason: "
-				placeholder="Choose your reason"
-				:options="reasonOptions"/>
+			<div class="required">
+				<SelectableOptionsField
+					v-model="chosenReason"
+					class="reason"
+					label="Kind of Reason: "
+					placeholder="Choose your reason"
+					:options="reasonOptions"/>
+			</div>
 
 			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
-				class="other-reason"
+				class="other-reason required"
 				label="What are the other reasons(s)?"
 				type="text"/>
-
 			<div
 				v-if="selectedConsultants.length"
 				class="schedule-selector mt-5">
@@ -55,29 +57,32 @@
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
 					<!-- TODO: style required field -->
-					<SelectableOptionsField
-						v-model="chosenDay"
-						class="selectable-day"
-						label="Day:"
-						:options="selectableDays"/>
-					<div v-if="isCustomDate" class="selectable date-picker">
-						<span>Select a date:</span>
-						<input
-							v-model="customDate"
-							:min="castToCompatibleDate(dateToday)"
-							:max="castToCompatibleDate(dateInNextMonth)"
-							type="date"/>
+					<div class="required">
+						<SelectableOptionsField
+							v-model="chosenDay"
+							class="selectable-day"
+							label="Day:"
+							:options="selectableDays"/>
+						<div v-if="isCustomDate" class="selectable date-picker">
+							<span>Select a date:</span>
+							<input
+								v-model="customDate"
+								:min="castToCompatibleDate(dateToday)"
+								:max="castToCompatibleDate(dateInNextMonth)"
+								type="date"/>
+						</div>
 					</div>
 
-					<!-- TODO: style required field -->
-					<SelectableOptionsField
-						v-if="chosenDay"
-						v-model="chosenTime"
-						class="selectable-time"
-						label="Time:"
-						:options="selectableTimes"/>
-				</div>
 
+					<!-- TODO: style required field -->
+					<div v-if="chosenDay" class="required">
+						<SelectableOptionsField
+							v-model="chosenTime"
+							class="selectable-time"
+							label="Time:"
+							:options="selectableTimes"/>
+					</div>
+				</div>
 				<div v-else class="consultant-no-schedules">
 					<p class="text-red-500">
 						This consultant has not set any schedules yet.
@@ -110,6 +115,18 @@
 
 <style lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/variables.scss";
+
+.required{
+	&::before {
+		@apply text-xs;
+
+		display:block;
+		color: $color-primary;
+		content:"* required";
+
+	}
+}
 
 .btn{
   border: none;
