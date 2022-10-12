@@ -11,7 +11,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can allow unreachable employees only as expected", async() => {
 		const serializedUser = await new UserFactory().beUnreachableEmployee().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("unreachable_employee")
+		const pageGuard = new KindBasedPolicy([ "unreachable_employee" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
@@ -30,7 +30,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can allow reachable employees only as expected", async() => {
 		const serializedUser = await new UserFactory().beReachableEmployee().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("reachable_employee")
+		const pageGuard = new KindBasedPolicy([ "reachable_employee" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
@@ -49,7 +49,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can allow students only as expected", async() => {
 		const serializedUser = await new UserFactory().beStudent().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("student")
+		const pageGuard = new KindBasedPolicy([ "student" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
@@ -68,7 +68,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can deny students if reachable employees are expected", async() => {
 		const serializedUser = await new UserFactory().beStudent().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("reachable_employee")
+		const pageGuard = new KindBasedPolicy([ "reachable_employee" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
@@ -91,7 +91,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can allow student or reachable employees only as expected", async() => {
 		const serializedUser = await new UserFactory().beReachableEmployee().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("student", "reachable_employee")
+		const pageGuard = new KindBasedPolicy([ "student", "reachable_employee" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
@@ -110,7 +110,7 @@ describe("Middleware: Kind-Based Policy", () => {
 	it("can deny unreachable employee if student or reachable employees are expected", async() => {
 		const serializedUser = await new UserFactory().beUnreachableEmployee().serializedOne()
 
-		const pageGuard = new KindBasedPolicy("student", "reachable_employee")
+		const pageGuard = new KindBasedPolicy([ "student", "reachable_employee" ])
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
