@@ -78,6 +78,12 @@ import type { PageContext } from "$/types/renderer"
 import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
+import {
+	isMessageKindFile,
+	isMessageKindStatus,
+	isMessageKindText
+} from "@/consultation/helpers/chat_message_kinds"
+
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -88,11 +94,6 @@ const { userProfile } = pageProps
 const { chatMessage } = defineProps<{
 	chatMessage: DeserializedChatMessageResource<"user">
 }>()
-
-function isMessageKindStatus(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & StatusMessage {
-	return value.kind === "status"
-}
 
 const isSelfMessage = computed<boolean>(() => {
 	const isMessageCameFromSelf = !isMessageKindStatus(chatMessage)
