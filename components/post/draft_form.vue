@@ -1,18 +1,18 @@
 <template>
 	<form @submit.prevent="submitPostDetails">
-		<div v-if="maySelectOtherDepartments" class="row">
-			<SelectableOptionsField
-				v-model="departmentID"
-				label="Department to post: "
-				placeholder="Choose the department"
-				:options="departmentNames"/>
-		</div>
 		<div v-if="hasMultipleRoles" class="row">
 			<SelectableOptionsField
 				v-model="roleID"
 				label="Post as: "
 				placeholder="Choose the role"
 				:options="roleNames"/>
+		</div>
+		<div v-if="maySelectOtherDepartments" class="row">
+			<SelectableOptionsField
+				v-model="departmentID"
+				label="Department to post: "
+				placeholder="Choose the department"
+				:options="departmentNames"/>
 		</div>
 		<div class="row">
 			<div class="col-25">
@@ -50,6 +50,7 @@ import { computed, ref, inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedPostDocument } from "$/types/documents/post"
+import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
@@ -69,29 +70,37 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile, departments } = pageProps
 
-const maySelectOtherDepartments = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
-])
-const departmentNames: OptionInfo[] = maySelectOtherDepartments
-	? []
-	: [
-		{
-			"label": "All",
-			"value": "*"
-		},
-		...departments.data.map(department => ({
-			"label": department.fullName,
-			"value": department.id
-		}))
-	]
-const departmentID = ref<string>(userProfile.data.department.data.id)
-
 const hasMultipleRoles = userProfile.data.roles.data.length > 1
 const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
 	"label": data.name,
 	"value": data.id
 })))
 const roleID = ref<string>(userProfile.data.roles.data[0].id)
+
+const maySelectOtherDepartments = computed(() => {
+	const targetRoleID = roleID.value
+	const chosenRole = userProfile.data.roles.data.find(
+		data => data.id === targetRoleID
+	) as DeserializedRoleResource
+
+	return permissionGroup.mayAllow(chosenRole, ...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+})
+const departmentNames = computed<OptionInfo[]>(() => {
+	const departmentNameOptions = maySelectOtherDepartments.value
+		? []
+		: [
+			{
+				"label": "All",
+				"value": "*"
+			},
+			...departments.data.map(department => ({
+				"label": department.fullName,
+				"value": department.id
+			}))
+		]
+	return departmentNameOptions
+})
+const departmentID = ref<string>(userProfile.data.department.data.id)
 const userID = userProfile.data.id
 
 const content = computed<string>({
