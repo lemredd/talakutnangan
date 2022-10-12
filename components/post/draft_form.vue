@@ -7,6 +7,13 @@
 				placeholder="Choose the department"
 				:options="departmentNames"/>
 		</div>
+		<div v-if="hasMultipleRoles" class="row">
+			<SelectableOptionsField
+				v-model="roleID"
+				label="Post as: "
+				placeholder="Choose the role"
+				:options="roleNames"/>
+		</div>
 		<div class="row">
 			<div class="col-25">
 				<label for="content">Content</label>
@@ -78,6 +85,13 @@ const departmentNames: OptionInfo[] = maySelectOtherDepartments
 		}))
 	]
 const departmentID = ref<string>(userProfile.data.department.data.id)
+
+const hasMultipleRoles = userProfile.data.roles.data.length > 1
+const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
+	"label": data.name,
+	"value": data.id
+})))
+const roleID = ref<string>(userProfile.data.roles.data[0].id)
 const userID = userProfile.data.id
 
 const content = computed<string>({
