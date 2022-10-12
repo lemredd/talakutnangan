@@ -251,7 +251,7 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
-			"existence": "*",
+			"existence": "exists",
 			"user": selectedConsultant.id
 		},
 		"page": {
