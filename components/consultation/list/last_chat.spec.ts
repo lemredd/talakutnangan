@@ -17,7 +17,8 @@ describe("Component: consultation/list/last_chat", () => {
 		})
 
 		const lastChatTime = wrapper.find(".last-chat-time-sent")
+		const castedWrapper = wrapper.vm as any
 
-		expect(lastChatTime.text()).toBe(currentTime.toString())
+		expect(lastChatTime.text()).toBe(castedWrapper.lastChatTimeSent)
 	})
 })

@@ -38,7 +38,7 @@ describe("Middleware: Scope-Based Policy", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
-				...new UserFactory().serialize(user),
+				...await new UserFactory().serialize(user),
 				"meta": {
 					"hasDefaultPassword": false
 				}
@@ -63,7 +63,8 @@ describe("Middleware: Scope-Based Policy", () => {
 			[ "update", "writeOverallScope" ],
 			async(): Promise<DeserializedUserDocument<"roles"|"department">> => {
 				const owner = await new UserFactory().attach(role).in(department).insertOne()
-				return new UserFactory().deserialize(owner) as DeserializedUserDocument<
+				return await new UserFactory()
+				.deserialize(owner) as DeserializedUserDocument<
 					"roles"|"department"
 				>
 			}
@@ -71,7 +72,7 @@ describe("Middleware: Scope-Based Policy", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
-				...new UserFactory().serialize(user),
+				...await new UserFactory().serialize(user),
 				"meta": {
 					"hasDefaultPassword": false
 				}
@@ -95,7 +96,7 @@ describe("Middleware: Scope-Based Policy", () => {
 			[ "update", "writeOverallScope" ],
 			async(): Promise<DeserializedUserDocument<"roles"|"department">> => {
 				const owner = await new UserFactory().attach(role).insertOne()
-				return new UserFactory().deserialize(
+				return await new UserFactory().deserialize(
 					owner
 				) as DeserializedUserDocument<"roles"|"department">
 			}
@@ -103,7 +104,7 @@ describe("Middleware: Scope-Based Policy", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn().mockReturnValue(true),
 			"user": {
-				...new UserFactory().serialize(user),
+				...await new UserFactory().serialize(user),
 				"meta": {
 					"hasDefaultPassword": false
 				}

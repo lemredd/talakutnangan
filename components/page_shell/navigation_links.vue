@@ -19,7 +19,7 @@
 					</span>
 					<span class="link-name">{{ link.name }}</span>
 				</Anchor>
-				<LogOutBtn class="mobile-log-out"/>
+				<LogOutBtn v-if="isUserLoggedIn" class="mobile-log-out"/>
 			</div>
 		</template>
 	</Dropdown>
@@ -91,7 +91,7 @@ body.unscrollable {
 <script setup lang="ts">
 import { computed, inject, Ref } from "vue"
 
-import type { DeserializedPageContext } from "$@/types/independent"
+import type { PageContext } from "$/types/renderer"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 
@@ -106,7 +106,9 @@ import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 
 const emit = defineEmits([ "toggle" ])
-const pageContext = inject("pageContext") as DeserializedPageContext
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { "pageProps": { userProfile } } = pageContext
+const isUserLoggedIn = Boolean(userProfile)
 
 // Role
 const roleLinks = computed(() => filterLinkInfo(pageContext, linkInfos))

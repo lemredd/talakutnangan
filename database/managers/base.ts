@@ -162,7 +162,7 @@ export default abstract class Manager<
 
 				Log.success("manager", "done searching for a model on a certain column")
 
-				cachedModel = this.serialize(model, transformerOptions, transformer)
+				cachedModel = await this.serialize(model, transformerOptions, transformer)
 
 				this.cache.setCache(uniquePath, cachedModel)
 
@@ -192,7 +192,7 @@ export default abstract class Manager<
 
 			Log.success("manager", "done listing models according to constraints")
 
-			const document = this.serialize(rows, transformerOptions)
+			const document = await this.serialize(rows, transformerOptions)
 
 			if (typeof document.meta === "object") {
 				document.meta = {
@@ -218,7 +218,7 @@ export default abstract class Manager<
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions)
+			return await this.serialize(model, transformerOptions)
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
@@ -364,12 +364,12 @@ export default abstract class Manager<
 		return attributeNames
 	}
 
-	protected serialize<Z = Serializable>(
+	protected async serialize<Z = Serializable>(
 		models: T|T[]|null,
 		options: W = {} as W,
 		transformer: Transformer<T, W> = this.transformer
-	): Z {
-		return Serializer.serialize(
+	): Promise<Z> {
+		return await Serializer.serialize(
 			models,
 			transformer,
 			options as GeneralObject
