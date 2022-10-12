@@ -5,6 +5,7 @@
 		</template>
 		<template #default>
 			<DraftForm
+				:id="CREATE_POST_FORM_ID"
 				v-model="content"
 				@submit-post="createPost">
 				<div v-if="hasMultipleRoles" class="row">
@@ -100,6 +101,7 @@ const departmentNames = computed<OptionInfo[]>(() => {
 	return departmentNameOptions
 })
 const departmentID = ref<string>(userProfile.data.department.data.id)
+
 const content = ref<string>("")
 const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 

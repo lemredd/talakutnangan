@@ -7,7 +7,15 @@
 			<DraftForm
 				:id="postID"
 				v-model="content"
-				@submit-post="updatePost"/>
+				@submit-post="updatePost">
+				<div v-if="hasMultipleRoles" class="row">
+					<SelectableOptionsField
+						v-model="roleID"
+						label="Post as: "
+						placeholder="Choose the role"
+						:options="roleNames"/>
+				</div>
+			</DraftForm>
 		</template>
 		<template #footer>
 			<button
@@ -31,9 +39,16 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, watch } from "vue"
 
+import type { OptionInfo } from "$@/types/component"
+import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostResource } from "$/types/documents/post"
+import type { DeserializedUserDocument } from "$/types/documents/user"
+
+import UserFetcher from "$@/fetchers/user"
+
+const userFetcher = new UserFetcher()
 
 const props = defineProps<{
 	isShown: boolean,
@@ -46,6 +61,57 @@ interface CustomEvents {
 	(event: "update:modelValue", content: DeserializedPostResource<"poster"|"posterRole">): void
 }
 const emit = defineEmits<CustomEvents>()
+
+const isShown = computed<boolean>(() => props.isShown)
+const hasLoadedCompletePosterInfo = computed<boolean>(() => {
+	const hasRoles = Boolean(props.modelValue.poster.data.roles)
+	return hasRoles
+})
+
+const hasMultipleRoles = computed(() => {
+	if (hasLoadedCompletePosterInfo.value) {
+		const completePosterInfo = props.modelValue.poster as DeserializedUserDocument<"roles">
+
+		return completePosterInfo.data.roles.data.length
+	}
+
+	return false
+})
+const roleNames = computed<OptionInfo[]>(() => {
+	if (hasMultipleRoles.value) {
+		const completePosterInfo = props.modelValue.poster as DeserializedUserDocument<"roles">
+
+		return completePosterInfo.data.roles.data.map(data => ({
+			"label": data.name,
+			"value": data.id
+		}))
+	}
+
+	return []
+})
+const roleID = computed<string>({
+	get(): string {
+		return props.modelValue.posterRole.data.id
+	},
+	set(newValue: string): void {
+		let currentRole = props.modelValue.posterRole.data
+
+		if (hasMultipleRoles.value) {
+			const completePosterInfo = props.modelValue.poster as DeserializedUserDocument<"roles">
+
+			currentRole = completePosterInfo.data.roles.data.find(
+				data => data.id === newValue
+			) as DeserializedRoleResource<"read">
+		}
+
+		emit("update:modelValue", {
+			...props.modelValue,
+			"posterRole": {
+				"data": currentRole
+			}
+		})
+	}
+})
 
 const postID = computed<string>(() => props.modelValue.id)
 const content = computed<string>({
@@ -67,4 +133,15 @@ function close() {
 function updatePost(): void {
 	emit("submit", postID.value)
 }
+
+watch(isShown, newValue => {
+	if (newValue && !hasLoadedCompletePosterInfo.value) {
+		userFetcher.read(props.modelValue.poster.data.id).then(({ body }) => {
+			emit("update:modelValue", {
+				...props.modelValue,
+				"poster": body
+			})
+		})
+	}
+})
 </script>
