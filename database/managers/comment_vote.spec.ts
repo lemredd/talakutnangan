@@ -12,11 +12,13 @@ describe("Database Manager: Miscellaneous comment vote operations", () => {
 			"-deletedAt",
 			"-departmentID",
 			"-id",
+			"-kind",
 			"-updatedAt",
 			"createdAt",
 			"deletedAt",
 			"departmentID",
 			"id",
+			"kind",
 			"updatedAt"
 		])
 	})
