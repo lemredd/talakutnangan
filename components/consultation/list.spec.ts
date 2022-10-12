@@ -53,7 +53,7 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": {},
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -100,7 +100,7 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": {},
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -150,7 +150,7 @@ describe("Component: consultation/list", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
-					"bodyClasses": {},
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -217,7 +217,7 @@ describe("Component: consultation/list", () => {
 		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
 	})
 
-	it("toggle search button", async () => {
+	it("toggle search button", async() => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {

@@ -1,12 +1,13 @@
 import type { Rules, FieldRules } from "!/types/validation"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationDocument } from "$/types/documents/consultation"
-import type { ChatMessageActivityDocument } from "$/types/documents/chat_message_activity"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Manager from "%/managers/consultation"
+import deserialize from "$/object/deserialize"
 import Merger from "!/middlewares/miscellaneous/merger"
 import ChatMessageManager from "%/managers/chat_message"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -237,20 +238,12 @@ export default class extends DoubleBoundJSONController {
 			if (value !== null) {
 				const activityManager = new ChatMessageActivityManager(request)
 
-				const activity = await activityManager.findOneOnColumn(
-					"consultationID",
-					id,
-					{
-						"constraints": {
-							"filter": {
-								"existence": "exists"
-							}
-						}
-					}
-				) as ChatMessageActivityDocument
+				const userProfile = deserialize(request.user) as DeserializedUserProfile
+
+				const activityID = await activityManager.findSessionID(Number(userProfile.data.id), id)
 
 				const chatMessage = await chatMessageManager.create({
-					"chatMessageActivityID": Number(activity.data.id),
+					"chatMessageActivityID": Number(activityID),
 					"data": {
 						value
 					},

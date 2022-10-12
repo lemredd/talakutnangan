@@ -1,13 +1,12 @@
 <template>
 	<div>
 		<small  v-if="isMessageKindText(lastChat)" class="last-chat">
-			<!-- TODO(others): must limit length -->
-			<!-- TODO(others): must change acording to kind of message -->
 			{{ lastChat.user.data.name }}: {{ lastChat.data.value }}
 		</small>
+		<small v-if="isMessageKindStatus(lastChat)" class="last-chat">
+			{{ lastChat.data.value }}
+		</small>
 		<small v-if="isMessageKindFile(lastChat)" class="last-chat">
-			<!-- TODO(others): must limit length -->
-			<!-- TODO(others): must change acording to kind of message -->
 			{{ (lastChat.user.data.name) }} sent an attachment
 		</small>
 
@@ -28,10 +27,15 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from "vue"
 
-import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
-import { computed } from "vue";
+
+import {
+	isMessageKindFile,
+	isMessageKindStatus,
+	isMessageKindText
+} from "@/consultation/helpers/chat_message_kinds"
 
 const {
 	lastChat
@@ -39,19 +43,6 @@ const {
 	lastChat: DeserializedChatMessageResource<"user">
 }>()
 
-function isMessageKindStatus(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & StatusMessage {
-	return value.kind === "status"
-}
-
-function isMessageKindText(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & TextMessage {
-	return value.kind === "text"
-}
-function isMessageKindFile(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & TextMessage {
-	return value.kind === "file"
-}
 
 const time = computed(
 	() => `${lastChat.createdAt.getHours() % 12}:${lastChat.createdAt.getMinutes()}`

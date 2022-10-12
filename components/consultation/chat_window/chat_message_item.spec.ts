@@ -155,7 +155,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"email": "",
 					"id": "1",
 					"kind": "reachable_employee",
-					"name": "A",
+					"name": "self",
 					"prefersDark": true,
 					"profilePicture": {
 						"data": {
@@ -172,7 +172,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"email": "",
 					"id": "2",
 					"kind": "student",
-					"name": "B",
+					"name": "Other user",
 					"prefersDark": true,
 					"profilePicture": {
 						"data": {
@@ -226,7 +226,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 	})
 
 	describe("File message", () => {
-		it.only("can show file type message properly", () => {
+		it("can show file type message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
 				"data": {
