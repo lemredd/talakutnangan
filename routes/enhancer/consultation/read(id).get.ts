@@ -121,7 +121,7 @@ export default class extends PageMiddleware {
 				"limit": 10,
 				"offset": 0
 			},
-			"sort": [ "createdAt" ]
+			"sort": [ "-createdAt" ]
 		})
 
 		const previewMessages = await chatMessageManager.findPreviews(allConsultationIDs)

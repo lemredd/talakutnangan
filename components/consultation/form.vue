@@ -5,7 +5,6 @@
 		</template>
 
 		<template #default>
-			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant required"
@@ -14,15 +13,14 @@
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
 
-			<!-- TODO: style required field -->
-			<div class="required">
+			<div v-if="selectedConsultants.length" class="required">
 				<SelectableOptionsField
-					v-if="selectedConsultants.length"
 					v-model="addressConsultantAs"
-					class="consultant-roles mb-5"
+					class="consultant-roles"
 					label="Address consultant as:"
 					:options="consultantRoles"/>
 			</div>
+
 			<SearchableChip
 				v-model="selectedConsulters"
 				:current-user-id="userProfileData.id"
@@ -32,7 +30,6 @@
 				text-field-label="Type the students to add"
 				kind="student"/>
 
-			<!-- TODO: style required field -->
 			<div class="required">
 				<SelectableOptionsField
 					v-model="chosenReason"
@@ -42,7 +39,6 @@
 					:options="reasonOptions"/>
 			</div>
 
-			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
@@ -56,7 +52,6 @@
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
-					<!-- TODO: style required field -->
 					<div class="required">
 						<SelectableOptionsField
 							v-model="chosenDay"
@@ -73,14 +68,18 @@
 						</div>
 					</div>
 
-
-					<!-- TODO: style required field -->
-					<div v-if="chosenDay" class="required">
+					<div
+						v-if="chosenDay"
+						:class="selectableTimes.length ? 'required' : ''">
 						<SelectableOptionsField
+							v-if="selectableTimes.length"
 							v-model="chosenTime"
 							class="selectable-time"
 							label="Time:"
 							:options="selectableTimes"/>
+						<p v-else class="selected-day-is-past text-red-500">
+							This consultant's schedule for this day has ended.
+						</p>
 					</div>
 				</div>
 				<div v-else class="consultant-no-schedules">
@@ -115,18 +114,6 @@
 
 <style lang="scss">
 @import "@styles/btn.scss";
-@import "@styles/variables.scss";
-
-.required{
-	&::before {
-		@apply text-xs;
-
-		display:block;
-		color: $color-primary;
-		content:"* required";
-
-	}
-}
 
 .btn{
   border: none;
@@ -155,6 +142,23 @@
 </style>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
+
+.required{
+	&::before {
+		@apply text-xs;
+
+		display:block;
+		color: $color-primary;
+		content:"* required";
+
+	}
+}
+
+.consultant-roles {
+	@apply mb-5;
+}
+
 .schedule-selector {
 	.selectable-day, .selectable-time {
 		margin: 1em 0 1em;
@@ -184,11 +188,11 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
-import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -247,7 +251,7 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
-			"existence": "*",
+			"existence": "exists",
 			"user": selectedConsultant.id
 		},
 		"page": {
@@ -261,9 +265,9 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 	})
 }
 
-const dateToday = new Date()
-const dateInNextMonth = jumpNextMonth(dateToday)
-const dayIndex = dateToday.getDay()
+const dateToday = ref(new Date())
+const dateInNextMonth = jumpNextMonth(dateToday.value)
+const dayIndex = dateToday.value.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
 const chosenDay = ref("")
@@ -329,13 +333,21 @@ const selectableTimes = computed(() => {
 
 			times.forEach(time => {
 				const timeObject = convertMinutesToTimeObject(time)
+				const timeString = convertToTimeString(timeObject)
 				const midday = getTimePart(time, "midday")
-				const label = `${convertToTimeString(timeObject)} ${midday}`
+				const label = `${timeString} ${midday}`
 
-				availableTimes.push({
-					label,
-					"value": String(time)
-				})
+				const comparableDate = new Date(chosenDay.value)
+				comparableDate.setHours(timeObject.hours)
+				comparableDate.setMinutes(timeObject.minutes)
+				comparableDate.setSeconds(0)
+				comparableDate.setMilliseconds(0)
+				if (comparableDate > dateToday.value) {
+					availableTimes.push({
+						label,
+						"value": String(time)
+					})
+				}
 			})
 		})
 	}
