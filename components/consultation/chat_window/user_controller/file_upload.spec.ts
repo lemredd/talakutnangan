@@ -124,7 +124,7 @@ describe("Component: User controller/File Upload", () => {
 
 	describe("file upload", () => {
 		const accept = "file/*"
-		it.only("can preview uploaded file", async() => {
+		it("can preview uploaded file", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -183,9 +183,9 @@ describe("Component: User controller/File Upload", () => {
 					"files": {
 						"item": () => [
 							{
-								"name": "image.png",
+								"name": "file.txt",
 								"size": 10000,
-								"type": "image/png"
+								"type": "file/*"
 							}
 						]
 					}
