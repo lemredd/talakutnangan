@@ -33,7 +33,7 @@
 						id="choose-file-btn"
 						type="file"
 						name="meta[fileContents]"
-						accept="image/png"
+						:accept="accept"
 						@change="extractFile"/>
 					CHOOSE FILE
 				</label>
@@ -84,7 +84,10 @@ import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
-defineProps<{ isShown: boolean }>()
+defineProps<{
+	accept: string
+	isShown: boolean
+}>()
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)

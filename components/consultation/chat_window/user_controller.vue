@@ -20,16 +20,18 @@
 				attach_file
 			</button>
 			<FileUpload
-				class="file-upload"
+				accept="file/*"
 				:is-shown="isFileUploadFormShown"
+				class="file-upload"
 				@close="hideFileUpload"/>
 
 			<button class="add-image-btn material-icons" @click="showImageUpload">
 				image
 			</button>
 			<FileUpload
-				class="image-upload"
+				accept="image/*"
 				:is-shown="isImageUploadFormShown"
+				class="image-upload"
 				@close="hideImageUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
