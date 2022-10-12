@@ -154,7 +154,7 @@
 </style>
 
 <script setup lang="ts">
-import convertHTMLToPDF from "html2pdf.js"
+import makeConverterFromHTMLToPDF from "html2pdf.js"
 import { ref, computed, watch, onMounted, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
@@ -394,7 +394,10 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 function saveAsPDF(): void {
 	const element = chatWindow.value
 
-
+	const worker = makeConverterFromHTMLToPDF()
+	worker.from(element).save().then(() => {
+		alert("done")
+	})
 }
 
 onMounted(() => {
