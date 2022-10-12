@@ -114,35 +114,15 @@ function uploadPostAttachment(event: Event): void {
 }
 
 function createPost(): void {
-	fetcher.create({
-		"content": content.value,
-		"deletedAt": null
-	}, {
+	fetcher.create(post.value.attributes, {
 		"extraCreateDocumentProps": {
 			"relationships": {
-				"department": {
-					"data": {
-						"id": departmentID.value,
-						"type": "department"
-					}
-				},
+				...post.value.relationships,
 				"postAttachments": {
 					"data": attachmentResources.value.map(resource => ({
 						"id": resource.id,
 						"type": "post_attachment"
 					}))
-				},
-				"poster": {
-					"data": {
-						"id": userID.value,
-						"type": "user"
-					}
-				},
-				"posterRole": {
-					"data": {
-						"id": roleID.value,
-						"type": "role"
-					}
 				}
 			}
 		}
