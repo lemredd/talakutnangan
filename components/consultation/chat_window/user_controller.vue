@@ -16,9 +16,14 @@
 				more_horiz
 			</button>
 			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
-				photo_camera
+			<button class="material-icons add-file-btn" @click="showFileUpload">
+				attach_file
 			</button>
+			<FileUpload
+				class="file-upload"
+				:is-shown="isFileUploadFormShown"
+				@close="hideFileUpload"/>
+
 			<button class="add-image-btn material-icons" @click="showImageUpload">
 				image
 			</button>
@@ -98,6 +103,11 @@ const props = defineProps<{
 
 const textInput = ref<string>("")
 
+const {
+	"off": hideFileUpload,
+	"on": showFileUpload,
+	"state": isFileUploadFormShown
+} = makeSwitch(false)
 const {
 	"off": hideImageUpload,
 	"on": showImageUpload,

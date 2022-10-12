@@ -223,45 +223,45 @@ describe("Component: consultation/chat_window/user_controller", () => {
 	})
 
 	describe("Sending files", () => {
-		// it("can toggle file upload component", async() => {
-		// 	fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		// 	fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		// 	const userID = "1"
-		// 	const resource = {
-		// 		"actionTaken": null,
-		// 		"deletedAt": null,
-		// 		"finishedAt": null,
-		// 		"id": "1",
-		// 		"reason": "",
-		// 		"scheduledStartAt": new Date(),
-		// 		"startedAt": new Date(),
-		// 		"type": "consultation"
-		// 	} as DeserializedConsultationResource
+		it("can toggle file upload component", async() => {
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const userID = "1"
+			const resource = {
+				"actionTaken": null,
+				"deletedAt": null,
+				"finishedAt": null,
+				"id": "1",
+				"reason": "",
+				"scheduledStartAt": new Date(),
+				"startedAt": new Date(),
+				"type": "consultation"
+			} as DeserializedConsultationResource
 
-		// 	const wrapper = shallowMount<any>(Component, {
-		// 		"global": {
-		// 			"provide": {
-		// 				[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
-		// 					"id": userID,
-		// 					"receivedMessageAt": new Date()
-		// 				}))
-		// 			}
-		// 		},
-		// 		"props": {
-		// 			"consultation": resource
-		// 		}
-		// 	})
-		// 	const fileUpload = wrapper.find(".file-upload")
-		// 	const addImageBtn = wrapper.find(".add-image-btn")
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
+							"id": userID,
+							"receivedMessageAt": new Date()
+						}))
+					}
+				},
+				"props": {
+					"consultation": resource
+				}
+			})
+			const fileUpload = wrapper.find(".file-upload")
+			const addImageBtn = wrapper.find(".add-file-btn")
 
-		// 	expect(fileUpload.exists()).toBeTruthy()
+			expect(fileUpload.exists()).toBeTruthy()
 
-		// 	await addImageBtn.trigger("click")
-		// 	expect(fileUpload.attributes("isshown")).toBeTruthy()
+			await addImageBtn.trigger("click")
+			expect(fileUpload.attributes("isshown")).toBeTruthy()
 
-		// 	await fileUpload.trigger("close")
-		// 	expect(fileUpload.attributes("isshown")).toBe("false")
-		// })
+			await fileUpload.trigger("close")
+			expect(fileUpload.attributes("isshown")).toBe("false")
+		})
 
 		it("can toggle image upload component", async() => {
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
