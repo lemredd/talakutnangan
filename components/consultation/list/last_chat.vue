@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<small  v-if="isMessageKindText(lastChat)" class="last-chat">
+		<small v-if="isMessageKindText(lastChat)" class="last-chat">
 			{{ lastChat.user.data.name }}: {{ lastChat.data.value }}
 		</small>
 		<small v-if="isMessageKindStatus(lastChat)" class="last-chat">
-			{{ lastChat.data.value }}
+			{{ lastChat.user.data.name }} {{ lastChat.data.value }}
 		</small>
 		<small v-if="isMessageKindFile(lastChat)" class="last-chat">
 			{{ (lastChat.user.data.name) }} sent an attachment
