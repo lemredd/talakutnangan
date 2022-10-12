@@ -1,8 +1,5 @@
 <template>
-	<div
-		v-for="(post, i) in posts"
-		class="post"
-		:hidden="secludePostDiv(post)">
+	<div v-for="post in posts" class="post">
 		<div v-if="post">
 			<div class="post-container flex justify-between w-[100%] pb-[5em]">
 				<div class="post-title">
@@ -15,41 +12,10 @@
 				<Menu/>
 			</div>
 			<!--  -->
-			<div class="post-container" :hidden="post.isEditShown">
-				<div class="container">
-					<form @submit.prevent="editPostDetails(post)">
-						<div class="row">
-							<div class="col-25">
-								<label for="title">Edit Title</label>
-							</div>
-							<div class="col-75">
-								<input
-									id="title"
-									v-model="titleToEdit"
-									type="text"
-									name="title"
-									placeholder="Your title.."/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-25">
-								<label for="desc">Edit Description</label>
-							</div>
-							<div class="col-75">
-								<textarea
-									id="desc"
-									v-model="descToEdit"
-									name="desc"
-									placeholder="Write something.."
-									style="height:200px"></textarea>
-							</div>
-						</div>
-						<div class="row">
-							<input type="submit" value="Submit"/>
-						</div>
-					</form>
-				</div>
-			</div>
+			<UpdatePostForm
+				v-model="post"
+				:is-shown="mustUpdate"
+				@submit="submitChangesSeparately"/>
 			<div class="post-container" :hidden="post.isPostShown">
 				<div class="left">
 					<div><img src="@assets/emptyUser.png"/></div>
@@ -108,16 +74,48 @@
 </style>
 
 <script setup lang="ts">
+import { ref, computed } from "vue"
 import {
 	voteCountUpdate,
 	determineUserVoted,
 	upVote,
 	downVoteCountUpdate,
 	determineUserDownVoted,
-	secludePostDiv,
 	downVote,
 	totalVotes
 } from "./../../pages/forum/post"
 
 import Menu from "@/post/viewer/menu.vue"
+import UpdatePostForm from "./viewer/update_post_form.vue"
+
+import type { DeserializedPostResource } from "$/types/documents/post"
+
+import makeSwitch from "$@/helpers/make_switch"
+
+const props = defineProps<{
+	modelValue: DeserializedPostResource<"poster"|"posterRole">[]
+}>()
+
+interface CustomEvents {
+	(event: "update:modelValue", post: DeserializedPostResource<"poster"|"posterRole">[]): void
+}
+const emit = defineEmits<CustomEvents>()
+
+const posts = computed<DeserializedPostResource<"poster"|"posterRole">[]>({
+	get(): DeserializedPostResource<"poster"|"posterRole">[] {
+		return props.modelValue
+	},
+	set(newValue: DeserializedPostResource<"poster"|"posterRole">[]): void {
+		emit("update:modelValue", newValue)
+	}
+})
+
+const {
+	"state": mustUpdate,
+	"on": openEditForm
+} = makeSwitch(false)
+
+async function submitChangesSeparately() {
+
+}
 </script>
