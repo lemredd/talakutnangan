@@ -1,5 +1,8 @@
 <template>
-	<div v-for="post in posts" class="post">
+	<div
+		v-for="(post, i) in posts"
+		:key="post.id"
+		class="post">
 		<div v-if="post">
 			<div class="post-container flex justify-between w-[100%] pb-[5em]">
 				<div class="post-title">
@@ -9,11 +12,10 @@
 				</div>
 				<div class="">
 				</div>
-				<Menu/>
+				<Menu :post="post"/>
 			</div>
-			<!--  -->
 			<UpdatePostForm
-				v-model="post"
+				v-model="posts[i]"
 				:is-shown="mustUpdate"
 				@submit="submitChangesSeparately"/>
 			<div class="post-container" :hidden="post.isPostShown">
@@ -61,7 +63,6 @@
 					{{ post.desc }}
 				</p>
 			</div>
-			<!--  -->
 		</div>
 		<br/>
 	</div>
@@ -115,7 +116,7 @@ const {
 	"on": openEditForm
 } = makeSwitch(false)
 
-async function submitChangesSeparately() {
+async function submitChangesSeparately(postID: string) {
 
 }
 </script>
