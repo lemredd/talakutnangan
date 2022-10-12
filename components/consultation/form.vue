@@ -167,11 +167,11 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
-import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -245,8 +245,8 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 }
 
 const dateToday = new Date()
-const dateInNextMonth = jumpNextMonth(dateToday)
-const dayIndex = dateToday.getDay()
+const dateInNextMonth = jumpNextMonth(dateToday.value)
+const dayIndex = dateToday.value.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
 const chosenDay = ref("")
@@ -312,13 +312,21 @@ const selectableTimes = computed(() => {
 
 			times.forEach(time => {
 				const timeObject = convertMinutesToTimeObject(time)
+				const timeString = convertToTimeString(timeObject)
 				const midday = getTimePart(time, "midday")
-				const label = `${convertToTimeString(timeObject)} ${midday}`
+				const label = `${timeString} ${midday}`
 
-				availableTimes.push({
-					label,
-					"value": String(time)
-				})
+				const comparableDate = new Date(chosenDay.value)
+				comparableDate.setHours(timeObject.hours)
+				comparableDate.setMinutes(timeObject.minutes)
+				comparableDate.setSeconds(0)
+				comparableDate.setMilliseconds(0)
+				if (comparableDate > dateToday.value) {
+					availableTimes.push({
+						label,
+						"value": String(time)
+					})
+				}
 			})
 		})
 	}
