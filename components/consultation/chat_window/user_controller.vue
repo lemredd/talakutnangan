@@ -19,13 +19,13 @@
 			<button class="material-icons">
 				photo_camera
 			</button>
-			<button class="add-image-btn material-icons" @click="showFileUpload">
+			<button class="add-image-btn material-icons" @click="showImageUpload">
 				image
 			</button>
 			<FileUpload
-				class="file-upload"
-				:is-shown="isFileUploadFormShown"
-				@close="hideFileUpload"/>
+				class="image-upload"
+				:is-shown="isImageUploadFormShown"
+				@close="hideImageUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
@@ -81,6 +81,7 @@ import type {
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
+import makeSwitch from "$@/helpers/make_switch"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
@@ -96,7 +97,13 @@ const props = defineProps<{
 }>()
 
 const textInput = ref<string>("")
-const isFileUploadFormShown = ref<boolean>(false)
+
+const {
+	"off": hideImageUpload,
+	"on": showImageUpload,
+	"state": isImageUploadFormShown
+} = makeSwitch(false)
+
 
 const {
 	willSoonStart,
@@ -123,13 +130,6 @@ function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
 	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
 
 	throw new Error("Chat message activities cannot be processed yet.")
-}
-
-function showFileUpload() {
-	isFileUploadFormShown.value = true
-}
-function hideFileUpload() {
-	isFileUploadFormShown.value = false
 }
 
 function send(): void {

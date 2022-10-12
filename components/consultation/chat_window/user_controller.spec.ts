@@ -7,6 +7,7 @@ import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import RequestEnvironment from "$/singletons/request_environment"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+
 import Component from "./user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
@@ -222,6 +223,46 @@ describe("Component: consultation/chat_window/user_controller", () => {
 	})
 
 	describe("Sending files", () => {
+		// it("can toggle file upload component", async() => {
+		// 	fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		// 	fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+		// 	const userID = "1"
+		// 	const resource = {
+		// 		"actionTaken": null,
+		// 		"deletedAt": null,
+		// 		"finishedAt": null,
+		// 		"id": "1",
+		// 		"reason": "",
+		// 		"scheduledStartAt": new Date(),
+		// 		"startedAt": new Date(),
+		// 		"type": "consultation"
+		// 	} as DeserializedConsultationResource
+
+		// 	const wrapper = shallowMount<any>(Component, {
+		// 		"global": {
+		// 			"provide": {
+		// 				[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
+		// 					"id": userID,
+		// 					"receivedMessageAt": new Date()
+		// 				}))
+		// 			}
+		// 		},
+		// 		"props": {
+		// 			"consultation": resource
+		// 		}
+		// 	})
+		// 	const fileUpload = wrapper.find(".file-upload")
+		// 	const addImageBtn = wrapper.find(".add-image-btn")
+
+		// 	expect(fileUpload.exists()).toBeTruthy()
+
+		// 	await addImageBtn.trigger("click")
+		// 	expect(fileUpload.attributes("isshown")).toBeTruthy()
+
+		// 	await fileUpload.trigger("close")
+		// 	expect(fileUpload.attributes("isshown")).toBe("false")
+		// })
+
 		it("can toggle image upload component", async() => {
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
@@ -250,7 +291,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 					"consultation": resource
 				}
 			})
-			const fileUpload = wrapper.find(".file-upload")
+			const fileUpload = wrapper.find(".image-upload")
 			const addImageBtn = wrapper.find(".add-image-btn")
 
 			expect(fileUpload.exists()).toBeTruthy()
