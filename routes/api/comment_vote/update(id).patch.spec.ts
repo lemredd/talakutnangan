@@ -26,7 +26,7 @@ describe("Controller: POST /api/comment_vote/:id", () => {
 						"comment": {
 							"data": {
 								"id": String(newCommentVote.commentID),
-								"type": "post"
+								"type": "comment"
 							}
 						},
 						"user": {
@@ -63,7 +63,7 @@ describe("Controller: POST /api/comment_vote/:id", () => {
 						"comment": {
 							"data": {
 								"id": 1,
-								"type": "post"
+								"type": "comment"
 							}
 						},
 						"user": {
