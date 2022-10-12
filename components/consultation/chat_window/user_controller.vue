@@ -4,7 +4,8 @@
 			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
 			<button
 				:disabled="!willStart"
-				class="start"
+				type="button"
+				class="start btn btn-primary"
 				@click="startConsultation">
 				Start consultation
 			</button>
@@ -18,10 +19,13 @@
 			<button class="material-icons">
 				photo_camera
 			</button>
-			<button class="material-icons" @click="showFileUpload">
+			<button class="add-image-btn material-icons" @click="showFileUpload">
 				image
 			</button>
-			<FileUpload :is-shown="isFileUploadFormShown" @close="hideFileUpload"/>
+			<FileUpload
+				class="file-upload"
+				:is-shown="isFileUploadFormShown"
+				@close="hideFileUpload"/>
 		</div>
 		<div v-if="isOngoing" class="message-box">
 			<input
@@ -43,8 +47,10 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 .user-controls {
 	@apply border-t p-3 flex
+
 }
 
 .message-box {

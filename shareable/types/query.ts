@@ -23,6 +23,12 @@ export interface DepartmentFilter<T extends number|string = string> extends Seri
 	}
 }
 
+export interface NullableDepartmentFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		departmentID: "*"|null|T
+	}
+}
+
 export interface RoleFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
@@ -183,3 +189,7 @@ export type ChatMessageQueryParameters<T extends number|string = string> =
 	& ConsultationFilter<T>
 	& ChatMessageKindFilter
 	& PreviewMessageOnlyFilter
+
+export type PostQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& NullableDepartmentFilter<T>

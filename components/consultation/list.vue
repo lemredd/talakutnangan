@@ -1,5 +1,4 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="consultations-list left">
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header">
@@ -41,7 +40,7 @@
 			class="consultation"
 			:class="getActivenessClass(consultation)"
 			@click="pickConsultation(consultation.id)">
-			<h3 class="consultation-title">
+			<h3 class="consultation-title font-bold mb-3;">
 				<span class="number-symbol">#{{ consultation.id }}</span>
 				{{ consultation.reason }}
 			</h3>
@@ -114,9 +113,6 @@
 			background-color: hsla(0, 0%, 50%, 0.1)
 		}
 
-		.consultation-title {
-			@apply col-span-full font-bold mb-3;
-
 			.number-symbol { @apply opacity-45; }
 		}
 
@@ -130,7 +126,6 @@
 				height: 20px;
 			}
 		}
-	}
 </style>
 
 <script setup lang="ts">

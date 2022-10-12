@@ -232,9 +232,9 @@ onMounted(async() => {
 
 	await loadConsultations()
 	await loadPreviousChatMessages()
-
-	setInterval(() => {
-		ConsultationTimerManager.nextInterval()
-	}, convertTimeToMilliseconds("00:00:01"))
 })
+
+setInterval(() => {
+	ConsultationTimerManager.nextInterval()
+}, convertTimeToMilliseconds("00:00:01"))
 </script>

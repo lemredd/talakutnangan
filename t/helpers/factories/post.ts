@@ -14,6 +14,7 @@ import type {
 import Role from "%/models/role"
 import User from "%/models/user"
 import Model from "%/models/post"
+import Department from "%/models/department"
 import Transformer from "%/transformers/post"
 import AttachedRole from "%/models/attached_role"
 import AttachedRoleFactory from "~/factories/attached_role"
@@ -34,6 +35,8 @@ export default class PostFactory extends TextContentLikeFactory<
 	private posterInfoGenerator: () => Promise<AttachedRole>
 		= () => new AttachedRoleFactory().insertOne()
 
+	private departmentGenerator: () => Promise<Department|null> = () => Promise.resolve(null)
+
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): Transformer { return new Transformer() }
@@ -41,7 +44,8 @@ export default class PostFactory extends TextContentLikeFactory<
 	async generate(): GeneratedData<Model> {
 		return {
 			"attachedRoleID": (await this.posterInfoGenerator()).id,
-			"content": this.contentGenerator()
+			"content": this.contentGenerator(),
+			"departmentID": (await this.departmentGenerator())?.id ?? null
 		}
 	}
 
@@ -64,6 +68,11 @@ export default class PostFactory extends TextContentLikeFactory<
 
 	posterInfo(generator: () => Promise<AttachedRole>): PostFactory {
 		this.posterInfoGenerator = generator
+		return this
+	}
+
+	department(generator: () => Promise<Department|null>): PostFactory {
+		this.departmentGenerator = generator
 		return this
 	}
 }

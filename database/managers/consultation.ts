@@ -131,13 +131,6 @@ export default class extends BaseManager<
 				return rawChatMessageActivityAttributes
 			})
 
-			rawChatMessageActivities.push({
-				"consultationID": Number(model.id),
-				"receivedMessageAt": null,
-				"seenMessageAt": null,
-				"userID": Number(consultantID)
-			})
-
 			const chatMessageActivities = await ChatMessageActivity.bulkCreate(
 				rawChatMessageActivities,
 				this.transaction.transactionObject
@@ -163,7 +156,7 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions, new Transformer({
+			return await this.serialize(model, transformerOptions, new Transformer({
 				"included": [
 					"consultant",
 					"consultantRole",

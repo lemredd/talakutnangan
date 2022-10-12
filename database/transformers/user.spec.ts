@@ -22,7 +22,7 @@ describe("Transformer: User", () => {
 		model.studentDetail = studentDetail
 		const transformer = new Transformer()
 
-		const object = Serializer.serialize(model, transformer, {})
+		const object = await Serializer.serialize(model, transformer, {})
 		expect(object).toHaveProperty("data.type", "user")
 		expect(object).toHaveProperty("data.id", String(model.id))
 		expect(object).not.toHaveProperty("data.attributes.prefersDark")
@@ -53,7 +53,7 @@ describe("Transformer: User", () => {
 		models[1].studentDetail = studentDetailB
 		const transformer = new Transformer()
 
-		const object = Serializer.serialize(models, transformer, {})
+		const object = await Serializer.serialize(models, transformer, {})
 
 		expect(object).toHaveProperty("data.0.type", "user")
 		expect(object).toHaveProperty("data.0.id", String(models[0].id))

@@ -132,7 +132,7 @@ describe("Communicator: Fetcher", () => {
 		expect(request).toHaveProperty("url", "/api/user")
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.json()).resolves.toStrictEqual({
+		expect(await request.json()).toStrictEqual({
 			"data": [
 				{
 					"id": "1",

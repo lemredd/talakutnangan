@@ -2,6 +2,7 @@ import {
 	Table,
 	Column,
 	DataType,
+	AllowNull,
 	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
@@ -15,8 +16,8 @@ import FileLike from "%/models/file-like"
 })
 export default class PostAttachment extends FileLike {
 	@ForeignKey(() => Post)
+	@AllowNull
 	@Column({
-		"allowNull": false,
 		"defaultValue": null,
 		"type": DataType.BIGINT
 	})

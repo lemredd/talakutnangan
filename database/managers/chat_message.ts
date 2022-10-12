@@ -137,9 +137,13 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done searching preview messages")
 
-			const serializedModels = this.serialize(models, {} as unknown as void, new Transformer({
-				"included": [ "user", "consultation" ]
-			}))
+			const serializedModels = await this.serialize(
+				models,
+				{} as unknown as void,
+				new Transformer({
+					"included": [ "user", "consultation" ]
+				})
+			)
 			serializedModels.meta = {
 				"count": models.length
 			}
@@ -156,7 +160,7 @@ export default class extends BaseManager<
 		try {
 			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
 
-			return this.serialize(model, transformerOptions, new Transformer({
+			return await this.serialize(model, transformerOptions, new Transformer({
 				"included": [ "user", "consultation", "chatMessageActivity" ]
 			}))
 		} catch (error) {
@@ -190,7 +194,7 @@ export default class extends BaseManager<
 
 			model.attachedChatFile = attachedChatFileModel
 
-			return this.serialize(model, transformerOptions, new Transformer({
+			return await this.serialize(model, transformerOptions, new Transformer({
 				"included": [ "user", "consultation", "chatMessageActivity", "attachedChatFile" ]
 			}))
 		} catch (error) {

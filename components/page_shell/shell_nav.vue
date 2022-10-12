@@ -85,7 +85,7 @@
 	}
 
 	.logo {
-		@apply flex items-center;
+		@apply flex items-center sm:flex-row max-w-30;
 
 		padding: .25em;
 

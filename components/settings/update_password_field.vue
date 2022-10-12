@@ -53,11 +53,12 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue"
+import { ref, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
 import Fetcher from "$@/fetchers/user"
+import makeSwitch from "$@/helpers/make_switch"
 
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
@@ -67,18 +68,16 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const mockPassword = ref<string>("00000000")
-const isOverlayShown = ref<boolean>(false)
+const {
+	"off": closeDialog,
+	"on": openDialog,
+	"state": isOverlayShown
+} = makeSwitch(false)
 const currentPassword = ref<string>("")
 const newPassword = ref<string>("")
 const confirmNewPassword = ref<string>("")
 
-let rawFetcher: Fetcher|null = null
-
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
-
-	throw new Error("Users cannot be processed to server yet")
-}
+const fetcher: Fetcher = new Fetcher()
 
 function clearPasswords(): void {
 	[
@@ -90,25 +89,17 @@ function clearPasswords(): void {
 	})
 }
 
-function openDialog(): void {
-	isOverlayShown.value = true
-}
-
 function cancel(): void {
 	clearPasswords()
-	isOverlayShown.value = false
+	closeDialog()
 }
 
 function savePassword() {
-	fetcher().updatePassword(
+	fetcher.updatePassword(
 		userProfile.data.id,
 		currentPassword.value,
 		newPassword.value,
 		confirmNewPassword.value
 	).then(cancel)
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>

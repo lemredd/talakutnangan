@@ -4,9 +4,6 @@ import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 import DepartmentFactory from "~/factories/department"
 
-import UserTransformer from "%/transformers/user"
-import Serializer from "%/transformers/serializer"
-
 import DevController from "!/controllers/dev"
 
 export default class extends DevController {
@@ -23,9 +20,8 @@ export default class extends DevController {
 			user.roles = [ role ]
 			return user
 		})
-		const transformer = new UserTransformer()
 
-		const serializedList = Serializer.serialize(list, transformer, {})
+		const serializedList = await new UserFactory().serialize(list)
 
 		response.status(this.status.OK).json(serializedList)
 	}

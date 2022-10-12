@@ -1,10 +1,10 @@
 import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
-import Log from "$!/singletons/log"
-
 import User from "%/models/user"
-import ProfilePicture from "%/models/profile_picture"
+import Log from "$!/singletons/log"
 import isUndefined from "$/type_guards/is_undefined"
+import ProfilePicture from "%/models/profile_picture"
+import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
@@ -36,6 +36,10 @@ export default function<T>(
 		],
 		"model": ChatMessageActivity,
 		"required": true
+	})
+	castInclude.push({
+		"model": AttachedChatFile,
+		"required": false
 	})
 
 	Log.trace("query pipe", "applied default includer")
