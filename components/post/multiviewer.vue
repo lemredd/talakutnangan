@@ -84,7 +84,7 @@ import {
 	determineUserDownVoted,
 	downVote,
 	totalVotes
-} from "./../../pages/forum/post"
+} from "../../pages/forum/post"
 
 import Menu from "@/post/viewer/menu.vue"
 import UpdatePostForm from "./viewer/update_post_form.vue"
