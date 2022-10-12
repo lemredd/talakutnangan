@@ -25,7 +25,7 @@
 				v-if="isMessageKindStatus(chatMessage)"
 				class="message-item-content"
 				:class="messageItemContent">
-				{{ chatMessage.user.data.name }} {{ chatMessage.data.value }}
+				{{ determineStatusMessage }}
 			</p>
 		</div>
 		<ProfilePicture
@@ -75,7 +75,7 @@
 import { computed, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TextMessage, StatusMessage } from "$/types/message"
+
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
 import {
@@ -109,14 +109,15 @@ const isOtherMessage = computed<boolean>(() => {
 	return isMessageCameFromOther
 })
 
-function isMessageKindText(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & TextMessage {
-	return value.kind === "text"
-}
-function isMessageKindFile(value: DeserializedChatMessageResource<"user">)
-: value is DeserializedChatMessageResource<"user"> & TextMessage {
-	return value.kind === "file"
-}
+const determineStatusMessage = computed(() => {
+	let value = ""
+	const chatMessageValue = chatMessage.data.value as string
+
+	if (chatMessageValue.includes("finished")) value = chatMessageValue
+	else value = `${chatMessage.user.data.name} ${chatMessageValue}`
+
+	return value
+})
 
 const messageItem = {
 	"own-message": isSelfMessage.value,
