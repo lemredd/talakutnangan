@@ -11,7 +11,7 @@ Put your additions and compatible changes here...
 
 ## Merge Instructions
 - PRs to merge first: None / #xxx
-- Will have additional commits? No [unless all tests are passing]/Yes
+- Will have additional commits? None/Yes [unless all tests are failing]
 - Must be merged ASAP? No/Yes
 - In case of merge conflicts, who will resolve them? Pull requester/Reviewer/Whoever caught it first
 

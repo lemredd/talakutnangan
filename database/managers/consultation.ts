@@ -201,7 +201,10 @@ export default class extends BaseManager<
 						"required": true
 					}
 				],
-				"where": new Condition().not("startedAt", null).build()
+				"where": new Condition().and(
+					new Condition().not("startedAt", null),
+					new Condition().is("finishedAt", null)
+				).build()
 			})
 
 			let canStart = activeConsultations.length === 0
