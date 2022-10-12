@@ -6,7 +6,6 @@
 			@click="toggleConsultationList">
 			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
 		</button>
-		<!-- TODO(others/mobile): should view once consultation is clicked in picker (by route) -->
 
 		<div class="selected-consultation-header dark:bg-true-gray-800">
 			<div class="text">
