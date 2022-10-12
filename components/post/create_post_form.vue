@@ -31,12 +31,22 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, inject } from "vue"
 
-import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
+import type { PageContext } from "$/types/renderer"
+import type { PostResource } from "$/types/documents/post"
+import type {
+	DeserializedPostAttachmentResource,
+	PostAttachmentIdentifierListDocument
+} from "$/types/documents/post_attachment"
 
 import Fetcher from "$@/fetchers/post"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
+
+type RequiredExtraProps = "departments"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
@@ -45,7 +55,37 @@ const postAttachmentFetcher = new PostAttachmentFetcher()
 const { isShown } = defineProps<{ isShown: boolean }>()
 
 const roleID = ref("")
-const post = ref("")
+const post = ref<PostResource<"create">>({
+	"attributes": {
+		"content": "",
+		"deletedAt": null
+	},
+	"id": 0 as unknown as undefined,
+	"relationships": {
+		"department": {
+			"data": {
+				"id": userProfile.data.department.data.id,
+				"type": "department"
+			}
+		},
+		"postAttachments": {
+			"data": []
+		} as PostAttachmentIdentifierListDocument,
+		"poster": {
+			"data": {
+				"id": userProfile.data.id,
+				"type": "user"
+			}
+		},
+		"posterRole": {
+			"data": {
+				"id": userProfile.data.roles.data[0].id,
+				"type": "role"
+			}
+		}
+	},
+	"type": "post"
+})
 const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
 interface CustomEvents {
