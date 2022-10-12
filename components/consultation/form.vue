@@ -244,7 +244,7 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 	})
 }
 
-const dateToday = new Date()
+const dateToday = ref(new Date())
 const dateInNextMonth = jumpNextMonth(dateToday.value)
 const dayIndex = dateToday.value.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
