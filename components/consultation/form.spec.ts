@@ -339,6 +339,109 @@ describe("Component: consultation/form", () => {
 			expect(selectableTime.exists()).toBeTruthy()
 			expect(timeOptions.length).toBeGreaterThan(0)
 		})
+
+		it("should eliminate time options", async() => {
+			const roles = {
+				"data": [
+					{
+						"id": 0,
+						"name": "Role A"
+					}
+				]
+			}
+			const employees = {
+				"data": [
+					{
+						"attributes": {
+							"email": "",
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
+						},
+						"id": "2",
+						"type": "user"
+					}
+				]
+			}
+			fetchMock.mockResponseOnce(
+				JSON.stringify(employees),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				]
+			}
+
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"id": "1",
+										"type": "user"
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"Overlay": false,
+						"SearchableChip": false,
+						"SelectableOptionsField": false
+					}
+				},
+				"props": {
+					"isShown": true
+				}
+			})
+
+			const consultantBox = wrapper.find(".consultant")
+			const consultantSearchField = consultantBox.findComponent({
+				"name": "NonSensitiveTextField"
+			})
+			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			// Display consultant chip
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			expect(selectableDay.exists()).toBeTruthy()
+			const dayOptions = selectableDay.findAll("option")
+			expect(dayOptions).toHaveLength(3)
+
+			// Load selectable times and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date(dayOptions[1].attributes("value") as string)
+			castedWrapper.dateToday.setHours(21)
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
+
+			// Eliminate options that are after the current hour
+			expect(timeOptions.length).not.toBeGreaterThan(1)
+		})
 	})
 
 	describe("Form submission", () => {
