@@ -5,7 +5,7 @@
 		</template>
 		<template #default>
 			<DraftForm
-				v-model="post"
+				v-model="content"
 				@submit-post="createPost">
 				<div v-if="hasMultipleRoles" class="row">
 					<SelectableOptionsField
@@ -50,12 +50,8 @@ import { ref, computed, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { PostResource } from "$/types/documents/post"
 import type { DeserializedRoleResource } from "$/types/documents/role"
-import type {
-	DeserializedPostAttachmentResource,
-	PostAttachmentIdentifierListDocument
-} from "$/types/documents/post_attachment"
+import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
 import Fetcher from "$@/fetchers/post"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
@@ -104,37 +100,7 @@ const departmentNames = computed<OptionInfo[]>(() => {
 	return departmentNameOptions
 })
 const departmentID = ref<string>(userProfile.data.department.data.id)
-const post = ref<PostResource<"create">>({
-	"attributes": {
-		"content": "",
-		"deletedAt": null
-	},
-	"id": 0 as unknown as undefined,
-	"relationships": {
-		"department": {
-			"data": {
-				"id": userProfile.data.department.data.id,
-				"type": "department"
-			}
-		},
-		"postAttachments": {
-			"data": []
-		} as PostAttachmentIdentifierListDocument,
-		"poster": {
-			"data": {
-				"id": userProfile.data.id,
-				"type": "user"
-			}
-		},
-		"posterRole": {
-			"data": {
-				"id": userProfile.data.roles.data[0].id,
-				"type": "role"
-			}
-		}
-	},
-	"type": "post"
-})
+const content = ref<string>("")
 const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
 interface CustomEvents {
@@ -163,15 +129,35 @@ function uploadPostAttachment(event: Event): void {
 }
 
 function createPost(): void {
-	fetcher.create(post.value.attributes, {
+	fetcher.create({
+		"content": content.value,
+		"deletedAt": null
+	}, {
 		"extraCreateDocumentProps": {
 			"relationships": {
-				...post.value.relationships,
+				"department": {
+					"data": {
+						"id": departmentID.value,
+						"type": "department"
+					}
+				},
 				"postAttachments": {
 					"data": attachmentResources.value.map(resource => ({
 						"id": resource.id,
 						"type": "post_attachment"
 					}))
+				},
+				"poster": {
+					"data": {
+						"id": userProfile.data.id,
+						"type": "user"
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": roleID.value,
+						"type": "role"
+					}
 				}
 			}
 		}
