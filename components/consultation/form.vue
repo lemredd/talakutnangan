@@ -5,7 +5,6 @@
 		</template>
 
 		<template #default>
-			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant required"
@@ -14,15 +13,14 @@
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
 
-			<!-- TODO: style required field -->
-			<div class="required">
+			<div v-if="selectedConsultants.length" class="required">
 				<SelectableOptionsField
-					v-if="selectedConsultants.length"
 					v-model="addressConsultantAs"
-					class="consultant-roles mb-5"
+					class="consultant-roles"
 					label="Address consultant as:"
 					:options="consultantRoles"/>
 			</div>
+
 			<SearchableChip
 				v-model="selectedConsulters"
 				:current-user-id="userProfileData.id"
@@ -32,7 +30,6 @@
 				text-field-label="Type the students to add"
 				kind="student"/>
 
-			<!-- TODO: style required field -->
 			<div class="required">
 				<SelectableOptionsField
 					v-model="chosenReason"
@@ -42,7 +39,6 @@
 					:options="reasonOptions"/>
 			</div>
 
-			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
@@ -56,7 +52,6 @@
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
-					<!-- TODO: style required field -->
 					<div class="required">
 						<SelectableOptionsField
 							v-model="chosenDay"
@@ -73,14 +68,18 @@
 						</div>
 					</div>
 
-
-					<!-- TODO: style required field -->
-					<div v-if="chosenDay" class="required">
+					<div
+						v-if="chosenDay"
+						:class="selectableTimes.length ? 'required' : ''">
 						<SelectableOptionsField
+							v-if="selectableTimes.length"
 							v-model="chosenTime"
 							class="selectable-time"
 							label="Time:"
 							:options="selectableTimes"/>
+						<p v-else class="selected-day-is-past text-red-500">
+							This consultant's schedule for this day has ended.
+						</p>
 					</div>
 				</div>
 				<div v-else class="consultant-no-schedules">
@@ -115,18 +114,6 @@
 
 <style lang="scss">
 @import "@styles/btn.scss";
-@import "@styles/variables.scss";
-
-.required{
-	&::before {
-		@apply text-xs;
-
-		display:block;
-		color: $color-primary;
-		content:"* required";
-
-	}
-}
 
 .btn{
   border: none;
@@ -155,6 +142,23 @@
 </style>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
+
+.required{
+	&::before {
+		@apply text-xs;
+
+		display:block;
+		color: $color-primary;
+		content:"* required";
+
+	}
+}
+
+.consultant-roles {
+	@apply mb-5;
+}
+
 .schedule-selector {
 	.selectable-day, .selectable-time {
 		margin: 1em 0 1em;

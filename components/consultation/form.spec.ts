@@ -436,11 +436,10 @@ describe("Component: consultation/form", () => {
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
-			const selectableTime = wrapper.find(".selectable-time")
-			const timeOptions = selectableTime.findAll("option")
+			const selectedDayIsPast = wrapper.find(".selected-day-is-past")
 
 			// Eliminate options that are after the current hour
-			expect(timeOptions.length).not.toBeGreaterThan(1)
+			expect(selectedDayIsPast.exists()).toBeTruthy()
 		})
 	})
 
