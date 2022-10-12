@@ -9,7 +9,6 @@ import {
 
 import User from "%/models/user"
 import Comment from "%/models/comment"
-import Department from "%/models/department"
 import { VoteKind, VoteKindValues } from "$/types/database"
 
 @Table({
@@ -27,17 +26,6 @@ export default class CommentVote extends Model {
 
 	@BelongsTo(() => Comment)
 		comment!: Comment
-
-	@ForeignKey(() => Department)
-	@Column({
-		"allowNull": true,
-		"defaultValue": null,
-		"type": DataType.BIGINT
-	})
-		departmentID!: number|null
-
-	@BelongsTo(() => Department)
-		department!: Department|null
 
 	@ForeignKey(() => User)
 	@Column({
