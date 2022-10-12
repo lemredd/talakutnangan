@@ -17,7 +17,7 @@ describe("Page: settings/account", () => {
 		.user(() => Promise.resolve(userProfileModel))
 		.insertOne()
 		userProfileModel.studentDetail = studentDetailModel
-		const userProfileResource = factory
+		const userProfileResource = await factory
 		.deserialize(userProfileModel) as DeserializedUserProfile<"department"|"studentDetail">
 		const wrapper = mount(Page, {
 			"global": {
@@ -44,7 +44,7 @@ describe("Page: settings/account", () => {
 	it("should show basic details for employees", async() => {
 		const factory = new Factory()
 		const userProfileModel = await factory.beReachableEmployee().insertOne()
-		const userProfileResource = factory
+		const userProfileResource = await factory
 		.deserialize(userProfileModel) as DeserializedUserProfile<"department">
 		const wrapper = mount(Page, {
 			"global": {

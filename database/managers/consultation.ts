@@ -156,7 +156,7 @@ export default class extends BaseManager<
 
 			Log.success("manager", "done creating a model")
 
-			return this.serialize(model, transformerOptions, new Transformer({
+			return await this.serialize(model, transformerOptions, new Transformer({
 				"included": [
 					"consultant",
 					"consultantRole",

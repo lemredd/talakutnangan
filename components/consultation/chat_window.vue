@@ -33,18 +33,49 @@
 					class="additional-controls"
 					@toggle="toggleHeaderControlDropdownShown">
 					<template #toggler>
-						<!-- TODO(lead/button): Apply functionality -->
-						<button class="material-icons">
+						<button class="material-icons toggle-controls-btn">
 							more_horiz
 						</button>
 					</template>
 
 					<template #dropdown-contents>
+						<!-- TODO: make absolute -->
+
 						<div class="links">
-							<span>dngdsnglknkl</span>
+							<a href="#">View consultation form</a>
+							<a
+								v-if="isCurrentUserConsultant"
+								href="#"
+								class="view-action-taken-overlay-btn"
+								@click="showActionTakenOverlay">Finish consultation</a>
 						</div>
 					</template>
 				</Dropdown>
+
+				<Overlay
+					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
+					class="action-taken"
+					@close="hideActionTakenOverlay">
+					<template #header>
+						Mark this consultation as finished?
+					</template>
+
+					<template #default>
+						<p>If so, please provide the action taken to solve the consulter/s concern.</p>
+						<NonSensitiveTextField
+							v-model="actionTaken"
+							class="action-taken-field"
+							type="text"/>
+					</template>
+
+					<template #footer>
+						<button
+							class="finish-btn btn btn-primary"
+							@click="finishConsultation">
+							submit
+						</button>
+					</template>
+				</Overlay>
 			</div>
 		</div>
 		<div class="selected-consultation-chats">
@@ -74,6 +105,7 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
 @import "@styles/mixins.scss";
 
 	.right {
@@ -119,8 +151,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, watch, onMounted, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
@@ -133,7 +166,9 @@ import ConsultationFetcher from "$@/fetchers/consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Overlay from "@/helpers/overlay.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
@@ -148,6 +183,10 @@ const props = defineProps<{
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	isConsultationListShown: boolean
 }>()
+
+const { "pageProps": { "userProfile": { "data": { kind } } } }
+= inject("pageContext") as PageContext<"deserialized">
+const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 
 function toggleConsultationList() {
 	emit("toggleConsultationList")
@@ -179,12 +218,20 @@ function changeTime(
 	remainingMilliseconds.value = remainingMillisecondduration
 }
 
+const {
+	"on": showActionTakenOverlay,
+	"off": hideActionTakenOverlay,
+	"state": isActionTakenOverlayShown
+} = makeSwitch(false)
+const actionTaken = ref("")
+
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
 	if (startedAt instanceof Date) {
+		const finalActionTaken = actionTaken.value ? actionTaken.value : null
 		const newConsultationData: ConsultationAttributes<"serialized"> = {
-			"actionTaken": null,
+			"actionTaken": finalActionTaken,
 			"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
 			"finishedAt": new Date().toISOString(),
 			"reason": consultation.value.reason,
@@ -193,7 +240,7 @@ function finishConsultation(): void {
 		}
 
 		const deserializedConsultationData: ConsultationAttributes<"deserialized"> = {
-			"actionTaken": consultation.value.actionTaken,
+			"actionTaken": finalActionTaken,
 			"deletedAt": consultation.value.deletedAt ?? null,
 			"finishedAt": new Date(newConsultationData.finishedAt as string),
 			"reason": consultation.value.reason,

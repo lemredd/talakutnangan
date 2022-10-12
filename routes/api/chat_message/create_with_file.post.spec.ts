@@ -48,7 +48,7 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 					}
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
@@ -92,7 +92,7 @@ describe("Controller: POST /api/chat_message/create_with_file", () => {
 					}
 				}
 			},
-			"user": userFactory.serialize(user)
+			"user": await userFactory.serialize(user)
 		})
 
 		await requester.runMiddleware(bodyValidationFunction)
