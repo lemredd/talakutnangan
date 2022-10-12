@@ -1,11 +1,11 @@
 <template>
 	<form @submit.prevent="submitPostDetails">
-		<div class="row" v-if="maySelectOtherDepartments">
+		<div v-if="maySelectOtherDepartments" class="row">
 			<SelectableOptionsField
 				v-model="departmentID"
 				label="Department to post: "
 				placeholder="Choose the department"
-				:options="departmentOptions"/>
+				:options="departmentNames"/>
 		</div>
 		<div class="row">
 			<div class="col-25">
@@ -41,8 +41,8 @@
 import { computed, ref, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedPostDocument } from "$/types/documents/post"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
@@ -60,12 +60,23 @@ const emit = defineEmits<CustomEvents>()
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
-const { userProfile } = pageProps
+const { userProfile, departments } = pageProps
 
 const maySelectOtherDepartments = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
 ])
-const departments = ref<DeserializedDepartmentResource[]>([])
+const departmentNames: OptionInfo[] = maySelectOtherDepartments
+	? []
+	: [
+		{
+			"label": "All",
+			"value": "*"
+		},
+		...departments.data.map(department => ({
+			"label": department.fullName,
+			"value": department.id
+		}))
+	]
 const departmentID = ref<string>(userProfile.data.department.data.id)
 const userID = userProfile.data.id
 
