@@ -9,6 +9,9 @@
 				@click="startConsultation">
 				Start consultation
 			</button>
+			<span v-if="!willStart" class="text-sm opacity-50">
+				You can start the consultation once the consultant is available.
+			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">
 			<!-- TODO(lead/button): Apply functionality -->
