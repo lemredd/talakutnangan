@@ -1,5 +1,4 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div class="consultations-list left">
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header">
