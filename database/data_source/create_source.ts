@@ -12,6 +12,7 @@ import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AuditTrail from "%/models/audit_trail"
 import ChatMessage from "%/models/chat_message"
+import CommentVote from "%/models/comment_vote"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -34,6 +35,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		AuditTrail,
 		Department,
 		ChatMessage,
+		CommentVote,
 		Consultation,
 		AttachedRole,
 		StudentDetail,

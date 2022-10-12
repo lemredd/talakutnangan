@@ -11,6 +11,8 @@ export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 export const COMMENT_LINK = makeTemplateLink(LINK_PREFIX, "comment")
 
+export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_votes")
+
 /**
  * Requires the `id` of the user
  */
