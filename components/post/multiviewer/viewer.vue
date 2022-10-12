@@ -77,7 +77,7 @@ import {
 	determineUserDownVoted,
 	downVote,
 	totalVotes
-} from "../../../pages/forum/post"
+} from "@@/forum/post"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 

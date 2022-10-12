@@ -18,7 +18,7 @@
 </template>
 
 <style lang="scss">
-@import "../index";
+@import "@@/forum/index";
 </style>
 
 <script setup lang="ts">
