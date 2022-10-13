@@ -119,7 +119,6 @@ const {
 	"state": isImageUploadFormShown
 } = makeSwitch(false)
 
-
 const {
 	willSoonStart,
 	willStart,
