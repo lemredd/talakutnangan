@@ -22,7 +22,7 @@ export default class <
 	private socialPermissionCombination: U[]
 	private publicPermissionCombination: U[]
 
-	private checkOthers: (request: V) => Promise<void>
+	private checkOthersAfterPermission: (request: V) => Promise<void>
 
 	/**
 	 * @param targetKinds Specific kinds which can access the route.
@@ -41,18 +41,18 @@ export default class <
 			return promise
 		}
 	) {
-		super(...targetKinds)
+		super(targetKinds)
 
 		this.permissionGroup = permissionGroup
 		this.socialPermissionCombination = socialPermissionCombination
 		this.publicPermissionCombination = publicPermissionCombination
-		this.checkOthers = checkOthers
+		this.checkOthersAfterPermission = checkOthers
 	}
 
 	async authorize(request: V): Promise<void> {
 		await super.authorize(request)
 		await this.checkLimitation(request)
-		await this.checkOthers(request)
+		await this.checkOthersAfterPermission(request)
 	}
 
 	checkLimitation(request: V): Promise<void> {

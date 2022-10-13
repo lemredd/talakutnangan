@@ -21,7 +21,8 @@ import {
 
 function makeList() {
 	const policies = {
-		"consultationParticipantsOnlyPolicy": new KindBasedPolicy("student", "reachable_employee"),
+		"consultationParticipantsOnlyPolicy": new KindBasedPolicy(
+			[ "student", "reachable_employee" ]),
 		"employeeSchedulePolicy": new PermissionBasedPolicy(user, [
 			UPDATE_OWN_DATA,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
@@ -48,9 +49,9 @@ function makeList() {
 		}),
 		"guestOnlyPolicy": new AuthenticationBasedPolicy(false),
 		"knownOnlyPolicy": new AuthenticationBasedPolicy(true),
-		"reachableEmployeeOnlyPolicy": new KindBasedPolicy("reachable_employee"),
-		"studentOnlyPolicy": new KindBasedPolicy("student"),
-		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy("unreachable_employee")
+		"reachableEmployeeOnlyPolicy": new KindBasedPolicy([ "reachable_employee" ]),
+		"studentOnlyPolicy": new KindBasedPolicy([ "student" ]),
+		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy([ "unreachable_employee" ])
 	}
 
 	const parsers = {
