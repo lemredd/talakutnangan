@@ -209,3 +209,10 @@ export type UserIdentifierDocument
 
 export type UserIdentifierListDocument
 = IdentifierListDocument<UserResourceIdentifier<"read">>
+
+interface SummedTimeMetaProperties extends Serializable {
+	totalMillisecondsConsumed: number
+}
+
+export type UserIdentifierListWithTimeConsumedDocument
+= IdentifierListDocument<UserResourceIdentifier<"read"> & MetaDocument<SummedTimeMetaProperties>>
