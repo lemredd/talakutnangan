@@ -38,7 +38,7 @@ export default class <
 		this.kinds = kinds
 	}
 
-	async authorize(request: AuthenticatedRequest): Promise<void> {
+	async authorize(request: V): Promise<void> {
 		await super.authorize(request)
 
 		const user = deserialize(request.user) as DeserializedUserProfile
@@ -47,5 +47,7 @@ export default class <
 		if (!this.kinds.includes(kind)) {
 			throw new AuthorizationError("Correct user kind can invoke the action.")
 		}
+
+		await this.checkOthers(request)
 	}
 }
