@@ -1,42 +1,60 @@
 <template>
-	<div
-		class="message-item"
-		:class="messageItem">
-		<ProfilePicture
-			v-if="isOtherMessage"
-			class="other"
-			:user="chatMessage.user"
-			:title="chatMessage.user.data.name"/>
-		<div>
-			<p
-				v-if="isMessageKindText(chatMessage)"
-				class="message-item-content"
-				:class="messageItemContent">
-				{{ chatMessage.data.value }}
-			</p>
-			<p
-				v-if="isMessageKindFile(chatMessage)"
-				class="message-item-content"
-				:class="messageItemContent">
-				<!-- TODO(lead): use appropriate elements for other file types  -->
-				<img :src="fileURL"/>
-			</p>
-			<p
-				v-if="isMessageKindStatus(chatMessage)"
-				class="message-item-content"
-				:class="messageItemContent">
-				{{ determineStatusMessage }}
-			</p>
+	<div class="message-container">
+		<div
+			class="message-item"
+			:class="messageItem">
+			<ProfilePicture
+				v-if="isOtherMessage"
+				class="other"
+				:user="chatMessage.user"
+				:title="chatMessage.user.data.name"/>
+			<div>
+				<p
+					v-if="isMessageKindText(chatMessage)"
+					class="message-item-content"
+					:class="messageItemContent">
+					{{ chatMessage.data.value }}
+				</p>
+				<p
+					v-if="isMessageKindFile(chatMessage)"
+					class="message-item-content"
+					:class="messageItemContent">
+					<!-- TODO(lead): use appropriate elements for other file types  -->
+					<img :src="fileURL"/>
+				</p>
+				<p
+					v-if="isMessageKindStatus(chatMessage)"
+					class="message-item-content"
+					:class="messageItemContent">
+					{{ determineStatusMessage }}
+				</p>
+			</div>
+			<ProfilePicture
+				v-if="isSelfMessage"
+				class="self"
+				:user="chatMessage.user"
+				:title="chatMessage.user.data.name"/>
 		</div>
-		<ProfilePicture
-			v-if="isSelfMessage"
-			class="self"
-			:user="chatMessage.user"
-			:title="chatMessage.user.data.name"/>
+		<div v-if="!isMessageKindStatus(chatMessage)" class="seen-list">
+			<ProfilePicture
+				v-for="activity in chatMessageActivities.data"
+				:key="activity.id"
+				:user="activity.user"
+				:title="activity.user.data.name"
+				class="seen-user"/>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
+
+.seen-list{
+	@apply flex justify-end;
+	.seen-user{
+		max-width: 20px;
+	}
+
+}
 	.message-item {
 		@apply flex items-end w-max mb-5;
 
@@ -77,6 +95,9 @@ import { computed, inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageActivityListDocument
+} from "$/types/documents/chat_message_activity"
 
 import {
 	isMessageKindFile,
@@ -88,6 +109,8 @@ import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
+const chatMessageActivities = pageProps
+.chatMessageActivities as DeserializedChatMessageActivityListDocument<"user"|"consultation">
 
 const { userProfile } = pageProps
 
