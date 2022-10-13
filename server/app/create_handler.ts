@@ -3,6 +3,7 @@ import express from "express"
 
 import type { RequestHandler } from "!/types/dependent"
 
+import Log from "$!/singletons/log"
 import Router from "!/bases/router"
 import Middleware from "!/bases/middleware"
 import catchAllErrors from "!/app/catch_all_errors"
@@ -24,6 +25,7 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	const rawGlobalPostJobs = globalPostJobs
 	.filter(postJob => postJob !== null)
 	.map((postJob: Middleware) => postJob.intermediate.bind(postJob))
+	let routeCount = 0
 
 	const allRouteInformation = await customRoutes.allUsableRoutes
 	for (const { information, handlers } of allRouteInformation) {
@@ -52,8 +54,10 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 		.filter(middleware => middleware !== null)
 
 		app[method](path, ...<RequestHandler[]><unknown>rawHandlers)
+		routeCount++
 	}
 
+	Log.success("server", `registered ${routeCount} routes with different types`)
 	app.use(viteDevRouter)
 
 	// @ts-ignore
