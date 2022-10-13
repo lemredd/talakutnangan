@@ -1,6 +1,7 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
-import type { ConsultationQueryParameters } from "$/types/query"
+import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
+import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
 import type {
 	ModelCtor,
@@ -215,6 +216,37 @@ export default class extends BaseManager<
 			}
 
 			return canStart
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async sumTimePerStudents(filter: TimeSumQueryParameters)
+	: Promise<UserIdentifierListWithTimeConsumedDocument> {
+		try {
+			const models = await ChatMessageActivity.findAll({
+				"group": [
+					"userID"
+				],
+				"include": [
+					{
+						"include": [
+							{
+								"model": User,
+								"required": true
+							}
+						],
+						"model": AttachedRole,
+						"required": true
+					}
+				],
+				...this.transaction.transactionObject
+			})
+
+
+			return {
+				"data": []
+			}
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
