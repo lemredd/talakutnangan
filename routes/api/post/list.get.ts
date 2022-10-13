@@ -1,6 +1,6 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { CommonQueryParameters } from "$/types/query"
+import type { PostQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
@@ -32,11 +32,12 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const constraints = { ...request.query }
+		const constraints = { ...request.query } as PostQueryParameters<number>
 
 		const manager = new PostManager(request)
-		const auditTrails = await manager.list(constraints as CommonQueryParameters)
 
-		return new ListResponse(auditTrails)
+		const post = await manager.list(constraints)
+
+		return new ListResponse(post)
 	}
 }
