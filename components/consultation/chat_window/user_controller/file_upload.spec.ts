@@ -149,6 +149,7 @@ describe("Component: User controller/File Upload", () => {
 
 	describe("file upload", () => {
 		const accept = "*/*"
+
 		it("can preview uploaded file", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -169,6 +170,29 @@ describe("Component: User controller/File Upload", () => {
 			await fileInput.setValue("")
 			const previewFile = wrapper.find(".preview-file-container")
 			expect(previewFile.exists()).toBeTruthy()
+		})
+
+		it("should have subkind as file", () => {
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+					},
+					"stubs": {
+						"Overlay": false
+					}
+				},
+				"props": {
+					accept,
+					"isShown": true
+				}
+			})
+			const castedWrapper = wrapper.vm as any
+			const { subKind } = castedWrapper
+			const subKindInput = wrapper.find(".sub-kind")
+
+			expect(subKind).toEqual("file")
+			expect(subKindInput.attributes("value")).toEqual("file")
 		})
 
 		it("can send selected file", async() => {
