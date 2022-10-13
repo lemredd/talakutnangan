@@ -10,7 +10,6 @@
 				@save="updateUser"/>
 		</div>
 
-		<!-- TODO: Refactor all WindiCSS inline classes using `@apply` directive -->
 		<div class="pictures">
 			<PicturePicker
 				resource-type="profile_picture"
@@ -26,7 +25,7 @@
 						for="input-profile-picture"
 						class="input-profile-picture">
 						<span class="material-icons">add_circle</span>
-						<small class="text-center ml-1">
+						<small class="upload_replace">
 							upload or replace image
 						</small>
 					</label>
@@ -50,7 +49,7 @@
 						for="input-signature"
 						class="input-signature">
 						<span class="material-icons">add_circle</span>
-						<small class="text-center ml-1 underline">
+						<small class="upload_replace signatures">
 							upload or replace image
 						</small>
 					</label>
@@ -111,6 +110,14 @@
 
 	.input-profile-picture,.input-signature{
 		@apply flex flex items-center;
+	}
+
+	.upload_replace{
+		@apply text-center ml-1;
+
+		&.signatures{
+			@apply underline;
+		}
 	}
 
 	.profile, .signature{

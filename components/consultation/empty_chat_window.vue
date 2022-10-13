@@ -1,5 +1,5 @@
 <template>
-	<section class="empty-chat-window right">
+	<section class="empty-chat-window">
 		<h1 v-if="isUserAStudent" class="student">
 			Need help?
 		</h1>
@@ -18,6 +18,7 @@
 <style scoped lang="scss">
 .empty-chat-window{
 	display: none;
+	position: right;
 
 	@screen sm{
 		@apply flex flex-col;

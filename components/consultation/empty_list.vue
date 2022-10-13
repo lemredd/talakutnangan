@@ -8,8 +8,8 @@
 			@click="toggleAddingSchedule">
 			add
 		</button>
-		<div class="mx-auto max-w-[max-content] no-consultations">
-			<img class="mx-auto" :src="SadIcon"/>
+		<div class="no-consultations">
+			<img class="SadIcon" :src="SadIcon"/>
 			<h2>There are no consultations yet...</h2>
 		</div>
 	</div>
@@ -47,6 +47,14 @@
 
 				.list-search-bar { @apply flex flex-1; }
 			}
+		}
+
+		.no-consultations{
+			@apply mx-auto max-w-max;
+		}
+
+		.SadIcon{
+			@apply mx-auto;
 		}
 
 		.add-btn {

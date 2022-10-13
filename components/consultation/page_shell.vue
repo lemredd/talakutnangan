@@ -1,12 +1,11 @@
 <!--
 	General tasks for other members:
-	TODO(others): Refactor all WindiCSS inline classes using @apply directive
 	TODO(others): Refactor HTML to Vue Components if applicable
 	TODO(others): Make use of mixins if applicable
 -->
 <template>
 	<div class="consultations-container">
-		<section class="consultations-picker relative">
+		<section class="consultations-picker">
 			<slot name="list"></slot>
 		</section>
 
@@ -18,6 +17,9 @@
 @import "@styles/variables.scss";
 @import "@styles/mixins.scss";
 
+.consultations-picker{
+	position: relative;
+}
 .add {
 	@apply material-icons absolute bottom-5 right-5 text-lg rounded-full border border-gray-600 p-3
 }
