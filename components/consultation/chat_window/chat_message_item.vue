@@ -20,7 +20,17 @@
 					class="message-item-content"
 					:class="[messageItemContent, fileMessageContent]">
 					<!-- TODO(lead): use appropriate elements for other file types  -->
-					<img :src="fileURL"/>
+					<img v-if="fileMessageContent.image" :src="fileURL"/>
+					<a
+						v-else
+						class="file-link flex items-center m-1"
+						target="_blank"
+						:href="fileURL">
+						<span class="attachment-symbol material-icons">
+							attachment
+						</span>
+						<span class="file-name">{{ chatMessage.data.name }}</span>
+					</a>
 				</p>
 				<p
 					v-if="isMessageKindStatus(chatMessage)"
@@ -35,7 +45,9 @@
 				:user="chatMessage.user"
 				:title="chatMessage.user.data.name"/>
 		</div>
-		<div v-if="!isMessageKindStatus(chatMessage)" class="seen-list">
+		<div
+			v-if="!isMessageKindStatus(chatMessage)"
+			class="seen-list">
 			<ProfilePicture
 				v-for="activity in chatMessageActivities.data"
 				:key="activity.id"
@@ -50,8 +62,10 @@
 
 .seen-list{
 	@apply flex justify-end;
+
 	.seen-user{
 		max-width: 20px;
+		max-height: 20px;
 	}
 
 }
@@ -92,7 +106,9 @@
 		}
 
 		.attachment-symbol {
-			@apply bg-gray-300 text-black dark:bg-dark-100 dark:text-white rounded-full p-1 mr-2;
+			@apply rounded-full p-1 mr-2;
+			@apply bg-gray-300 text-black;
+			@apply dark:bg-dark-100 dark:text-white;
 		}
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;

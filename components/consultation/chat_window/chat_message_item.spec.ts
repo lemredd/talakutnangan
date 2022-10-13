@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { shallowMount } from "@vue/test-utils"
 import type { TextMessage, StatusMessage } from "$/types/message"
 import type { DeserializedUserDocument } from "$/types/documents/user"
@@ -7,6 +8,10 @@ import Component from "./chat_message_item.vue"
 
 describe("Component: consultation/chat_window/chat_message_item", () => {
 	describe("Text message", () => {
+		const chatMessageActivities = {
+			"data": []
+		}
+
 		it("should show self's text message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
@@ -32,6 +37,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
+								chatMessageActivities,
 								"userProfile": user
 							}
 						}
@@ -63,7 +69,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const messageItemProfilePicture = wrapper.find(".message-item .self")
 
 			expect(messageItem.find(".self").exists()).toBeTruthy()
-			expect(messageItemContent.html()).toContain(textValue)
+			expect(messageItemContent.text()).toContain(textValue)
 			expect(messageItemProfilePicture.exists()).toBeTruthy()
 			expect(messageItemProfilePicture.attributes("title")).toEqual(user.data.name)
 		})
@@ -110,6 +116,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
+								chatMessageActivities,
 								"userProfile": user
 							}
 						}
@@ -148,6 +155,87 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 	})
 
 	describe("Status message", () => {
+		const chatMessageActivities = {
+			"data": []
+		}
+
+		it("should show own status message properly", () => {
+			const CURRENT_TIME = new Date()
+			const user = {
+				"data": {
+					"email": "",
+					"id": "1",
+					"kind": "reachable_employee",
+					"name": "self",
+					"prefersDark": true,
+					"profilePicture": {
+						"data": {
+							"fileContents": "http://example.com/image_a",
+							"id": "1",
+							"type": "profile_picture"
+						}
+					},
+					"type": "user"
+				}
+			} as DeserializedUserDocument<"profilePicture">
+			const other = {
+				"data": {
+					"email": "",
+					"id": "2",
+					"kind": "student",
+					"name": "Other user",
+					"prefersDark": true,
+					"profilePicture": {
+						"data": {
+							"fileContents": "http://example.com/image_b",
+							"id": "2",
+							"type": "profile_picture"
+						}
+					},
+					"type": "user"
+				}
+			} as DeserializedUserDocument<"profilePicture">
+			const textValue = "Hello foo!"
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								chatMessageActivities,
+								"userProfile": user
+							}
+						}
+					},
+					"stubs": {
+						"ProfilePicture": {
+							"name": "ProfilePicture",
+							"template": "<img/>"
+						}
+					}
+				},
+				"props": {
+					"chatMessage": {
+						"createdAt": CURRENT_TIME,
+						"data": {
+							"value": textValue
+						},
+						"id": "0",
+						"kind": "status",
+						"type": "chat_message",
+						"updatedAt": CURRENT_TIME,
+						user
+					} as DeserializedChatMessageResource<"user"> & StatusMessage<"deserialized">
+				}
+			})
+
+			const messageItem = wrapper.find(".message-item")
+			const messageItemContent = wrapper.find(".message-item-content")
+
+			expect(messageItem.classes()).toContain("status-message")
+			expect(messageItemContent.html()).toContain(textValue)
+			expect(messageItemContent.html()).toContain(user.data.name)
+		})
+
 		it("should show other's status message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
@@ -190,6 +278,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
+								chatMessageActivities,
 								"userProfile": user
 							}
 						}
@@ -226,6 +315,10 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 	})
 
 	describe("File message", () => {
+		const chatMessageActivities = {
+			"data": []
+		}
+
 		it("can show image type message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
@@ -254,6 +347,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
+								chatMessageActivities,
 								"userProfile": user
 							}
 						}
@@ -292,7 +386,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			expect(actualFile.attributes("src")).toBeDefined()
 		})
 
-		it("can show image type message properly", () => {
+		it("can show file type message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
 				"data": {
@@ -320,6 +414,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
+								chatMessageActivities,
 								"userProfile": user
 							}
 						}

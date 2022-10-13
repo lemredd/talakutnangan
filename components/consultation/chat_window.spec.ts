@@ -633,7 +633,7 @@ describe("Component: consultation/chat_window", () => {
 		})
 	})
 
-	describe.only("chat messages", () => {
+	describe("chat messages", () => {
 		it("is sorted properly", () => {
 			const scheduledStartAt = new Date()
 			const consultant = {
