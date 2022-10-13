@@ -106,7 +106,7 @@ const props = defineProps<{
 
 const isAcceptingImage = props.accept.includes("image/")
 const isAcceptingFile = props.accept.includes("*/")
-const subKind = computed(() => (isAcceptingImage ? "image" : "file"))
+const subKind = isAcceptingImage ? "image" : "file"
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
