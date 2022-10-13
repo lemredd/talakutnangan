@@ -1,3 +1,4 @@
+import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Model from "%/models/consultation"
@@ -7,8 +8,8 @@ import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
-import type { UserIdentifierDocument } from "$/types/documents/user"
 import Manager from "./consultation"
 
 describe("Database Manager: Consultation read operations", () => {
@@ -105,6 +106,33 @@ describe("Database Manager: Consultation read operations", () => {
 		const canStart = await manager.canStart(model.id)
 
 		expect(canStart).toBeFalsy()
+	})
+
+	it("can sum time by students", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date("2022-09-01T08:00:00"))
+		.finishedAt(() => new Date("2022-09-01T08:10:00"))
+		.insertOne()
+		await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date("2022-09-02T08:00:00"))
+		.finishedAt(() => new Date("2022-09-02T08:05:30"))
+		.insertOne()
+
+		const time = await manager.sumTimePerStudents(user.id)
+
+		expect(time).toStrictEqual([
+			{
+				"studentID": String(user.id),
+				"timeConsumed": convertTimeToMilliseconds("00:15:30")
+			}
+		])
 	})
 })
 
