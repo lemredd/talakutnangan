@@ -11,7 +11,8 @@
 				<input
 					type="hidden"
 					name="data[attributes][data][subkind]"
-					value="image"/>
+					class="sub-kind"
+					:value="subKind"/>
 				<input
 					type="hidden"
 					name="data[relationships][chatMessageActivity][data][id]"
@@ -47,7 +48,9 @@
 						{{ filename }}
 					</small>
 				</div>
-				<div class="preview-file-container bg-true-gray-200 flex items-center px-3 py-2">
+				<div
+					v-if="isAcceptingFile"
+					class="preview-file-container bg-true-gray-200 flex items-center px-3 py-2">
 					<span class="material-icons mr-2">
 						attachment
 					</span>
@@ -102,7 +105,8 @@ const props = defineProps<{
 }>()
 
 const isAcceptingImage = props.accept.includes("image/")
-const isAcceptingFile = props.accept.includes("file/")
+const isAcceptingFile = props.accept.includes("*/")
+const subKind = computed(() => (isAcceptingImage ? "image" : "file"))
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
