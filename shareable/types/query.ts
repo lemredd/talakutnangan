@@ -193,3 +193,7 @@ export type ChatMessageQueryParameters<T extends number|string = string> =
 export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& NullableDepartmentFilter<T>
+
+export type TimeSumQueryParameters =
+	& CommonQueryParameters
+	& ConsultationRangeFilter
