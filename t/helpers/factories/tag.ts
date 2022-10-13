@@ -29,8 +29,7 @@ export default class TagFactory extends BaseFactory<
 	DeserializedTagDocument,
 	DeserializedTagListDocument
 > {
-	#name: () => string = () => faker.random.word()
-
+	#name: () => string = () => faker.random.word() + faker.random.word()
 	get model(): ModelCtor<Tag> { return Tag }
 
 	get transformer(): TagTransformer { return new TagTransformer() }
