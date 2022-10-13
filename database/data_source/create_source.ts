@@ -8,6 +8,7 @@ import User from "%/models/user"
 import Post from "%/models/post"
 import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
+import PostTag from "%/models/post_tag"
 import Semester from "%/models/semester"
 import Signature from "%/models/signature"
 import Department from "%/models/department"
@@ -32,6 +33,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		User,
 		Post,
 		Comment,
+		PostTag,
 		Semester,
 		Signature,
 		AuditTrail,
