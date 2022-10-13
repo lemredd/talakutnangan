@@ -98,6 +98,18 @@ export interface ConsultationRangeFilter extends Serializable {
 	}
 }
 
+export interface DateTimeRangeFilter extends Serializable {
+	filter: {
+		/**
+		 * The time range where consultation schedules are available.
+		 */
+		dateTimeRange: {
+			end: Date,
+			begin: Date
+		}
+	}
+}
+
 export interface ConsultationFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
@@ -196,4 +208,4 @@ export type PostQueryParameters<T extends number|string = string> =
 
 export type TimeSumQueryParameters =
 	& CommonQueryParameters
-	& ConsultationRangeFilter
+	& DateTimeRangeFilter
