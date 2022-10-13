@@ -17,6 +17,20 @@ describe("Database Manager: Chat message activity read operations", () => {
 
 		expect(consultationIDs).toHaveProperty("0", consultation.id)
 	})
+
+	it("can find specific activity ID", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const consultation = await new ConsultationFactory().insertOne()
+		const model = await new Factory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultation))
+		.insertOne()
+
+		const chatMessageActivityID = await manager.findSessionID(user.id, consultation.id)
+
+		expect(chatMessageActivityID).toBe(model.id)
+	})
 })
 
 describe("Database Manager: Miscellaneous chat message activity operations", () => {

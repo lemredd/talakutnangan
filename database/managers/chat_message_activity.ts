@@ -75,4 +75,19 @@ export default class extends BaseManager<
 			throw this.makeBaseError(error)
 		}
 	}
+
+	async findSessionID(userID: number, consultationID: number): Promise<number> {
+		try {
+			const chatMessageActivity = await Model.findOne({
+				"where": new Condition().and(
+					new Condition().equal("userID", userID),
+					new Condition().equal("consultationID", consultationID)
+				).build()
+			}) as Model
+
+			return chatMessageActivity.id
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
 }

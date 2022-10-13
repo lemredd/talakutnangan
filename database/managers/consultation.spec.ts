@@ -35,6 +35,29 @@ describe("Database Manager: Consultation read operations", () => {
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => null)
+		.finishedAt(() => null)
+		.insertOne()
+
+		const canStart = await manager.canStart(model.id)
+
+		expect(canStart).toBeTruthy()
+	})
+
+	it("can start after other consultation finished", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date())
+		.finishedAt(() => new Date())
+		.insertOne()
+		const model = await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => null)
+		.finishedAt(() => null)
 		.insertOne()
 
 		const canStart = await manager.canStart(model.id)
@@ -51,6 +74,7 @@ describe("Database Manager: Consultation read operations", () => {
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
+		.finishedAt(() => null)
 		.insertOne()
 		await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
@@ -75,6 +99,7 @@ describe("Database Manager: Consultation read operations", () => {
 		await new Factory()
 		.consultantInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
+		.finishedAt(() => null)
 		.insertOne()
 
 		const canStart = await manager.canStart(model.id)

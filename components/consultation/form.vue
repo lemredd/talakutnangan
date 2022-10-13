@@ -5,22 +5,21 @@
 		</template>
 
 		<template #default>
-			<!-- TODO: style required field -->
 			<SearchableChip
 				v-model="selectedConsultants"
-				class="consultant"
+				class="consultant required"
 				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
 
-			<!-- TODO: style required field -->
-			<SelectableOptionsField
-				v-if="selectedConsultants.length"
-				v-model="addressConsultantAs"
-				class="consultant-roles mb-5"
-				label="Address consultant as:"
-				:options="consultantRoles"/>
+			<div v-if="selectedConsultants.length" class="required">
+				<SelectableOptionsField
+					v-model="addressConsultantAs"
+					class="consultant-roles"
+					label="Address consultant as:"
+					:options="consultantRoles"/>
+			</div>
 
 			<SearchableChip
 				v-model="selectedConsulters"
@@ -31,22 +30,21 @@
 				text-field-label="Type the students to add"
 				kind="student"/>
 
-			<!-- TODO: style required field -->
-			<SelectableOptionsField
-				v-model="chosenReason"
-				class="reason"
-				label="Kind of Reason: "
-				placeholder="Choose your reason"
-				:options="reasonOptions"/>
+			<div class="required">
+				<SelectableOptionsField
+					v-model="chosenReason"
+					class="reason"
+					label="Kind of Reason: "
+					placeholder="Choose your reason"
+					:options="reasonOptions"/>
+			</div>
 
-			<!-- TODO: style required field -->
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
-				class="other-reason"
+				class="other-reason required"
 				label="What are the other reasons(s)?"
 				type="text"/>
-
 			<div
 				v-if="selectedConsultants.length"
 				class="schedule-selector mt-5">
@@ -54,30 +52,36 @@
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
-					<!-- TODO: style required field -->
-					<SelectableOptionsField
-						v-model="chosenDay"
-						class="selectable-day"
-						label="Day:"
-						:options="selectableDays"/>
-					<div v-if="isCustomDate" class="selectable date-picker">
-						<span>Select a date:</span>
-						<input
-							v-model="customDate"
-							:min="castToCompatibleDate(dateToday)"
-							:max="castToCompatibleDate(dateInNextMonth)"
-							type="date"/>
+					<div class="required">
+						<SelectableOptionsField
+							v-model="chosenDay"
+							class="selectable-day"
+							label="Day:"
+							:options="selectableDays"/>
+						<div v-if="isCustomDate" class="selectable date-picker">
+							<span>Select a date:</span>
+							<input
+								v-model="customDate"
+								:min="castToCompatibleDate(dateToday)"
+								:max="castToCompatibleDate(dateInNextMonth)"
+								type="date"/>
+						</div>
 					</div>
 
-					<!-- TODO: style required field -->
-					<SelectableOptionsField
+					<div
 						v-if="chosenDay"
-						v-model="chosenTime"
-						class="selectable-time"
-						label="Time:"
-						:options="selectableTimes"/>
+						:class="selectableTimes.length ? 'required' : ''">
+						<SelectableOptionsField
+							v-if="selectableTimes.length"
+							v-model="chosenTime"
+							class="selectable-time"
+							label="Time:"
+							:options="selectableTimes"/>
+						<p v-else class="selected-day-is-past text-red-500">
+							This consultant's schedule for this day has ended.
+						</p>
+					</div>
 				</div>
-
 				<div v-else class="consultant-no-schedules">
 					<p class="text-red-500">
 						This consultant has not set any schedules yet.
@@ -138,6 +142,23 @@
 </style>
 
 <style scoped lang="scss">
+@import "@styles/variables.scss";
+
+.required{
+	&::before {
+		@apply text-xs;
+
+		display:block;
+		color: $color-primary;
+		content:"* required";
+
+	}
+}
+
+.consultant-roles {
+	@apply mb-5;
+}
+
 .schedule-selector {
 	.selectable-day, .selectable-time {
 		margin: 1em 0 1em;
@@ -167,11 +188,11 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
-import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -230,7 +251,7 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
-			"existence": "*",
+			"existence": "exists",
 			"user": selectedConsultant.id
 		},
 		"page": {
@@ -244,9 +265,9 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 	})
 }
 
-const dateToday = new Date()
-const dateInNextMonth = jumpNextMonth(dateToday)
-const dayIndex = dateToday.getDay()
+const dateToday = ref(new Date())
+const dateInNextMonth = jumpNextMonth(dateToday.value)
+const dayIndex = dateToday.value.getDay()
 const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
 
 const chosenDay = ref("")
@@ -312,13 +333,21 @@ const selectableTimes = computed(() => {
 
 			times.forEach(time => {
 				const timeObject = convertMinutesToTimeObject(time)
+				const timeString = convertToTimeString(timeObject)
 				const midday = getTimePart(time, "midday")
-				const label = `${convertToTimeString(timeObject)} ${midday}`
+				const label = `${timeString} ${midday}`
 
-				availableTimes.push({
-					label,
-					"value": String(time)
-				})
+				const comparableDate = new Date(chosenDay.value)
+				comparableDate.setHours(timeObject.hours)
+				comparableDate.setMinutes(timeObject.minutes)
+				comparableDate.setSeconds(0)
+				comparableDate.setMilliseconds(0)
+				if (comparableDate > dateToday.value) {
+					availableTimes.push({
+						label,
+						"value": String(time)
+					})
+				}
 			})
 		})
 	}

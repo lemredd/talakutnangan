@@ -27,7 +27,7 @@
 			</div>
 			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 
-			<PostViewer/>
+			<MultiplePostViewer/>
 		</div>
 		<!--body end-->
 
@@ -55,7 +55,7 @@ import {
 
 import makeSwitch from "$@/helpers/make_switch"
 
-import PostViewer from "@/post/viewer.vue"
+import MultiplePostViewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 
 import type { Post } from "./data"
