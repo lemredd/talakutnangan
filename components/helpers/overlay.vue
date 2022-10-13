@@ -1,8 +1,7 @@
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<div
 		v-if="isShown"
-		class="overlay bg-[rgba(0,0,0,0.3)] z-1 "
+		class="overlay "
 		@click.self="emitClose">
 		<div class="content bg-white text-black dark:bg-dark-200 dark:text-white">
 			<header>
@@ -23,6 +22,7 @@
 
 <style scoped lang="scss">
 .overlay {
+	@apply z-1 bg-black bg-opacity-30;
 	position:fixed;
 	inset: 0;
 	width: 100%;
