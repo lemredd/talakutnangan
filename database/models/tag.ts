@@ -6,7 +6,7 @@ import {
 	BelongsToMany
 } from "sequelize-typescript"
 import Post from "%/models/post"
-// import PostTag from "%/models/post_tag"
+import PostTag from "%/models/post_tag"
 
 @Table({
 	"timestamps": true,
@@ -19,9 +19,9 @@ export default class Tag extends Model {
 	})
 		name!: string
 
-	// @HasMany(() => PostTag)
-	// 	postTags!: PostTag[]
+	@HasMany(() => PostTag)
+		postTags!: PostTag[]
 
-	// @BelongsToMany(() => Post, () => PostTag)
-	// 	post!: Post[]
+	@BelongsToMany(() => Post, () => PostTag)
+		post!: Post[]
 }
