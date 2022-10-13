@@ -93,7 +93,7 @@ export interface ConsultationRangeFilter extends Serializable {
 		 */
 		consultationScheduleRange: "*"|{
 			end: Date,
-			start: Date
+			begin: Date
 		}
 	}
 }
