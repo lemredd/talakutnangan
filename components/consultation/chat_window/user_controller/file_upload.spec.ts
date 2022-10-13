@@ -17,6 +17,7 @@ import Component from "./file_upload.vue"
 describe("Component: User controller/File Upload", () => {
 	describe("image upload", () => {
 		const accept = "image/png"
+
 		it("can preview uploaded file", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -39,6 +40,29 @@ describe("Component: User controller/File Upload", () => {
 			const previewImg = previewFile.find("img")
 			expect(previewFile.exists()).toBeTruthy()
 			expect(previewImg.attributes("src")).toBeDefined()
+		})
+
+		it("should have subkind as image", () => {
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+					},
+					"stubs": {
+						"Overlay": false
+					}
+				},
+				"props": {
+					accept,
+					"isShown": true
+				}
+			})
+			const castedWrapper = wrapper.vm as any
+			const { subKind } = castedWrapper
+			const subKindInput = wrapper.find(".sub-kind")
+
+			expect(subKind).toEqual("image")
+			expect(subKindInput.attributes("value")).toEqual("image")
 		})
 
 		it("can send selected file", async() => {
