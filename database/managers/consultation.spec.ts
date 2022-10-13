@@ -127,8 +127,11 @@ describe("Database Manager: Consultation read operations", () => {
 
 		const times = await manager.sumTimePerStudents({
 			"filter": {
-				"beginDateTime": new Date("2022-09-01T00:00:00")),
-				"endDateTime": new Date("2022-09-30T11:59:59"))
+				"dateTimeRange": {
+					"begin": new Date("2022-09-01T00:00:00"),
+					"end": new Date("2022-09-30T11:59:59")
+				},
+				"existence": "exists"
 			},
 			"page": {
 				"limit": 10,
@@ -137,10 +140,15 @@ describe("Database Manager: Consultation read operations", () => {
 		})
 
 		expect(times).toStrictEqual([
-			{
-				"studentID": String(user.id),
-				"timeConsumed": convertTimeToMilliseconds("00:15:30")
-			}
+			"data": [
+				{
+					"id": String(user.id),
+					"meta": {
+						"timeConsumed": convertTimeToMilliseconds("00:15:30")
+					},
+					"type": "user"
+				}
+			]
 		])
 	})
 })
