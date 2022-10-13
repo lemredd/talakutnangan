@@ -2,11 +2,13 @@ import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
 import type { SourceType } from "$/types/database"
 
+import Tag from "%/models/tag"
 import Role from "%/models/role"
 import User from "%/models/user"
 import Post from "%/models/post"
 import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
+import PostTag from "%/models/post_tag"
 import Semester from "%/models/semester"
 import Signature from "%/models/signature"
 import Department from "%/models/department"
@@ -26,10 +28,12 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
 	const models = [
+		Tag,
 		Role,
 		User,
 		Post,
 		Comment,
+		PostTag,
 		Semester,
 		Signature,
 		AuditTrail,
