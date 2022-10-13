@@ -2,6 +2,7 @@ import { generatePdf } from "html-pdf-node-ts"
 
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
+import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import Manager from "%/managers/consultation"
 import URLMaker from "$!/singletons/url_maker"
@@ -27,8 +28,12 @@ export default class extends BoundController {
 	async handle(request: Request, unusedResponse: Response): Promise<OkResponseInfo> {
 		const { id } = request.params
 
+		const URL = URLMaker.makeURLFromPath("consultation/:id", { id })
+
+		Log.trace("controller", `converting "${URL}" to PDF`)
+
 		const document = await generatePdf({
-			"url": URLMaker.makeURLFromPath("consultation/:id", { id })
+			"url": URL
 		})
 
 		return new OkResponseInfo(document, "application/pdf")
