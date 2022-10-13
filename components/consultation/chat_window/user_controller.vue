@@ -12,7 +12,7 @@
 		</div>
 		<div v-if="isOngoing" class="left-controls">
 			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<button class="material-icons" @click="saveAsPDF">
 				more_horiz
 			</button>
 			<!-- TODO(lead/button): Apply functionality -->
@@ -106,10 +106,12 @@ const {
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
+	(eventName: "saveAsPdf"): void
 }
 const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
+const saveAsPDF = () => emit("saveAsPdf")
 
 let rawFetcher: Fetcher|null = null
 function fetcher(): Fetcher {

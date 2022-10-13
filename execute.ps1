@@ -141,6 +141,10 @@ Param(
 	[switch]
 	$Routes,
 
+	[Parameter(ParameterSetName="Server", Position=1)]
+	[switch]
+	$MakeTestPDF,
+
 	[Parameter(ParameterSetName="PushRepo", Position=0)]
 	[switch]
 	$Push,
@@ -245,6 +249,8 @@ if ($Server) {
 		& npx cross-env NODE_ENV=production npx ts-node ./server
 	} elseif ($Routes) {
 		& npx ts-node ./server/cli/list_routes.ts
+	} elseif ($MakeTestPDF) {
+		& npx ts-node ./server/cli/make_test_pdf.ts
 	} else {
 		$command = "pwsh ./execute.ps1 -Server -Normal"
 		& npx nodemon --watch server --watch routes --watch database --watch common_back-end --ext ts --ignore "*.spec.ts" --exec "$command"
