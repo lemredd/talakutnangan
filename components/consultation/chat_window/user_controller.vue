@@ -23,7 +23,7 @@
 				attach_file
 			</button>
 			<FileUpload
-				accept="file/*"
+				accept="*/*"
 				:is-shown="isFileUploadFormShown"
 				class="file-upload"
 				@close="hideFileUpload"/>
