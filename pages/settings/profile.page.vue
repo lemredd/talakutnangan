@@ -25,7 +25,7 @@
 						for="input-profile-picture"
 						class="input-profile-picture">
 						<span class="material-icons">add_circle</span>
-						<small class="upload_replace">
+						<small class="upload-replace">
 							upload or replace image
 						</small>
 					</label>
@@ -49,7 +49,7 @@
 						for="input-signature"
 						class="input-signature">
 						<span class="material-icons">add_circle</span>
-						<small class="upload_replace signatures">
+						<small class="upload-replace signatures">
 							upload or replace image
 						</small>
 					</label>
@@ -112,7 +112,7 @@
 		@apply flex flex items-center;
 	}
 
-	.upload_replace{
+	.upload-replace{
 		@apply text-center ml-1;
 
 		&.signatures{

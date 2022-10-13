@@ -9,7 +9,7 @@
 			add
 		</button>
 		<div class="no-consultations">
-			<img class="SadIcon" :src="SadIcon"/>
+			<img class="sad-icon" :src="SadIcon"/>
 			<h2>There are no consultations yet...</h2>
 		</div>
 	</div>
@@ -53,7 +53,7 @@
 			@apply mx-auto max-w-max;
 		}
 
-		.SadIcon{
+		.sad-icon{
 			@apply mx-auto;
 		}
 
