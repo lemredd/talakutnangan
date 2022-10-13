@@ -52,7 +52,7 @@ export default class extends DoubleBoundJSONController {
 				"ClassName": CommentManager,
 				"isArray": false,
 				"relationshipName": "comment",
-				"typeName": "post",
+				"typeName": "comment",
 				"validator": exists
 			},
 			{

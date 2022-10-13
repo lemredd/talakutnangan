@@ -1,5 +1,4 @@
 import type { Serializable } from "$/types/general"
-import type { TextContentLikeAttributes } from "$/types/documents/text_content-like"
 import type {
 	CommentIdentifierDocument,
 	DeserializedCommentDocument
@@ -8,7 +7,7 @@ import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/d
 import type {
 	Completeness,
 	Format,
-
+	Attributes,
 	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
@@ -33,7 +32,7 @@ extends ResourceIdentifier<T> {
 	type: "comment_vote"
 }
 
-export type CommentVoteAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T>
+export type CommentVoteAttributes<T extends Format = "serialized"> = Attributes<T>
 
 interface CommentVoteRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {

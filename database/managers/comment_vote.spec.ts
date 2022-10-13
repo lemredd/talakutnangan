@@ -10,13 +10,11 @@ describe("Database Manager: Miscellaneous comment vote operations", () => {
 		expect(sortableColumns).toStrictEqual([
 			"-createdAt",
 			"-deletedAt",
-			"-departmentID",
 			"-id",
 			"-kind",
 			"-updatedAt",
 			"createdAt",
 			"deletedAt",
-			"departmentID",
 			"id",
 			"kind",
 			"updatedAt"
