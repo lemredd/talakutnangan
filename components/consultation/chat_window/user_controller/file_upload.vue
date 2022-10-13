@@ -97,7 +97,7 @@ import Overlay from "@/helpers/overlay.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 const props = defineProps<{
-	accept: "image/*" | "file/*"
+	accept: "image/*" | "*/*"
 	isShown: boolean
 }>()
 

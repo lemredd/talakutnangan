@@ -8,10 +8,11 @@ import type {
 	ChatMessageDocument
 } from "$/types/documents/chat_message"
 
+import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./file_upload.vue"
-import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 describe("Component: User controller/File Upload", () => {
 	describe("image upload", () => {
@@ -123,7 +124,7 @@ describe("Component: User controller/File Upload", () => {
 	})
 
 	describe("file upload", () => {
-		const accept = "file/*"
+		const accept = "*/*"
 		it("can preview uploaded file", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
