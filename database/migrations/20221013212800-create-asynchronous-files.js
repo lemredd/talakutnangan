@@ -38,7 +38,7 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.INTEGER
 					},
-					"isRunning": {
+					"hasStopped": {
 						"allowNull": false,
 						"type": Sequelize.BOOLEAN
 					},
