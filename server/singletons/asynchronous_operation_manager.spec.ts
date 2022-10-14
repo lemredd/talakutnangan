@@ -10,7 +10,7 @@ import Singleton from "./asynchronous_operation_manager"
 describe("Server singleton: Asynchronous operation manager", () => {
 	const requester = new MockRequester<AuthenticatedRequest>()
 
-	it("can initialize properly", async() => {
+	it("can initialize properly with new operation", async() => {
 		const singleton = new Singleton()
 		const user = await new UserFactory().serializedOne(true)
 
@@ -25,6 +25,6 @@ describe("Server singleton: Asynchronous operation manager", () => {
 			4
 		)
 
-		requester.expectSuccess()
+		expect(singleton.isNew).toBeTruthy()
 	})
 })
