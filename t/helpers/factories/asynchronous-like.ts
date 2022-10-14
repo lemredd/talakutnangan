@@ -13,9 +13,10 @@ import type {
 	ResourceListDocument
 } from "$/types/documents/base"
 
+import User from "%/models/user"
 import digest from "$!/helpers/digest"
-
 import BaseFactory from "~/factories/base"
+import UserFactory from "~/factories/user"
 
 export default abstract class AsynchronousLikeFactory<
 	T extends Model,
@@ -78,6 +79,14 @@ export default abstract class AsynchronousLikeFactory<
 	extra(generator: () => GeneralObject)
 	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.extraGenerator = generator
+		return this
+	}
+
+	protected userGenerator: () => Promise<User> = () => new UserFactory().insertOne()
+
+	user(generator: () => Promise<User>)
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+		this.userGenerator = generator
 		return this
 	}
 }
