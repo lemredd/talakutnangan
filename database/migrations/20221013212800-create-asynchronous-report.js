@@ -38,6 +38,10 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.BOOLEAN
 					},
+					"extra": {
+						"allowNull": false,
+						"type": Sequelize.JSON
+					},
 					"fileContents": {
 						"type": Sequelize.BLOB,
 						"allowNull": false
