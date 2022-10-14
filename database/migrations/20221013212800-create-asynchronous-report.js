@@ -5,7 +5,7 @@ module.exports = {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
 				const HASH_LENGTH = 64
-				await queryInterface.createTable("AsynchronousRequests", {
+				await queryInterface.createTable("AsynchronousReports", {
 					"id": {
 						"allowNull": false,
 						"autoIncrement": true,
@@ -56,8 +56,8 @@ module.exports = {
 					}
 				}, { transaction })
 
-				await queryInterface.addConstraint("AsynchronousRequests", {
-					"fields": [ "bodyHash" ],
+				await queryInterface.addConstraint("AsynchronousReports", {
+					"fields": [ "token" ],
 					"type": "unique",
 					"name": "unique_key_body_hash_constraint",
 					transaction
@@ -71,7 +71,7 @@ module.exports = {
 	async down(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("AsynchronousRequests", { transaction })
+				await queryInterface.dropTable("AsynchronousReports", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
