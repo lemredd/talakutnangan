@@ -34,7 +34,7 @@ export default class extends CreateRoute {
 					"fileContents": {
 						"constraints": {
 							"buffer": {
-								"allowedMimeTypes": [ "text/plain", "image/png" ],
+								"allowedMimeTypes": [ "*/*" ],
 								"maximumSize": MAXIMUM_FILE_SIZE,
 								"minimumSize": MINIMUM_FILE_SIZE
 							}

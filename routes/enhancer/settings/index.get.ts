@@ -1,3 +1,5 @@
+import type { DocumentProps } from "$/types/server"
+
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
@@ -11,6 +13,13 @@ export default class extends PageMiddleware {
 	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
 
 	get bodyParser(): null { return null }
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Consultation chat platform for MCC",
+			"title": "Settings | Talakutnangan"
+		}
+	}
 
 	get validations(): Validation[] { return [] }
 
