@@ -22,7 +22,7 @@ module.exports = {
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
-					"bodyHash": {
+					"token": {
 						"allowNull": false,
 						"type": Sequelize.STRING(HASH_LENGTH)
 					},
