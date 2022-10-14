@@ -22,10 +22,10 @@
 				<img v-if="chatMessage.data.subkind === 'image'" :src="fileURL"/>
 				<a
 					v-else
-					class="file-link flex items-center m-1"
+					class="file-link"
 					target="_blank"
 					:href="fileURL">
-					<span class="attachment-symbol material-icons bg-gray-300 text-black dark:bg-dark-100 dark:text-white rounded-full p-1 mr-2">
+					<span class="attachment-symbol material-icons">
 						attachment
 					</span>
 					<span class="file-name">{{ chatMessage.data.name }}</span>
@@ -75,13 +75,17 @@
 				@apply dark:border-opacity-100;
 
 				.file-link {
-					.file-name {
+					@apply flex items-center m-1;
+					&.file-name {
 						text-decoration: underline;
 					}
 				}
 			}
 		}
 
+		.attachment-symbol {
+			@apply bg-gray-300 text-black dark:bg-dark-100 dark:text-white rounded-full p-1 mr-2;
+		}
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;
 			width: 40px;

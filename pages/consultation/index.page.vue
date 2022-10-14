@@ -1,6 +1,5 @@
 <!--
 	General tasks for other members:
-	TODO(others): Refactor all WindiCSS inline classes using @apply directive
 	TODO(others): Refactor HTML to Vue Components if applicable
 	TODO(others): Make use of mixins if applicable
 -->
