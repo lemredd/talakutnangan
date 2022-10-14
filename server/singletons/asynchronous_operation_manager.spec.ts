@@ -1,3 +1,5 @@
+import type { AuthenticatedRequest } from "!/types/dependent"
+
 import "~/setups/database.setup"
 import MockRequester from "~/setups/mock_requester"
 import AsynchronousFileManager from "%/managers/asynchronous_file"
@@ -5,7 +7,7 @@ import AsynchronousFileManager from "%/managers/asynchronous_file"
 import Singleton from "./asynchronous_operation_manager"
 
 describe("Server singleton: Asynchronous operation manager", () => {
-	const requester = new MockRequester()
+	const requester = new MockRequester<AuthenticatedRequest>()
 
 	it("can initialize properly", async() => {
 		const singleton = new Singleton()
