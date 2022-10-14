@@ -51,6 +51,11 @@ export default class <T extends AsynchronousLike> extends AsynchronousLikeTransf
 		if (isUndefined(options.extra)) {
 			options.extra = { "raw": false }
 		}
+
+		if (options.extra.raw) {
+			return [ "fileContents" ]
+		}
+
 		return []
 	}
 }
