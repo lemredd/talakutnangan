@@ -1,10 +1,12 @@
-import type { Request } from "!/types/dependent"
 import type { Serializable } from "$/types/general"
+import type { AuthenticatedRequest } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
 import BaseManager from "%/managers/base"
+import deserialize from "$/object/deserialize"
 import TransactionManager from "%/helpers/transaction_manager"
 
 /**
@@ -19,7 +21,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 	 * Expects body of request to be raw.
 	 */
 	async initializeWithRequest(
-		request: Request,
+		request: AuthenticatedRequest,
 		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
 		totalStepCount: number
 	): Promise<void> {
@@ -28,6 +30,8 @@ export default class extends TransactionManager implements TransactionManagerInt
 			"cache": request.cache,
 			"transaction": this
 		})
+
+		const user = deserialize(request.user) as DeserializedUserProfile
 
 		const hashedBody = await digest(request.body)
 		Log.trace("asynchronous", `digested body in ${request.url}`)
@@ -50,7 +54,8 @@ export default class extends TransactionManager implements TransactionManagerInt
 				"hasStopped": false,
 				"origin": request.url,
 				"token": hashedBody,
-				totalStepCount
+				totalStepCount,
+				"userID": Number(user.data.id)
 			})
 
 			possibleResource = createdDocument.data

@@ -1,6 +1,7 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import "~/setups/database.setup"
+import UserFactory from "~/factories/user"
 import MockRequester from "~/setups/mock_requester"
 import AsynchronousFileManager from "%/managers/asynchronous_file"
 
@@ -11,13 +12,11 @@ describe("Server singleton: Asynchronous operation manager", () => {
 
 	it("can initialize properly", async() => {
 		const singleton = new Singleton()
+		const user = await new UserFactory().serializedOne(true)
+
 		requester.customizeRequest({
 			"body": Buffer.alloc(0),
-			"user": {
-				"data": {
-					"id": "1"
-				}
-			}
+			user
 		})
 
 		await requester.runAsynchronousOperationInitializer(
