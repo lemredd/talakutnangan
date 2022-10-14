@@ -47,8 +47,9 @@ module.exports = {
 						"type": Sequelize.JSON
 					},
 					"fileContents": {
-						"type": Sequelize.BLOB,
-						"allowNull": false
+						"allowNull": true,
+						"defaultValue": null,
+						"type": Sequelize.BLOB
 					},
 					"createdAt": {
 						"allowNull": false,
