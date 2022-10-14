@@ -1,6 +1,6 @@
 import type { Request } from "!/types/dependent"
 import type { Serializable } from "$/types/general"
-import type { TransactionManagerInterface } from "$!/types/dependent"
+import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
@@ -11,19 +11,22 @@ import TransactionManager from "%/helpers/transaction_manager"
  * Manages the transaction for asynchronous requests to be implementation-agnostic.
  */
 export default class extends TransactionManager implements TransactionManagerInterface {
-	private manager: BaseManager<any, any, any, any, any, any>
+	private manager: BaseManager<any, any, any, any, any, any>|null = null
 	private id = 0
-
-	constructor(manager: BaseManager<any, any, any, any, any, any>) {
-		super()
-		this.manager = manager
-	}
 
 	/**
 	 * Expects body of request to be raw.
 	 */
-	async initializeWithRequest(request: Request, totalStepCount: number): Promise<void> {
+	async initializeWithRequest(
+		request: Request,
+		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
+		totalStepCount: number
+	): Promise<void> {
 		await super.initialize()
+		this.manager = new Manager({
+			"cache": request.cache,
+			"transaction": this
+		})
 
 		const hashedBody = await digest(request.body)
 		Log.trace("asynchronous", `digested body in ${request.url}`)
