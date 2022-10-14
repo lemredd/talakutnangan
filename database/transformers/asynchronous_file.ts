@@ -45,7 +45,7 @@ export default class <T extends AsynchronousLike> extends AsynchronousLikeTransf
 		return safeObjects
 	}
 
-	protected determineWhiteListedAttributes(
+	protected determineOtherWhiteListedAttributes(
 		options: TransformerOptions<FileLikeTransformerOptions>
 	): string[] {
 		if (isUndefined(options.extra)) {

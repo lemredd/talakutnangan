@@ -33,7 +33,7 @@ export default abstract class<T extends AsynchronousLike, U> extends Transformer
 			"totalStepCount",
 			"hasStopped",
 			"extra",
-			...this.determineWhiteListedAttributes(options)
+			...this.determineOtherWhiteListedAttributes(options)
 		]
 
 		const safeObjects = Serializer.whitelist(model, whiteListedAttributes)
@@ -41,7 +41,7 @@ export default abstract class<T extends AsynchronousLike, U> extends Transformer
 		return safeObjects
 	}
 
-	protected determineWhiteListedAttributes(unusedOptions: TransformerOptions<U>): string[] {
+	protected determineOtherWhiteListedAttributes(unusedOptions: TransformerOptions<U>): string[] {
 		return []
 	}
 }
