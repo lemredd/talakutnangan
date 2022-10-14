@@ -13,6 +13,7 @@ import TransactionManager from "%/helpers/transaction_manager"
 export default class extends TransactionManager implements TransactionManagerInterface {
 	private manager: BaseManager<any, any, any, any, any, any>|null = null
 	private id = 0
+	private hasFound = false
 
 	/**
 	 * Expects body of request to be raw.
@@ -35,6 +36,8 @@ export default class extends TransactionManager implements TransactionManagerInt
 		let possibleResource = possibleDocument.data
 
 		if (possibleResource === null) {
+			this.hasFound = false
+
 			const createdDocument = await this.manager.create({
 				"extra": {},
 				"finishedStepCount": 0,
@@ -51,4 +54,6 @@ export default class extends TransactionManager implements TransactionManagerInt
 
 		this.id = Number(castResource.id)
 	}
+
+	get isNew(): boolean { return !this.hasFound }
 }
