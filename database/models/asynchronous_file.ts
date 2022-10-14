@@ -1,7 +1,8 @@
 import {
 	Table,
 	Column,
-	DataType
+	DataType,
+	AllowNull
 } from "sequelize-typescript"
 
 import AsynchronousLike from "%/models/asynchronous-like"
@@ -11,8 +12,9 @@ import AsynchronousLike from "%/models/asynchronous-like"
 	"timestamps": true
 })
 export default class AsynchronousFile extends AsynchronousLike {
+	@AllowNull
 	@Column({
 		"type": DataType.BLOB("medium")
 	})
-		fileContents!: Buffer
+		fileContents!: Buffer|null
 }
