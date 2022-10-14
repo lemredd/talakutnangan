@@ -4,7 +4,7 @@ import MockRequester from "~/setups/mock_requester"
 import type { PreprocessedRequest } from "!/types/dependent"
 import type { EmailVerificationArguments } from "!/types/independent"
 
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 
 import EmailVerification from "./email_verification"
 

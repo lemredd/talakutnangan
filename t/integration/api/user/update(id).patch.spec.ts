@@ -8,7 +8,7 @@ import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
 
 import User from "%/models/user"
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 import Route from "!%/api/user/update(id).patch"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"

@@ -1,6 +1,6 @@
 import { createTestAccount } from "nodemailer"
 
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 beforeAll(done => {
