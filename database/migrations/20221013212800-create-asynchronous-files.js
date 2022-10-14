@@ -30,11 +30,11 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.STRING(HASH_LENGTH)
 					},
-					"currentStep": {
+					"finishedStepCount": {
 						"allowNull": false,
 						"type": Sequelize.INTEGER
 					},
-					"maxStep": {
+					"totalStepCount": {
 						"allowNull": false,
 						"type": Sequelize.INTEGER
 					},
