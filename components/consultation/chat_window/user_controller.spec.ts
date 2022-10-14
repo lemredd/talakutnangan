@@ -26,8 +26,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"finishedAt": null,
 						"id": "1",
 						"reason": "",
-						"scheduledStartAt": new Date(),
-						"startedAt": new Date(),
+						"scheduledStartAt": new Date("2022-10-04 10:00"),
+						"startedAt": new Date("2022-10-04 10:01"),
 						"type": "consultation"
 					} as DeserializedConsultationResource
 				}
@@ -58,7 +58,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"finishedAt": null,
 						"id": "1",
 						"reason": "",
-						"scheduledStartAt": new Date(),
+						"scheduledStartAt": new Date("2022-10-04 10:00"),
 						"startedAt": null,
 						"type": "consultation"
 					}
@@ -90,7 +90,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"finishedAt": null,
 						"id": "1",
 						"reason": "",
-						"scheduledStartAt": new Date(),
+						"scheduledStartAt": new Date("2022-10-04 10:00"),
 						"startedAt": null,
 						"type": "consultation"
 					}
@@ -118,8 +118,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
-				"scheduledStartAt": new Date(),
-				"startedAt": new Date(),
+				"scheduledStartAt": new Date("2022-10-04 10:00"),
+				"startedAt": new Date("2022-10-04 10:01"),
 				"type": "consultation"
 			} as DeserializedConsultationResource
 
@@ -176,8 +176,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
-				"scheduledStartAt": new Date(),
-				"startedAt": new Date(),
+				"scheduledStartAt": new Date("2022-10-04 10:00"),
+				"startedAt": new Date("2022-10-04 10:01"),
 				"type": "consultation"
 			} as DeserializedConsultationResource
 
@@ -186,7 +186,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 					"provide": {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
-							"receivedMessageAt": new Date()
+							"receivedMessageAt": new Date("2022-10-04 10:00")
 						}))
 					}
 				},
@@ -233,8 +233,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
-				"scheduledStartAt": new Date(),
-				"startedAt": new Date(),
+				"scheduledStartAt": new Date("2022-10-04 10:00"),
+				"startedAt": new Date("2022-10-04 10:01"),
 				"type": "consultation"
 			} as DeserializedConsultationResource
 
@@ -243,7 +243,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 					"provide": {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
-							"receivedMessageAt": new Date()
+							"receivedMessageAt": new Date("2022-10-04 10:02")
 						}))
 					}
 				},
@@ -273,8 +273,8 @@ describe("Component: consultation/chat_window/user_controller", () => {
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
-				"scheduledStartAt": new Date(),
-				"startedAt": new Date(),
+				"scheduledStartAt": new Date("2022-10-04 10:00"),
+				"startedAt": new Date("2022-10-04 10:01"),
 				"type": "consultation"
 			} as DeserializedConsultationResource
 
@@ -283,7 +283,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 					"provide": {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
-							"receivedMessageAt": new Date()
+							"receivedMessageAt": new Date("2022-10-04 10:02")
 						}))
 					}
 				},
