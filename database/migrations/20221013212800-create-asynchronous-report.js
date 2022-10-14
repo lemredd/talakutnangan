@@ -22,6 +22,10 @@ module.exports = {
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
+					"origin": {
+						"allowNull": false,
+						"type": Sequelize.STRING
+					},
 					"token": {
 						"allowNull": false,
 						"type": Sequelize.STRING(HASH_LENGTH)
@@ -61,9 +65,9 @@ module.exports = {
 				}, { transaction })
 
 				await queryInterface.addConstraint("AsynchronousReports", {
-					"fields": [ "token" ],
+					"fields": [ "origin", "token" ],
 					"type": "unique",
-					"name": "unique_key_body_hash_constraint",
+					"name": "unique_key_origin_token_constraint",
 					transaction
 				})
 			} catch (err) {
