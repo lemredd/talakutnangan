@@ -5,8 +5,8 @@ import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 import FileLike from "%/models/file-like"
 import Transformer from "%/transformers/base"
 import URLMaker from "$!/singletons/url_maker"
-import Serializer from "%/transformers/serializer"
 import processData from "%/helpers/process_data"
+import Serializer from "%/transformers/serializer"
 
 export default abstract class<
 	T extends FileLike,
@@ -28,12 +28,13 @@ export default abstract class<
 
 		const safeObjects = Serializer.whitelist(model, whiteListedAttributes)
 
-		const templatePath = `/api/${this.type}/:id`
+		const templatePath = "/api/:type/:id"
 		processData(safeObjects, safeObject => {
 			const castSafeObject = safeObject as GeneralObject
 			if (!castSafeObject.fileContents) {
 				castSafeObject.fileContents = URLMaker.makeURLFromPath(templatePath, {
-					"id": castSafeObject.id
+					"id": castSafeObject.id,
+					"type": this.type
 				})
 			}
 		})
