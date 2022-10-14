@@ -1,4 +1,4 @@
-import type { RawableFormat, FormatRegulator } from "$/types/documents/irregularity"
+import type { RawableFormat as Format, FormatRegulator } from "$/types/documents/irregularity"
 import type {
 	AsynchronousLikeRelationshipNames,
 	AsynchronousLikeRelationships,
@@ -7,8 +7,8 @@ import type {
 } from "$/types/documents/asynchronous-like"
 import type {
 	Completeness,
-	Format,
 	Resource,
+
 	ResourceIdentifier,
 	DeserializedResource,
 
@@ -34,7 +34,7 @@ extends ResourceIdentifier<T> {
 	type: "asynchronous_file"
 }
 
-export interface AsynchronousFileAttributes<T extends RawableFormat = "serialized">
+export interface AsynchronousFileAttributes<T extends Format = "serialized">
 extends AsynchronousLikeAttributes<FormatRegulator<T>> {
 	fileContents: (T extends "raw" ? Buffer : string)|null
 }
