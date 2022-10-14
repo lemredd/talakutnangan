@@ -5,13 +5,13 @@ import type { FileLikeTransformerOptions, IncludedRelationships } from "%/types/
 import URLMaker from "$!/singletons/url_maker"
 import processData from "%/helpers/process_data"
 import isUndefined from "$/type_guards/is_undefined"
-import AsynchronousLike from "%/models/asynchronous-like"
+import AsynchronousFile from "%/models/asynchronous_file"
 import AsynchronousLikeTransformer from "%/transformers/asynchronous-like"
 
 type Relationships = "user"
 
-export default class <T extends AsynchronousLike> extends AsynchronousLikeTransformer<
-	T, FileLikeTransformerOptions
+export default class extends AsynchronousLikeTransformer<
+	AsynchronousFile, FileLikeTransformerOptions
 > {
 	private readTemplatePath: string
 
@@ -27,7 +27,7 @@ export default class <T extends AsynchronousLike> extends AsynchronousLikeTransf
 	}
 
 	transform(
-		model: T|T[],
+		model: AsynchronousFile|AsynchronousFile[],
 		options: TransformerOptions<FileLikeTransformerOptions>
 	): AttributesObject {
 		const safeObjects = super.transform(model, options)
