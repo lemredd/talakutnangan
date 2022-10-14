@@ -1,9 +1,10 @@
-
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
 import type { FieldRules } from "!/types/validation"
+import type { SharedManagerState } from "$!/types/dependent"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
+import BaseManager from "%/managers/base"
 import RequestEnvironment from "$/singletons/request_environment"
 
 /**
@@ -83,6 +84,18 @@ export default class <T extends Request> extends RequestEnvironment {
 		unusedInput: object
 	) => Promise<object>, rules: FieldRules, input: object): Promise<object> {
 		return await handle(rules, this.request, input) as object
+	}
+
+	async runAsynchronousOperationInitializer(
+		handle: (
+			unusedRequest: T,
+			Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
+			totalStepCount: number
+		) => Promise<void>,
+		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
+		totalStepCount: number
+	): Promise<void> {
+		await handle(this.request, Manager, totalStepCount)
 	}
 
 	expectSuccess(): any {
