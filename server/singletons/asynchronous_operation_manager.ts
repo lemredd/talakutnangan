@@ -32,7 +32,13 @@ export default class extends TransactionManager implements TransactionManagerInt
 		const hashedBody = await digest(request.body)
 		Log.trace("asynchronous", `digested body in ${request.url}`)
 
-		const possibleDocument = await this.manager.findOneOnColumn("token", hashedBody)
+		const possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
+			"constraints": {
+				"filter": {
+					"existence": "exists"
+				}
+			}
+		})
 		let possibleResource = possibleDocument.data
 
 		if (possibleResource === null) {
