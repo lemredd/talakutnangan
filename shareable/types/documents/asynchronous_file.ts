@@ -1,6 +1,5 @@
 import type { RawableFormat, FormatRegulator } from "$/types/documents/irregularity"
 import type {
-	AsynchronousLikeRelationshipData,
 	AsynchronousLikeRelationshipNames,
 	AsynchronousLikeRelationships,
 	DeserializedAsynchronousLikeRelationships,
@@ -8,11 +7,10 @@ import type {
 } from "$/types/documents/asynchronous-like"
 import type {
 	Completeness,
+	Format,
 	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
-
-	PartialOrPickDeserializedRelationship,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -22,8 +20,6 @@ import type {
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
-
-type AsynchronousFileRelationshipData<T extends Completeness> = AsynchronousLikeRelationshipData<T>
 
 export type AsynchronousFileRelationshipNames = AsynchronousLikeRelationshipNames
 
@@ -43,52 +39,52 @@ extends AsynchronousLikeAttributes<FormatRegulator<T>> {
 	fileContents: (T extends "raw" ? Buffer : string)|null
 }
 
-export type AsynchronousFileResource<T extends Completeness = "read"> = Resource<
+export type AsynchronousFileResource<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = Resource<
 	T,
 	AsynchronousFileResourceIdentifier<T>,
-	AsynchronousFileAttributes<"serialized">
-> & AsynchronousFileRelationships
+	AsynchronousFileAttributes<U>
+>
 
-export type DeserializedAsynchronousFileResource<
-	T extends AsynchronousFileRelationshipNames|undefined = undefined
-> = DeserializedResource<
+export type DeserializedAsynchronousFileResource<T extends Format = "serialized">
+= DeserializedResource<
 	AsynchronousFileResourceIdentifier<"read">,
-	AsynchronousFileAttributes<"deserialized">
-> & PartialOrPickDeserializedRelationship<
-	AsynchronousFileRelationshipData<"read">,
-	DeserializedAsynchronousFileRelationships<"read">,
-	AsynchronousFileRelationshipNames,
-	T extends AsynchronousFileRelationshipNames ? true : false,
-	T extends AsynchronousFileRelationshipNames ? T : AsynchronousFileRelationshipNames
+	AsynchronousFileAttributes<T>
 >
 
-export type AsynchronousFileDocument<T extends Completeness = "read"> = ResourceDocument<
+export type AsynchronousFileDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceDocument<
 	T,
 	AsynchronousFileResourceIdentifier<T>,
-	AsynchronousFileAttributes<"serialized">,
-	AsynchronousFileResource<T>
+	AsynchronousFileAttributes<U>,
+	AsynchronousFileResource<T, U>
 >
 
-export type AsynchronousFileListDocument<T extends Completeness = "read"> = ResourceListDocument<
+export type AsynchronousFileListDocument<
+	T extends Completeness = "read",
+	U extends Format = "serialized"
+> = ResourceListDocument<
 	T,
 	AsynchronousFileResourceIdentifier<T>,
-	AsynchronousFileAttributes<"serialized">,
-	AsynchronousFileResource<T>
+	AsynchronousFileAttributes<U>,
+	AsynchronousFileResource<T, U>
 >
 
-export type DeserializedAsynchronousFileDocument<
-	T extends AsynchronousFileRelationshipNames|undefined = undefined
-> = DeserializedResourceDocument<
+export type DeserializedAsynchronousFileDocument<T extends Format = "serialized">
+= DeserializedResourceDocument<
 	AsynchronousFileResourceIdentifier<"read">,
-	AsynchronousFileAttributes<"deserialized">,
+	AsynchronousFileAttributes<T>,
 	DeserializedAsynchronousFileResource<T>
 >
 
-export type DeserializedAsynchronousFileListDocument<
-	T extends AsynchronousFileRelationshipNames|undefined = undefined
-> = DeserializedResourceListDocument<
+export type DeserializedAsynchronousFileListDocument<T extends Format = "serialized">
+= DeserializedResourceListDocument<
 	AsynchronousFileResourceIdentifier<"read">,
-	AsynchronousFileAttributes<"deserialized">,
+	AsynchronousFileAttributes<T>,
 	DeserializedAsynchronousFileResource<T>
 >
 

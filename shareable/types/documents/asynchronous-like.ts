@@ -12,7 +12,7 @@ import type {
 	DeriveDeserializedRelationships
 } from "$/types/documents/base"
 
-export interface AsynchronousLikeRelationshipData<T extends Completeness = "read">
+interface AsynchronousLikeRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
 	user: {
 		serialized: T extends "update" ? undefined : UserIdentifierDocument,
