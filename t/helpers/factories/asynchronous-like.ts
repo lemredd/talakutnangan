@@ -17,7 +17,7 @@ import digest from "$!/helpers/digest"
 
 import BaseFactory from "~/factories/base"
 
-export default abstract class AsynchronouseLikeFactory<
+export default abstract class AsynchronousLikeFactory<
 	T extends Model,
 	U extends ResourceIdentifier<"read">,
 	V extends Attributes<"serialized">,
@@ -36,7 +36,7 @@ export default abstract class AsynchronouseLikeFactory<
 	}
 
 	token(generator: () => Promise<string>)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.tokenGenerator = generator
 		return this
 	}
@@ -44,7 +44,7 @@ export default abstract class AsynchronouseLikeFactory<
 	protected originGenerator: () => string = () => `/${faker.word.noun()}`
 
 	origin(generator: () => string)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.originGenerator = generator
 		return this
 	}
@@ -52,7 +52,7 @@ export default abstract class AsynchronouseLikeFactory<
 	protected finishedStepCountGenerator: () => number = () => 0
 
 	finishedStepCount(generator: () => number)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.finishedStepCountGenerator = generator
 		return this
 	}
@@ -60,7 +60,7 @@ export default abstract class AsynchronouseLikeFactory<
 	protected totalStepCountGenerator: () => number = () => 10
 
 	totalStepCount(generator: () => number)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.totalStepCountGenerator = generator
 		return this
 	}
@@ -68,7 +68,7 @@ export default abstract class AsynchronouseLikeFactory<
 	protected hasStoppedGenerator: () => boolean = () => false
 
 	hasStopped(generator: () => boolean)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.hasStoppedGenerator = generator
 		return this
 	}
@@ -76,7 +76,7 @@ export default abstract class AsynchronouseLikeFactory<
 	protected extraGenerator: () => GeneralObject = () => ({})
 
 	extra(generator: () => GeneralObject)
-	: AsynchronouseLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	: AsynchronousLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.extraGenerator = generator
 		return this
 	}
