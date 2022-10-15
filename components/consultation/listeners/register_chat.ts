@@ -17,6 +17,7 @@ import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized
 import Socket from "$@/external/socket"
 import debounce from "$@/helpers/debounce"
 import deserialize from "$/object/deserialize"
+import WindowFocus from "$@/external/window_focus"
 import DocumentVisibility from "$@/external/document_visibility"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
@@ -51,6 +52,11 @@ export default function(
 	}
 
 
+	WindowFocus.addEventListener(newState => {
+		const isWindowFocused = newState === "focus"
+
+		if (isWindowFocused) updateSeenMessageAt()
+	})
 	DocumentVisibility.addEventListener(newState => {
 		isWindowShown = newState === "visible"
 
