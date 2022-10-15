@@ -2,7 +2,7 @@ import type { PreprocessedRequest } from "!/types/dependent"
 import type { NewUserNotificationArguments } from "!/types/independent"
 
 import Log from "$!/singletons/log"
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 import RequestFilter from "!/bases/request_filter"
 
 /**

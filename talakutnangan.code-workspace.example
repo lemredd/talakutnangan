@@ -15,6 +15,7 @@
 		// { "name": "field components",				"path": "components/fields" },
 		// { "name": "consultation components",	"path": "components/consultation" },
 		// { "name": "role components",				"path": "components/role" },
+		// { "name": "post components",				"path": "components/post" },
 
 		// { "name": "renderer",						"path": "renderer" },
 
@@ -22,6 +23,7 @@
 		// { "name": "consultation pages",			"path": "pages/consultation" },
 		// { "name": "role pages",						"path": "pages/role" },
 		// { "name": "settings pages",				"path": "pages/settings" },
+		// { "name": "forum pages",					"path": "pages/forum" },
 
 		// { "name": "shareable",						"path": "shareable" },
 		// { "name": "shareable types",				"path": "shareable/types" },
@@ -39,6 +41,8 @@
 		// { "name": "setups",							"path": "t/helpers/setups" },
 		// { "name": "factories",						"path": "t/helpers/factories" },
 		// { "name": "integration tests",			"path": "t/integration" },
+		// { "name": "API integration tests",		"path": "t/integration/api" },
+		// { "name": "extra integration tests",	"path": "t/integration/t" },
 
 		// { "name": "routes",							"path": "routes" },
 		// { "name": "Enhancer routes",				"path": "routes/enhancer" },
@@ -49,14 +53,17 @@
 
 		// { "name": "common back-end",				"path": "common_back-end" },
 		// { "name": "back-end types",				"path": "common_back-end/types" },
-		// { "name": "back-end errors",				"path": "common_back-end/errors" },
 		// { "name": "back-end helpers",				"path": "common_back-end/helpers" },
+		// { "name": "back-end errors",				"path": "common_back-end/errors" },
+		// { "name": "back-end constants",			"path": "common_back-end/constants" },
 		// { "name": "back-end singletons",			"path": "common_back-end/singletons" },
 		// { "name": "back-end auth helpers",		"path": "common_back-end/auth" },
 
 		// { "name": "server",							"path": "server" },
+		// { "name": "server constants",				"path": "server/constants" },
 		// { "name": "server types",					"path": "server/types" },
 		// { "name": "server helpers",				"path": "server/helpers" },
+		// { "name": "server singletons",			"path": "server/singletons" },
 		// { "name": "bases",							"path": "server/bases" },
 		// { "name": "middlewares",					"path": "server/middlewares" },
 		// { "name": "app",								"path": "server/app" },
@@ -73,6 +80,7 @@
 
 		// { "name": "database",						"path": "database" },
 		// { "name": "database types",				"path": "database/types" },
+		// { "name": "helpers",							"path": "database/helpers" },
 		// { "name": "database configuration",		"path": "database/configuration" },
 		// { "name": "data source",					"path": "database/data_source" },
 		// { "name": "seeders",							"path": "database/seeders" },
@@ -87,13 +95,11 @@
 			"lukashass.volar",
 			"dbaeumer.vscode-eslint",
 			"voorjaar.windicss-intellisense",
-			"aaron-bond.better-comments",
-			"qcz.text-power-tools"
+			"aaron-bond.better-comments"
 		]
 	},
 	"settings": {
 		"scss.lint.unknownAtRules": "ignore",
-		"files.eol": "\n",
 
 		"editor.tabSize": 3,
 		"editor.insertSpaces": false,
@@ -103,6 +109,9 @@
 		"files.insertFinalNewline": true,
 		"files.trimFinalNewlines": true,
 		"files.trimTrailingWhitespace": true,
+		"editor.foldingStrategy": "indentation",
+		"editor.foldingImportsByDefault": true,
+		"editor.folding": true,
 		"files.exclude": {
 			"**/.DS_Store": true,
 			"**/.git": true,

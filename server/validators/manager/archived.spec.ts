@@ -11,13 +11,13 @@ describe("Validator: archived", () => {
 		const user = await new UserFactory().insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			"request": {} as Request,
-			"source": null,
 			"field": "hello",
 			"manager": {
 				"className": UserManager,
 				"columnName": "name"
-			}
+			},
+			"request": {} as Request,
+			"source": null
 		}
 		await user.destroy({ "force": false })
 
@@ -30,13 +30,13 @@ describe("Validator: archived", () => {
 		const user = await new UserFactory().insertOne()
 		const value = Promise.resolve(makeInitialState(user.name))
 		const constraints = {
-			"request": {} as Request,
-			"source": null,
 			"field": "hello",
 			"manager": {
 				"className": UserManager,
 				"columnName": "name"
-			}
+			},
+			"request": {} as Request,
+			"source": null
 		}
 
 		try {
@@ -51,13 +51,13 @@ describe("Validator: archived", () => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
 		const constraints = {
-			"request": {} as Request,
-			"source": null,
 			"field": "hello",
 			"manager": {
 				"className": UserManager,
 				"columnName": "name"
-			}
+			},
+			"request": {} as Request,
+			"source": null
 		}
 
 		try {
