@@ -181,23 +181,6 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"type": "user"
 				}
 			} as DeserializedUserDocument<"profilePicture">
-			const other = {
-				"data": {
-					"email": "",
-					"id": "2",
-					"kind": "student",
-					"name": "Other user",
-					"prefersDark": true,
-					"profilePicture": {
-						"data": {
-							"fileContents": "http://example.com/image_b",
-							"id": "2",
-							"type": "profile_picture"
-						}
-					},
-					"type": "user"
-				}
-			} as DeserializedUserDocument<"profilePicture">
 			const textValue = "Hello foo!"
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
@@ -458,7 +441,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 	})
 
 	describe("seen users", () => {
-		it("can identify which users have seen latest message", async () => {
+		it("can identify which users have seen latest message", () => {
 			const CURRENT_TIME = new Date("2022-10-4 10:00:00")
 			const user = {
 				"data": {
