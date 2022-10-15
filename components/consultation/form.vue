@@ -195,7 +195,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, inject, watch } from "vue"
+import { ref, computed, inject, watch } from "vue"
 
 import { Day, DayValues } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
@@ -213,30 +213,22 @@ import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
-import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
-import Checkbox from "@/fields/checkbox.vue"
-import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
 
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+import SearchableChip from "@/consultation/form/searchable_chip.vue"
+
 const { isShown } = defineProps<{ isShown: boolean }>()
 
-const { pageProps }
-= inject("pageContext") as PageContext<"deserialized", "consultations">
-const { "userProfile": { "data": userProfileData } }
-= pageProps
+const { pageProps } = inject("pageContext") as PageContext<"deserialized", "consultations">
+const { "userProfile": { "data": userProfileData } } = pageProps
 
-let rawFetcher: Fetcher|null = null
-
-function fetcher(): Fetcher {
-	if (rawFetcher === null) throw new Error("Consultation cannot be processed yet")
-
-	return rawFetcher
-}
+const fetcher = new Fetcher()
 
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
@@ -420,7 +412,7 @@ function addConsultation(): void {
 		"doesAllowConflicts": forceCreate.value
 	}
 
-	fetcher().create({
+	fetcher.create({
 		"actionTaken": null,
 		"deletedAt": null,
 		"finishedAt": null,
@@ -457,10 +449,6 @@ function addConsultation(): void {
 		hasConflicts.value = true
 	})
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 
 watch(selectedConsultants, () => {
 	if (selectedConsultants.value.length) {
