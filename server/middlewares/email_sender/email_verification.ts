@@ -3,7 +3,7 @@ import type { EmailVerificationArguments } from "!/types/independent"
 
 import Log from "$!/singletons/log"
 import URLMaker from "$!/singletons/url_maker"
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 import RequestFilter from "!/bases/request_filter"
 
 /**
