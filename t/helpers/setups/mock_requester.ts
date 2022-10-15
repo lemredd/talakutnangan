@@ -1,5 +1,6 @@
 import { getMockReq as makeRequest, getMockRes as makeResponse } from "@jest-mock/express"
 
+import type { Serializable } from "$/types/general"
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response, NextFunction, BaseManagerClass } from "!/types/dependent"
 
@@ -89,11 +90,11 @@ export default class <T extends Request> extends RequestEnvironment {
 			unusedRequest: T,
 			Manager: BaseManagerClass,
 			totalStepCount: number
-		) => Promise<void>,
+		) => Promise<Serializable>,
 		Manager: BaseManagerClass,
 		totalStepCount: number
-	): Promise<void> {
-		await handle(this.request, Manager, totalStepCount)
+	): Promise<Serializable> {
+		return await handle(this.request, Manager, totalStepCount)
 	}
 
 	expectSuccess(): any {

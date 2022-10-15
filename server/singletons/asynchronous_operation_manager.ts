@@ -26,7 +26,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 		request: AuthenticatedRequest,
 		Manager: BaseManagerClass,
 		totalStepCount: number
-	): Promise<void> {
+	): Promise<Serializable> {
 		await this.initialize()
 		this.rawManager = new Manager({
 			"cache": request.cache,
@@ -38,7 +38,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 		const hashedBody = await digest(request.body)
 		Log.trace("asynchronous", `digested body in ${request.url}`)
 
-		const possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
+		let possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
 			"constraints": {
 				"filter": {
 					"existence": "exists"
@@ -60,6 +60,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 				"userID": Number(user.data.id)
 			})
 
+			possibleDocument = createdDocument
 			possibleResource = createdDocument.data
 		} else {
 			this.hasFound = true
@@ -74,6 +75,8 @@ export default class extends TransactionManager implements AsynchronousOperation
 		await this.destroySuccessfully()
 		await this.initialize()
 		Log.trace("asynchronous", "initialize asynchronous operation")
+
+		return possibleDocument
 	}
 
 	get isNew(): boolean { return !this.hasFound }
