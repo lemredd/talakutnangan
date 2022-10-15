@@ -17,3 +17,10 @@ export interface SharedManagerState<
 	cache: CacheClient,
 	transaction: T
 }
+
+export interface SharedAsynchronousOperationState<
+	T extends TransactionManagerInterface = TransactionManagerInterface,
+	U extends TransactionManagerInterface = TransactionManagerInterface
+> extends SharedManagerState<T> {
+	asynchronousOperation: U
+}
