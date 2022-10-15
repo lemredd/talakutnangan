@@ -1,5 +1,6 @@
-import TransactionManager from "%/helpers/transaction_manager"
 import type { Request } from "!/types/dependent"
+
+import TransactionManager from "%/helpers/transaction_manager"
 
 import RequestFilter from "!/bases/request_filter"
 

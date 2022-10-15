@@ -1,8 +1,8 @@
 import type { Serializable } from "$/types/general"
-import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { TransactionManagerInterface } from "$!/types/dependent"
+import type { AuthenticatedRequest, BaseManagerClass } from "!/types/dependent"
 import type { AsynchronousLikeAttributes } from "$/types/documents/asynchronous-like"
-import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
@@ -24,7 +24,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 	 */
 	async initializeWithRequest(
 		request: AuthenticatedRequest,
-		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
+		Manager: BaseManagerClass,
 		totalStepCount: number
 	): Promise<void> {
 		await this.initialize()
