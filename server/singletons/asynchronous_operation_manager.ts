@@ -1,6 +1,6 @@
 import type { Serializable } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { TransactionManagerInterface } from "$!/types/dependent"
+import type { AsynchronousOperationInterface } from "$!/types/dependent"
 import type { AuthenticatedRequest, BaseManagerClass } from "!/types/dependent"
 import type { AsynchronousLikeAttributes } from "$/types/documents/asynchronous-like"
 
@@ -14,7 +14,7 @@ import TransactionManager from "%/helpers/transaction_manager"
 /**
  * Manages the transaction for asynchronous requests to be implementation-agnostic.
  */
-export default class extends TransactionManager implements TransactionManagerInterface {
+export default class extends TransactionManager implements AsynchronousOperationInterface {
 	private rawManager: BaseManager<any, any, any, any, any, any>|null = null
 	private hasFound = false
 	private rawAttributes: Partial<AsynchronousLikeAttributes & { id: number }> = {}
