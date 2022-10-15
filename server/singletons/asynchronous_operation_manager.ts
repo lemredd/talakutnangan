@@ -73,6 +73,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 
 		await this.destroySuccessfully()
 		await this.initialize()
+		Log.trace("asynchronous", "initialize asynchronous operation")
 	}
 
 	get isNew(): boolean { return !this.hasFound }
@@ -115,7 +116,19 @@ export default class extends TransactionManager implements AsynchronousOperation
 		})
 	}
 
-	protected get manager(): BaseManager<any, any, any, any, any, any> {
+	async destroyConditionally() {
+		if (this.mayDestroy) {
+			if (this.isCompletelyFinished) {
+				await this.destroySuccessfully()
+			} else {
+				const reason = "Asynchronous operation did not finished properly"
+				Log.errorMessage("asynchronous", `${reason} in "${this.origin}"`)
+				await this.destroyIneffectually()
+			}
+		}
+	}
+
+	private get manager(): BaseManager<any, any, any, any, any, any> {
 		if (this.rawManager === null) {
 			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
 			throw new DeveloperError(
@@ -127,7 +140,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 		return this.rawManager
 	}
 
-	protected get id(): number {
+	private get id(): number {
 		if (this.rawAttributes.id) {
 			return this.rawAttributes.id
 		}
@@ -137,5 +150,33 @@ export default class extends TransactionManager implements AsynchronousOperation
 			`${developmentPrerequisite} before doing something with model manager.`,
 			"Developer have executed instructions out of order."
 		)
+	}
+
+	private get hasStopped(): boolean {
+		if (this.rawAttributes.hasStopped) {
+			return this.rawAttributes.hasStopped
+		}
+
+		const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+		throw new DeveloperError(
+			`${developmentPrerequisite} before doing something with model manager.`,
+			"Developer have executed instructions out of order."
+		)
+	}
+
+	private get origin(): string {
+		if (this.rawAttributes.origin) {
+			return this.rawAttributes.origin
+		}
+
+		const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+		throw new DeveloperError(
+			`${developmentPrerequisite} before doing something with model manager.`,
+			"Developer have executed instructions out of order."
+		)
+	}
+
+	private get isCompletelyFinished(): boolean {
+		return this.hasStopped && this.finishedStepCount === this.totalStepCount
 	}
 }
