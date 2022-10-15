@@ -39,6 +39,11 @@ export default abstract class extends Middleware {
 	abstract get validations(): Validation[]
 
 	/**
+	 * Lists middlewares to run after authorizing the current user.
+	 */
+	get postPolicyMiddlewares(): OptionalMiddleware[] { return [] }
+
+	/**
 	 * Lists middlewares to run after body parsing is done.
 	 */
 	get postParseMiddlewares(): OptionalMiddleware[] { return [] }
@@ -54,6 +59,7 @@ export default abstract class extends Middleware {
 	get middlewares(): OptionalMiddleware[] {
 		return [
 			this.policy,
+			...this.postPolicyMiddlewares,
 			this.bodyParser,
 			...this.postParseMiddlewares,
 			...this.validations,
@@ -73,16 +79,16 @@ export default abstract class extends Middleware {
 	get routeInformation(): RouteInformation {
 		return <RouteInformation>{
 			...extractRouteInfo(this.filePath),
-			description: this.description
+			"description": this.description
 		}
 	}
 
 	get handlers(): RouteHandlers {
 		return {
-			middlewares: this.middlewares,
-			controller: this.intermediate.bind(this),
-			postJobs: this.postJobs,
-			endHandler: this.endHandler
+			"controller": this.intermediate.bind(this),
+			"endHandler": this.endHandler,
+			"middlewares": this.middlewares,
+			"postJobs": this.postJobs
 		}
 	}
 }
