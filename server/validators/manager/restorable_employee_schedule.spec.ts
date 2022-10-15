@@ -65,10 +65,12 @@ describe("Validator: restorable employee schedule", () => {
 		} as unknown as ValidationConstraints<Request>
 		& Partial<RestorableEmployeeScheduleConstraints>
 
-		const error = restorableEmployeeSchedule(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await restorableEmployeeSchedule(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 
 	it("cannot accept invalid value", async() => {
@@ -102,9 +104,11 @@ describe("Validator: restorable employee schedule", () => {
 		} as unknown as ValidationConstraints<Request>
 		& Partial<RestorableEmployeeScheduleConstraints>
 
-		const error = restorableEmployeeSchedule(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await restorableEmployeeSchedule(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

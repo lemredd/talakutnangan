@@ -29,9 +29,11 @@ describe("Validator pipe: divisible by", () => {
 			}
 		}
 
-		const error = divisibleBy(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await divisibleBy(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

@@ -33,9 +33,11 @@ describe("Validator: matches password", () => {
 			"field": "hello"
 		}
 
-		const error = matchesPassword(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await matchesPassword(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })
