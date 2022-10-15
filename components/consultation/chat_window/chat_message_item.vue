@@ -18,7 +18,7 @@
 				<p
 					v-if="isMessageKindFile(chatMessage)"
 					class="message-item-content"
-					:class="messageItemContent">
+					:class="[messageItemContent, fileMessageContent]">
 					<!-- TODO(lead): use appropriate elements for other file types  -->
 					<img :src="fileURL"/>
 				</p>
@@ -74,13 +74,26 @@
 			max-width: 45vw;
 			overflow-wrap: break-word;
 
-			&.text-message-content {
+			&.status-message-content {
+				text-align: center;
+			}
+			&.text-message-content, &.general-file {
 				@apply ml-2 py-1 px-2;
 				@apply border rounded-lg border-true-gray-600 border-opacity-50;
 				@apply dark:border-opacity-100;
+
+				.file-link {
+					@apply flex items-center m-1;
+					&.file-name {
+						text-decoration: underline;
+					}
+				}
 			}
 		}
 
+		.attachment-symbol {
+			@apply bg-gray-300 text-black dark:bg-dark-100 dark:text-white rounded-full p-1 mr-2;
+		}
 		.other, .self {
 			@apply rounded-full border border-true-gray-600 border-opacity-50;
 			width: 40px;
@@ -150,6 +163,12 @@ const messageItemContent = {
 	"file-message-content": isMessageKindFile(chatMessage),
 	"status-message-content": isMessageKindStatus(chatMessage),
 	"text-message-content": isMessageKindText(chatMessage)
+}
+const fileMessageContent = {
+	"general-file": isMessageKindFile(chatMessage)
+	&& chatMessage.data.subkind.match(/file/u),
+	"image": isMessageKindFile(chatMessage)
+	&& chatMessage.data.subkind.match(/image/u)
 }
 
 const fileURL = computed(() => chatMessage.attachedChatFile?.data.fileContents)

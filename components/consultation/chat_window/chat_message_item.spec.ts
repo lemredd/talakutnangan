@@ -226,7 +226,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 	})
 
 	describe("File message", () => {
-		it("can show file type message properly", () => {
+		it("can show image type message properly", () => {
 			const CURRENT_TIME = new Date()
 			const user = {
 				"data": {
@@ -245,10 +245,10 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 					"type": "user"
 				}
 			} as DeserializedUserDocument<"profilePicture">
-			const value = JSON.stringify({
+			const value = {
 				"name": "Scan_20220112 (2).png",
 				"subkind": "image"
-			})
+			}
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -275,7 +275,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 							}
 						},
 						"createdAt": CURRENT_TIME,
-						"data": { value },
+						"data": value,
 						"id": "0",
 						"kind": "file",
 						"type": "chat_message",
@@ -290,6 +290,72 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			expect(fileMessageContent.exists()).toBeTruthy()
 			expect(actualFile.exists()).toBeTruthy()
 			expect(actualFile.attributes("src")).toBeDefined()
+		})
+
+		it("can show image type message properly", () => {
+			const CURRENT_TIME = new Date()
+			const user = {
+				"data": {
+					"email": "",
+					"id": "1",
+					"kind": "reachable_employee",
+					"name": "A",
+					"prefersDark": true,
+					"profilePicture": {
+						"data": {
+							"fileContents": "http://example.com/image_a",
+							"id": "1",
+							"type": "profile_picture"
+						}
+					},
+					"type": "user"
+				}
+			} as DeserializedUserDocument<"profilePicture">
+			const value = {
+				"name": "file.txt",
+				"subkind": "file"
+			}
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": user
+							}
+						}
+					},
+					"stubs": {
+						"ProfilePicture": {
+							"name": "ProfilePicture",
+							"template": "<img/>"
+						}
+					}
+				},
+				"props": {
+					"chatMessage": {
+						"attachedChatFile": {
+							"data": {
+								"fileContents": "http://localhost:16000/api/attached_chat_file/1",
+								"id": "1",
+								"type": "attached_chat_file"
+							}
+						},
+						"createdAt": CURRENT_TIME,
+						"data": value,
+						"id": "0",
+						"kind": "file",
+						"type": "chat_message",
+						"updatedAt": CURRENT_TIME,
+						user
+					}
+				}
+			})
+			const fileMessageContent = wrapper.find(".file-message-content")
+			// TODO(lead): display other elements for other file types
+			const actualFile = fileMessageContent.find(".file-link")
+			expect(fileMessageContent.exists()).toBeTruthy()
+			expect(actualFile.exists()).toBeTruthy()
+			expect(actualFile.attributes("href")).toBeDefined()
 		})
 	})
 })

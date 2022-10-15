@@ -11,7 +11,8 @@
 				<input
 					type="hidden"
 					name="data[attributes][data][subkind]"
-					value="image"/>
+					class="sub-kind"
+					:value="subKind"/>
 				<input
 					type="hidden"
 					name="data[relationships][chatMessageActivity][data][id]"
@@ -33,18 +34,31 @@
 						id="choose-file-btn"
 						type="file"
 						name="meta[fileContents]"
-						accept="image/png"
+						:accept="accept"
 						@change="extractFile"/>
 					CHOOSE FILE
 				</label>
 			</form>
 
-			<div v-if="hasExtracted" class="preview-file mt-5">
-				<div class="preview-img-container">
-					<img class="preview-img max-w-30" :src="previewFile"/>
-					<small class="preview-title max-w-30 text-xs">
+			<div v-if="hasExtracted" class="preview-file">
+				<div v-if="isAcceptingImage" class="preview-img-container">
+					<img class="preview-img" :src="previewFile"/>
+					<small class="preview-title">
 						{{ filename }}
 					</small>
+				</div>
+				<div
+					v-if="isAcceptingFile"
+					class="preview-file-container">
+					<span class="material-icons mr-2">
+						attachment
+					</span>
+					<small class="preview-file-title">
+						{{ filename }}
+					</small>
+					<span class="remove-file-btn material-icons cursor-pointer">
+						close
+					</span>
 				</div>
 			</div>
 		</template>
@@ -66,13 +80,34 @@
 	</Overlay>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@styles/btn.scss";
 
 #choose-file-btn {
 	display:none;
 	appearance: none;
 }
+
+.preview-file{
+	@apply mt-5;
+}
+
+.preview-img{
+	@apply max-w-3;
+}
+
+.preview-title{
+	@apply max-w-30 text-xs;
+}
+
+.preview-file-container {
+	@apply bg-true-gray-200 flex items-center px-3 py-2;
+}
+
+.preview-file-title{
+	@apply flex-1 text-xs;
+}
+
 </style>
 
 <script setup lang="ts">
@@ -84,7 +119,14 @@ import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
-defineProps<{ isShown: boolean }>()
+const props = defineProps<{
+	accept: "image/*" | "*/*"
+	isShown: boolean
+}>()
+
+const isAcceptingImage = props.accept.includes("image/")
+const isAcceptingFile = props.accept.includes("*/")
+const subKind = isAcceptingImage ? "image" : "file"
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)

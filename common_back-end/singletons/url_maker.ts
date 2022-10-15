@@ -28,18 +28,17 @@ export default class {
 		lastPage: number
 	): object {
 		const document = { ...JSONAPI }
-		document.links = document.links || {}
+		document.links ||= {}
 		document.links = {
 			...document.links as object,
 			"first": `${this.makeBaseModelPath(modelPath)}?page=1`,
 			"last": `${this.makeBaseModelPath(modelPath)}?page=${lastPage}`,
-			"prev": currentPage === 1
-				? null
-				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage - 1}`,
 			"next": currentPage === lastPage
 				? null
-				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage + 1}`
-
+				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage + 1}`,
+			"prev": currentPage === 1
+				? null
+				: `${this.makeBaseModelPath(modelPath)}?page=${currentPage - 1}`
 		}
 
 		return document
@@ -50,7 +49,11 @@ export default class {
 	}
 
 	static getResolvedPort() {
-		return this.port === 0 || this.port === 80 || this.port === 443 ? "" : `:${this.port}`
+		const HTTP_PORT = 80
+		const HTTPS_PORT = 443
+		return this.port === 0 || this.port === HTTP_PORT || this.port === HTTPS_PORT
+			? ""
+			: `:${this.port}`
 	}
 
 	static makeBaseURL(): string {
@@ -119,8 +122,8 @@ export default class {
 				&& typeof parsedData[0] === "number"
 			) {
 				return {
-					"hasExpired": parsedData[0] < currentTime,
-					"data": parsedData[1]
+					"data": parsedData[1],
+					"hasExpired": parsedData[0] < currentTime
 				}
 			}
 			throw new Error()
