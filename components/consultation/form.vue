@@ -93,14 +93,20 @@
 				By submitting, your signatures will be applied on the printable consultation form.
 			</div>
 
-			<div v-if="hasConflicts">
-				<input
-					id="checkbox"
-					v-model="forceCreate"
-					type="checkbox"
-					class="warning-message"/>
-				Consultation is already on-going. Please wait for your turn.
+			<div>
+				<label>
+					<input
+						id="checkbox"
+						v-model="forceCreate"
+						type="checkbox"
+						class="warning-message"/>
+					Force create?
+				</label>
 			</div>
+			<p v-if="hasConflicts">
+				Other students have schedule with consultant on the same day and same time. Please
+				change the time.
+			</p>
 		</template>
 
 		<template #footer>
@@ -378,9 +384,6 @@ const selectableTimes = computed(() => {
 
 	return availableTimes
 })
-watch(chosenTime, () => {
-	hasConflicts.value = false
-})
 
 const scheduledStartAt = computed(() => {
 	const chosenDate = isCustomDate.value && customDate.value
@@ -396,6 +399,9 @@ const scheduledStartAt = computed(() => {
 	return chosenDate.toJSON()
 })
 
+watch(scheduledStartAt, () => {
+	hasConflicts.value = false
+})
 
 const isRequiredInfoCompleted = computed(
 	() => Boolean(selectedConsultants.value.length)
