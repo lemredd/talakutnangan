@@ -114,11 +114,12 @@ describe("Validator: unique consultation schedule", () => {
 				"userIDPointer": "user"
 			}
 		} as unknown as ValidationConstraints<Request>
-		& Partial<UniqueConsultationScheduleConstraints>
 
-		const error = uniqueConsultationSchedule(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await uniqueConsultationSchedule(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

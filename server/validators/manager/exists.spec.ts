@@ -39,13 +39,15 @@ describe("Validator: exists", () => {
 		}
 		await user.destroy({ "force": false })
 
-		const error = exists(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await exists(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 
-	it("cannot accept invalid value", () => {
+	it("cannot accept invalid value", async() => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
 		const constraints = {
@@ -58,9 +60,11 @@ describe("Validator: exists", () => {
 			}
 		}
 
-		const error = exists(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await exists(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

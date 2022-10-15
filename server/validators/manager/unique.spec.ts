@@ -50,10 +50,12 @@ describe("Validator: unique", () => {
 			}
 		}
 
-		const error = unique(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await unique(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 
 	it("cannot accept archived value", async() => {
@@ -76,9 +78,11 @@ describe("Validator: unique", () => {
 		}
 		await newUser.destroy({ "force": false })
 
-		const error = unique(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await unique(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

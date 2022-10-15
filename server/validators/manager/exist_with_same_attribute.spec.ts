@@ -47,10 +47,12 @@ describe("Validator: exist wth same attribute", () => {
 		}
 		await user.destroy({ "force": false })
 
-		const error = existWithSameAttribute(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await existWithSameAttribute(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 
 	it("cannot accept invalid value", async() => {
@@ -69,9 +71,12 @@ describe("Validator: exist wth same attribute", () => {
 				"value": `${user.name}name`
 			}
 		}
-		const error = existWithSameAttribute(value, constraints)
 
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await existWithSameAttribute(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

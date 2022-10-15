@@ -18,11 +18,14 @@ import CommentVote from "%/models/comment_vote"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
+import FoundPostWord from "%/models/found_post_word"
 import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
+import ProfanityFilter from "%/models/profanity_filter"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
 import AsynchronousFile from "%/models/asynchronous_file"
+import FoundCommentWord from "%/models/found_comment_word"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
@@ -44,10 +47,13 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		Consultation,
 		AttachedRole,
 		StudentDetail,
+		FoundPostWord,
 		ProfilePicture,
 		PostAttachment,
+		ProfanityFilter,
 		EmployeeSchedule,
 		AsynchronousFile,
+		FoundCommentWord,
 		AttachedChatFile,
 		ChatMessageActivity
 	]

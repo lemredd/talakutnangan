@@ -16,7 +16,7 @@ describe("Validator pipe: integer", () => {
 		expect(sanitizeValue).toEqual(value)
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState("hello"))
 		const constraints = {
 			"request": null,
@@ -24,9 +24,11 @@ describe("Validator pipe: integer", () => {
 			"field": "hello"
 		}
 
-		const error = integer(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await integer(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

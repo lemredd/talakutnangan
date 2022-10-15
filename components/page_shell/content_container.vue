@@ -7,29 +7,30 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/variables.scss";
-@import "@styles/mixins.scss";
+	@import "@styles/variables.scss";
+	@import "@styles/mixins.scss";
 
-.content {
-	@include useContentBaseHeight;
-	margin-top: $navHeight;
-	padding: 20px;
+	.content {
+		@include useContentBaseHeight;
+		margin-top: $navHeight;
+		padding: 20px;
 
-	.wrapper:not(.consultation) {
-		margin: 0 auto;
-		max-width: 900px;
-	}
+		.wrapper:not(.consultation) {
+			margin: 0 auto;
+			max-width: 900px;
+		}
 
-	&.login-content {
-		.wrapper {
-			max-width: initial;
+		&.login-content {
+			.wrapper {
+				max-width: initial;
+			}
 		}
 	}
-}
 </style>
 
 <script setup lang="ts">
 import { computed, inject } from "vue"
+
 import type { PageContext } from "$/types/renderer"
 
 const isAtConsultationPage = computed(() => {
