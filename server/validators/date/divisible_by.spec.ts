@@ -18,7 +18,7 @@ describe("Validator pipe: divisible by", () => {
 		expect(sanitizeValue).toEqual("10")
 	})
 
-	it("can accept invalid input", () => {
+	it("can accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState("10"))
 		const constraints = {
 			"request": null,
