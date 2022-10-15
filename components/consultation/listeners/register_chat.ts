@@ -36,12 +36,25 @@ export default function(
 		const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt
 		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
 			"receivedMessageAt": new Date().toJSON(),
-			"seenMessageAt": lastSeenMessageAt?.toJSON() ?? null
+			"seenMessageAt": isWindowShown
+				? new Date().toJSON()
+				: lastSeenMessageAt?.toJSON() ?? null
 		})
 	}
 
+	function updateSeenMessageAt(): void {
+		const { receivedMessageAt } = currentChatMessageActivityResource.value
+		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
+			"receivedMessageAt": receivedMessageAt?.toJSON() ?? null,
+			"seenMessageAt": new Date().toJSON()
+		})
+	}
+
+
 	DocumentVisibility.addEventListener(newState => {
 		isWindowShown = newState === "visible"
+
+		if (isWindowShown) updateSeenMessageAt()
 	})
 
 	const debounceUpdateReceivedMessageAt = debounce(() => {
