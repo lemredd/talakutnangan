@@ -1,6 +1,7 @@
 import type { Serializable } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { AsynchronousLikeAttributes } from "$/types/documents/asynchronous-like"
 import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -88,6 +89,14 @@ export default class extends TransactionManager implements TransactionManagerInt
 
 	async regenerateDocument(): Promise<Serializable> {
 		return await this.manager.findWithID(this.id)
+	}
+
+	async incrementProgress(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
+		this.rawFinishedStepCount += 1
+		await this.manager.update(this.id, {
+			...attributes,
+			"finishedStepCount": this.finishedStepCount
+		})
 	}
 
 	protected get manager(): BaseManager<any, any, any, any, any, any> {

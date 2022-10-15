@@ -158,7 +158,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		)
 
 		const newMessage = "world"
-		await singleton.incrementProgress({ "message": newMessage })
+		await singleton.incrementProgress({ "extra": { "message": newMessage } })
 		const document = await singleton.regenerateDocument()
 		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
 		await singleton.destroySuccessfully()
