@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "!/types/dependent"
+
 import redirect from "!/helpers/redirect"
 import Middleware from "!/bases/middleware"
 import RequestEnvironment from "$/singletons/request_environment"

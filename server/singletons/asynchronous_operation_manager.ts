@@ -1,8 +1,8 @@
 import type { Serializable } from "$/types/general"
-import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { AsynchronousOperationInterface } from "$!/types/dependent"
+import type { AuthenticatedRequest, BaseManagerClass } from "!/types/dependent"
 import type { AsynchronousLikeAttributes } from "$/types/documents/asynchronous-like"
-import type { TransactionManagerInterface, SharedManagerState } from "$!/types/dependent"
 
 import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
@@ -14,7 +14,7 @@ import TransactionManager from "%/helpers/transaction_manager"
 /**
  * Manages the transaction for asynchronous requests to be implementation-agnostic.
  */
-export default class extends TransactionManager implements TransactionManagerInterface {
+export default class extends TransactionManager implements AsynchronousOperationInterface {
 	private rawManager: BaseManager<any, any, any, any, any, any>|null = null
 	private hasFound = false
 	private rawAttributes: Partial<AsynchronousLikeAttributes & { id: number }> = {}
@@ -24,9 +24,9 @@ export default class extends TransactionManager implements TransactionManagerInt
 	 */
 	async initializeWithRequest(
 		request: AuthenticatedRequest,
-		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
+		Manager: BaseManagerClass,
 		totalStepCount: number
-	): Promise<void> {
+	): Promise<Serializable> {
 		await this.initialize()
 		this.rawManager = new Manager({
 			"cache": request.cache,
@@ -38,7 +38,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 		const hashedBody = await digest(request.body)
 		Log.trace("asynchronous", `digested body in ${request.url}`)
 
-		const possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
+		let possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
 			"constraints": {
 				"filter": {
 					"existence": "exists"
@@ -60,6 +60,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 				"userID": Number(user.data.id)
 			})
 
+			possibleDocument = createdDocument
 			possibleResource = createdDocument.data
 		} else {
 			this.hasFound = true
@@ -73,6 +74,9 @@ export default class extends TransactionManager implements TransactionManagerInt
 
 		await this.destroySuccessfully()
 		await this.initialize()
+		Log.trace("asynchronous", "initialize asynchronous operation")
+
+		return possibleDocument
 	}
 
 	get isNew(): boolean { return !this.hasFound }
@@ -115,7 +119,19 @@ export default class extends TransactionManager implements TransactionManagerInt
 		})
 	}
 
-	protected get manager(): BaseManager<any, any, any, any, any, any> {
+	async destroyConditionally() {
+		if (this.mayDestroy) {
+			if (this.isCompletelyFinished) {
+				await this.destroySuccessfully()
+			} else {
+				const reason = "Asynchronous operation did not finished properly"
+				Log.errorMessage("asynchronous", `${reason} in "${this.origin}"`)
+				await this.destroyIneffectually()
+			}
+		}
+	}
+
+	private get manager(): BaseManager<any, any, any, any, any, any> {
 		if (this.rawManager === null) {
 			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
 			throw new DeveloperError(
@@ -127,7 +143,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 		return this.rawManager
 	}
 
-	protected get id(): number {
+	private get id(): number {
 		if (this.rawAttributes.id) {
 			return this.rawAttributes.id
 		}
@@ -137,5 +153,33 @@ export default class extends TransactionManager implements TransactionManagerInt
 			`${developmentPrerequisite} before doing something with model manager.`,
 			"Developer have executed instructions out of order."
 		)
+	}
+
+	private get hasStopped(): boolean {
+		if (this.rawAttributes.hasStopped) {
+			return this.rawAttributes.hasStopped
+		}
+
+		const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+		throw new DeveloperError(
+			`${developmentPrerequisite} before doing something with model manager.`,
+			"Developer have executed instructions out of order."
+		)
+	}
+
+	private get origin(): string {
+		if (this.rawAttributes.origin) {
+			return this.rawAttributes.origin
+		}
+
+		const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+		throw new DeveloperError(
+			`${developmentPrerequisite} before doing something with model manager.`,
+			"Developer have executed instructions out of order."
+		)
+	}
+
+	private get isCompletelyFinished(): boolean {
+		return this.hasStopped && this.finishedStepCount === this.totalStepCount
 	}
 }

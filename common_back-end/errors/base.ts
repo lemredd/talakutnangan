@@ -23,10 +23,10 @@ export default class extends Error {
 
 	toJSON(): UnitError {
 		return {
-			status: this.status,
-			code: this.code,
-			title: this.name,
-			detail: this.message
+			"code": this.code,
+			"detail": this.message,
+			"status": this.status,
+			"title": this.name
 		}
 	}
 }
