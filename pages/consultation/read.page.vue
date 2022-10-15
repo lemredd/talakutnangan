@@ -57,7 +57,10 @@ import type {
 	DeserializedChatMessageListDocument
 } from "$/types/documents/chat_message"
 
-import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+import {
+	CHAT_MESSAGE_ACTIVITY,
+	CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION
+} from "$@/constants/provided_keys"
 
 import Socket from "$@/external/socket"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
@@ -121,10 +124,21 @@ const chatMessageActivities = ref<
 	>
 )
 
+const chatMessageActivityResources = computed<
+	DeserializedChatMessageActivityResource<"user"|"consultation">[]
+>(() => {
+	const foundChatActivity = chatMessageActivities.value.data.filter(activity => {
+		const consultationID = activity.consultation.data.id
+		return String(consultationID) === String(consultation.value.id)
+	}) as DeserializedChatMessageActivityResource<"user"|"consultation">[]
+
+	return foundChatActivity
+})
+
 const currentChatMessageActivityResource = computed<
 	DeserializedChatMessageActivityResource<"user"|"consultation">
 >(() => {
-	const foundChatActivity = chatMessageActivities.value.data.find(activity => {
+	const foundChatActivity = chatMessageActivityResources.value.find(activity => {
 		const ownerID = activity.user.data.id
 		return String(ownerID) === String(userProfile.data.id)
 	}) as DeserializedChatMessageActivityResource<"user"|"consultation">
@@ -133,6 +147,7 @@ const currentChatMessageActivityResource = computed<
 })
 
 provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
+provide(CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION, readonly(chatMessageActivityResources))
 
 function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<"deserialized">)
 : void {
