@@ -16,10 +16,8 @@ import TransactionManager from "%/helpers/transaction_manager"
  */
 export default class extends TransactionManager implements TransactionManagerInterface {
 	private rawManager: BaseManager<any, any, any, any, any, any>|null = null
-	private rawFinishedStepCount = 0
-	private rawTotalStepCount = 0
-	private rawID = 0
 	private hasFound = false
+	private rawAttributes: Partial<AsynchronousLikeAttributes & { id: number }> = {}
 
 	/**
 	 * Expects body of request to be raw.
@@ -65,34 +63,39 @@ export default class extends TransactionManager implements TransactionManagerInt
 			possibleResource = createdDocument.data
 		} else {
 			this.hasFound = true
-
-			const castResource = possibleResource as Serializable
-			const attributes = castResource.attributes as Serializable
-
-			this.rawFinishedStepCount = attributes.finishedStepCount as number
 		}
 
-		this.rawTotalStepCount = totalStepCount as number
-
 		const castResource = possibleResource as Serializable
+		this.rawAttributes = {
+			...castResource.attributes as Serializable,
+			"id": Number(castResource.id)
+		}
 
-		this.rawID = Number(castResource.id)
 		await this.destroySuccessfully()
 		await this.initialize()
 	}
 
 	get isNew(): boolean { return !this.hasFound }
 
-	get finishedStepCount(): number { return this.rawFinishedStepCount }
+	get finishedStepCount(): number { return this.rawAttributes.finishedStepCount ?? 0 }
 
-	get totalStepCount(): number { return this.rawTotalStepCount }
+	get totalStepCount(): number { return this.rawAttributes.totalStepCount ?? 0 }
 
 	async regenerateDocument(): Promise<Serializable> {
-		return await this.manager.findWithID(this.id)
+		const document = await this.manager.findWithID(this.id)
+		const castData = document.data as Serializable
+
+		this.rawAttributes = { ...castData.attributes as Serializable }
+
+		return document
 	}
 
 	async incrementProgress(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
-		this.rawFinishedStepCount += 1
+		this.rawAttributes = {
+			...this.rawAttributes,
+			...attributes,
+			"finishedStepCount": this.finishedStepCount + 1
+		}
 		await this.manager.update(this.id, {
 			...attributes,
 			"finishedStepCount": this.finishedStepCount
@@ -100,7 +103,11 @@ export default class extends TransactionManager implements TransactionManagerInt
 	}
 
 	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
-		this.rawFinishedStepCount = this.totalStepCount
+		this.rawAttributes = {
+			...this.rawAttributes,
+			...attributes,
+			"finishedStepCount": this.totalStepCount
+		}
 		await this.manager.update(this.id, {
 			...attributes,
 			"finishedStepCount": this.finishedStepCount,
@@ -121,14 +128,14 @@ export default class extends TransactionManager implements TransactionManagerInt
 	}
 
 	protected get id(): number {
-		if (this.rawID === 0) {
-			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
-			throw new DeveloperError(
-				`${developmentPrerequisite} before doing something with model manager.`,
-				"Developer have executed instructions out of order."
-			)
+		if (this.rawAttributes.id) {
+			return this.rawAttributes.id
 		}
 
-		return this.rawID
+		const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+		throw new DeveloperError(
+			`${developmentPrerequisite} before doing something with model manager.`,
+			"Developer have executed instructions out of order."
+		)
 	}
 }
