@@ -15,6 +15,8 @@ export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_votes")
 
 export const TAG_LINK = makeTemplateLink(LINK_PREFIX, "tag")
 
+export const PROFANITY_FILTER_LINK = makeTemplateLink(LINK_PREFIX, "profanity_filter")
+
 /**
  * Requires the `id` of the user
  */

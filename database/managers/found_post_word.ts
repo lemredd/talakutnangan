@@ -1,17 +1,17 @@
 import type { CommonQueryParameters } from "$/types/query"
-import type { PostTagAttributes } from "$/types/documents/post_tag"
+import type { FoundPostWordAttributes } from "$/types/documents/found_post_word"
 import type {
 	ModelCtor
 } from "%/types/dependent"
 
-import Model from "%/models/post_tag"
+import Model from "%/models/found_post_word"
 import BaseManager from "%/managers/base"
 import Condition from "%/helpers/condition"
-import Transformer from "%/transformers/post_tag"
+import Transformer from "%/transformers/found_post_word"
 
 export default class extends BaseManager<
 	Model,
-	PostTagAttributes<"deserialized">,
+	FoundPostWordAttributes<"deserialized">,
 	CommonQueryParameters
 > {
 	get model(): ModelCtor<Model> { return Model }
@@ -22,17 +22,17 @@ export default class extends BaseManager<
 		return []
 	}
 
-	async findPostTag(postID: number, tagID: number): Promise<Model|null> {
+	async findFoundPostWord(postID: number, profanityFilterID: number): Promise<Model|null> {
 		try {
-			const attachedPost = await Model.findOne({
+			const attachedRole = await Model.findOne({
 				"where": new Condition().and(
 					new Condition().equal("postID", postID),
-					new Condition().equal("tagID", tagID)
+					new Condition().equal("profanityFilterID", profanityFilterID)
 				).build(),
 				...this.transaction.transactionObject
 			})
 
-			return attachedPost
+			return attachedRole
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}

@@ -18,7 +18,7 @@ describe("Validator pipe: same", () => {
 		expect(sanitizeValue).toEqual("world")
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState("foo"))
 		const constraints = {
 			"field": "hello",
@@ -29,9 +29,11 @@ describe("Validator pipe: same", () => {
 			"source": null
 		}
 
-		const error = same(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await same(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

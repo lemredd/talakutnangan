@@ -18,7 +18,7 @@ describe("Validator pipe: divisible by", () => {
 		expect(sanitizeValue).toEqual("10")
 	})
 
-	it("can accept invalid input", () => {
+	it("can accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState("10"))
 		const constraints = {
 			"request": null,
@@ -29,9 +29,11 @@ describe("Validator pipe: divisible by", () => {
 			}
 		}
 
-		const error = divisibleBy(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await divisibleBy(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })

@@ -19,7 +19,7 @@ describe("Validator pipe: string array", () => {
 		expect(sanitizeValue).toEqual([ "world", "foo" ])
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState(2))
 		const constraints = {
 			"request": null,
@@ -31,9 +31,11 @@ describe("Validator pipe: string array", () => {
 			}
 		}
 
-		const error = stringArray(value, constraints)
-
-		expect(error).rejects.toHaveProperty("field", "hello")
-		expect(error).rejects.toHaveProperty("messageMaker")
+		try {
+			await stringArray(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
 	})
 })
