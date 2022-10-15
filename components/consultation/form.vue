@@ -95,7 +95,9 @@
 
 			<div v-if="hasConflicts">
 				<input
+					id="checkbox"
 					v-model="forceCreate"
+					type="checkbox"
 					class="warning-message"/>
 				Consultation is already on-going. Please wait for your turn.
 			</div>
