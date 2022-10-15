@@ -32,11 +32,6 @@ export interface Request extends BaseRequest, SharedManagerState<TransactionMana
 	logout: () => void
 }
 
-export interface AsynchrnousRequest extends Request, SharedAsynchronousOperationState<
-	TransactionManager,
-	AsynchronousOperationManager
-> {}
-
 export interface AuthenticatedRequest extends Request {
 	session: Session & {
 		token: string
@@ -44,6 +39,11 @@ export interface AuthenticatedRequest extends Request {
 
 	user: Serializable
 }
+
+export interface AsynchronousRequest extends AuthenticatedRequest, SharedAsynchronousOperationState<
+	TransactionManager,
+	AsynchronousOperationManager
+> {}
 
 /**
  * Type of request to use to communicate between which have non-standard arguments.
