@@ -43,7 +43,6 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).send(request.body).end()
 		} else {
-			const readAsync = promisify(readFile)
 			const testDeanEmail = "dean@example.net"
 			const testRole = "test_dean"
 			const testDepartment = "Test Institute Department"
@@ -191,6 +190,7 @@ export default class extends DevController {
 				previousUser = createdUser
 			}
 
+			const readAsync = promisify(readFile)
 			const previousSignature = await Signature.findOne({
 				"where": new Condition().equal("userID", previousUser.id).build()
 			})
