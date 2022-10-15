@@ -81,7 +81,7 @@ export default class implements TransactionManagerInterface {
 		return this.rawTransaction as Transaction
 	}
 
-	private get mayDestroy(): boolean {
+	protected get mayDestroy(): boolean {
 		return !this.hasDestroyed && this.isPermitted
 	}
 
