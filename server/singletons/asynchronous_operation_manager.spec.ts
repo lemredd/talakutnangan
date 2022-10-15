@@ -97,4 +97,74 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount)
 		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
 	})
+
+	it("can increment progress only", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const finishedStepCount = 2
+		const totalStepCount = 5
+		const message = "hello"
+		await new Factory()
+		.token(() => digest(body))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.extra(() => ({ message }))
+		.insertOne()
+		requester.customizeRequest({
+			body,
+			"user": await userFactory.serialize(user)
+		})
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+
+		await singleton.incrementProgress()
+		const document = await singleton.regenerateDocument()
+		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
+		await singleton.destroySuccessfully()
+
+		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount + 1)
+		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.extra", { message })
+	})
+
+	it("can increment progress with other updates", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const finishedStepCount = 1
+		const totalStepCount = 3
+		await new Factory()
+		.token(() => digest(body))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.extra(() => ({ "message": "hello" }))
+		.insertOne()
+		requester.customizeRequest({
+			body,
+			"user": await userFactory.serialize(user)
+		})
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+
+		const newMessage = "world"
+		await singleton.incrementProgress({ "message": newMessage })
+		const document = await singleton.regenerateDocument()
+		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
+		await singleton.destroySuccessfully()
+
+		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount + 1)
+		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.extra", { "message": newMessage })
+	})
 })
