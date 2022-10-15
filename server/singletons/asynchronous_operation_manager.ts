@@ -25,7 +25,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 		Manager: new(state: SharedManagerState) => BaseManager<any, any, any, any, any, any>,
 		totalStepCount: number
 	): Promise<void> {
-		await super.initialize()
+		await this.initialize()
 		this.manager = new Manager({
 			"cache": request.cache,
 			"transaction": this
@@ -59,11 +59,15 @@ export default class extends TransactionManager implements TransactionManagerInt
 			})
 
 			possibleResource = createdDocument.data
+		} else {
+			this.hasFound = true
 		}
 
 		const castResource = possibleResource as Serializable
 
 		this.id = Number(castResource.id)
+		await this.destroySuccessfully()
+		await this.initialize()
 	}
 
 	get isNew(): boolean { return !this.hasFound }
