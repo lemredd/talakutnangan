@@ -15,6 +15,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 	it("can initialize properly with new operation", async() => {
 		const singleton = new Singleton()
 		const user = await new UserFactory().serializedOne(true)
+		const totalStepCount = 3
 
 		requester.customizeRequest({
 			"body": Buffer.alloc(0),
@@ -24,11 +25,13 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		await requester.runAsynchronousOperationInitializer(
 			singleton.initializeWithRequest.bind(singleton),
 			AsynchronousFileManager,
-			4
+			totalStepCount
 		)
 		await singleton.destroySuccessfully()
 
 		expect(singleton.isNew).toBeTruthy()
+		expect(singleton.finishedStepCount).toBe(0)
+		expect(singleton.totalStepCount).toBe(totalStepCount)
 	})
 
 	it("can initialize properly with old operation", async() => {
@@ -36,9 +39,13 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const finishedStepCount = 2
+		const totalStepCount = 4
 		await new Factory()
 		.token(() => digest(body))
 		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
 		.insertOne()
 
 		requester.customizeRequest({
@@ -49,10 +56,12 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		await requester.runAsynchronousOperationInitializer(
 			singleton.initializeWithRequest.bind(singleton),
 			AsynchronousFileManager,
-			4
+			totalStepCount
 		)
 		await singleton.destroySuccessfully()
 
 		expect(singleton.isNew).toBeFalsy()
+		expect(singleton.finishedStepCount).toBe(finishedStepCount)
+		expect(singleton.totalStepCount).toBe(totalStepCount)
 	})
 })

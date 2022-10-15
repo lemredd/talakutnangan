@@ -13,6 +13,8 @@ import TransactionManager from "%/helpers/transaction_manager"
  * Manages the transaction for asynchronous requests to be implementation-agnostic.
  */
 export default class extends TransactionManager implements TransactionManagerInterface {
+	private rawFinishedStepCount = 0
+	private rawTotalStepCount = 0
 	private manager: BaseManager<any, any, any, any, any, any>|null = null
 	private id = 0
 	private hasFound = false
@@ -61,7 +63,14 @@ export default class extends TransactionManager implements TransactionManagerInt
 			possibleResource = createdDocument.data
 		} else {
 			this.hasFound = true
+
+			const castResource = possibleResource as Serializable
+			const attributes = castResource.attributes as Serializable
+
+			this.rawFinishedStepCount = attributes.finishedStepCount as number
 		}
+
+		this.rawTotalStepCount = totalStepCount as number
 
 		const castResource = possibleResource as Serializable
 
@@ -71,4 +80,10 @@ export default class extends TransactionManager implements TransactionManagerInt
 	}
 
 	get isNew(): boolean { return !this.hasFound }
+
+	get finishedStepCount(): number {
+		console.log(this.rawFinishedStepCount, "finished\n\n\n\n")
+		return this.rawFinishedStepCount }
+
+	get totalStepCount(): number { return this.rawTotalStepCount }
 }
