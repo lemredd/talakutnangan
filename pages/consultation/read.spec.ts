@@ -27,6 +27,7 @@ import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
 
+
 describe("UI Page: Read consultation resource by ID", () => {
 	it("can toggle state of consultation list", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
@@ -210,16 +211,18 @@ describe("UI Page: Read consultation resource by ID", () => {
 		expect(chatWindow.exists()).toBeTruthy()
 
 		const previousCalls = Stub.consumePreviousCalls()
+
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
 		expect(previousCalls).toHaveProperty("1.functionName", "addEventListener")
-		expect(previousCalls).toHaveProperty("2.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("2.functionName", "addEventListener")
+		expect(previousCalls).toHaveProperty("3.functionName", "addEventListeners")
 		expect(previousCalls).toHaveProperty(
-			"2.arguments.0",
+			"3.arguments.0",
 			makeConsultationChatNamespace(model.id)
 		)
-		expect(previousCalls).toHaveProperty("2.arguments.1.create")
-		expect(previousCalls).toHaveProperty("2.arguments.1.update")
+		expect(previousCalls).toHaveProperty("3.arguments.1.create")
+		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
@@ -366,14 +369,14 @@ describe("UI Page: Communicate with consultation resource", () => {
 		expect(previousCalls).toHaveProperty("0.functionName", "initialize")
 		expect(previousCalls).toHaveProperty("0.arguments", [])
 		expect(previousCalls).toHaveProperty("1.functionName", "addEventListener")
-		expect(previousCalls).toHaveProperty("2.functionName", "addEventListeners")
+		expect(previousCalls).toHaveProperty("2.functionName", "addEventListener")
+		expect(previousCalls).toHaveProperty("3.functionName", "addEventListeners")
 		expect(previousCalls).toHaveProperty(
-			"2.arguments.0",
+			"3.arguments.0",
 			makeConsultationChatNamespace(model.id)
 		)
-		expect(previousCalls).toHaveProperty("2.arguments.1.connect_error")
-		expect(previousCalls).toHaveProperty("2.arguments.1.create")
-		expect(previousCalls).toHaveProperty("2.arguments.1.update")
+		expect(previousCalls).toHaveProperty("3.arguments.1.create")
+		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls

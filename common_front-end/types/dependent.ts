@@ -25,3 +25,5 @@ interface TimerListener {
 export type TimerListeners = TimerListener[]
 
 export type VisibilityListener = (currentVisibility: Document["visibilityState"]) => void
+
+export type FocusListener = (currentFocus: "focus" | "blur") => void
