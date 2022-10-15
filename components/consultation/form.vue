@@ -47,7 +47,7 @@
 				type="text"/>
 			<div
 				v-if="selectedConsultants.length"
-				class="schedule-selector mt-5">
+				class="schedule-selector">
 				<div
 					v-if="consultantSchedules.length"
 					class="consultant-has-schedules">
@@ -77,20 +77,27 @@
 							class="selectable-time"
 							label="Time:"
 							:options="selectableTimes"/>
-						<p v-else class="selected-day-is-past text-red-500">
+						<p v-else class="selected-day-is-past">
 							This consultant's schedule for this day has ended.
 						</p>
 					</div>
 				</div>
 				<div v-else class="consultant-no-schedules">
-					<p class="text-red-500">
+					<p class="consultation-no-schedules">
 						This consultant has not set any schedules yet.
 					</p>
 				</div>
 			</div>
 
-			<div class="signature-message text-xs mt-5">
+			<div class="signature-message">
 				By submitting, your signatures will be applied on the printable consultation form.
+			</div>
+
+			<div v-if="hasConflicts">
+				<input
+					v-model="forceCreate"
+					class="warning-message"/>
+				Consultation is already on-going. Please wait for your turn.
 			</div>
 		</template>
 
@@ -139,6 +146,14 @@
 
 	max-width: initial !important;
 }
+
+.consultation-no-schedules{
+	@apply text-red-500;
+}
+
+.signature-message, .warning-message{
+		@apply text-xs mt-5;
+	}
 </style>
 
 <style scoped lang="scss">
@@ -160,10 +175,15 @@
 }
 
 .schedule-selector {
+	@apply mt-5;
 	.selectable-day, .selectable-time {
 		margin: 1em 0 1em;
 	}
 }
+
+ .selected-day-is-past{
+	@apply text-red-500;
+ }
 </style>
 
 <script setup lang="ts">
@@ -187,6 +207,7 @@ import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import Checkbox from "@/fields/checkbox.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
@@ -221,7 +242,8 @@ const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
-const doesAllowConflicts = ref<boolean>(true)
+const forceCreate = ref<boolean>(true)
+const hasConflicts = ref<boolean>(false)
 
 const MAX_CONSULTANTS = 1
 const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
@@ -354,6 +376,9 @@ const selectableTimes = computed(() => {
 
 	return availableTimes
 })
+watch(chosenTime, () => {
+	hasConflicts.value = false
+})
 
 const scheduledStartAt = computed(() => {
 	const chosenDate = isCustomDate.value && customDate.value
@@ -384,7 +409,7 @@ function addConsultation(): void {
 	}
 
 	const meta = {
-		"doesAllowConflicts": doesAllowConflicts.value
+		"doesAllowConflicts": forceCreate.value
 	}
 
 	fetcher().create({
@@ -420,6 +445,9 @@ function addConsultation(): void {
 		}
 	})
 	.then(() => assignPath("/consultation"))
+	.catch(() => {
+		hasConflicts.value = true
+	})
 }
 
 onMounted(() => {
