@@ -24,7 +24,7 @@ export default class extends BaseManager<
 
 	async findPostTag(postID: number, tagID: number): Promise<Model|null> {
 		try {
-			const attachedRole = await Model.findOne({
+			const attachedPost = await Model.findOne({
 				"where": new Condition().and(
 					new Condition().equal("postID", postID),
 					new Condition().equal("tagID", tagID)
@@ -32,7 +32,7 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			return attachedRole
+			return attachedPost
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
