@@ -186,7 +186,8 @@ describe("Component: consultation/chat_window", () => {
 					},
 					"props": {
 						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation
+						"consultation": fakeConsultation,
+						"isConsultationListShown": false
 					}
 				})
 
@@ -279,7 +280,8 @@ describe("Component: consultation/chat_window", () => {
 					},
 					"props": {
 						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation
+						"consultation": fakeConsultation,
+						"isConsultationListShown": false
 					}
 				})
 
@@ -325,7 +327,8 @@ describe("Component: consultation/chat_window", () => {
 					},
 					"props": {
 						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation
+						"consultation": fakeConsultation,
+						"isConsultationListShown": false
 					}
 				})
 
@@ -471,7 +474,8 @@ describe("Component: consultation/chat_window", () => {
 					},
 					"props": {
 						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation
+						"consultation": fakeConsultation,
+						"isConsultationListShown": false
 					}
 				})
 
