@@ -167,4 +167,40 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
 		expect(deserializedDocument).toHaveProperty("data.extra", { "message": newMessage })
 	})
+
+	it("can finish progress even if other steps will be skipped", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const finishedStepCount = 2
+		const totalStepCount = 5
+		const message = "hello"
+		await new Factory()
+		.token(() => digest(body))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.extra(() => ({ message }))
+		.insertOne()
+		requester.customizeRequest({
+			body,
+			"user": await userFactory.serialize(user)
+		})
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+
+		await singleton.finish()
+		const document = await singleton.regenerateDocument()
+		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
+		await singleton.destroySuccessfully()
+
+		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.hasStopped", true)
+		expect(deserializedDocument).toHaveProperty("data.extra", { message })
+	})
 })
