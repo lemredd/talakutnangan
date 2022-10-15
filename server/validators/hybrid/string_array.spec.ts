@@ -19,7 +19,7 @@ describe("Validator pipe: string array", () => {
 		expect(sanitizeValue).toEqual([ "world", "foo" ])
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState(2))
 		const constraints = {
 			"request": null,
