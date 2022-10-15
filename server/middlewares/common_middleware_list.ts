@@ -8,6 +8,8 @@ import MultipartParser from "!/middlewares/body_parser/multipart"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
+import AsynchronousOperationCommitter
+	from "!/middlewares/miscellaneous/asynchronous_operation_committer"
 
 import deserialize from "$/object/deserialize"
 import mergeDeeply from "$!/helpers/merge_deeply"
@@ -54,6 +56,10 @@ function makeList() {
 		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy([ "unreachable_employee" ])
 	}
 
+	const miscellaneuous = {
+		"asynchronousEnder": new AsynchronousOperationCommitter()
+	}
+
 	const parsers = {
 		"JSONBody": new JSONBodyParser(),
 		"multipart": new MultipartParser()
@@ -68,6 +74,7 @@ function makeList() {
 		...policies,
 		...parsers,
 		...emailSenders,
+		...miscellaneuous,
 		// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 		initialize(): void {}
 	}
