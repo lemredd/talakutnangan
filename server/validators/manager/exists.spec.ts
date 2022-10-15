@@ -47,7 +47,7 @@ describe("Validator: exists", () => {
 		}
 	})
 
-	it("cannot accept invalid value", () => {
+	it("cannot accept invalid value", async() => {
 		const user = "hello"
 		const value = Promise.resolve(makeInitialState(user))
 		const constraints = {
