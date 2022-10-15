@@ -143,8 +143,9 @@ const chatMessageActivities = pageProps
 
 const { userProfile } = pageProps
 
-const { chatMessage } = defineProps<{
-	chatMessage: DeserializedChatMessageResource<"user">
+const { chatMessage, nextMessage } = defineProps<{
+	chatMessage: DeserializedChatMessageResource<"user">,
+	nextMessage?: DeserializedChatMessageResource<"user">
 }>()
 
 const isSelfMessage = computed<boolean>(() => {

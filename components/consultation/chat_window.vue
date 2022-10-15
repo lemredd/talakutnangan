@@ -93,10 +93,10 @@
 			</div>
 
 			<div
-				v-for="message in sortedMessagesByTime"
+				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
 				class="chat-entry">
-				<ChatMessageItem :chat-message="message"/>
+				<ChatMessageItem :chat-message="message" :next-message="sortedMessagesByTime[i+1]"/>
 			</div>
 		</div>
 		<UserController
