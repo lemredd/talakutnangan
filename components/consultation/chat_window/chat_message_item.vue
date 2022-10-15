@@ -8,7 +8,7 @@
 				class="other"
 				:user="chatMessage.user"
 				:title="chatMessage.user.data.name"/>
-			<div>
+			<div :title="chatMessage.createdAt.toString()">
 				<p
 					v-if="isMessageKindText(chatMessage)"
 					class="message-item-content"
@@ -48,12 +48,15 @@
 		<div
 			v-if="!isMessageKindStatus(chatMessage)"
 			class="seen-list">
-			<ProfilePicture
-				v-for="activity in chatMessageActivities.data"
+			<span
+				v-for="activity in chatMessageActivityResources"
 				:key="activity.id"
-				:user="activity.user"
-				:title="activity.user.data.name"
-				class="seen-user"/>
+				class="seen-user">
+				<ProfilePicture
+					v-if="hasSeenLatestMessage(activity)"
+					:user="activity.user!"
+					:title="`seen at ${activity.seenMessageAt}`"/>
+			</span>
 		</div>
 	</div>
 </template>
@@ -125,7 +128,7 @@ import type { PageContext } from "$/types/renderer"
 
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 import type {
-	DeserializedChatMessageActivityListDocument
+	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
 import {
@@ -135,11 +138,10 @@ import {
 } from "@/consultation/helpers/chat_message_kinds"
 
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import { CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION } from "$@/constants/provided_keys"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const chatMessageActivities = pageProps
-.chatMessageActivities as DeserializedChatMessageActivityListDocument<"user"|"consultation">
 
 const { userProfile } = pageProps
 
@@ -154,7 +156,6 @@ const isSelfMessage = computed<boolean>(() => {
 
 	return isMessageCameFromSelf
 })
-
 const isOtherMessage = computed<boolean>(() => {
 	const isMessageCameFromOther = !isMessageKindStatus(chatMessage)
 		&& userProfile.data.id !== chatMessage.user.data.id
@@ -187,6 +188,20 @@ const fileMessageContent = {
 	"image": isMessageKindFile(chatMessage)
 	&& chatMessage.data.subkind.match(/image/u)
 }
-
 const fileURL = computed(() => chatMessage.attachedChatFile?.data.fileContents)
+
+const chatMessageActivityResources
+= inject(CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION) as DeserializedChatMessageActivityResource[]
+function hasSeenLatestMessage(activity: DeserializedChatMessageActivityResource) {
+	if (activity.seenMessageAt && activity.user) {
+		const hasSeenCurrentMessage = activity.seenMessageAt >= chatMessage.createdAt
+		const hasSeenNextMessage
+			= !nextMessage
+			|| activity.seenMessageAt < nextMessage?.createdAt
+
+		return hasSeenCurrentMessage && hasSeenNextMessage
+	}
+
+	return false
+}
 </script>
