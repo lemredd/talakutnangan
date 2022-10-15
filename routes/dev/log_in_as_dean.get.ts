@@ -1,15 +1,19 @@
-import { PreprocessedRequest, Response } from "!/types/dependent"
+import { readFile } from "fs"
+import { promisify } from "util"
 
-import Log from "$!/singletons/log"
+import { PreprocessedRequest, Response } from "!/types/dependent"
 
 import User from "%/models/user"
 import Role from "%/models/role"
+import Log from "$!/singletons/log"
+import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import SignatureFactory from "~/factories/signature"
 import DepartmentFactory from "~/factories/department"
 import EmployeeScheduleFactory from "~/factories/employee_schedule"
 import {
@@ -37,8 +41,9 @@ export default class extends DevController {
 
 	async handle(request: PreprocessedRequest<OwnArguments>, response: Response): Promise<void> {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
-			response.status(this.status.OK).end()
+			response.status(this.status.OK).send(request.body).end()
 		} else {
+			const readAsync = promisify(readFile)
 			const testDeanEmail = "dean@example.net"
 			const testRole = "test_dean"
 			const testDepartment = "Test Institute Department"
@@ -182,12 +187,28 @@ export default class extends DevController {
 
 				Log.success("controller", "created test dean")
 
+				// eslint-disable-next-line require-atomic-updates
 				previousUser = createdUser
 			}
 
+			const previousSignature = await Signature.findOne({
+				"where": new Condition().equal("userID", previousUser.id).build()
+			})
+			Log.success("controller", "making for dean's signature")
+			if (previousSignature === null) {
+				const sampleImagePath = `${this.root}/t/data/log_bg_transparent.png`
+				const sampleImage = await readAsync(sampleImagePath)
+				await new SignatureFactory()
+				.user(() => Promise.resolve(previousUser as User))
+				.fileContents(() => sampleImage)
+				.insertOne()
+
+				Log.success("controller", "created dean's signature")
+			}
+
 			await AttachedRole.upsert({
-				"userID": previousUser.id,
-				"roleID": testDeanRole.id
+				"roleID": testDeanRole.id,
+				"userID": previousUser.id
 			})
 
 			Log.success("controller", "attached test dean role to test dean")
