@@ -3,7 +3,7 @@ import type { FocusListener } from "$@/types/dependent"
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 
-export default class DocumentVisibility extends RequestEnvironment {
+export default class extends RequestEnvironment {
 	private static rawListeners: FocusListener[] = []
 
 	static addEventListener(listener: FocusListener): void {
