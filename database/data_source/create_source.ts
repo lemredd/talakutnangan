@@ -2,11 +2,13 @@ import { Sequelize, SequelizeOptions } from "sequelize-typescript"
 
 import type { SourceType } from "$/types/database"
 
+import Tag from "%/models/tag"
 import Role from "%/models/role"
 import User from "%/models/user"
 import Post from "%/models/post"
 import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
+import PostTag from "%/models/post_tag"
 import Semester from "%/models/semester"
 import Signature from "%/models/signature"
 import Department from "%/models/department"
@@ -20,16 +22,19 @@ import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
+import AsynchronousFile from "%/models/asynchronous_file"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 export default async function(type: SourceType): Promise<Sequelize> {
 	const configuration: SequelizeOptions = createConfiguration(type) as SequelizeOptions
 	const models = [
+		Tag,
 		Role,
 		User,
 		Post,
 		Comment,
+		PostTag,
 		Semester,
 		Signature,
 		AuditTrail,
@@ -42,6 +47,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		ProfilePicture,
 		PostAttachment,
 		EmployeeSchedule,
+		AsynchronousFile,
 		AttachedChatFile,
 		ChatMessageActivity
 	]

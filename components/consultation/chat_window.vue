@@ -1,5 +1,5 @@
 <template>
-	<section class="chat-window right">
+	<section ref="chatWindow" class="chat-window right">
 		<button
 			class="toggle-list-btn material-icons"
 			title="Toggle consultation list"
@@ -99,7 +99,10 @@
 				<ChatMessageItem :chat-message="message"/>
 			</div>
 		</div>
-		<UserController :consultation="consultation" @start-consultation="startConsultation"/>
+		<UserController
+			:consultation="consultation"
+			@start-consultation="startConsultation"
+			@save-as-pdf="saveAsPDF"/>
 	</section>
 </template>
 
@@ -183,8 +186,15 @@ const props = defineProps<{
 	isConsultationListShown: boolean
 }>()
 
-const { "pageProps": { "userProfile": { "data": { kind } } } }
-= inject("pageContext") as PageContext<"deserialized">
+const {
+	"pageProps": {
+		"userProfile": {
+			"data": {
+				kind
+			}
+		}
+	}
+} = inject("pageContext") as PageContext<"deserialized">
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
@@ -196,6 +206,7 @@ const sortedMessagesByTime = computed(() => {
 	})
 })
 
+const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {
 	emit("toggleConsultationList")
 }
@@ -386,6 +397,10 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 		startWatcher()
 	}
 }, { "deep": true })
+
+function saveAsPDF(): void {
+	const unusedElement = chatWindow.value
+}
 
 onMounted(() => {
 	if (props.consultation.startedAt instanceof Date && props.consultation.finishedAt === null) {
