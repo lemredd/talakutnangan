@@ -138,7 +138,7 @@ export default class extends DevController {
 			const previousSignature = await Signature.findOne({
 				"where": new Condition().equal("userID", previousUser.id).build()
 			})
-			Log.success("controller", "making for dean's signature")
+			Log.success("controller", "making for default professors's signature")
 			if (previousSignature === null) {
 				const sampleImagePath = `${this.root}/t/data/log_bg_transparent.png`
 				const sampleImage = await readAsync(sampleImagePath)
@@ -147,7 +147,7 @@ export default class extends DevController {
 				.fileContents(() => sampleImage)
 				.insertOne()
 
-				Log.success("controller", "created dean's signature")
+				Log.success("controller", "created default professors's signature")
 			}
 
 			await AttachedRole.upsert({
