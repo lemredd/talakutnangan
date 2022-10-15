@@ -99,6 +99,15 @@ export default class extends TransactionManager implements TransactionManagerInt
 		})
 	}
 
+	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
+		this.rawFinishedStepCount = this.totalStepCount
+		await this.manager.update(this.id, {
+			...attributes,
+			"finishedStepCount": this.finishedStepCount,
+			"hasStopped": true
+		})
+	}
+
 	protected get manager(): BaseManager<any, any, any, any, any, any> {
 		if (this.rawManager === null) {
 			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
