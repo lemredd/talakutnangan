@@ -7,16 +7,17 @@ import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
 import BaseManager from "%/managers/base"
 import deserialize from "$/object/deserialize"
+import DeveloperError from "$!/errors/developer"
 import TransactionManager from "%/helpers/transaction_manager"
 
 /**
  * Manages the transaction for asynchronous requests to be implementation-agnostic.
  */
 export default class extends TransactionManager implements TransactionManagerInterface {
+	private rawManager: BaseManager<any, any, any, any, any, any>|null = null
 	private rawFinishedStepCount = 0
 	private rawTotalStepCount = 0
-	private manager: BaseManager<any, any, any, any, any, any>|null = null
-	private id = 0
+	private rawID = 0
 	private hasFound = false
 
 	/**
@@ -28,7 +29,7 @@ export default class extends TransactionManager implements TransactionManagerInt
 		totalStepCount: number
 	): Promise<void> {
 		await this.initialize()
-		this.manager = new Manager({
+		this.rawManager = new Manager({
 			"cache": request.cache,
 			"transaction": this
 		})
@@ -74,16 +75,42 @@ export default class extends TransactionManager implements TransactionManagerInt
 
 		const castResource = possibleResource as Serializable
 
-		this.id = Number(castResource.id)
+		this.rawID = Number(castResource.id)
 		await this.destroySuccessfully()
 		await this.initialize()
 	}
 
 	get isNew(): boolean { return !this.hasFound }
 
-	get finishedStepCount(): number {
-		console.log(this.rawFinishedStepCount, "finished\n\n\n\n")
-		return this.rawFinishedStepCount }
+	get finishedStepCount(): number { return this.rawFinishedStepCount }
 
 	get totalStepCount(): number { return this.rawTotalStepCount }
+
+	async regenerateDocument(): Promise<Serializable> {
+		return await this.manager.findWithID(this.id)
+	}
+
+	protected get manager(): BaseManager<any, any, any, any, any, any> {
+		if (this.rawManager === null) {
+			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+			throw new DeveloperError(
+				`${developmentPrerequisite} before doing something with model manager.`,
+				"Developer have executed instructions out of order."
+			)
+		}
+
+		return this.rawManager
+	}
+
+	protected get id(): number {
+		if (this.rawID === 0) {
+			const developmentPrerequisite = "Asynchronous operation manager should be initialized"
+			throw new DeveloperError(
+				`${developmentPrerequisite} before doing something with model manager.`,
+				"Developer have executed instructions out of order."
+			)
+		}
+
+		return this.rawID
+	}
 }
