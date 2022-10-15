@@ -17,8 +17,8 @@ export default class extends PageMiddleware {
 
 	get policy(): Policy {
 		return new DynamicGatedRedirector((request: Request) => {
-			if (request.user === null) return Promise.resolve(null)
-			return Promise.resolve({ "location": "/" })
+			if (request.isAuthenticated()) return Promise.resolve({ "location": "/" })
+			return Promise.resolve(null)
 		}) as unknown as Policy
 	}
 }

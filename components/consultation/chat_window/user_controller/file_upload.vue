@@ -40,21 +40,20 @@
 				</label>
 			</form>
 
-			<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
-			<div v-if="hasExtracted" class="preview-file mt-5">
+			<div v-if="hasExtracted" class="preview-file">
 				<div v-if="isAcceptingImage" class="preview-img-container">
-					<img class="preview-img max-w-30" :src="previewFile"/>
-					<small class="preview-title max-w-30 text-xs">
+					<img class="preview-img" :src="previewFile"/>
+					<small class="preview-title">
 						{{ filename }}
 					</small>
 				</div>
 				<div
 					v-if="isAcceptingFile"
-					class="preview-file-container bg-true-gray-200 flex items-center px-3 py-2">
+					class="preview-file-container">
 					<span class="material-icons mr-2">
 						attachment
 					</span>
-					<small class="preview-title flex-1 text-xs">
+					<small class="preview-file-title">
 						{{ filename }}
 					</small>
 					<span class="remove-file-btn material-icons cursor-pointer">
@@ -81,13 +80,34 @@
 	</Overlay>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@styles/btn.scss";
 
 #choose-file-btn {
 	display:none;
 	appearance: none;
 }
+
+.preview-file{
+	@apply mt-5;
+}
+
+.preview-img{
+	@apply max-w-3;
+}
+
+.preview-title{
+	@apply max-w-30 text-xs;
+}
+
+.preview-file-container {
+	@apply bg-true-gray-200 flex items-center px-3 py-2;
+}
+
+.preview-file-title{
+	@apply flex-1 text-xs;
+}
+
 </style>
 
 <script setup lang="ts">
