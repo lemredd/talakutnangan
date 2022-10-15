@@ -16,7 +16,7 @@ import DatabaseError from "$!/errors/database"
 export default class implements TransactionManagerInterface {
 	private rawTransaction: Transaction|null = null
 
-	async initialize() {
+	async initialize(): Promise<void> {
 		if (this.rawTransaction === null && this.isPermitted) {
 			/*
 			 * For informred decision, please read:
@@ -51,7 +51,7 @@ export default class implements TransactionManagerInterface {
 		}
 	}
 
-	async destroySuccessfully() {
+	async destroySuccessfully(): Promise<void> {
 		if (this.mayDestroy) {
 			await this.transaction.commit()
 			this.rawTransaction = null
@@ -60,12 +60,12 @@ export default class implements TransactionManagerInterface {
 		}
 	}
 
-	async destroyIneffectually() {
+	async destroyIneffectually(): Promise<void> {
 		if (this.mayDestroy) {
 			await this.transaction.rollback()
 			this.rawTransaction = null
 
-			Log.success("transaction", "rolled back the database changes")
+			Log.errorMessage("transaction", "rolled back the database changes")
 		}
 	}
 
