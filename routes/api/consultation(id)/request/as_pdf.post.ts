@@ -1,7 +1,7 @@
 import { generatePdf } from "html-pdf-node-ts"
 
 import { OptionalMiddleware } from "!/types/independent"
-import type { Request, Response, BaseManagerClass } from "!/types/dependent"
+import type { AsynchronousRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -28,7 +28,7 @@ export default class extends BoundController {
 	}
 
 	get postPolicyMiddlewares(): OptionalMiddleware[] {
-		const numberOfTotalStepCount = 3
+		const numberOfTotalStepCount = 2
 		return [
 			new AsynchronousOperationInitializer(
 				AsynchronousFile,
@@ -39,17 +39,24 @@ export default class extends BoundController {
 
 	get manager(): BaseManagerClass { return Manager }
 
-	async handle(request: Request, unusedResponse: Response): Promise<AcceptedResponseInfo> {
+	async handle(request: AsynchronousRequest, unusedResponse: Response): Promise<void> {
 		const { id } = request.params
 
 		const URL = URLMaker.makeURLFromPath("consultation/:id", { id })
-
 		Log.trace("controller", `converting "${URL}" to PDF`)
+		await request.asynchronousOperation.incrementProgress()
 
 		const document = await generatePdf({
 			"url": URL
 		})
+		await request.asynchronousOperation.incrementProgress({
+			"fileContents": document
+		})
+	}
 
-		return new AcceptedResponseInfo(document)
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			CommonMiddlewareList.asynchronousEnder
+		]
 	}
 }
