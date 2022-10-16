@@ -103,7 +103,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		await singleton.destroySuccessfully()
 
 		expect(singleton.isNew).toBeTruthy()
-		expect(singleton.finishedStepCount).toBe(finishedStepCount)
+		expect(singleton.finishedStepCount).toBe(0)
 		expect(singleton.totalStepCount).toBe(totalStepCount)
 	})
 
