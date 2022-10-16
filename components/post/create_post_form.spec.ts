@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker"
+import flushPromises from "flush-promises"
 import { shallowMount } from "@vue/test-utils"
 
 import { POST_LINK } from "$/constants/template_links"
 
-import flushPromises from "flush-promises"
 import RequestEnvironment from "$/singletons/request_environment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import {
