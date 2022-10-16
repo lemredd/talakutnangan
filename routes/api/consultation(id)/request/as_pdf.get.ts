@@ -1,12 +1,13 @@
-import { generatePdf } from "html-pdf-node-ts"
-
 import type { OptionalMiddleware } from "!/types/independent"
-import type { AsynchronousRequest, Response, BaseManagerClass } from "!/types/dependent"
+import type {
+	AsynchronousRequest,
+	Response,
+	NextFunction,
+	BaseManagerClass
+} from "!/types/dependent"
 
-import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import Manager from "%/managers/consultation"
-import URLMaker from "$!/singletons/url_maker"
 import BoundController from "!/controllers/bound"
 import Merger from "!/middlewares/miscellaneous/merger"
 
@@ -38,19 +39,14 @@ export default class extends BoundController {
 
 	get manager(): BaseManagerClass { return Manager }
 
-	async handle(request: AsynchronousRequest, unusedResponse: Response): Promise<void> {
-		const { id } = request.params
+	async intermediate(request: AsynchronousRequest, response: Response, next: NextFunction)
+	: Promise<void> {
+		await this.handle(request, response)
+		next()
+	}
 
-		const URL = URLMaker.makeURLFromPath("consultation/:id", { id })
-		Log.trace("controller", `converting "${URL}" to PDF`)
-		await request.asynchronousOperation.incrementProgress()
-
-		const document = await generatePdf({
-			"url": URL
-		})
-		await request.asynchronousOperation.finish({
-			"fileContents": document
-		})
+	handle(unusedRequest: AsynchronousRequest, unusedResponse: Response): Promise<void> {
+		return Promise.resolve()
 	}
 
 	get postJobs(): OptionalMiddleware[] {
