@@ -63,6 +63,9 @@ export default class extends BoundJSONController {
 			"url": URL
 		})
 		await request.asynchronousOperation.finish({
+			"extra": {
+				"link": URLMaker.makeURLFromPath("consultation/:id/as_pdf", { id })
+			},
 			"fileContents": document
 		})
 	}
