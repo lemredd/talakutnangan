@@ -18,12 +18,12 @@ describe("Component: post/create_post_form", () => {
 		const roleResourceA = {
 			"id": "1",
 			"name": "A",
-			"post": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+			"postFlags": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
 		}
 		const roleResourceB = {
 			"id": "2",
 			"name": "B",
-			"post": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
+			"postFlags": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		}
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
@@ -56,17 +56,16 @@ describe("Component: post/create_post_form", () => {
 				"isShown": true
 			}
 		})
-		const firstSelectableOptionsField = wrapper
+		const roleOptionsField = wrapper
 		.find(".role-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
 
-		await firstSelectableOptionsField.setValue(roleResourceB.id)
+		await roleOptionsField.setValue(roleResourceB.id)
 
-		const secondSelectableOptionsField = wrapper
+		const departmentOptionsField = wrapper
 		.find(".department-selector")
-		.findComponent({ "name": "SelectableOptionsField" })
-		expect(firstSelectableOptionsField.exists()).toBeTruthy()
-		expect(secondSelectableOptionsField.exists()).toBeFalsy()
+		expect(roleOptionsField.exists()).toBeTruthy()
+		expect(departmentOptionsField.exists()).toBeFalsy()
 	})
 
 	it("may select one of the multiple roles and any department", async() => {
@@ -81,12 +80,12 @@ describe("Component: post/create_post_form", () => {
 		const roleResourceA = {
 			"id": "1",
 			"name": "A",
-			"post": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+			"postFlags": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
 		}
 		const roleResourceB = {
 			"id": "2",
 			"name": "B",
-			"post": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
+			"postFlags": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		}
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
@@ -119,16 +118,70 @@ describe("Component: post/create_post_form", () => {
 				"isShown": true
 			}
 		})
-		const firstSelectableOptionsField = wrapper
+		const roleOptionsField = wrapper
 		.find(".role-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
 
-		await firstSelectableOptionsField.setValue(roleResourceA.id)
+		await roleOptionsField.setValue(roleResourceA.id)
 
-		const secondSelectableOptionsField = wrapper
+		const departmentOptionsField = wrapper
 		.find(".department-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
-		expect(firstSelectableOptionsField.exists()).toBeTruthy()
-		expect(secondSelectableOptionsField.exists()).toBeTruthy()
+		expect(roleOptionsField.exists()).toBeTruthy()
+		expect(departmentOptionsField.exists()).toBeTruthy()
+	})
+
+	it("may select any department but only one role", async() => {
+		const departmentAResource = {
+			"id": "3",
+			"name": "C"
+		}
+		const departmentBResource = {
+			"id": "4",
+			"name": "D"
+		}
+		const roleResourceA = {
+			"id": "1",
+			"name": "A",
+			"postFlags": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+		}
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"departments": [ departmentAResource, departmentBResource ],
+							"userProfile": {
+								"data": {
+									"department": {
+										"data": departmentAResource
+									},
+									"roles": {
+										"data": [
+											roleResourceA
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"stubs": {
+					"DraftForm": false,
+					"Overlay": false
+				}
+			},
+			"props": {
+				"isShown": true
+			}
+		})
+		const roleOptionsField = wrapper
+		.find(".role-selector")
+		const departmentOptionsField = wrapper
+		.find(".department-selector")
+		.findComponent({ "name": "SelectableOptionsField" })
+
+		expect(roleOptionsField.exists()).toBeFalsy()
+		expect(departmentOptionsField.exists()).toBeTruthy()
 	})
 })
