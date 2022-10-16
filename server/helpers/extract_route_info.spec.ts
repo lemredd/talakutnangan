@@ -263,4 +263,15 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/a/:id/as_pdf")
 		expect(purpose).toBe("api")
 	})
+
+	it("can extract multi-purpose route with argument", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/a(id)/request/as_pdf.post.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("post")
+		expect(path).toBe("/api/a/:id/request/as_pdf")
+		expect(purpose).toBe("api")
+	})
 })
