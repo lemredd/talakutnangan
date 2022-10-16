@@ -1,8 +1,18 @@
 <template>
 	<div class="login-form">
-		<div v-if="receivedError" class="error">
-			{{ receivedError }}
-		</div>
+		<ul v-if="receivedErrors" class="errors">
+			<div v-if="receivedErrorFromPageContext" class="from-page-context">
+				{{ receivedErrors }}
+			</div>
+			<div v-else class="from-input-validation">
+				<h3>The following errors have occured:</h3>
+				<li
+					v-for="error in receivedErrors"
+					:key="receivedErrors.indexOf(error)">
+					{{ error }}
+				</li>
+			</div>
+		</ul>
 		<h1>log in</h1>
 
 		<form>
@@ -125,10 +135,10 @@ const props = defineProps<{
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-const receivedError = ref(
+const receivedErrors = ref(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail
-		: ""
+		: [ "" ]
 )
 
 function logIn() {
@@ -140,8 +150,7 @@ function logIn() {
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
 	.catch(({ "body": { errors } }) => {
-		const error = errors[0].detail
-		receivedError.value = error
+		receivedErrors.value = errors.map((error: UnitError) => error.detail)
 	})
 }
 
