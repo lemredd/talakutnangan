@@ -3,9 +3,10 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/setups/app"
 
 import RoleFactory from "~/factories/role"
+import SignatureFactory from "~/factories/signature"
+import Factory from "~/factories/chat_message_activity"
 import ConsultationFactory from "~/factories/consultation"
 import RequestEnvironment from "$!/singletons/request_environment"
-import Factory from "~/factories/chat_message_activity"
 
 import Route from "!%/api/chat_message_activity/list.get"
 
@@ -23,6 +24,9 @@ describe("GET /api/chat_message_activity", () => {
 		const model = await new Factory()
 		.user(() => Promise.resolve(employee))
 		.consultation(() => Promise.resolve(consultation))
+		.insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
 		.insertOne()
 
 		const response = await App.request
