@@ -14,7 +14,7 @@
 			<br/>
 			<div class="post-container">
 				<div class="left">
-					{{ dummyUserDemo[0].userName }}
+					{{ userProfile.data.name }}
 				</div>
 				<div class="middle">
 					<h1>What's on your mind?</h1>
@@ -27,7 +27,7 @@
 			</div>
 			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 
-			<MultiplePostViewer/>
+			<MultiplePostViewer v-model="posts"/>
 		</div>
 		<!--body end-->
 
@@ -47,65 +47,29 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
-import {
-	posts,
-	dummyUserDemo
-} from "./post"
+import { ref, inject } from "vue"
+
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedPostResource } from "$/types/documents/post"
 
 import makeSwitch from "$@/helpers/make_switch"
 
 import MultiplePostViewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 
-import type { Post } from "./data"
+type RequiredExtraProps = "posts"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 
-const titleToEdit = ref("")
-const descToEdit = ref("")
+const posts = ref<DeserializedPostResource<"poster"|"posterRole">[]>(
+	pageProps.posts.data as DeserializedPostResource<"poster"|"posterRole">[]
+)
 
 const {
 	"state": isCreateShown,
 	"on": showCreateForm,
 	"off": hideCreateForm
 } = makeSwitch(true)
-
-
-// Post edit
-function editPostDetails(currentPost: Post) {
-	const titleText = titleToEdit.value.trim()
-	const descriptionText = descToEdit.value.trim()
-
-	currentPost.title = titleText
-	currentPost.desc = descriptionText
-
-	currentPost.isPostShown = !currentPost.isPostShown
-	currentPost.isEditShown = !currentPost.isEditShown
-
-	alert("Successfully edited!")
-}
-
-// Toggles
-
-function turnOffAllDropdown() {
-
-}
-
-function togglePostMenu(post: Post) {
-	post.isMenuShown = !post.isMenuShown
-}
-
-
-
-
-
-/*
- * To create a post, the needed variables are
- *  - ID - 1
- *  - Username - 2
- *  - Post title - 3
- *  - Post description - 4
- *  - Empty voters object - 5
- *  - Empty down voters object - 6
- */
 
 </script>
