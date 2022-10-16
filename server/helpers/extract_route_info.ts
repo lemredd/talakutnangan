@@ -28,7 +28,7 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 			 * API routes ID parameter is the only parameter that can be retained if is a suffix
 			 */
 			path = path.replace(
-				/^\/(.*?)\/?(list|create|read|update|archive|restore|destroy)(\/:id)?/u,
+				/^\/(.*?)\/?(list|create|read|update|archive|restore|destroy)\b(\/:id)?/u,
 				"/$1$3"
 			)
 			break
