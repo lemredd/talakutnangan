@@ -49,7 +49,7 @@ describe("Component: Log In Form", () => {
 				}
 			}
 		})
-		const error = wrapper.find(".errors")
+		const error = wrapper.find(".error")
 		expect(error.html()).toContain(wrapper.props().receivedErrorFromPageContext.detail)
 	})
 
@@ -94,7 +94,7 @@ describe("Component: Log In Form", () => {
 		expect(request).toHaveProperty("url", "/api/user/log_in")
 		await flushPromises()
 
-		const error = wrapper.find(".errors")
+		const error = wrapper.find(".error")
 		expect(error.exists()).toBeTruthy()
 		expect(error.html()).toContain(errorDetail1)
 		expect(error.html()).toContain(errorDetail2)
