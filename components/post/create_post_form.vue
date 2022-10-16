@@ -8,14 +8,14 @@
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
 				@submit-post="createPost">
-				<div v-if="hasMultipleRoles" class="row flex flex-row">
+				<div v-if="hasMultipleRoles" class="row role-selector flex flex-row">
 					<SelectableOptionsField
 						v-model="roleID"
 						label="Post as: "
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
-				<div v-if="maySelectOtherDepartments" class="row flex flex-row">
+				<div v-if="maySelectOtherDepartments" class="row department-selector flex flex-row">
 					<SelectableOptionsField
 						v-model="departmentID"
 						label="Department to post: "
