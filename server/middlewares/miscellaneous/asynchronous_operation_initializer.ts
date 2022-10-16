@@ -34,9 +34,6 @@ export default class AsynchronousOperationInitializer extends Middleware {
 			const responseInfo = new OkResponseInfo(document)
 			responseInfo.sendThrough(response)
 			next()
-		} else if (request.method === "GET") {
-			const responseInfo = new OkResponseInfo(document)
-			responseInfo.sendThrough(response)
 		} else {
 			next(new StillProcessingError())
 		}
