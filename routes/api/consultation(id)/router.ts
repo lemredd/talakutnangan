@@ -8,8 +8,8 @@ export default class extends Router {
 
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
-				new ReadRouter(),
-				new RequestRouter()
+				new RequestRouter(),
+				new ReadRouter()
 			])
 		}))
 	}
