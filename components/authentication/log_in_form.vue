@@ -37,7 +37,7 @@
 		<div class="controls">
 			<!-- TODO: add reset password functionality -->
 			<button
-				v-if="email && !token"
+				:disabled="!email && token"
 				id="submit-btn"
 				class="btn btn-primary"
 				@click="logIn">
