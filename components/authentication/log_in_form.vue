@@ -1,6 +1,6 @@
 <template>
 	<div class="login-form">
-		<ul v-if="receivedErrors" class="errors">
+		<ul v-if="receivedErrors.length" class="error">
 			<div v-if="receivedErrorFromPageContext" class="from-page-context">
 				{{ receivedErrors }}
 			</div>
