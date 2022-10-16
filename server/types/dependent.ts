@@ -29,7 +29,9 @@ export interface Request extends BaseRequest, SharedManagerState<TransactionMana
 	// Added due to `passport` package
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
-	logout: () => void
+	logout: () => void,
+
+	asynchronousOperation: AsynchronousOperationManager|undefined
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -40,10 +42,10 @@ export interface AuthenticatedRequest extends Request {
 	user: Serializable
 }
 
-export interface AsynchronousRequest extends AuthenticatedRequest, SharedAsynchronousOperationState<
+export type AsynchronousRequest = AuthenticatedRequest & SharedAsynchronousOperationState<
 	TransactionManager,
 	AsynchronousOperationManager
-> {}
+>
 
 /**
  * Type of request to use to communicate between which have non-standard arguments.
