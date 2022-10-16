@@ -50,6 +50,8 @@ export const POST_ATTACHMENT_LINK = makeTemplateLink(LINK_PREFIX, "post_attachme
 
 export const SEMESTER_LINK = makeTemplateLink(LINK_PREFIX, "semester")
 
+export const ASYNCHRONOUS_FILE = makeTemplateLink(LINK_PREFIX, "asynchronous_file")
+
 /**
  * Requires the `id` of the user
  */
