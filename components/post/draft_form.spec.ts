@@ -3,7 +3,7 @@ import { shallowMount } from "@vue/test-utils"
 
 import Component from "./draft_form.vue"
 
-describe("Component: fields/non-sensitive_text", () => {
+describe("Component: post/draft_form", () => {
 	it("can update", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
