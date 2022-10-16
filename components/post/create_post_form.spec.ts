@@ -210,6 +210,7 @@ describe("Component: post/create_post_form", () => {
 			"data.relationships.department.data.id",
 			departmentAResource.id
 		)
+		expect(firstRequestBody).toHaveProperty("data.relationships.postAttachments.data", [])
 		expect(firstRequestBody).toHaveProperty("data.relationships.poster.data.id", userID)
 		expect(firstRequestBody).toHaveProperty(
 			"data.relationships.posterRole.data.id",

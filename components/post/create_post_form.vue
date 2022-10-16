@@ -35,7 +35,7 @@
 			<button
 				class="btn submit-btn btn-primary"
 				:form="CREATE_POST_FORM_ID"
-				type="button">
+				type="submit">
 				Create post
 			</button>
 		</template>
@@ -139,7 +139,7 @@ function createPost(): void {
 		"content": content.value,
 		"deletedAt": null
 	}, {
-		"extraCreateDocumentProps": {
+		"extraDataFields": {
 			"relationships": {
 				"department": {
 					"data": {
