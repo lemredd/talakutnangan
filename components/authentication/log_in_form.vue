@@ -135,10 +135,10 @@ const props = defineProps<{
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-const receivedErrors = ref(
+const receivedErrors = ref<string|string[]>(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail
-		: [ "" ]
+		: []
 )
 
 function logIn() {
