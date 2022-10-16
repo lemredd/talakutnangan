@@ -37,9 +37,7 @@ describe("PATCH /api/consultation/:id", () => {
 				"userID": consultant.id
 			}
 		}) as AttachedRole
-		await new SignatureFactory()
-		.user(() => Promise.resolve(consultant))
-		.insertOne()
+		await new SignatureFactory().user(() => Promise.resolve(consultant)).insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => null)
