@@ -104,6 +104,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 			...attributes,
 			"finishedStepCount": this.finishedStepCount
 		})
+		Log.trace("asynchronous", "increment asynchronous operation")
 		await this.destroySuccessfully()
 		await this.initialize()
 	}
@@ -119,6 +120,7 @@ export default class extends TransactionManager implements AsynchronousOperation
 			"finishedStepCount": this.finishedStepCount,
 			"hasStopped": true
 		})
+		Log.trace("asynchronous", "finish asynchronous operation")
 		await this.destroySuccessfully()
 		await this.initialize()
 	}
