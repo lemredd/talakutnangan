@@ -41,39 +41,6 @@ describe("Component: Log In Form", () => {
 		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 
-	it("should not log in with non-existing credentials", async() => {
-		fetchMock.mockResponse(
-			JSON.stringify({
-				"errors": [
-					{
-						"status": RequestEnvironment.status.BAD_REQUEST,
-						"code": "3",
-						"title": "Validation Error",
-						// eslint-disable-next-line max-len
-						"detail": "The sample@example.com in field \"email\" does not exists in the database\".",
-						"source": {
-							"pointer": "email"
-						}
-					}
-				] as UnitError[]
-			}),
-			{ "status": RequestEnvironment.status.BAD_REQUEST })
-
-		const wrapper = shallowMount(Component)
-
-		const submitBtn = wrapper.find("#submit-btn")
-		await submitBtn.trigger("click")
-
-		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/user/log_in")
-		await flushPromises()
-
-		const error = wrapper.find(".error")
-		console.log(error.html())
-	})
-
 	it("should show error from authentication-guarded route", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
@@ -82,23 +49,35 @@ describe("Component: Log In Form", () => {
 				}
 			}
 		})
-		const error = wrapper.find(".error")
+		const error = wrapper.find(".errors")
 		expect(error.html()).toContain(wrapper.props().receivedErrorFromPageContext.detail)
 	})
 
 	it("should not log in with non-existing credentials", async() => {
+		const errorDetail1
+		= "The sample@example.com in field \"email\" does not exists in the database\"."
+		const errorDetail2
+		= "sample error."
 		fetchMock.mockResponse(
 			JSON.stringify({
 				"errors": [
 					{
-						"status": RequestEnvironment.status.BAD_REQUEST,
 						"code": "3",
-						"title": "Validation Error",
-						// eslint-disable-next-line max-len
-						"detail": "The sample@example.com in field \"email\" does not exists in the database\".",
+						"detail": errorDetail1,
 						"source": {
 							"pointer": "email"
-						}
+						},
+						"status": RequestEnvironment.status.BAD_REQUEST,
+						"title": "Validation Error"
+					},
+					{
+						"code": "3",
+						"detail": errorDetail2,
+						"source": {
+							"pointer": "email"
+						},
+						"status": RequestEnvironment.status.BAD_REQUEST,
+						"title": "Validation Error"
 					}
 				] as UnitError[]
 			}),
@@ -115,12 +94,9 @@ describe("Component: Log In Form", () => {
 		expect(request).toHaveProperty("url", "/api/user/log_in")
 		await flushPromises()
 
-
-		const error = wrapper.find(".error")
-		const errorDetails
-		= "The sample@example.com in field \"email\" does not exists in the database\"."
-		console.log(errorDetails, "\n\n\n\n")
+		const error = wrapper.find(".errors")
 		expect(error.exists()).toBeTruthy()
-		expect(error.html()).toContain(errorDetails)
+		expect(error.html()).toContain(errorDetail1)
+		expect(error.html()).toContain(errorDetail2)
 	})
 })
