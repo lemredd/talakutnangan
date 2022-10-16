@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import GetReadAsPDF from "!%/api/consultation/read(id)/as_pdf.get"
+import GetReadAsPDF from "!%/api/consultation/(id)read/as_pdf.get"
 
 export default class extends Router {
 	constructor() {
