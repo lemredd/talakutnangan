@@ -14,6 +14,7 @@ import ProfilePictureRouter from "!%/api/profile_picture/router"
 import ProfanityFilterRouter from "!%/api/profanity_filter/router"
 import BoundConsultationRouter from "!%/api/consultation(id)/router"
 import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
+import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import AttachedChatFileRouter from "!%/api/attached_chat_file/router"
 import ChatMessageActivityRouter from "!%/api/chat_message_activity/router"
 
@@ -59,7 +60,8 @@ export default class extends Router {
 		const miscelleneousRouters = new Promise<Router[]>(resolve => {
 			resolve([
 				new SemesterRouter(),
-				new AuditTrailRouter()
+				new AuditTrailRouter(),
+				new AsynchronousFileRouter()
 			])
 		})
 
