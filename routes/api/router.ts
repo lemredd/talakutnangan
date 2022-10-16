@@ -12,6 +12,7 @@ import ChatMessageRouter from "!%/api/chat_message/router"
 import ConsultationRouter from "!%/api/consultation/router"
 import ProfilePictureRouter from "!%/api/profile_picture/router"
 import ProfanityFilterRouter from "!%/api/profanity_filter/router"
+import BoundConsultationRouter from "!%/api/consultation(id)/router"
 import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
 import AttachedChatFileRouter from "!%/api/attached_chat_file/router"
 import ChatMessageActivityRouter from "!%/api/chat_message_activity/router"
@@ -37,6 +38,7 @@ export default class extends Router {
 				new ProfanityFilterRouter(),
 				new EmployeeScheduleRouter(),
 				new AttachedChatFileRouter(),
+				new BoundConsultationRouter(),
 				new ChatMessageActivityRouter()
 			])
 		}))
