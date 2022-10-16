@@ -21,26 +21,56 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRoutersAsync(new Promise(resolve => {
+		const coreRouters = new Promise<Router[]>(resolve => {
 			resolve([
-				new TagRouter(),
-				new UserRouter(),
 				new RoleRouter(),
-				new PostRouter(),
-				new SemesterRouter(),
+				new UserRouter(),
+				new DepartmentRouter()
+			])
+		})
+
+		const userRelatedRouters = new Promise<Router[]>(resolve => {
+			resolve([
 				new SignatureRouter(),
-				new AuditTrailRouter(),
-				new DepartmentRouter(),
 				new UserBindedRouter(),
+				new ProfilePictureRouter(),
+				new EmployeeScheduleRouter()
+			])
+		})
+
+		const consultationRelatedRouters = new Promise<Router[]>(resolve => {
+			resolve([
 				new ChatMessageRouter(),
 				new ConsultationRouter(),
-				new ProfilePictureRouter(),
-				new ProfanityFilterRouter(),
-				new EmployeeScheduleRouter(),
 				new AttachedChatFileRouter(),
 				new BoundConsultationRouter(),
 				new ChatMessageActivityRouter()
 			])
-		}))
+		})
+
+		const forumRelatedRouters = new Promise<Router[]>(resolve => {
+			resolve([
+				new TagRouter(),
+				new PostRouter(),
+				new ProfanityFilterRouter()
+			])
+		})
+
+		const miscelleneousRouters = new Promise<Router[]>(resolve => {
+			resolve([
+				new SemesterRouter(),
+				new AuditTrailRouter()
+			])
+		})
+
+		this.useRoutersAsync(
+			Promise.all([
+				coreRouters,
+				userRelatedRouters,
+				forumRelatedRouters,
+				consultationRelatedRouters,
+				miscelleneousRouters
+			]).then(routerGroups => routerGroups.flat())
+		)
 	}
 }
