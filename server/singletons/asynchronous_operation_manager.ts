@@ -104,6 +104,8 @@ export default class extends TransactionManager implements AsynchronousOperation
 			...attributes,
 			"finishedStepCount": this.finishedStepCount
 		})
+		await this.destroySuccessfully()
+		await this.initialize()
 	}
 
 	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
@@ -117,6 +119,8 @@ export default class extends TransactionManager implements AsynchronousOperation
 			"finishedStepCount": this.finishedStepCount,
 			"hasStopped": true
 		})
+		await this.destroySuccessfully()
+		await this.initialize()
 	}
 
 	async destroyConditionally() {
