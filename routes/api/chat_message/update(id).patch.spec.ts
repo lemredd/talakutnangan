@@ -1,6 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/chat_message"
+import SignatureFactory from "~/factories/signature"
 import MockRequester from "~/setups/mock_requester"
 import AuthorizationError from "$!/errors/authorization"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -50,6 +51,8 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		.user(() => new UserFactory().beReachableEmployee().insertOne())
 		.insertOne()
 		const { user } = chatMessageActivity
+		const signature = await new SignatureFactory().insertOne()
+		user.signature = signature
 		const model = await new Factory().chatMessageActivity(
 			() => Promise.resolve(chatMessageActivity)
 		).insertOne()
@@ -75,7 +78,10 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 		const controller = new Controller()
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
-		const otherUser = await new UserFactory().beReachableEmployee().serializedOne(true)
+		const userFactory = new UserFactory()
+		const otherUser = await userFactory.beReachableEmployee().insertOne()
+		const signature = await new SignatureFactory().insertOne()
+		otherUser.signature = signature
 		const chatMessageActivity = await new ChatMessageActivityFactory()
 		.user(() => new UserFactory().beReachableEmployee().insertOne())
 		.insertOne()
@@ -88,7 +94,7 @@ describe("Controller: PATCH /api/chat_message/:id", () => {
 				"id": String(model.id)
 			},
 			"user": {
-				...otherUser,
+				...await userFactory.serialize(otherUser),
 				"meta": {
 					"hasDefaultPassword": false
 				}
