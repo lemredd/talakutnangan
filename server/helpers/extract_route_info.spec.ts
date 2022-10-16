@@ -252,4 +252,15 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})
+
+	it("can trim multi-purpose read route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/a/read(id)/as_pdf.get.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("get")
+		expect(path).toBe("/api/a/:id/as_pdf")
+		expect(purpose).toBe("api")
+	})
 })
