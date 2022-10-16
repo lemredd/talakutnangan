@@ -1,6 +1,10 @@
 import { faker } from "@faker-js/faker"
 import { shallowMount } from "@vue/test-utils"
 
+import { POST_LINK } from "$/constants/template_links"
+
+import flushPromises from "flush-promises"
+import RequestEnvironment from "$/singletons/request_environment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -131,7 +135,11 @@ describe("Component: post/create_post_form", () => {
 		expect(departmentOptionsField.exists()).toBeTruthy()
 	})
 
-	it("may select any department but only one role", async() => {
+	it("may submit to any department but only one role", async() => {
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
 		const departmentAResource = {
 			"id": "3",
 			"name": "C"
@@ -145,6 +153,7 @@ describe("Component: post/create_post_form", () => {
 			"name": "A",
 			"postFlags": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
 		}
+		const userID = "2"
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
@@ -156,6 +165,7 @@ describe("Component: post/create_post_form", () => {
 									"department": {
 										"data": departmentAResource
 									},
+									"id": userID,
 									"roles": {
 										"data": [
 											roleResourceA
@@ -180,8 +190,30 @@ describe("Component: post/create_post_form", () => {
 		const departmentOptionsField = wrapper
 		.find(".department-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
+		const contentField = wrapper.find("textarea")
+		const exampleContent = faker.lorem.paragraphs(2)
+		await contentField.setValue(exampleContent)
+
+		const createPostForm = wrapper.find("form")
+		await createPostForm.trigger("submit")
+		await flushPromises()
 
 		expect(roleOptionsField.exists()).toBeFalsy()
 		expect(departmentOptionsField.exists()).toBeTruthy()
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ firstRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "POST")
+		expect(firstRequest).toHaveProperty("url", POST_LINK.unbound)
+		const firstRequestBody = await firstRequest.json()
+		expect(firstRequestBody).toHaveProperty("data.type", "post")
+		expect(firstRequestBody).toHaveProperty(
+			"data.relationships.department.data.id",
+			departmentAResource.id
+		)
+		expect(firstRequestBody).toHaveProperty("data.relationships.poster.data.id", userID)
+		expect(firstRequestBody).toHaveProperty(
+			"data.relationships.posterRole.data.id",
+			roleResourceA.id
+		)
 	})
 })
