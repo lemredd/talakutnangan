@@ -59,6 +59,10 @@ import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
 
+import Overlay from "@/helpers/overlay.vue"
+import DraftForm from "@/post/draft_form.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
