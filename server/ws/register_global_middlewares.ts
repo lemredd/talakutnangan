@@ -24,4 +24,17 @@ export default function(io: WebSocketServer): void {
 		) as unknown as void
 		io.use(wrappedMiddleware)
 	})
+
+	// Necessary to prevent leaks
+	const ender = (
+		socket: Socket,
+		next: SocketNextFunction
+	) => {
+		const request = socket.request as Request
+		const castNext = next as NextFunction
+		request.transaction.destroySuccessfully()
+		.then(castNext)
+		.catch(castNext)
+	}
+	io.use(ender)
 }

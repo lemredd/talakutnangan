@@ -1,5 +1,3 @@
-import type { Request } from "!/types/dependent"
-
 import Log from "$!/singletons/log"
 import { Server } from "socket.io"
 
@@ -13,10 +11,7 @@ export default function(wsServer: Server) {
 	})
 
 	function listenOnDynamicNamespace(namespace: RegExp, logMessage: string) {
-		wsServer.of(namespace).on("connection", socket => {
-			const request = socket.request as Request
-
-			request.transaction.destroySuccessfully()
+		wsServer.of(namespace).on("connection", () => {
 			Log.debug("server", logMessage)
 		})
 	}
