@@ -12,7 +12,7 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
-import { CONSULTATION_LINK } from "$/constants/template_links"
+import { CONSULTATION_LINK, GENERATE_CONSULTATION_AS_PDF_LINK } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
 import specializePath from "$/helpers/specialize_path"
@@ -44,7 +44,12 @@ export default class ConsultationFetcher extends BaseFetcher<
 		AsynchronousFileDocument<"read", "deserialized">
 	>> {
 		return this.handleResponse(
-			this.postJSON(specializePath(`${this.links.bound}/request/as_pdf`, { id }), {}),
+			this.postJSON(specializePath(GENERATE_CONSULTATION_AS_PDF_LINK, { id }), {
+				"data": {
+					id,
+					"type": "consultation"
+				}
+			}),
 			true
 		) as Promise<Response<
 			ConsultationResourceIdentifier,
