@@ -1,15 +1,11 @@
 <template>
 	<div>
-		<!--header start-->
 		<div class="top-bar">
 			<div><img src="@assets/emptyImage.png"/></div>
 			<h4>
 				Forum App
 			</h4>
 		</div>
-		<!--header end-->
-
-		<!--body start-->
 		<div class="main">
 			<br/>
 			<div class="post-container">
@@ -29,16 +25,12 @@
 
 			<MultiplePostViewer v-model="posts"/>
 		</div>
-		<!--body end-->
-
-		<!--footer start-->
 		<footer>
 			<p>
 				Footer space<br/>
 				<a href="./forum">email@example.com</a>
 			</p>
 		</footer>
-		<!--footer end-->
 	</div>
 </template>
 
@@ -57,7 +49,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import MultiplePostViewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 
-type RequiredExtraProps = "posts"
+type RequiredExtraProps = "posts"|"departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile } = pageProps
@@ -70,6 +62,6 @@ const {
 	"state": isCreateShown,
 	"on": showCreateForm,
 	"off": hideCreateForm
-} = makeSwitch(true)
+} = makeSwitch(false)
 
 </script>
