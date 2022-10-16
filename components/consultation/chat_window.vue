@@ -88,7 +88,14 @@
 					<li>Status: {{ consultationStatus }}</li>
 
 					<!-- TODO(lead/button): Apply functionality -->
-					<li><a class="underline" href="#">View printable form (PDF)</a></li>
+					<li>
+						<a
+							class="underline"
+							href="#"
+							@click.prevent="saveAsPDF">
+							View printable form (PDF)
+						</a>
+					</li>
 				</ul>
 			</div>
 
@@ -401,7 +408,9 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 }, { "deep": true })
 
 function saveAsPDF(): void {
-	const unusedElement = chatWindow.value
+	fetcher.requestAsPDF(props.consultation.id).then(({ body }) => {
+		console.log(body)
+	})
 }
 
 onMounted(() => {
