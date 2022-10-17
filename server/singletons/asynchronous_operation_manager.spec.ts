@@ -3,6 +3,7 @@ import type { AsynchronousFileDocument } from "$/types/documents/asynchronous_fi
 
 import "~/setups/database.setup"
 import UserFactory from "~/factories/user"
+import DeveloperError from "$!/errors/developer"
 import Factory from "~/factories/asynchronous_file"
 import MockRequester from "~/setups/mock_requester"
 import AsynchronousFileManager from "%/managers/asynchronous_file"
@@ -10,7 +11,6 @@ import AsynchronousFileManager from "%/managers/asynchronous_file"
 import digest from "$!/helpers/digest"
 import deserialize from "$/object/deserialize"
 import Singleton from "./asynchronous_operation_manager"
-import DeveloperError from "$!/errors/developer"
 
 describe("Server singleton: Asynchronous operation manager", () => {
 	const requester = new MockRequester<AuthenticatedRequest>()
@@ -257,7 +257,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
 		expect(deserializedDocument).toHaveProperty("data.hasStopped", true)
 		expect(deserializedDocument).toHaveProperty("data.extra", {
-			"error": error.toJSON(),
+			"errors": [ error.toJSON() ],
 			message
 		})
 	})

@@ -6,6 +6,7 @@ import type { AsynchronousLikeAttributes } from "$/types/documents/asynchronous-
 
 import Log from "$!/singletons/log"
 import digest from "$!/helpers/digest"
+import BaseError from "$!/errors/base"
 import BaseManager from "%/managers/base"
 import deserialize from "$/object/deserialize"
 import DeveloperError from "$!/errors/developer"
@@ -128,6 +129,16 @@ export default class extends TransactionManager implements AsynchronousOperation
 		Log.trace("asynchronous", "stopped asynchronous operation")
 		await this.destroySuccessfully()
 		await this.initialize()
+	}
+
+	async fail(error: BaseError): Promise<void> {
+		Log.errorMessage("asynchronous", "asynchronous operation failed")
+		await this.stopProgress({
+			"extra": {
+				...this.extra,
+				"errors": [ error.toJSON() ]
+			}
+		})
 	}
 
 	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
