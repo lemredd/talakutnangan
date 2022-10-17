@@ -37,8 +37,8 @@
 		<div class="controls">
 			<!-- TODO: add reset password functionality -->
 			<button
-				:disabled="!email && token"
 				id="submit-btn"
+				:disabled="!email && Boolean(token)"
 				class="btn btn-primary"
 				@click="logIn">
 				Log in
@@ -69,6 +69,7 @@
 
 	ul {
 		list-style-type: disc;
+		width: 100%;
 
 		li {
 			@apply ml-3;
@@ -157,8 +158,13 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(({ "body": { errors } }) => {
-		receivedErrors.value = errors.map((error: UnitError) => error.detail)
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => error.detail)
+		} else {
+			receivedErrors.value = [ "Invalid e-mail or password" ]
+		}
 	})
 }
 
