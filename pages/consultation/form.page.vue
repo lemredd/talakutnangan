@@ -1,64 +1,71 @@
 <template>
-	<div>
-		<section class="header">
-			<h1>Enter the consultation details</h1>
-		</section>
+	<section class="header">
+		<h1>Consultation Ticket #{{ consultation.id }}</h1>
+	</section>
 
-		<section class="default">
-			<input
-				class="consultant required"
-				header="Consultant"
-				text-field-label="Type the employee to add"
-				kind="reachable_employee"/>
+	<section class="details">
+		<h2>
+			Consultant Name:
+		</h2>
+		<h6 id="consultant" class="consultant">
+			{{ consultant.data.name }}
+		</h6>
 
-			<div class="required">
-				<select
-					class="consultant-roles"
-					label="Address consultant as:">
-				</select>
+		<h2>
+			Consultant Role:
+		</h2>
+		<h6 id="consultant-role" class="consultant-role">
+			{{ consultantRole.data.name }}
+		</h6>
+
+		<h2>
+			Consulter/s:
+		</h2>
+		<ul id="consulters" class="consulters">
+			<li
+				v-for="consulter in consulters"
+				:key="consulter.id"
+				class="consulter">
+				{{ consulter.user?.data.name }}
+			</li>
+		</ul>
+
+		<h2>
+			Reason:
+		</h2>
+		<h6 id="reason" class="reason">
+			{{ reason }}
+		</h6>
+
+		<h2>
+			Scheduled Start:
+		</h2>
+		<h6 id="scheduled-start" class="scheduled-start">
+			{{ scheduledStartAt }}
+		</h6>
+
+		<h2>
+			Actual Start:
+		</h2>
+		<h6 id="actual-start" class="actual-start">
+			{{ startedAt }}
+		</h6>
+	</section>
+
+	<ul class="chat-messages">
+		<h1>Chat Messages</h1>
+		<li
+			v-for="chatMessage in chatMessages"
+			:key="chatMessage.id">
+			<div v-if="isMessageKindStatus(chatMessage)" class="status-message">
+				{{ chatMessage.data.value }}
 			</div>
-
-			<input
-				class="consulters"
-				header="Consulters"
-				text-field-label="Type the students to add"
-				kind="student"/>
-
-			<div class="required">
-				<select
-					class="reason"
-					label="Kind of Reason: "
-					placeholder="Choose your reason"></select>
+			<div v-if="isMessageKindText(chatMessage)" class="text-message">
+				[{{ chatMessage.createdAt.toDateString() }}] ({{ chatMessage.user.data.name }}):
+				{{ chatMessage.data.value }}
 			</div>
-
-			<input
-				class="other-reason required"
-				label="What are the other reasons(s)?"
-				type="text"/>
-			<div class="schedule-selector">
-				<div class="consultant-has-schedules">
-					<p>Please select the day and time from the consultant's available schedules</p>
-					<div class="required">
-						<select class="selectable-day" label="Day:"></select>
-						<div class="selectable date-picker">
-							<span>Select a date:</span>
-							<input type="date" value=""/>
-						</div>
-					</div>
-
-					<div>
-						<select
-							class="selectable-time"
-							label="Time:">
-						</select>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section class="footer">
-		</section>
-	</div>
+		</li>
+	</ul>
 </template>
 
 <script setup lang="ts">
