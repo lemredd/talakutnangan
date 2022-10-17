@@ -41,11 +41,15 @@
 						<!-- TODO: make absolute -->
 
 						<div class="links">
-							<a href="#">View consultation form</a>
+							<a
+								href="#"
+								class="additional-control view-printable-form-btn">
+								View consultation form
+							</a>
 							<a
 								v-if="isCurrentUserConsultant"
 								href="#"
-								class="view-action-taken-overlay-btn"
+								class="additional-control view-action-taken-overlay-btn"
 								@click="showActionTakenOverlay">Finish consultation</a>
 						</div>
 					</template>
@@ -157,9 +161,12 @@
 				@apply flex items-center;
 
 				.additional-controls {
-
 					display: inline;
 					height: min-content;
+
+					.additional-control{
+					@apply p-2 hover:bg-light-600;
+					}
 				}
 			}
 		}
