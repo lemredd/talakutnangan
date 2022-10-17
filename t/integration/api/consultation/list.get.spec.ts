@@ -4,6 +4,7 @@ import App from "~/setups/app"
 
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
+import SignatureFactory from "~/factories/signature"
 import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 
@@ -23,6 +24,9 @@ describe("GET /api/consultation", () => {
 		await new ChatMessageActivityFactory()
 		.user(() => Promise.resolve(employee))
 		.consultation(() => Promise.resolve(model))
+		.insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
 		.insertOne()
 
 		const response = await App.request

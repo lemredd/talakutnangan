@@ -77,7 +77,6 @@ describe("PATCH /api/user/:id/update_password", () => {
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
-		console.log(response.body, "\n\n\n")
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 	})
 })

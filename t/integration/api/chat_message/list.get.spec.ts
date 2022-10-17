@@ -4,6 +4,7 @@ import App from "~/setups/app"
 
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/chat_message"
+import SignatureFactory from "~/factories/signature"
 import ConsultationFactory from "~/factories/consultation"
 import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
@@ -27,6 +28,9 @@ describe("GET /api/chat_message", () => {
 		.insertOne()
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(activity))
+		.insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
 		.insertOne()
 
 		const response = await App.request
@@ -63,6 +67,9 @@ describe("GET /api/chat_message", () => {
 		.insertOne()
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(activity))
+		.insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
 		.insertOne()
 
 		const response = await App.request

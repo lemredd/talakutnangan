@@ -8,6 +8,7 @@ import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/consultation"
 import AttachedRole from "%/models/attached_role"
+import SignatureFactory from "~/factories/signature"
 import specializePath from "$/helpers/specialize_path"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$!/singletons/request_environment"
@@ -36,6 +37,7 @@ describe("PATCH /api/consultation/:id", () => {
 				"userID": consultant.id
 			}
 		}) as AttachedRole
+		await new SignatureFactory().user(() => Promise.resolve(consultant)).insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => null)
@@ -116,6 +118,9 @@ describe("PATCH /api/consultation/:id", () => {
 				"userID": consultant.id
 			}
 		}) as AttachedRole
+		await new SignatureFactory()
+		.user(() => Promise.resolve(consultant))
+		.insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => null)
@@ -208,6 +213,9 @@ describe("PATCH /api/consultation/:id", () => {
 				"userID": consultant.id
 			}
 		}) as AttachedRole
+		await new SignatureFactory()
+		.user(() => Promise.resolve(consultant))
+		.insertOne()
 		const model = await new Factory()
 		.consultantInfo(() => Promise.resolve(consultantInfo))
 		.startedAt(() => STARTED_TIME)

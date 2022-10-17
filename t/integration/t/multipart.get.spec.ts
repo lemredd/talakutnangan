@@ -5,16 +5,16 @@ import App from "~/setups/app"
 import Route from "!%/t/multipart.post"
 
 describe("GET /t/multipart", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route(), false)
 	})
 
-	it("can upload multipart form data", async () => {
+	it("can upload multipart form data", async() => {
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
-			.post("/t/multipart")
-			.attach("importedCSV", path)
+		.post("/t/multipart")
+		.attach("importedCSV", path)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("importedCSV")
@@ -22,13 +22,13 @@ describe("GET /t/multipart", () => {
 		expect(response.body.importedCSV).toHaveProperty("info")
 	})
 
-	it("can upload multipart form data with array", async () => {
+	it("can upload multipart form data with array", async() => {
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
-			.post("/t/multipart")
-			.field("roles[]", [ "a", "b" ])
-			.attach("importedCSV", path)
+		.post("/t/multipart")
+		.field("roles[]", [ "a", "b" ])
+		.attach("importedCSV", path)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("roles")
@@ -38,15 +38,13 @@ describe("GET /t/multipart", () => {
 		expect(response.body.importedCSV).toHaveProperty("info")
 	})
 
-	it("can upload multipart form data with nested properties", async () => {
+	it("can upload multipart form data with nested properties", async() => {
 		const path = `${RequestEnvironment.root}/t/data/valid_student_details.csv`
 
 		const response = await App.request
-			.post("/t/multipart")
-			.field("roles[]", [ "a", "b" ])
-			.attach("nestedImportedCSV[file]", path)
-
-		console.log(response.headers, "\n\n\n\n\n\n")
+		.post("/t/multipart")
+		.field("roles[]", [ "a", "b" ])
+		.attach("nestedImportedCSV[file]", path)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
 		expect(response.body).toHaveProperty("roles")
