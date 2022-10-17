@@ -23,6 +23,10 @@ export default async function(
 ) {
 	await request.transaction.destroyIneffectually()
 
+	if (request.asynchronousOperation) {
+		await request.asynchronousOperation.destroyIneffectually()
+	}
+
 	if (response.writableEnded) {
 		Log.errorMessage("middleware", `Cannot write the error at "${request.path}"`)
 	} else {

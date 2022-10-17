@@ -5,6 +5,7 @@ import App from "~/setups/app"
 import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/chat_message"
+import SignatureFactory from "~/factories/signature"
 import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -30,6 +31,9 @@ describe("PATCH /api/chat_message/:id", () => {
 		const newModel = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.serializedOne(false)
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
+		.insertOne()
 
 		const response = await App.request
 		.patch(`/api/chat_message/${model.data.id}`)

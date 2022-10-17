@@ -252,4 +252,37 @@ describe("Helpers: Extract route info", () => {
 		expect(path).toBe("/api/user")
 		expect(purpose).toBe("api")
 	})
+
+	it("can trim multi-purpose read route", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/a/read(id)/as_pdf.get.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("get")
+		expect(path).toBe("/api/a/:id/as_pdf")
+		expect(purpose).toBe("api")
+	})
+
+	it("can extract multi-purpose route with argument", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/a(id)/request/as_pdf.post.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("post")
+		expect(path).toBe("/api/a/:id/request/as_pdf")
+		expect(purpose).toBe("api")
+	})
+
+	it("cannot trim routes without word boundary", () => {
+		const root = "/sample"
+		const currentPath = `${root}/api/user(id)/update_password.patch.ts`
+
+		const { method, path, purpose } = extractRouteInfo(currentPath, root)
+
+		expect(method).toBe("patch")
+		expect(path).toBe("/api/user/:id/update_password")
+		expect(purpose).toBe("api")
+	})
 })

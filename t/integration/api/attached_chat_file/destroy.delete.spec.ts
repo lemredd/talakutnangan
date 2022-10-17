@@ -4,6 +4,7 @@ import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import Model from "%/models/attached_chat_file"
 import Factory from "~/factories/attached_chat_file"
+import SignatureFactory from "~/factories/signature"
 import ChatMessageFactory from "~/factories/chat_message"
 import StudentDetailFactory from "~/factories/student_detail"
 import RequestEnvironment from "$!/singletons/request_environment"
@@ -31,6 +32,7 @@ describe("DELETE /api/attached_chat_file", () => {
 		.insertOne()
 		const model = await new Factory().chatMessage(() => Promise.resolve(chatMessage)).insertOne()
 		await new StudentDetailFactory().user(() => Promise.resolve(user)).insertOne()
+		await new SignatureFactory().user(() => Promise.resolve(user)).insertOne()
 
 		const response = await App.request
 		.delete("/api/attached_chat_file")

@@ -10,7 +10,9 @@ import deserialize from "$/object/deserialize"
 import JSONController from "!/controllers/json"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+
+import KindBasedPolicy from "!/policies/kind-based"
+import requireSignature from "!/helpers/require_signature"
 
 import date from "!/validators/base/date"
 import object from "!/validators/base/object"
@@ -32,7 +34,10 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.studentOnlyPolicy
+		return new KindBasedPolicy(
+			[ "student" ],
+			{ "checkOthers": requireSignature }
+		)
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {

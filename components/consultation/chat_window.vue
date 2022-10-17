@@ -88,7 +88,14 @@
 					<li>Status: {{ consultationStatus }}</li>
 
 					<!-- TODO(lead/button): Apply functionality -->
-					<li><a class="underline" href="#">View printable form (PDF)</a></li>
+					<li>
+						<a
+							class="underline"
+							href="#"
+							@click.prevent="saveAsPDF">
+							View printable form (PDF)
+						</a>
+					</li>
 				</ul>
 			</div>
 
@@ -107,8 +114,8 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-@import "@styles/mixins.scss";
+	@import "@styles/btn.scss";
+	@import "@styles/mixins.scss";
 
 	.right {
 		@apply flex flex-col;
@@ -173,6 +180,8 @@ import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
+
+const fetcher = new ConsultationFetcher()
 
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
@@ -280,7 +289,7 @@ function finishConsultation(): void {
 			finishConsultation
 		)
 
-		new ConsultationFetcher().update(
+		fetcher.update(
 			consultationID.value,
 			newConsultationData,
 			{
@@ -328,7 +337,7 @@ function startConsultation() {
 		"startedAt": new Date().toISOString()
 	}
 
-	new ConsultationFetcher().update(
+	fetcher.update(
 		consultationID.value,
 		newConsultationData,
 		{
@@ -399,7 +408,9 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 }, { "deep": true })
 
 function saveAsPDF(): void {
-	const unusedElement = chatWindow.value
+	fetcher.requestAsPDF(props.consultation.id).then(({ body }) => {
+		console.log(body)
+	})
 }
 
 onMounted(() => {

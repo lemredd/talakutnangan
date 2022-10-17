@@ -4,6 +4,7 @@ import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import Consultation from "%/models/consultation"
 import Model from "%/models/chat_message_activity"
+import SignatureFactory from "~/factories/signature"
 import Factory from "~/factories/chat_message_activity"
 import ConsultationFactory from "~/factories/consultation"
 import AttachedRoleFactory from "~/factories/attached_role"
@@ -25,6 +26,9 @@ describe("DELETE /api/chat_message_activity", () => {
 		)
 		const model = await new Factory().insertOne()
 		await new StudentDetailFactory().user(() => Promise.resolve(consulter)).insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(consulter))
+		.insertOne()
 
 		const response = await App.request
 		.delete("/api/chat_message_activity")
@@ -59,6 +63,9 @@ describe("DELETE /api/chat_message_activity", () => {
 		.consultantInfo(() => consultantInfo)
 		.insertOne()
 		const model = await new Factory().consultation(() => consultation).insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(consultant))
+		.insertOne()
 
 		const response = await App.request
 		.delete("/api/chat_message_activity")
