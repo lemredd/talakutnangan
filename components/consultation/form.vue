@@ -148,7 +148,7 @@
 		@apply dark:bg-transparent dark:text-white;
 
 		option {
-			@apply dark:bg-dark-200 dark:text-white
+			@apply dark:bg-dark-200 dark:text-white;
 		}
 	}
 

@@ -64,6 +64,10 @@
 				[{{ chatMessage.createdAt.toDateString() }}] ({{ chatMessage.user.data.name }}):
 				{{ chatMessage.data.value }}
 			</div>
+			<div v-if="isMessageKindFile(chatMessage)" class="file-message">
+				[{{ chatMessage.createdAt.toDateString() }}] ({{ chatMessage.user.data.name }})
+				sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
+			</div>
 		</li>
 	</ul>
 </template>
