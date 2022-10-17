@@ -114,16 +114,23 @@ describe("Database Manager: Consultation read operations", () => {
 		const attachedRole = await new AttachedRoleFactory()
 		.user(() => Promise.resolve(user))
 		.insertOne()
-		await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
-		.startedAt(() => new Date("2022-09-01T08:00:00"))
-		.finishedAt(() => new Date("2022-09-01T08:10:00"))
-		.insertOne()
-		await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
-		.startedAt(() => new Date("2022-09-02T08:00:00"))
-		.finishedAt(() => new Date("2022-09-02T08:05:30"))
-		.insertOne()
+		const consultations = [
+			await new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date("2022-09-01T08:00:00"))
+			.finishedAt(() => new Date("2022-09-01T08:10:00"))
+			.insertOne(),
+			await new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date("2022-09-02T08:00:00"))
+			.finishedAt(() => new Date("2022-09-02T08:05:30"))
+			.insertOne()
+		]
+		const consultationIterator = consultations.values()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => consultationIterator.next().value)
+		.insertMany(consultations.length)
 
 		const times = await manager.sumTimePerStudents({
 			"filter": {
@@ -135,21 +142,22 @@ describe("Database Manager: Consultation read operations", () => {
 			},
 			"page": {
 				"limit": 10,
-				"offset": 5
-			}
+				"offset": 0
+			},
+			"sort": [ "-name" ]
 		})
 
-		expect(times).toStrictEqual([
+		expect(times).toStrictEqual({
 			"data": [
 				{
 					"id": String(user.id),
 					"meta": {
-						"timeConsumed": convertTimeToMilliseconds("00:15:30")
+						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:30")
 					},
 					"type": "user"
 				}
 			]
-		])
+		})
 	})
 })
 
