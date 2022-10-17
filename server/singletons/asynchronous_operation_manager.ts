@@ -89,6 +89,8 @@ export default class extends TransactionManager implements AsynchronousOperation
 
 	get totalStepCount(): number { return this.rawAttributes.totalStepCount ?? 0 }
 
+	get extra(): Serializable { return this.rawAttributes.extra ?? {} }
+
 	async regenerateDocument(): Promise<Serializable> {
 		const document = await this.manager.findWithID(this.id)
 		const castData = document.data as Serializable
