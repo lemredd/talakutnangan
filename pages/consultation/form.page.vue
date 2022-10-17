@@ -61,9 +61,61 @@
 	</div>
 </template>
 
-<style>
-</style>
-
 <script setup lang="ts">
+import { inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedRoleDocument } from "$/types/documents/role"
+import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type {
+	DeserializedChatMessageActivityResource
+} from "$/types/documents/chat_message_activity"
+
+import {
+	isMessageKindFile,
+	isMessageKindStatus,
+	isMessageKindText
+} from "@/consultation/helpers/chat_message_kinds"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const {
+	"pageProps": {
+		"chatMessageActivities": {
+			"data": chatMessageActivitiesData
+		},
+		"chatMessages": {
+			"data": chatMessagesData
+		},
+		"consultation": {
+			"data": consultationData
+		}
+	}
+} = pageContext as any
+
+const consultation = consultationData as DeserializedConsultationResource
+const {
+	consultant,
+	consultantRole,
+	reason,
+	scheduledStartAt,
+	startedAt
+} = consultation as unknown as {
+	"consultant": DeserializedUserResource
+	"consultantRole": DeserializedRoleDocument
+	"reason": string
+	"scheduledStartAt": Date
+	"startedAt": Date
+}
+
+const consultationChatMessageActivities
+= chatMessageActivitiesData as DeserializedChatMessageActivityResource[]
+const consulters = consultationChatMessageActivities.filter(
+	(
+		activity: DeserializedChatMessageActivityResource
+	) => activity.user?.data.id !== consultant.data.id
+)
+
+const chatMessages = chatMessagesData as DeserializedChatMessageResource<"user">[]
 </script>
