@@ -113,6 +113,17 @@
 	</section>
 </template>
 
+<style lang="scss">
+
+.additional-controls{
+	.dropdown-container{
+		inset: unset;
+		right: -80px;
+	}
+}
+
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	@import "@styles/mixins.scss";
@@ -132,6 +143,10 @@
 			z-index: 1001;
 		}
 
+		.links{
+			@apply flex flex-col;
+		}
+
 		.selected-consultation-header {
 			@apply flex py-4 px-2;
 			.text {
@@ -142,6 +157,7 @@
 				@apply flex items-center;
 
 				.additional-controls {
+
 					display: inline;
 					height: min-content;
 				}
