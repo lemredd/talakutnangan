@@ -250,7 +250,7 @@ describe("Database Manager: Consultation read operations", () => {
 				"limit": 10,
 				"offset": 0
 			},
-			"sort": [ "-name" ]
+			"sort": [ "startedAt" ]
 		})
 
 		// eslint-disable-next-line no-magic-numbers

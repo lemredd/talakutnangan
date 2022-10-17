@@ -11,7 +11,6 @@ import ChatMessageActivity from "%/models/chat_message_activity"
 
 import includeDefaults from "./include_defaults"
 
-
 describe("Database Pipe: Include defaults", () => {
 	it("can read resource", async() => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
