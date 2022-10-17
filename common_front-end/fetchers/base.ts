@@ -247,10 +247,16 @@ export default class Fetcher<
 	private async requestJSON(path: string, request: RequestInit)
 	: Promise<Response<any, any, any, any, any, any>> {
 		const parsedResponse = await fetch(new Request(path, request))
-		.then(async response => ({
-			"body": response.status === this.status.NO_CONTENT ? null : await response.json(),
-			"status": response.status
-		}))
+
+		.then(async response => {
+			const isEmpty = response.status === this.status.NO_CONTENT
+			|| response.headers.get("content-type") === null
+
+			return {
+				"body": isEmpty ? null : await response.json(),
+				"status": response.status
+			}
+		})
 		return parsedResponse
 	}
 
