@@ -115,15 +115,12 @@ import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
-defineProps<{
-	"is404": boolean
-}>()
-
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const { userProfile } = pageProps
+const { userProfile, is404 } = pageProps
 
 const hasDefaultPassword = userProfile !== null
+	&& !isUndefined(userProfile)
 	&& !isUndefined(userProfile.meta.hasDefaultPassword)
 	&& userProfile.meta.hasDefaultPassword
 

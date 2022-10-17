@@ -67,7 +67,7 @@ export default async function(app: ExpressApp) {
 			const pageContextInit = {
 				"documentProps": request.documentProps,
 				"pageProps": {
-					...request.pageProps,
+					...request.pageProps ?? {},
 					parsedUnitError
 				},
 				"urlOriginal": url
