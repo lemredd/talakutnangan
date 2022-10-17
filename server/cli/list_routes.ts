@@ -20,6 +20,7 @@ async function main() {
 	}))
 	const end = new Date()
 
+	allInformation.sort((leftInfo, rightInfo) => leftInfo.path.localeCompare(rightInfo.path))
 	for (const { purpose, method, path } of allInformation) {
 		console.log(
 			`\t${purpose} ${method.padStart(6, " ")} ${path}`
