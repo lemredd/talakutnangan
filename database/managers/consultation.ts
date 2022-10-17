@@ -296,4 +296,77 @@ export default class extends BaseManager<
 			throw this.makeBaseError(error)
 		}
 	}
+
+	async sumTimePerWeek(query: TimeSumQueryParameters)
+	: Promise<UserIdentifierListWithTimeConsumedDocument> {
+		try {
+			// TODO: Auto-correct the date time range to valid time
+			const models = await ChatMessageActivity.findAll({
+				"include": [
+					{
+						"model": User,
+						"required": true
+					},
+					sort({
+						"model": Model,
+						"paranoid": false,
+						"required": true,
+						"where": new Condition().and(
+							new Condition().greaterThanOrEqual(
+								"startedAt",
+								query.filter.dateTimeRange.begin
+							),
+							new Condition().lessThanOrEqual(
+								"finishedAt",
+								query.filter.dateTimeRange.end
+							)
+						).build()
+					} as FindOptions<any>, query) as IncludeOptions
+				],
+				"paranoid": false,
+				...this.transaction.transactionObject
+			})
+
+			return {
+				"data": models.filter(model => {
+					const consultation = model.consultation as Model
+
+					return consultation.finishedAt !== null && consultation.startedAt !== null
+				}).map(model => {
+					const user = model.user as User
+					const consultation = model.consultation as Model
+
+					const millisecond = calculateMillisecondDifference(
+						consultation.finishedAt as Date,
+						consultation.startedAt as Date
+					)
+
+					return {
+						"id": String(user.id),
+						"meta": {
+							"totalMillisecondsConsumed": millisecond
+						},
+						"type": "user"
+					}
+				}).reduce((previousSums, currentSum: any) => {
+					const previousSum = previousSums.find(sum => sum.id === currentSum.id)
+
+					if (previousSum) {
+						previousSum.meta.totalMillisecondsConsumed += currentSum
+						.meta
+						.totalMillisecondsConsumed
+
+						return previousSums
+					}
+
+					return [
+						...previousSums,
+						currentSum
+					]
+				}, [] as UserIdentifierListWithTimeConsumedDocument["data"])
+			}
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
 }
