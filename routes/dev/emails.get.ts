@@ -1,6 +1,6 @@
 import { Request, Response } from "!/types/dependent"
 
-import Transport from "!/helpers/email/transport"
+import Transport from "!/singletons/transport"
 import DevController from "!/controllers/dev"
 import convertMarkdownToHTML from "!/helpers/text/convert_markdown_to_html"
 import specializeTemplateFile from "!/helpers/text/specialize_template_file"
@@ -13,12 +13,12 @@ export default class extends DevController {
 		const { email } = request.query
 		const emailTemplatePath = `${email}.md`
 		const variables = {
-			email: process.env.EMAIL_USER,
-			homePageURL: `${request.protocol}://${request.hostname}`,
-			emailVerificationURL: `${request.protocol}://${request.hostname}/user/verification`,
-			password: "12345678",
-			name: "Sample Name",
-			kind: "Student"
+			"email": process.env.EMAIL_USER,
+			"emailVerificationURL": `${request.protocol}://${request.hostname}/user/verification`,
+			"homePageURL": `${request.protocol}://${request.hostname}`,
+			"kind": "Student",
+			"name": "Sample Name",
+			"password": "12345678"
 		}
 		const rawVerification = await specializeTemplateFile(`email/${emailTemplatePath}`, variables)
 		const parsedVerification = convertMarkdownToHTML(rawVerification)
@@ -29,15 +29,15 @@ export default class extends DevController {
 		response.send(encapsulatedFragment)
 		response.end()
 
-		const to = process.env.EMAIL_USER!
+		const to = process.env.EMAIL_USER as string
 		const subject = "Sample email"
 
 		Transport.sendMail([ to ], subject, emailTemplatePath, variables)
-			.then(info => {
-				console.log(info)
-			})
-			.catch(error => {
-				console.error(`Error [${error}]: ${error.message}`)
-			})
+		.then(info => {
+			console.log(info)
+		})
+		.catch(error => {
+			console.error(`Error [${error}]: ${error.message}`)
+		})
 	}
 }

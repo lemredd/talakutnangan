@@ -1,11 +1,11 @@
 import ErrorBag from "$!/errors/error_bag"
-import SemesterFactory from "~/factories/semester"
+import Factory from "~/factories/semester"
 import MockRequester from "~/setups/mock_requester"
 import Controller from "./update(id).patch"
 
 const BODY_VALIDATION_INDEX = 1
 
-describe("Controller: POST /api/semester/:id", () => {
+describe("Controller: PATCH /api/semester/:id", () => {
 	const requester = new MockRequester()
 
 	it("can accept valid info with new details", async() => {
@@ -13,18 +13,18 @@ describe("Controller: POST /api/semester/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const semester = await new SemesterFactory().insertOne()
-		const newPost = await new SemesterFactory().makeOne()
+		const model = await new Factory().insertOne()
+		const newModel = await new Factory().makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"name": String(newPost.name),
-						"startAt": String(newPost.startAt),
-						"endAt": String(newPost.endAt),
-						"semesterOrder": newPost.semesterOrder
+						"endAt": String(newModel.endAt),
+						"name": String(newModel.name),
+						"semesterOrder": newModel.semesterOrder,
+						"startAt": String(newModel.startAt)
 					},
-					"id": String(semester.id),
+					"id": String(model.id),
 					"type": "semester"
 				}
 			}
@@ -40,25 +40,25 @@ describe("Controller: POST /api/semester/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const semester = await new SemesterFactory().insertOne()
+		const model = await new Factory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
 					"attributes": {
-						"name": 1,
-						"startAt": 1,
 						"endAt": 1,
-						"semesterOrder": 1
+						"name": 1,
+						"semesterOrder": 1,
+						"startAt": 1
 					},
-					"id": String(semester.id),
+					"id": String(model.id),
 					"type": "semester"
 				}
 			}
 		})
+
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-
 		expect(body).toHaveLength(4)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.endAt")
 		expect(body).toHaveProperty("1.source.pointer", "data.attributes.name")

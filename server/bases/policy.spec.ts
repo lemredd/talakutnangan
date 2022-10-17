@@ -6,9 +6,9 @@ import Policy from "./policy"
 describe("Back-end Base: Policy", () => {
 	const requester = new MockRequester()
 
-	it("can allow user", async () => {
+	it("can allow user", async() => {
 		class PolicyA extends Policy {
-			async authorize(): Promise<void> { return }
+			authorize(): Promise<void> { return Promise.resolve() }
 		}
 		const policy = new PolicyA()
 
@@ -17,9 +17,9 @@ describe("Back-end Base: Policy", () => {
 		requester.expectSuccess()
 	})
 
-	it("can deny user", async () => {
+	it("can deny user", async() => {
 		class PolicyB extends Policy {
-			async authorize(): Promise<void> { throw new BaseError("", 400, "", "") }
+			authorize(): Promise<void> { throw new BaseError("", 400, "", "") }
 		}
 		const policy = new PolicyB()
 

@@ -1,5 +1,5 @@
 <template>
-	<section class="chat-window right">
+	<section ref="chatWindow" class="chat-window right">
 		<button
 			class="toggle-list-btn material-icons"
 			title="Toggle consultation list"
@@ -88,24 +88,34 @@
 					<li>Status: {{ consultationStatus }}</li>
 
 					<!-- TODO(lead/button): Apply functionality -->
-					<li><a class="underline" href="#">View printable form (PDF)</a></li>
+					<li>
+						<a
+							class="underline"
+							href="#"
+							@click.prevent="saveAsPDF">
+							View printable form (PDF)
+						</a>
+					</li>
 				</ul>
 			</div>
 
 			<div
-				v-for="message in sortedMessagesByTime"
+				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
 				class="chat-entry">
-				<ChatMessageItem :chat-message="message"/>
+				<ChatMessageItem :chat-message="message" :next-message="sortedMessagesByTime[i+1]"/>
 			</div>
 		</div>
-		<UserController :consultation="consultation" @start-consultation="startConsultation"/>
+		<UserController
+			:consultation="consultation"
+			@start-consultation="startConsultation"
+			@save-as-pdf="saveAsPDF"/>
 	</section>
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-@import "@styles/mixins.scss";
+	@import "@styles/btn.scss";
+	@import "@styles/mixins.scss";
 
 	.right {
 		@apply flex flex-col;
@@ -171,6 +181,8 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
+const fetcher = new ConsultationFetcher()
+
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 	(eventName: "toggleConsultationList"): void
@@ -183,8 +195,15 @@ const props = defineProps<{
 	isConsultationListShown: boolean
 }>()
 
-const { "pageProps": { "userProfile": { "data": { kind } } } }
-= inject("pageContext") as PageContext<"deserialized">
+const {
+	"pageProps": {
+		"userProfile": {
+			"data": {
+				kind
+			}
+		}
+	}
+} = inject("pageContext") as PageContext<"deserialized">
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
@@ -196,6 +215,7 @@ const sortedMessagesByTime = computed(() => {
 	})
 })
 
+const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {
 	emit("toggleConsultationList")
 }
@@ -269,7 +289,7 @@ function finishConsultation(): void {
 			finishConsultation
 		)
 
-		new ConsultationFetcher().update(
+		fetcher.update(
 			consultationID.value,
 			newConsultationData,
 			{
@@ -317,7 +337,7 @@ function startConsultation() {
 		"startedAt": new Date().toISOString()
 	}
 
-	new ConsultationFetcher().update(
+	fetcher.update(
 		consultationID.value,
 		newConsultationData,
 		{
@@ -386,6 +406,12 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 		startWatcher()
 	}
 }, { "deep": true })
+
+function saveAsPDF(): void {
+	fetcher.requestAsPDF(props.consultation.id).then(({ body }) => {
+		console.log(body)
+	})
+}
 
 onMounted(() => {
 	if (props.consultation.startedAt instanceof Date && props.consultation.finishedAt === null) {

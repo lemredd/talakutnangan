@@ -2,9 +2,9 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/semester"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import SemesterActivityManager from "%/managers/semester"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -23,12 +23,12 @@ export default class extends JSONController {
 		return makeResourceIdentifierListDocumentRules(
 			"semester",
 			exists,
-			SemesterActivityManager
+			Manager
 		)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new SemesterActivityManager(request)
+		const manager = new Manager(request)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
 		await manager.archiveBatch(IDs)

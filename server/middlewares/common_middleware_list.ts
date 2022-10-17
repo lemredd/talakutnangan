@@ -1,16 +1,19 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
+import deserialize from "$/object/deserialize"
+import mergeDeeply from "$!/helpers/merge_deeply"
 import KindBasedPolicy from "!/policies/kind-based"
+import requireSignature from "!/helpers/require_signature"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import MultipartParser from "!/middlewares/body_parser/multipart"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
+import AsynchronousOperationCommitter
+	from "!/middlewares/miscellaneous/asynchronous_operation_committer"
 
-import deserialize from "$/object/deserialize"
-import mergeDeeply from "$!/helpers/merge_deeply"
 import { user } from "$/permissions/permission_list"
 import AuthorizationError from "$!/errors/authorization"
 import {
@@ -22,7 +25,9 @@ import {
 function makeList() {
 	const policies = {
 		"consultationParticipantsOnlyPolicy": new KindBasedPolicy(
-			[ "student", "reachable_employee" ]),
+			[ "student", "reachable_employee" ],
+			{ "checkOthers": requireSignature }
+		),
 		"employeeSchedulePolicy": new PermissionBasedPolicy(user, [
 			UPDATE_OWN_DATA,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
@@ -54,6 +59,10 @@ function makeList() {
 		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy([ "unreachable_employee" ])
 	}
 
+	const miscellaneuous = {
+		"asynchronousEnder": new AsynchronousOperationCommitter()
+	}
+
 	const parsers = {
 		"JSONBody": new JSONBodyParser(),
 		"multipart": new MultipartParser()
@@ -68,6 +77,7 @@ function makeList() {
 		...policies,
 		...parsers,
 		...emailSenders,
+		...miscellaneuous,
 		// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 		initialize(): void {}
 	}

@@ -5,11 +5,19 @@ import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
 import URLMaker from "$!/singletons/url_maker"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
+import { DocumentProps } from "$/types/server"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): null { return null }
+
+	getDocumentProps(): DocumentProps {
+		return {
+			"description": "Verifies the your email",
+			"title": "Verify Email | Talakutnangan"
+		}
+	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
 		const completeURL = `${request.protocol}://${request.hostname}${request.url}`

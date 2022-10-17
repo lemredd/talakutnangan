@@ -14,12 +14,12 @@ import type { ExpressPeerServer } from "peer"
 import type { Session } from "express-session"
 
 import type { Serializable } from "$/types/general"
-import type { SharedManagerState } from "$!/types/dependent"
+import type { SharedManagerState, SharedAsynchronousOperationState } from "$!/types/dependent"
 
 import BaseManager from "%/managers/base"
 import TransactionManager from "%/helpers/transaction_manager"
+import AsynchronousOperationManager from "!/singletons/asynchronous_operation_manager"
 
-// @ts-ignore
 export interface Request extends BaseRequest, SharedManagerState<TransactionManager> {
 	// Added due to `express-session` package
 	session: Session & {
@@ -29,7 +29,9 @@ export interface Request extends BaseRequest, SharedManagerState<TransactionMana
 	// Added due to `passport` package
 	user: Serializable|undefined
 	isAuthenticated: () => boolean
-	logout: () => void
+	logout: () => void,
+
+	asynchronousOperation: AsynchronousOperationManager|undefined
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -39,6 +41,11 @@ export interface AuthenticatedRequest extends Request {
 
 	user: Serializable
 }
+
+export type AsynchronousRequest = AuthenticatedRequest & SharedAsynchronousOperationState<
+	TransactionManager,
+	AsynchronousOperationManager
+>
 
 /**
  * Type of request to use to communicate between which have non-standard arguments.

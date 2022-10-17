@@ -17,6 +17,7 @@ import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized
 import Socket from "$@/external/socket"
 import debounce from "$@/helpers/debounce"
 import deserialize from "$/object/deserialize"
+import WindowFocus from "$@/external/window_focus"
 import DocumentVisibility from "$@/external/document_visibility"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
@@ -36,12 +37,30 @@ export default function(
 		const lastSeenMessageAt = currentChatMessageActivityResource.value.seenMessageAt
 		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
 			"receivedMessageAt": new Date().toJSON(),
-			"seenMessageAt": lastSeenMessageAt?.toJSON() ?? null
+			"seenMessageAt": isWindowShown
+				? new Date().toJSON()
+				: lastSeenMessageAt?.toJSON() ?? null
 		})
 	}
 
+	function updateSeenMessageAt(): void {
+		const { receivedMessageAt } = currentChatMessageActivityResource.value
+		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
+			"receivedMessageAt": receivedMessageAt?.toJSON() ?? null,
+			"seenMessageAt": new Date().toJSON()
+		})
+	}
+
+
+	WindowFocus.addEventListener(newState => {
+		const isWindowFocused = newState === "focus"
+
+		if (isWindowFocused) updateSeenMessageAt()
+	})
 	DocumentVisibility.addEventListener(newState => {
 		isWindowShown = newState === "visible"
+
+		if (isWindowShown) updateSeenMessageAt()
 	})
 
 	const debounceUpdateReceivedMessageAt = debounce(() => {
