@@ -214,6 +214,46 @@ describe("Server singleton: Asynchronous operation manager", () => {
 
 		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount + 1)
 		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.hasStopped", false)
+		expect(deserializedDocument).toHaveProperty("data.extra", { "message": newMessage })
+	})
+
+	it("can stop progress with other updates", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
+		const finishedStepCount = 1
+		const totalStepCount = 3
+		await new Factory()
+		.token(() => digest(uniqueCombination))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.extra(() => ({ "message": "foo" }))
+		.insertOne()
+		requester.customizeRequest({
+			body,
+			params,
+			"user": await userFactory.serialize(user)
+		})
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+
+		const newMessage = "bar"
+		await singleton.stopProgress({ "extra": { "message": newMessage } })
+		const document = await singleton.regenerateDocument()
+		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
+		await singleton.destroySuccessfully()
+
+		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount)
+		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.hasStopped", true)
 		expect(deserializedDocument).toHaveProperty("data.extra", { "message": newMessage })
 	})
 
