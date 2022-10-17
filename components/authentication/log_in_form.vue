@@ -1,8 +1,18 @@
 <template>
 	<div class="login-form">
-		<div v-if="receivedError" class="error">
-			{{ receivedError }}
-		</div>
+		<ul v-if="receivedErrors.length" class="error">
+			<div v-if="receivedErrorFromPageContext" class="from-page-context">
+				{{ receivedErrors }}
+			</div>
+			<div v-else class="from-input-validation">
+				<h3>The following errors have occured:</h3>
+				<li
+					v-for="error in receivedErrors"
+					:key="receivedErrors.indexOf(error)">
+					{{ error }}
+				</li>
+			</div>
+		</ul>
 		<h1>log in</h1>
 
 		<form>
@@ -27,8 +37,8 @@
 		<div class="controls">
 			<!-- TODO: add reset password functionality -->
 			<button
-				v-if="email && !token"
 				id="submit-btn"
+				:disabled="!email && Boolean(token)"
 				class="btn btn-primary"
 				@click="logIn">
 				Log in
@@ -56,6 +66,15 @@
 	margin: 0 2em;
 	padding: 1em 2em;
 	z-index: 1;
+
+	ul {
+		list-style-type: disc;
+		width: 100%;
+
+		li {
+			@apply ml-3;
+		}
+	}
 
 	@screen sm {
 		width: initial;
@@ -125,10 +144,10 @@ const props = defineProps<{
 const email = ref("sample@example.com")
 const password = ref("12345678")
 const token = ref("")
-const receivedError = ref(
+const receivedErrors = ref<string|string[]>(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail
-		: ""
+		: []
 )
 
 function logIn() {
@@ -139,9 +158,13 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(({ "body": { errors } }) => {
-		const error = errors[0].detail
-		receivedError.value = error
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => error.detail)
+		} else {
+			receivedErrors.value = [ "Invalid e-mail or password" ]
+		}
 	})
 }
 
