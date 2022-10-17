@@ -129,7 +129,7 @@ describe("Database Manager: Consultation read operations", () => {
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
 		.user(() => Promise.resolve(user))
-		.consultation(() => consultationIterator.next().value)
+		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
 		const times = await manager.sumTimePerStudents({

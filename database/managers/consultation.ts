@@ -5,6 +5,8 @@ import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/type
 import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
 import type {
 	ModelCtor,
+	FindOptions,
+	IncludeOptions,
 	Model as BaseModel,
 	CreationAttributes,
 	FindAndCountOptions
@@ -15,12 +17,14 @@ import Role from "%/models/role"
 import Log from "$!/singletons/log"
 import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
+import Condition from "%/helpers/condition"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
-import Condition from "%/helpers/condition"
 import Transformer from "%/transformers/consultation"
 import ChatMessageActivity from "%/models/chat_message_activity"
+import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
+import sort from "%/queries/base/sort"
 import siftByUser from "%/queries/consultation/sift_by_user"
 import siftByRange from "%/queries/consultation/sift_by_range"
 import includeDefaults from "%/queries/consultation/include_defaults"
@@ -221,31 +225,62 @@ export default class extends BaseManager<
 		}
 	}
 
-	async sumTimePerStudents(filter: TimeSumQueryParameters)
+	async sumTimePerStudents(query: TimeSumQueryParameters)
 	: Promise<UserIdentifierListWithTimeConsumedDocument> {
 		try {
 			const models = await ChatMessageActivity.findAll({
-				"group": [
-					"userID"
-				],
 				"include": [
+					sort({
+						"model": User,
+						"required": true
+					} as FindOptions<any>, query) as IncludeOptions,
 					{
-						"include": [
-							{
-								"model": User,
-								"required": true
-							}
-						],
-						"model": AttachedRole,
+						"model": Model,
+						"paranoid": false,
 						"required": true
 					}
 				],
+				"paranoid": false,
 				...this.transaction.transactionObject
 			})
 
-
 			return {
-				"data": []
+				"data": models.filter(model => {
+					const consultation = model.consultation as Model
+
+					return consultation.finishedAt !== null && consultation.startedAt !== null
+				}).map(model => {
+					const user = model.user as User
+					const consultation = model.consultation as Model
+
+					const millisecond = calculateMillisecondDifference(
+						consultation.finishedAt as Date,
+						consultation.startedAt as Date
+					)
+
+					return {
+						"id": String(user.id),
+						"meta": {
+							"totalMillisecondsConsumed": millisecond
+						},
+						"type": "user"
+					}
+				}).reduce((previousSums, currentSum: any) => {
+					const previousSum = previousSums.find(sum => sum.id === currentSum.id)
+
+					if (previousSum) {
+						previousSum.meta.totalMillisecondsConsumed += currentSum
+						.meta
+						.totalMillisecondsConsumed
+
+						return previousSums
+					}
+
+					return [
+						...previousSums,
+						currentSum
+					]
+				}, [] as UserIdentifierListWithTimeConsumedDocument["data"])
 			}
 		} catch (error) {
 			throw this.makeBaseError(error)
