@@ -108,7 +108,6 @@ export default class extends PageMiddleware {
 			"sort": [ "id" ]
 		})
 
-
 		const chatMessageManager = new ChatMessageManager(request)
 		const chatMessages = await chatMessageManager.list({
 			"filter": {
@@ -118,20 +117,16 @@ export default class extends PageMiddleware {
 				"previewMessageOnly": false
 			},
 			"page": {
-				"limit": 10,
+				"limit": Infinity,
 				"offset": 0
 			},
-			"sort": [ "-createdAt" ]
+			"sort": [ "createdAt" ]
 		})
-
-		const previewMessages = await chatMessageManager.findPreviews(allConsultationIDs)
 
 		return {
 			chatMessageActivities,
 			chatMessages,
-			consultation,
-			consultations,
-			previewMessages
+			consultation
 		}
 	}
 }
