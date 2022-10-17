@@ -8,14 +8,14 @@
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
 				@submit-post="createPost">
-				<div v-if="hasMultipleRoles" class="row">
+				<div v-if="hasMultipleRoles" class="row role-selector flex flex-row">
 					<SelectableOptionsField
 						v-model="roleID"
 						label="Post as: "
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
-				<div v-if="maySelectOtherDepartments" class="row">
+				<div v-if="maySelectOtherDepartments" class="row department-selector flex flex-row">
 					<SelectableOptionsField
 						v-model="departmentID"
 						label="Department to post: "
@@ -35,7 +35,7 @@
 			<button
 				class="btn submit-btn btn-primary"
 				:form="CREATE_POST_FORM_ID"
-				type="button">
+				type="submit">
 				Create post
 			</button>
 		</template>
@@ -58,6 +58,10 @@ import Fetcher from "$@/fetchers/post"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
+
+import Overlay from "@/helpers/overlay.vue"
+import DraftForm from "@/post/draft_form.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -135,7 +139,7 @@ function createPost(): void {
 		"content": content.value,
 		"deletedAt": null
 	}, {
-		"extraCreateDocumentProps": {
+		"extraDataFields": {
 			"relationships": {
 				"department": {
 					"data": {
