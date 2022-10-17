@@ -115,6 +115,21 @@ export default class extends TransactionManager implements AsynchronousOperation
 		await this.initialize()
 	}
 
+	async stopProgress(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
+		this.rawAttributes = {
+			...this.rawAttributes,
+			...attributes,
+			"hasStopped": true
+		}
+		await this.manager.update(this.id, {
+			...attributes,
+			"hasStopped": true
+		})
+		Log.trace("asynchronous", "stopped asynchronous operation")
+		await this.destroySuccessfully()
+		await this.initialize()
+	}
+
 	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
 		this.rawAttributes = {
 			...this.rawAttributes,
