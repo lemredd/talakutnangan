@@ -1,14 +1,19 @@
+import { readFile } from "fs"
+import { promisify } from "util"
+
 import { PreprocessedRequest, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Role from "%/models/role"
+import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import SignatureFactory from "~/factories/signature"
 import DepartmentFactory from "~/factories/department"
 import {
 	tag,
@@ -35,7 +40,7 @@ export default class extends DevController {
 
 	async handle(request: PreprocessedRequest<OwnArguments>, response: Response): Promise<void> {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
-			response.status(this.status.OK).end()
+			response.status(this.status.OK).send(request.body).end()
 		} else {
 			const testSecretaryEmail = "secretary@example.net"
 			const testSecretaryRoleName = "test_secretary"
@@ -124,12 +129,29 @@ export default class extends DevController {
 
 				Log.success("controller", "created test secretary user")
 
+				// eslint-disable-next-line require-atomic-updates
 				previousUser = createdUser
 			}
 
+			const readAsync = promisify(readFile)
+			const previousSignature = await Signature.findOne({
+				"where": new Condition().equal("userID", previousUser.id).build()
+			})
+			Log.success("controller", "making for secretary's signature")
+			if (previousSignature === null) {
+				const sampleImagePath = `${this.root}/t/data/log_bg_transparent.png`
+				const sampleImage = await readAsync(sampleImagePath)
+				await new SignatureFactory()
+				.user(() => Promise.resolve(previousUser as User))
+				.fileContents(() => sampleImage)
+				.insertOne()
+
+				Log.success("controller", "created secretary's signature")
+			}
+
 			await AttachedRole.upsert({
-				"userID": previousUser.id,
-				"roleID": testSecretaryRole.id
+				"roleID": testSecretaryRole.id,
+				"userID": previousUser.id
 			})
 
 			Log.success("controller", "attached test secretary role to test secretary user")

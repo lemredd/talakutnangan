@@ -5,9 +5,9 @@ import Policy from "!/bases/policy"
 import { OrderValues } from "$/types/database"
 import SemesterManager from "%/managers/semester"
 import Merger from "!/middlewares/miscellaneous/merger"
+import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import BoundJSONController from "!/controllers/bound_json"
 
 import date from "!/validators/base/date"
 import string from "!/validators/base/string"
@@ -29,6 +29,9 @@ export default class extends BoundJSONController {
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
 		const attributes = {
+			"endAt": {
+				"pipes": [ required, string, date ]
+			},
 			"name": {
 				"constraints": {
 					"length": {
@@ -47,9 +50,6 @@ export default class extends BoundJSONController {
 				"pipes": [ required, string, oneOf ]
 			},
 			"startAt": {
-				"pipes": [ required, string, date ]
-			},
-			"endAt": {
 				"pipes": [ required, string, date ]
 			}
 		}

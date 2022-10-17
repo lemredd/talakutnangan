@@ -29,11 +29,12 @@ export default abstract class FileLikeFactory<
 	C extends DeserializedResourceListDocument<U, W, Y>,
 	D extends FileLikeTransformerOptions = FileLikeTransformerOptions
 > extends BaseFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
-	protected fileContentsGenerator: () => MimeBuffer = () => dataURIToBuffer(
+	protected fileContentsGenerator: () => MimeBuffer|Buffer = () => dataURIToBuffer(
 		faker.image.dataUri()
 	)
 
-	fileContents(generator: () => MimeBuffer): FileLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
+	fileContents(generator: () => MimeBuffer|Buffer)
+	: FileLikeFactory<T, U, V, W, X, Y, Z, A, B, C, D> {
 		this.fileContentsGenerator = generator
 		return this
 	}

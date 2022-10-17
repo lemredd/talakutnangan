@@ -5,6 +5,7 @@ import App from "~/setups/app"
 import Socket from "!/ws/socket"
 import RoleFactory from "~/factories/role"
 import Factory from "~/factories/chat_message"
+import SignatureFactory from "~/factories/signature"
 import RequestEnvironment from "$!/singletons/request_environment"
 import ChatMessageActivityFactory from "~/factories/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -27,6 +28,9 @@ describe("POST /api/chat_message", () => {
 		const model = await new Factory()
 		.chatMessageActivity(() => Promise.resolve(chatMessageActivity))
 		.serializedOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
 
 		const response = await App.request
 		.post("/api/chat_message")

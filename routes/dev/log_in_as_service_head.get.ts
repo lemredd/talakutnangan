@@ -1,14 +1,19 @@
+import { readFile } from "fs"
+import { promisify } from "util"
+
 import { PreprocessedRequest, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Role from "%/models/role"
+import Signature from "%/models/signature"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import SignatureFactory from "~/factories/signature"
 import DepartmentFactory from "~/factories/department"
 import {
 	tag,
@@ -35,7 +40,7 @@ export default class extends DevController {
 
 	async handle(request: PreprocessedRequest<OwnArguments>, response: Response): Promise<void> {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
-			response.status(this.status.OK).end()
+			response.status(this.status.OK).send(request.body).end()
 		} else {
 			const testEmail = "service_head@example.net"
 			const testRoleName = "test_service_head"
@@ -120,7 +125,7 @@ export default class extends DevController {
 			})
 			Log.success("controller", "making for  user")
 			if (previousUser === null) {
-				const createdUSer = await new UserFactory()
+				const createdUser = await new UserFactory()
 				.email(() => testEmail)
 				.beReachableEmployee()
 				.in(testServiceDepartment)
@@ -128,12 +133,29 @@ export default class extends DevController {
 
 				Log.success("controller", "created test user")
 
-				previousUser = createdUSer
+				// eslint-disable-next-line require-atomic-updates
+				previousUser = createdUser
+			}
+
+			const readAsync = promisify(readFile)
+			const previousSignature = await Signature.findOne({
+				"where": new Condition().equal("userID", previousUser.id).build()
+			})
+			Log.success("controller", "making for service head's signature")
+			if (previousSignature === null) {
+				const sampleImagePath = `${this.root}/t/data/log_bg_transparent.png`
+				const sampleImage = await readAsync(sampleImagePath)
+				await new SignatureFactory()
+				.user(() => Promise.resolve(previousUser as User))
+				.fileContents(() => sampleImage)
+				.insertOne()
+
+				Log.success("controller", "created service head's signature")
 			}
 
 			await AttachedRole.upsert({
-				"userID": previousUser.id,
-				"roleID": testRole.id
+				"roleID": testRole.id,
+				"userID": previousUser.id
 			})
 
 			Log.success("controller", "attached test role to test user")

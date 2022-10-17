@@ -60,7 +60,6 @@ export default class {
 			"password": user.password
 		})
 
-		console.log(response.body, "login\n\n\n")
 		expect(response.status).toBe(RequestEnvironment.status.OK)
 
 		return {

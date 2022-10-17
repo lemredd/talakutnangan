@@ -1,7 +1,10 @@
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
+import deserialize from "$/object/deserialize"
+import mergeDeeply from "$!/helpers/merge_deeply"
 import KindBasedPolicy from "!/policies/kind-based"
+import requireSignature from "!/helpers/require_signature"
 import JSONBodyParser from "!/middlewares/body_parser/json"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import MultipartParser from "!/middlewares/body_parser/multipart"
@@ -11,8 +14,6 @@ import NewUserNotification from "!/middlewares/email_sender/new_user_notificatio
 import AsynchronousOperationCommitter
 	from "!/middlewares/miscellaneous/asynchronous_operation_committer"
 
-import deserialize from "$/object/deserialize"
-import mergeDeeply from "$!/helpers/merge_deeply"
 import { user } from "$/permissions/permission_list"
 import AuthorizationError from "$!/errors/authorization"
 import {
@@ -24,7 +25,9 @@ import {
 function makeList() {
 	const policies = {
 		"consultationParticipantsOnlyPolicy": new KindBasedPolicy(
-			[ "student", "reachable_employee" ]),
+			[ "student", "reachable_employee" ],
+			{ "checkOthers": requireSignature }
+		),
 		"employeeSchedulePolicy": new PermissionBasedPolicy(user, [
 			UPDATE_OWN_DATA,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,

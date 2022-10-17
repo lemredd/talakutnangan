@@ -18,9 +18,11 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const singleton = new Singleton()
 		const user = await new UserFactory().serializedOne(true)
 		const totalStepCount = 3
-
+		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
 		requester.customizeRequest({
-			"body": Buffer.alloc(0),
+			body,
+			params,
 			user
 		})
 
@@ -41,10 +43,12 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
 		const finishedStepCount = 2
 		const totalStepCount = 4
 		await new Factory()
-		.token(() => digest(body))
+		.token(() => digest(uniqueCombination))
 		.user(() => Promise.resolve(user))
 		.finishedStepCount(() => finishedStepCount)
 		.totalStepCount(() => totalStepCount)
@@ -52,6 +56,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 
 		requester.customizeRequest({
 			body,
+			params,
 			"user": await userFactory.serialize(user)
 		})
 
@@ -67,21 +72,59 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		expect(singleton.totalStepCount).toBe(totalStepCount)
 	})
 
+	it("can initialize properly with new parameter", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const oldParams = { "id": 1 }
+		const newParams = { "id": 2 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(oldParams)) ])
+		const finishedStepCount = 2
+		const totalStepCount = 4
+		await new Factory()
+		.token(() => digest(uniqueCombination))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.insertOne()
+
+		requester.customizeRequest({
+			body,
+			"params": newParams,
+			"user": await userFactory.serialize(user)
+		})
+
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+		await singleton.destroySuccessfully()
+
+		expect(singleton.isNew).toBeTruthy()
+		expect(singleton.finishedStepCount).toBe(0)
+		expect(singleton.totalStepCount).toBe(totalStepCount)
+	})
+
 	it("can regenerate document", async() => {
 		const singleton = new Singleton()
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
 		const finishedStepCount = 2
 		const totalStepCount = 4
 		await new Factory()
-		.token(() => digest(body))
+		.token(() => digest(uniqueCombination))
 		.user(() => Promise.resolve(user))
 		.finishedStepCount(() => finishedStepCount)
 		.totalStepCount(() => totalStepCount)
 		.insertOne()
 		requester.customizeRequest({
 			body,
+			params,
 			"user": await userFactory.serialize(user)
 		})
 		await requester.runAsynchronousOperationInitializer(
@@ -103,11 +146,13 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
 		const finishedStepCount = 2
 		const totalStepCount = 5
 		const message = "hello"
 		await new Factory()
-		.token(() => digest(body))
+		.token(() => digest(uniqueCombination))
 		.user(() => Promise.resolve(user))
 		.finishedStepCount(() => finishedStepCount)
 		.totalStepCount(() => totalStepCount)
@@ -115,6 +160,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		.insertOne()
 		requester.customizeRequest({
 			body,
+			params,
 			"user": await userFactory.serialize(user)
 		})
 		await requester.runAsynchronousOperationInitializer(
@@ -138,10 +184,12 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
 		const finishedStepCount = 1
 		const totalStepCount = 3
 		await new Factory()
-		.token(() => digest(body))
+		.token(() => digest(uniqueCombination))
 		.user(() => Promise.resolve(user))
 		.finishedStepCount(() => finishedStepCount)
 		.totalStepCount(() => totalStepCount)
@@ -149,6 +197,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		.insertOne()
 		requester.customizeRequest({
 			body,
+			params,
 			"user": await userFactory.serialize(user)
 		})
 		await requester.runAsynchronousOperationInitializer(
@@ -173,11 +222,13 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		const userFactory = new UserFactory()
 		const user = await userFactory.insertOne()
 		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
 		const finishedStepCount = 2
 		const totalStepCount = 5
 		const message = "hello"
 		await new Factory()
-		.token(() => digest(body))
+		.token(() => digest(uniqueCombination))
 		.user(() => Promise.resolve(user))
 		.finishedStepCount(() => finishedStepCount)
 		.totalStepCount(() => totalStepCount)
@@ -185,6 +236,7 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		.insertOne()
 		requester.customizeRequest({
 			body,
+			params,
 			"user": await userFactory.serialize(user)
 		})
 		await requester.runAsynchronousOperationInitializer(

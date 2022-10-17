@@ -35,8 +35,12 @@ export default class extends TransactionManager implements AsynchronousOperation
 
 		const user = deserialize(request.user) as DeserializedUserProfile
 
-		const hashedBody = await digest(request.body)
-		Log.trace("asynchronous", `digested body in ${request.url}`)
+		const uniqueCombination = Buffer.concat([
+			request.body,
+			Buffer.from(JSON.stringify(request.params))
+		])
+		const hashedBody = await digest(uniqueCombination)
+		Log.trace("asynchronous", `digested body and parameters in ${request.url}`)
 
 		let possibleDocument = await this.manager.findOneOnColumn("token", hashedBody, {
 			"constraints": {
@@ -104,6 +108,9 @@ export default class extends TransactionManager implements AsynchronousOperation
 			...attributes,
 			"finishedStepCount": this.finishedStepCount
 		})
+		Log.trace("asynchronous", "increment asynchronous operation")
+		await this.destroySuccessfully()
+		await this.initialize()
 	}
 
 	async finish(attributes: Partial<AsynchronousLikeAttributes> = {}): Promise<void> {
@@ -117,6 +124,9 @@ export default class extends TransactionManager implements AsynchronousOperation
 			"finishedStepCount": this.finishedStepCount,
 			"hasStopped": true
 		})
+		Log.trace("asynchronous", "finish asynchronous operation")
+		await this.destroySuccessfully()
+		await this.initialize()
 	}
 
 	async destroyConditionally() {

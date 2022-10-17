@@ -3,6 +3,7 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import App from "~/setups/app"
 import RoleFactory from "~/factories/role"
 import Model from "%/models/chat_message_activity"
+import SignatureFactory from "~/factories/signature"
 import Factory from "~/factories/chat_message_activity"
 import RequestEnvironment from "$!/singletons/request_environment"
 
@@ -15,9 +16,15 @@ describe("PATCH /api/chat_message_activity", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { cookie } = await App.makeAuthenticatedCookie(role, user => user.beReachableEmployee())
+		const { user, cookie } = await App.makeAuthenticatedCookie(
+			role,
+			userFactory => userFactory.beReachableEmployee()
+		)
 		const model = await new Factory().insertOne()
 		await model.destroy()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
 
 		const response = await App.request
 		.patch("/api/chat_message_activity")

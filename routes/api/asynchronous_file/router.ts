@@ -1,5 +1,5 @@
 import Router from "!/bases/router"
-import GetReadAsPDF from "!%/api/consultation/read(id)/as_pdf.get"
+import GetRead from "!%/api/asynchronous_file/read(id).get"
 
 export default class extends Router {
 	constructor() {
@@ -7,7 +7,7 @@ export default class extends Router {
 
 		this.useControllersAsync(new Promise(resolve => {
 			resolve([
-				new GetReadAsPDF()
+				new GetRead()
 			])
 		}))
 	}

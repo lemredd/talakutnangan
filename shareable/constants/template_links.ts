@@ -50,6 +50,8 @@ export const POST_ATTACHMENT_LINK = makeTemplateLink(LINK_PREFIX, "post_attachme
 
 export const SEMESTER_LINK = makeTemplateLink(LINK_PREFIX, "semester")
 
+export const ASYNCHRONOUS_FILE = makeTemplateLink(LINK_PREFIX, "asynchronous_file")
+
 /**
  * Requires the `id` of the user
  */
@@ -74,3 +76,8 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 = `${USER_LINK.bound}/relationships/${PROFILE_PICTURE_LINK.type}`
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
+
+/**
+ * Requires the `id` of the consultation
+ */
+export const GENERATE_CONSULTATION_AS_PDF_LINK = `${CONSULTATION_LINK.bound}/request/as_pdf`
