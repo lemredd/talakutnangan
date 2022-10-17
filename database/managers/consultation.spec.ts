@@ -216,6 +216,55 @@ describe("Database Manager: Consultation read operations", () => {
 			]
 		})
 	})
+
+	it("can sum time by week", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		// eslint-disable-next-line no-magic-numbers
+		const datesOfFebruary = [ 1, 2, 10, 11, 19, 20, 27, 28 ]
+		const consultations = await Promise.all(datesOfFebruary.map(
+			date => new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date(`2015-02-${date}T08:00:00`))
+			.finishedAt(() => new Date(`2015-02-${date}T08:10:00`))
+			.insertOne()
+		))
+		const consultationIterator = consultations.values()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultationIterator.next().value))
+		.insertMany(consultations.length)
+
+		const times = await manager.sumTimePerWeek({
+			"filter": {
+				"dateTimeRange": {
+					"begin": new Date("2015-02-01T00:00:00"),
+					"end": new Date("2015-02-28T11:59:59")
+				},
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-name" ]
+		})
+
+		// eslint-disable-next-line no-magic-numbers
+		const weekRanges = [ [ 1, 7 ], [ 8, 14 ], [ 15, 21 ], [ 22, 28 ] ]
+		expect(times).toStrictEqual({
+			"data": weekRanges.map(([ beginDate, endDate ]) => ({
+				"meta": {
+					"beginDate": new Date(`2015-02-${beginDate}T00:00:00`),
+					"endDate": new Date(`2015-02-${endDate}T11:59:59`),
+					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
+				}
+			}))
+		})
+	})
 })
 
 describe("Database Manager: Consultation create operations", () => {
