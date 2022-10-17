@@ -319,6 +319,8 @@ describe("Component: consultation/form", () => {
 			await employeeChip.trigger("click")
 
 			// Load selectable days and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date().setHours(7)
 			await flushPromises()
 			const selectableDay = wrapper.find(".selectable-day")
 			expect(selectableDay.exists()).toBeTruthy()
@@ -662,6 +664,8 @@ describe("Component: consultation/form", () => {
 			const dayOptions = selectableDay.findAll("option")
 
 			// Load selectable times and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date().setHours(7)
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
@@ -782,6 +786,8 @@ describe("Component: consultation/form", () => {
 			const dayOptions = selectableDay.findAll("option")
 
 			// Load selectable times and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date().setHours(7)
 			await flushPromises()
 			const selectableDayField = selectableDay.find("select")
 			await selectableDayField.setValue(dayOptions[1].attributes("value"))
