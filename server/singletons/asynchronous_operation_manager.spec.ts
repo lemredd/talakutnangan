@@ -10,6 +10,7 @@ import AsynchronousFileManager from "%/managers/asynchronous_file"
 import digest from "$!/helpers/digest"
 import deserialize from "$/object/deserialize"
 import Singleton from "./asynchronous_operation_manager"
+import DeveloperError from "$!/errors/developer"
 
 describe("Server singleton: Asynchronous operation manager", () => {
 	const requester = new MockRequester<AuthenticatedRequest>()
@@ -216,6 +217,49 @@ describe("Server singleton: Asynchronous operation manager", () => {
 		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
 		expect(deserializedDocument).toHaveProperty("data.hasStopped", false)
 		expect(deserializedDocument).toHaveProperty("data.extra", { "message": newMessage })
+	})
+
+	it("can fail", async() => {
+		const singleton = new Singleton()
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const body = Buffer.alloc(0)
+		const params = { "id": 1 }
+		const uniqueCombination = Buffer.concat([ body, Buffer.from(JSON.stringify(params)) ])
+		const finishedStepCount = 1
+		const totalStepCount = 3
+		const message = "foo"
+		await new Factory()
+		.token(() => digest(uniqueCombination))
+		.user(() => Promise.resolve(user))
+		.finishedStepCount(() => finishedStepCount)
+		.totalStepCount(() => totalStepCount)
+		.extra(() => ({ message }))
+		.insertOne()
+		requester.customizeRequest({
+			body,
+			params,
+			"user": await userFactory.serialize(user)
+		})
+		await requester.runAsynchronousOperationInitializer(
+			singleton.initializeWithRequest.bind(singleton),
+			AsynchronousFileManager,
+			totalStepCount
+		)
+
+		const error = new DeveloperError("Sample")
+		await singleton.fail(error)
+		const document = await singleton.regenerateDocument()
+		const deserializedDocument = deserialize(document) as AsynchronousFileDocument
+		await singleton.destroySuccessfully()
+
+		expect(deserializedDocument).toHaveProperty("data.finishedStepCount", finishedStepCount)
+		expect(deserializedDocument).toHaveProperty("data.totalStepCount", totalStepCount)
+		expect(deserializedDocument).toHaveProperty("data.hasStopped", true)
+		expect(deserializedDocument).toHaveProperty("data.extra", {
+			"error": error.toJSON(),
+			message
+		})
 	})
 
 	it("can stop progress with other updates", async() => {
