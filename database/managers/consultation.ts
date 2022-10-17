@@ -237,7 +237,17 @@ export default class extends BaseManager<
 					{
 						"model": Model,
 						"paranoid": false,
-						"required": true
+						"required": true,
+						"where": new Condition().and(
+							new Condition().greaterThanOrEqual(
+								"startedAt",
+								query.filter.dateTimeRange.begin
+							),
+							new Condition().lessThanOrEqual(
+								"finishedAt",
+								query.filter.dateTimeRange.end
+							)
+						).build()
 					}
 				],
 				"paranoid": false,
