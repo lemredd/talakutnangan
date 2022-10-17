@@ -159,6 +159,63 @@ describe("Database Manager: Consultation read operations", () => {
 			]
 		})
 	})
+
+	it("can sum some times by students", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const consultations = [
+			await new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date("2022-09-03T08:10:00"))
+			.finishedAt(() => new Date("2022-09-03T08:11:00"))
+			.insertOne(),
+			await new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date("2022-10-01T08:02:00"))
+			.finishedAt(() => new Date("2022-10-01T08:04:00"))
+			.insertOne(),
+			await new Factory()
+			.consultantInfo(() => Promise.resolve(attachedRole))
+			.startedAt(() => new Date("2022-09-04T08:00:00"))
+			.finishedAt(() => new Date("2022-09-04T08:04:45"))
+			.insertOne()
+		]
+		const consultationIterator = consultations.values()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultationIterator.next().value))
+		.insertMany(consultations.length)
+
+		const times = await manager.sumTimePerStudents({
+			"filter": {
+				"dateTimeRange": {
+					"begin": new Date("2022-09-01T00:00:00"),
+					"end": new Date("2022-09-30T11:59:59")
+				},
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-name" ]
+		})
+
+		expect(times).toStrictEqual({
+			"data": [
+				{
+					"id": String(user.id),
+					"meta": {
+						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:05:45")
+					},
+					"type": "user"
+				}
+			]
+		})
+	})
 })
 
 describe("Database Manager: Consultation create operations", () => {
