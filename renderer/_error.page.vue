@@ -124,6 +124,7 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const hasDefaultPassword = userProfile !== null
+	&& !isUndefined(userProfile)
 	&& !isUndefined(userProfile.meta.hasDefaultPassword)
 	&& userProfile.meta.hasDefaultPassword
 
