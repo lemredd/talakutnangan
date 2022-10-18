@@ -23,7 +23,7 @@ export default function<T>(
 			break
 		default: {
 			const condition = new Condition()
-			condition.equal("id", constraints.filter.department)
+			condition.equal("departmentID", constraints.filter.department)
 
 			if (isUndefined(newState.include)) {
 				newState.include = []
@@ -31,15 +31,9 @@ export default function<T>(
 
 			const castInclude = newState.include as IncludeOptions[]
 			castInclude.push({
-				"include": [
-					{
-						"model": Department,
-						"required": true,
-						"where": condition.build()
-					}
-				],
 				"model": User,
-				"required": true
+				"required": true,
+				"where": condition.build()
 			})
 			break
 		}
