@@ -4,11 +4,9 @@
 			search
 		</button>
 		<input
-			id="search-filter"
 			v-model="searchFilterText"
 			type="text"
-			class="search-filter"
-			@change="emit('filterByGivenSlug', searchFilterText)"/>
+			class="search-filter"/>
 	</div>
 </template>
 
