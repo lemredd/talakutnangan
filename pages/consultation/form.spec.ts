@@ -145,8 +145,10 @@ describe("Page: Consultation/form", () => {
 				}
 			})
 			const chatMessagesList = wrapper.find(".chat-messages")
+			const dateAndOwner = chatMessagesList.findAll(".date-and-owner-details")
 			const textMessages = chatMessagesList.findAll(".text-message")
 
+			dateAndOwner.forEach(detail => expect(detail.text()).not.toEqual(""))
 			textMessages.forEach(message => expect(message.text()).toContain(":"))
 		})
 
@@ -212,10 +214,12 @@ describe("Page: Consultation/form", () => {
 			})
 			const chatMessagesList = wrapper.find(".chat-messages")
 			const statusMessages = chatMessagesList.findAll(".status-message")
+			const dateAndOwner = chatMessagesList.findAll(".date-and-owner-details")
 
-			statusMessages.forEach(
-				message => expect(message.text()).toEqual(chatMessages.data[0].data.value)
-			)
+			dateAndOwner.forEach(detail => expect(detail.text()).not.toEqual(""))
+			statusMessages.forEach(message => {
+				expect(message.text()).toContain(chatMessages.data[0].data.value)
+			})
 		})
 
 		it("can display file messages properly", () => {
@@ -283,7 +287,9 @@ describe("Page: Consultation/form", () => {
 			})
 			const chatMessagesList = wrapper.find(".chat-messages")
 			const fileMessages = chatMessagesList.findAll(".file-message")
+			const dateAndOwner = chatMessagesList.findAll(".date-and-owner-details")
 
+			dateAndOwner.forEach(detail => expect(detail.text()).not.toEqual(""))
 			fileMessages.forEach(message => {
 				expect(message.text()).toContain("sent an attachment")
 				const link = message.find("a")
