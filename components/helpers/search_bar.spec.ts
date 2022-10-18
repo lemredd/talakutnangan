@@ -9,6 +9,6 @@ describe("Component: Search Bar", () => {
 
 		await textField.setValue(slug)
 
-		expect(wrapper.emitted("filterByGivenSlug")).toStrictEqual([ [ slug ] ])
+		expect(wrapper.emitted("update:modelValue")).toStrictEqual([ [ slug ] ])
 	})
 })
