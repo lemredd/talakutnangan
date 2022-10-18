@@ -4,13 +4,13 @@
 	</a>
 </template>
 <style scoped lang="scss">
-a {
-	@apply flex items-center px-3px py-10px;
-}
-a.active {
-	@apply dark:bg-[#eee] dark:text-[#222] bg-dark-300 text-white;
+	a {
+		@apply flex items-center px-3px py-10px;
+	}
 
-}
+	a.active {
+		@apply dark:bg-[#eee] dark:text-[#222] bg-dark-300 text-white;
+	}
 </style>
 <script lang="ts" setup>
 import { PageContext } from "$/types/renderer"

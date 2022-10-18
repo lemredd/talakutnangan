@@ -11,39 +11,41 @@ const TAB_2 = {
 }
 
 describe("Component: Tab", () => {
-	it("should have first tab initially active", () => {
+	it("should have first tab to be initially active", () => {
 		const wrapper = mount(Tab, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"urlPathname": TAB_1.path
-					},
-					"tabs": [ TAB_1, TAB_2 ]
+					}
 				}
+			},
+			"props": {
+				"tabs": [ TAB_1, TAB_2 ]
 			}
 		})
 
-		const firstLink = wrapper.find(".anchor")
+		const firstLink = wrapper.find("li:nth-child(1) .anchor")
 
 		expect(firstLink.classes()).toContain("active")
 	})
 
-	it.skip("can go to second tab", async() => {
+	it("should have second tab to be initially inactive", () => {
 		const wrapper = mount(Tab, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"urlPathname": TAB_1.path
-					},
-					"tabs": [ TAB_1, TAB_2 ]
+					}
 				}
+			},
+			"props": {
+				"tabs": [ TAB_1, TAB_2 ]
 			}
 		})
 
-		const secondLink = wrapper.find(".anchor:not(.active)")
+		const secondLink = wrapper.find("li:nth-child(2) .anchor")
 
-		await secondLink.trigger("click")
-		window.location.href = `${window.location.href}/tabbed_page/tab2`
-		// expect(secondLink.classes()).not.toContain("active")
+		expect(secondLink.classes()).not.toContain("active")
 	})
 })
