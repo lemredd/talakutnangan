@@ -30,6 +30,10 @@
 
 		.search-bar {
 			@apply dark:bg-dark-300 bg-gray-300 basis-full p-[.25em];
+
+			~ * {
+				@apply flex-1;
+			}
 		}
 	}
 </style>
