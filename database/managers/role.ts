@@ -13,6 +13,7 @@ import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 import Condition from "%/helpers/condition"
 import segragateIDs from "%/helpers/segragate_IDs"
+import siftBySlug from "%/queries/role/sift_by_slug"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
 export default class extends BaseManager<
@@ -26,6 +27,7 @@ export default class extends BaseManager<
 
 	get listPipeline(): Pipe<FindAndCountOptions<Model>, RoleQueryParameters<number>>[] {
 		return [
+			siftBySlug,
 			siftByDepartment,
 			...super.listPipeline
 		]
