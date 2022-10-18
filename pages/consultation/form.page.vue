@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
 	<section class="header">
 		<h1>Consultation Ticket #{{ consultation.id }}</h1>
@@ -37,19 +38,25 @@
 			{{ reason }}
 		</h6>
 
-		<h2>
-			Scheduled Start:
-		</h2>
-		<h6 id="scheduled-start" class="scheduled-start">
-			{{ scheduledStartAt }}
-		</h6>
+		<div class="schedules flex justify-between">
+			<div class="col">
+				<h2>
+					Scheduled Start:
+				</h2>
+				<h6 id="scheduled-start" class="scheduled-start">
+					{{ scheduledStartAt }}
+				</h6>
+			</div>
 
-		<h2>
-			Actual Start:
-		</h2>
-		<h6 id="actual-start" class="actual-start">
-			{{ startedAt }}
-		</h6>
+			<div class="col">
+				<h2>
+					Actual Start:
+				</h2>
+				<h6 id="actual-start" class="actual-start">
+					{{ startedAt }}
+				</h6>
+			</div>
+		</div>
 	</section>
 
 	<ul class="chat-messages">
@@ -57,20 +64,41 @@
 		<li
 			v-for="chatMessage in chatMessages"
 			:key="chatMessage.id">
-			<div v-if="isMessageKindStatus(chatMessage)" class="status-message">
+			<span class="date-and-owner-details">
+				[
+				{{ chatMessage.createdAt.toDateString() }}
+				{{ chatMessage.createdAt.getHours() }}:{{ chatMessage.createdAt.getMinutes() }}:{{ chatMessage.createdAt.getSeconds() }}
+				]
+				({{ chatMessage.user.data.name }})
+			</span>
+			<span v-if="isMessageKindStatus(chatMessage)" class="status-message">
 				{{ chatMessage.data.value }}
-			</div>
-			<div v-if="isMessageKindText(chatMessage)" class="text-message">
-				[{{ chatMessage.createdAt.toDateString() }}] ({{ chatMessage.user.data.name }}):
-				{{ chatMessage.data.value }}
-			</div>
-			<div v-if="isMessageKindFile(chatMessage)" class="file-message">
-				[{{ chatMessage.createdAt.toDateString() }}] ({{ chatMessage.user.data.name }})
+			</span>
+			<span v-if="isMessageKindText(chatMessage)" class="text-message">
+				: {{ chatMessage.data.value }}
+			</span>
+			<span v-if="isMessageKindFile(chatMessage)" class="file-message">
 				sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
-			</div>
+			</span>
 		</li>
 	</ul>
 </template>
+
+<style scoped lang="scss">
+	h1 {
+		@apply text-2xl;
+	}
+
+	h2 {
+		@apply text-lg;
+	}
+
+	h6 {
+		@apply border-b mb-5;
+	}
+
+	.file-message a { text-decoration: underline; }
+</style>
 
 <script setup lang="ts">
 import { inject } from "vue"
