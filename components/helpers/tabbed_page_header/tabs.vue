@@ -2,12 +2,12 @@
 	<ul class="tabs">
 		<li
 			v-for="tab in tabs"
-			:key="tab.label"
+			:key="tab.name"
 			class="tab-button">
 			<Anchor
 				class="tab-link"
 				:href="`${tab.path}`">
-				{{ tab.label }}
+				{{ tab.name }}
 			</Anchor>
 		</li>
 	</ul>
@@ -40,11 +40,11 @@
 </style>
 
 <script setup lang="ts">
-import type { TabInfo } from "$@/types/component"
+import type { LinkInfo } from "$@/types/independent"
 
 import Anchor from "@/helpers/anchor.vue"
 
 defineProps<{
-	tabs: TabInfo[]
+	tabs: LinkInfo[]
 }>()
 </script>

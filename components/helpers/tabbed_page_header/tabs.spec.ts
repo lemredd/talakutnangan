@@ -1,13 +1,20 @@
 import { mount } from "@vue/test-utils"
+
+import type { LinkInfo } from "$@/types/independent"
+
 import Tab from "./tabs.vue"
 
-const TAB_1 = {
-	"label": "TAB_1",
-	"path": "/tabbed_page/tab1"
+const TAB_1: LinkInfo = {
+	"icon": "",
+	"name": "TAB_1",
+	"path": "/tabbed_page/tab1",
+	"viewportsAvailable": []
 }
-const TAB_2 = {
-	"label": "TAB_2",
-	"path": "/tabbed_page/tab2"
+const TAB_2: LinkInfo = {
+	"icon": "",
+	"name": "TAB_2",
+	"path": "/tabbed_page/tab2",
+	"viewportsAvailable": []
 }
 
 describe("Component: Tab", () => {
