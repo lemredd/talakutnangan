@@ -65,9 +65,34 @@ const departmentNames = computed<OptionInfo[]>(() => [
 	}))
 ])
 
-const slug = ref("")
+const slug = ref<string>("")
 
 async function fetchRoleInfos(offset: number): Promise<number|void> {
+	await fetcher.list({
+		"filter": {
+			"department": chosenDepartment.value,
+			"existence": "exists",
+			"slug": slug.value
+		},
+		"page": {
+			"limit": 10,
+			offset
+		},
+		"sort": [ "name" ]
+	}).then(response => {
+		const deserializedData = response.body.data as DeserializedRoleResource[]
+		const IDsToCount = deserializedData.map(data => data.id)
+
+		if (deserializedData.length === 0) return Promise.resolve()
+
+		list.value = [ ...list.value, ...deserializedData ]
+
+		// eslint-disable-next-line no-use-before-define
+		return countUsersPerRole(IDsToCount)
+	})
+}
+
+async function fetchDepartmentInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -110,7 +135,7 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 
-function refetchRoles() {
+async function refetchRoles() {
 	list.value = []
 	fetchRoleInfos(0)
 }
