@@ -31,20 +31,6 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"links": [
 			{
 				"icon": "",
-				"name": "Departments",
-				"path": "/department/list",
-				"viewportsAvailable": [ "mobile", "desktop" ]
-			}
-		],
-		"mustBeGuest": false,
-		"permissionCombinations": [ UPDATE_DEPARTMENTS ],
-		"permissionGroup": department
-	},
-	{
-		"kinds": [],
-		"links": [
-			{
-				"icon": "",
 				"name": "Roles",
 				"path": "/role/list",
 				"viewportsAvailable": [ "mobile", "desktop" ]
@@ -53,6 +39,20 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"mustBeGuest": false,
 		"permissionCombinations": [ UPDATE_ROLES ],
 		"permissionGroup": role
+	},
+	{
+		"kinds": [],
+		"links": [
+			{
+				"icon": "",
+				"name": "Departments",
+				"path": "/department/list",
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [ UPDATE_DEPARTMENTS ],
+		"permissionGroup": department
 	}
 ]
 
