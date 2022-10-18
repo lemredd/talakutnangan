@@ -25,6 +25,7 @@ import Transformer from "%/transformers/consultation"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import sort from "%/queries/base/sort"
 import siftByUser from "%/queries/consultation/sift_by_user"
@@ -303,7 +304,9 @@ export default class extends BaseManager<
 	: Promise<WeeklySummedTimeDocument> {
 		try {
 			const adjustedBeginDate = adjustUntilChosenDay(query.filter.dateTimeRange.begin, 0, -1)
-			const adjustedEndDate = adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
+			const adjustedEndDate = adjustBeforeMidnightOfNextDay(
+				adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
+			)
 			const models = await Model.findAll(sort({
 				"paranoid": false,
 				"where": new Condition().and(
@@ -318,20 +321,20 @@ export default class extends BaseManager<
 				}
 			}
 
-			for (
-				let i = adjustedBeginDate;
-				i < adjustedEndDate;
-				i = adjustUntilChosenDay(i, 6, 7, { "force": true })
-			) {
-				const rangeEnd = adjustUntilChosenDay(adjustedBeginDate, 6, 7, { "force": true })
-				// eslint-disable-next-line no-magic-numbers
-				rangeEnd.setHours(11, 59, 59, 999)
+			let i = adjustedBeginDate
+			do {
+				const rangeEnd = adjustUntilChosenDay(i, 6, 6)
+				const rangeLastEnd = adjustBeforeMidnightOfNextDay(rangeEnd)
+
 				sums.meta.weeklyTimeSums.push({
 					"beginDateTime": i,
-					"endDateTime": rangeEnd,
+					"endDateTime": rangeLastEnd,
 					"totalMillisecondsConsumed": 0
 				})
-			}
+
+				i = adjustUntilChosenDay(rangeEnd, 0, 1)
+			} while (i < adjustedEndDate)
+
 
 			for (const weeklyTimeSum of sums.meta.weeklyTimeSums) {
 				weeklyTimeSum.totalMillisecondsConsumed += models.reduce((
@@ -339,17 +342,16 @@ export default class extends BaseManager<
 					model
 				) => {
 					let newTotalMillisecondsconsumed = totalMillisecondsConsumed
-					if (model) {
-						const startedAt = model.startedAt as Date
-						const finishedAt = model.finishedAt as Date
-						if (
-							weeklyTimeSum.beginDateTime < startedAt
-							&& finishedAt < weeklyTimeSum.endDateTime
-						) {
-							const difference = calculateMillisecondDifference(finishedAt, startedAt)
+					const startedAt = model.startedAt as Date
+					const finishedAt = model.finishedAt as Date
 
-							newTotalMillisecondsconsumed += difference
-						}
+					if (
+						weeklyTimeSum.beginDateTime <= startedAt
+						&& finishedAt <= weeklyTimeSum.endDateTime
+					) {
+						const difference = calculateMillisecondDifference(finishedAt, startedAt)
+
+						newTotalMillisecondsconsumed += difference
 					}
 
 					return newTotalMillisecondsconsumed
