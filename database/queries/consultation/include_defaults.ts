@@ -4,6 +4,7 @@ import Log from "$!/singletons/log"
 
 import Role from "%/models/role"
 import User from "%/models/user"
+import Signature from "%/models/signature"
 import AttachedRole from "%/models/attached_role"
 import ProfilePicture from "%/models/profile_picture"
 
@@ -27,6 +28,10 @@ export default function<T>(
 				"include": [
 					{
 						"model": ProfilePicture,
+						"required": false
+					},
+					{
+						"model": Signature,
 						"required": false
 					}
 				],
