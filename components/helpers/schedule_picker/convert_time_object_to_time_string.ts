@@ -1,6 +1,6 @@
 import type { Time } from "%/types/independent"
 
-import twoDigits from "./two_digits"
+import twoDigits from "$/time/two_digits"
 import formatTo12Hours from "./format_to_12_hours"
 
 

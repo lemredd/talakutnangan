@@ -1,6 +1,6 @@
 import { NOON } from "$@/constants/time"
 
-import twoDigits from "./two_digits"
+import twoDigits from "$/time/two_digits"
 import formatTo12Hours from "./format_to_12_hours"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
