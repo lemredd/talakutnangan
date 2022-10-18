@@ -150,6 +150,7 @@ import { BODY_CLASSES } from "$@/constants/provided_keys"
 
 import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
 import LastChat from "@/consultation/list/last_chat.vue"
@@ -235,6 +236,8 @@ function getPreviewMessage(
 }
 
 function pickConsultation(consultationID: string) {
-	assignPath(`/consultation/${consultationID}`)
+	assignPath(specializePath("/consultation/read/:id", {
+		"id": consultationID
+	}))
 }
 </script>

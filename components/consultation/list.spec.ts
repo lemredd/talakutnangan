@@ -1,7 +1,9 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
-import Stub from "$/singletons/stub"
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+
+import Stub from "$/singletons/stub"
+import specializePath from "$/helpers/specialize_path"
 
 import Component from "./list.vue"
 
@@ -143,7 +145,11 @@ describe("Component: consultation/list", () => {
 
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments", [ `/consultation/${id}` ])
+		expect(previousCalls).toHaveProperty("0.arguments", [
+			specializePath("/consultation/read/:id", {
+				id
+			})
+		])
 	})
 
 	it("should display non-duplicating profile pictures", () => {

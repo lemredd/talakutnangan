@@ -1,1 +1,1 @@
-export default "/role/@id"
+export default "/role/read/@id"

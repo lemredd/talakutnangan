@@ -28,12 +28,21 @@
 </style>
 
 <script setup lang = ts>
-import { ref } from "vue"
+import { computed } from "vue"
 
-const searchFilterText = ref("")
-
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
-	(e: "filterByGivenSlug", slug: string): void
+	(e: "update:modelValue", slug: string): void
 }>()
+
+const props = defineProps<{
+	modelValue: string
+}>()
+const searchFilterText = computed<string>({
+	get(): string {
+		return props.modelValue
+	},
+	set(newValue: string): void {
+		emit("update:modelValue", newValue)
+	}
+})
 </script>

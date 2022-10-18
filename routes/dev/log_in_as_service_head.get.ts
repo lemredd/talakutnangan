@@ -143,7 +143,7 @@ export default class extends DevController {
 			})
 			Log.success("controller", "making for service head's signature")
 			if (previousSignature === null) {
-				const sampleImagePath = `${this.root}/t/data/log_bg_transparent.png`
+				const sampleImagePath = `${this.root}/t/data/logo_bg_transparent.png`
 				const sampleImage = await readAsync(sampleImagePath)
 				await new SignatureFactory()
 				.user(() => Promise.resolve(previousUser as User))

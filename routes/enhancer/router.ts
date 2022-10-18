@@ -15,11 +15,11 @@ export default class extends Router {
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
 				new UserRouter(),
-				new ConsultationRouter(),
 				new ChatRouter(),
 				new RoleRouter(),
 				new ForumRouter(),
 				new DepartmentRouter(),
+				new ConsultationRouter(),
 				new UserSettingsRouter()
 			])
 		}))

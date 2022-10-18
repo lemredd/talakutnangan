@@ -58,25 +58,25 @@ describe("Helpers: Extract route info", () => {
 		expect(purpose).toBe("enhancer")
 	})
 
-	it("can extract read enhancer route", () => {
+	it("cannot extract read enhancer route", () => {
 		const root = "/sample"
 		const currentPath = `${root}/enhancer/read(id).get.ts`
 
 		const { method, path, purpose } = extractRouteInfo(currentPath, root)
 
 		expect(method).toBe("get")
-		expect(path).toBe("/:id")
+		expect(path).toBe("/read/:id")
 		expect(purpose).toBe("enhancer")
 	})
 
-	it("can extract subread enhancer route", () => {
+	it("cannot extract subread enhancer route", () => {
 		const root = "/sample"
 		const currentPath = `${root}/enhancer/a/read(id).get.ts`
 
 		const { method, path, purpose } = extractRouteInfo(currentPath, root)
 
 		expect(method).toBe("get")
-		expect(path).toBe("/a/:id")
+		expect(path).toBe("/a/read/:id")
 		expect(purpose).toBe("enhancer")
 	})
 

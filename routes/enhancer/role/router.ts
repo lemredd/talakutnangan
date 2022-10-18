@@ -10,8 +10,8 @@ export default class extends Router {
 		this.useControllersAsync(new Promise(resolve => {
 			resolve([
 				new GetList(),
-				new GetRead(),
-				new GetCreate()
+				new GetCreate(),
+				new GetRead()
 			])
 		}))
 	}

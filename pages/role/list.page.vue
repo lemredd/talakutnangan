@@ -20,12 +20,14 @@ import { inject, onMounted, provide, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
 import Manager from "$/helpers/manager"
 import RoleFetcher from "$@/fetchers/role"
+import debounce from "$@/helpers/debounce"
 
 import SearchFilter from "@/helpers/search_bar.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
@@ -66,14 +68,6 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 
 const slug = ref("")
-const filteredList = ref<DeserializedRoleResource[]>([])
-// const watchableFilters = [
-// 	slug
-// ]
-
-function getFilteredList(resource: PossibleResources[]) {
-	filteredList.value = resource as DeserializedRoleResource[]
-}
 
 async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
@@ -118,7 +112,8 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 
-watch(chosenDepartment, () => {
+watch([ chosenDepartment, slug ], () => {
+	list.value = []
 	fetchRoleInfos(0)
 })
 

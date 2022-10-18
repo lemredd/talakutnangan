@@ -50,7 +50,7 @@ export default class extends PageMiddleware {
 				}
 
 				return {
-					"location": URLMaker.makeURLFromPath("/consultation/:id", {
+					"location": URLMaker.makeURLFromPath("/consultation/read/:id", {
 						"id": consultations.data[0].id
 					})
 				}
