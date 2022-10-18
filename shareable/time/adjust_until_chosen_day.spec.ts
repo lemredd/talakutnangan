@@ -6,14 +6,14 @@ describe("Time helpers: Adjust until chosen day", () => {
 
 		const adjustedDate = adjustUntilChosenDay(initialDate, 0, -1)
 
-		expect(adjustedDate).toBe(new Date("2022-09-25T00:00:00"))
+		expect(adjustedDate).toStrictEqual(new Date("2022-09-25T00:00:00"))
 	})
 
 	it("can go forward", () => {
 		const initialDate = new Date("2022-10-31T00:00:00")
 
-		const adjustedDate = adjustUntilChosenDay(initialDate, 0, -1)
+		const adjustedDate = adjustUntilChosenDay(initialDate, 6, 1)
 
-		expect(adjustedDate).toBe(new Date("2022-11-05T00:00:00"))
+		expect(adjustedDate).toStrictEqual(new Date("2022-11-05T00:00:00"))
 	})
 })
