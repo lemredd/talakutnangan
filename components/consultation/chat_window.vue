@@ -41,11 +41,15 @@
 						<!-- TODO: make absolute -->
 
 						<div class="links">
-							<a href="#">View consultation form</a>
+							<a
+								href="#"
+								class="additional-control view-printable-form-btn">
+								View consultation form
+							</a>
 							<a
 								v-if="isCurrentUserConsultant"
 								href="#"
-								class="view-action-taken-overlay-btn"
+								class="additional-control view-action-taken-overlay-btn"
 								@click="showActionTakenOverlay">Finish consultation</a>
 						</div>
 					</template>
@@ -113,6 +117,17 @@
 	</section>
 </template>
 
+<style lang="scss">
+
+.additional-controls{
+	.dropdown-container{
+		inset: unset;
+		right: -80px;
+	}
+}
+
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	@import "@styles/mixins.scss";
@@ -132,6 +147,10 @@
 			z-index: 1001;
 		}
 
+		.links{
+			@apply flex flex-col;
+		}
+
 		.selected-consultation-header {
 			@apply flex py-4 px-2;
 			.text {
@@ -144,6 +163,10 @@
 				.additional-controls {
 					display: inline;
 					height: min-content;
+
+					.additional-control{
+					@apply p-2 hover:bg-light-600;
+					}
 				}
 			}
 		}
