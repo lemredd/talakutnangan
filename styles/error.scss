@@ -8,3 +8,12 @@
 	font-size: smaller;
 	width: fit-content;
 }
+
+ul.error {
+	list-style-type: disc;
+	width: 100%;
+
+	li {
+		@apply ml-3;
+	}
+}

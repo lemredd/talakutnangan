@@ -67,14 +67,6 @@
 	padding: 1em 2em;
 	z-index: 1;
 
-	ul {
-		list-style-type: disc;
-		width: 100%;
-
-		li {
-			@apply ml-3;
-		}
-	}
 
 	@screen sm {
 		width: initial;
