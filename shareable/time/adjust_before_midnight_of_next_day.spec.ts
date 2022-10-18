@@ -6,6 +6,6 @@ describe("Time helpers: Adjust before midnight of next day", () => {
 
 		const adjustedDate = adjustBeforeMidnightOfNextDay(initialDate)
 
-		expect(adjustedDate).toStrictEqual(new Date("2022-10-01T11:59:59.999"))
+		expect(adjustedDate).toStrictEqual(new Date("2022-10-01T23:59:59.999"))
 	})
 })
