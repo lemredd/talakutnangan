@@ -300,69 +300,63 @@ export default class extends BaseManager<
 	}
 
 	async sumTimePerWeek(query: TimeSumQueryParameters)
-	: Promise<UserIdentifierListWithTimeConsumedDocument> {
+	: Promise<WeeklySummedTimeDocument> {
 		try {
 			const adjustedBeginDate = adjustUntilChosenDay(query.filter.dateTimeRange.begin, 0, -1)
 			const adjustedEndDate = adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
-			const models = await ChatMessageActivity.findAll({
-				"include": [
-					{
-						"model": User,
-						"required": true
-					},
-					sort({
-						"model": Model,
-						"paranoid": false,
-						"required": true,
-						"where": new Condition().and(
-							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
-							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
-						).build()
-					} as FindOptions<any>, query) as IncludeOptions
-				],
+			const models = await Model.findAll(sort({
 				"paranoid": false,
-				...this.transaction.transactionObject
-			})
+				"where": new Condition().and(
+					new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+					new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
+				).build()
+			} as FindOptions<any>, query) as IncludeOptions)
 
-			const weekGroups: WeeklySummedTimeDocument = []
-			return {
-				"data": models.filter(model => {
-					const consultation = model.consultation as Model
-
-					return consultation.finishedAt !== null && consultation.startedAt !== null
-				}).map(model => {
-					const user = model.user as User
-					const consultation = model.consultation as Model
-
-					const millisecond = calculateMillisecondDifference(
-						consultation.finishedAt as Date,
-						consultation.startedAt as Date
-					)
-
-					return {
-						"id": String(user.id),
-						"meta": {
-							"totalMillisecondsConsumed": millisecond
-						},
-						"type": "user"
-					}
-				}).reduce((previousSums, currentSum: any) => {
-					const previousSum = previousSums.find(sum => sum.id === currentSum.id)
-
-					if (previousSum) {
-						previousSum.meta.totalMillisecondsConsumed += currentSum
-						.meta
-						.totalMillisecondsConsumed
-
-						return previousSums
-					}
-
-					return [
-						...previousSums,
-						currentSum
-					]
-				}, [] as UserIdentifierListWithTimeConsumedDocument["data"])
+			const sums: WeeklySummedTimeDocument = {
+				"meta": {
+					"weeklyTimeSums": []
+				}
 			}
+
+			for (
+				let i = adjustedBeginDate;
+				i < adjustedEndDate;
+				i = adjustUntilChosenDay(i, 6, 7, { "force": true })
+			) {
+				const rangeEnd = adjustUntilChosenDay(adjustedBeginDate, 6, 7, { "force": true })
+				// eslint-disable-next-line no-magic-numbers
+				rangeEnd.setHours(11, 59, 59, 999)
+				sums.meta.weeklyTimeSums.push({
+					"beginDateTime": i,
+					"endDateTime": rangeEnd,
+					"totalMillisecondsConsumed": 0
+				})
+			}
+
+			for (const weeklyTimeSum of sums.meta.weeklyTimeSums) {
+				weeklyTimeSum.totalMillisecondsConsumed += models.reduce((
+					totalMillisecondsConsumed,
+					model
+				) => {
+					let newTotalMillisecondsconsumed = totalMillisecondsConsumed
+					if (model) {
+						const startedAt = model.startedAt as Date
+						const finishedAt = model.finishedAt as Date
+						if (
+							weeklyTimeSum.beginDateTime < startedAt
+							&& finishedAt < weeklyTimeSum.endDateTime
+						) {
+							const difference = calculateMillisecondDifference(finishedAt, startedAt)
+
+							newTotalMillisecondsconsumed += difference
+						}
+					}
+
+					return newTotalMillisecondsconsumed
+				}, 0)
+			}
+
+			return sums
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
