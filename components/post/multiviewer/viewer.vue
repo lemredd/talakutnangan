@@ -8,7 +8,11 @@
 			</div>
 			<div class="">
 			</div>
-			<Menu :post="post"/>
+			<Menu
+				:post="post"
+				@update-post="openUpdateForm"
+				@archive-post="confirmArchive"
+				@restore-post="confirmRestore"/>
 		</div>
 		<UpdatePostForm
 			v-model="post"
@@ -99,7 +103,17 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole">>(props.modelVal
 
 const {
 	"state": mustUpdate,
-	"on": openEditForm
+	"on": openUpdateForm
+} = makeSwitch(false)
+
+const {
+	"state": mustArchive,
+	"on": confirmArchive
+} = makeSwitch(false)
+
+const {
+	"state": mustRestore,
+	"on": confirmRestore
 } = makeSwitch(false)
 
 async function submitChangesSeparately(postID: string) {

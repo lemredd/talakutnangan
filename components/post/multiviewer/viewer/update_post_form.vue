@@ -8,7 +8,7 @@
 				:id="postID"
 				v-model="content"
 				@submit-post="updatePost">
-				<div v-if="hasMultipleRoles" class="row">
+				<div v-if="hasMultipleRoles" class="role-selector flex mt-1">
 					<SelectableOptionsField
 						v-model="roleID"
 						label="Post as: "
@@ -47,6 +47,10 @@ import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import UserFetcher from "$@/fetchers/user"
+
+import Overlay from "@/helpers/overlay.vue"
+import DraftForm from "@/post/draft_form.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const userFetcher = new UserFetcher()
 
