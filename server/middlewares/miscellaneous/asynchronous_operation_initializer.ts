@@ -33,6 +33,7 @@ export default class AsynchronousOperationInitializer extends Middleware {
 		if (request.asynchronousOperation.isNew) {
 			const responseInfo = new OkResponseInfo(document)
 			responseInfo.sendThrough(response)
+			response.end()
 			next()
 		} else {
 			next(new StillProcessingError())

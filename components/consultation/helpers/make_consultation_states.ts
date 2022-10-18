@@ -3,7 +3,7 @@ import { ref, computed } from "vue"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
-import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
 export default function(
 	props: {

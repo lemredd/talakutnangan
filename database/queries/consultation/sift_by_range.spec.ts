@@ -21,8 +21,8 @@ describe("Database Pipe: Sift by range", () => {
 	it("can find on with limited time", async() => {
 		const CURRENT_TIME = new Date()
 		const TIME_OFFSET = 5
-		const START_TIME = new Date()
-		START_TIME.setSeconds(CURRENT_TIME.getSeconds() - TIME_OFFSET)
+		const BEGIN_TIME = new Date()
+		BEGIN_TIME.setSeconds(CURRENT_TIME.getSeconds() - TIME_OFFSET)
 		const END_TIME = new Date()
 		END_TIME.setSeconds(CURRENT_TIME.getSeconds() + TIME_OFFSET)
 		const model = await new Factory()
@@ -32,8 +32,8 @@ describe("Database Pipe: Sift by range", () => {
 		const options = siftByRange({}, {
 			"filter": {
 				"consultationScheduleRange": {
-					"end": END_TIME,
-					"start": START_TIME
+					"begin": BEGIN_TIME,
+					"end": END_TIME
 				}
 			}
 		})
@@ -46,8 +46,8 @@ describe("Database Pipe: Sift by range", () => {
 	it("cannot find with limited time", async() => {
 		const CURRENT_TIME = new Date()
 		const TIME_OFFSET = 5
-		const START_TIME = new Date()
-		START_TIME.setSeconds(CURRENT_TIME.getSeconds() + TIME_OFFSET)
+		const BEGIN_TIME = new Date()
+		BEGIN_TIME.setSeconds(CURRENT_TIME.getSeconds() + TIME_OFFSET)
 		const END_TIME = new Date()
 		END_TIME.setSeconds(CURRENT_TIME.getSeconds() + TIME_OFFSET * 2)
 		await new Factory()
@@ -57,8 +57,8 @@ describe("Database Pipe: Sift by range", () => {
 		const options = siftByRange({}, {
 			"filter": {
 				"consultationScheduleRange": {
-					"end": END_TIME,
-					"start": START_TIME
+					"begin": BEGIN_TIME,
+					"end": END_TIME
 				}
 			}
 		})

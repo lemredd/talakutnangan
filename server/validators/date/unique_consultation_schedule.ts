@@ -57,8 +57,8 @@ export default async function(
 	const foundModels = await manager.list({
 		"filter": {
 			"consultationScheduleRange": {
-				"end": target,
-				"start": minimumPossiblePreviousSchedule
+				"begin": minimumPossiblePreviousSchedule,
+				"end": target
 			},
 			"existence": "exists",
 			"user": userID

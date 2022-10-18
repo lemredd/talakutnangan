@@ -1,16 +1,17 @@
 <template>
 	<form @submit.prevent="submitPostDetails">
+		<!-- TODO(others): Merge the following classes into one -->
 		<slot></slot>
-		<div class="row">
-			<div class="col-25">
+		<div class="row flex flex-row">
+			<div class="label flex-1 mt-1">
 				<label for="content">Content</label>
 			</div>
-			<div class="col-75">
+			<div class="field flex-3 mt-1">
 				<textarea
 					id="content"
 					v-model="content"
-					placeholder="Write something.."
-					style="height:200px">
+					class="height-[4em]"
+					placeholder="Write something..">
 				</textarea>
 			</div>
 		</div>
@@ -18,7 +19,7 @@
 </template>
 
 <style lang="scss">
-@import "@@/forum/index";
+
 </style>
 
 <script setup lang="ts">
