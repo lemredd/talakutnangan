@@ -139,7 +139,8 @@ describe("Database Manager: Consultation read operations", () => {
 					"begin": new Date("2022-09-01T00:00:00"),
 					"end": new Date("2022-09-30T11:59:59")
 				},
-				"existence": "exists"
+				"existence": "exists",
+				"user": user.id
 			},
 			"page": {
 				"limit": 10,
@@ -196,7 +197,8 @@ describe("Database Manager: Consultation read operations", () => {
 					"begin": new Date("2022-09-01T00:00:00"),
 					"end": new Date("2022-09-30T11:59:59")
 				},
-				"existence": "exists"
+				"existence": "exists",
+				"user": user.id
 			},
 			"page": {
 				"limit": 10,
@@ -245,7 +247,8 @@ describe("Database Manager: Consultation read operations", () => {
 					"begin": new Date("2015-02-01T00:00:00"),
 					"end": new Date("2015-02-28T23:59:59.999")
 				},
-				"existence": "exists"
+				"existence": "exists",
+				"user": user.id
 			},
 			"page": {
 				"limit": 10,

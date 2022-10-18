@@ -206,6 +206,7 @@ export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& NullableDepartmentFilter<T>
 
-export type TimeSumQueryParameters =
+export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DateTimeRangeFilter
+	& UserFilter<T>
