@@ -256,13 +256,14 @@ describe("Database Manager: Consultation read operations", () => {
 		// eslint-disable-next-line no-magic-numbers
 		const weekRanges = [ [ 1, 7 ], [ 8, 14 ], [ 15, 21 ], [ 22, 28 ] ]
 		expect(times).toStrictEqual({
-			"data": weekRanges.map(([ beginDate, endDate ]) => ({
-				"meta": {
-					"beginDate": new Date(`2015-02-${beginDate}T00:00:00`),
-					"endDate": new Date(`2015-02-${endDate}T11:59:59`),
+			"meta": {
+				"weeklyTimeSums": weekRanges.map(([ beginDate, endDate ]) => ({
+					"beginDateTime": new Date(`2015-02-${beginDate}T00:00:00`),
+					// Adjusted to GMT+0
+					"endDateTime": new Date(`2015-02-${endDate}T03:59:59.999Z`),
 					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
-				}
-			}))
+				}))
+			}
 		})
 	})
 })
