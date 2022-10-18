@@ -2,6 +2,7 @@ import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Model from "%/models/consultation"
+import twoDigits from "$/time/two_digits"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
@@ -228,8 +229,8 @@ describe("Database Manager: Consultation read operations", () => {
 		const consultations = await Promise.all(datesOfFebruary.map(
 			date => new Factory()
 			.consultantInfo(() => Promise.resolve(attachedRole))
-			.startedAt(() => new Date(`2015-02-${date}T08:00:00`))
-			.finishedAt(() => new Date(`2015-02-${date}T08:10:00`))
+			.startedAt(() => new Date(`2015-02-${twoDigits(date)}T16:00:00`))
+			.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T16:10:00`))
 			.insertOne()
 		))
 		const consultationIterator = consultations.values()
@@ -238,11 +239,12 @@ describe("Database Manager: Consultation read operations", () => {
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
+		// Adjusted to GMT+0
 		const times = await manager.sumTimePerWeek({
 			"filter": {
 				"dateTimeRange": {
-					"begin": new Date("2015-02-01T00:00:00"),
-					"end": new Date("2015-02-28T11:59:59")
+					"begin": new Date("2015-02-01T08:00:00"),
+					"end": new Date("2015-03-01T07:59:59")
 				},
 				"existence": "exists"
 			},
@@ -258,9 +260,8 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"meta": {
 				"weeklyTimeSums": weekRanges.map(([ beginDate, endDate ]) => ({
-					"beginDateTime": new Date(`2015-02-${beginDate}T00:00:00`),
-					// Adjusted to GMT+0
-					"endDateTime": new Date(`2015-02-${endDate}T03:59:59.999Z`),
+					"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T08:00:00`),
+					"endDateTime": new Date(`2015-02-${twoDigits(endDate+1)}T07:59:59.999Z`),
 					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
 				}))
 			}
