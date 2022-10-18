@@ -2,7 +2,10 @@
 	<div class="resource-manager">
 		<slot name="header"></slot>
 		<div class="controls-bar">
-			<SearchFilter v-if="hasSlug" v-model="slugText"/>
+			<SearchFilter
+				v-if="hasSlug"
+				v-model="slugText"
+				class="search-bar"/>
 			<SelectableOptionsField
 				v-if="hasRoleNames"
 				v-model="role"
@@ -23,15 +26,10 @@
 
 <style lang="scss">
 	.controls-bar {
-		@apply dark:bg-dark-100 bg-light-600 gap-y-4 justify-between;
+		@apply dark:bg-dark-100 bg-light-600 gap-y-4 flex flex-row flex-wrap justify-between;
 
 		.search-bar {
-			@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
-			padding: .25em;
-		}
-
-		.filters {
-			@apply flex flex-col sm:flex-row justify-between;
+			@apply dark:bg-dark-300 bg-gray-300 basis-full p-[.25em];
 		}
 	}
 </style>
