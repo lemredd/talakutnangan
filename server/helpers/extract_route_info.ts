@@ -20,7 +20,7 @@ export default function(currentPath: string, routeRoot = resolve(getRoot(), "rou
 	switch (purpose) {
 		case "enhancer":
 			// Trim "index" or "read" suffix for enhancer routes
-			path = path.replace(/^\/(.*?)\/?(index|read)(\/:id)?$/u, "/$1$3").replace(/\/\//ug, "/")
+			path = path.replace(/^\/(.*?)\/?index(\/:id)?$/u, "/$1$3").replace(/\/\//ug, "/")
 			break
 		case "api":
 			/*
