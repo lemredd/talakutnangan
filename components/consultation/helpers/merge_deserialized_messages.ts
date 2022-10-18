@@ -5,7 +5,7 @@ import type {
 	DeserializedChatMessageResource
 } from "$/types/documents/chat_message"
 
-import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
 export default function(
 	chatMessages: Ref<DeserializedChatMessageListDocument<"user">>,

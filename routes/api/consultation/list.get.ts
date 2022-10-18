@@ -35,11 +35,11 @@ export default class extends QueryController {
 							"defaultValue": "*"
 						},
 						"object": {
-							"end": {
-								// TODO: Ensure this is greater than the start
+							"begin": {
 								"pipes": [ required, date ]
 							},
-							"start": {
+							"end": {
+								// TODO: Ensure this is greater than the start
 								"pipes": [ required, date ]
 							}
 						}
