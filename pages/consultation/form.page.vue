@@ -38,7 +38,7 @@
 			{{ reason }}
 		</h6>
 
-		<div class="schedules flex justify-between">
+		<div class="schedules flex justify-between max-w-[900px]">
 			<div class="col">
 				<h2>
 					Scheduled Start:
@@ -94,10 +94,26 @@
 	}
 
 	h6 {
-		@apply border-b mb-5;
+		@apply border-b border-b-light-500 mb-5;
 	}
 
 	.file-message a { text-decoration: underline; }
+	@media print {
+		h1 {
+			@apply text-2xl;
+		}
+
+		h2 {
+			@apply text-lg;
+		}
+
+		h6 {
+			border-bottom: 1px solid black;
+			@apply border-b mb-5;
+		}
+
+		.file-message a { text-decoration: underline; }
+	}
 </style>
 
 <script setup lang="ts">
