@@ -1,6 +1,13 @@
 <template>
 	<AdminConfigHeader class="tabs" title="Admin Configuration"/>
-
+	<ul v-if="receivedErrors.length" class="error">
+		<h3>The following errors have occured:</h3>
+		<li
+			v-for="error in receivedErrors"
+			:key="receivedErrors.indexOf(error)">
+			{{ error }}
+		</li>
+	</ul>
 	<form @submit.prevent="importData">
 		<div>
 			<MultiSelectableOptionsField
@@ -80,6 +87,7 @@
 </template>
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
+@import "@styles/error.scss";
 
 .tabs {
 	margin-bottom: 2em;
@@ -161,6 +169,7 @@ const kindNames = UserKindValues.map(kind => ({
 const chosenKind = ref<string>(kindNames[0].value)
 
 const createdUsers = ref<DeserializedUserResource<"roles"|"department">[]>([])
+const receivedErrors = ref<string[]>([])
 
 const fetcher = new UserFetcher()
 
@@ -171,11 +180,17 @@ function importData(event: Event) {
 	fetcher.import(formData).then(({ body }) => {
 		const { data } = body
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
-	}).catch(({ body }) => {
-		const unusedCastBody = body as ErrorDocument
-		// Process the error
+	})
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: ErrorDocument) => error.detail)
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
+
 
 function isStudentResource(resource: DeserializedUserResource)
 : resource is DeserializedStudentResource {
