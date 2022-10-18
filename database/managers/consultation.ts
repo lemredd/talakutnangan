@@ -22,6 +22,7 @@ import Condition from "%/helpers/condition"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Transformer from "%/transformers/consultation"
+import resetToMidnight from "$/time/reset_to_midnight"
 import ChatMessageActivity from "%/models/chat_message_activity"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
@@ -303,7 +304,9 @@ export default class extends BaseManager<
 	async sumTimePerWeek(query: TimeSumQueryParameters)
 	: Promise<WeeklySummedTimeDocument> {
 		try {
-			const adjustedBeginDate = adjustUntilChosenDay(query.filter.dateTimeRange.begin, 0, -1)
+			const adjustedBeginDate = resetToMidnight(
+				adjustUntilChosenDay(query.filter.dateTimeRange.begin, 0, -1)
+			)
 			const adjustedEndDate = adjustBeforeMidnightOfNextDay(
 				adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
 			)
@@ -327,7 +330,7 @@ export default class extends BaseManager<
 				const rangeLastEnd = adjustBeforeMidnightOfNextDay(rangeEnd)
 
 				sums.meta.weeklyTimeSums.push({
-					"beginDateTime": i,
+					"beginDateTime": resetToMidnight(i),
 					"endDateTime": rangeLastEnd,
 					"totalMillisecondsConsumed": 0
 				})
