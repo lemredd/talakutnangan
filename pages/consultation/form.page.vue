@@ -85,6 +85,10 @@
 </template>
 
 <style scoped lang="scss">
+	@page {
+		margin: 0;
+	}
+
 	h1 {
 		@apply text-2xl;
 	}
