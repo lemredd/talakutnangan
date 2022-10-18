@@ -4,6 +4,7 @@ import type { FindOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import Condition from "%/helpers/condition"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Sift user model which matches a certain column.
@@ -24,7 +25,7 @@ export default function<T>(
 				new Condition().search("name", constraints.filter.slug)
 			)
 
-			if (typeof newState.where === "undefined") {
+			if (isUndefined(newState.where)) {
 				newState.where = {}
 			}
 
