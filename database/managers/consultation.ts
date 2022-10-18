@@ -1,5 +1,6 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
+import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
@@ -22,6 +23,7 @@ import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Transformer from "%/transformers/consultation"
 import ChatMessageActivity from "%/models/chat_message_activity"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
 import sort from "%/queries/base/sort"
@@ -300,7 +302,8 @@ export default class extends BaseManager<
 	async sumTimePerWeek(query: TimeSumQueryParameters)
 	: Promise<UserIdentifierListWithTimeConsumedDocument> {
 		try {
-			// TODO: Auto-correct the date time range to valid time
+			const adjustedBeginDate = adjustUntilChosenDay(query.filter.dateTimeRange.begin, 0, -1)
+			const adjustedEndDate = adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
 			const models = await ChatMessageActivity.findAll({
 				"include": [
 					{
@@ -312,14 +315,8 @@ export default class extends BaseManager<
 						"paranoid": false,
 						"required": true,
 						"where": new Condition().and(
-							new Condition().greaterThanOrEqual(
-								"startedAt",
-								query.filter.dateTimeRange.begin
-							),
-							new Condition().lessThanOrEqual(
-								"finishedAt",
-								query.filter.dateTimeRange.end
-							)
+							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
 						).build()
 					} as FindOptions<any>, query) as IncludeOptions
 				],
@@ -327,6 +324,7 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
+			const weekGroups: WeeklySummedTimeDocument = []
 			return {
 				"data": models.filter(model => {
 					const consultation = model.consultation as Model
