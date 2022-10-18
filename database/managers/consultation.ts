@@ -236,13 +236,16 @@ export default class extends BaseManager<
 				"include": [
 					sort({
 						"model": User,
-						"required": true
+						"required": true,
+						"where": new Condition().equal("id", query.filter.user).build()
 					} as FindOptions<any>, query) as IncludeOptions,
 					{
 						"model": Model,
 						"paranoid": false,
 						"required": true,
 						"where": new Condition().and(
+							new Condition().not("startedAt", null),
+							new Condition().not("finishedAt", null),
 							new Condition().greaterThanOrEqual(
 								"startedAt",
 								query.filter.dateTimeRange.begin
@@ -259,11 +262,7 @@ export default class extends BaseManager<
 			})
 
 			return {
-				"data": models.filter(model => {
-					const consultation = model.consultation as Model
-
-					return consultation.finishedAt !== null && consultation.startedAt !== null
-				}).map(model => {
+				"data": models.map(model => {
 					const user = model.user as User
 					const consultation = model.consultation as Model
 
@@ -310,13 +309,34 @@ export default class extends BaseManager<
 			const adjustedEndDate = adjustBeforeMidnightOfNextDay(
 				adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
 			)
-			const models = await Model.findAll(sort({
+			const models = await await ChatMessageActivity.findAll({
+				"include": [
+					{
+						"model": User,
+						"required": true,
+						"where": new Condition().equal("id", query.filter.user).build()
+					},
+					sort({
+						"model": Model,
+						"paranoid": false,
+						"required": true,
+						"where": new Condition().and(
+							new Condition().not("startedAt", null),
+							new Condition().not("finishedAt", null),
+							new Condition().greaterThanOrEqual(
+								"startedAt",
+								query.filter.dateTimeRange.begin
+							),
+							new Condition().lessThanOrEqual(
+								"finishedAt",
+								query.filter.dateTimeRange.end
+							)
+						).build()
+					} as FindOptions<any>, query) as IncludeOptions
+				],
 				"paranoid": false,
-				"where": new Condition().and(
-					new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
-					new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
-				).build()
-			} as FindOptions<any>, query) as IncludeOptions)
+				...this.transaction.transactionObject
+			})
 
 			const sums: WeeklySummedTimeDocument = {
 				"meta": {
@@ -345,8 +365,9 @@ export default class extends BaseManager<
 					model
 				) => {
 					let newTotalMillisecondsconsumed = totalMillisecondsConsumed
-					const startedAt = model.startedAt as Date
-					const finishedAt = model.finishedAt as Date
+					const consultation = model.consultation as Model
+					const startedAt = consultation.startedAt as Date
+					const finishedAt = consultation.finishedAt as Date
 
 					if (
 						weeklyTimeSum.beginDateTime <= startedAt
