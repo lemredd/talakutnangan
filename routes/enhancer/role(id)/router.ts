@@ -1,6 +1,5 @@
 import Router from "!/bases/router"
-import GetList from "!%/enhancer/role/list.get"
-import GetCreate from "!%/enhancer/role/create.get"
+import GetRead from "!%/enhancer/role(id)/read.get"
 
 export default class extends Router {
 	constructor() {
@@ -8,8 +7,7 @@ export default class extends Router {
 
 		this.useControllersAsync(new Promise(resolve => {
 			resolve([
-				new GetList(),
-				new GetCreate()
+				new GetRead()
 			])
 		}))
 	}
