@@ -190,7 +190,7 @@ const consulters = consultationChatMessageActivities.filter(
 const chatMessages = chatMessagesData as DeserializedChatMessageResource<"user">[]
 
 function printPage() {
-	if (!isUndefined(typeof window)) {
+	if (!isUndefined(window)) {
 		window.print()
 	}
 }
