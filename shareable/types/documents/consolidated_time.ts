@@ -7,9 +7,13 @@ interface SummedTimeMetaProperties extends Serializable {
 
 export type SummedTimeDocument = MetaDocument<SummedTimeMetaProperties>
 
-interface WeeklySummedTimeMetaProperties extends SummedTimeMetaProperties {
+interface WeeklySummedTimeProperties extends SummedTimeMetaProperties {
 	beginDateTime: Date,
 	endDateTime: Date
 }
 
-export type WeeklySummedTimeDocument = MetaDocument<WeeklySummedTimeMetaProperties>
+interface WeeklySummedTimeMetaCollection extends Serializable {
+	weeklyTimeSums: WeeklySummedTimeProperties[]
+}
+
+export type WeeklySummedTimeDocument = MetaDocument<WeeklySummedTimeMetaCollection>
