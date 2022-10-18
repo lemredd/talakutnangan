@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, provide, ref, computed, watch } from "vue"
+import { inject, onMounted, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -40,8 +40,6 @@ type RequiredExtraProps =
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
-
-provide("tabs", [ "Users", "Roles", "Departments" ])
 
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
