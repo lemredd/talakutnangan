@@ -6,7 +6,7 @@
 		:department-names="departmentNames"
 		:role-names="[]">
 		<template #header>
-			<TabbedPageHeader title="Admin Configuration"/>
+			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos"/>
 		</template>
 		<template #resources>
 			<RolesList :filtered-list="list"/>
@@ -28,6 +28,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
