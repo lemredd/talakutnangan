@@ -17,11 +17,19 @@ describe("Time helpers: Adjust until chosen day", () => {
 		expect(adjustedDate).toStrictEqual(new Date("2022-11-05T00:00:00"))
 	})
 
-	it("can go forward at lest once", () => {
+	it("can go forward at least once if forced", () => {
 		const initialDate = new Date("2022-11-05T00:00:00")
 
-		const adjustedDate = adjustUntilChosenDay(initialDate, 6, 7)
+		const adjustedDate = adjustUntilChosenDay(initialDate, 6, 7, { "force": true })
 
 		expect(adjustedDate).toStrictEqual(new Date("2022-11-12T00:00:00"))
+	})
+
+	it("cannot go forward at least once if not forced", () => {
+		const initialDate = new Date("2022-11-05T00:00:00")
+
+		const adjustedDate = adjustUntilChosenDay(initialDate, 6, 7, { "force": false })
+
+		expect(adjustedDate).toStrictEqual(new Date("2022-11-05T00:00:00"))
 	})
 })
