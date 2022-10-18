@@ -1,5 +1,12 @@
 <!-- eslint-disable max-len -->
 <template>
+	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
+	<button
+		class="print-btn material-icons fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white"
+		@click="printPage">
+		print
+	</button>
+
 	<section class="header">
 		<h1>Consultation Ticket #{{ consultation.id }}</h1>
 	</section>
@@ -85,6 +92,10 @@
 </template>
 
 <style scoped lang="scss">
+	@page {
+		margin: 0;
+	}
+
 	h1 {
 		@apply text-2xl;
 	}
@@ -133,6 +144,7 @@ import {
 	isMessageKindStatus,
 	isMessageKindText
 } from "@/consultation/helpers/chat_message_kinds"
+import isUndefined from "$/type_guards/is_undefined"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const {
@@ -176,4 +188,10 @@ const consulters = consultationChatMessageActivities.filter(
 )
 
 const chatMessages = chatMessagesData as DeserializedChatMessageResource<"user">[]
+
+function printPage() {
+	if (!isUndefined(window)) {
+		window.print()
+	}
+}
 </script>
