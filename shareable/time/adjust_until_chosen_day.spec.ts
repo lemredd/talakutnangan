@@ -16,4 +16,12 @@ describe("Time helpers: Adjust until chosen day", () => {
 
 		expect(adjustedDate).toStrictEqual(new Date("2022-11-05T00:00:00"))
 	})
+
+	it("can go forward at lest once", () => {
+		const initialDate = new Date("2022-11-05T00:00:00")
+
+		const adjustedDate = adjustUntilChosenDay(initialDate, 6, 7)
+
+		expect(adjustedDate).toStrictEqual(new Date("2022-11-12T00:00:00"))
+	})
 })
