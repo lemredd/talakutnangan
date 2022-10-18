@@ -1,16 +1,17 @@
 <template>
-	<AdminSettingsHeader title="Admin Configuration"/>
-
-	<RolesManager :resource="list" :is-loaded="isLoaded">
-		<template #search-filter>
-			<SearchFilter v-model="slug"/>
-			<SelectableOptionsField
-				v-model="chosenDepartment"
-				:options="departmentNames"/>
+	<ResourceManager
+		v-model:chosen-department="chosenDepartment"
+		v-model:slug="slug"
+		:is-loaded="isLoaded"
+		:department-names="departmentNames"
+		:role-names="[]">
+		<template #header>
+			<AdminSettingsHeader title="Admin Configuration"/>
 		</template>
-
-		<RolesList :filtered-list="list"/>
-	</RolesManager>
+		<template #resources>
+			<RolesList :filtered-list="list"/>
+		</template>
+	</ResourceManager>
 </template>
 
 <script setup lang="ts">
@@ -25,14 +26,11 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/role"
-import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
 
-import SearchFilter from "@/helpers/search_bar.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
-import RolesManager from "@/resource_management/resource_manager.vue"
+import ResourceManager from "@/resource_management/resource_manager.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -42,10 +40,6 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const { userProfile } = pageProps
-
-const classifier = new Manager(userProfile)
-provide("managerKind", classifier)
 provide("tabs", [ "Users", "Roles", "Departments" ])
 
 const fetcher = new Fetcher()
