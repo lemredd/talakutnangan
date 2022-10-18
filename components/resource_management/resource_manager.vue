@@ -44,6 +44,7 @@ import type { OptionInfo } from "$@/types/component"
 import isUndefined from "$/type_guards/is_undefined"
 
 import Suspensible from "@/suspensible.vue"
+import SearchFilter from "@/helpers/search_bar.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
