@@ -89,6 +89,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 	})
 }
 
+// TODO: Share this among resource pages
 async function fetchDepartmentInfos(): Promise<number|void> {
 	await departmentFetcher.list({
 		"filter": {

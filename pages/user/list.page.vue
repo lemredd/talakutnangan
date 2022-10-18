@@ -43,6 +43,8 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
+import RoleFetcher from "$@/fetchers/role"
+import DepartmentFetcher from "$@/fetchers/department"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -55,6 +57,10 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
+
+const fetcher = new Fetcher()
+const roleFetcher = new RoleFetcher()
+const departmentFetcher = new DepartmentFetcher()
 
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
@@ -107,7 +113,6 @@ const windowOffset = ref(0)
 const slug = ref("")
 
 function fetchUserInfo() {
-	isLoaded.value = false
 	new Fetcher().list({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
@@ -139,10 +144,12 @@ function fetchUserInfo() {
 }
 
 onMounted(() => {
+	isLoaded.value = false
 	fetchUserInfo()
 })
 
 function resetUsersList() {
+	isLoaded.value = false
 	windowOffset.value = 0
 	list.value = []
 }
