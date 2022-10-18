@@ -18,14 +18,16 @@ import { inject, onMounted, provide, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import Fetcher from "$@/fetchers/role"
 import Manager from "$/helpers/manager"
-import RoleFetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
+import DepartmentFetcher from "$@/fetchers/department"
 
 import SearchFilter from "@/helpers/search_bar.vue"
 import AdminSettingsHeader from "@/tabbed_page_header.vue"
@@ -46,11 +48,12 @@ const classifier = new Manager(userProfile)
 provide("managerKind", classifier)
 provide("tabs", [ "Users", "Roles", "Departments" ])
 
-const fetcher = new RoleFetcher()
+const fetcher = new Fetcher()
+const departmentFetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
-const departmentList = ref<DeserializedDepartmentResource[]>(
+const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
 const chosenDepartment = ref<string>("*")
@@ -59,7 +62,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"label": "All",
 		"value": "*"
 	},
-	...departmentList.value.map(data => ({
+	...departments.value.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))
@@ -86,34 +89,37 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 		if (deserializedData.length === 0) return Promise.resolve()
 
 		list.value = [ ...list.value, ...deserializedData ]
+		isLoaded.value = true
 
 		// eslint-disable-next-line no-use-before-define
 		return countUsersPerRole(IDsToCount)
 	})
 }
 
-async function fetchDepartmentInfos(offset: number): Promise<number|void> {
-	await fetcher.list({
+async function fetchDepartmentInfos(): Promise<number|void> {
+	await departmentFetcher.list({
 		"filter": {
-			"department": chosenDepartment.value,
 			"existence": "exists",
-			"slug": slug.value
+			"slug": ""
 		},
 		"page": {
 			"limit": 10,
-			offset
+			"offset": departments.value.length
 		},
 		"sort": [ "name" ]
 	}).then(response => {
-		const deserializedData = response.body.data as DeserializedRoleResource[]
-		const IDsToCount = deserializedData.map(data => data.id)
+		const { data, meta } = response.body
 
-		if (deserializedData.length === 0) return Promise.resolve()
+		if (data.length === 0) return Promise.resolve()
 
-		list.value = [ ...list.value, ...deserializedData ]
+		departments.value = [ ...departments.value, ...data ]
 
-		// eslint-disable-next-line no-use-before-define
-		return countUsersPerRole(IDsToCount)
+		const castMeta = meta as ResourceCount
+		if (departments.value.length < castMeta.count) {
+			return fetchDepartmentInfos()
+		}
+
+		return Promise.resolve()
 	})
 }
 
@@ -137,13 +143,15 @@ async function countUsersPerRole(IDsToCount: string[]) {
 
 async function refetchRoles() {
 	list.value = []
-	fetchRoleInfos(0)
+	isLoaded.value = false
+	await fetchRoleInfos(0)
 }
 
 watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
+	await fetchDepartmentInfos()
 	isLoaded.value = true
 })
 </script>

@@ -1,4 +1,3 @@
-
 import type { Serializable } from "$/types/general"
 import type { RequirePassword } from "$/types/documents/security"
 import type {
