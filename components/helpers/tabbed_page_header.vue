@@ -5,7 +5,7 @@
 		</header>
 
 		<main>
-			<Tab/>
+			<Tabs :tabs="tabs"/>
 		</main>
 	</div>
 </template>
@@ -23,7 +23,12 @@ header {
 </style>
 
 <script setup lang="ts">
-import Tab from "@/tab.vue"
+import type { TabInfo } from "$@/types/component"
 
-const { title } = defineProps<{ title: string }>()
+import Tabs from "@/helpers/tabbed_page_header/tabs.vue"
+
+defineProps<{
+	title: string,
+	tabs: TabInfo[]
+}>()
 </script>

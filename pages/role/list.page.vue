@@ -6,7 +6,7 @@
 		:department-names="departmentNames"
 		:role-names="[]">
 		<template #header>
-			<AdminSettingsHeader title="Admin Configuration"/>
+			<TabbedPageHeader title="Admin Configuration"/>
 		</template>
 		<template #resources>
 			<RolesList :filtered-list="list"/>
@@ -29,7 +29,7 @@ import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
 
-import AdminSettingsHeader from "@/tabbed_page_header.vue"
+import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import RolesList from "@/resource_management/resource_manager/resource_list.vue"
 

@@ -33,7 +33,7 @@ import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/
 
 import Manager from "$/helpers/manager"
 import SearchFilter from "@/helpers/search_bar.vue"
-import AdminConfigHeader from "@/tabbed_page_header.vue"
+import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
 import UsersManager from "@/resource_management/resource_manager.vue"
 import UsersList from "@/resource_management/resource_manager/resource_list.vue"
 

@@ -182,7 +182,7 @@ import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee
 
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import Signature from "@/helpers/signature.vue"
-import SettingsHeader from "@/tabbed_page_header.vue"
+import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"

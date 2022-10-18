@@ -55,7 +55,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
 
-import SettingsHeader from "@/tabbed_page_header.vue"
+import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
 
