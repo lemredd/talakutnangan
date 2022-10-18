@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import type { TabInfo } from "$@/types/component"
 
-import Anchor from "@/anchor.vue"
+import Anchor from "@/helpers/anchor.vue"
 
 defineProps<{
 	tabs: TabInfo[]

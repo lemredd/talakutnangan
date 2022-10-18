@@ -165,7 +165,7 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import makeSwitch from "$@/helpers/make_switch"
 
-import Anchor from "@/anchor.vue"
+import Anchor from "@/helpers/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 import CommonNavigationLinks from "@/page_shell/navigation_links.vue"
