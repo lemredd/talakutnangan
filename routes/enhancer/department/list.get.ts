@@ -30,7 +30,8 @@ export default class extends PageMiddleware {
 		const pageProps = {
 			"departments": await manager.list({
 				"filter": {
-					"existence": "exists"
+					"existence": "exists",
+					"slug": ""
 				},
 				"page": {
 					"limit": 10,
