@@ -1,4 +1,5 @@
 import type { Serializable } from "$/types/general"
+import type { SummedTimeDocument } from "$/types/documents/consolidated_time"
 import type {
 	RoleIdentifierListDocument,
 	DeserializedRoleListDocument
@@ -209,3 +210,6 @@ export type UserIdentifierDocument
 
 export type UserIdentifierListDocument
 = IdentifierListDocument<UserResourceIdentifier<"read">>
+
+export type UserIdentifierListWithTimeConsumedDocument
+= IdentifierListDocument<UserResourceIdentifier<"read"> & SummedTimeDocument>

@@ -4,6 +4,7 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import Condition from "%/helpers/condition"
+import isUndefined from "$/type_guards/is_undefined"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
 /**
@@ -18,7 +19,7 @@ export default function<T>(
 	const condition = new Condition()
 	condition.equal("userID", constraints.filter.user)
 
-	if (typeof newState.include === "undefined") {
+	if (isUndefined(newState.include)) {
 		newState.include = []
 	}
 

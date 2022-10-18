@@ -8,6 +8,8 @@ import CacheManager from "$!/singletons/cache_manager"
 import RequestEnvironment from "$/singletons/request_environment"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
+import isUndefined from "$/type_guards/is_undefined"
+
 export default async function(sourceType: SourceType) {
 	Log.initialize()
 
@@ -30,10 +32,10 @@ export default async function(sourceType: SourceType) {
 	Log.trace("app", "initialized database")
 
 	if (
-		typeof process.env.EMAIL_HOST !== "undefined"
-		&& typeof process.env.EMAIL_PORT !== "undefined"
-		&& typeof process.env.EMAIL_USER !== "undefined"
-		&& typeof process.env.EMAIL_PASS !== "undefined"
+		!isUndefined(process.env.EMAIL_HOST)
+		&& !isUndefined(process.env.EMAIL_PORT)
+		&& !isUndefined(process.env.EMAIL_USER)
+		&& !isUndefined(process.env.EMAIL_PASS)
 	) {
 		Transport.initialize(
 			process.env.EMAIL_HOST,

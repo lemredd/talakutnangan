@@ -1,6 +1,7 @@
 import type { ExistenceFilter } from "$/types/query"
 import type { FindOptions, Model } from "%/types/dependent"
 
+import isUndefined from "$/type_guards/is_undefined"
 import Condition from "%/helpers/condition"
 import Log from "$!/singletons/log"
 
@@ -18,7 +19,7 @@ export default function<T extends Model>(
 			newState.paranoid = false
 			break
 		case "archived": {
-			if (typeof newState.where === "undefined") newState.where = {}
+			if (isUndefined(newState.where)) newState.where = {}
 			const initialCondition = new Condition(newState.where)
 			const existCondition = new Condition()
 			existCondition.not("deletedAt", null)

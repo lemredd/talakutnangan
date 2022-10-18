@@ -7,6 +7,8 @@ import ListResponse from "!/response_infos/list"
 import DepartmentManager from "%/managers/department"
 import QueryController from "!/controllers/query"
 
+import string from "!/validators/base/string"
+import nullable from "!/validators/base/nullable"
 import { READ } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -23,7 +25,14 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(DepartmentManager, {})
+		return makeListRules(DepartmentManager, {
+			"slug": {
+				"constraints": {
+					"nullable": { "defaultValue": "" }
+				},
+				"pipes": [ nullable, string ]
+			}
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {

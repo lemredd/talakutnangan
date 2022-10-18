@@ -8,7 +8,7 @@ import type {
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
-import calculateMillisecondDifference from "$@/helpers/calculate_millisecond_difference"
+import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
 /**
  * Manages the timers of different consultations.

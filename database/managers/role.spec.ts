@@ -127,6 +127,50 @@ describe("Database Manager: Role read operations", () => {
 		expect(counts).toHaveProperty("data.1.type", "role")
 		expect(counts).toHaveProperty("data.1.meta.userCount", 2)
 	})
+
+	it("can search user with matching query", async() => {
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
+		const incompleteName = user.name.slice(0, user.name.length - 2)
+
+		const users = await manager.list({
+			"filter": {
+				"department": "*",
+				"existence": "exists",
+				"slug": incompleteName
+			},
+			"page": {
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": []
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+	})
+
+	it("cannot search user with non-matching query", async() => {
+		const manager = new Manager()
+		const user = await new Factory().insertOne()
+		const incorrectName = `${user.name}133`
+
+		const users = await manager.list({
+			"filter": {
+				"department": "*",
+				"existence": "exists",
+				"slug": incorrectName
+			},
+			"page": {
+				"limit": 5,
+				"offset": 0
+			},
+			"sort": []
+		})
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(0)
+	})
 })
 
 describe("Database Manager: Role update operations", () => {

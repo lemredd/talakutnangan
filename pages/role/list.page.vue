@@ -20,6 +20,7 @@ import { inject, onMounted, provide, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
@@ -64,11 +65,22 @@ const departmentNames = computed<OptionInfo[]>(() => [
 	}))
 ])
 
+const slug = ref("")
+const filteredList = ref<DeserializedRoleResource[]>([])
+// const watchableFilters = [
+// 	slug
+// ]
+
+function getFilteredList(resource: PossibleResources[]) {
+	filteredList.value = resource as DeserializedRoleResource[]
+}
+
 async function fetchRoleInfos(offset: number): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"department": chosenDepartment.value,
-			"existence": "exists"
+			"existence": "exists",
+			"slug": slug.value
 		},
 		"page": {
 			"limit": 10,

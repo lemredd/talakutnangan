@@ -4,6 +4,7 @@ import type { ConsultationRangeFilter } from "$/types/query"
 import Log from "$!/singletons/log"
 
 import Condition from "%/helpers/condition"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Sift employee schedule models which within a certain range.
@@ -16,7 +17,7 @@ export default function<T>(
 
 	const { consultationScheduleRange } = constraints.filter
 
-	if (typeof newState.where === "undefined") {
+	if (isUndefined(newState.where)) {
 		newState.where = {}
 	}
 
@@ -24,7 +25,7 @@ export default function<T>(
 
 	if (consultationScheduleRange !== "*") {
 		condition.and(
-			new Condition().greaterThanOrEqual("scheduledStartAt", consultationScheduleRange.start),
+			new Condition().greaterThanOrEqual("scheduledStartAt", consultationScheduleRange.begin),
 			new Condition().lessThanOrEqual("scheduledStartAt", consultationScheduleRange.end)
 		)
 	}

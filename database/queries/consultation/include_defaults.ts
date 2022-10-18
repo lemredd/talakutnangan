@@ -6,6 +6,7 @@ import Role from "%/models/role"
 import User from "%/models/user"
 import AttachedRole from "%/models/attached_role"
 import ProfilePicture from "%/models/profile_picture"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Includes default models
@@ -16,7 +17,7 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (typeof newState.include === "undefined") {
+	if (isUndefined(newState.include)) {
 		newState.include = []
 	}
 
