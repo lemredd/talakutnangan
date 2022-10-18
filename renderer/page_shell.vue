@@ -1,10 +1,10 @@
 <template>
 	<div ref="layout" class="layout">
-		<ShellNav v-if="!isLoggingIn"/>
+		<ShellNav v-if="!isLoggingIn && !isViewingConsultationForm"/>
 		<Content :class="{ 'login-content': isLoggingIn }">
 			<slot></slot>
 		</Content>
-		<Footer/>
+		<Footer v-if="!isViewingConsultationForm"/>
 	</div>
 </template>
 
@@ -56,8 +56,9 @@ import ShellNav from "@/page_shell/shell_nav.vue"
 import Content from "@/page_shell/content_container.vue"
 
 const pageContext = usePageContext()
-const path = pageContext.urlPathname
+const path = pageContext.urlPathname as string
 const isLoggingIn = ref<boolean>(path === "/user/log_in")
+const isViewingConsultationForm = ref<boolean>(path.includes("/consultation/form"))
 
 const layout = ref<HTMLElement | null>(null)
 const bodyClasses = ref<BodyCSSClasses | null>(null)

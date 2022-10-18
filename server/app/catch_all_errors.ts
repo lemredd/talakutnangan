@@ -5,6 +5,7 @@ import Log from "$!/singletons/log"
 import BaseError from "$!/errors/base"
 import ErrorBag from "$!/errors/error_bag"
 import URLMaker from "$!/singletons/url_maker"
+import DeveloperError from "$!/errors/developer"
 import encodeToBase64 from "$!/helpers/encode_to_base64"
 import RequestEnvironment from "$/singletons/request_environment"
 
@@ -24,6 +25,31 @@ export default async function(
 	await request.transaction.destroyIneffectually()
 
 	if (request.asynchronousOperation) {
+		let unitError: BaseError|ErrorBag = new DeveloperError(
+			"Error in server that probably a logical error",
+			"Error in server"
+		)
+
+		if (error instanceof BaseError || error instanceof ErrorBag) {
+			unitError = error
+		} else if (error instanceof Error) {
+			let detail = error.message
+
+			if (RequestEnvironment.isNotOnProduction) {
+				detail += `(Stack trace pf ${error.name}: ${error.stack})`
+			}
+
+			unitError = new DeveloperError(detail, `Found error named "${error.name}"`)
+		}
+
+		if (unitError instanceof BaseError) {
+			await request.asynchronousOperation.fail(unitError)
+		} else {
+			await request.asynchronousOperation.stopProgress({
+				...request.asynchronousOperation.extra,
+				"errors": unitError.toJSON()
+			})
+		}
 		await request.asynchronousOperation.destroyIneffectually()
 	}
 
