@@ -1,69 +1,64 @@
 <template>
-	<AdminConfigHeader v-if="currentResourceManager.isAdmin()" :title="determineTitle"/>
-	<h1 v-else class="resource-config-header">
-		{{ determineTitle }}
-	</h1>
-
-	<UsersManager
+	<ResourceManager
+		v-model:chosen-role="chosenRole"
+		v-model:chosen-department="chosenDepartment"
+		v-model:slug="slug"
 		:is-loaded="isLoaded"
-		:resource="users"
-		:is-resource-type-user="true"
-		@filter-by-role="filterByAdditionalResource($event, 'role')"
-		@filter-by-dept="filterByAdditionalResource($event, 'department')">
-		<template #search-filter>
-			<SearchFilter @filter-by-given-slug="filterByGivenSlug"/>
+		:department-names="departmentNames"
+		:role-names="roleNames">
+		<template #header>
+			<TabbedPageHeader
+				v-if="currentResourceManager.isAdmin()"
+				:title="determineTitle"
+				:tab-infos="resourceTabInfos"/>
+			<h1 v-else class="resource-config-header">
+				{{ determineTitle }}
+			</h1>
 		</template>
 
-		<UsersList :filtered-list="users"/>
-	</UsersManager>
+		<template #resources>
+			<ResourceList :filtered-list="list"/>
+		</template>
+	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
-
-.resource-config-header {
-	font-size: 1.75em;
-	text-transform: uppercase;
-}
+	.resource-config-header {
+		font-size: 1.75em;
+		text-transform: uppercase;
+	}
 </style>
 <script setup lang="ts">
-import { computed, inject, onMounted, provide, ref, watch } from "vue"
+import { computed, inject, onMounted, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
+
+import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
-import SearchFilter from "@/helpers/search_bar.vue"
-import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
-import UsersManager from "@/resource_management/resource_manager.vue"
-import UsersList from "@/resource_management/resource_manager/resource_list.vue"
+import debounce from "$@/helpers/debounce"
 
-import UserFetcher from "$@/fetchers/user"
+import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
+import ResourceManager from "@/resource_management/resource_manager.vue"
+import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized">
+type RequiredExtraProps =
+	| "userProfile"
+	| "roles"
+	| "departments"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
+
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 const isLoaded = ref(false)
-
-provide("managerKind", new Manager(userProfile))
-if (currentResourceManager.isAdmin()) {
-	const tabs = [
-		{
-			"label": "Users",
-			"path": "/user/list"
-		},
-		{
-			"label": "Roles",
-			"path": "/role/list"
-		},
-		{
-			"label": "Departments",
-			"path": "/department/list"
-		}
-	]
-	provide("tabs", tabs)
-}
 
 const determineTitle = computed(() => {
 	if (currentResourceManager.isInstituteLimited()) {
@@ -76,37 +71,51 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
-const users = ref<DeserializedUserResource[]>([])
+const list = ref<DeserializedUserResource[]>([])
+const roles = ref<DeserializedRoleResource[]>(
+	pageProps.roles.data as DeserializedRoleResource[]
+)
+const roleNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "All",
+		"value": "*"
+	},
+	...roles.value.map(data => ({
+		"label": data.name,
+		"value": data.id
+	}))
+])
+const chosenRole = ref("*")
 
-const roleId = ref("*")
-const depId = ref("*")
+const departments = ref<DeserializedDepartmentResource[]>(
+	pageProps.departments.data as DeserializedDepartmentResource[]
+)
+const departmentNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "All",
+		"value": "*"
+	},
+	...departments.value.map(data => ({
+		"label": data.fullName,
+		"value": data.id
+	}))
+])
+const chosenDepartment = ref("*")
+
 const windowOffset = ref(0)
+
 const slug = ref("")
-const watchableFilters = [
-	roleId,
-	windowOffset,
-	depId,
-	slug
-]
-
-function resetUsersList() {
-	windowOffset.value = 0
-	users.value = []
-}
-
-function filterByGivenSlug(searchInput: string) {
-	resetUsersList()
-	slug.value = searchInput
-}
 
 function fetchUserInfo() {
 	isLoaded.value = false
-	new UserFetcher().list({
+	new Fetcher().list({
 		"filter": {
-			"department": currentResourceManager.isAdmin() ? depId.value : currentUserDepartment.id,
+			"department": currentResourceManager.isAdmin()
+				? chosenDepartment.value
+				: currentUserDepartment.id,
 			"existence": "exists",
 			"kind": "*",
-			"role": roleId.value,
+			"role": chosenRole.value,
 			"slug": slug.value
 		},
 		"page": {
@@ -121,25 +130,28 @@ function fetchUserInfo() {
 
 		if (!deserializedData.length) return Promise.resolve()
 
-		users.value = deserializedData
+		list.value = deserializedData
 
-		// eslint-disable-next-line no-use-before-define
 		windowOffset.value += offsetIncrement
 
 		return Promise.resolve()
 	})
 }
 
-function filterByAdditionalResource(id: string, filterKind: "role" | "department") {
-	resetUsersList()
-	if (filterKind === "role") roleId.value = id
-	else depId.value = id
-}
-
 onMounted(() => {
 	fetchUserInfo()
 })
-watch(watchableFilters, () => {
-	fetchUserInfo()
-})
+
+function resetUsersList() {
+	windowOffset.value = 0
+	list.value = []
+}
+
+const refetchUsers = debounce(fetchUserInfo, DEBOUNCED_WAIT_DURATION)
+watch([ windowOffset, slug ], refetchUsers)
+watch([ chosenRole, chosenDepartment ], debounce(() => {
+	resetUsersList()
+	refetchUsers()
+}, DEBOUNCED_WAIT_DURATION))
+
 </script>

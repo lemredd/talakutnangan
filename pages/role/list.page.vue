@@ -9,7 +9,7 @@
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos"/>
 		</template>
 		<template #resources>
-			<RolesList :filtered-list="list"/>
+			<ResourceList :filtered-list="list"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -24,15 +24,15 @@ import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
-import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
-import RolesList from "@/resource_management/resource_manager/resource_list.vue"
+import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
