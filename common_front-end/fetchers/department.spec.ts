@@ -71,7 +71,8 @@ describe("Fetcher: Department", () => {
 		const queryObject: DepartmentQueryParameters = {
 			"filter": {
 				"IDs": [],
-				"existence": "exists"
+				"existence": "exists",
+				"slug": ""
 			},
 			"page": {
 				"limit": 5,
