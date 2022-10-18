@@ -297,4 +297,67 @@ describe("Page: Consultation/form", () => {
 			})
 		})
 	})
+
+	describe("printing", () => {
+		it("can print the page on click", async() => {
+			const consultant = {
+				"data": {
+					"id": 0,
+					"name": "Consultant Name"
+				}
+			}
+			const consultantRole = {
+				"data": {
+					"name": "Consultant Role"
+				}
+			}
+			const chatMessageActivities = {
+				"data": [
+					{
+						"user": consultant
+					},
+					{
+						"user": {
+							"data": {
+								"id": 1,
+								"name": "Consulter Name"
+							}
+						}
+					}
+				]
+			}
+
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								chatMessageActivities,
+								"chatMessages": {
+									"data": []
+								},
+								"consultation": {
+									"data": {
+										consultant,
+										consultantRole,
+										"reason": "Reason",
+										"scheduledStartAt": new Date("2022-10-04 10:00"),
+										"startedAt": new Date("2022-10-04 10:00")
+									}
+								}
+							}
+						}
+					}
+				}
+			})
+			const printBtn = wrapper.find(".print-btn")
+
+			expect(printBtn.exists()).toBeTruthy()
+
+			global.window.print = jest.fn()
+			await printBtn.trigger("click")
+
+			expect(global.window.print).toBeCalled()
+		})
+	})
 })
