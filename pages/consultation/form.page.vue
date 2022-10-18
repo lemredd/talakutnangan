@@ -65,8 +65,7 @@
 			</div>
 		</div>
 	</section>
-
-	<ul class="chat-messages">
+	<ul class="chat-messages mt-15">
 		<h1>Chat Messages</h1>
 		<li
 			v-for="chatMessage in chatMessages"
@@ -89,6 +88,25 @@
 			</span>
 		</li>
 	</ul>
+
+	<section class="signatures mt-15">
+		<h1>Signatures</h1>
+		<div class="consultant-signature">
+			<h2>Consultant</h2>
+			<img :src="consultant.data.signature?.data.fileContents"/>
+			<small>{{ consultant.data.name }}</small>
+		</div>
+		<div
+			class="consulter-signature mt-5">
+			<h2>Consulter/s</h2>
+			<div
+				v-for="consulter in consulters"
+				:key="consulter.id">
+				<img :src="consulter.user?.data.signature?.data.fileContents"/>
+				<small>{{ consulter.user?.data.name }}</small>
+			</div>
+		</div>
+	</section>
 </template>
 
 <style scoped lang="scss">
@@ -105,8 +123,9 @@
 	}
 
 	h6 {
-		@apply border-b border-b-light-500 mb-5;
+		@apply border-b mb-5;
 	}
+	.signatures img { max-width: 120px; }
 
 	.file-message a { text-decoration: underline; }
 	@media print {
