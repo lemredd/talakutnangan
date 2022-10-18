@@ -22,8 +22,7 @@ export default function<T>(
 		default: {
 			const condition = new Condition()
 			condition.or(
-				new Condition().search("name", constraints.filter.slug),
-				new Condition().search("email", constraints.filter.slug)
+				new Condition().search("fullName", constraints.filter.slug)
 			)
 
 			if (isUndefined(newState.where)) {

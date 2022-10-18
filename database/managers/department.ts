@@ -1,6 +1,7 @@
+import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { DepartmentQueryParameters } from "$/types/query"
-import type { Model as BaseModel, ModelCtor } from "%/types/dependent"
+import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type {
 	DepartmentAttributes,
 	DepartmentResourceIdentifier
@@ -13,6 +14,7 @@ import trimRight from "$/string/trim_right"
 import Condition from "%/helpers/condition"
 import DatabaseError from "$!/errors/database"
 import Transformer from "%/transformers/department"
+import siftBySlug from "%/queries/department/sift_by_slug"
 
 export default class extends BaseManager<
 	Model,
@@ -22,6 +24,13 @@ export default class extends BaseManager<
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): Transformer { return new Transformer() }
+
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, DepartmentQueryParameters<number>>[] {
+		return [
+			siftBySlug,
+			...super.listPipeline
+		]
+	}
 
 	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
 		throw new DatabaseError("Departments are not owned by any user.")

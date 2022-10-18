@@ -2,7 +2,7 @@ import type { Sort } from "$/types/query"
 import type { FindOptions, Model } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
-
+import isUndefined from "$/type_guards/is_undefined"
 /**
  * Sorts the selected models.
  */
@@ -21,7 +21,7 @@ export default function<T extends Model>(
 	})
 
 	if (rawSortInfo.length > 0) {
-		if (typeof newState.order === "undefined") {
+		if (isUndefined(newState.order)) {
 			newState.order = []
 		}
 

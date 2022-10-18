@@ -10,6 +10,7 @@ import type {
 } from "%/types/dependent"
 
 import Serializer from "%/transformers/serializer"
+import isUndefined from "$/type_guards/is_undefined"
 import processDataAsync from "%/helpers/process_data_async"
 
 export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
@@ -122,7 +123,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 	protected findTransformer(attributeName: string): Transformer<any, any> {
 		const subtransformer = this.subtransformers.find(info => info.attribute === attributeName)
 
-		if (typeof subtransformer === "undefined") {
+		if (isUndefined(subtransformer)) {
 			throw new Error(
 				`Developer is looking for a transformer with a missing attribute "${attributeName}".`
 			)
@@ -206,7 +207,7 @@ export default abstract class Transformer<T, U> extends BaseTransformer<T, U> {
 			resourceLinkage
 		)
 
-		if (typeof resourceObject !== "undefined" || resourceObject !== null) {
+		if (!isUndefined(resourceObject) || resourceObject !== null) {
 			const transformerInfo = this.subtransformers.find(
 				subtransformerInfo => subtransformerInfo.attribute === attributeName
 			) as Subtransformer
