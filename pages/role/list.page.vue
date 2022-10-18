@@ -3,9 +3,7 @@
 
 	<RolesManager :resource="list" :is-loaded="isLoaded">
 		<template #search-filter>
-			<SearchFilter
-				:resource="list"
-				@filter-resource-by-search="getFilteredList"/>
+			<SearchFilter v-model="slug"/>
 			<SelectableOptionsField
 				v-model="chosenDepartment"
 				:options="departmentNames"/>
