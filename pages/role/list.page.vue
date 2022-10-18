@@ -112,10 +112,12 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 
-watch([ chosenDepartment, slug ], () => {
+function refetchRoles() {
 	list.value = []
 	fetchRoleInfos(0)
-})
+}
+
+watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
