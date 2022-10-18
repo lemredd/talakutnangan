@@ -103,7 +103,10 @@ const {
 			"data": consultationData
 		}
 	}
-} = pageContext as any
+} = pageContext as PageContext<
+	"deserialized",
+	"consultation"|"chatMessageActivities"|"chatMessages"
+>
 
 const consultation = consultationData as DeserializedConsultationResource
 const {
