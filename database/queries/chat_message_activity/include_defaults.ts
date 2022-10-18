@@ -3,6 +3,7 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
+import Signature from "%/models/signature"
 import Consultation from "%/models/consultation"
 import ProfilePicture from "%/models/profile_picture"
 import isUndefined from "$/type_guards/is_undefined"
@@ -25,6 +26,10 @@ export default function<T>(
 		"include": [
 			{
 				"model": ProfilePicture,
+				"required": false
+			},
+			{
+				"model": Signature,
 				"required": false
 			}
 		],
