@@ -108,8 +108,6 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 const chosenDepartment = ref("*")
 
-const windowOffset = ref(0)
-
 const slug = ref("")
 
 function fetchUserInfo() {
@@ -125,40 +123,31 @@ function fetchUserInfo() {
 		},
 		"page": {
 			"limit": 10,
-			"offset": windowOffset.value
+			"offset": list.value.length
 		},
 		"sort": [ "name" ]
 	}).then(({ "body": deserializedUserList }) => {
 		isLoaded.value = true
 		const deserializedData = deserializedUserList.data as DeserializedUserResource[]
-		const offsetIncrement = 10
 
 		if (!deserializedData.length) return Promise.resolve()
 
-		list.value = deserializedData
-
-		windowOffset.value += offsetIncrement
+		list.value = [ ...list.value, ...deserializedData ]
 
 		return Promise.resolve()
 	})
 }
 
-onMounted(() => {
+onMounted(async() => {
 	isLoaded.value = false
-	fetchUserInfo()
+	await fetchUserInfo()
 })
 
-function resetUsersList() {
+async function resetUsersList() {
 	isLoaded.value = false
-	windowOffset.value = 0
 	list.value = []
+	await fetchUserInfo()
 }
 
-const refetchUsers = debounce(fetchUserInfo, DEBOUNCED_WAIT_DURATION)
-watch([ windowOffset, slug ], refetchUsers)
-watch([ chosenRole, chosenDepartment ], debounce(() => {
-	resetUsersList()
-	refetchUsers()
-}, DEBOUNCED_WAIT_DURATION))
-
+watch([ chosenRole, slug, chosenDepartment ], debounce(resetUsersList, DEBOUNCED_WAIT_DURATION))
 </script>
