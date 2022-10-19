@@ -13,7 +13,7 @@ import required from "!/validators/base/required"
 import isGreaterThan from "!/validators/comparison/is_greater_than"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
-import GetReadTimeSumByWeek from "!%/api/consultation/read_time_sum_by_week.get"
+import GetReadTimeSumByWeek from "!%/api/consultation/read_time_sum_per_week.get"
 
 export default class extends GetReadTimeSumByWeek {
 	get filePath(): string { return __filename }

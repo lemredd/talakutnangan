@@ -2,7 +2,7 @@ import ErrorBag from "$!/errors/error_bag"
 import UserFactory from "~/factories/user"
 import MockRequester from "~/setups/mock_requester"
 
-import Controller from "./read_time_sum_by_week.get"
+import Controller from "./read_time_sum_per_week.get"
 
 const QUERY_VALIDATION_INDEX = 0
 
