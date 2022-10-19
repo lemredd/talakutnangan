@@ -262,7 +262,7 @@ export default class extends BaseManager<
 			})
 
 			return {
-				"data": models.map(model => {
+				"data": await models.map(model => {
 					const user = model.user as User
 					const consultation = model.consultation as Model
 
@@ -274,26 +274,36 @@ export default class extends BaseManager<
 					return {
 						"id": String(user.id),
 						"meta": {
+							"consultations": [
+								consultation
+							],
 							"totalMillisecondsConsumed": millisecond
 						},
 						"type": "user"
 					}
-				}).reduce((previousSums, currentSum: any) => {
-					const previousSum = previousSums.find(sum => sum.id === currentSum.id)
+				}).reduce(async(previousSums, currentSum: any) => {
+					const waitedPreviousSums = await previousSums
+					const previousSum = waitedPreviousSums.find(sum => sum.id === currentSum.id)
+					currentSum.meta.consultations = deserialize(
+						await this.serialize(currentSum.meta.consultations)
+					)
 
 					if (previousSum) {
 						previousSum.meta.totalMillisecondsConsumed += currentSum
 						.meta
 						.totalMillisecondsConsumed
 
-						return previousSums
+						const consultations = previousSum.meta.consultations.data
+						consultations.push(currentSum.meta.consultations.data[0])
+
+						return waitedPreviousSums
 					}
 
 					return [
-						...previousSums,
+						...waitedPreviousSums,
 						currentSum
 					]
-				}, [] as UserIdentifierListWithTimeConsumedDocument["data"])
+				}, Promise.resolve([]) as Promise<UserIdentifierListWithTimeConsumedDocument["data"]>)
 			}
 		} catch (error) {
 			throw this.makeBaseError(error)
