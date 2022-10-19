@@ -23,7 +23,7 @@
 					<img v-if="fileMessageContent.image" :src="fileURL"/>
 					<a
 						v-else
-						class="file-link flex items-center m-1"
+						class="file-link"
 						target="_blank"
 						:href="fileURL">
 						<span class="attachment-symbol material-icons">

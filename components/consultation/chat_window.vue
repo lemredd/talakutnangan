@@ -7,7 +7,7 @@
 			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
 		</button>
 
-		<div class="selected-consultation-header dark:bg-true-gray-800">
+		<div class="selected-consultation-header">
 			<div class="text">
 				<div class="selected-consultation-title">
 					{{ consultation.reason }}
@@ -38,8 +38,6 @@
 					</template>
 
 					<template #dropdown-contents>
-						<!-- TODO: make absolute -->
-
 						<div class="links">
 							<a href="#">View consultation form</a>
 							<a
@@ -78,12 +76,12 @@
 			</div>
 		</div>
 		<div class="selected-consultation-chats">
-			<div class="selected-consultation-new flex flex-col align-center justify-center">
-				<p class="text-center">
+			<div class="selected-consultation-new">
+				<p class="consultation-details">
 					<strong>This is a new consultation.</strong>
 					here are some additional details
 				</p>
-				<ul class="selected-consultation-additional-details my-5 w-[max-content] mx-auto">
+				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 
@@ -133,7 +131,7 @@
 		}
 
 		.selected-consultation-header {
-			@apply flex py-4 px-2;
+			@apply flex py-4 px-2 dark:bg-true-gray-800;
 			.text {
 				@apply flex-1;
 				.selected-consultation-user-status { @apply row-start-2; }
@@ -151,9 +149,18 @@
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
+			.selected-consultation-new{
+				@apply flex flex-col items-center justify-center;
+			}
+
+			.consultation-details{
+				@apply text-center;
+			}
+
 			ul.selected-consultation-additional-details {
 				@apply bg-true-gray-600 border border-true-gray-600 rounded-md p-5;
 				@apply dark:bg-transparent;
+				@apply my-5 w-max mx-auto;
 			}
 		}
 	}

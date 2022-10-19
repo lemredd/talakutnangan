@@ -35,7 +35,6 @@
 			</div>
 		</form>
 		<div class="controls">
-			<!-- TODO: add reset password functionality -->
 			<button
 				id="submit-btn"
 				:disabled="!email && Boolean(token)"
