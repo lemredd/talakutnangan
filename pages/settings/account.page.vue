@@ -1,5 +1,5 @@
 <template>
-	<SettingsHeader title="User Settings"/>
+	<SettingsHeader title="User Settings" :tab-infos="tabs"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
@@ -47,10 +47,10 @@ form {
 </style>
 
 <script setup lang="ts">
-import { inject, provide, ref, computed, onMounted } from "vue"
+import { inject, ref, computed } from "vue"
 
-import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
+import type { ConditionalLinkInfo } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
@@ -58,6 +58,8 @@ import Fetcher from "$@/fetchers/user"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
+
+const fetcher = new Fetcher()
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -88,16 +90,8 @@ const groupName = computed<string>(() => userProfile.data.department.data.acrony
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
 
-let rawFetcher: Fetcher|null = null
-
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
-
-	throw new Error("Users cannot be processed to server yet")
-}
-
 function updateEmail(): void {
-	fetcher().update(userProfile.data.id, {
+	fetcher.update(userProfile.data.id, {
 		"email": email.value,
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
@@ -111,20 +105,26 @@ function updateEmail(): void {
 	})
 }
 
-const tabs: TabInfo[] = [
+const tabs: ConditionalLinkInfo<any, any>[] = [
 	{
-		"label": "Account",
-		"path": "/settings/account"
-	},
-	{
-		"label": "Profile",
-		"path": "/settings/profile"
+		"kinds": [],
+		"links": [
+			{
+				"icon": "",
+				"name": "Account",
+				"path": "/settings/account",
+				"viewportsAvailable": ["mobile", "desktop"]
+			},
+			{
+				"icon": "",
+				"name": "Profile",
+				"path": "/settings/profile",
+				"viewportsAvailable": ["mobile", "desktop"]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [],
+		"permissionGroup": null
 	}
 ]
-
-provide("tabs", tabs)
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>
