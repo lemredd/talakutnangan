@@ -131,6 +131,7 @@ async function countUsersPerRole(IDsToCount: string[]) {
 			}
 		}
 	})
+	await fetchRoleInfos()
 }
 
 async function refetchRoles() {
