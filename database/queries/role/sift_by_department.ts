@@ -5,7 +5,6 @@ import Log from "$!/singletons/log"
 
 import User from "%/models/user"
 import Condition from "%/helpers/condition"
-import Department from "%/models/department"
 import isUndefined from "$/type_guards/is_undefined"
 
 /**
