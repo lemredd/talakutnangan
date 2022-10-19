@@ -2,6 +2,13 @@ import { shallowMount } from "@vue/test-utils"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedRoleDocument } from "$/types/documents/role"
+
+import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import { POST_LINK } from "$/constants/template_links"
+
+import specializePath from "$/helpers/specialize_path"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import PermissionGroup from "$/permissions/post"
 import {
@@ -15,6 +22,26 @@ describe("Component: post/viewer", () => {
 	it.only("should submit post errors", async() => {
 		const userID = "1"
 		const postID = "2"
+		const roleID = "3"
+		const modelValue = {
+			"content": "Hello world!",
+			"deletedAt": null,
+			"id": postID,
+			"poster": {
+				"data": {
+					"id": userID,
+					"type": "user"
+				}
+			} as DeserializedUserDocument<"roles">,
+			"posterRole": {
+				"data": {
+					"id": roleID,
+					"type": "role"
+				}
+			} as DeserializedRoleDocument,
+			"type": "post"
+		} as DeserializedPostResource<"poster">
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
@@ -44,26 +71,28 @@ describe("Component: post/viewer", () => {
 				}
 			},
 			"props": {
-				"modelValue": {
-					"content": "Hello world!",
-					"deletedAt": null,
-					"id": postID,
-					"poster": {
-						"data": {
-							"id": userID,
-							"type": "user"
-						}
-					} as DeserializedUserDocument<"roles">,
-					"type": "post"
-				} as DeserializedPostResource<"poster">
+				modelValue
 			}
 		})
 
 		const menu = wrapper.findComponent({ "name": "Menu" })
 		await menu.vm.$emit("updatePost")
+		const updatePostForm = wrapper.findComponent({ "name": "UpdatePostForm" })
+		await updatePostForm.vm.$emit("submit")
 
 		const castWrapper = wrapper.vm as any
 		expect(castWrapper.mustUpdate).toBeTruthy()
+		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(1)
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", specializePath(POST_LINK.bound, { "id": postID }))
+		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(await request.json()).toStrictEqual(modelValue)
+
+		const updateEvent = wrapper.emitted("update:modelValue")
+		expect(updateEvent).toHaveProperty("0.0", modelValue)
 	})
 
 	it("cannot request for editing the post", async() => {
