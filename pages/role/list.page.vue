@@ -61,8 +61,6 @@ const departmentNames = computed<OptionInfo[]>(() => [
 	}))
 ])
 
-const windowOffset = ref<number>(0)
-
 const slug = ref<string>("")
 
 async function fetchRoleInfos(): Promise<number|void> {
@@ -74,10 +72,11 @@ async function fetchRoleInfos(): Promise<number|void> {
 		},
 		"page": {
 			"limit": 10,
-			"offset": windowOffset.value
+			"offset": list.value.length
 		},
 		"sort": [ "name" ]
 	}).then(response => {
+		isLoaded.value = true
 		const deserializedData = response.body.data as DeserializedRoleResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
 
@@ -121,20 +120,15 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...list.value ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
 
-			const index = originalData.findIndex(data => data.id === id)
-			originalData[index].meta = meta
-		}
+			const index = list.value.findIndex(data => data.id === id)
 
-		list.value = originalData
-		isLoaded.value = true
-
-		if (windowOffset.value !== list.value.length) {
-			windowOffset.value += originalData.length
+			if (index > -1) {
+				list.value[index].meta = meta
+			}
 		}
 	})
 }
@@ -145,11 +139,7 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug ], debounce(() => {
-	windowOffset.value = 0
-	refetchRoles()
-}, DEBOUNCED_WAIT_DURATION))
-watch([ windowOffset ], debounce(fetchRoleInfos, DEBOUNCED_WAIT_DURATION))
+watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
