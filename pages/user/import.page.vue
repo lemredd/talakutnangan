@@ -119,6 +119,7 @@
 <script setup lang="ts">
 import { inject, ref, computed, provide } from "vue"
 
+import type { UnitError } from "$/types/server"
 import { UserKindValues } from "$/types/database"
 import type { ErrorDocument } from "$/types/documents/base"
 import type { OptionInfo, TabInfo } from "$@/types/component"
@@ -184,7 +185,7 @@ function importData(event: Event) {
 	.catch(({ body }) => {
 		if (body) {
 			const { errors } = body
-			receivedErrors.value = errors.map((error: ErrorDocument) => error.detail)
+			receivedErrors.value = errors.map((error: UnitError) => {
 		} else {
 			receivedErrors.value = [ "an error occured" ]
 		}
