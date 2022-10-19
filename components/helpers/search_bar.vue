@@ -4,27 +4,31 @@
 			search
 		</button>
 		<input
-			id="search-filter"
 			v-model="searchFilterText"
 			type="text"
-			class="search-filter"
-			@change="emit('filterByGivenSlug', searchFilterText)"/>
+			class="search-filter"/>
 	</div>
 </template>
 
 <style scoped lang="scss">
-.search-bar {
-	.search-filter {
-		@apply border-b-gray-900;
+	.search-bar {
+		@apply flex flex-row flex-wrap;
 
-		width: 100%;
-		background-color: transparent;
+		button {
+			@apply flex-none;
+		}
 
-		&:focus {
-			outline: none;
+		.search-filter {
+			@apply flex-1 border-b-gray-900;
+
+			width: 100%;
+			background-color: transparent;
+
+			&:focus {
+				outline: none;
+			}
 		}
 	}
-}
 </style>
 
 <script setup lang = ts>

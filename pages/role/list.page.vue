@@ -1,39 +1,38 @@
 <template>
-	<AdminSettingsHeader title="Admin Configuration"/>
-
-	<RolesManager :resource="list" :is-loaded="isLoaded">
-		<template #search-filter>
-			<SearchFilter
-				:resource="list"
-				@filter-resource-by-search="getFilteredList"/>
-			<SelectableOptionsField
-				v-model="chosenDepartment"
-				:options="departmentNames"/>
+	<ResourceManager
+		v-model:chosen-department="chosenDepartment"
+		v-model:slug="slug"
+		:is-loaded="isLoaded"
+		:department-names="departmentNames"
+		:role-names="[]">
+		<template #header>
+			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos"/>
 		</template>
-
-		<RolesList :filtered-list="list"/>
-	</RolesManager>
+		<template #resources>
+			<ResourceList :filtered-list="list"/>
+		</template>
+	</ResourceManager>
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, provide, ref, computed, watch } from "vue"
+import { inject, onMounted, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
-import Manager from "$/helpers/manager"
-import RoleFetcher from "$@/fetchers/role"
+import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
+import DepartmentFetcher from "$@/fetchers/department"
 
-import SearchFilter from "@/helpers/search_bar.vue"
-import AdminSettingsHeader from "@/tabbed_page_header.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
-import RolesManager from "@/resource_management/resource_manager.vue"
-import RolesList from "@/resource_management/resource_manager/resource_list.vue"
+import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
+import ResourceManager from "@/resource_management/resource_manager.vue"
+import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -42,17 +41,12 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const { userProfile } = pageProps
-
-const classifier = new Manager(userProfile)
-provide("managerKind", classifier)
-provide("tabs", [ "Users", "Roles", "Departments" ])
-
-const fetcher = new RoleFetcher()
+const fetcher = new Fetcher()
+const departmentFetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
-const departmentList = ref<DeserializedDepartmentResource[]>(
+const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
 const chosenDepartment = ref<string>("*")
@@ -61,15 +55,15 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"label": "All",
 		"value": "*"
 	},
-	...departmentList.value.map(data => ({
+	...departments.value.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))
 ])
 
-const slug = ref("")
+const slug = ref<string>("")
 
-async function fetchRoleInfos(offset: number): Promise<number|void> {
+async function fetchRoleInfos(): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -78,10 +72,11 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 		},
 		"page": {
 			"limit": 10,
-			offset
+			"offset": list.value.length
 		},
 		"sort": [ "name" ]
 	}).then(response => {
+		isLoaded.value = true
 		const deserializedData = response.body.data as DeserializedRoleResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
 
@@ -94,31 +89,62 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 	})
 }
 
+// TODO: Share this among resource pages
+async function fetchDepartmentInfos(): Promise<number|void> {
+	await departmentFetcher.list({
+		"filter": {
+			"existence": "exists",
+			"slug": ""
+		},
+		"page": {
+			"limit": 10,
+			"offset": departments.value.length
+		},
+		"sort": [ "fullName" ]
+	}).then(response => {
+		const { data, meta } = response.body
+
+		if (data.length === 0) return Promise.resolve()
+
+		departments.value = [ ...departments.value, ...data ]
+
+		const castMeta = meta as ResourceCount
+		if (departments.value.length < castMeta.count) {
+			return fetchDepartmentInfos()
+		}
+
+		return Promise.resolve()
+	})
+}
+
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...list.value ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
 
-			const index = originalData.findIndex(data => data.id === id)
-			originalData[index].meta = meta
+			const index = list.value.findIndex(data => data.id === id)
+
+			if (index > -1) {
+				list.value[index].meta = meta
+			}
 		}
-
-		list.value = originalData
-
-		return fetchRoleInfos(originalData.length)
 	})
+	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug ], () => {
+async function refetchRoles() {
 	list.value = []
-	fetchRoleInfos(0)
-})
+	isLoaded.value = false
+	await fetchRoleInfos()
+}
+
+watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
+	await fetchDepartmentInfos()
 	isLoaded.value = true
 })
 </script>

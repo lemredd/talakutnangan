@@ -121,7 +121,7 @@ import type { DeserializedUserResource, DeserializedStudentResource } from "$/ty
 import UserFetcher from "$@/fetchers/user"
 import convertForSentence from "$/string/convert_for_sentence"
 
-import AdminConfigHeader from "@/tabbed_page_header.vue"
+import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
 import OutputTable from "@/helpers/overflowing_table.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"

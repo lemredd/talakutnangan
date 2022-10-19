@@ -25,12 +25,23 @@
 </template>
 
 <style scoped lang="scss">
-@media (min-width: 640px) {
-	.selectable{
-		max-width: 70%;
-		@apply flex-row flex justify-between;
+	.selectable {
+		@apply flex flex-row flex-nowrap max-w-full;
+
+		label {
+			@apply flex-none;
+		}
+
+		select {
+			@apply flex-1 truncate ml-3;
+		}
 	}
-}
+
+	@screen md {
+		.selectable {
+			@apply max-w-[70%];
+		}
+	}
 </style>
 
 <script setup lang="ts">

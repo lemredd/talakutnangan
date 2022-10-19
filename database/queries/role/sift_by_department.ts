@@ -1,11 +1,11 @@
-import type { FindOptions } from "%/types/dependent"
 import type { DepartmentFilter } from "$/types/query"
+import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
-import Department from "%/models/department"
 import Condition from "%/helpers/condition"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Sift role models which the associated user belongs to a certain department.
@@ -22,22 +22,17 @@ export default function<T>(
 			break
 		default: {
 			const condition = new Condition()
-			condition.equal("id", constraints.filter.department)
+			condition.equal("departmentID", constraints.filter.department)
 
-			if (!newState.include) {
+			if (isUndefined(newState.include)) {
 				newState.include = []
 			}
 
-			(newState.include as any[])!.push({
+			const castInclude = newState.include as IncludeOptions[]
+			castInclude.push({
 				"model": User,
 				"required": true,
-				"include": [
-					{
-						"model": Department,
-						"required": true,
-						"where": condition.build()
-					}
-				]
+				"where": condition.build()
 			})
 			break
 		}

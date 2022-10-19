@@ -47,7 +47,7 @@ export default class DepartmentFetcher extends BaseFetcher<
 	>> {
 		return this.handleResponse(
 			this.getJSON(
-				`${this.links.type}/count_users?${stringifyQuery({
+				`${this.links.unbound}/count_users?${stringifyQuery({
 					"filter": {
 						IDs
 					}

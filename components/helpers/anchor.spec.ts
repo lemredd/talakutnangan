@@ -1,11 +1,11 @@
-import { mount } from "@vue/test-utils"
+import { shallowMount } from "@vue/test-utils"
+
 import Anchor from "./anchor.vue"
 
-
-describe("Component: Link", () => {
-	it("Should be active based on current path", async() => {
+describe("Component: helpers/anchor", () => {
+	it("should be active based on current path", () => {
 		const path = "/"
-		const wrapper = mount(Anchor, {
+		const wrapper = shallowMount(Anchor, {
 			"attrs": {
 				"href": path
 			},
@@ -21,9 +21,9 @@ describe("Component: Link", () => {
 		expect(wrapper.attributes("class")).toContain("active")
 	})
 
-	it("Should not be active if path mismatches", async() => {
+	it("should not be active if path mismatches", () => {
 		const path = "/"
-		const wrapper = mount(Anchor, {
+		const wrapper = shallowMount(Anchor, {
 			"attrs": {
 				"href": "/about"
 			},

@@ -1,118 +1,90 @@
 <template>
 	<div class="resource-manager">
+		<slot name="header"></slot>
 		<div class="controls-bar">
-			<slot name="search-filter">
-			<!-- TODO: search filter rearrangement - unuse slot -->
-			<!-- purpose: place search filter component properly in the UI -->
-			</slot>
-			<div v-if="props.isResourceTypeUser" class="filters">
-				<SelectableFilter
-					id="role-filter"
-					v-model="selectedRole"
-					:options="roleFilterOptions"
-					label="Role"
-					@update:model-value="filterByAdditional($event, 'roles')"/>
-				<SelectableFilter
-					v-if="managerKind.isAdmin()"
-					id="dept-filter"
-					v-model="selectedDepartment"
-					:options="departmentFilterOptions"
-					label="Department"
-					@update:model-value="filterByAdditional($event, 'departments')"/>
-			</div>
+			<SearchFilter
+				v-if="hasSlug"
+				v-model="slugText"
+				class="search-bar"/>
+			<SelectableOptionsField
+				v-if="hasRoleNames"
+				v-model="role"
+				label="Role"
+				:options="roleNames"/>
+			<SelectableOptionsField
+				v-if="hasDepartmentNames"
+				v-model="department"
+				label="Department"
+				:options="departmentNames"/>
 		</div>
-		<Suspensible :is-loaded="props.isLoaded">
-			<slot>
+		<Suspensible :is-loaded="isLoaded">
+			<slot name="resources">
 			</slot>
 		</Suspensible>
 	</div>
 </template>
 
 <style lang="scss">
-.controls-bar {
-	@apply dark:bg-dark-100 bg-light-600 gap-y-4 justify-between;
+	.controls-bar {
+		@apply dark:bg-dark-100 bg-light-600 gap-y-4 flex flex-row flex-wrap justify-between;
 
-	.search-bar {
-		@apply dark:bg-dark-300 bg-gray-300 flex justify-between items-center;
-		padding: .25em;
-	}
+		.search-bar {
+			@apply dark:bg-dark-300 bg-gray-300 basis-full p-[.25em];
 
-	.filters {
-		@apply flex flex-col sm:flex-row justify-between;
+			~ * {
+				@apply flex-1;
+			}
+		}
 	}
-}
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { computed } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
-import type { PossibleResources } from "$@/types/independent"
+
+import isUndefined from "$/type_guards/is_undefined"
 
 import Suspensible from "@/suspensible.vue"
-import SelectableFilter from "@/fields/selectable_options.vue"
-
-import Manager from "$/helpers/manager"
-import type { PageContext, PageProps } from "$/types/renderer"
-
-type AdditionalFilter = "departments" | "roles"
-type DefinedEmits = {
-	(e: "filterByRole", id: string): void
-	(e: "filterByDept", id: string): void
-}
+import SearchFilter from "@/helpers/search_bar.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
 	isLoaded: boolean
-	resource: PossibleResources[]
-	isResourceTypeUser?: boolean
+	chosenRole?: string,
+	chosenDepartment?: string,
+	slug?: string,
+
+	roleNames: OptionInfo[],
+	departmentNames: OptionInfo[]
 }>()
 
-const emit = defineEmits<DefinedEmits>()
-
-const managerKind = inject("managerKind") as Manager
-const pageContext = inject("pageContext") as PageContext
-const { pageProps } = pageContext
-const selectedDepartment = ref("")
-const selectedRole = ref("")
-
-function makeFilterOptions(resources: PossibleResources[]) {
-	const filterOptions = resources.map(resourceFilterOption => {
-		const resourceType = resourceFilterOption.type
-		return {
-			"label": String(
-				resourceType === "department"
-					? resourceFilterOption.acronym
-					: resourceFilterOption.name
-			),
-			"value": String(resourceFilterOption.id)
-		}
-	})
-	filterOptions.unshift({
-		"label": "All",
-		"value": "*"
-	})
-
-	return filterOptions
+interface CustomEvents {
+	(e: "update:chosenDepartment", id: string): void
+	(e: "update:chosenRole", id: string): void
+	(e: "update:slug", slug: string): void
 }
+const emit = defineEmits<CustomEvents>()
 
-const departmentFilterOptions = computed<OptionInfo[]>(() => {
-	if (managerKind.isAdmin()) {
-		const {
-			"departments": rawDepartments
-		} = pageProps as PageProps<"deserialized", AdditionalFilter>
-		return makeFilterOptions(rawDepartments.data)
+const hasRoleNames = computed<boolean>(() => props.roleNames.length > 0)
+const role = computed<string>({
+	get(): string { return props.chosenRole as string },
+	set(newValue: string): void {
+		emit("update:chosenRole", newValue)
 	}
-	return []
 })
-const roleFilterOptions = computed<OptionInfo[]>(() => {
-	const { "roles": rawRoles } = pageProps as PageProps<"deserialized", AdditionalFilter>
-
-	return makeFilterOptions(rawRoles.data)
+const hasDepartmentNames = computed<boolean>(() => props.departmentNames.length > 0)
+const department = computed<string>({
+	get(): string { return props.chosenDepartment as string },
+	set(newValue: string): void {
+		emit("update:chosenDepartment", newValue)
+	}
 })
-
-
-function filterByAdditional(selectedFilterId: string, filterKind: AdditionalFilter) {
-	if (filterKind === "roles") emit("filterByRole", selectedFilterId)
-	if (filterKind === "departments") emit("filterByDept", selectedFilterId)
-}
+const hasSlug = computed<boolean>(() => !isUndefined(props.slug))
+const slugText = computed<string>({
+	get(): string { return props.slug as string },
+	set(newValue: string): void {
+		emit("update:slug", newValue)
+	}
+})
 </script>

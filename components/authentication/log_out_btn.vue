@@ -13,7 +13,7 @@
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 
-import Anchor from "@/anchor.vue"
+import Anchor from "@/helpers/anchor.vue"
 
 function logOut() {
 	new UserFetcher().logOut()

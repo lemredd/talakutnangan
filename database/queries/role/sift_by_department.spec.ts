@@ -31,7 +31,7 @@ describe("Database Pipe: Sift by department", () => {
 		})
 		const foundRoles = await Role.findAll(options)
 
-		expect(options).toHaveProperty("include.0.include.0.where.id")
+		expect(options).toHaveProperty("include.0")
 		expect(foundRoles).toHaveLength(1)
 		expect(foundRoles).toHaveProperty("0.id", role.id)
 	})
@@ -49,7 +49,7 @@ describe("Database Pipe: Sift by department", () => {
 		})
 		const foundRoles = await Role.findAll(options)
 
-		expect(options).toHaveProperty("include.0.include.0.where.id")
+		expect(options).toHaveProperty("include.0")
 		expect(foundRoles).toHaveLength(0)
 	})
 })
