@@ -22,45 +22,31 @@
 			<div class="left">
 				<div><img src="@assets/emptyUser.png"/></div>
 				<h2 class="title">
-					{{ post.user }}
-				</h2>
-			</div>
-			<div class="middle">
-				<h2 class="title">
-					{{ post.title }}
-					{{ post.badWordExist() }}
+					{{ post.poster.data.name }}
 				</h2>
 			</div>
 			<div class="right">
 				<h2 class="title">
-					{{ voteCountUpdate(post) }}
+					<!-- TODO: Put the total number of upvotes here -->
 				</h2>
 				<label class="switch">
-					<input
-						type="checkbox"
-						:checked="determineUserVoted(post)"
-						class="switch"
-						@click="upVote($event, post)"/>
+					<!-- TODO: Put a checkbox to upvote -->
 					<span class="slider"></span>
 				</label>
 				<h2 class="title">
-					{{ downVoteCountUpdate(post) }}
+					<!-- TODO: Put the total number of downvotes here -->
 				</h2>
 				<label class="switch">
-					<input
-						type="checkbox"
-						:checked="determineUserDownVoted(post)"
-						class="switch"
-						@click="downVote($event, post)"/>
+					<!-- TODO: Put a checkbox to downvote -->
 					<span class="slider"></span>
 				</label>
 
 				<h2 class="title">
-					{{ totalVotes(post) }}
+					<!-- TODO: Put the total number of votes here -->
 				</h2>
 			</div>
-			<p :class="`${post.id}`">
-				{{ post.desc }}
+			<p>
+				{{ post.content }}
 			</p>
 		</div>
 	</div>
@@ -72,16 +58,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-
-import {
-	voteCountUpdate,
-	determineUserVoted,
-	upVote,
-	downVoteCountUpdate,
-	determineUserDownVoted,
-	downVote,
-	totalVotes
-} from "@@/forum/post"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 
@@ -96,6 +72,8 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(event: "update:modelValue", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(event: "delete", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole">): void
 }
 const emit = defineEmits<CustomEvents>()
 
