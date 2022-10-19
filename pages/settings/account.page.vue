@@ -1,5 +1,5 @@
 <template>
-	<SettingsHeader title="User Settings" :tab-infos="tabs"/>
+	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
@@ -50,10 +50,10 @@ form {
 import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { ConditionalLinkInfo } from "$@/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
+import settingsTabInfos from "@/settings/settings_tab_infos"
 
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
@@ -104,27 +104,4 @@ function updateEmail(): void {
 		//
 	})
 }
-
-const tabs: ConditionalLinkInfo<any, any>[] = [
-	{
-		"kinds": [],
-		"links": [
-			{
-				"icon": "",
-				"name": "Account",
-				"path": "/settings/account",
-				"viewportsAvailable": ["mobile", "desktop"]
-			},
-			{
-				"icon": "",
-				"name": "Profile",
-				"path": "/settings/profile",
-				"viewportsAvailable": ["mobile", "desktop"]
-			}
-		],
-		"mustBeGuest": false,
-		"permissionCombinations": [],
-		"permissionGroup": null
-	}
-]
 </script>
