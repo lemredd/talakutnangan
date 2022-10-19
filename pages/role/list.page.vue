@@ -61,9 +61,11 @@ const departmentNames = computed<OptionInfo[]>(() => [
 	}))
 ])
 
+const windowOffset = ref<number>(0)
+
 const slug = ref<string>("")
 
-async function fetchRoleInfos(offset: number): Promise<number|void> {
+async function fetchRoleInfos(): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -72,7 +74,7 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 		},
 		"page": {
 			"limit": 10,
-			offset
+			"offset": windowOffset.value
 		},
 		"sort": [ "name" ]
 	}).then(response => {
@@ -82,7 +84,6 @@ async function fetchRoleInfos(offset: number): Promise<number|void> {
 		if (deserializedData.length === 0) return Promise.resolve()
 
 		list.value = [ ...list.value, ...deserializedData ]
-		isLoaded.value = true
 
 		// eslint-disable-next-line no-use-before-define
 		return countUsersPerRole(IDsToCount)
@@ -100,7 +101,7 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 			"limit": 10,
 			"offset": departments.value.length
 		},
-		"sort": [ "name" ]
+		"sort": [ "fullName" ]
 	}).then(response => {
 		const { data, meta } = response.body
 
@@ -130,18 +131,25 @@ async function countUsersPerRole(IDsToCount: string[]) {
 		}
 
 		list.value = originalData
+		isLoaded.value = true
 
-		return fetchRoleInfos(originalData.length)
+		if (windowOffset.value !== list.value.length) {
+			windowOffset.value += originalData.length
+		}
 	})
 }
 
 async function refetchRoles() {
 	list.value = []
 	isLoaded.value = false
-	await fetchRoleInfos(0)
+	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ chosenDepartment, slug ], debounce(() => {
+	windowOffset.value = 0
+	refetchRoles()
+}, DEBOUNCED_WAIT_DURATION))
+watch([ windowOffset ], debounce(fetchRoleInfos, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
