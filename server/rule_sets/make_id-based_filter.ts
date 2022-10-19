@@ -5,17 +5,23 @@ import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
 import exists from "!/validators/manager/exists"
 import nullable from "!/validators/base/nullable"
+import required from "!/validators/base/required"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
 
 export default function(
 	fieldName: string,
 	ClassName: BaseManagerClass,
 	{
+		maySkip = true,
 		mustCast = false
 	}: Partial<{
+		maySkip: boolean
 		mustCast: boolean
 	}> = {}
 ): FieldRules {
+	const fieldRequirement = maySkip
+		? [ nullable, skipAsterisk ]
+		: [ required ]
 	return {
 		[fieldName]: {
 			"constraints": {
@@ -26,7 +32,7 @@ export default function(
 				},
 				"nullable": { "defaultValue": "*" }
 			},
-			"pipes": [ nullable, skipAsterisk, string, integer, exists ]
+			"pipes": [ ...fieldRequirement, string, integer, exists ]
 		}
 	}
 }
