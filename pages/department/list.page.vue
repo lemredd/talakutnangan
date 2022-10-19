@@ -1,28 +1,33 @@
 <template>
-	<AdminSettingsHeader title="Admin Configuration"/>
-
-	<DeptManager :resource="list" :is-loaded="isLoaded">
-		<template #search-filter>
-			<SearchFilter :resource="list" @filter-resource-by-search="getFilteredList"/>
+	<ResourceManager
+		v-model:slug="slug"
+		:is-loaded="isLoaded"
+		:department-names="[]"
+		:role-names="[]">
+		<template #header>
+			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos"/>
 		</template>
-
-		<DeptList :filtered-list="list"/>
-	</DeptManager>
+		<template #resources>
+			<ResourceList :filtered-list="list"/>
+		</template>
+	</ResourceManager>
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, inject, ref } from "vue"
+import { onMounted, inject, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { PossibleResources } from "$@/types/independent"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
-import DepartmentFetcher from "$@/fetchers/department"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
-import SearchFilter from "@/helpers/search_bar.vue"
-import AdminSettingsHeader from "@/helpers/tabbed_page_header.vue"
-import DeptManager from "@/resource_management/resource_manager.vue"
-import DeptList from "@/resource_management/resource_manager/resource_list.vue"
+import debounce from "$@/helpers/debounce"
+import Fetcher from "$@/fetchers/department"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
+
+import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
+import ResourceManager from "@/resource_management/resource_manager.vue"
+import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -30,32 +35,28 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-provide("tabs", [ "Users", "Roles", "Departments" ])
-
-const fetcher = new DepartmentFetcher()
+const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
 
-const filteredList = ref<DeserializedDepartmentResource[]>([])
+const slug = ref<string>("")
 
-function getFilteredList(resource: PossibleResources[]) {
-	filteredList.value = resource as DeserializedDepartmentResource[]
-}
-
-async function fetchDepartmentInfos(offset: number): Promise<number|void> {
+async function fetchDepartmentInfos(): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
-			"existence": "exists"
+			"existence": "exists",
+			"slug": slug.value
 		},
 		"page": {
 			"limit": 10,
-			offset
+			"offset": list.value.length
 		},
 		"sort": [ "fullName" ]
 	}).then(response => {
+		isLoaded.value = true
 		const deserializedData = response.body.data as DeserializedDepartmentResource[]
 		const IDsToCount = deserializedData.map(data => data.id)
 
@@ -81,10 +82,18 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 		}
 
 		list.value = originalData
-
-		return fetchDepartmentInfos(originalData.length)
 	})
+
+	await fetchDepartmentInfos()
 }
+
+async function refetchRoles() {
+	list.value = []
+	isLoaded.value = false
+	await fetchDepartmentInfos()
+}
+
+watch([ slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.map(item => item.id))
