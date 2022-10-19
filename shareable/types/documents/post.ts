@@ -51,21 +51,25 @@ extends GeneralRelationshipData {
 	department: {
 		serialized: T extends "create"
 			? DepartmentIdentifierDocument<"attached">
-			: DepartmentIdentifierDocument,
+			: T extends "update"
+				? undefined
+				: DepartmentIdentifierDocument,
 		deserialized: DeserializedDepartmentDocument
 	},
 	poster: {
-		serialized: T extends "create" ? UserIdentifierDocument : undefined,
+		serialized: UserIdentifierDocument,
 		deserialized: DeserializedUserDocument
 	},
 	posterRole: {
 		serialized: T extends "create"
 			? RoleIdentifierDocument<"attached">
 			: RoleIdentifierDocument,
-			deserialized: DeserializedRoleDocument
+		deserialized: DeserializedRoleDocument
 	},
 	postAttachments: {
-		"serialized": PostAttachmentIdentifierListDocument,
+		"serialized": T extends "read"
+			? PostAttachmentIdentifierListDocument
+			: undefined,
 		"deserialized": DeserializedPostAttachmentListDocument
 	}
 }
