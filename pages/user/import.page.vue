@@ -121,7 +121,6 @@ import { inject, ref, computed, provide } from "vue"
 
 import type { UnitError } from "$/types/server"
 import { UserKindValues } from "$/types/database"
-import type { ErrorDocument } from "$/types/documents/base"
 import type { OptionInfo, TabInfo } from "$@/types/component"
 import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
@@ -186,6 +185,18 @@ function importData(event: Event) {
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+				.replace(
+					/ in field "meta\.importedCSV\.\d+\.(email|name)"/u,
+					""
+				)
+				.replace(
+					/ does exists in the database"/u,
+					" already exists"
+				)
+
+				return readableDetail
+			})
 		} else {
 			receivedErrors.value = [ "an error occured" ]
 		}
