@@ -40,9 +40,9 @@ describe("Component: post/viewer", () => {
 				}
 			} as DeserializedRoleDocument,
 			"type": "post"
-		} as DeserializedPostResource<"poster">
+		} as DeserializedPostResource<"poster"|"posterRole">
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const wrapper = shallowMount<any>(Component, {
+		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
