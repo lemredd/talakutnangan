@@ -3,7 +3,11 @@ import type { Serializable } from "$/types/general"
 import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
-import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
+import type {
+	ConsultationResource,
+	ConsultationAttributes,
+	DeserializedConsultationListDocument
+} from "$/types/documents/consultation"
 import type {
 	ModelCtor,
 	FindOptions,
@@ -19,6 +23,7 @@ import Log from "$!/singletons/log"
 import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
 import Condition from "%/helpers/condition"
+import deserialize from "$/object/deserialize"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Transformer from "%/transformers/consultation"
@@ -361,6 +366,7 @@ export default class extends BaseManager<
 
 				sums.meta.weeklyTimeSums.push({
 					"beginDateTime": resetToMidnight(i),
+					"consultations": { "data": [] },
 					"endDateTime": rangeLastEnd,
 					"totalMillisecondsConsumed": 0
 				})
@@ -368,29 +374,38 @@ export default class extends BaseManager<
 				i = adjustUntilChosenDay(rangeEnd, 0, 1)
 			} while (i < adjustedEndDate)
 
-
+			const operations: Promise<any>[] = []
 			for (const weeklyTimeSum of sums.meta.weeklyTimeSums) {
-				weeklyTimeSum.totalMillisecondsConsumed += models.reduce((
-					totalMillisecondsConsumed,
-					model
-				) => {
-					let newTotalMillisecondsconsumed = totalMillisecondsConsumed
-					const consultation = model.consultation as Model
-					const startedAt = consultation.startedAt as Date
-					const finishedAt = consultation.finishedAt as Date
+				operations.push(new Promise<void>(resolve => {
+					let totalMillisecondsConsumed = 0
+					const deserializedConsultations: DeserializedConsultationListDocument
+					= { "data": [] }
+					const deserializedOperations: Promise<any>[] = []
+					for (const model of models) {
+						const consultation = model.consultation as Model
+						const startedAt = consultation.startedAt as Date
+						const finishedAt = consultation.finishedAt as Date
 
-					if (
-						weeklyTimeSum.beginDateTime <= startedAt
+						if (
+							weeklyTimeSum.beginDateTime <= startedAt
 						&& finishedAt <= weeklyTimeSum.endDateTime
-					) {
-						const difference = calculateMillisecondDifference(finishedAt, startedAt)
+						) {
+							deserializedOperations.push(this.serialize([ consultation ]).then(deserialize))
 
-						newTotalMillisecondsconsumed += difference
+							const difference = calculateMillisecondDifference(finishedAt, startedAt)
+
+							totalMillisecondsConsumed += difference
+						}
 					}
 
-					return newTotalMillisecondsconsumed
-				}, 0)
+					Promise.all(deserializedOperations).then(() => {
+						weeklyTimeSum.totalMillisecondsConsumed = totalMillisecondsConsumed
+						weeklyTimeSum.consultations = deserializedConsultations
+						resolve()
+					})
+				}))
 			}
+			await Promise.all(operations)
 
 			return sums
 		} catch (error) {
