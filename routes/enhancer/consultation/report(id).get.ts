@@ -43,11 +43,11 @@ export default class extends PageMiddleware {
 		const { id } = request.params
 		const manager = new Manager(request)
 
-		const consultations = await manager.sumTimePerStudents({
+		const totalMillisecondsConsumed = await manager.sumTimePerStudents({
 			"filter": {
 				"dateTimeRange": {
-					"begin": new Date("2022-09-01T00:00:00"),
-					"end": new Date("2022-09-30T11:59:59")
+					"begin": new Date("2022-10-01T00:00:00"),
+					"end": new Date("2022-10-30T11:59:59")
 				},
 				"existence": "exists",
 				"user": id
@@ -60,7 +60,7 @@ export default class extends PageMiddleware {
 		}) as UserIdentifierListWithTimeConsumedDocument
 
 		return {
-			consultations
+			totalMillisecondsConsumed
 		}
 	}
 }
