@@ -1,8 +1,3 @@
-<!--
-	General tasks for other members:
-	TODO(others): Refactor HTML to Vue Components if applicable
-	TODO(others): Make use of mixins if applicable
--->
 <template>
 	<div class="consultations-container">
 		<section class="consultations-picker">

@@ -27,7 +27,8 @@ export default class PostFetcher extends BaseFetcher<
 	DeserializedPostListDocument,
 	{
 		"queryParameters": PostQueryParameters<string>,
-		"extraCreateData": PostRelationships<"create">
+		"extraCreateData": PostRelationships<"create">,
+		"extraUpdateData": PostRelationships<"update">
 	}
 > {
 	constructor() {

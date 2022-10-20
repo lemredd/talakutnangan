@@ -40,7 +40,7 @@ export default class extends PageMiddleware {
 					"slug": ""
 				},
 				"page": {
-					"limit": 10,
+					"limit": Infinity,
 					"offset": 0
 				},
 				"sort": [ "fullName" ]

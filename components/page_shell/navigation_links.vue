@@ -101,7 +101,7 @@ import BodyCSSClasses from "$@/external/body_css_classes"
 import linkInfos from "@/page_shell/navigation_link_infos"
 import RequestEnvironment from "$/singletons/request_environment"
 
-import Anchor from "@/anchor.vue"
+import Anchor from "@/helpers/anchor.vue"
 import Dropdown from "@/page_shell/dropdown.vue"
 import LogOutBtn from "@/authentication/log_out_btn.vue"
 

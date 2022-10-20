@@ -12,7 +12,7 @@ export default function<T extends Model>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	const offset = constraints.page.offset
+	const { offset } = constraints.page
 	const rawLimit = constraints.page.limit
 	const highestPossibleLimit = Number(process.env.DATABASE_MAX_SELECT ?? "10")
 	const limit = Math.min(rawLimit, highestPossibleLimit)

@@ -1,5 +1,5 @@
 <template>
-	<SettingsHeader title="User Settings"/>
+	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
 	<div class="profile-account">
 		<div>
 			<TextualField
@@ -159,19 +159,13 @@
 </style>
 
 <script setup lang="ts">
-import {
-	ref,
-	Ref,
-	inject,
-	provide,
-	computed
-} from "vue"
+import { ref, Ref, inject, computed } from "vue"
 
-import type { TabInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+import settingsTabInfos from "@/settings/settings_tab_infos"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
@@ -182,7 +176,7 @@ import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee
 
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import Signature from "@/helpers/signature.vue"
-import SettingsHeader from "@/tabbed_page_header.vue"
+import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
@@ -248,16 +242,4 @@ function toggleDarkMode() {
 }
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
-
-const tabs: TabInfo[] = [
-	{
-		"label": "Account",
-		"path": "/settings/account"
-	},
-	{
-		"label": "Profile",
-		"path": "/settings/profile"
-	}
-]
-provide("tabs", tabs)
 </script>

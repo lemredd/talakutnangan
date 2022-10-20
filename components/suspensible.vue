@@ -1,10 +1,10 @@
 <template>
 	<div class="suspensible">
-		<div class="loaded" v-if="isLoaded">
+		<div v-if="isLoaded" class="loaded">
 			<slot></slot>
 		</div>
 
-		<div class="loading" v-else>
+		<div v-else class="loading">
 			Loading...
 		</div>
 	</div>
@@ -18,5 +18,4 @@
 const { isLoaded } = defineProps<{
 	isLoaded: boolean
 }>()
-// watch(computed(() => asyncResource), () => console.log("loaded reosurce:", asyncResource, "\n\n\n\n"))
 </script>

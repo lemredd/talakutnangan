@@ -234,7 +234,7 @@ export default class extends BaseManager<
 		}
 	}
 
-	async sumTimePerStudents(query: TimeSumQueryParameters)
+	async sumTimePerStudents(query: TimeSumQueryParameters<number>)
 	: Promise<UserIdentifierListWithTimeConsumedDocument> {
 		try {
 			const models = await ChatMessageActivity.findAll({
@@ -315,7 +315,7 @@ export default class extends BaseManager<
 		}
 	}
 
-	async sumTimePerWeek(query: TimeSumQueryParameters)
+	async sumTimePerWeek(query: TimeSumQueryParameters<number>)
 	: Promise<WeeklySummedTimeDocument> {
 		try {
 			const adjustedBeginDate = resetToMidnight(
