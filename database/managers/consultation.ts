@@ -241,10 +241,17 @@ export default class extends BaseManager<
 				"include": [
 					sort({
 						"model": User,
-						"required": true,
-						"where": new Condition().equal("id", query.filter.user).build()
+						"required": true
 					} as FindOptions<any>, query) as IncludeOptions,
 					{
+						"include": [
+							{
+								"model": AttachedRole,
+								"paranoid": false,
+								"required": true,
+								"where": new Condition().equal("id", query.filter.user).build()
+							}
+						],
 						"model": Model,
 						"paranoid": false,
 						"required": true,
@@ -263,6 +270,7 @@ export default class extends BaseManager<
 					}
 				],
 				"paranoid": false,
+				"where": new Condition().notEqual("userID", query.filter.user).build(),
 				...this.transaction.transactionObject
 			})
 
