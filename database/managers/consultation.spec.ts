@@ -109,11 +109,12 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(canStart).toBeFalsy()
 	})
 
-	it("can sum time by students", async() => {
+	it.only("can sum time by students", async() => {
 		const manager = new Manager()
-		const user = await new UserFactory().insertOne()
+		const consultant = await new UserFactory().insertOne()
+		const consulter = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consultant))
 		.insertOne()
 		const consultations = [
 			await new Factory()
@@ -129,7 +130,7 @@ describe("Database Manager: Consultation read operations", () => {
 		]
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consulter))
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
@@ -140,7 +141,7 @@ describe("Database Manager: Consultation read operations", () => {
 					"end": new Date("2022-09-30T11:59:59")
 				},
 				"existence": "exists",
-				"user": user.id
+				"user": consultant.id
 			},
 			"page": {
 				"limit": 10,
@@ -152,8 +153,15 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"data": [
 				{
-					"id": String(user.id),
+					"id": String(consulter.id),
 					"meta": {
+						"consultations": await new Factory().deserialize(
+							consultations.map(consultation => {
+								// eslint-disable-next-line no-undefined
+								consultation.consultantInfo = undefined
+								return consultation
+							})
+						),
 						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:30")
 					},
 					"type": "user"
