@@ -19,9 +19,9 @@ describe("Controller: POST /api/post/:id", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"attachedRoleID": post.attachedRoleID,
 						"content": newPost.content
 					},
+					"id": String(post.id),
 					"relationships": {
 						"poster": {
 							"data": {
@@ -36,7 +36,6 @@ describe("Controller: POST /api/post/:id", () => {
 							}
 						}
 					},
-					"id": String(post.id),
 					"type": "post"
 				}
 			}
@@ -56,9 +55,9 @@ describe("Controller: POST /api/post/:id", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"attachedRoleID": "not a role",
 						"content": 0
 					},
+					"id": String(post.id),
 					"relationships": {
 						"poster": {
 							"data": {
@@ -73,7 +72,6 @@ describe("Controller: POST /api/post/:id", () => {
 							}
 						}
 					},
-					"id": String(post.id),
 					"type": "post"
 				}
 			}

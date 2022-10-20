@@ -18,77 +18,92 @@
 			v-model="post"
 			:is-shown="mustUpdate"
 			@submit="submitChangesSeparately"/>
+		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
+			<template #header>
+				<h1>Enter the post details</h1>
+			</template>
+			<template #default>
+				<p v-if="mustArchive">
+					Do you really want to archive?
+				</p>
+				<p v-if="mustRestore">
+					Do you really want to restore?
+				</p>
+			</template>
+			<template #footer>
+				<button
+					class="btn btn-back"
+					type="button"
+					@click="closeArchiveOrRestore">
+					Back
+				</button>
+				<button
+					v-if="mustArchive"
+					class="btn submit-btn btn-primary"
+					type="button"
+					@click="archivePost">
+					Archive post
+				</button>
+				<button
+					v-if="mustRestore"
+					class="btn submit-btn btn-primary"
+					type="button"
+					@click="restorePost">
+					Restore post
+				</button>
+			</template>
+		</Overlay>
 		<div class="post-container" :hidden="post.isPostShown">
 			<div class="left">
 				<div><img src="@assets/emptyUser.png"/></div>
 				<h2 class="title">
-					{{ post.user }}
-				</h2>
-			</div>
-			<div class="middle">
-				<h2 class="title">
-					{{ post.title }}
-					{{ post.badWordExist() }}
+					{{ post.poster.data.name }}
 				</h2>
 			</div>
 			<div class="right">
 				<h2 class="title">
-					{{ voteCountUpdate(post) }}
+					<!-- TODO: Put the total number of upvotes here -->
 				</h2>
 				<label class="switch">
-					<input
-						type="checkbox"
-						:checked="determineUserVoted(post)"
-						class="switch"
-						@click="upVote($event, post)"/>
+					<!-- TODO: Put a checkbox to upvote -->
 					<span class="slider"></span>
 				</label>
 				<h2 class="title">
-					{{ downVoteCountUpdate(post) }}
+					<!-- TODO: Put the total number of downvotes here -->
 				</h2>
 				<label class="switch">
-					<input
-						type="checkbox"
-						:checked="determineUserDownVoted(post)"
-						class="switch"
-						@click="downVote($event, post)"/>
+					<!-- TODO: Put a checkbox to downvote -->
 					<span class="slider"></span>
 				</label>
 
 				<h2 class="title">
-					{{ totalVotes(post) }}
+					<!-- TODO: Put the total number of votes here -->
 				</h2>
 			</div>
-			<p :class="`${post.id}`">
-				{{ post.desc }}
+			<p>
+				{{ post.content }}
 			</p>
 		</div>
 	</div>
 </template>
 
-<style>
-
+<style lang="scss">
+	@import "@styles/btn.scss";
 </style>
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
 
-import {
-	voteCountUpdate,
-	determineUserVoted,
-	upVote,
-	downVoteCountUpdate,
-	determineUserDownVoted,
-	downVote,
-	totalVotes
-} from "@@/forum/post"
-
 import type { DeserializedPostResource } from "$/types/documents/post"
 
+import Fetcher from "$@/fetchers/post"
+import makeSwitch from "$@/helpers/make_switch"
+
+import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
-import makeSwitch from "$@/helpers/make_switch"
+const fetcher = new Fetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedPostResource<"poster"|"posterRole">
@@ -96,6 +111,8 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(event: "update:modelValue", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(event: "archive", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole">): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -108,15 +125,62 @@ const {
 
 const {
 	"state": mustArchive,
-	"on": confirmArchive
+	"on": confirmArchive,
+	"off": closeArchive
 } = makeSwitch(false)
 
 const {
 	"state": mustRestore,
-	"on": confirmRestore
+	"on": confirmRestore,
+	"off": closeRestore
 } = makeSwitch(false)
 
-async function submitChangesSeparately(postID: string) {
+const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRestore.value)
 
+function closeArchiveOrRestore() {
+	closeArchive()
+	closeRestore()
+}
+
+async function submitChangesSeparately(): Promise<void> {
+	await fetcher.update(post.value.id, {
+		"content": post.value.content,
+		"deletedAt": null
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				// eslint-disable-next-line no-undefined
+				"department": undefined,
+				// eslint-disable-next-line no-undefined
+				"postAttachments": undefined,
+				"poster": {
+					"data": {
+						"id": post.value.poster.data.id,
+						"type": "user"
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": post.value.posterRole.data.id,
+						"type": "role"
+					}
+				}
+			}
+		}
+	}).then(() => {
+		emit("update:modelValue", post.value)
+	})
+}
+
+async function archivePost(): Promise<void> {
+	await fetcher.archive([ post.value.id ]).then(() => {
+		emit("archive", post.value)
+	})
+}
+
+async function restorePost(): Promise<void> {
+	await fetcher.restore([ post.value.id ]).then(() => {
+		emit("restore", post.value)
+	})
 }
 </script>
