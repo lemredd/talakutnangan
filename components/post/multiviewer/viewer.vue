@@ -57,14 +57,17 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
+
+import Fetcher from "$@/fetchers/post"
+import makeSwitch from "$@/helpers/make_switch"
 
 import Menu from "@/post/multiviewer/viewer/menu.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
-import makeSwitch from "$@/helpers/make_switch"
+const fetcher = new Fetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedPostResource<"poster"|"posterRole">
@@ -94,7 +97,33 @@ const {
 	"on": confirmRestore
 } = makeSwitch(false)
 
-async function submitChangesSeparately(postID: string) {
-
+async function submitChangesSeparately(): Promise<void> {
+	await fetcher.update(post.value.id, {
+		"content": post.value.content,
+		"deletedAt": null
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				// eslint-disable-next-line no-undefined
+				"department": undefined,
+				// eslint-disable-next-line no-undefined
+				"postAttachments": undefined,
+				"poster": {
+					"data": {
+						"id": post.value.poster.data.id,
+						"type": "user"
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": post.value.posterRole.data.id,
+						"type": "role"
+					}
+				}
+			}
+		}
+	}).then(() => {
+		emit("update:modelValue", post.value)
+	})
 }
 </script>
