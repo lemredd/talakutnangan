@@ -47,8 +47,9 @@
 				<button
 					v-if="mustRestore"
 					class="btn submit-btn btn-primary"
-					type="button">
-					Update post
+					type="button"
+					@click="restorePost">
+					Restore post
 				</button>
 			</template>
 		</Overlay>
@@ -174,6 +175,12 @@ async function submitChangesSeparately(): Promise<void> {
 async function archivePost(): Promise<void> {
 	await fetcher.archive([ post.value.id ]).then(() => {
 		emit("archive", post.value)
+	})
+}
+
+async function restorePost(): Promise<void> {
+	await fetcher.restore([ post.value.id ]).then(() => {
+		emit("restore", post.value)
 	})
 }
 </script>
