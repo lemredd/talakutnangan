@@ -87,8 +87,8 @@
 	</div>
 </template>
 
-<style lang="sccs">
-@import "@styles/btn.scss";
+<style lang="scss">
+	@import "@styles/btn.scss";
 </style>
 
 <script setup lang="ts">
