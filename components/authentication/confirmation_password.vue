@@ -31,6 +31,9 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
+import Overlay from "@/helpers/overlay.vue"
+import SensitiveTextField from "@/fields/sensitive_text.vue"
+
 const props = defineProps<{
 	mustConfirm: boolean
 	modelValue: string
