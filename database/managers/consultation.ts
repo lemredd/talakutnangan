@@ -332,7 +332,7 @@ export default class extends BaseManager<
 			const adjustedEndDate = adjustBeforeMidnightOfNextDay(
 				adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
 			)
-			const models = await await ChatMessageActivity.findAll({
+			const models = await ChatMessageActivity.findAll({
 				"include": [
 					{
 						"model": User,
@@ -398,7 +398,13 @@ export default class extends BaseManager<
 							weeklyTimeSum.beginDateTime <= startedAt
 						&& finishedAt <= weeklyTimeSum.endDateTime
 						) {
-							deserializedOperations.push(this.serialize([ consultation ]).then(deserialize))
+							deserializedOperations.push(
+								this.serialize([ consultation ])
+								.then(deserialize)
+								.then(deserializedConsultation => deserializedConsultations.data.push(
+									...deserializedConsultation?.data as any[]
+								))
+							)
 
 							const difference = calculateMillisecondDifference(finishedAt, startedAt)
 
