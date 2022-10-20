@@ -11,17 +11,17 @@ describe("Validator: validate", () => {
 
 	it("can accept valid input", async() => {
 		const input = {
-			"hello": "world",
-			"foo": 42
+			"foo": 42,
+			"hello": "world"
 		}
 		const rules: FieldRules = {
-			"hello": {
-				"pipes": [ required, string ],
-				"constraints": {}
-			},
 			"foo": {
-				"pipes": [ required, integer ],
-				"constraints": {}
+				"constraints": {},
+				"pipes": [ required, integer ]
+			},
+			"hello": {
+				"constraints": {},
+				"pipes": [ required, string ]
 			}
 		}
 
