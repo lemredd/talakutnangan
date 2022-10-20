@@ -48,6 +48,11 @@ export default class Condition<T = any> {
 		return this
 	}
 
+	notEqual(column: Column, value: any): Condition {
+		this.currentCondition[column] = { [Op.ne]: value }
+		return this
+	}
+
 	greaterThanOrEqual(column: Column, value: any): Condition {
 		this.currentCondition[column] = { [Op.gte]: value }
 		return this
