@@ -18,6 +18,40 @@
 			v-model="post"
 			:is-shown="mustUpdate"
 			@submit="submitChangesSeparately"/>
+		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
+			<template #header>
+				<h1>Enter the post details</h1>
+			</template>
+			<template #default>
+				<p v-if="mustArchive">
+					Do you really want to archive?
+				</p>
+				<p v-if="mustRestore">
+					Do you really want to restore?
+				</p>
+			</template>
+			<template #footer>
+				<button
+					class="btn btn-back"
+					type="button"
+					@click="closeArchiveOrRestore">
+					Back
+				</button>
+				<button
+					v-if="mustArchive"
+					class="btn submit-btn btn-primary"
+					type="button"
+					@click="archivePost">
+					Archive post
+				</button>
+				<button
+					v-if="mustRestore"
+					class="btn submit-btn btn-primary"
+					type="button">
+					Update post
+				</button>
+			</template>
+		</Overlay>
 		<div class="post-container" :hidden="post.isPostShown">
 			<div class="left">
 				<div><img src="@assets/emptyUser.png"/></div>
@@ -52,18 +86,19 @@
 	</div>
 </template>
 
-<style>
-
+<style lang="sccs">
+	@import "@styles/btn.scss";
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
 
+import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
@@ -75,7 +110,7 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(event: "update:modelValue", post: DeserializedPostResource<"poster"|"posterRole">): void
-	(event: "delete", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(event: "archive", post: DeserializedPostResource<"poster"|"posterRole">): void
 	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole">): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -89,13 +124,22 @@ const {
 
 const {
 	"state": mustArchive,
-	"on": confirmArchive
+	"on": confirmArchive,
+	"off": closeArchive
 } = makeSwitch(false)
 
 const {
 	"state": mustRestore,
-	"on": confirmRestore
+	"on": confirmRestore,
+	"off": closeRestore
 } = makeSwitch(false)
+
+const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRestore.value)
+
+function closeArchiveOrRestore() {
+	closeArchive()
+	closeRestore()
+}
 
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
@@ -124,6 +168,12 @@ async function submitChangesSeparately(): Promise<void> {
 		}
 	}).then(() => {
 		emit("update:modelValue", post.value)
+	})
+}
+
+async function archivePost(): Promise<void> {
+	await fetcher.archive([ post.value.id ]).then(() => {
+		emit("archive", post.value)
 	})
 }
 </script>
