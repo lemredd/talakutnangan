@@ -286,11 +286,28 @@ describe("Database Manager: Consultation read operations", () => {
 		const weekRanges = [ [ 1, 7 ], [ 8, 14 ], [ 15, 21 ], [ 22, 28 ] ]
 		expect(times).toStrictEqual({
 			"meta": {
-				"weeklyTimeSums": weekRanges.map(([ beginDate, endDate ]) => ({
-					"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
-					"endDateTime": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
-					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
-				}))
+				"weeklyTimeSums": await Promise.all(
+					weekRanges.map(async([ beginDate, endDate ]) => ({
+						"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
+						"consultations": await new Factory().deserialize(
+							consultations.filter(consultation => {
+								const startedAt = consultation.startedAt as Date
+								const finishedAt = consultation.finishedAt as Date
+								const isWithinRange
+								= startedAt.getDate() >= beginDate
+								&& finishedAt.getDate() <= endDate
+
+								return isWithinRange
+							}).map(consultation => {
+								// eslint-disable-next-line no-undefined
+								consultation.consultantInfo = undefined
+								return consultation
+							})
+						),
+						"endDateTime": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
+						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
+					}))
+				)
 			}
 		})
 	})
