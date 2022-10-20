@@ -90,7 +90,7 @@ describe("Validator pipe: object", () => {
 		expect(sanitizedInput).toStrictEqual({ "hello": "world" })
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input with friendly names", async () => {
 		const value = Promise.resolve(makeInitialState({
 			"foo": 2,
 			"hello": 2
@@ -113,14 +113,16 @@ describe("Validator pipe: object", () => {
 			"source": null
 		}
 
-		const error = object(value, constraints)
-
-		expect(error).rejects.toHaveLength(2)
-		expect(error).rejects.toHaveProperty("0.field", "hi.bar")
-		expect(error).rejects.toHaveProperty("1.field", "hi.world")
+		try {
+			await object(value, constraints)
+		} catch (errors) {
+			expect(errors).toHaveLength(2)
+			expect(errors).toHaveProperty("0.field", "bar")
+			expect(errors).toHaveProperty("1.field", "world")
+		}
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState({
 			"foo": 2,
 			"hello": 2
@@ -141,10 +143,12 @@ describe("Validator pipe: object", () => {
 			"source": null
 		}
 
-		const error = object(value, constraints)
-
-		expect(error).rejects.toHaveLength(2)
-		expect(error).rejects.toHaveProperty("0.field", "hi.foo")
-		expect(error).rejects.toHaveProperty("1.field", "hi.hello")
+		try {
+			await object(value, constraints)
+		} catch (errors) {
+			expect(errors).toHaveLength(2)
+			expect(errors).toHaveProperty("0.field", "hi.foo")
+			expect(errors).toHaveProperty("1.field", "hi.hello")
+		}
 	})
 })
