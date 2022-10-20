@@ -125,7 +125,20 @@ async function updateRole() {
 		password.value = ""
 		console.log(body, status)
 	})
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
+
 
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])
