@@ -43,32 +43,61 @@ describe("Validator: validate", () => {
 		await requester.runValidator(validate, rules, input)
 
 		expect(mockValidator).toHaveBeenCalled()
-		expect(mockValidator.mock.calls[0][0]).resolves.toEqual({
+		expect(await mockValidator.mock.calls[0][0]).toEqual({
 			"maySkip": false,
 			"value": undefined
 		})
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input but with friendly name", async() => {
 		const input = {
-			"hello": "world",
-			"foo": 42
+			"foo": 42,
+			"hello": "world"
 		}
 		const rules: FieldRules = {
-			"hello": {
-				"pipes": [ required, integer ],
-				"constraints": {}
-			},
 			"foo": {
-				"pipes": [ required, string ],
-				"constraints": {}
+				"constraints": {},
+				"friendlyName": "bar",
+				"pipes": [ required, string ]
+			},
+			"hello": {
+				"constraints": {},
+				"friendlyName": "world",
+				"pipes": [ required, integer ]
 			}
 		}
 
-		const errors = requester.runValidator(validate, rules, input)
+		try {
+			await requester.runValidator(validate, rules, input)
+		} catch (errors) {
+			expect(errors).toHaveLength(2)
+			expect(errors).toHaveProperty("0.friendlyName", "bar")
+			expect(errors).toHaveProperty("1.friendlyName", "world")
+		}
+	})
 
-		expect(errors).rejects.toHaveLength(2)
-		expect(errors).rejects.toHaveProperty("0.field", "foo")
-		expect(errors).rejects.toHaveProperty("1.field", "hello")
+	it("cannot accept invalid input", async() => {
+		const input = {
+			"foo": 42,
+			"hello": "world"
+		}
+		const rules: FieldRules = {
+			"foo": {
+				"constraints": {},
+				"pipes": [ required, string ]
+			},
+			"hello": {
+				"constraints": {},
+				"pipes": [ required, integer ]
+			}
+		}
+
+		try {
+			await requester.runValidator(validate, rules, input)
+		} catch (errors) {
+			expect(errors).toHaveLength(2)
+			expect(errors).toHaveProperty("0.field", "foo")
+			expect(errors).toHaveProperty("1.field", "hello")
+		}
 	})
 })
