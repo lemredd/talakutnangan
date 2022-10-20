@@ -61,7 +61,7 @@ extends GeneralRelationshipData {
 		deserialized: DeserializedUserDocument
 	},
 	posterRole: {
-		serialized: T extends "create"
+		serialized: T extends "create"|"update"
 			? RoleIdentifierDocument<"attached">
 			: RoleIdentifierDocument,
 		deserialized: DeserializedRoleDocument

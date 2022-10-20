@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils"
+import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
@@ -79,6 +79,7 @@ describe("Component: post/viewer", () => {
 		await menu.vm.$emit("updatePost")
 		const updatePostForm = wrapper.findComponent({ "name": "UpdatePostForm" })
 		await updatePostForm.vm.$emit("submit")
+		await flushPromises()
 
 		const castWrapper = wrapper.vm as any
 		expect(castWrapper.mustUpdate).toBeTruthy()
@@ -89,7 +90,31 @@ describe("Component: post/viewer", () => {
 		expect(request).toHaveProperty("url", specializePath(POST_LINK.bound, { "id": postID }))
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(await request.json()).toStrictEqual(modelValue)
+		const expectedBody = {
+			"data": {
+				"attributes": {
+					"content": modelValue.content,
+					"deletedAt": modelValue.deletedAt
+				},
+				"id": postID,
+				"relationships": {
+					"poster": {
+						"data": {
+							"id": modelValue.poster.data.id,
+							"type": "user"
+						}
+					},
+					"posterRole": {
+						"data": {
+							"id": modelValue.posterRole.data.id,
+							"type": "role"
+						}
+					}
+				},
+				"type": "post"
+			}
+		}
+		expect(await request.json()).toStrictEqual(expectedBody)
 
 		const updateEvent = wrapper.emitted("update:modelValue")
 		expect(updateEvent).toHaveProperty("0.0", modelValue)
