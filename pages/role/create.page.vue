@@ -1,4 +1,6 @@
 <template>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+
 	<form @submit.prevent="createRole">
 		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
@@ -39,10 +41,12 @@ import { ref } from "vue"
 import type { RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
-import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
 import FlagSelector from "@/role/flag_selector.vue"
+import TextualField from "@/fields/non-sensitive_text.vue"
+import ReceivedErrors from "@/helpers/received_errors.vue"
+import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
+import { UnitError } from "$/types/server"
 
 const role = ref<RoleAttributes<"deserialized">>({
 	"auditTrailFlags": 0,
@@ -61,14 +65,25 @@ const role = ref<RoleAttributes<"deserialized">>({
 const flagSelectors = makeFlagSelectorInfos(role)
 const roleFetcher = new Fetcher()
 
+const receivedErrors = ref<string[]>([])
 function createRole() {
 	roleFetcher.create({
 		...role.value,
 		"deletedAt": null
 	}).then(({ unusedBody, unusedStatus }) => {
 		// Success
-	}).catch(({ unusedBody, unusedStatus }) => {
-		// Fail
+	})
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 </script>
