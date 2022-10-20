@@ -45,7 +45,7 @@
 			{{ reason }}
 		</h6>
 
-		<div class="schedules flex justify-between max-w-[900px]">
+		<div class="schedules">
 			<div class="col">
 				<h2>
 					Scheduled Start:
@@ -126,6 +126,10 @@
 		@apply border-b mb-5;
 	}
 	.signatures img { max-width: 120px; }
+
+	.schedules{
+		@apply flex justify-between max-w-900px;
+	}
 
 	.file-message a { text-decoration: underline; }
 	@media print {

@@ -35,7 +35,6 @@
 			</div>
 		</form>
 		<div class="controls">
-			<!-- TODO: add reset password functionality -->
 			<button
 				id="submit-btn"
 				:disabled="!email && Boolean(token)"
@@ -67,14 +66,6 @@
 	padding: 1em 2em;
 	z-index: 1;
 
-	ul {
-		list-style-type: disc;
-		width: 100%;
-
-		li {
-			@apply ml-3;
-		}
-	}
 
 	@screen sm {
 		width: initial;
