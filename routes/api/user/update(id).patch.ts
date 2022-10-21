@@ -9,7 +9,7 @@ import type {
 	BaseManagerClass
 } from "!/types/dependent"
 
-import { personName } from "$!/constants/regex"
+import { personName, personNameDescription } from "$!/constants/regex"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -48,7 +48,7 @@ export default class extends DoubleBoundJSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
-		const attributes = {
+		const attributes: FieldRules = {
 			"email": {
 				"constraints": {
 					"manager": {
@@ -64,6 +64,7 @@ export default class extends DoubleBoundJSONController {
 			"name": {
 				"constraints": {
 					"regex": {
+						"friendlyDescription": personNameDescription,
 						"match": personName
 					}
 				},

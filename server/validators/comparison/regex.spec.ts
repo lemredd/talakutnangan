@@ -4,10 +4,15 @@ import regex from "./regex"
 describe("Validator pipe: regex", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world"))
-		const constraints = { "request": null,
-			"source": null,
+		const constraints = {
 			"field": "hello",
-			"regex": { "match": /world/ } }
+			"regex": {
+				"friendlyDescription": "",
+				"match": /world/u
+			},
+			"request": null,
+			"source": null
+		}
 
 		const sanitizeValue = (await regex(value, constraints)).value
 
@@ -17,10 +22,13 @@ describe("Validator pipe: regex", () => {
 	it("can accept valid input with whitespace", async() => {
 		const value = Promise.resolve(makeInitialState("Regional Functionality Executive"))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
-			"regex": { "match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/ }
+			"regex": {
+				"friendlyDescription": "",
+				"match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u
+			},
+			"request": null,
+			"source": null
 		}
 
 		const sanitizeValue = (await regex(value, constraints)).value
@@ -30,10 +38,15 @@ describe("Validator pipe: regex", () => {
 
 	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState("foo"))
-		const constraints = { "request": null,
-			"source": null,
+		const constraints = {
 			"field": "hello",
-			"regex": { "match": /world/ } }
+			"regex": {
+				"friendlyDescription": "",
+				"match": /world/u
+			},
+			"request": null,
+			"source": null
+		}
 		try {
 			await regex(value, constraints)
 		} catch (error) {

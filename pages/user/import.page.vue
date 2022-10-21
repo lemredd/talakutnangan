@@ -1,13 +1,10 @@
 <template>
-	<AdminConfigHeader class="tabs" title="Admin Configuration"/>
-	<ul v-if="receivedErrors.length" class="error">
-		<h3>The following errors have occured:</h3>
-		<li
-			v-for="error in receivedErrors"
-			:key="receivedErrors.indexOf(error)">
-			{{ error }}
-		</li>
-	</ul>
+	<AdminConfigHeader
+		class="tabs"
+		title="Admin Configuration"
+		:tab-infos="TabInfos"/>
+
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="importData">
 		<div>
 			<MultiSelectableOptionsField
@@ -117,11 +114,11 @@
 
 
 <script setup lang="ts">
-import { inject, ref, computed, provide } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { UnitError } from "$/types/server"
 import { UserKindValues } from "$/types/database"
-import type { OptionInfo, TabInfo } from "$@/types/component"
+import type { OptionInfo } from "$@/types/component"
 import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedUserResource, DeserializedStudentResource } from "$/types/documents/user"
@@ -129,27 +126,13 @@ import type { DeserializedUserResource, DeserializedStudentResource } from "$/ty
 import UserFetcher from "$@/fetchers/user"
 import convertForSentence from "$/string/convert_for_sentence"
 
-import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
 import OutputTable from "@/helpers/overflowing_table.vue"
+import ReceivedErrors from "@/helpers/received_errors.vue"
+import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
-const tabs: TabInfo[] = [
-	{
-		"label": "Users",
-		"path": "user/list"
-	},
-	{
-		"label": "Roles",
-		"path": "role/list"
-	},
-	{
-		"label": "Departments",
-		"path": "department/list"
-	}
-]
-
-provide("tabs", tabs)
+import TabInfos from "@/resource_management/resource_tab_infos"
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
@@ -186,27 +169,6 @@ function importData(event: Event) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
-				// TODO(others): Generalize replacing substring using regex
-				.replace(
-					/^(The |Field )/u,
-					""
-				)
-				.replace(
-					/( in field )?"meta\.importedCSV\.\d+\.(email|name|studentNumber)?"/u,
-					" is a $2"
-				)
-				.replace(
-					/^ is a studentNumber/u,
-					"Student number"
-				)
-				.replace(
-					/must match ".+?"/u,
-					" must be valid"
-				)
-				.replace(
-					/ does exists in the database"/u,
-					" that already exists"
-				)
 
 				return readableDetail
 			})
@@ -215,7 +177,6 @@ function importData(event: Event) {
 		}
 	})
 }
-
 
 function isStudentResource(resource: DeserializedUserResource)
 : resource is DeserializedStudentResource {

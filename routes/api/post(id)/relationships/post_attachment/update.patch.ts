@@ -1,6 +1,7 @@
 import type { FieldRules, Rules } from "!/types/validation"
 import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import { fileType, fileTypeDescription } from "$!/constants/regex"
 import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
 
 import Log from "$!/singletons/log"
@@ -59,7 +60,8 @@ export default class extends BoundJSONController {
 						"minimum": 5
 					},
 					"regex": {
-						"match": /(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?/u
+						"friendlyDescription": fileTypeDescription,
+						"match": fileType
 					}
 				},
 				"pipes": [ required, string, length, regex ]
