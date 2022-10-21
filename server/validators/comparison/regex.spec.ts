@@ -4,10 +4,15 @@ import regex from "./regex"
 describe("Validator pipe: regex", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world"))
-		const constraints = { "request": null,
-			"source": null,
+		const constraints = {
 			"field": "hello",
-			"regex": { "match": /world/ } }
+			"regex": {
+				"friendlyDescription": "",
+				"match": /world/u
+			},
+			"request": null,
+			"source": null
+		}
 
 		const sanitizeValue = (await regex(value, constraints)).value
 
