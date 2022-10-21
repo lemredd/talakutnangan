@@ -3,24 +3,22 @@
 		<label class="block">
 			Full name:
 			<input
-				id="full-name"
 				v-model="department.data.fullName"
-				class="border-solid"
+				class="full-name border-solid"
 				type="text"/>
 		</label>
 		<label class="block">
 			Acronym:
 			<input
-				id="acronym"
 				v-model="department.data.acronym"
-				class="border-solid"
+				class="acronym border-solid"
 				type="text"/>
 		</label>
 		<label class="block">
 			May admit students:
 			<input
-				id="may-admit"
 				v-model="department.data.mayAdmit"
+				class="may-admit"
 				type="checkbox"/>
 		</label>
 		<input
@@ -71,13 +69,12 @@ function updateDepartment() {
 		"fullName": department.value.data.fullName,
 		"mayAdmit": department.value.data.mayAdmit
 	}, {
-		"extraDataFields": {
+		"extraUpdateDocumentProps": {
 			"meta": {
 				"password": password.value
 			}
 		}
-	}
-	)
+	})
 	.then(({ body, status }) => {
 		closeConfirmation()
 		password.value = ""
