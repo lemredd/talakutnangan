@@ -9,8 +9,13 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import { personName } from "$!/constants/regex"
 import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+import {
+	personName,
+	personNameDescription,
+	studentNumber,
+	studentNumberDescription
+} from "$!/constants/regex"
 
 import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
@@ -151,6 +156,7 @@ export default class extends MultipartController {
 														"columnName": "name"
 													},
 													"regex": {
+														"friendlyDescription": personNameDescription,
 														"match": personName
 													}
 												},
@@ -159,7 +165,8 @@ export default class extends MultipartController {
 											"studentNumber": {
 												"constraints": {
 													"regex": {
-														"match": /^\d+-\d+$/u
+														"friendlyDescription": studentNumberDescription,
+														"match": studentNumber
 													}
 												},
 												"pipes": [ nullable, string, regex ]
