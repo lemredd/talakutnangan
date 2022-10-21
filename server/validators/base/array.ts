@@ -58,6 +58,7 @@ export default async function(
 		if (errors.length > 0) {
 			throw errors.map(error => ({
 				"field": `${constraints.field}.${error.field}`,
+				"friendlyName": error.friendlyName,
 				"messageMaker": error.messageMaker
 			}))
 		} else {
