@@ -44,12 +44,24 @@ export default class extends PageMiddleware {
 			[ READ_ANYONE_ON_ALL_DEPARTMENTS ]
 		)
 		const department = mayViewAllDepartments ? null : Number(userProfile.data.department.data.id)
+		const posts = await manager.list({
+			"filter": {
+				"departmentID": department,
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		})
 
 		const pageProps = {
 			"departments": mayViewAllDepartments
 				? await departmentManager.list({
 					"filter": {
-						"existence": "exists"
+						"existence": "exists",
+						"slug": ""
 					},
 					"page": {
 						"limit": 10,
@@ -58,17 +70,7 @@ export default class extends PageMiddleware {
 					"sort": [ "fullName" ]
 				})
 				: [],
-			"posts": await manager.list({
-				"filter": {
-					"departmentID": department,
-					"existence": "exists"
-				},
-				"page": {
-					"limit": 10,
-					"offset": 0
-				},
-				"sort": [ "-createdAt" ]
-			})
+			posts
 		}
 
 		return pageProps
