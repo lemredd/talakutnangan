@@ -44,6 +44,8 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
 
+import RequestEnvironment from "$/singletons/request_environment"
+
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
@@ -53,7 +55,11 @@ const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
 )
 
-const password = ref<string>("")
+const password = ref<string>(
+	RequestEnvironment.isNotOnProduction
+		? "password"
+		: ""
+)
 
 const fetcher = new Fetcher()
 
