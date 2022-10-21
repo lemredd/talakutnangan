@@ -1,7 +1,9 @@
+import { flushPromises, mount } from "@vue/test-utils"
+
 import RequestEnvironment from "$/singletons/request_environment"
-import { mount } from "@vue/test-utils"
 
 import Page from "./read.page.vue"
+import Stub from "$/singletons/stub"
 
 describe("Page: department/read", () => {
 	it("Should populate fields with pre-loaded data", () => {
@@ -34,7 +36,60 @@ describe("Page: department/read", () => {
 		expect(mayAdmit).toEqual(department.data.mayAdmit)
 	})
 
-	it("can update department information", () => {
+	it("can update department information", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+
+		const department = {
+			"data": {
+				"acronym": "STD",
+				"fullName": "Sample Test Department",
+				"id": "0",
+				"mayAdmit": false
+			}
+		}
+		const updatedDepartment = {
+			"data": {
+				"acronym": "TSD",
+				"fullName": "Test Sample Department",
+				"mayAdmit": true
+			}
+		}
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							department
+						}
+					}
+				}
+			}
+		})
+		const fullNameInput = wrapper.find(".full-name")
+		const acronymInput = wrapper.find(".acronym")
+		const mayAdmitInput = wrapper.find(".may-admit")
+		const submitBtn = wrapper.find("input[type=submit]")
+
+		await fullNameInput.setValue(updatedDepartment.data.fullName)
+		await acronymInput.setValue(updatedDepartment.data.acronym)
+		await mayAdmitInput.setValue(updatedDepartment.data.mayAdmit)
+		await submitBtn.trigger("submit")
+		const confirmPasswordBtn = wrapper.find(".confirm-btn")
+		await confirmPasswordBtn.trigger("click")
+		await flushPromises()
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", `/api/department/${department.data.id}`)
+		expect(JSON.stringify(await request.json())).toContain(JSON.stringify(updatedDepartment.data))
+
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+		expect(previousCalls).toHaveProperty(
+			"0.arguments.0",
+			`/department/read/${department.data.id}`
+		)
+		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 })
