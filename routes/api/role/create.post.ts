@@ -1,6 +1,8 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
+import { roleName, roleNameDescription } from "$!/constants/regex"
+
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import JSONController from "!/controllers/json"
@@ -42,7 +44,10 @@ export default class extends JSONController {
 						"className": RoleManager,
 						"columnName": "name"
 					},
-					"regex": { "match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u }
+					"regex": {
+						"friendlyDescription": roleNameDescription,
+						"match": roleName
+					}
 				},
 				"pipes": [ required, string, regex, notExists ]
 			},

@@ -1,7 +1,12 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
-import { departmentAcronym, departmentFullName } from "$!/constants/regex"
+import {
+	departmentAcronym,
+	departmentFullName,
+	departmentAcronymDescription,
+	departmentFullNameDescription
+} from "$!/constants/regex"
 
 import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
@@ -30,7 +35,7 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		const attributes = {
+		const attributes: FieldRules = {
 			"acronym": {
 				"constraints": {
 					"acronym": { "spelledOutPath": "data.attributes.fullName" },
@@ -42,7 +47,10 @@ export default class extends JSONController {
 						"className": DepartmentManager,
 						"columnName": "acronym"
 					},
-					"regex": { "match": departmentAcronym }
+					"regex": {
+						"friendlyDescription": departmentAcronymDescription,
+						"match": departmentAcronym
+					}
 				},
 				"pipes": [ required, string, length, regex, acronym, notExists ]
 			},
@@ -56,7 +64,10 @@ export default class extends JSONController {
 						"className": DepartmentManager,
 						"columnName": "fullName"
 					},
-					"regex": { "match": departmentFullName }
+					"regex": {
+						"friendlyDescription": departmentFullNameDescription,
+						"match": departmentFullName
+					}
 				},
 				"pipes": [ required, string, length, regex, notExists ]
 			},

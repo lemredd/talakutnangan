@@ -2,11 +2,12 @@ import type { FieldRules } from "!/types/validation"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
+import { chatMessageKind, chatMessageKindDescription } from "$!/constants/regex"
+
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
 import Manager from "%/managers/chat_message"
 import JSONController from "!/controllers/json"
-import { chatMessageKind } from "$!/constants/regex"
 import CreatedResponseInfo from "!/response_infos/created"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
@@ -43,6 +44,7 @@ export default class extends JSONController {
 						"minimum": 3
 					},
 					"regex": {
+						"friendlyDescription": chatMessageKindDescription,
 						"match": chatMessageKind
 					}
 				},

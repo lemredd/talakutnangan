@@ -6,19 +6,15 @@ export default function(field: string, errors: (ErrorPointer|Error)[]): ErrorPoi
 		if (error instanceof Error) {
 			return {
 				field,
-				messageMaker: (
-					field: string,
-					value: any
-				): string => {
-					let message = `Unexpected error happened while validating ${field}.`
+				"messageMaker": (subfield: string): string => {
+					let message = `Unexpected error happened while validating ${subfield}.`
 					if (RequestEnvironment.isNotOnProduction) {
 						message += `Message: ${error.message} ${error.stack})`
 					}
 					return message
 				}
 			}
-		} else {
-			return error
 		}
+		return error
 	})
 }

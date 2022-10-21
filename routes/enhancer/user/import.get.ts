@@ -10,7 +10,7 @@ import PermissionBasedPolicy from "!/policies/permission-based"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
-import RoleManager from "%/managers/role"
+import Manager from "%/managers/role"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
@@ -31,12 +31,13 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const manager = new RoleManager(request)
+		const manager = new Manager(request)
 		const pageProps = {
 			"roles": await manager.list({
 				"filter": {
 					"department": "*",
-					"existence": "exists"
+					"existence": "exists",
+					"slug": ""
 				},
 				"page": {
 					"limit": 10,

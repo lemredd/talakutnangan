@@ -26,6 +26,7 @@ describe("Back-end: JSON Controller Special Validation", () => {
 					"email": {
 						"constraints": {
 							"regex": {
+								"friendlyDescription": "must be a valid email",
 								"match": /.*@.*/u
 							}
 						},
