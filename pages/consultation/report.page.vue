@@ -1,5 +1,26 @@
 <template>
-	hello
+	<ul>
+		<li
+			v-for="sumEntry in totalMillisecondsConsumed.data"
+			:key="sumEntry.id">
+			<div class="milliseconds">
+				<span>Time consumed:</span>
+				{{ convertToFullTimeString(sumEntry.meta.totalMillisecondsConsumed) }}
+			</div>
+			<ul class="consultations">
+				<span>consultations</span>
+				<li
+					v-for="consultation in sumEntry.meta.consultations.data"
+					:key="consultation.id">
+					#{{ consultation.id }}
+					{{ consultation.reason }}
+					{{
+						convertToFullTimeString(calculateMillisecondDifference(consultation.finishedAt, consultation.startedAt))
+					}}
+				</li>
+			</ul>
+		</li>
+	</ul>
 </template>
 
 <style>
@@ -10,7 +31,25 @@
 import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
+import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
+import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized", "consultations">
-console.log(pageContext.pageProps.consultations)
+const pageContext = inject("pageContext") as PageContext<
+	"deserialized",
+	"totalMillisecondsConsumed"
+>
+const { pageProps } = pageContext
+const totalMillisecondsConsumed
+= pageProps.totalMillisecondsConsumed as UserIdentifierListWithTimeConsumedDocument
+
+function convertToFullTimeString(timeInMilliseconds: number) {
+	const {
+		hours,
+		minutes,
+		seconds
+	} = convertMStoTimeObject(timeInMilliseconds)
+
+	return `${hours} hours ${minutes} minutes ${Math.floor(seconds)} seconds`
+}
 </script>
