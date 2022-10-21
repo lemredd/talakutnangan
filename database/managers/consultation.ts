@@ -249,7 +249,7 @@ export default class extends BaseManager<
 								"model": AttachedRole,
 								"paranoid": false,
 								"required": true,
-								"where": new Condition().equal("id", query.filter.user).build()
+								"where": new Condition().equal("userID", query.filter.user).build()
 							}
 						],
 						"model": Model,
