@@ -274,61 +274,50 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const prestructuredInfo = models.map(model => {
-				const user = model.user as User
-				const consultation = model.consultation as Model
+			return {
+				"data": await models.map(model => {
+					const user = model.user as User
+					const consultation = model.consultation as Model
 
-				const millisecond = calculateMillisecondDifference(
-					consultation.finishedAt as Date,
-					consultation.startedAt as Date
-				)
+					const millisecond = calculateMillisecondDifference(
+						consultation.finishedAt as Date,
+						consultation.startedAt as Date
+					)
 
-				return {
-					"id": String(user.id),
-					"meta": {
-						"consultations": [
-							consultation
-						],
-						"totalMillisecondsConsumed": millisecond
-					},
-					"type": "user"
-				}
-			})
-			let operations: Promise<any[]> = Promise.resolve([])
-			for (const currentSum of prestructuredInfo) {
-				operations = operations
-				.then(previousSums => this.serialize(currentSum.meta.consultations)
-				.then(seralizedConsultation => {
-					const castedCurrentSum = currentSum as any
-					castedCurrentSum.meta.consultations = deserialize(seralizedConsultation)
 					return {
-						"currentSum": castedCurrentSum,
-						previousSums
+						"id": String(user.id),
+						"meta": {
+							"consultations": [
+								consultation
+							],
+							"totalMillisecondsConsumed": millisecond
+						},
+						"type": "user"
 					}
-				})).then(({ previousSums, "currentSum": processedCurrentSum }) => {
-					const previousSum = previousSums.find(sum => sum.id === processedCurrentSum.id)
+				}).reduce(async(previousSums, currentSum: any) => {
+					const waitedPreviousSums = await previousSums
+					const previousSum = waitedPreviousSums.find(sum => sum.id === currentSum.id)
+					currentSum.meta.consultations = deserialize(
+						await this.serialize(currentSum.meta.consultations)
+					)
+
 					if (previousSum) {
-						previousSum.meta.totalMillisecondsConsumed += processedCurrentSum
+						previousSum.meta.totalMillisecondsConsumed += currentSum
 						.meta
 						.totalMillisecondsConsumed
 
-						const { consultations } = previousSum.meta
-						consultations.data.push(...processedCurrentSum.meta.consultations.data)
+						const consultations = previousSum.meta.consultations.data
+						consultations.push(currentSum.meta.consultations.data[0])
 
-						return previousSums
+						return waitedPreviousSums
 					}
 
 					return [
-						...previousSums,
-						processedCurrentSum
+						...waitedPreviousSums,
+						currentSum
 					]
-				})
+				}, Promise.resolve([]) as Promise<UserIdentifierListWithTimeConsumedDocument["data"]>)
 			}
-			const document = {
-				"data": await operations
-
-			}
-			return document
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
