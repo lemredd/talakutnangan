@@ -22,3 +22,13 @@ export const departmentAcronymDescription = "be an uppercased alphetic name with
 export const consultationReason = /[a-zA-Z0-9!?. -]+/u
 export const consultationReasonDescription
 = "contain at least one or more alphaumeric characters, or special characters (!?. -)"
+
+export const studentNumber = /^\d+-\d+$/u
+export const studentNumberDescription = "have numbers and dash in the middle"
+
+export const roleName = /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u
+export const roleNameDescription
+= "be properly-cased name with one or more Latin characters, dash, space, or underscore"
+
+export const fileType = /(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?/u
+export const fileTypeDescription = "be a valid MIME type"
