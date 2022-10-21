@@ -1,6 +1,8 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
+import { roleName, roleNameDescription } from "$!/constants/regex"
+
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -45,7 +47,10 @@ export default class extends DoubleBoundJSONController {
 						"className": RoleManager,
 						"columnName": "name"
 					},
-					"regex": { "match": /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u },
+					"regex": {
+						"friendlyDescription": roleNameDescription,
+						"match": roleName
+					},
 					"unique": {
 						"IDPath": "data.id"
 					}

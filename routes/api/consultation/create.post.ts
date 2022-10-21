@@ -3,6 +3,8 @@ import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
+import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
+
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
@@ -63,7 +65,8 @@ export default class extends JSONController {
 						"minimum": 10
 					},
 					"regex": {
-						"match": /[a-zA-Z0-9!?. -]/u
+						"friendlyDescription": consultationReasonDescription,
+						"match": consultationReason
 					}
 				},
 				"pipes": [ required, string, length, regex ]

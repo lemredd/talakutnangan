@@ -13,7 +13,7 @@ import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import RoleManager from "%/managers/role"
+import Manager from "%/managers/role"
 import DepartmentManager from "%/managers/department"
 
 export default class extends PageMiddleware {
@@ -38,7 +38,7 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const roleManager = new RoleManager(request)
+		const roleManager = new Manager(request)
 		const departmentManager = new DepartmentManager(request)
 		const pageProps = {
 			"departments": await departmentManager.list({

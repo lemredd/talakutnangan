@@ -1,4 +1,6 @@
 <template>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+
 	<form @submit.prevent="openConfirmation">
 		<div class="role-name">
 			<RoleNameField
@@ -47,6 +49,7 @@
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/error.scss";
 </style>
 
 <script setup lang="ts">
@@ -60,6 +63,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
 import FlagSelector from "@/role/flag_selector.vue"
+import ReceivedErrors from "@/helpers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 
@@ -67,9 +71,7 @@ type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const role = ref<DeserializedRoleDocument<"read">>(
-	pageProps.role as DeserializedRoleDocument<"read">
-)
+
 const roleData = computed<RoleAttributes<"deserialized">>({
 	get(): RoleAttributes<"deserialized"> { return role.value.data },
 	set(newResource: RoleAttributes<"deserialized">): void {
@@ -82,7 +84,14 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
 const password = ref<string>("")
 
+const role = ref<DeserializedRoleDocument<"read">>(
+	pageProps.role as DeserializedRoleDocument<"read">
+
+)
+const receivedErrors = ref<string[]>([])
+
 const fetcher: Fetcher = new Fetcher()
+
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
 const {
@@ -116,7 +125,20 @@ async function updateRole() {
 		password.value = ""
 		console.log(body, status)
 	})
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
+
 
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])

@@ -1,7 +1,6 @@
 <template>
 	<div class="user-controls">
 		<div v-if="willSoonStart || willStart" class="wide-control">
-			<!-- TODO(minor/button): Disable for consultation not yet scheduled -->
 			<button
 				:disabled="!willStart"
 				type="button"
@@ -9,7 +8,7 @@
 				@click="startConsultation">
 				Start consultation
 			</button>
-			<span v-if="!willStart" class="text-sm opacity-50">
+			<span v-if="!willStart" class="will-not-start">
 				You can start the consultation once the consultant is available.
 			</span>
 		</div>
@@ -59,8 +58,11 @@
 <style scoped lang="scss">
 @import "@styles/btn.scss";
 .user-controls {
-	@apply border-t p-3 flex
+	@apply border-t p-3 flex;
+}
 
+.will-not-start{
+		@apply text-sm opacity-50;
 }
 
 .message-box {

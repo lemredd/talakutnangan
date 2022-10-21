@@ -1,3 +1,5 @@
+@import "@styles/variables.scss";
+
 .error {
 	margin: 1em 0;
 	border-radius: 3px;
@@ -7,4 +9,13 @@
 	color: white;
 	font-size: smaller;
 	width: fit-content;
+}
+
+ul.error {
+	list-style-type: disc;
+	width: 100%;
+
+	li {
+		@apply ml-3;
+	}
 }
