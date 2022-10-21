@@ -47,6 +47,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
+import assignPath from "$@/external/assign_path"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
@@ -81,10 +82,10 @@ function updateDepartment() {
 			}
 		}
 	})
-	.then(({ body, status }) => {
+	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		console.log(body, status)
+		assignPath(`/department/read/${department.value.data.id}`)
 	})
 	.catch(error => console.log(error))
 }
