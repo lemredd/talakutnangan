@@ -90,7 +90,7 @@ describe("Validator pipe: object", () => {
 		expect(sanitizedInput).toStrictEqual({ "hello": "world" })
 	})
 
-	it.only("cannot accept invalid input with friendly names", async () => {
+	it("cannot accept invalid input with friendly names", async() => {
 		const value = Promise.resolve(makeInitialState({
 			"foo": 2,
 			"hello": 2
