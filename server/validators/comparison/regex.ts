@@ -30,7 +30,7 @@ export default async function(
 		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
 			field: string
-		) => `Field "${field}" must match "${constraints.regex?.friendlyDescription}".`
+		) => `Field "${field}" must ${constraints.regex?.friendlyDescription}.`
 	}
 	throw error
 }
