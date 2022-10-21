@@ -1,6 +1,5 @@
 import Router from "!/bases/router"
 import GetIndex from "!%/enhancer/index.get"
-import ChatRouter from "!%/enhancer/chat/router"
 import UserRouter from "!%/enhancer/user/router"
 import RoleRouter from "!%/enhancer/role/router"
 import ForumRouter from "!%/enhancer/forum/router"
@@ -15,7 +14,6 @@ export default class extends Router {
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
 				new UserRouter(),
-				new ChatRouter(),
 				new RoleRouter(),
 				new ForumRouter(),
 				new DepartmentRouter(),
