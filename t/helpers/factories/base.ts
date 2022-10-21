@@ -42,12 +42,12 @@ export default abstract class Factory<
 
 	async makeOne(): Promise<T> {
 		const model = this.model.build(await this.generate())
-		return this.attachRelatedModels(model)
+		return await this.attachRelatedModels(model)
 	}
 
 	async insertOne(): Promise<T> {
 		const model = await this.model.create(await this.generate())
-		return this.attachRelatedModels(model)
+		return await this.attachRelatedModels(model)
 	}
 
 	async generateMany(count: number): MultipleGeneratedData<T> {
