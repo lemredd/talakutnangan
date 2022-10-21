@@ -47,6 +47,7 @@ export default async function(
 
 			throw errors.map(thrownError => ({
 				"field": `${constraints.field}.${thrownError.field}`,
+				"friendlyName": thrownError.friendlyName,
 				"messageMaker": thrownError.messageMaker
 			}))
 		}

@@ -1,7 +1,12 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
-import { departmentAcronym, departmentFullName } from "$!/constants/regex"
+import {
+	departmentAcronym,
+	departmentFullName,
+	departmentAcronymDescription,
+	departmentFullNameDescription
+} from "$!/constants/regex"
 
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -32,7 +37,7 @@ export default class extends DoubleBoundJSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		const attributes = {
+		const attributes: FieldRules = {
 			"acronym": {
 				"constraints": {
 					"acronym": { "spelledOutPath": "data.attributes.fullName" },
@@ -44,7 +49,10 @@ export default class extends DoubleBoundJSONController {
 						"className": DepartmentManager,
 						"columnName": "acronym"
 					},
-					"regex": { "match": departmentAcronym },
+					"regex": {
+						"friendlyDescription": departmentAcronymDescription,
+						"match": departmentAcronym
+					},
 					"unique": { "IDPath": "data.id" }
 				},
 				"pipes": [ required, string, length, regex, acronym, unique ]
@@ -59,7 +67,10 @@ export default class extends DoubleBoundJSONController {
 						"className": DepartmentManager,
 						"columnName": "fullName"
 					},
-					"regex": { "match": departmentFullName },
+					"regex": {
+						"friendlyDescription": departmentFullNameDescription,
+						"match": departmentFullName
+					},
 					"unique": { "IDPath": "data.id" }
 				},
 				"pipes": [ required, string, length, regex, unique ]

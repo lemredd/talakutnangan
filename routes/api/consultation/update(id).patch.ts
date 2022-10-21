@@ -3,6 +3,8 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationDocument } from "$/types/documents/consultation"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
+
 import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -108,7 +110,8 @@ export default class extends DoubleBoundJSONController {
 						"minimum": 10
 					},
 					"regex": {
-						"match": /[a-zA-Z0-9!?. -]/u
+						"friendlyDescription": consultationReasonDescription,
+						"match": consultationReason
 					}
 				},
 				"pipes": [ required, string, length, regex ]

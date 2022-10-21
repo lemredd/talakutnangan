@@ -6,13 +6,13 @@ describe("Validator pipe: array", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState([ 2, 3 ]))
 		const constraints = {
-			"request": null,
-			"source": null,
-			"field": "hello",
 			"array": {
-				"pipes": [ integer ],
-				"constraints": {}
-			}
+				"constraints": {},
+				"pipes": [ integer ]
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
 		}
 
 		const sanitizeValue = (await array(value, constraints)).value
@@ -25,13 +25,13 @@ describe("Validator pipe: array", () => {
 		const source = Symbol("source")
 		const customPipe = jest.fn(originalValue => originalValue)
 		const constraints = {
-			"request": null,
-			source,
-			"field": "hello",
 			"array": {
-				"pipes": [ customPipe ],
-				"constraints": {}
-			}
+				"constraints": {},
+				"pipes": [ customPipe ]
+			},
+			"field": "hello",
+			"request": null,
+			source
 		}
 
 		await array(value, constraints)
@@ -40,20 +40,43 @@ describe("Validator pipe: array", () => {
 		expect(customPipe.mock.calls[0]).toHaveProperty("1.source", source)
 	})
 
-	it("cannot accept invalid input", () => {
+	it("cannot accept invalid input with friendly names", async() => {
 		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
+		const friendlyName = "def"
 		const constraints = {
-			"request": null,
-			"source": null,
-			"field": "hello",
 			"array": {
-				"pipes": [ integer ],
-				"constraints": {}
-			}
+				"constraints": {},
+				friendlyName,
+				"pipes": [ integer ]
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
 		}
 
-		const error = array(value, constraints)
+		try {
+			await array(value, constraints)
+		} catch (errors) {
+			expect(errors).toHaveProperty("0.friendlyName", friendlyName)
+		}
+	})
 
-		expect(error).rejects.toHaveProperty("0.field", "hello.1")
+	it("cannot accept invalid input", async() => {
+		const value = Promise.resolve(makeInitialState([ 2, "abc" ]))
+		const constraints = {
+			"array": {
+				"constraints": {},
+				"pipes": [ integer ]
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
+		}
+
+		try {
+			await array(value, constraints)
+		} catch (errors) {
+			expect(errors).toHaveProperty("0.field", "hello.1")
+		}
 	})
 })

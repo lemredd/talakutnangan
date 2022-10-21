@@ -32,7 +32,12 @@ export interface IsLessThanRuleConstraints {
 
 export interface OneOfRuleConstraints { oneOf: { values: any[] } }
 
-export interface RegexRuleConstraints { regex: { match: RegExp } }
+export interface RegexRuleConstraints {
+	regex: {
+		match: RegExp,
+		"friendlyDescription": string
+	}
+}
 
 export interface ArrayRuleConstraints {
 	// eslint-disable-next-line no-use-before-define
