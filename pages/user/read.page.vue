@@ -52,15 +52,14 @@ import {
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedUserDocument } from "$/types/documents/user"
 import type {
-	DeserializedRoleListDocument,
 	DeserializedRoleResource
 } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/user"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 type RequiredExtraProps = "user" | "roles"
