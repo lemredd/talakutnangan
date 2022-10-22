@@ -13,57 +13,60 @@
 				:disabled="isCurrentlyDisabled"
 				@keyup.enter.exact="saveImplicitly"/>
 			<button
-				v-if="editable"
+				v-if="isLocked"
 				type="button"
 				class="material-icons"
-				@click="toggleEditableField">
-				{{
-					isCurrentlyDisabled
-						? "edit"
-						: "save"
-				}}
+				@click="unlock">
+				edit
+			</button>
+			<button
+				v-if="isUnlocked"
+				type="button"
+				class="material-icons"
+				@click="lock">
+				save
 			</button>
 		</div>
 	</div>
 </template>
 <style scoped lang="scss">
-.input-container {
-	@apply flex flex-col;
+	.input-container {
+		@apply flex flex-col;
 
-	label {
-		margin-bottom: .5em;
+		label {
+			margin-bottom: .5em;
 
-		h2 {
-			font-size: 1.5em;
-		}
-	}
-
-	&.default {
-		display: block;
-	}
-
-	.input-and-controls {
-		@apply flex items-center;
-
-		input {
-			@apply flex-1;
-			padding-bottom: .25em;
-
-			&:not(:disabled) {
-				border-bottom: 1px solid hsl(0, 0%, 60%);
-				outline: none;
+			h2 {
+				font-size: 1.5em;
 			}
 		}
-		.material-icons {
-			@apply justify-self-end;
+
+		&.default {
+			display: block;
+		}
+
+		.input-and-controls {
+			@apply flex items-center;
+
+			input {
+				@apply flex-1;
+				padding-bottom: .25em;
+
+				&:not(:disabled) {
+					border-bottom: 1px solid hsl(0, 0%, 60%);
+					outline: none;
+				}
+			}
+			.material-icons {
+				@apply justify-self-end;
+			}
 		}
 	}
-}
 </style>
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed } from "vue"
 
-import type { Textual } from "@/fields/types"
+import type { Textual, FieldStatus } from "@/fields/types"
 
 const props = defineProps<{
 	label?: string
@@ -71,23 +74,14 @@ const props = defineProps<{
 	modelValue: string
 	required?: boolean
 	maySaveImplicitly?: boolean
-	disabled?: boolean
-	editable?: boolean
+	status?: FieldStatus
 	inputClasses?: string
 }>()
 
-const {
-	label,
-	type,
-	required = true,
-	editable,
-	inputClasses
-} = props
-
 interface CustomEvents {
 	(event: "update:modelValue", newModelValue: string): void
+	(event: "update:status", status: FieldStatus): void
 	(event: "saveImplicitly"): void
-	(event: "save"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -97,14 +91,22 @@ const modelValue = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
-const isCurrentlyDisabled = ref<boolean>(props.disabled as boolean || props.editable as boolean)
 
-function toggleEditableField() {
-	isCurrentlyDisabled.value = !isCurrentlyDisabled.value
+const derivedStatus = computed<FieldStatus>(() => props.status || "enabled")
+const isCurrentlyDisabled = computed<boolean>(() => {
+	const status = derivedStatus.value
+	return status === "disabled" || status === "locked"
+})
+const isLocked = computed<boolean>(() => derivedStatus.value === "locked")
+const isUnlocked = computed<boolean>(() => derivedStatus.value === "unlocked")
+const editable = computed<boolean>(() => isLocked.value || isUnlocked.value)
 
-	if (isCurrentlyDisabled.value) {
-		emit("save")
-	}
+function lock() {
+	if (derivedStatus.value === "unlocked") emit("update:status", "locked")
+}
+
+function unlock() {
+	if (derivedStatus.value === "locked") emit("update:status", "unlocked")
 }
 
 function saveImplicitly() {

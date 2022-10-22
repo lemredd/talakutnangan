@@ -54,12 +54,14 @@ describe("Component: fields/non-sensitive_text", () => {
 		})
 
 		const editButton = wrapper.find("button")
-		const field = wrapper.find("input")
 
 		await editButton.trigger("click")
 
+		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBe("")
-		expect(wrapper.emitted("unlock")).toHaveLength(1)
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "unlocked")
 	})
 
 	it("may not be edited", async() => {
@@ -74,14 +76,14 @@ describe("Component: fields/non-sensitive_text", () => {
 		})
 
 		const editButton = wrapper.find("button")
-		const field = wrapper.find("input")
 
 		await editButton.trigger("click")
 
-		expect(field.attributes("disabled")).toBe("true")
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toBeUndefined()
 		const updates = wrapper.emitted("update:status")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("0.0", "lock")
+		expect(updates).toHaveProperty("0.0", "locked")
 	})
 
 	it("must be disabled", async() => {
@@ -99,7 +101,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		const editButton = wrapper.find("button")
 		const doesExists = await editButton.exists()
 
-		expect(field.attributes("disabled")).toBe("true")
+		expect(field.attributes("disabled")).toBe("")
 		expect(doesExists).toBeFalsy()
 	})
 
@@ -118,7 +120,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		const editButton = wrapper.find("button")
 		const doesExists = await editButton.exists()
 
-		expect(field.attributes("disabled")).toBe("")
+		expect(field.attributes("disabled")).toBeFalsy()
 		expect(doesExists).toBeFalsy()
 	})
 
