@@ -69,6 +69,7 @@ import Fetcher from "$@/fetchers/user"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import assignPath from "$@/external/assign_path"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -97,6 +98,7 @@ const selectableDepartments = departments.data.map(department => ({
 
 let fetcher = new Fetcher()
 
+
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
@@ -104,17 +106,16 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then(({ body, status }) => {
-		console.log(body, status)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
 	})
-
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	.then(({ body, status }) => {
-		console.log(body, status)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
 	})
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value)
-	.then(({ body, status }) => {
-		console.log(body, status)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
 	})
 }
 
