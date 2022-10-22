@@ -46,7 +46,7 @@ export default function<T>(
 	})
 	castInclude.push({
 		"model": Department,
-		"required": true
+		"required": false
 	})
 	castInclude.push({
 		"model": PostAttachment,
