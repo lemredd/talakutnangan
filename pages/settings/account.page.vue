@@ -5,8 +5,8 @@
 			v-model="email"
 			label="E-mail"
 			type="email"
-			:editable="true"
-			@save="updateEmail"/>
+			:status="emailFieldStatus"
+			@update:status="updateEmailFieldStatus"/>
 		<UpdatePasswordField/>
 
 		<NonSensitiveTextualField
@@ -14,12 +14,12 @@
 			v-model="studentNumber"
 			label="Student Number"
 			type="text"
-			:disabled="true"/>
+			status="disabled"/>
 		<NonSensitiveTextualField
 			v-model="groupName"
 			:label="groupKind"
 			type="text"
-			:disabled="true"/>
+			status="disabled"/>
 		<div>
 			<h3 class="input-header">
 				Roles
@@ -30,25 +30,26 @@
 </template>
 
 <style lang="scss">
-@import "@styles/variables.scss";
+	@import "@styles/variables.scss";
 
-form {
-	max-width: $mobileViewportMaximum;
+	form {
+		max-width: $mobileViewportMaximum;
 
-	.input-header {
-		font-size: 1.25em;
+		.input-header {
+			font-size: 1.25em;
+		}
+		.role {
+			border-radius: 2em;
+			padding: .5em 1em;
+			width: max-content;
+		}
 	}
-	.role {
-		border-radius: 2em;
-		padding: .5em 1em;
-		width: max-content;
-	}
-}
 </style>
 
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -64,6 +65,7 @@ const fetcher = new Fetcher()
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+const emailFieldStatus = ref<FieldStatus>("locked")
 const email = ref<string>(userProfile.data.email)
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
@@ -103,5 +105,17 @@ function updateEmail(): void {
 	.catch(() => {
 		//
 	})
+}
+
+function updateEmailFieldStatus(newStatus: FieldStatus) {
+	switch (newStatus) {
+		case "unlocked":
+			emailFieldStatus.value = newStatus
+			break
+		case "locked":
+			updateEmail()
+			break
+		default: throw new Error("Developer error!")
+	}
 }
 </script>
