@@ -22,9 +22,3 @@ export interface FlagSelectorInfo {
 	"uncheckExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void,
 	"checkExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void
 }
-
-export type FieldStatus =
-	| "enabled"
-	| "disabled"
-	| "unlocked"
-	| "locked"
