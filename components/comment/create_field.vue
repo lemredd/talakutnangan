@@ -31,7 +31,7 @@ import TextualField from "@/fields/non-sensitive_text.vue"
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 interface CustomEvents {
-	(event: "addComment", data: DeserializedCommentResource): void
+	(event: "createComment", data: DeserializedCommentResource): void
 	(event: "submitPost"): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -86,7 +86,7 @@ async function submit() {
 			}
 		}
 	}).then(({ body }) => {
-		emit("addComment", {
+		emit("createComment", {
 			...body.data,
 			"parentComment": isUndefined(parentComment.value)
 				// eslint-disable-next-line no-undefined
