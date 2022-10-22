@@ -81,7 +81,7 @@ describe("Component: post/viewer/menu", () => {
 		expect(restoreButton.exists()).toBeFalsy()
 		const events = wrapper.emitted("updatePost")
 		expect(events).toHaveLength(1)
-		expect(events).toHaveProperty("0.0")
+		expect(events).toHaveProperty("0")
 	})
 
 	it("cannot request for updating the other's post", async() => {
@@ -202,7 +202,7 @@ describe("Component: post/viewer/menu", () => {
 		expect(restoreButton.exists()).toBeFalsy()
 		const events = wrapper.emitted("archivePost")
 		expect(events).toHaveLength(1)
-		expect(events).toHaveProperty("0.0")
+		expect(events).toHaveProperty("0")
 	})
 
 	it("may request for archiving other's post", async() => {
@@ -279,6 +279,6 @@ describe("Component: post/viewer/menu", () => {
 		expect(restoreButton.exists()).toBeFalsy()
 		const events = wrapper.emitted("archivePost")
 		expect(events).toHaveLength(1)
-		expect(events).toHaveProperty("0.0")
+		expect(events).toHaveProperty("0")
 	})
 })
