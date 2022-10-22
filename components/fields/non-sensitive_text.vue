@@ -81,6 +81,7 @@ const props = defineProps<{
 interface CustomEvents {
 	(event: "update:modelValue", newModelValue: string): void
 	(event: "update:status", status: FieldStatus): void
+	(event: "save"): void
 	(event: "saveImplicitly"): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -102,7 +103,10 @@ const isUnlocked = computed<boolean>(() => derivedStatus.value === "unlocked")
 const editable = computed<boolean>(() => isLocked.value || isUnlocked.value)
 
 function lock() {
-	if (derivedStatus.value === "unlocked") emit("update:status", "locked")
+	if (derivedStatus.value === "unlocked") {
+		emit("update:status", "locked")
+		emit("save")
+	}
 }
 
 function unlock() {
