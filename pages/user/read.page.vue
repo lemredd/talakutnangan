@@ -10,10 +10,18 @@
 
 		<div class="roles">
 			<MultiSelectableOptionsField
-				v-model="[]"
+				v-model="userRoleIDs"
 				class="selectable-roles"
 				label="Roles"
 				:options="selectableRoles"/>
+		</div>
+
+		<div class="department">
+			<SelectableOptionsField
+				v-model="userDepartment"
+				class="selectable-department"
+				label="Department"
+				:options="selectableDepartments"/>
 		</div>
 
 		<div class="controls flex justify-between">
@@ -76,7 +84,12 @@ const selectableRoles = roles.data.map(
 ) as OptionInfo[]
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
-let rawFetcher: Fetcher|null = null
+const { departments } = pageProps
+const userDepartment = ref(user.value.data.department?.data.id as string)
+const selectableDepartments = departments.data.map(department => ({
+	"label": department.fullName,
+	"value": department.id
+}))
 
 function fetcher(): Fetcher {
 	if (rawFetcher) return rawFetcher
