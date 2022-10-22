@@ -8,6 +8,7 @@ import GetLogInAsSecretaryRoute from "!%/dev/log_in_as_secretary.get"
 import GetLogInAsServiceHeadRoute from "!%/dev/log_in_as_service_head.get"
 import GetLogInAsDefaultProfessorRoute from "!%/dev/log_in_as_default_professor.get"
 
+import GetMakeTestPostRoute from "!%/dev/make_test_post.get"
 import GetSampleUserListRoute from "!%/dev/sample_user_list.get"
 import GetSampleServerErrorRoute from "!%/dev/sample_server_error.get"
 import GetMakeUnverifiedUserRoute from "!%/dev/make_unverified_user.get"
@@ -28,6 +29,7 @@ export default class extends Router {
 			new GetLogInAsServiceHeadRoute(),
 			new GetLogInAsDefaultProfessorRoute(),
 
+			new GetMakeTestPostRoute(),
 			new GetSampleUserListRoute(),
 			new GetSampleServerErrorRoute(),
 			new GetMakeUnverifiedUserRoute(),

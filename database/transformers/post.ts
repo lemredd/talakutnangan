@@ -52,7 +52,8 @@ export default class extends Transformer<Model, void> {
 	transform(model: Model|Model[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-			"content"
+			"content",
+			"deletedAt"
 		])
 
 		return safeObject
