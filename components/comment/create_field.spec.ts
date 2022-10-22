@@ -20,6 +20,16 @@ describe("Component: comment/create_field", () => {
 			"data": { content },
 			...commentIdentifier
 		}
+		const userProfile = {
+			"data": {
+				"id": userID,
+				"type": "user"
+			}
+		}
+		const post = {
+			"id": postID,
+			"type": "post"
+		}
 		fetchMock.mockResponseOnce(
 			JSON.stringify(comment),
 			{ "status": RequestEnvironment.status.OK }
@@ -29,21 +39,13 @@ describe("Component: comment/create_field", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"userProfile": {
-								"data": {
-									"id": userID,
-									"type": "user"
-								}
-							}
+							userProfile
 						}
 					}
 				}
 			},
 			"props": {
-				"post": {
-					"id": postID,
-					"type": "post"
-				}
+				post
 			}
 		})
 
@@ -62,6 +64,15 @@ describe("Component: comment/create_field", () => {
 		expect(firstRequestBody).not.toHaveProperty("data.relationships.parentComment")
 		expect(firstRequestBody).toHaveProperty("data.relationships.user.data.id", userID)
 		expect(firstRequestBody).toHaveProperty("data.relationships.post.data.id", postID)
+
+		const updates = wrapper.emitted("createComment")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("data.type", "comment")
+		expect(updates).toHaveProperty("data.content", content)
+		expect(updates).toHaveProperty("data.id", commentIdentifier.id)
+		expect(updates).toHaveProperty("data.user", userProfile)
+		expect(updates).not.toHaveProperty("data.parentComment")
+		expect(updates).toHaveProperty("data.post", post)
 	})
 
 	it("may submit dependently", async() => {
@@ -77,6 +88,21 @@ describe("Component: comment/create_field", () => {
 			"data": { content },
 			...commentIdentifier
 		}
+		const userProfile = {
+			"data": {
+				"id": userID,
+				"type": "user"
+			}
+		}
+		const parentComment = {
+			"id": parentCommentID,
+			"type": "comment"
+		}
+		const post = {
+			"id": postID,
+			"type": "post"
+		}
+
 		fetchMock.mockResponseOnce(
 			JSON.stringify(comment),
 			{ "status": RequestEnvironment.status.OK }
@@ -86,25 +112,14 @@ describe("Component: comment/create_field", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"userProfile": {
-								"data": {
-									"id": userID,
-									"type": "user"
-								}
-							}
+							userProfile
 						}
 					}
 				}
 			},
 			"props": {
-				"parentComment": {
-					"id": parentCommentID,
-					"type": "comment"
-				},
-				"post": {
-					"id": postID,
-					"type": "post"
-				}
+				parentComment,
+				post
 			}
 		})
 
@@ -126,5 +141,14 @@ describe("Component: comment/create_field", () => {
 			"data.relationships.parentComment.data.id",
 			parentCommentID
 		)
+
+		const updates = wrapper.emitted("createComment")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("data.type", "comment")
+		expect(updates).toHaveProperty("data.content", content)
+		expect(updates).toHaveProperty("data.id", commentIdentifier.id)
+		expect(updates).toHaveProperty("data.user", userProfile)
+		expect(updates).toHaveProperty("data.parentComment", parentComment)
+		expect(updates).toHaveProperty("data.post", post)
 	})
 })
