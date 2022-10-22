@@ -41,9 +41,7 @@ extends GeneralRelationshipData {
 	post: {
 		serialized: T extends "update"
 			? undefined
-			: T extends "create"
-				? PostIdentifierDocument|undefined
-				: PostIdentifierDocument,
+			: PostIdentifierDocument,
 		deserialized: DeserializedPostDocument
 	},
 	parentComment: {
