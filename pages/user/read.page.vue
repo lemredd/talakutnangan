@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="updateUser">
+	<form @submit.prevent="updateAndReload">
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
@@ -117,6 +117,13 @@ async function updateUser() {
 		console.log(body, status)
 	})
 }
+
+function updateAndReload() {
+	updateUser()
+	.then(() => assignPath(`/user/read/${user.value.data.id}`))
+	.catch(error => console.log(error))
+}
+
 
 async function archiveUser() {
 	await fetcher.archive([ user.value.data.id ])
