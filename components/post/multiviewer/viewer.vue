@@ -106,17 +106,20 @@ import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 const fetcher = new Fetcher()
 
 const props = defineProps<{
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"department">
 }>()
 
 interface CustomEvents {
-	(event: "update:modelValue", post: DeserializedPostResource<"poster"|"posterRole">): void
-	(event: "archive", post: DeserializedPostResource<"poster"|"posterRole">): void
-	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole">): void
+	(
+		event: "update:modelValue",
+		post: DeserializedPostResource<"poster"|"posterRole"|"department"
+	>): void
+	(event: "archive", post: DeserializedPostResource<"poster"|"posterRole"|"department">): void
+	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole"|"department">): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const post = ref<DeserializedPostResource<"poster"|"posterRole">>(props.modelValue)
+const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
 
 const {
 	"state": mustUpdate,
