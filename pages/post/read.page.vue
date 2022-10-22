@@ -10,7 +10,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { inject, computed, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostResource } from "$/types/documents/post"
