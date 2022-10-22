@@ -28,18 +28,22 @@
 		}
 
 		> .dropdown-container {
-			@apply dark:bg-dark-400 fixed bg-white h-full z-501;
+			@apply dark:bg-dark-400 fixed bg-white h-full z-501 flex;
 
 			inset: calc($navHeight + 60%) 0 0 0;
 		}
 	}
 
 	@screen md {
-		.dropdown-container {
-			@apply absolute bg-white h-max w-max;
+		.container {
+			> .overlay { display: none }
 
-			top: $navHeight;
-			transform: translateX(-50%);
+			> .dropdown-container {
+				@apply absolute dark:bg-dark-400 bg-white h-max w-max p-1;
+
+				inset: unset;
+				transform: translatex(-50%) translateY(125%);
+			}
 		}
 	}
 </style>
