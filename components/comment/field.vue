@@ -5,8 +5,8 @@
 			:user="user"/>
 		<TextualField
 			v-model="content"
+			v-model:status="fieldStatus"
 			type="text"
-			:status="fieldStatus"
 			:may-save-implicitly="true"
 			@save-implicitly="submit"
 			@save="submit"/>
