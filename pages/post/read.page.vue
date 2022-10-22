@@ -1,6 +1,7 @@
 <template>
 	<div class="post-container">
 		<Viewer v-model="post"/>
+		<CreateField :post="post"/>
 		<Multiviewer v-model="comments"/>
 	</div>
 </template>
@@ -19,6 +20,7 @@ import makeSwitch from "$@/helpers/make_switch"
 
 import Multiviewer from "@/comment/multiviewer.vue"
 import Viewer from "@/post/multiviewer/viewer.vue"
+import CreateField from "@/comment/create_field.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
