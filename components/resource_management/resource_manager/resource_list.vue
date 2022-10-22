@@ -21,7 +21,7 @@
 					<td>
 						<a
 							:href="`read/${resource.id}`"
-							class="btn"
+							class="read-resource-btn btn"
 							type="button">
 							edit
 						</a>
