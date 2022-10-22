@@ -46,4 +46,30 @@ describe("Component: comment/field", () => {
 		expect(updates).toHaveLength(1)
 		expect(updates).toHaveProperty("0")
 	})
+
+	it("may submit explicitly", async() => {
+		const parentCommentID = "3"
+		const content = "Hello world"
+		const parentComment = {
+			"id": parentCommentID,
+			"type": "comment"
+		}
+
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"isEditable": true,
+				"modelValue": content,
+				parentComment
+			}
+		})
+
+		const field = wrapper.findComponent({ "name": "TextualField" })
+		await field.setValue(content)
+		await field.vm.$emit("save")
+		await flushPromises()
+
+		const updates = wrapper.emitted("submitComment")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0")
+	})
 })

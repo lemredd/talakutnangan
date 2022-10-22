@@ -3,8 +3,10 @@
 		<TextualField
 			v-model="content"
 			type="text"
+			:editable="editable"
 			:may-save-implicitly="true"
-			@save-implicitly="submit"/>
+			@save-implicitly="submit"
+			@save="submit"/>
 		<button class="material-icons" @click="submit">
 			send
 		</button>
@@ -30,6 +32,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	parentComment?: DeserializedCommentResource,
+	editable?: boolean,
 	modelValue: string
 }>()
 
