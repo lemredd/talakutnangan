@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<ProfilePicture
+			class="self"
+			:user="user"/>
 		<TextualField
 			v-model="content"
 			type="text"
@@ -23,8 +26,10 @@ import { computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import TextualField from "@/fields/non-sensitive_text.vue"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 interface CustomEvents {
 	(event: "update:modelValue", data: string): void
@@ -34,7 +39,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	parentComment?: DeserializedCommentResource,
-	editable?: boolean,
+	user: DeserializedUserDocument,
 	status: FieldStatus,
 	modelValue: string
 }>()
