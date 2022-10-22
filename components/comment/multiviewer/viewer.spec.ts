@@ -19,7 +19,7 @@ import {
 import Component from "./viewer.vue"
 
 describe("Component: comment/multiviewer/viewer", () => {
-	it("should submit comment updates", async() => {
+	it.skip("should submit comment updates", async() => {
 		const userID = "1"
 		const commentID = "2"
 		const modelValue = {
