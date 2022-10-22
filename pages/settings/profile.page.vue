@@ -4,9 +4,9 @@
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
+				v-model:status="nameFieldStatus"
 				label="Display Name"
 				type="text"
-				:editable="true"
 				@save="updateUser"/>
 		</div>
 
@@ -161,6 +161,7 @@
 <script setup lang="ts">
 import { ref, Ref, inject, computed } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
@@ -181,7 +182,6 @@ import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
 
-
 import { DayValues } from "$/types/database"
 
 const bodyClasses = inject(BODY_CLASSES) as Ref<string[]>
@@ -191,6 +191,8 @@ const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocumen
 const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
+
+const nameFieldStatus = ref<FieldStatus>("locked")
 
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
