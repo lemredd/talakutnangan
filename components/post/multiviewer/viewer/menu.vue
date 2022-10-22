@@ -71,8 +71,8 @@ const {
 const poster = computed<DeserializedUserResource>(
 	() => props.post.poster.data as DeserializedUserResource
 )
-const department = computed<DeserializedDepartmentResource|null>(
-	() => props.post.department.data as DeserializedDepartmentResource|null
+const department = computed<DeserializedDepartmentResource|undefined>(
+	() => props.post.department?.data as DeserializedDepartmentResource|undefined
 )
 
 const permissionGroup = new PermissionGroup()
@@ -89,7 +89,7 @@ const mayUpdatePost = computed<boolean>(() => {
 		&& (
 			isOwned || (
 				!isUndefined(department.value)
-				&& department.value?.data.id === userProfile.data.department.data.id
+				&& department.value?.id === userProfile.data.department.data.id
 			)
 		)
 
@@ -116,10 +116,8 @@ const mayArchiveOrRestorePost = computed<boolean>(() => {
 			ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || (
-				!isUndefined(department.value)
-				&& department.value?.data.id === userProfile.data.department.data.id
-			)
+			isOwned || !isUndefined(department.value)
+				&& department.value?.id === userProfile.data.department.data.id
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
