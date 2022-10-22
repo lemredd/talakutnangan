@@ -58,10 +58,49 @@ describe("Component: fields/non-sensitive_text", () => {
 
 		await editButton.trigger("click")
 
-		expect(field.attributes("disabled")).not.toBeTruthy()
+		expect(field.attributes("disabled")).toBeFalsy()
+		expect(wrapper.emitted("enable")).toHaveLength(1)
+	})
+
+	it("may be disabled", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"editable": true,
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const editButton = wrapper.find("button")
+		const field = wrapper.find("input")
+
+		await editButton.trigger("click")
+		await editButton.trigger("click")
+
+		expect(field.attributes("disabled")).toBeFalsy()
+		expect(wrapper.emitted("enable")).toHaveLength(1)
+		expect(wrapper.emitted("disable")).toHaveLength(1)
 	})
 
 	it("may not be edited", () => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"editable": true,
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const field = wrapper.find("input")
+
+		expect(field.attributes("disabled")).toBe("")
+	})
+
+	it("may be explicitly edited", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"editable": false,
