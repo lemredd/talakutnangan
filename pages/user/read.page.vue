@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="updateRole">
+	<form @submit.prevent="updateUser">
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
@@ -23,7 +23,7 @@
 				v-else
 				type="button"
 				class="btn btn-primary"
-				@click="archiveRole">
+				@click="archiveUser">
 				Archive
 			</button>
 		</div>
@@ -66,7 +66,7 @@ function fetcher(): Fetcher {
 	throw new Error("User cannot be processed to server yet")
 }
 
-async function updateRole() {
+async function updateUser() {
 	await fetcher().update(user.value.data.id, {
 		"email": user.value.data.email,
 		"kind": user.value.data.kind,
@@ -78,7 +78,7 @@ async function updateRole() {
 	})
 }
 
-async function archiveRole() {
+async function archiveUser() {
 	await fetcher().archive([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
