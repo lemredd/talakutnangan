@@ -9,7 +9,7 @@
 				<template #after-dropdown>
 					<button
 						type="button"
-						class="material-icons"
+						class="add-btn material-icons"
 						@click="addCurrentOption">
 						add
 					</button>
@@ -32,7 +32,7 @@
 				</button>
 			</li>
 			<li v-if="!selectedOptions.length" class="no-options">
-				<small>There are no roles selected</small>
+				<small>There are no options selected</small>
 			</li>
 		</ul>
 	</div>
