@@ -31,9 +31,11 @@ import { computed, inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import makeSwitch from "$@/helpers/make_switch"
 import PermissionGroup from "$/permissions/post"
+import isUndefined from "$/type_guards/is_undefined"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -46,7 +48,7 @@ import {
 import Dropdown from "@/page_shell/dropdown.vue"
 
 const props = defineProps<{
-	post: DeserializedPostResource<"poster">
+	post: DeserializedPostResource<"poster"|"department">
 }>()
 
 interface CustomEvents {
@@ -66,8 +68,11 @@ const {
 	"toggle": toggleDropdown
 } = makeSwitch(false)
 
-const poster = computed<DeserializedUserResource<"department">>(
-	() => props.post.poster.data as DeserializedUserResource<"department">
+const poster = computed<DeserializedUserResource>(
+	() => props.post.poster.data as DeserializedUserResource
+)
+const department = computed<DeserializedDepartmentResource|null>(
+	() => props.post.department.data as DeserializedDepartmentResource|null
 )
 
 const permissionGroup = new PermissionGroup()
@@ -82,7 +87,10 @@ const mayUpdatePost = computed<boolean>(() => {
 			UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || (
+				!isUndefined(department.value)
+				&& department.value?.data.id === userProfile.data.department.data.id
+			)
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -108,7 +116,10 @@ const mayArchiveOrRestorePost = computed<boolean>(() => {
 			ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || (
+				!isUndefined(department.value)
+				&& department.value?.data.id === userProfile.data.department.data.id
+			)
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
