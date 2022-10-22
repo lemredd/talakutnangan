@@ -79,9 +79,9 @@ export default class extends JSONController {
 			},
 			{
 				"ClassName": Manager,
-				"isOptional": true,
 				"isArray": false,
-				"relationshipName": "comment",
+				"isOptional": true,
+				"relationshipName": "parentComment",
 				"typeName": "comment",
 				"validator": exists
 			}
