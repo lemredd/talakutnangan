@@ -28,8 +28,8 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 const { userProfile } = pageProps
-const post = ref<DeserializedPostResource<"poster"|"posterRole">>(
-	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole">
+const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
+	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
 const comments = ref<DeserializedCommentResource<"user"|"parentComment">[]>(
 	pageProps.comments.data as DeserializedCommentResource<"user"|"parentComment">[]
