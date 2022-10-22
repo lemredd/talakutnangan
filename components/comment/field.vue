@@ -24,7 +24,8 @@ import type { DeserializedCommentResource } from "$/types/documents/comment"
 import TextualField from "@/fields/non-sensitive_text.vue"
 
 interface CustomEvents {
-	(event: "submitComment", data: string): void
+	(event: "update:modelValue", data: string): void
+	(event: "submitComment"): void
 }
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
@@ -37,7 +38,11 @@ const content = computed<string>({
 		return props.modelValue
 	},
 	set(newValue: string): void {
-		emit("submitComment", newValue)
+		emit("update:modelValue", newValue)
 	}
 })
+
+function submit() {
+	emit("submitComment")
+}
 </script>

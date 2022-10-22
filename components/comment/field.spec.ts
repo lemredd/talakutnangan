@@ -19,7 +19,7 @@ describe("Component: comment/field", () => {
 
 		const updates = wrapper.emitted("submitComment")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("0.0", content)
+		expect(updates).toHaveProperty("0")
 	})
 
 	it("may submit dependently", async() => {
@@ -44,6 +44,6 @@ describe("Component: comment/field", () => {
 
 		const updates = wrapper.emitted("submitComment")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("0.0", content)
+		expect(updates).toHaveProperty("0")
 	})
 })
