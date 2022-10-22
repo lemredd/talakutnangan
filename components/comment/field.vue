@@ -10,10 +10,6 @@
 			:may-save-implicitly="true"
 			@save-implicitly="submit"
 			@save="submit"/>
-		<button class="material-icons" @click="submit">
-			send
-		</button>
-		<slot name="additional-button-items"></slot>
 	</div>
 </template>
 

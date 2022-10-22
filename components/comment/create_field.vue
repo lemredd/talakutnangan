@@ -1,14 +1,9 @@
 <template>
-	<div>
-		<Field
-			v-model="content"
-			v-model:status="commentStatus"
-			:user="userProfile"
-			@submit-comment="submit"/>
-		<button class="send-btn material-icons" @click="submit">
-			send
-		</button>
-	</div>
+	<Field
+		v-model="content"
+		v-model:status="commentStatus"
+		:user="userProfile"
+		@submit-comment="submit"/>
 </template>
 
 <style lang="scss">
