@@ -1,29 +1,22 @@
 <template>
-	<div class="controls relative">
-		<Dropdown
-			:is-dropdown-shown="isDropdownShown"
-			class="comment-menu absolute top-[2em] right-0 flex flex-col"
-			@toggle="toggleDropdown"
-			@resize="toggleDropdown">
-			<template #toggler>
-				<button class="material-icons">
-					more_vert
-				</button>
-			</template>
-			<template #dropdown-contents>
-				<button v-if="mayUpdateComment" @click="updateComment">
-					Update
-				</button>
-				<button v-if="mayArchiveComment" @click="archiveComment">
-					Archive
-				</button>
-				<button v-if="mayRestoreComment" @click="restoreComment">
-					Restore
-				</button>
-			</template>
-		</Dropdown>
-	</div>
+	<MinorDropdown v-model="isDropdownShown">
+		<template #dropdown-contents>
+			<button v-if="mayUpdateComment" @click="updateComment">
+				Update
+			</button>
+			<button v-if="mayArchiveComment" @click="archiveComment">
+				Archive
+			</button>
+			<button v-if="mayRestoreComment" @click="restoreComment">
+				Restore
+			</button>
+		</template>
+	</MinorDropdown>
 </template>
+
+<style scoped lang="scss">
+
+</style>
 
 <script setup lang="ts">
 import { computed, inject } from "vue"
@@ -43,7 +36,7 @@ import {
 	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
-import Dropdown from "@/page_shell/dropdown.vue"
+import MinorDropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
 	comment: DeserializedCommentResource<"user">
@@ -62,8 +55,7 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const {
-	"state": isDropdownShown,
-	"toggle": toggleDropdown
+	"state": isDropdownShown
 } = makeSwitch(false)
 
 const user = computed<DeserializedUserResource<"department">>(
