@@ -87,6 +87,73 @@ describe("Component: fields/non-sensitive_text", () => {
 		expect(wrapper.emitted("save")).toHaveLength(1)
 	})
 
+	it("may be prepared", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"status": "loaded",
+				"type": "email"
+			}
+		})
+
+		const editButton = wrapper.find(".edit-button")
+
+		await editButton.trigger("click")
+
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toBe("")
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "prepared")
+	})
+
+	it("may be processed", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"status": "prepared",
+				"type": "email"
+			}
+		})
+
+		const saveButton = wrapper.find(".save-button")
+
+		await saveButton.trigger("click")
+
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toBeUndefined()
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "processed")
+		expect(wrapper.emitted("save")).toHaveLength(1)
+	})
+
+	it("may not be processed", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"status": "prepared",
+				"type": "email"
+			}
+		})
+
+		const cancelButton = wrapper.find(".cancel-button")
+
+		await cancelButton.trigger("click")
+
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toBeUndefined()
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "loaded")
+	})
+
 	it("must be disabled", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
