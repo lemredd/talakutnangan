@@ -33,6 +33,16 @@ export default class extends BaseManager<
 		})
 	}
 
+	get singleReadPipeline(): Pipe<
+		FindAndCountOptions<Model>,
+		PostQueryParameters<number>
+	>[] {
+		return [
+			includeDefaults,
+			...super.listPipeline
+		]
+	}
+
 	get listPipeline(): Pipe<
 		FindAndCountOptions<Model>,
 		PostQueryParameters<number>
