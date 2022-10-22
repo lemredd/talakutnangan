@@ -40,7 +40,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -59,7 +59,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
 		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
@@ -102,7 +102,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -121,17 +121,68 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
 		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
 		const restoreButton = wrapper.find(".dropdown-container button:nth-child(3)")
 		await archiveButton.trigger("click")
 
-		expect(updateButton.exists()).toBeTruthy()
-		expect(restoreButton.exists()).toBeFalsy()
+		expect(await updateButton.exists()).toBeTruthy()
+		expect(await restoreButton.exists()).toBeFalsy()
 		const events = wrapper.emitted("archiveComment")
 		expect(events).toHaveLength(1)
 		expect(events).toHaveProperty("0.0", commentID)
+	})
+
+	it("should hide if nothing is permitted", () => {
+		const userID = "1"
+		const commentID = "2"
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"id": userID,
+									"roles": {
+										"data": [
+											{
+												"commentFlags": comment.generateMask(),
+												"id": "1"
+											}
+										]
+									},
+									"type": "user"
+								}
+							}
+						}
+					}
+				},
+				"stubs": {
+					"MinorDropdown": false
+				}
+			},
+			"props": {
+				"comment": {
+					"content": "Hello world!",
+					"deletedAt": null,
+					"id": commentID,
+					"type": "comment",
+					"user": {
+						"data": {
+							"id": userID,
+							"type": "user"
+						}
+					} as DeserializedUserDocument<"roles">
+				} as DeserializedCommentResource<"user">
+			}
+		})
+
+		const button = wrapper.find(".container > .material-icons:nth-child(1)")
+		const doesExists = button.exists()
+
+		expect(doesExists).toBeFalsy()
 	})
 })
