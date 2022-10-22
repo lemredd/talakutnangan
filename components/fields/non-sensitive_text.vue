@@ -26,6 +26,13 @@
 				@click="lock">
 				save
 			</button>
+			<button
+				v-if="isUnlocked"
+				type="button"
+				class="cancel-button material-icons"
+				@click="load">
+				cancel
+			</button>
 		</div>
 	</div>
 </template>
@@ -96,21 +103,57 @@ const modelValue = computed<string>({
 const derivedStatus = computed<FieldStatus>(() => props.status || "enabled")
 const isCurrentlyDisabled = computed<boolean>(() => {
 	const status = derivedStatus.value
-	return status === "disabled" || status === "locked"
+	const disabledStatuses: FieldStatus[] = [ "disabled", "locked", "processing", "loaded" ]
+	return disabledStatuses.includes(status)
 })
-const isLocked = computed<boolean>(() => derivedStatus.value === "locked")
-const isUnlocked = computed<boolean>(() => derivedStatus.value === "unlocked")
+const isLocked = computed<boolean>(() => {
+	const status = derivedStatus.value
+	const lockedStatuses: FieldStatus[] = [ "locked", "loaded" ]
+	return lockedStatuses.includes(status)
+})
+const isUnlocked = computed<boolean>(() => {
+	const status = derivedStatus.value
+	const unlockedStatuses: FieldStatus[] = [ "unlocked", "prepared" ]
+	return unlockedStatuses.includes(status)
+})
 const editable = computed<boolean>(() => isLocked.value || isUnlocked.value)
 
 function lock() {
-	if (derivedStatus.value === "unlocked") {
-		emit("update:status", "locked")
-		emit("save")
+	switch (derivedStatus.value) {
+		case "unlocked":
+			emit("update:status", "locked")
+			emit("save")
+			break
+		case "prepared":
+			emit("update:status", "processing")
+			emit("save")
+			break
+		default:
+			break
 	}
 }
 
 function unlock() {
-	if (derivedStatus.value === "locked") emit("update:status", "unlocked")
+	switch (derivedStatus.value) {
+		case "locked":
+			emit("update:status", "unlocked")
+			break
+		case "loaded":
+			emit("update:status", "prepared")
+			break
+		default:
+			break
+	}
+}
+
+function load() {
+	switch (derivedStatus.value) {
+		case "prepared":
+			emit("update:status", "loaded")
+			break
+		default:
+			break
+	}
 }
 
 function saveImplicitly() {

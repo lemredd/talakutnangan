@@ -44,7 +44,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 								chatMessageActivities,
 								"userProfile": user
 							}
-						},
+						}
 					},
 					"stubs": {
 						"ProfilePicture": {

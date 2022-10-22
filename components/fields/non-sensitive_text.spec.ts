@@ -128,7 +128,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		expect(field.attributes("disabled")).toBeUndefined()
 		const updates = wrapper.emitted("update:status")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("0.0", "processed")
+		expect(updates).toHaveProperty("0.0", "processing")
 		expect(wrapper.emitted("save")).toHaveLength(1)
 	})
 
