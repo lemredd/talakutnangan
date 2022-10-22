@@ -46,6 +46,7 @@ describe("POST /api/comment", () => {
 		.send({
 			"data": {
 				"attributes": {
+					"approvedAt": null,
 					"content": model.data.attributes.content
 				},
 				"relationships": {
