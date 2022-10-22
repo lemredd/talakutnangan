@@ -52,7 +52,7 @@ describe("POST /api/comment", () => {
 				"relationships": {
 					"post": {
 						"data": {
-							"id": post.id,
+							"id": String(post.id),
 							"type": "post"
 						}
 					},

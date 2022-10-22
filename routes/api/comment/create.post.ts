@@ -50,7 +50,7 @@ export default class extends JSONController {
 			"pipes": [ nullable, same ]
 		}
 
-		const attributes = {
+		const attributes: FieldRules = {
 			"approvedAt": pureNull,
 			"content": {
 				"constraints": {
@@ -87,6 +87,7 @@ export default class extends JSONController {
 				"validator": exists
 			}
 		])
+
 
 		return makeResourceDocumentRules(
 			"comment",
