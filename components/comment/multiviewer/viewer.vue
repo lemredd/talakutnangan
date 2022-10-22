@@ -4,11 +4,11 @@
 			<ProfilePicture
 				class="flex-initial w-auto h-12"
 				:user="comment.user"/>
-			<h3 class="flex-1 m-auto mx-2">
+			<h3 class="flex-1 m-auto ml-2">
 				{{ comment.user.data.name }}
 			</h3>
 			<Menu
-				class="flex-initial"
+				class="flex-none m-auto mx-1 h-12 w-12"
 				:comment="comment"
 				@update-comment="openUpdateField"
 				@archive-comment="confirmArchive"
