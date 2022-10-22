@@ -34,8 +34,8 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import makeSwitch from "$@/helpers/make_switch"
-import PermissionGroup from "$/permissions/post"
 import isUndefined from "$/type_guards/is_undefined"
+import { post as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -75,7 +75,6 @@ const department = computed<DeserializedDepartmentResource|undefined>(
 	() => props.post.department?.data as DeserializedDepartmentResource|undefined
 )
 
-const permissionGroup = new PermissionGroup()
 const mayUpdatePost = computed<boolean>(() => {
 	const isOwned = userProfile.data.id === poster.value.id
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
