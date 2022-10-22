@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<TextualField
+		<Field
 			v-model="content"
-			type="text"
-			:may-save-implicitly="true"
-			@save-implicitly="submit"/>
+			v-model:status="commentStatus"
+			:user="userProfile"
+			@submit-comment="submit"/>
 		<button class="send-btn material-icons" @click="submit">
 			send
 		</button>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { ref, computed, inject } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedPostResource } from "$/types/documents/post"
@@ -26,7 +27,7 @@ import type { DeserializedCommentResource } from "$/types/documents/comment"
 import Fetcher from "$@/fetchers/comment"
 import isUndefined from "$/type_guards/is_undefined"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
+import Field from "@/comment/field.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
@@ -50,6 +51,7 @@ const parentComment = computed<DeserializedCommentResource|undefined>(
 )
 
 const content = ref<string>("")
+const commentStatus = ref<FieldStatus>("loaded")
 
 const fetcher = new Fetcher()
 async function submit() {
@@ -86,6 +88,7 @@ async function submit() {
 			}
 		}
 	}).then(({ body }) => {
+		commentStatus.value = "loaded"
 		emit("createComment", {
 			...body.data,
 			"parentComment": isUndefined(parentComment.value)
