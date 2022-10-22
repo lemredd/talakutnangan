@@ -1,5 +1,5 @@
 <template>
-	<MinorDropdown v-model="isDropdownShown">
+	<MinorDropdown v-if="shouldHaveMenu" v-model="isDropdownShown">
 		<template #dropdown-contents>
 			<button v-if="mayUpdateComment" @click="updateComment">
 				Update
@@ -119,6 +119,10 @@ const mayRestoreComment = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestoreComment.value
 	return isPermitted && props.comment.deletedAt !== null
 })
+
+const shouldHaveMenu = computed<boolean>(
+	() => mayUpdateComment.value || mayArchiveComment.value || mayRestoreComment.value
+)
 
 function updateComment() {
 	emit("updateComment", props.comment.id)
