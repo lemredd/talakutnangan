@@ -5,3 +5,6 @@ export type FieldStatus =
 	| "disabled"
 	| "unlocked"
 	| "locked"
+	| "prepared"
+	| "processing"
+	| "loaded"
