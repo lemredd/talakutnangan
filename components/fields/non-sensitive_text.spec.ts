@@ -45,10 +45,10 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may be edited", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"editable": true,
 				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
+				"status": "locked",
 				"type": "email"
 			}
 		})
@@ -57,56 +57,18 @@ describe("Component: fields/non-sensitive_text", () => {
 		const field = wrapper.find("input")
 
 		await editButton.trigger("click")
-
-		expect(field.attributes("disabled")).toBeFalsy()
-		expect(wrapper.emitted("enable")).toHaveLength(1)
-	})
-
-	it("may be disabled", async() => {
-		const wrapper = shallowMount(Component, {
-			"props": {
-				"editable": true,
-				"label": "E-mail",
-				"modelValue": "",
-				"required": true,
-				"type": "email"
-			}
-		})
-
-		const editButton = wrapper.find("button")
-		const field = wrapper.find("input")
-
-		await editButton.trigger("click")
-		await editButton.trigger("click")
-
-		expect(field.attributes("disabled")).toBeFalsy()
-		expect(wrapper.emitted("enable")).toHaveLength(1)
-		expect(wrapper.emitted("disable")).toHaveLength(1)
-	})
-
-	it("may not be edited", () => {
-		const wrapper = shallowMount(Component, {
-			"props": {
-				"editable": true,
-				"label": "E-mail",
-				"modelValue": "",
-				"required": true,
-				"type": "email"
-			}
-		})
-
-		const field = wrapper.find("input")
 
 		expect(field.attributes("disabled")).toBe("")
+		expect(wrapper.emitted("unlock")).toHaveLength(1)
 	})
 
-	it("may be explicitly edited", () => {
+	it("may not be edited", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"editable": false,
 				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
+				"status": "unlocked",
 				"type": "email"
 			}
 		})
@@ -114,31 +76,50 @@ describe("Component: fields/non-sensitive_text", () => {
 		const editButton = wrapper.find("button")
 		const field = wrapper.find("input")
 
-		expect(editButton.exists()).toBeFalsy()
-		expect(field.attributes("disabled")).toBeFalsy()
+		await editButton.trigger("click")
+
+		expect(field.attributes("disabled")).toBe("true")
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "lock")
 	})
 
-	it("may be saved", async() => {
+	it("must be disabled", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"editable": true,
 				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
+				"status": "disabled",
 				"type": "email"
 			}
 		})
 
+		const field = wrapper.find("input")
 		const editButton = wrapper.find("button")
+		const doesExists = await editButton.exists()
 
-		// Open
-		await editButton.trigger("click")
-		// Close
-		await editButton.trigger("click")
+		expect(field.attributes("disabled")).toBe("true")
+		expect(doesExists).toBeFalsy()
+	})
+
+	it("must be enabled", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"status": "enabled",
+				"type": "email"
+			}
+		})
 
 		const field = wrapper.find("input")
-		expect(field.attributes("disabled")).toEqual("")
-		expect(wrapper.emitted("save")).toHaveLength(1)
+		const editButton = wrapper.find("button")
+		const doesExists = await editButton.exists()
+
+		expect(field.attributes("disabled")).toBe("")
+		expect(doesExists).toBeFalsy()
 	})
 
 	it("may be saved implicitly", async() => {
