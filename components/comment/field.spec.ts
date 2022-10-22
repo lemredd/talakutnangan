@@ -6,9 +6,18 @@ import Component from "./field.vue"
 describe("Component: comment/field", () => {
 	it("may submit independently", async() => {
 		const content = "Hello world"
+		const user = {
+			"data": {
+				"id": "1",
+				"type": "user"
+			}
+		}
+
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"modelValue": content
+				"modelValue": content,
+				"status": "unlocked",
+				user
 			}
 		})
 
@@ -29,11 +38,19 @@ describe("Component: comment/field", () => {
 			"id": parentCommentID,
 			"type": "comment"
 		}
+		const user = {
+			"data": {
+				"id": "1",
+				"type": "user"
+			}
+		}
 
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"modelValue": content,
-				parentComment
+				parentComment,
+				"status": "unlocked",
+				user
 			}
 		})
 
