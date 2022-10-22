@@ -10,7 +10,8 @@
 				:class="inputClasses"
 				:type="type"
 				:required="required"
-				:disabled="isCurrentlyDisabled"/>
+				:disabled="isCurrentlyDisabled"
+				@keyup.enter.exact="saveImplicitly"/>
 			<button
 				v-if="editable"
 				type="button"
@@ -69,6 +70,7 @@ const props = defineProps<{
 	type: Textual
 	modelValue: string
 	required?: boolean
+	maySaveImplicitly?: boolean
 	disabled?: boolean
 	editable?: boolean
 	inputClasses?: string
@@ -84,6 +86,7 @@ const {
 
 interface CustomEvents {
 	(event: "update:modelValue", newModelValue: string): void
+	(event: "saveImplicitly"): void
 	(event: "save"): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -101,6 +104,12 @@ function toggleEditableField() {
 
 	if (isCurrentlyDisabled.value) {
 		emit("save")
+	}
+}
+
+function saveImplicitly() {
+	if (props.maySaveImplicitly) {
+		emit("saveImplicitly")
 	}
 }
 </script>
