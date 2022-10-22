@@ -3,10 +3,10 @@
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
+			v-model:status="emailFieldStatus"
 			label="E-mail"
 			type="email"
-			:status="emailFieldStatus"
-			@update:status="updateEmailFieldStatus"/>
+			@save="updateEmail"/>
 		<UpdatePasswordField/>
 
 		<NonSensitiveTextualField
@@ -105,17 +105,5 @@ function updateEmail(): void {
 	.catch(() => {
 		//
 	})
-}
-
-function updateEmailFieldStatus(newStatus: FieldStatus) {
-	switch (newStatus) {
-		case "unlocked":
-			emailFieldStatus.value = newStatus
-			break
-		case "locked":
-			updateEmail()
-			break
-		default: throw new Error("Developer error!")
-	}
 }
 </script>
