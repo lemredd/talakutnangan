@@ -53,7 +53,7 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find("button")
+		const editButton = wrapper.find(".edit-button")
 
 		await editButton.trigger("click")
 
@@ -75,9 +75,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find("button")
+		const saveButton = wrapper.find(".save-button")
 
-		await editButton.trigger("click")
+		await saveButton.trigger("click")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -99,7 +99,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		})
 
 		const field = wrapper.find("input")
-		const editButton = wrapper.find("button")
+		const editButton = wrapper.find(".edit-button")
 		const doesExists = await editButton.exists()
 
 		expect(field.attributes("disabled")).toBe("")
@@ -118,7 +118,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		})
 
 		const field = wrapper.find("input")
-		const editButton = wrapper.find("button")
+		const editButton = wrapper.find(".edit-button")
 		const doesExists = await editButton.exists()
 
 		expect(field.attributes("disabled")).toBeFalsy()

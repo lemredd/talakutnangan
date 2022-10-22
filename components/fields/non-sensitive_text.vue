@@ -15,14 +15,14 @@
 			<button
 				v-if="isLocked"
 				type="button"
-				class="material-icons"
+				class="edit-button material-icons"
 				@click="unlock">
 				edit
 			</button>
 			<button
 				v-if="isUnlocked"
 				type="button"
-				class="material-icons"
+				class="save-button material-icons"
 				@click="lock">
 				save
 			</button>
