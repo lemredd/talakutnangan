@@ -39,7 +39,7 @@
 			> .overlay { display: none }
 
 			> .dropdown-container {
-				@apply absolute dark:bg-dark-400 bg-white h-max w-max p-1;
+				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max py-1 px-2;
 
 				inset: unset;
 				transform: translatex(-50%) translateY(125%);
