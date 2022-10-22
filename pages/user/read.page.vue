@@ -70,17 +70,21 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
-type RequiredExtraProps = "user" | "roles"
+type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const user = ref<DeserializedUserDocument>(
-	pageProps.user as DeserializedUserDocument
-)
+const user = ref(pageProps.user)
 
-const roles = pageProps.roles as DeserializedRoleListDocument
+const { roles } = pageProps
+const userRoleIDs = ref(
+	user.value.data.roles?.data.map(role => role.id) as string[]
+)
 const selectableRoles = roles.data.map(
-	(role: DeserializedRoleResource) => ({ "value": role.data.name })
+	(role: DeserializedRoleResource) => ({
+		"label": role.name,
+		"value": role.id
+	})
 ) as OptionInfo[]
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
@@ -91,39 +95,44 @@ const selectableDepartments = departments.data.map(department => ({
 	"value": department.id
 }))
 
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
-
-	throw new Error("User cannot be processed to server yet")
-}
+let fetcher = new Fetcher()
 
 async function updateUser() {
-	await fetcher().update(user.value.data.id, {
+	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
 		"kind": user.value.data.kind,
 		"name": user.value.data.name,
-		"prefersDark": user.value.data.prefersDark
+		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
+	.then(({ body, status }) => {
+		console.log(body, status)
+	})
+
+	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
+	.then(({ body, status }) => {
+		console.log(body, status)
+	})
+	await fetcher.updateDepartment(user.value.data.id, userDepartment.value)
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 async function archiveUser() {
-	await fetcher().archive([ user.value.data.id ])
+	await fetcher.archive([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 async function restoreUser() {
-	await fetcher().restore([ user.value.data.id ])
+	await fetcher.restore([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 onMounted(() => {
-	rawFetcher = new Fetcher()
+	fetcher = new Fetcher()
 })
 </script>
