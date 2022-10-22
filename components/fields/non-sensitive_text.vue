@@ -74,13 +74,6 @@ const props = defineProps<{
 	inputClasses?: string
 }>()
 
-const {
-	label,
-	type,
-	required = true,
-	editable,
-	inputClasses
-} = props
 
 interface CustomEvents {
 	(event: "update:modelValue", newModelValue: string): void
