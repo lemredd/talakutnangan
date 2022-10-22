@@ -39,7 +39,7 @@ export default class extends BaseManager<
 	>[] {
 		return [
 			includeDefaults,
-			...super.listPipeline
+			...super.singleReadPipeline
 		]
 	}
 
