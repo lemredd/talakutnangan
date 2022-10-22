@@ -8,7 +8,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./create_field.vue"
 
 describe("Component: comment/create_field", () => {
-	it.only("may submit independently", async() => {
+	it("may submit independently", async() => {
 		const postID = "1"
 		const userID = "2"
 		const content = "Hello world"
@@ -17,8 +17,10 @@ describe("Component: comment/create_field", () => {
 			"type": "comment"
 		}
 		const comment = {
-			"data": { content },
-			...commentIdentifier
+			"data": {
+				"attributes": { content },
+				...commentIdentifier
+			}
 		}
 		const userProfile = {
 			"data": {
@@ -67,12 +69,13 @@ describe("Component: comment/create_field", () => {
 
 		const updates = wrapper.emitted("createComment")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("data.type", "comment")
-		expect(updates).toHaveProperty("data.content", content)
-		expect(updates).toHaveProperty("data.id", commentIdentifier.id)
-		expect(updates).toHaveProperty("data.user", userProfile)
-		expect(updates).not.toHaveProperty("data.parentComment")
-		expect(updates).toHaveProperty("data.post", post)
+		expect(updates).toHaveProperty("0.0.type", "comment")
+		expect(updates).toHaveProperty("0.0.content", content)
+		expect(updates).toHaveProperty("0.0.id", commentIdentifier.id)
+		expect(updates).toHaveProperty("0.0.user", userProfile)
+		// eslint-disable-next-line no-undefined
+		expect(updates).toHaveProperty("0.0.parentComment", undefined)
+		expect(updates).toHaveProperty("0.0.post.data", post)
 	})
 
 	it("may submit dependently", async() => {
@@ -85,8 +88,10 @@ describe("Component: comment/create_field", () => {
 			"type": "comment"
 		}
 		const comment = {
-			"data": { content },
-			...commentIdentifier
+			"data": {
+				"attributes": { content },
+				...commentIdentifier
+			}
 		}
 		const userProfile = {
 			"data": {
@@ -134,7 +139,7 @@ describe("Component: comment/create_field", () => {
 		expect(firstRequest).toHaveProperty("url", COMMENT_LINK.unbound)
 		const firstRequestBody = await firstRequest.json()
 		expect(firstRequestBody).toHaveProperty("data.type", "comment")
-		expect(firstRequestBody).toHaveProperty("data.attributes", { content })
+		expect(firstRequestBody).toHaveProperty("data.attributes.content", content)
 		expect(firstRequestBody).toHaveProperty("data.relationships.user.data.id", userID)
 		expect(firstRequestBody).toHaveProperty("data.relationships.post.data.id", postID)
 		expect(firstRequestBody).toHaveProperty(
@@ -144,11 +149,11 @@ describe("Component: comment/create_field", () => {
 
 		const updates = wrapper.emitted("createComment")
 		expect(updates).toHaveLength(1)
-		expect(updates).toHaveProperty("data.type", "comment")
-		expect(updates).toHaveProperty("data.content", content)
-		expect(updates).toHaveProperty("data.id", commentIdentifier.id)
-		expect(updates).toHaveProperty("data.user", userProfile)
-		expect(updates).toHaveProperty("data.parentComment", parentComment)
-		expect(updates).toHaveProperty("data.post", post)
+		expect(updates).toHaveProperty("0.0.type", "comment")
+		expect(updates).toHaveProperty("0.0.content", content)
+		expect(updates).toHaveProperty("0.0.id", commentIdentifier.id)
+		expect(updates).toHaveProperty("0.0.user", userProfile)
+		expect(updates).toHaveProperty("0.0.parentComment.data", parentComment)
+		expect(updates).toHaveProperty("0.0.post.data", post)
 	})
 })
