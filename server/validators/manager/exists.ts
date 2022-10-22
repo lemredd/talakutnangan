@@ -33,7 +33,6 @@ export default async function(
 		}
 	})
 
-	// TODO: Store found model in cache
 	if (foundModel.data === null) {
 		const error = {
 			"field": constraints.field,

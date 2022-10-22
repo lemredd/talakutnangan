@@ -11,7 +11,7 @@ import Validation from "!/bases/validation"
 import deserialize from "$/object/deserialize"
 import CommentManager from "%/managers/comment"
 import present from "!/validators/manager/present"
-import IDParameterValidator from "!/validations/id_parameter"
+import IDParameterValidation from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
 import ScopeBasedPolicy from "!/policies/scope-based"
@@ -38,7 +38,7 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] {
 		return [
-			new IDParameterValidator([
+			new IDParameterValidation([
 				[ "id", Manager, present ]
 			])
 		]
