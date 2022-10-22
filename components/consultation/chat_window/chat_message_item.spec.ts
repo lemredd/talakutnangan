@@ -12,7 +12,7 @@ import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_
 describe("Component: consultation/chat_window/chat_message_item", () => {
 	describe("text message", () => {
 		const chatMessageActivities = {
-			"data": {}
+			"data": []
 		}
 
 		it("should show self's text message properly", () => {
