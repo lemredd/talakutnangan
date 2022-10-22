@@ -41,7 +41,7 @@ export default async function(
 			"messageMaker": (
 				field: string,
 				value: string
-			) => `The ${value} in field "${field}" does not exists in the database".`
+			) => `The ${value} in field "${field}" does not exists in the database.`
 		}
 
 		throw error
