@@ -52,9 +52,9 @@ const props = defineProps<{
 }>()
 
 interface CustomEvents {
-	(event: "updatePost", postID: string): void
-	(event: "archivePost", postID: string): void
-	(event: "restorePost", postID: string): void
+	(event: "updatePost"): void
+	(event: "archivePost"): void
+	(event: "restorePost"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -139,14 +139,14 @@ const mayRestorePost = computed<boolean>(() => {
 })
 
 function updatePost() {
-	emit("updatePost", props.post.id)
+	emit("updatePost")
 }
 
 function archivePost() {
-	emit("archivePost", props.post.id)
+	emit("archivePost")
 }
 
 function restorePost() {
-	emit("restorePost", props.post.id)
+	emit("restorePost")
 }
 </script>
