@@ -6,6 +6,7 @@ import Policy from "!/bases/policy"
 import Manager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import Validation from "!/bases/validation"
+import DepartmentManager from "%/managers/department"
 import present from "!/validators/manager/present"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
@@ -69,8 +70,21 @@ export default class extends PageMiddleware {
 			"sort": [ "name" ]
 		})
 
+		const departments = await new DepartmentManager().list({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": Infinity,
+				"offset": 0
+			},
+			"sort": [ "fullName" ]
+		})
+
 
 		return {
+			departments,
 			roles,
 			user
 		}
