@@ -84,6 +84,7 @@ describe("Component: fields/non-sensitive_text", () => {
 		const updates = wrapper.emitted("update:status")
 		expect(updates).toHaveLength(1)
 		expect(updates).toHaveProperty("0.0", "locked")
+		expect(wrapper.emitted("save")).toHaveLength(1)
 	})
 
 	it("must be disabled", async() => {
