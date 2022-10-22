@@ -151,11 +151,19 @@ export interface Sort extends Serializable {
 }
 
 /**
+ * Expected shape of the common page offset
+ */
+export interface PageOffset {
+	page: {
+		offset: number
+	}
+}
+
+/**
  * Expected shape of the common page options
  */
-export interface Page {
+export type Page = PageOffset & {
 	page: {
-		offset: number,
 		limit: number
 	}
 }
