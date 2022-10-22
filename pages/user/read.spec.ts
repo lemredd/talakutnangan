@@ -3,6 +3,7 @@ import { flushPromises, mount } from "@vue/test-utils"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Page from "./read.page.vue"
+import Stub from "$/singletons/stub"
 
 describe("Page: user/read", () => {
 	it("can populate fields using pre-loaded data", () => {
@@ -199,5 +200,14 @@ describe("Page: user/read", () => {
 			`/api/user/${user.data.id}/relationships/department`
 		)
 		expect(await requestForAttachedDepartment.json()).toEqual(updatedUserDepartment)
+
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+		expect(previousCalls).toHaveProperty("0.arguments.0", `/user/read/${user.data.id}`)
+		expect(previousCalls).not.toHaveProperty("0.arguments.1")
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+		expect(previousCalls).toHaveProperty("0.arguments.0", `/user/read/${user.data.id}`)
+		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 })
