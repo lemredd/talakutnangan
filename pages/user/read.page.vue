@@ -8,6 +8,14 @@
 				:editable="true"/>
 		</div>
 
+		<div class="roles">
+			<MultiSelectableOptionsField
+				v-model="[]"
+				class="selectable-roles"
+				label="Roles"
+				:options="selectableRoles"/>
+		</div>
+
 		<div class="controls flex justify-between">
 			<button type="submit" class="btn btn-primary">
 				Submit
@@ -43,19 +51,30 @@ import {
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type {
+	DeserializedRoleListDocument,
+	DeserializedRoleResource
+} from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/user"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
-type RequiredExtraProps = "user"
+type RequiredExtraProps = "user" | "roles"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
 const user = ref<DeserializedUserDocument>(
 	pageProps.user as DeserializedUserDocument
 )
+
+const roles = pageProps.roles as DeserializedRoleListDocument
+const selectableRoles = roles.data.map(
+	(role: DeserializedRoleResource) => ({ "value": role.data.name })
+) as OptionInfo[]
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 let rawFetcher: Fetcher|null = null

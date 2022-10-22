@@ -4,6 +4,7 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/user"
+import RoleManager from "%/managers/role"
 import Validation from "!/bases/validation"
 import present from "!/validators/manager/present"
 import IDParameterValidator from "!/validations/id_parameter"
@@ -55,7 +56,22 @@ export default class extends PageMiddleware {
 			}
 		})
 
+		const roles = await new RoleManager().list({
+			"filter": {
+				"department": "*",
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": Infinity,
+				"offset": 0
+			},
+			"sort": [ "name" ]
+		})
+
+
 		return {
+			roles,
 			user
 		}
 	}
