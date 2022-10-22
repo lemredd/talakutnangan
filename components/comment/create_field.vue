@@ -3,7 +3,8 @@
 		<TextualField
 			v-model="content"
 			type="text"
-			@save-impicitly="submit"/>
+			:may-save-implicitly="true"
+			@save-implicitly="submit"/>
 		<button class="send-btn material-icons" @click="submit">
 			send
 		</button>
