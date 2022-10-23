@@ -5,16 +5,17 @@ import RoleRouter from "!%/api/role/router"
 import PostRouter from "!%/api/post/router"
 import CommentRouter from "!%/api/comment/router"
 import SemesterRouter from "!%/api/semester/router"
-import UserBindedRouter from "!%/api/user(id)/router"
-import SignatureRouter from "!%/api/signature/router"
 import DepartmentRouter from "!%/api/department/router"
 import AuditTrailRouter from "!%/api/audit_trail/router"
-import ProfilePictureRouter from "!%/api/profile_picture/router"
 import ProfanityFilterRouter from "!%/api/profanity_filter/router"
 import BoundConsultationRouter from "!%/api/consultation(id)/router"
-import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
 import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
+import { controllers as signatureControllers } from "!%/api/signature/router"
+import { controllers as userBindedControllers } from "!%/api/user(id)/router"
+import { controllers as profilePictureControllers } from "!%/api/profile_picture/router"
+import { controllers as employeeScheduleControllers } from "!%/api/employee_schedule/router"
 
 import { controllers as chatMessageControllers } from "!%/api/chat_message/router"
 import { controllers as consultationControllers } from "!%/api/consultation/router"
@@ -30,11 +31,11 @@ export default class extends Router {
 			DepartmentRouter
 		]
 
-		const userRelatedRouters = [
-			SignatureRouter,
-			UserBindedRouter,
-			ProfilePictureRouter,
-			EmployeeScheduleRouter
+		const userRelatedControllers = [
+			...signatureControllers,
+			...userBindedControllers,
+			...profilePictureControllers,
+			...employeeScheduleControllers
 		]
 
 		const consultationRelatedControllers = [
@@ -62,6 +63,7 @@ export default class extends Router {
 
 		this.useControllersAsync(
 			instantiateSimultaneously([
+				...userRelatedControllers,
 				...consultationRelatedControllers
 			])
 		)
@@ -69,7 +71,6 @@ export default class extends Router {
 		this.useRoutersAsync(
 			instantiateSimultaneously([
 				...coreRouters,
-				...userRelatedRouters,
 				...forumRelatedRouters,
 				...consultationRelatedRouters,
 				...miscelleneousRouters

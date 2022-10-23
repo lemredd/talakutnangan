@@ -1,6 +1,12 @@
 import Router from "!/bases/router"
-import RelationshipRouter from "!%/api/user(id)/relationships/router"
+import RelationshipRouter, { controllers as relationshipControllers }
+	from "!%/api/user(id)/relationships/router"
 import PatchUpdatePassword from "!%/api/user(id)/update_password.patch"
+
+export const controllers = [
+	PatchUpdatePassword,
+	...relationshipControllers
+]
 
 export default class extends Router {
 	constructor() {
