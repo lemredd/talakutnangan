@@ -1,25 +1,23 @@
 <template>
-	<section class="icon-button-container" @focusout="close">
-		<button class="material-icons" @click="open">
-			more_vert
-		</button>
-		<div v-if="modelValue" class="overlay"></div>
-		<div v-if="modelValue" class="dropdown-container">
-			<slot name="dropdown-contents"></slot>
-		</div>
-	</section>
+	<IconButton
+		class="container"
+		icon-name="more_vert"
+		@focusout="close"
+		@icon-click="open">
+		<template #associated-pop-outs>
+			<div v-if="modelValue" class="overlay"></div>
+			<div v-if="modelValue" class="dropdown-container">
+				<slot name="dropdown-contents"></slot>
+			</div>
+		</template>
+	</IconButton>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/variables.scss";
-	@import "@styles/icon_button.scss";
 
-	.icon-button-container {
+	.container {
 		@apply relative;
-
-		> button:first-child {
-			@apply flex-1 m-auto;
-		}
 
 		> .overlay {
 			@apply dark:bg-white fixed bg-dark-400 z-500 opacity-60 block;
@@ -53,9 +51,12 @@
 import isUndefined from "$/type_guards/is_undefined"
 import { onUpdated } from "vue"
 
-const emit = defineEmits<{
+import IconButton from "@/helpers/icon_button.vue"
+
+interface CustomEvents {
 	(event: "update:modelValue", isShown: boolean): void
-}>()
+}
+const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	modelValue: boolean
 }>()

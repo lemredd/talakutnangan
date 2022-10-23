@@ -18,12 +18,13 @@
 </style>
 
 <script setup lang="ts">
-const emit = defineEmits<{
-	(event: "iconClick"): void
-}>()
 defineProps<{
 	iconName: string
 }>()
+interface CustomEvents {
+	(event: "iconClick"): void
+}
+const emit = defineEmits<CustomEvents>()
 
 function emitIconClickEvent() {
 	emit("iconClick")
