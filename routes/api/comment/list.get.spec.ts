@@ -1,4 +1,5 @@
 import ErrorBag from "$!/errors/error_bag"
+import PostFactory from "~/factories/post"
 import MockRequester from "~/setups/mock_requester"
 
 import Controller from "./list.get"
@@ -13,11 +14,12 @@ describe("Controller: GET /api/comment", () => {
 		const { validations } = controller
 		const queryValidation = validations[QUERY_VALIDATION_INDEX]
 		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
+		const post = await new PostFactory().insertOne()
 		requester.customizeRequest({
 			"query": {
 				"filter": {
 					"existence": "*",
-					"postID": "1"
+					"postID": String(post.id)
 				}
 			}
 		})
@@ -45,6 +47,6 @@ describe("Controller: GET /api/comment", () => {
 		const body = requester.expectFailure(ErrorBag).toJSON()
 		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.parameter", "filter.existence")
-		expect(body).toHaveProperty("0.source.parameter", "filter.postID")
+		expect(body).toHaveProperty("1.source.parameter", "filter.postID")
 	})
 })
