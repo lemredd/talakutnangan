@@ -1,5 +1,5 @@
 <template>
-	<section class="container" @focusout="close">
+	<section class="icon-button-container" @focusout="close">
 		<button class="material-icons" @click="open">
 			more_vert
 		</button>
@@ -12,9 +12,10 @@
 
 <style scoped lang="scss">
 	@import "@styles/variables.scss";
+	@import "@styles/icon_button.scss";
 
-	.container {
-		@apply flex flex-row flex-nowrap justify-center items-center relative;
+	.icon-button-container {
+		@apply relative;
 
 		> button:first-child {
 			@apply flex-1 m-auto;
