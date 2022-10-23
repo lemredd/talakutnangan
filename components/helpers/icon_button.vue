@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<button class="material-icons" @click="emitIconClickEvent">
+		<button
+			type="button"
+			class="material-icons"
+			@click="emitIconClickEvent">
 			{{ iconName }}
 		</button>
 		<slot name="associated-pop-outs"></slot>
