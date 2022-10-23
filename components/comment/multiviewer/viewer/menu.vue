@@ -16,6 +16,10 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	button {
+		@apply flex-1 max-h-[4rem] py-4;
+	}
 </style>
 
 <script setup lang="ts">

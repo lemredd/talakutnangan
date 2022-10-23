@@ -2,7 +2,7 @@
 	<IconButton
 		class="container"
 		icon-name="more_vert"
-		@focusout="close"
+		@blur="close"
 		@icon-click="open">
 		<template #associated-pop-outs>
 			<div v-if="modelValue" class="overlay"></div>
@@ -17,17 +17,18 @@
 	@import "@styles/variables.scss";
 
 	.container {
-		@apply relative;
+		@apply flex-col relative;
 
-		> .overlay {
+		.overlay {
 			@apply dark:bg-white fixed bg-dark-400 z-500 opacity-60 block;
 			inset: $navHeight 0 0 0;
 
 			content: " "
 		}
 
-		> .dropdown-container {
-			@apply dark:bg-dark-400 fixed bg-white h-full z-501 flex;
+		.dropdown-container {
+			@apply dark:bg-dark-400 fixed bg-white h-full z-501;
+			@apply flex flex-col flex-nowrap;
 
 			inset: calc($navHeight + 60%) 0 0 0;
 		}
@@ -35,9 +36,9 @@
 
 	@screen md {
 		.container {
-			> .overlay { display: none }
+			.overlay { display: none }
 
-			> .dropdown-container {
+			.dropdown-container {
 				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max py-1 px-2;
 
 				inset: unset;
