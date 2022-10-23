@@ -84,6 +84,7 @@ async function submit() {
 		}
 	}).then(({ body }) => {
 		commentStatus.value = "loaded"
+		content.value = ""
 		emit("createComment", {
 			...body.data,
 			"parentComment": isUndefined(parentComment.value)
