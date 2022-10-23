@@ -40,6 +40,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 					}
 				},
 				"stubs": {
+					"IconButton": false,
 					"MinorDropdown": false
 				}
 			},
@@ -102,6 +103,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 					}
 				},
 				"stubs": {
+					"IconButton": false,
 					"MinorDropdown": false
 				}
 			},
@@ -161,6 +163,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 					}
 				},
 				"stubs": {
+					"IconButton": false,
 					"MinorDropdown": false
 				}
 			},
