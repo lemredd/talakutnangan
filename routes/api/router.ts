@@ -1,8 +1,10 @@
 import Router from "!/bases/router"
-import SemesterRouter from "!%/api/semester/router"
-import AuditTrailRouter from "!%/api/audit_trail/router"
-import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
+import ControllerLike from "!/bases/controller-likes/controller"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
+import { controllers as semesterControllers } from "!%/api/semester/router"
+import { controllers as auditTrailControllers } from "!%/api/audit_trail/router"
+import { controllers as asynchronousFileControllers } from "!%/api/asynchronous_file/router"
 
 import { controllers as tagControllers } from "!%/api/tag/router"
 import { controllers as postControllers } from "!%/api/post/router"
@@ -57,10 +59,10 @@ export default class extends Router {
 			...profanityFilterControllers
 		]
 
-		const miscelleneousRouters = [
-			SemesterRouter,
-			AuditTrailRouter,
-			AsynchronousFileRouter
+		const miscelleneousControllers = [
+			...semesterControllers,
+			...auditTrailControllers,
+			...asynchronousFileControllers
 		]
 
 		this.useControllersAsync(
@@ -68,14 +70,9 @@ export default class extends Router {
 				...coreControllers,
 				...userRelatedControllers,
 				...consultationRelatedControllers,
-				...forumRelatedControllers
-			])
-		)
-
-		this.useRoutersAsync(
-			instantiateSimultaneously([
-				...miscelleneousRouters
-			])
+				...forumRelatedControllers,
+				...miscelleneousControllers
+			] as (new() => ControllerLike)[])
 		)
 	}
 }
