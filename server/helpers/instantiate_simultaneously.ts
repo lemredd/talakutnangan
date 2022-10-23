@@ -1,10 +1,7 @@
-import Router from "!/bases/router"
-import ControllerLike from "!/bases/controller-like"
-
-export default async function(classes: (new() => Router|ControllerLike)[])
-: Promise<(Router|ControllerLike)[]> {
-	const instances: Promise<(Router|ControllerLike)>[] = classes.map(
-		ClassName => new Promise<Router|ControllerLike>(resolve => {
+export default async function<T>(classes: (new() => T)[])
+: Promise<(T)[]> {
+	const instances: Promise<(T)>[] = classes.map(
+		ClassName => new Promise<T>(resolve => {
 			resolve(new ClassName())
 		})
 	)
