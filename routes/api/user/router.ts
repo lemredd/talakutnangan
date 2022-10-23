@@ -8,6 +8,16 @@ import PatchUpdate from "!%/api/user/update(id).patch"
 import PatchResetPassword from "!%/api/user/reset_password(id).patch"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
+export const controllers = [
+	GetList,
+	GetRead,
+	PostLogIn,
+	PostImport,
+	PostLogOut,
+	PatchUpdate,
+	PatchResetPassword
+]
+
 export default class extends Router {
 	constructor() {
 		super()

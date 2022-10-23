@@ -8,6 +8,17 @@ import DeleteArchive from "!%/api/role/archive.delete"
 import GetCountUsers from "!%/api/role/count_users.get"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
+export const controllers = [
+	GetList,
+	// ! this should match first to prevent shadowing by `read(id)` route
+	GetCountUsers,
+	GetRead,
+	PostCreate,
+	PatchUpdate,
+	PatchRestore,
+	DeleteArchive
+]
+
 export default class extends Router {
 	constructor() {
 		super()

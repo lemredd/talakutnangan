@@ -7,6 +7,15 @@ import DeleteArchive from "!%/api/department/archive.delete"
 import GetCountUsers from "!%/api/department/count_users.get"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
+export const controllers = [
+	GetList,
+	PostCreate,
+	PatchUpdate,
+	PatchRestore,
+	DeleteArchive,
+	GetCountUsers
+]
+
 export default class extends Router {
 	constructor() {
 		super()

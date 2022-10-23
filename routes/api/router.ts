@@ -1,16 +1,17 @@
 import Router from "!/bases/router"
 import TagRouter from "!%/api/tag/router"
-import UserRouter from "!%/api/user/router"
-import RoleRouter from "!%/api/role/router"
 import PostRouter from "!%/api/post/router"
 import CommentRouter from "!%/api/comment/router"
 import SemesterRouter from "!%/api/semester/router"
-import DepartmentRouter from "!%/api/department/router"
 import AuditTrailRouter from "!%/api/audit_trail/router"
 import ProfanityFilterRouter from "!%/api/profanity_filter/router"
 import BoundConsultationRouter from "!%/api/consultation(id)/router"
 import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
+import { controllers as userControllers } from "!%/api/user/router"
+import { controllers as roleControllers } from "!%/api/role/router"
+import { controllers as departmentControllers } from "!%/api/department/router"
 
 import { controllers as signatureControllers } from "!%/api/signature/router"
 import { controllers as userBindedControllers } from "!%/api/user(id)/router"
@@ -25,10 +26,10 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		const coreRouters = [
-			RoleRouter,
-			UserRouter,
-			DepartmentRouter
+		const coreControllers = [
+			...userControllers,
+			...roleControllers,
+			...departmentControllers
 		]
 
 		const userRelatedControllers = [
@@ -63,6 +64,7 @@ export default class extends Router {
 
 		this.useControllersAsync(
 			instantiateSimultaneously([
+				...coreControllers,
 				...userRelatedControllers,
 				...consultationRelatedControllers
 			])
@@ -70,7 +72,6 @@ export default class extends Router {
 
 		this.useRoutersAsync(
 			instantiateSimultaneously([
-				...coreRouters,
 				...forumRelatedRouters,
 				...consultationRelatedRouters,
 				...miscelleneousRouters
