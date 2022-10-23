@@ -12,7 +12,7 @@
 
 <style scoped lang="scss">
 	div {
-		@apply flex flex-row flex-nowrap justify-center items-center h-12 w-12;
+		@apply flex flex-row flex-nowrap justify-center items-center h-12 w-8;
 
 		> button:first-child {
 			@apply flex-1 m-auto;
