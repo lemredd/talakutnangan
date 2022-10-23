@@ -1,12 +1,30 @@
 <template>
-	<div class="post-container">
+	<section>
 		<Viewer v-model="post"/>
-		<CreateField v-if="mayCreateComment" :post="post"/>
-		<Multiviewer v-model="comments"/>
-	</div>
+		<CreateField
+			v-if="mayCreateComment"
+			class="field"
+			:post="post"/>
+		<Multiviewer v-model="comments" class="comments"/>
+	</section>
 </template>
 
 <style lang="scss">
+	section {
+		@apply flex flex-col flex-nowrap justify-center;
+
+		> .field {
+			@apply flex-initial;
+		}
+
+		> .comments {
+			@apply flex-1;
+		}
+
+		> * {
+			@apply mb-4;
+		}
+	}
 </style>
 
 <script setup lang="ts">
