@@ -1,3 +1,4 @@
+import type { CommentQueryParameters } from "$/types/query"
 import type {
 	CommentResourceIdentifier,
 	CommentAttributes,
@@ -25,6 +26,7 @@ export default class CommentFetcher extends BaseFetcher<
 	DeserializedCommentDocument,
 	DeserializedCommentListDocument,
 	{
+		"queryParameters": CommentQueryParameters<string>,
 		"extraCreateData": CommentRelationships<"create">
 	}
 > {
