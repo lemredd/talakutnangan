@@ -4,7 +4,8 @@
 		<CreateField
 			v-if="mayCreateComment"
 			class="field"
-			:post="post"/>
+			:post="post"
+			@create-comment="includeComment"/>
 		<Multiviewer v-model="comments" class="comments"/>
 	</section>
 </template>
@@ -83,4 +84,7 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 
+function includeComment(newComment: DeserializedCommentResource<"user"|"parentComment">): void {
+	comments.value.push(newComment)
+}
 </script>

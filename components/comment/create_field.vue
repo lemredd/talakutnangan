@@ -27,7 +27,7 @@ import Field from "@/comment/field.vue"
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 interface CustomEvents {
-	(event: "createComment", data: DeserializedCommentResource): void
+	(event: "createComment", data: DeserializedCommentResource<"user"|"parentComment">): void
 	(event: "submitPost"): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -96,7 +96,7 @@ async function submit() {
 				"data": post.value
 			},
 			"user": userProfile as DeserializedUserDocument
-		} as DeserializedCommentResource)
+		} as DeserializedCommentResource<"user"|"parentComment">)
 	})
 }
 </script>
