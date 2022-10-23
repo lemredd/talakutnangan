@@ -5,6 +5,14 @@ import PatchRestore from "!%/api/profanity_filter/restore.patch"
 import PatchUpdate from "!%/api/profanity_filter/update(id).patch"
 import DeleteArchive from "!%/api/profanity_filter/archive.delete"
 
+export const controllers = [
+	GetList,
+	PostCreate,
+	PatchUpdate,
+	PatchRestore,
+	DeleteArchive
+]
+
 export default class extends Router {
 	constructor() {
 		super()

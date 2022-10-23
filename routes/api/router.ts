@@ -1,13 +1,16 @@
 import Router from "!/bases/router"
-import TagRouter from "!%/api/tag/router"
-import PostRouter from "!%/api/post/router"
-import CommentRouter from "!%/api/comment/router"
 import SemesterRouter from "!%/api/semester/router"
 import AuditTrailRouter from "!%/api/audit_trail/router"
-import ProfanityFilterRouter from "!%/api/profanity_filter/router"
 import BoundConsultationRouter from "!%/api/consultation(id)/router"
 import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
+import { controllers as tagControllers } from "!%/api/tag/router"
+import { controllers as postControllers } from "!%/api/post/router"
+import { controllers as commentControllers } from "!%/api/comment/router"
+import { controllers as boundPostControllers } from "!%/api/post(id)/router"
+import { controllers as postAttachmentControllers } from "!%/api/post_attachment/router"
+import { controllers as profanityFilterControllers } from "!%/api/profanity_filter/router"
 
 import { controllers as userControllers } from "!%/api/user/router"
 import { controllers as roleControllers } from "!%/api/role/router"
@@ -49,11 +52,13 @@ export default class extends Router {
 			BoundConsultationRouter
 		]
 
-		const forumRelatedRouters = [
-			TagRouter,
-			PostRouter,
-			CommentRouter,
-			ProfanityFilterRouter
+		const forumRelatedControllers = [
+			...tagControllers,
+			...postControllers,
+			...commentControllers,
+			...boundPostControllers,
+			...postAttachmentControllers,
+			...profanityFilterControllers
 		]
 
 		const miscelleneousRouters = [
@@ -66,13 +71,13 @@ export default class extends Router {
 			instantiateSimultaneously([
 				...coreControllers,
 				...userRelatedControllers,
-				...consultationRelatedControllers
+				...consultationRelatedControllers,
+				...forumRelatedControllers
 			])
 		)
 
 		this.useRoutersAsync(
 			instantiateSimultaneously([
-				...forumRelatedRouters,
 				...consultationRelatedRouters,
 				...miscelleneousRouters
 			])
