@@ -2,6 +2,7 @@ import Router from "!/bases/router"
 import GetList from "!%/api/consultation/list.get"
 import PostCreate from "!%/api/consultation/create.post"
 import PatchUpdate from "!%/api/consultation/update(id).patch"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 import GetReadTimeSumByWeek from "!%/api/consultation/read_time_sum_per_week.get"
 import GetReadTimeSumByStudent from "!%/api/consultation/read_time_sum_per_student.get"
 // import PatchRestore from "!%/api/consultation/restore.patch"
@@ -11,16 +12,14 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([
-				new GetList(),
-				new PostCreate(),
-				new PatchUpdate(),
-				new GetReadTimeSumByWeek(),
-				new GetReadTimeSumByStudent()
-				// new PatchRestore(),
-				// new DeleteArchive()
-			])
-		}))
+		this.useControllersAsync(instantiateSimultaneously([
+			GetList,
+			PostCreate,
+			PatchUpdate,
+			GetReadTimeSumByWeek,
+			GetReadTimeSumByStudent
+			// PatchRestore,
+			// DeleteArchive
+		]))
 	}
 }
