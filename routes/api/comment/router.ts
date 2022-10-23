@@ -1,8 +1,9 @@
 import Router from "!/bases/router"
+import GetList from "!%/api/comment/list.get"
 import PostCreate from "!%/api/comment/create.post"
+import PatchRestore from "!%/api/comment/restore.patch"
 import DeleteArchive from "!%/api/comment/archive.delete"
 import PatchUpdate from "!%/api/comment/update(id).patch"
-import PatchRestore from "!%/api/comment/restore.patch"
 
 export default class extends Router {
 	constructor() {
@@ -10,10 +11,11 @@ export default class extends Router {
 
 		this.useControllersAsync(new Promise(resolve => {
 			resolve([
+				new GetList(),
 				new PostCreate(),
-				new DeleteArchive(),
 				new PatchUpdate(),
-				new PatchRestore()
+				new PatchRestore(),
+				new DeleteArchive()
 			])
 		}))
 	}
