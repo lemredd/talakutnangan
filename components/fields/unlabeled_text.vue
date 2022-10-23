@@ -8,34 +8,24 @@
 			:required="required"
 			:disabled="isCurrentlyDisabled"
 			@keyup.enter.exact="saveImplicitly"/>
-		<div class="icon-button-container">
-			<button
-				v-if="isLocked"
-				type="button"
-				class="edit-button material-icons"
-				@click="unlock">
-				edit
-			</button>
-		</div>
-		<button
+		<IconButton
+			v-if="isLocked"
+			icon-name="edit"
+			class="edit-button"
+			@icon-click="unlock"/>
+		<IconButton
 			v-if="isUnlocked"
-			type="button"
-			class="save-button material-icons"
-			@click="lock">
-			save
-		</button>
-		<button
+			icon-name="save"
+			class="save-button"
+			@icon-click="lock"/>
+		<IconButton
 			v-if="isUnlocked"
-			type="button"
-			class="cancel-button material-icons"
-			@click="load">
-			cancel
-		</button>
+			icon-name="cancel"
+			class="cancel-button"
+			@icon-click="load"/>
 	</div>
 </template>
 <style scoped lang="scss">
-	@import "@styles/icon_button.scss";
-
 	.field-container {
 		@apply flex flex-row justify-center justify-items-stretch items-center;
 
@@ -57,6 +47,8 @@
 import { computed } from "vue"
 
 import type { Textual, FieldStatus } from "@/fields/types"
+
+import IconButton from "@/helpers/icon_button.vue"
 
 const props = defineProps<{
 	type: Textual
