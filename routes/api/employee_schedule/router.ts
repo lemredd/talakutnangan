@@ -3,18 +3,17 @@ import GetList from "!%/api/employee_schedule/list.get"
 import PostCreate from "!%/api/employee_schedule/create.post"
 import PatchUpdate from "!%/api/employee_schedule/update(id).patch"
 import DeleteArchive from "!%/api/employee_schedule/archive.delete"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([
-				new GetList(),
-				new PostCreate(),
-				new PatchUpdate(),
-				new DeleteArchive()
-			])
-		}))
+		this.useControllersAsync(instantiateSimultaneously([
+			GetList,
+			PostCreate,
+			PatchUpdate,
+			DeleteArchive
+		]))
 	}
 }
