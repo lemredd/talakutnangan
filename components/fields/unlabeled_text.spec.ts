@@ -49,9 +49,9 @@ describe("Component: fields/unlabeled_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find(".edit-button")
+		const editButton = wrapper.find(".edit-button").findComponent({ "name": "IconButton" })
 
-		await editButton.trigger("click")
+		await editButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBe("")
@@ -70,9 +70,9 @@ describe("Component: fields/unlabeled_text", () => {
 			}
 		})
 
-		const saveButton = wrapper.find(".save-button")
+		const saveButton = wrapper.find(".save-button").findComponent({ "name": "IconButton" })
 
-		await saveButton.trigger("click")
+		await saveButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -92,9 +92,9 @@ describe("Component: fields/unlabeled_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find(".edit-button")
+		const editButton = wrapper.find(".edit-button").findComponent({ "name": "IconButton" })
 
-		await editButton.trigger("click")
+		await editButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBe("")
@@ -113,9 +113,9 @@ describe("Component: fields/unlabeled_text", () => {
 			}
 		})
 
-		const saveButton = wrapper.find(".save-button")
+		const saveButton = wrapper.find(".save-button").findComponent({ "name": "IconButton" })
 
-		await saveButton.trigger("click")
+		await saveButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -135,9 +135,9 @@ describe("Component: fields/unlabeled_text", () => {
 			}
 		})
 
-		const cancelButton = wrapper.find(".cancel-button")
+		const cancelButton = wrapper.find(".cancel-button").findComponent({ "name": "IconButton" })
 
-		await cancelButton.trigger("click")
+		await cancelButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
