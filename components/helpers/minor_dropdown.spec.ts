@@ -10,8 +10,8 @@ describe("Component: helpers/minor_dropdown", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".container > button")
-		await toggler.trigger("click")
+		const container = wrapper.findComponent({ "name": "IconButton" })
+		await container.vm.$emit("iconClick")
 
 		expect(wrapper.emitted()).toHaveProperty("update:modelValue.0.0", true)
 	})
@@ -23,8 +23,8 @@ describe("Component: helpers/minor_dropdown", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".container")
-		await toggler.trigger("blur")
+		const container = wrapper.findComponent({ "name": "IconButton" })
+		await container.vm.$emit("focusout")
 
 		expect(wrapper.emitted()).toHaveProperty("update:modelValue.0.0", false)
 	})

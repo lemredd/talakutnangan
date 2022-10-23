@@ -2,7 +2,7 @@
 	<IconButton
 		class="container"
 		icon-name="more_vert"
-		@blur="close"
+		@focusout="close"
 		@icon-click="open">
 		<template #associated-pop-outs>
 			<div v-if="modelValue" class="overlay"></div>
