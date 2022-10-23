@@ -14,14 +14,14 @@
 	@import "@styles/variables.scss";
 
 	.container {
-		@apply flex flex-row flex-nowrap justify-center align-middle relative;
+		@apply flex flex-row flex-nowrap justify-center items-center relative;
 
-		> button:first {
-			@apply flex-1;
+		> button:first-child {
+			@apply flex-1 m-auto;
 		}
 
 		> .overlay {
-			@apply  dark:bg-white fixed bg-dark-400 z-500 opacity-60 block;
+			@apply dark:bg-white fixed bg-dark-400 z-500 opacity-60 block;
 			inset: $navHeight 0 0 0;
 
 			content: " "
