@@ -22,13 +22,13 @@ describe("Database Pipe: Sift by post", () => {
 	})
 
 	it("cannot find on empty post", async() => {
-		const departmentA = await new PostFactory().insertOne()
-		const departmentB = await new PostFactory().insertOne()
-		await new Comment().post(() => Promise.resolve(departmentA)).insertOne()
+		const postA = await new PostFactory().insertOne()
+		const postB = await new PostFactory().insertOne()
+		await new Comment().post(() => Promise.resolve(postA)).insertOne()
 
 		const options = siftByPost({}, {
 			"filter": {
-				"postID": departmentB.id
+				"postID": postB.id
 			}
 		})
 		const foundModels = await Model.findAll(options)
