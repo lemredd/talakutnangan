@@ -8,13 +8,15 @@
 			:required="required"
 			:disabled="isCurrentlyDisabled"
 			@keyup.enter.exact="saveImplicitly"/>
-		<button
-			v-if="isLocked"
-			type="button"
-			class="edit-button material-icons"
-			@click="unlock">
-			edit
-		</button>
+		<div class="icon-button-container">
+			<button
+				v-if="isLocked"
+				type="button"
+				class="edit-button material-icons"
+				@click="unlock">
+				edit
+			</button>
+		</div>
 		<button
 			v-if="isUnlocked"
 			type="button"
@@ -32,6 +34,8 @@
 	</div>
 </template>
 <style scoped lang="scss">
+	@import "@styles/icon_button.scss";
+
 	.field-container {
 		@apply flex flex-row justify-center justify-items-stretch items-center;
 
