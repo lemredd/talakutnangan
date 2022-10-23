@@ -4,17 +4,16 @@ import DevRouter from "!%/dev/router"
 import APIRouter from "!%/api/router"
 import { Environment } from "$/types/server"
 import EnhancerRouter from "!%/enhancer/router"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 export default class extends Router {
 	constructor() {
 		super()
 
-		this.useRoutersAsync(new Promise(resolve => {
-			resolve([
-				new APIRouter(),
-				new EnhancerRouter()
-			])
-		}))
+		this.useRoutersAsync(instantiateSimultaneously([
+			APIRouter,
+			EnhancerRouter
+		]))
 
 		switch (this.environment) {
 			case Environment.Development:
