@@ -1,28 +1,39 @@
 <template>
-	<div>
+	<form>
 		<ProfilePicture
 			class="self"
 			:user="user"/>
 		<TextualField
 			v-model="content"
 			v-model:status="fieldStatus"
+			class="field"
 			type="text"
 			:may-save-implicitly="true"
 			@save-implicitly="submit"
 			@save="submit"/>
-	</div>
+	</form>
 </template>
 
 <style lang="scss">
+	form {
+		@apply flex flex-row flex-nowrap justify-center;
 
+		> .self {
+			@apply flex-initial w-auto h-12;
+		}
+
+		> .field {
+			@apply flex-1 ml-4 flex flex-row;
+		}
+	}
 </style>
 
 <script setup lang="ts">
 import { computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
