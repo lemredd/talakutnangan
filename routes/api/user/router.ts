@@ -6,21 +6,20 @@ import PostImport from "!%/api/user/import.post"
 import PostLogOut from "!%/api/user/log_out.post"
 import PatchUpdate from "!%/api/user/update(id).patch"
 import PatchResetPassword from "!%/api/user/reset_password(id).patch"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([
-				new GetList(),
-				new GetRead(),
-				new PostLogIn(),
-				new PostImport(),
-				new PostLogOut(),
-				new PatchUpdate(),
-				new PatchResetPassword()
-			])
-		}))
+		this.useControllersAsync(instantiateSimultaneously([
+			GetList,
+			GetRead,
+			PostLogIn,
+			PostImport,
+			PostLogOut,
+			PatchUpdate,
+			PatchResetPassword
+		]))
 	}
 }

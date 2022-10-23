@@ -18,63 +18,54 @@ import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
 import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import AttachedChatFileRouter from "!%/api/attached_chat_file/router"
 import ChatMessageActivityRouter from "!%/api/chat_message_activity/router"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 export default class extends Router {
 	constructor() {
 		super()
 
-		const coreRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new RoleRouter(),
-				new UserRouter(),
-				new DepartmentRouter()
-			])
-		})
+		const coreRouters = [
+			RoleRouter,
+			UserRouter,
+			DepartmentRouter
+		]
 
-		const userRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new SignatureRouter(),
-				new UserBindedRouter(),
-				new ProfilePictureRouter(),
-				new EmployeeScheduleRouter()
-			])
-		})
+		const userRelatedRouters = [
+			SignatureRouter,
+			UserBindedRouter,
+			ProfilePictureRouter,
+			EmployeeScheduleRouter
+		]
 
-		const consultationRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new ChatMessageRouter(),
-				new ConsultationRouter(),
-				new AttachedChatFileRouter(),
-				new BoundConsultationRouter(),
-				new ChatMessageActivityRouter()
-			])
-		})
+		const consultationRelatedRouters = [
+			ChatMessageRouter,
+			ConsultationRouter,
+			AttachedChatFileRouter,
+			BoundConsultationRouter,
+			ChatMessageActivityRouter
+		]
 
-		const forumRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new TagRouter(),
-				new PostRouter(),
-				new CommentRouter(),
-				new ProfanityFilterRouter()
-			])
-		})
+		const forumRelatedRouters = [
+			TagRouter,
+			PostRouter,
+			CommentRouter,
+			ProfanityFilterRouter
+		]
 
-		const miscelleneousRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new SemesterRouter(),
-				new AuditTrailRouter(),
-				new AsynchronousFileRouter()
-			])
-		})
+		const miscelleneousRouters = [
+			SemesterRouter,
+			AuditTrailRouter,
+			AsynchronousFileRouter
+		]
 
 		this.useRoutersAsync(
-			Promise.all([
-				coreRouters,
-				userRelatedRouters,
-				forumRelatedRouters,
-				consultationRelatedRouters,
-				miscelleneousRouters
-			]).then(routerGroups => routerGroups.flat())
+			instantiateSimultaneously([
+				...coreRouters,
+				...userRelatedRouters,
+				...forumRelatedRouters,
+				...consultationRelatedRouters,
+				...miscelleneousRouters
+			])
 		)
 	}
 }
