@@ -35,7 +35,7 @@ import type { FieldStatus } from "@/fields/types"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
-import TextualField from "@/fields/non-sensitive_text.vue"
+import TextualField from "@/fields/unlabeled_text.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 interface CustomEvents {
