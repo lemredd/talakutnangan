@@ -1,7 +1,6 @@
 import Router from "!/bases/router"
 import SemesterRouter from "!%/api/semester/router"
 import AuditTrailRouter from "!%/api/audit_trail/router"
-import BoundConsultationRouter from "!%/api/consultation(id)/router"
 import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
@@ -48,9 +47,6 @@ export default class extends Router {
 			...attachedChatFileControllers,
 			...chatMessageActivityControllers
 		]
-		const consultationRelatedRouters = [
-			BoundConsultationRouter
-		]
 
 		const forumRelatedControllers = [
 			...tagControllers,
@@ -78,7 +74,6 @@ export default class extends Router {
 
 		this.useRoutersAsync(
 			instantiateSimultaneously([
-				...consultationRelatedRouters,
 				...miscelleneousRouters
 			])
 		)
