@@ -1,6 +1,4 @@
-import Router from "!/bases/router"
 import ControllerLike from "!/bases/controller-likes/controller"
-import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 import { controllers as semesterControllers } from "!%/api/semester/router"
 import { controllers as auditTrailControllers } from "!%/api/audit_trail/router"
@@ -26,53 +24,46 @@ import { controllers as chatMessageControllers } from "!%/api/chat_message/route
 import { controllers as consultationControllers } from "!%/api/consultation/router"
 import { controllers as attachedChatFileControllers } from "!%/api/attached_chat_file/router"
 import { controllers as chatMessageActivityControllers } from "!%/api/chat_message_activity/router"
-export default class extends Router {
-	constructor() {
-		super()
 
-		const coreControllers = [
-			...userControllers,
-			...roleControllers,
-			...departmentControllers
-		]
+const coreControllers = [
+	...userControllers,
+	...roleControllers,
+	...departmentControllers
+]
 
-		const userRelatedControllers = [
-			...signatureControllers,
-			...userBindedControllers,
-			...profilePictureControllers,
-			...employeeScheduleControllers
-		]
+const userRelatedControllers = [
+	...signatureControllers,
+	...userBindedControllers,
+	...profilePictureControllers,
+	...employeeScheduleControllers
+]
 
-		const consultationRelatedControllers = [
-			...chatMessageControllers,
-			...consultationControllers,
-			...attachedChatFileControllers,
-			...chatMessageActivityControllers
-		]
+const consultationRelatedControllers = [
+	...chatMessageControllers,
+	...consultationControllers,
+	...attachedChatFileControllers,
+	...chatMessageActivityControllers
+]
 
-		const forumRelatedControllers = [
-			...tagControllers,
-			...postControllers,
-			...commentControllers,
-			...boundPostControllers,
-			...postAttachmentControllers,
-			...profanityFilterControllers
-		]
+const forumRelatedControllers = [
+	...tagControllers,
+	...postControllers,
+	...commentControllers,
+	...boundPostControllers,
+	...postAttachmentControllers,
+	...profanityFilterControllers
+]
 
-		const miscelleneousControllers = [
-			...semesterControllers,
-			...auditTrailControllers,
-			...asynchronousFileControllers
-		]
+const miscelleneousControllers = [
+	...semesterControllers,
+	...auditTrailControllers,
+	...asynchronousFileControllers
+]
 
-		this.useControllersAsync(
-			instantiateSimultaneously([
-				...coreControllers,
-				...userRelatedControllers,
-				...consultationRelatedControllers,
-				...forumRelatedControllers,
-				...miscelleneousControllers
-			] as (new() => ControllerLike)[])
-		)
-	}
-}
+export const controllers: (new() => ControllerLike)[] = [
+	...coreControllers,
+	...userRelatedControllers,
+	...consultationRelatedControllers,
+	...forumRelatedControllers,
+	...miscelleneousControllers
+]
