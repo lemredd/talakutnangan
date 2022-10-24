@@ -1,7 +1,7 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
-import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
+import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type {
 	ConsultationResource,
@@ -235,7 +235,7 @@ export default class extends BaseManager<
 	}
 
 	async sumTimePerStudents(query: TimeSumQueryParameters<number>)
-	: Promise<UserIdentifierListWithTimeConsumedDocument> {
+	: Promise<DeserializedUserListWithTimeConsumedDocument> {
 		try {
 			const models = await ChatMessageActivity.findAll({
 				"include": [
@@ -316,7 +316,7 @@ export default class extends BaseManager<
 						...waitedPreviousSums,
 						currentSum
 					]
-				}, Promise.resolve([]) as Promise<UserIdentifierListWithTimeConsumedDocument["data"]>)
+				}, Promise.resolve([]) as Promise<DeserializedUserListWithTimeConsumedDocument["data"]>)
 			}
 		} catch (error) {
 			throw this.makeBaseError(error)

@@ -3,7 +3,7 @@ import type { Serializable } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type {
 	DeserializedUserProfile,
-	UserIdentifierListWithTimeConsumedDocument
+	DeserializedUserListWithTimeConsumedDocument
 } from "$/types/documents/user"
 import deserialize from "$/object/deserialize"
 
@@ -48,7 +48,7 @@ export default class extends PageMiddleware {
 				"offset": 0
 			},
 			"sort": [ "-name" ]
-		}) as UserIdentifierListWithTimeConsumedDocument
+		}) as DeserializedUserListWithTimeConsumedDocument
 
 		console.log(totalMillisecondsConsumed)
 

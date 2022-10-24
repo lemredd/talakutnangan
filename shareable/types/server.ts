@@ -34,7 +34,7 @@ import type {
 	DeserializedUserProfile,
 	DeserializedUserDocument,
 	DeserializedUserListDocument,
-	UserIdentifierListWithTimeConsumedDocument
+	DeserializedUserListWithTimeConsumedDocument
 } from "$/types/documents/user"
 
 /**
@@ -103,7 +103,7 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	chatMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 	previewMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 
-	timeConsumedPerStudent: OptionalPageProps<T, UserIdentifierListWithTimeConsumedDocument>
+	timeConsumedPerStudent: OptionalPageProps<T, DeserializedUserListWithTimeConsumedDocument>
 	timeConsumedPerWeek: OptionalPageProps<T, WeeklySummedTimeDocument>
 
 	posts: OptionalPageProps<T, DeserializedPostListDocument>

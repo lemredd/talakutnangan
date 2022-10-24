@@ -30,7 +30,7 @@ import EmployeeSchedule from "%/models/employee_schedule"
 
 import BaseManager from "%/managers/base"
 import RoleManager from "%/managers/role"
-import UserTransformer from "%/transformers/user"
+import Transformer from "%/transformers/user"
 import DepartmentManager from "%/managers/department"
 import UserProfileTransformer from "%/transformers/user_profile"
 
@@ -47,7 +47,7 @@ import includeRoleAndDepartment from "%/queries/user/include_role_and_department
 export default class UserManager extends BaseManager<Model, RawUser, UserQueryParameters<number>> {
 	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): UserTransformer { return new UserTransformer() }
+	get transformer(): Transformer { return new Transformer() }
 
 	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, UserQueryParameters<number>>[] {
 		return [
