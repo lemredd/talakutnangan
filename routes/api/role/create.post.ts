@@ -49,6 +49,7 @@ export default class extends JSONController {
 						"match": roleName
 					}
 				},
+				"friendlyName": "Role name",
 				"pipes": [ required, string, regex, notExists ]
 			},
 			...makeFlagRules("semesterFlags", semester),
