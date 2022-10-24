@@ -4,7 +4,7 @@ import ControllerLike from "!/bases/controller-likes/controller"
 import { controllers as userControllers } from "!%/enhancer/user/router"
 import { controllers as roleControllers } from "!%/enhancer/role/router"
 import { controllers as postControllers } from "!%/enhancer/post/router"
-import ForumRouter from "!%/enhancer/forum/router"
+import { controllers as forumControllers } from "!%/enhancer/forum/router"
 import DepartmentRouter from "!%/enhancer/department/router"
 import UserSettingsRouter from "!%/enhancer/settings/router"
 import ConsultationRouter from "!%/enhancer/consultation/router"
@@ -17,12 +17,12 @@ export default class extends Router {
 			...userControllers,
 			...roleControllers,
 			...postControllers,
+			...forumControllers
 			GetIndex
 		] as (new() => ControllerLike)[]))
 
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
-				new ForumRouter(),
 				new DepartmentRouter(),
 				new ConsultationRouter(),
 				new UserSettingsRouter()
