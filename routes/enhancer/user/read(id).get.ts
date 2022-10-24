@@ -57,7 +57,7 @@ export default class extends PageMiddleware {
 			}
 		})
 
-		const roles = await new RoleManager().list({
+		const roles = await new RoleManager(request).list({
 			"filter": {
 				"department": "*",
 				"existence": "exists",
@@ -70,7 +70,7 @@ export default class extends PageMiddleware {
 			"sort": [ "name" ]
 		})
 
-		const departments = await new DepartmentManager().list({
+		const departments = await new DepartmentManager(request).list({
 			"filter": {
 				"existence": "exists",
 				"slug": ""
