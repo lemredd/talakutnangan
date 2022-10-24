@@ -54,17 +54,19 @@
 import {
 	ref,
 	inject,
-	computed
+	computed,
+	onMounted
 } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type {
-	DeserializedRoleResource
-} from "$/types/documents/role"
+import type { ResourceCount } from "$/types/documents/base"
+import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
+import RoleFetcher from "$@/fetchers/role"
 import assignPath from "$@/external/assign_path"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
@@ -75,18 +77,22 @@ type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const user = ref(pageProps.user)
-
-const { roles } = pageProps
-const userRoleIDs = ref(
-	user.value.data.roles?.data.map(role => role.id) as string[]
+const user = ref<DeserializedUserDocument<"roles">>(
+	pageProps.user as DeserializedUserDocument<"roles">
 )
-const selectableRoles = roles.data.map(
+const roles = ref<DeserializedRoleResource[]>(
+	pageProps.roles.data as DeserializedRoleResource[]
+)
+
+const userRoleIDs = ref(
+	user.value.data.roles.data.map(role => role.id) as string[]
+)
+const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 	(role: DeserializedRoleResource) => ({
 		"label": role.name,
 		"value": role.id
 	})
-) as OptionInfo[]
+))
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const nameFieldStatus = ref<FieldStatus>("locked")
@@ -140,4 +146,36 @@ async function restoreUser() {
 		console.log(body, status)
 	})
 }
+
+const roleFetcher = new RoleFetcher()
+async function fetchRolesIncrementally(): Promise<void> {
+	await roleFetcher.list({
+		"filter": {
+			"department": "*",
+			"existence": "exists",
+			"slug": ""
+		},
+		"page": {
+			"limit": 10,
+			"offset": roles.value.length
+		},
+		"sort": [ "name" ]
+	}).then(({ body }) => {
+		roles.value = [
+			...roles.value,
+			...body.data
+		]
+
+		const meta = body.meta as ResourceCount
+		if (roles.value.length < meta.count) {
+			return fetchRolesIncrementally()
+		}
+
+		return Promise.resolve()
+	})
+}
+
+onMounted(async() => {
+	await fetchRolesIncrementally()
+})
 </script>
