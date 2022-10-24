@@ -90,34 +90,35 @@ export default class extends BaseManager<
 	}
 
 	async reattach(userID: number, roleIDs: number[]): Promise<void> {
-		const attachedRoles = await AttachedRole.findAll({
-			"where": new Condition().equal("userID", userID).build()
-		})
-
-		const currentAttachedRoleIDs = attachedRoles.map(attachedRole => attachedRole.roleID)
-		const { newIDs, deletedIDs } = segragateIDs(currentAttachedRoleIDs, roleIDs)
-
-		if (newIDs.length > 0) {
-			await AttachedRole.bulkCreate(
-				newIDs.map(roleID => ({
-					roleID,
-					userID
-				}))
-			)
-		}
-
-		if (deletedIDs.length > 0) {
-			const conditionedDeletedIDs: Condition[] = deletedIDs.map(
-				id => new Condition().equal("roleID", id)
-			)
-			const deleteCondition = new Condition().and(
-				new Condition().equal("userID", userID),
-				new Condition().or(...conditionedDeletedIDs)
-			)
-			await AttachedRole.destroy({
-				"force": true,
-				"where": deleteCondition.build()
+		try {
+			const attachedRoles = await AttachedRole.findAll({
+				"where": new Condition().equal("userID", userID).build()
 			})
+
+			const currentAttachedRoleIDs = attachedRoles.map(attachedRole => attachedRole.roleID)
+			const { newIDs, deletedIDs } = segragateIDs(currentAttachedRoleIDs, roleIDs)
+
+			if (newIDs.length > 0) {
+				await AttachedRole.bulkCreate(
+					newIDs.map(roleID => ({
+						roleID,
+						userID
+					}))
+				)
+			}
+
+			if (deletedIDs.length > 0) {
+				const deleteCondition = new Condition().and(
+					new Condition().equal("userID", userID),
+					new Condition().isIncludedIn("roleID", deletedIDs)
+				)
+				await AttachedRole.destroy({
+					"force": true,
+					"where": deleteCondition.build()
+				})
+			}
+		} catch (error) {
+			throw this.makeBaseError(error)
 		}
 	}
 
