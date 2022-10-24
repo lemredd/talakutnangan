@@ -1,3 +1,4 @@
+import type { CommentQueryParameters } from "$/types/query"
 import type {
 	CommentResourceIdentifier,
 	CommentAttributes,
@@ -6,7 +7,8 @@ import type {
 	CommentDocument,
 	CommentListDocument,
 	DeserializedCommentDocument,
-	DeserializedCommentListDocument
+	DeserializedCommentListDocument,
+	CommentRelationships
 } from "$/types/documents/comment"
 
 import { COMMENT_LINK } from "$/constants/template_links"
@@ -22,7 +24,11 @@ export default class CommentFetcher extends BaseFetcher<
 	CommentDocument,
 	CommentListDocument,
 	DeserializedCommentDocument,
-	DeserializedCommentListDocument
+	DeserializedCommentListDocument,
+	{
+		"queryParameters": CommentQueryParameters<string>,
+		"extraCreateData": CommentRelationships<"create">
+	}
 > {
 	constructor() {
 		super(COMMENT_LINK)

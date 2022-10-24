@@ -31,6 +31,7 @@ export default function<T>(
 		"model": User,
 		"required": true
 	}, {
+		"as": "parentComment",
 		"model": Comment,
 		"required": false
 	})

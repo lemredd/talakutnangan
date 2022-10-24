@@ -1,78 +1,71 @@
-import Router from "!/bases/router"
-import TagRouter from "!%/api/tag/router"
-import UserRouter from "!%/api/user/router"
-import RoleRouter from "!%/api/role/router"
-import PostRouter from "!%/api/post/router"
-import SemesterRouter from "!%/api/semester/router"
-import UserBindedRouter from "!%/api/user(id)/router"
-import SignatureRouter from "!%/api/signature/router"
-import DepartmentRouter from "!%/api/department/router"
-import AuditTrailRouter from "!%/api/audit_trail/router"
-import ChatMessageRouter from "!%/api/chat_message/router"
-import ConsultationRouter from "!%/api/consultation/router"
-import ProfilePictureRouter from "!%/api/profile_picture/router"
-import ProfanityFilterRouter from "!%/api/profanity_filter/router"
-import BoundConsultationRouter from "!%/api/consultation(id)/router"
-import EmployeeScheduleRouter from "!%/api/employee_schedule/router"
-import AsynchronousFileRouter from "!%/api/asynchronous_file/router"
-import AttachedChatFileRouter from "!%/api/attached_chat_file/router"
-import ChatMessageActivityRouter from "!%/api/chat_message_activity/router"
+import ControllerLike from "!/bases/controller-likes/controller"
 
-export default class extends Router {
-	constructor() {
-		super()
+import { controllers as semesterControllers } from "!%/api/semester/router"
+import { controllers as auditTrailControllers } from "!%/api/audit_trail/router"
+import { controllers as asynchronousFileControllers } from "!%/api/asynchronous_file/router"
 
-		const coreRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new RoleRouter(),
-				new UserRouter(),
-				new DepartmentRouter()
-			])
-		})
+import { controllers as tagControllers } from "!%/api/tag/router"
+import { controllers as postControllers } from "!%/api/post/router"
+import { controllers as commentControllers } from "!%/api/comment/router"
+import { controllers as boundPostControllers } from "!%/api/post(id)/router"
+import { controllers as commentVoteControllers } from "!%/api/comment_vote/router"
+import { controllers as postAttachmentControllers } from "!%/api/post_attachment/router"
+import { controllers as profanityFilterControllers } from "!%/api/profanity_filter/router"
 
-		const userRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new SignatureRouter(),
-				new UserBindedRouter(),
-				new ProfilePictureRouter(),
-				new EmployeeScheduleRouter()
-			])
-		})
+import { controllers as userControllers } from "!%/api/user/router"
+import { controllers as roleControllers } from "!%/api/role/router"
+import { controllers as departmentControllers } from "!%/api/department/router"
 
-		const consultationRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new ChatMessageRouter(),
-				new ConsultationRouter(),
-				new AttachedChatFileRouter(),
-				new BoundConsultationRouter(),
-				new ChatMessageActivityRouter()
-			])
-		})
+import { controllers as signatureControllers } from "!%/api/signature/router"
+import { controllers as userBindedControllers } from "!%/api/user(id)/router"
+import { controllers as profilePictureControllers } from "!%/api/profile_picture/router"
+import { controllers as employeeScheduleControllers } from "!%/api/employee_schedule/router"
 
-		const forumRelatedRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new TagRouter(),
-				new PostRouter(),
-				new ProfanityFilterRouter()
-			])
-		})
+import { controllers as chatMessageControllers } from "!%/api/chat_message/router"
+import { controllers as consultationControllers } from "!%/api/consultation/router"
+import { controllers as attachedChatFileControllers } from "!%/api/attached_chat_file/router"
+import { controllers as chatMessageActivityControllers } from "!%/api/chat_message_activity/router"
 
-		const miscelleneousRouters = new Promise<Router[]>(resolve => {
-			resolve([
-				new SemesterRouter(),
-				new AuditTrailRouter(),
-				new AsynchronousFileRouter()
-			])
-		})
+const coreControllers = [
+	...userControllers,
+	...roleControllers,
+	...departmentControllers
+]
 
-		this.useRoutersAsync(
-			Promise.all([
-				coreRouters,
-				userRelatedRouters,
-				forumRelatedRouters,
-				consultationRelatedRouters,
-				miscelleneousRouters
-			]).then(routerGroups => routerGroups.flat())
-		)
-	}
-}
+const userRelatedControllers = [
+	...signatureControllers,
+	...userBindedControllers,
+	...profilePictureControllers,
+	...employeeScheduleControllers
+]
+
+const consultationRelatedControllers = [
+	...chatMessageControllers,
+	...consultationControllers,
+	...attachedChatFileControllers,
+	...chatMessageActivityControllers
+]
+
+const forumRelatedControllers = [
+	...tagControllers,
+	...postControllers,
+	...commentControllers,
+	...boundPostControllers,
+	...postAttachmentControllers,
+	...profanityFilterControllers,
+	...commentVoteControllers
+]
+
+const miscelleneousControllers = [
+	...semesterControllers,
+	...auditTrailControllers,
+	...asynchronousFileControllers
+]
+
+export const controllers: (new() => ControllerLike)[] = [
+	...coreControllers,
+	...userRelatedControllers,
+	...consultationRelatedControllers,
+	...forumRelatedControllers,
+	...miscelleneousControllers
+]

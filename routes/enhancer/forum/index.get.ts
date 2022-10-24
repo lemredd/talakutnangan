@@ -2,10 +2,12 @@ import type { Serializable } from "$/types/general"
 import type { DocumentProps } from "$/types/server"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedPostListDocument } from "$/types/documents/post"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/post"
 import deserialize from "$/object/deserialize"
+import CommentManager from "%/managers/comment"
 import DepartmentManager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
@@ -35,6 +37,7 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
+		const commentManager = new CommentManager(request)
 		const departmentManager = new DepartmentManager(request)
 		const userProfile = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
 
@@ -44,12 +47,35 @@ export default class extends PageMiddleware {
 			[ READ_ANYONE_ON_ALL_DEPARTMENTS ]
 		)
 		const department = mayViewAllDepartments ? null : Number(userProfile.data.department.data.id)
+		const posts = await manager.list({
+			"filter": {
+				"departmentID": department,
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		}) as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		const comments = await commentManager.list({
+			"filter": {
+				"existence": "exists"
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-created" ]
+		})
 
 		const pageProps = {
+			comments,
 			"departments": mayViewAllDepartments
 				? await departmentManager.list({
 					"filter": {
-						"existence": "exists"
+						"existence": "exists",
+						"slug": ""
 					},
 					"page": {
 						"limit": 10,
@@ -58,17 +84,7 @@ export default class extends PageMiddleware {
 					"sort": [ "fullName" ]
 				})
 				: [],
-			"posts": await manager.list({
-				"filter": {
-					"departmentID": department,
-					"existence": "exists"
-				},
-				"page": {
-					"limit": 10,
-					"offset": 0
-				},
-				"sort": [ "-createdAt" ]
-			})
+			posts
 		}
 
 		return pageProps

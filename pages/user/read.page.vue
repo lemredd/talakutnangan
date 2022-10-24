@@ -3,9 +3,9 @@
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
+				v-model:status="nameFieldStatus"
 				label="User Name"
-				type="text"
-				:editable="true"/>
+				type="text"/>
 		</div>
 
 		<div class="controls flex justify-between">
@@ -42,6 +42,7 @@ import {
 	onMounted
 } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 
@@ -57,6 +58,8 @@ const user = ref<DeserializedUserDocument>(
 	pageProps.user as DeserializedUserDocument
 )
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
+
+const nameFieldStatus = ref<FieldStatus>("locked")
 
 let rawFetcher: Fetcher|null = null
 

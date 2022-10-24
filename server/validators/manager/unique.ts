@@ -46,7 +46,7 @@ export default async function(
 		"messageMaker": (
 			field: string,
 			value: string
-		) => `The ${value} in field "${field}" is not unique in the database".`
+		) => `The ${value} in field "${field}" is not unique in the database.`
 	}
 
 	throw error

@@ -69,7 +69,8 @@ export default async function(
 				unitError = error.toJSON()
 				redirectURL = error.redirectURL ?? redirectURL
 			} else if (error instanceof ErrorBag) {
-				unitError = error.toJSON()
+				const [ firstError ] = error.toJSON()
+				unitError = firstError
 			}
 
 			const getEncodedError = encodeToBase64(unitError)

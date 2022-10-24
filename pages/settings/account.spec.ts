@@ -83,12 +83,12 @@ describe("Page: settings/account", () => {
 			}
 		})
 
+		const editEmailFieldButton = wrapper.find("input[type=email] + .edit-button")
+		await editEmailFieldButton.trigger("click")
 		const emailField = wrapper.find("input[type=email]")
-		const editEmailFieldButton = wrapper.find("input[type=email] + button")
-
-		await editEmailFieldButton.trigger("click")
 		await emailField.setValue(fakeNewEmail)
-		await editEmailFieldButton.trigger("click")
+		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
+		await saveEmailFieldButton.trigger("click")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls

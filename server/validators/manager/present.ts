@@ -39,7 +39,7 @@ export default async function(
 			"messageMaker": (
 				field: string,
 				value: string
-			) => `The ${value} in field "${field}" is not existing or archived in the database".`
+			) => `The ${value} in field "${field}" is not existing or archived in the database.`
 		}
 
 		throw error
