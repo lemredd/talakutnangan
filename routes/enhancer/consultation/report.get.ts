@@ -1,14 +1,11 @@
 import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
-import type {
-	DeserializedUserProfile,
-	DeserializedUserListWithTimeConsumedDocument
-} from "$/types/documents/user"
-import deserialize from "$/object/deserialize"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/consultation"
+import deserialize from "$/object/deserialize"
 import Merger from "!/middlewares/miscellaneous/merger"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -48,9 +45,7 @@ export default class extends PageMiddleware {
 				"offset": 0
 			},
 			"sort": [ "-name" ]
-		}) as DeserializedUserListWithTimeConsumedDocument
-
-		console.log(totalMillisecondsConsumed)
+		})
 
 		return {
 			totalMillisecondsConsumed
