@@ -7,7 +7,9 @@ import SemesterManager from "%/managers/semester"
 import Merger from "!/middlewares/miscellaneous/merger"
 import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
+
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import date from "!/validators/base/date"
 import string from "!/validators/base/string"
@@ -15,7 +17,6 @@ import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
-import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
