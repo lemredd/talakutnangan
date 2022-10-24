@@ -1,4 +1,3 @@
-import Router from "!/bases/router"
 import GetList from "!%/api/role/list.get"
 import GetRead from "!%/api/role/read(id).get"
 import PostCreate from "!%/api/role/create.post"
@@ -18,20 +17,3 @@ export const controllers = [
 	PatchRestore,
 	DeleteArchive
 ]
-
-export default class extends Router {
-	constructor() {
-		super()
-
-		this.useControllersAsync(instantiateSimultaneously([
-			GetList,
-			// ! this should match first to prevent shadowing by `read(id)` route
-			GetCountUsers,
-			GetRead,
-			PostCreate,
-			PatchUpdate,
-			PatchRestore,
-			DeleteArchive
-		]))
-	}
-}

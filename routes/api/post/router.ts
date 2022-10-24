@@ -1,4 +1,3 @@
-import Router from "!/bases/router"
 import GetList from "!%/api/department/list.get"
 import PostCreate from "!%/api/post/create.post"
 import DeleteArchive from "!%/api/post/archive.delete"
@@ -12,19 +11,3 @@ export const controllers = [
 	PatchUpdate,
 	PatchRestore
 ]
-
-export default class extends Router {
-	constructor() {
-		super()
-
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([
-				new GetList(),
-				new PostCreate(),
-				new DeleteArchive(),
-				new PatchUpdate(),
-				new PatchRestore()
-			])
-		}))
-	}
-}

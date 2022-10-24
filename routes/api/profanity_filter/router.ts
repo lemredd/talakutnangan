@@ -1,4 +1,3 @@
-import Router from "!/bases/router"
 import GetList from "!%/api/profanity_filter/list.get"
 import PostCreate from "!%/api/profanity_filter/create.post"
 import PatchRestore from "!%/api/profanity_filter/restore.patch"
@@ -12,19 +11,3 @@ export const controllers = [
 	PatchRestore,
 	DeleteArchive
 ]
-
-export default class extends Router {
-	constructor() {
-		super()
-
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([
-				new GetList(),
-				new PostCreate(),
-				new PatchUpdate(),
-				new PatchRestore(),
-				new DeleteArchive()
-			])
-		}))
-	}
-}

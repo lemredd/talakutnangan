@@ -1,4 +1,3 @@
-import Router from "!/bases/router"
 import ControllerLike from "!/bases/controller-like"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
@@ -21,20 +20,3 @@ export const controllers: (new() => ControllerLike)[] = [
 	...userSettingsControllers,
 	GetIndex
 ]
-
-export default class extends Router {
-	constructor() {
-		super()
-
-		this.useControllersAsync(instantiateSimultaneously([
-			...userControllers,
-			...roleControllers,
-			...postControllers,
-			...forumControllers,
-			...departmentControllers,
-			...consultationControllers,
-			...userSettingsControllers,
-			GetIndex
-		] as (new() => ControllerLike)[]))
-	}
-}
