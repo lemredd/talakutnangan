@@ -1,8 +1,12 @@
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
+import { UPDATE_ROLE_OF_USER_LINK } from "$/constants/template_links"
+
 import App from "~/setups/app"
 import Factory from "~/factories/user"
 import RoleFactory from "~/factories/role"
+import AttachedRole from "%/models/attached_role"
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$!/singletons/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -24,7 +28,7 @@ describe("PATCH /api/user/:id/relationships/role", () => {
 		const model = await new Factory().attach(roles[0]).attach(roles[1]).insertOne()
 
 		const response = await App.request
-		.patch(`/api/user/${model.id}/relationships/role`)
+		.patch(specializePath(UPDATE_ROLE_OF_USER_LINK, { "id": model.id }))
 		.send({
 			"data": [
 				{
@@ -42,5 +46,9 @@ describe("PATCH /api/user/:id/relationships/role", () => {
 		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
+		const { count, rows } = await AttachedRole.findAndCountAll()
+		expect(count).toBe(4)
+		expect(rows).toHaveProperty("2.roleID", roles[1].id)
+		expect(rows).toHaveProperty("3.roleID", roles[2].id)
 	})
 })
