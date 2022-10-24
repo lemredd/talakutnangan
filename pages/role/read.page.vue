@@ -116,7 +116,7 @@ async function updateRole() {
 		"tagFlags": role.value.data.tagFlags,
 		"userFlags": role.value.data.userFlags
 	}, {
-		"extraDataFields": {
+		"extraUpdateDocumentProps": {
 			"meta": {
 				"password": password.value
 			}
