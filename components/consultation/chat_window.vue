@@ -209,6 +209,26 @@
 			}
 		}
 
+		@screen sm {
+				margin:auto 0;
+				.button-file{
+					@apply ml-80px;
+			}
+		}
+		@screen sm {
+				margin:auto 0;
+				.button-file{
+					@apply ml-120px;
+			}
+		}
+		.file-list{
+			@apply overflow-y-scroll;
+			max-height: 20vh;
+			@media screen and (min-width: 640px){
+				@apply max-h-60;
+			}
+		}
+
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
@@ -246,6 +266,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Overlay from "@/helpers/overlay.vue"
+
 import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
@@ -337,6 +358,7 @@ function switchTab(event: Event) {
 
 	fileRepoTab.value = innerText.toLocaleLowerCase()
 }
+
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
