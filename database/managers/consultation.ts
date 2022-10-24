@@ -1,7 +1,6 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
-import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type {
 	ConsultationResource,
@@ -16,6 +15,9 @@ import type {
 	CreationAttributes,
 	FindAndCountOptions
 } from "%/types/dependent"
+
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
 
 import User from "%/models/user"
 import Role from "%/models/role"
@@ -235,7 +237,7 @@ export default class extends BaseManager<
 	}
 
 	async sumTimePerStudents(query: TimeSumQueryParameters<number>)
-	: Promise<DeserializedUserListWithTimeConsumedDocument> {
+	: Promise<Serializable> {
 		try {
 			const models = await ChatMessageActivity.findAll({
 				"include": [
@@ -273,9 +275,10 @@ export default class extends BaseManager<
 				"where": new Condition().notEqual("userID", query.filter.user).build(),
 				...this.transaction.transactionObject
 			})
+			const userTransformer = new UserTransformer()
 
 			return {
-				"data": await models.map(model => {
+				"data": await models.map(async model => {
 					const user = model.user as User
 					const consultation = model.consultation as Model
 
@@ -284,39 +287,40 @@ export default class extends BaseManager<
 						consultation.startedAt as Date
 					)
 
-					return {
-						"id": String(user.id),
-						"meta": {
-							"consultations": [
-								consultation
-							],
-							"totalMillisecondsConsumed": millisecond
-						},
-						"type": "user"
-					}
-				}).reduce(async(previousSums, currentSum: any) => {
+					const serializedUser
+					= await Serializer.serialize(user, userTransformer) as Serializable
+					serializedUser.meta = {
+						"consultations": [
+							consultation
+						],
+						"totalMillisecondsConsumed": millisecond
+					} as unknown as Serializable
+
+					return serializedUser
+				}).reduce(async(previousSums, currentSum: Promise<any>) => {
 					const waitedPreviousSums = await previousSums
-					const previousSum = waitedPreviousSums.find(sum => sum.id === currentSum.id)
-					currentSum.meta.consultations = deserialize(
-						await this.serialize(currentSum.meta.consultations)
+					const waitedCurrentSums = await currentSum
+					const previousSum = waitedPreviousSums.find(sum => sum.id === waitedCurrentSums.id)
+					waitedCurrentSums.meta.consultations = deserialize(
+						await this.serialize(waitedCurrentSums.meta.consultations)
 					)
 
 					if (previousSum) {
-						previousSum.meta.totalMillisecondsConsumed += currentSum
+						previousSum.meta.totalMillisecondsConsumed += waitedCurrentSums
 						.meta
 						.totalMillisecondsConsumed
 
 						const consultations = previousSum.meta.consultations.data
-						consultations.push(currentSum.meta.consultations.data[0])
+						consultations.push(waitedCurrentSums.meta.consultations.data[0])
 
 						return waitedPreviousSums
 					}
 
 					return [
 						...waitedPreviousSums,
-						currentSum
+						waitedCurrentSums
 					]
-				}, Promise.resolve([]) as Promise<DeserializedUserListWithTimeConsumedDocument["data"]>)
+				}, Promise.resolve([]) as Promise<any[]>)
 			}
 		} catch (error) {
 			throw this.makeBaseError(error)
