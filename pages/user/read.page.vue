@@ -3,9 +3,25 @@
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
+				v-model:status="nameFieldStatus"
 				label="User Name"
-				type="text"
-				:editable="true"/>
+				type="text"/>
+		</div>
+
+		<div class="roles">
+			<MultiSelectableOptionsField
+				v-model="userRoleIDs"
+				class="selectable-roles"
+				label="Roles"
+				:options="selectableRoles"/>
+		</div>
+
+		<div class="department">
+			<SelectableOptionsField
+				v-model="userDepartment"
+				class="selectable-department"
+				label="Department"
+				:options="selectableDepartments"/>
 		</div>
 
 		<div class="roles">
@@ -58,6 +74,7 @@ import {
 	onMounted
 } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type {
@@ -65,11 +82,11 @@ import type {
 } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
-import assignPath from "$@/external/assign_path"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -88,6 +105,8 @@ const selectableRoles = roles.data.map(
 	})
 ) as OptionInfo[]
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
+
+const nameFieldStatus = ref<FieldStatus>("locked")
 
 const { departments } = pageProps
 const userDepartment = ref(user.value.data.department?.data.id as string)

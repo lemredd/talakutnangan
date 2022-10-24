@@ -1,27 +1,58 @@
 <template>
-	<div>
-		<div v-if="mustDisplayOnly" class="comment-container flex justify-between w-[100%] pb-[5em]">
-			<div class="comment-user">
-				<h2 class="font-bold">
-					{{ comment.user }}
-				</h2>
-			</div>
-			<p>
-				{{ comment.content }}
-			</p>
+	<section v-if="mustDisplayOnly" class="flex flex-col flex-nowrap">
+		<header class="flex-1 flex flex-row flex-nowrap">
+			<ProfilePicture
+				class="flex-initial w-auto h-12"
+				:user="comment.user"/>
+			<h3 class="flex-1 m-auto ml-2">
+				{{ comment.user.data.name }}
+			</h3>
 			<Menu
+				class="flex-none m-auto mx-1 h-12 w-12"
 				:comment="comment"
 				@update-comment="openUpdateField"
 				@archive-comment="confirmArchive"
 				@restore-comment="confirmRestore"/>
-		</div>
+			<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
+				<template #header>
+					<h1>Enter the comment details</h1>
+				</template>
+				<template #default>
+					<p v-if="mustArchive">
+						Do you really want to archive?
+					</p>
+					<p v-if="mustRestore">
+						Do you really want to restore?
+					</p>
+				</template>
+				<template #footer>
+					<button
+						class="btn btn-back"
+						type="button"
+						@click="closeArchiveOrRestore">
+						Back
+					</button>
+					<button
+						v-if="mustArchive"
+						class="btn submit-btn btn-primary"
+						type="button"
+						@click="archivePost">
+						Archive comment
+					</button>
+					<button
+						v-if="mustRestore"
+						class="btn submit-btn btn-primary"
+						type="button"
+						@click="restorePost">
+						Restore comment
+					</button>
+				</template>
+			</Overlay>
+		</header>
+		<p class="flex-1 indent mt-4">
+			{{ comment.content }}
+		</p>
 		<div class="comment-container">
-			<div class="left">
-				<div><img src="@assets/emptyUser.png"/></div>
-				<h2 class="title">
-					{{ comment.user.data.name }}
-				</h2>
-			</div>
 			<div class="right">
 				<h2 class="title">
 					<!-- TODO: Put the total number of upvotes here -->
@@ -43,42 +74,7 @@
 				</h2>
 			</div>
 		</div>
-		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
-			<template #header>
-				<h1>Enter the comment details</h1>
-			</template>
-			<template #default>
-				<p v-if="mustArchive">
-					Do you really want to archive?
-				</p>
-				<p v-if="mustRestore">
-					Do you really want to restore?
-				</p>
-			</template>
-			<template #footer>
-				<button
-					class="btn btn-back"
-					type="button"
-					@click="closeArchiveOrRestore">
-					Back
-				</button>
-				<button
-					v-if="mustArchive"
-					class="btn submit-btn btn-primary"
-					type="button"
-					@click="archivePost">
-					Archive comment
-				</button>
-				<button
-					v-if="mustRestore"
-					class="btn submit-btn btn-primary"
-					type="button"
-					@click="restorePost">
-					Restore comment
-				</button>
-			</template>
-		</Overlay>
-	</div>
+	</section>
 </template>
 
 <style lang="scss">
@@ -95,6 +91,7 @@ import makeSwitch from "$@/helpers/make_switch"
 
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
 
