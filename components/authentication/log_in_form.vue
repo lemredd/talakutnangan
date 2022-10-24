@@ -37,7 +37,7 @@
 		<div class="controls">
 			<button
 				id="submit-btn"
-				:disabled="!email && Boolean(token)"
+				:disabled="!email"
 				class="btn btn-primary"
 				@click="logIn">
 				Log in
@@ -134,7 +134,6 @@ const props = defineProps<{
 
 const email = ref("sample@example.com")
 const password = ref("12345678")
-const token = ref("")
 const receivedErrors = ref<string|string[]>(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail

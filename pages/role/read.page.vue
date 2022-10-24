@@ -7,7 +7,8 @@
 				v-model="role.data.name"
 				label="Role Name"
 				type="text"
-				:editable="true"/>
+				:status="nameFieldStatus"
+				@update:status="updateNameFieldStatus"/>
 		</div>
 
 		<FlagSelector
@@ -27,14 +28,14 @@
 			<button
 				v-if="isDeleted"
 				type="button"
-				class="btn btn-primary"
+				class="restore-btn btn btn-primary"
 				@click="restoreRole">
 				Restore
 			</button>
 			<button
 				v-else
 				type="button"
-				class="btn btn-primary"
+				class="archive-btn btn btn-primary"
 				@click="archiveRole">
 				Archive
 			</button>
@@ -55,6 +56,8 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
+import type { UnitError } from "$/types/server"
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents/role"
 
@@ -71,6 +74,11 @@ type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
+const role = ref<DeserializedRoleDocument<"read">>(
+	pageProps.role as DeserializedRoleDocument<"read">
+
+)
+const receivedErrors = ref<string[]>([])
 
 const roleData = computed<RoleAttributes<"deserialized">>({
 	get(): RoleAttributes<"deserialized"> { return role.value.data },
@@ -81,17 +89,8 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 		}
 	}
 })
-const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
+const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
 const password = ref<string>("")
-
-const role = ref<DeserializedRoleDocument<"read">>(
-	pageProps.role as DeserializedRoleDocument<"read">
-
-)
-const receivedErrors = ref<string[]>([])
-
-const fetcher: Fetcher = new Fetcher()
-
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
 const {
@@ -100,6 +99,9 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const nameFieldStatus = ref<FieldStatus>("locked")
+
+const fetcher: Fetcher = new Fetcher()
 async function updateRole() {
 	await fetcher.update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
@@ -114,7 +116,7 @@ async function updateRole() {
 		"tagFlags": role.value.data.tagFlags,
 		"userFlags": role.value.data.userFlags
 	}, {
-		"extraDataFields": {
+		"extraUpdateDocumentProps": {
 			"meta": {
 				"password": password.value
 			}
@@ -123,11 +125,12 @@ async function updateRole() {
 	.then(({ body, status }) => {
 		closeConfirmation()
 		password.value = ""
+		nameFieldStatus.value = "locked"
 		console.log(body, status)
 	})
 	.catch(({ body }) => {
 		if (body) {
-			const { errors } = body
+			const errors = body.errors as UnitError[]
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
 
@@ -138,7 +141,6 @@ async function updateRole() {
 		}
 	})
 }
-
 
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])
@@ -152,5 +154,17 @@ async function restoreRole() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+}
+
+function updateNameFieldStatus(newStatus: FieldStatus) {
+	switch (newStatus) {
+		case "unlocked":
+			nameFieldStatus.value = newStatus
+			break
+		case "locked":
+			updateRole()
+			break
+		default: throw new Error("Developer error!")
+	}
 }
 </script>

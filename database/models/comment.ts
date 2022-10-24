@@ -34,7 +34,7 @@ export default class Comment extends TextContentLike {
 	})
 		postID!: number
 
-	@BelongsTo(() => User)
+	@BelongsTo(() => Post)
 		post!: Post
 
 	@AllowNull

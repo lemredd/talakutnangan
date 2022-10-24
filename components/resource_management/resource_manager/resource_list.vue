@@ -19,9 +19,12 @@
 						{{ resource.department.data.acronym }}
 					</td>
 					<td>
-						<button class="btn" type="button">
+						<a
+							:href="`read/${resource.id}`"
+							class="read-resource-btn btn"
+							type="button">
 							edit
-						</button>
+						</a>
 					</td>
 				</tr>
 			</template>
@@ -42,6 +45,14 @@
 						{{
 							resource.meta ? resource.meta.userCount : ""
 						}} users
+					</td>
+					<td>
+						<a
+							:href="`read/${resource.id}`"
+							class="btn"
+							type="button">
+							edit
+						</a>
 					</td>
 				</tr>
 			</template>

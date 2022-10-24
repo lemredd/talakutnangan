@@ -65,6 +65,12 @@ export interface UserFilter<T extends number|string = string> extends Serializab
 	}
 }
 
+export interface PostFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		postID: T
+	}
+}
+
 export interface EmployeeScheduleDayFilter extends Serializable {
 	filter: {
 		/**
@@ -151,11 +157,19 @@ export interface Sort extends Serializable {
 }
 
 /**
+ * Expected shape of the common page offset
+ */
+export interface PageOffset {
+	page: {
+		offset: number
+	}
+}
+
+/**
  * Expected shape of the common page options
  */
-export interface Page {
+export type Page = PageOffset & {
 	page: {
-		offset: number,
 		limit: number
 	}
 }
@@ -212,3 +226,7 @@ export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DateTimeRangeFilter
 	& UserFilter<T>
+
+export type CommentQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& PostFilter<T>

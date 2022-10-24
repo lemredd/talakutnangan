@@ -9,7 +9,7 @@
 				<template #after-dropdown>
 					<button
 						type="button"
-						class="material-icons"
+						class="add-btn material-icons"
 						@click="addCurrentOption">
 						add
 					</button>
@@ -32,7 +32,7 @@
 				</button>
 			</li>
 			<li v-if="!selectedOptions.length" class="no-options">
-				<small>There are no roles selected</small>
+				<small>There are no options selected</small>
 			</li>
 		</ul>
 	</div>
@@ -72,12 +72,7 @@ import subtract from "$/array/subtract"
 
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
-const {
-	options,
-	modelValue,
-	label,
-	placeholder
-} = defineProps<{
+const props = defineProps<{
 	options: readonly OptionInfo[]
 	modelValue: string[]
 	label: string
@@ -85,11 +80,16 @@ const {
 }>()
 
 const selectedOptions = computed<OptionInfo[]>(() => {
-	const chosenOptions = options.filter(option => modelValue.includes(option.value)) as OptionInfo[]
+	const chosenOptions = props.options.filter(
+		option => props.modelValue.includes(option.value)
+	) as OptionInfo[]
 	return chosenOptions
 })
 
-const remainingOptions = computed<OptionInfo[]>(() => subtract(options, selectedOptions.value))
+
+const remainingOptions = computed<OptionInfo[]>(
+	() => subtract(props.options, selectedOptions.value)
+)
 
 const currentOption = ref<string>(remainingOptions.value[0].value)
 
@@ -100,12 +100,12 @@ const emit = defineEmits<CustomEvents>()
 
 function addCurrentOption() {
 	emit("update:modelValue", [
-		...modelValue,
+		...props.modelValue,
 		currentOption.value
 	])
 }
 
 function removeOption(removedValue: string) {
-	emit("update:modelValue", modelValue.filter(value => value !== removedValue))
+	emit("update:modelValue", props.modelValue.filter(value => value !== removedValue))
 }
 </script>
