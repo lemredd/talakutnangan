@@ -1,5 +1,9 @@
 import type { FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type {
+	CommentVoteRelationships,
+	CommentVoteAttributes
+} from "$/types/documents/comment_vote"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -77,7 +81,13 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new Manager(request)
-		const commentInfo = await manager.create(request.body.data.attributes)
+		const attributes = request.body.data.attributes as CommentVoteAttributes
+		const data = request.body.data as CommentVoteRelationships
+		const commentInfo = await manager.create({
+			...attributes,
+			"commentID": Number(data.relationships.comment.data.id),
+			"userID": Number(data.relationships.user.data.id)
+		})
 
 		return new CreatedResponseInfo(commentInfo)
 	}
