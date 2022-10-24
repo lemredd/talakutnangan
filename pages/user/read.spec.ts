@@ -138,7 +138,7 @@ describe("Page: user/read", () => {
 			}
 		})
 		const userNameInput = wrapper.find(".user-name input")
-		const editBtn = wrapper.find(".user-name button")
+		const editBtn = wrapper.find(".user-name .edit-button")
 		const selectableRoles = wrapper.find(".selectable-roles select")
 		const addSelectedRoleBtn = wrapper.find(".add-btn")
 		const selectedDepartment = wrapper.find(".selectable-department select")
@@ -174,7 +174,8 @@ describe("Page: user/read", () => {
 		jest.useFakeTimers()
 		await editBtn.trigger("click")
 		await userNameInput.setValue("New Name")
-		await editBtn.trigger("click")
+		const saveBtn = wrapper.find(".user-name .save-button")
+		await saveBtn.trigger("click")
 		await selectableRoles.setValue(roles.data[1].id)
 		await addSelectedRoleBtn.trigger("click")
 		await selectedDepartment.setValue(departments.data[1].id)
