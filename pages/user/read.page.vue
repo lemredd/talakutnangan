@@ -201,6 +201,7 @@ async function fetchDepartmentsIncrementally(): Promise<void> {
 
 		const meta = body.meta as ResourceCount
 		if (departments.value.length < meta.count) {
+			console.log("requests department\n\n\n")
 			return fetchDepartmentsIncrementally()
 		}
 

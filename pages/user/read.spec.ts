@@ -6,7 +6,7 @@ import Page from "./read.page.vue"
 import Stub from "$/singletons/stub"
 
 describe("Page: user/read", () => {
-	it("can populate fields using pre-loaded data", () => {
+	it("can populate fields using pre-loaded data", async() => {
 		const roles = {
 			"data": [
 				{
@@ -48,6 +48,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -61,6 +73,8 @@ describe("Page: user/read", () => {
 				}
 			}
 		})
+
+		await flushPromises()
 		const userNameInput = wrapper.find(".user-name input").element as HTMLInputElement
 		const selectedRoles = wrapper.findAll(".selected-options li")
 		const selectedDepartment
@@ -74,6 +88,19 @@ describe("Page: user/read", () => {
 	})
 
 	it("can update user information", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
@@ -137,6 +164,8 @@ describe("Page: user/read", () => {
 				}
 			}
 		})
+
+		await flushPromises()
 		const userNameInput = wrapper.find(".user-name input")
 		const editBtn = wrapper.find(".user-name .edit-button")
 		const selectableRoles = wrapper.find(".selectable-roles select")
@@ -193,6 +222,8 @@ describe("Page: user/read", () => {
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [
+			,
+			,
 			[ requestforUserInfo ],
 			[ requestForAttachedRoles ],
 			[ requestForAttachedDepartment ]
@@ -220,6 +251,18 @@ describe("Page: user/read", () => {
 	})
 
 	it.skip("can catch all errors that have occured", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
@@ -283,6 +326,8 @@ describe("Page: user/read", () => {
 				}
 			}
 		})
+
+		await flushPromises()
 		const userNameInput = wrapper.find(".user-name input")
 		const editBtn = wrapper.find(".user-name button")
 		const selectableRoles = wrapper.find(".selectable-roles select")
