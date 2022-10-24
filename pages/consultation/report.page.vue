@@ -14,6 +14,7 @@
 				<span>consultations</span>
 				<li
 					v-for="consultation in sumEntry.meta.consultations.data"
+					class="consultation"
 					:key="consultation.id">
 					#{{ consultation.id }}
 					{{ consultation.reason }}
