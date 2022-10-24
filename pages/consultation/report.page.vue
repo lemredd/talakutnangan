@@ -50,6 +50,7 @@ function convertToFullTimeString(timeInMilliseconds: number) {
 		seconds
 	} = convertMStoTimeObject(timeInMilliseconds)
 
-	return `${hours} hours ${minutes} minutes ${Math.floor(seconds)} seconds`
+	// eslint-disable-next-line max-len
+	return `${Math.abs(hours)} hours ${Math.abs(minutes)} minutes ${Math.abs(Math.floor(seconds))} seconds`
 }
 </script>
