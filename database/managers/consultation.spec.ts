@@ -153,6 +153,11 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"data": [
 				{
+					"attributes": {
+						"email": consulter.email,
+						"kind": "student",
+						"name": consulter.name
+					},
 					"id": String(consulter.id),
 					"meta": {
 						"consultations": await new Factory().deserialize(
@@ -220,6 +225,11 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"data": [
 				{
+					"attributes": {
+						"email": consulter.email,
+						"kind": "student",
+						"name": consulter.name
+					},
 					"id": String(consulter.id),
 					"meta": {
 						"consultations": await new Factory().deserialize(

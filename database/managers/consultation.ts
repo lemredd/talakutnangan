@@ -287,16 +287,19 @@ export default class extends BaseManager<
 						consultation.startedAt as Date
 					)
 
-					const serializedUser
-					= await Serializer.serialize(user, userTransformer) as Serializable
-					serializedUser.meta = {
+					const serializedUser = await Serializer.serialize(
+						user,
+						userTransformer
+					) as Serializable
+					const serializedUserData = serializedUser.data as Serializable
+					serializedUserData.meta = {
 						"consultations": [
 							consultation
 						],
 						"totalMillisecondsConsumed": millisecond
 					} as unknown as Serializable
 
-					return serializedUser
+					return serializedUserData
 				}).reduce(async(previousSums, currentSum: Promise<any>) => {
 					const waitedPreviousSums = await previousSums
 					const waitedCurrentSums = await currentSum
