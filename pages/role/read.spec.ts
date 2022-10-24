@@ -3,7 +3,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$/singletons/request_environment"
-import RoleFactory from "~/factories/role"
+import Factory from "~/factories/role"
 import {
 	tag,
 	user,
@@ -18,7 +18,7 @@ import Page from "./read.page.vue"
 
 describe("UI Page: Read resource by ID", () => {
 	it("render properly", async() => {
-		const sampleResource = await new RoleFactory()
+		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
 		.semesterFlags(semester.generateMask("view"))
@@ -68,7 +68,7 @@ describe("UI Page: Read resource by ID", () => {
 	})
 
 	it("should uncheck dependent permissions", async() => {
-		const sampleResource = await new RoleFactory()
+		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
 		.semesterFlags(semester.generateMask("view"))
@@ -131,7 +131,7 @@ describe("UI Page: Read resource by ID", () => {
 	})
 
 	it("should uncheck externally dependent permissions", async() => {
-		const sampleResource = await new RoleFactory()
+		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
 		.semesterFlags(semester.generateMask("view"))
@@ -171,7 +171,7 @@ describe("UI Page: Read resource by ID", () => {
 	})
 
 	it("should check external dependency permissions", async() => {
-		const sampleResource = await new RoleFactory()
+		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
 		.semesterFlags(semester.generateMask("view"))
@@ -210,7 +210,7 @@ describe("UI Page: Read resource by ID", () => {
 	})
 
 	it("can edit role name", async() => {
-		const sampleResource = await new RoleFactory()
+		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
 		.semesterFlags(semester.generateMask("view"))
@@ -244,7 +244,7 @@ describe("UI Page: Read resource by ID", () => {
 		))
 		.auditTrailFlags(0)
 		.deserializedOne(true)
-		const newSampleModel = await new RoleFactory().makeOne()
+		const newSampleModel = await new Factory().makeOne()
 
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
@@ -296,6 +296,126 @@ describe("UI Page: Read resource by ID", () => {
 		})
 	})
 
-	it.todo("Should be archivable")
-	it.todo("Should be restorable")
+	it("Should be archivable", async() => {
+		const sampleResource = await new Factory()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"tag"
+		))
+		.commentFlags(comment.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"vote"
+		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+		.userFlags(user.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope"
+		))
+		.auditTrailFlags(0)
+		.deserializedOne(true)
+		const newSampleModel = await new Factory().makeOne()
+
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"role": sampleResource
+						}
+					}
+				}
+			}
+		})
+		const archiveBtn = wrapper.find(".archive-btn")
+		await archiveBtn.trigger("click")
+		await flushPromises()
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "DELETE")
+		expect(request).toHaveProperty("url", "/api/role")
+	})
+
+	it("Should be restorable", async() => {
+		const sampleModel = await new Factory()
+		.departmentFlags(department.generateMask("view"))
+		.roleFlags(role.generateMask("view"))
+		.semesterFlags(semester.generateMask("view"))
+		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"tag"
+		))
+		.commentFlags(comment.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope",
+			"vote"
+		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
+		.userFlags(user.generateMask(
+			"view",
+			"create",
+			"update",
+			"archiveAndRestore",
+			"readDepartmentScope",
+			"writeDepartmentScope"
+		))
+		.auditTrailFlags(0)
+		.insertOne()
+
+		await sampleModel.destroy()
+		sampleModel.deletedAt = new Date("2022-10-20 10:00")
+		const sampleResource = await new Factory().deserialize(sampleModel)
+
+		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
+
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"role": sampleResource
+						}
+					}
+				}
+			}
+		})
+		const restoreBtn = wrapper.find(".restore-btn")
+		await restoreBtn.trigger("click")
+		await flushPromises()
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", "/api/role")
+	})
 })
