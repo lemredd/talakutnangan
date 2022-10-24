@@ -30,42 +30,12 @@
 				<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
 					storage
 				</button>
-				<Overlay
-					:is-shown="isFileRepoOverlayShown"
-					class="action-taken"
-					@close="hideFileRepoOverlay">
-					<template #header>
-						<div class="tabs">
-							<button class="button-file" @click="switchTab">
-								File
-							</button>
-							<button class="button-picture" @click="switchTab">
-								Pictures
-							</button>
-						</div>
-					</template>
 
-					<template #default>
-						<!-- show list of files -->
-						<div class="sent-files overflow-y-hidden">
-							<div class="file-repo flex <sm:flex-col">
-								<div class="file-list flex-1">
-									<li
-										v-for="n in 100"
-										:key="n"
-										class="file">
-										file.extension
-									</li>
-								</div>
-
-								<div v-if="mustShowPreview" class="file-repo-preview flex-[2]">
-									hello world
-								</div>
-							</div>
-							<!-- show selected file to preview -->
-						</div>
-					</template>
-				</Overlay>
+				<FileOverlay
+					:is-file-repo-overlay-shown="isFileRepoOverlayShown"
+					:must-show-preview="mustShowPreview"
+					@hide-file-repo-overlay="hideFileRepoOverlay"
+					@switch-tab="switchTab"/>
 
 				<Dropdown
 					:is-dropdown-shown="isHeaderControlDropdownShown"
@@ -271,6 +241,7 @@ import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
+import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 
 const fetcher = new ConsultationFetcher()
 
@@ -317,9 +288,7 @@ const {
 } = makeSwitch(false)
 
 const remainingMilliseconds = ref<number>(0)
-const remainingTime = computed<FullTime>(
-	() => convertMStoTimeObject(remainingMilliseconds.value)
-)
+const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
