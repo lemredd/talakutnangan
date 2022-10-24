@@ -35,9 +35,10 @@
 import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
-import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
+import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
+
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
+import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -45,7 +46,7 @@ const pageContext = inject("pageContext") as PageContext<
 >
 const { pageProps } = pageContext
 const totalMillisecondsConsumed
-= pageProps.totalMillisecondsConsumed as UserIdentifierListWithTimeConsumedDocument
+= pageProps.totalMillisecondsConsumed as DeserializedUserListWithTimeConsumedDocument
 
 function convertToFullTimeString(timeInMilliseconds: number) {
 	const {
