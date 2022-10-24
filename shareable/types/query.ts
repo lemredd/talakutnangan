@@ -65,6 +65,12 @@ export interface UserFilter<T extends number|string = string> extends Serializab
 	}
 }
 
+export interface PostFilter<T extends number|string = string> extends Serializable {
+	filter: {
+		postID: T
+	}
+}
+
 export interface EmployeeScheduleDayFilter extends Serializable {
 	filter: {
 		/**
@@ -220,3 +226,7 @@ export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DateTimeRangeFilter
 	& UserFilter<T>
+
+export type CommentQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& PostFilter<T>
