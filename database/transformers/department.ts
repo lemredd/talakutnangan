@@ -13,7 +13,8 @@ export default class extends Transformer<Department, void> {
 			"id",
 			"acronym",
 			"fullName",
-			"mayAdmit"
+			"mayAdmit",
+			"deletedAt"
 		])
 
 		return safeObject
