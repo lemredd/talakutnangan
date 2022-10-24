@@ -19,7 +19,12 @@
 					#{{ consultation.id }}
 					{{ consultation.reason }}
 					{{
-						convertToFullTimeString(calculateMillisecondDifference(consultation.finishedAt, consultation.startedAt))
+						convertToFullTimeString(
+							calculateMillisecondDifference(
+								consultation.finishedAt!,
+								consultation.startedAt!
+							)
+						)
 					}}
 				</li>
 			</ul>
