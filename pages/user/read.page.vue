@@ -1,11 +1,27 @@
 <template>
-	<form @submit.prevent="updateRole">
+	<form @submit.prevent="updateAndReload">
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
 				v-model:status="nameFieldStatus"
 				label="User Name"
 				type="text"/>
+		</div>
+
+		<div class="roles">
+			<MultiSelectableOptionsField
+				v-model="userRoleIDs"
+				class="selectable-roles"
+				label="Roles"
+				:options="selectableRoles"/>
+		</div>
+
+		<div class="department">
+			<SelectableOptionsField
+				v-model="userDepartment"
+				class="selectable-department"
+				label="Department"
+				:options="selectableDepartments"/>
 		</div>
 
 		<div class="controls flex justify-between">
@@ -23,7 +39,7 @@
 				v-else
 				type="button"
 				class="btn btn-primary"
-				@click="archiveRole">
+				@click="archiveUser">
 				Archive
 			</button>
 		</div>
@@ -38,64 +54,90 @@
 import {
 	ref,
 	inject,
-	computed,
-	onMounted
+	computed
 } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { OptionInfo } from "$@/types/component"
+import type {
+	DeserializedRoleResource
+} from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
-type RequiredExtraProps = "user"
+type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const user = ref<DeserializedUserDocument>(
-	pageProps.user as DeserializedUserDocument
+const user = ref(pageProps.user)
+
+const { roles } = pageProps
+const userRoleIDs = ref(
+	user.value.data.roles?.data.map(role => role.id) as string[]
 )
+const selectableRoles = roles.data.map(
+	(role: DeserializedRoleResource) => ({
+		"label": role.name,
+		"value": role.id
+	})
+) as OptionInfo[]
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const nameFieldStatus = ref<FieldStatus>("locked")
 
-let rawFetcher: Fetcher|null = null
+const { departments } = pageProps
+const userDepartment = ref(user.value.data.department?.data.id as string)
+const selectableDepartments = departments.data.map(department => ({
+	"label": department.fullName,
+	"value": department.id
+}))
 
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
+const fetcher = new Fetcher()
 
-	throw new Error("User cannot be processed to server yet")
-}
-
-async function updateRole() {
-	await fetcher().update(user.value.data.id, {
+async function updateUser() {
+	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
 		"kind": user.value.data.kind,
 		"name": user.value.data.name,
-		"prefersDark": user.value.data.prefersDark
+		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then(({ body, status }) => {
-		console.log(body, status)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
+	})
+	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
+	})
+	await fetcher.updateDepartment(user.value.data.id, userDepartment.value)
+	await new Promise(resolve => {
+		setTimeout(resolve, 1000)
 	})
 }
 
-async function archiveRole() {
-	await fetcher().archive([ user.value.data.id ])
+function updateAndReload() {
+	updateUser()
+	.then(() => assignPath(`/user/read/${user.value.data.id}`))
+	.catch(error => console.log(error))
+}
+
+
+async function archiveUser() {
+	await fetcher.archive([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
 
 async function restoreUser() {
-	await fetcher().restore([ user.value.data.id ])
+	await fetcher.restore([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>
