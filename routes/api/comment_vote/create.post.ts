@@ -8,9 +8,9 @@ import type {
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Manager from "%/managers/comment_vote"
-import { VoteKindValues } from "$/types/database"
 import CommentManager from "%/managers/comment"
 import JSONController from "!/controllers/json"
+import { VoteKindValues } from "$/types/database"
 import CreatedResponseInfo from "!/response_infos/created"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -56,7 +56,7 @@ export default class extends JSONController {
 				"ClassName": CommentManager,
 				"isArray": false,
 				"relationshipName": "comment",
-				"typeName": "post",
+				"typeName": "comment",
 				"validator": exists
 			},
 			{
