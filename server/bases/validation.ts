@@ -28,7 +28,7 @@ export default abstract class extends RequestFilter {
 	async validate(body: GeneralObject, request: Request): Promise<void> {
 		let errorInfos: any = null
 
-		Log.success("middleware", `Validating in ${request.url}`)
+		Log.trace("middleware", `Validating in ${request.url}`)
 		try {
 			const validationRules = this.validationRules(request)
 			const sanitizedInputs = await validate(validationRules, request, body)

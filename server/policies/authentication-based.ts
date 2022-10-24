@@ -3,6 +3,7 @@ import type { AuthenticationOptions } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { Request, AuthenticatedIDRequest } from "!/types/dependent"
 
+import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import URLMaker from "$!/singletons/url_maker"
 import deserialize from "$/object/deserialize"
@@ -30,6 +31,8 @@ export default class extends Policy {
 	}
 
 	authorize(request: Request | AuthenticatedIDRequest): Promise<void> {
+		Log.trace("middleware", `Authorizing in ${request.url}`)
+
 		if (request.isAuthenticated() !== this.targetAuthenticationState) {
 			const reason = this.targetAuthenticationState
 				? "The user must be logged in to invoke the action."
