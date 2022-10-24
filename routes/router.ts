@@ -2,18 +2,18 @@ import Router from "!/bases/router"
 import TestRouter from "!%/t/router"
 import DevRouter from "!%/dev/router"
 import { Environment } from "$/types/server"
-import EnhancerRouter from "!%/enhancer/router"
 import { controllers as APIControllers } from "!%/api/router"
+import { controllers as enhancerControllers } from "!%/enhancer/router"
+
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
 export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(instantiateSimultaneously(APIControllers))
-
-		this.useRoutersAsync(instantiateSimultaneously([
-			EnhancerRouter
+		this.useControllersAsync(instantiateSimultaneously([
+			...APIControllers,
+			...enhancerControllers
 		]))
 
 		switch (this.environment) {
