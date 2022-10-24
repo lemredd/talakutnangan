@@ -1,7 +1,8 @@
 import Router from "!/bases/router"
 import GetIndex from "!%/enhancer/index.get"
+import ControllerLike from "!/bases/controller-likes/controller"
 import { controllers as userControllers } from "!%/enhancer/user/router"
-import RoleRouter from "!%/enhancer/role/router"
+import { controllers as roleControllers } from "!%/enhancer/role/router"
 import PostRouter from "!%/enhancer/post/router"
 import ForumRouter from "!%/enhancer/forum/router"
 import DepartmentRouter from "!%/enhancer/department/router"
@@ -12,11 +13,13 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(instantiateSimultaneously(userControllers))
+		this.useControllersAsync(instantiateSimultaneously([
+			...userControllers,
+			...roleControllers
+		] as (new() => ControllerLike)[]))
 
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
-				new RoleRouter(),
 				new PostRouter(),
 				new ForumRouter(),
 				new DepartmentRouter(),
