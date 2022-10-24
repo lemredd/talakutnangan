@@ -47,8 +47,8 @@ describe("PATCH /api/user/:id/relationships/role", () => {
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 		const { count, rows } = await AttachedRole.findAndCountAll()
-		expect(count).toBe(4)
-		expect(rows).toHaveProperty("2.roleID", roles[1].id)
-		expect(rows).toHaveProperty("3.roleID", roles[2].id)
+		expect(count).toBe(3)
+		expect(rows).toHaveProperty("1.roleID", roles[1].id)
+		expect(rows).toHaveProperty("2.roleID", roles[2].id)
 	})
 })
