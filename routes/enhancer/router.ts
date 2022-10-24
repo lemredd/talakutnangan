@@ -1,31 +1,22 @@
-import Router from "!/bases/router"
+import ControllerLike from "!/bases/controller-like"
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
 import GetIndex from "!%/enhancer/index.get"
-import UserRouter from "!%/enhancer/user/router"
-import RoleRouter from "!%/enhancer/role/router"
-import PostRouter from "!%/enhancer/post/router"
-import ForumRouter from "!%/enhancer/forum/router"
-import DepartmentRouter from "!%/enhancer/department/router"
-import UserSettingsRouter from "!%/enhancer/settings/router"
-import ConsultationRouter from "!%/enhancer/consultation/router"
+import { controllers as userControllers } from "!%/enhancer/user/router"
+import { controllers as roleControllers } from "!%/enhancer/role/router"
+import { controllers as postControllers } from "!%/enhancer/post/router"
+import { controllers as forumControllers } from "!%/enhancer/forum/router"
+import { controllers as departmentControllers } from "!%/enhancer/department/router"
+import { controllers as userSettingsControllers } from "!%/enhancer/settings/router"
+import { controllers as consultationControllers } from "!%/enhancer/consultation/router"
 
-export default class extends Router {
-	constructor() {
-		super()
-
-		this.useRoutersAsync(new Promise(resolve => {
-			resolve([
-				new UserRouter(),
-				new RoleRouter(),
-				new PostRouter(),
-				new ForumRouter(),
-				new DepartmentRouter(),
-				new ConsultationRouter(),
-				new UserSettingsRouter()
-			])
-		}))
-
-		this.useControllersAsync(new Promise(resolve => {
-			resolve([ new GetIndex() ])
-		}))
-	}
-}
+export const controllers: (new() => ControllerLike)[] = [
+	...userControllers,
+	...roleControllers,
+	...postControllers,
+	...forumControllers,
+	...departmentControllers,
+	...consultationControllers,
+	...userSettingsControllers,
+	GetIndex
+]
