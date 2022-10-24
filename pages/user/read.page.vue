@@ -24,22 +24,6 @@
 				:options="selectableDepartments"/>
 		</div>
 
-		<div class="roles">
-			<MultiSelectableOptionsField
-				v-model="userRoleIDs"
-				class="selectable-roles"
-				label="Roles"
-				:options="selectableRoles"/>
-		</div>
-
-		<div class="department">
-			<SelectableOptionsField
-				v-model="userDepartment"
-				class="selectable-department"
-				label="Department"
-				:options="selectableDepartments"/>
-		</div>
-
 		<div class="controls flex justify-between">
 			<button type="submit" class="btn btn-primary">
 				Submit
