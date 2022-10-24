@@ -16,9 +16,9 @@ import CreatedResponseInfo from "!/response_infos/created"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
-	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-	CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
 import string from "!/validators/base/string"
@@ -33,9 +33,9 @@ export default class extends JSONController {
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-			CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-			CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 		])
 	}
 
