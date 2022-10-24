@@ -329,6 +329,14 @@ const {
 } = makeSwitch(false)
 const actionTaken = ref("")
 
+const fileRepoTab = ref("files")
+const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
+function switchTab(event: Event) {
+	const button = event.target as HTMLButtonElement
+	const { innerText } = button
+
+	fileRepoTab.value = innerText.toLocaleLowerCase()
+}
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
