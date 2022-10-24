@@ -22,11 +22,13 @@ import {
 } from "$/permissions/comment_combinations"
 
 import string from "!/validators/base/string"
+import not from "!/validators/comparison/not"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -55,6 +57,22 @@ export default class extends JSONController {
 			{
 				"ClassName": CommentManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"not": {
+								"constraints": {
+									"sameAttribute": {
+										"columnName": "userID",
+										"pointer": "data.relationships.user.data.id"
+									}
+								},
+								"pipes": [ existWithSameAttribute ]
+							}
+						},
+						"pipes": [ not ]
+					}
+				},
 				"relationshipName": "comment",
 				"typeName": "comment",
 				"validator": exists
