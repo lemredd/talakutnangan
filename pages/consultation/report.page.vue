@@ -3,6 +3,9 @@
 		<li
 			v-for="sumEntry in totalMillisecondsConsumed.data"
 			:key="sumEntry.id">
+			<h3 class="sum-entry-owner">
+				{{ sumEntry.name }} <small>({{ sumEntry.email }})</small>
+			</h3>
 			<div class="milliseconds">
 				<span>Time consumed:</span>
 				{{ convertToFullTimeString(sumEntry.meta.totalMillisecondsConsumed) }}
