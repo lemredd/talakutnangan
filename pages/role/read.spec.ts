@@ -209,7 +209,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(castViewCommentPermissionCheckbox.checked).toBeTruthy()
 	})
 
-	it.skip("can edit role name", async() => {
+	it("can edit role name", async() => {
 		const sampleResource = await new RoleFactory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
@@ -261,11 +261,13 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		const roleName = wrapper.find("input[type='text']")
-		const editButton = wrapper.find("input[type='text'] + button")
+		const editButton = wrapper.find(".edit-button")
 		const submit = wrapper.find("[type='submit']")
 
 		await editButton.trigger("click")
 		await roleName.setValue(newSampleModel.name)
+		const saveButton = wrapper.find(".save-button")
+		await saveButton.trigger("click")
 		await submit.trigger("submit")
 		await flushPromises()
 
@@ -287,6 +289,9 @@ describe("UI Page: Read resource by ID", () => {
 				},
 				id,
 				type
+			},
+			"meta": {
+				"password": ""
 			}
 		})
 	})
