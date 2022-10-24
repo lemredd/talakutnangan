@@ -15,26 +15,28 @@ import GetMakeUnverifiedUserRoute from "!%/dev/make_unverified_user.get"
 import GetNewUserNotificationRoute from "!%/dev/new_user_notification.get"
 import GetMakeTestConsultationRoute from "!%/dev/make_test_consultation.get"
 
+import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
+
 export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllers([
-			new GetEmailsRoute(),
-			new GetServerInfoRoute(),
-			new GetLogInAsDeanRoute(),
-			new GetLogInAsAdminRoute(),
-			new GetLogInAsStudentRoute(),
-			new GetLogInAsSecretaryRoute(),
-			new GetLogInAsServiceHeadRoute(),
-			new GetLogInAsDefaultProfessorRoute(),
+		this.useControllersAsync(instantiateSimultaneously([
+			GetEmailsRoute,
+			GetServerInfoRoute,
+			GetLogInAsDeanRoute,
+			GetLogInAsAdminRoute,
+			GetLogInAsStudentRoute,
+			GetLogInAsSecretaryRoute,
+			GetLogInAsServiceHeadRoute,
+			GetLogInAsDefaultProfessorRoute,
 
-			new GetMakeTestPostRoute(),
-			new GetSampleUserListRoute(),
-			new GetSampleServerErrorRoute(),
-			new GetMakeUnverifiedUserRoute(),
-			new GetNewUserNotificationRoute(),
-			new GetMakeTestConsultationRoute()
-		])
+			GetMakeTestPostRoute,
+			GetSampleUserListRoute,
+			GetSampleServerErrorRoute,
+			GetMakeUnverifiedUserRoute,
+			GetNewUserNotificationRoute,
+			GetMakeTestConsultationRoute
+		]))
 	}
 }
