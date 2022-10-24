@@ -6,8 +6,8 @@ import { controllers as roleControllers } from "!%/enhancer/role/router"
 import { controllers as postControllers } from "!%/enhancer/post/router"
 import { controllers as forumControllers } from "!%/enhancer/forum/router"
 import { controllers as departmentControllers } from "!%/enhancer/department/router"
+import { controllers as consultationControllers } from "!%/enhancer/consultation/router"
 import UserSettingsRouter from "!%/enhancer/settings/router"
-import ConsultationRouter from "!%/enhancer/consultation/router"
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 export default class extends Router {
 	constructor() {
@@ -18,13 +18,13 @@ export default class extends Router {
 			...roleControllers,
 			...postControllers,
 			...forumControllers,
-			...departmentControllers
+			...departmentControllers,
+			...consultationControllers,
 			GetIndex
 		] as (new() => ControllerLike)[]))
 
 		this.useRoutersAsync(new Promise(resolve => {
 			resolve([
-				new ConsultationRouter(),
 				new UserSettingsRouter()
 			])
 		}))
