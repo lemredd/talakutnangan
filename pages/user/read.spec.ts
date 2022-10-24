@@ -170,6 +170,8 @@ describe("Page: user/read", () => {
 				"type": updatedUser.data.department.data.type
 			}
 		}
+
+		jest.useFakeTimers()
 		await editBtn.trigger("click")
 		await userNameInput.setValue("New Name")
 		await editBtn.trigger("click")
@@ -177,7 +179,16 @@ describe("Page: user/read", () => {
 		await addSelectedRoleBtn.trigger("click")
 		await selectedDepartment.setValue(departments.data[1].id)
 		await submitBtn.trigger("submit")
+
+		// update user info and timeout for 1s
 		await flushPromises()
+		jest.advanceTimersByTime(1000)
+		// update user roles and timeout for 1s
+		await flushPromises()
+		jest.advanceTimersByTime(1000)
+		// update user department and timeout for 1s
+		await flushPromises()
+		jest.advanceTimersByTime(1000)
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [
