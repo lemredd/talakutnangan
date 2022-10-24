@@ -37,9 +37,9 @@ export default class extends DoubleBoundJSONController {
 			]),
 			new ScopeBasedPolicy(
 				permissionGroup,
-				UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
-				UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
 				UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
+				UPDATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+				UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
 				(request: AuthenticatedRequest) => Promise.resolve(
 					deserialize(request.user) as DeserializedUserDocument<"roles"|"department">
 				)

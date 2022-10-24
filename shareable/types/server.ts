@@ -11,6 +11,10 @@ import type { DeserializedChatMessageListDocument } from "$/types/documents/chat
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedPostDocument, DeserializedPostListDocument } from "$/types/documents/post"
 import type {
+	DeserializedCommentDocument,
+	DeserializedCommentListDocument
+} from "$/types/documents/comment"
+import type {
 	DeserializedDepartmentDocument,
 	DeserializedDepartmentListDocument
 } from "$/types/documents/department"
@@ -104,6 +108,9 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	posts: OptionalPageProps<T, DeserializedPostListDocument>
 	post: OptionalPageProps<T, DeserializedPostDocument>
+
+	comments: OptionalPageProps<T, DeserializedCommentListDocument>
+	comment: OptionalPageProps<T, DeserializedCommentDocument>
 }
 
 export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>

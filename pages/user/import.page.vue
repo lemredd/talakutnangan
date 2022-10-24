@@ -169,27 +169,6 @@ function importData(event: Event) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
-				// TODO(others): Generalize replacing substring using regex
-				.replace(
-					/^(The |Field )/u,
-					""
-				)
-				.replace(
-					/( in field )?"meta\.importedCSV\.\d+\.(email|name|studentNumber)?"/u,
-					" is a $2"
-				)
-				.replace(
-					/^ is a studentNumber/u,
-					"Student number"
-				)
-				.replace(
-					/must match ".+?"/u,
-					" must be valid"
-				)
-				.replace(
-					/ does exists in the database"/u,
-					" that already exists"
-				)
 
 				return readableDetail
 			})

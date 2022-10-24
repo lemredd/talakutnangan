@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable vue/sort-keys */
 import { ref } from "vue"
 import { flushPromises, shallowMount } from "@vue/test-utils"
@@ -31,7 +32,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -60,6 +64,7 @@ describe("Page: settings/profile", () => {
 			expect(displayNameField.html()).toContain(user.data.name)
 			expect(darkModeCheckbox.value).toBe("on")
 		})
+
 		it("can display profile picture", async() => {
 			const sampleURL = "/images/profile.png"
 			const profilePicture = {
@@ -76,7 +81,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -103,6 +111,7 @@ describe("Page: settings/profile", () => {
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
+
 		it("can display signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
@@ -119,7 +128,10 @@ describe("Page: settings/profile", () => {
 			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -146,6 +158,7 @@ describe("Page: settings/profile", () => {
 
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
+
 		it("can not display signature user is admin", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
@@ -162,7 +175,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -201,7 +217,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne()
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -209,7 +228,7 @@ describe("Page: settings/profile", () => {
 						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
 							}
 						}
 					},
@@ -220,7 +239,7 @@ describe("Page: settings/profile", () => {
 			})
 
 			const displayNameField = wrapper.find(".input-container")
-			const displayNameBtn = displayNameField.find("button")
+			const editNameButton = displayNameField.find(".edit-button")
 			const displayNameInput = displayNameField.find("input")
 
 			fetchMock.mockResponseOnce(
@@ -234,9 +253,10 @@ describe("Page: settings/profile", () => {
 				{ "status": RequestEnvironment.status.OK }
 			)
 
-			await displayNameBtn.trigger("click")
+			await editNameButton.trigger("click")
 			await displayNameInput.setValue("Something")
-			await displayNameBtn.trigger("click")
+			const saveNameButton = displayNameField.find(".save-button")
+			await saveNameButton.trigger("click")
 			await flushPromises()
 
 			const displayNameInputElement = displayNameInput.getRootNodes()[0] as HTMLInputElement
@@ -246,6 +266,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
+
 		it("can create profile picture", async() => {
 			const sampleURL = "/images/profile.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
@@ -257,7 +278,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -265,7 +289,7 @@ describe("Page: settings/profile", () => {
 						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
 							}
 						}
 					},
@@ -308,6 +332,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
+
 		it("can create signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const department = await new DepartmentFactory().mayNotAdmit()
@@ -319,7 +344,10 @@ describe("Page: settings/profile", () => {
 			.beReachableEmployee()
 			.attach(role)
 			.deserializedOne(true)
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -327,7 +355,7 @@ describe("Page: settings/profile", () => {
 						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
 							}
 						}
 					},
@@ -370,6 +398,7 @@ describe("Page: settings/profile", () => {
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 		})
+
 		it("can edit dark mode preference", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
@@ -380,7 +409,10 @@ describe("Page: settings/profile", () => {
 			.beUnreachableEmployee()
 			.attach(role)
 			.deserializedOne(false, {} as unknown as void, new UserProfileTransformer())
-			const userProfile = user as DeserializedUserProfile<"roles"|"department">
+			const userProfile = user as DeserializedUserProfile<
+				"roles"|"department"|"employeeSchedules"
+			>
+			userProfile.data.employeeSchedules = { "data": [] }
 
 			const wrapper = shallowMount(Page, {
 				"global": {
@@ -388,7 +420,7 @@ describe("Page: settings/profile", () => {
 						[BODY_CLASSES]: ref([]),
 						"pageContext": {
 							"pageProps": {
-								userProfile
+								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
 							}
 						}
 					},

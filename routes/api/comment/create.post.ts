@@ -1,10 +1,11 @@
 import type { Rules, FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type { CommentAttributes, CommentRelationships } from "$/types/documents/comment"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/comment"
 import PostManager from "%/managers/post"
 import UserManager from "%/managers/user"
-import Manager from "%/managers/comment"
 import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
 
@@ -49,7 +50,7 @@ export default class extends JSONController {
 			"pipes": [ nullable, same ]
 		}
 
-		const attributes = {
+		const attributes: FieldRules = {
 			"approvedAt": pureNull,
 			"content": {
 				"constraints": {
@@ -79,13 +80,14 @@ export default class extends JSONController {
 			},
 			{
 				"ClassName": Manager,
-				"isOptional": true,
 				"isArray": false,
-				"relationshipName": "comment",
+				"isOptional": true,
+				"relationshipName": "parentComment",
 				"typeName": "comment",
 				"validator": exists
 			}
 		])
+
 
 		return makeResourceDocumentRules(
 			"comment",
@@ -100,7 +102,16 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new Manager(request)
-		const commentInfo = await manager.create(request.body.data.attributes)
+		const attributes = request.body.data.attributes as CommentAttributes<"deserialized">
+		const relationships = request.body.data.relationships as CommentRelationships<
+			"create"
+		>["relationships"]
+		const commentInfo = await manager.create({
+			...attributes,
+			"parentCommentID": relationships.parentComment?.data.id ?? null,
+			"postID": relationships.post.data.id,
+			"userID": relationships.user.data.id
+		})
 
 		return new CreatedResponseInfo(commentInfo)
 	}

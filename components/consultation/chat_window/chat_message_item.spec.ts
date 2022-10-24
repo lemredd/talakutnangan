@@ -38,6 +38,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,
@@ -74,7 +75,6 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			expect(messageItem.find(".self").exists()).toBeTruthy()
 			expect(messageItemContent.text()).toContain(textValue)
 			expect(messageItemProfilePicture.exists()).toBeTruthy()
-			expect(messageItemProfilePicture.attributes("title")).toEqual(user.data.name)
 		})
 
 		it("should show other's text message properly", () => {
@@ -117,6 +117,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,
@@ -185,6 +186,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,
@@ -262,6 +264,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,
@@ -331,6 +334,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,
@@ -398,6 +402,7 @@ describe("Component: consultation/chat_window/chat_message_item", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
+						[CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION]: chatMessageActivities,
 						"pageContext": {
 							"pageProps": {
 								chatMessageActivities,

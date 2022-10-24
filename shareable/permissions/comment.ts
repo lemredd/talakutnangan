@@ -15,8 +15,7 @@ import {
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
-import { post } from "$/permissions/permission_list"
-import { Permissions as PostPermissions } from "$/permissions/post"
+import PostPermissionGroup, { Permissions as PostPermissions } from "$/permissions/post"
 
 const commentColumnName = "commentFlags"
 
@@ -32,6 +31,13 @@ export type Permissions =
  * This is safe to use in client-side.
  */
 export default class extends PermissionGroup<CommentFlags, Permissions> {
+	private post: PostPermissionGroup
+
+	constructor(post: PostPermissionGroup) {
+		super()
+		this.post = post
+	}
+
 	get name(): string { return commentColumnName }
 
 	get permissions(): PermissionMap<Permissions> {
@@ -39,7 +45,7 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 			[ "view", {
 				"externalPermissionDependencies": [
 					{
-						"group": post,
+						"group": this.post,
 						"permissionDependencies": [ "view" ] as PostPermissions[]
 					}
 				],
@@ -61,7 +67,7 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 			[ "readDepartmentScope", {
 				"externalPermissionDependencies": [
 					{
-						"group": post,
+						"group": this.post,
 						"permissionDependencies": [ "readDepartmentScope" ] as PostPermissions[]
 					}
 				],
@@ -71,7 +77,7 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 			[ "readOverallScope", {
 				"externalPermissionDependencies": [
 					{
-						"group": post,
+						"group": this.post,
 						"permissionDependencies": [ "readOverallScope" ] as PostPermissions[]
 					}
 				],
