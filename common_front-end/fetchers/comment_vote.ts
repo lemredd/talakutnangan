@@ -6,7 +6,8 @@ import type {
 	CommentVoteDocument,
 	CommentVoteListDocument,
 	DeserializedCommentVoteDocument,
-	DeserializedCommentVoteListDocument
+	DeserializedCommentVoteListDocument,
+	CommentVoteRelationships
 } from "$/types/documents/comment_vote"
 
 import { COMMENT_VOTE_LINK } from "$/constants/template_links"
@@ -22,7 +23,10 @@ export default class CommentVoteFetcher extends BaseFetcher<
 	CommentVoteDocument,
 	CommentVoteListDocument,
 	DeserializedCommentVoteDocument,
-	DeserializedCommentVoteListDocument
+	DeserializedCommentVoteListDocument,
+	{
+		"extraCreateData": CommentVoteRelationships<"create">
+	}
 > {
 	constructor() {
 		super(COMMENT_VOTE_LINK)

@@ -27,7 +27,7 @@ export default class extends DoubleBoundJSONController {
 
 	get policy(): Policy {
 		return new Merger([
-			 new PermissionBasedPolicy(permissionGroup, [
+			new PermissionBasedPolicy(permissionGroup, [
 				VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 				VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
 				VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
