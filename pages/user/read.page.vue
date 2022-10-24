@@ -64,10 +64,12 @@ import type { OptionInfo } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import assignPath from "$@/external/assign_path"
+import DepartmentFetcher from "$@/fetchers/department"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -80,10 +82,10 @@ const { pageProps } = pageContext
 const user = ref<DeserializedUserDocument<"roles">>(
 	pageProps.user as DeserializedUserDocument<"roles">
 )
+
 const roles = ref<DeserializedRoleResource[]>(
 	pageProps.roles.data as DeserializedRoleResource[]
 )
-
 const userRoleIDs = ref(
 	user.value.data.roles.data.map(role => role.id) as string[]
 )
@@ -97,12 +99,16 @@ const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const nameFieldStatus = ref<FieldStatus>("locked")
 
-const { departments } = pageProps
+const departments = ref<DeserializedDepartmentResource[]>(
+	pageProps.departments.data as DeserializedDepartmentResource[]
+)
 const userDepartment = ref(user.value.data.department?.data.id as string)
-const selectableDepartments = departments.data.map(department => ({
-	"label": department.fullName,
-	"value": department.id
-}))
+const selectableDepartments = computed(() => departments.value.map(
+	department => ({
+		"label": department.fullName,
+		"value": department.id
+	})
+))
 
 const fetcher = new Fetcher()
 
@@ -175,7 +181,35 @@ async function fetchRolesIncrementally(): Promise<void> {
 	})
 }
 
+const departmentFetcher = new DepartmentFetcher()
+async function fetchDepartmentsIncrementally(): Promise<void> {
+	await departmentFetcher.list({
+		"filter": {
+			"existence": "exists",
+			"slug": ""
+		},
+		"page": {
+			"limit": 10,
+			"offset": departments.value.length
+		},
+		"sort": [ "fullName" ]
+	}).then(({ body }) => {
+		departments.value = [
+			...departments.value,
+			...body.data
+		]
+
+		const meta = body.meta as ResourceCount
+		if (departments.value.length < meta.count) {
+			return fetchDepartmentsIncrementally()
+		}
+
+		return Promise.resolve()
+	})
+}
+
 onMounted(async() => {
+	await fetchDepartmentsIncrementally()
 	await fetchRolesIncrementally()
 })
 </script>
