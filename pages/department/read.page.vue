@@ -29,6 +29,20 @@
 			:must-confirm="isBeingConfirmed"
 			@cancel="closeConfirmation"
 			@confirm="updateDepartment"/>
+		<button
+			v-if="isDeleted"
+			type="button"
+			class="btn btn-primary"
+			@click="restoreDepartment">
+			Restore
+		</button>
+		<button
+			v-else
+			type="button"
+			class="btn btn-primary"
+			@click="archiveDepartment">
+			Archive
+		</button>
 	</form>
 </template>
 
@@ -36,7 +50,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject } from "vue"
+import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
@@ -51,6 +65,7 @@ import assignPath from "$@/external/assign_path"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
+const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
 
 const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
@@ -90,5 +105,17 @@ function updateDepartment() {
 	.catch(error => console.log(error))
 }
 
+async function archiveDepartment() {
+	await fetcher.archive([ department.value.data.id ])
+	.then(({ body, status }) => {
+		console.log(body, status)
+	})
+}
 
+async function restoreDepartment() {
+	await fetcher.restore([ department.value.data.id ])
+	.then(({ body, status }) => {
+		console.log(body, status)
+	})
+}
 </script>
