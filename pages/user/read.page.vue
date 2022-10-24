@@ -54,8 +54,7 @@
 import {
 	ref,
 	inject,
-	computed,
-	onMounted
+	computed
 } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
@@ -99,8 +98,7 @@ const selectableDepartments = departments.data.map(department => ({
 	"value": department.id
 }))
 
-let fetcher = new Fetcher()
-
+const fetcher = new Fetcher()
 
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
@@ -142,8 +140,4 @@ async function restoreUser() {
 		console.log(body, status)
 	})
 }
-
-onMounted(() => {
-	fetcher = new Fetcher()
-})
 </script>
