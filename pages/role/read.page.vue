@@ -28,14 +28,14 @@
 			<button
 				v-if="isDeleted"
 				type="button"
-				class="btn btn-primary"
+				class="restore-btn btn btn-primary"
 				@click="restoreRole">
 				Restore
 			</button>
 			<button
 				v-else
 				type="button"
-				class="btn btn-primary"
+				class="archive-btn btn btn-primary"
 				@click="archiveRole">
 				Archive
 			</button>
@@ -89,7 +89,7 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 		}
 	}
 })
-const isDeleted = computed<boolean>(() => Boolean(role.value.deletedAt))
+const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
 const password = ref<string>("")
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
