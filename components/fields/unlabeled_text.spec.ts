@@ -1,12 +1,11 @@
-import { shallowMount } from "@vue/test-utils"
 import { faker } from "@faker-js/faker"
-import Component from "./non-sensitive_text.vue"
+import { shallowMount } from "@vue/test-utils"
+import Component from "./unlabeled_text.vue"
 
-describe("Component: fields/non-sensitive_text", () => {
+describe("Component: fields/unlabeled_text", () => {
 	it("can update", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"type": "email"
@@ -25,7 +24,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("should change upon prop update", async() => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"type": "email"
 			}
@@ -33,7 +31,6 @@ describe("Component: fields/non-sensitive_text", () => {
 
 		const newValue = "admin@example.com"
 		await wrapper.setProps({
-			"label": "E-mail",
 			"modelValue": newValue,
 			"type": "email"
 		})
@@ -45,7 +42,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may be edited", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "locked",
@@ -53,9 +49,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find(".edit-button")
+		const editButton = wrapper.find(".edit-button").findComponent({ "name": "IconButton" })
 
-		await editButton.trigger("click")
+		await editButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBe("")
@@ -67,7 +63,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may not be edited", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "unlocked",
@@ -75,9 +70,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const saveButton = wrapper.find(".save-button")
+		const saveButton = wrapper.find(".save-button").findComponent({ "name": "IconButton" })
 
-		await saveButton.trigger("click")
+		await saveButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -90,7 +85,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may be prepared", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "loaded",
@@ -98,9 +92,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const editButton = wrapper.find(".edit-button")
+		const editButton = wrapper.find(".edit-button").findComponent({ "name": "IconButton" })
 
-		await editButton.trigger("click")
+		await editButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBe("")
@@ -112,7 +106,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may be processed", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "prepared",
@@ -120,9 +113,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const saveButton = wrapper.find(".save-button")
+		const saveButton = wrapper.find(".save-button").findComponent({ "name": "IconButton" })
 
-		await saveButton.trigger("click")
+		await saveButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -135,7 +128,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may not be processed", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "prepared",
@@ -143,9 +135,9 @@ describe("Component: fields/non-sensitive_text", () => {
 			}
 		})
 
-		const cancelButton = wrapper.find(".cancel-button")
+		const cancelButton = wrapper.find(".cancel-button").findComponent({ "name": "IconButton" })
 
-		await cancelButton.trigger("click")
+		await cancelButton.vm.$emit("iconClick")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toBeUndefined()
@@ -157,7 +149,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("must be disabled", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "disabled",
@@ -176,7 +167,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("must be enabled", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"status": "enabled",
@@ -195,7 +185,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may be saved implicitly", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"maySaveImplicitly": true,
 				"modelValue": "",
 				"required": true,
@@ -212,7 +201,6 @@ describe("Component: fields/non-sensitive_text", () => {
 	it("may not be saved implicitly", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"label": "E-mail",
 				"modelValue": "",
 				"required": true,
 				"type": "email"

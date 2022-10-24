@@ -51,9 +51,9 @@ describe("Component: comment/create_field", () => {
 			}
 		})
 
-		const field = wrapper.findComponent({ "name": "TextualField" })
+		const field = wrapper.findComponent({ "name": "Field" })
 		await field.setValue(content)
-		await field.vm.$emit("saveImplicitly")
+		await field.vm.$emit("submitComment")
 		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
@@ -128,9 +128,9 @@ describe("Component: comment/create_field", () => {
 			}
 		})
 
-		const field = wrapper.findComponent({ "name": "TextualField" })
+		const field = wrapper.findComponent({ "name": "Field" })
 		await field.setValue(content)
-		await field.vm.$emit("saveImplicitly")
+		await field.vm.$emit("submitComment")
 		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>

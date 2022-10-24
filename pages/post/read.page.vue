@@ -1,16 +1,35 @@
 <template>
-	<div class="post-container">
+	<section>
 		<Viewer v-model="post"/>
-		<CreateField v-if="mayCreateComment" :post="post"/>
-		<Multiviewer v-model="comments"/>
-	</div>
+		<CreateField
+			v-if="mayCreateComment"
+			class="field"
+			:post="post"
+			@create-comment="includeComment"/>
+		<Multiviewer v-model="comments" class="comments"/>
+	</section>
 </template>
 
 <style lang="scss">
+	section {
+		@apply flex flex-col flex-nowrap justify-center;
+
+		> .field {
+			@apply flex-initial;
+		}
+
+		> .comments {
+			@apply flex-1;
+		}
+
+		> * {
+			@apply mb-4;
+		}
+	}
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
+import { inject, computed, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostResource } from "$/types/documents/post"
@@ -65,4 +84,7 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 
+function includeComment(newComment: DeserializedCommentResource<"user"|"parentComment">): void {
+	comments.value.push(newComment)
+}
 </script>

@@ -42,8 +42,7 @@
 			<ProfilePicture
 				v-if="isSelfMessage"
 				class="self"
-				:user="chatMessage.user"
-				:title="chatMessage.user.data.name"/>
+				:user="chatMessage.user"/>
 		</div>
 		<div
 			v-if="!isMessageKindStatus(chatMessage)"
@@ -131,6 +130,7 @@ import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import { CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION } from "$@/constants/provided_keys"
 import {
 	isMessageKindFile,
 	isMessageKindStatus,
@@ -138,7 +138,6 @@ import {
 } from "@/consultation/helpers/chat_message_kinds"
 
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
-import { CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION } from "$@/constants/provided_keys"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
