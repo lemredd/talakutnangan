@@ -1,5 +1,5 @@
-import { flushPromises, shallowMount } from "@vue/test-utils"
 import { nextTick } from "vue"
+import { flushPromises, shallowMount } from "@vue/test-utils"
 import Component from "./dropdown.vue"
 
 describe("Component: Dropdown", () => {

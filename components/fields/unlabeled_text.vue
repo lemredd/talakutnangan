@@ -1,72 +1,45 @@
 <template>
-	<div :class="{ 'default': !editable }" class="input-container">
-		<label v-if="label" class="input-header">
-			{{ label }}
-		</label>
-		<div class="input-and-controls">
-			<input
-				v-model="modelValue"
-				class="bg-transparent"
-				:class="inputClasses"
-				:type="type"
-				:required="required"
-				:disabled="isCurrentlyDisabled"
-				@keyup.enter.exact="saveImplicitly"/>
-			<button
-				v-if="isLocked"
-				type="button"
-				class="edit-button material-icons"
-				@click="unlock">
-				edit
-			</button>
-			<button
-				v-if="isUnlocked"
-				type="button"
-				class="save-button material-icons"
-				@click="lock">
-				save
-			</button>
-			<button
-				v-if="isUnlocked"
-				type="button"
-				class="cancel-button material-icons"
-				@click="load">
-				cancel
-			</button>
-		</div>
+	<div class="field-container">
+		<input
+			v-model="modelValue"
+			class="bg-transparent"
+			:class="inputClasses"
+			:type="type"
+			:required="required"
+			:disabled="isCurrentlyDisabled"
+			@keyup.enter.exact="saveImplicitly"/>
+		<IconButton
+			v-if="isLocked"
+			icon-name="edit"
+			class="edit-button"
+			@icon-click="unlock"/>
+		<IconButton
+			v-if="isUnlocked"
+			icon-name="save"
+			class="save-button"
+			@icon-click="lock"/>
+		<IconButton
+			v-if="isUnlocked"
+			icon-name="cancel"
+			class="cancel-button"
+			@icon-click="load"/>
 	</div>
 </template>
 <style scoped lang="scss">
-	.input-container {
-		@apply flex flex-col;
+	.field-container {
+		@apply flex flex-row justify-center justify-items-stretch items-center;
 
-		label {
-			margin-bottom: .5em;
+		input {
+			@apply flex-1;
+			padding-bottom: .25em;
 
-			h2 {
-				font-size: 1.5em;
+			&:not(:disabled) {
+				border-bottom: 1px solid hsl(0, 0%, 60%);
+				outline: none;
 			}
 		}
-
-		&.default {
-			display: block;
-		}
-
-		.input-and-controls {
-			@apply flex items-center;
-
-			input {
-				@apply flex-1;
-				padding-bottom: .25em;
-
-				&:not(:disabled) {
-					border-bottom: 1px solid hsl(0, 0%, 60%);
-					outline: none;
-				}
-			}
-			.material-icons {
-				@apply justify-self-end;
-			}
+		.material-icons {
+			@apply justify-self-end;
 		}
 	}
 </style>
@@ -75,8 +48,9 @@ import { computed } from "vue"
 
 import type { Textual, FieldStatus } from "@/fields/types"
 
+import IconButton from "@/helpers/icon_button.vue"
+
 const props = defineProps<{
-	label?: string
 	type: Textual
 	modelValue: string
 	required?: boolean
@@ -116,7 +90,6 @@ const isUnlocked = computed<boolean>(() => {
 	const unlockedStatuses: FieldStatus[] = [ "unlocked", "prepared" ]
 	return unlockedStatuses.includes(status)
 })
-const editable = computed<boolean>(() => isLocked.value || isUnlocked.value)
 
 function lock() {
 	switch (derivedStatus.value) {

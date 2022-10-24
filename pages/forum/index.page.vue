@@ -6,7 +6,7 @@
 				Forum App
 			</h4>
 		</div>
-		<div class="main">
+		<main>
 			<br/>
 			<div class="post-container">
 				<div class="left">
@@ -24,7 +24,7 @@
 			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 
 			<MultiplePostViewer v-model="posts"/>
-		</div>
+		</main>
 		<footer>
 			<p>
 				Footer space<br/>
@@ -35,7 +35,6 @@
 </template>
 
 <style lang="scss">
-@import "./index";
 </style>
 
 <script setup lang="ts">
