@@ -144,7 +144,7 @@ describe("Component: post/viewer", () => {
 			"type": "post"
 		} as DeserializedPostResource<"poster"|"posterRole">
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {

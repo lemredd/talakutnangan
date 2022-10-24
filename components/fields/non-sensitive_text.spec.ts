@@ -92,11 +92,46 @@ describe("Component: fields/non-sensitive_text", () => {
 
 		const editButton = wrapper.find("button")
 
+		// Open
 		await editButton.trigger("click")
+		// Close
 		await editButton.trigger("click")
 
 		const field = wrapper.find("input")
 		expect(field.attributes("disabled")).toEqual("")
 		expect(wrapper.emitted("save")).toHaveLength(1)
+	})
+
+	it("may be saved implicitly", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"maySaveImplicitly": true,
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const field = wrapper.find("input")
+		await field.trigger("keyup.enter")
+
+		expect(wrapper.emitted("saveImplicitly")).toHaveLength(1)
+	})
+
+	it("may not be saved implicitly", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"type": "email"
+			}
+		})
+
+		const field = wrapper.find("input")
+		await field.trigger("keyup.enter")
+
+		expect(wrapper.emitted("saveImplicitly")).not.toBeDefined()
 	})
 })

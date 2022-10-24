@@ -31,9 +31,11 @@ import { computed, inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import makeSwitch from "$@/helpers/make_switch"
-import PermissionGroup from "$/permissions/post"
+import isUndefined from "$/type_guards/is_undefined"
+import { post as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -46,13 +48,13 @@ import {
 import Dropdown from "@/page_shell/dropdown.vue"
 
 const props = defineProps<{
-	post: DeserializedPostResource<"poster">
+	post: DeserializedPostResource<"poster"|"department">
 }>()
 
 interface CustomEvents {
-	(event: "updatePost", postID: string): void
-	(event: "archivePost", postID: string): void
-	(event: "restorePost", postID: string): void
+	(event: "updatePost"): void
+	(event: "archivePost"): void
+	(event: "restorePost"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -66,11 +68,13 @@ const {
 	"toggle": toggleDropdown
 } = makeSwitch(false)
 
-const poster = computed<DeserializedUserResource<"department">>(
-	() => props.post.poster.data as DeserializedUserResource<"department">
+const poster = computed<DeserializedUserResource>(
+	() => props.post.poster.data as DeserializedUserResource
+)
+const department = computed<DeserializedDepartmentResource|undefined>(
+	() => props.post.department?.data as DeserializedDepartmentResource|undefined
 )
 
-const permissionGroup = new PermissionGroup()
 const mayUpdatePost = computed<boolean>(() => {
 	const isOwned = userProfile.data.id === poster.value.id
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
@@ -82,7 +86,10 @@ const mayUpdatePost = computed<boolean>(() => {
 			UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || (
+				!isUndefined(department.value)
+				&& department.value?.id === userProfile.data.department.data.id
+			)
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -108,7 +115,8 @@ const mayArchiveOrRestorePost = computed<boolean>(() => {
 			ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || poster.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || !isUndefined(department.value)
+				&& department.value?.id === userProfile.data.department.data.id
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -130,14 +138,14 @@ const mayRestorePost = computed<boolean>(() => {
 })
 
 function updatePost() {
-	emit("updatePost", props.post.id)
+	emit("updatePost")
 }
 
 function archivePost() {
-	emit("archivePost", props.post.id)
+	emit("archivePost")
 }
 
 function restorePost() {
-	emit("restorePost", props.post.id)
+	emit("restorePost")
 }
 </script>

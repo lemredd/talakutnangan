@@ -3,6 +3,7 @@ import TagRouter from "!%/api/tag/router"
 import UserRouter from "!%/api/user/router"
 import RoleRouter from "!%/api/role/router"
 import PostRouter from "!%/api/post/router"
+import CommentRouter from "!%/api/comment/router"
 import SemesterRouter from "!%/api/semester/router"
 import UserBindedRouter from "!%/api/user(id)/router"
 import SignatureRouter from "!%/api/signature/router"
@@ -53,6 +54,7 @@ export default class extends Router {
 			resolve([
 				new TagRouter(),
 				new PostRouter(),
+				new CommentRouter(),
 				new ProfanityFilterRouter()
 			])
 		})

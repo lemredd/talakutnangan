@@ -1,6 +1,5 @@
-import type { Request } from "!/types/dependent"
 import type { Rules, FieldRules, Pipe } from "!/types/validation"
-import type { BaseManagerClass } from "!/types/dependent"
+import type { Request, BaseManagerClass } from "!/types/dependent"
 
 import integer from "!/validators/base/integer"
 import required from "!/validators/base/required"
