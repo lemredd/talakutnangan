@@ -1,9 +1,12 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
-import type { UserIdentifierListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
-import type { ConsultationResource, ConsultationAttributes } from "$/types/documents/consultation"
+import type {
+	ConsultationResource,
+	ConsultationAttributes,
+	DeserializedConsultationListDocument
+} from "$/types/documents/consultation"
 import type {
 	ModelCtor,
 	FindOptions,
@@ -13,12 +16,16 @@ import type {
 	FindAndCountOptions
 } from "%/types/dependent"
 
+import UserTransformer from "%/transformers/user"
+import Serializer from "%/transformers/serializer"
+
 import User from "%/models/user"
 import Role from "%/models/role"
 import Log from "$!/singletons/log"
 import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
 import Condition from "%/helpers/condition"
+import deserialize from "$/object/deserialize"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
 import Transformer from "%/transformers/consultation"
@@ -230,16 +237,23 @@ export default class extends BaseManager<
 	}
 
 	async sumTimePerStudents(query: TimeSumQueryParameters<number>)
-	: Promise<UserIdentifierListWithTimeConsumedDocument> {
+	: Promise<Serializable> {
 		try {
 			const models = await ChatMessageActivity.findAll({
 				"include": [
 					sort({
 						"model": User,
-						"required": true,
-						"where": new Condition().equal("id", query.filter.user).build()
+						"required": true
 					} as FindOptions<any>, query) as IncludeOptions,
 					{
+						"include": [
+							{
+								"model": AttachedRole,
+								"paranoid": false,
+								"required": true,
+								"where": new Condition().equal("userID", query.filter.user).build()
+							}
+						],
 						"model": Model,
 						"paranoid": false,
 						"required": true,
@@ -258,11 +272,13 @@ export default class extends BaseManager<
 					}
 				],
 				"paranoid": false,
+				"where": new Condition().notEqual("userID", query.filter.user).build(),
 				...this.transaction.transactionObject
 			})
+			const userTransformer = new UserTransformer()
 
 			return {
-				"data": models.map(model => {
+				"data": await models.map(async model => {
 					const user = model.user as User
 					const consultation = model.consultation as Model
 
@@ -271,29 +287,43 @@ export default class extends BaseManager<
 						consultation.startedAt as Date
 					)
 
-					return {
-						"id": String(user.id),
-						"meta": {
-							"totalMillisecondsConsumed": millisecond
-						},
-						"type": "user"
-					}
-				}).reduce((previousSums, currentSum: any) => {
-					const previousSum = previousSums.find(sum => sum.id === currentSum.id)
+					const serializedUser = await Serializer.serialize(
+						user,
+						userTransformer
+					) as Serializable
+					const serializedUserData = serializedUser.data as Serializable
+					serializedUserData.meta = {
+						"consultations": [
+							consultation
+						],
+						"totalMillisecondsConsumed": millisecond
+					} as unknown as Serializable
+
+					return serializedUserData
+				}).reduce(async(previousSums, currentSum: Promise<any>) => {
+					const waitedPreviousSums = await previousSums
+					const waitedCurrentSums = await currentSum
+					const previousSum = waitedPreviousSums.find(sum => sum.id === waitedCurrentSums.id)
+					waitedCurrentSums.meta.consultations = deserialize(
+						await this.serialize(waitedCurrentSums.meta.consultations)
+					)
 
 					if (previousSum) {
-						previousSum.meta.totalMillisecondsConsumed += currentSum
+						previousSum.meta.totalMillisecondsConsumed += waitedCurrentSums
 						.meta
 						.totalMillisecondsConsumed
 
-						return previousSums
+						const consultations = previousSum.meta.consultations.data
+						consultations.push(waitedCurrentSums.meta.consultations.data[0])
+
+						return waitedPreviousSums
 					}
 
 					return [
-						...previousSums,
-						currentSum
+						...waitedPreviousSums,
+						waitedCurrentSums
 					]
-				}, [] as UserIdentifierListWithTimeConsumedDocument["data"])
+				}, Promise.resolve([]) as Promise<any[]>)
 			}
 		} catch (error) {
 			throw this.makeBaseError(error)
@@ -309,7 +339,7 @@ export default class extends BaseManager<
 			const adjustedEndDate = adjustBeforeMidnightOfNextDay(
 				adjustUntilChosenDay(query.filter.dateTimeRange.end, 6, 1)
 			)
-			const models = await await ChatMessageActivity.findAll({
+			const models = await ChatMessageActivity.findAll({
 				"include": [
 					{
 						"model": User,
@@ -351,6 +381,7 @@ export default class extends BaseManager<
 
 				sums.meta.weeklyTimeSums.push({
 					"beginDateTime": resetToMidnight(i),
+					"consultations": { "data": [] },
 					"endDateTime": rangeLastEnd,
 					"totalMillisecondsConsumed": 0
 				})
@@ -358,29 +389,44 @@ export default class extends BaseManager<
 				i = adjustUntilChosenDay(rangeEnd, 0, 1)
 			} while (i < adjustedEndDate)
 
-
+			const operations: Promise<any>[] = []
 			for (const weeklyTimeSum of sums.meta.weeklyTimeSums) {
-				weeklyTimeSum.totalMillisecondsConsumed += models.reduce((
-					totalMillisecondsConsumed,
-					model
-				) => {
-					let newTotalMillisecondsconsumed = totalMillisecondsConsumed
-					const consultation = model.consultation as Model
-					const startedAt = consultation.startedAt as Date
-					const finishedAt = consultation.finishedAt as Date
+				operations.push(new Promise<void>(resolve => {
+					let totalMillisecondsConsumed = 0
+					const deserializedConsultations: DeserializedConsultationListDocument
+					= { "data": [] }
+					const deserializedOperations: Promise<any>[] = []
+					for (const model of models) {
+						const consultation = model.consultation as Model
+						const startedAt = consultation.startedAt as Date
+						const finishedAt = consultation.finishedAt as Date
 
-					if (
-						weeklyTimeSum.beginDateTime <= startedAt
+						if (
+							weeklyTimeSum.beginDateTime <= startedAt
 						&& finishedAt <= weeklyTimeSum.endDateTime
-					) {
-						const difference = calculateMillisecondDifference(finishedAt, startedAt)
+						) {
+							deserializedOperations.push(
+								this.serialize([ consultation ])
+								.then(deserialize)
+								.then(deserializedConsultation => deserializedConsultations.data.push(
+									...deserializedConsultation?.data as any[]
+								))
+							)
 
-						newTotalMillisecondsconsumed += difference
+							const difference = calculateMillisecondDifference(finishedAt, startedAt)
+
+							totalMillisecondsConsumed += difference
+						}
 					}
 
-					return newTotalMillisecondsconsumed
-				}, 0)
+					Promise.all(deserializedOperations).then(() => {
+						weeklyTimeSum.totalMillisecondsConsumed = totalMillisecondsConsumed
+						weeklyTimeSum.consultations = deserializedConsultations
+						resolve()
+					})
+				}))
 			}
+			await Promise.all(operations)
 
 			return sums
 		} catch (error) {

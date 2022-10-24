@@ -211,5 +211,8 @@ export type UserIdentifierDocument
 export type UserIdentifierListDocument
 = IdentifierListDocument<UserResourceIdentifier<"read">>
 
-export type UserIdentifierListWithTimeConsumedDocument
-= IdentifierListDocument<UserResourceIdentifier<"read"> & SummedTimeDocument>
+export type DeserializedUserListWithTimeConsumedDocument = DeserializedResourceListDocument<
+	UserResourceIdentifier<"read">,
+	DeserializedUserAttributes,
+	DeserializedUserResource<T> & SummedTimeDocument
+>

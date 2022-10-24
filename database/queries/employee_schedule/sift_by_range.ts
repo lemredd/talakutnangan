@@ -4,7 +4,7 @@ import type { EmployeeScheduleRangeFilter } from "$/types/query"
 import Log from "$!/singletons/log"
 
 import Condition from "%/helpers/condition"
-import { isUndefined } from "lodash"
+import isUndefined from "$/type_guards/is_undefined"
 
 /**
  * Sift employee schedule models which within a certain range.

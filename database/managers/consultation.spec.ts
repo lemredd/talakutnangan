@@ -111,9 +111,10 @@ describe("Database Manager: Consultation read operations", () => {
 
 	it("can sum time by students", async() => {
 		const manager = new Manager()
-		const user = await new UserFactory().insertOne()
+		const consultant = await new UserFactory().insertOne()
+		const consulter = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consultant))
 		.insertOne()
 		const consultations = [
 			await new Factory()
@@ -129,7 +130,7 @@ describe("Database Manager: Consultation read operations", () => {
 		]
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consulter))
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
@@ -140,7 +141,7 @@ describe("Database Manager: Consultation read operations", () => {
 					"end": new Date("2022-09-30T11:59:59")
 				},
 				"existence": "exists",
-				"user": user.id
+				"user": consultant.id
 			},
 			"page": {
 				"limit": 10,
@@ -152,8 +153,20 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"data": [
 				{
-					"id": String(user.id),
+					"attributes": {
+						"email": consulter.email,
+						"kind": "student",
+						"name": consulter.name
+					},
+					"id": String(consulter.id),
 					"meta": {
+						"consultations": await new Factory().deserialize(
+							consultations.map(consultation => {
+								// eslint-disable-next-line no-undefined
+								consultation.consultantInfo = undefined
+								return consultation
+							})
+						),
 						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:30")
 					},
 					"type": "user"
@@ -164,9 +177,10 @@ describe("Database Manager: Consultation read operations", () => {
 
 	it("can sum some times by students", async() => {
 		const manager = new Manager()
-		const user = await new UserFactory().insertOne()
+		const consultant = await new UserFactory().insertOne()
+		const consulter = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consultant))
 		.insertOne()
 		const consultations = [
 			await new Factory()
@@ -187,18 +201,19 @@ describe("Database Manager: Consultation read operations", () => {
 		]
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(user))
+		.user(() => Promise.resolve(consulter))
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
+		const dateTimeRange = {
+			"begin": new Date("2022-09-01T00:00:00"),
+			"end": new Date("2022-09-30T11:59:59")
+		}
 		const times = await manager.sumTimePerStudents({
 			"filter": {
-				"dateTimeRange": {
-					"begin": new Date("2022-09-01T00:00:00"),
-					"end": new Date("2022-09-30T11:59:59")
-				},
+				dateTimeRange,
 				"existence": "exists",
-				"user": user.id
+				"user": consultant.id
 			},
 			"page": {
 				"limit": 10,
@@ -210,8 +225,28 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"data": [
 				{
-					"id": String(user.id),
+					"attributes": {
+						"email": consulter.email,
+						"kind": "student",
+						"name": consulter.name
+					},
+					"id": String(consulter.id),
 					"meta": {
+						"consultations": await new Factory().deserialize(
+							consultations.filter(consultation => {
+								const startedAt = consultation.startedAt as Date
+								const finishedAt = consultation.finishedAt as Date
+								const isWithinRange
+								= startedAt >= dateTimeRange.begin
+								&& finishedAt <= dateTimeRange.end
+
+								return isWithinRange
+							}).map(consultation => {
+								// eslint-disable-next-line no-undefined
+								consultation.consultantInfo = undefined
+								return consultation
+							})
+						),
 						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:05:45")
 					},
 					"type": "user"
@@ -261,11 +296,28 @@ describe("Database Manager: Consultation read operations", () => {
 		const weekRanges = [ [ 1, 7 ], [ 8, 14 ], [ 15, 21 ], [ 22, 28 ] ]
 		expect(times).toStrictEqual({
 			"meta": {
-				"weeklyTimeSums": weekRanges.map(([ beginDate, endDate ]) => ({
-					"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
-					"endDateTime": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
-					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
-				}))
+				"weeklyTimeSums": await Promise.all(
+					weekRanges.map(async([ beginDate, endDate ]) => ({
+						"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
+						"consultations": await new Factory().deserialize(
+							consultations.filter(consultation => {
+								const startedAt = consultation.startedAt as Date
+								const finishedAt = consultation.finishedAt as Date
+								const isWithinRange
+								= startedAt.getDate() >= beginDate
+								&& finishedAt.getDate() <= endDate
+
+								return isWithinRange
+							}).map(consultation => {
+								// eslint-disable-next-line no-undefined
+								consultation.consultantInfo = undefined
+								return consultation
+							})
+						),
+						"endDateTime": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
+						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
+					}))
+				)
 			}
 		})
 	})

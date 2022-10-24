@@ -4,7 +4,9 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
+
 import type { Serializable } from "$/types/general"
+import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedPostDocument, DeserializedPostListDocument } from "$/types/documents/post"
@@ -31,7 +33,8 @@ import type {
 import type {
 	DeserializedUserProfile,
 	DeserializedUserDocument,
-	DeserializedUserListDocument
+	DeserializedUserListDocument,
+	DeserializedUserListWithTimeConsumedDocument
 } from "$/types/documents/user"
 
 /**
@@ -74,6 +77,7 @@ type OptionalPageProps<
 	T extends Format,
 	U extends DeserializedResourceDocument<any, any, any>
 		| DeserializedResourceListDocument<any, any, any>
+		| Serializable
 > = T extends "deserialized" ? U : Serializable|undefined
 
 interface RawPageProps<T extends Format = "serialized"> extends Serializable {
@@ -98,6 +102,9 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	chatMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 	previewMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
+
+	timeConsumedPerStudent: OptionalPageProps<T, DeserializedUserListWithTimeConsumedDocument>
+	timeConsumedPerWeek: OptionalPageProps<T, WeeklySummedTimeDocument>
 
 	posts: OptionalPageProps<T, DeserializedPostListDocument>
 	post: OptionalPageProps<T, DeserializedPostDocument>
