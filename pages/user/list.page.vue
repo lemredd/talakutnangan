@@ -140,18 +140,18 @@ function fetchUserInfo() {
 	})
 }
 
-onMounted(async() => {
-	isLoaded.value = false
-	await loadRemainingRoles(roles, roleFetcher)
-	await loadRemainingDepartments(departments, departmentFetcher)
-	await fetchUserInfo()
-})
-
 async function resetUsersList() {
 	isLoaded.value = false
 	list.value = []
 	await fetchUserInfo()
 }
 
-watch([ chosenRole, slug, chosenDepartment ], debounce(resetUsersList, DEBOUNCED_WAIT_DURATION))
+onMounted(async() => {
+	isLoaded.value = false
+	await loadRemainingRoles(roles, roleFetcher)
+	await loadRemainingDepartments(departments, departmentFetcher)
+	await fetchUserInfo()
+
+	watch([ chosenRole, slug, chosenDepartment ], debounce(resetUsersList, DEBOUNCED_WAIT_DURATION))
+})
 </script>
