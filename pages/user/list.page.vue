@@ -3,6 +3,7 @@
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
 		:role-names="roleNames">
@@ -111,6 +112,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const chosenDepartment = ref("*")
 
 const slug = ref("")
+const existence = ref<"exists"|"archived"|"*">("exists")
 
 function fetchUserInfo() {
 	fetcher.list({
@@ -118,7 +120,7 @@ function fetchUserInfo() {
 			"department": currentResourceManager.isAdmin()
 				? chosenDepartment.value
 				: currentUserDepartment.id,
-			"existence": "exists",
+			"existence": existence.value,
 			"kind": "*",
 			"role": chosenRole.value,
 			"slug": slug.value
@@ -152,6 +154,9 @@ onMounted(async() => {
 	await loadRemainingDepartments(departments, departmentFetcher)
 	await fetchUserInfo()
 
-	watch([ chosenRole, slug, chosenDepartment ], debounce(resetUsersList, DEBOUNCED_WAIT_DURATION))
+	watch(
+		[ chosenRole, slug, chosenDepartment, existence ],
+		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
+	)
 })
 </script>

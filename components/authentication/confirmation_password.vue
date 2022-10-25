@@ -17,7 +17,7 @@
 				Cancel
 			</button>
 			<button
-				class="btn btn-primary"
+				class="confirm-btn btn btn-primary"
 				type="button"
 				@click="confirm">
 				Update

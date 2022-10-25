@@ -12,7 +12,7 @@ Put your additions and compatible changes here...
 ## Merge Instructions
 - PRs to merge first: None / #xxx
 - Will have additional commits?
-   - [ ] None
+	- [ ] None
 	- [ ] Yes
 	- [ ] Yes[unless all tests are success]
 - Must be merged ASAP?
