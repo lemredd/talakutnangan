@@ -1,13 +1,13 @@
 import { ref } from "vue"
 
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedRoleResource } from "$/types/documents/role"
 
-import Fetcher from "$@/fetchers/department"
+import Fetcher from "$@/fetchers/role"
 import RequestEnvironment from "$/singletons/request_environment"
 
-import loadRemainingDepartments from "./load_remaining_departments"
+import loadRemainingRoles from "./load_remaining_roles"
 
-describe("Helper: Load remaining departments", () => {
+describe("Helper: Load remaining roles", () => {
 	it("should stop loop", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
@@ -19,9 +19,9 @@ describe("Helper: Load remaining departments", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 		const fetcher = new Fetcher()
-		const departments = ref<DeserializedDepartmentResource[]>([])
+		const roles = ref<DeserializedRoleResource[]>([])
 
-		await loadRemainingDepartments(departments, fetcher)
+		await loadRemainingRoles(roles, fetcher)
 
 		expect(fetch).toHaveBeenCalledTimes(1)
 	})
