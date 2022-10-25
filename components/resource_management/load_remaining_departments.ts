@@ -2,11 +2,11 @@ import type { Ref } from "vue"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
-import DepartmentFetcher from "$@/fetchers/department"
+import Fetcher from "$@/fetchers/department"
 
 export default async function loadRemainingDepartments(
 	departments: Ref<DeserializedDepartmentResource[]>,
-	fetcher: DepartmentFetcher
+	fetcher: Fetcher
 ): Promise<void> {
 	await fetcher.list({
 		"filter": {
