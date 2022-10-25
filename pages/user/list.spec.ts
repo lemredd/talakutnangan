@@ -43,6 +43,24 @@ describe("Page: user/list", () => {
 
 			fetchMock.mockResponseOnce(
 				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
 					"data": [
 						{
 							"id": String(role.id),
@@ -74,7 +92,7 @@ describe("Page: user/list", () => {
 			expect(header.text()).toContain("Admin")
 
 			const castFetch = fetch as jest.Mock<any, any>
-			expect(castFetch).toHaveBeenCalledTimes(1)
+			expect(castFetch).toHaveBeenCalledTimes(3)
 		})
 	})
 
@@ -96,6 +114,24 @@ describe("Page: user/list", () => {
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
 			fetchMock.mockResponseOnce(
 				JSON.stringify({
 					"data": [
@@ -137,7 +173,7 @@ describe("Page: user/list", () => {
 			await flushPromises()
 
 			const castFetch = fetch as jest.Mock<any, any>
-			expect(castFetch).toHaveBeenCalledTimes(2)
+			expect(castFetch).toHaveBeenCalledTimes(4)
 		})
 
 		it("can select specific role", async() => {
@@ -157,6 +193,24 @@ describe("Page: user/list", () => {
 			.deserializedOne()
 			const userProfile = user as DeserializedUserProfile<"roles"|"department">
 
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
 			fetchMock.mockResponseOnce(
 				JSON.stringify({
 					"data": [
@@ -198,7 +252,7 @@ describe("Page: user/list", () => {
 			await flushPromises()
 
 			const castFetch = fetch as jest.Mock<any, any>
-			expect(castFetch).toHaveBeenCalledTimes(2)
+			expect(castFetch).toHaveBeenCalledTimes(4)
 		})
 	})
 })
