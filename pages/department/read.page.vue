@@ -1,4 +1,6 @@
 <template>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+
 	<form @submit.prevent="openConfirmation">
 		<label class="block">
 			Full name:
@@ -52,6 +54,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
+import type { UnitError } from "$/types/server"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 
@@ -60,6 +63,7 @@ import makeSwitch from "$@/helpers/make_switch"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import ReceivedErrors from "@/helpers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import assignPath from "$@/external/assign_path"
 
@@ -76,6 +80,8 @@ const password = ref<string>(
 		? "password"
 		: ""
 )
+
+const receivedErrors = ref<string[]>([])
 
 const fetcher = new Fetcher()
 
@@ -102,7 +108,18 @@ function updateDepartment() {
 		password.value = ""
 		assignPath(`/department/read/${department.value.data.id}`)
 	})
-	.catch(error => console.log(error))
+	.catch(({ body }) => {
+		if (body) {
+			const errors = body.errors as UnitError[]
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 
 async function archiveDepartment() {
