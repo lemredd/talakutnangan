@@ -6,7 +6,7 @@ import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
-import RoleManager from "%/managers/role"
+import Manager from "%/managers/role"
 import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import BoundJSONController from "!/controllers/bound_json"
@@ -44,17 +44,17 @@ export default class extends BoundJSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
-		return makeResourceIdentifierListDocumentRules("role", exists, RoleManager)
+		return makeResourceIdentifierListDocumentRules("role", exists, Manager)
 	}
 
 	get manager(): BaseManagerClass { return UserManager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
-		const manager = new RoleManager(request)
+		const manager = new Manager(request)
 		const { data } = request.body as RoleIdentifierListDocument<"read">
-		const userData = deserialize(request.user) as DeserializedUserProfile
-		const userID = Number(userData.data.id)
+		const { id } = request.params
+		const userID = Number(id)
 
 		await manager.reattach(userID, data.map(identifier => Number(identifier.id)))
 		Log.success("controller", "successfully updated the roles of the user")

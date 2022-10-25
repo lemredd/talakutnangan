@@ -9,10 +9,11 @@ import RoleFactory from "~/factories/role"
 
 import User from "%/models/user"
 import Transport from "!/singletons/transport"
-import Route from "!%/api/user/update(id).patch"
-import { user as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
+
+import Route from "!%/api/user/update(id).patch"
 
 describe("PATCH /api/user/:id", () => {
 	beforeAll(async() => {
