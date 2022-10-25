@@ -111,7 +111,7 @@ const chosenDepartment = ref("*")
 const slug = ref("")
 
 function fetchUserInfo() {
-	new Fetcher().list({
+	fetcher.list({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
 				? chosenDepartment.value
