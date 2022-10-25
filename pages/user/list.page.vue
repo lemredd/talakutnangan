@@ -45,6 +45,8 @@ import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -140,6 +142,8 @@ function fetchUserInfo() {
 
 onMounted(async() => {
 	isLoaded.value = false
+	await loadRemainingRoles(roles, roleFetcher)
+	await loadRemainingDepartments(departments, departmentFetcher)
 	await fetchUserInfo()
 })
 
