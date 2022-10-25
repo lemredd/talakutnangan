@@ -16,6 +16,11 @@
 				v-model="department"
 				label="Department"
 				:options="departmentNames"/>
+			<SelectableExistence
+				v-if="hasExistence"
+				v-model="existence"
+				title="Existence"
+				:options="existenceOptions"/>
 		</div>
 		<Suspensible :is-loaded="isLoaded">
 			<slot name="resources">
