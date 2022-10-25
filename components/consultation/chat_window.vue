@@ -27,6 +27,16 @@
 				<button class="material-icons">
 					video_camera_back
 				</button>
+				<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
+					storage
+				</button>
+
+				<FileOverlay
+					:is-file-repo-overlay-shown="isFileRepoOverlayShown"
+					:must-show-preview="mustShowPreview"
+					@hide-file-repo-overlay="hideFileRepoOverlay"
+					@switch-tab="switchTab"/>
+
 				<Dropdown
 					:is-dropdown-shown="isHeaderControlDropdownShown"
 					class="additional-controls"
@@ -169,6 +179,26 @@
 			}
 		}
 
+		@screen sm {
+				margin:auto 0;
+				.button-file{
+					@apply ml-80px;
+			}
+		}
+		@screen sm {
+				margin:auto 0;
+				.button-file{
+					@apply ml-120px;
+			}
+		}
+		.file-list{
+			@apply overflow-y-scroll;
+			max-height: 20vh;
+			@media screen and (min-width: 640px){
+				@apply max-h-60;
+			}
+		}
+
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
@@ -206,10 +236,12 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Overlay from "@/helpers/overlay.vue"
+
 import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
+import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 
 const fetcher = new ConsultationFetcher()
 
@@ -256,9 +288,7 @@ const {
 } = makeSwitch(false)
 
 const remainingMilliseconds = ref<number>(0)
-const remainingTime = computed<FullTime>(
-	() => convertMStoTimeObject(remainingMilliseconds.value)
-)
+const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
@@ -277,11 +307,26 @@ function changeTime(
 }
 
 const {
+	"on": showFileRepoOverlay,
+	"off": hideFileRepoOverlay,
+	"state": isFileRepoOverlayShown
+} = makeSwitch(false)
+
+const {
 	"on": showActionTakenOverlay,
 	"off": hideActionTakenOverlay,
 	"state": isActionTakenOverlayShown
 } = makeSwitch(false)
 const actionTaken = ref("")
+
+const fileRepoTab = ref("files")
+const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
+function switchTab(event: Event) {
+	const button = event.target as HTMLButtonElement
+	const { innerText } = button
+
+	fileRepoTab.value = innerText.toLocaleLowerCase()
+}
 
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
