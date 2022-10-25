@@ -2,37 +2,38 @@ import type { FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
 import Manager from "%/managers/comment_vote"
-import CommentManager from "%/managers/comment"
 import { VoteKindValues } from "$/types/database"
+import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { comment as permissionGroup } from "$/permissions/permission_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 import {
-	UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-	UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-	UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
 import string from "!/validators/base/string"
-import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
-import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-			UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-			UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
-		])
+		return new Merger([
+			new PermissionBasedPolicy(permissionGroup, [
+				VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+				VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+				VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+			]),
+			new BelongsToCurrentUserPolicy(this.manager)
+		]) as unknown as Policy
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
@@ -47,31 +48,7 @@ export default class extends DoubleBoundJSONController {
 			}
 		}
 
-		const relationships: FieldRules = makeRelationshipRules([
-			{
-				"ClassName": CommentManager,
-				"isArray": false,
-				"relationshipName": "comment",
-				"typeName": "comment",
-				"validator": exists
-			},
-			{
-				"ClassName": UserManager,
-				"isArray": false,
-				"relationshipName": "user",
-				"typeName": "user",
-				"validator": exists
-			}
-		])
-
-		return makeResourceDocumentRules(
-			"comment_vote",
-			attributes,
-			{
-				"extraDataQueries": relationships,
-				"isNew": true
-			}
-		)
+		return makeResourceDocumentRules("comment_vote", attributes)
 	}
 
 	get manager(): BaseManagerClass { return Manager }

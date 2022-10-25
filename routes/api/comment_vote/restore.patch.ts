@@ -9,9 +9,9 @@ import NoContentResponseInfo from "!/response_infos/no_content"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
-	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 import archived from "!/validators/manager/archived"
 import makeResourceIdentifierListDocumentRules
@@ -22,9 +22,9 @@ export default class extends JSONController {
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-			ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-			ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 		])
 	}
 

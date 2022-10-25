@@ -54,3 +54,18 @@ export const ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT: Permissions[]
 	"archiveAndRestore",
 	"writeOverallScope"
 ]
+
+export const VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT: Permissions[] = [
+	"vote",
+	"writeOwnScope"
+]
+
+export const VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT: Permissions[] = [
+	"vote",
+	"writeDepartmentScope"
+]
+
+export const VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT: Permissions[] = [
+	"vote",
+	"writeOverallScope"
+]

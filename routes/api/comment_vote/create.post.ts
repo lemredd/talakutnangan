@@ -1,37 +1,43 @@
 import type { FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type {
+	CommentVoteRelationships,
+	CommentVoteAttributes
+} from "$/types/documents/comment_vote"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import Manager from "%/managers/comment_vote"
-import { VoteKindValues } from "$/types/database"
 import CommentManager from "%/managers/comment"
 import JSONController from "!/controllers/json"
+import { VoteKindValues } from "$/types/database"
 import CreatedResponseInfo from "!/response_infos/created"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
-	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-	CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
 import string from "!/validators/base/string"
+import not from "!/validators/comparison/not"
 import exists from "!/validators/manager/exists"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 import makeRelationshipRules from "!/rule_sets/make_relationships"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
-			CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-			CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+			VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 		])
 	}
 
@@ -51,8 +57,24 @@ export default class extends JSONController {
 			{
 				"ClassName": CommentManager,
 				"isArray": false,
+				"options": {
+					"postIDRules": {
+						"constraints": {
+							"not": {
+								"constraints": {
+									"sameAttribute": {
+										"columnName": "userID",
+										"pointer": "data.relationships.user.data.id"
+									}
+								},
+								"pipes": [ existWithSameAttribute ]
+							}
+						},
+						"pipes": [ not ]
+					}
+				},
 				"relationshipName": "comment",
-				"typeName": "post",
+				"typeName": "comment",
 				"validator": exists
 			},
 			{
@@ -77,7 +99,13 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new Manager(request)
-		const commentInfo = await manager.create(request.body.data.attributes)
+		const attributes = request.body.data.attributes as CommentVoteAttributes
+		const data = request.body.data as CommentVoteRelationships
+		const commentInfo = await manager.create({
+			...attributes,
+			"commentID": Number(data.relationships.comment.data.id),
+			"userID": Number(data.relationships.user.data.id)
+		})
 
 		return new CreatedResponseInfo(commentInfo)
 	}
