@@ -179,26 +179,6 @@
 			}
 		}
 
-		@screen sm {
-				margin:auto 0;
-				.button-file{
-					@apply ml-80px;
-			}
-		}
-		@screen sm {
-				margin:auto 0;
-				.button-file{
-					@apply ml-120px;
-			}
-		}
-		.file-list{
-			@apply overflow-y-scroll;
-			max-height: 20vh;
-			@media screen and (min-width: 640px){
-				@apply max-h-60;
-			}
-		}
-
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
