@@ -106,14 +106,14 @@ const existence = computed<string>({
 
 const existenceOptions = [
 	{
-		"label": "all",
-		"value": "*"
-	},
-	{
 		"value": "exists"
 	},
 	{
 		"value": "archived"
+	},
+	{
+		"label": "all",
+		"value": "*"
 	}
 ] as OptionInfo[]
 </script>
