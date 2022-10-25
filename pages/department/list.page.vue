@@ -1,6 +1,7 @@
 <template>
 	<ResourceManager
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="[]"
 		:role-names="[]">
@@ -43,11 +44,12 @@ const list = ref<DeserializedDepartmentResource[]>(
 )
 
 const slug = ref<string>("")
+const existence = ref<"exists"|"archived"|"*">("exists")
 
 async function fetchDepartmentInfos(): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
-			"existence": "exists",
+			"existence": existence.value,
 			"slug": slug.value
 		},
 		"page": {
@@ -93,7 +95,7 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.map(item => item.id))

@@ -16,6 +16,11 @@
 				v-model="department"
 				label="Department"
 				:options="departmentNames"/>
+			<SelectableExistence
+				v-if="hasExistence"
+				v-model="existence"
+				title="Existence"
+				:options="existenceOptions"/>
 		</div>
 		<Suspensible :is-loaded="isLoaded">
 			<slot name="resources">
@@ -47,12 +52,14 @@ import isUndefined from "$/type_guards/is_undefined"
 
 import Suspensible from "@/suspensible.vue"
 import SearchFilter from "@/helpers/search_bar.vue"
+import SelectableExistence from "@/fields/selectable_radio.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
 	isLoaded: boolean
 	chosenRole?: string,
 	chosenDepartment?: string,
+	existence?: string,
 	slug?: string,
 
 	roleNames: OptionInfo[],
@@ -61,6 +68,7 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(e: "update:chosenDepartment", id: string): void
+	(e: "update:existence", existence: string): void
 	(e: "update:chosenRole", id: string): void
 	(e: "update:slug", slug: string): void
 }
@@ -87,4 +95,25 @@ const slugText = computed<string>({
 		emit("update:slug", newValue)
 	}
 })
+
+const hasExistence = computed(() => !isUndefined(props.existence))
+const existence = computed<string>({
+	get(): string { return props.existence as string },
+	set(newValue: string): void {
+		emit("update:existence", newValue)
+	}
+})
+
+const existenceOptions = [
+	{
+		"value": "exists"
+	},
+	{
+		"value": "archived"
+	},
+	{
+		"label": "all",
+		"value": "*"
+	}
+] as OptionInfo[]
 </script>

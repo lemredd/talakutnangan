@@ -55,6 +55,7 @@ export default class extends DoubleBoundJSONController {
 						"IDPath": "data.id"
 					}
 				},
+				"friendlyName": "Role name",
 				"pipes": [ required, string, regex, unique ]
 			},
 			...makeFlagRules("semesterFlags", semester),

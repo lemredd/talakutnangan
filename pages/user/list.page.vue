@@ -3,6 +3,7 @@
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
 		:role-names="roleNames">
@@ -43,8 +44,6 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
-import RoleFetcher from "$@/fetchers/role"
-import DepartmentFetcher from "$@/fetchers/department"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -59,8 +58,6 @@ const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
 
 const fetcher = new Fetcher()
-const roleFetcher = new RoleFetcher()
-const departmentFetcher = new DepartmentFetcher()
 
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
@@ -109,14 +106,15 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const chosenDepartment = ref("*")
 
 const slug = ref("")
+const existence = ref<"exists"|"archived"|"*">("exists")
 
 function fetchUserInfo() {
-	new Fetcher().list({
+	fetcher.list({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
 				? chosenDepartment.value
 				: currentUserDepartment.id,
-			"existence": "exists",
+			"existence": existence.value,
 			"kind": "*",
 			"role": chosenRole.value,
 			"slug": slug.value
@@ -149,5 +147,8 @@ async function resetUsersList() {
 	await fetchUserInfo()
 }
 
-watch([ chosenRole, slug, chosenDepartment ], debounce(resetUsersList, DEBOUNCED_WAIT_DURATION))
+watch(
+	[ chosenRole, slug, chosenDepartment, existence ],
+	debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
+)
 </script>
