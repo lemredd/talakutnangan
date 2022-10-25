@@ -6,22 +6,25 @@ Put your additions and compatible changes here...
 
 ## PR Quality
 - Is pull requester confidently has no/applied changes affected by breaking changes of previous PRs?
-  Yes/No
-- Has breaking changes? None/Yes
+  - [ ] Yes
+  - [ ] No
+- Has breaking changes?
+  - [ ] None
+  - [ ] Yes, and I will explain below.
 
 ## Merge Instructions
 - PRs to merge first: None / #xxx
 - Will have additional commits?
-	- [ ] None
-	- [ ] Yes
-	- [ ] Yes[unless all tests are success]
+  - [ ] None
+  - [ ] Yes
+  - [ ] Yes[unless all tests are success]
 - Must be merged ASAP?
-	- [ ] No
-	- [ ] Yes
+  - [ ] No
+  - [ ] Yes
 - In case of merge conflicts, who will resolve them?
-	- [ ] Pull requester
-	- [ ] Reviewer
-	- [ ] Whoever caught it first
+  - [ ] Pull requester
+  - [ ] Reviewer
+  - [ ] Whoever caught it first
 
 ## Lacking Mechanism
 - lemredd/talakutnangan#

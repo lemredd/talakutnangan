@@ -1,10 +1,10 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
+import Stub from "$/singletons/stub"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import SchedulePicker from "./schedule_picker.vue"
-import Stub from "$/singletons/stub"
 
 describe("Component: Schedule Picker", () => {
 	it("should identify 12-hour format value", () => {
@@ -95,6 +95,7 @@ describe("Component: Schedule Picker", () => {
 			}
 		})
 	})
+
 	it("should add new schedule in a day", async() => {
 		const wrapper = shallowMount<any>(SchedulePicker, {
 			"global": {
@@ -159,6 +160,7 @@ describe("Component: Schedule Picker", () => {
 		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 		expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 	})
+
 	it("should delete existing schedule", async() => {
 		const wrapper = shallowMount<any>(SchedulePicker, {
 			"global": {

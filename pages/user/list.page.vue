@@ -44,6 +44,10 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
+import RoleFetcher from "$@/fetchers/role"
+import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -58,6 +62,8 @@ const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
 
 const fetcher = new Fetcher()
+const roleFetcher = new RoleFetcher()
+const departmentFetcher = new DepartmentFetcher()
 
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
@@ -136,19 +142,21 @@ function fetchUserInfo() {
 	})
 }
 
-onMounted(async() => {
-	isLoaded.value = false
-	await fetchUserInfo()
-})
-
 async function resetUsersList() {
 	isLoaded.value = false
 	list.value = []
 	await fetchUserInfo()
 }
 
-watch(
-	[ chosenRole, slug, chosenDepartment, existence ],
-	debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
-)
+onMounted(async() => {
+	isLoaded.value = false
+	await loadRemainingRoles(roles, roleFetcher)
+	await loadRemainingDepartments(departments, departmentFetcher)
+	await fetchUserInfo()
+
+	watch(
+		[ chosenRole, slug, chosenDepartment, existence ],
+		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
+	)
+})
 </script>
