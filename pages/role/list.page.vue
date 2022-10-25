@@ -19,7 +19,6 @@ import { inject, onMounted, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
@@ -29,6 +28,7 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -89,34 +89,6 @@ async function fetchRoleInfos(): Promise<number|void> {
 	})
 }
 
-// TODO: Share this among resource pages
-async function fetchDepartmentInfos(): Promise<number|void> {
-	await departmentFetcher.list({
-		"filter": {
-			"existence": "exists",
-			"slug": ""
-		},
-		"page": {
-			"limit": 10,
-			"offset": departments.value.length
-		},
-		"sort": [ "fullName" ]
-	}).then(response => {
-		const { data, meta } = response.body
-
-		if (data.length === 0) return Promise.resolve()
-
-		departments.value = [ ...departments.value, ...data ]
-
-		const castMeta = meta as ResourceCount
-		if (departments.value.length < castMeta.count) {
-			return fetchDepartmentInfos()
-		}
-
-		return Promise.resolve()
-	})
-}
-
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -144,7 +116,7 @@ watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
-	await fetchDepartmentInfos()
+	await loadRemainingDepartments(departments, departmentFetcher)
 	isLoaded.value = true
 })
 </script>
