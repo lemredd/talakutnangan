@@ -23,33 +23,41 @@
 				class="may-admit"
 				type="checkbox"/>
 		</label>
-		<input
-			type="submit"
-			value="Save changes"/>
+		<div class="controls">
+			<input
+				type="submit"
+				value="Save changes"
+				class="btn btn-primary"/>
+			<button
+				v-if="isDeleted"
+				type="button"
+				class="btn btn-primary"
+				@click="restoreDepartment">
+				Restore
+			</button>
+			<button
+				v-else
+				type="button"
+				class="btn btn-primary"
+				@click="archiveDepartment">
+				Archive
+			</button>
+		</div>
+
 		<ConfirmationPassword
 			v-model="password"
 			:must-confirm="isBeingConfirmed"
 			@cancel="closeConfirmation"
 			@confirm="updateDepartment"/>
-		<button
-			v-if="isDeleted"
-			type="button"
-			class="btn btn-primary"
-			@click="restoreDepartment">
-			Restore
-		</button>
-		<button
-			v-else
-			type="button"
-			class="btn btn-primary"
-			@click="archiveDepartment">
-			Archive
-		</button>
 	</form>
 </template>
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
+
+	.controls{
+		@apply flex justify-between;
+	}
 </style>
 
 <script setup lang="ts">
