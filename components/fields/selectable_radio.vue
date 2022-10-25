@@ -30,7 +30,6 @@ const props = defineProps<ComponentProps>()
 
 const emit = defineEmits<{(e: "update:modelValue", value: string): void}>()
 
-const selectID = computed(() => props.options.map(info => info.value).join(" ").replace(" ", "_"))
 const value = computed({
 	get() {
 		return props.modelValue

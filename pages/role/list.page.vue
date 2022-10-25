@@ -2,6 +2,7 @@
 	<ResourceManager
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
 		:role-names="[]">
@@ -62,6 +63,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 
 const slug = ref<string>("")
+const existence = ref<string>("*")
 
 async function fetchRoleInfos(): Promise<number|void> {
 	await fetcher.list({

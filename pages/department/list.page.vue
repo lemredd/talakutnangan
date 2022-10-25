@@ -1,6 +1,7 @@
 <template>
 	<ResourceManager
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="[]"
 		:role-names="[]">
@@ -43,6 +44,7 @@ const list = ref<DeserializedDepartmentResource[]>(
 )
 
 const slug = ref<string>("")
+const existence = ref<string>("*")
 
 async function fetchDepartmentInfos(): Promise<number|void> {
 	await fetcher.list({

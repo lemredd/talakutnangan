@@ -3,6 +3,7 @@
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
+		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
 		:role-names="roleNames">
@@ -109,6 +110,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const chosenDepartment = ref("*")
 
 const slug = ref("")
+const existence = ref("*")
 
 function fetchUserInfo() {
 	new Fetcher().list({
