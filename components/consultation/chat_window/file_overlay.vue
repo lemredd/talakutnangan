@@ -5,10 +5,10 @@
 		@close="hideFileRepoOverlay">
 		<template #header>
 			<div class="tabs">
-				<button class="button-file" @click="switchTab">
+				<button class="file-tab" @click="switchTab">
 					File
 				</button>
-				<button class="button-picture" @click="switchTab">
+				<button class="picture-tab" @click="switchTab">
 					Pictures
 				</button>
 			</div>
