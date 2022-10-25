@@ -7,6 +7,7 @@
 			for="exists">
 			<input
 				:id="option.label"
+				v-model="value"
 				:value="option.value"
 				type="radio"/>
 			{{ option.label ?? option.value }}
