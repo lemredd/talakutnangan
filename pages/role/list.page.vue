@@ -63,13 +63,13 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 
 const slug = ref<string>("")
-const existence = ref<string>("*")
+const existence = ref<"exists"|"archived"|"*">("exists")
 
 async function fetchRoleInfos(): Promise<number|void> {
 	await fetcher.list({
 		"filter": {
 			"department": chosenDepartment.value,
-			"existence": "exists",
+			"existence": existence.value,
 			"slug": slug.value
 		},
 		"page": {
@@ -142,7 +142,7 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ chosenDepartment, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.map(item => item.id))
