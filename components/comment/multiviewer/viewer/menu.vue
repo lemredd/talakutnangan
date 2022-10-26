@@ -89,7 +89,7 @@ const mayUpdateComment = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	return isPermitted && props.comment.deletedAt === null
+	return isPermitted && !props.comment.deletedAt
 })
 
 const mayArchiveOrRestoreComment = computed<boolean>(() => {
@@ -116,12 +116,12 @@ const mayArchiveOrRestoreComment = computed<boolean>(() => {
 
 const mayArchiveComment = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestoreComment.value
-	return isPermitted && props.comment.deletedAt === null
+	return isPermitted && !props.comment.deletedAt
 })
 
 const mayRestoreComment = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestoreComment.value
-	return isPermitted && props.comment.deletedAt !== null
+	return isPermitted && Boolean(props.comment.deletedAt)
 })
 
 const shouldHaveMenu = computed<boolean>(
