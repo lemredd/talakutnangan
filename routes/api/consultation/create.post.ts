@@ -5,11 +5,13 @@ import type { ConsultationResource } from "$/types/documents/consultation"
 
 import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
 
+import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import deserialize from "$/object/deserialize"
 import JSONController from "!/controllers/json"
+import ValidationError from "$!/errors/validation"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
 import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
@@ -32,7 +34,6 @@ import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
 import isWithinEmployeeSchedule from "!/validators/manager/is_within_employee_schedule"
-import Socket from "!/ws/socket"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -161,9 +162,20 @@ export default class extends JSONController {
 
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
+		const resource = request.body.data as ConsultationResource<"create">
+		if (resource.relationships.participants.data.findIndex(
+			identifier => identifier.id === resource.relationships.consultant.data.id
+		)) {
+			throw new ValidationError(
+				{
+					"pointer": "data.relationships.consultant.data.id"
+				},
+				"The ID of the consultant must be one of the participants."
+			)
+		}
+
 		const user = deserialize(request.user) as DeserializedUserProfile
 		const manager = new ConsultationManager(request)
-		const resource = request.body.data as ConsultationResource<"create">
 
 		const consultationInfo = await manager.createUsingResource(resource, Number(user.data.id))
 		const userIDs = resource.relationships.participants.data.map(data => data.id)

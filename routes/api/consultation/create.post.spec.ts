@@ -56,6 +56,10 @@ describe("Controller: POST /api/consultation", () => {
 						"participants": {
 							"data": [
 								{
+									"id": String(model.consultant?.id),
+									"type": "user"
+								},
+								{
 									"id": String(user.id),
 									"type": "user"
 								}
