@@ -41,18 +41,16 @@
 import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
-	"totalMillisecondsConsumed"
+	"timeConsumedPerWeek"
 >
 const { pageProps } = pageContext
-const totalMillisecondsConsumed
-= pageProps.totalMillisecondsConsumed as WeeklySummedTimeDocument
+const { totalMillisecondsConsumed } = pageProps
 
 function convertToFullTimeString(timeInMilliseconds: number) {
 	const {

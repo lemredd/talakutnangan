@@ -31,7 +31,7 @@ export default class extends PageMiddleware {
 		const manager = new Manager(request)
 		const user = deserialize(request.user) as DeserializedUserProfile
 
-		const weeklyTotalMillisecondsConsumed = await manager.sumTimePerWeek({
+		const timeConsumedPerWeek = await manager.sumTimePerWeek({
 			"filter": {
 				"dateTimeRange": {
 					"begin": new Date("2022-10-01T00:00:00"),
@@ -48,7 +48,7 @@ export default class extends PageMiddleware {
 		})
 
 		return {
-			weeklyTotalMillisecondsConsumed
+			timeConsumedPerWeek
 		}
 	}
 }

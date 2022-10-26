@@ -1,7 +1,7 @@
 <template>
 	<ul>
 		<li
-			v-for="sumEntry in totalMillisecondsConsumed.data"
+			v-for="sumEntry in timeConsumedPerStudent.data"
 			:key="sumEntry.id">
 			<h3 class="sum-entry-owner">
 				{{ sumEntry.name }} <small>({{ sumEntry.email }})</small>
@@ -40,18 +40,16 @@
 import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
-	"totalMillisecondsConsumed"
+	"timeConsumedPerStudent"
 >
 const { pageProps } = pageContext
-const totalMillisecondsConsumed
-= pageProps.totalMillisecondsConsumed as DeserializedUserListWithTimeConsumedDocument
+const { timeConsumedPerStudent } = pageProps
 
 function convertToFullTimeString(timeInMilliseconds: number) {
 	const {
