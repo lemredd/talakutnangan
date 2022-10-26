@@ -86,10 +86,10 @@ const mayUpdatePost = computed<boolean>(() => {
 			UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || (
-				!isUndefined(department.value)
+			isOwned
+				|| !isUndefined(department.value)
 				&& department.value?.id === userProfile.data.department.data.id
-			)
+
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -101,7 +101,7 @@ const mayUpdatePost = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	return isPermitted && props.post.deletedAt === null
+	return isPermitted && !props.post.deletedAt
 })
 
 const mayArchiveOrRestorePost = computed<boolean>(() => {
@@ -129,12 +129,12 @@ const mayArchiveOrRestorePost = computed<boolean>(() => {
 
 const mayArchivePost = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestorePost.value
-	return isPermitted && props.post.deletedAt === null
+	return isPermitted && !props.post.deletedAt
 })
 
 const mayRestorePost = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestorePost.value
-	return isPermitted && props.post.deletedAt !== null
+	return isPermitted && Boolean(props.post.deletedAt)
 })
 
 function updatePost() {
