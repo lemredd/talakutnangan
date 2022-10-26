@@ -89,17 +89,20 @@ describe("POST /api/consultation", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.CREATED)
 		expect(response.body.data.attributes.reason).toStrictEqual(model.reason)
 		const previousCalls = Socket.consumePreviousCalls()
+		expect(previousCalls).toHaveLength(2)
 		expect(previousCalls[0].functionName).toBe("emitToClients")
 		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"namespace",
 			makeConsultationListOfUserNamespace(String(consultant.id))
 		)
-		expect(previousCalls[0].functionName).toBe("emitToClients")
-		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
-		expect(previousCalls[0].arguments).toHaveProperty(
+		expect(previousCalls[0].arguments).toHaveProperty("data.0.data.type", "consultation")
+		expect(previousCalls[1].functionName).toBe("emitToClients")
+		expect(previousCalls[1].arguments).toHaveProperty("eventName", "create")
+		expect(previousCalls[1].arguments).toHaveProperty(
 			"namespace",
 			makeConsultationListOfUserNamespace(String(user.id))
 		)
+		expect(previousCalls[1].arguments).toHaveProperty("data.0.data.type", "consultation")
 	})
 })

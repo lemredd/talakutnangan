@@ -1,7 +1,10 @@
 import type { Rules, FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { ConsultationResource } from "$/types/documents/consultation"
+import type {
+	ConsultationResource,
+	ConsultationRelationships
+} from "$/types/documents/consultation"
 
 import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
 
@@ -12,6 +15,7 @@ import deserialize from "$/object/deserialize"
 import JSONController from "!/controllers/json"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
+import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
 
 import KindBasedPolicy from "!/policies/kind-based"
 import requireSignature from "!/helpers/require_signature"
@@ -31,6 +35,7 @@ import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import uniqueConsultationSchedule from "!/validators/date/unique_consultation_schedule"
 import isWithinEmployeeSchedule from "!/validators/manager/is_within_employee_schedule"
+import Socket from "!/ws/socket"
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -161,11 +166,18 @@ export default class extends JSONController {
 	: Promise<CreatedResponseInfo> {
 		const user = deserialize(request.user) as DeserializedUserProfile
 		const manager = new ConsultationManager(request)
+		const resource = request.body.data as ConsultationResource<"create">
 
-		const consultationInfo = await manager.createUsingResource(
-			request.body.data as ConsultationResource<"create">,
-			Number(user.data.id)
-		)
+		const consultationInfo = await manager.createUsingResource(resource, Number(user.data.id))
+		const userIDs = [
+			resource.relationships.consultant.data.id,
+			...resource.relationships.participants.data.map(data => data.id)
+		]
+
+		for (const userID of userIDs) {
+			const namespace = makeConsultationListOfUserNamespace(userID)
+			Socket.emitToClients(namespace, "create", consultationInfo)
+		}
 
 		return new CreatedResponseInfo(consultationInfo)
 	}
