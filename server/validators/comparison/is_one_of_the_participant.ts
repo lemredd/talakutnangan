@@ -6,7 +6,6 @@ import type { ValidationState, ValidationConstraints } from "!/types/validation"
  * Validator to check if requester is of belongs to the participants.
  *
  */
-
 export default async function(
 	currentState: Promise<ValidationState>,
 	constraints: ValidationConstraints<AuthenticatedRequest>
