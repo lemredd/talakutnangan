@@ -37,32 +37,6 @@
 					@hide-file-repo-overlay="hideFileRepoOverlay"
 					@switch-tab="switchTab"/>
 
-				<Dropdown
-					:is-dropdown-shown="isHeaderControlDropdownShown"
-					class="additional-controls"
-					@toggle="toggleHeaderControlDropdownShown">
-					<template #toggler>
-						<button class="material-icons toggle-controls-btn">
-							more_horiz
-						</button>
-					</template>
-
-					<template #dropdown-contents>
-						<div class="links">
-							<a
-								href="#"
-								class="additional-control view-printable-form-btn">
-								View consultation form
-							</a>
-							<a
-								v-if="isCurrentUserConsultant"
-								href="#"
-								class="additional-control view-action-taken-overlay-btn"
-								@click="showActionTakenOverlay">Finish consultation</a>
-						</div>
-					</template>
-				</Dropdown>
-
 				<Overlay
 					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
 					class="action-taken"
