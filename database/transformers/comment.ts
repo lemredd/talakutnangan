@@ -10,13 +10,11 @@ import Serializer from "%/transformers/serializer"
 type Relationships =
 	|"user"
 	|"post"
-	|"comments"
-	|"parentComment"
 
 export default class CommentTransformer extends Transformer<Model, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "user", "post", "parentComment" ]
+			"included": [ "user", "post" ]
 		}
 	) {
 		super("comment", [
@@ -30,21 +28,6 @@ export default class CommentTransformer extends Transformer<Model, void> {
 				? {
 					"attribute": "post",
 					"transformer": new PostTransformer()
-				}
-				: null,
-			included.indexOf("parentComment") > -1
-				? {
-					"attribute": "parentComment",
-					// Prevent recursion to parent comment by ignoring from possible transformers.
-					"transformer": new CommentTransformer({
-						"included": [ "user", "post" ]
-					})
-				}
-				: null,
-			included.indexOf("comments") > -1
-				? {
-					"attribute": "comments",
-					"transformer": new CommentTransformer()
 				}
 				: null
 		])
