@@ -1,4 +1,5 @@
 import type { Request } from "!/types/dependent"
+import type { GeneralObject } from "$/types/general"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import deserialize from "$/object/deserialize"
@@ -10,10 +11,14 @@ import AuditTrailManager from "%/managers/audit_trail"
  */
 export default class ActionAuditor extends RequestFilter {
 	private actionName: string
+	private extra: GeneralObject
 
-	constructor(actionName: string) {
+	constructor(actionName: string, extra: GeneralObject = {
+		"isSensitive": false
+	}) {
 		super()
 		this.actionName = actionName
+		this.extra = extra
 	}
 
 	async filterRequest(request: Request): Promise<void> {
@@ -25,7 +30,7 @@ export default class ActionAuditor extends RequestFilter {
 
 		await manager.create({
 			"actionName": this.actionName,
-			"extra": {},
+			"extra": this.extra,
 			userID
 		})
 	}
