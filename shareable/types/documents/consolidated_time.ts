@@ -31,7 +31,7 @@ interface ConsolidatedSummedTimeProperties extends BasicSummedTimeMetaProperties
 }
 
 interface ConsolidatedSummedTimeMetaCollection extends Serializable {
-	consolidatedTimeSums: ConsolidatedSummedTimeProperties[]
+	rawConsolidatedTimeSums: ConsolidatedSummedTimeProperties[]
 }
 
 export type ConsolidatedSummedTimeDocument = MetaDocument<ConsolidatedSummedTimeMetaCollection>
