@@ -1,5 +1,6 @@
 <template>
 	<ul>
+		<!-- TODO: correct the entries here -->
 		<li
 			v-for="sumEntry in totalMillisecondsConsumed.data"
 			:key="sumEntry.id">
@@ -40,7 +41,7 @@
 import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
+import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
@@ -51,7 +52,7 @@ const pageContext = inject("pageContext") as PageContext<
 >
 const { pageProps } = pageContext
 const totalMillisecondsConsumed
-= pageProps.totalMillisecondsConsumed as DeserializedUserListWithTimeConsumedDocument
+= pageProps.totalMillisecondsConsumed as WeeklySummedTimeDocument
 
 function convertToFullTimeString(timeInMilliseconds: number) {
 	const {
