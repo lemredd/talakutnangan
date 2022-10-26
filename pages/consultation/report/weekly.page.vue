@@ -2,7 +2,7 @@
 	<ul>
 		<!-- TODO: correct the entries here -->
 		<li
-			v-for="sumEntry in totalMillisecondsConsumed.data"
+			v-for="sumEntry in timeConsumedPerWeek.data"
 			:key="sumEntry.id">
 			<h3 class="sum-entry-owner">
 				{{ sumEntry.name }} <small>({{ sumEntry.email }})</small>
@@ -50,7 +50,7 @@ const pageContext = inject("pageContext") as PageContext<
 	"timeConsumedPerWeek"
 >
 const { pageProps } = pageContext
-const { totalMillisecondsConsumed } = pageProps
+const { timeConsumedPerWeek } = pageProps
 
 function convertToFullTimeString(timeInMilliseconds: number) {
 	const {
