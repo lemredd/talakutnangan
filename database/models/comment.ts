@@ -1,9 +1,7 @@
 import {
 	Table,
 	Column,
-	HasMany,
 	DataType,
-	AllowNull,
 	BelongsTo,
 	ForeignKey
 } from "sequelize-typescript"
@@ -36,21 +34,4 @@ export default class Comment extends TextContentLike {
 
 	@BelongsTo(() => Post)
 		post!: Post
-
-	@AllowNull
-	@ForeignKey(() => Comment)
-	@Column({
-		"defaultValue": null,
-		"field": "commentID",
-		"type": DataType.BIGINT
-	})
-		parentCommentID?: number|null
-
-	@BelongsTo(() => Comment, "commentID")
-		// eslint-disable-next-line no-use-before-define
-		parentComment?: Comment|null
-
-	@HasMany(() => Comment)
-		// eslint-disable-next-line no-use-before-define
-		comments?: Comment[]
 }
