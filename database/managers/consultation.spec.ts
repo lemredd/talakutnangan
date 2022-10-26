@@ -5,6 +5,7 @@ import type { ConsultationResource } from "$/types/documents/consultation"
 import Model from "%/models/consultation"
 import twoDigits from "$/time/two_digits"
 import UserFactory from "~/factories/user"
+import makeUnique from "$/array/make_unique"
 import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
@@ -323,7 +324,7 @@ describe("Database Manager: Consultation read operations", () => {
 		})
 	})
 
-	it("can sum time by week", async() => {
+	it("can sum time for consolidation", async() => {
 		const manager = new Manager()
 		const user = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
@@ -393,18 +394,20 @@ describe("Database Manager: Consultation read operations", () => {
 					}).map(consultation => String(consultation.id)),
 					"endDateTime": new Date(`2015-02-${twoDigits(date)}T23:59:59.999`),
 					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:00"),
-					"userIDs": completeConsultationInfo.filter(consultation => {
-						const startedAt = consultation.startedAt as Date
-						const finishedAt = consultation.finishedAt as Date
-						const isWithinRange = startedAt.getDate() === date
-							&& finishedAt.getDate() === date
+					"userIDs": makeUnique(
+						completeConsultationInfo.filter(consultation => {
+							const startedAt = consultation.startedAt as Date
+							const finishedAt = consultation.finishedAt as Date
+							const isWithinRange = startedAt.getDate() === date
+								&& finishedAt.getDate() === date
 
-						return isWithinRange
-					})
-					.map(consultation => consultation.chatMessageActivities as ChatMessageActivity[])
-					.flat()
-					.filter(chatMessageActivity => chatMessageActivity.id !== user.id)
-					.map(chatMessageActivity => String(chatMessageActivity.id))
+							return isWithinRange
+						})
+						.map(consultation => consultation.chatMessageActivities as ChatMessageActivity[])
+						.flat()
+						.filter(chatMessageActivity => chatMessageActivity.id !== user.id)
+						.map(chatMessageActivity => String(chatMessageActivity.userID))
+					)
 				}))
 			}
 		})

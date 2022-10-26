@@ -29,6 +29,7 @@ import Log from "$!/singletons/log"
 import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
 import Condition from "%/helpers/condition"
+import makeUnique from "$/array/make_unique"
 import deserialize from "$/object/deserialize"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
@@ -358,14 +359,8 @@ export default class extends BaseManager<
 						"where": new Condition().and(
 							new Condition().not("startedAt", null),
 							new Condition().not("finishedAt", null),
-							new Condition().greaterThanOrEqual(
-								"startedAt",
-								query.filter.dateTimeRange.begin
-							),
-							new Condition().lessThanOrEqual(
-								"finishedAt",
-								query.filter.dateTimeRange.end
-							)
+							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
 						).build()
 					} as FindOptions<any>, query) as IncludeOptions
 				],
@@ -461,14 +456,8 @@ export default class extends BaseManager<
 						"where": new Condition().and(
 							new Condition().not("startedAt", null),
 							new Condition().not("finishedAt", null),
-							new Condition().greaterThanOrEqual(
-								"startedAt",
-								query.filter.dateTimeRange.begin
-							),
-							new Condition().lessThanOrEqual(
-								"finishedAt",
-								query.filter.dateTimeRange.end
-							)
+							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
 						).build()
 					} as FindOptions<any>, query) as IncludeOptions
 				],
@@ -479,6 +468,9 @@ export default class extends BaseManager<
 				chatMessageActivities.map(activity => activity.consultation),
 				leftModel => leftModel.id
 			)
+			const availableDates = makeUnique(
+				models.map(model => resetToMidnight(model.startedAt as Date).toJSON())
+			).map(dateString => new Date(dateString))
 
 			const sums: ConsolidatedSummedTimeDocument = {
 				"meta": {
@@ -486,24 +478,33 @@ export default class extends BaseManager<
 				}
 			}
 
-			let i = adjustedBeginDate
-			do {
-				const rangeStart = resetToMidnight(i)
-				const rangeLastEnd = adjustBeforeMidnightOfNextDay(i)
+			for (const availableDate of availableDates) {
+				const rangeStart = resetToMidnight(availableDate)
+				const rangeLastEnd = adjustBeforeMidnightOfNextDay(availableDate)
+				const filteredConsultations = models.filter(model => {
+					const startedAt = model.startedAt as Date
+					const finishedAt = model.finishedAt as Date
+					const isWithinRange = startedAt.getDate() === rangeStart.getDate()
+						&& finishedAt.getDate() === rangeLastEnd.getDate()
+
+					return isWithinRange
+				})
 
 				sums.meta.rawConsolidatedTimeSums.push({
-					"beginDateTime": resetToMidnight(i),
-					"consultationIDs": models.filter(model => {
-						const startedAt = model.startedAt as Date
-						const finishedAt = model.finishedAt as Date
-						const isWithinRange = startedAt.getDate() === rangeStart.getDate()
-							&& finishedAt.getDate() === rangeLastEnd.getDate()
-
-						return isWithinRange
-					}).map(model => String(model.id)),
+					"beginDateTime": rangeStart,
+					"consultationIDs": makeUnique(filteredConsultations.map(model => String(model.id))),
 					"endDateTime": rangeLastEnd,
-					"totalMillisecondsConsumed": 0,
-					"userIDs": chatMessageActivities.filter(chatMessageActivity => {
+					"totalMillisecondsConsumed": filteredConsultations.map(
+						model => {
+							const startedAt = model.startedAt as Date
+							const finishedAt = model.finishedAt as Date
+							return calculateMillisecondDifference(finishedAt, startedAt)
+						}
+					).reduce(
+						(previousDuration, currentDuration) => previousDuration + currentDuration,
+						0
+					),
+					"userIDs": makeUnique(chatMessageActivities.filter(chatMessageActivity => {
 						const model = chatMessageActivity.consultation
 						const startedAt = model.startedAt as Date
 						const finishedAt = model.finishedAt as Date
@@ -511,11 +512,9 @@ export default class extends BaseManager<
 							&& finishedAt.getDate() === rangeLastEnd.getDate()
 
 						return isWithinRange
-					}).map(activity => String(activity.userID))
+					}).map(activity => String(activity.userID)))
 				})
-
-				i = adjustUntilChosenDay(rangeStart, (rangeStart.getDay() + 1) % 7, 1)
-			} while (i < adjustedEndDate)
+			}
 
 			return sums
 		} catch (error) {
