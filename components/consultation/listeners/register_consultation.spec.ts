@@ -19,9 +19,12 @@ describe("Listener: Consultation", () => {
 		const consultationNamespace = makeConsultationNamespace(id)
 
 		const consultation = ref({ id }) as unknown
-		listener(consultation as Ref<
-			DeserializedConsultationResource<"consultant"|"consultantRole">
-		>)
+		listener(
+			consultation as Ref<
+				DeserializedConsultationResource<"consultant"|"consultantRole">
+			>,
+			"1"
+		)
 
 		jest.useFakeTimers()
 
