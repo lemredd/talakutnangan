@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils"
 
-import Page from "./report.page.vue"
+import Page from "./per_student.page.vue"
 
 describe("Page: user/report", () => {
 	it("can display properly", () => {
