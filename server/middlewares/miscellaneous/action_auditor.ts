@@ -11,11 +11,11 @@ import AuditTrailManager from "%/managers/audit_trail"
  */
 export default class ActionAuditor extends RequestFilter {
 	private actionName: string
-	private extra: GeneralObject
+	private extra: (request: Request) => GeneralObject
 
-	constructor(actionName: string, extra: GeneralObject = {
+	constructor(actionName: string, extra: (request: Request) => GeneralObject = () => ({
 		"isSensitive": false
-	}) {
+	})) {
 		super()
 		this.actionName = actionName
 		this.extra = extra
@@ -30,7 +30,7 @@ export default class ActionAuditor extends RequestFilter {
 
 		await manager.create({
 			"actionName": this.actionName,
-			"extra": this.extra,
+			"extra": this.extra(request),
 			userID
 		})
 	}
