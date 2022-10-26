@@ -166,10 +166,7 @@ export default class extends JSONController {
 		const resource = request.body.data as ConsultationResource<"create">
 
 		const consultationInfo = await manager.createUsingResource(resource, Number(user.data.id))
-		const userIDs = [
-			resource.relationships.consultant.data.id,
-			...resource.relationships.participants.data.map(data => data.id)
-		]
+		const userIDs = resource.relationships.participants.data.map(data => data.id)
 
 		for (const userID of userIDs) {
 			const namespace = makeConsultationListOfUserNamespace(userID)
