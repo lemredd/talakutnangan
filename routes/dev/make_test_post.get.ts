@@ -121,7 +121,6 @@ export default class extends DevController {
 
 		const postFactory = new PostFactory()
 		const postModel = await postFactory.serializedOne(true)
-		console.log(postModel)
 
 		response.status(this.status.OK).send({
 			"data": [
