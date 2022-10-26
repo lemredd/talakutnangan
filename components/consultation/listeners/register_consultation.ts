@@ -37,13 +37,15 @@ export default function(
 			newConsultation
 		) as DeserializedConsultationDocument<"read">
 
-		consultation.value = {
-			...consultation.value,
-			...deserializedConsultation.data
-		}
+		consultations.value.data = [
+			...consultations.value.data,
+			deserializedConsultation.data as unknown as DeserializedConsultationResource<
+			"consultant"|"consultantRole"
+			>
+		]
 	}
 	const consultationListOfUserNamespace = makeConsultationListOfUserNamespace(userID)
 	Socket.addEventListeners(consultationListOfUserNamespace, {
-		"update": createConsultation
+		"create": createConsultation
 	})
 }
