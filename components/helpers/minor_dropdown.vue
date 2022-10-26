@@ -42,7 +42,7 @@
 				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max py-1 px-2;
 
 				inset: unset;
-				transform: translatex(-50%) translateY(125%);
+				transform: translatex(-50%) translateY(60%);
 			}
 		}
 	}
