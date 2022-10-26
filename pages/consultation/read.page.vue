@@ -242,7 +242,7 @@ onMounted(async() => {
 		currentChatMessageActivityResource,
 		chatMessageActivityFetcher
 	)
-	registerConsultationListeners(consultation)
+	registerConsultationListeners(consultation, userProfile.data.id)
 	registerChatActivityListeners(consultation, chatMessageActivities)
 
 	await loadConsultations()

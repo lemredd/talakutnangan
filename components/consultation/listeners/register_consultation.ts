@@ -12,7 +12,8 @@ import makeConsultationNamespace from "$/namespace_makers/consultation"
 import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
 
 export default function(
-	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>
+	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
+	userID: string
 ) {
 	function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
 		const deserializedConsultation = deserialize(
@@ -24,7 +25,6 @@ export default function(
 			...deserializedConsultation.data
 		}
 	}
-
 	const consultationNamespace = makeConsultationNamespace(consultation.value.id)
 	Socket.addEventListeners(consultationNamespace, {
 		"update": updateConsultation
