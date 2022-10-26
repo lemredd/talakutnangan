@@ -17,7 +17,7 @@ export default class Transport {
 		senderUsername: string,
 		senderPassword: string
 	): void {
-		if (!this.currentInstance) {
+		if (!this.currentInstance && process.env.EMAIL_SERVER !== "false") {
 			this.currentInstance = new Transport(
 				host,
 				port,
