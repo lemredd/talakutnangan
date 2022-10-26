@@ -47,6 +47,7 @@ describe("POST /api/consultation", () => {
 		.post("/api/consultation")
 		.set("Cookie", cookie)
 		.send({
+
 			"data": {
 				"attributes": {
 					"actionTaken": model.actionTaken,
@@ -70,6 +71,10 @@ describe("POST /api/consultation", () => {
 					},
 					"participants": {
 						"data": [
+							{
+								"id": String(consultant.id),
+								"type": "user"
+							},
 							{
 								"id": String(user.id),
 								"type": "user"
