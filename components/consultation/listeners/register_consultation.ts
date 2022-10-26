@@ -3,7 +3,8 @@ import { Ref } from "vue"
 import type {
 	ConsultationResource,
 	DeserializedConsultationDocument,
-	DeserializedConsultationResource
+	DeserializedConsultationResource,
+	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
 import Socket from "$@/external/socket"
@@ -13,6 +14,7 @@ import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation
 
 export default function(
 	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
+	consultations: Ref<DeserializedConsultationListDocument<"consultant"|"consultantRole">>,
 	userID: string
 ) {
 	function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
