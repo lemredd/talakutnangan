@@ -33,7 +33,7 @@ describe("Component: comment/multiviewer/viewer", () => {
 					"type": "user"
 				}
 			}
-		} as DeserializedCommentResource<"user"|"parentComment">
+		} as DeserializedCommentResource<"user">
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Component, {
 			"global": {

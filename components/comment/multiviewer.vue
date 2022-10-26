@@ -20,22 +20,22 @@ import type { DeserializedCommentResource } from "$/types/documents/comment"
 import Viewer from "@/comment/multiviewer/viewer.vue"
 
 const props = defineProps<{
-	modelValue: DeserializedCommentResource<"user"|"parentComment">[]
+	modelValue: DeserializedCommentResource<"user"">[]
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		comment: DeserializedCommentResource<"user"|"parentComment">[]
+		comment: DeserializedCommentResource<"user"">[]
 	): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const comments = computed<DeserializedCommentResource<"user"|"parentComment">[]>({
-	get(): DeserializedCommentResource<"user"|"parentComment">[] {
+const comments = computed<DeserializedCommentResource<"user"">[]>({
+	get(): DeserializedCommentResource<"user"">[] {
 		return props.modelValue
 	},
-	set(newValue: DeserializedCommentResource<"user"|"parentComment">[]): void {
+	set(newValue: DeserializedCommentResource<"user"">[]): void {
 		emit("update:modelValue", newValue)
 	}
 })
