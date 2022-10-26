@@ -1,9 +1,11 @@
+/* eslint-disable max-lines */
 import type { UserIdentifierDocument } from "$/types/documents/user"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
 import Model from "%/models/consultation"
 import twoDigits from "$/time/two_digits"
 import UserFactory from "~/factories/user"
+import makeUnique from "$/array/make_unique"
 import Factory from "~/factories/consultation"
 import ChatMessage from "%/models/chat_message"
 import AttachedRoleFactory from "~/factories/attached_role"
@@ -318,6 +320,95 @@ describe("Database Manager: Consultation read operations", () => {
 						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
 					}))
 				)
+			}
+		})
+	})
+
+	it("can sum time for consolidation", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		// eslint-disable-next-line no-magic-numbers
+		const datesOfFebruary = [ 1, 2, 10, 11 ]
+		const consultations = await Promise.all(datesOfFebruary.map(
+			date => [
+				new Factory()
+				.consultantInfo(() => Promise.resolve(attachedRole))
+				.startedAt(() => new Date(`2015-02-${twoDigits(date)}T08:00:00`))
+				.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T08:10:00`))
+				.insertOne(),
+				new Factory()
+				.consultantInfo(() => Promise.resolve(attachedRole))
+				.startedAt(() => new Date(`2015-02-${twoDigits(date)}T10:05:00`))
+				.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T10:10:00`))
+				.insertOne()
+			]
+		).flat())
+		const consultationIteratorForConsultant = consultations.values()
+		await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultationIteratorForConsultant.next().value))
+		.insertMany(consultations.length)
+		const consultationIteratorForConsulters = consultations.values()
+		await new ChatMessageActivityFactory()
+		.consultation(() => Promise.resolve(consultationIteratorForConsulters.next().value))
+		.insertMany(consultations.length)
+
+		const times = await manager.sumTimeForConsolidation({
+			"filter": {
+				"dateTimeRange": {
+					"begin": new Date("2015-02-01T00:00:00"),
+					"end": new Date("2015-02-28T23:59:59.999")
+				},
+				"existence": "exists",
+				"user": user.id
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "startedAt" ]
+		})
+
+		const completeConsultationInfo = await Model.findAll({
+			"include": [
+				{
+					"model": ChatMessageActivity,
+					"required": true
+				}
+			]
+		})
+		expect(times).toStrictEqual({
+			"meta": {
+				"rawConsolidatedTimeSums": datesOfFebruary.map(date => ({
+					"beginDateTime": new Date(`2015-02-${twoDigits(date)}T00:00:00`),
+					"consultationIDs": completeConsultationInfo.filter(consultation => {
+						const startedAt = consultation.startedAt as Date
+						const finishedAt = consultation.finishedAt as Date
+						const isWithinRange = startedAt.getDate() === date
+							&& finishedAt.getDate() === date
+
+						return isWithinRange
+					}).map(consultation => String(consultation.id)),
+					"endDateTime": new Date(`2015-02-${twoDigits(date)}T23:59:59.999`),
+					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:00"),
+					"userIDs": makeUnique(
+						completeConsultationInfo.filter(consultation => {
+							const startedAt = consultation.startedAt as Date
+							const finishedAt = consultation.finishedAt as Date
+							const isWithinRange = startedAt.getDate() === date
+								&& finishedAt.getDate() === date
+
+							return isWithinRange
+						})
+						.map(consultation => consultation.chatMessageActivities as ChatMessageActivity[])
+						.flat()
+						.filter(chatMessageActivity => chatMessageActivity.id !== user.id)
+						.map(chatMessageActivity => String(chatMessageActivity.userID))
+					)
+				}))
 			}
 		})
 	})

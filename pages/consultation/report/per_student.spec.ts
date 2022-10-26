@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils"
 
-import Page from "./report.page.vue"
+import Page from "./per_student.page.vue"
 
 describe("Page: user/report", () => {
 	it("can display properly", () => {
@@ -14,7 +14,7 @@ describe("Page: user/report", () => {
 				}
 			]
 		}
-		const totalMillisecondsConsumed = {
+		const timeConsumedPerStudent = {
 			"data": [
 				{
 					"email": "B@email",
@@ -32,7 +32,7 @@ describe("Page: user/report", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							totalMillisecondsConsumed
+							timeConsumedPerStudent
 						}
 					}
 				}
@@ -43,7 +43,7 @@ describe("Page: user/report", () => {
 		const consultations = wrapper.findAll(".consultation")
 
 		expect(sumEntryOwner.text()).toEqual(
-			`${totalMillisecondsConsumed.data[0].name} (${totalMillisecondsConsumed.data[0].email})`
+			`${timeConsumedPerStudent.data[0].name} (${timeConsumedPerStudent.data[0].email})`
 		)
 		expect(milliseconds.text()).toEqual(
 			"Time consumed: 0 hours 1 minutes 0 seconds"
