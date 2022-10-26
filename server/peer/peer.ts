@@ -34,7 +34,7 @@ export default class Peer extends RequestEnvironment {
 	}
 
 	private static get server(): PeerServer {
-		if (this.rawServer) return this.rawServer
+		if (this.rawServer && process.env.WEB_PEER_SERVER !== "false") return this.rawServer
 
 		throw new Developer(
 			"Peer server was not initialized.",

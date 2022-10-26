@@ -53,7 +53,7 @@ export default class Socket extends RequestEnvironment {
 	}
 
 	private static get server(): WebSocketServer {
-		if (this.rawServer) return this.rawServer
+		if (this.rawServer && process.env.WEB_SOCKET_SERVER !== "false") return this.rawServer
 
 		throw new Developer(
 			"Web socket server was not initialized.",
