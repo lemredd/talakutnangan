@@ -1,9 +1,10 @@
+/* eslint-disable vue/sort-keys */
 
 module.exports = {
 	async up(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.removeColumn("Users", "admittedAt", { transaction })
+				await queryInterface.removeColumn("Comments", "commentID", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
@@ -14,12 +15,17 @@ module.exports = {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
 				await queryInterface.addColumn(
-					"Users",
-					"admittedAt",
+					"Comments",
+					"commentID",
 					{
 						"allowNull": true,
-						"defaultValue": null,
-						"type": Sequelize.DATE
+						"type": Sequelize.BIGINT,
+						"references": {
+							"model": "Comments",
+							"key": "id"
+						},
+						"onDelete": "cascade",
+						"onUpdate": "cascade"
 					},
 					{ transaction }
 				)
