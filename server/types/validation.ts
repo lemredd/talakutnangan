@@ -30,7 +30,12 @@ export interface IsLessThanRuleConstraints {
 	isLessThan: DynamicValue<number|Date>
 }
 
-export interface OneOfRuleConstraints { oneOf: { values: any[] } }
+export interface OneOfRuleConstraints {
+	oneOf: {
+		values?: any[],
+		pointer?: string
+	}
+}
 
 export interface RegexRuleConstraints {
 	regex: {
