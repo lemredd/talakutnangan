@@ -21,7 +21,7 @@ describe("Page: user/report", () => {
 					"id": "1",
 					"meta": {
 						"consultations": consultationsRelatedToUser,
-						"timeConsumedPerStudent": 60000
+						"totalMillisecondsConsumed": 60000
 					},
 					"name": "A"
 				}
