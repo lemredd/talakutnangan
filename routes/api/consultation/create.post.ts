@@ -1,10 +1,7 @@
 import type { Rules, FieldRules } from "!/types/validation"
-import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type {
-	ConsultationResource,
-	ConsultationRelationships
-} from "$/types/documents/consultation"
+import type { AuthenticatedRequest, Response } from "!/types/dependent"
+import type { ConsultationResource } from "$/types/documents/consultation"
 
 import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
 
