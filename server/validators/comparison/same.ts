@@ -5,8 +5,8 @@ import type {
 	SameRuleConstraints
 } from "!/types/validation"
 
-import accessDeepPath from "$!/helpers/access_deep_path"
 import isUndefined from "$/type_guards/is_undefined"
+import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
