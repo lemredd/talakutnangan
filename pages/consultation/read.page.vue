@@ -125,7 +125,7 @@ const chatMessageActivities = ref<
 	>
 )
 
-const chatMessageActivityResources = computed<
+const currentConsultationActivity = computed<
 	DeserializedChatMessageActivityResource<"user"|"consultation">[]
 >(() => {
 	const foundChatActivity = chatMessageActivities.value.data.filter(activity => {
@@ -136,10 +136,10 @@ const chatMessageActivityResources = computed<
 	return foundChatActivity
 })
 
-const currentChatMessageActivityResource = computed<
+const ownCurrentConsultationActivityResource = computed<
 	DeserializedChatMessageActivityResource<"user"|"consultation">
 >(() => {
-	const foundChatActivity = chatMessageActivityResources.value.find(activity => {
+	const foundChatActivity = currentConsultationActivity.value.find(activity => {
 		const ownerID = activity.user.data.id
 		return String(ownerID) === String(userProfile.data.id)
 	})
@@ -151,8 +151,8 @@ const currentChatMessageActivityResource = computed<
 	return foundChatActivity
 })
 
-provide(CHAT_MESSAGE_ACTIVITY, readonly(currentChatMessageActivityResource))
-provide(CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION, readonly(chatMessageActivityResources))
+provide(CHAT_MESSAGE_ACTIVITY, readonly(ownCurrentConsultationActivityResource))
+provide(CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION, readonly(currentConsultationActivity))
 
 function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<"deserialized">)
 : void {
@@ -244,7 +244,7 @@ onMounted(async() => {
 	registerChatListeners(
 		consultation,
 		chatMessages,
-		currentChatMessageActivityResource,
+		ownCurrentConsultationActivityResource,
 		chatMessageActivityFetcher
 	)
 	registerConsultationListeners(consultation, consultations, userProfile.data.id)
