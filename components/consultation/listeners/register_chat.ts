@@ -23,7 +23,6 @@ import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
-
 export default function(
 	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
 	chatMessages: Ref<DeserializedChatMessageListDocument<"user">>,
@@ -46,7 +45,7 @@ export default function(
 	function updateSeenMessageAt(): void {
 		const { receivedMessageAt } = currentChatMessageActivityResource.value
 		chatMessageActivityFetcher.update(currentChatMessageActivityResource.value.id, {
-			"receivedMessageAt": receivedMessageAt?.toJSON() ?? null,
+			"receivedMessageAt": receivedMessageAt?.toJSON() ?? new Date().toJSON(),
 			"seenMessageAt": new Date().toJSON()
 		})
 	}
