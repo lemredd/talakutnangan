@@ -13,7 +13,7 @@
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
 				<template #additional-controls>
-					<a class="import-users-btn btn btn-primary">
+					<a href="/user/import" class="import-users-btn btn btn-primary">
 						import
 					</a>
 				</template>
