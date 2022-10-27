@@ -3,6 +3,7 @@
 		<template #header>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form ref="fileUploadForm" @submit.prevent>
 				<input
 					type="hidden"
@@ -114,9 +115,11 @@
 import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+import type { UnitError } from "$/types/server"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
+import ReceivedErrors from "@/helpers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 const props = defineProps<{
@@ -130,11 +133,13 @@ const subKind = isAcceptingImage ? "image" : "file"
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
-const previewFile = ref<File|null>(null)
+const previewFile = ref<any>(null)
 const fileUploadForm = ref()
 const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
+
+const receivedErrors = ref<string[]>([])
 
 interface CustomEvents {
 	(event: "close"): void
@@ -152,8 +157,18 @@ function sendFile() {
 	.then(() => {
 		emitClose()
 	})
-	.catch(() => {
-		// Show errors
+
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 
