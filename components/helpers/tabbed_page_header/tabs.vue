@@ -15,8 +15,6 @@
 
 <style scoped lang="scss">
 	.tabs {
-		padding-bottom: 1em;
-
 		display: flex;
 		flex-direction: column;
 
