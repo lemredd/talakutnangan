@@ -1,4 +1,6 @@
 <template>
+	<UserListRedirector resource-type="department"/>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="createDepartment">
 		<label class="block">
@@ -39,6 +41,7 @@ import type { UnitError } from "$/types/server"
 import DepartmentFetcher from "$@/fetchers/department"
 
 import ReceivedErrors from "@/helpers/received_errors.vue"
+import UserListRedirector from "@/resource_management/list_redirector.vue"
 
 const fullName = ref("")
 const acronym = ref("")

@@ -79,6 +79,7 @@
 		</output>
 	</form>
 </template>
+
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
 @import "@styles/error.scss";
@@ -105,9 +106,7 @@
 		@apply flex flex-row;
 	}
 }
-
 </style>
-
 
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"

@@ -1,4 +1,5 @@
 <template>
+	<UserListRedirector resource-type="role"/>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 
 	<form @submit.prevent="createRole">
@@ -38,6 +39,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+
+import type { UnitError } from "$/types/server"
 import type { RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
@@ -46,7 +49,7 @@ import FlagSelector from "@/role/flag_selector.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/received_errors.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
-import { UnitError } from "$/types/server"
+import UserListRedirector from "@/resource_management/list_redirector.vue"
 
 const role = ref<RoleAttributes<"deserialized">>({
 	"auditTrailFlags": 0,
