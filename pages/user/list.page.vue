@@ -1,4 +1,4 @@
-<template>
+ <template>
 	<ResourceManager
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
@@ -11,7 +11,13 @@
 			<TabbedPageHeader
 				v-if="currentResourceManager.isAdmin()"
 				:title="determineTitle"
-				:tab-infos="resourceTabInfos"/>
+				:tab-infos="resourceTabInfos">
+				<template #additional-controls>
+					<button class="btn btn-primary">
+						import
+					</button>
+				</template>
+			</TabbedPageHeader>
 			<h1 v-else class="resource-config-header">
 				{{ determineTitle }}
 			</h1>
@@ -24,11 +30,14 @@
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
+
 	.resource-config-header {
 		font-size: 1.75em;
 		text-transform: uppercase;
 	}
 </style>
+
 <script setup lang="ts">
 import { computed, inject, onMounted, ref, watch } from "vue"
 
