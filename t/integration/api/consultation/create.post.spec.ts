@@ -47,7 +47,6 @@ describe("POST /api/consultation", () => {
 		.post("/api/consultation")
 		.set("Cookie", cookie)
 		.send({
-
 			"data": {
 				"attributes": {
 					"actionTaken": model.actionTaken,
@@ -109,5 +108,77 @@ describe("POST /api/consultation", () => {
 			makeConsultationListOfUserNamespace(String(user.id))
 		)
 		expect(previousCalls[1].arguments).toHaveProperty("data.0.data.type", "consultation")
+	})
+
+	it("cannot create with missing consultant in participants", async() => {
+		const normalRole = await new RoleFactory().insertOne()
+		const { user, cookie } = await App.makeAuthenticatedCookie(
+			normalRole,
+			userFactory => userFactory.beStudent())
+		const consultant = await new UserFactory()
+		.beReachableEmployee()
+		.attach(normalRole)
+		.insertOne()
+		const model = await new Factory()
+		.startedAt(() => null)
+		.finishedAt(() => null)
+		.makeOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(consultant))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
+		.scheduleStart(() => convertTimeToMinutes("00:01"))
+		.scheduleEnd(() => convertTimeToMinutes("23:58"))
+		.insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(user)).insertOne()
+		await new SignatureFactory().user(() => Promise.resolve(user)).insertOne()
+
+		const response = await App.request
+		.post("/api/consultation")
+		.set("Cookie", cookie)
+		.send({
+			"data": {
+				"attributes": {
+					"actionTaken": model.actionTaken,
+					"attachedRoleID": model.attachedRoleID,
+					"finishedAt": model.finishedAt,
+					"reason": model.reason,
+					"scheduledStartAt": model.scheduledStartAt.toJSON()
+				},
+				"relationships": {
+					"consultant": {
+						"data": {
+							"id": String(consultant.id),
+							"type": "user"
+						}
+					},
+					"consultantRole": {
+						"data": {
+							"id": String(normalRole.id),
+							"type": "role"
+						}
+					},
+					"participants": {
+						"data": [
+							{
+								"id": String(user.id),
+								"type": "user"
+							}
+						]
+					}
+				},
+				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
+			}
+		})
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
+
+		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
+		expect(response.body).toHaveProperty(
+			"errors.0.source.pointer",
+			"data.relationships.consultant.data.id"
+		)
 	})
 })
