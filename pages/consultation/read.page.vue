@@ -66,6 +66,8 @@ import Socket from "$@/external/socket"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
 
+import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
@@ -77,7 +79,6 @@ import registerChatListeners from "@/consultation/listeners/register_chat"
 import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
-import makeSwitch from "$@/helpers/make_switch"
 
 Socket.initialize()
 
@@ -141,7 +142,11 @@ const currentChatMessageActivityResource = computed<
 	const foundChatActivity = chatMessageActivityResources.value.find(activity => {
 		const ownerID = activity.user.data.id
 		return String(ownerID) === String(userProfile.data.id)
-	}) as DeserializedChatMessageActivityResource<"user"|"consultation">
+	})
+
+	if (isUndefined(foundChatActivity)) {
+		throw new Error("Chat message activity of the current user was not found.")
+	}
 
 	return foundChatActivity
 })
