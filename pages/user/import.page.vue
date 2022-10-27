@@ -1,4 +1,11 @@
 <template>
+	<a href="/user" class="back-to-list-page">
+		<span class="material-icons">
+			arrow_circle_left
+		</span>
+		Users List
+	</a>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="importData">
 		<div>
@@ -81,6 +88,12 @@
 @import "@styles/btn.scss";
 @import "@styles/error.scss";
 
+.back-to-list-page {
+	@apply mb-8 flex items-center;
+
+	.material-icons { @apply mr-2 }
+}
+
 .tabs-header {
 	@apply mb-8 border-b;
 }
@@ -97,7 +110,6 @@
 #import-btn{
 	margin-top:1em;
 }
-
 
 @media (min-width: 640px) {
 	.kind{
