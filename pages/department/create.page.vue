@@ -1,16 +1,28 @@
 <template>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="createDepartment">
 		<label class="block">
 			Full name:
-			<input class="border-solid" type="text" id="full-name" v-model="fullName"/>
+			<input
+				id="full-name"
+				v-model="fullName"
+				class="border-solid"
+				type="text"/>
 		</label>
 		<label class="block">
 			Acronym:
-			<input class="border-solid" type="text" id="acronym" v-model="acronym"/>
+			<input
+				id="acronym"
+				v-model="acronym"
+				class="border-solid"
+				type="text"/>
 		</label>
 		<label class="block">
 			May admit students:
-			<input type="checkbox" id="may-admit" v-model="mayAdmit"/>
+			<input
+				id="may-admit"
+				v-model="mayAdmit"
+				type="checkbox"/>
 		</label>
 		<input type="submit" value="Create department"/>
 	</form>
@@ -20,29 +32,40 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref } from "vue"
-import DepartmentFetcher from "$@/fetchers/department"
-import type { DeserializedPageContext } from "$@/types/independent"
+import { ref } from "vue"
 
-const pageContext = inject("pageContext") as DeserializedPageContext
+import type { UnitError } from "$/types/server"
+
+import DepartmentFetcher from "$@/fetchers/department"
+
+import ReceivedErrors from "@/helpers/received_errors.vue"
 
 const fullName = ref("")
 const acronym = ref("")
 const mayAdmit = ref(false)
 
 const fetcher = new DepartmentFetcher()
-
+const receivedErrors = ref<string[]>([])
 function createDepartment() {
 	fetcher.create({
-		fullName: fullName.value,
-		acronym: acronym.value,
-		mayAdmit: mayAdmit.value
+		"acronym": acronym.value,
+		"fullName": fullName.value,
+		"mayAdmit": mayAdmit.value
 	})
 	.then(({ body, status }) => {
-
+		// output success message
 	})
-	.catch(({ body, status }) => {
-		// Output error
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 </script>
