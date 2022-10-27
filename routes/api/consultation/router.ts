@@ -1,15 +1,19 @@
 import GetList from "!%/api/consultation/list.get"
 import PostCreate from "!%/api/consultation/create.post"
+import PatchRestore from "!%/api/consultation/restore.patch"
+import DeleteArchive from "!%/api/consultation/archive.delete"
 import PatchUpdate from "!%/api/consultation/update(id).patch"
-import GetReadTimeSumByWeek from "!%/api/consultation/read_time_sum_per_week.get"
-import GetReadTimeSumByStudent from "!%/api/consultation/read_time_sum_per_student.get"
-// import PatchRestore from "!%/api/consultation/restore.patch"
-// import DeleteArchive from "!%/api/consultation/archive.delete"
+import GetReadTimeSumPerWeek from "!%/api/consultation/read_time_sum_per_week.get"
+import GetReadTimeSumPerStudent from "!%/api/consultation/read_time_sum_per_student.get"
+import GetReadTimeSumForConsolidation from "!%/api/consultation/read_time_sum_for_consolidation.get"
 
 export const controllers = [
 	GetList,
 	PostCreate,
 	PatchUpdate,
-	GetReadTimeSumByWeek,
-	GetReadTimeSumByStudent
+	PatchRestore,
+	DeleteArchive,
+	GetReadTimeSumPerWeek,
+	GetReadTimeSumPerStudent,
+	GetReadTimeSumForConsolidation
 ]

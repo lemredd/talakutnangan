@@ -34,4 +34,16 @@ export default class DocumentVisibility extends RequestEnvironment {
 			}
 		)
 	}
+
+	static clearAllListeners(): void {
+		Stub.runConditionally(
+			() => {
+				throw new Error("It is impossible to clear all consultation time listeners forcefully.")
+			},
+			() => {
+				DocumentVisibility.rawListeners = []
+				return [ {} as unknown as void, null ]
+			}
+		)
+	}
 }

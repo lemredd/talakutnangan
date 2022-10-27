@@ -43,23 +43,6 @@ extends GeneralRelationshipData {
 			? undefined
 			: PostIdentifierDocument,
 		deserialized: DeserializedPostDocument
-	},
-	parentComment: {
-		serialized: T extends "update"
-		? undefined
-		: T extends "create"
-			// eslint-disable-next-line no-use-before-define
-			? CommentIdentifierDocument|undefined
-			// eslint-disable-next-line no-use-before-define
-			: CommentIdentifierDocument,
-		// eslint-disable-next-line no-use-before-define
-		deserialized: DeserializedCommentDocument
-	},
-	comments: {
-		// eslint-disable-next-line no-use-before-define
-		serialized: T extends "update"|"create" ? undefined : CommentIdentifierListDocument,
-		// eslint-disable-next-line no-use-before-define
-		deserialized: DeserializedCommentListDocument
 	}
 }
 

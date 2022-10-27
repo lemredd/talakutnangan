@@ -4,7 +4,9 @@ import type {
 	OneOfRuleConstraints
 } from "!/types/validation"
 
+import isString from "$/type_guards/is_string"
 import isUndefined from "$/type_guards/is_undefined"
+import accessDeepPath from "$!/helpers/access_deep_path"
 import makeDeveloperError from "!/validators/make_developer_error"
 
 /**
@@ -22,9 +24,25 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
-	const { values } = constraints.oneOf
+	const { values, pointer } = constraints.oneOf
+	let possibleValues = values
+	if (isUndefined(values)) {
+		if (isString(pointer)) {
+			const accessedValue = accessDeepPath(constraints.source, pointer)
 
-	if (values.includes(state.value)) {
+			if (Array.isArray(accessedValue)) {
+				possibleValues = accessedValue
+			} else {
+				throw makeDeveloperError(constraints.field)
+			}
+		} else {
+			throw makeDeveloperError(constraints.field)
+		}
+	} else {
+		possibleValues = possibleValues as any[]
+	}
+
+	if (possibleValues.includes(state.value)) {
 		return state
 	}
 
@@ -32,7 +50,7 @@ export default async function(
 		"field": constraints.field,
 		"friendlyName": constraints.friendlyName,
 		"messageMaker": (field: string) => `Field "${field}" must be one of these: ${
-			values.map(value => `"${value}"`).join(", ")
+			possibleValues?.map(value => `"${value}"`).join(", ")
 		}".`
 	}
 

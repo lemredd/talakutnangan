@@ -20,7 +20,10 @@ export default class Socket extends RequestEnvironment {
 
 	static emitToClients(namespace: string, eventName: string, ...data: any): void {
 		this.runDependingOnEnvironment(
-			() => this.server.of(namespace).emit(eventName, ...data),
+			() => {
+				this.server.of(namespace).emit(eventName, ...data)
+				Log.trace("socket", `Sent ${eventName} event through "${namespace}" namespace`)
+			},
 			() => {
 				this.previousCallInfos.push({
 					"arguments": {
@@ -53,7 +56,7 @@ export default class Socket extends RequestEnvironment {
 	}
 
 	private static get server(): WebSocketServer {
-		if (this.rawServer) return this.rawServer
+		if (this.rawServer && process.env.WEB_SOCKET_SERVER !== "false") return this.rawServer
 
 		throw new Developer(
 			"Web socket server was not initialized.",

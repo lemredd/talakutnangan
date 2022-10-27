@@ -5,11 +5,29 @@ describe("Validator pipe: one-of", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world"))
 		const constraints = {
-			"request": null,
-			"source": null,
 			"field": "hello",
 			"oneOf": {
 				"values": [ "foo", "bar", "world" ]
+			},
+			"request": null,
+			"source": null
+		}
+
+		const sanitizeValue = (await oneOf(value, constraints)).value
+
+		expect(sanitizeValue).toEqual("world")
+	})
+
+	it("can accept dynamic input", async() => {
+		const value = Promise.resolve(makeInitialState("world"))
+		const constraints = {
+			"field": "hello",
+			"oneOf": {
+				"pointer": "existingValues"
+			},
+			"request": null,
+			"source": {
+				"existingValues": [ "foo", "bar", "world" ]
 			}
 		}
 

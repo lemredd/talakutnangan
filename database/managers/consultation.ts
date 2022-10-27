@@ -1,7 +1,11 @@
+/* eslint-disable max-lines */
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
-import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
+import type {
+	WeeklySummedTimeDocument,
+	ConsolidatedSummedTimeDocument
+} from "$/types/documents/consolidated_time"
 import type {
 	ConsultationResource,
 	ConsultationAttributes,
@@ -25,9 +29,11 @@ import Log from "$!/singletons/log"
 import Model from "%/models/consultation"
 import BaseManager from "%/managers/base"
 import Condition from "%/helpers/condition"
+import makeUnique from "$/array/make_unique"
 import deserialize from "$/object/deserialize"
 import ChatMessage from "%/models/chat_message"
 import AttachedRole from "%/models/attached_role"
+import makeUniqueBy from "$/helpers/make_unique_by"
 import Transformer from "%/transformers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import ChatMessageActivity from "%/models/chat_message_activity"
@@ -353,14 +359,8 @@ export default class extends BaseManager<
 						"where": new Condition().and(
 							new Condition().not("startedAt", null),
 							new Condition().not("finishedAt", null),
-							new Condition().greaterThanOrEqual(
-								"startedAt",
-								query.filter.dateTimeRange.begin
-							),
-							new Condition().lessThanOrEqual(
-								"finishedAt",
-								query.filter.dateTimeRange.end
-							)
+							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
 						).build()
 					} as FindOptions<any>, query) as IncludeOptions
 				],
@@ -427,6 +427,94 @@ export default class extends BaseManager<
 				}))
 			}
 			await Promise.all(operations)
+
+			return sums
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
+	}
+
+	async sumTimeForConsolidation(query: TimeSumQueryParameters<number>)
+	: Promise<ConsolidatedSummedTimeDocument> {
+		try {
+			const adjustedBeginDate = resetToMidnight(query.filter.dateTimeRange.begin)
+			const adjustedEndDate = adjustBeforeMidnightOfNextDay(query.filter.dateTimeRange.end)
+			const chatMessageActivities = await ChatMessageActivity.findAll({
+				"include": [
+					sort({
+						"include": [
+							{
+								"model": AttachedRole,
+								"paranoid": false,
+								"required": true,
+								"where": new Condition().equal("userID", query.filter.user).build()
+							}
+						],
+						"model": Model,
+						"paranoid": false,
+						"required": true,
+						"where": new Condition().and(
+							new Condition().not("startedAt", null),
+							new Condition().not("finishedAt", null),
+							new Condition().greaterThanOrEqual("startedAt", adjustedBeginDate),
+							new Condition().lessThanOrEqual("finishedAt", adjustedEndDate)
+						).build()
+					} as FindOptions<any>, query) as IncludeOptions
+				],
+				"paranoid": false,
+				...this.transaction.transactionObject
+			})
+			const models = makeUniqueBy(
+				chatMessageActivities.map(activity => activity.consultation),
+				leftModel => leftModel.id
+			)
+			const availableDates = makeUnique(
+				models.map(model => resetToMidnight(model.startedAt as Date).toJSON())
+			).map(dateString => new Date(dateString))
+
+			const sums: ConsolidatedSummedTimeDocument = {
+				"meta": {
+					"rawConsolidatedTimeSums": []
+				}
+			}
+
+			for (const availableDate of availableDates) {
+				const rangeStart = resetToMidnight(availableDate)
+				const rangeLastEnd = adjustBeforeMidnightOfNextDay(availableDate)
+				const filteredConsultations = models.filter(model => {
+					const startedAt = model.startedAt as Date
+					const finishedAt = model.finishedAt as Date
+					const isWithinRange = startedAt.getDate() === rangeStart.getDate()
+						&& finishedAt.getDate() === rangeLastEnd.getDate()
+
+					return isWithinRange
+				})
+
+				sums.meta.rawConsolidatedTimeSums.push({
+					"beginDateTime": rangeStart,
+					"consultationIDs": makeUnique(filteredConsultations.map(model => String(model.id))),
+					"endDateTime": rangeLastEnd,
+					"totalMillisecondsConsumed": filteredConsultations.map(
+						model => {
+							const startedAt = model.startedAt as Date
+							const finishedAt = model.finishedAt as Date
+							return calculateMillisecondDifference(finishedAt, startedAt)
+						}
+					).reduce(
+						(previousDuration, currentDuration) => previousDuration + currentDuration,
+						0
+					),
+					"userIDs": makeUnique(chatMessageActivities.filter(chatMessageActivity => {
+						const model = chatMessageActivity.consultation
+						const startedAt = model.startedAt as Date
+						const finishedAt = model.finishedAt as Date
+						const isWithinRange = startedAt.getDate() === rangeStart.getDate()
+							&& finishedAt.getDate() === rangeLastEnd.getDate()
+
+						return isWithinRange
+					}).map(activity => String(activity.userID)))
+				})
+			}
 
 			return sums
 		} catch (error) {

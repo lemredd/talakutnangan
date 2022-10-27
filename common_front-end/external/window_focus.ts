@@ -3,7 +3,7 @@ import type { FocusListener } from "$@/types/dependent"
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 
-export default class extends RequestEnvironment {
+export default class WindowFocus extends RequestEnvironment {
 	private static rawListeners: FocusListener[] = []
 
 	static addEventListener(listener: FocusListener): void {
@@ -32,6 +32,18 @@ export default class extends RequestEnvironment {
 			() => {
 				this.rawListeners.forEach(rawListener => rawListener(state))
 
+				return [ {} as unknown as void, null ]
+			}
+		)
+	}
+
+	static clearAllListeners(): void {
+		Stub.runConditionally(
+			() => {
+				throw new Error("It is impossible to clear all consultation time listeners forcefully.")
+			},
+			() => {
+				WindowFocus.rawListeners = []
 				return [ {} as unknown as void, null ]
 			}
 		)

@@ -253,7 +253,7 @@ if ($Server) {
 		& npx ts-node ./server/cli/make_test_pdf.ts
 	} else {
 		$command = "pwsh ./execute.ps1 -Server -Normal"
-		& npx nodemon --watch server --watch routes --watch database --watch common_back-end --ext ts --ignore "*.spec.ts" --exec "$command"
+		& npx nodemon --watch .env --watch server --watch routes --watch database --watch common_back-end --ext ts --ignore "*.spec.ts" --exec "$command"
 	}
 }
 

@@ -33,7 +33,7 @@ export default class CommentVoteFactory extends BaseFactory<
 	DeserializedCommentVoteListDocument
 > {
 	private userGenerator: () => Promise<User> = () => new UserFactory().insertOne()
-	private parentCommentGenerator: () => Promise<Comment> = () => new CommentFactory().insertOne()
+	private commentGenerator: () => Promise<Comment> = () => new CommentFactory().insertOne()
 	#kind = () => "upvote"
 
 	get model(): ModelCtor<Model> { return Model }
@@ -42,9 +42,9 @@ export default class CommentVoteFactory extends BaseFactory<
 
 	async generate(): GeneratedData<Model> {
 		return {
-			"commentID": (await this.parentCommentGenerator())?.id,
-			"userID": (await this.userGenerator()).id,
-			"kind": this.#kind()
+			"commentID": (await this.commentGenerator())?.id,
+			"kind": this.#kind(),
+			"userID": (await this.userGenerator()).id
 		}
 	}
 
@@ -53,8 +53,8 @@ export default class CommentVoteFactory extends BaseFactory<
 		return this
 	}
 
-	parentCommentVote(generator: () => Promise<Comment>): CommentVoteFactory {
-		this.parentCommentGenerator = generator
+	commentVote(generator: () => Promise<Comment>): CommentVoteFactory {
+		this.commentGenerator = generator
 		return this
 	}
 

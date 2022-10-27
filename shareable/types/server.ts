@@ -4,7 +4,6 @@
  * packages. However, they can be used by other parts of the repository.
  */
 
-
 import type { Serializable } from "$/types/general"
 import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"

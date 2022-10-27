@@ -33,7 +33,6 @@ export default class CommentFactory extends TextContentLikeFactory<
 > {
 	private postGenerator: () => Promise<Post> = () => new PostFactory().insertOne()
 	private userGenerator: () => Promise<User> = () => new UserFactory().insertOne()
-	private parentCommentGenerator: () => Promise<Model|null> = () => Promise.resolve(null)
 
 	get model(): ModelCtor<Model> { return Model }
 
@@ -41,7 +40,6 @@ export default class CommentFactory extends TextContentLikeFactory<
 
 	async generate(): GeneratedData<Model> {
 		return {
-			"commentID": (await this.parentCommentGenerator())?.id || null,
 			"content": this.contentGenerator(),
 			"postID": (await this.postGenerator()).id,
 			"userID": (await this.userGenerator()).id
@@ -55,11 +53,6 @@ export default class CommentFactory extends TextContentLikeFactory<
 
 	user(generator: () => Promise<User>): CommentFactory {
 		this.userGenerator = generator
-		return this
-	}
-
-	parentComment(generator: () => Promise<Model|null>): CommentFactory {
-		this.parentCommentGenerator = generator
 		return this
 	}
 }

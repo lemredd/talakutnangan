@@ -1,17 +1,20 @@
 import type { Rules, FieldRules } from "!/types/validation"
-import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { ConsultationResource } from "$/types/documents/consultation"
 
 import { consultationReason, consultationReasonDescription } from "$!/constants/regex"
 
+import Socket from "!/ws/socket"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import deserialize from "$/object/deserialize"
 import JSONController from "!/controllers/json"
+import ValidationError from "$!/errors/validation"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
+import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
 
 import KindBasedPolicy from "!/policies/kind-based"
 import requireSignature from "!/helpers/require_signature"
@@ -159,13 +162,28 @@ export default class extends JSONController {
 
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
+		const resource = request.body.data as ConsultationResource<"create">
+		if (resource.relationships.participants.data.findIndex(
+			identifier => identifier.id === resource.relationships.consultant.data.id
+		)) {
+			throw new ValidationError(
+				{
+					"pointer": "data.relationships.consultant.data.id"
+				},
+				"The ID of the consultant must be one of the participants."
+			)
+		}
+
 		const user = deserialize(request.user) as DeserializedUserProfile
 		const manager = new ConsultationManager(request)
 
-		const consultationInfo = await manager.createUsingResource(
-			request.body.data as ConsultationResource<"create">,
-			Number(user.data.id)
-		)
+		const consultationInfo = await manager.createUsingResource(resource, Number(user.data.id))
+		const userIDs = resource.relationships.participants.data.map(data => data.id)
+
+		for (const userID of userIDs) {
+			const namespace = makeConsultationListOfUserNamespace(userID)
+			Socket.emitToClients(namespace, "create", consultationInfo)
+		}
 
 		return new CreatedResponseInfo(consultationInfo)
 	}
