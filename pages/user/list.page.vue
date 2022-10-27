@@ -13,9 +13,9 @@
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
 				<template #additional-controls>
-					<button class="btn btn-primary">
+					<a class="import-users-btn btn btn-primary">
 						import
-					</button>
+					</a>
 				</template>
 			</TabbedPageHeader>
 			<h1 v-else class="resource-config-header">

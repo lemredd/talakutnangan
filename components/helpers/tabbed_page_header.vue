@@ -28,7 +28,7 @@
 	main {
 		@apply flex justify-between items-center;
 
-		.additional-controls {
+		.main-controls, .additional-controls {
 			padding-bottom: 1em;
 		}
 	}
