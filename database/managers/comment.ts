@@ -92,6 +92,48 @@ export default class extends BaseManager<
 					";"
 				)
 			})`)
+
+			const ownUpvoteSubselectQuery = Model.sequelize.literal(`(${
+				trimRight(
+					// @ts-ignore
+					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
+						CommentVote.tableName, {
+							"attributes": [ CommentVote.sequelize.fn("count", "*") ],
+							"where": new Condition().and(
+								new Condition().equal(
+									"commentID",
+									CommentVote.sequelize.col(`${Model.tableName}.id`)
+								),
+								new Condition().equal("userID", currentUserID),
+								new Condition().equal("kind", "upvote")
+							)
+							.build()
+						}
+					),
+					";"
+				)
+			})`)
+			const ownDownvoteSubselectQuery = Model.sequelize.literal(`(${
+				trimRight(
+					// @ts-ignore
+					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
+						CommentVote.tableName, {
+							"attributes": [ CommentVote.sequelize.fn("count", "*") ],
+							"where": new Condition().and(
+								new Condition().equal(
+									"commentID",
+									CommentVote.sequelize.col(`${Model.tableName}.id`)
+								),
+								new Condition().equal("userID", currentUserID),
+								new Condition().equal("kind", "downvote")
+							)
+							.build()
+						}
+					),
+					";"
+				)
+			})`)
+
 			const [ counts ] = await Model.sequelize.query(
 				// @ts-ignore
 				Model.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -99,7 +141,9 @@ export default class extends BaseManager<
 						"attributes": [
 							"id",
 							[ upvoteSubselectQuery, "upvoteCount" ],
-							[ downvoteSubselectQuery, "downvoteCount" ]
+							[ downvoteSubselectQuery, "downvoteCount" ],
+							[ ownUpvoteSubselectQuery, "ownUpvoteCount" ],
+							[ ownDownvoteSubselectQuery, "ownDownvoteCount" ]
 						],
 						"where": new Condition().or(
 							...commentIDs.map(commentID => new Condition().equal("id", commentID))
@@ -110,14 +154,24 @@ export default class extends BaseManager<
 			) as unknown as [ {
 				id: number,
 				upvoteCount: string,
-				downvoteCount: string
+				downvoteCount: string,
+				ownUpvoteCount: string,
+				ownDownvoteCount: string
 			}[] ]
 
 			const identifierObjects: CommentResourceIdentifier[] = []
 			counts.forEach(countInfo => {
+				const ownUpvoteCount = Number(countInfo.ownUpvoteCount)
+				const ownDownvoteCount = Number(countInfo.ownDownvoteCount)
+				const currentUserVoteStatus = ownDownvoteCount === 1
+					? "downvoted"
+					: ownUpvoteCount === 1
+						? "upvoted"
+						: "unvoted"
 				identifierObjects.push({
 					"id": String(countInfo.id),
 					"meta": {
+						currentUserVoteStatus,
 						"downvoteCount": Number(countInfo.downvoteCount),
 						"upvoteCount": Number(countInfo.upvoteCount)
 					},
