@@ -20,6 +20,7 @@ import type {
 import Log from "$!/singletons/log"
 import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Role from "%/models/role"
 import Model from "%/models/user"
@@ -344,9 +345,9 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		) => {
 			if (dayName !== "saturday" && dayName !== "sunday") {
 				// Start at 8am
-				const scheduleStart = 60 * 60 * 8
+				const scheduleStart = convertTimeToMinutes("08:00")
 				// End at 5pm
-				const scheduleEnd = 60 * 60 * (12 + 5)
+				const scheduleEnd = convertTimeToMinutes("17:00")
 				return [ ...previousSchedule, {
 					dayName,
 					scheduleEnd,
