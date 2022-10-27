@@ -71,7 +71,7 @@
 				Back
 			</button>
 			<button
-				:disabled="!hasExtracted"
+				:disabled="!hasExtracted || isFileSizeGreaterThanLimit"
 				class="send-btn btn btn-primary"
 				type="button"
 				@click="sendFile">
@@ -117,6 +117,8 @@ import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 import type { UnitError } from "$/types/server"
 
+import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
+
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
 import ReceivedErrors from "@/helpers/received_errors.vue"
@@ -134,6 +136,11 @@ const subKind = isAcceptingImage ? "image" : "file"
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
+const fileSize = ref<number|null>(null)
+const isFileSizeGreaterThanLimit = computed(() => {
+	const castedFileSize = fileSize.value as number
+	return castedFileSize > MAXIMUM_FILE_SIZE
+})
 const fileUploadForm = ref()
 const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
@@ -176,6 +183,9 @@ function extractFile(event: Event) {
 	const target = event.target as HTMLInputElement
 	const file = target.files?.item(0)
 	const rawFilename = file?.name as ""
+
+	fileSize.value = file?.size as number|null
+	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
 
 	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
