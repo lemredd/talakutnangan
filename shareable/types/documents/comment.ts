@@ -120,5 +120,5 @@ export type CommentIdentifierListDocumentWithVotes
 = IdentifierListDocument<CommentResourceIdentifier<"read"> & MetaDocument<{
 	upvoteCount: number,
 	downvoteCount: number,
-	currentVoteStatus: "upvote"|"downvote"|"unvoted"
+	currentUserVoteStatus: "upvoted"|"downvoted"|"unvoted"
 }>>
