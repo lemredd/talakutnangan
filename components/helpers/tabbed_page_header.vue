@@ -5,7 +5,11 @@
 		</header>
 
 		<main>
-			<Tabs :tabs="tabs"/>
+			<Tabs :tabs="tabs" class="main-controls"/>
+
+			<div class="additional-controls">
+				<slot name="additional-controls"></slot>
+			</div>
 		</main>
 	</div>
 </template>
@@ -18,6 +22,14 @@
 			margin: 1.25em 0;
 			font-size: 1.75em;
 			text-transform: uppercase;
+		}
+	}
+
+	main {
+		@apply flex justify-between items-center;
+
+		.additional-controls {
+			padding-bottom: 1em;
 		}
 	}
 </style>
