@@ -164,8 +164,8 @@ export default class extends JSONController {
 	: Promise<CreatedResponseInfo> {
 		const resource = request.body.data as ConsultationResource<"create">
 		if (resource.relationships.participants.data.findIndex(
-			identifier => identifier.id === resource.relationships.consultant.data.id
-		)) {
+			identifier => Number(identifier.id) === Number(resource.relationships.consultant.data.id)
+		) === -1) {
 			throw new ValidationError(
 				{
 					"pointer": "data.relationships.consultant.data.id"
