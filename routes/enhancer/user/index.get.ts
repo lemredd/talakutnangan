@@ -1,25 +1,24 @@
+import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DocumentProps } from "$/types/server"
-import { user as permissionGroup } from "$/permissions/permission_list"
-import {
-	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
-} from "$/permissions/user_combinations"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
-import Middleware from "!/bases/middleware"
 import Validation from "!/bases/validation"
-import PermissionBasedPolicy from "!/policies/permission-based"
+import deserialize from "$/object/deserialize"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
-import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
+import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [
-			READ_ANYONE_ON_OWN_DEPARTMENT,
-			READ_ANYONE_ON_ALL_DEPARTMENTS
-		])
+		return new DynamicGatedRedirector((request: AuthenticatedRequest) => {
+			const user = deserialize(request.user) as DeserializedUserProfile
+			const { kind } = user.data
+
+			if (kind === "student") return Promise.resolve({ "location": "/" })
+			return Promise.resolve({ "location": "/user/list" })
+		}) as unknown as Policy
 	}
 
 
@@ -33,10 +32,4 @@ export default class extends PageMiddleware {
 	}
 
 	get validations(): Validation[] { return [] }
-
-	get postValidationMiddlewares(): Middleware[] {
-		return [
-			new ForceRedirector("/user/list")
-		]
-	}
 }
