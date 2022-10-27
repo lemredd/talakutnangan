@@ -34,7 +34,6 @@ export default class extends BaseManager<
 			"approvedAt",
 			"userID",
 			"postID",
-			"parentCommentID",
 			"commentID",
 			"deletedAt"
 		]

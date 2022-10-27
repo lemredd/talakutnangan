@@ -57,8 +57,8 @@ const { userProfile } = pageProps
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const comments = ref<DeserializedCommentResource<"user"|"parentComment">[]>(
-	pageProps.comments.data as DeserializedCommentResource<"user"|"parentComment">[]
+const comments = ref<DeserializedCommentResource<"user">[]>(
+	pageProps.comments.data as DeserializedCommentResource<"user">[]
 )
 
 // TODO: Correct the specialization
@@ -84,7 +84,7 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 
-function includeComment(newComment: DeserializedCommentResource<"user"|"parentComment">): void {
+function includeComment(newComment: DeserializedCommentResource<"user">): void {
 	comments.value.push(newComment)
 }
 </script>

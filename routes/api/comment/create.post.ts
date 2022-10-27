@@ -77,14 +77,6 @@ export default class extends JSONController {
 				"relationshipName": "user",
 				"typeName": "user",
 				"validator": exists
-			},
-			{
-				"ClassName": Manager,
-				"isArray": false,
-				"isOptional": true,
-				"relationshipName": "parentComment",
-				"typeName": "comment",
-				"validator": exists
 			}
 		])
 
@@ -108,7 +100,6 @@ export default class extends JSONController {
 		>["relationships"]
 		const commentInfo = await manager.create({
 			...attributes,
-			"parentCommentID": relationships.parentComment?.data.id ?? null,
 			"postID": relationships.post.data.id,
 			"userID": relationships.user.data.id
 		})
