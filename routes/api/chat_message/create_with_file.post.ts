@@ -3,7 +3,7 @@ import type { FieldRules, Rules } from "!/types/validation"
 import type { AttachedFile } from "$/types/documents/file-like"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
-import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Socket from "!/ws/socket"
 import Log from "$!/singletons/log"
