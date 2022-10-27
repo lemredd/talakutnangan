@@ -1,6 +1,6 @@
 <template>
 	<div class="user-controls">
-		<div v-if="willSoonStart || willStart" class="wide-control">
+		<div v-if="mayStartConsultation" class="wide-control">
 			<button
 				:disabled="!willStart"
 				type="button"
@@ -81,9 +81,10 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, ComputedRef, DeepReadonly, onMounted } from "vue"
+import { ref, inject, computed, ComputedRef, DeepReadonly, onMounted } from "vue"
 
 import type { TextMessage } from "$/types/message"
+import type { PageContext } from "$/types/renderer"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type {
@@ -99,6 +100,9 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import FileUpload from "@/consultation/chat_window/user_controller/file_upload.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { userProfile } = pageContext.pageProps
 
 const currentChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
@@ -135,6 +139,14 @@ const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
 const saveAsPDF = () => emit("saveAsPdf")
+const mayStartConsultation = computed<boolean>(() => {
+	const shouldSoonStart = willSoonStart.value
+	const shouldStart = willStart.value
+	const mayStart = shouldSoonStart || shouldStart
+	const canStart = userProfile.data.kind === "reachable_employee"
+
+	return mayStart && canStart
+})
 
 let rawFetcher: Fetcher|null = null
 function fetcher(): Fetcher {
