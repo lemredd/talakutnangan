@@ -12,10 +12,12 @@ interface SummedTimeMetaProperties extends BasicSummedTimeMetaProperties {
 
 export type SummedTimeDocument = MetaDocument<SummedTimeMetaProperties>
 
-interface WeeklySummedTimeProperties extends SummedTimeMetaProperties {
+export interface DateTimeRange {
 	beginDateTime: Date,
 	endDateTime: Date
 }
+
+interface WeeklySummedTimeProperties extends DateTimeRange, SummedTimeMetaProperties {}
 
 interface WeeklySummedTimeMetaCollection extends Serializable {
 	weeklyTimeSums: WeeklySummedTimeProperties[]
@@ -23,9 +25,7 @@ interface WeeklySummedTimeMetaCollection extends Serializable {
 
 export type WeeklySummedTimeDocument = MetaDocument<WeeklySummedTimeMetaCollection>
 
-interface ConsolidatedSummedTimeProperties extends BasicSummedTimeMetaProperties {
-	beginDateTime: Date,
-	endDateTime: Date
+interface ConsolidatedSummedTimeProperties extends DateTimeRange, BasicSummedTimeMetaProperties {
 	consultationIDs: string[]
 	userIDs: string[]
 }

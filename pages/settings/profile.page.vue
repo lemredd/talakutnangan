@@ -164,6 +164,7 @@ import { ref, Ref, inject, computed } from "vue"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 import settingsTabInfos from "@/settings/settings_tab_infos"
@@ -171,20 +172,20 @@ import settingsTabInfos from "@/settings/settings_tab_infos"
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 import SignatureFetcher from "$@/fetchers/signature"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
-import { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
-import ProfilePicture from "@/helpers/profile_picture.vue"
 import Signature from "@/helpers/signature.vue"
-import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
+import ProfilePicture from "@/helpers/profile_picture.vue"
+import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
 
 import { DayValues } from "$/types/database"
 
-const bodyClasses = inject(BODY_CLASSES) as Ref<string[]>
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
@@ -217,6 +218,7 @@ function submitSignature(formData: FormData) {
 		formData
 	).then(() => assignPath("/settings/profile"))
 }
+
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
@@ -231,14 +233,13 @@ function toggleDarkMode() {
 		emit("toggleDarkMode")
 	}
 
-	const mutatedBodyClasses = new Set([ ...bodyClasses.value ])
+	const mutatedBodyClasses = new Set([ ...bodyClasses.value.bodyClasses ])
 	if (mutatedBodyClasses.has("dark")) {
-		mutatedBodyClasses.delete("dark")
+		bodyClasses.value.lighten()
 	} else {
-		mutatedBodyClasses.add("dark")
+		bodyClasses.value.darken()
 	}
 
-	bodyClasses.value = [ ...mutatedBodyClasses ]
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 	updateUser()
 }

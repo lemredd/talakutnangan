@@ -17,7 +17,8 @@ Put your additions and compatible changes here...
 - Will have additional commits?
   - [ ] None
   - [ ] Yes
-  - [ ] Yes[unless all tests are success]
+  - [ ] Yes, unless all tests are success
+  - [ ] None, unless some tests are failing
 - Must be merged ASAP?
   - [ ] No
   - [ ] Yes

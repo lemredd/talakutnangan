@@ -35,17 +35,17 @@ export default async function(): Promise<void> {
 		Log.success("middleware", "serializing user for session")
 
 		const castUserData = user.data as Serializable
-		done(null, castUserData.id as number)
+		done(null, Number(castUserData.id))
 	})
 
 	passport.deserializeUser(async(id: number, done: (...allArguments: any) => void) => {
 		const manager = new UserManager()
 
-		const user = await manager.findWithID(id, {
+		const user = await manager.findWithID(Number(id), {
 			"transformer": new UserProfileTransformer()
 		})
 
-		Log.success("middleware", "deserializing user from session")
+		Log.trace("middleware", "deserializing user from session")
 
 		return done(null, user)
 	})
