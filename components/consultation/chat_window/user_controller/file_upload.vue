@@ -57,7 +57,9 @@
 					<small class="preview-file-title">
 						{{ filename }}
 					</small>
-					<span class="remove-file-btn material-icons cursor-pointer">
+					<span
+						class="remove-file-btn material-icons cursor-pointer"
+						@click="removeFile">
 						close
 					</span>
 				</div>
@@ -128,6 +130,10 @@ const props = defineProps<{
 	accept: "image/*" | "*/*"
 	isShown: boolean
 }>()
+interface CustomEvents {
+	(event: "close"): void
+}
+const emit = defineEmits<CustomEvents>()
 
 const isAcceptingImage = props.accept.includes("image/")
 const isAcceptingFile = props.accept.includes("*/")
@@ -142,16 +148,18 @@ const isFileSizeGreaterThanLimit = computed(() => {
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
 const fileUploadForm = ref()
+const receivedErrors = ref<string[]>([])
 const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
-const receivedErrors = ref<string[]>([])
-
-interface CustomEvents {
-	(event: "close"): void
+function removeFile() {
+	filename.value = null
+	previewFile.value = null
+	fileSize.value = null
+	receivedErrors.value = []
 }
-const emit = defineEmits<CustomEvents>()
+
 function emitClose() {
 	emit("close")
 }
