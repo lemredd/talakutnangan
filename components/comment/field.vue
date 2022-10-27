@@ -33,7 +33,6 @@ import { computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import TextualField from "@/fields/unlabeled_text.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
@@ -45,7 +44,6 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
-	parentComment?: DeserializedCommentResource,
 	user: DeserializedUserDocument,
 	status: FieldStatus,
 	modelValue: string

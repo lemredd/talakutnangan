@@ -16,7 +16,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
-						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" })),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "student"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -48,7 +57,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
-						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" })),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "reachable_employee"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -80,7 +98,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
-						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" }))
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" })),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "reachable_employee"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -129,7 +156,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
 							"receivedMessageAt": new Date()
-						}))
+						})),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "student"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -187,7 +223,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
 							"receivedMessageAt": new Date("2022-10-04 10:00")
-						}))
+						})),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "student"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -244,7 +289,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
 							"receivedMessageAt": new Date("2022-10-04 10:02")
-						}))
+						})),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "student"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {
@@ -284,7 +338,16 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({
 							"id": userID,
 							"receivedMessageAt": new Date("2022-10-04 10:02")
-						}))
+						})),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "student"
+									}
+								}
+							}
+						}
 					}
 				},
 				"props": {

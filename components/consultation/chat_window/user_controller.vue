@@ -1,6 +1,6 @@
 <template>
 	<div class="user-controls">
-		<div v-if="willSoonStart || willStart" class="wide-control">
+		<div v-if="mayStartConsultation" class="wide-control">
 			<button
 				:disabled="!willStart"
 				type="button"
@@ -81,9 +81,10 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, ComputedRef, DeepReadonly, onMounted } from "vue"
+import { ref, inject, computed, ComputedRef, DeepReadonly } from "vue"
 
 import type { TextMessage } from "$/types/message"
+import type { PageContext } from "$/types/renderer"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type {
@@ -99,6 +100,9 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import FileUpload from "@/consultation/chat_window/user_controller/file_upload.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { userProfile } = pageContext.pageProps
 
 const currentChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
@@ -135,23 +139,20 @@ const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
 const saveAsPDF = () => emit("saveAsPdf")
+const mayStartConsultation = computed<boolean>(() => {
+	const shouldSoonStart = willSoonStart.value
+	const shouldStart = willStart.value
+	const mayStart = shouldSoonStart || shouldStart
+	const canStart = userProfile.data.kind === "reachable_employee"
 
-let rawFetcher: Fetcher|null = null
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
+	return mayStart && canStart
+})
 
-	throw new Error("Messages cannot be sent to server yet.")
-}
-
-let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
-function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
-	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
-
-	throw new Error("Chat message activities cannot be processed yet.")
-}
+const fetcher: Fetcher = new Fetcher()
+const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 function send(): void {
-	fetcher().create({
+	fetcher.create({
 		"data": {
 			"value": textInput.value
 		},
@@ -171,15 +172,10 @@ function send(): void {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
 		const seenMessageAt = new Date().toJSON()
-		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
+		chatMessageActivityFetcher.update(currentChatMessageActivity.value.id, {
 			"receivedMessageAt": seenMessageAt,
 			seenMessageAt
 		})
 	})
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-	rawChatMessageActivityFetcher = new ChatMessageActivityFetcher()
-})
 </script>

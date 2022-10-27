@@ -96,17 +96,17 @@ import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 const fetcher = new Fetcher()
 
 const props = defineProps<{
-	modelValue: DeserializedCommentResource<"user"|"parentComment">
+	modelValue: DeserializedCommentResource<"user">
 }>()
 
 interface CustomEvents {
-	(event: "update:modelValue", comment: DeserializedCommentResource<"user"|"parentComment">): void
-	(event: "archive", comment: DeserializedCommentResource<"user"|"parentComment">): void
-	(event: "restore", comment: DeserializedCommentResource<"user"|"parentComment">): void
+	(event: "update:modelValue", comment: DeserializedCommentResource<"user">): void
+	(event: "archive", comment: DeserializedCommentResource<"user">): void
+	(event: "restore", comment: DeserializedCommentResource<"user">): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const comment = ref<DeserializedCommentResource<"user"|"parentComment">>(props.modelValue)
+const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
 const {
 	"state": mustUpdate,

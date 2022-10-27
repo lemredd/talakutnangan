@@ -17,7 +17,7 @@ describe("Middleware: Action Auditor", () => {
 		const auditTrails = await AuditTrail.findAll()
 		expect(auditTrails).toHaveLength(1)
 		expect(auditTrails).toHaveProperty("0.actionName", "type.name")
-		expect(auditTrails).toHaveProperty("0.extra", {})
+		expect(auditTrails).toHaveProperty("0.extra", { "isSensitive": false })
 		expect(auditTrails).toHaveProperty("0.userID", null)
 	})
 })

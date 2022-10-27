@@ -24,13 +24,18 @@ export default async function startServer(): Promise<HTTPServer> {
 
 	const app = await createAppHandler(customRouter)
 	const httpServer = new HTTPServer(app)
-	const wsServer = createWSServer(httpServer)
-	const peerServer = createPeerServer(app, httpServer)
 
-	Socket.initialize(wsServer)
-	Peer.initialize(peerServer)
+	if (process.env.WEB_SOCKET_SERVER !== "false") {
+		const wsServer = createWSServer(httpServer)
+		Socket.initialize(wsServer)
+	}
 
-	const port = process.env.PORT || 3000
+	if (process.env.WEB_PEER_SERVER !== "false") {
+		const peerServer = createPeerServer(app, httpServer)
+		Peer.initialize(peerServer)
+	}
+
+	const port = Number(process.env.PORT || "3000")
 	httpServer.listen(port)
 	Log.success("server", `HTTP server running at ${URLMaker.makeBaseURL()}`)
 

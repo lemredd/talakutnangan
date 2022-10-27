@@ -3,7 +3,6 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
-import Comment from "%/models/comment"
 import isUndefined from "$/type_guards/is_undefined"
 import ProfilePicture from "%/models/profile_picture"
 
@@ -30,10 +29,6 @@ export default function<T>(
 		],
 		"model": User,
 		"required": true
-	}, {
-		"as": "parentComment",
-		"model": Comment,
-		"required": false
 	})
 
 	Log.trace("query pipe", "applied default includer")

@@ -57,12 +57,12 @@ const { userProfile } = pageProps
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const comments = ref<DeserializedCommentResource<"user"|"parentComment">[]>(
-	pageProps.comments.data as DeserializedCommentResource<"user"|"parentComment">[]
+const comments = ref<DeserializedCommentResource<"user">[]>(
+	pageProps.comments.data as DeserializedCommentResource<"user">[]
 )
 
-// TODO: Correct the specialization
 const mayCreateComment = computed<boolean>(() => {
+	const isPostPublic = !post.value.department
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 	])
@@ -77,14 +77,15 @@ const mayCreateComment = computed<boolean>(() => {
 			CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 		])
 
-	const isPermitted = isLimitedPersonalScope
+	const isPermitted = isPostPublic
+	|| isLimitedPersonalScope
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
 	return isPermitted && post.value.deletedAt === null
 })
 
-function includeComment(newComment: DeserializedCommentResource<"user"|"parentComment">): void {
+function includeComment(newComment: DeserializedCommentResource<"user">): void {
 	comments.value.push(newComment)
 }
 </script>

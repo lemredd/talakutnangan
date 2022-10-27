@@ -5,10 +5,13 @@
  */
 
 import type { Serializable } from "$/types/general"
-import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedPostDocument, DeserializedPostListDocument } from "$/types/documents/post"
+import type {
+	WeeklySummedTimeDocument,
+	ConsolidatedSummedTimeDocument
+} from "$/types/documents/consolidated_time"
 import type {
 	DeserializedCommentDocument,
 	DeserializedCommentListDocument
@@ -102,6 +105,7 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	chatMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 	previewMessages: OptionalPageProps<T, DeserializedChatMessageListDocument>
 
+	timeConsumedforConsolidation: OptionalPageProps<T, ConsolidatedSummedTimeDocument>
 	timeConsumedPerStudent: OptionalPageProps<T, DeserializedUserListWithTimeConsumedDocument>
 	timeConsumedPerWeek: OptionalPageProps<T, WeeklySummedTimeDocument>
 

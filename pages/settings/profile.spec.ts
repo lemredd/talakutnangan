@@ -7,18 +7,18 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 
+import Stub from "$/singletons/stub"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import UserProfileTransformer from "%/transformers/user_profile"
+import RequestEnvironment from "$/singletons/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 
 import Page from "./profile.page.vue"
-
-import Stub from "$/singletons/stub"
-import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Page: settings/profile", () => {
 	describe("Reading", () => {
@@ -40,7 +40,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -89,7 +89,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -136,7 +136,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -183,7 +183,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": {
@@ -225,7 +225,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
@@ -263,8 +263,9 @@ describe("Page: settings/profile", () => {
 			expect(displayNameInputElement.value).toEqual("Something")
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can create profile picture", async() => {
@@ -286,7 +287,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
@@ -329,8 +330,9 @@ describe("Page: settings/profile", () => {
 			)
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can create signature", async() => {
@@ -352,7 +354,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
@@ -395,8 +397,9 @@ describe("Page: settings/profile", () => {
 			)
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can edit dark mode preference", async() => {
@@ -417,7 +420,7 @@ describe("Page: settings/profile", () => {
 			const wrapper = shallowMount(Page, {
 				"global": {
 					"provide": {
-						[BODY_CLASSES]: ref([]),
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageContext": {
 							"pageProps": {
 								"userProfile": userProfile as DeserializedUserProfile<"roles"|"department">
@@ -445,6 +448,7 @@ describe("Page: settings/profile", () => {
 			await darkModeBtn.trigger("click")
 
 			expect(wrapper.emitted()).toHaveProperty("toggleDarkMode")
+
 		})
 	})
 })
