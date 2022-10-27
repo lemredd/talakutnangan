@@ -263,8 +263,9 @@ describe("Page: settings/profile", () => {
 			expect(displayNameInputElement.value).toEqual("Something")
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can create profile picture", async() => {
@@ -329,8 +330,9 @@ describe("Page: settings/profile", () => {
 			)
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can create signature", async() => {
@@ -395,8 +397,9 @@ describe("Page: settings/profile", () => {
 			)
 
 			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
+			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
+			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can edit dark mode preference", async() => {
