@@ -1,10 +1,5 @@
 <template>
-	<a href="/user" class="back-to-list-page">
-		<span class="material-icons">
-			arrow_circle_left
-		</span>
-		Users List
-	</a>
+	<UserListRedirector resource-type="user"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="importData">
@@ -88,12 +83,6 @@
 @import "@styles/btn.scss";
 @import "@styles/error.scss";
 
-.back-to-list-page {
-	@apply mb-8 flex items-center;
-
-	.material-icons { @apply mr-2 }
-}
-
 .tabs-header {
 	@apply mb-8 border-b;
 }
@@ -136,6 +125,7 @@ import convertForSentence from "$/string/convert_for_sentence"
 import OutputTable from "@/helpers/overflowing_table.vue"
 import ReceivedErrors from "@/helpers/received_errors.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import UserListRedirector from "@/resource_management/list_redirector.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 
 const pageContext = inject("pageContext") as PageContext
