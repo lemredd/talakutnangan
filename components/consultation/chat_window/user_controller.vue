@@ -81,7 +81,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, computed, ComputedRef, DeepReadonly, onMounted } from "vue"
+import { ref, inject, computed, ComputedRef, DeepReadonly } from "vue"
 
 import type { TextMessage } from "$/types/message"
 import type { PageContext } from "$/types/renderer"
@@ -148,22 +148,11 @@ const mayStartConsultation = computed<boolean>(() => {
 	return mayStart && canStart
 })
 
-let rawFetcher: Fetcher|null = null
-function fetcher(): Fetcher {
-	if (rawFetcher) return rawFetcher
-
-	throw new Error("Messages cannot be sent to server yet.")
-}
-
-let rawChatMessageActivityFetcher: ChatMessageActivityFetcher|null = null
-function chatMessageActivityFetcher(): ChatMessageActivityFetcher {
-	if (rawChatMessageActivityFetcher) return rawChatMessageActivityFetcher
-
-	throw new Error("Chat message activities cannot be processed yet.")
-}
+const fetcher: Fetcher = new Fetcher()
+const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 function send(): void {
-	fetcher().create({
+	fetcher.create({
 		"data": {
 			"value": textInput.value
 		},
@@ -183,15 +172,10 @@ function send(): void {
 		textInput.value = ""
 		ConsultationTimerManager.restartTimerFor(props.consultation)
 		const seenMessageAt = new Date().toJSON()
-		chatMessageActivityFetcher().update(currentChatMessageActivity.value.id, {
+		chatMessageActivityFetcher.update(currentChatMessageActivity.value.id, {
 			"receivedMessageAt": seenMessageAt,
 			seenMessageAt
 		})
 	})
 }
-
-onMounted(() => {
-	rawFetcher = new Fetcher()
-	rawChatMessageActivityFetcher = new ChatMessageActivityFetcher()
-})
 </script>
