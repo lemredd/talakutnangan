@@ -20,17 +20,21 @@
 		@apply flex-col relative;
 
 		.overlay {
-			@apply dark:bg-white fixed bg-dark-400 z-500 opacity-60 block;
-			inset: $navHeight 0 0 0;
+			@apply dark:bg-white fixed bg-black z-500 opacity-30 block;
+			inset:0;
 
 			content: " "
 		}
 
 		.dropdown-container {
-			@apply dark:bg-dark-400 fixed bg-white h-full z-501;
+			@apply w-max;
+			@apply dark:bg-dark-400 fixed bg-white h-full z-501 h-min;
 			@apply flex flex-col flex-nowrap;
 
-			inset: calc($navHeight + 60%) 0 0 0;
+			top: calc($navHeight + calc(50% - $navHeight));
+			left: 50%;
+
+			transform: translateX(-50%);
 		}
 	}
 
@@ -67,7 +71,7 @@ function open() {
 }
 
 function close() {
-	emit("update:modelValue", false)
+	// emit("update:modelValue", false)
 }
 
 onUpdated(() => {

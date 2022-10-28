@@ -145,18 +145,7 @@
 				@apply flex-1;
 				.selected-consultation-user-status { @apply row-start-2; }
 			}
-			.controls {
-				@apply flex items-center;
-
-				.additional-controls {
-					display: inline;
-					height: min-content;
-
-					.additional-control{
-					@apply p-2 hover:bg-light-600;
-					}
-				}
-			}
+			.controls { @apply flex items-center; }
 		}
 
 		.selected-consultation-chats {

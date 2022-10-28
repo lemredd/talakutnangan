@@ -54,7 +54,7 @@ const modelValue = computed({
 	},
 	set(): void {
 		emit("toggleHeaderControlDropdownShown")
-}
+	}
 })
 
 function toggleHeaderControlDropdownShown() {
