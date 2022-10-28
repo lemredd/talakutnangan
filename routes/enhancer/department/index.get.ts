@@ -20,7 +20,9 @@ export default class extends PageMiddleware {
 			CREATE,
 			UPDATE,
 			ARCHIVE_AND_RESTORE
-		])
+		], {
+			"failedRedirectURL": "/"
+		})
 	}
 
 	get postPolicyMiddlewares(): Middleware[] {
