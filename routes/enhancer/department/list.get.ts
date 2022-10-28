@@ -6,15 +6,19 @@ import Policy from "!/bases/policy"
 import Manager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
-import { CREATE } from "$/permissions/department_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { department as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new PermissionBasedPolicy(permissionGroup, [ CREATE ])
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE,
+			UPDATE,
+			ARCHIVE_AND_RESTORE
+		])
 	}
 
 	getDocumentProps(): DocumentProps {
