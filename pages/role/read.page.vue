@@ -26,7 +26,7 @@
 				Submit
 			</button>
 			<button
-				v-if="isDeleted"
+				v-if="mayRestoreRole"
 				type="button"
 				class="restore-btn btn btn-primary"
 				@click="restoreRole">
@@ -103,6 +103,15 @@ const mayArchiveRole = computed<boolean>(() => {
 	])
 
 	return !isDeleted.value && isPermitted
+})
+
+const mayRestoreRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isDeleted.value && isPermitted
 })
 
 const {
