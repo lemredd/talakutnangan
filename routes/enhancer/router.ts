@@ -1,6 +1,6 @@
 import ControllerLike from "!/bases/controller-like"
-import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
+import GetHome from "!%/enhancer/home.get"
 import GetIndex from "!%/enhancer/index.get"
 import { controllers as userControllers } from "!%/enhancer/user/router"
 import { controllers as roleControllers } from "!%/enhancer/role/router"
@@ -18,5 +18,6 @@ export const controllers: (new() => ControllerLike)[] = [
 	...departmentControllers,
 	...consultationControllers,
 	...userSettingsControllers,
+	GetHome,
 	GetIndex
 ]
