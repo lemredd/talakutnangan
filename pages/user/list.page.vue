@@ -1,4 +1,4 @@
- <template>
+<template>
 	<ResourceManager
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
@@ -12,7 +12,9 @@
 				v-if="currentResourceManager.isAdmin()"
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
-				<template #additional-controls>
+				<template
+					v-if="mayCreateUser"
+					#additional-controls>
 					<a href="/user/import" class="import-users-btn btn btn-primary">
 						import
 					</a>
@@ -47,6 +49,11 @@ import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
@@ -150,6 +157,17 @@ function fetchUserInfo() {
 		return Promise.resolve()
 	})
 }
+
+const mayCreateUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(users, [
+		READ_ANYONE_ON_OWN_DEPARTMENT,
+		READ_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isPermitted
+})
+
 
 async function resetUsersList() {
 	isLoaded.value = false
