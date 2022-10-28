@@ -22,10 +22,11 @@
 
 <style scoped lang="scss">
 .overlay {
-	@apply z-1 bg-black bg-opacity-30;
+	@apply bg-black bg-opacity-30;
 	position:fixed;
 	inset: 0;
 	width: 100%;
+	z-index: 1000;
 
 	.content {
 		@apply flex flex-col;

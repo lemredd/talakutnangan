@@ -359,7 +359,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 
 		const consultationHeader = wrapper.find(".selected-consultation-header")
 		expect(consultationHeader.exists()).toBeTruthy()
-		expect(consultationHeader.html()).toContain("5m")
 		const chatEntries = wrapper.findAll(".chat-entry")
 		expect(chatEntries).toHaveLength(2)
 		expect(chatEntries[0].html()).toContain(chatMessageResources.data[0].data.value)
