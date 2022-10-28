@@ -39,8 +39,8 @@ export default async function(
 			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string,
-				value: string
-			) => `The ${value} in field "${field}" does not exists in the database.`
+				unusedValue: string
+			) => `The ${state.value} in field "${field}" does not exists in the database.`
 		}
 
 		throw error

@@ -52,6 +52,45 @@ describe("GET /api/chat_message", () => {
 		expect(response.body).not.toHaveProperty("data.1")
 	})
 
+	it("can be accessed by authenticated user with multiple consultations", async() => {
+		const normalRole = await new RoleFactory().insertOne()
+		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
+			normalRole,
+			userFactory => userFactory.beReachableEmployee())
+		const consultations = await new ConsultationFactory().insertMany(2)
+		const consultationIterator = consultations.values()
+		const activities = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(employee))
+		.consultation(() => Promise.resolve(consultationIterator.next().value))
+		.insertMany(consultations.length)
+		const activitiesIterator = activities.values()
+		const model = await new Factory()
+		.chatMessageActivity(() => Promise.resolve(activitiesIterator.next().value))
+		.insertOne()
+		await new SignatureFactory()
+		.user(() => Promise.resolve(employee))
+		.insertOne()
+
+		const response = await App.request
+		.get("/api/chat_message")
+		.set("Cookie", cookie)
+		.query({
+			"filter": {
+				"consultationIDs": consultations.map(consultation => consultation.id).join(","),
+				"existence": "exists"
+			}
+		})
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
+
+		console.log(response.body, "\n\n\n")
+		expect(response.statusCode).toBe(RequestEnvironment.status.OK)
+		expect(response.body).toHaveProperty("data.0.id", String(model.id))
+		expect(response.body).toHaveProperty("data.0.type", "chat_message")
+		expect(response.body).toHaveProperty("data.0.attributes.kind", model.kind)
+		expect(response.body).not.toHaveProperty("data.1")
+	})
+
 	it("can be accessed by authenticated user forto get preview messages", async() => {
 		const normalRole = await new RoleFactory().insertOne()
 		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
