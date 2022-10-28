@@ -91,16 +91,22 @@
 
 	.file-repo-preview{
 		@apply min-w-max;
-
-		}
-
-
+	}
 </style>
 
 <script setup lang="ts">
+import { ref } from "vue"
+
+import type {
+	DeserializedChatMessageListDocument,
+	DeserializedChatMessageResource
+} from "$/types/documents/chat_message"
+
 import Overlay from "@/helpers/overlay.vue"
 
 defineProps<{
+	generalFiles: DeserializedChatMessageListDocument
+	imageFiles: DeserializedChatMessageListDocument
 	isFileRepoOverlayShown: boolean
 	mustShowPreview: boolean
 }>()
@@ -110,12 +116,16 @@ interface CustomEvents {
 	(eventName: "switchTab", event: Event): void
 }
 const emit = defineEmits<CustomEvents>()
-
 function switchTab(event: Event) {
 	emit("switchTab", event)
 }
-
 function hideFileRepoOverlay() {
 	emit("hideFileRepoOverlay")
+}
+
+const imageToPreview = ref("")
+function previewImageFile(file: DeserializedChatMessageResource) {
+	const { fileContents } = file.attachedChatFile?.data as { "fileContents": string }
+	imageToPreview.value = fileContents
 }
 </script>
