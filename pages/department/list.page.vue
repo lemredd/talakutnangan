@@ -6,13 +6,23 @@
 		:department-names="[]"
 		:role-names="[]">
 		<template #header>
-			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos"/>
+			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
+				<template #additional-controls>
+					<a href="/department/create" class="add-department-btn btn btn-primary">
+						Add Department
+					</a>
+				</template>
+			</TabbedPageHeader>
 		</template>
 		<template #resources>
 			<ResourceList :filtered-list="list"/>
 		</template>
 	</ResourceManager>
 </template>
+
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+</style>
 
 <script setup lang="ts">
 import { onMounted, inject, ref, watch } from "vue"

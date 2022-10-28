@@ -3,6 +3,7 @@
 		<template #header>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form ref="fileUploadForm" @submit.prevent>
 				<input
 					type="hidden"
@@ -56,7 +57,9 @@
 					<small class="preview-file-title">
 						{{ filename }}
 					</small>
-					<span class="remove-file-btn material-icons cursor-pointer">
+					<span
+						class="remove-file-btn material-icons cursor-pointer"
+						@click="removeFile">
 						close
 					</span>
 				</div>
@@ -70,7 +73,7 @@
 				Back
 			</button>
 			<button
-				:disabled="!hasExtracted"
+				:disabled="!hasExtracted || isFileSizeGreaterThanLimit"
 				class="send-btn btn btn-primary"
 				type="button"
 				@click="sendFile">
@@ -114,15 +117,23 @@
 import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+import type { UnitError } from "$/types/server"
+
+import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
+import ReceivedErrors from "@/helpers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 const props = defineProps<{
 	accept: "image/*" | "*/*"
 	isShown: boolean
 }>()
+interface CustomEvents {
+	(event: "close"): void
+}
+const emit = defineEmits<CustomEvents>()
 
 const isAcceptingImage = props.accept.includes("image/")
 const isAcceptingFile = props.accept.includes("*/")
@@ -130,16 +141,25 @@ const subKind = isAcceptingImage ? "image" : "file"
 
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
-const previewFile = ref<File|null>(null)
+const previewFile = ref<any>(null)
+const fileSize = ref<number|null>(null)
+const isFileSizeGreaterThanLimit = computed(() => {
+	const castedFileSize = fileSize.value as number
+	return castedFileSize > MAXIMUM_FILE_SIZE
+})
 const fileUploadForm = ref()
+const receivedErrors = ref<string[]>([])
 const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
-interface CustomEvents {
-	(event: "close"): void
+function removeFile() {
+	filename.value = null
+	previewFile.value = null
+	fileSize.value = null
+	receivedErrors.value = []
 }
-const emit = defineEmits<CustomEvents>()
+
 function emitClose() {
 	emit("close")
 }
@@ -152,8 +172,18 @@ function sendFile() {
 	.then(() => {
 		emitClose()
 	})
-	.catch(() => {
-		// Show errors
+
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 
@@ -161,6 +191,9 @@ function extractFile(event: Event) {
 	const target = event.target as HTMLInputElement
 	const file = target.files?.item(0)
 	const rawFilename = file?.name as ""
+
+	fileSize.value = file?.size as number|null
+	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
 
 	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename

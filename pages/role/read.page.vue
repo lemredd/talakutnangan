@@ -159,12 +159,36 @@ async function archiveRole() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(({ body }) => {
+		if (body) {
+			const errors = body.errors as UnitError[]
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 
 async function restoreRole() {
 	await fetcher.restore([ role.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
+	})
+	.catch(({ body }) => {
+		if (body) {
+			const errors = body.errors as UnitError[]
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 

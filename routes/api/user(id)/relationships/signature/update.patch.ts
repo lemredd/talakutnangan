@@ -2,7 +2,7 @@ import type { FieldRules } from "!/types/validation"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AuthenticatedIDRequest, Response } from "!/types/dependent"
 
-import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
