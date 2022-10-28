@@ -29,7 +29,7 @@
 				value="Save changes"
 				class="btn btn-primary"/>
 			<button
-				v-if="isDeleted"
+				v-if="mayRestoreDepartment"
 				type="button"
 				class="btn btn-primary"
 				@click="restoreDepartment">
@@ -83,6 +83,10 @@ import assignPath from "$@/external/assign_path"
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+
+const department = ref<DeserializedDepartmentDocument<"read">>(
+	pageProps.department as DeserializedDepartmentDocument<"read">
+)
 const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
 
 const mayArchiveDepartment = computed<boolean>(() => {
@@ -94,9 +98,14 @@ const mayArchiveDepartment = computed<boolean>(() => {
 	return !isDeleted.value && isPermitted
 })
 
-const department = ref<DeserializedDepartmentDocument<"read">>(
-	pageProps.department as DeserializedDepartmentDocument<"read">
-)
+const mayRestoreDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isDeleted.value && isPermitted
+})
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
