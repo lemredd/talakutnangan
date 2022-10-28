@@ -102,15 +102,28 @@ const emit = defineEmits<CustomEvents>()
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
-const voteRef = ref<"upvote"|"downvote"|"unvoted">("unvoted")
+const vote = computed<"upvoted"|"downvoted"|"unvoted">({
+	get(): "upvoted"|"downvoted"|"unvoted" {
+		if (isUndefined(props.modelValue.meta)) {
+			return "unvoted"
+		}
 
-function switchVoteRef() {
-	return voteRef.value === "upvote"
-		? true
-		: voteRef.value === "downvote"
-			? false
-			: "unvoted"
-}
+		return props.modelValue.meta.currentUserVoteStatus
+	},
+	set(newValue: "upvoted"|"downvoted"|"unvoted"): void {
+		if (!isUndefined(props.modelValue.meta)) {
+			const commentWithVote = {
+				...props.modelValue,
+				"meta": {
+					...props.modelValue.meta
+				}
+			}
+
+			commentWithVote.meta.currentUserVoteStatus = newValue
+			emit("update:modelValue", commentWithVote)
+		}
+	}
+})
 
 const voteCount = ref<number>(0)
 
