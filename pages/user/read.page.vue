@@ -36,7 +36,7 @@
 				Restore
 			</button>
 			<button
-				v-else
+				v-if="mayArchiveUser"
 				type="button"
 				class="btn btn-primary"
 				@click="archiveUser">
@@ -71,6 +71,11 @@ import RoleFetcher from "$@/fetchers/role"
 import assignPath from "$@/external/assign_path"
 import DepartmentFetcher from "$@/fetchers/department"
 
+import {
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
@@ -109,6 +114,18 @@ const selectableDepartments = computed(() => departments.value.map(
 		"value": department.id
 	})
 ))
+
+const { userProfile } = pageProps
+
+const mayArchiveUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(users, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+	])
+
+	return !isDeleted.value && isPermitted
+})
 
 const fetcher = new Fetcher()
 
