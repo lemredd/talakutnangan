@@ -29,11 +29,11 @@ export default async function(
 		"field": constraints.field,
 		"friendlyName": constraints.friendlyName,
 		"messageMaker": (
-			field: string,
-			value: string
+			unusedField: string,
+			unusedValue: string
 		) => {
-			const subject = `The "${field}" with a value of "${value}"`
-			const predicate = "should has affected users which do not have surviving roles."
+			const subject = "When the selected roles have been deleted, some affected users"
+			const predicate = "would have no surviving roles which is impossible."
 
 			return `${subject} ${predicate}`
 		}
