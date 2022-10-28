@@ -24,6 +24,8 @@ export default async function(
 	const app = express()
 	app.set("trust proxy", true)
 
+	const viteDevRouter = await createViteDevServer(app)
+
 	await Promise.all([
 		dependentProcess.then(() => registerGlobalMiddlewares(app)),
 		manageAuthentication()
@@ -76,17 +78,14 @@ export default async function(
 		}))
 	}
 
-	const [ viteDevRouter ] = await Promise.all([
-		createViteDevServer(app),
-		Promise.all(registrationProcess).then(results => {
-			results.forEach(({ method, path, handlers }) => {
-				app[method](path, ...handlers)
-				routeCount++
-			})
-
-			Log.success("server", `registered ${routeCount} routes with different types`)
+	await Promise.all(registrationProcess).then(results => {
+		results.forEach(({ method, path, handlers }) => {
+			app[method](path, ...handlers)
+			routeCount++
 		})
-	])
+
+		Log.success("server", `registered ${routeCount} routes with different types`)
+	})
 
 	app.use(viteDevRouter)
 
