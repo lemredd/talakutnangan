@@ -81,5 +81,5 @@ export interface AdvanceAuthenticationOptions<V> extends AuthenticationOptions {
 }
 
 export interface RedirectableAuthenticationOptions<V> extends AdvanceAuthenticationOptions<V> {
-	"redirectURL": string|null
+	"failedRedirectURL": string|null
 }
