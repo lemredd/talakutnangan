@@ -37,11 +37,6 @@ export default async function startServer(): Promise<HTTPServer> {
 
 	const httpServer = new HTTPServer(app)
 
-	if (process.env.WEB_SOCKET_SERVER !== "false") {
-		const wsServer = createWSServer(httpServer)
-		Socket.initialize(wsServer)
-	}
-
 	if (process.env.WEB_PEER_SERVER !== "false") {
 		const peerServer = createPeerServer(app, httpServer)
 		Peer.initialize(peerServer)
@@ -50,6 +45,11 @@ export default async function startServer(): Promise<HTTPServer> {
 	const port = Number(process.env.PORT || "3000")
 	httpServer.listen(port)
 	Log.success("server", `HTTP server running at ${URLMaker.makeBaseURL()}`)
+
+	if (process.env.WEB_SOCKET_SERVER !== "false") {
+		const wsServer = createWSServer(httpServer)
+		Socket.initialize(wsServer)
+	}
 
 	return httpServer
 }
