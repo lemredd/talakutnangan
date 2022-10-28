@@ -1,7 +1,7 @@
 import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { AdvanceAuthenticationOptions } from "!/types/independent"
+import type { RedirectableAuthenticationOptions } from "!/types/independent"
 
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
@@ -36,7 +36,7 @@ export default class <
 				return promise
 			},
 			...otherAuthenticationOptions
-		}: Partial<AdvanceAuthenticationOptions<V>> = {}
+		}: Partial<RedirectableAuthenticationOptions<V>> = {}
 	) {
 		super(true, otherAuthenticationOptions)
 		this.permissionGroup = permissionGroup
