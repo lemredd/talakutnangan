@@ -529,7 +529,7 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.clearAllListeners()
 			})
 
-			it("can be terminated by consultant with action taken", async() => {
+			it.only("can be terminated by consultant with action taken", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -565,6 +565,8 @@ describe("Component: consultation/chat_window", () => {
 						},
 						"stubs": {
 							"Dropdown": false,
+							"ExtraControls": false,
+							"IconButton": false,
 							"Overlay": false
 						}
 					},
@@ -589,9 +591,9 @@ describe("Component: consultation/chat_window", () => {
 				await flushPromises()
 
 				const additionalControls = wrapper.find(".additional-controls")
-				const additionalControlsBtn = wrapper.find("#dropdown-btn")
+				const additionalControlsBtn = wrapper.find(".icon-btn")
 				await additionalControlsBtn.trigger("click")
-				const viewOverlayBtn = additionalControls.find(".view-action-taken-overlay-btn")
+				const viewOverlayBtn = additionalControls.find(".show-action-taken-overlay-btn")
 				await viewOverlayBtn.trigger("click")
 				const actionTakenOverlay = wrapper.find(".action-taken")
 				const actionTakenField = actionTakenOverlay.findComponent(".action-taken-field")
