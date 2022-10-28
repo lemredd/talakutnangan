@@ -7,7 +7,8 @@ describe("Component: chat_window/extra_controls", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"stubs": {
-					"Dropdown": false
+					"Dropdown": false,
+					"IconButton": false
 				}
 			},
 			"props": {
@@ -15,6 +16,7 @@ describe("Component: chat_window/extra_controls", () => {
 				"isHeaderControlDropdownShown": true
 			}
 		})
+
 		const showActionTakenOverlayBtn = wrapper.find(".show-action-taken-overlay-btn")
 
 		await showActionTakenOverlayBtn.trigger("click")
