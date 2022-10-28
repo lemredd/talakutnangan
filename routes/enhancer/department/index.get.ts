@@ -1,24 +1,22 @@
-import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DocumentProps } from "$/types/server"
-import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
-import deserialize from "$/object/deserialize"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
-import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
+
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new DynamicGatedRedirector((request: AuthenticatedRequest) => {
-			const user = deserialize(request.user) as DeserializedUserProfile
-			const { kind } = user.data
-
-			if (kind === "student") return Promise.resolve({ "location": "/" })
-			return Promise.resolve({ "location": "/department/list" })
-		}) as unknown as Policy
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE,
+			UPDATE,
+			ARCHIVE_AND_RESTORE
+		])
 	}
 
 
