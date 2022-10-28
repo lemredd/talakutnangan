@@ -19,7 +19,7 @@
 				<a
 					v-if="isCurrentUserConsultant"
 					href="#"
-					class="additional-control view-action-taken-overlay-btn"
+					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">Finish consultation</a>
 			</div>
 		</template>

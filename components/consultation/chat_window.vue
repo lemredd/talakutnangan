@@ -37,6 +37,12 @@
 					@hide-file-repo-overlay="hideFileRepoOverlay"
 					@switch-tab="switchTab"/>
 
+				<ExtraControls
+					:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
+					:is-current-user-consultant="isCurrentUserConsultant"
+					@show-action-taken-overlay="showActionTakenOverlay"
+					@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
+
 				<Overlay
 					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
 					class="action-taken"
@@ -191,11 +197,11 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 
 import Overlay from "@/helpers/overlay.vue"
 
-import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
+import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
-import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 
 const fetcher = new ConsultationFetcher()
 
