@@ -1,11 +1,10 @@
-@import "@styles/variables.scss";
-
 .error {
+	@apply bg-red-500;
+
 	margin: 1em 0;
 	border-radius: 3px;
 	padding: .25em 1em;
 
-	background-color: $color-primary;
 	color: white;
 	font-size: smaller;
 	width: fit-content;
