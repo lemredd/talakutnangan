@@ -22,7 +22,7 @@ export default class extends PageMiddleware {
 			UPDATE,
 			ARCHIVE_AND_RESTORE
 		], {
-			"failedRedirectURL": URLMaker.makeBaseURL(HOME)
+			"failedRedirectURL": URLMaker.makeURLFromPath(HOME)
 		})
 	}
 
