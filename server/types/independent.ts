@@ -79,3 +79,7 @@ export interface AuthenticationOptions {
 export interface AdvanceAuthenticationOptions<V> extends AuthenticationOptions {
 	checkOthers: (request: V) => Promise<void>
 }
+
+export interface RedirectableAuthenticationOptions<V> extends AdvanceAuthenticationOptions<V> {
+	"redirectURL": string|null
+}
