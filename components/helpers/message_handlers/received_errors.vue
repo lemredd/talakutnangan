@@ -1,5 +1,5 @@
 <template>
-	<ul class="error">
+	<ul class="status-messages error">
 		<h3>The following errors have occured:</h3>
 		<li
 			v-for="error in receivedErrors"

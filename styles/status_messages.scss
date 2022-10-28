@@ -1,6 +1,4 @@
-.error {
-	@apply bg-red-500;
-
+.status-messages {
 	margin: 1em 0;
 	border-radius: 3px;
 	padding: .25em 1em;
@@ -8,6 +6,18 @@
 	color: white;
 	font-size: smaller;
 	width: fit-content;
+
+	&.error {
+		@apply bg-red-500;
+	}
+
+	&.success {
+		@apply bg-emerald-500;
+	}
+}
+
+.success {
+
 }
 
 ul.error {

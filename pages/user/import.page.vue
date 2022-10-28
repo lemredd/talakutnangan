@@ -87,7 +87,6 @@
 
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
-@import "@styles/status_messages.scss";
 
 .tabs-header {
 	@apply mb-8 border-b;
