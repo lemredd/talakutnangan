@@ -55,7 +55,7 @@
 		</Overlay>
 		<div class="post-container" :hidden="post.isPostShown">
 			<div class="left">
-				<div><img src="@assets/emptyUser.png"/></div>
+				<div><img class="max-w-[10px]" src="@assets/emptyUser.png"/></div>
 				<h2 class="title">
 					{{ post.poster.data.name }}
 				</h2>
