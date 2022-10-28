@@ -1,6 +1,5 @@
 <template>
 	<ul class="status-messages success">
-		<h3>The following errors have occured:</h3>
 		<li
 			v-for="successMessage in receivedSuccessMessages"
 			:key="receivedSuccessMessages.indexOf(successMessage)">
