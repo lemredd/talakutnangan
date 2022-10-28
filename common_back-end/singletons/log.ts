@@ -2,8 +2,8 @@ import consola from "consola"
 import RequestEnvironment from "$/singletons/request_environment"
 
 export default class Log {
-	private static maxStringLength: number
-	private static allowedAreas: Map<string, string>
+	private static maxStringLength = 0
+	private static allowedAreas: Map<string, string> = new Map()
 
 	static initialize(): void {
 		const rawAllowedAreas = RequestEnvironment.isOnTest
