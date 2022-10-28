@@ -36,7 +36,7 @@
 				Restore
 			</button>
 			<button
-				v-else
+				v-if="mayArchiveDepartment"
 				type="button"
 				class="btn btn-primary"
 				@click="archiveDepartment">
@@ -70,6 +70,10 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
 
+import {
+	ARCHIVE_AND_RESTORE
+} from "$/permissions/department_combinations"
+import { department as permissionGroup } from "$/permissions/permission_list"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import ReceivedErrors from "@/helpers/received_errors.vue"
@@ -78,7 +82,17 @@ import assignPath from "$@/external/assign_path"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
+
+const mayArchiveDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	])
+
+	return !isDeleted.value && isPermitted
+})
 
 const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
