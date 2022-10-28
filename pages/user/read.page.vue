@@ -1,5 +1,8 @@
 <template>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form @submit.prevent="updateAndReload">
 		<div class="user-name">
 			<NonSensitiveTextField
@@ -70,13 +73,13 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
-import assignPath from "$@/external/assign_path"
 import DepartmentFetcher from "$@/fetchers/department"
 
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -99,6 +102,7 @@ const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 	})
 ))
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const nameFieldStatus = ref<FieldStatus>("locked")
@@ -138,8 +142,12 @@ async function updateUser() {
 
 function updateAndReload() {
 	updateUser()
-	.then(() => assignPath(`/user/read/${user.value.data.id}`))
+	.then(() => {
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Users have been imported successfully!")
+	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
