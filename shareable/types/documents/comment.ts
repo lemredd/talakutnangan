@@ -116,9 +116,15 @@ export type CommentIdentifierDocument
 export type CommentIdentifierListDocument
 = IdentifierListDocument<CommentResourceIdentifier<"read">>
 
-export type CommentIdentifierListDocumentWithVotes
-= IdentifierListDocument<CommentResourceIdentifier<"read"> & MetaDocument<{
+type WithVoteCount = MetaDocument<{
 	upvoteCount: number,
 	downvoteCount: number,
 	currentUserVoteStatus: "upvoted"|"downvoted"|"unvoted"
-}>>
+}>
+
+export type DeserializedCommentResourceWithPossibleVoteInfo<
+	T extends CommentRelationshipNames|undefined = undefined,
+> = DeserializedCommentResource<T> & WithVoteCount
+
+export type CommentIdentifierListDocumentWithVotes
+= IdentifierListDocument<CommentResourceIdentifier<"read"> & WithVoteCount>
