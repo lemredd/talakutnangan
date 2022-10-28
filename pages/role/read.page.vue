@@ -33,7 +33,7 @@
 				Restore
 			</button>
 			<button
-				v-else
+				v-if="mayArchiveRole"
 				type="button"
 				class="archive-btn btn btn-primary"
 				@click="archiveRole">
@@ -65,6 +65,9 @@ import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
+import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import { role as permissionGroup } from "$/permissions/permission_list"
+
 import FlagSelector from "@/role/flag_selector.vue"
 import ReceivedErrors from "@/helpers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
@@ -73,10 +76,10 @@ import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
-
 )
 const receivedErrors = ref<string[]>([])
 
@@ -92,6 +95,15 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
 const password = ref<string>("")
 const flagSelectors = makeFlagSelectorInfos(roleData)
+
+const mayArchiveRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	])
+
+	return !isDeleted.value && isPermitted
+})
 
 const {
 	"state": isBeingConfirmed,
