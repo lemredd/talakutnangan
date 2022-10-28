@@ -34,20 +34,30 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const fetcher = new Fetcher()
+
 const comments = computed<DeserializedCommentResource<"user">[]>({
 	get(): DeserializedCommentResource<"user">[] {
 		return props.modelValue
 	},
 	set(newValue: DeserializedCommentResource<"user">[]): void {
-		emit("update:modelValue", newValue)
+		if (newValue.some(comment => isUndefined(comment.meta))) {
+			// eslint-disable-next-line no-use-before-define
+			countVotesOfComments(extractCommentIDsWithNoVoteInfo(newValue))
+		} else {
+			emit("update:modelValue", newValue)
+		}
 	}
 })
 
-const fetcher = new Fetcher()
-
-async function countCommentVote(): Promise<number|void> {
-	const commentsWithNoVoteInfo = comments.value.filter(comment => isUndefined(comment.meta))
+function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentResource<"user">[])
+: string[] {
+	const commentsWithNoVoteInfo = currentComments.filter(comment => isUndefined(comment.meta))
 	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
+	return commentIDs
+}
+
+async function countVotesOfComments(commentIDs: string[]): Promise<void> {
 	await fetcher.countVotes(commentIDs)
 	.then(response => {
 		const deserializedData = response.body.data
@@ -69,5 +79,9 @@ async function countCommentVote(): Promise<number|void> {
 	})
 }
 
-onMounted(() => countCommentVote())
+async function countCommentVote(): Promise<number|void> {
+	await countVotesOfComments(extractCommentIDsWithNoVoteInfo(comments.value))
+}
+
+onMounted(async() => await countCommentVote())
 </script>
