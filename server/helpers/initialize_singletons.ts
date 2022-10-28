@@ -1,8 +1,8 @@
 import { SourceType } from "$/types/database"
 
 import Log from "$!/singletons/log"
-import initializeDependent from "!/helpers/initializers/initialize_dependent"
-import initializeIndependent from "!/helpers/initializers/initialize_independent"
+import initializeDependent from "!/helpers/initializers/dependent"
+import initializeIndependent from "!/helpers/initializers/independent"
 
 export default async function(sourceType: SourceType) {
 	Log.initialize()
