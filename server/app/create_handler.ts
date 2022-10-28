@@ -19,7 +19,7 @@ export default async function(
 		dependentProcess = Promise.resolve()
 	}: Partial<{
 		dependentProcess: Promise<void>
-	}>
+	}> = {}
 ): Promise<express.Express> {
 	const app = express()
 	app.set("trust proxy", true)
