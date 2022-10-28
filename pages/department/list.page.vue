@@ -17,7 +17,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
-			<ResourceList :filtered-list="list"/>
+			<ResourceList :filtered-list="list" :may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -108,7 +108,15 @@ const { userProfile } = pageProps
 const mayCreateDepartment = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		CREATE,
+		CREATE
+	])
+
+	return isPermitted
+})
+
+const mayEditDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		UPDATE,
 		ARCHIVE_AND_RESTORE
 	])
