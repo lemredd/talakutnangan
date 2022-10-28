@@ -29,10 +29,11 @@ export default async function startServer(): Promise<HTTPServer> {
 
 	const customRouter = new Router()
 
-	const [ app ] = await Promise.all([
-		independentInitializationProcess.then(() => createAppHandler(customRouter)),
-		dependentInitializationProcess
-	])
+	const app = await independentInitializationProcess.then(
+		() => createAppHandler(customRouter, {
+			"dependentProcess": dependentInitializationProcess
+		})
+	)
 
 	const httpServer = new HTTPServer(app)
 

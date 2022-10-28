@@ -13,14 +13,23 @@ import makeGlobalPostJobs from "!/app/make_global_post_jobs"
 import manageAuthentication from "!/app/manage_authentication"
 import registerGlobalMiddlewares from "!/app/register_global_middlewares"
 
-export default async function(customRoutes: Router): Promise<express.Express> {
+export default async function(
+	customRoutes: Router,
+	{
+		dependentProcess = Promise.resolve()
+	}: Partial<{
+		dependentProcess: Promise<void>
+	}>
+): Promise<express.Express> {
 	const app = express()
 	app.set("trust proxy", true)
 
-	const viteDevRouter = await createViteDevServer(app)
+	const viteDevRouterCreation = createViteDevServer(app)
 
-	await registerGlobalMiddlewares(app)
-	await manageAuthentication()
+	await Promise.all([
+		dependentProcess.then(() => registerGlobalMiddlewares(app)),
+		manageAuthentication()
+	])
 
 	const globalPostJobs = await makeGlobalPostJobs()
 	const rawGlobalPostJobs = globalPostJobs
@@ -77,7 +86,7 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	})
 
 	Log.success("server", `registered ${routeCount} routes with different types`)
-	app.use(viteDevRouter)
+	app.use(await viteDevRouterCreation)
 
 	// @ts-ignore
 	app.use(catchAllErrors)
