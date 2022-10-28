@@ -161,10 +161,12 @@ function importData(event: Event) {
 	.then(({ body }) => {
 		const { data } = body
 
+		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Users have been imported successfully!")
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
