@@ -90,7 +90,7 @@ const department = ref<DeserializedDepartmentDocument<"read">>(
 const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
 
 const mayArchiveDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
+	const roles = userProfile.data?.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
@@ -99,7 +99,7 @@ const mayArchiveDepartment = computed<boolean>(() => {
 })
 
 const mayRestoreDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
+	const roles = userProfile.data?.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
