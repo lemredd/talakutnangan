@@ -21,6 +21,7 @@ export default class <
 	private permissionCombinations: U[][]
 	protected readonly permissionGroup: PermissionGroup<T, U>
 	private checkOthers: (request: V) => Promise<void>
+	private redirectURL: string|null
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
@@ -35,6 +36,7 @@ export default class <
 				const promise = Promise.resolve()
 				return promise
 			},
+			redirectURL = null,
 			...otherAuthenticationOptions
 		}: Partial<RedirectableAuthenticationOptions<V>> = {}
 	) {
@@ -42,6 +44,7 @@ export default class <
 		this.permissionGroup = permissionGroup
 		this.permissionCombinations = permissionCombinations
 		this.checkOthers = checkOthers
+		this.redirectURL = redirectURL
 	}
 
 	async authorize(request: V): Promise<void> {
@@ -52,7 +55,10 @@ export default class <
 		const isPermitted = this.permissionGroup.hasOneRoleAllowed(roles, this.permissionCombinations)
 
 		if (!isPermitted) {
-			throw new AuthorizationError("None of the roles of the user can invoke the action.")
+			throw new AuthorizationError(
+				"None of the roles of the user can invoke the action.",
+				this.redirectURL
+			)
 		}
 
 		await this.checkOthers(request)
