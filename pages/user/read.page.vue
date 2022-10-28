@@ -29,7 +29,7 @@
 				Submit
 			</button>
 			<button
-				v-if="isDeleted"
+				v-if="mayRestoreUser"
 				type="button"
 				class="btn btn-primary"
 				@click="restoreUser">
@@ -119,12 +119,28 @@ const { userProfile } = pageProps
 
 const mayArchiveUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(users, [
-		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
 		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 	])
 
-	return !isDeleted.value && isPermitted
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+	])
+
+	return !isDeleted.value && (isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope)
+})
+
+const mayRestoreUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+	])
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+	])
+
+	return isDeleted.value && (isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope)
 })
 
 const fetcher = new Fetcher()
