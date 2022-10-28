@@ -1,1 +1,3 @@
 export const MINUTE_SCHEDULE_INTERVAL = 15
+
+export const DEFAULT_LIST_LIMIT = 10

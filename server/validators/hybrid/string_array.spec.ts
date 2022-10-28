@@ -5,13 +5,13 @@ describe("Validator pipe: string array", () => {
 	it("can accept valid input", async() => {
 		const value = Promise.resolve(makeInitialState("world,foo"))
 		const constraints = {
-			"request": null,
-			"source": null,
-			"field": "hello",
 			"array": {
-				"pipes": [ jest.fn(pipedValue => pipedValue) ],
-				"constraints": {}
-			}
+				"constraints": {},
+				"pipes": [ jest.fn(pipedValue => pipedValue) ]
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
 		}
 
 		const sanitizeValue = (await stringArray(value, constraints)).value
@@ -22,13 +22,13 @@ describe("Validator pipe: string array", () => {
 	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState(2))
 		const constraints = {
-			"request": null,
-			"source": null,
-			"field": "hello",
 			"array": {
-				"pipes": [ jest.fn(pipedValue => pipedValue) ],
-				"constraints": {}
-			}
+				"constraints": {},
+				"pipes": [ jest.fn(pipedValue => pipedValue) ]
+			},
+			"field": "hello",
+			"request": null,
+			"source": null
 		}
 
 		try {

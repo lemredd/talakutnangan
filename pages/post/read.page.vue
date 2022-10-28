@@ -61,8 +61,8 @@ const comments = ref<DeserializedCommentResource<"user">[]>(
 	pageProps.comments.data as DeserializedCommentResource<"user">[]
 )
 
-// TODO: Correct the specialization
 const mayCreateComment = computed<boolean>(() => {
+	const isPostPublic = !post.value.department
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 	])
@@ -77,7 +77,8 @@ const mayCreateComment = computed<boolean>(() => {
 			CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 		])
 
-	const isPermitted = isLimitedPersonalScope
+	const isPermitted = isPostPublic
+	|| isLimitedPersonalScope
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 

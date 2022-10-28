@@ -2,7 +2,7 @@ import type { FieldRules, Rules } from "!/types/validation"
 import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
 import { fileType, fileTypeDescription } from "$!/constants/regex"
-import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"

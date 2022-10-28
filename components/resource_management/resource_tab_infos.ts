@@ -1,5 +1,7 @@
 import type { ConditionalLinkInfo } from "$@/types/independent"
 
+import { DEPARTMENT_LIST, USER_LIST, ROLE_LIST } from "$/constants/template_page_paths"
+
 import { user, role, department } from "$/permissions/permission_list"
 import { UPDATE as UPDATE_ROLES } from "$/permissions/role_combinations"
 import { UPDATE as UPDATE_DEPARTMENTS } from "$/permissions/department_combinations"
@@ -15,7 +17,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "",
 				"name": "Users",
-				"path": "/user/list",
+				"path": USER_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
@@ -32,7 +34,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "",
 				"name": "Roles",
-				"path": "/role/list",
+				"path": ROLE_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
@@ -46,7 +48,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "",
 				"name": "Departments",
-				"path": "/department/list",
+				"path": DEPARTMENT_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],

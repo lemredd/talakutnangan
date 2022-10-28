@@ -246,8 +246,11 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 			})
 
+
 			it("should continue to started consultation", async() => {
-				const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+				const dateNow = new Date("2022-10-20 10:00:00")
+				const scheduledStartAt
+				= new Date(dateNow.valueOf() - convertTimeToMilliseconds("00:00:02"))
 				const consultant = {
 					"data": {
 						"id": "10",
@@ -284,7 +287,6 @@ describe("Component: consultation/chat_window", () => {
 						"isConsultationListShown": false
 					}
 				})
-
 				await nextTick()
 
 				const consultationHeader = wrapper.find(".selected-consultation-header")
@@ -565,6 +567,8 @@ describe("Component: consultation/chat_window", () => {
 						},
 						"stubs": {
 							"Dropdown": false,
+							"ExtraControls": false,
+							"IconButton": false,
 							"Overlay": false
 						}
 					},
@@ -589,9 +593,9 @@ describe("Component: consultation/chat_window", () => {
 				await flushPromises()
 
 				const additionalControls = wrapper.find(".additional-controls")
-				const additionalControlsBtn = wrapper.find("#dropdown-btn")
+				const additionalControlsBtn = wrapper.find(".icon-btn")
 				await additionalControlsBtn.trigger("click")
-				const viewOverlayBtn = additionalControls.find(".view-action-taken-overlay-btn")
+				const viewOverlayBtn = additionalControls.find(".show-action-taken-overlay-btn")
 				await viewOverlayBtn.trigger("click")
 				const actionTakenOverlay = wrapper.find(".action-taken")
 				const actionTakenField = actionTakenOverlay.findComponent(".action-taken-field")

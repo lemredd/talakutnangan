@@ -1,6 +1,8 @@
 import type { BaseManagerClass } from "!/types/dependent"
 import type { Pipe, Rules, FieldRules } from "!/types/validation"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
 import exists from "!/validators/manager/exists"
@@ -40,8 +42,7 @@ export default function(
 					"pipes": [ string, integer, exists, ...postIDPipes ]
 				},
 				"length": {
-					// TODO: Find the best length
-					"maximum": 24,
+					"maximum": DEFAULT_LIST_LIMIT,
 					"minimum": 1
 				}
 			},

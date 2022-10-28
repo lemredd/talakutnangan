@@ -1,8 +1,5 @@
 <template>
-	<AdminConfigHeader
-		class="tabs"
-		title="Admin Configuration"
-		:tab-infos="TabInfos"/>
+	<UserListRedirector resource-type="user"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<form @submit.prevent="importData">
@@ -82,12 +79,13 @@
 		</output>
 	</form>
 </template>
+
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
 @import "@styles/error.scss";
 
-.tabs {
-	margin-bottom: 2em;
+.tabs-header {
+	@apply mb-8 border-b;
 }
 
 .kind{
@@ -103,15 +101,12 @@
 	margin-top:1em;
 }
 
-
 @media (min-width: 640px) {
 	.kind{
 		@apply flex flex-row;
 	}
 }
-
 </style>
-
 
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
@@ -128,11 +123,9 @@ import convertForSentence from "$/string/convert_for_sentence"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
 import ReceivedErrors from "@/helpers/received_errors.vue"
-import AdminConfigHeader from "@/helpers/tabbed_page_header.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import UserListRedirector from "@/resource_management/list_redirector.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
-
-import TabInfos from "@/resource_management/resource_tab_infos"
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext

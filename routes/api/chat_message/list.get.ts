@@ -2,10 +2,13 @@ import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 import type { ChatMessageQueryParameters } from "$/types/query"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import Policy from "!/bases/policy"
 import Manager from "%/managers/chat_message"
 import ListResponse from "!/response_infos/list"
 import QueryController from "!/controllers/query"
+import ConsultationManager from "%/managers/consultation"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -28,7 +31,7 @@ export default class extends QueryController {
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeListRules(Manager, {
-			...makeMultiIDBasedFilterRules(Manager, {
+			...makeMultiIDBasedFilterRules(ConsultationManager, {
 				"initialPipes": [ required ],
 				"multipleIDKey": "consultationIDs",
 				"mustCast": true,
@@ -39,8 +42,7 @@ export default class extends QueryController {
 			"chatMessageKind": {
 				"constraints": {
 					"length": {
-						// TODO: Find the best length
-						"maximum": 24,
+						"maximum": DEFAULT_LIST_LIMIT,
 						"minimum": 1
 					},
 					"nullable": { "defaultValue": "*" }
