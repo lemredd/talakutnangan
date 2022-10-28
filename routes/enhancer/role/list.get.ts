@@ -8,9 +8,9 @@ import Validation from "!/bases/validation"
 import DepartmentManager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { role as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
