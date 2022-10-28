@@ -54,23 +54,13 @@
 		</p>
 		<div class="comment-container">
 			<div class="right">
+				<SelectableVote
+					v-model="vote"
+					title=""
+					:options="voteOptions"
+					:checked="switchVoteRef()"/>
 				<h2 class="title">
-					<!-- TODO: Put the total number of upvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to upvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of downvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to downvote -->
-					<span class="slider"></span>
-				</label>
-
-				<h2 class="title">
-					<!-- TODO: Put the total number of votes here -->
+					{{ voteCount }} votes
 				</h2>
 			</div>
 		</div>
@@ -82,18 +72,22 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
 
 import Overlay from "@/helpers/overlay.vue"
+import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
+import SelectableVote from "@/fields/selectable_checkbox.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
+const fetcherVote = new VoteFetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedCommentResource<"user">
@@ -107,6 +101,53 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
+
+const voteRef = ref<"upvote"|"downvote"|"unvoted">("unvoted")
+
+function switchVoteRef() {
+	return voteRef.value === "upvote"
+		? true
+		: voteRef.value === "downvote"
+			? false
+			: "unvoted"
+}
+
+const voteCount = ref<number>(0)
+
+const voteOptions = [
+	{
+		"value": "upvote"
+	},
+	{
+		"value": "downvote"
+	}
+] as OptionInfo[]
+
+async function updateVotes(): Promise<number|void> {
+	await fetcherVote.update(comment.value.id, {
+		"deletedAt": null,
+		"type": voteRef.value
+	}).then(() => {
+		emit("update:modelValue", comment.value)
+	})
+}
+
+const vote = ref<string>("unvoted")
+watch(voteRef, () => {
+	updateVotes()
+	countCommentVote()
+	switchVoteRef()
+})
+
+/*
+ * Const vote = computed<string>({
+ * 	get(): string { return "upvote" },
+ * 	set(): void {
+ * 		updateVotes()
+ * 	}
+ * })
+ */
+
 
 const {
 	"state": mustUpdate,

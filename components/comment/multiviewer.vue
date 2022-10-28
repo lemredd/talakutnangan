@@ -13,9 +13,11 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, onMounted } from "vue"
 
 import type { DeserializedCommentResource } from "$/types/documents/comment"
+
+import Fetcher from "$@/fetchers/comment"
 
 import Viewer from "@/comment/multiviewer/viewer.vue"
 
@@ -39,4 +41,19 @@ const comments = computed<DeserializedCommentResource<"user">[]>({
 		emit("update:modelValue", newValue)
 	}
 })
+
+const fetcher = new Fetcher()
+
+async function countCommentVote(): Promise<number|void> {
+	await fetcher.countVotes(comments.value.map(comment => comment.id))
+	.then(response => {
+		const deserializedData = response.body.data
+		for (const identifierData of deserializedData) {
+			const { upvoteCount, downvoteCount } = identifierData
+			voteCount.value += Number(upvoteCount) - Number(downvoteCount)
+		}
+	})
+}
+
+onMounted(() => countCommentVote())
 </script>
