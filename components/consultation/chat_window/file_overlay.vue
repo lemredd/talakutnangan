@@ -83,6 +83,10 @@
 			max-width: 130px;
 			@apply flex-1 max-h-80;
 		}
+
+		.file-item {
+			@apply flex items-center justify-between;
+		}
 	}
 
 	.file-repo-preview{
