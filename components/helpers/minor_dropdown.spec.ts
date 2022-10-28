@@ -18,14 +18,19 @@ describe("Component: helpers/minor_dropdown", () => {
 
 	it("should close if click emitted outside of dropdown", async() => {
 		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"IconButton": false
+				}
+			},
 			"props": {
 				"modelValue": true
 			}
 		})
 
-		const container = wrapper.findComponent({ "name": "IconButton" })
-		await container.vm.$emit("focusout")
-
+		console.log(wrapper.html(), "\n\n\n")
+		const overlay = wrapper.find(".overlay")
+		await overlay.trigger("click")
 		expect(wrapper.emitted()).toHaveProperty("update:modelValue.0.0", false)
 	})
 })
