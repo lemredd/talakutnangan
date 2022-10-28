@@ -30,7 +30,9 @@ export default class extends PageMiddleware {
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 			RESET_PASSWORD,
 			IMPORT_USERS
-		])
+		], {
+			"failedRedirectURL": "/"
+		})
 	}
 
 	get postPolicyMiddlewares(): Middleware[] {
