@@ -18,18 +18,32 @@
 			<!-- show list of files -->
 			<div class="sent-files">
 				<div class="file-repo">
-					<div class="file-list">
+					<div v-if="!mustShowPreview" class="file-list general-files">
 						<li
-							v-for="n in 100"
-							:key="n"
-							class="file">
-							file.extension
+							v-for="file in generalFiles.data"
+							:key="file.id"
+							class="file-item">
+							{{ file.data.name }}
+
+							<a
+								:href="file.attachedChatFile?.data.fileContents"
+								target="_blank"
+								class="material-icons download-btn">download</a>
+						</li>
+					</div>
+					<div v-else class="file-list image-files">
+						<li
+							v-for="file in imageFiles.data"
+							:key="file.id"
+							class="file-item"
+							@click="previewImageFile(file)">
+							{{ file.data.name }}
 						</li>
 					</div>
 
 					<!--  -->
-					<div v-if="mustShowPreview" class="file-repo-preview flex-[2]">
-						hello world
+					<div v-if="mustShowPreview" class="file-repo-preview md:flex-[2]">
+						<img class="image-to-preview" :src="imageToPreview"/>
 					</div>
 				</div>
 				<!-- show selected file to preview -->
