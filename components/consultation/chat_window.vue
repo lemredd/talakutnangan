@@ -37,31 +37,11 @@
 					@hide-file-repo-overlay="hideFileRepoOverlay"
 					@switch-tab="switchTab"/>
 
-				<Dropdown
-					:is-dropdown-shown="isHeaderControlDropdownShown"
-					class="additional-controls"
-					@toggle="toggleHeaderControlDropdownShown">
-					<template #toggler>
-						<button class="material-icons toggle-controls-btn">
-							more_horiz
-						</button>
-					</template>
-
-					<template #dropdown-contents>
-						<div class="links">
-							<a
-								href="#"
-								class="additional-control view-printable-form-btn">
-								View consultation form
-							</a>
-							<a
-								v-if="isCurrentUserConsultant"
-								href="#"
-								class="additional-control view-action-taken-overlay-btn"
-								@click="showActionTakenOverlay">Finish consultation</a>
-						</div>
-					</template>
-				</Dropdown>
+				<ExtraControls
+					:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
+					:is-current-user-consultant="isCurrentUserConsultant"
+					@show-action-taken-overlay="showActionTakenOverlay"
+					@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
 
 				<Overlay
 					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
@@ -165,18 +145,7 @@
 				@apply flex-1;
 				.selected-consultation-user-status { @apply row-start-2; }
 			}
-			.controls {
-				@apply flex items-center;
-
-				.additional-controls {
-					display: inline;
-					height: min-content;
-
-					.additional-control{
-					@apply p-2 hover:bg-light-600;
-					}
-				}
-			}
+			.controls { @apply flex items-center; }
 		}
 
 		.selected-consultation-chats {
@@ -217,11 +186,11 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 
 import Overlay from "@/helpers/overlay.vue"
 
-import Dropdown from "@/page_shell/dropdown.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
+import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
-import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 
 const fetcher = new ConsultationFetcher()
 
