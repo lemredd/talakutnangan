@@ -1,6 +1,6 @@
 import type { DocumentProps } from "$/types/server"
 
-import { ROLE_LIST } from "$/constants/template_page_paths"
+import { ROLE_LIST, HOME } from "$/constants/template_page_paths"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
@@ -22,7 +22,7 @@ export default class extends PageMiddleware {
 			UPDATE,
 			ARCHIVE_AND_RESTORE
 		], {
-			"failedRedirectURL": URLMaker.makeBaseURL()
+			"failedRedirectURL": URLMaker.makeURLFromPath(HOME)
 		})
 	}
 
