@@ -42,6 +42,38 @@ describe("Controller: GET /api/chat_message", () => {
 		requester.expectSuccess()
 	})
 
+	it("can accept valid info with multiple consultation ID", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const queryValidation = validations[QUERY_VALIDATION_INDEX]
+		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
+		const userFactory = new UserFactory()
+		const user = await userFactory.insertOne()
+		const consultations = await new ConsultationFactory().insertMany(2)
+		const consultationIterator = consultations.values()
+		const activities = await new ChatMessageActivityFactory()
+		.user(() => Promise.resolve(user))
+		.consultation(() => Promise.resolve(consultationIterator.next().value))
+		.insertMany(consultations.length)
+		const activitiesIterator = activities.values()
+		await new Factory()
+		.chatMessageActivity(() => Promise.resolve(activitiesIterator.next().value))
+		.insertOne()
+		requester.customizeRequest({
+			"query": {
+				"filter": {
+					"consultationIDs": consultations.map(consultation => consultation.id).join(","),
+					"existence": "*"
+				}
+			},
+			"user": await userFactory.serialize(user)
+		})
+
+		await requester.runMiddleware(queryValidationFunction)
+
+		requester.expectSuccess()
+	})
+
 	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
 		const { validations } = controller
