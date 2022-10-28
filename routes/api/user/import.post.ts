@@ -9,7 +9,7 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
-import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "!/constants/measurement"
+import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
 import {
 	personName,
 	personNameDescription,
