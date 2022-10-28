@@ -1,6 +1,7 @@
 import "dotenv/config"
 import express from "express"
 
+import type { Method } from "$/types/server"
 import type { RequestHandler } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -28,34 +29,52 @@ export default async function(customRoutes: Router): Promise<express.Express> {
 	let routeCount = 0
 
 	const allRouteInformation = await customRoutes.allUsableRoutes
+	const registrationProcess: Promise<{
+		method: Method,
+		path: string,
+		handlers: RequestHandler[]
+	}>[] = []
+
 	for (const { information, handlers } of allRouteInformation) {
-		const { method, path } = information
-		const { middlewares, controller, postJobs, endHandler } = handlers
+		registrationProcess.push(new Promise(resolve => {
+			const { method, path } = information
+			const { middlewares, controller, postJobs, endHandler } = handlers
 
-		const rawMiddlewares = middlewares
-		.filter(middleware => middleware !== null)
-		.map(middleware => {
-			const castMiddleware = middleware as Middleware
-			return castMiddleware.intermediate.bind(middleware)
-		})
-		const rawPostJobs = postJobs
-		.filter(postJob => postJob !== null)
-		.map(postJob => {
-			const castPostJob = postJob as Middleware
-			return castPostJob.intermediate.bind(postJob)
-		})
-		const rawHandlers = [
-			...rawMiddlewares,
-			controller,
-			...rawPostJobs,
-			...rawGlobalPostJobs,
-			endHandler
-		]
-		.filter(middleware => middleware !== null)
+			const rawMiddlewares = middlewares
+			.filter(middleware => middleware !== null)
+			.map(middleware => {
+				const castMiddleware = middleware as Middleware
+				return castMiddleware.intermediate.bind(middleware)
+			})
+			const rawPostJobs = postJobs
+			.filter(postJob => postJob !== null)
+			.map(postJob => {
+				const castPostJob = postJob as Middleware
+				return castPostJob.intermediate.bind(postJob)
+			})
+			const rawHandlers = [
+				...rawMiddlewares,
+				controller,
+				...rawPostJobs,
+				...rawGlobalPostJobs,
+				endHandler
+			]
+			.filter(middleware => middleware !== null)
 
-		app[method](path, ...<RequestHandler[]><unknown>rawHandlers)
-		routeCount++
+			resolve({
+				"handlers": <RequestHandler[]><unknown>rawHandlers,
+				method,
+				path
+			})
+		}))
 	}
+
+	await Promise.all(registrationProcess).then(results => {
+		results.forEach(({ method, path, handlers }) => {
+			app[method](path, ...handlers)
+			routeCount++
+		})
+	})
 
 	Log.success("server", `registered ${routeCount} routes with different types`)
 	app.use(viteDevRouter)
