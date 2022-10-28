@@ -529,7 +529,7 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.clearAllListeners()
 			})
 
-			it.only("can be terminated by consultant with action taken", async() => {
+			it("can be terminated by consultant with action taken", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
