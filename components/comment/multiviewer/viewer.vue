@@ -55,10 +55,10 @@
 		<div class="comment-container">
 			<div class="right">
 				<SelectableVote
-					v-model="vote"
+					:model-value="vote"
 					title=""
 					:options="voteOptions"
-					:checked="switchVoteRef()"/>
+					@update:model-value="switchVote"/>
 				<h2 class="title">
 					{{ voteCount }} votes
 				</h2>
@@ -79,6 +79,7 @@ import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
 
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
@@ -136,31 +137,18 @@ const voteOptions = [
 	}
 ] as OptionInfo[]
 
-async function updateVotes(): Promise<number|void> {
-	await fetcherVote.update(comment.value.id, {
-		"deletedAt": null,
-		"type": voteRef.value
-	}).then(() => {
-		emit("update:modelValue", comment.value)
-	})
+async function switchVote(newRawVote: string): Promise<void> {
+	const newVote = `${newRawVote}d` as "upvoted"|"downvoted"|"unvoted"
+	const currentVote = vote.value
+
+	if (currentVote === "unvoted") {
+		// Create vote
+	} else if (newVote === "unvoted") {
+		// Delete vote
+	} else {
+		// Update vote
+	}
 }
-
-const vote = ref<string>("unvoted")
-watch(voteRef, () => {
-	updateVotes()
-	countCommentVote()
-	switchVoteRef()
-})
-
-/*
- * Const vote = computed<string>({
- * 	get(): string { return "upvote" },
- * 	set(): void {
- * 		updateVotes()
- * 	}
- * })
- */
-
 
 const {
 	"state": mustUpdate,
