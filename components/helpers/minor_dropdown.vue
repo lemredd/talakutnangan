@@ -31,7 +31,7 @@
 			@apply dark:bg-dark-400 fixed bg-white h-full z-501 h-min;
 			@apply flex flex-col flex-nowrap;
 
-			top: calc($navHeight + calc(50% - $navHeight));
+			top: 50%;
 			left: 50%;
 
 			transform: translateX(-50%);
@@ -71,7 +71,7 @@ function open() {
 }
 
 function close() {
-	// emit("update:modelValue", false)
+	emit("update:modelValue", false)
 }
 
 onUpdated(() => {
