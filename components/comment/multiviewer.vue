@@ -18,6 +18,7 @@ import { computed, onMounted } from "vue"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
+import isUndefined from "$/type_guards/is_undefined"
 
 import Viewer from "@/comment/multiviewer/viewer.vue"
 
@@ -45,13 +46,26 @@ const comments = computed<DeserializedCommentResource<"user">[]>({
 const fetcher = new Fetcher()
 
 async function countCommentVote(): Promise<number|void> {
-	await fetcher.countVotes(comments.value.map(comment => comment.id))
+	const commentsWithNoVoteInfo = comments.value.filter(comment => isUndefined(comment.meta))
+	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
+	await fetcher.countVotes(commentIDs)
 	.then(response => {
 		const deserializedData = response.body.data
+		const commentsWithVoteInfo = [ ...comments.value ]
+
 		for (const identifierData of deserializedData) {
-			const { upvoteCount, downvoteCount } = identifierData
-			voteCount.value += Number(upvoteCount) - Number(downvoteCount)
+			const { meta, id } = identifierData
+
+			const commentWithVoteInfo = commentsWithVoteInfo.find(comment => comment.id === id)
+
+			if (isUndefined(commentWithVoteInfo)) {
+				throw new Error("Comment requested to load vote info is missing.")
+			} else {
+				commentWithVoteInfo.meta = meta
+			}
 		}
+
+		comments.value = commentsWithVoteInfo
 	})
 }
 
