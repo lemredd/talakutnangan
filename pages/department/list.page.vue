@@ -7,7 +7,9 @@
 		:role-names="[]">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
-				<template #additional-controls>
+				<template
+					v-if="mayCreateDepartment"
+					#additional-controls>
 					<a href="/department/create" class="add-department-btn btn btn-primary">
 						Add Department
 					</a>
@@ -25,12 +27,14 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch } from "vue"
+import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/department"
@@ -98,6 +102,19 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 
 	await fetchDepartmentInfos()
 }
+
+const { userProfile } = pageProps
+
+const mayCreateDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		CREATE,
+		UPDATE,
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isPermitted
+})
 
 async function refetchRoles() {
 	list.value = []
