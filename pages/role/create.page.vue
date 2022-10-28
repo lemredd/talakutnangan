@@ -47,7 +47,7 @@ import Fetcher from "$@/fetchers/role"
 
 import FlagSelector from "@/role/flag_selector.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 

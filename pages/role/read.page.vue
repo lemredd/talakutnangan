@@ -66,7 +66,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
 import FlagSelector from "@/role/flag_selector.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 

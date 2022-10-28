@@ -122,7 +122,7 @@ import UserFetcher from "$@/fetchers/user"
 import convertForSentence from "$/string/convert_for_sentence"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"

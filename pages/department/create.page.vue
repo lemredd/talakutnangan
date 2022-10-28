@@ -40,7 +40,7 @@ import type { UnitError } from "$/types/server"
 
 import DepartmentFetcher from "$@/fetchers/department"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 
 const fullName = ref("")

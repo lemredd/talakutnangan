@@ -72,7 +72,7 @@ import makeSwitch from "$@/helpers/make_switch"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import assignPath from "$@/external/assign_path"
 
