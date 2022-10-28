@@ -246,8 +246,11 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 			})
 
+
 			it("should continue to started consultation", async() => {
-				const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
+				const dateNow = new Date("2022-10-20 10:00:00")
+				const scheduledStartAt
+				= new Date(dateNow.valueOf() - convertTimeToMilliseconds("00:00:02"))
 				const consultant = {
 					"data": {
 						"id": "10",
@@ -284,7 +287,6 @@ describe("Component: consultation/chat_window", () => {
 						"isConsultationListShown": false
 					}
 				})
-
 				await nextTick()
 
 				const consultationHeader = wrapper.find(".selected-consultation-header")
