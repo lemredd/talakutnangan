@@ -26,7 +26,7 @@
 		</template>
 
 		<template #resources>
-			<ResourceList :filtered-list="list"/>
+			<ResourceList :filtered-list="list" :may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -52,7 +52,11 @@ import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
 } from "$/permissions/user_combinations"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
@@ -160,14 +164,31 @@ function fetchUserInfo() {
 
 const mayCreateUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(users, [
-		READ_ANYONE_ON_OWN_DEPARTMENT,
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		READ_ANYONE_ON_OWN_DEPARTMENT
+	])
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		READ_ANYONE_ON_ALL_DEPARTMENTS
 	])
 
-	return isPermitted
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
 
+const mayEditUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+	])
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+	])
+
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
 
 async function resetUsersList() {
 	isLoaded.value = false
