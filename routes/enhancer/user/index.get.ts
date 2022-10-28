@@ -1,8 +1,12 @@
 import type { DocumentProps } from "$/types/server"
 
+import { USER_LIST } from "$/constants/template_page_paths"
+
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
+import Middleware from "!/bases/middleware"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
+import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -29,6 +33,11 @@ export default class extends PageMiddleware {
 		])
 	}
 
+	get postPolicyMiddlewares(): Middleware[] {
+		return [
+			new ForceRedirector(USER_LIST)
+		]
+	}
 
 	get bodyParser(): null { return null }
 
