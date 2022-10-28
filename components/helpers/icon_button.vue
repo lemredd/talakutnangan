@@ -2,7 +2,7 @@
 	<div>
 		<button
 			type="button"
-			class="material-icons"
+			class="icon-btn material-icons"
 			@click="emitIconClickEvent">
 			{{ iconName }}
 		</button>

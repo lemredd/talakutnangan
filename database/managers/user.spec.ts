@@ -1,15 +1,19 @@
 /* eslint-disable no-magic-numbers */
 import type { RawBulkDataForStudents, RawBulkDataForEmployees } from "%/types/independent"
 
-import Model from "%/models/user"
-import Manager from "./user"
 import compare from "$!/auth/compare"
-import Factory from "~/factories/user"
-import RoleFactory from "~/factories/role"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
+import Model from "%/models/user"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
-import DepartmentFactory from "~/factories/department"
 import EmployeeSchedule from "%/models/employee_schedule"
+
+import Factory from "~/factories/user"
+import RoleFactory from "~/factories/role"
+import DepartmentFactory from "~/factories/department"
+
+import Manager from "./user"
 
 describe("Database Manager: User authentication operations", () => {
 	it("can find user using credentials", async() => {
@@ -247,6 +251,14 @@ describe("Database Manager: User create operations", () => {
 		expect(userData).toHaveProperty("included.1.type", "department")
 		expect(userData).toHaveProperty("included.2.type", "department")
 		expect(userData).toHaveProperty("included.3.type", "employee_schedule")
+		expect(userData).toHaveProperty(
+			"included.3.attributes.scheduleStart",
+			convertTimeToMinutes("08:00")
+		)
+		expect(userData).toHaveProperty(
+			"included.3.attributes.scheduleEnd",
+			convertTimeToMinutes("17:00")
+		)
 		expect(userData).toHaveProperty("included.4.type", "employee_schedule")
 		expect(userData).toHaveProperty("included.5.type", "employee_schedule")
 		expect(userData).toHaveProperty("included.6.type", "employee_schedule")
@@ -263,6 +275,7 @@ describe("Database Manager: User create operations", () => {
 		expect(userData).toHaveProperty("included.17.type", "employee_schedule")
 		expect(userData).toHaveProperty("included.18.type", "role")
 		expect(userData).toHaveProperty("included.19.type", "role")
+		expect(userData).not.toHaveProperty("included.20")
 	})
 
 	it("can create unreachable employees in bulk", async() => {
