@@ -8,7 +8,9 @@
 		:role-names="[]">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
-				<template #additional-controls>
+				<template
+					v-if="mayCreateRole"
+					#additional-controls>
 					<a href="/role/create" class="add-role-btn btn btn-primary">
 						Add Role
 					</a>
@@ -33,6 +35,8 @@ import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
+import { role as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
@@ -117,6 +121,19 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 	await fetchRoleInfos()
 }
+
+const { userProfile } = pageProps
+
+const mayCreateRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		CREATE,
+		UPDATE,
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isPermitted
+})
 
 async function refetchRoles() {
 	list.value = []
