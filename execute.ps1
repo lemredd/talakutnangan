@@ -467,6 +467,7 @@ if ($Log) {
 			Replace("≡ƒîÉ", "🌐").
 			Replace("≡ƒöª", "🔦").
 			Replace("≡ƒªá", "🦠").
+			Replace("≡ƒöÑ", "🔥").
 			Replace("≡ƒò╖", "🕷")
 		if (($line -eq "") -and $lastLine.StartsWith("###")) {
 			$lastLine = $line
