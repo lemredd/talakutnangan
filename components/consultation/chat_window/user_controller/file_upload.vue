@@ -123,7 +123,7 @@ import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/chat_message"
 import Overlay from "@/helpers/overlay.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
 const props = defineProps<{

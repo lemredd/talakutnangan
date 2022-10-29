@@ -1,5 +1,8 @@
 <template>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 
 	<form @submit.prevent="openConfirmation">
 		<div class="role-name">
@@ -69,6 +72,7 @@ import FlagSelector from "@/role/flag_selector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -79,6 +83,7 @@ const role = ref<DeserializedRoleDocument<"read">>(
 
 )
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 const roleData = computed<RoleAttributes<"deserialized">>({
 	get(): RoleAttributes<"deserialized"> { return role.value.data },
@@ -127,10 +132,14 @@ async function updateRole() {
 		password.value = ""
 		nameFieldStatus.value = "locked"
 		console.log(body, status)
+
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Role has been successfully!")
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
-			const errors = body.errors as UnitError[]
+			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
 

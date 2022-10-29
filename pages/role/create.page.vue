@@ -1,6 +1,9 @@
 <template>
 	<UserListRedirector resource-type="role"/>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 
 	<form @submit.prevent="createRole">
 		<!-- TODO: capitalize each word in input automatically  -->
@@ -48,6 +51,7 @@ import Fetcher from "$@/fetchers/role"
 import FlagSelector from "@/role/flag_selector.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 
@@ -69,14 +73,17 @@ const flagSelectors = makeFlagSelectorInfos(role)
 const roleFetcher = new Fetcher()
 
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function createRole() {
 	roleFetcher.create({
 		...role.value,
 		"deletedAt": null
 	}).then(({ unusedBody, unusedStatus }) => {
-		// Success
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Role has been successfully!")
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
