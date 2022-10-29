@@ -61,9 +61,10 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
 import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
@@ -73,10 +74,12 @@ const pageContext = inject("pageContext") as PageContext<
 	"timeConsumedPerStudent"
 >
 const { pageProps } = pageContext
-const { timeConsumedPerStudent } = pageProps
+const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>(
+	pageProps.timeConsumedPerStudent as DeserializedUserListWithTimeConsumedDocument
+)
 
 const totalTime = computed<number>(() => {
-	const total = timeConsumedPerStudent.data.reduce((previousTotal, currentSum) => {
+	const total = timeConsumedPerStudent.value.data.reduce((previousTotal, currentSum) => {
 		const newTotal = previousTotal + currentSum.meta.totalMillisecondsConsumed
 		return newTotal
 	}, 0)
