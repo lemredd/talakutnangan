@@ -87,9 +87,9 @@ import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/docum
 import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
-import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
+import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",

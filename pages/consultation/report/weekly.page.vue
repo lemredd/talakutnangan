@@ -64,8 +64,8 @@ import { inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
-import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
+import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",

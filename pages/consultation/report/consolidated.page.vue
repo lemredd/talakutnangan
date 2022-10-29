@@ -41,7 +41,7 @@ import makeUnique from "$/array/make_unique"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
-import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
+import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -120,16 +120,4 @@ const totalNumberOfStudents = computed<number>(
 const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
 )
-
-
-function convertToFullTimeString(timeInMilliseconds: number) {
-	const {
-		hours,
-		minutes,
-		seconds
-	} = convertMStoTimeObject(timeInMilliseconds)
-
-	// eslint-disable-next-line max-len
-	return `${Math.abs(hours)} hours ${Math.abs(minutes)} minutes ${Math.abs(Math.floor(seconds))} seconds`
-}
 </script>
