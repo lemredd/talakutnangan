@@ -171,6 +171,7 @@ const mayCreateUser = computed<boolean>(() => {
 	return mayImportUsers
 })
 
+// TODO: Fina way to assess each user if they can be edited
 const mayEditUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
 	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
