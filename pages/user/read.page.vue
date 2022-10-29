@@ -77,6 +77,8 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
@@ -91,8 +93,8 @@ type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const user = ref<DeserializedUserDocument<"roles">>(
-	pageProps.user as DeserializedUserDocument<"roles">
+const user = ref<DeserializedUserDocument<"roles"|"department">>(
+	pageProps.user as DeserializedUserDocument<"roles"|"department">
 )
 
 const roles = ref<DeserializedRoleResource[]>(
@@ -116,7 +118,7 @@ const nameFieldStatus = ref<FieldStatus>("locked")
 const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
-const userDepartment = ref(user.value.data.department?.data.id as string)
+const userDepartment = ref(user.value.data.department.data.id as string)
 const selectableDepartments = computed(() => departments.value.map(
 	department => ({
 		"label": department.fullName,
@@ -125,32 +127,37 @@ const selectableDepartments = computed(() => departments.value.map(
 ))
 
 const { userProfile } = pageProps
+const isOnSameDepartment = computed<boolean>(() => {
+	const ownDepartment = userProfile.data.department.data.id
+	return ownDepartment === user.value.data.department.data.id
+})
+const mayUpdateUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT
+	]) && isOnSameDepartment.value
 
-const mayArchiveUser = computed<boolean>(() => {
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
+
+const mayArchiveOrRestoreUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
 	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
 		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
-	])
+	]) && isOnSameDepartment.value
 
 	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
 	])
 
-	return !isDeleted.value && (isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope)
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
-
-const mayRestoreUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
-		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
-	])
-
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
-	])
-
-	return isDeleted.value && (isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope)
-})
+const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
+const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
 
 const fetcher = new Fetcher()
 
@@ -168,7 +175,9 @@ async function updateUser() {
 	await new Promise(resolve => {
 		setTimeout(resolve, 1000)
 	})
-	await fetcher.updateDepartment(user.value.data.id, userDepartment.value)
+	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
+		user.value.data.department.data.id = userDepartment.value
+	})
 	await new Promise(resolve => {
 		setTimeout(resolve, 1000)
 	})
