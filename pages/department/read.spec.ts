@@ -1,11 +1,13 @@
 import { flushPromises, mount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import Page from "./read.page.vue"
 
 describe("Page: department/read", () => {
-	it("Should populate fields with pre-loaded data", () => {
+	it("should populate fields with pre-loaded data", () => {
 		const department = {
 			"data": {
 				"acronym": "STD",
@@ -18,7 +20,19 @@ describe("Page: department/read", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							department
+							department,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"departmentFlags": 0,
+												"name": "A"
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -58,7 +72,19 @@ describe("Page: department/read", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							department
+							department,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"departmentFlags": 0,
+												"name": "A"
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
