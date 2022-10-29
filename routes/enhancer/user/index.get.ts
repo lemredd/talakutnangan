@@ -1,10 +1,11 @@
 import type { DocumentProps } from "$/types/server"
 
-import { USER_LIST } from "$/constants/template_page_paths"
+import { USER_LIST, HOME } from "$/constants/template_page_paths"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import Middleware from "!/bases/middleware"
+import URLMaker from "$!/singletons/url_maker"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
@@ -30,7 +31,9 @@ export default class extends PageMiddleware {
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 			RESET_PASSWORD,
 			IMPORT_USERS
-		])
+		], {
+			"failedRedirectURL": URLMaker.makeURLFromPath(HOME)
+		})
 	}
 
 	get postPolicyMiddlewares(): Middleware[] {

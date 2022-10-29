@@ -1,7 +1,7 @@
 import type { GeneralObject } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { AdvanceAuthenticationOptions } from "!/types/independent"
+import type { RedirectableAuthenticationOptions } from "!/types/independent"
 
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
@@ -21,6 +21,7 @@ export default class <
 	private permissionCombinations: U[][]
 	protected readonly permissionGroup: PermissionGroup<T, U>
 	private checkOthers: (request: V) => Promise<void>
+	private failedRedirectURL: string|null
 
 	/**
 	 * @param permissionGroup Specific permission which will dictate if user is allowed or not.
@@ -35,13 +36,15 @@ export default class <
 				const promise = Promise.resolve()
 				return promise
 			},
+			failedRedirectURL = null,
 			...otherAuthenticationOptions
-		}: Partial<AdvanceAuthenticationOptions<V>> = {}
+		}: Partial<RedirectableAuthenticationOptions<V>> = {}
 	) {
 		super(true, otherAuthenticationOptions)
 		this.permissionGroup = permissionGroup
 		this.permissionCombinations = permissionCombinations
 		this.checkOthers = checkOthers
+		this.failedRedirectURL = failedRedirectURL
 	}
 
 	async authorize(request: V): Promise<void> {
@@ -52,7 +55,10 @@ export default class <
 		const isPermitted = this.permissionGroup.hasOneRoleAllowed(roles, this.permissionCombinations)
 
 		if (!isPermitted) {
-			throw new AuthorizationError("None of the roles of the user can invoke the action.")
+			throw new AuthorizationError(
+				"None of the roles of the user can invoke the action.",
+				this.failedRedirectURL
+			)
 		}
 
 		await this.checkOthers(request)

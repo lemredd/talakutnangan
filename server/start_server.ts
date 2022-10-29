@@ -11,10 +11,17 @@ import createWSServer from "!/ws/create_server"
 import createAppHandler from "!/app/create_handler"
 import createPeerServer from "!/peer/create_server_middleware"
 import RequestEnvironment from "$/singletons/request_environment"
-import initializeSingletons from "!/helpers/initialize_singletons"
+import initializeDependent from "!/helpers/initializers/dependent"
+import initializeIndependent from "!/helpers/initializers/independent"
 
 export default async function startServer(): Promise<HTTPServer> {
-	await initializeSingletons(
+	Log.initialize()
+
+	Log.trace("app", "initialized logger")
+
+	const independentInitializationProcess = initializeIndependent()
+
+	const dependentInitializationProcess = initializeDependent(
 		RequestEnvironment.isOnTest
 			? process.env.DATABASE_TEST_TYPE as SourceType
 			: process.env.DATABASE_TYPE as SourceType
@@ -22,13 +29,13 @@ export default async function startServer(): Promise<HTTPServer> {
 
 	const customRouter = new Router()
 
-	const app = await createAppHandler(customRouter)
-	const httpServer = new HTTPServer(app)
+	const app = await independentInitializationProcess.then(
+		() => createAppHandler(customRouter, {
+			"dependentProcess": dependentInitializationProcess
+		})
+	)
 
-	if (process.env.WEB_SOCKET_SERVER !== "false") {
-		const wsServer = createWSServer(httpServer)
-		Socket.initialize(wsServer)
-	}
+	const httpServer = new HTTPServer(app)
 
 	if (process.env.WEB_PEER_SERVER !== "false") {
 		const peerServer = createPeerServer(app, httpServer)
@@ -38,6 +45,11 @@ export default async function startServer(): Promise<HTTPServer> {
 	const port = Number(process.env.PORT || "3000")
 	httpServer.listen(port)
 	Log.success("server", `HTTP server running at ${URLMaker.makeBaseURL()}`)
+
+	if (process.env.WEB_SOCKET_SERVER !== "false") {
+		const wsServer = createWSServer(httpServer)
+		Socket.initialize(wsServer)
+	}
 
 	return httpServer
 }
