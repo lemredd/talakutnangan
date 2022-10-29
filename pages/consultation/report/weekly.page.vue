@@ -64,8 +64,8 @@ import { inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
+import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
-import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -82,15 +82,4 @@ const totalTime = computed<number>(() => {
 
 	return total
 })
-
-function convertToFullTimeString(timeInMilliseconds: number) {
-	const {
-		hours,
-		minutes,
-		seconds
-	} = convertMStoTimeObject(timeInMilliseconds)
-
-	// eslint-disable-next-line max-len
-	return `${Math.abs(hours)} hours ${Math.abs(minutes)} minutes ${Math.abs(Math.floor(seconds))} seconds`
-}
 </script>
