@@ -36,6 +36,8 @@
 							v-for="file in imageFiles.data"
 							:key="file.id"
 							class="file-item"
+							:class="determineActiveness(file)"
+							:title="file.data.name as string"
 							@click="previewImageFile(file)">
 							{{ file.data.name }}
 						</li>
@@ -87,11 +89,14 @@
 
 		.file-item {
 			@apply flex items-center justify-between;
-
 			cursor: pointer;
 			overflow-x: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+
+			&.active {
+				@apply bg-gray-400 bg-opacity-40;
+			}
 		}
 	}
 
@@ -100,7 +105,7 @@
 
 		.image-to-preview {
 			max-width: 100%;
-			max-height: min-content;
+			max-height: 100%;
 			height: inherit;
 			width: inherit;
 			@apply object-cover;
@@ -141,5 +146,11 @@ const imageToPreview = ref("")
 function previewImageFile(file: DeserializedChatMessageResource) {
 	const { fileContents } = file.attachedChatFile?.data as { "fileContents": string }
 	imageToPreview.value = fileContents
+}
+function determineActiveness(file: DeserializedChatMessageResource) {
+	const { fileContents } = file.attachedChatFile?.data as { "fileContents": string }
+	const isSelectedToPreview = fileContents === imageToPreview.value
+
+	return isSelectedToPreview ? "active" : ""
 }
 </script>
