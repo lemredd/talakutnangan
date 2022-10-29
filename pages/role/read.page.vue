@@ -18,6 +18,7 @@
 			v-for="flagSelector in flagSelectors"
 			:key="flagSelector.permissionGroup.name"
 			v-model="role.data[flagSelector.permissionGroup.name]"
+			:disabled="areFlagSelectorsDisabled"
 			:header="flagSelector.header"
 			:base-permission-group="flagSelector.permissionGroup"
 			:dependent-permission-groups="flagSelector.dependentGroups"
