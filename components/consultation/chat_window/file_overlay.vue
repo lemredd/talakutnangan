@@ -18,7 +18,7 @@
 			<!-- show list of files -->
 			<div class="sent-files">
 				<div class="file-repo">
-					<div v-if="!mustShowPreview" class="file-list general-files">
+					<ul v-if="!mustShowPreview" class="file-list general-files">
 						<li
 							v-for="file in generalFiles.data"
 							:key="file.id"
@@ -30,8 +30,8 @@
 								target="_blank"
 								class="material-icons download-btn">download</a>
 						</li>
-					</div>
-					<div v-else class="file-list image-files">
+					</ul>
+					<ul v-else class="file-list image-files">
 						<li
 							v-for="file in imageFiles.data"
 							:key="file.id"
@@ -39,10 +39,10 @@
 							@click="previewImageFile(file)">
 							{{ file.data.name }}
 						</li>
-					</div>
+					</ul>
 
 					<!--  -->
-					<div v-if="mustShowPreview" class="file-repo-preview md:flex-[2]">
+					<div v-if="mustShowPreview" class="file-repo-preview">
 						<img class="image-to-preview" :src="imageToPreview"/>
 					</div>
 				</div>
