@@ -331,7 +331,6 @@ describe("UI Page: Read resource by ID", () => {
 		))
 		.auditTrailFlags(0)
 		.deserializedOne(true)
-		const newSampleModel = await new Factory().makeOne()
 
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 

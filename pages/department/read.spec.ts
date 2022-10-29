@@ -3,7 +3,6 @@ import { flushPromises, mount } from "@vue/test-utils"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Page from "./read.page.vue"
-import Stub from "$/singletons/stub"
 
 describe("Page: department/read", () => {
 	it("Should populate fields with pre-loaded data", () => {
@@ -83,13 +82,5 @@ describe("Page: department/read", () => {
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", `/api/department/${department.data.id}`)
 		expect(JSON.stringify(await request.json())).toContain(JSON.stringify(updatedDepartment.data))
-
-		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty(
-			"0.arguments.0",
-			`/department/read/${department.data.id}`
-		)
-		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 })
