@@ -15,40 +15,40 @@
 		</template>
 
 		<template #default>
-			<!-- show list of files -->
-			<div class="sent-files">
-				<div class="file-repo">
-					<ul v-if="!mustShowPreview" class="file-list general-files">
-						<li
-							v-for="file in generalFiles.data"
-							:key="file.id"
-							class="file-item">
+			<div class="file-repo">
+				<ul v-if="!mustShowPreview" class="file-list general-files">
+					<li
+						v-for="file in generalFiles.data"
+						:key="file.id"
+						class="file-item">
+						<span class="file-name">
 							{{ file.data.name }}
+						</span>
 
-							<a
-								:href="file.attachedChatFile?.data.fileContents"
-								target="_blank"
-								class="material-icons download-btn">download</a>
-						</li>
-					</ul>
-					<ul v-else class="file-list image-files">
-						<li
-							v-for="file in imageFiles.data"
-							:key="file.id"
-							class="file-item"
-							:class="determineActiveness(file)"
-							:title="file.data.name as string"
-							@click="previewImageFile(file)">
-							{{ file.data.name }}
-						</li>
-					</ul>
+						<a
+							:href="file.attachedChatFile?.data.fileContents"
+							target="_blank"
+							class="material-icons download-btn">download</a>
+					</li>
+				</ul>
+				<ul v-else class="file-list image-files">
+					<li
+						v-for="file in imageFiles.data"
+						:key="file.id"
+						class="file-item"
+						:class="determineActiveness(file)"
+						:title="file.data.name as string"
+						@click="previewImageFile(file)">
+						{{ file.data.name }}
+					</li>
+				</ul>
 
-					<!--  -->
-					<div v-if="mustShowPreview" class="file-repo-preview">
+				<!--  -->
+				<div v-if="mustShowPreview" class="file-repo-preview">
+					<a :href="imageToPreview" target="_blank">
 						<img class="image-to-preview" :src="imageToPreview"/>
-					</div>
+					</a>
 				</div>
-				<!-- show selected file to preview -->
 			</div>
 		</template>
 	</Overlay>
@@ -62,20 +62,19 @@
 			@apply ml-80px;
 	}
 	@screen sm {
-					margin:auto 0;
-					.file-tab{
-						@apply ml-80px;
-				}
-					.picture-tab{
-						@apply ml-80px;
-				}
-			}
-	.sent-files{
-		@apply overflow-y-hidden;
+		margin:auto 0;
+
+		.file-tab{
+			@apply ml-80px;
+		}
+		.picture-tab{
+			@apply ml-80px;
+		}
 	}
 
 	.file-repo{
 		@apply flex <md:flex-col;
+		height: 100%;
 	}
 	.file-list{
 		@apply overflow-y-scroll;
@@ -101,14 +100,19 @@
 	}
 
 	.file-repo-preview{
-		@apply my-auto flex justify-center items-center;
+		@apply mx-auto;
+		@screen sm {
+			@apply m-auto;
+			@apply flex justify-center items-center;
+			width: 100%;
+			max-height: 100%;
+			overflow-y: scroll;
+		}
 
 		.image-to-preview {
-			max-width: 100%;
-			max-height: 100%;
-			height: inherit;
-			width: inherit;
-			@apply object-cover;
+			// max-width: 100%;
+			// max-height: 100%;
+			// @apply object-cover;
 		}
 	}
 </style>
