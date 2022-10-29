@@ -52,8 +52,7 @@ import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	IMPORT_USERS,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
@@ -165,15 +164,11 @@ function fetchUserInfo() {
 
 const mayCreateUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
-		READ_ANYONE_ON_OWN_DEPARTMENT
+	const mayImportUsers = permissionGroup.hasOneRoleAllowed(users, [
+		IMPORT_USERS
 	])
 
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		READ_ANYONE_ON_ALL_DEPARTMENTS
-	])
-
-	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+	return mayImportUsers
 })
 
 const mayEditUser = computed<boolean>(() => {
