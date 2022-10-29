@@ -30,12 +30,15 @@ export default class extends PageMiddleware {
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable | any> {
 		const manager = new Manager(request)
 		const user = deserialize(request.user) as DeserializedUserProfile
+		const currentDate = new Date()
+		const rangeBegin = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
+		const rangeEnd = adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1))
 
 		const timeConsumedPerWeek = await manager.sumTimePerWeek({
 			"filter": {
 				"dateTimeRange": {
-					"begin": new Date("2022-10-01T00:00:00"),
-					"end": new Date("2022-10-30T11:59:59")
+					"begin": rangeBegin,
+					"end": rangeEnd
 				},
 				"existence": "exists",
 				"user": Number(user.data.id)
