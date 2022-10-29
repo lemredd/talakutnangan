@@ -1,8 +1,8 @@
 import { flushPromises, mount } from "@vue/test-utils"
 
+import { UPDATE } from "$/permissions/department_combinations"
 import RequestEnvironment from "$/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import Page from "./read.page.vue"
 
@@ -39,8 +39,8 @@ describe("Page: department/read", () => {
 			}
 		})
 		const castedWrapper = wrapper.vm as any
-		const fullNameInput = wrapper.find(".full-name").element as HTMLInputElement
-		const acronymInput = wrapper.find(".acronym").element as HTMLInputElement
+		const fullNameInput = wrapper.find(".full-name input").element as HTMLInputElement
+		const acronymInput = wrapper.find(".acronym input").element as HTMLInputElement
 		// Checkbox value always returns "on". ensure the page's interal data instead
 		const { mayAdmit } = castedWrapper.department.data
 
@@ -78,7 +78,7 @@ describe("Page: department/read", () => {
 									"roles": {
 										"data": [
 											{
-												"departmentFlags": 0,
+												"departmentFlags": permissionGroup.generateMask(...UPDATE),
 												"name": "A"
 											}
 										]
@@ -90,9 +90,9 @@ describe("Page: department/read", () => {
 				}
 			}
 		})
-		const fullNameInput = wrapper.find(".full-name")
-		const acronymInput = wrapper.find(".acronym")
-		const mayAdmitInput = wrapper.find(".may-admit")
+		const fullNameInput = wrapper.find(".full-name input")
+		const acronymInput = wrapper.find(".acronym input")
+		const mayAdmitInput = wrapper.find(".may-admit input")
 		const submitBtn = wrapper.find("input[type=submit]")
 
 		await fullNameInput.setValue(updatedDepartment.data.fullName)
