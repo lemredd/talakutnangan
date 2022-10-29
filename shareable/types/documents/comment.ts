@@ -1,3 +1,4 @@
+import type { VoteKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { TextContentLikeAttributes } from "$/types/documents/text_content-like"
 import type { PostIdentifierDocument, DeserializedPostDocument } from "$/types/documents/post"
@@ -67,10 +68,13 @@ export type CommentResource<T extends Completeness = "read">
 		: Serializable
 )
 
+export type CompleteVoteKind = VoteKind|"abstain"
+
 type WithVoteInfo = MetaDocument<{
 	upvoteCount: number,
 	downvoteCount: number,
-	currentUserVoteStatus: "upvoted"|"downvoted"|"unvoted"
+	currentUserVoteStatus: CompleteVoteKind,
+	commentVoteID: string
 }>
 
 export type DeserializedCommentResource<
