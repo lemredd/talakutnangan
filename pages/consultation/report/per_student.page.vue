@@ -1,6 +1,7 @@
 <template>
 	<article>
 		<h1>Sum Per Student</h1>
+		<p>The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.</p>
 		<table>
 			<thead>
 				<tr>
@@ -66,8 +67,11 @@ import { inject, ref, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
+import resetToMidnight from "$/time/reset_to_midnight"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -77,6 +81,9 @@ const { pageProps } = pageContext
 const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>(
 	pageProps.timeConsumedPerStudent as DeserializedUserListWithTimeConsumedDocument
 )
+const currentDate = new Date()
+const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
+const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
 
 const totalTime = computed<number>(() => {
 	const total = timeConsumedPerStudent.value.data.reduce((previousTotal, currentSum) => {
