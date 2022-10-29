@@ -1,24 +1,27 @@
 <template>
-	<ul>
-		<li>
-			<div class="milliseconds">
-				<span>Time consumed:</span>
-				{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
-			</div>
-		</li>
-		<li>
-			<div class="users">
-				<span>Number of consulters interacted:</span>
-				{{ totalNumberOfStudents }}
-			</div>
-		</li>
-		<li>
-			<div class="users">
-				<span>Number of consultations performed:</span>
-				{{ totalNumberOfConsultations }}
-			</div>
-		</li>
-	</ul>
+	<article>
+		<h1>Consolidated Summary of Consultations</h1>
+		<ul>
+			<li>
+				<div class="milliseconds">
+					<span>Time consumed:</span>
+					{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
+				</div>
+			</li>
+			<li>
+				<div class="users">
+					<span>Number of consulters interacted:</span>
+					{{ totalNumberOfStudents }}
+				</div>
+			</li>
+			<li>
+				<div class="users">
+					<span>Number of consultations performed:</span>
+					{{ totalNumberOfConsultations }}
+				</div>
+			</li>
+		</ul>
+	</article>
 </template>
 
 <style>
