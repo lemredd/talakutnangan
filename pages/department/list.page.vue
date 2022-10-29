@@ -8,14 +8,17 @@
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
-					<a href="/department/create" class="add-department-btn btn btn-primary">
+					<a
+						v-if="mayCreateDepartment"
+						href="/department/create"
+						class="add-department-btn btn btn-primary">
 						Add Department
 					</a>
 				</template>
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
-			<ResourceList :filtered-list="list"/>
+			<ResourceList :filtered-list="list" :may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -25,12 +28,14 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch } from "vue"
+import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/department"
@@ -98,6 +103,27 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 
 	await fetchDepartmentInfos()
 }
+
+const { userProfile } = pageProps
+
+const mayCreateDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		CREATE
+	])
+
+	return isPermitted
+})
+
+const mayEditDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		UPDATE,
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isPermitted
+})
 
 async function refetchRoles() {
 	list.value = []

@@ -54,7 +54,7 @@
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
-@import "@styles/error.scss";
+@import "@styles/status_messages.scss";
 @import "@styles/variables.scss";
 
 .login-form {

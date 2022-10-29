@@ -1,5 +1,5 @@
 <template>
-	<ul class="error">
+	<ul class="status-messages error">
 		<h3>The following errors have occured:</h3>
 		<li
 			v-for="error in receivedErrors"
@@ -10,7 +10,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/error.scss";
+@import "@styles/status_messages.scss";
 </style>
 
 <script setup lang="ts">

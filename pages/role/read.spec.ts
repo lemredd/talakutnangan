@@ -1,8 +1,11 @@
+/* eslint-disable max-lines */
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$/singletons/request_environment"
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+
 import Factory from "~/factories/role"
 import {
 	tag,
@@ -14,6 +17,7 @@ import {
 	department,
 	role
 } from "$/permissions/permission_list"
+
 import Page from "./read.page.vue"
 
 describe("UI Page: Read resource by ID", () => {
@@ -35,7 +39,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": 0
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -108,7 +124,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...UPDATE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -148,7 +176,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...UPDATE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -188,7 +228,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...UPDATE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -253,7 +305,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...UPDATE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -296,7 +360,7 @@ describe("UI Page: Read resource by ID", () => {
 		})
 	})
 
-	it("Should be archivable", async() => {
+	it("should be archivable", async() => {
 		const sampleResource = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
@@ -331,7 +395,6 @@ describe("UI Page: Read resource by ID", () => {
 		))
 		.auditTrailFlags(0)
 		.deserializedOne(true)
-		const newSampleModel = await new Factory().makeOne()
 
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
 
@@ -340,7 +403,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...ARCHIVE_AND_RESTORE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
@@ -356,7 +431,7 @@ describe("UI Page: Read resource by ID", () => {
 		expect(request).toHaveProperty("url", "/api/role")
 	})
 
-	it("Should be restorable", async() => {
+	it("should be restorable", async() => {
 		const sampleModel = await new Factory()
 		.departmentFlags(department.generateMask("view"))
 		.roleFlags(role.generateMask("view"))
@@ -403,7 +478,19 @@ describe("UI Page: Read resource by ID", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"role": sampleResource
+							"role": sampleResource,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"name": "A",
+												"roleFlags": role.generateMask(...ARCHIVE_AND_RESTORE)
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}

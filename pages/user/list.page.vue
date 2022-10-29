@@ -1,4 +1,4 @@
- <template>
+<template>
 	<ResourceManager
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
@@ -13,7 +13,10 @@
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
 				<template #additional-controls>
-					<a href="/user/import" class="import-users-btn btn btn-primary">
+					<a
+						v-if="mayCreateUser"
+						href="/user/import"
+						class="import-users-btn btn btn-primary">
 						import
 					</a>
 				</template>
@@ -24,7 +27,7 @@
 		</template>
 
 		<template #resources>
-			<ResourceList :filtered-list="list"/>
+			<ResourceList :filtered-list="list" :may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -47,6 +50,14 @@ import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	IMPORT_USERS,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+} from "$/permissions/user_combinations"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
@@ -150,6 +161,31 @@ function fetchUserInfo() {
 		return Promise.resolve()
 	})
 }
+
+const mayCreateUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const mayImportUsers = permissionGroup.hasOneRoleAllowed(users, [
+		IMPORT_USERS
+	])
+
+	return mayImportUsers
+})
+
+// TODO: Fina way to assess each user if they can be edited
+const mayEditUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+	])
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+	])
+
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
 
 async function resetUsersList() {
 	isLoaded.value = false

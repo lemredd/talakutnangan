@@ -2,8 +2,10 @@ import { flushPromises, mount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
+
 import Page from "./read.page.vue"
-import Stub from "$/singletons/stub"
 
 describe("Page: user/read", () => {
 	it("can populate fields using pre-loaded data", async() => {
@@ -48,6 +50,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [],
 			"meta": {
@@ -67,7 +81,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -151,6 +166,19 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"department": userDepartment,
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -158,7 +186,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -210,13 +239,13 @@ describe("Page: user/read", () => {
 		await selectedDepartment.setValue(departments.data[1].id)
 		await submitBtn.trigger("submit")
 
-		// update user info and timeout for 1s
+		// Update user info and timeout for 1s
 		await flushPromises()
 		jest.advanceTimersByTime(1000)
-		// update user roles and timeout for 1s
+		// Update user roles and timeout for 1s
 		await flushPromises()
 		jest.advanceTimersByTime(1000)
-		// update user department and timeout for 1s
+		// Update user department and timeout for 1s
 		await flushPromises()
 		jest.advanceTimersByTime(1000)
 
@@ -243,11 +272,6 @@ describe("Page: user/read", () => {
 			`/api/user/${user.data.id}/relationships/department`
 		)
 		expect(await requestForAttachedDepartment.json()).toEqual(updatedUserDepartment)
-
-		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments.0", `/user/read/${user.data.id}`)
-		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 
 	it.skip("can catch all errors that have occured", async() => {
@@ -313,6 +337,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -320,7 +356,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -391,10 +428,5 @@ describe("Page: user/read", () => {
 			`/api/user/${user.data.id}/relationships/department`
 		)
 		expect(await requestForAttachedDepartment.json()).toEqual(updatedUserDepartment)
-
-		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments.0", `/user/read/${user.data.id}`)
-		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 })

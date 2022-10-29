@@ -1,12 +1,13 @@
 import { flushPromises, mount } from "@vue/test-utils"
 
+import { UPDATE } from "$/permissions/department_combinations"
 import RequestEnvironment from "$/singletons/request_environment"
+import { department as permissionGroup } from "$/permissions/permission_list"
 
 import Page from "./read.page.vue"
-import Stub from "$/singletons/stub"
 
 describe("Page: department/read", () => {
-	it("Should populate fields with pre-loaded data", () => {
+	it("should populate fields with pre-loaded data", () => {
 		const department = {
 			"data": {
 				"acronym": "STD",
@@ -19,15 +20,27 @@ describe("Page: department/read", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							department
+							department,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"departmentFlags": 0,
+												"name": "A"
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
 			}
 		})
 		const castedWrapper = wrapper.vm as any
-		const fullNameInput = wrapper.find(".full-name").element as HTMLInputElement
-		const acronymInput = wrapper.find(".acronym").element as HTMLInputElement
+		const fullNameInput = wrapper.find(".full-name input").element as HTMLInputElement
+		const acronymInput = wrapper.find(".acronym input").element as HTMLInputElement
 		// Checkbox value always returns "on". ensure the page's interal data instead
 		const { mayAdmit } = castedWrapper.department.data
 
@@ -59,15 +72,27 @@ describe("Page: department/read", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							department
+							department,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": [
+											{
+												"departmentFlags": permissionGroup.generateMask(...UPDATE),
+												"name": "A"
+											}
+										]
+									}
+								}
+							}
 						}
 					}
 				}
 			}
 		})
-		const fullNameInput = wrapper.find(".full-name")
-		const acronymInput = wrapper.find(".acronym")
-		const mayAdmitInput = wrapper.find(".may-admit")
+		const fullNameInput = wrapper.find(".full-name input")
+		const acronymInput = wrapper.find(".acronym input")
+		const mayAdmitInput = wrapper.find(".may-admit input")
 		const submitBtn = wrapper.find("input[type=submit]")
 
 		await fullNameInput.setValue(updatedDepartment.data.fullName)
@@ -83,13 +108,5 @@ describe("Page: department/read", () => {
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", `/api/department/${department.data.id}`)
 		expect(JSON.stringify(await request.json())).toContain(JSON.stringify(updatedDepartment.data))
-
-		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty(
-			"0.arguments.0",
-			`/department/read/${department.data.id}`
-		)
-		expect(previousCalls).not.toHaveProperty("0.arguments.1")
 	})
 })

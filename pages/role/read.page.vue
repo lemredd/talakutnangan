@@ -1,5 +1,8 @@
 <template>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 
 	<form @submit.prevent="openConfirmation">
 		<div class="role-name">
@@ -15,6 +18,7 @@
 			v-for="flagSelector in flagSelectors"
 			:key="flagSelector.permissionGroup.name"
 			v-model="role.data[flagSelector.permissionGroup.name]"
+			:disabled="areFlagSelectorsDisabled"
 			:header="flagSelector.header"
 			:base-permission-group="flagSelector.permissionGroup"
 			:dependent-permission-groups="flagSelector.dependentGroups"
@@ -26,14 +30,14 @@
 				Submit
 			</button>
 			<button
-				v-if="isDeleted"
+				v-if="mayRestoreRole"
 				type="button"
 				class="restore-btn btn btn-primary"
 				@click="restoreRole">
 				Restore
 			</button>
 			<button
-				v-else
+				v-if="mayArchiveRole"
 				type="button"
 				class="archive-btn btn btn-primary"
 				@click="archiveRole">
@@ -50,7 +54,7 @@
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
-@import "@styles/error.scss";
+@import "@styles/status_messages.scss";
 </style>
 
 <script setup lang="ts">
@@ -65,20 +69,25 @@ import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import { role as permissionGroup } from "$/permissions/permission_list"
+
 import FlagSelector from "@/role/flag_selector.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
-
 )
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 const roleData = computed<RoleAttributes<"deserialized">>({
 	get(): RoleAttributes<"deserialized"> { return role.value.data },
@@ -93,13 +102,32 @@ const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
 const password = ref<string>("")
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
+const mayUpdateRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+
+	return isPermitted
+})
+const mayArchiveOrRestoreRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	])
+
+	return isPermitted
+})
+
+const mayArchiveRole = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreRole.value)
+const mayRestoreRole = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreRole.value)
+
 const {
 	"state": isBeingConfirmed,
 	"on": openConfirmation,
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-const nameFieldStatus = ref<FieldStatus>("locked")
+const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "locked" : "disabled")
+const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const fetcher: Fetcher = new Fetcher()
 async function updateRole() {
@@ -127,10 +155,14 @@ async function updateRole() {
 		password.value = ""
 		nameFieldStatus.value = "locked"
 		console.log(body, status)
+
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Role has been successfully!")
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
-			const errors = body.errors as UnitError[]
+			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
 
