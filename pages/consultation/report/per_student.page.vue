@@ -1,7 +1,24 @@
 <template>
 	<article>
 		<h1>Sum Per Student</h1>
-		<p>The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.</p>
+		<form>
+			<label>
+				Begin:
+				<input
+					v-model="rangeBegin"
+					type="date"/>
+			</label>
+			<label>
+				End:
+				<input
+					v-model="rangeEnd"
+					type="date"/>
+			</label>
+			<input type="submit" value="Summarize"/>
+		</form>
+		<p>
+			The table contains the students consulted from {{ oldRangeBegin }} to {{ oldRangeEnd }}.
+		</p>
 		<table>
 			<thead>
 				<tr>
@@ -82,8 +99,10 @@ const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>
 	pageProps.timeConsumedPerStudent as DeserializedUserListWithTimeConsumedDocument
 )
 const currentDate = new Date()
-const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
-const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
+const rangeBegin = ref<Date>(adjustUntilChosenDay(currentDate, 0, -1))
+const rangeEnd = ref<Date>(adjustUntilChosenDay(currentDate, 6, 1))
+const oldRangeBegin = ref<Date>(resetToMidnight(rangeBegin.value))
+const oldRangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(rangeEnd.value))
 
 const totalTime = computed<number>(() => {
 	const total = timeConsumedPerStudent.value.data.reduce((previousTotal, currentSum) => {
