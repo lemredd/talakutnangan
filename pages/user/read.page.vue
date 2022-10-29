@@ -144,7 +144,7 @@ function updateAndReload() {
 	updateUser()
 	.then(() => {
 		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Users have been imported successfully!")
+		successMessages.value.push("Users have been read successfully!")
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
