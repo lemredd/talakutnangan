@@ -2,6 +2,9 @@ import { flushPromises, mount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
+
 import Page from "./read.page.vue"
 
 describe("Page: user/read", () => {
@@ -165,11 +168,12 @@ describe("Page: user/read", () => {
 		}
 		const userProfile = {
 			"data": {
+				"department": userDepartment,
 				"roles": {
 					"data": [
 						{
 							"name": "A",
-							"userFlags": 0
+							"userFlags": permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 						}
 					]
 				}
