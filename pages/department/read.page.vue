@@ -4,22 +4,18 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
-		<label class="block">
-			<NonSensitiveTextField
-				v-model="department.data.fullName"
-				v-model:status="fieldStatus"
-				class="full-name border-solid"
-				label="Full name"
-				type="text"/>
-		</label>
-		<label class="block">
-			<NonSensitiveTextField
-				v-model="department.data.acronym"
-				v-model:status="fieldStatus"
-				class="acronym border-solid"
-				label="Acronym"
-				type="text"/>
-		</label>
+		<NonSensitiveTextField
+			v-model="department.data.fullName"
+			v-model:status="fieldStatus"
+			class="full-name border-solid"
+			label="Full name"
+			type="text"/>
+		<NonSensitiveTextField
+			v-model="department.data.acronym"
+			v-model:status="fieldStatus"
+			class="acronym border-solid"
+			label="Acronym"
+			type="text"/>
 		<label class="block">
 			May admit students:
 			<input
