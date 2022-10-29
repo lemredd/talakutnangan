@@ -1,35 +1,59 @@
 <template>
-	<ul>
-		<li
-			v-for="sumEntry in timeConsumedPerStudent.data"
-			:key="sumEntry.id">
-			<h3 class="sum-entry-owner">
-				{{ sumEntry.name }} <small>({{ sumEntry.email }})</small>
-			</h3>
-			<div class="milliseconds">
-				<span>Time consumed:</span>
-				{{ convertToFullTimeString(sumEntry.meta.totalMillisecondsConsumed) }}
-			</div>
-			<ul class="consultations">
-				<span>consultations</span>
-				<li
-					v-for="consultation in sumEntry.meta.consultations.data"
-					:key="consultation.id"
-					class="consultation">
-					#{{ consultation.id }}
-					{{ consultation.reason }}
-					{{
-						convertToFullTimeString(
-							calculateMillisecondDifference(
-								consultation.finishedAt!,
-								consultation.startedAt!
-							)
-						)
-					}}
-				</li>
-			</ul>
-		</li>
-	</ul>
+	<article>
+		<h1>Sum Per Student</h1>
+		<table>
+			<thead>
+				<tr>
+					<td>Student ID</td>
+					<td>Student</td>
+					<td>Consultations</td>
+					<td>Total time consumed</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					v-for="studentEntry in timeConsumedPerStudent.data"
+					:key="studentEntry.id">
+					<td>{{ studentEntry.id }}</td>
+					<td>
+						<span>{{ studentEntry.name }}</span>
+						<small>({{ studentEntry.email }})</small>
+					</td>
+					<td>
+						<ul class="consultations">
+							<span>consultations</span>
+							<li
+								v-for="consultation in studentEntry.meta.consultations.data"
+								:key="consultation.id"
+								class="consultation">
+								#{{ consultation.id }}
+								{{ consultation.reason }}
+								{{
+									convertToFullTimeString(
+										calculateMillisecondDifference(
+											consultation.finishedAt!,
+											consultation.startedAt!
+										)
+									)
+								}}
+							</li>
+						</ul>
+					</td>
+					<td>
+						{{ convertToFullTimeString(studentEntry.meta.totalMillisecondsConsumed) }}
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3">
+						Total
+					</td>
+					<td>{{ convertToFullTimeString(totalTime) }}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</article>
 </template>
 
 <style>
@@ -37,12 +61,12 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
+import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
-import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -51,14 +75,12 @@ const pageContext = inject("pageContext") as PageContext<
 const { pageProps } = pageContext
 const { timeConsumedPerStudent } = pageProps
 
-function convertToFullTimeString(timeInMilliseconds: number) {
-	const {
-		hours,
-		minutes,
-		seconds
-	} = convertMStoTimeObject(timeInMilliseconds)
+const totalTime = computed<number>(() => {
+	const total = timeConsumedPerStudent.data.reduce((previousTotal, currentSum) => {
+		const newTotal = previousTotal + currentSum.meta.totalMillisecondsConsumed
+		return newTotal
+	}, 0)
 
-	// eslint-disable-next-line max-len
-	return `${Math.abs(hours)} hours ${Math.abs(minutes)} minutes ${Math.abs(Math.floor(seconds))} seconds`
-}
+	return total
+})
 </script>
