@@ -5,17 +5,19 @@
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
 		<label class="block">
-			Full name:
-			<input
+			<NonSensitiveTextField
 				v-model="department.data.fullName"
+				v-model:status="fieldStatus"
 				class="full-name border-solid"
+				label="Full name"
 				type="text"/>
 		</label>
 		<label class="block">
-			Acronym:
-			<input
+			<NonSensitiveTextField
 				v-model="department.data.acronym"
+				v-model:status="fieldStatus"
 				class="acronym border-solid"
+				label="Acronym"
 				type="text"/>
 		</label>
 		<label class="block">
@@ -66,6 +68,7 @@
 import { ref, inject, computed } from "vue"
 
 import type { UnitError } from "$/types/server"
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 
@@ -76,6 +79,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -111,6 +115,7 @@ const mayRestoreDepartment = computed<boolean>(
 	() => isDeleted.value && mayArchiveOrRestoreDepartment.value
 )
 
+const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
 		? "password"
