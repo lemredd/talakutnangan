@@ -8,10 +8,11 @@
 		:role-names="[]">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
-				<template
-					v-if="mayCreateRole"
-					#additional-controls>
-					<a href="/role/create" class="add-role-btn btn btn-primary">
+				<template #additional-controls>
+					<a
+						v-if="mayCreateRole"
+						href="/role/create"
+						class="add-role-btn btn btn-primary">
 						Add Role
 					</a>
 				</template>
