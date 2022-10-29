@@ -7,10 +7,11 @@
 		:role-names="[]">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
-				<template
-					v-if="mayCreateDepartment"
-					#additional-controls>
-					<a href="/department/create" class="add-department-btn btn btn-primary">
+				<template #additional-controls>
+					<a
+						v-if="mayCreateDepartment"
+						href="/department/create"
+						class="add-department-btn btn btn-primary">
 						Add Department
 					</a>
 				</template>
