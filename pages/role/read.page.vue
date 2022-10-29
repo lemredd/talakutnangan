@@ -68,7 +68,7 @@ import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 
-import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
 import FlagSelector from "@/role/flag_selector.vue"
@@ -101,23 +101,23 @@ const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
 const password = ref<string>("")
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
-const mayArchiveRole = computed<boolean>(() => {
+const mayUpdateRole = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+
+	return isPermitted
+})
+const mayArchiveOrRestoreRole = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
 
-	return !isDeleted.value && isPermitted
+	return isPermitted
 })
 
-const mayRestoreRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isDeleted.value && isPermitted
-})
+const mayArchiveRole = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreRole.value)
+const mayRestoreRole = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreRole.value)
 
 const {
 	"state": isBeingConfirmed,
@@ -125,7 +125,8 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-const nameFieldStatus = ref<FieldStatus>("locked")
+const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "locked" : "disabled")
+const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const fetcher: Fetcher = new Fetcher()
 async function updateRole() {
