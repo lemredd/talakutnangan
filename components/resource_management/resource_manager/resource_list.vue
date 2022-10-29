@@ -20,6 +20,7 @@
 					</td>
 					<td>
 						<a
+							v-if="mayEdit"
 							:href="`read/${resource.id}`"
 							class="read-resource-btn btn"
 							type="button">
@@ -104,6 +105,7 @@ import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
+	mayEdit: boolean
 }>()
 
 const resourceType = computed(() => filteredList[0].type)

@@ -2,6 +2,9 @@ import { flushPromises, mount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
+
 import Page from "./read.page.vue"
 
 describe("Page: user/read", () => {
@@ -47,6 +50,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [],
 			"meta": {
@@ -66,7 +81,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -150,6 +166,19 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"department": userDepartment,
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -157,7 +186,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -307,6 +337,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -314,7 +356,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}

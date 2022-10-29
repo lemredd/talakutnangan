@@ -12,6 +12,7 @@
 				class="ml-5">
 				<Checkbox
 					v-model="rawFlags"
+					:disabled="disabled"
 					:label="convertForSentence(permissionName).toLowerCase()"
 					:value="permissionName"/>
 			</li>
@@ -22,10 +23,12 @@
 			class="access-level-flags">
 			<AccessLevelSelector
 				v-model="readPermission"
+				:disabled="disabled"
 				label="Read Access Level"
 				:options="readScopedPermissionNames"/>
 			<AccessLevelSelector
 				v-model="writePermission"
+				:disabled="disabled"
 				label="Write Access Level"
 				:options="writeScopedPermissionNames"/>
 		</div>
@@ -66,6 +69,7 @@ import AccessLevelSelector from "@/fields/selectable_options.vue"
 // Props should be contained to retain its reactivity
 const props = defineProps<{
 	header: string
+	disabled?: boolean,
 	basePermissionGroup: BasePermissionGroup<any, any>
 	dependentPermissionGroups?: BasePermissionGroup<any, any>[]
 	modelValue: number
