@@ -4,7 +4,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 
 import RequestEnvironment from "$/singletons/request_environment"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 
 import Factory from "~/factories/role"
 import {
@@ -131,7 +131,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": 0
+												"roleFlags": role.generateMask(...UPDATE)
 											}
 										]
 									}
@@ -183,7 +183,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": 0
+												"roleFlags": role.generateMask(...UPDATE)
 											}
 										]
 									}
@@ -235,7 +235,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": 0
+												"roleFlags": role.generateMask(...UPDATE)
 											}
 										]
 									}
@@ -312,7 +312,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": 0
+												"roleFlags": role.generateMask(...UPDATE)
 											}
 										]
 									}
