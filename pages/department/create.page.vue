@@ -2,6 +2,9 @@
 	<UserListRedirector resource-type="department"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form @submit.prevent="createDepartment">
 		<label class="block">
 			Full name:
@@ -40,8 +43,9 @@ import type { UnitError } from "$/types/server"
 
 import DepartmentFetcher from "$@/fetchers/department"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const fullName = ref("")
 const acronym = ref("")
@@ -49,6 +53,8 @@ const mayAdmit = ref(false)
 
 const fetcher = new DepartmentFetcher()
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+
 function createDepartment() {
 	fetcher.create({
 		"acronym": acronym.value,
@@ -56,9 +62,11 @@ function createDepartment() {
 		"mayAdmit": mayAdmit.value
 	})
 	.then(({ body, status }) => {
-		// output success message
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Department has been create successfully!")
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {

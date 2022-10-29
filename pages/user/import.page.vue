@@ -2,6 +2,10 @@
 	<UserListRedirector resource-type="user"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
+
 	<form @submit.prevent="importData">
 		<div>
 			<MultiSelectableOptionsField
@@ -40,6 +44,7 @@
 				type="hidden"
 				:name="`data[relationships][roles][data][${i}][type]`"
 				value="role"/>
+
 			<input
 				v-for="(roleID, i) in chosenRoleIDs"
 				:key="roleID"
@@ -82,7 +87,6 @@
 
 <style scoped lang = "scss">
 @import "@styles/btn.scss";
-@import "@styles/error.scss";
 
 .tabs-header {
 	@apply mb-8 border-b;
@@ -122,10 +126,11 @@ import UserFetcher from "$@/fetchers/user"
 import convertForSentence from "$/string/convert_for_sentence"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
-import ReceivedErrors from "@/helpers/received_errors.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext
 const { pageProps } = pageContext
@@ -144,20 +149,24 @@ const kindNames = UserKindValues.map(kind => ({
 }))
 const chosenKind = ref<string>(kindNames[0].value)
 
+const fetcher = new UserFetcher()
 const createdUsers = ref<DeserializedUserResource<"roles"|"department">[]>([])
 const receivedErrors = ref<string[]>([])
-
-const fetcher = new UserFetcher()
-
+const successMessages = ref<string[]>([])
 function importData(event: Event) {
 	const form = event.target as HTMLFormElement
 	const formData = new FormData(form)
 
-	fetcher.import(formData).then(({ body }) => {
+	fetcher.import(formData)
+	.then(({ body }) => {
 		const { data } = body
+
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Users have been imported successfully!")
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {

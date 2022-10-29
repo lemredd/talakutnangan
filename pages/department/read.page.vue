@@ -1,6 +1,8 @@
 <template>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
 		<label class="block">
 			Full name:
@@ -76,9 +78,9 @@ import {
 import { department as permissionGroup } from "$/permissions/permission_list"
 import RequestEnvironment from "$/singletons/request_environment"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
-import assignPath from "$@/external/assign_path"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
@@ -114,6 +116,7 @@ const password = ref<string>(
 )
 
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 const fetcher = new Fetcher()
 
@@ -138,11 +141,13 @@ function updateDepartment() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		assignPath(`/department/read/${department.value.data.id}`)
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Department has been read successfully!")
 	})
 	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
 		if (body) {
-			const errors = body.errors as UnitError[]
+			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
 				const readableDetail = error.detail
 

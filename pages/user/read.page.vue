@@ -1,4 +1,8 @@
 <template>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form @submit.prevent="updateAndReload">
 		<div class="user-name">
 			<NonSensitiveTextField
@@ -58,6 +62,7 @@ import {
 	onMounted
 } from "vue"
 
+import type { UnitError } from "$/types/server"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -68,17 +73,19 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
-import assignPath from "$@/external/assign_path"
 import DepartmentFetcher from "$@/fetchers/department"
 
+import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
-import { user as permissionGroup } from "$/permissions/permission_list"
+
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -100,6 +107,8 @@ const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 		"value": role.id
 	})
 ))
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const nameFieldStatus = ref<FieldStatus>("locked")
@@ -167,10 +176,24 @@ async function updateUser() {
 
 function updateAndReload() {
 	updateUser()
-	.then(() => assignPath(`/user/read/${user.value.data.id}`))
-	.catch(error => console.log(error))
-}
+	.then(() => {
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Users have been read successfully!")
+	})
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
 
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
+}
 
 async function archiveUser() {
 	await fetcher.archive([ user.value.data.id ])
