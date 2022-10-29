@@ -1,7 +1,7 @@
 <template>
 	<article>
 		<h1>Sum Per Student</h1>
-		<form>
+		<form @submit.prevent="renewSummary">
 			<label>
 				Begin:
 				<input
@@ -84,6 +84,7 @@ import { inject, ref, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
+import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import convertToFullTimeString from "@/consultation/convert_to_full_time_string"
@@ -112,4 +113,9 @@ const totalTime = computed<number>(() => {
 
 	return total
 })
+
+const fetcher = new Fetcher()
+function renewSummary() {
+	// TODO: fetcher method to make consultation summary per student
+}
 </script>
