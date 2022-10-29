@@ -16,13 +16,12 @@
 			class="acronym border-solid"
 			label="Acronym"
 			type="text"/>
-		<label class="block">
-			May admit students:
-			<input
-				v-model="department.data.mayAdmit"
-				class="may-admit"
-				type="checkbox"/>
-		</label>
+		<Checkbox
+			v-model="mayAdmitRaw"
+			:value="MAY_ADMIT"
+			class="may-admit"
+			label="May admit students"
+			:disabled="mayNotChangeAdmission"/>
 		<div class="controls">
 			<input
 				type="submit"
@@ -75,6 +74,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
+import Checkbox from "@/fields/checkbox.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -112,6 +112,14 @@ const mayRestoreDepartment = computed<boolean>(
 )
 
 const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
+const mayNotChangeAdmission = computed<boolean>(() => !mayUpdateDepartment.value)
+const MAY_ADMIT = "1"
+const mayAdmitRaw = computed<string[]>({
+	get(): string[] { return department.value.data.mayAdmit ? [ MAY_ADMIT ] : [] },
+	set(newValue: string[]) {
+		department.value.data.mayAdmit = newValue.indexOf(MAY_ADMIT) > -1
+	}
+})
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
 		? "password"
