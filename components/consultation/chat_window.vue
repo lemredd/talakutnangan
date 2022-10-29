@@ -193,7 +193,7 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 
 import Overlay from "@/helpers/overlay.vue"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
