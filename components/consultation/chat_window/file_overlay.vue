@@ -108,12 +108,6 @@
 			max-height: 100%;
 			overflow-y: scroll;
 		}
-
-		.image-to-preview {
-			// max-width: 100%;
-			// max-height: 100%;
-			// @apply object-cover;
-		}
 	}
 </style>
 
