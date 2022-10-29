@@ -12,10 +12,11 @@
 				v-if="currentResourceManager.isAdmin()"
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
-				<template
-					v-if="mayCreateUser"
-					#additional-controls>
-					<a href="/user/import" class="import-users-btn btn btn-primary">
+				<template #additional-controls>
+					<a
+						v-if="mayCreateUser"
+						href="/user/import"
+						class="import-users-btn btn btn-primary">
 						import
 					</a>
 				</template>
