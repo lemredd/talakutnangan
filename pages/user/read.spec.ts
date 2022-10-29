@@ -47,6 +47,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [],
 			"meta": {
@@ -66,7 +78,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -150,6 +163,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -157,7 +182,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
@@ -307,6 +333,18 @@ describe("Page: user/read", () => {
 				"roles": userRoles
 			}
 		}
+		const userProfile = {
+			"data": {
+				"roles": {
+					"data": [
+						{
+							"name": "A",
+							"userFlags": 0
+						}
+					]
+				}
+			}
+		}
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -314,7 +352,8 @@ describe("Page: user/read", () => {
 						"pageProps": {
 							departments,
 							roles,
-							user
+							user,
+							userProfile
 						}
 					}
 				}
