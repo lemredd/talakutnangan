@@ -16,6 +16,7 @@
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
 				class="selectable-roles"
+				:disabled="mayNotSelect"
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
@@ -24,6 +25,7 @@
 			<SelectableOptionsField
 				v-model="userDepartment"
 				class="selectable-department"
+				:disabled="mayNotSelect"
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
@@ -113,8 +115,6 @@ const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
-const nameFieldStatus = ref<FieldStatus>("locked")
-
 const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
@@ -158,6 +158,9 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 })
 const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
+
+const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
+const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
 const fetcher = new Fetcher()
 
