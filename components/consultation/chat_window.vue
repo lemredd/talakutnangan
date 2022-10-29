@@ -32,6 +32,8 @@
 				</button>
 
 				<FileOverlay
+					:general-files="generalFileChatMessages"
+					:image-files="imageFileChatMessages"
 					:is-file-repo-overlay-shown="isFileRepoOverlayShown"
 					:must-show-preview="mustShowPreview"
 					@hide-file-repo-overlay="hideFileRepoOverlay"
@@ -222,6 +224,7 @@ const {
 	}
 } = inject("pageContext") as PageContext<"deserialized">
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
 	return [ ...rawData ].sort((left, right) => {
@@ -231,6 +234,16 @@ const sortedMessagesByTime = computed(() => {
 		return Math.sign(leftSeconds - rightSeconds)
 	})
 })
+const generalFileChatMessages = {
+	"data": props.chatMessages.data.filter(
+		chatMessage => chatMessage.data.subkind === "file"
+	)
+}
+const imageFileChatMessages = {
+	"data": props.chatMessages.data.filter(
+		chatMessage => chatMessage.data.subkind === "image"
+	)
+}
 
 const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {
