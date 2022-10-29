@@ -94,6 +94,11 @@
 				</ul>
 			</div>
 
+			<button
+				class="load-previous-messages-btn btn btn-secondary"
+				@click="loadPreviousMessages">
+				Load Previous messages
+			</button>
 			<div
 				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
@@ -203,6 +208,7 @@ const fetcher = new ConsultationFetcher()
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 	(eventName: "toggleConsultationList"): void
+	(eventName: "loadPreviousMessages"): void
 }
 
 const emit = defineEmits<CustomEvents>()
@@ -231,6 +237,9 @@ const sortedMessagesByTime = computed(() => {
 		return Math.sign(leftSeconds - rightSeconds)
 	})
 })
+function loadPreviousMessages() {
+	emit("loadPreviousMessages")
+}
 
 const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {
