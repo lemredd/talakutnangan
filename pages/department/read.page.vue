@@ -72,11 +72,9 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
 
-import {
-	ARCHIVE_AND_RESTORE
-} from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
 import RequestEnvironment from "$/singletons/request_environment"
+import { department as permissionGroup } from "$/permissions/permission_list"
+import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -91,23 +89,27 @@ const department = ref<DeserializedDepartmentDocument<"read">>(
 )
 const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
 
-const mayArchiveDepartment = computed<boolean>(() => {
-	const roles = userProfile.data?.roles.data
+const mayUpdateDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+
+	return isPermitted
+})
+const mayArchiveOrRestoreDepartment = computed<boolean>(() => {
+	const roles = userProfile.data.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
 
-	return !isDeleted.value && isPermitted
+	return isPermitted
 })
 
-const mayRestoreDepartment = computed<boolean>(() => {
-	const roles = userProfile.data?.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isDeleted.value && isPermitted
-})
+const mayArchiveDepartment = computed<boolean>(
+	() => !isDeleted.value && mayArchiveOrRestoreDepartment.value
+)
+const mayRestoreDepartment = computed<boolean>(
+	() => isDeleted.value && mayArchiveOrRestoreDepartment.value
+)
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
