@@ -78,19 +78,33 @@
 	.file-list{
 		@apply overflow-y-scroll;
 
-		max-height: 20vh;
-		@screen md {
-			max-width: 130px;
-			@apply flex-1 max-h-80;
+		min-width: 40%;
+		&.image-files {
+			@screen md {
+				max-width: 150px;
+			}
 		}
 
 		.file-item {
 			@apply flex items-center justify-between;
+
+			cursor: pointer;
+			overflow-x: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 
 	.file-repo-preview{
-		@apply min-w-max;
+		@apply my-auto flex justify-center items-center;
+
+		.image-to-preview {
+			max-width: 100%;
+			max-height: min-content;
+			height: inherit;
+			width: inherit;
+			@apply object-cover;
+		}
 	}
 </style>
 
