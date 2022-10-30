@@ -1,5 +1,5 @@
-import type { FieldRules } from "!/types/validation"
 import type { Request } from "!/types/dependent"
+import type { FieldRules } from "!/types/validation"
 import type { ConsultationQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
