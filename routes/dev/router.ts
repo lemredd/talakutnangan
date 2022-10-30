@@ -14,6 +14,7 @@ import GetSampleServerErrorRoute from "!%/dev/sample_server_error.get"
 import GetMakeUnverifiedUserRoute from "!%/dev/make_unverified_user.get"
 import GetNewUserNotificationRoute from "!%/dev/new_user_notification.get"
 import GetMakeTestConsultationRoute from "!%/dev/make_test_consultation.get"
+import GetMakeTestConsultationsRoute from "!%/dev/make_test_consultations.get"
 
 import instantiateSimultaneously from "!/helpers/instantiate_simultaneously"
 
@@ -36,7 +37,8 @@ export default class extends Router {
 			GetSampleServerErrorRoute,
 			GetMakeUnverifiedUserRoute,
 			GetNewUserNotificationRoute,
-			GetMakeTestConsultationRoute
+			GetMakeTestConsultationRoute,
+			GetMakeTestConsultationsRoute
 		]))
 	}
 }

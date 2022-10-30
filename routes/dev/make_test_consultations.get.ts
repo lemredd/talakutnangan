@@ -1,10 +1,19 @@
 /* eslint-disable no-undefined */
-import { Request, Response } from "!/types/dependent"
+import { faker } from "@faker-js/faker"
+
+import type { Request, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
+import Validation from "!/bases/validation"
+import QueryValidation from "!/validations/query"
+import resetToMidnight from "$/time/reset_to_midnight"
+
+import date from "!/validators/base/date"
+import required from "!/validators/base/required"
 
 import User from "%/models/user"
 import Role from "%/models/role"
+import Condition from "%/helpers/condition"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -25,11 +34,25 @@ import {
 	role
 } from "$/permissions/permission_list"
 
-import Condition from "%/helpers/condition"
 import DevController from "!/controllers/dev"
 
 export default class extends DevController {
 	get filePath(): string { return __filename }
+
+	get validations(): Validation[] {
+		return [
+			new QueryValidation(
+				() => ({
+					"begin": {
+						"pipes": [ required, date ]
+					},
+					"end": {
+						"pipes": [ required, date ]
+					}
+				})
+			)
+		]
+	}
 
 	async handle(request: Request, response: Response): Promise<void> {
 		const testSecretaryEmail = "secretary@example.net"
@@ -209,47 +232,67 @@ export default class extends DevController {
 		Log.success("controller", "attached test secretary role to test secretary user")
 
 		const consultationManager = new ConsultationManager(request)
+		const range = request.query as unknown as { begin: Date, end: Date }
+		const consultationCountToCreate = Number(faker.random.numeric())
+		const creations: Promise<any>[] = []
 
-		const createdConsultation = await consultationManager.createUsingResource({
-			"attributes": {
-				"actionTaken": null,
-				"deletedAt": null,
-				"finishedAt": null,
-				"reason": "Grade-related",
-				"scheduledStartAt": new Date().toISOString(),
-				"startedAt": null
-			},
-			"id": undefined,
-			"relationships": {
-				"chatMessageActivities": undefined,
-				"chatMessages": undefined,
-				"consultant": {
-					"data": {
-						"id": previousSecretaryUser.id,
-						"type": "user"
-					}
+		for (let i = 0; i < consultationCountToCreate; ++i) {
+			const startedAt = resetToMidnight(faker.date.between(range.begin, range.end))
+			startedAt.setHours(faker.datatype.number({
+				"max": 11,
+				"min": 8
+			}))
+			const finishedAt = new Date(startedAt)
+			finishedAt.setMinutes(faker.datatype.number({
+				"max": 30,
+				"min": 5
+			}))
+
+			const creation = consultationManager.createUsingResource({
+				"attributes": {
+					"actionTaken": null,
+					"deletedAt": null,
+					"finishedAt": finishedAt.toJSON(),
+					"reason": "Grade-related",
+					"scheduledStartAt": new Date().toISOString(),
+					"startedAt": startedAt.toJSON()
 				},
-				"consultantRole": {
-					"data": {
-						"id": testSecretaryRole.id,
-						"type": "role"
-					}
-				},
-				"participants": {
-					"data": [
-						{
-							"id": previousStudentUser.id,
-							"type": "user"
-						},
-						{
+				"id": undefined,
+				"relationships": {
+					"chatMessageActivities": undefined,
+					"chatMessages": undefined,
+					"consultant": {
+						"data": {
 							"id": previousSecretaryUser.id,
 							"type": "user"
 						}
-					]
-				}
-			},
-			"type": "consultation"
-		}, Number(previousStudentUser.id))
+					},
+					"consultantRole": {
+						"data": {
+							"id": testSecretaryRole.id,
+							"type": "role"
+						}
+					},
+					"participants": {
+						"data": [
+							{
+								"id": previousStudentUser.id,
+								"type": "user"
+							},
+							{
+								"id": previousSecretaryUser.id,
+								"type": "user"
+							}
+						]
+					}
+				},
+				"type": "consultation"
+			}, Number(previousStudentUser.id))
+
+			creations.push(creation)
+		}
+
+		await Promise.all(creations)
 
 		response.status(this.status.OK).send({
 			"data": [
@@ -260,10 +303,10 @@ export default class extends DevController {
 				{
 					"email": testSecretaryEmail,
 					"password": "password"
-				},
-				createdConsultation
+				}
 			],
 			"meta": {
+				consultationCountToCreate,
 				"info": "Please log in one of the following credentials manually"
 			}
 		})
