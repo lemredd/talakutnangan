@@ -72,10 +72,11 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref, computed, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
@@ -88,7 +89,7 @@ import SelectableVote from "@/fields/selectable_checkbox.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
-const fetcherVote = new VoteFetcher()
+const voteFetcher = new VoteFetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedCommentResource<"user">
@@ -101,17 +102,23 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+
+const { userProfile } = pageProps
+
+const voteCount = ref<number>(0)
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
-const vote = computed<"upvoted"|"downvoted"|"unvoted">({
-	get(): "upvoted"|"downvoted"|"unvoted" {
+const vote = computed<CompleteVoteKind>({
+	get(): CompleteVoteKind {
 		if (isUndefined(props.modelValue.meta)) {
-			return "unvoted"
+			return "abstain"
 		}
 
 		return props.modelValue.meta.currentUserVoteStatus
 	},
-	set(newValue: "upvoted"|"downvoted"|"unvoted"): void {
+	set(newValue: CompleteVoteKind): void {
 		if (!isUndefined(props.modelValue.meta)) {
 			const commentWithVote = {
 				...props.modelValue,
@@ -122,11 +129,13 @@ const vote = computed<"upvoted"|"downvoted"|"unvoted">({
 
 			commentWithVote.meta.currentUserVoteStatus = newValue
 			emit("update:modelValue", commentWithVote)
+
+			voteCount.value = Number(
+				Number(commentWithVote.meta.upvoteCount))
+			- Number(commentWithVote.meta.downvoteCount)
 		}
 	}
 })
-
-const voteCount = ref<number>(0)
 
 const voteOptions = [
 	{
@@ -138,15 +147,44 @@ const voteOptions = [
 ] as OptionInfo[]
 
 async function switchVote(newRawVote: string): Promise<void> {
-	const newVote = `${newRawVote}d` as "upvoted"|"downvoted"|"unvoted"
+	const newVote = newRawVote as CompleteVoteKind
 	const currentVote = vote.value
 
-	if (currentVote === "unvoted") {
-		// Create vote
-	} else if (newVote === "unvoted") {
-		// Delete vote
+	if (currentVote === "abstain" && newVote !== "abstain") {
+		await voteFetcher.create({
+			"kind": newVote
+		}, {
+			"extraDataFields": {
+				"relationships": {
+					"comment": {
+						"data": {
+							"id": comment.value.id,
+							"type": "comment"
+						}
+					},
+					"user": {
+						"data": {
+							"id": userProfile.data.id,
+							"type": "user"
+						}
+					}
+				}
+			}
+		}).then(() => {
+			vote.value = newVote
+		})
+	} else if (newVote === "abstain") {
+		// TODO: use real comment vote ID
+		await voteFetcher.archive([ comment.value.meta?.commentVoteID ?? "" ]).then(() => {
+			vote.value = newVote
+		})
 	} else {
-		// Update vote
+		// TODO: use real comment vote ID
+		await voteFetcher.update(comment.value.meta?.commentVoteID ?? "", {
+			"kind": newVote
+		}).then(() => {
+			vote.value = newVote
+		})
 	}
 }
 
