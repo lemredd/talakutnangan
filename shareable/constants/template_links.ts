@@ -11,7 +11,7 @@ export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 export const COMMENT_LINK = makeTemplateLink(LINK_PREFIX, "comment")
 
-export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_votes")
+export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_vote")
 
 export const TAG_LINK = makeTemplateLink(LINK_PREFIX, "tag")
 
