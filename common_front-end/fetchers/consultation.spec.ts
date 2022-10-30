@@ -1,6 +1,10 @@
 import type { TimeSumQueryParameters } from "$/types/query"
 
-import { READ_TIME_SUM_PER_STUDENT } from "$/constants/template_links"
+import {
+	READ_TIME_SUM_PER_STUDENT,
+	READ_TIME_SUM_PER_WEEK,
+	READ_TIME_SUM_FOR_CONSOLIDATION
+} from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -57,6 +61,82 @@ describe("Fetcher: Consultation", () => {
 				"name": "A",
 				"type": "user"
 			}
+		})
+		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
+
+	it("can read summary per week", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"meta": {}
+		}), { "status": RequestEnvironment.status.OK })
+
+		const query: TimeSumQueryParameters = {
+			"filter": {
+				"dateTimeRange": {
+					"begin": new Date(),
+					"end": new Date()
+				},
+				"existence": "*",
+				"user": "1"
+			},
+			"page": {
+				"limit": 1,
+				"offset": 0
+			},
+			"sort": [ "-name" ]
+		}
+		const fetcher = new Fetcher()
+		const response = await fetcher.readTimeSumPerWeek(query)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "GET")
+		expect(request).toHaveProperty("url", specializePath(READ_TIME_SUM_PER_WEEK, {
+			"query": stringifyQuery({
+				...query,
+				"sort": query.sort.join(",")
+			})
+		}))
+		expect(response).toHaveProperty("body", {
+			"meta": {}
+		})
+		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
+
+	it("can read summary for consolidation", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"meta": {}
+		}), { "status": RequestEnvironment.status.OK })
+
+		const query: TimeSumQueryParameters = {
+			"filter": {
+				"dateTimeRange": {
+					"begin": new Date(),
+					"end": new Date()
+				},
+				"existence": "*",
+				"user": "1"
+			},
+			"page": {
+				"limit": 1,
+				"offset": 0
+			},
+			"sort": [ "-name" ]
+		}
+		const fetcher = new Fetcher()
+		const response = await fetcher.readTimeSumForConsolidation(query)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "GET")
+		expect(request).toHaveProperty("url", specializePath(READ_TIME_SUM_FOR_CONSOLIDATION, {
+			"query": stringifyQuery({
+				...query,
+				"sort": query.sort.join(",")
+			})
+		}))
+		expect(response).toHaveProperty("body", {
+			"meta": {}
 		})
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
 	})
