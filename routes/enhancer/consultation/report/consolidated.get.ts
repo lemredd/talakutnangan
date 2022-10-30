@@ -34,13 +34,13 @@ export default class extends PageMiddleware {
 		const manager = new Manager(request)
 		const user = deserialize(request.user) as DeserializedUserProfile
 		const currentDate = new Date()
-		const rangeStart = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
+		const rangeBegin = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
 		const rangeEnd = adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1))
 
 		const timeConsumedforConsolidation = await manager.sumTimeForConsolidation({
 			"filter": {
 				"dateTimeRange": {
-					"begin": rangeStart,
+					"begin": rangeBegin,
 					"end": rangeEnd
 				},
 				"existence": "exists",
