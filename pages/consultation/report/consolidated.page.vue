@@ -1,6 +1,13 @@
 <template>
 	<article>
 		<h1>Consolidated Summary of Consultations</h1>
+		<SummaryModifier
+			:initial-range-begin="rangeBegin"
+			:initial-range-end="rangeEnd"
+			@renew-summary="renewSummary"/>
+		<p>
+			The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.
+		</p>
 		<ul>
 			<li>
 				<div class="milliseconds">
@@ -32,12 +39,14 @@
 import { ref, computed, inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { SummaryRange } from "$@/types/component"
 import type {
 	ConsolidatedSummedTimeDocument,
 	DateTimeRange
 } from "$/types/documents/consolidated_time"
 
 import makeUnique from "$/array/make_unique"
+import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
@@ -120,4 +129,9 @@ const totalNumberOfStudents = computed<number>(
 const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
 )
+
+const fetcher = new Fetcher()
+function renewSummary(range: SummaryRange) {
+	// TODO: fetcher method to make overall consultation summary
+}
 </script>
