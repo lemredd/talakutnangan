@@ -132,10 +132,10 @@ async function renewSummary(range: SummaryRange) {
 		},
 		"sort": [ "name" ]
 	}).then(({ body }) => {
-		isLoaded.value = true
 		timeConsumedPerStudent.value = body
 		rangeBegin.value = correctBegin
 		rangeEnd.value = correctEnd
+		isLoaded.value = true
 	}).catch(() => {
 		isLoaded.value = true
 	})
