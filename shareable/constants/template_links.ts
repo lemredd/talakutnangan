@@ -76,3 +76,8 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 = `${USER_LINK.bound}/relationships/${PROFILE_PICTURE_LINK.type}`
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
+
+export const READ_TIME_SUM_PER_STUDENT = `${CONSULTATION_LINK.unbound}/read_time_sum_per_student`
+export const READ_TIME_SUM_PER_WEEK = `${CONSULTATION_LINK.unbound}/read_time_sum_per_week`
+export const READ_TIME_SUM_FOR_CONSOLIDATION
+= `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation`
