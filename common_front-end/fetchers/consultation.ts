@@ -2,6 +2,10 @@ import type { Response } from "$@/types/independent"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 import type {
+	WeeklySummedTimeDocument,
+	ConsolidatedSummedTimeDocument
+} from "$/types/documents/consolidated_time"
+import type {
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
 	ConsultationResource,
@@ -66,6 +70,62 @@ export default class ConsultationFetcher extends BaseFetcher<
 			ConsultationResource,
 			DeserializedConsultationResource,
 			DeserializedUserListWithTimeConsumedDocument
+		>>
+	}
+
+	readTimeSumPerWeek(parameters: TimeSumQueryParameters): Promise<Response<
+		ConsultationResourceIdentifier,
+		ConsultationAttributes<"serialized">,
+		ConsultationAttributes<"deserialized">,
+		ConsultationResource,
+		DeserializedConsultationResource,
+		WeeklySummedTimeDocument
+	>> {
+		const commaDelimitedSort = {
+			...parameters,
+			"sort": parameters.sort.join(",")
+		}
+
+		return this.handleResponse(
+			this.getJSON(specializePath(READ_TIME_SUM_PER_WEEK, {
+				"query": stringifyQuery(commaDelimitedSort)
+			})),
+			true
+		) as Promise<Response<
+			ConsultationResourceIdentifier,
+			ConsultationAttributes<"serialized">,
+			ConsultationAttributes<"deserialized">,
+			ConsultationResource,
+			DeserializedConsultationResource,
+			WeeklySummedTimeDocument
+		>>
+	}
+
+	readTimeSumForConsolidation(parameters: TimeSumQueryParameters): Promise<Response<
+		ConsultationResourceIdentifier,
+		ConsultationAttributes<"serialized">,
+		ConsultationAttributes<"deserialized">,
+		ConsultationResource,
+		DeserializedConsultationResource,
+		ConsolidatedSummedTimeDocument
+	>> {
+		const commaDelimitedSort = {
+			...parameters,
+			"sort": parameters.sort.join(",")
+		}
+
+		return this.handleResponse(
+			this.getJSON(specializePath(READ_TIME_SUM_FOR_CONSOLIDATION, {
+				"query": stringifyQuery(commaDelimitedSort)
+			})),
+			true
+		) as Promise<Response<
+			ConsultationResourceIdentifier,
+			ConsultationAttributes<"serialized">,
+			ConsultationAttributes<"deserialized">,
+			ConsultationResource,
+			DeserializedConsultationResource,
+			ConsolidatedSummedTimeDocument
 		>>
 	}
 }
