@@ -29,7 +29,7 @@ describe("Database Manager: Comment read operations", () => {
 
 		expect(document).toHaveProperty("data.0.meta.upvoteCount", upvoteCount)
 		expect(document).toHaveProperty("data.0.meta.downvoteCount", downvoteCount)
-		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "unvoted")
+		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "abstain")
 	})
 
 	it("can read number of votes with self", async() => {
@@ -59,7 +59,7 @@ describe("Database Manager: Comment read operations", () => {
 
 		expect(document).toHaveProperty("data.0.meta.upvoteCount", upvoteCount)
 		expect(document).toHaveProperty("data.0.meta.downvoteCount", downvoteCount + 1)
-		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "downvoted")
+		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "downvote")
 	})
 })
 
