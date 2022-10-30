@@ -113,8 +113,8 @@ const totalTime = computed<number>(() => {
 
 const fetcher = new Fetcher()
 async function renewSummary(range: SummaryRange) {
-	const correctBegin = resetToMidnight(range.rangeBegin)
-	const correctEnd = adjustBeforeMidnightOfNextDay(range.rangeEnd)
+	const correctBegin = resetToMidnight(adjustUntilChosenDay(range.rangeBegin, 0, -1))
+	const correctEnd = adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(range.rangeEnd, 6, 1))
 
 	isLoaded.value = false
 	await fetcher.readTimeSumPerWeek({
