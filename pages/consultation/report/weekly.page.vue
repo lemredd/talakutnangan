@@ -1,6 +1,13 @@
 <template>
 	<article>
 		<h1>Weekly Time Sums</h1>
+		<SummaryModifier
+			:initial-range-begin="rangeBegin"
+			:initial-range-end="rangeEnd"
+			@renew-summary="renewSummary"/>
+		<p>
+			The table contains the weekly consultations from {{ rangeBegin }} to {{ rangeEnd }}.
+		</p>
 		<table>
 			<thead>
 				<tr>
@@ -60,26 +67,45 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { SummaryRange } from "$@/types/component"
+import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_time"
 
+import Fetcher from "$@/fetchers/consultation"
+import resetToMidnight from "$/time/reset_to_midnight"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
+
+import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
 	"timeConsumedPerWeek"
 >
 const { pageProps } = pageContext
-const { timeConsumedPerWeek } = pageProps
+const timeConsumedPerWeek = ref<WeeklySummedTimeDocument>(pageProps.timeConsumedPerWeek)
+const currentDate = new Date()
+const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
+const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
 
 const totalTime = computed<number>(() => {
-	const total = timeConsumedPerWeek.meta.weeklyTimeSums.reduce((previousTotal, currentSum) => {
-		const newTotal = previousTotal + currentSum.totalMillisecondsConsumed
-		return newTotal
-	}, 0)
+	const total = timeConsumedPerWeek.value.meta.weeklyTimeSums.reduce(
+		(previousTotal, currentSum) => {
+			const newTotal = previousTotal + currentSum.totalMillisecondsConsumed
+			return newTotal
+		},
+		0
+	)
 
 	return total
 })
+
+const fetcher = new Fetcher()
+function renewSummary(range: SummaryRange) {
+	// TODO: fetcher method to make consultation summary per week
+}
 </script>

@@ -6,7 +6,7 @@
 			:initial-range-end="rangeEnd"
 			@renew-summary="renewSummary"/>
 		<p>
-			The table contains the students consulted from {{ oldRangeBegin }} to {{ oldRangeEnd }}.
+			The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.
 		</p>
 		<table>
 			<thead>
@@ -89,13 +89,11 @@ const pageContext = inject("pageContext") as PageContext<
 >
 const { pageProps } = pageContext
 const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>(
-	pageProps.timeConsumedPerStudent as DeserializedUserListWithTimeConsumedDocument
+	pageProps.timeConsumedPerStudent
 )
 const currentDate = new Date()
-const rangeBegin = ref<Date>(adjustUntilChosenDay(currentDate, 0, -1))
-const rangeEnd = ref<Date>(adjustUntilChosenDay(currentDate, 6, 1))
-const oldRangeBegin = ref<Date>(resetToMidnight(rangeBegin.value))
-const oldRangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(rangeEnd.value))
+const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
+const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
 
 const totalTime = computed<number>(() => {
 	const total = timeConsumedPerStudent.value.data.reduce((previousTotal, currentSum) => {
