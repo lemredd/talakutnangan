@@ -93,7 +93,7 @@ export default class extends BaseManager<
 				)
 			})`)
 
-			const ownUpvoteSubselectQuery = Model.sequelize.literal(`(${
+			const ownUpvoteCountSubselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -113,7 +113,7 @@ export default class extends BaseManager<
 					";"
 				)
 			})`)
-			const ownDownvoteSubselectQuery = Model.sequelize.literal(`(${
+			const ownDownvoteCountSubselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
@@ -142,8 +142,8 @@ export default class extends BaseManager<
 							"id",
 							[ upvoteSubselectQuery, "upvoteCount" ],
 							[ downvoteSubselectQuery, "downvoteCount" ],
-							[ ownUpvoteSubselectQuery, "ownUpvoteCount" ],
-							[ ownDownvoteSubselectQuery, "ownDownvoteCount" ]
+							[ ownUpvoteCountSubselectQuery, "ownUpvoteCount" ],
+							[ ownDownvoteCountSubselectQuery, "ownDownvoteCount" ]
 						],
 						"where": new Condition().or(
 							...commentIDs.map(commentID => new Condition().equal("id", commentID))
@@ -164,10 +164,11 @@ export default class extends BaseManager<
 				const ownUpvoteCount = Number(countInfo.ownUpvoteCount)
 				const ownDownvoteCount = Number(countInfo.ownDownvoteCount)
 				const currentUserVoteStatus = ownDownvoteCount === 1
-					? "downvoted"
+					? "downvote"
 					: ownUpvoteCount === 1
-						? "upvoted"
-						: "unvoted"
+						? "upvote"
+						: "abstain"
+				// TODO: find comment vote ID
 				identifierObjects.push({
 					"id": String(countInfo.id),
 					"meta": {

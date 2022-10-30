@@ -55,7 +55,7 @@
 		</Overlay>
 		<div class="post-container" :hidden="post.isPostShown">
 			<div class="left">
-				<div><img class="max-w-[10px]" src="@assets/emptyUser.png"/></div>
+				<div><img class="max-w-[100px]" src="@assets/emptyUser.png"/></div>
 				<h2 class="title">
 					{{ post.poster.data.name }}
 				</h2>
@@ -75,7 +75,6 @@
 					<!-- TODO: Put a checkbox to downvote -->
 					<span class="slider"></span>
 				</label>
-
 				<h2 class="title">
 					<!-- TODO: Put the total number of votes here -->
 				</h2>
@@ -89,6 +88,15 @@
 
 <style lang="scss">
 	@import "@styles/btn.scss";
+
+	post-container {
+		@apply flex flex-col flex-nowrap justify-center;
+
+		> .field {
+			@apply flex-initial;
+		}
+	}
+
 </style>
 
 <script setup lang="ts">
