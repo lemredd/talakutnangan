@@ -2,7 +2,11 @@ import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { CommentQueryParameters } from "$/types/query"
 import type { ModelCtor, FindAndCountOptions } from "%/types/dependent"
-import type { CommentAttributes, CommentResourceIdentifier } from "$/types/documents/comment"
+import type {
+	CommentAttributes,
+	CommentResourceIdentifier,
+	CompleteVoteKind
+} from "$/types/documents/comment"
 
 import Model from "%/models/comment"
 import BaseManager from "%/managers/base"
@@ -93,12 +97,12 @@ export default class extends BaseManager<
 				)
 			})`)
 
-			const ownUpvoteCountSubselectQuery = Model.sequelize.literal(`(${
+			const ownUpvoteSubselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
 						CommentVote.tableName, {
-							"attributes": [ CommentVote.sequelize.fn("count", "*") ],
+							"attributes": [ "id" ],
 							"where": new Condition().and(
 								new Condition().equal(
 									"commentID",
@@ -113,12 +117,12 @@ export default class extends BaseManager<
 					";"
 				)
 			})`)
-			const ownDownvoteCountSubselectQuery = Model.sequelize.literal(`(${
+			const ownDownvoteSubselectQuery = Model.sequelize.literal(`(${
 				trimRight(
 					// @ts-ignore
 					CommentVote.sequelize.getQueryInterface().queryGenerator.selectQuery(
 						CommentVote.tableName, {
-							"attributes": [ CommentVote.sequelize.fn("count", "*") ],
+							"attributes": [ "id" ],
 							"where": new Condition().and(
 								new Condition().equal(
 									"commentID",
@@ -142,8 +146,8 @@ export default class extends BaseManager<
 							"id",
 							[ upvoteSubselectQuery, "upvoteCount" ],
 							[ downvoteSubselectQuery, "downvoteCount" ],
-							[ ownUpvoteCountSubselectQuery, "ownUpvoteCount" ],
-							[ ownDownvoteCountSubselectQuery, "ownDownvoteCount" ]
+							[ ownUpvoteSubselectQuery, "ownUpvoteID" ],
+							[ ownDownvoteSubselectQuery, "ownDownvoteID" ]
 						],
 						"where": new Condition().or(
 							...commentIDs.map(commentID => new Condition().equal("id", commentID))
@@ -155,23 +159,24 @@ export default class extends BaseManager<
 				id: number,
 				upvoteCount: string,
 				downvoteCount: string,
-				ownUpvoteCount: string,
-				ownDownvoteCount: string
+				ownUpvoteID: string|null,
+				ownDownvoteID: string|null
 			}[] ]
 
 			const identifierObjects: CommentResourceIdentifier[] = []
 			counts.forEach(countInfo => {
-				const ownUpvoteCount = Number(countInfo.ownUpvoteCount)
-				const ownDownvoteCount = Number(countInfo.ownDownvoteCount)
-				const currentUserVoteStatus = ownDownvoteCount === 1
-					? "downvote"
-					: ownUpvoteCount === 1
-						? "upvote"
-						: "abstain"
-				// TODO: find comment vote ID
+				const { ownUpvoteID, ownDownvoteID } = countInfo
+
+				let currentUserVoteStatus: CompleteVoteKind = "abstain"
+				if (ownDownvoteID !== null) currentUserVoteStatus = "downvote"
+				else if (ownUpvoteID !== null) currentUserVoteStatus = "upvote"
+
+				const commentVoteID = ownDownvoteID || ownUpvoteID
+
 				identifierObjects.push({
 					"id": String(countInfo.id),
 					"meta": {
+						"commentVoteID": commentVoteID === null ? null : String(commentVoteID),
 						currentUserVoteStatus,
 						"downvoteCount": Number(countInfo.downvoteCount),
 						"upvoteCount": Number(countInfo.upvoteCount)

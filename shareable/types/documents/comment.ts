@@ -74,7 +74,7 @@ type WithVoteInfo = MetaDocument<{
 	upvoteCount: number,
 	downvoteCount: number,
 	currentUserVoteStatus: CompleteVoteKind,
-	commentVoteID: string
+	commentVoteID: string|null
 }>
 
 export type DeserializedCommentResource<

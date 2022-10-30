@@ -13,12 +13,12 @@ describe("Database Manager: Comment read operations", () => {
 		const model = await new Factory().insertOne()
 		const upvoteCount = 4
 		const downvoteCount = 5
-		const commentVotefactory = new CommentVoteFactory()
-		await commentVotefactory
+		const commentVoteFactory = new CommentVoteFactory()
+		await commentVoteFactory
 		.kind(() => "upvote")
 		.comment(() => Promise.resolve(model))
 		.insertMany(upvoteCount)
-		await commentVotefactory
+		await commentVoteFactory
 		.kind(() => "downvote")
 		.comment(() => Promise.resolve(model))
 		.insertMany(downvoteCount)
@@ -30,6 +30,7 @@ describe("Database Manager: Comment read operations", () => {
 		expect(document).toHaveProperty("data.0.meta.upvoteCount", upvoteCount)
 		expect(document).toHaveProperty("data.0.meta.downvoteCount", downvoteCount)
 		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "abstain")
+		expect(document).toHaveProperty("data.0.meta.commentVoteID", null)
 	})
 
 	it("can read number of votes with self", async() => {
@@ -38,16 +39,16 @@ describe("Database Manager: Comment read operations", () => {
 		const model = await new Factory().insertOne()
 		const upvoteCount = 4
 		const downvoteCount = 2
-		const commentVotefactory = new CommentVoteFactory()
-		await commentVotefactory
+		const commentVoteFactory = new CommentVoteFactory()
+		await commentVoteFactory
 		.kind(() => "upvote")
 		.comment(() => Promise.resolve(model))
 		.insertMany(upvoteCount)
-		await commentVotefactory
+		await commentVoteFactory
 		.kind(() => "downvote")
 		.comment(() => Promise.resolve(model))
 		.insertMany(downvoteCount)
-		await commentVotefactory
+		const downvote = await commentVoteFactory
 		.kind(() => "downvote")
 		.user(() => Promise.resolve(user))
 		.comment(() => Promise.resolve(model))
@@ -60,6 +61,7 @@ describe("Database Manager: Comment read operations", () => {
 		expect(document).toHaveProperty("data.0.meta.upvoteCount", upvoteCount)
 		expect(document).toHaveProperty("data.0.meta.downvoteCount", downvoteCount + 1)
 		expect(document).toHaveProperty("data.0.meta.currentUserVoteStatus", "downvote")
+		expect(document).toHaveProperty("data.0.meta.commentVoteID", String(downvote.id))
 	})
 })
 
