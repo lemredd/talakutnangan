@@ -1,6 +1,6 @@
 import type { Response } from "$@/types/independent"
-import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
+import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 import type {
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
@@ -20,8 +20,8 @@ import {
 } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
-import stringifyQuery from "$@/fetchers/stringify_query"
 import specializePath from "$/helpers/specialize_path"
+import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class ConsultationFetcher extends BaseFetcher<
 	ConsultationResourceIdentifier<"read">,
