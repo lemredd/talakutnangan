@@ -6,7 +6,7 @@
 			:initial-range-end="rangeEnd"
 			@renew-summary="renewSummary"/>
 		<p>
-			The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.
+			The list contains the overall consultation summary from {{ rangeBegin }} to {{ rangeEnd }}.
 		</p>
 		<ul>
 			<li>
@@ -51,6 +51,8 @@ import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
+
+import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
