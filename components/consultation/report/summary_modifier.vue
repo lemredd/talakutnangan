@@ -13,6 +13,9 @@
 				type="date"/>
 		</label>
 		<input type="submit" value="Summarize"/>
+		<button type="button" @click="printPage">
+			Print
+		</button>
 	</form>
 </template>
 <script setup lang="ts">
@@ -38,5 +41,9 @@ function renewSummary() {
 		"rangeBegin": rangeBegin.value,
 		"rangeEnd": rangeEnd.value
 	})
+}
+
+function printPage() {
+	window.print()
 }
 </script>
