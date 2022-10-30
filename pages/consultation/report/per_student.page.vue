@@ -1,21 +1,10 @@
 <template>
 	<article>
 		<h1>Sum Per Student</h1>
-		<form @submit.prevent="renewSummary">
-			<label>
-				Begin:
-				<input
-					v-model="rangeBegin"
-					type="date"/>
-			</label>
-			<label>
-				End:
-				<input
-					v-model="rangeEnd"
-					type="date"/>
-			</label>
-			<input type="submit" value="Summarize"/>
-		</form>
+		<SummaryModifier
+			:initial-range-begin="rangeBegin"
+			:initial-range-end="rangeEnd"
+			@renew-summary="renewSummary"/>
 		<p>
 			The table contains the students consulted from {{ oldRangeBegin }} to {{ oldRangeEnd }}.
 		</p>
@@ -82,6 +71,7 @@
 import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { SummaryRange } from "$@/types/component"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/consultation"
@@ -90,6 +80,8 @@ import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
+
+import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
@@ -115,7 +107,7 @@ const totalTime = computed<number>(() => {
 })
 
 const fetcher = new Fetcher()
-function renewSummary() {
+function renewSummary(range: SummaryRange) {
 	// TODO: fetcher method to make consultation summary per student
 }
 </script>
