@@ -82,12 +82,14 @@ import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 const pageContext = inject("pageContext") as PageContext<
 	"deserialized",
 	"timeConsumedPerStudent"
 >
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>(
 	pageProps.timeConsumedPerStudent
 )
@@ -105,7 +107,28 @@ const totalTime = computed<number>(() => {
 })
 
 const fetcher = new Fetcher()
-function renewSummary(range: SummaryRange) {
-	// TODO: fetcher method to make consultation summary per student
+async function renewSummary(range: SummaryRange) {
+	const correctBegin = resetToMidnight(range.rangeBegin)
+	const correctEnd = adjustBeforeMidnightOfNextDay(range.rangeEnd)
+	await fetcher.readTimeSumPerStudent({
+		"filter": {
+			"dateTimeRange": {
+				"begin": correctBegin,
+				"end": correctEnd
+			},
+			"existence": "exists",
+			"user": userProfile.data.id
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	}).then(({ body }) => {
+		console.log(body)
+		timeConsumedPerStudent.value = body
+		rangeBegin.value = correctBegin
+		rangeEnd.value = correctEnd
+	})
 }
 </script>
