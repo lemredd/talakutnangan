@@ -22,7 +22,9 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
 export interface CommentResourceIdentifier<T extends Completeness = "read">
@@ -65,6 +67,12 @@ export type CommentResource<T extends Completeness = "read">
 		: Serializable
 )
 
+type WithVoteInfo = MetaDocument<{
+	upvoteCount: number,
+	downvoteCount: number,
+	currentUserVoteStatus: "upvoted"|"downvoted"|"unvoted"
+}>
+
 export type DeserializedCommentResource<
 	T extends CommentRelationshipNames|undefined = undefined
 > = DeserializedResource<
@@ -76,7 +84,7 @@ export type DeserializedCommentResource<
 	CommentRelationshipNames,
 	T extends CommentRelationshipNames ? true : false,
 	T extends CommentRelationshipNames ? T : CommentRelationshipNames
->
+> & Partial<WithVoteInfo>
 
 export type CommentDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
@@ -113,3 +121,6 @@ export type CommentIdentifierDocument
 
 export type CommentIdentifierListDocument
 = IdentifierListDocument<CommentResourceIdentifier<"read">>
+
+export type CommentIdentifierListDocumentWithVotes
+= IdentifierListDocument<CommentResourceIdentifier<"read"> & WithVoteInfo>

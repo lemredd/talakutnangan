@@ -54,23 +54,13 @@
 		</p>
 		<div class="comment-container">
 			<div class="right">
+				<SelectableVote
+					:model-value="vote"
+					title=""
+					:options="voteOptions"
+					@update:model-value="switchVote"/>
 				<h2 class="title">
-					<!-- TODO: Put the total number of upvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to upvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of downvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to downvote -->
-					<span class="slider"></span>
-				</label>
-
-				<h2 class="title">
-					<!-- TODO: Put the total number of votes here -->
+					{{ voteCount }} votes
 				</h2>
 			</div>
 		</div>
@@ -82,18 +72,23 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
+import type { OptionInfo } from "$@/types/component"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
 
 import Overlay from "@/helpers/overlay.vue"
+import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
+import SelectableVote from "@/fields/selectable_checkbox.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
+const fetcherVote = new VoteFetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedCommentResource<"user">
@@ -107,6 +102,53 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
+
+const vote = computed<"upvoted"|"downvoted"|"unvoted">({
+	get(): "upvoted"|"downvoted"|"unvoted" {
+		if (isUndefined(props.modelValue.meta)) {
+			return "unvoted"
+		}
+
+		return props.modelValue.meta.currentUserVoteStatus
+	},
+	set(newValue: "upvoted"|"downvoted"|"unvoted"): void {
+		if (!isUndefined(props.modelValue.meta)) {
+			const commentWithVote = {
+				...props.modelValue,
+				"meta": {
+					...props.modelValue.meta
+				}
+			}
+
+			commentWithVote.meta.currentUserVoteStatus = newValue
+			emit("update:modelValue", commentWithVote)
+		}
+	}
+})
+
+const voteCount = ref<number>(0)
+
+const voteOptions = [
+	{
+		"value": "upvote"
+	},
+	{
+		"value": "downvote"
+	}
+] as OptionInfo[]
+
+async function switchVote(newRawVote: string): Promise<void> {
+	const newVote = `${newRawVote}d` as "upvoted"|"downvoted"|"unvoted"
+	const currentVote = vote.value
+
+	if (currentVote === "unvoted") {
+		// Create vote
+	} else if (newVote === "unvoted") {
+		// Delete vote
+	} else {
+		// Update vote
+	}
+}
 
 const {
 	"state": mustUpdate,

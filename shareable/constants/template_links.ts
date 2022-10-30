@@ -81,3 +81,5 @@ export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/
  * Requires the `id` of the consultation
  */
 export const GENERATE_CONSULTATION_AS_PDF_LINK = `${CONSULTATION_LINK.bound}/request/as_pdf`
+
+export const COUNT_COMMENT_VOTES = `${COMMENT_LINK.unbound}/count_votes`
