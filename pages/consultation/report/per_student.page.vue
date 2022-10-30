@@ -22,9 +22,8 @@
 					v-for="studentEntry in timeConsumedPerStudent.data"
 					:key="studentEntry.id">
 					<td>{{ studentEntry.id }}</td>
-					<td>
-						<span>{{ studentEntry.name }}</span>
-						<small>({{ studentEntry.email }})</small>
+					<td class="sum-entry-owner">
+						{{ studentEntry.name }} <small>({{ studentEntry.email }})</small>
 					</td>
 					<td>
 						<ul class="consultations">
@@ -55,7 +54,9 @@
 					<td colspan="3">
 						Total
 					</td>
-					<td>{{ convertToFullTimeString(totalTime) }}</td>
+					<td class="milliseconds">
+						{{ convertToFullTimeString(totalTime) }}
+					</td>
 				</tr>
 			</tfoot>
 		</table>
