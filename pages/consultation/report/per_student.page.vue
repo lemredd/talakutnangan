@@ -28,7 +28,6 @@
 					</td>
 					<td>
 						<ul class="consultations">
-							<span>consultations</span>
 							<li
 								v-for="consultation in studentEntry.meta.consultations.data"
 								:key="consultation.id"

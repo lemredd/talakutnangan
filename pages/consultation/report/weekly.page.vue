@@ -27,7 +27,6 @@
 					<td>{{ sumEntry.endDateTime.toJSON() }}</td>
 					<td>
 						<ul class="consultations">
-							<span>consultations</span>
 							<li
 								v-for="consultation in sumEntry.consultations.data"
 								:key="consultation.id"
