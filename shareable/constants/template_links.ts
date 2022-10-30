@@ -77,7 +77,21 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
 
-export const READ_TIME_SUM_PER_STUDENT = `${CONSULTATION_LINK.unbound}/read_time_sum_per_student`
-export const READ_TIME_SUM_PER_WEEK = `${CONSULTATION_LINK.unbound}/read_time_sum_per_week`
+/**
+ * Requires the time sum query parameters
+ */
+export const READ_TIME_SUM_PER_STUDENT
+= `${CONSULTATION_LINK.unbound}/read_time_sum_per_student?:query`
+
+/**
+ * Requires the time sum query parameters
+ */
+export const READ_TIME_SUM_PER_WEEK
+= `${CONSULTATION_LINK.unbound}/read_time_sum_per_week?:query`
+
+
+/**
+ * Requires the time sum query parameters
+ */
 export const READ_TIME_SUM_FOR_CONSOLIDATION
-= `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation`
+= `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation?:query`
