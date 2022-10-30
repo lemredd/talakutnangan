@@ -1,15 +1,18 @@
 /* eslint-disable no-undefined */
 import { faker } from "@faker-js/faker"
 
+import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import Validation from "!/bases/validation"
 import QueryValidation from "!/validations/query"
 import resetToMidnight from "$/time/reset_to_midnight"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import date from "!/validators/base/date"
-import required from "!/validators/base/required"
+import nullable from "!/validators/base/nullable"
 
 import User from "%/models/user"
 import Role from "%/models/role"
@@ -42,14 +45,33 @@ export default class extends DevController {
 	get validations(): Validation[] {
 		return [
 			new QueryValidation(
-				() => ({
-					"begin": {
-						"pipes": [ required, date ]
-					},
-					"end": {
-						"pipes": [ required, date ]
+				() => {
+					const currentDate = new Date()
+					const rangeBegin = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
+					const rangeEnd = adjustBeforeMidnightOfNextDay(
+						adjustUntilChosenDay(currentDate, 6, 1)
+					)
+					const range: FieldRules = {
+						"begin": {
+							"constraints": {
+								"nullable": {
+									"defaultValue": rangeBegin
+								}
+							},
+							"pipes": [ nullable, date ]
+						},
+						"end": {
+							"constraints": {
+								"nullable": {
+									"defaultValue": rangeEnd
+								}
+							},
+							"pipes": [ nullable, date ]
+						}
 					}
-				})
+
+					return range
+				}
 			)
 		]
 	}
