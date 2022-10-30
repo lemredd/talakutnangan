@@ -81,8 +81,8 @@ const weeklyGroups = computed<DateTimeRange[]>(() => {
 		const rangeLastEnd = adjustBeforeMidnightOfNextDay(localRangeEnd)
 
 		ranges.push({
-			"beginDateTime": resetToMidnight(i),
-			"endDateTime": rangeLastEnd
+			"beginAt": resetToMidnight(i),
+			"endAt": rangeLastEnd
 		})
 
 		i = adjustUntilChosenDay(localRangeEnd, 0, 1)
@@ -99,9 +99,9 @@ interface WeeklySummary extends DateTimeRange {
 const weeklySummary = computed<WeeklySummary[]>(() => weeklyGroups.value.map(range => {
 	const metaDocument = timeConsumedforConsolidation.value.meta
 	const rawConsolidatedSums = metaDocument.rawConsolidatedTimeSums.filter(sum => {
-		const { beginDateTime, endDateTime } = sum
+		const { beginAt, endAt } = sum
 
-		return range.beginDateTime <= beginDateTime && endDateTime <= range.endDateTime
+		return range.beginAt <= beginAt && endAt <= range.endAt
 	}).reduce((summary, currentDay) => ({
 		...summary,
 		"consultationIDs": [ ...summary.consultationIDs, ...currentDay.consultationIDs ],
