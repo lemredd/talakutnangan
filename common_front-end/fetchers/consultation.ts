@@ -1,6 +1,6 @@
 import type { Response } from "$@/types/independent"
-import type { ConsultationQueryParameters } from "$/types/query"
-import type { AsynchronousFileDocument } from "$/types/documents/asynchronous_file"
+import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
+import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type {
 	ConsultationResourceIdentifier,
 	ConsultationAttributes,
@@ -12,9 +12,15 @@ import type {
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
-import { CONSULTATION_LINK, GENERATE_CONSULTATION_AS_PDF_LINK } from "$/constants/template_links"
+import {
+	CONSULTATION_LINK,
+	READ_TIME_SUM_PER_STUDENT,
+	READ_TIME_SUM_PER_WEEK,
+	READ_TIME_SUM_FOR_CONSOLIDATION
+} from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
+import stringifyQuery from "$@/fetchers/stringify_query"
 import specializePath from "$/helpers/specialize_path"
 
 export default class ConsultationFetcher extends BaseFetcher<
@@ -35,21 +41,23 @@ export default class ConsultationFetcher extends BaseFetcher<
 		super(CONSULTATION_LINK)
 	}
 
-	requestAsPDF(id: string): Promise<Response<
+	readTimeSumPerStudent(parameters: TimeSumQueryParameters): Promise<Response<
 		ConsultationResourceIdentifier,
 		ConsultationAttributes<"serialized">,
 		ConsultationAttributes<"deserialized">,
 		ConsultationResource,
 		DeserializedConsultationResource,
-		AsynchronousFileDocument<"read", "deserialized">
+		DeserializedUserListWithTimeConsumedDocument
 	>> {
+		const commaDelimitedSort = {
+			...parameters,
+			"sort": parameters.sort.join(",")
+		}
+
 		return this.handleResponse(
-			this.postJSON(specializePath(GENERATE_CONSULTATION_AS_PDF_LINK, { id }), {
-				"data": {
-					id,
-					"type": "consultation"
-				}
-			}),
+			this.getJSON(specializePath(READ_TIME_SUM_PER_STUDENT, {
+				"query": stringifyQuery(commaDelimitedSort)
+			})),
 			true
 		) as Promise<Response<
 			ConsultationResourceIdentifier,
@@ -57,7 +65,7 @@ export default class ConsultationFetcher extends BaseFetcher<
 			ConsultationAttributes<"deserialized">,
 			ConsultationResource,
 			DeserializedConsultationResource,
-			AsynchronousFileDocument<"read", "deserialized">
+			DeserializedUserListWithTimeConsumedDocument
 		>>
 	}
 }

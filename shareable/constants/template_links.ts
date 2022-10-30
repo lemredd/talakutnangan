@@ -89,7 +89,6 @@ export const READ_TIME_SUM_PER_STUDENT
 export const READ_TIME_SUM_PER_WEEK
 = `${CONSULTATION_LINK.unbound}/read_time_sum_per_week?:query`
 
-
 /**
  * Requires the time sum query parameters
  */
