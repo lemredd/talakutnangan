@@ -3,13 +3,13 @@
 		<label>
 			Begin:
 			<input
-				v-model="currentRangeBegin"
+				v-model="rangeBegin"
 				type="date"/>
 		</label>
 		<label>
 			End:
 			<input
-				v-model="currentRangeEnd"
+				v-model="rangeEnd"
 				type="date"/>
 		</label>
 		<input type="submit" value="Summarize"/>
@@ -18,23 +18,25 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
+import type { SummaryRange } from "$@/types/component"
+
 const props = defineProps<{
-	rangeBegin: Date,
-	rangeEnd: Date
+	initialRangeBegin: Date,
+	initialRangeEnd: Date
 }>()
 
 interface CustomEvents {
-	(event: "renewSummary", range: { rangeBegin: Date, rangeEnd: Date }): void
+	(event: "renewSummary", range: SummaryRange): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const currentRangeBegin = ref<Date>(props.rangeBegin)
-const currentRangeEnd = ref<Date>(props.rangeEnd)
+const rangeBegin = ref<Date>(props.initialRangeBegin)
+const rangeEnd = ref<Date>(props.initialRangeEnd)
 
 function renewSummary() {
 	emit("renewSummary", {
-		"rangeBegin": currentRangeBegin.value,
-		"rangeEnd": currentRangeEnd.value
+		"rangeBegin": rangeBegin.value,
+		"rangeEnd": rangeEnd.value
 	})
 }
 </script>
