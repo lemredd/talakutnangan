@@ -190,19 +190,19 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
-
 import makeSwitch from "$@/helpers/make_switch"
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Overlay from "@/helpers/overlay.vue"
-
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 
 const fetcher = new ConsultationFetcher()
@@ -295,7 +295,6 @@ const {
 	"state": isActionTakenOverlayShown
 } = makeSwitch(false)
 const actionTaken = ref("")
-
 
 const fileRepoTab = ref("files")
 const receivedErrors = ref<string[]>([])
@@ -476,9 +475,7 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 }, { "deep": true })
 
 function saveAsPDF(): void {
-	fetcher.requestAsPDF(props.consultation.id).then(({ body }) => {
-		console.log(body)
-	})
+	assignPath(specializePath())
 }
 
 onMounted(() => {

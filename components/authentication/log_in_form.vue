@@ -27,7 +27,6 @@
 				class="field pass-field"/>
 			<div v-if="RequestEnvironment.isNotOnProduction">
 				Fill details for:
-
 				<RoleSelector
 					v-model="selectedRole"
 					:options="selectableRoles"
