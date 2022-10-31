@@ -58,6 +58,7 @@
 				class="right">
 				<SelectableVote
 					:model-value="vote"
+					:is-loaded="hasRenewedVote"
 					title=""
 					@update:model-value="switchVote"/>
 				<h2 class="title">
@@ -107,10 +108,11 @@ const { pageProps } = pageContext
 
 const { userProfile } = pageProps
 
+const hasRenewedVote = ref<boolean>(true)
 const mayVote = computed<boolean>(() => {
 	const hasNotLoaded = isUndefined(props.modelValue.meta)
 
-	return !hasNotLoaded
+	return !hasNotLoaded && hasRenewedVote.value
 })
 
 const voteCount = computed<number>(() => {
@@ -172,6 +174,7 @@ const voteID = computed<string|null>({
 async function switchVote(newRawVote: string): Promise<void> {
 	const newVote = newRawVote as CompleteVoteKind
 	const currentVote = vote.value
+	hasRenewedVote.value = false
 
 	if (currentVote === "abstain" && newVote !== "abstain") {
 		await voteFetcher.create({
@@ -210,6 +213,8 @@ async function switchVote(newRawVote: string): Promise<void> {
 			vote.value = newVote
 		})
 	}
+
+	hasRenewedVote.value = true
 }
 
 const {

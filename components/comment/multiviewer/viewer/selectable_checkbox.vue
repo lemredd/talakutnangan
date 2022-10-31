@@ -1,32 +1,35 @@
 <template>
 	<div class="selectable-checkbox">
-		{{ title }}
-		<label>
-			<input
-				v-model="hasUpvoted"
-				title="upvote"
-				type="checkbox"/>
-		</label>
-		<label>
-			<input
-				v-model="hasDownvoted"
-				title="downvote"
-				type="checkbox"/>
-		</label>
+		<Suspensible :is-loaded="isLoaded">
+			{{ title }}
+			<label>
+				<input
+					v-model="hasUpvoted"
+					title="upvote"
+					type="checkbox"/>
+			</label>
+			<label>
+				<input
+					v-model="hasDownvoted"
+					title="downvote"
+					type="checkbox"/>
+			</label>
+		</Suspensible>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue"
 
-import { CompleteVoteKind } from "$/types/documents/comment"
+import type { CompleteVoteKind } from "$/types/documents/comment"
 
-type ComponentProps = {
+import Suspensible from "@/suspensible.vue"
+
+const props = defineProps<{
 	title: string,
+	isLoaded: boolean,
 	modelValue: CompleteVoteKind,
-}
-
-const props = defineProps<ComponentProps>()
+}>()
 
 const emit = defineEmits<{(e: "update:modelValue", value: CompleteVoteKind): void}>()
 
