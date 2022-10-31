@@ -110,7 +110,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { UnitError } from "$/types/server"
 import type { FullTime } from "$@/types/independent"
@@ -125,6 +125,7 @@ import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
@@ -328,31 +329,7 @@ function startConsultation() {
 	})
 }
 
-const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
-	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
-		registerListeners(newConsultation)
-
-		const finishWatcher = watch(consultation, (
-			newFinishedConsultation,
-			oldUnfinishedConsultation
-		) => {
-			if (
-				oldUnfinishedConsultation.finishedAt === null
-				&& newFinishedConsultation.finishedAt instanceof Date
-			) {
-				ConsultationTimerManager.forceFinish(newFinishedConsultation)
-				ConsultationTimerManager.unlistenConsultationTimeEvent(
-					newFinishedConsultation,
-					"finish",
-					finishConsultation
-				)
-				finishWatcher()
-			}
-		})
-
-		startWatcher()
-	}
-}, { "deep": true })
+watchConsultation(consultation, registerListeners, finishConsultation)
 
 function saveAsPDF(): void {
 	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
