@@ -46,6 +46,7 @@ import regex from "!/validators/comparison/regex"
 import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import notExists from "!/validators/manager/not_exists"
+import convertForSentence from "$/string/convert_for_sentence"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 import validateExtensivelyIf from "!/validators/logical/validate_extensively_if"
 import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
@@ -258,7 +259,7 @@ export default class extends MultipartController {
 
 		const userDetails = body.importedCSV.map(data => ({
 			"email": data.email,
-			"kind": body.kind as UserKind,
+			"kind": convertForSentence(body.kind as UserKind),
 			"name": data.name,
 			"password": data.password
 		}))
