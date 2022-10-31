@@ -14,29 +14,32 @@ import makeUnique from "$/array/make_unique"
 import Manager from "%/managers/consultation"
 import URLMaker from "$!/singletons/url_maker"
 import deserialize from "$/object/deserialize"
+import Merger from "!/middlewares/miscellaneous/merger"
 import ChatMessageManager from "%/managers/chat_message"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
+
 import present from "!/validators/manager/present"
-import doesBelongToCurrentUser from "!/validators/manager/does_belong_to_current_user"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(Manager)
+		]) as unknown as Policy
 	}
 
 	get validations(): Validation[] {
 		return [
 			new IDParameterValidator([
-				[ "id", Manager, present, {
-					"pipes": [ doesBelongToCurrentUser ]
-				} ]
+				[ "id", Manager, present ]
 			])
 		]
 	}
