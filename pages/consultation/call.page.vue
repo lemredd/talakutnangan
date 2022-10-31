@@ -1,6 +1,6 @@
 <template>
 	<div class="call">
-		hello
+		<SelfParticipant/>
 	</div>
 </template>
 
@@ -8,24 +8,16 @@
 </style>
 
 <script setup lang="ts">
-import { inject, onMounted } from "vue"
+import { inject } from "vue"
 
 import { PageContext } from "$/types/renderer"
 
-import TokenFetcher from "$@/fetchers/rtc_token"
+import SelfParticipant from "@/consultation/call/self_participant.vue"
 
-type AdditionalPageProps = "TOKEN_SERVICE_HOST_NAME"|"chatMessageActivities"|"consultation"
+type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
-const { pageProps } = pageContext
-const { consultation, chatMessageActivities, userProfile, TOKEN_SERVICE_HOST_NAME } = pageProps
 
-const tokenFetcher = new TokenFetcher()
+const callParticipants = []
 
-onMounted(() => {
-	const channelName = `consultation-ticket-${consultation.data.id}`
-	const uid = userProfile.data.id
 
-	tokenFetcher.generateToken(TOKEN_SERVICE_HOST_NAME as string, channelName, uid)
-	.then(console.log)
-})
 </script>
