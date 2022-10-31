@@ -22,17 +22,20 @@ export default class extends BaseFetcher<
 		"extraCreateData": any,
 	}
 > {
-	generateToken(
-		channelName: string,
-		uid: string,
-		expireTime: string) {
+	generateToken(channelName: string, uid: string): Promise<Response<
+		any,
+		any,
+		any,
+		any,
+		any,
+		{ "rtcToken": string }
+	>> {
 		const pathToGenerateToken = specializePath(RTC_TOKEN_LINK, {
 			channelName,
-			expireTime,
 			uid
 		})
 		const headers = new Headers({ "Access-Control-Allow-Origin": "*" })
 
-		this.getFrom(pathToGenerateToken, headers)
+		return this.getFrom(pathToGenerateToken, headers)
 	}
 }
