@@ -1,57 +1,44 @@
 import { shallowMount } from "@vue/test-utils"
 
-import type { OptionInfo } from "$@/types/component"
-
 import Component from "./selectable_checkbox.vue"
 
-describe("Component: fields/selectable_checkbox", () => {
-	it("should emit custom event", async() => {
+describe("Component: comment/multiviewer/viewer/checkbox", () => {
+	it("can update", async() => {
+		const values = [] as string[]
+		const checkboxValue = "upvote"
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"label": "Sample select",
-				"modelValue": "",
-				"options": [ { "value": "1" }, { "value": "2" }, { "value": "3" } ] as OptionInfo[]
+				"label": "View",
+				"modelValue": values
 			}
 		})
 
-		const checkbox = wrapper.findAll("input[type=checkbox]")
-		const [ unusedfirstOption, secondOption ] = checkbox
-		const secondOptionElement = secondOption.element as HTMLInputElement
-		secondOptionElement.select()
-		await secondOption.trigger("change")
+		const field = wrapper.find("input")
+		await field.setValue(true)
 
-		const updates = wrapper.emitted()
-		expect(updates).toHaveProperty("update:modelValue")
+		const updates = wrapper.emitted("update:modelValue") as string[][]
+		expect(updates).toHaveLength(1)
+		const updatedValues = updates[0] as string[]
+
+		expect(updatedValues[0].includes(checkboxValue)).toBeTruthy()
 	})
 
-	it("should not load empty options", () => {
+	it("should check upon prop update", async() => {
+		const values = [ "view", "create" ]
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"label": "Sample select",
-				"modelValue": "",
-				"options": [] as OptionInfo[]
+				"label": "View",
+				"modelValue": values
 			}
 		})
 
-		const checkbox = wrapper.find("input[type=checkbox]")
-
-		expect(checkbox.exists()).toBeFalsy()
-	})
-
-	it("should identify initial value", () => {
-		const options = [ { "value": "1" }, { "value": "2" }, { "value": "3" } ] as OptionInfo[]
-		const modelValue = options[0].value
-		const wrapper = shallowMount<any>(Component, {
-			"props": {
-				"label": "Sample select",
-				modelValue,
-				options
-			}
+		const newValues = [ "view" ]
+		await wrapper.setProps({
+			"label": "View",
+			"modelValue": newValues
 		})
 
-		const checkbox = wrapper.find("input[type=checkbox]").element as HTMLInputElement
-		const identifiedInitialValue = checkbox.value
-
-		expect(Number(identifiedInitialValue)).toEqual(Number(modelValue))
+		const field = wrapper.find("input").element as HTMLInputElement
+		expect(field.checked).toBeFalsy()
 	})
 })
