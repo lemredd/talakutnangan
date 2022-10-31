@@ -13,6 +13,7 @@ import type {
 import { RTC_TOKEN_LINK } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
+import specializePath from "$/helpers/specialize_path"
 
 export default class CommentVoteFetcher extends BaseFetcher<
 	CommentVoteResourceIdentifier<"read">,
