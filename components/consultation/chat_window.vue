@@ -8,9 +8,11 @@
 		</button>
 
 		<ConsultationHeader
+			v-model="actionTaken"
 			:consultation="consultation"
 			:chat-messages="chatMessages"
 			:remaining-time="remainingTime"
+			:received-errors="receivedErrors"
 			@finish-consultation="finishConsultation"/>
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">

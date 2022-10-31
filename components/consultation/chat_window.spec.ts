@@ -109,6 +109,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -182,6 +185,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -246,7 +252,6 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequestBody).toHaveProperty("data.type", "consultation")
 			})
 
-
 			it("should continue to started consultation", async() => {
 				const dateNow = new Date("2022-10-20 10:00:00")
 				const scheduledStartAt
@@ -279,6 +284,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -307,6 +315,7 @@ describe("Component: consultation/chat_window", () => {
 				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 				const fakeConsultation = {
 					"actionTaken": null,
+					consultant,
 					"finishedAt": null,
 					"id": "1",
 					"reason": "",
@@ -325,6 +334,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -384,6 +396,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -472,6 +487,9 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
+						},
+						"stubs": {
+							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -486,6 +504,7 @@ describe("Component: consultation/chat_window", () => {
 				await flushPromises()
 				const firstUpdatedFakeConsultation = {
 					...fakeConsultation,
+					consultant,
 					"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 				} as DeserializedConsultationResource
 				await wrapper.setProps({
@@ -566,6 +585,7 @@ describe("Component: consultation/chat_window", () => {
 							}
 						},
 						"stubs": {
+							"ConsultationHeader": false,
 							"Dropdown": false,
 							"ExtraControls": false,
 							"IconButton": false,
@@ -624,7 +644,6 @@ describe("Component: consultation/chat_window", () => {
 				)
 				expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 				expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-
 
 				expect(secondRequest).toHaveProperty("method", "PATCH")
 				expect(secondRequest).toHaveProperty(

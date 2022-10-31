@@ -107,6 +107,7 @@ const {
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 
 interface CustomEvents {
+	(eventName: "update:modelValue", newValue: string): void
 	(eventName: "finishConsultation"): void
 }
 
@@ -114,6 +115,8 @@ const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	modelValue: string,
+	receivedErrors: string[],
 	remainingTime: FullTime
 }>()
 
@@ -159,9 +162,14 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
-const actionTaken = ref("")
-
-const receivedErrors = ref<string[]>([])
+const actionTaken = computed<string>({
+	get(): string {
+		return props.modelValue
+	},
+	set(newValue: string): void {
+		emit("update:modelValue", newValue)
+	}
+})
 
 function finishConsultation(): void {
 	emit("finishConsultation")
