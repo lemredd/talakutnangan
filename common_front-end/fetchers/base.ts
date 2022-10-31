@@ -157,7 +157,9 @@ export default class Fetcher<
 	}
 
 	getJSON(path: string): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
-		return this.getFrom(path, this.makeJSONHeaders())
+		return this.getFrom(path, {
+			"headers": this.makeJSONHeaders()
+		})
 	}
 
 	postJSON(
@@ -187,11 +189,19 @@ export default class Fetcher<
 		return this.deleteThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
-	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
+	getFrom(path: string, {
+		headers = this.makeJSONHeaders(),
+		otherRequestOptions = {}
+	}: Partial<{
+		headers: Headers,
+		// eslint-disable-next-line no-undef
+		otherRequestOptions: RequestInit
+	}> = {})
 	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			headers,
-			"method": "GET"
+			"method": "GET",
+			...otherRequestOptions
 		})
 	}
 
