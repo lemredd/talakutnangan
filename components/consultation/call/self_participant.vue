@@ -1,6 +1,7 @@
 <template>
 	<div :id="selfParticipantId" class="self-participant">
 		<video ref="videoElement"></video>
+		<audio ref="audioElement"></audio>
 	</div>
 </template>
 
@@ -28,17 +29,29 @@ type DefinedProps = {
 const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
-const videoElement = ref<HTMLVideoElement|null>(null)
 
+const videoElement = ref<HTMLVideoElement|null>(null)
 function addVideoStream(stream: MediaStream) {
 	const video = videoElement.value as HTMLVideoElement
 	video.srcObject = stream
 	video.autoplay = true
 	video.addEventListener("loadedmetadata", () => video.play())
 }
-
-function removeVideoStream(video: HTMLVideoElement) {
+function removeVideoStream() {
+	const video = videoElement.value as HTMLVideoElement
 	video.srcObject = null
+}
+
+const audioElement = ref<HTMLAudioElement|null>(null)
+function addAudioStream(stream: MediaStream) {
+	const audio = audioElement.value as HTMLAudioElement
+	audio.srcObject = stream
+	audio.autoplay = true
+	audio.addEventListener("loadedmetadata", () => audio.play())
+}
+function removeAudioStream() {
+	const audio = audioElement.value as HTMLAudioElement
+	audio.srcObject = null
 }
 
 watch(props, () => {
@@ -46,5 +59,11 @@ watch(props, () => {
 		navigator.mediaDevices.getUserMedia({ "video": true })
 		.then(addVideoStream)
 	}
+	if (props.mustTransmitAudio) {
+		navigator.mediaDevices.getUserMedia({ "audio": true })
+		.then(addAudioStream)
+	}
+	if (!props.mustShowVideo) removeVideoStream()
+	if (!props.mustTransmitAudio) removeAudioStream()
 })
 </script>
