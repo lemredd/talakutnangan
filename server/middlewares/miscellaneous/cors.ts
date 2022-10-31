@@ -1,20 +1,22 @@
 import cors from "cors"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import UrlMaker from "$!/singletons/url_maker"
-import RequestFilter from "!/bases/request_filter"
+import Middleware from "!/bases/middleware"
 
 const ALLOWED_LIST = [
-	UrlMaker.makeBaseURL(),
-	process.env.AGORA_TOKEN_SERVICE as string
+	"http://localhost:16000"
+	// process.env.AGORA_TOKEN_SERVICE as string
 ]
 
-export default class CORS extends RequestFilter {
-	private static handler = cors({ "origin": ALLOWED_LIST })
+export default class CORS extends Middleware {
+	private static handler = cors({ "origin": process.env.AGORA_TOKEN_SERVICE as string })
 
 	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		// @ts-ignore
-		CORS.handler(request, response, next)
+		response.setHeader("Access-Control-Allow-Origin", ALLOWED_LIST.join(","))
+		response.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
+		response.setHeader("Referrer-Policy", "no-referrer")
+		next()
 		return Promise.resolve()
 	}
 
