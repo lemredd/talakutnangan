@@ -1,5 +1,5 @@
 <template>
-	<div class="selectable-radio">
+	<div class="selectable-checkbox">
 		{{ title }}
 		<label>
 			<input
