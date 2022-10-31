@@ -7,7 +7,13 @@ describe("Component: comment/multiviewer/viewer/checkbox", () => {
 		const values = [] as string[]
 		const checkboxValue = "upvote"
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"stubs": {
+					"Suspensible": false
+				}
+			},
 			"props": {
+				"isLoaded": true,
 				"label": "View",
 				"modelValue": values
 			}
@@ -26,7 +32,13 @@ describe("Component: comment/multiviewer/viewer/checkbox", () => {
 	it("should check upon prop update", async() => {
 		const values = [ "view", "create" ]
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"stubs": {
+					"Suspensible": false
+				}
+			},
 			"props": {
+				"isLoaded": true,
 				"label": "View",
 				"modelValue": values
 			}
