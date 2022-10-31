@@ -53,11 +53,12 @@
 			{{ comment.content }}
 		</p>
 		<div class="comment-container">
-			<div class="right">
+			<div
+				v-if="mayVote"
+				class="right">
 				<SelectableVote
 					:model-value="vote"
 					title=""
-					:options="voteOptions"
 					@update:model-value="switchVote"/>
 				<h2 class="title">
 					{{ voteCount }} votes
@@ -72,10 +73,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject } from "vue"
+import { ref, computed, inject, nextTick } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { OptionInfo } from "$@/types/component"
 import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
@@ -85,7 +85,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
-import SelectableVote from "@/fields/selectable_checkbox.vue"
+import SelectableVote from "@/comment/multiviewer/viewer/selectable_checkbox.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
@@ -107,7 +107,17 @@ const { pageProps } = pageContext
 
 const { userProfile } = pageProps
 
-const voteCount = ref<number>(0)
+const mayVote = computed<boolean>(() => {
+	const hasNotLoaded = isUndefined(props.modelValue.meta)
+
+	return !hasNotLoaded
+})
+
+const voteCount = computed<number>(() => {
+	if (isUndefined(props.modelValue.meta)) return 0
+	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
+})
+
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
 const vote = computed<CompleteVoteKind>({
@@ -120,6 +130,7 @@ const vote = computed<CompleteVoteKind>({
 	},
 	set(newValue: CompleteVoteKind): void {
 		if (!isUndefined(props.modelValue.meta)) {
+			const oldValue = props.modelValue.meta.currentUserVoteStatus
 			const commentWithVote = {
 				...props.modelValue,
 				"meta": {
@@ -128,23 +139,35 @@ const vote = computed<CompleteVoteKind>({
 			}
 
 			commentWithVote.meta.currentUserVoteStatus = newValue
-			emit("update:modelValue", commentWithVote)
+			if (oldValue === "upvote") commentWithVote.meta.upvoteCount--
+			else if (oldValue === "downvote") commentWithVote.meta.downvoteCount--
 
-			voteCount.value = Number(
-				Number(commentWithVote.meta.upvoteCount))
-			- Number(commentWithVote.meta.downvoteCount)
+			if (newValue === "upvote") commentWithVote.meta.upvoteCount++
+			else if (newValue === "downvote") commentWithVote.meta.downvoteCount++
+
+			emit("update:modelValue", commentWithVote)
 		}
 	}
 })
 
-const voteOptions = [
-	{
-		"value": "upvote"
+const voteID = computed<string|null>({
+	get(): string|null {
+		return props.modelValue.meta?.commentVoteID ?? null
 	},
-	{
-		"value": "downvote"
+	set(newValue: string|null): void {
+		if (!isUndefined(props.modelValue.meta)) {
+			const commentWithVote = {
+				...props.modelValue,
+				"meta": {
+					...props.modelValue.meta
+				}
+			}
+
+			commentWithVote.meta.commentVoteID = newValue
+			emit("update:modelValue", commentWithVote)
+		}
 	}
-] as OptionInfo[]
+})
 
 async function switchVote(newRawVote: string): Promise<void> {
 	const newVote = newRawVote as CompleteVoteKind
@@ -170,17 +193,18 @@ async function switchVote(newRawVote: string): Promise<void> {
 					}
 				}
 			}
+		}).then(({ body }) => {
+			voteID.value = body.data.id
+			return nextTick()
 		}).then(() => {
 			vote.value = newVote
 		})
 	} else if (newVote === "abstain") {
-		// TODO: use real comment vote ID
-		await voteFetcher.archive([ comment.value.meta?.commentVoteID ?? "" ]).then(() => {
+		await voteFetcher.archive([ voteID.value as string ]).then(() => {
 			vote.value = newVote
 		})
 	} else {
-		// TODO: use real comment vote ID
-		await voteFetcher.update(comment.value.meta?.commentVoteID ?? "", {
+		await voteFetcher.update(voteID.value as string, {
 			"kind": newVote
 		}).then(() => {
 			vote.value = newVote
