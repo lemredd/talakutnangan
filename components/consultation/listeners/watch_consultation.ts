@@ -11,31 +11,40 @@ export default function(
 	) => void,
 	finishConsultation: (newConsultation: DeserializedConsultationResource) => void
 ): WatchEffect {
-	const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
-		if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
-			registerListeners(newConsultation)
+	function makeFinishWatcher(): WatchEffect {
+		const finishWatcher = watch(consultation, (
+			newFinishedConsultation,
+			oldUnfinishedConsultation
+		) => {
+			if (
+				oldUnfinishedConsultation.finishedAt === null
+				&& newFinishedConsultation.finishedAt instanceof Date
+			) {
+				ConsultationTimerManager.forceFinish(newFinishedConsultation)
+				ConsultationTimerManager.unlistenConsultationTimeEvent(
+					newFinishedConsultation,
+					"finish",
+					finishConsultation
+				)
+				finishWatcher()
+			}
+		}, { "deep": true })
 
-			const finishWatcher = watch(consultation, (
-				newFinishedConsultation,
-				oldUnfinishedConsultation
-			) => {
-				if (
-					oldUnfinishedConsultation.finishedAt === null
-					&& newFinishedConsultation.finishedAt instanceof Date
-				) {
-					ConsultationTimerManager.forceFinish(newFinishedConsultation)
-					ConsultationTimerManager.unlistenConsultationTimeEvent(
-						newFinishedConsultation,
-						"finish",
-						finishConsultation
-					)
-					finishWatcher()
-				}
-			})
+		return finishWatcher
+	}
 
-			startWatcher()
-		}
-	}, { "deep": true })
+	function makeStartWatcher(): WatchEffect {
+		const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
+			if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
+				registerListeners(newConsultation)
+				makeFinishWatcher()
+				startWatcher()
+			}
+		}, { "deep": true })
 
-	return startWatcher
+		return startWatcher
+	}
+
+	if (consultation.value.startedAt === null) return makeStartWatcher()
+	return makeFinishWatcher()
 }
