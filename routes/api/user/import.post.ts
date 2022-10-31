@@ -259,7 +259,7 @@ export default class extends MultipartController {
 
 		const userDetails = body.importedCSV.map(data => ({
 			"email": data.email,
-			"kind": convertForSentence(body.kind as UserKind),
+			"kind": convertForSentence(body.kind as UserKind).toLocaleLowerCase(),
 			"name": data.name,
 			"password": data.password
 		}))
