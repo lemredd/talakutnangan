@@ -1,53 +1,53 @@
 <template>
-	<div>
-		<div class="post">
-			<div
-				class="created-post">
-				<span class="material-icons account-attachment">
-					account_circle
-				</span>
-				<input
-					type="text"
-					placeholder="What's on your mind?"
-					class="post-create"/>
-				<span class="material-icons account-attachment">
-					attachment
-				</span>
-			</div>
+	<div class="post">
+		<div
+			class="created-post">
+			<span class="material-icons account-attachment">
+				account_circle
+			</span>
+			<input
+				type="text"
+				placeholder="What's on your mind?"
+				class="post-create"/>
+			<span class="material-icons account-attachment">
+				attachment
+			</span>
 		</div>
-		<div class="comment-post">
-			<div class="post-main">
-				<div class="post-profile">
+	</div>
+	<div class="comment-post">
+		<div class="post-main">
+			<div class="post-profile">
+				<div class="flex">
 					<span class="material-icons icon">
 						account_circle
 					</span>
 					{{ userProfile.data.name }}
-					<div class="post-details">
-						<!-- Institute Name and posted hours -->
-						Posted on INS(Institute Name) 1 hour ago
-					</div>
 				</div>
-				<span class="material-icons icon">
-					more_vert
-				</span>
+				<small class="post-details">
+					<!-- Institute Name and posted hours -->
+					Posted on INS(Institute Name) 1 hour ago
+				</small>
 			</div>
-			<div class="post-messages">
-				Lorem Ipsum
-			</div>
-			<div class="post-view-comments">
-				<span class="material-icons icon">
-					comment
-				</span>
-				<!-- insert number of comments -->
-				50 Comments
-			</div>
+			<span class="material-icons icon">
+				more_vert
+			</span>
+		</div>
+		<div class="post-messages">
+			Lorem Ipsum
+		</div>
+		<div class="post-view-comments">
+			<span class="material-icons icon">
+				comment
+			</span>
+			<!-- insert number of comments -->
+			50 Comments
 		</div>
 	</div>
 
 	<!-- show comment section on user's post  -->
 	<div class="comment-preview">
-		<div class="comment-filter flex justify-end mr-25">
-			<span class="material-icons text-10">
+		<div class="comment-filter">
+			<span class="material-icons icon">
 				arrow_drop_down
 			</span>
 			<!-- Comment filter -->
@@ -60,7 +60,7 @@
 			<input
 				type="text"
 				placeholder="Write to comment"
-				class="post-message p-4 rounded-1rem bg-gray-300 text-dark-500 w-180"/>
+				class="comment-messages"/>
 			<span class="material-icons file-media">
 				<!-- add component -->
 				photo
@@ -78,7 +78,7 @@
 			<span class="material-icons icon mt-2">
 				account_circle
 			</span>
-			<div class="comment-user ">
+			<div class="comment-user">
 				<!-- user's comment -->
 				Tropa Time
 			</div>
@@ -88,7 +88,7 @@
 				<!-- add view vote  -->
 				north_east
 			</span>
-			<span class="material-icons down-vote">
+			<span class="material-icons">
 				<!-- add view vote  -->
 				south_west
 			</span>
@@ -136,38 +136,41 @@
 </template>
 
 <style scoped lang="scss">
-@media (min-width: 600px){
+
+
 .created-post{
 	@apply flex justify-between items-center;
-	@apply m-5 p-4 max-w-800 rounded-1rem shadow-inner bg-light-800;
+	@apply m-5 p-4 rounded-1rem shadow-inner bg-light-800 min-w-85;
+	width: 90%;
 
 	.post-create{
-		@apply p-4 rounded-1rem bg-gray-300 text-dark-500 min-w-100;
+		@apply p-4 rounded-1rem bg-gray-300 text-dark-500;
+		width: 90%;
+
 
 	.account-attachment{
-		@apply text-40px mr-2;
+		@apply ml-2;
 	}
-	}
-}
-}
 
+}
+}
 .comment-post{
-	@apply p-5 m-5 bg-light-800 shadow-lg rounded-1rem max-w-800;
-
+	@apply p-5 m-5 bg-light-800 shadow-lg rounded-1rem min-w-85;
+	width: 90%;
 	.post-main{
 		@apply flex justify-between;
 	}
 
 	.post-profile{
-		@apply mb-5 flex items-center text-20px;
+		@apply mb-5 flex <sm:flex-col items-center;
 	}
 
 	.post-details{
-		@apply ml-2 text-15px;
+		@apply ml-2;
 	}
 
 	.post-messages{
-		@apply mt-5 text-40px;
+		@apply mt-5;
 	}
 	.post-view-comments{
 		@apply mt-10 flex items-center;
@@ -175,40 +178,47 @@
 }
 
 .comment-preview{
-	@apply p-5 m-5 bg-light-800 shadow-lg rounded-1rem max-w-800;
+	@apply p-5 m-5 bg-light-800 shadow-lg rounded-1rem min-w-85;
+	width: 90%;
 
+	.comment-messages{
+	@apply p-4 rounded-1rem bg-gray-300 text-dark-500 min-w-55;
+		width: 100%;
+}
+	.comment-filter{
+		@apply flex justify-end;
+	}
 	.write-comment{
 		@apply flex items-center;
+		width: 90%;
 	}
 
 	.comment-user{
-	@apply flex items-center p-5 bg-gray-300 shadow-lg rounded-1rem w-500;
-	}
+	@apply flex items-center p-5 bg-gray-300 shadow-lg rounded-1rem;
+	width: 90%;
+}
 
 	.vote-view{
-		@apply flex items-center ml-2 text-20px;
+		@apply flex items-center ml-2;
 	}
 
 	.comment-replied-user{
-		@apply p-5 bg-gray-300 shadow-lg rounded-1rem w-500 flex items-center text-1;
+		@apply p-5 bg-gray-300 shadow-lg rounded-1rem w-500 flex items-center;
 	}
 }
 
 
 .icon{
-	@apply text-35px mr-2;
+	@apply mr-2;
 }
 .file-media{
-	@apply text-35px mr-2;
+	@apply mr-2;
 }
 .up-vote{
-	@apply text-20px ml-10;
-}
-.down-vote{
-	@apply text-20px;
+	@apply ml-10;
 }
 .message{
-	@apply text-20px ml-2 mr-2;
+	@apply ml-2 mr-2;
 }
 </style>
 
