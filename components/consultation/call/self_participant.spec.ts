@@ -3,19 +3,19 @@ import { shallowMount } from "@vue/test-utils"
 import Component from "./self_participant.vue"
 
 describe("Component: consultation/call/self participant", () => {
-		const mockGetUserMedia = jest.fn(
-			() => new Promise<string>(
-				resolve => {
-					resolve("mock source")
-				}
-			)
-		)
-
-		Object.defineProperty(global.navigator, "mediaDevices", {
-			"value": {
-				"getUserMedia": mockGetUserMedia
+	const mockGetUserMedia = jest.fn(
+		() => new Promise<string>(
+			resolve => {
+				resolve("mock source")
 			}
-		})
+		)
+	)
+
+	Object.defineProperty(global.navigator, "mediaDevices", {
+		"value": {
+			"getUserMedia": mockGetUserMedia
+		}
+	})
 
 	it("should identify uniquely", () => {
 		const userProfile = {
