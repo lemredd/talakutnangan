@@ -1,7 +1,7 @@
 <template>
 	<div ref="layout" class="layout">
 		<ShellNav v-if="!shouldHideNavbar"/>
-		<Content :class="{ 'marginalized-top': shouldHideNavbar }">
+		<Content :class="{ 'demarginalized-top': shouldHideNavbar }">
 			<slot></slot>
 		</Content>
 		<Footer v-if="!shouldHideFooter"/>
@@ -36,7 +36,7 @@ a {
 	@apply flex flex-col;
 }
 
-.marginalized-top {
+.demarginalized-top {
 	margin-top: 0;
 	padding: 0;
 }
