@@ -10,7 +10,7 @@ import type {
 	CommentVoteRelationships
 } from "$/types/documents/comment_vote"
 
-import { COMMENT_VOTE_LINK } from "$/constants/template_links"
+import { RTC_TOKEN_LINK } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
 
