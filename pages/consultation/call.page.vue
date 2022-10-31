@@ -1,6 +1,8 @@
 <template>
 	<div class="call">
-		<SelfParticipant/>
+		<CallControls
+			@toggle-video="toggleVideo"
+			@toggle-mic="toggleMic"/>
 	</div>
 </template>
 
@@ -12,6 +14,7 @@ import { inject } from "vue"
 
 import { PageContext } from "$/types/renderer"
 
+import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
 
 type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
