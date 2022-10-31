@@ -3,7 +3,6 @@ import { shallowMount } from "@vue/test-utils"
 import Component from "./self_participant.vue"
 
 describe("Component: consultation/call/self participant", () => {
-	it("should identify uniquely", () => {
 		const mockGetUserMedia = jest.fn(
 			() => new Promise<string>(
 				resolve => {
@@ -18,6 +17,7 @@ describe("Component: consultation/call/self participant", () => {
 			}
 		})
 
+	it("should identify uniquely", () => {
 		const userProfile = {
 			"data": {
 				"id": "1",
@@ -31,6 +31,10 @@ describe("Component: consultation/call/self participant", () => {
 						userProfile
 					} }
 				}
+			},
+			"props": {
+				"mustShowVideo": false,
+				"mustTransmitAudio": false
 			}
 		})
 
@@ -41,5 +45,31 @@ describe("Component: consultation/call/self participant", () => {
 
 	it.todo("can load audio track")
 
-	it.todo("can load video track")
+	it("can load video track", async() => {
+		const userProfile = {
+			"data": {
+				"id": "1",
+				"name": "User A"
+			}
+		}
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": { "pageProps": {
+						userProfile
+					} }
+				}
+			},
+			"props": {
+				"mustShowVideo": false,
+				"mustTransmitAudio": false
+			}
+		})
+		await wrapper.setProps({
+			"mustShowVideo": true
+		})
+
+		const videoElement = wrapper.find("video")
+		expect(videoElement.attributes("autoplay")).toBeDefined()
+	})
 })
