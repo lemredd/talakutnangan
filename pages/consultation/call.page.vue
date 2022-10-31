@@ -1,5 +1,9 @@
 <template>
 	<div class="call">
+		<SelfParticipant
+			v-model:must-show-video="mustShowVideo"
+			v-model:must-transmit-audio="mustTransmitAudio"/>
+
 		<CallControls
 			@toggle-video="toggleVideo"
 			@toggle-mic="toggleMic"/>
@@ -16,11 +20,19 @@ import { PageContext } from "$/types/renderer"
 
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+import makeSwitch from "$@/helpers/make_switch";
 
 type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
 
 const callParticipants = []
 
-
+const {
+	"toggle": toggleVideo,
+	"state": mustShowVideo
+} = makeSwitch(false)
+const {
+	"toggle": toggleMic,
+	"state": mustTransmitAudio
+} = makeSwitch(false)
 </script>
