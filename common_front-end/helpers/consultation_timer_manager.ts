@@ -16,7 +16,7 @@ import calculateMillisecondDifference from "$/time/calculate_millisecond_differe
  * It must be manually ticked to reduce the number running timers.
  */
 export default class ConsultationTimerManager extends RequestEnvironment {
-	static MAX_EXPIRATION_TIME: number = convertTimeToMilliseconds("00:05:00")
+	static MAX_EXPIRATION_TIME: number = convertTimeToMilliseconds("00:00:30")
 	private static listeners: TimerListeners = []
 
 	static listenConsultationTimeEvent<T extends ConsultationEventNames>(
@@ -104,10 +104,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 					consultationListener(consultation, listener.remainingMillisecondsBeforeInactivity)
 				})
 			} else {
-				listener.remainingMillisecondsBeforeInactivity = 0
-				listener.consultationListeners.finish.forEach(consultationListener => {
-					consultationListener(consultation)
-				})
+				ConsultationTimerManager.forceFinish(consultation)
 			}
 		})
 	}
@@ -186,8 +183,13 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 		const listener = ConsultationTimerManager.listeners[foundIndex]
 		listener.consultation = resource
 		listener.remainingMillisecondsBeforeInactivity = 0
-		listener.consultationListeners.finish.forEach(consultationListener => {
-			consultationListener(resource)
-		})
+		const finishListeners = [ ...listener.consultationListeners.finish ]
+
+		listener.consultationListeners.consumedTime = []
+		listener.consultationListeners.restartTime = []
+		listener.consultationListeners.finish = []
+		for (const sublistener of finishListeners) {
+			sublistener(resource)
+		}
 	}
 }

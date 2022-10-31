@@ -213,19 +213,6 @@ function finishConsultation(): void {
 			startedAt
 		}
 
-		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
-			"consultant"|"consultantRole"
-		> = {
-			...consultation.value,
-			...deserializedConsultationData
-		}
-
-		ConsultationTimerManager.unlistenConsultationTimeEvent(
-			expectedDeserializedConsultationResource,
-			"finish",
-			finishConsultation
-		)
-
 		fetcher.update(
 			consultationID.value,
 			newConsultationData,
