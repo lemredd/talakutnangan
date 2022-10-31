@@ -86,4 +86,4 @@ export const GENERATE_CONSULTATION_AS_PDF_LINK = `${CONSULTATION_LINK.bound}/req
  * Link for generating RTC Token
  */
 // eslint-disable-next-line max-len
-export const RTC_TOKEN_LINK = "https://agora-token-service-production-d8d5.up.railway.app/rtc/:channelName/1/uid/:uid/?expiry=300"
+export const RTC_TOKEN_LINK = ":hostName/rtc/:channelName/1/uid/:uid/?expiry=300"
