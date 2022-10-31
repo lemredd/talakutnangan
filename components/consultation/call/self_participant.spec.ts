@@ -43,7 +43,38 @@ describe("Component: consultation/call/self participant", () => {
 		.toEqual(`${userProfile.data.id}_${userProfile.data.name}`)
 	})
 
-	it.todo("can load audio track")
+	it("can load audio track", async() => {
+		const userProfile = {
+			"data": {
+				"id": "1",
+				"name": "User A"
+			}
+		}
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": { "pageProps": {
+						userProfile
+					} }
+				}
+			},
+			"props": {
+				"mustShowVideo": false,
+				"mustTransmitAudio": false
+			}
+		})
+		const audioElement = wrapper.find("video").element
+
+		await wrapper.setProps({
+			"mustTransmitAudio": true
+		})
+		expect(audioElement.srcObject).toBeDefined()
+
+		await wrapper.setProps({
+			"mustTransmitAudio": false
+		})
+		expect(audioElement.srcObject).toBeFalsy()
+	})
 
 	it("can load video track", async() => {
 		const userProfile = {
@@ -65,11 +96,16 @@ describe("Component: consultation/call/self participant", () => {
 				"mustTransmitAudio": false
 			}
 		})
+
 		await wrapper.setProps({
 			"mustShowVideo": true
 		})
+		const videoElement = wrapper.find("video").element
+		expect(videoElement.srcObject).toBeDefined()
 
-		const videoElement = wrapper.find("video")
-		expect(videoElement.attributes("autoplay")).toBeDefined()
+		await wrapper.setProps({
+			"mustShowVideo": false
+		})
+		expect(videoElement.srcObject).toBeFalsy()
 	})
 })
