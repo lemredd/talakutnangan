@@ -32,8 +32,8 @@ describe("Validator pipe: or", () => {
 		const value = Promise.resolve(makeInitialState([ "invalid" ]))
 		const constraints = {
 			"field": "hello",
+			friendlyName,
 			"or": {
-				friendlyName,
 				"rules": [
 					{
 						"pipes": [ string ]
@@ -50,6 +50,7 @@ describe("Validator pipe: or", () => {
 		try {
 			await or(value, constraints)
 		} catch (errors) {
+			console.log(errors)
 			expect(errors).toHaveProperty("0.friendlyName", friendlyName)
 		}
 	})

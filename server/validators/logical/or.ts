@@ -35,7 +35,12 @@ export default async function(
 		promises = promises.then(async localState => {
 			try {
 				const value = await validate(
-					{ [constraints.field]: subrules },
+					{
+						[constraints.field]: {
+							...subrules,
+							"friendlyName": constraints.friendlyName
+						}
+					},
 					constraints.request,
 					{ [constraints.field]: localState.value },
 					constraints.source
