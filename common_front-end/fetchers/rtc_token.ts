@@ -29,7 +29,17 @@ export default class CommentVoteFetcher extends BaseFetcher<
 		"extraCreateData": CommentVoteRelationships<"create">
 	}
 > {
-	constructor() {
-		super(COMMENT_VOTE_LINK)
+	generateToken(
+		channelName: string,
+		uid: string,
+		expireTime: string) {
+		const pathToGenerateToken = specializePath(RTC_TOKEN_LINK, {
+			channelName,
+			expireTime,
+			uid
+		})
+		const headers = new Headers({ "Access-Control-Allow-Origin": "*" })
+
+		this.getFrom(pathToGenerateToken, headers)
 	}
 }
