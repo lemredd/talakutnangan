@@ -93,7 +93,6 @@ export default class extends PageMiddleware {
 		const MAXIMUM_STUDENT_COUNT = 5
 		const MAXIMUM_REACHABLE_EMPLOYEE_COUNT = 1
 		const MAXIMUM_PARTICIPANT_COUNT = MAXIMUM_STUDENT_COUNT + MAXIMUM_REACHABLE_EMPLOYEE_COUNT
-
 		const chatMessageActivityManager = new ChatMessageActivityManager(request)
 		const chatMessageActivities = await chatMessageActivityManager.list({
 			"filter": {
@@ -107,7 +106,16 @@ export default class extends PageMiddleware {
 			"sort": [ "id" ]
 		})
 
+		const TOKEN_GENERATOR_URL = "https://agora-token-service-production-d8d5.up.railway.app"
+		const CHANNEL_NAME = `consultation-ticket-${id}`
+		const AGORA_UID = `1/uid/${user.data.id}`
+		const EXPIRE_TIME = 300
+		const EXPIRE_TIME_QUERY = `?expiry=${EXPIRE_TIME}`
+		const FULL_TOKEN_URL
+		= `${TOKEN_GENERATOR_URL}/rtc/${CHANNEL_NAME}/${AGORA_UID}/${EXPIRE_TIME_QUERY}`
+
 		return {
+			FULL_TOKEN_URL,
 			chatMessageActivities,
 			consultation
 		}
