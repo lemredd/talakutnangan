@@ -3,9 +3,8 @@ import { shallowMount } from "@vue/test-utils"
 import Component from "./selectable_checkbox.vue"
 
 describe("Component: comment/multiviewer/viewer/checkbox", () => {
-	it("can update", async() => {
-		const values = [] as string[]
-		const checkboxValue = "upvote"
+	it("can downvote", async() => {
+		const modelValue = "upvote"
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
@@ -14,23 +13,21 @@ describe("Component: comment/multiviewer/viewer/checkbox", () => {
 			},
 			"props": {
 				"isLoaded": true,
-				"label": "View",
-				"modelValue": values
+				modelValue,
+				"title": "View"
 			}
 		})
 
-		const field = wrapper.find("input")
+		const field = wrapper.find("label:nth-child(2) input")
 		await field.setValue(true)
 
 		const updates = wrapper.emitted("update:modelValue") as string[][]
 		expect(updates).toHaveLength(1)
-		const updatedValues = updates[0] as string[]
-
-		expect(updatedValues[0].includes(checkboxValue)).toBeTruthy()
+		expect(updates[0][0]).toBe("downvote")
 	})
 
-	it("should check upon prop update", async() => {
-		const values = [ "view", "create" ]
+	it("can abstain", async() => {
+		const modelValue = "downvote"
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
@@ -39,18 +36,16 @@ describe("Component: comment/multiviewer/viewer/checkbox", () => {
 			},
 			"props": {
 				"isLoaded": true,
-				"label": "View",
-				"modelValue": values
+				modelValue,
+				"title": "View"
 			}
 		})
 
-		const newValues = [ "view" ]
-		await wrapper.setProps({
-			"label": "View",
-			"modelValue": newValues
-		})
+		const field = wrapper.find("label:nth-child(2) input")
+		await field.setValue(false)
 
-		const field = wrapper.find("input").element as HTMLInputElement
-		expect(field.checked).toBeFalsy()
+		const updates = wrapper.emitted("update:modelValue") as string[][]
+		expect(updates).toHaveLength(1)
+		expect(updates[0][0]).toBe("abstain")
 	})
 })
