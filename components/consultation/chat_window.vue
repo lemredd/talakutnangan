@@ -118,6 +118,8 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
+import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
+
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -351,7 +353,9 @@ const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
 }, { "deep": true })
 
 function saveAsPDF(): void {
-	assignPath(specializePath())
+	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
+		"id": consultationID.value
+	}))
 }
 
 onMounted(() => {
