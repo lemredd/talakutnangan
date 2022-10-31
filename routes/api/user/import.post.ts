@@ -47,6 +47,8 @@ import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
 import notExists from "!/validators/manager/not_exists"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
+import validateExtensivelyIf from "!/validators/logical/validate_extensively_if"
+import existWithSameAttribute from "!/validators/manager/exist_with_same_attribute"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
 
@@ -131,14 +133,32 @@ export default class extends MultipartController {
 									"constraints": {
 										"object": {
 											"department": {
-												// TODO: Add validator to match if department may admit
 												"constraints": {
 													"manager": {
 														"className": DepartmentManager,
 														"columnName": "acronym"
+													},
+													"validateExtensivelyIf": {
+														"condition": ({ source }) => {
+															const currentKind = source.data.attributes.kind
+															return Promise.resolve(currentKind === "student")
+														},
+														"rules": {
+															"constraints": {
+																"manager": {
+																	"className": DepartmentManager,
+																	"columnName": "acronym"
+																},
+																"sameAttribute": {
+																	"columnName": "mayAdmit",
+																	"value": true
+																}
+															},
+															"pipes": [ existWithSameAttribute ]
+														}
 													}
 												},
-												"pipes": [ required, string, exists ]
+												"pipes": [ required, string, exists, validateExtensivelyIf ]
 											},
 											"email": {
 												"constraints": {
@@ -167,9 +187,18 @@ export default class extends MultipartController {
 													"regex": {
 														"friendlyDescription": studentNumberDescription,
 														"match": studentNumber
+													},
+													"validateExtensivelyIf": {
+														"condition": ({ source }) => {
+															const currentKind = source.data.attributes.kind
+															return Promise.resolve(currentKind === "student")
+														},
+														"rules": {
+															"pipes": [ required ]
+														}
 													}
 												},
-												"pipes": [ nullable, string, regex ]
+												"pipes": [ validateExtensivelyIf, nullable, string, regex ]
 											}
 										}
 									},
