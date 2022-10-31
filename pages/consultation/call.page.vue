@@ -18,9 +18,10 @@ import { inject } from "vue"
 
 import { PageContext } from "$/types/renderer"
 
+import makeSwitch from "$@/helpers/make_switch"
+
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
-import makeSwitch from "$@/helpers/make_switch";
 
 type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
