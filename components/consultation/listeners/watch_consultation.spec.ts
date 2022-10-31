@@ -18,9 +18,8 @@ describe("Listener: Consultation watcher", () => {
 			"startedAt": null,
 			"type": "consultation"
 		}) as unknown as Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>
-		const finishConsultation = jest.fn()
 		const registerListeners = jest.fn()
-		listener(consultation, registerListeners, finishConsultation)
+		listener(consultation, registerListeners)
 
 		consultation.value = {
 			...consultation.value,
@@ -46,7 +45,7 @@ describe("Listener: Consultation watcher", () => {
 				finishConsultation
 			)
 		})
-		listener(consultation, registerListeners, finishConsultation)
+		listener(consultation, registerListeners)
 
 		consultation.value = {
 			...consultation.value,
@@ -77,7 +76,7 @@ describe("Listener: Consultation watcher", () => {
 			"finish",
 			finishConsultation
 		)
-		listener(consultation, registerListeners, finishConsultation)
+		listener(consultation, registerListeners)
 
 		consultation.value = {
 			...consultation.value,

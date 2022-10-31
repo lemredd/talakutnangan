@@ -8,8 +8,7 @@ export default function(
 	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
 	registerListeners: (
 		newConsultation: DeserializedConsultationResource<"consultant"|"consultantRole">
-	) => void,
-	finishConsultation: (newConsultation: DeserializedConsultationResource) => void
+	) => void
 ): WatchEffect {
 	function makeFinishWatcher(): WatchEffect {
 		const finishWatcher = watch(consultation, (
@@ -20,12 +19,8 @@ export default function(
 				oldUnfinishedConsultation.finishedAt === null
 				&& newFinishedConsultation.finishedAt instanceof Date
 			) {
+				// In case the consultation finishes from other users
 				ConsultationTimerManager.forceFinish(newFinishedConsultation)
-				ConsultationTimerManager.unlistenConsultationTimeEvent(
-					newFinishedConsultation,
-					"finish",
-					finishConsultation
-				)
 				finishWatcher()
 			}
 		}, { "deep": true })

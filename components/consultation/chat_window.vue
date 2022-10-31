@@ -316,7 +316,7 @@ function startConsultation() {
 	})
 }
 
-watchConsultation(consultation, registerListeners, finishConsultation)
+watchConsultation(consultation, registerListeners)
 
 function saveAsPDF(): void {
 	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
