@@ -1,19 +1,26 @@
 <template>
 	<div>
+		<div class="post ">
+			<div class="flex justify-between m-5 p-4 rounded-1rem shadow-inner bg-light-800">
+				<span class="profile material-icons">
+					account_circle
+				</span>
+				<input
+					type="text"
+					placeholder="What's on your mind?"
+					class="post-message p-4 rounded-1rem bg-gray-300 text-dark-500 w-l-180"/>
+				<span class="attachment material-icons">
+					attachment
+				</span>
+			</div>
+		</div>
 		<div class="top-bar">
-			<div><img src="@assets/emptyImage.png"/></div>
-			<h4>
-				Forum App
-			</h4>
 		</div>
 		<main>
 			<br/>
 			<div class="post-container">
 				<div class="left">
 					{{ userProfile.data.name }}
-				</div>
-				<div class="middle">
-					<h1>What's on your mind?</h1>
 				</div>
 				<div class="right">
 					<button @click="showCreateForm()">
@@ -34,7 +41,19 @@
 	</div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
+
+.profile{
+	font-size: 40px;
+}
+.attachment{
+	font-size: 40px;
+}
+
+// .post_message{
+// position: fixed;
+
+// }
 </style>
 
 <script setup lang="ts">
@@ -47,6 +66,7 @@ import makeSwitch from "$@/helpers/make_switch"
 
 import MultiplePostViewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 type RequiredExtraProps = "posts"|"departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
