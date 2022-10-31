@@ -106,7 +106,10 @@ export default class extends PageMiddleware {
 			"sort": [ "id" ]
 		})
 
+		const TOKEN_SERVICE_HOST_NAME = process.env.AGORA_TOKEN_SERVICE
+
 		return {
+			TOKEN_SERVICE_HOST_NAME,
 			chatMessageActivities,
 			consultation
 		}
