@@ -106,12 +106,12 @@ export default class extends PageMiddleware {
 			"sort": [ "id" ]
 		})
 
-		const TOKEN_SERVICE_HOST_NAME = process.env.AGORA_TOKEN_SERVICE
+		const mustUsePeerServer = true
 
 		return {
-			TOKEN_SERVICE_HOST_NAME,
 			chatMessageActivities,
-			consultation
+			consultation,
+			mustUsePeerServer
 		}
 	}
 }
