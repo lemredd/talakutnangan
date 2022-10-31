@@ -35,7 +35,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 	}
 
 	const peerServerScript = pageProps.mustUsePeerServer
-		? "<script defer src=\"https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js\"></script>"
+		? "https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"
 		: ""
 
 	const title = documentProps && documentProps.title || "Vite SSR app"
@@ -48,7 +48,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 				<link rel="icon" href="${logoUrl}" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<meta name="description" content="${desc}" />
-				${peerServerScript}
+				<script defer src="${peerServerScript}"></script>
 				<title>${title}</title>
 			</head>
 			<body class="${isDark ? "dark" : ""}">
