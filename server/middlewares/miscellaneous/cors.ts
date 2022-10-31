@@ -1,9 +1,11 @@
 import cors from "cors"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import Database from "%/data_source/database"
+import UrlMaker from "$!/singletons/url_maker"
 import RequestFilter from "!/bases/request_filter"
 
+const ALLOWED_LIST = [
+	UrlMaker.makeBaseURL(),
 const MILLISECONDS_PER_SECOND = 1000
 const SECONDS_PER_MINUTE = 60
 const EXPIRATION_MINUTE_DURATION = 15
