@@ -190,7 +190,7 @@
 	}
 
 	.comment-replied-user{
-		@apply p-5 bg-gray-300 shadow-lg rounded-1rem w-500 flex items-center;
+		@apply p-5 bg-gray-300 shadow-lg rounded-1rem w-500 flex items-center text-1;
 	}
 }
 
