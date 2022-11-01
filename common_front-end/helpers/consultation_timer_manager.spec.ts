@@ -178,7 +178,6 @@ describe("Helper: Timer manager", () => {
 		)
 
 		expect(mockFinish).toHaveBeenCalled()
-		expect(mockConsumedTime).toHaveBeenCalled()
-		expect(mockConsumedTime).toHaveBeenCalledTimes(1)
+		expect(mockConsumedTime).not.toHaveBeenCalled()
 	})
 })
