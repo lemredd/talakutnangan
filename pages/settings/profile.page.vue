@@ -1,13 +1,16 @@
 <template>
 	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<div class="profile-account">
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
 				v-model:status="nameFieldStatus"
 				label="Display Name"
-				type="text"
-				@save="updateUser"/>
+				class="display-name-field"
+				type="text"/>
 		</div>
 
 		<div class="pictures">
@@ -88,10 +91,15 @@
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
+
+		<button class="submit-btn btn btn-primary" @click="updateUser">
+			submit
+		</button>
 	</div>
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
 	form {
 		max-width: 640px;
 
@@ -182,6 +190,7 @@ import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 import { DayValues } from "$/types/database"
 
@@ -194,6 +203,9 @@ const isReachableEmployee = computed(() => userProfileData.value.kind === "reach
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
 const nameFieldStatus = ref<FieldStatus>("locked")
+
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
@@ -222,7 +234,10 @@ function submitSignature(formData: FormData) {
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
-	}).then(() => assignPath("/settings/profile"))
+	}).then(() => {
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Your profile has been updated successfully")
+	})
 }
 
 const emit = defineEmits([ "toggleDarkMode" ])
