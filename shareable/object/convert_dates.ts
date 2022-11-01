@@ -7,17 +7,26 @@ import isPlainObject from "$/type_guards/is_plain_object"
  * @param value Object to convert
  */
 export default function convertDates(value: GeneralObject): GeneralObject {
-	const objectName = value
+	const rawObject = value
 	for (const property in value) {
 		if (Object.hasOwn(value, property)) {
 			if (property.endsWith("At")) {
-				if (isString(objectName[property])) {
-					objectName[property] = new Date(objectName[property])
+				if (isString(rawObject[property])) {
+					rawObject[property] = new Date(rawObject[property])
 				}
-			} else if (isPlainObject(objectName[property])) {
-				objectName[property] = convertDates(objectName[property])
+			} else if (isPlainObject(rawObject[property])) {
+				rawObject[property] = convertDates(rawObject[property])
+			} else if (Array.isArray(rawObject[property])) {
+				const castValue = rawObject[property] as any[]
+				rawObject[property] = castValue.map((rawElement: any) => {
+					if (isPlainObject(rawElement)) {
+						return convertDates(rawElement)
+					}
+
+					return rawElement
+				})
 			}
 		}
 	}
-	return objectName
+	return rawObject
 }

@@ -4,7 +4,6 @@
  * cannot be shareable since they are only used within the server.
  */
 
-import type { UserKind } from "$/types/database"
 import type Middleware from "!/bases/middleware"
 
 /**
@@ -26,7 +25,7 @@ export interface NewUserNotificationArguments {
 	userDetails: {
 		name: string,
 		email: string,
-		kind: UserKind,
+		kind: string,
 		password: string
 	}[]
 }

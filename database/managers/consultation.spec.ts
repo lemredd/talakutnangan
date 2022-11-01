@@ -300,7 +300,7 @@ describe("Database Manager: Consultation read operations", () => {
 			"meta": {
 				"weeklyTimeSums": await Promise.all(
 					weekRanges.map(async([ beginDate, endDate ]) => ({
-						"beginDateTime": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
+						"beginAt": new Date(`2015-02-${twoDigits(beginDate)}T00:00:00`),
 						"consultations": await new Factory().deserialize(
 							consultations.filter(consultation => {
 								const startedAt = consultation.startedAt as Date
@@ -316,7 +316,7 @@ describe("Database Manager: Consultation read operations", () => {
 								return consultation
 							})
 						),
-						"endDateTime": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
+						"endAt": new Date(`2015-02-${twoDigits(endDate)}T23:59:59.999`),
 						"totalMillisecondsConsumed": convertTimeToMilliseconds("00:20:00")
 					}))
 				)
@@ -383,7 +383,7 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(times).toStrictEqual({
 			"meta": {
 				"rawConsolidatedTimeSums": datesOfFebruary.map(date => ({
-					"beginDateTime": new Date(`2015-02-${twoDigits(date)}T00:00:00`),
+					"beginAt": new Date(`2015-02-${twoDigits(date)}T00:00:00`),
 					"consultationIDs": completeConsultationInfo.filter(consultation => {
 						const startedAt = consultation.startedAt as Date
 						const finishedAt = consultation.finishedAt as Date
@@ -392,7 +392,7 @@ describe("Database Manager: Consultation read operations", () => {
 
 						return isWithinRange
 					}).map(consultation => String(consultation.id)),
-					"endDateTime": new Date(`2015-02-${twoDigits(date)}T23:59:59.999`),
+					"endAt": new Date(`2015-02-${twoDigits(date)}T23:59:59.999`),
 					"totalMillisecondsConsumed": convertTimeToMilliseconds("00:15:00"),
 					"userIDs": makeUnique(
 						completeConsultationInfo.filter(consultation => {
