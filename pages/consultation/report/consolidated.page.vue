@@ -6,35 +6,80 @@
 			:initial-range-end="rangeEnd"
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
-			<p>
+			<p class="details">
 				The list contains the overall consultation summary
 				from {{ rangeBegin }} to {{ rangeEnd }}.
 			</p>
-			<ul>
-				<li>
-					<div class="milliseconds">
-						<span>Time consumed:</span>
-						{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
-					</div>
-				</li>
-				<li>
-					<div class="users">
-						<span>Number of consulters interacted:</span>
-						{{ totalNumberOfStudents }}
-					</div>
-				</li>
-				<li>
-					<div class="users">
-						<span>Number of consultations performed:</span>
-						{{ totalNumberOfConsultations }}
-					</div>
-				</li>
-			</ul>
+			<div class="main">
+				<table>
+					<tr class="row">
+						<td>
+							<div class="consolidated">
+								{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
+							</div>
+							<small> Time consumed </small>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr class="row">
+						<td>
+							<div class="consolidated">
+								{{ totalNumberOfStudents }}
+							</div>
+							<small> Number of consulters interacted </small>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr class="row">
+						<td>
+							<div class="consolidated">
+								{{ totalNumberOfConsultations }}
+							</div>
+							<small> Number of consultations performed </small>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr class="row">
+						<td>
+							<div class="consolidated">
+							</div>
+							<small> add name here </small>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</Suspensible>
 	</article>
 </template>
 
-<style>
+<style lang="scss">
+	@media print {
+		.parent-dropdown-container.links.mobile, .page-shell-footer {
+			display: none;
+		}
+	}
+</style>
+
+<style scoped lang="scss">
+
+.main{
+	@apply flex justify-around <sm: flex-col place-content-around;
+}
+.details{
+	@apply mb-5;
+}
+
+table, td{
+	@apply border-2px border-solid p-8px text-center <sm: justify-center w-150 m-10px;
+
+}
+
+.consolidated{
+	@apply text-center h-10 <sm: h-5;
+}
 
 </style>
 
