@@ -6,6 +6,7 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<div class="profile-account">
+		<h1 class="text-xl mb-8">General Profile Info</h1>
 		<div>
 			<TextualField
 				v-model="userProfileData.name"
@@ -82,6 +83,9 @@
 					name=""
 					@click="toggleDarkMode"/>
 			</label>
+			<button class="submit-btn btn btn-primary mt-4 mb-8" @click="updateUser">
+				submit
+			</button>
 		</div>
 		<div v-if="isReachableEmployee" class="consultation-schedules">
 			<h3 class="display-name">
@@ -93,10 +97,6 @@
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
-
-		<button class="submit-btn btn btn-primary" @click="updateUser">
-			submit
-		</button>
 	</div>
 </template>
 
