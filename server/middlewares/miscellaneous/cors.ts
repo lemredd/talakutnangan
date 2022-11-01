@@ -1,4 +1,5 @@
-import cors from "cors"
+import createSessionMiddleware, { Store } from "express-session"
+import makeSequelizeStore from "connect-session-sequelize"
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
 import Database from "%/data_source/database"
