@@ -1,17 +1,38 @@
-import { io, Socket as BaseSocket } from "socket.io-client"
+import type { MediaConnection, Peer } from "peerjs"
 
-import { SocketListeners } from "$@/types/dependent"
+import { PeerEventListeners } from "$@/types/dependent"
+
+import { PEER_SERVER_COMPLETE_PATH } from "$/constants/template_links"
 
 import Stub from "$/singletons/stub"
 import RequestEnvironment from "$/singletons/request_environment"
 
 export default class Socket extends RequestEnvironment {
-	private static rawSockets: Map<string, BaseSocket> = new Map()
-	private static testSockets: Map<string, SocketListeners> = new Map()
+	private static rawPeer: Peer|null = null
+	private static id: string|null = null
+	private static selfStream: MediaStream
 
-	static initialize(): void {
+	static initialize(
+		connectionListener: (id: string) => void,
+		stream: MediaStream,
+		answerListener: (otherStream: MediaStream) => void
+	): void {
 		Stub.runConditionally(
-			() => { this.rawSockets.set("/", io()) },
+			() => {
+				this.rawPeer = new Peer({
+					"path": PEER_SERVER_COMPLETE_PATH
+				})
+				this.selfStream = stream
+				this.peer.on("open", id => {
+					this.id = id
+					connectionListener(id)
+				})
+
+				this.peer.on("call", (mediaConnection: MediaConnection) => {
+					mediaConnection.answer(this.selfStream)
+					answerListener(mediaConnection.remoteStream)
+				})
+			},
 			() => {
 				this.testSockets.set("/", {})
 				return [ {} as unknown as void, {
@@ -22,15 +43,14 @@ export default class Socket extends RequestEnvironment {
 		)
 	}
 
-	static addEventListeners(namespace: string, listeners: SocketListeners): void {
+	static call(targetPeerID: string) {
+		this.peer.call(targetPeerID, this.selfStream)
+	}
+
+	static addEventListeners(listeners: PeerEventListeners): void {
 		Stub.runConditionally(
 			() => {
-				const namespacedSocket = this.getSocket(namespace)
-
-				for (const eventName of Object.getOwnPropertyNames(listeners)) {
-					const listener = listeners[eventName]
-					namespacedSocket.on(eventName, listener)
-				}
+				this.listeners.push(listeners)
 			},
 			() => {
 				const namespacedSocket = this.getTestSocket(namespace)
@@ -63,19 +83,14 @@ export default class Socket extends RequestEnvironment {
 		)
 	}
 
-	private static getSocket(namespace: string): BaseSocket {
-		if (this.rawSockets.size > 0) {
-			const rawSocket = this.rawSockets.get(namespace)
+	public static get peerID(): string {
+		if (this.id === null) throw new Error("Peer Server is not ready yet.")
+		return this.id
+	}
 
-			if (rawSocket) return rawSocket
-
-			const newSocket = io(namespace)
-			this.rawSockets.set(namespace, newSocket)
-
-			return newSocket
-		}
-
-		throw new Error("Developer forgot to initialize the socket")
+	private static get peer(): Peer {
+		if (this.rawPeer === null) throw new Error("Developer forgot to initialize the socket")
+		return this.rawPeer
 	}
 
 	private static getTestSocket(namespace: string): SocketListeners {
