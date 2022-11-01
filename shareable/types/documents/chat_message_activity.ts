@@ -24,13 +24,17 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
-export interface ChatMessageActivityResourceIdentifier<T extends Completeness = "read">
-extends ResourceIdentifier<T> {
+export type ChatMessageActivityResourceIdentifier<T extends Completeness = "read">
+= ResourceIdentifier<T> & {
 	type: "chat_message_activity"
-}
+} & Partial<MetaDocument<{
+	"peerID": string
+}>>
 
 export interface ChatMessageActivityAttributes<T extends Format = "serialized">
 extends Attributes<T> {
