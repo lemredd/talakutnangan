@@ -20,7 +20,7 @@
 			max-width: 900px;
 		}
 
-		&.login-content {
+		&.demarginalized-top {
 			.wrapper {
 				max-width: initial;
 			}
