@@ -9,12 +9,49 @@ const ALLOWED_LIST = [
 	process.env.AGORA_TOKEN_SERVICE as string
 ]
 
-export default class CORS extends RequestFilter {
-	private static handler = cors({ "origin": ALLOWED_LIST })
+export default class Session extends RequestFilter {
+	private static session = createSessionMiddleware({
+		"cookie": {
+			"maxAge": Number(process.env.SESSION_DURATION || String(EXPIRATION_MILLISECOND_DURATION)),
+			"sameSite": "strict"
+		},
+		"name": process.env.SESSION_NAME || "talakutnangan_session",
+		"resave": false,
+		"saveUninitialized": false,
+		"secret": process.env.SESSION_SECRET || "12345678"
+	})
+
+	constructor() {
+		super()
+
+		/*
+		 * Prevent changing the memory store for tests
+		 * Please see: https://www.npmjs.com/package/connect-session-sequelize
+		 */
+		if (!this.isOnTest) {
+			Session.session = createSessionMiddleware({
+				"cookie": {
+					"maxAge": Number(
+						process.env.SESSION_DURATION
+						|| String(EXPIRATION_MILLISECOND_DURATION)
+					),
+					"sameSite": "strict"
+				},
+				"name": process.env.SESSION_NAME || "talakutnangan_session",
+				"resave": false,
+				"saveUninitialized": false,
+				"secret": process.env.SESSION_SECRET || "12345678",
+				"store": new (makeSequelizeStore(Store))({
+					"db": Database.dataSource,
+					"tableName": "Sessions"
+				})
+			})
+		}
+	}
 
 	intermediate(request: Request, response: Response, next: NextFunction): Promise<void> {
 		// @ts-ignore
-		CORS.handler(request, response, next)
+		Session.session(request, response, next)
 		return Promise.resolve()
 	}
 
