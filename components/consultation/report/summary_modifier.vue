@@ -18,6 +18,15 @@
 		</button>
 	</form>
 </template>
+
+<style scoped lang="scss">
+	@media print {
+		form {
+			@apply hidden;
+		}
+	}
+</style>
+
 <script setup lang="ts">
 import { ref } from "vue"
 
