@@ -196,6 +196,7 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 import { DayValues } from "$/types/database"
+import { UnitError } from "$/types/server"
 
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -217,12 +218,40 @@ function submitProfilePicture(formData: FormData) {
 		profilePictureFetcher.updateFile(
 			userProfileData.value.profilePicture.data.id,
 			formData
-		).then(() => assignPath("/settings/profile"))
+		)
+		.then(() => assignPath("/settings/profile"))
+		.catch(({ body }) => {
+			if (successMessages.value.length) successMessages.value = []
+			if (body) {
+				const { errors } = body
+				receivedErrors.value = errors.map((error: UnitError) => {
+					const readableDetail = error.detail
+
+					return readableDetail
+				})
+			} else {
+				receivedErrors.value = [ "an error occured" ]
+			}
+		})
 	} else {
 		profilePictureFetcher.createFile(
 			userProfileData.value.id,
 			formData
-		).then(() => assignPath("/settings/profile"))
+		)
+		.then(() => assignPath("/settings/profile"))
+		.catch(({ body }) => {
+			if (successMessages.value.length) successMessages.value = []
+			if (body) {
+				const { errors } = body
+				receivedErrors.value = errors.map((error: UnitError) => {
+					const readableDetail = error.detail
+
+					return readableDetail
+				})
+			} else {
+				receivedErrors.value = [ "an error occured" ]
+			}
+		})
 	}
 }
 function submitSignature(formData: FormData) {
@@ -231,15 +260,43 @@ function submitSignature(formData: FormData) {
 	signatureFetcher.renew(
 		userProfileData.value.id,
 		formData
-	).then(() => assignPath("/settings/profile"))
+	)
+	.then(() => assignPath("/settings/profile"))
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
-	}).then(() => {
+	})
+	.then(() => {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Your profile has been updated successfully")
+	})
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 
