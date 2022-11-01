@@ -48,6 +48,18 @@ export default class Socket extends RequestEnvironment {
 		)
 	}
 
+	static send(namespace: string, eventName: string, ...argumentsToPass: any[]): void {
+		Stub.runConditionally(
+			() => {
+				const namespacedSocket = this.getSocket(namespace)
+				namespacedSocket.send(eventName, ...argumentsToPass)
+			},
+			() => {
+
+			}
+		)
+	}
+
 	static emitMockEvent(namespace: string, eventName: string, ...argumentsToPass: any[]): void {
 		Stub.runConditionally(
 			() => {
