@@ -101,6 +101,6 @@ export const READ_TIME_SUM_PER_WEEK
 export const READ_TIME_SUM_FOR_CONSOLIDATION
 = `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation?:query`
 
-export const PEER_PATH_PREFIX = "/p2p"
+export const PEER_SERVER_PATH_PREFIX = "/p2p"
 export const PEER_SERVER_SUBPATH = "/server"
-export const PEER_SERVER_COMPLETE_PATH = PEER_PATH_PREFIX + PEER_SERVER_SUBPATH
+export const PEER_SERVER_COMPLETE_PATH = PEER_SERVER_PATH_PREFIX + PEER_SERVER_SUBPATH
