@@ -109,9 +109,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -125,9 +122,6 @@ describe("Component: consultation/chat_window", () => {
 				await userController.trigger("start-consultation")
 				await flushPromises()
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(1)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -185,9 +179,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -211,9 +202,6 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.forceFinish(updatedFakeConsultation)
 				await flushPromises()
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("0m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(2)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -284,9 +272,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -297,9 +282,10 @@ describe("Component: consultation/chat_window", () => {
 				})
 				await nextTick()
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
+				// TODO: Move as a test for consultation header
+				// const consultationHeader = wrapper.find(".selected-consultation-header")
+				// expect(consultationHeader.exists()).toBeTruthy()
+				// expect(consultationHeader.html()).toContain("5m")
 				ConsultationTimerManager.clearAllListeners()
 			})
 
@@ -334,9 +320,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -354,11 +337,11 @@ describe("Component: consultation/chat_window", () => {
 				})
 				ConsultationTimerManager.nextInterval()
 				await nextTick()
-
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("4m")
-				expect(consultationHeader.html()).toContain("59s")
+				// TODO: Move as a test for consultation header
+				// const consultationHeader = wrapper.find(".selected-consultation-header")
+				// expect(consultationHeader.exists()).toBeTruthy()
+				// expect(consultationHeader.html()).toContain("4m")
+				// expect(consultationHeader.html()).toContain("59s")
 				ConsultationTimerManager.clearAllListeners()
 			})
 
@@ -396,9 +379,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
@@ -426,9 +406,6 @@ describe("Component: consultation/chat_window", () => {
 				expect(castedWrapper.remainingTime.minutes).toEqual(4)
 				expect(castedWrapper.remainingTime.seconds).toEqual(59)
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(1)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -454,7 +431,7 @@ describe("Component: consultation/chat_window", () => {
 		})
 
 		describe("after", () => {
-			it.only("should automatically terminate the consultation", async() => {
+			it("should automatically terminate the consultation", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -547,7 +524,7 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.clearAllListeners()
 			})
 
-			it.only("can be terminated by consultant with action taken", async() => {
+			it("can be terminated by consultant with action taken", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {

@@ -85,12 +85,16 @@ import { ref, computed, inject, onMounted, Ref } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { ResourceCount } from "$/types/documents/base"
 import type {
 	DeserializedChatMessageListDocument,
 	DeserializedChatMessageResource
 } from "$/types/documents/chat_message"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import makeSwitch from "$@/helpers/make_switch"
+import makeUniqueBy from "$/helpers/make_unique_by"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 
 import Overlay from "@/helpers/overlay.vue"
@@ -98,9 +102,6 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
-import makeUniqueBy from "$/helpers/make_unique_by"
-import { ResourceCount } from "$/types/documents/base"
 
 const {
 	"pageProps": {
