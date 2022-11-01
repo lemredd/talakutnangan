@@ -55,17 +55,6 @@
 	</section>
 </template>
 
-<style lang="scss">
-
-.additional-controls{
-	.dropdown-container{
-		inset: unset;
-		right: -80px;
-	}
-}
-
-</style>
-
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	@import "@styles/mixins.scss";

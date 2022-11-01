@@ -169,9 +169,7 @@ async function loadRemainingFiles(
 		return Promise.resolve()
 	})
 }
-onMounted(async() => {
-	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
-})
+
 const generalFileChatMessages = computed(() => {
 	const filteredDependentFileChatMessages = dependentFileChatMessages.value.filter(
 		chatMessage => chatMessage.data.subkind === "file"
@@ -192,6 +190,7 @@ const generalFileChatMessages = computed(() => {
 
 	return { "data": uniqueList }
 })
+
 const imageFileChatMessages = computed(() => {
 	const filteredDependentFileChatMessages = dependentFileChatMessages.value.filter(
 		chatMessage => chatMessage.data.subkind === "image"
@@ -251,4 +250,8 @@ const actionTaken = computed<string>({
 function finishConsultation(): void {
 	emit("finishConsultation")
 }
+
+onMounted(async() => {
+	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
+})
 </script>

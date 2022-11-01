@@ -550,7 +550,7 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.clearAllListeners()
 			})
 
-			it("can be terminated by consultant with action taken", async() => {
+			it.only("can be terminated by consultant with action taken", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -583,13 +583,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false,
-							"Dropdown": false,
-							"ExtraControls": false,
-							"IconButton": false,
-							"Overlay": false
 						}
 					},
 					"props": {
@@ -612,24 +605,18 @@ describe("Component: consultation/chat_window", () => {
 				})
 				await flushPromises()
 
-				const additionalControls = wrapper.find(".additional-controls")
-				const additionalControlsBtn = wrapper.find(".icon-btn")
-				await additionalControlsBtn.trigger("click")
-				const viewOverlayBtn = additionalControls.find(".show-action-taken-overlay-btn")
-				await viewOverlayBtn.trigger("click")
-				const actionTakenOverlay = wrapper.find(".action-taken")
-				const actionTakenField = actionTakenOverlay.findComponent(".action-taken-field")
-				await actionTakenField.setValue("action taken")
+				const actionTakenFieldValue = "action taken"
+				const header = wrapper.findComponent({ "name": "ConsultationHeader" })
+				await header.vm.$emit("update:modelValue", "action taken")
 				const secondUpdatedFakeConsultation = {
 					...firstUpdatedFakeConsultation,
-					"actionTaken": actionTakenField.attributes("modelvalue")
+					"actionTaken": actionTakenFieldValue
 				}
 				await wrapper.setProps({
 					"chatMessages": fakeChatMessage,
 					"consultation": secondUpdatedFakeConsultation
 				})
-				const finishBtn = actionTakenOverlay.find(".finish-btn")
-				await finishBtn.trigger("click")
+				await header.vm.$emit("finishConsultation")
 				await flushPromises()
 
 				const events = wrapper.emitted("updatedConsultationAttributes")
@@ -654,7 +641,7 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 				const body = await secondRequest.json()
 				const { actionTaken } = body.data.attributes
-				expect(actionTaken).toEqual(actionTakenField.attributes("modelvalue"))
+				expect(actionTaken).toEqual(actionTakenFieldValue)
 				ConsultationTimerManager.clearAllListeners()
 			})
 		})
