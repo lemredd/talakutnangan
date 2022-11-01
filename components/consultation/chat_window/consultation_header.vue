@@ -80,7 +80,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject, onMounted } from "vue"
+import { ref, computed, inject, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
@@ -100,6 +100,7 @@ import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import makeUniqueBy from "$/helpers/make_unique_by"
+import { ResourceCount } from "$/types/documents/base"
 
 const {
 	"pageProps": {
@@ -138,8 +139,11 @@ const dependentFileChatMessages = computed(
 	)
 )
 const independentFileChatMessages = ref<DeserializedChatMessageResource[]>([])
-onMounted(() => {
-	chatMessageFetcher.list({
+async function loadRemainingFiles(
+	files: Ref<DeserializedChatMessageResource[]>,
+	fetcher: ChatMessageFetcher
+) {
+	await chatMessageFetcher.list({
 		"filter": {
 			"chatMessageKinds": [ "file" ],
 			"consultationIDs": [ props.consultation.id ],
@@ -148,13 +152,25 @@ onMounted(() => {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": independentFileChatMessages.value.length
+			"offset": files.value.length
 		},
 		"sort": [ "-createdAt" ]
 	})
 	.then(({ body }) => {
-		independentFileChatMessages.value = [ ...independentFileChatMessages.value, ...body.data ]
+		const { data, meta } = body
+		if (data.length === 0) return Promise.resolve()
+
+		files.value = [ ...files.value, ...data ]
+		const castedMeta = meta as ResourceCount
+		if (independentFileChatMessages.value.length < castedMeta.count) {
+			return loadRemainingFiles(files, fetcher)
+		}
+
+		return Promise.resolve()
 	})
+}
+onMounted(async() => {
+	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
 })
 const generalFileChatMessages = computed(() => {
 	const filteredDependentFileChatMessages = dependentFileChatMessages.value.filter(
