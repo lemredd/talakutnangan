@@ -22,3 +22,8 @@ export interface FlagSelectorInfo {
 	"uncheckExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void,
 	"checkExternal": (dependencies: ExternalPermissionDependencyInfo<any, any>[]) => void
 }
+
+export interface SummaryRange {
+	rangeBegin: Date,
+	rangeEnd: Date
+}

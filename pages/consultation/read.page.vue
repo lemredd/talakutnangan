@@ -13,7 +13,8 @@
 				:chat-messages="chatMessages"
 				:is-consultation-list-shown="isConsultationListShown"
 				@updated-consultation-attributes="updateConsultationAttributes"
-				@toggle-consultation-list="toggleConsultationList"/>
+				@toggle-consultation-list="toggleConsultationList"
+				@load-previous-messages="loadPreviousChatMessages"/>
 		</template>
 	</ConsultationShell>
 </template>

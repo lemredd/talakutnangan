@@ -709,5 +709,71 @@ describe("Component: consultation/chat_window", () => {
 			expect(sortedMessagesByTime[0]).toEqual(expectedFirstMessage)
 			expect(sortedMessagesByTime[sortedMessagesByTime.length - 1]).toEqual(expectedLastMessage)
 		})
+		it("should emit to load previous messages", async() => {
+			const scheduledStartAt = new Date()
+			const consultant = {
+				"data": {
+					"id": "10",
+					"kind": "reachable_employee",
+					"type": "user"
+				}
+			}
+			fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+			const id = "1"
+			const fakeConsultation = {
+				"actionTaken": null,
+				"consultant": {
+					"data": {
+						"id": "1",
+						"type": "user"
+					}
+				},
+				"finishedAt": null,
+				id,
+				"reason": "",
+				scheduledStartAt,
+				"startedAt": null,
+				"type": "consultation"
+			} as DeserializedConsultationResource
+			const fakeChatMessage = {
+				"data": [
+					{
+						"createdAt": new Date("2022-10-4 17:35"),
+						"data": {
+							"value": "sample text"
+						},
+						"id": "0"
+					},
+					{
+						"createdAt": new Date("2022-10-4 05:35"),
+						"data": {
+							"value": "sample text"
+						},
+						"id": "0"
+					}
+				]
+			}
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": consultant
+							}
+						}
+					}
+				},
+				"props": {
+					"chatMessages": fakeChatMessage,
+					"consultation": fakeConsultation,
+					"isConsultationListShown": false
+				}
+			})
+			const loadPreviousMessagesBtn = wrapper.find(".load-previous-messages-btn")
+			await loadPreviousMessagesBtn.trigger("click")
+
+			const emissions = wrapper.emitted()
+			expect(emissions).toHaveProperty("loadPreviousMessages")
+		})
 	})
 })

@@ -16,6 +16,7 @@
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
 				class="selectable-roles"
+				:disabled="mayNotSelect"
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
@@ -24,6 +25,7 @@
 			<SelectableOptionsField
 				v-model="userDepartment"
 				class="selectable-department"
+				:disabled="mayNotSelect"
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
@@ -33,14 +35,14 @@
 				Submit
 			</button>
 			<button
-				v-if="isDeleted"
+				v-if="mayRestoreUser"
 				type="button"
 				class="btn btn-primary"
 				@click="restoreUser">
 				Restore
 			</button>
 			<button
-				v-else
+				v-if="mayArchiveUser"
 				type="button"
 				class="btn btn-primary"
 				@click="archiveUser">
@@ -75,9 +77,17 @@ import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/user_combinations"
+
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
@@ -85,8 +95,8 @@ type RequiredExtraProps = "user" | "roles" | "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const user = ref<DeserializedUserDocument<"roles">>(
-	pageProps.user as DeserializedUserDocument<"roles">
+const user = ref<DeserializedUserDocument<"roles"|"department">>(
+	pageProps.user as DeserializedUserDocument<"roles"|"department">
 )
 
 const roles = ref<DeserializedRoleResource[]>(
@@ -105,18 +115,52 @@ const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
-const nameFieldStatus = ref<FieldStatus>("locked")
-
 const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
-const userDepartment = ref(user.value.data.department?.data.id as string)
+const userDepartment = ref(user.value.data.department.data.id as string)
 const selectableDepartments = computed(() => departments.value.map(
 	department => ({
 		"label": department.fullName,
 		"value": department.id
 	})
 ))
+
+const { userProfile } = pageProps
+const isOnSameDepartment = computed<boolean>(() => {
+	const ownDepartment = userProfile.data.department.data.id
+	return ownDepartment === user.value.data.department.data.id
+})
+const mayUpdateUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT
+	]) && isOnSameDepartment.value
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
+
+const mayArchiveOrRestoreUser = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
+	]) && isOnSameDepartment.value
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
+	])
+
+	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
+})
+const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
+const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
+
+const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
+const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
 const fetcher = new Fetcher()
 
@@ -134,7 +178,9 @@ async function updateUser() {
 	await new Promise(resolve => {
 		setTimeout(resolve, 1000)
 	})
-	await fetcher.updateDepartment(user.value.data.id, userDepartment.value)
+	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
+		user.value.data.department.data.id = userDepartment.value
+	})
 	await new Promise(resolve => {
 		setTimeout(resolve, 1000)
 	})

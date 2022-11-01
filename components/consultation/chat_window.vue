@@ -32,6 +32,8 @@
 				</button>
 
 				<FileOverlay
+					:general-files="generalFileChatMessages"
+					:image-files="imageFileChatMessages"
 					:is-file-repo-overlay-shown="isFileRepoOverlayShown"
 					:must-show-preview="mustShowPreview"
 					@hide-file-repo-overlay="hideFileRepoOverlay"
@@ -94,6 +96,11 @@
 				</ul>
 			</div>
 
+			<button
+				class="load-previous-messages-btn btn btn-secondary"
+				@click="loadPreviousMessages">
+				Load Previous messages
+			</button>
 			<div
 				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
@@ -191,7 +198,7 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 
 import Overlay from "@/helpers/overlay.vue"
 
-import ReceivedErrors from "@/helpers/received_errors.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
@@ -203,6 +210,7 @@ const fetcher = new ConsultationFetcher()
 interface CustomEvents {
 	(eventName: "updatedConsultationAttributes", data: ConsultationAttributes<"deserialized">): void
 	(eventName: "toggleConsultationList"): void
+	(eventName: "loadPreviousMessages"): void
 }
 
 const emit = defineEmits<CustomEvents>()
@@ -222,6 +230,7 @@ const {
 	}
 } = inject("pageContext") as PageContext<"deserialized">
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
 	return [ ...rawData ].sort((left, right) => {
@@ -231,6 +240,19 @@ const sortedMessagesByTime = computed(() => {
 		return Math.sign(leftSeconds - rightSeconds)
 	})
 })
+function loadPreviousMessages() {
+	emit("loadPreviousMessages")
+}
+const generalFileChatMessages = {
+	"data": props.chatMessages.data.filter(
+		chatMessage => chatMessage.data.subkind === "file"
+	)
+}
+const imageFileChatMessages = {
+	"data": props.chatMessages.data.filter(
+		chatMessage => chatMessage.data.subkind === "image"
+	)
+}
 
 const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {

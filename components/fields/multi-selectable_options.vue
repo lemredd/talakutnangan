@@ -4,6 +4,7 @@
 			<h3>{{ label }}</h3>
 			<SelectableOptionsField
 				v-model="currentOption"
+				:disabled="disabled"
 				:options="remainingOptions"
 				:placeholder="placeholder">
 				<template #after-dropdown>
@@ -73,6 +74,7 @@ import subtract from "$/array/subtract"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
+	disabled?: boolean
 	options: readonly OptionInfo[]
 	modelValue: string[]
 	label: string
