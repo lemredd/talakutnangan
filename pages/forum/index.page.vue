@@ -137,7 +137,6 @@
 
 <style scoped lang="scss">
 
-
 .created-post{
 	@apply flex justify-between items-center;
 	@apply m-5 p-4 rounded-1rem shadow-inner bg-light-800 min-w-85;
