@@ -34,8 +34,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 		isDark = userProfile.prefersDark
 	}
 
-	const title = documentProps && documentProps.title || "Vite SSR app"
-	const desc = documentProps && documentProps.description || "App using Vite + vite-plugin-ssr"
+	const title = documentProps && documentProps.title || "Talakutnangan"
+	const desc = documentProps && documentProps.description || "A consultation platform"
 
 	const documentHtml = escapeInject`<!DOCTYPE html>
 		<html lang="en">
