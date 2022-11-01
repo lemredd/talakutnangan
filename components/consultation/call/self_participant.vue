@@ -13,7 +13,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, watch } from "vue"
+import { inject, onMounted, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
@@ -28,6 +28,11 @@ type DefinedProps = {
 }
 const props = defineProps<DefinedProps>()
 
+type CustomEvents = {
+	(event: "streamVideo", audio: MediaStream): void
+}
+const emit = defineEmits<CustomEvents>()
+
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 
 const videoElement = ref<HTMLVideoElement|null>(null)
@@ -36,6 +41,7 @@ function addVideoStream(stream: MediaStream) {
 	video.srcObject = stream
 	video.autoplay = true
 	video.addEventListener("loadedmetadata", () => video.play())
+	emit("streamVideo", stream)
 }
 function removeVideoStream() {
 	const video = videoElement.value as HTMLVideoElement
@@ -54,16 +60,18 @@ function removeAudioStream() {
 	audio.srcObject = null
 }
 
-watch(props, () => {
-	if (props.mustShowVideo) {
-		navigator.mediaDevices.getUserMedia({ "video": true })
-		.then(addVideoStream)
-	}
-	if (props.mustTransmitAudio) {
-		navigator.mediaDevices.getUserMedia({ "audio": true })
-		.then(addAudioStream)
-	}
-	if (!props.mustShowVideo) removeVideoStream()
-	if (!props.mustTransmitAudio) removeAudioStream()
+onMounted(() => {
+	watch(props, () => {
+		if (props.mustShowVideo) {
+			navigator.mediaDevices.getUserMedia({ "video": true })
+			.then(addVideoStream)
+		}
+		if (props.mustTransmitAudio) {
+			navigator.mediaDevices.getUserMedia({ "audio": true })
+			.then(addAudioStream)
+		}
+		if (!props.mustShowVideo) removeVideoStream()
+		if (!props.mustTransmitAudio) removeAudioStream()
+	})
 })
 </script>
