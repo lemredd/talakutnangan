@@ -7,7 +7,6 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 
-import Stub from "$/singletons/stub"
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
 import DepartmentFactory from "~/factories/department"
@@ -319,11 +318,6 @@ describe("Page: settings/profile", () => {
 				"url",
 				`/api/user/${user.data.id}/relationships/profile_picture`
 			)
-
-			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can create signature", async() => {
@@ -386,11 +380,6 @@ describe("Page: settings/profile", () => {
 				"url",
 				`/api/user/${user.data.id}/relationships/signature`
 			)
-
-			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
 		})
 
 		it("can edit dark mode preference", async() => {
@@ -439,7 +428,6 @@ describe("Page: settings/profile", () => {
 			await darkModeBtn.trigger("click")
 
 			expect(wrapper.emitted()).toHaveProperty("toggleDarkMode")
-
 		})
 	})
 })
