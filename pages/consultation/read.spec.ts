@@ -10,11 +10,14 @@ import type {
 } from "$/types/documents/consultation"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { CONSULTATION_LINK, CHAT_MESSAGE_LINK } from "$/constants/template_links"
 
 import Stub from "$/singletons/stub"
 import "~/setups/consultation_timer.setup"
 import UserFactory from "~/factories/user"
 import Factory from "~/factories/consultation"
+import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import ChatMessageFactory from "~/factories/chat_message"
 import ChatMessageActivity from "%/models/chat_message_activity"
@@ -73,6 +76,15 @@ describe("UI Page: Read consultation resource by ID", () => {
 		)
 		const chatMessageResources = await chatMessageFactory.deserialize(chatMessageModels)
 
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
@@ -182,6 +194,15 @@ describe("UI Page: Read consultation resource by ID", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const wrapper = mount(Page, {
 			"global": {
@@ -225,10 +246,29 @@ describe("UI Page: Read consultation resource by ID", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
-		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
-			stringifyQuery({
+		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
+			"query": stringifyQuery({
+				"filter": {
+					"chatMessageKinds": [ "file" ],
+					"consultationIDs": [ model.id ],
+					"existence": "exists",
+					"previewMessageOnly": false
+				},
+				"page": {
+					"limit": DEFAULT_LIST_LIMIT,
+					"offset": 0
+				},
+				"sort": "-createdAt"
+			})
+		}))
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.query, {
+			"query": stringifyQuery({
 				"filter": {
 					"consultationScheduleRange": "*",
 					"existence": "exists",
@@ -240,12 +280,13 @@ describe("UI Page: Read consultation resource by ID", () => {
 				},
 				"sort": "-updatedAt"
 			})
-		}`)
-		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(secondRequest).toHaveProperty("method", "GET")
-		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
-			stringifyQuery({
+		}))
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		expect(thirdRequest).toHaveProperty("method", "GET")
+		expect(thirdRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
+			"query": stringifyQuery({
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
@@ -253,14 +294,14 @@ describe("UI Page: Read consultation resource by ID", () => {
 					"previewMessageOnly": false
 				},
 				"page": {
-					"limit": 10,
+					"limit": DEFAULT_LIST_LIMIT,
 					"offset": INITIAL_MESSAGE_COUNT
 				},
-				"sort": [ "-createdAt" ]
-			} as ChatMessageQueryParameters)
-		}`)
-		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+				"sort": "-createdAt"
+			})
+		}))
+		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })
 
@@ -325,7 +366,15 @@ describe("UI Page: Communicate with consultation resource", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
-
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
@@ -378,10 +427,29 @@ describe("UI Page: Communicate with consultation resource", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
-		expect(firstRequest).toHaveProperty("url", `/api/consultation?${
-			stringifyQuery({
+		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
+			"query": stringifyQuery({
+				"filter": {
+					"chatMessageKinds": [ "file" ],
+					"consultationIDs": [ model.id ],
+					"existence": "exists",
+					"previewMessageOnly": false
+				},
+				"page": {
+					"limit": DEFAULT_LIST_LIMIT,
+					"offset": 0
+				},
+				"sort": "-createdAt"
+			})
+		}))
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", specializePath(CONSULTATION_LINK.query, {
+			"query": stringifyQuery({
 				"filter": {
 					"consultationScheduleRange": "*",
 					"existence": "exists",
@@ -393,12 +461,13 @@ describe("UI Page: Communicate with consultation resource", () => {
 				},
 				"sort": "-updatedAt"
 			})
-		}`)
-		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		expect(secondRequest).toHaveProperty("method", "GET")
-		expect(secondRequest).toHaveProperty("url", `/api/chat_message?${
-			stringifyQuery({
+		}))
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+
+		expect(thirdRequest).toHaveProperty("method", "GET")
+		expect(thirdRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
+			"query": stringifyQuery({
 				"filter": {
 					"chatMessageKinds": [ "text", "status" ],
 					"consultationIDs": [ resource.data.id ],
@@ -406,14 +475,14 @@ describe("UI Page: Communicate with consultation resource", () => {
 					"previewMessageOnly": false
 				},
 				"page": {
-					"limit": 10,
+					"limit": DEFAULT_LIST_LIMIT,
 					"offset": INITIAL_MESSAGE_COUNT
 				},
-				"sort": [ "-createdAt" ]
-			} as ChatMessageQueryParameters)
-		}`)
-		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+				"sort": "-createdAt"
+			})
+		}))
+		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
 		// End the pending finished listener
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
