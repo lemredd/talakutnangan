@@ -78,6 +78,12 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
 
 /**
+ * Link for generating RTC Token
+ */
+// eslint-disable-next-line max-len
+export const RTC_TOKEN_LINK = ":hostName/rtc/:channelName/1/uid/:uid/?expiry=300"
+
+/**
  * Requires the time sum query parameters
  */
 export const READ_TIME_SUM_PER_STUDENT
