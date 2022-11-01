@@ -295,7 +295,12 @@ function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
 	})
-	.then(() => showSuccessMessage("Your profile has been updated successfully"))
+	.then(() => {
+		// eslint-disable-next-line max-len
+		showSuccessMessage("Your profile has been updated successfully. Please wait until the page reloads.")
+		const SECONDS_BEFORE_PAGES_RELOAD = 3000
+		setTimeout(() => assignPath("/settings/profile"), SECONDS_BEFORE_PAGES_RELOAD)
+	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
 		if (body) {
