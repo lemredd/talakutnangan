@@ -211,6 +211,11 @@ const nameFieldStatus = ref<FieldStatus>("locked")
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
+function showSuccessMessage(message: string) {
+	if (receivedErrors.value.length) receivedErrors.value = []
+	successMessages.value.push(message)
+}
+
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
 
@@ -219,7 +224,10 @@ function submitProfilePicture(formData: FormData) {
 			userProfileData.value.profilePicture.data.id,
 			formData
 		)
-		.then(() => assignPath("/settings/profile"))
+		.then(() => {
+			const message = "profile picture uploaded successfully. reload the page to see the changes"
+			showSuccessMessage(message)
+		})
 		.catch(({ body }) => {
 			if (successMessages.value.length) successMessages.value = []
 			if (body) {
@@ -238,7 +246,10 @@ function submitProfilePicture(formData: FormData) {
 			userProfileData.value.id,
 			formData
 		)
-		.then(() => assignPath("/settings/profile"))
+		.then(() => {
+			const message = "profile picture uploaded successfully. reload the page to see the changes"
+			showSuccessMessage(message)
+		})
 		.catch(({ body }) => {
 			if (successMessages.value.length) successMessages.value = []
 			if (body) {
@@ -261,7 +272,10 @@ function submitSignature(formData: FormData) {
 		userProfileData.value.id,
 		formData
 	)
-	.then(() => assignPath("/settings/profile"))
+	.then(() => {
+		const message = "Signature uploaded successfully. reload the page to see the changes"
+		showSuccessMessage(message)
+	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
 		if (body) {
@@ -281,10 +295,7 @@ function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
 		...userProfileData.value
 	})
-	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Your profile has been updated successfully")
-	})
+	.then(() => showSuccessMessage("Your profile has been updated successfully"))
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
 		if (body) {
@@ -316,7 +327,6 @@ function toggleDarkMode() {
 	}
 
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
-	updateUser()
 }
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
