@@ -1,5 +1,8 @@
+import type { ChatMessageActivityResourceIdentifier } from "$/types/documents/chat_message_activity"
+
 import Log from "$!/singletons/log"
-import { Server } from "socket.io"
+import { Server, Socket } from "socket.io"
+import SocketPublisher from "!/ws/socket"
 
 export default function(wsServer: Server) {
 	wsServer.on("connection", socket => {
@@ -28,4 +31,12 @@ export default function(wsServer: Server) {
 		/^\/consultation\/\d+\/chat_activity$/u,
 		"listening for consultation chat activity"
 	)
+
+	wsServer
+	.of(/^\/consultation\/\d+\/call$/u)
+	.on("connection", (socket: Socket) => {
+		socket.on("send_peer_id", (peerID: ChatMessageActivityResourceIdentifier) => {
+			SocketPublisher.emitToClients(socket.handshake.url, "receive_peer_id", peerID)
+		})
+	})
 }
