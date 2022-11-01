@@ -6,8 +6,13 @@ import RequestFilter from "!/bases/request_filter"
 
 const ALLOWED_LIST = [
 	UrlMaker.makeBaseURL(),
-	process.env.AGORA_TOKEN_SERVICE as string
-]
+const MILLISECONDS_PER_SECOND = 1000
+const SECONDS_PER_MINUTE = 60
+const EXPIRATION_MINUTE_DURATION = 15
+const EXPIRATION_MILLISECOND_DURATION
+	= MILLISECONDS_PER_SECOND
+		* SECONDS_PER_MINUTE
+		* EXPIRATION_MINUTE_DURATION
 
 export default class Session extends RequestFilter {
 	private static session = createSessionMiddleware({
