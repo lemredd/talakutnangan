@@ -80,20 +80,26 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject } from "vue"
+import { ref, computed, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
-import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageListDocument,
+	DeserializedChatMessageResource
+} from "$/types/documents/chat_message"
 
 import makeSwitch from "$@/helpers/make_switch"
+import ChatMessageFetcher from "$@/fetchers/chat_message"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import makeUniqueBy from "$/helpers/make_unique_by"
 
 const {
 	"pageProps": {
@@ -125,16 +131,71 @@ const {
 	"state": isHeaderControlDropdownShown
 } = makeSwitch(false)
 
-const generalFileChatMessages = {
-	"data": props.chatMessages.data.filter(
+const chatMessageFetcher = new ChatMessageFetcher()
+const dependentFileChatMessages = computed(
+	() => props.chatMessages.data.filter(
+		chatMessage => chatMessage.kind === "file"
+	)
+)
+const independentFileChatMessages = ref<DeserializedChatMessageResource[]>([])
+onMounted(() => {
+	chatMessageFetcher.list({
+		"filter": {
+			"chatMessageKinds": [ "file" ],
+			"consultationIDs": [ props.consultation.id ],
+			"existence": "exists",
+			"previewMessageOnly": false
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": independentFileChatMessages.value.length
+		},
+		"sort": [ "-createdAt" ]
+	})
+	.then(({ body }) => {
+		independentFileChatMessages.value = [ ...independentFileChatMessages.value, ...body.data ]
+	})
+})
+const generalFileChatMessages = computed(() => {
+	const filteredDependentFileChatMessages = dependentFileChatMessages.value.filter(
 		chatMessage => chatMessage.data.subkind === "file"
 	)
-}
-const imageFileChatMessages = {
-	"data": props.chatMessages.data.filter(
+	const filteredIndependentFileChatMessages = independentFileChatMessages.value.filter(
+		chatMessage => chatMessage.data.subkind === "file"
+	)
+	const combinedList = [
+		...filteredDependentFileChatMessages, ...filteredIndependentFileChatMessages
+	]
+	const uniqueList = makeUniqueBy(combinedList, "id")
+	uniqueList.sort((left, right) => {
+		const leftSeconds = left.createdAt.valueOf()
+		const rightSeconds = right.createdAt.valueOf()
+
+		return Math.sign(leftSeconds - rightSeconds)
+	})
+
+	return { "data": uniqueList }
+})
+const imageFileChatMessages = computed(() => {
+	const filteredDependentFileChatMessages = dependentFileChatMessages.value.filter(
 		chatMessage => chatMessage.data.subkind === "image"
 	)
-}
+	const filteredIndependentFileChatMessages = independentFileChatMessages.value.filter(
+		chatMessage => chatMessage.data.subkind === "image"
+	)
+	const combinedList = [
+		...filteredDependentFileChatMessages, ...filteredIndependentFileChatMessages
+	]
+	const uniqueList = makeUniqueBy(combinedList, "id")
+	uniqueList.sort((left, right) => {
+		const leftSeconds = left.createdAt.valueOf()
+		const rightSeconds = right.createdAt.valueOf()
+
+		return Math.sign(rightSeconds - leftSeconds)
+	})
+
+	return { "data": uniqueList }
+})
 
 const {
 	"on": showFileRepoOverlay,
