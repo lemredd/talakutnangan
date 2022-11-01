@@ -16,7 +16,7 @@ import calculateMillisecondDifference from "$/time/calculate_millisecond_differe
  * It must be manually ticked to reduce the number running timers.
  */
 export default class ConsultationTimerManager extends RequestEnvironment {
-	static MAX_EXPIRATION_TIME: number = convertTimeToMilliseconds("00:00:30")
+	static MAX_EXPIRATION_TIME: number = convertTimeToMilliseconds("00:05:00")
 	private static listeners: TimerListeners = []
 
 	static listenConsultationTimeEvent<T extends ConsultationEventNames>(
