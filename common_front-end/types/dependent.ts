@@ -1,7 +1,13 @@
 import type { GeneralObject } from "$/types/general"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { MediaConnection } from "peerjs"
 
 export type SocketListeners = GeneralObject<(...parameters: any[]) => void>
+
+export type PeerEventListeners = {
+	"stream": (stream: MediaStream) => void,
+	"calling": (connection: MediaConnection) => void
+}
 
 export type ConsultationEventListeners = {
 	"consumedTime": (
