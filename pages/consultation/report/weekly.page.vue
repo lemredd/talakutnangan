@@ -7,7 +7,7 @@
 			@renew-summary="renewSummary"/>
 
 		<Suspensible :is-loaded="isLoaded">
-			<p>
+			<p class="details">
 				The table contains the weekly consultations from {{ rangeBegin }} to {{ rangeEnd }}.
 			</p>
 			<table>
@@ -27,25 +27,25 @@
 						<td>{{ i+1 }}</td>
 						<td>{{ sumEntry.beginAt.toJSON() }}</td>
 						<td>{{ sumEntry.endAt.toJSON() }}</td>
-						<td>
-							<ul class="consultations">
-								<li
-									v-for="consultation in sumEntry.consultations.data"
-									:key="consultation.id"
-									class="consultation">
-									#{{ consultation.id }}
-									{{ consultation.reason }}
-									{{
-										convertToFullTimeString(
-											calculateMillisecondDifference(
-												consultation.finishedAt!,
-												consultation.startedAt!
-											)
+
+						<ul class="consultations">
+							<td
+								v-for="consultation in sumEntry.consultations.data"
+								:key="consultation.id"
+								class="consultation">
+								#{{ consultation.id }}
+								{{ consultation.reason }}
+								{{
+									convertToFullTimeString(
+										calculateMillisecondDifference(
+											consultation.finishedAt!,
+											consultation.startedAt!
 										)
-									}}
-								</li>
-							</ul>
-						</td>
+									)
+								}}
+							</td>
+						</ul>
+
 						<td>
 							{{ convertToFullTimeString(sumEntry.totalMillisecondsConsumed) }}
 						</td>
@@ -64,7 +64,23 @@
 	</article>
 </template>
 
-<style>
+<style scoped lang="scss">
+
+.details{
+	@apply mb-5;
+}
+
+table, th, thead, tfoot, td{
+	border:2px solid;
+	padding: 8px;
+	text-align: center;
+
+}
+
+.consultations{
+	@apply flex flex-col;
+}
+
 
 </style>
 
