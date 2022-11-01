@@ -1,9 +1,10 @@
+import { nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 
 import Page from "./per_student.page.vue"
 
-describe("Page: user/report", () => {
-	it("can display properly", () => {
+describe("Page: consultation/report/per_student", () => {
+	it("can display properly", async() => {
 		const consultationsRelatedToUser = {
 			"data": [
 				{
@@ -38,6 +39,8 @@ describe("Page: user/report", () => {
 				}
 			}
 		})
+
+		await nextTick()
 		const sumEntryOwner = wrapper.find(".sum-entry-owner")
 		const milliseconds = wrapper.find(".milliseconds")
 		const consultations = wrapper.findAll(".consultation")
