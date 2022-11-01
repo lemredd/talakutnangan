@@ -454,7 +454,7 @@ describe("Component: consultation/chat_window", () => {
 		})
 
 		describe("after", () => {
-			it("should automatically terminate the consultation", async() => {
+			it.only("should automatically terminate the consultation", async() => {
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -487,9 +487,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"ConsultationHeader": false
 						}
 					},
 					"props": {
