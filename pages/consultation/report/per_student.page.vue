@@ -64,6 +64,15 @@
 	</article>
 </template>
 
+<style lang="scss">
+	@media print {
+		.parent-dropdown-container.links.mobile, .page-shell-footer {
+			display: none;
+		}
+	}
+
+</style>
+
 <style scoped lang="scss">
 .details{
 	@apply mb-5;
