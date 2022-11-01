@@ -1,5 +1,7 @@
 <template>
 	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
@@ -58,7 +60,7 @@
 					</label>
 				</div>
 
-				<Signature class="schedule-picker-sm"/>
+				<Signature class="signature-picker-sm"/>
 			</PicturePicker>
 		</div>
 
@@ -132,7 +134,7 @@
 		font-size: 1.5em;
 	}
 
-	.profile-picker-sm, .schedule-picker-sm{
+	.profile-picker-sm, .signature-picker-sm{
 		@apply flex flex-row sm:flex-row max-w-30;
 	}
 
@@ -190,6 +192,7 @@ import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 import { DayValues } from "$/types/database"
