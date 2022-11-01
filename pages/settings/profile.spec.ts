@@ -16,7 +16,9 @@ import UserProfileTransformer from "%/transformers/user_profile"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_ALL_DEPARTMENTS, READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
+import {
+	READ_ANYONE_ON_ALL_DEPARTMENTS, READ_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/user_combinations"
 
 import Page from "./profile.page.vue"
 
@@ -107,14 +109,14 @@ describe("Page: settings/profile", () => {
 			expect(picture.attributes().src).toEqual(sampleURL)
 		})
 
-		it.only("can display signature", async() => {
+		it("can display signature", async() => {
 			const sampleURL = "/images/signature.png"
 			const signature = {
 				"data": {
 					"fileContents": sampleURL
 				}
 			}
-			const department = await new DepartmentFactory().mayNotAdmit()
+			const department = await new DepartmentFactory().mayAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
 			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
@@ -145,9 +147,9 @@ describe("Page: settings/profile", () => {
 					}
 				}
 			})
-			const picture = wrapper.find("img")
+			const picture = wrapper.find(".signature-picker-sm")
 
-			expect(picture.attributes().src).toEqual(sampleURL)
+			expect(picture.attributes("src")).toEqual(sampleURL)
 		})
 
 		it("can not display signature user is admin", async() => {
@@ -185,15 +187,11 @@ describe("Page: settings/profile", () => {
 								}
 							}
 						}
-					},
-					"stubs": {
-						"PicturePicker": false,
-						"Signature": false
 					}
 				}
 			})
-
-			expect(wrapper.html()).not.toContain("img")
+			const signaturePicture = wrapper.find(".signature-picker-sm")
+			expect(signaturePicture.exists()).toBeFalsy()
 		})
 	})
 
