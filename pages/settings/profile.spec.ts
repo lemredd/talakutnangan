@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable vue/sort-keys */
-import { ref } from "vue"
-import { flushPromises, shallowMount } from "@vue/test-utils"
+import { nextTick, ref } from "vue"
+import { flushPromises, mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -22,7 +22,7 @@ import Page from "./profile.page.vue"
 
 describe("Page: settings/profile", () => {
 	describe("Reading", () => {
-		it("should read display name and dark mode", async() => {
+		it.only("should read display name and dark mode", async() => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
@@ -37,7 +37,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -55,14 +55,14 @@ describe("Page: settings/profile", () => {
 				}
 			})
 
+			console.log(wrapper.html(), "\n\n\n")
+			// const displayNameField = wrapper.findComponent({ "name": "TextualField" })
+			// const [ darkMode ] = wrapper.find("#dark-mode-toggle").getRootNodes()
+			// const darkModeCheckbox = darkMode as HTMLInputElement
 
-			const displayNameField = wrapper.findComponent({ "name": "TextualField" })
-			const [ darkMode ] = wrapper.find("#dark-mode-toggle").getRootNodes()
-			const darkModeCheckbox = darkMode as HTMLInputElement
-
-			expect(displayNameField.props().modelValue).toEqual(user.data.name)
-			expect(displayNameField.html()).toContain(user.data.name)
-			expect(darkModeCheckbox.value).toBe("on")
+			// expect(displayNameField.props().modelValue).toEqual(user.data.name)
+			// expect(displayNameField.html()).toContain(user.data.name)
+			// expect(darkModeCheckbox.value).toBe("on")
 		})
 
 		it("can display profile picture", async() => {
@@ -86,7 +86,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -133,7 +133,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -180,7 +180,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -222,7 +222,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -257,15 +257,17 @@ describe("Page: settings/profile", () => {
 			await displayNameInput.setValue("Something")
 			const saveNameButton = displayNameField.find(".save-button")
 			await saveNameButton.trigger("click")
-			await flushPromises()
 
 			const displayNameInputElement = displayNameInput.getRootNodes()[0] as HTMLInputElement
 			expect(displayNameInputElement.value).toEqual("Something")
 
-			const previousCalls = Stub.consumePreviousCalls()
-			expect(previousCalls).toHaveProperty("0.functionName", "constructor")
-			expect(previousCalls).toHaveProperty("1.functionName", "assignPath")
-			expect(previousCalls).toHaveProperty("1.arguments.0", "/settings/profile")
+			const submitBtn = wrapper.find(".submit-btn")
+			await submitBtn.trigger("click")
+			await flushPromises()
+			await nextTick()
+
+			const successMessages = wrapper.find(".status-messages.success")
+			expect(successMessages.exists()).toBeTruthy()
 		})
 
 		it("can create profile picture", async() => {
@@ -284,7 +286,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -351,7 +353,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
@@ -417,7 +419,7 @@ describe("Page: settings/profile", () => {
 			>
 			userProfile.data.employeeSchedules = { "data": [] }
 
-			const wrapper = shallowMount(Page, {
+			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
 						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
