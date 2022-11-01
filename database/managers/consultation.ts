@@ -380,9 +380,9 @@ export default class extends BaseManager<
 				const rangeLastEnd = adjustBeforeMidnightOfNextDay(rangeEnd)
 
 				sums.meta.weeklyTimeSums.push({
-					"beginDateTime": resetToMidnight(i),
+					"beginAt": resetToMidnight(i),
 					"consultations": { "data": [] },
-					"endDateTime": rangeLastEnd,
+					"endAt": rangeLastEnd,
 					"totalMillisecondsConsumed": 0
 				})
 
@@ -402,8 +402,8 @@ export default class extends BaseManager<
 						const finishedAt = consultation.finishedAt as Date
 
 						if (
-							weeklyTimeSum.beginDateTime <= startedAt
-						&& finishedAt <= weeklyTimeSum.endDateTime
+							weeklyTimeSum.beginAt <= startedAt
+						&& finishedAt <= weeklyTimeSum.endAt
 						) {
 							deserializedOperations.push(
 								this.serialize([ consultation ])
@@ -491,9 +491,9 @@ export default class extends BaseManager<
 				})
 
 				sums.meta.rawConsolidatedTimeSums.push({
-					"beginDateTime": rangeStart,
+					"beginAt": rangeStart,
 					"consultationIDs": makeUnique(filteredConsultations.map(model => String(model.id))),
-					"endDateTime": rangeLastEnd,
+					"endAt": rangeLastEnd,
 					"totalMillisecondsConsumed": filteredConsultations.map(
 						model => {
 							const startedAt = model.startedAt as Date

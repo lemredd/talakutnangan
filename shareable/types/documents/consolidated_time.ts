@@ -13,8 +13,8 @@ interface SummedTimeMetaProperties extends BasicSummedTimeMetaProperties {
 export type SummedTimeDocument = MetaDocument<SummedTimeMetaProperties>
 
 export interface DateTimeRange {
-	beginDateTime: Date,
-	endDateTime: Date
+	beginAt: Date,
+	endAt: Date
 }
 
 interface WeeklySummedTimeProperties extends DateTimeRange, SummedTimeMetaProperties {}

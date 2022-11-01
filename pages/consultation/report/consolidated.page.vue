@@ -5,29 +5,32 @@
 			:initial-range-begin="rangeBegin"
 			:initial-range-end="rangeEnd"
 			@renew-summary="renewSummary"/>
-		<p>
-			The list contains the overall consultation summary from {{ rangeBegin }} to {{ rangeEnd }}.
-		</p>
-		<ul>
-			<li>
-				<div class="milliseconds">
-					<span>Time consumed:</span>
-					{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
-				</div>
-			</li>
-			<li>
-				<div class="users">
-					<span>Number of consulters interacted:</span>
-					{{ totalNumberOfStudents }}
-				</div>
-			</li>
-			<li>
-				<div class="users">
-					<span>Number of consultations performed:</span>
-					{{ totalNumberOfConsultations }}
-				</div>
-			</li>
-		</ul>
+		<Suspensible :is-loaded="isLoaded">
+			<p>
+				The list contains the overall consultation summary
+				from {{ rangeBegin }} to {{ rangeEnd }}.
+			</p>
+			<ul>
+				<li>
+					<div class="milliseconds">
+						<span>Time consumed:</span>
+						{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
+					</div>
+				</li>
+				<li>
+					<div class="users">
+						<span>Number of consulters interacted:</span>
+						{{ totalNumberOfStudents }}
+					</div>
+				</li>
+				<li>
+					<div class="users">
+						<span>Number of consultations performed:</span>
+						{{ totalNumberOfConsultations }}
+					</div>
+				</li>
+			</ul>
+		</Suspensible>
 	</article>
 </template>
 
@@ -36,7 +39,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject } from "vue"
+import { ref, computed, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { SummaryRange } from "$@/types/component"
@@ -45,6 +48,8 @@ import type {
 	DateTimeRange
 } from "$/types/documents/consolidated_time"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import makeUnique from "$/array/make_unique"
 import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
@@ -52,6 +57,7 @@ import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
+import Suspensible from "@/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<
@@ -59,12 +65,14 @@ const pageContext = inject("pageContext") as PageContext<
 	"timeConsumedforConsolidation"
 >
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 const timeConsumedforConsolidation = ref<ConsolidatedSummedTimeDocument>(
 	pageProps.timeConsumedforConsolidation as ConsolidatedSummedTimeDocument
 )
 const currentDate = new Date()
 const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
 const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
+const isLoaded = ref<boolean>(false)
 
 const weeklyRangeBegin = computed<Date>(
 	() => resetToMidnight(adjustUntilChosenDay(rangeBegin.value, 0, -1))
@@ -81,8 +89,8 @@ const weeklyGroups = computed<DateTimeRange[]>(() => {
 		const rangeLastEnd = adjustBeforeMidnightOfNextDay(localRangeEnd)
 
 		ranges.push({
-			"beginDateTime": resetToMidnight(i),
-			"endDateTime": rangeLastEnd
+			"beginAt": resetToMidnight(i),
+			"endAt": rangeLastEnd
 		})
 
 		i = adjustUntilChosenDay(localRangeEnd, 0, 1)
@@ -99,9 +107,9 @@ interface WeeklySummary extends DateTimeRange {
 const weeklySummary = computed<WeeklySummary[]>(() => weeklyGroups.value.map(range => {
 	const metaDocument = timeConsumedforConsolidation.value.meta
 	const rawConsolidatedSums = metaDocument.rawConsolidatedTimeSums.filter(sum => {
-		const { beginDateTime, endDateTime } = sum
+		const { beginAt, endAt } = sum
 
-		return range.beginDateTime <= beginDateTime && endDateTime <= range.endDateTime
+		return range.beginAt <= beginAt && endAt <= range.endAt
 	}).reduce((summary, currentDay) => ({
 		...summary,
 		"consultationIDs": [ ...summary.consultationIDs, ...currentDay.consultationIDs ],
@@ -133,7 +141,36 @@ const totalNumberOfConsultations = computed<number>(
 )
 
 const fetcher = new Fetcher()
-function renewSummary(range: SummaryRange) {
-	// TODO: fetcher method to make overall consultation summary
+async function renewSummary(range: SummaryRange) {
+	const correctBegin = resetToMidnight(range.rangeBegin)
+	const correctEnd = adjustBeforeMidnightOfNextDay(range.rangeEnd)
+
+	isLoaded.value = false
+	await fetcher.readTimeSumForConsolidation({
+		"filter": {
+			"dateTimeRange": {
+				"begin": correctBegin,
+				"end": correctEnd
+			},
+			"existence": "exists",
+			"user": userProfile.data.id
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": 0
+		},
+		"sort": [ "name" ]
+	}).then(({ body }) => {
+		timeConsumedforConsolidation.value = body
+		rangeBegin.value = correctBegin
+		rangeEnd.value = correctEnd
+		isLoaded.value = true
+	}).catch(() => {
+		isLoaded.value = true
+	})
 }
+
+onMounted(() => {
+	isLoaded.value = true
+})
 </script>
