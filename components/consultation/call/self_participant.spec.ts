@@ -11,6 +11,7 @@ describe("Component: consultation/call/self participant", () => {
 		)
 	)
 
+
 	Object.defineProperty(global.navigator, "mediaDevices", {
 		"value": {
 			"getUserMedia": mockGetUserMedia
@@ -63,7 +64,7 @@ describe("Component: consultation/call/self participant", () => {
 				"mustTransmitAudio": false
 			}
 		})
-		const audioElement = wrapper.find("video").element
+		const audioElement = wrapper.find("audio").element
 
 		await wrapper.setProps({
 			"mustTransmitAudio": true
