@@ -44,6 +44,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 16.x
+    - name: Use .env.ci as the environment file for back-end
+      run: mv .env.ci .env
     - name: Cache node modules
       uses: actions/cache@v3
       with:

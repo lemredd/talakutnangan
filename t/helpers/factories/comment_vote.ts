@@ -53,6 +53,11 @@ export default class CommentVoteFactory extends BaseFactory<
 		return this
 	}
 
+	comment(generator: () => Promise<Comment>): CommentVoteFactory {
+		this.commentGenerator = generator
+		return this
+	}
+
 	commentVote(generator: () => Promise<Comment>): CommentVoteFactory {
 		this.commentGenerator = generator
 		return this
