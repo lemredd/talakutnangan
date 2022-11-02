@@ -9,9 +9,9 @@ export default function(timeInMilliseconds: number): RawFullTimeString {
 		seconds
 	} = convertMStoTimeObject(timeInMilliseconds)
 
-	const hourString = `${Math.abs(hours)} hours`
-	const minuteString = `${Math.abs(minutes)} minutes`
-	const secondString = `${Math.abs(seconds)} seconds`
+	const hourString = `${Math.abs(Math.round(hours))} hours`
+	const minuteString = `${Math.abs(Math.round(minutes))} minutes`
+	const secondString = `${Math.abs(Math.round(seconds))} seconds`
 
 	return {
 		hourString,
