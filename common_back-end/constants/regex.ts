@@ -19,7 +19,7 @@ export const departmentFullNameDescription
 export const departmentAcronym = /([A-Z][a-z]*)+/u
 export const departmentAcronymDescription = "be an uppercased alphetic name with one or more spaces"
 
-export const consultationReason = /[a-zA-Z0-9!?. -]+/u
+export const consultationReason = /^[a-zA-Z0-9!?. -]+$/u
 export const consultationReasonDescription
 = "contain at least one or more alphaumeric characters, or special characters (!?. -)"
 
@@ -30,7 +30,7 @@ export const roleName = /^([A-Z][a-z-_]+ )*[A-Z][a-z-_]+$/u
 export const roleNameDescription
 = "be properly-cased name with one or more Latin characters, dash, space, or underscore"
 
-export const fileType = /(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?/u
+export const fileType = /^(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?$/u
 export const fileTypeDescription = "be a valid MIME type"
 
 export const channelName = /^\w+$/u
