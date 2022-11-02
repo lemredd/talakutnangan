@@ -59,10 +59,18 @@ export type AttachedChatFileResource<
 	AttachedChatFileAttributes<U>
 >
 
-export type DeserializedAttachedChatFileResource<T extends Format = "serialized">
-= DeserializedResource<
+export type DeserializedAttachedChatFileResource<
+	T extends Format = "serialized",
+	U extends AttachedChatFileRelationshipNames|undefined = undefined
+> = DeserializedResource<
 	AttachedChatFileResourceIdentifier<"read">,
 	AttachedChatFileAttributes<T>
+> & PartialOrPickDeserializedRelationship<
+	AttachedChatFileRelationshipData<"read">,
+	DeserializedAttachedChatFileRelationships<"read">,
+	AttachedChatFileRelationshipNames,
+	U extends AttachedChatFileRelationshipNames ? true : false,
+	U extends AttachedChatFileRelationshipNames ? U : AttachedChatFileRelationshipNames
 >
 
 export type AttachedChatFileDocument<
@@ -91,20 +99,16 @@ export type DeserializedAttachedChatFileDocument<
 > = DeserializedResourceDocument<
 	AttachedChatFileResourceIdentifier<"read">,
 	AttachedChatFileAttributes<T>,
-	DeserializedAttachedChatFileResource<T>
-> & PartialOrPickDeserializedRelationship<
-	AttachedChatFileRelationshipData<"read">,
-	DeserializedAttachedChatFileRelationships<"read">,
-	AttachedChatFileRelationshipNames,
-	U extends AttachedChatFileRelationshipNames ? true : false,
-	U extends AttachedChatFileRelationshipNames ? U : AttachedChatFileRelationshipNames
+	DeserializedAttachedChatFileResource<T, U>
 >
 
-export type DeserializedAttachedChatFileListDocument<T extends Format = "serialized">
-= DeserializedResourceListDocument<
+export type DeserializedAttachedChatFileListDocument<
+	T extends Format = "serialized",
+	U extends AttachedChatFileRelationshipNames|undefined = undefined
+> = DeserializedResourceListDocument<
 	AttachedChatFileResourceIdentifier<"read">,
 	AttachedChatFileAttributes<T>,
-	DeserializedAttachedChatFileResource<T>
+	DeserializedAttachedChatFileResource<T, U>
 >
 
 export type AttachedChatFileIdentifierDocument
