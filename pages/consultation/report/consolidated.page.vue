@@ -100,7 +100,7 @@
 	}
 
 	.main {
-		@apply flex flex-row flex-wrap justify-around <sm: flex-col place-content-around;
+		@apply flex flex-row flex-wrap justify-center place-content-around;
 
 		section {
 			@apply flex-initial flex flex-col justify-around items-center;
