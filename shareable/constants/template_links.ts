@@ -100,3 +100,10 @@ export const READ_TIME_SUM_PER_WEEK
  */
 export const READ_TIME_SUM_FOR_CONSOLIDATION
 = `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation?:query`
+
+/**
+ * Requires the `id` of the consultation, `channelName` within the consultation, and `uid` which is
+ * the chat message activity of the current user.
+ */
+export const READ_GENERATED_RTC_TOKEN
+= `${CONSULTATION_LINK.bound}/:channelName/:uid`
