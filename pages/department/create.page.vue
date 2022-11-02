@@ -76,7 +76,7 @@ function createDepartment() {
 		"fullName": fullName.value,
 		"mayAdmit": mayAdmit.value
 	})
-	.then(({ unusedBody, unusedStatus }) => {
+	.then(() => {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Department has been created successfully!")
 	})

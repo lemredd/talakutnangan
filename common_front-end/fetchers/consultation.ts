@@ -1,3 +1,4 @@
+import type { Serializable } from "$/types/general"
 import type { Response } from "$@/types/independent"
 import type { ConsultationQueryParameters, TimeSumQueryParameters } from "$/types/query"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
@@ -13,14 +14,16 @@ import type {
 	ConsultationDocument,
 	ConsultationListDocument,
 	DeserializedConsultationDocument,
-	DeserializedConsultationListDocument
+	DeserializedConsultationListDocument,
+	RTCTokenDocument
 } from "$/types/documents/consultation"
 
 import {
 	CONSULTATION_LINK,
 	READ_TIME_SUM_PER_STUDENT,
 	READ_TIME_SUM_PER_WEEK,
-	READ_TIME_SUM_FOR_CONSOLIDATION
+	READ_TIME_SUM_FOR_CONSOLIDATION,
+	READ_GENERATED_RTC_TOKEN
 } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
@@ -38,6 +41,7 @@ export default class ConsultationFetcher extends BaseFetcher<
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument,
 	{
+		"otherDocuments": RTCTokenDocument|Serializable
 		"queryParameters": ConsultationQueryParameters
 	}
 > {
@@ -126,6 +130,30 @@ export default class ConsultationFetcher extends BaseFetcher<
 			ConsultationResource,
 			DeserializedConsultationResource,
 			ConsolidatedSummedTimeDocument
+		>>
+	}
+
+	generateToken(id: string, channelName: string, chatMessageActivityID: string): Promise<Response<
+		ConsultationResourceIdentifier,
+		ConsultationAttributes<"serialized">,
+		ConsultationAttributes<"deserialized">,
+		ConsultationResource,
+		DeserializedConsultationResource,
+		RTCTokenDocument
+	>> {
+		const pathToGenerateToken = specializePath(READ_GENERATED_RTC_TOKEN, {
+			channelName,
+			id,
+			"uid": chatMessageActivityID
+		})
+
+		return this.getFrom(pathToGenerateToken) as Promise<Response<
+			ConsultationResourceIdentifier,
+			ConsultationAttributes<"serialized">,
+			ConsultationAttributes<"deserialized">,
+			ConsultationResource,
+			DeserializedConsultationResource,
+			RTCTokenDocument
 		>>
 	}
 }

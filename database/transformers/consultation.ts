@@ -60,6 +60,8 @@ export default class extends Transformer<Consultation, void> {
 			"scheduledStartAt",
 			"startedAt",
 			"finishedAt",
+			"createdAt",
+			"updatedAt",
 			"deletedAt"
 		])
 

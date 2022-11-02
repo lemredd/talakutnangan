@@ -1,16 +1,17 @@
-import type { AttachedChatFileDocument } from "$/types/documents/attached_chat_file"
+import type { FileMessage } from "$/types/message"
+import type { Response, BaseManagerClass, AuthenticatedIDRequest } from "!/types/dependent"
 import type {
-	Response,
-	BaseManagerClass,
-	AuthenticatedIDRequest
-} from "!/types/dependent"
+	AttachedChatFileDocument,
+	DeserializedAttachedChatFileDocument
+} from "$/types/documents/attached_chat_file"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
-import Manager from "%/managers/attached_chat_file"
-import OkResponseInfo from "!/response_infos/ok"
+import deserialize from "$/object/deserialize"
 import BoundController from "!/controllers/bound"
+import Manager from "%/managers/attached_chat_file"
 import sniffMediaType from "!/helpers/sniff_media_type"
+import AttachmentResponseInfo from "!/response_infos/attachment"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -34,7 +35,7 @@ export default class extends BoundController {
 	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
-	: Promise<OkResponseInfo> {
+	: Promise<AttachmentResponseInfo> {
 		const manager = new Manager(request)
 		const { id } = request.params
 
@@ -52,11 +53,17 @@ export default class extends BoundController {
 			}
 		) as AttachedChatFileDocument<"read", "raw">
 
-		const attachedChatFile = attachedChatFileDocument.data.attributes.fileContents
+		const deserializedAttachedChatFile = deserialize(
+			attachedChatFileDocument
+		) as DeserializedAttachedChatFileDocument<"raw", "chatMessage">
+		const attachedChatFile = deserializedAttachedChatFile.data.fileContents
+		const chatMessage = deserializedAttachedChatFile.data.chatMessage.data
+		const fileMessageData = chatMessage.data as FileMessage["data"]
+		const filename = fileMessageData.name
 		const type = await sniffMediaType(attachedChatFile)
 
 		Log.success("controller", "successfully got the attached chat file")
 
-		return new OkResponseInfo(attachedChatFile, type)
+		return new AttachmentResponseInfo(attachedChatFile, filename, type)
 	}
 }

@@ -2,33 +2,42 @@ import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { ConsultationDocument, ConsultationListDocument } from "$/types/documents/consultation"
+import type {
+	ConsultationDocument,
+	ConsultationListDocument
+} from "$/types/documents/consultation"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import Middleware from "!/bases/middleware"
+import makeUnique from "$/array/make_unique"
 import Manager from "%/managers/consultation"
 import URLMaker from "$!/singletons/url_maker"
 import deserialize from "$/object/deserialize"
-import present from "!/validators/manager/present"
-import makeUnique from "$/array/make_unique"
+import Merger from "!/middlewares/miscellaneous/merger"
 import ChatMessageManager from "%/managers/chat_message"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
+
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
+
+import present from "!/validators/manager/present"
 
 export default class extends PageMiddleware {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(Manager)
+		]) as unknown as Policy
 	}
 
 	get validations(): Validation[] {
 		return [
-			// TODO: Allow adding other rules to check if consultation belongs to current user
 			new IDParameterValidator([
 				[ "id", Manager, present ]
 			])

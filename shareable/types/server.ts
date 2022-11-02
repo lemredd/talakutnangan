@@ -113,9 +113,7 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	post: OptionalPageProps<T, DeserializedPostDocument>
 
 	comments: OptionalPageProps<T, DeserializedCommentListDocument>
-	comment: OptionalPageProps<T, DeserializedCommentDocument>,
-
-	mustUsePeerServer?: boolean
+	comment: OptionalPageProps<T, DeserializedCommentDocument>
 }
 
 export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>

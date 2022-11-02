@@ -3,7 +3,8 @@ import type { TimeSumQueryParameters } from "$/types/query"
 import {
 	READ_TIME_SUM_PER_STUDENT,
 	READ_TIME_SUM_PER_WEEK,
-	READ_TIME_SUM_FOR_CONSOLIDATION
+	READ_TIME_SUM_FOR_CONSOLIDATION,
+	READ_GENERATED_RTC_TOKEN
 } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
@@ -134,6 +135,35 @@ describe("Fetcher: Consultation", () => {
 				...query,
 				"sort": query.sort.join(",")
 			})
+		}))
+		expect(response).toHaveProperty("body", {
+			"meta": {}
+		})
+		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
+
+	it("can read generated token", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"meta": {}
+		}), { "status": RequestEnvironment.status.OK })
+
+		const consultationID = "1"
+		const channelName = "call"
+		const chatMessageActivityID = "2"
+		const fetcher = new Fetcher()
+		const response = await fetcher.generateToken(
+			consultationID,
+			channelName,
+			chatMessageActivityID
+		)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "GET")
+		expect(request).toHaveProperty("url", specializePath(READ_GENERATED_RTC_TOKEN, {
+			channelName,
+			"id": consultationID,
+			"uid": chatMessageActivityID
 		}))
 		expect(response).toHaveProperty("body", {
 			"meta": {}
