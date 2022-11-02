@@ -62,6 +62,12 @@
 		<p>
 			{{ post.content }}
 		</p>
+		<p class="comment-count">
+			<span class="material-icons icon">
+				comment
+			</span>
+			{{ friendlyCommentCount }}
+		</p>
 	</section>
 </template>
 
@@ -69,12 +75,11 @@
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap justify-center;
-		@apply flex justify-between pb-[5em];
-		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply flex flex-col flex-nowrap justify-between;
+		@apply p-5 pb-[5em] bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
 		header {
-			@apply flex flex-row justify-between;
+			@apply flex-1 flex flex-row justify-between;
 
 			.post-details {
 				@apply flex-1 flex flex-row flex-wrap;
@@ -87,6 +92,10 @@
 					}
 				}
 			}
+		}
+
+		.comment-count {
+			@apply flex-initial mt-10;
 		}
 	}
 
@@ -109,6 +118,7 @@ import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 const fetcher = new Fetcher()
 
 const props = defineProps<{
+	commentCount: number,
 	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"department">
 }>()
 
@@ -162,17 +172,19 @@ const friendlyCreatedDate = computed<string>(() => {
 	const { createdAt } = post.value
 
 	// TODO: Format like "one hour ago", or "one day ago"
-	return createdAt
+	return createdAt.toJSON()
 })
 
 const postInfo = computed<string>(() => `${postDepartment.value} ${friendlyCreatedDate.value}`)
 
+const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
+
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
 		"content": post.value.content,
-		"createdAt": new Date(),
+		"createdAt": new Date().toJSON(),
 		"deletedAt": null,
-		"updatedAt": new Date()
+		"updatedAt": new Date().toJSON()
 	}, {
 		"extraDataFields": {
 			"relationships": {
