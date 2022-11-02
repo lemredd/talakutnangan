@@ -1,6 +1,6 @@
 <template>
 	<div class="login-form">
-		<ul v-if="receivedErrors.length" class="error">
+		<ul v-if="receivedErrors.length" class="status-messages error">
 			<div v-if="receivedErrorFromPageContext" class="from-page-context">
 				{{ receivedErrors }}
 			</div>
@@ -27,7 +27,6 @@
 				class="field pass-field"/>
 			<div v-if="RequestEnvironment.isNotOnProduction">
 				Fill details for:
-
 				<RoleSelector
 					v-model="selectedRole"
 					:options="selectableRoles"

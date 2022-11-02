@@ -24,7 +24,7 @@ import type {
 } from "$/types/documents/base"
 
 import deserialize from "$/object/deserialize"
-import specializedPath from "$/helpers/specialize_path"
+import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
 
@@ -81,7 +81,7 @@ export default class Fetcher<
 	}
 
 	read(id: string): Promise<Response<T, U, V, W, X, A>> {
-		const path = specializedPath(this.links.bound, { id })
+		const path = specializePath(this.links.bound, { id })
 
 		return this.handleResponse(
 			this.getJSON(path)
@@ -94,7 +94,7 @@ export default class Fetcher<
 			"sort": parameters.sort.join(",")
 		}
 		return this.handleResponse(
-			this.getJSON(specializedPath(this.links.query, {
+			this.getJSON(specializePath(this.links.query, {
 				"query": stringifyQuery(commaDelimitedSort)
 			}))
 		)
@@ -157,7 +157,9 @@ export default class Fetcher<
 	}
 
 	getJSON(path: string): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
-		return this.getFrom(path, this.makeJSONHeaders())
+		return this.getFrom(path, {
+			"headers": this.makeJSONHeaders()
+		})
 	}
 
 	postJSON(
@@ -172,7 +174,7 @@ export default class Fetcher<
 		IDs: { [key:string]: string },
 		data: Serializable
 	): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
-		const path = specializedPath(pathTemplate, IDs)
+		const path = specializePath(pathTemplate, IDs)
 
 		return this.patchThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
@@ -182,16 +184,24 @@ export default class Fetcher<
 		IDs: { [key:string]: string },
 		data: Serializable
 	): Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
-		const path = specializedPath(pathTemplate, IDs)
+		const path = specializePath(pathTemplate, IDs)
 
 		return this.deleteThrough(path, JSON.stringify(data), this.makeJSONHeaders())
 	}
 
-	getFrom(path: string, headers: Headers = this.makeJSONHeaders())
+	getFrom(path: string, {
+		headers = this.makeJSONHeaders(),
+		otherRequestOptions = {}
+	}: Partial<{
+		headers: Headers,
+		// eslint-disable-next-line no-undef
+		otherRequestOptions: RequestInit
+	}> = {})
 	: Promise<Response<T, U, V, W, X, Y | Z | OtherDocuments<C> | null>> {
 		return this.requestJSON(path, {
 			headers,
-			"method": "GET"
+			"method": "GET",
+			...otherRequestOptions
 		})
 	}
 

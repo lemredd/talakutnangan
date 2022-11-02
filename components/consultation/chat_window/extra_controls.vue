@@ -21,6 +21,13 @@
 
 <style scoped lang="scss">
 	.additional-controls {
+		.dropdown-container{
+			inset: unset;
+			right: -80px;
+		}
+	}
+
+	.additional-controls {
 		.buttons {
 			@apply flex flex-col;
 		}
@@ -34,7 +41,6 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-// import Dropdown from "@/page_shell/dropdown.vue"
 import Dropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{

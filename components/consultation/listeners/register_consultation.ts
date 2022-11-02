@@ -27,6 +27,7 @@ export default function(
 			...deserializedConsultation.data
 		}
 	}
+
 	const consultationNamespace = makeConsultationNamespace(consultation.value.id)
 	Socket.addEventListeners(consultationNamespace, {
 		"update": updateConsultation
@@ -40,7 +41,7 @@ export default function(
 		consultations.value.data = [
 			...consultations.value.data,
 			deserializedConsultation.data as unknown as DeserializedConsultationResource<
-			"consultant"|"consultantRole"
+				"consultant"|"consultantRole"
 			>
 		]
 	}

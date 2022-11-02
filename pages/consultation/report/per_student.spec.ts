@@ -1,9 +1,10 @@
+import { nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 
 import Page from "./per_student.page.vue"
 
-describe("Page: user/report", () => {
-	it("can display properly", () => {
+describe("Page: consultation/report/per_student", () => {
+	it("can display properly", async() => {
 		const consultationsRelatedToUser = {
 			"data": [
 				{
@@ -38,6 +39,8 @@ describe("Page: user/report", () => {
 				}
 			}
 		})
+
+		await nextTick()
 		const sumEntryOwner = wrapper.find(".sum-entry-owner")
 		const milliseconds = wrapper.find(".milliseconds")
 		const consultations = wrapper.findAll(".consultation")
@@ -45,9 +48,7 @@ describe("Page: user/report", () => {
 		expect(sumEntryOwner.text()).toEqual(
 			`${timeConsumedPerStudent.data[0].name} (${timeConsumedPerStudent.data[0].email})`
 		)
-		expect(milliseconds.text()).toEqual(
-			"Time consumed: 0 hours 1 minutes 0 seconds"
-		)
+		expect(milliseconds.text()).toEqual("0 hours 1 minutes 0 seconds")
 		consultations.forEach((consultation, index) => {
 			expect(consultation.text()).toEqual(
 				// eslint-disable-next-line max-len

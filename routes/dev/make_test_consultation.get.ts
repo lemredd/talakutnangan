@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 import { Request, Response } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
@@ -161,6 +162,7 @@ export default class extends DevController {
 
 			Log.success("controller", "created test student")
 
+			// eslint-disable-next-line require-atomic-updates
 			previousStudentUser = createdUser
 		}
 
@@ -204,11 +206,6 @@ export default class extends DevController {
 			previousSecretaryUser = createdUser
 		}
 
-		const [ consultantInfo ] = await AttachedRole.upsert({
-			"roleID": testSecretaryRole.id,
-			"userID": previousSecretaryUser.id
-		})
-
 		Log.success("controller", "attached test secretary role to test secretary user")
 
 		const consultationManager = new ConsultationManager(request)
@@ -216,6 +213,7 @@ export default class extends DevController {
 		const createdConsultation = await consultationManager.createUsingResource({
 			"attributes": {
 				"actionTaken": null,
+				"deletedAt": null,
 				"finishedAt": null,
 				"reason": "Grade-related",
 				"scheduledStartAt": new Date().toISOString(),
