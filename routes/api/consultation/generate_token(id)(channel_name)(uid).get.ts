@@ -44,6 +44,15 @@ export default class extends Controller {
 					},
 					"pipes": [ required, string, length, regex ]
 				},
+				"id": {
+					"constraints": {
+						"manager": {
+							"className": Manager,
+							"columnName": "id"
+						}
+					},
+					"pipes": [ required, integer, exists ]
+				},
 				"uid": {
 					"constraints": {
 						"integer": {
@@ -63,12 +72,15 @@ export default class extends Controller {
 	handle(request: Request): Promise<OkResponse> {
 		const {
 			"channel_name": specifiedChannelName,
+			"id": consultationID,
 			"uid": userID
 		} = request.params
 
+		const properName = `consultation_${consultationID}_${specifiedChannelName}`
+
 		return Promise.resolve(new OkResponse({
 			"meta": {
-				"RTCToken": generateToken(specifiedChannelName, Number(userID))
+				"RTCToken": generateToken(properName, Number(userID))
 			}
 		}))
 	}
