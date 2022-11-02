@@ -10,11 +10,10 @@
 				v-for="permissionName in operationalPermissionNames"
 				:key="permissionName"
 				class="ml-5">
-				<!-- TODO: use title case utility function  -->
 				<Checkbox
 					v-model="rawFlags"
 					:disabled="disabled"
-					:label="titleCase(convertForSentence(permissionName))"
+					:label="convertToTitle(convertForSentence(permissionName))"
 					:value="permissionName"/>
 			</li>
 		</div>
@@ -59,14 +58,14 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 // Developer defined internals
 import makeUnique from "$/array/make_unique"
-import BasePermissionGroup from "$/permissions/base"
 import subtractArrays from "$/array/subtract"
+import BasePermissionGroup from "$/permissions/base"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import convertToTitle from "$/string/convert_to_title"
 import convertForSentence from "$/string/convert_for_sentence"
 
 import Checkbox from "@/fields/checkbox.vue"
 import AccessLevelSelector from "@/fields/selectable_options.vue"
-import { titleCase } from "text-title-case"
 
 // Props should be contained to retain its reactivity
 const props = defineProps<{
