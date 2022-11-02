@@ -1,12 +1,17 @@
 <template>
-	<section v-if="mustDisplayOnly" class="flex flex-col flex-nowrap">
-		<header class="flex-1 flex flex-row flex-nowrap">
-			<ProfilePicture
-				class="flex-initial w-auto h-12"
-				:user="comment.user"/>
+	<section v-if="mustDisplayOnly" class="comment-viewer">
+		<header>
 			<h3 class="flex-1 m-auto ml-2">
 				{{ comment.user.data.name }}
 			</h3>
+		</header>
+		<div class="main-content">
+			<ProfilePicture
+				class="flex-initial w-auto h-12"
+				:user="comment.user"/>
+			<p>
+				{{ comment.content }}
+			</p>
 			<Menu
 				class="flex-none m-auto mx-1 h-12 w-12"
 				:comment="comment"
@@ -48,10 +53,7 @@
 					</button>
 				</template>
 			</Overlay>
-		</header>
-		<p class="flex-1 indent mt-4">
-			{{ comment.content }}
-		</p>
+		</div>
 		<VoteView
 			v-if="mayVote"
 			:model-value="vote"
@@ -63,6 +65,26 @@
 
 <style lang="scss">
 	@import "@styles/btn.scss";
+
+	.comment-viewer {
+		@apply flex flex-col flex-nowrap;
+
+		header {
+			@apply flex-1 flex flex-row flex-nowrap
+		}
+
+		.main-content {
+			@apply flex-1 flex flex-row flex-nowrap items-center;
+			@screen md {
+				@apply w-[90%];
+			}
+
+			> p {
+				@apply flex-1;
+				@apply ml-auto ml-3 p-5 bg-gray-300 shadow-lg rounded-[1rem]
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
