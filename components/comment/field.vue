@@ -36,6 +36,15 @@
 	}
 </style>
 
+<style lang="scss">
+	form {
+		> .field {
+			.raw-field:not(:disabled) {
+				@apply border-none p-4 rounded-1rem w-[100%];
+			}
+		}
+	}
+</style>
 <script setup lang="ts">
 import { computed } from "vue"
 
