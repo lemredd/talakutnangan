@@ -22,7 +22,7 @@
 		@apply mb-5;
 
 		> .self {
-			@apply flex-1 w-auto h-12 mr-2;
+			@apply flex-initial w-auto h-12 mr-2;
 		}
 
 		> .field {
