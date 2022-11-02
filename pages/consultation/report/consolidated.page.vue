@@ -118,7 +118,7 @@
 			small { @apply flex-initial; }
 
 			.hours {
-				@apply text-5xl;
+				@apply text-4xl;
 			}
 		}
 	}
