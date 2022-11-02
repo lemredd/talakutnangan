@@ -10,10 +10,11 @@
 				v-for="permissionName in operationalPermissionNames"
 				:key="permissionName"
 				class="ml-5">
+				<!-- TODO: use title case utility function  -->
 				<Checkbox
 					v-model="rawFlags"
 					:disabled="disabled"
-					:label="convertForSentence(permissionName).toLowerCase()"
+					:label="titleCase(convertForSentence(permissionName))"
 					:value="permissionName"/>
 			</li>
 		</div>
@@ -65,6 +66,7 @@ import convertForSentence from "$/string/convert_for_sentence"
 
 import Checkbox from "@/fields/checkbox.vue"
 import AccessLevelSelector from "@/fields/selectable_options.vue"
+import { titleCase } from "text-title-case"
 
 // Props should be contained to retain its reactivity
 const props = defineProps<{
