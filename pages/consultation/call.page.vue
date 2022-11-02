@@ -65,9 +65,12 @@ import type {
 import isUndefined from "$/type_guards/is_undefined"
 
 import makeSwitch from "$@/helpers/make_switch"
+import Fetcher from "$@/fetchers/consultation"
 
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+
+const fetcher = new Fetcher()
 
 type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
@@ -116,4 +119,15 @@ const {
 	"toggle": toggleMic,
 	"state": mustTransmitAudio
 } = makeSwitch(false)
+
+onMounted(() => {
+	const { "id": userProfileID } = userProfile.data
+	const { "id": consultationID } = consultation.data
+	const channelName = `consultation-ticket-${consultationID}`
+	const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
+	fetcher.generateToken(userProfileID, channelName, chatMessageActivityID)
+	.then(res => {
+		console.log(res)
+	})
+})
 </script>
