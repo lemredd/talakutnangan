@@ -1,9 +1,24 @@
-import type { FileLikeTransformerOptions } from "%/types/independent"
+import type { IncludedRelationships, FileLikeTransformerOptions } from "%/types/independent"
+
 import AttachedChatFile from "%/models/attached_chat_file"
 import FileLikeTransformer from "%/transformers/file-like"
+import ChatMessageTransformer from "%/transformers/chat_message"
+
+type Relationships = "chatMessage"
 
 export default class extends FileLikeTransformer<AttachedChatFile, FileLikeTransformerOptions> {
-	constructor() {
-		super("attached_chat_file")
+	constructor({ included }: IncludedRelationships<Relationships> = {
+		"included": [ "chatMessage" ]
+	}) {
+		super("attached_chat_file", [
+			included.indexOf("chatMessage") > -1
+				? {
+					"attribute": "chatMessageActivity",
+					"transformer": new ChatMessageTransformer({
+						"included": []
+					})
+				}
+				: null
+		])
 	}
 }
