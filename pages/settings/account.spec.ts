@@ -65,7 +65,7 @@ describe("Page: settings/account", () => {
 		expect(inputs[2].element.value).toBe(userProfileResource.data.department.data.acronym)
 	})
 
-	it("should send updated email", async() => {
+	it("should send updated user", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const userProfile = await new Factory()
 		.beUnreachableEmployee()
