@@ -109,9 +109,9 @@ import makeUnique from "$/array/make_unique"
 import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
+import convertToRawFullTime from "$/consultation/convert_to_raw_full_time"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
-import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Suspensible from "@/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
@@ -205,9 +205,11 @@ const weeklyAverageByStudents = computed<number>(() => {
 	const subtotals = weeklySummary.value.map(summary => ({
 		"count": summary.userIDs.length,
 		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
-	} as WeeklySubtotal)
+	} as WeeklySubtotal))
 
-	const weightData = subtotals.map(subtotal => subtotal.count * subtotal.totalMillisecondsConsumed)
+	const weightedData = subtotals.map(
+		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
+	)
 	const total = weightedData.reduce((total, subtotal) => total + subtotal, 0)
 	return total / totalNumberOfStudents.value
 })
@@ -216,22 +218,7 @@ const readableTotalTime = computed<{
 	hourString: string,
 	minuteString: string,
 	secondString: string
-}>(() => {
-	const {
-		hours,
-		minutes,
-		seconds
-	} = convertMStoTimeObject(totalNumberOfConsumedMilliseconds.value)
-
-	const hourString = `${Math.abs(hours)} hours`
-	const minuteString = `${Math.abs(minutes)} minutes`
-	const secondString = `${Math.abs(seconds)} seconds`
-	return {
-		hourString,
-		minuteString,
-		secondString
-	}
-})
+}>(() => convertToRawFullTime(totalNumberOfConsumedMilliseconds.value))
 const readableTotalHours = computed<string>(() => readableTotalTime.value.hourString)
 const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
 const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
