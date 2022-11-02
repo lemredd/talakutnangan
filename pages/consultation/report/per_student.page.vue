@@ -6,7 +6,7 @@
 			:initial-range-end="rangeEnd"
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
-			<p>
+			<p class="details">
 				The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.
 			</p>
 			<table>
@@ -26,25 +26,24 @@
 						<td class="sum-entry-owner">
 							{{ studentEntry.name }} <small>({{ studentEntry.email }})</small>
 						</td>
-						<td>
-							<ul class="consultations">
-								<li
-									v-for="consultation in studentEntry.meta.consultations.data"
-									:key="consultation.id"
-									class="consultation">
-									#{{ consultation.id }}
-									{{ consultation.reason }}
-									{{
-										convertToFullTimeString(
-											calculateMillisecondDifference(
-												consultation.finishedAt!,
-												consultation.startedAt!
-											)
+
+						<ul class="consultations">
+							<td
+								v-for="consultation in studentEntry.meta.consultations.data"
+								:key="consultation.id"
+								class="consultation">
+								#{{ consultation.id }}
+								{{ consultation.reason }}
+								{{
+									convertToFullTimeString(
+										calculateMillisecondDifference(
+											consultation.finishedAt!,
+											consultation.startedAt!
 										)
-									}}
-								</li>
-							</ul>
-						</td>
+									)
+								}}
+							</td>
+						</ul>
 						<td>
 							{{ convertToFullTimeString(studentEntry.meta.totalMillisecondsConsumed) }}
 						</td>
@@ -65,7 +64,31 @@
 	</article>
 </template>
 
-<style>
+<style lang="scss">
+	@media print {
+		.parent-dropdown-container.links.mobile, .page-shell-footer {
+			display: none;
+		}
+	}
+
+</style>
+
+<style scoped lang="scss">
+.details{
+	@apply mb-5;
+}
+
+table, th, thead, tfoot, td{
+	border:2px solid;
+	padding: 8px;
+	text-align: center;
+
+}
+
+.consultations{
+	@apply flex flex-col;
+}
+
 
 </style>
 
