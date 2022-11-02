@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import { mount } from "@vue/test-utils"
+import { flushPromises, mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -10,7 +10,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Page from "./account.page.vue"
 
 describe("Page: settings/account", () => {
-	it("should show basic details for students", async() => {
+	it.only("should show basic details for students", async() => {
 		const factory = new Factory()
 		const userProfileModel = await factory.beStudent().insertOne()
 		const studentDetailModel = await new StudentDetailFactory()
@@ -31,14 +31,15 @@ describe("Page: settings/account", () => {
 			}
 		})
 
-		const inputs = wrapper.findAll("input")
+		const inputs = wrapper.findAll(".submittable-field input")
+		const inputElements = inputs.map(input => input.element as HTMLInputElement)
 
-		expect(inputs).toHaveLength(4)
-		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
-		expect(inputs[2].element.value).toBe(
+		expect(inputs).toHaveLength(3)
+		expect(inputElements[0].value).toBe(userProfileResource.data.email)
+		expect(inputElements[1].value).toBe(
 			userProfileResource.data.studentDetail.data.studentNumber
 		)
-		expect(inputs[3].element.value).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputElements[2].value).toContain(userProfileResource.data.department.data.acronym)
 	})
 
 	it("should show basic details for employees", async() => {
@@ -89,6 +90,9 @@ describe("Page: settings/account", () => {
 		await emailField.setValue(fakeNewEmail)
 		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
 		await saveEmailFieldButton.trigger("click")
+		const submitBtn = wrapper.find(".submit-btn")
+		await submitBtn.trigger("click")
+		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
