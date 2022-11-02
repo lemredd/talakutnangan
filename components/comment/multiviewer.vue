@@ -4,12 +4,13 @@
 		:key="comment.id"
 		class="comment">
 		<Viewer v-model="comments[i]"/>
-		<br/>
 	</div>
 </template>
 
 <style scoped lang="scss">
-
+	div {
+		@apply flex-1 p-5 m-5 bg-light-800 shadow-lg rounded-1rem;
+	}
 </style>
 
 <script setup lang="ts">
