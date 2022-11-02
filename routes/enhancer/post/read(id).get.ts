@@ -65,7 +65,8 @@ export default class extends PageMiddleware {
 		}) as PostDocument
 		const comments = await commentManager.list({
 			"filter": {
-				"existence": "exists"
+				"existence": "exists",
+				"postID": Number(id)
 			},
 			"page": {
 				"limit": 10,
