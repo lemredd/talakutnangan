@@ -44,10 +44,15 @@
 
 <style lang="scss">
 	@import "@styles/variables.scss";
+	@import "@styles/btn.scss";
+
+	form, .update-password-field {
+		@apply mt-8;
+
+		max-width: $mobileViewportMaximum;
+	}
 
 	form {
-		max-width: $mobileViewportMaximum;
-
 		.input-header {
 			font-size: 1.25em;
 		}
@@ -80,6 +85,7 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 const emailFieldStatus = ref<FieldStatus>("locked")
 const email = ref<string>(userProfile.data.email)
+
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
