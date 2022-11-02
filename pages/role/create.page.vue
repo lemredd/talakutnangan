@@ -80,7 +80,7 @@ function createRole() {
 		"deletedAt": null
 	}).then(({ unusedBody, unusedStatus }) => {
 		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Role has been successfully!")
+		successMessages.value.push("Role has been created successfully!")
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
