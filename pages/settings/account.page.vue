@@ -26,6 +26,15 @@
 			</h3>
 			<span class="role bg-white text-black">{{ roles }}</span>
 		</div>
+
+		<div class="controls mt-8 flex justify-between">
+			<button type="submit" class="submit-btn btn btn-primary">
+				submit
+			</button>
+			<button type="reset" class="submit-btn btn btn-secondary">
+				cancel
+			</button>
+		</div>
 	</form>
 </template>
 
