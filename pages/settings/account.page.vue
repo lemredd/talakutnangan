@@ -97,6 +97,9 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+
 const emailFieldStatus = ref<FieldStatus>("locked")
 const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
