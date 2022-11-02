@@ -99,39 +99,6 @@
 			</span>
 			Reply
 		</div>
-		<div class="view-reply ml-8 mt-5">
-			<div class="replied-comment ml-15 mt-5">
-				<!-- replied user name and date created -->
-				You replied to Tropa 10/31/2022
-			</div>
-			<div class="write-comment">
-				<span class="material-icons icon mt-2">
-					account_circle
-				</span>
-				<div class="comment-replied-user">
-					Osige na nga
-				</div>
-				<span class="material-icons icon">
-					more_horiz
-				</span>
-			</div>
-			<div class="vote-view">
-				<span class="material-icons up-vote">
-					<!-- add view vote  -->
-					north_east
-				</span>
-				<span class="material-icons down-vote">
-					<!-- add view vote  -->
-					south_west
-				</span>
-				500 Votes
-				<span class="material-icons message">
-					<!-- add view comments  -->
-					comment
-				</span>
-				Reply
-			</div>
-		</div>
 	</div>
 </template>
 
