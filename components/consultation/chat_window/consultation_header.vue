@@ -16,9 +16,11 @@
 		</div>
 		<div class="controls">
 			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
+			<a
+				:href="`../call/${consultation.id}`"
+				class="material-icons">
 				video_camera_back
-			</button>
+			</a>
 			<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
 				storage
 			</button>
