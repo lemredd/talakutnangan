@@ -56,7 +56,7 @@
 			v-if="mayVote"
 			:model-value="vote"
 			:is-loaded="hasRenewedVote"
-			title="friendlyVoteCount"
+			:title="friendlyVoteCount"
 			@update:model-value="switchVote"/>
 	</section>
 </template>

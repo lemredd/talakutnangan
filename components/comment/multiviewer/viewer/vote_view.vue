@@ -1,7 +1,6 @@
 <template>
 	<div class="vote-view">
 		<Suspensible :is-loaded="isLoaded">
-			{{ title }}
 			<label class="material-icons up-vote">
 				north_east
 				<input
@@ -18,6 +17,7 @@
 					title="downvote"
 					type="checkbox"/>
 			</label>
+			{{ title }}
 		</Suspensible>
 	</div>
 </template>
