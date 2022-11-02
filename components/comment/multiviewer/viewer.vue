@@ -56,7 +56,7 @@
 			<div
 				v-if="mayVote"
 				class="right">
-				<SelectableVote
+				<VoteView
 					:model-value="vote"
 					:is-loaded="hasRenewedVote"
 					title=""
@@ -86,7 +86,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
-import SelectableVote from "@/comment/multiviewer/viewer/selectable_checkbox.vue"
+import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()

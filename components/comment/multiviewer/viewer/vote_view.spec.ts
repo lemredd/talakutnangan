@@ -1,6 +1,6 @@
 import { shallowMount } from "@vue/test-utils"
 
-import Component from "./selectable_checkbox.vue"
+import Component from "./vote_view.vue"
 
 describe("Component: comment/multiviewer/viewer/checkbox", () => {
 	it("can downvote", async() => {
