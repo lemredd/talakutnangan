@@ -1,12 +1,39 @@
 <template>
 	<div :id="selfParticipantId" class="self-participant">
-		<video ref="videoElement"></video>
+		<div class="profile-user">
+			<ProfilePicture
+				class="profile-picture w-50 h-50 mb-50"
+				:user="userProfile"/>
+		</div>
+		<video
+			v-if="mustShowVideo"
+			ref="videoElement"
+			class="video-track"></video>
 		<audio ref="audioElement"></audio>
 	</div>
 </template>
 
 <style scoped lang="scss">
+	.name-user{
+		@apply flex justify-center  mb-5;
+	}
+	.call-details{
+		@apply flex justify-center mb-20;
+	}
+	.profile-user{
+		@apply flex justify-center;
+	}
+
+	.self-participant{
+		position:relative;
+	}
 	video {
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		max-width:100%;
+		max-height:100%;
 		width: 100%;
 		height: 100%;
 	}
@@ -16,6 +43,7 @@
 import { inject, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 type AdditionalPageProps = "consultation"|"chatMessageActivities"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
