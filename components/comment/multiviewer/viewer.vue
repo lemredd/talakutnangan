@@ -52,20 +52,12 @@
 		<p class="flex-1 indent mt-4">
 			{{ comment.content }}
 		</p>
-		<div class="comment-container">
-			<div
-				v-if="mayVote"
-				class="right">
-				<VoteView
-					:model-value="vote"
-					:is-loaded="hasRenewedVote"
-					title=""
-					@update:model-value="switchVote"/>
-				<h2 class="title">
-					{{ voteCount }} votes
-				</h2>
-			</div>
-		</div>
+		<VoteView
+			v-if="mayVote"
+			:model-value="vote"
+			:is-loaded="hasRenewedVote"
+			title="friendlyVoteCount"
+			@update:model-value="switchVote"/>
 	</section>
 </template>
 
@@ -119,6 +111,8 @@ const voteCount = computed<number>(() => {
 	if (isUndefined(props.modelValue.meta)) return 0
 	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
 })
+
+const friendlyVoteCount = computed<string>(() => `${voteCount.value} votes`)
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
