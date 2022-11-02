@@ -4,27 +4,46 @@
 			Begin:
 			<input
 				v-model="rangeBegin"
-				type="date"/>
+				type="date"
+				class="date"/>
 		</label>
 		<label>
 			End:
 			<input
 				v-model="rangeEnd"
-				type="date"/>
+				type="date"
+				class="date"/>
 		</label>
-		<input type="submit" value="Summarize"/>
-		<button type="button" @click="printPage">
+		<input
+			type="submit"
+			value="Summarize"
+			class="summarize-print btn btn-primary"/>
+		<button
+			type="button"
+			class="summarize-print btn btn-primary"
+			@click="printPage">
 			Print
 		</button>
 	</form>
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/variables.scss";
+	@import "@styles/btn.scss";
+
 	@media print {
 		form {
 			@apply hidden;
 		}
 	}
+
+.date{
+	@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
+}
+
+.summarize-print{
+	@apply m-l-5 rounded-0.5rem;
+}
 </style>
 
 <script setup lang="ts">

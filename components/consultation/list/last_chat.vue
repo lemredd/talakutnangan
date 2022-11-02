@@ -43,7 +43,6 @@ const {
 	lastChat: DeserializedChatMessageResource<"user">
 }>()
 
-
 const time = computed(
 	() => `${lastChat.createdAt.getHours() % 12}:${lastChat.createdAt.getMinutes()}`
 )

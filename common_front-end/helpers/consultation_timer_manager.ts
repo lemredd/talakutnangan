@@ -104,10 +104,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 					consultationListener(consultation, listener.remainingMillisecondsBeforeInactivity)
 				})
 			} else {
-				listener.remainingMillisecondsBeforeInactivity = 0
-				listener.consultationListeners.finish.forEach(consultationListener => {
-					consultationListener(consultation)
-				})
+				ConsultationTimerManager.forceFinish(consultation)
 			}
 		})
 	}
@@ -186,8 +183,13 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 		const listener = ConsultationTimerManager.listeners[foundIndex]
 		listener.consultation = resource
 		listener.remainingMillisecondsBeforeInactivity = 0
-		listener.consultationListeners.finish.forEach(consultationListener => {
-			consultationListener(resource)
-		})
+		const finishListeners = [ ...listener.consultationListeners.finish ]
+
+		listener.consultationListeners.consumedTime = []
+		listener.consultationListeners.restartTime = []
+		listener.consultationListeners.finish = []
+		for (const sublistener of finishListeners) {
+			sublistener(resource)
+		}
 	}
 }
