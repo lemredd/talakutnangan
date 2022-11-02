@@ -85,7 +85,6 @@ const mayUpdatePost = computed<boolean>(() => {
 			isOwned
 				|| !isUndefined(department.value)
 				&& department.value?.id === userProfile.data.department.data.id
-
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope

@@ -1,19 +1,5 @@
 <template>
-	<div>
-		<div class="post-container flex justify-between w-[100%] pb-[5em]">
-			<div class="post-title">
-				<h2 class="font-bold">
-					Post
-				</h2>
-			</div>
-			<div class="">
-			</div>
-			<Menu
-				:post="post"
-				@update-post="openUpdateForm"
-				@archive-post="confirmArchive"
-				@restore-post="confirmRestore"/>
-		</div>
+	<section>
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
@@ -53,47 +39,54 @@
 				</button>
 			</template>
 		</Overlay>
-		<div class="post-container" :hidden="post.isPostShown">
-			<div class="left">
-				<div><img class="max-w-[100px]" src="@assets/emptyUser.png"/></div>
-				<h2 class="title">
+		<header>
+			<div class="post-details">
+				<ProfilePicture
+					class="profile-picture"
+					:user="post.poster"/>
+				<span>
 					{{ post.poster.data.name }}
-				</h2>
+				</span>
+				<span>
+					<small>
+						{{ postInfo }}
+					</small>
+				</span>
 			</div>
-			<div class="right">
-				<h2 class="title">
-					<!-- TODO: Put the total number of upvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to upvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of downvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to downvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of votes here -->
-				</h2>
-			</div>
-			<p>
-				{{ post.content }}
-			</p>
-		</div>
-	</div>
+			<Menu
+				:post="post"
+				@update-post="openUpdateForm"
+				@archive-post="confirmArchive"
+				@restore-post="confirmRestore"/>
+		</header>
+		<p>
+			{{ post.content }}
+		</p>
+	</section>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "@styles/btn.scss";
 
-	post-container {
+	section {
 		@apply flex flex-col flex-nowrap justify-center;
+		@apply flex justify-between pb-[5em];
+		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
-		> .field {
-			@apply flex-initial;
+		header {
+			@apply flex flex-row justify-between;
+
+			.post-details {
+				@apply flex-1 flex flex-row flex-wrap;
+
+				.profile-picture {
+					@apply mb-5 flex-initial w-auto h-6;
+
+					+ span {
+						@apply flex-1;
+					}
+				}
+			}
 		}
 	}
 
@@ -106,9 +99,11 @@ import type { DeserializedPostResource } from "$/types/documents/post"
 
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
 
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
 const fetcher = new Fetcher()
@@ -153,10 +148,31 @@ function closeArchiveOrRestore() {
 	closeRestore()
 }
 
+const postDepartment = computed<string>(() => {
+	const { department } = post.value
+
+	if (isUndefined(department)) {
+		return "Posted to all"
+	}
+
+	return `Posted on ${department.data.fullName} (${department.data.acronym})`
+})
+
+const friendlyCreatedDate = computed<string>(() => {
+	const { createdAt } = post.value
+
+	// TODO: Format like "one hour ago", or "one day ago"
+	return createdAt
+})
+
+const postInfo = computed<string>(() => `${postDepartment.value} ${friendlyCreatedDate.value}`)
+
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
 		"content": post.value.content,
-		"deletedAt": null
+		"createdAt": new Date(),
+		"deletedAt": null,
+		"updatedAt": new Date()
 	}, {
 		"extraDataFields": {
 			"relationships": {
