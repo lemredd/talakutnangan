@@ -2,7 +2,7 @@
 	<section v-if="mustDisplayOnly" class="comment-viewer">
 		<header>
 			<h3 class="flex-1 m-auto ml-2">
-				{{ comment.user.data.name }}
+				{{ comment.user.data.name }} {{ comment.createdAt }}
 			</h3>
 		</header>
 		<div class="main-content">
