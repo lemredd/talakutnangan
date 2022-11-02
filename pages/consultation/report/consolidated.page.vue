@@ -248,8 +248,12 @@ const weeklyAveragePerConsulters = computed<number>(() => {
 	const weightedData = subtotals.map(
 		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
 	)
+	const totalWeeklyCount = subtotals.reduce(
+		(previousTotal, subtotal) => previousTotal + subtotal.count,
+		0
+	)
 	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
-	return total / Math.max(totalNumberOfConsulters.value, 1)
+	return total / Math.max(totalWeeklyCount, 1)
 })
 const readableWeeklyAverageTimePerConsulter = computed<RawFullTimeString>(
 	() => convertToRawFullTime(weeklyAveragePerConsulters.value)
@@ -273,8 +277,12 @@ const weeklyAveragePerConsultations = computed<number>(() => {
 	const weightedData = subtotals.map(
 		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
 	)
+	const totalWeeklyCount = subtotals.reduce(
+		(previousTotal, subtotal) => previousTotal + subtotal.count,
+		0
+	)
 	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
-	return total / Math.max(totalNumberOfConsultations.value, 1)
+	return total / Math.max(totalWeeklyCount, 1)
 })
 const readableWeeklyAverageTimePerConsultation = computed<RawFullTimeString>(
 	() => convertToRawFullTime(weeklyAveragePerConsultations.value)
