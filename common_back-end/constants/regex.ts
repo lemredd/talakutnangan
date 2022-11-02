@@ -32,3 +32,6 @@ export const roleNameDescription
 
 export const fileType = /(\w|-)+\/(\w|-)+(\.(\w|-)+)?(\+(\w|-)+)?/u
 export const fileTypeDescription = "be a valid MIME type"
+
+export const channelName = /^\w+$/u
+export const channelNameDescription = "have alphanumeric or underscore characters only"
