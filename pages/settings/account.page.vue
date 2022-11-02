@@ -16,7 +16,7 @@
 			type="text"
 			status="disabled"/>
 		<NonSensitiveTextualField
-			v-model="groupName"
+			v-model="department"
 			:label="groupKind"
 			type="text"
 			status="disabled"/>
@@ -88,7 +88,9 @@ const groupKind = computed<string>(() => {
 	if (isCurrentlyUnreachableEmployee.value) return "Department"
 	return "Institute"
 })
-const groupName = computed<string>(() => userProfile.data.department.data.acronym)
+const departmentFullName = userProfile.data.department.data.fullName
+const departmentAcronym = userProfile.data.department.data.acronym
+const department = ref(`${departmentFullName} (${departmentAcronym})`)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
 
