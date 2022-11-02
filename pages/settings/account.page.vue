@@ -1,5 +1,9 @@
 <template>
 	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
@@ -59,6 +63,10 @@ import settingsTabInfos from "@/settings/settings_tab_infos"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
+
+import { UnitError } from "$/types/server"
 
 const fetcher = new Fetcher()
 
@@ -67,6 +75,9 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 const emailFieldStatus = ref<FieldStatus>("locked")
 const email = ref<string>(userProfile.data.email)
+
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
@@ -100,10 +111,21 @@ function updateEmail(): void {
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
-		//
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Email updated successfully.")
 	})
-	.catch(() => {
-		//
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 </script>
