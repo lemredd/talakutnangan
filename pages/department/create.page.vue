@@ -40,8 +40,8 @@
 import { ref, computed } from "vue"
 
 import type { UnitError } from "$/types/server"
-import convertToTitle from "$/string/convert_to_title"
 
+import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
 
 import UserListRedirector from "@/resource_management/list_redirector.vue"
