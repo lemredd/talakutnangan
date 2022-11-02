@@ -149,11 +149,10 @@ async function updateRole() {
 			}
 		}
 	})
-	.then(({ body, status }) => {
+	.then(() => {
 		closeConfirmation()
 		password.value = ""
 		nameFieldStatus.value = "locked"
-		console.log(body, status)
 
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Role has been successfully!")
