@@ -5,23 +5,25 @@
 		class="border-b"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
+			class="submittable-field email-field"
 			v-model="email"
 			v-model:status="emailFieldStatus"
 			label="E-mail"
-			type="email"
-			@save="updateUser"/>
+			type="email"/>
 
 		<NonSensitiveTextualField
 			v-if="isCurrentlyStudent"
 			v-model="studentNumber"
 			label="Student Number"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field student-number-field"/>
 		<NonSensitiveTextualField
 			v-model="department"
 			:label="departmentLabelKind"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field department-field"/>
 		<div>
 			<h3 class="input-header">
 				Roles
@@ -30,12 +32,15 @@
 		</div>
 
 		<div class="controls mt-8 flex justify-between">
-			<button type="submit" class="submit-btn btn btn-primary">
+			<button
+				type="submit"
+				class="submit-btn btn btn-primary"
+				@click="updateUser">
 				submit
 			</button>
 			<button
 				type="reset"
-				class="submit-btn btn btn-secondary"
+				class="reset-btn btn btn-secondary"
 				@click.prevent="revertToOldData">
 				cancel
 			</button>
@@ -122,7 +127,10 @@ function revertToOldData() {
 
 function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
-		...userProfile.data
+		"email": email.value,
+		"kind": userProfile.data.kind,
+		"name": userProfile.data.name,
+		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
 		//
