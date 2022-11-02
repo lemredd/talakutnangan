@@ -46,9 +46,22 @@
 					<small> Number of consultations performed </small>
 				</section>
 				<section>
-					<div>
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableWeeklyAverageHoursPerStudent }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageMinutesPerStudent }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageSecondsPerStudent }}
+							</p>
+						</div>
 					</div>
-					<small> add name here </small>
+					<small>Weekly average per student</small>
 				</section>
 			</div>
 		</Suspensible>
@@ -97,7 +110,7 @@
 import { ref, computed, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { SummaryRange } from "$@/types/component"
+import type { SummaryRange, RawFullTimeString } from "$@/types/component"
 import type {
 	ConsolidatedSummedTimeDocument,
 	DateTimeRange
@@ -109,7 +122,7 @@ import makeUnique from "$/array/make_unique"
 import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
-import convertToRawFullTime from "$/consultation/convert_to_raw_full_time"
+import convertToRawFullTime from "@/consultation/report/convert_to_raw_full_time"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
@@ -201,7 +214,14 @@ const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
 )
 
-const weeklyAverageByStudents = computed<number>(() => {
+const readableTotalTime = computed<RawFullTimeString>(
+	() => convertToRawFullTime(totalNumberOfConsumedMilliseconds.value)
+)
+const readableTotalHours = computed<string>(() => readableTotalTime.value.hourString)
+const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
+const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
+
+const weeklyAveragePerStudents = computed<number>(() => {
 	const subtotals = weeklySummary.value.map(summary => ({
 		"count": summary.userIDs.length,
 		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
@@ -210,18 +230,21 @@ const weeklyAverageByStudents = computed<number>(() => {
 	const weightedData = subtotals.map(
 		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
 	)
-	const total = weightedData.reduce((total, subtotal) => total + subtotal, 0)
-	return total / totalNumberOfStudents.value
+	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
+	return total / Math.max(totalNumberOfStudents.value, 1)
 })
-
-const readableTotalTime = computed<{
-	hourString: string,
-	minuteString: string,
-	secondString: string
-}>(() => convertToRawFullTime(totalNumberOfConsumedMilliseconds.value))
-const readableTotalHours = computed<string>(() => readableTotalTime.value.hourString)
-const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
-const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
+const readableWeeklyAverageTimePerStudent = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerStudents.value)
+)
+const readableWeeklyAverageHoursPerStudent = computed<string>(
+	() => readableWeeklyAverageTimePerStudent.value.hourString
+)
+const readableWeeklyAverageMinutesPerStudent = computed<string>(
+	() => readableWeeklyAverageTimePerStudent.value.minuteString
+)
+const readableWeeklyAverageSecondsPerStudent = computed<string>(
+	() => readableWeeklyAverageTimePerStudent.value.secondString
+)
 
 const fetcher = new Fetcher()
 async function renewSummary(range: SummaryRange) {
