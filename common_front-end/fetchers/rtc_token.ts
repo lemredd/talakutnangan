@@ -26,7 +26,7 @@ export default class extends BaseFetcher<
 		super({} as any)
 	}
 
-	generateToken(hostName: string, channelName: string, uid: string): Promise<Response<
+	generateToken(channelName: string, uid: string): Promise<Response<
 		any,
 		any,
 		any,
@@ -36,7 +36,6 @@ export default class extends BaseFetcher<
 	>> {
 		const pathToGenerateToken = specializePath(RTC_TOKEN_LINK, {
 			channelName,
-			hostName,
 			uid
 		})
 		const headers = new Headers({ "Access-Control-Allow-Origin": "*" })
