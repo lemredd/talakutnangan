@@ -185,9 +185,9 @@ const friendlyCommentCount = computed<string>(() => `${props.commentCount} comme
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
 		"content": post.value.content,
-		"createdAt": new Date().toJSON(),
+		"createdAt": post.value.createdAt.toJSON(),
 		"deletedAt": null,
-		"updatedAt": new Date().toJSON()
+		"updatedAt": post.value.updatedAt.toJSON()
 	}, {
 		"extraDataFields": {
 			"relationships": {

@@ -26,6 +26,7 @@ describe("Component: post/viewer", () => {
 		const roleID = "3"
 		const modelValue = {
 			"content": "Hello world!",
+			"createdAt": new Date(),
 			"deletedAt": null,
 			"id": postID,
 			"poster": {
@@ -40,7 +41,8 @@ describe("Component: post/viewer", () => {
 					"type": "role"
 				}
 			} as DeserializedRoleDocument,
-			"type": "post"
+			"type": "post",
+			"updatedAt": new Date()
 		} as DeserializedPostResource<"poster"|"posterRole">
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount(Component, {
@@ -72,6 +74,7 @@ describe("Component: post/viewer", () => {
 				}
 			},
 			"props": {
+				"commentCount": 0,
 				modelValue
 			}
 		})
@@ -95,7 +98,9 @@ describe("Component: post/viewer", () => {
 			"data": {
 				"attributes": {
 					"content": modelValue.content,
-					"deletedAt": modelValue.deletedAt
+					"createdAt": modelValue.createdAt.toJSON(),
+					"deletedAt": modelValue.deletedAt,
+					"updatedAt": modelValue.updatedAt.toJSON()
 				},
 				"id": postID,
 				"relationships": {
@@ -127,6 +132,7 @@ describe("Component: post/viewer", () => {
 		const roleID = "3"
 		const modelValue = {
 			"content": "Hello world!",
+			"createdAt": new Date(),
 			"deletedAt": null,
 			"id": postID,
 			"poster": {
@@ -141,7 +147,8 @@ describe("Component: post/viewer", () => {
 					"type": "role"
 				}
 			} as DeserializedRoleDocument,
-			"type": "post"
+			"type": "post",
+			"updatedAt": new Date()
 		} as DeserializedPostResource<"poster"|"posterRole">
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const wrapper = shallowMount<any>(Component, {
@@ -173,6 +180,7 @@ describe("Component: post/viewer", () => {
 				}
 			},
 			"props": {
+				"commentCount": 0,
 				modelValue
 			}
 		})
