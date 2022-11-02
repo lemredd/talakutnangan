@@ -8,10 +8,9 @@
 		<div class="role-name">
 			<RoleNameField
 				v-model="role.data.name"
+				v-model:status="nameFieldStatus"
 				label="Role Name"
-				type="text"
-				:status="nameFieldStatus"
-				@update:status="updateNameFieldStatus"/>
+				type="text"/>
 		</div>
 
 		<FlagSelector
@@ -210,17 +209,5 @@ async function restoreRole() {
 			receivedErrors.value = [ "an error occured" ]
 		}
 	})
-}
-
-function updateNameFieldStatus(newStatus: FieldStatus) {
-	switch (newStatus) {
-		case "unlocked":
-			nameFieldStatus.value = newStatus
-			break
-		case "locked":
-			updateRole()
-			break
-		default: throw new Error("Developer error!")
-	}
 }
 </script>
