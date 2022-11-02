@@ -6,9 +6,9 @@
 				:user="userProfile"/>
 		</div>
 		<video
-			v-if="mustShowVideo"
 			ref="videoElement"
-			class="video-track"></video>
+			class="video-track">
+		</video>
 		<audio ref="audioElement"></audio>
 	</div>
 </template>
@@ -24,11 +24,12 @@
 		min-height:300px;
 
 		.profile-user{
+			position: absolute;
 			max-width:100px;
 			max-height:100px;
 		}
 
-		video {
+		.video-track {
 			@apply object-cover;
 			max-width:800px;
 			max-height:100%;
