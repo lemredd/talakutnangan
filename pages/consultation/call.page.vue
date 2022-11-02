@@ -54,13 +54,15 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from "vue"
+import { computed, inject, onMounted, provide, ref } from "vue"
 
 import { PageContext } from "$/types/renderer"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
+
+import { CURRENT_USER_RTC_TOKEN } from "$@/constants/provided_keys"
 
 import isUndefined from "$/type_guards/is_undefined"
 
@@ -120,8 +122,9 @@ const {
 	"state": mustTransmitAudio
 } = makeSwitch(false)
 
+const token = ref("")
+provide(CURRENT_USER_RTC_TOKEN, token)
 onMounted(() => {
-	const { "id": userProfileID } = userProfile.data
 	const { "id": consultationID } = consultation.data
 	const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 	fetcher.generateToken(consultationID, "call", chatMessageActivityID)
