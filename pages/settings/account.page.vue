@@ -9,7 +9,7 @@
 			v-model:status="emailFieldStatus"
 			label="E-mail"
 			type="email"
-			@save="updateEmail"/>
+			@save="updateUser"/>
 
 		<NonSensitiveTextualField
 			v-if="isCurrentlyStudent"
@@ -19,7 +19,7 @@
 			status="disabled"/>
 		<NonSensitiveTextualField
 			v-model="department"
-			:label="groupKind"
+			:label="departmentLabelKind"
 			type="text"
 			status="disabled"/>
 		<div>
@@ -33,7 +33,10 @@
 			<button type="submit" class="submit-btn btn btn-primary">
 				submit
 			</button>
-			<button type="reset" class="submit-btn btn btn-secondary">
+			<button
+				type="reset"
+				class="submit-btn btn btn-secondary"
+				@click.prevent="revertToOldData">
 				cancel
 			</button>
 		</div>
@@ -83,10 +86,11 @@ const fetcher = new Fetcher()
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+
+
 const emailFieldStatus = ref<FieldStatus>("locked")
+const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
-
-
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
 	if (isCurrentlyStudent.value) {
@@ -99,11 +103,10 @@ const studentNumber = computed<string>(() => {
 
 	return ""
 })
-
 const isCurrentlyUnreachableEmployee = computed<boolean>(
 	() => userProfile.data.kind === "unreachable_employee"
 )
-const groupKind = computed<string>(() => {
+const departmentLabelKind = computed<string>(() => {
 	if (isCurrentlyUnreachableEmployee.value) return "Department"
 	return "Institute"
 })
@@ -113,12 +116,13 @@ const department = ref(`${departmentFullName} (${departmentAcronym})`)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
 
-function updateEmail(): void {
+function revertToOldData() {
+	email.value = oldEmail
+}
+
+function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
-		"email": email.value,
-		"kind": userProfile.data.kind,
-		"name": userProfile.data.name,
-		"prefersDark": userProfile.data.prefersDark
+		...userProfile.data
 	})
 	.then(() => {
 		//
