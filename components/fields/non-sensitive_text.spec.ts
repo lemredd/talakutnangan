@@ -154,6 +154,28 @@ describe("Component: fields/non-sensitive_text", () => {
 		expect(updates).toHaveProperty("0.0", "loaded")
 	})
 
+	it("must locked if close button has been clicked", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"label": "E-mail",
+				"modelValue": "",
+				"required": true,
+				"status": "unlocked",
+				"type": "email"
+			}
+		})
+
+		const cancelButton = wrapper.find(".cancel-button")
+
+		await cancelButton.trigger("click")
+
+		const field = wrapper.find("input")
+		expect(field.attributes("disabled")).toBeUndefined()
+		const updates = wrapper.emitted("update:status")
+		expect(updates).toHaveLength(1)
+		expect(updates).toHaveProperty("0.0", "locked")
+	})
+
 	it("must be disabled", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {

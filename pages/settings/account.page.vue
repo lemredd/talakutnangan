@@ -5,9 +5,9 @@
 		class="border-b"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
-			class="submittable-field email-field"
 			v-model="email"
 			v-model:status="emailFieldStatus"
+			class="submittable-field email-field"
 			label="E-mail"
 			type="email"/>
 
@@ -91,7 +91,6 @@ const fetcher = new Fetcher()
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
-
 
 const emailFieldStatus = ref<FieldStatus>("locked")
 const oldEmail = userProfile.data.email
