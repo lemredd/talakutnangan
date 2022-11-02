@@ -89,11 +89,10 @@ const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
 )
 
-const acronym = ref<string>(department.value.data.acronym)
-const capitalAcronym = computed<string>({
-	"get": () => acronym.value,
+const capitalAcronym = computed({
+	"get": () => department.value.data.acronym,
 	set(newValue: string): void {
-		acronym.value = newValue.toUpperCase()
+		department.value.data.acronym = newValue.toUpperCase()
 	}
 })
 
