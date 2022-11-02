@@ -6,7 +6,6 @@
 		:received-success-messages="successMessages"/>
 
 	<form @submit.prevent="createRole">
-		<!-- TODO: capitalize each word in input automatically  -->
 		<TextualField
 			v-model="role.name"
 			label="Role Name"
