@@ -1,5 +1,8 @@
 <template>
-	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+	<SettingsHeader
+		title="User Settings"
+		:tab-infos="settingsTabInfos"
+		class="border-b"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
@@ -7,7 +10,6 @@
 			label="E-mail"
 			type="email"
 			@save="updateEmail"/>
-		<UpdatePasswordField/>
 
 		<NonSensitiveTextualField
 			v-if="isCurrentlyStudent"
@@ -36,6 +38,8 @@
 			</button>
 		</div>
 	</form>
+
+	<UpdatePasswordField class="update-password-field"/>
 </template>
 
 <style lang="scss">
