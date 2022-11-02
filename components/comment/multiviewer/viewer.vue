@@ -7,7 +7,7 @@
 		</header>
 		<div class="main-content">
 			<ProfilePicture
-				class="flex-initial w-auto h-12"
+				class="profile-picture"
 				:user="comment.user"/>
 			<p>
 				{{ comment.content }}
@@ -75,13 +75,18 @@
 
 		.main-content {
 			@apply flex-1 flex flex-row flex-nowrap items-center;
+
 			@screen md {
 				@apply w-[90%];
 			}
 
+			> .profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
+
 			> p {
 				@apply flex-1;
-				@apply ml-auto ml-3 p-5 bg-gray-300 shadow-lg rounded-[1rem]
+				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
 			}
 		}
 	}
