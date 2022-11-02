@@ -1,4 +1,4 @@
-import { Response } from "!/types/dependent"
+import type { Response } from "!/types/dependent"
 
 import type { Serializable } from "$/types/general"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
