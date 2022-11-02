@@ -69,11 +69,11 @@
 	}
 
 	.main {
-		@apply flex justify-around <sm: flex-col place-content-around;
+		@apply flex flex-row flex-wrap justify-around <sm: flex-col place-content-around;
 
 		section {
-			@apply flex-1 flex flex-col justify-around items-center;
-			@apply border-2px border-solid p-8px text-center min-w-64 min-h-64;
+			@apply flex-initial flex flex-col justify-around items-center;
+			@apply border-2px border-solid p-8px text-center min-w-64 min-h-64 m-3;
 
 			div {
 				@apply flex-1 text-center h-10 <sm:h-5 break-words m-auto;
@@ -185,6 +185,11 @@ const weeklySummary = computed<WeeklySummary[]>(() => weeklyGroups.value.map(ran
 	return rawConsolidatedSums
 }))
 
+interface WeeklySubtotal extends DateTimeRange {
+	count: number
+	totalMillisecondsConsumed: number
+}
+
 const totalNumberOfConsumedMilliseconds = computed<number>(() => weeklySummary.value.reduce(
 	(totalMilliseconds, summary) => totalMilliseconds + summary.totalMillisecondsConsumed,
 	0
@@ -195,6 +200,17 @@ const totalNumberOfStudents = computed<number>(
 const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
 )
+
+const weeklyAverageByStudents = computed<number>(() => {
+	const subtotals = weeklySummary.value.map(summary => ({
+		"count": summary.userIDs.length,
+		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
+	} as WeeklySubtotal)
+
+	const weightData = subtotals.map(subtotal => subtotal.count * subtotal.totalMillisecondsConsumed)
+	const total = weightedData.reduce((total, subtotal) => total + subtotal, 0)
+	return total / totalNumberOfStudents.value
+})
 
 const readableTotalTime = computed<{
 	hourString: string,
