@@ -1,11 +1,21 @@
 import type { FileLikeAttributes } from "$/types/documents/file-like"
 import type { RawableFormat as Format } from "$/types/documents/irregularity"
 import type {
+	ChatMessageIdentifierDocument,
+	DeserializedChatMessageDocument
+} from "$/types/documents/chat_message"
+import type {
 	Completeness,
 	Resource,
 
 	ResourceIdentifier,
 	DeserializedResource,
+
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
 
 	ResourceDocument,
 	ResourceListDocument,
@@ -22,6 +32,23 @@ extends ResourceIdentifier<T> {
 }
 
 export type AttachedChatFileAttributes<T extends Format = "serialized"> = FileLikeAttributes<T>
+
+interface AttachedChatFileRelationshipData<unusedT extends Completeness = "read">
+extends GeneralRelationshipData {
+	chatMessage: {
+		serialized: ChatMessageIdentifierDocument,
+		deserialized: DeserializedChatMessageDocument
+	}
+}
+
+export type AttachedChatFileRelationshipNames
+= DeriveRelationshipNames<AttachedChatFileRelationshipData>
+
+export type AttachedChatFileRelationships<T extends Completeness = "read">
+= DeriveRelationships<AttachedChatFileRelationshipData<T>>
+
+export type DeserializedAttachedChatFileRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<AttachedChatFileRelationshipData<T>>
 
 export type AttachedChatFileResource<
 	T extends Completeness = "read",
@@ -63,6 +90,12 @@ export type DeserializedAttachedChatFileDocument<T extends Format = "serialized"
 	AttachedChatFileResourceIdentifier<"read">,
 	AttachedChatFileAttributes<T>,
 	DeserializedAttachedChatFileResource<T>
+> & PartialOrPickDeserializedRelationship<
+	AttachedChatFileRelationshipData<"read">,
+	DeserializedAttachedChatFileRelationships<"read">,
+	AttachedChatFileRelationshipNames,
+	T extends AttachedChatFileRelationshipNames ? true : false,
+	T extends AttachedChatFileRelationshipNames ? T : AttachedChatFileRelationshipNames
 >
 
 export type DeserializedAttachedChatFileListDocument<T extends Format = "serialized">
