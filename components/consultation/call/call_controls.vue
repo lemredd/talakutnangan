@@ -22,6 +22,7 @@
 .call-controls {
 	@apply border-t py-4;
 	@apply flex justify-center;
+	@apply bg-white dark:bg-dark-400;
 
 	position: fixed;
 	bottom: 0;
