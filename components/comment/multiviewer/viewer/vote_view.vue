@@ -1,7 +1,7 @@
 <template>
-	<div class="vote-view">
-		<Suspensible :is-loaded="isLoaded">
-			<label class="material-icons up-vote">
+	<Suspensible :is-loaded="isLoaded">
+		<div class="vote-view">
+			<label class="material-icons up-vote" :class="{ 'active-vote': hasUpvoted }">
 				north_east
 				<input
 					v-model="hasUpvoted"
@@ -9,7 +9,7 @@
 					title="upvote"
 					type="checkbox"/>
 			</label>
-			<label class="material-icons down-vote">
+			<label class="material-icons down-vote" :class="{ 'active-vote': hasDownvoted }">
 				south_west
 				<input
 					v-model="hasDownvoted"
@@ -18,8 +18,8 @@
 					type="checkbox"/>
 			</label>
 			{{ title }}
-		</Suspensible>
-	</div>
+		</div>
+	</Suspensible>
 </template>
 
 <style scoped lang="scss">
@@ -30,6 +30,16 @@
 
 	.up-vote {
 		@apply ml-10;
+
+		&.active-vote {
+			@apply text-blue-300 font-900;
+		}
+	}
+
+	.down-vote {
+		&.active-vote {
+			@apply text-red-300 font-900;
+		}
 	}
 </style>
 
