@@ -63,6 +63,24 @@
 					</div>
 					<small>Weekly average per consulter</small>
 				</section>
+				<section>
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableWeeklyAverageHoursPerConsultation }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageMinutesPerConsultation }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageSecondsPerConsultation }}
+							</p>
+						</div>
+					</div>
+					<small>Weekly average per consultation</small>
+				</section>
 			</div>
 		</Suspensible>
 	</article>
@@ -244,6 +262,31 @@ const readableWeeklyAverageMinutesPerConsulter = computed<string>(
 )
 const readableWeeklyAverageSecondsPerConsulter = computed<string>(
 	() => readableWeeklyAverageTimePerConsulter.value.secondString
+)
+
+const weeklyAveragePerConsultations = computed<number>(() => {
+	const subtotals = weeklySummary.value.map(summary => ({
+		"count": summary.consultationIDs.length,
+		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
+	} as WeeklySubtotal))
+
+	const weightedData = subtotals.map(
+		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
+	)
+	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
+	return total / Math.max(totalNumberOfConsultations.value, 1)
+})
+const readableWeeklyAverageTimePerConsultation = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerConsultations.value)
+)
+const readableWeeklyAverageHoursPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.hourString
+)
+const readableWeeklyAverageMinutesPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.minuteString
+)
+const readableWeeklyAverageSecondsPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.secondString
 )
 
 const fetcher = new Fetcher()
