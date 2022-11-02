@@ -11,7 +11,7 @@ export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 export const COMMENT_LINK = makeTemplateLink(LINK_PREFIX, "comment")
 
-export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_votes")
+export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_vote")
 
 export const TAG_LINK = makeTemplateLink(LINK_PREFIX, "tag")
 
@@ -76,6 +76,8 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 = `${USER_LINK.bound}/relationships/${PROFILE_PICTURE_LINK.type}`
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
+
+export const COUNT_COMMENT_VOTES = `${COMMENT_LINK.unbound}/count_votes`
 
 /**
  * Link for generating RTC Token
