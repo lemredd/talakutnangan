@@ -10,7 +10,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Page from "./account.page.vue"
 
 describe("Page: settings/account", () => {
-	it.only("should show basic details for students", async() => {
+	it("should show basic details for students", async() => {
 		const factory = new Factory()
 		const userProfileModel = await factory.beStudent().insertOne()
 		const studentDetailModel = await new StudentDetailFactory()
@@ -63,7 +63,7 @@ describe("Page: settings/account", () => {
 
 		expect(inputs).toHaveLength(3)
 		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
-		expect(inputs[2].element.value).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputs[1].element.value).toContain(userProfileResource.data.department.data.acronym)
 	})
 
 	it("should send updated user", async() => {
