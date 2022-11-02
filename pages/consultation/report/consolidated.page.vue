@@ -12,25 +12,41 @@
 			</p>
 			<div class="main">
 				<section>
-					<div class="consolidated">
-						{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableTotalHours }}
+							</p>
+							<p>
+								{{ readableTotalMinutes }}
+							</p>
+							<p>
+								{{ readableTotalSeconds }}
+							</p>
+						</div>
 					</div>
-					<small> Time consumed </small>
+					<small>Time consumed</small>
 				</section>
 				<section>
-					<div class="consolidated">
-						{{ totalNumberOfStudents }}
+					<div>
+						<div class="text-8xl">
+							{{ totalNumberOfStudents }}
+						</div>
 					</div>
 					<small> Number of consulters interacted </small>
 				</section>
 				<section>
-					<div class="consolidated">
-						{{ totalNumberOfConsultations }}
+					<div>
+						<div>
+							{{ totalNumberOfConsultations }}
+						</div>
 					</div>
 					<small> Number of consultations performed </small>
 				</section>
 				<section>
-					<div class="consolidated">
+					<div>
 					</div>
 					<small> add name here </small>
 				</section>
@@ -48,22 +64,33 @@
 </style>
 
 <style scoped lang="scss">
-	.main {
-		@apply flex justify-around <sm: flex-col place-content-around;
-	}
-
 	.details {
 		@apply mb-5;
 	}
 
-	section {
-		@apply border-2px border-solid p-8px text-center <sm:justify-center min-w-64 min-h-64 m-auto;
+	.main {
+		@apply flex justify-around <sm: flex-col place-content-around;
 
-		.consolidated {
-			@apply text-center h-10 <sm:h-5;
+		section {
+			@apply flex-1 flex flex-col justify-around items-center;
+			@apply border-2px border-solid p-8px text-center min-w-64 min-h-64;
+
+			div {
+				@apply flex-1 text-center h-10 <sm:h-5 break-words m-auto;
+				@apply flex flex-col justify-center items-center;
+
+				div {
+					@apply flex-1 text-11xl;
+				}
+			}
+
+			small { @apply flex-initial; }
+
+			.hours {
+				@apply text-5xl;
+			}
 		}
 	}
-
 </style>
 
 <script setup lang="ts">
@@ -84,6 +111,7 @@ import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
+import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import Suspensible from "@/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
@@ -167,6 +195,30 @@ const totalNumberOfStudents = computed<number>(
 const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
 )
+
+const readableTotalTime = computed<{
+	hourString: string,
+	minuteString: string,
+	secondString: string
+}>(() => {
+	const {
+		hours,
+		minutes,
+		seconds
+	} = convertMStoTimeObject(totalNumberOfConsumedMilliseconds.value)
+
+	const hourString = `${Math.abs(hours)} hours`
+	const minuteString = `${Math.abs(minutes)} minutes`
+	const secondString = `${Math.abs(seconds)} seconds`
+	return {
+		hourString,
+		minuteString,
+		secondString
+	}
+})
+const readableTotalHours = computed<string>(() => readableTotalTime.value.hourString)
+const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
+const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
 
 const fetcher = new Fetcher()
 async function renewSummary(range: SummaryRange) {
