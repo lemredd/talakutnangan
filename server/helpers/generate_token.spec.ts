@@ -1,4 +1,4 @@
-import helper from "./token_generator"
+import helper from "./generate_token"
 
 describe("Helper: token generator", () => {
 	it("can generate token", () => {
