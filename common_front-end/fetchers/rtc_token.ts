@@ -22,10 +22,6 @@ export default class extends BaseFetcher<
 		"extraCreateData": any,
 	}
 > {
-	constructor() {
-		super({} as any)
-	}
-
 	generateToken(channelName: string, uid: string): Promise<Response<
 		any,
 		any,
