@@ -32,7 +32,7 @@
 				<section>
 					<div>
 						<div class="text-8xl">
-							{{ totalNumberOfStudents }}
+							{{ totalNumberOfConsulters }}
 						</div>
 					</div>
 					<small> Number of consulters interacted </small>
@@ -51,17 +51,17 @@
 						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
 						<div class="hours">
 							<p>
-								{{ readableWeeklyAverageHoursPerStudent }}
+								{{ readableWeeklyAverageHoursPerConsulter }}
 							</p>
 							<p>
-								{{ readableWeeklyAverageMinutesPerStudent }}
+								{{ readableWeeklyAverageMinutesPerConsulter }}
 							</p>
 							<p>
-								{{ readableWeeklyAverageSecondsPerStudent }}
+								{{ readableWeeklyAverageSecondsPerConsulter }}
 							</p>
 						</div>
 					</div>
-					<small>Weekly average per student</small>
+					<small>Weekly average per consulter</small>
 				</section>
 			</div>
 		</Suspensible>
@@ -207,7 +207,7 @@ const totalNumberOfConsumedMilliseconds = computed<number>(() => weeklySummary.v
 	(totalMilliseconds, summary) => totalMilliseconds + summary.totalMillisecondsConsumed,
 	0
 ))
-const totalNumberOfStudents = computed<number>(
+const totalNumberOfConsulters = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.userIDs).flat()).length
 )
 const totalNumberOfConsultations = computed<number>(
@@ -221,7 +221,7 @@ const readableTotalHours = computed<string>(() => readableTotalTime.value.hourSt
 const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
 const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
 
-const weeklyAveragePerStudents = computed<number>(() => {
+const weeklyAveragePerConsulters = computed<number>(() => {
 	const subtotals = weeklySummary.value.map(summary => ({
 		"count": summary.userIDs.length,
 		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
@@ -231,19 +231,19 @@ const weeklyAveragePerStudents = computed<number>(() => {
 		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
 	)
 	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
-	return total / Math.max(totalNumberOfStudents.value, 1)
+	return total / Math.max(totalNumberOfConsulters.value, 1)
 })
-const readableWeeklyAverageTimePerStudent = computed<RawFullTimeString>(
-	() => convertToRawFullTime(weeklyAveragePerStudents.value)
+const readableWeeklyAverageTimePerConsulter = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerConsulters.value)
 )
-const readableWeeklyAverageHoursPerStudent = computed<string>(
-	() => readableWeeklyAverageTimePerStudent.value.hourString
+const readableWeeklyAverageHoursPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.hourString
 )
-const readableWeeklyAverageMinutesPerStudent = computed<string>(
-	() => readableWeeklyAverageTimePerStudent.value.minuteString
+const readableWeeklyAverageMinutesPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.minuteString
 )
-const readableWeeklyAverageSecondsPerStudent = computed<string>(
-	() => readableWeeklyAverageTimePerStudent.value.secondString
+const readableWeeklyAverageSecondsPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.secondString
 )
 
 const fetcher = new Fetcher()
