@@ -1,12 +1,14 @@
 <template>
 	<section>
 		<Viewer v-model="post"/>
-		<CreateField
-			v-if="mayCreateComment"
-			class="field"
-			:post="post"
-			@create-comment="includeComment"/>
-		<Multiviewer v-model="comments" class="comments"/>
+		<div class="comments">
+			<CreateField
+				v-if="mayCreateComment"
+				class="field"
+				:post="post"
+				@create-comment="includeComment"/>
+			<Multiviewer v-model="comments"/>
+		</div>
 	</section>
 </template>
 
@@ -14,12 +16,9 @@
 	section {
 		@apply flex flex-col flex-nowrap justify-center;
 
-		> .field {
-			@apply flex-initial;
-		}
-
 		> .comments {
-			@apply flex-1;
+			@apply flex-1 flex-col flex-nowrap;
+			@apply p-5 bg-light-800 shadow-lg rounded-[1rem];
 		}
 
 		> * {

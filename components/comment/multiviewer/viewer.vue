@@ -1,5 +1,5 @@
 <template>
-	<section v-if="mustDisplayOnly" class="comment-viewer">
+	<section v-if="mustDisplayOnly">
 		<header>
 			<h3 class="flex-1 m-auto ml-2">
 				{{ comment.user.data.name }} {{ comment.createdAt }}
@@ -63,10 +63,10 @@
 	</section>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "@styles/btn.scss";
 
-	.comment-viewer {
+	section {
 		@apply flex flex-col flex-nowrap;
 
 		header {

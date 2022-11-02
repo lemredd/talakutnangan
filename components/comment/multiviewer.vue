@@ -1,17 +1,9 @@
 <template>
-	<div
+	<Viewer
 		v-for="(comment, i) in comments"
 		:key="comment.id"
-		class="comment">
-		<Viewer v-model="comments[i]"/>
-	</div>
+		v-model="comments[i]"/>
 </template>
-
-<style scoped lang="scss">
-	div {
-		@apply flex-1 p-5 m-5 bg-light-800 shadow-lg rounded-1rem;
-	}
-</style>
 
 <script setup lang="ts">
 import { computed, onMounted } from "vue"
