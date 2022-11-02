@@ -151,6 +151,9 @@ function load() {
 		case "prepared":
 			emit("update:status", "loaded")
 			break
+		case "unlocked":
+			emit("update:status", "locked")
+			break
 		default:
 			break
 	}

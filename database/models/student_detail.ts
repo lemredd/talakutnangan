@@ -9,21 +9,21 @@ import {
 import User from "%/models/user"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"timestamps": true,
+	"paranoid": true
 })
 export default class StudentDetail extends Model {
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	studentNumber!: string
+		studentNumber!: string
 
 	@ForeignKey(() => User)
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	userID!: number
+		userID!: number
 
 	@BelongsTo(() => User)
-	user!: User
+		user!: User
 }

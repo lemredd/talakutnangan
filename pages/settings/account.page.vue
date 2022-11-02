@@ -1,40 +1,66 @@
 <template>
-	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+	<SettingsHeader
+		title="User Settings"
+		:tab-infos="settingsTabInfos"
+		class="border-b"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
 			v-model:status="emailFieldStatus"
+			class="submittable-field email-field"
 			label="E-mail"
-			type="email"
-			@save="updateEmail"/>
-		<UpdatePasswordField/>
+			type="email"/>
 
 		<NonSensitiveTextualField
 			v-if="isCurrentlyStudent"
 			v-model="studentNumber"
 			label="Student Number"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field student-number-field"/>
 		<NonSensitiveTextualField
-			v-model="groupName"
-			:label="groupKind"
+			v-model="department"
+			:label="departmentLabelKind"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field department-field"/>
 		<div>
 			<h3 class="input-header">
 				Roles
 			</h3>
 			<span class="role bg-white text-black">{{ roles }}</span>
 		</div>
+
+		<div class="controls mt-8 flex justify-between">
+			<button
+				type="submit"
+				class="submit-btn btn btn-primary"
+				@click="updateUser">
+				submit
+			</button>
+			<button
+				type="reset"
+				class="reset-btn btn btn-secondary"
+				@click.prevent="revertToOldData">
+				cancel
+			</button>
+		</div>
 	</form>
+
+	<UpdatePasswordField class="update-password-field"/>
 </template>
 
 <style lang="scss">
 	@import "@styles/variables.scss";
+	@import "@styles/btn.scss";
+
+	form, .update-password-field {
+		@apply mt-8;
+
+		max-width: $mobileViewportMaximum;
+	}
 
 	form {
-		max-width: $mobileViewportMaximum;
-
 		.input-header {
 			font-size: 1.25em;
 		}
@@ -65,9 +91,10 @@ const fetcher = new Fetcher()
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
-const emailFieldStatus = ref<FieldStatus>("locked")
-const email = ref<string>(userProfile.data.email)
 
+const emailFieldStatus = ref<FieldStatus>("locked")
+const oldEmail = userProfile.data.email
+const email = ref<string>(userProfile.data.email)
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
 	if (isCurrentlyStudent.value) {
@@ -80,19 +107,24 @@ const studentNumber = computed<string>(() => {
 
 	return ""
 })
-
 const isCurrentlyUnreachableEmployee = computed<boolean>(
 	() => userProfile.data.kind === "unreachable_employee"
 )
-const groupKind = computed<string>(() => {
+const departmentLabelKind = computed<string>(() => {
 	if (isCurrentlyUnreachableEmployee.value) return "Department"
 	return "Institute"
 })
-const groupName = computed<string>(() => userProfile.data.department.data.acronym)
+const departmentFullName = userProfile.data.department.data.fullName
+const departmentAcronym = userProfile.data.department.data.acronym
+const department = ref(`${departmentFullName} (${departmentAcronym})`)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
 
-function updateEmail(): void {
+function revertToOldData() {
+	email.value = oldEmail
+}
+
+function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
 		"kind": userProfile.data.kind,
