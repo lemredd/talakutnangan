@@ -123,11 +123,13 @@ const {
 onMounted(() => {
 	const { "id": userProfileID } = userProfile.data
 	const { "id": consultationID } = consultation.data
-	const channelName = `consultation-ticket-${consultationID}`
 	const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
-	fetcher.generateToken(userProfileID, channelName, chatMessageActivityID)
-	.then(res => {
-		console.log(res)
+	fetcher.generateToken(consultationID, "call", chatMessageActivityID)
+	.then(({ body }) => {
+		const { meta } = body
+		const { RTCToken } = meta
+
+		token.value = RTCToken
 	})
 })
 </script>
