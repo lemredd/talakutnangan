@@ -7,9 +7,12 @@ import Validation from "!/bases/validation"
 import OkResponse from "!/response_infos/ok"
 import Manager from "%/managers/consultation"
 import generateToken from "!/helpers/generate_token"
+import Merger from "!/middlewares/miscellaneous/merger"
 import RouteParameterValidation from "!/validations/route_parameter"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
+
+import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
@@ -23,7 +26,10 @@ export default class extends Controller {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new Merger([
+			CommonMiddlewareList.consultationParticipantsOnlyPolicy,
+			new BelongsToCurrentUserPolicy(Manager)
+		]) as unknown as Policy
 	}
 
 	get bodyParser(): null { return null }
