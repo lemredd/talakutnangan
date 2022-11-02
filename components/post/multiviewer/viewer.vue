@@ -66,7 +66,9 @@
 			<span class="material-icons icon">
 				comment
 			</span>
-			{{ friendlyCommentCount }}
+			<span>
+				{{ friendlyCommentCount }}
+			</span>
 		</p>
 	</section>
 </template>
@@ -76,7 +78,7 @@
 
 	section {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-5 pb-[5em] bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
 		header {
 			@apply flex-1 flex flex-row justify-between;
@@ -95,10 +97,11 @@
 		}
 
 		.comment-count {
-			@apply flex-initial mt-10;
+			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
 		}
 	}
 
+	.icon { @apply mr-2; }
 </style>
 
 <script setup lang="ts">

@@ -1,6 +1,8 @@
 <template>
-	<section>
-		<Viewer v-model="post"/>
+	<article>
+		<Viewer
+			v-model="post"
+			:comment-count="commentCount"/>
 		<div class="comments">
 			<CreateField
 				v-if="mayCreateComment"
@@ -9,11 +11,11 @@
 				@create-comment="includeComment"/>
 			<Multiviewer v-model="comments"/>
 		</div>
-	</section>
+	</article>
 </template>
 
 <style lang="scss">
-	section {
+	article {
 		@apply flex flex-col flex-nowrap justify-center;
 
 		> .comments {
@@ -31,6 +33,7 @@
 import { inject, computed, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
@@ -59,6 +62,12 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 const comments = ref<DeserializedCommentResource<"user">[]>(
 	pageProps.comments.data as DeserializedCommentResource<"user">[]
 )
+
+const commentCount = computed<number>(() => {
+	const castMeta = pageProps.comments.meta as ResourceCount
+
+	return castMeta.count
+})
 
 const mayCreateComment = computed<boolean>(() => {
 	const isPostPublic = !post.value.department
