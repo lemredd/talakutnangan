@@ -34,8 +34,8 @@ extends ResourceIdentifier<T> {
 }
 
 export type CommentAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T> & {
-	"createdAt": Date,
-	"updatedAt": Date
+	"createdAt": T extends "serialized" ? string : Date,
+	"updatedAt": T extends "serialized" ? string : Date
 }
 
 interface CommentRelationshipData<T extends Completeness = "read">
