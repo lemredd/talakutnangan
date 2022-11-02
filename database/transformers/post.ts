@@ -53,6 +53,8 @@ export default class extends Transformer<Model, void> {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
 			"content",
+			"createdAt",
+			"updatedAt",
 			"deletedAt"
 		])
 
