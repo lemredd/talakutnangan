@@ -7,49 +7,33 @@
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
-				The list contains the overall consultation summary
+				The page contains the overall consultation summary
 				from {{ rangeBegin }} to {{ rangeEnd }}.
 			</p>
 			<div class="main">
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
-							</div>
-							<small> Time consumed </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ totalNumberOfStudents }}
-							</div>
-							<small> Number of consulters interacted </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ totalNumberOfConsultations }}
-							</div>
-							<small> Number of consultations performed </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-							</div>
-							<small> add name here </small>
-						</td>
-					</tr>
-				</table>
+				<section>
+					<div class="consolidated">
+						{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
+					</div>
+					<small> Time consumed </small>
+				</section>
+				<section>
+					<div class="consolidated">
+						{{ totalNumberOfStudents }}
+					</div>
+					<small> Number of consulters interacted </small>
+				</section>
+				<section>
+					<div class="consolidated">
+						{{ totalNumberOfConsultations }}
+					</div>
+					<small> Number of consultations performed </small>
+				</section>
+				<section>
+					<div class="consolidated">
+					</div>
+					<small> add name here </small>
+				</section>
 			</div>
 		</Suspensible>
 	</article>
@@ -64,22 +48,21 @@
 </style>
 
 <style scoped lang="scss">
+	.main {
+		@apply flex justify-around <sm: flex-col place-content-around;
+	}
 
-.main{
-	@apply flex justify-around <sm: flex-col place-content-around;
-}
-.details{
-	@apply mb-5;
-}
+	.details {
+		@apply mb-5;
+	}
 
-table, td{
-	@apply border-2px border-solid p-8px text-center <sm: justify-center w-150 m-10px;
+	section {
+		@apply border-2px border-solid p-8px text-center <sm:justify-center min-w-64 min-h-64 m-auto;
 
-}
-
-.consolidated{
-	@apply text-center h-10 <sm: h-5;
-}
+		.consolidated {
+			@apply text-center h-10 <sm:h-5;
+		}
+	}
 
 </style>
 
