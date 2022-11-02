@@ -38,7 +38,9 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
 export interface ConsultationResourceIdentifier<T extends Completeness = "read">
@@ -147,3 +149,5 @@ export type ConsultationIdentifierDocument
 
 export type ConsultationIdentifierListDocument
 = IdentifierListDocument<ConsultationResourceIdentifier<"read">>
+
+export type RTCTokenDocument = MetaDocument<{ "RTCToken": string }>

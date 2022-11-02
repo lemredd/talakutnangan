@@ -81,6 +81,7 @@
 		"@vitejs/plugin-vue": "^3.1.2",
 		"@vue/compiler-sfc": "^3.2.40",
 		"@vue/server-renderer": "^3.2.40",
+		"agora-access-token": "^2.0.4",
 		"bcryptjs": "^2.4.3",
 		"busboy": "^1.6.0",
 		"compression": "^1.7.4",

@@ -23,6 +23,7 @@ export default async function(
 ): Promise<express.Express> {
 	const app = express()
 	app.set("trust proxy", true)
+	app.disable("x-powered-by")
 
 	const viteDevRouter = await createViteDevServer(app)
 

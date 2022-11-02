@@ -4,7 +4,7 @@
 		<Content :class="{ 'demarginalized-top': shouldHideNavbar }">
 			<slot></slot>
 		</Content>
-		<Footer v-if="!shouldHideFooter"/>
+		<Footer v-if="!shouldHideFooter" class="page-shell-footer"/>
 	</div>
 </template>
 
@@ -63,7 +63,10 @@ const shouldHideNavbar
 	= isLoggingIn
 	|| isViewingConsultationForm
 	|| path.includes("/consultation/call")
-const shouldHideFooter = isViewingConsultationForm || path.includes("/consultation/call")
+const shouldHideFooter
+	= isViewingConsultationForm
+	|| path.includes("/consultation/call")
+	|| path.includes("/consultation/report")
 
 
 const layout = ref<HTMLElement | null>(null)
