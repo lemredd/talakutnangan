@@ -1,8 +1,8 @@
 <template>
 	<div :id="selfParticipantId" class="self-participant">
-		<div class="profile-user">
+		<div v-if="!mustShowVideo" class="profile-user">
 			<ProfilePicture
-				class="profile-picture w-50 h-50 mb-50"
+				class="profile-picture"
 				:user="userProfile"/>
 		</div>
 		<video
@@ -14,28 +14,27 @@
 </template>
 
 <style scoped lang="scss">
-	.name-user{
-		@apply flex justify-center  mb-5;
-	}
-	.call-details{
-		@apply flex justify-center mb-20;
-	}
-	.profile-user{
-		@apply flex justify-center;
-	}
-
 	.self-participant{
+		@apply m-2;
+		@apply flex justify-center items-center;
+		@apply bg-blue-gray-300 bg-opacity-60;
 		position:relative;
-	}
-	video {
-		position: absolute;
-		top: 0;
-		left: 0;
 
-		max-width:100%;
-		max-height:100%;
-		width: 100%;
-		height: 100%;
+		max-height:600px;
+		min-height:300px;
+
+		.profile-user{
+			max-width:100px;
+			max-height:100px;
+		}
+
+		video {
+			@apply object-cover;
+			max-width:800px;
+			max-height:100%;
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>
 
