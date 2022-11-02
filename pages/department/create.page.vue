@@ -61,9 +61,9 @@ function createDepartment() {
 		"fullName": fullName.value,
 		"mayAdmit": mayAdmit.value
 	})
-	.then(({ body, status }) => {
+	.then(({ unusedBody, unusedStatus }) => {
 		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been create successfully!")
+		successMessages.value.push("Department has been created successfully!")
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
