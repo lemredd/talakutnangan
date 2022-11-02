@@ -40,11 +40,6 @@ export default class extends BaseFetcher<
 		})
 		const headers = new Headers({ "Access-Control-Allow-Origin": "*" })
 
-		return this.getFrom(pathToGenerateToken, {
-			headers,
-			"otherRequestOptions": {
-				"mode": "cors"
-			}
-		})
+		return this.getFrom(pathToGenerateToken, headers)
 	}
 }
