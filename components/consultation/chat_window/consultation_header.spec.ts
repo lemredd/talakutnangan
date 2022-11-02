@@ -135,4 +135,7 @@ describe("Component: chat window/consultation header", () => {
 		})
 	})
 
+	describe("file fetching", () => {
+		it.todo("can fetch independent file messages")
+	})
 })
