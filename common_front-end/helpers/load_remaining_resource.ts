@@ -45,7 +45,7 @@ export default async function loadRemainingResources<
 	queryMaker: () => QueryParameters<C>,
 	{
 		delayer = () => Promise.resolve()
-	} = Partial<{
+	}: Partial<{
 		delayer: () => Promise<void>
 	}> = {}
 ): Promise<void> {
