@@ -2,7 +2,7 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				:id="`local-${chatMessageActivityID}`"
+				:id="selfParticipantID"
 				v-model:must-show-video="mustShowVideo"
 				v-model:must-transmit-audio="mustTransmitAudio"
 				class="local-participant"/>
@@ -29,8 +29,8 @@
 
 		<CallControls
 			v-model:is-joined="isJoined"
-			@join-call="joinWithLocalTracks"
-			@leave-call="leaveAndRemoveLocalTracks"
+			@join-call="join"
+			@leave-call="leave"
 			@toggle-video="toggleVideo"
 			@toggle-mic="toggleMic"/>
 	</div>
@@ -58,15 +58,16 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, provide, readonly, ref } from "vue"
+import {
+	computed,
+	inject,
+	onMounted,
+	provide,
+	readonly,
+	ref
+} from "vue"
 
-import type {
-	IAgoraRTC,
-	IAgoraRTCClient,
-	ILocalAudioTrack,
-	ILocalVideoTrack
-} from "agora-rtc-sdk-ng"
-import { PageContext } from "$/types/renderer"
+import type { PageContext } from "$/types/renderer"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
@@ -81,6 +82,11 @@ import Fetcher from "$@/fetchers/consultation"
 
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+import {
+	initiateVideoConferenceEngine,
+	joinAndPresentLocalTracks,
+	leaveAndRemoveLocalTracks
+} from "@/consultation/call/helpers/video_conference_manager"
 
 type AdditionalPageProps = "VIDEO_CONFERENCE_APP_ID"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
@@ -138,27 +144,6 @@ function fetchGeneratedToken() {
 	})
 }
 
-let AgoraRTC: IAgoraRTC|null = null
-let videoConferenceEngine: IAgoraRTCClient|null = null
-async function initiateVideConferenceEngine() {
-	if (!isUndefined(window)) {
-		// @ts-ignore
-		AgoraRTC = await import("agora-rtc-sdk-ng") as IAgoraRTC
-		videoConferenceEngine = AgoraRTC.createClient({
-			"codec": "vp8",
-			"mode": "rtc"
-		})
-	}
-}
-
-type LocalTracks = {
-	"localAudioTrack": ILocalAudioTrack|null
-	"localVideoTrack": ILocalVideoTrack|null
-}
-const localTracks: LocalTracks = {
-	"localAudioTrack": null,
-	"localVideoTrack": null
-}
 const {
 	"toggle": toggleVideo,
 	"state": mustShowVideo
@@ -168,40 +153,28 @@ const {
 	"state": mustTransmitAudio
 } = makeSwitch(false)
 const {
-	"off": leaveCall,
-	"on": joinCall,
+	"off": leaveAndHideAdditionalButtons,
+	"on": joinAndShowAdditionalButtons,
 	"state": isJoined
 } = makeSwitch(false)
-async function joinWithLocalTracks() {
-	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
-	AgoraRTC = AgoraRTC as IAgoraRTC
-
+const selfParticipantID = `local-${chatMessageActivityID}`
+function join() {
 	toggleVideo()
-	joinCall()
-	await videoConferenceEngine.join(
-			VIDEO_CONFERENCE_APP_ID as string,
-			"call",
-			token.value,
-			Number(chatMessageActivityID)
+	joinAndShowAdditionalButtons()
+	joinAndPresentLocalTracks(
+		VIDEO_CONFERENCE_APP_ID as string,
+		chatMessageActivityID,
+		selfParticipantID,
+		token.value
 	)
-	localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
-	localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
-
-	await videoConferenceEngine.publish([
-		localTracks.localAudioTrack,
-		localTracks.localVideoTrack
-	])
-	localTracks.localVideoTrack.play(`local-${chatMessageActivityID}`)
 }
-function leaveAndRemoveLocalTracks() {
-	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
-	AgoraRTC = AgoraRTC as IAgoraRTC
-
-	leaveCall()
+function leave() {
+	leaveAndHideAdditionalButtons()
+	leaveAndRemoveLocalTracks()
 }
 
 onMounted(() => {
 	fetchGeneratedToken()
-	initiateVideConferenceEngine()
+	initiateVideoConferenceEngine()
 })
 </script>
