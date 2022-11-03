@@ -24,7 +24,10 @@ export default function<T>(
 			if (constraints.filter.departmentID === null) {
 				condition.is("departmentID", constraints.filter.departmentID)
 			} else {
-				condition.equal("departmentID", constraints.filter.departmentID)
+				condition.or(
+					new Condition().is("departmentID", null),
+					new Condition().equal("departmentID", constraints.filter.departmentID)
+				)
 			}
 
 			if (isUndefined(newState.where)) {

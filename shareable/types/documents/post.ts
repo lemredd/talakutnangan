@@ -70,9 +70,9 @@ extends GeneralRelationshipData {
 		deserialized: DeserializedRoleDocument<"attached">
 	},
 	postAttachments: {
-		"serialized": T extends "read"
-			? PostAttachmentIdentifierListDocument
-			: undefined,
+		"serialized": T extends "create"|"update"
+			? PostAttachmentIdentifierListDocument|undefined
+			: PostAttachmentIdentifierListDocument,
 		"deserialized": DeserializedPostAttachmentListDocument
 	}
 }
