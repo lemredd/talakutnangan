@@ -8,15 +8,15 @@ const QUERY_VALIDATION_INDEX = 0
 describe("Controller: GET /api/department", () => {
 	const requester = new MockRequester()
 
-	it("can accept valid info", async () => {
+	it("can accept valid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const queryValidation = validations[QUERY_VALIDATION_INDEX]
 		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
 		requester.customizeRequest({
-			query: {
-				filter: {
-					existence: "*"
+			"query": {
+				"filter": {
+					"existence": "*"
 				}
 			}
 		})
@@ -26,15 +26,15 @@ describe("Controller: GET /api/department", () => {
 		requester.expectSuccess()
 	})
 
-	it("cannot accept invalid info", async () => {
+	it("cannot accept invalid info", async() => {
 		const controller = new Controller()
-		const validations = controller.validations
+		const { validations } = controller
 		const queryValidation = validations[QUERY_VALIDATION_INDEX]
 		const queryValidationFunction = queryValidation.intermediate.bind(queryValidation)
 		requester.customizeRequest({
-			query: {
-				filter: {
-					existence: "hello"
+			"query": {
+				"filter": {
+					"existence": "hello"
 				}
 			}
 		})
