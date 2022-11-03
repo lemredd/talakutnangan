@@ -6,6 +6,7 @@ import type {
 } from "agora-rtc-sdk-ng"
 
 import isUndefined from "$/type_guards/is_undefined"
+import Stub from "$/singletons/stub"
 
 let AgoraRTC: IAgoraRTC|null = null
 export let videoConferenceEngine: IAgoraRTCClient|null = null
@@ -25,7 +26,7 @@ type LocalTracks = {
 	"localAudioTrack": ILocalAudioTrack|null
 	"localVideoTrack": ILocalVideoTrack|null
 }
-const localTracks: LocalTracks = {
+export const localTracks: LocalTracks = {
 	"localAudioTrack": null,
 	"localVideoTrack": null
 }
@@ -58,4 +59,15 @@ export async function joinAndPresentLocalTracks(
 export function leaveAndRemoveLocalTracks() {
 	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
 	AgoraRTC = AgoraRTC as IAgoraRTC
+}
+
+export function mockJoining() {
+	localTracks.localAudioTrack = Stub.runConditionally(
+		AgoraRTC!.createMicrophoneAudioTrack,
+		(): any => "this runs on test"
+	) as unknown as any
+	localTracks.localVideoTrack = Stub.runConditionally(
+		AgoraRTC!.createMicrophoneAudioTrack,
+		(): any => "this runs on test"
+	) as unknown as any
 }

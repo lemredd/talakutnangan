@@ -1,6 +1,8 @@
 import {
+	localTracks,
 	videoConferenceEngine,
-	initiateVideoConferenceEngine
+	initiateVideoConferenceEngine,
+	mockJoining
 } from "./video_conference_manager"
 
 describe("Helper: video conference manager", () => {
@@ -8,5 +10,12 @@ describe("Helper: video conference manager", () => {
 		await initiateVideoConferenceEngine()
 
 		expect(videoConferenceEngine).toBeTruthy()
+	})
+
+	it("can generate local tracks", async() => {
+		await mockJoining()
+
+		expect(localTracks.localAudioTrack).toBeTruthy()
+		expect(localTracks.localVideoTrack).toBeTruthy()
 	})
 })
