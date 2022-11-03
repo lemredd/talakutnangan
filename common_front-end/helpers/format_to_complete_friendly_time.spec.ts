@@ -6,6 +6,6 @@ describe("Helper: format to friendly past time", () => {
 
 		const string = helper(currentTime)
 
-		expect(string).toBe("Monday, October 10, 2022 at 05:00:00 PM")
+		expect(string).toBe("Monday, October 10, 2022 at 5:00:00 PM")
 	})
 })
