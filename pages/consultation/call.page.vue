@@ -2,9 +2,9 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				:id="selfParticipantID"
 				v-model:must-show-video="mustShowVideo"
 				v-model:must-transmit-audio="mustTransmitAudio"
+				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<div class="others">
 				<!-- TODO: Use remote participant -->

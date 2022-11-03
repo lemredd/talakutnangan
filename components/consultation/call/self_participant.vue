@@ -5,6 +5,11 @@
 				class="profile-picture"
 				:user="userProfile"/>
 		</div>
+		<div
+			v-else
+			:id="containerId"
+			class="track-container">
+		</div>
 	</div>
 </template>
 
@@ -16,6 +21,7 @@
 		position:relative;
 
 		max-height:600px;
+		height: 100%;
 		min-height:300px;
 
 		.profile-user{
@@ -24,18 +30,30 @@
 			max-height:100px;
 		}
 
-		.video-track {
-			@apply object-cover;
-			max-width:800px;
-			max-height:100%;
+		.track-container {
 			width: 100%;
 			height: 100%;
+			max-height:600px;
+			min-height:300px;
+
+			div {
+				max-height:600px;
+				min-height:300px;
+
+				video {
+					@apply object-cover;
+					max-width:800px;
+					max-height:100%;
+					width: 100%;
+					height: 100%;
+				}
+			}
 		}
 	}
 </style>
 
 <script setup lang="ts">
-import { inject, ref, watch } from "vue"
+import { inject, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
@@ -46,6 +64,7 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 type DefinedProps = {
+	containerId: string
 	mustShowVideo: boolean
 	mustTransmitAudio: boolean
 }
