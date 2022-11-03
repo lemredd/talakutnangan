@@ -28,6 +28,9 @@
 		</div>
 
 		<CallControls
+			v-model:is-joined="isJoined"
+			@join-call="joinWithLocalTracks"
+			@leave-call="leaveAndRemoveLocalTracks"
 			@toggle-video="toggleVideo"
 			@toggle-mic="toggleMic"/>
 	</div>
@@ -163,30 +166,40 @@ const {
 	"toggle": toggleMic,
 	"state": mustTransmitAudio
 } = makeSwitch(false)
+const {
+	"off": leaveCall,
+	"on": joinCall,
+	"state": isJoined
+} = makeSwitch(false)
+async function joinWithLocalTracks() {
+	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
+	AgoraRTC = AgoraRTC as IAgoraRTC
 
-onMounted(() => {
-	fetchGeneratedToken()
-	initiateVideConferenceEngine()
-})
-
-watch(mustShowVideo, async() => {
-	if (mustShowVideo.value) {
-		videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
-		AgoraRTC = AgoraRTC as IAgoraRTC
-		await videoConferenceEngine.join(
+	joinCall()
+	await videoConferenceEngine.join(
 			VIDEO_CONFERENCE_APP_ID as string,
 			"call",
 			token.value,
 			Number(chatMessageActivityID)
-		)
-		localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
-		localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
+	)
+	localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
+	localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
 
-		await videoConferenceEngine.publish([
-			localTracks.localAudioTrack,
-			localTracks.localVideoTrack
-		])
-		localTracks.localVideoTrack.play(localPlayerContainer.value as HTMLDivElement)
-	}
+	await videoConferenceEngine.publish([
+		localTracks.localAudioTrack,
+		localTracks.localVideoTrack
+	])
+	localTracks.localVideoTrack.play(localPlayerContainer.value as HTMLDivElement)
+}
+function leaveAndRemoveLocalTracks() {
+	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
+	AgoraRTC = AgoraRTC as IAgoraRTC
+
+	leaveCall()
+}
+
+onMounted(() => {
+	fetchGeneratedToken()
+	initiateVideConferenceEngine()
 })
 </script>
