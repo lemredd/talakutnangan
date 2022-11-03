@@ -1,7 +1,7 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
-			<h3 class="flex-1 m-auto ml-15">
+			<h3>
 				<span>
 					{{ comment.user.data.name }}
 				</span>
@@ -75,7 +75,25 @@
 		@apply flex flex-col flex-nowrap;
 
 		header {
-			@apply flex-1 flex flex-row flex-nowrap
+			@apply flex-1 flex flex-row flex-nowrap;
+
+			h3 {
+				@apply flex-1 flex flex-row flex-nowrap justify-center items-center;
+				@apply m-auto ml-15;
+
+				/**
+				 * Reduce the left margin
+				 */
+				width: calc(100% - 3.75rem);
+
+				span:nth-child(1) {
+					@apply flex-1 truncate flex-shrink-[2];
+				}
+
+				span:nth-child(2) {
+					@apply flex-initial;
+				}
+			}
 		}
 
 		.main-content {
