@@ -122,9 +122,10 @@ const {
 	"state": mustTransmitAudio
 } = makeSwitch(false)
 
+const fetcher = new Fetcher()
 const token = ref("")
 provide(CURRENT_USER_RTC_TOKEN, token)
-onMounted(() => {
+function fetchGeneratedToken() {
 	const { "id": consultationID } = consultation.data
 	const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 	fetcher.generateToken(consultationID, "call", chatMessageActivityID)
@@ -134,5 +135,8 @@ onMounted(() => {
 
 		token.value = RTCToken
 	})
+
+onMounted(() => {
+	fetchGeneratedToken()
 })
 </script>
