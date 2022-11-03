@@ -21,6 +21,7 @@ import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import length from "!/validators/comparison/length"
 import Controller from "!/bases/controller-likes/controller"
+import convertToCamel from "$/string/convert_to_camel"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
@@ -40,7 +41,7 @@ export default class extends Controller {
 				"channel_name": {
 					"constraints": {
 						"length": {
-							"maximum": 255,
+							"maximum": 64,
 							"minimum": 3
 						},
 						"regex": {
@@ -82,7 +83,7 @@ export default class extends Controller {
 			"uid": userID
 		} = request.params
 
-		const properName = `consultation_${consultationID}_${specifiedChannelName}`
+		const properName = convertToCamel(`consultation${consultationID} ${specifiedChannelName}`)
 
 		return Promise.resolve(new OkResponse({
 			"meta": {
