@@ -4,12 +4,12 @@ import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/d
 import Policy from "!/bases/policy"
 import { OrderValues } from "$/types/database"
 import SemesterManager from "%/managers/semester"
-import Merger from "!/middlewares/miscellaneous/merger"
 import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
+import { UPDATE } from "$/permissions/semester_combinations"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 
 import date from "!/validators/base/date"
 import string from "!/validators/base/string"
@@ -22,10 +22,9 @@ export default class extends BoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new Merger([
-			CommonMiddlewareList.studentOnlyPolicy,
-			new BelongsToCurrentUserPolicy(this.manager)
-		]) as unknown as Policy
+		return new PermissionBasedPolicy(permissionGroup, [
+			UPDATE
+		])
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
