@@ -231,7 +231,6 @@ const completeFriendlyCommentTimestamp = computed<string>(() => {
 	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
 })
 
-
 async function switchVote(newRawVote: string): Promise<void> {
 	const newVote = newRawVote as CompleteVoteKind
 	const currentVote = vote.value
@@ -301,15 +300,6 @@ const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRe
 function closeArchiveOrRestore() {
 	closeArchive()
 	closeRestore()
-}
-
-async function submitChangesSeparately(): Promise<void> {
-	await fetcher.update(comment.value.id, {
-		"content": comment.value.content,
-		"deletedAt": null
-	}).then(() => {
-		emit("update:modelValue", comment.value)
-	})
 }
 
 async function archivePost(): Promise<void> {
