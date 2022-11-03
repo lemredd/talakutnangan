@@ -3,7 +3,8 @@
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
-			@submit="submitChangesSeparately"/>
+			@submit="submitChangesSeparately"
+			@close="closeUpdateForm"/>
 		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
 			<template #header>
 				<h1>Enter the post details</h1>
@@ -142,7 +143,8 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(p
 
 const {
 	"state": mustUpdate,
-	"on": openUpdateForm
+	"on": openUpdateForm,
+	"off": closeUpdateForm
 } = makeSwitch(false)
 
 const {
