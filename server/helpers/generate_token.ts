@@ -1,4 +1,4 @@
-import { RtcTokenBuilder } from "agora-access-token"
+import { RtcRole, RtcTokenBuilder } from "agora-access-token"
 
 import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 
@@ -17,7 +17,7 @@ export default function(channelName: string, uid: number) {
 		appCertificate,
 		channelName,
 		uid,
-		1,
+		RtcRole.PUBLISHER,
 		defaultExpiredTime
 	)
 
