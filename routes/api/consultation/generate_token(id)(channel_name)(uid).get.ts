@@ -21,7 +21,6 @@ import regex from "!/validators/comparison/regex"
 import required from "!/validators/base/required"
 import length from "!/validators/comparison/length"
 import Controller from "!/bases/controller-likes/controller"
-import convertToCamel from "$/string/convert_to_camel"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
@@ -79,15 +78,13 @@ export default class extends Controller {
 	handle(request: Request): Promise<OkResponse> {
 		const {
 			"channel_name": specifiedChannelName,
-			"id": consultationID,
 			"uid": userID
 		} = request.params
 
-		const properName = convertToCamel(`consultation${consultationID} ${specifiedChannelName}`)
-
+		// TODO: find a way to make the general channel name unique
 		return Promise.resolve(new OkResponse({
 			"meta": {
-				"RTCToken": generateToken(properName, Number(userID))
+				"RTCToken": generateToken(specifiedChannelName, Number(userID))
 			}
 		}))
 	}
