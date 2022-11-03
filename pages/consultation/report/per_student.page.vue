@@ -76,22 +76,20 @@
 </style>
 
 <style scoped lang="scss">
-.details{
-	@apply mb-5;
-}
+	.details {
+		@apply mb-5;
+	}
 
-table, th, thead, tfoot, td{
-	border:2px solid;
-	padding: 8px;
-	text-align: center;
+	table, th, thead, tfoot, td {
+		border:2px solid;
+		padding: 8px;
+		text-align: center;
 
-}
+	}
 
-.consultations{
-	@apply flex flex-col;
-}
-
-
+	.consultations {
+		@apply flex flex-col;
+	}
 </style>
 
 <script setup lang="ts">

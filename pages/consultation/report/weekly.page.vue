@@ -27,8 +27,8 @@
 						v-for="(sumEntry, i) in timeConsumedPerWeek.meta.weeklyTimeSums"
 						:key="sumEntry.beginAt.toJSON()">
 						<td>{{ i+1 }}</td>
-						<td>{{ sumEntry.beginAt.toJSON() }}</td>
-						<td>{{ sumEntry.endAt.toJSON() }}</td>
+						<td>{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}</td>
+						<td>{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}</td>
 
 						<ul class="consultations">
 							<td
