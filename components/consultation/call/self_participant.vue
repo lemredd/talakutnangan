@@ -5,11 +5,6 @@
 				class="profile-picture"
 				:user="userProfile"/>
 		</div>
-		<video
-			ref="videoElement"
-			class="video-track">
-		</video>
-		<audio ref="audioElement"></audio>
 	</div>
 </template>
 
@@ -58,40 +53,14 @@ const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 
-const videoElement = ref<HTMLVideoElement|null>(null)
-function addVideoStream(stream: MediaStream) {
-	const video = videoElement.value as HTMLVideoElement
-	video.srcObject = stream
-	video.autoplay = true
-	video.addEventListener("loadedmetadata", () => video.play())
-}
-function removeVideoStream() {
-	const video = videoElement.value as HTMLVideoElement
-	video.srcObject = null
-}
-
-const audioElement = ref<HTMLAudioElement|null>(null)
-function addAudioStream(stream: MediaStream) {
-	const audio = audioElement.value as HTMLAudioElement
-	audio.srcObject = stream
-	audio.autoplay = true
-	audio.addEventListener("loadedmetadata", () => audio.play())
-}
-function removeAudioStream() {
-	const audio = audioElement.value as HTMLAudioElement
-	audio.srcObject = null
-}
-
 watch(props, () => {
 	if (props.mustShowVideo) {
-		navigator.mediaDevices.getUserMedia({ "video": true })
-		.then(addVideoStream)
+		console.log("agora should be working")
 	}
 	if (props.mustTransmitAudio) {
-		navigator.mediaDevices.getUserMedia({ "audio": true })
-		.then(addAudioStream)
+		console.log("agora should be working")
 	}
-	if (!props.mustShowVideo) removeVideoStream()
-	if (!props.mustTransmitAudio) removeAudioStream()
+	if (!props.mustShowVideo) console.log("agfora should be working")
+	if (!props.mustTransmitAudio) console.log("agfora should be working")
 })
 </script>
