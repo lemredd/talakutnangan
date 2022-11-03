@@ -125,7 +125,7 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "locked" : "disabled")
+const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const fetcher: Fetcher = new Fetcher()

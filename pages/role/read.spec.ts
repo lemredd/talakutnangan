@@ -323,13 +323,9 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		const roleName = wrapper.find("input[type='text']")
-		const editButton = wrapper.find(".edit-button")
 		const submit = wrapper.find("[type='submit']")
 
-		await editButton.trigger("click")
 		await roleName.setValue(newSampleModel.name)
-		const saveButton = wrapper.find(".save-button")
-		await saveButton.trigger("click")
 		await submit.trigger("submit")
 		await flushPromises()
 
