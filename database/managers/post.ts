@@ -4,6 +4,7 @@ import type { PostQueryParameters } from "$/types/query"
 import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { PostAttributes, PostResource, PostResourceIdentifier } from "$/types/documents/post"
 
+import User from "%/models/user"
 import Model from "%/models/post"
 import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
@@ -59,7 +60,7 @@ export default class extends BaseManager<
 	get modelChainToUser(): readonly ModelCtor<BaseModel>[] {
 		return [
 			AttachedRole,
-			Comment
+			User
 		]
 	}
 
