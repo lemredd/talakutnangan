@@ -1,9 +1,10 @@
 <template>
-	<section>
+	<article>
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
-			@submit="submitChangesSeparately"/>
+			@submit="submitChangesSeparately"
+			@close="closeUpdateForm"/>
 		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
 			<template #header>
 				<h1>Enter the post details</h1>
@@ -69,21 +70,21 @@
 		<p>
 			{{ post.content }}
 		</p>
-		<p class="comment-count">
+		<a :href="readPostPath" class="comment-count">
 			<span class="material-icons icon">
 				comment
 			</span>
 			<span>
 				{{ friendlyCommentCount }}
 			</span>
-		</p>
-	</section>
+		</a>
+	</article>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
-	section {
+	article {
 		@apply flex flex-col flex-nowrap justify-between;
 		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
@@ -94,7 +95,7 @@
 				@apply flex-1 flex flex-row flex-wrap;
 
 				.profile-picture {
-					@apply mb-5 flex-initial w-auto h-6;
+					@apply mb-5 mr-2 flex-initial w-auto h-6;
 
 					+ span {
 						@apply flex-1;
@@ -116,9 +117,12 @@ import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 
+import { READ_POST } from "$/constants/template_page_paths"
+
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
+import specializePath from "$/helpers/specialize_path"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
@@ -131,7 +135,7 @@ const fetcher = new Fetcher()
 
 const props = defineProps<{
 	commentCount: number,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"department">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
 }>()
 
 interface CustomEvents {
@@ -148,7 +152,8 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(p
 
 const {
 	"state": mustUpdate,
-	"on": openUpdateForm
+	"on": openUpdateForm,
+	"off": closeUpdateForm
 } = makeSwitch(false)
 
 const {
@@ -195,6 +200,16 @@ const completeFriendlyPostTimestamp = computed<string>(() => {
 })
 
 const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
+
+const readPostPath = computed<string>(() => {
+	const postID = post.value.id
+
+	const path = specializePath(READ_POST, {
+		"id": postID
+	})
+
+	return path
+})
 
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
