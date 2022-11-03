@@ -75,9 +75,3 @@ export function mockJoining() {
 		(): any => "this runs on test"
 	) as unknown as any
 }
-
-export function mockLeaving() {
-	AgoraRTC = AgoraRTC as IAgoraRTC
-	localTracks.localAudioTrack?.close()
-	localTracks.localVideoTrack?.close()
-}
