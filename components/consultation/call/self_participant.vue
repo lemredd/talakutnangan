@@ -17,7 +17,7 @@
 	.self-participant{
 		@apply m-2;
 		@apply flex justify-center items-center;
-		@apply bg-blue-gray-300 bg-opacity-60;
+		@apply bg-blue-gray-400 bg-opacity-20;
 		position:relative;
 
 		max-height:600px;
@@ -35,25 +35,14 @@
 			height: 100%;
 			max-height:600px;
 			min-height:300px;
+			position: absolute;
 
-			div {
-				max-height:600px;
-				min-height:300px;
-
-				video {
-					@apply object-cover;
-					max-width:800px;
-					max-height:100%;
-					width: 100%;
-					height: 100%;
-				}
-			}
 		}
 	}
 </style>
 
 <script setup lang="ts">
-import { inject, watch } from "vue"
+import { inject } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
@@ -71,15 +60,4 @@ type DefinedProps = {
 const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
-
-watch(props, () => {
-	if (props.mustShowVideo) {
-		console.log("agora should be working")
-	}
-	if (props.mustTransmitAudio) {
-		console.log("agora should be working")
-	}
-	if (!props.mustShowVideo) console.log("agfora should be working")
-	if (!props.mustTransmitAudio) console.log("agfora should be working")
-})
 </script>
