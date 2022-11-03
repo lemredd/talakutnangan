@@ -109,7 +109,7 @@ describe("Helper: Load remaining resource", () => {
 		} as DepartmentQueryParameters)
 		const delayDuration = 200
 		const mockOperation = jest.fn()
-		const delayer = new Promise<void>(resolve => {
+		const delayer = () => new Promise<void>(resolve => {
 			setTimeout(() => {
 				mockOperation()
 				resolve()
@@ -121,6 +121,51 @@ describe("Helper: Load remaining resource", () => {
 		await loadingProcess
 
 		expect(fetch).toHaveBeenCalledTimes(1)
+		expect(mockOperation).toHaveBeenCalledTimes(1)
+	})
+
+	it("should run extra operations", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [ {} ],
+			"meta": {
+				"count": 2
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+
+		const listDocument = ref({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		})
+		const fetcher = new DepartmentFetcher()
+		const queryMaker = () => ({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": 0,
+				"offset": 0
+			},
+			"sort": []
+		} as DepartmentQueryParameters)
+		const mockOperation = jest.fn()
+		const extraOperations = () => new Promise<void>(resolve => {
+			console.log("extra")
+			mockOperation()
+			resolve()
+		})
+
+		await loadRemainingResource(listDocument, fetcher, queryMaker, { extraOperations })
+
+		expect(fetch).toHaveBeenCalledTimes(2)
 		expect(mockOperation).toHaveBeenCalledTimes(1)
 	})
 })
