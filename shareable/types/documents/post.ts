@@ -36,13 +36,16 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
-export interface PostResourceIdentifier<T extends Completeness = "read">
-extends ResourceIdentifier<T> {
+export type PostResourceIdentifier<T extends Completeness = "read"> = ResourceIdentifier<T> & {
 	type: "post"
-}
+} & Partial<MetaDocument<{
+	"commentCount": number
+}>>
 
 export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T> & {
 	"createdAt": T extends "serialized" ? string : Date,
