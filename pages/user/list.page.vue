@@ -46,7 +46,7 @@ import { computed, inject, onMounted, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
@@ -101,15 +101,15 @@ const determineTitle = computed(() => {
 })
 
 const list = ref<DeserializedUserResource[]>([])
-const roles = ref<DeserializedRoleResource[]>(
-	pageProps.roles.data as DeserializedRoleResource[]
+const roles = ref<DeserializedRoleListDocument>(
+	pageProps.roles as DeserializedRoleListDocument
 )
 const roleNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "All",
 		"value": "*"
 	},
-	...roles.value.map(data => ({
+	...roles.value.data.map(data => ({
 		"label": data.name,
 		"value": data.id
 	}))
