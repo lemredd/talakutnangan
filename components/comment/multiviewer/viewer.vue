@@ -1,7 +1,7 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
-			<h3 class="flex-1 m-auto ml-2">
+			<h3 class="flex-1 m-auto ml-15">
 				<span>
 					{{ comment.user.data.name }}
 				</span>
