@@ -9,66 +9,66 @@ import User from "%/models/user"
 import AttachedRole from "%/models/attached_role"
 
 @Table({
-	timestamps: true,
-	paranoid: true
+	"timestamps": true,
+	"paranoid": true
 })
 export default class Role extends Model {
 	@Column({
-		unique: true,
-		allowNull: false
+		"unique": true,
+		"allowNull": false
 	})
-	name!: string
+		name!: string
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	departmentFlags!: number
+		departmentFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	roleFlags!: number
+		roleFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	semesterFlags!: number
+		semesterFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	tagFlags!: number
+		tagFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	postFlags!: number
+		postFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	commentFlags!: number
+		commentFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	profanityFlags!: number
+		profanityFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	userFlags!: number
+		userFlags!: number
 
 	@Column({
-		allowNull: false
+		"allowNull": false
 	})
-	auditTrailFlags!: number
+		auditTrailFlags!: number
 
 	@HasMany(() => AttachedRole)
-	attachedRoles!: AttachedRole[]
+		attachedRoles!: AttachedRole[]
 
 	@BelongsToMany(() => User, () => AttachedRole)
-	users!: User[]
+		users!: User[]
 
-	// userCount?:number
+	// UserCount?:number
 }
