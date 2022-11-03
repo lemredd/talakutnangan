@@ -59,15 +59,25 @@ export async function joinAndPresentLocalTracks(
 export function leaveAndRemoveLocalTracks() {
 	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
 	AgoraRTC = AgoraRTC as IAgoraRTC
+
+	localTracks.localAudioTrack?.close()
+	localTracks.localVideoTrack?.close()
 }
 
 export function mockJoining() {
+	AgoraRTC = AgoraRTC as IAgoraRTC
 	localTracks.localAudioTrack = Stub.runConditionally(
-		AgoraRTC!.createMicrophoneAudioTrack,
+		AgoraRTC.createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 	localTracks.localVideoTrack = Stub.runConditionally(
-		AgoraRTC!.createMicrophoneAudioTrack,
+		AgoraRTC.createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
+}
+
+export function mockLeaving() {
+	AgoraRTC = AgoraRTC as IAgoraRTC
+	localTracks.localAudioTrack?.close()
+	localTracks.localVideoTrack?.close()
 }

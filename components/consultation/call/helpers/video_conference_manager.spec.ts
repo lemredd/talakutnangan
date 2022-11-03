@@ -2,7 +2,8 @@ import {
 	localTracks,
 	videoConferenceEngine,
 	initiateVideoConferenceEngine,
-	mockJoining
+	mockJoining,
+	mockLeaving
 } from "./video_conference_manager"
 
 describe("Helper: video conference manager", () => {
@@ -12,10 +13,17 @@ describe("Helper: video conference manager", () => {
 		expect(videoConferenceEngine).toBeTruthy()
 	})
 
-	it("can generate local tracks", async() => {
-		await mockJoining()
+	it("can generate local tracks", () => {
+		mockJoining()
 
 		expect(localTracks.localAudioTrack).toBeTruthy()
 		expect(localTracks.localVideoTrack).toBeTruthy()
+	})
+
+	it("can close local tracks", () => {
+		mockLeaving()
+
+		expect(localTracks.localAudioTrack).toBeFalsy()
+		expect(localTracks.localVideoTrack).toBeFalsy()
 	})
 })
