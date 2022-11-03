@@ -74,7 +74,7 @@ import Fetcher from "$@/fetchers/consultation"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
 
-type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
+type AdditionalPageProps = "VIDEO_CONFERENCE_APP_ID"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
 const { pageProps } = pageContext
 const { consultation, userProfile } = pageProps
