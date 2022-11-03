@@ -1,18 +1,27 @@
-import type { CommonQueryParameters } from "$/types/query"
-import type { ModelCtor } from "%/types/dependent"
+import type { Pipe } from "$/types/database"
+import type { SemesterQueryParameters } from "$/types/query"
+import type { FindAndCountOptions, ModelCtor } from "%/types/dependent"
 import type { SemesterAttributes } from "$/types/documents/semester"
 
+import Model from "%/models/semester"
 import BaseManager from "%/managers/base"
-import Semester from "%/models/semester"
+import siftBySlug from "%/queries/semester/sift_by_slug"
 
 import SemesterTransformer from "%/transformers/semester"
 
 export default class extends BaseManager<
-	Semester,
+	Model,
 	SemesterAttributes<"deserialized">,
-	CommonQueryParameters
+	SemesterQueryParameters<number>
 > {
-	get model(): ModelCtor<Semester> { return Semester }
+	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): SemesterTransformer { return new SemesterTransformer() }
+
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, SemesterQueryParameters<number>>[] {
+		return [
+			siftBySlug,
+			...super.listPipeline
+		]
+	}
 }
