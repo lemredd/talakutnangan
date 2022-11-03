@@ -55,10 +55,14 @@
 </style>
 
 <script setup lang="ts">
-import AgoraRTC from "agora-rtc-sdk-ng"
 import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
-import type { IAgoraRTC, IAgoraRTCClient } from "agora-rtc-sdk-ng"
+import type {
+	IAgoraRTC,
+	IAgoraRTCClient,
+	ILocalAudioTrack,
+	ILocalVideoTrack
+} from "agora-rtc-sdk-ng"
 import { PageContext } from "$/types/renderer"
 import type {
 	DeserializedChatMessageActivityResource,
@@ -114,19 +118,6 @@ const ownCurrentConsultationActivityResource = computed<
 	return foundChatActivity
 })
 
-const localTracks = {
-	"localAudioTrack": await AgoraRTC.createMicrophoneAudioTrack(),
-	"localVideoTrack": await AgoraRTC.createCameraVideoTrack()
-}
-const {
-	"toggle": toggleVideo,
-	"state": mustShowVideo
-} = makeSwitch(false)
-const {
-	"toggle": toggleMic,
-	"state": mustTransmitAudio
-} = makeSwitch(false)
-
 const fetcher = new Fetcher()
 const token = ref("")
 const { "id": consultationID } = consultation.data
@@ -142,13 +133,13 @@ function fetchGeneratedToken() {
 	})
 }
 
+let AgoraRTC: IAgoraRTC|null = null
 let videoConferenceEngine: IAgoraRTCClient|null = null
 async function initiateVideConferenceEngine() {
 	if (!isUndefined(window)) {
-		const AgoraRTC = await import("agora-rtc-sdk-ng")
 		// @ts-ignore
-		const AgoraRTCInterface = AgoraRTC as IAgoraRTC
-		videoConferenceEngine = AgoraRTCInterface.createClient({
+		AgoraRTC = await import("agora-rtc-sdk-ng") as IAgoraRTC
+		videoConferenceEngine = AgoraRTC.createClient({
 			"codec": "vp8",
 			"mode": "rtc"
 		})
@@ -156,6 +147,22 @@ async function initiateVideConferenceEngine() {
 }
 const localPlayerContainer = ref<HTMLDivElement|null>(null)
 
+type LocalTracks = {
+	"localAudioTrack": ILocalAudioTrack|null
+	"localVideoTrack": ILocalVideoTrack|null
+}
+const localTracks: LocalTracks = {
+	"localAudioTrack": null,
+	"localVideoTrack": null
+}
+const {
+	"toggle": toggleVideo,
+	"state": mustShowVideo
+} = makeSwitch(false)
+const {
+	"toggle": toggleMic,
+	"state": mustTransmitAudio
+} = makeSwitch(false)
 
 onMounted(() => {
 	fetchGeneratedToken()
@@ -164,18 +171,22 @@ onMounted(() => {
 
 watch(mustShowVideo, async() => {
 	if (mustShowVideo.value) {
-		await agoraEngine.join(
+		videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
+		AgoraRTC = AgoraRTC as IAgoraRTC
+		await videoConferenceEngine.join(
 			VIDEO_CONFERENCE_APP_ID as string,
 			"call",
 			token.value,
 			chatMessageActivityID
 		)
+		localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
+		localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
 
-		await agoraEngine.publish([
+		await videoConferenceEngine.publish([
 			localTracks.localAudioTrack,
 			localTracks.localVideoTrack
 		])
-		localTracks.localVideoTrack.play(localPlayerContainer.value)
+		localTracks.localVideoTrack.play(localPlayerContainer.value as HTMLDivElement)
 	}
 })
 </script>
