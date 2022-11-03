@@ -101,6 +101,9 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 	departments: OptionalPageProps<T, DeserializedDepartmentListDocument>
 	department: OptionalPageProps<T, DeserializedDepartmentDocument>
 
+	semesters: OptionalPageProps<T, DeserializedSemesterListDocument>
+	semester: OptionalPageProps<T, DeserializedSemesterDocument>
+
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
 	consultation: OptionalPageProps<T, DeserializedConsultationDocument>
 
