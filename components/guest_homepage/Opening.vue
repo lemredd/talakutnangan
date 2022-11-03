@@ -6,7 +6,7 @@
 				Consultation
 			</template>
 			<template #details>
-				Students can consults any available employees with the help of Consultation Message.
+				Students can consult any available employees with the help of Consultation Message.
 			</template>
 		</Description>
 		<div class="graphics">
