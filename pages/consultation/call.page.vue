@@ -27,12 +27,17 @@
 			</div>
 		</div>
 
-		<CallControls
-			v-model:is-joined="isJoined"
-			@join-call="join"
-			@leave-call="leave"
-			@toggle-video="toggleVideo"
-			@toggle-mic="toggleMic"/>
+		<Suspensible
+			class="suspensive-call-controls"
+			:is-loaded="isReadyForCalling"
+			custom-message="Please wait. we are still preparing you for call...">
+			<CallControls
+				v-model:is-joined="isJoined"
+				@join-call="join"
+				@leave-call="leave"
+				@toggle-video="toggleVideo"
+				@toggle-mic="toggleMic"/>
+		</Suspensible>
 	</div>
 </template>
 
@@ -54,6 +59,15 @@
 		.local-participant{
 			@apply flex-1;
 		}
+	}
+
+	.suspensive-call-controls {
+		@apply border-t py-4;
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+
+		text-align: center;
 	}
 </style>
 
@@ -80,6 +94,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import makeSwitch from "$@/helpers/make_switch"
 import Fetcher from "$@/fetchers/consultation"
 
+import Suspensible from "@/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
 import {
@@ -173,8 +188,12 @@ function leave() {
 	leaveAndRemoveLocalTracks()
 }
 
+const isReadyForCalling = ref(false)
 onMounted(() => {
 	fetchGeneratedToken()
 	initiateVideoConferenceEngine()
+	.then(() => {
+		isReadyForCalling.value = true
+	})
 })
 </script>
