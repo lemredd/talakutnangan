@@ -58,7 +58,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, provide, ref, watch } from "vue"
+import { computed, inject, onMounted, provide, readonly, ref } from "vue"
 
 import type {
 	IAgoraRTC,
@@ -125,9 +125,11 @@ const fetcher = new Fetcher()
 const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
-provide(CURRENT_USER_RTC_TOKEN, token)
+provide(CURRENT_USER_RTC_TOKEN, readonly(token))
 function fetchGeneratedToken() {
-	fetcher.generateToken(consultationID, "call", chatMessageActivityID)
+	// TODO: make channel name unique based on consultation ID
+	const channelName = "call"
+	fetcher.generateToken(consultationID, channelName, chatMessageActivityID)
 	.then(({ body }) => {
 		const { meta } = body
 		const { RTCToken } = meta
