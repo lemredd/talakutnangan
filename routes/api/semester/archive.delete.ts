@@ -6,7 +6,9 @@ import Manager from "%/managers/semester"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import { ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 
 import exists from "!/validators/manager/exists"
 import makeResourceIdentifierListDocumentRules
@@ -16,7 +18,9 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			ARCHIVE_AND_RESTORE
+		])
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
