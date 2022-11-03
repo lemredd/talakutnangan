@@ -36,7 +36,9 @@ export default class CommentTransformer extends Transformer<Model, void> {
 	transform(model: Model|Model[], unusedOptions: TransformerOptions): AttributesObject {
 		const safeObject = Serializer.whitelist(model, [
 			"id",
-			"content"
+			"content",
+			"createdAt",
+			"updatedAt"
 		])
 
 		return safeObject

@@ -60,13 +60,14 @@ export default class extends PageMiddleware {
 		}) as DeserializedPostListDocument<"poster"|"posterRole"|"department">
 		const comments = await commentManager.list({
 			"filter": {
+				"postID": 1,
 				"existence": "exists"
 			},
 			"page": {
 				"limit": 10,
 				"offset": 0
 			},
-			"sort": [ "-created" ]
+			"sort": [ "-createdAt" ]
 		})
 
 		const pageProps = {

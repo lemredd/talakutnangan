@@ -74,7 +74,7 @@ export default class extends DevController {
 					"update",
 					"archiveAndRestore",
 					"readDepartmentScope",
-					"writeOwnScope",
+					"writeDepartmentScope",
 					"tag"
 				))
 				.commentFlags(comment.generateMask(

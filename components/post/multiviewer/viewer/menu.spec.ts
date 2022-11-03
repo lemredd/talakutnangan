@@ -13,7 +13,7 @@ import {
 
 import Component from "./menu.vue"
 
-describe("Component: post/viewer/menu", () => {
+describe("Component: post/multiviewer/viewer/menu", () => {
 	it("may request for updating the own post", async() => {
 		const userID = "1"
 		const postID = "2"
@@ -43,7 +43,8 @@ describe("Component: post/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"IconButton": false,
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -70,7 +71,7 @@ describe("Component: post/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
 		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
@@ -84,7 +85,7 @@ describe("Component: post/viewer/menu", () => {
 		expect(events).toHaveProperty("0")
 	})
 
-	it("cannot request for updating the other's post", async() => {
+	it("cannot request for updating the other's post", () => {
 		const userID = "1"
 		const postID = "2"
 		const otherUserID = "3"
@@ -113,7 +114,8 @@ describe("Component: post/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"IconButton": false,
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -132,15 +134,9 @@ describe("Component: post/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
-		await toggler.trigger("click")
-		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
-		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
-		const restoreButton = wrapper.find(".dropdown-container button:nth-child(3)")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 
-		expect(updateButton.exists()).toBeFalsy()
-		expect(archiveButton.exists()).toBeFalsy()
-		expect(restoreButton.exists()).toBeFalsy()
+		expect(toggler.exists()).toBeFalsy()
 	})
 
 	it("may request for archiving own post", async() => {
@@ -172,7 +168,8 @@ describe("Component: post/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"IconButton": false,
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -191,7 +188,7 @@ describe("Component: post/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
 		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
@@ -242,7 +239,8 @@ describe("Component: post/viewer/menu", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"IconButton": false,
+					"MinorDropdown": false
 				}
 			},
 			"props": {
@@ -267,9 +265,9 @@ describe("Component: post/viewer/menu", () => {
 			}
 		})
 
-		const toggler = wrapper.find(".toggler button")
+		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
-		console.log(wrapper.html(), "\n\n\n")
+
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
 		const archiveButton = wrapper.find(".dropdown-container button:nth-child(2)")
 		const restoreButton = wrapper.find(".dropdown-container button:nth-child(3)")

@@ -41,7 +41,7 @@ const post = computed<DeserializedPostResource>(
 )
 
 const content = ref<string>("")
-const commentStatus = ref<FieldStatus>("loaded")
+const commentStatus = ref<FieldStatus>("enabled")
 
 const fetcher = new Fetcher()
 async function submit() {
