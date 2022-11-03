@@ -49,7 +49,7 @@ import type { DeserializedPostResource } from "$/types/documents/post"
 
 import makeSwitch from "$@/helpers/make_switch"
 
-import MultiplePostViewer from "@/post/multiviewer.vue"
+import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
