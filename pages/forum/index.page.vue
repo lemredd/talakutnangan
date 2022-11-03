@@ -1,17 +1,16 @@
 <template>
 	<div class="main">
-		<div
-			class="created-post">
-			<span class="material-icons account-attachment">
-				account_circle
+		<div class="created-post" @click="showCreateForm">
+			<ProfilePicture
+				class="account-attachment"
+				:user="userProfile"/>
+			<span class="post-create">
+				What's on your mind?
 			</span>
-			<input
-				type="text"
-				placeholder="What's on your mind?"
-				class="post-create"/>
 			<span class="material-icons account-attachment">
 				attachment
 			</span>
+			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 		</div>
 		<Multiviewer
 			v-model="posts"
@@ -28,12 +27,12 @@
 			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
 
 			.post-create {
-				@apply rounded-1rem bg-gray-300 text-dark-500;
+				@apply p-4 rounded-1rem bg-gray-300 text-gray-500;
 				width: 90%;
 			}
 
 			.account-attachment {
-				@apply ml-2;
+				@apply h-6 w-auto;
 			}
 
 		}

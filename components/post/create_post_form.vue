@@ -72,7 +72,7 @@ const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
 
-const { isShown } = defineProps<{ isShown: boolean }>()
+defineProps<{ isShown: boolean }>()
 
 const hasMultipleRoles = userProfile.data.roles.data.length > 1
 const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
