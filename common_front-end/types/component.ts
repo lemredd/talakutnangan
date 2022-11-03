@@ -27,3 +27,9 @@ export interface SummaryRange {
 	rangeBegin: Date,
 	rangeEnd: Date
 }
+
+export interface RawFullTimeString {
+	hourString: string,
+	minuteString: string,
+	secondString: string
+}
