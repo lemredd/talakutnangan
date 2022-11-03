@@ -2,7 +2,12 @@
 	<section v-if="mustDisplayOnly">
 		<header>
 			<h3 class="flex-1 m-auto ml-2">
-				{{ comment.user.data.name }} {{ comment.createdAt }}
+				<span>
+					{{ comment.user.data.name }}
+				</span>
+				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+					{{ friendlyCommentTimestamp }}
+				</span>
 			</h3>
 		</header>
 		<div class="main-content">
@@ -101,6 +106,8 @@ import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/docu
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
+import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
@@ -191,6 +198,21 @@ const voteID = computed<string|null>({
 		}
 	}
 })
+
+const friendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt } = comment.value
+
+	return formatToFriendlyPastTime(createdAt)
+})
+
+const completeFriendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt, updatedAt } = comment.value
+	const friendlyCreationTime = formatToCompleteFriendlyTime(createdAt)
+	const friendlyModificationTime = formatToCompleteFriendlyTime(updatedAt)
+
+	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
+})
+
 
 async function switchVote(newRawVote: string): Promise<void> {
 	const newVote = newRawVote as CompleteVoteKind
