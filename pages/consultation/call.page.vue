@@ -8,7 +8,7 @@
 				class="local-participant"/>
 			<div class="others">
 				<!-- TODO: Use remote participant -->
-				<SelfParticipant
+				<!-- <SelfParticipant
 					v-model:must-show-video="mustShowVideo"
 					v-model:must-transmit-audio="mustTransmitAudio"
 					class="other-participant"/>
@@ -23,7 +23,7 @@
 				<SelfParticipant
 					v-model:must-show-video="mustShowVideo"
 					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
+					class="other-participant"/> -->
 			</div>
 		</div>
 
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import AgoraRTC from "agora-rtc-sdk-ng"
-import { computed, inject, onMounted, provide, ref } from "vue"
+import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
 import { PageContext } from "$/types/renderer"
 import type {
@@ -77,7 +77,7 @@ import SelfParticipant from "@/consultation/call/self_participant.vue"
 type AdditionalPageProps = "VIDEO_CONFERENCE_APP_ID"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
 const { pageProps } = pageContext
-const { consultation, userProfile } = pageProps
+const { consultation, userProfile, VIDEO_CONFERENCE_APP_ID } = pageProps
 
 const chatMessageActivities = ref<
 	DeserializedChatMessageActivityListDocument<"user"|"consultation">
@@ -113,6 +113,10 @@ const ownCurrentConsultationActivityResource = computed<
 	return foundChatActivity
 })
 
+const localTracks = {
+	"localAudioTrack": await AgoraRTC.createMicrophoneAudioTrack(),
+	"localVideoTrack": await AgoraRTC.createCameraVideoTrack()
+}
 const {
 	"toggle": toggleVideo,
 	"state": mustShowVideo
@@ -124,10 +128,10 @@ const {
 
 const fetcher = new Fetcher()
 const token = ref("")
+const { "id": consultationID } = consultation.data
+const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 provide(CURRENT_USER_RTC_TOKEN, token)
 function fetchGeneratedToken() {
-	const { "id": consultationID } = consultation.data
-	const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 	fetcher.generateToken(consultationID, "call", chatMessageActivityID)
 	.then(({ body }) => {
 		const { meta } = body
@@ -143,7 +147,25 @@ const agoraEngine = AgoraRTC.createClient({
 })
 const localPlayerContainer = ref<HTMLDivElement|null>(null)
 
+
 onMounted(() => {
 	fetchGeneratedToken()
+})
+
+watch(mustShowVideo, async() => {
+	if (mustShowVideo.value) {
+		await agoraEngine.join(
+			VIDEO_CONFERENCE_APP_ID as string,
+			"call",
+			token.value,
+			chatMessageActivityID
+		)
+
+		await agoraEngine.publish([
+			localTracks.localAudioTrack,
+			localTracks.localVideoTrack
+		])
+		localTracks.localVideoTrack.play(localPlayerContainer.value)
+	}
 })
 </script>
