@@ -58,6 +58,7 @@
 import AgoraRTC from "agora-rtc-sdk-ng"
 import { computed, inject, onMounted, provide, ref, watch } from "vue"
 
+import type { IAgoraRTC, IAgoraRTCClient } from "agora-rtc-sdk-ng"
 import { PageContext } from "$/types/renderer"
 import type {
 	DeserializedChatMessageActivityResource,
@@ -141,15 +142,24 @@ function fetchGeneratedToken() {
 	})
 }
 
-const agoraEngine = AgoraRTC.createClient({
-	"codec": "vp8",
-	"mode": "rtc"
-})
+let videoConferenceEngine: IAgoraRTCClient|null = null
+async function initiateVideConferenceEngine() {
+	if (!isUndefined(window)) {
+		const AgoraRTC = await import("agora-rtc-sdk-ng")
+		// @ts-ignore
+		const AgoraRTCInterface = AgoraRTC as IAgoraRTC
+		videoConferenceEngine = AgoraRTCInterface.createClient({
+			"codec": "vp8",
+			"mode": "rtc"
+		})
+	}
+}
 const localPlayerContainer = ref<HTMLDivElement|null>(null)
 
 
 onMounted(() => {
 	fetchGeneratedToken()
+	initiateVideConferenceEngine()
 })
 
 watch(mustShowVideo, async() => {
