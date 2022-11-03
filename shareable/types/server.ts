@@ -21,6 +21,10 @@ import type {
 	DeserializedDepartmentListDocument
 } from "$/types/documents/department"
 import type {
+	DeserializedSemesterDocument,
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
+import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
