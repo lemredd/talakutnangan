@@ -177,7 +177,7 @@ watch(mustShowVideo, async() => {
 			VIDEO_CONFERENCE_APP_ID as string,
 			"call",
 			token.value,
-			chatMessageActivityID
+			Number(chatMessageActivityID)
 		)
 		localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
 		localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
