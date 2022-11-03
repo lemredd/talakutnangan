@@ -2,7 +2,7 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				ref="localPlayerContainer"
+				:id="`local-${chatMessageActivityID}`"
 				v-model:must-show-video="mustShowVideo"
 				v-model:must-transmit-audio="mustTransmitAudio"
 				class="local-participant"/>
@@ -150,7 +150,6 @@ async function initiateVideConferenceEngine() {
 		})
 	}
 }
-const localPlayerContainer = ref<HTMLDivElement|null>(null)
 
 type LocalTracks = {
 	"localAudioTrack": ILocalAudioTrack|null
@@ -177,6 +176,7 @@ async function joinWithLocalTracks() {
 	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
 	AgoraRTC = AgoraRTC as IAgoraRTC
 
+	toggleVideo()
 	joinCall()
 	await videoConferenceEngine.join(
 			VIDEO_CONFERENCE_APP_ID as string,
@@ -191,7 +191,7 @@ async function joinWithLocalTracks() {
 		localTracks.localAudioTrack,
 		localTracks.localVideoTrack
 	])
-	localTracks.localVideoTrack.play(localPlayerContainer.value as HTMLDivElement)
+	localTracks.localVideoTrack.play(`local-${chatMessageActivityID}`)
 }
 function leaveAndRemoveLocalTracks() {
 	videoConferenceEngine = videoConferenceEngine as IAgoraRTCClient
