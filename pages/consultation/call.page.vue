@@ -2,6 +2,7 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
+				ref="localPlayerContainer"
 				v-model:must-show-video="mustShowVideo"
 				v-model:must-transmit-audio="mustTransmitAudio"
 				class="local-participant"/>
@@ -54,6 +55,7 @@
 </style>
 
 <script setup lang="ts">
+import AgoraRTC from "agora-rtc-sdk-ng"
 import { computed, inject, onMounted, provide, ref } from "vue"
 
 import { PageContext } from "$/types/renderer"
@@ -71,8 +73,6 @@ import Fetcher from "$@/fetchers/consultation"
 
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
-
-const fetcher = new Fetcher()
 
 type AdditionalPageProps = "mustUsePeerServer"|"chatMessageActivities"|"consultation"
 const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
@@ -135,6 +135,13 @@ function fetchGeneratedToken() {
 
 		token.value = RTCToken
 	})
+}
+
+const agoraEngine = AgoraRTC.createClient({
+	"codec": "vp8",
+	"mode": "rtc"
+})
+const localPlayerContainer = ref<HTMLDivElement|null>(null)
 
 onMounted(() => {
 	fetchGeneratedToken()
