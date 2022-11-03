@@ -51,11 +51,14 @@ export default async function loadRemainingResources<
 
 		listDocument.value = {
 			...listDocument.value,
-			...meta,
 			"data": [
 				...listDocument.value.data,
 				...data
-			]
+			],
+			"meta": {
+				...listDocument.value.meta,
+				...meta
+			}
 		}
 
 		const castMeta = meta as ResourceCount
