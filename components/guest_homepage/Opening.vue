@@ -1,27 +1,34 @@
 <template>
-<img src="@assets/logo_bg_transparent.svg" alt="logo" />
-<div class="teaser">
-	<Description>
-		<template #header>Chat header</template>
-		<template #details>The quick brown fox jumped over the lazy dog.</template>
-	</Description>
-	<div class="graphics">
-		<Person accessory="chat" variant="talking left"/>
-		<Person accessory="chat" variant="talking right"/>
+	<img src="@assets/logo_bg_transparent.svg" alt="logo"/>
+	<div class="teaser">
+		<Description>
+			<template #header>
+				Consultation
+			</template>
+			<template #details>
+				Students can consults any available employees with the help of Consultation Message.
+			</template>
+		</Description>
+		<div class="graphics">
+			<Person accessory="chat" variant="talking left"/>
+			<Person accessory="chat" variant="talking right"/>
+		</div>
 	</div>
-</div>
 
-<div class="teaser">
-	<Description>
-		<template #header>Forum Header</template>
-		<template #details>
-			Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim, alias?
-		</template>
-	</Description>
-	<div class="graphics graphics-left">
-		<Person accessory="campaign" variant="announce"/>
+	<div class="teaser">
+		<Description>
+			<template #header>
+				Forum
+			</template>
+			<template #details>
+				Students will know the updates of the employees
+				and students also can comment on the post of the employees.
+			</template>
+		</Description>
+		<div class="graphics graphics-left">
+			<Person accessory="campaign" variant="announce"/>
+		</div>
 	</div>
-</div>
 </template>
 <style scoped lang="scss">
 .teaser {
