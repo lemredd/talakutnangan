@@ -7,7 +7,6 @@ import type { DeserializedPostListDocument } from "$/types/documents/post"
 import Policy from "!/bases/policy"
 import Manager from "%/managers/post"
 import deserialize from "$/object/deserialize"
-import CommentManager from "%/managers/comment"
 import DepartmentManager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 

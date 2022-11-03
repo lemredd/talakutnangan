@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<article>
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
@@ -70,13 +70,13 @@
 				{{ friendlyCommentCount }}
 			</span>
 		</a>
-	</section>
+	</article>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
-	section {
+	article {
 		@apply flex flex-col flex-nowrap justify-between;
 		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
@@ -125,7 +125,7 @@ const fetcher = new Fetcher()
 
 const props = defineProps<{
 	commentCount: number,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"department">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
 }>()
 
 interface CustomEvents {
