@@ -8,14 +8,21 @@ import type {
 import Stub from "$/singletons/stub"
 import isUndefined from "$/type_guards/is_undefined"
 
-let AgoraRTC: VideoConferenceManager|null = null
+let videoConferenceManager: VideoConferenceManager|null = null
+function manager(): VideoConferenceManager {
+	return videoConferenceManager as VideoConferenceManager
+}
+
 export let videoConferenceEngine: VideoConferenceEngine|null = null
+function engine(): VideoConferenceEngine {
+	return videoConferenceEngine as VideoConferenceEngine
+}
 
 export async function initiateVideoConferenceEngine() {
 	if (!isUndefined(window)) {
 		// @ts-ignore
-		AgoraRTC = await import("agora-rtc-sdk-ng") as VideoConferenceManager
-		videoConferenceEngine = AgoraRTC.createClient({
+		videoConferenceManager = await import("agora-rtc-sdk-ng") as VideoConferenceManager
+		videoConferenceEngine = videoConferenceManager.createClient({
 			"codec": "vp8",
 			"mode": "rtc"
 		})
@@ -37,19 +44,16 @@ export async function joinAndPresentLocalTracks(
 	localParticipantID: string,
 	token: string
 ) {
-	videoConferenceEngine = videoConferenceEngine as VideoConferenceEngine
-	AgoraRTC = AgoraRTC as VideoConferenceManager
-
-	await videoConferenceEngine.join(
+	await engine().join(
 		appId,
 		"call",
 		token,
 		Number(chatMessageActivityID)
 	)
-	localTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
-	localTracks.localVideoTrack = await AgoraRTC.createCameraVideoTrack()
+	localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
+	localTracks.localVideoTrack = await manager().createCameraVideoTrack()
 
-	await videoConferenceEngine.publish([
+	await engine().publish([
 		localTracks.localAudioTrack,
 		localTracks.localVideoTrack
 	])
@@ -58,20 +62,20 @@ export async function joinAndPresentLocalTracks(
 
 export function leaveAndRemoveLocalTracks() {
 	videoConferenceEngine = videoConferenceEngine as VideoConferenceEngine
-	AgoraRTC = AgoraRTC as VideoConferenceManager
+	videoConferenceManager = videoConferenceManager as VideoConferenceManager
 
 	localTracks.localAudioTrack?.close()
 	localTracks.localVideoTrack?.close()
 }
 
 export function mockJoining() {
-	AgoraRTC = AgoraRTC as VideoConferenceManager
+	videoConferenceManager = videoConferenceManager as VideoConferenceManager
 	localTracks.localAudioTrack = Stub.runConditionally(
-		AgoraRTC.createMicrophoneAudioTrack,
+		videoConferenceManager.createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 	localTracks.localVideoTrack = Stub.runConditionally(
-		AgoraRTC.createMicrophoneAudioTrack,
+		videoConferenceManager.createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 }
