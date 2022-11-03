@@ -197,6 +197,11 @@ export type DepartmentQueryParameters<T extends number|string = string> =
 	& IDsFilter<T>
 	& SlugFilter
 
+export type SemesterQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& IDsFilter<T>
+	& SlugFilter
+
 export type EmployeeScheduleQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& UserFilter<T>
