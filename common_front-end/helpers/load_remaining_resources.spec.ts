@@ -124,7 +124,7 @@ describe("Helper: Load remaining resource", () => {
 		expect(mockOperation).toHaveBeenCalledTimes(1)
 	})
 
-	it("should run extra operations", async() => {
+	it("should run post operations", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [ {} ],
 			"meta": {
@@ -157,13 +157,13 @@ describe("Helper: Load remaining resource", () => {
 			"sort": []
 		} as DepartmentQueryParameters)
 		const mockOperation = jest.fn()
-		const extraOperations = () => new Promise<void>(resolve => {
+		const postOperations = () => new Promise<void>(resolve => {
 			console.log("extra")
 			mockOperation()
 			resolve()
 		})
 
-		await loadRemainingResource(listDocument, fetcher, queryMaker, { extraOperations })
+		await loadRemainingResource(listDocument, fetcher, queryMaker, { postOperations })
 
 		expect(fetch).toHaveBeenCalledTimes(2)
 		expect(mockOperation).toHaveBeenCalledTimes(1)
