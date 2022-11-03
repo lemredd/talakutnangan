@@ -137,7 +137,9 @@ function uploadPostAttachment(event: Event): void {
 function createPost(): void {
 	fetcher.create({
 		"content": content.value,
-		"deletedAt": null
+		"createdAt": new Date().toJSON(),
+		"deletedAt": null,
+		"updatedAt": new Date().toJSON()
 	}, {
 		"extraDataFields": {
 			"relationships": {

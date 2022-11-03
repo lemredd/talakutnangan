@@ -10,8 +10,8 @@
 			<span class="material-icons account-attachment">
 				attachment
 			</span>
-			<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 		</div>
+		<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
 		<Multiviewer
 			v-model="posts"
 			class="multiviewer"/>
@@ -73,5 +73,4 @@ const {
 	"on": showCreateForm,
 	"off": hideCreateForm
 } = makeSwitch(false)
-
 </script>
