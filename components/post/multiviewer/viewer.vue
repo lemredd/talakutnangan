@@ -87,7 +87,7 @@
 				@apply flex-1 flex flex-row flex-wrap;
 
 				.profile-picture {
-					@apply mb-5 flex-initial w-auto h-6;
+					@apply mb-5 mr-2 flex-initial w-auto h-6;
 
 					+ span {
 						@apply flex-1;

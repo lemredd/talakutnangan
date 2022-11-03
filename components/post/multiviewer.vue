@@ -1,16 +1,22 @@
 <template>
 	<div
 		v-for="(post, i) in posts"
-		:key="post.id"
-		class="post">
+		:key="post.id">
 		<Viewer
 			v-model="posts[i]"
+			class="viewer"
 			:comment-count="0"/>
 	</div>
 </template>
 
 <style scoped lang="scss">
+	div {
+		@apply flex flex-col flex-nowrap;
 
+		.viewer {
+			@apply flex-1 mb-8;
+		}
+	}
 </style>
 
 <script setup lang="ts">

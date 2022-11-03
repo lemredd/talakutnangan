@@ -1,44 +1,51 @@
 <template>
-	<div>
-		<div class="post">
-			<div
-				class="created-post">
-				<span class="material-icons account-attachment">
-					account_circle
-				</span>
-				<input
-					type="text"
-					placeholder="What's on your mind?"
-					class="post-create"/>
-				<span class="material-icons account-attachment">
-					attachment
-				</span>
-			</div>
+	<div class="main">
+		<div
+			class="created-post">
+			<span class="material-icons account-attachment">
+				account_circle
+			</span>
+			<input
+				type="text"
+				placeholder="What's on your mind?"
+				class="post-create"/>
+			<span class="material-icons account-attachment">
+				attachment
+			</span>
 		</div>
 		<Multiviewer
-			v-model="posts"/>
+			v-model="posts"
+			class="multiviewer"/>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	.created-post {
-		@apply flex justify-between items-center;
-		@apply m-5 p-4 rounded-1rem shadow-inner bg-light-800 min-w-85;
-		width: 90%;
+	.main {
+		@apply flex flex-col flex-nowrap justify-start items-stretch;
 
-		.post-create {
-			@apply p-4 rounded-1rem bg-gray-300 text-dark-500;
-			width: 90%;
+		.created-post {
+			@apply flex-1 flex justify-between items-center;
+			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
+
+			.post-create {
+				@apply rounded-1rem bg-gray-300 text-dark-500;
+				width: 90%;
+			}
+
+			.account-attachment {
+				@apply ml-2;
+			}
+
+		}
+		.file-media{
+			@apply mr-2;
 		}
 
-		.account-attachment {
-			@apply ml-2;
+		.multiviewer {
+			@apply flex-1 m-5;
 		}
+	}
 
-	}
-	.file-media{
-		@apply mr-2;
-	}
 </style>
 
 <script setup lang="ts">
