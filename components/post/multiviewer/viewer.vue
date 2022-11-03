@@ -62,14 +62,14 @@
 		<p>
 			{{ post.content }}
 		</p>
-		<p class="comment-count">
+		<a :href="readPostPath" class="comment-count">
 			<span class="material-icons icon">
 				comment
 			</span>
 			<span>
 				{{ friendlyCommentCount }}
 			</span>
-		</p>
+		</a>
 	</section>
 </template>
 
@@ -109,9 +109,12 @@ import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 
+import { READ_POST } from "$/constants/template_page_paths"
+
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
+import specializePath from "$/helpers/specialize_path"
 
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
@@ -181,6 +184,16 @@ const friendlyCreatedDate = computed<string>(() => {
 const postInfo = computed<string>(() => `${postDepartment.value} ${friendlyCreatedDate.value}`)
 
 const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
+
+const readPostPath = computed<string>(() => {
+	const postID = post.value.id
+
+	const path = specializePath(READ_POST, {
+		"id": postID
+	})
+
+	return path
+})
 
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
