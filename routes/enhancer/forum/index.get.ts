@@ -37,7 +37,6 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
-		const commentManager = new CommentManager(request)
 		const departmentManager = new DepartmentManager(request)
 		const userProfile = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
 
@@ -58,20 +57,8 @@ export default class extends PageMiddleware {
 			},
 			"sort": [ "-createdAt" ]
 		}) as DeserializedPostListDocument<"poster"|"posterRole"|"department">
-		const comments = await commentManager.list({
-			"filter": {
-				"postID": 1,
-				"existence": "exists"
-			},
-			"page": {
-				"limit": 10,
-				"offset": 0
-			},
-			"sort": [ "-createdAt" ]
-		})
 
 		const pageProps = {
-			comments,
 			"departments": mayViewAllDepartments
 				? await departmentManager.list({
 					"filter": {
