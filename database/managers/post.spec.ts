@@ -1,6 +1,8 @@
+import Model from "%/models/post"
 import Factory from "~/factories/post"
 import UserFactory from "~/factories/user"
 import CommentFactory from "~/factories/comment"
+import DepartmentFactory from "~/factories/department"
 import AttachedRoleFactory from "~/factories/attached_role"
 
 import Manager from "./post"
@@ -32,6 +34,43 @@ describe("Database Manager: Post read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.commentCount", modelACommentCount)
 		expect(counts).toHaveProperty("data.1.id", String(modelB.id))
 		expect(counts).toHaveProperty("data.1.meta.commentCount", modelBCommentCount)
+	})
+})
+describe("Database Manager: Post create operations", () => {
+	it("can create post without attachment", async() => {
+		const department = await new DepartmentFactory().insertOne()
+		const model = await new Factory().makeOne()
+		const manager = new Manager()
+
+		const data = await manager.createUsingResource({
+			"attributes": {
+				"content": model.content
+			},
+			"relationships": {
+				"department": {
+					"data": {
+						"id": department.id
+					}
+				},
+				"postAttachments": {
+					"data": []
+				},
+				"poster": {
+					"data": {
+						"id": model.poster?.id
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": model.posterRole?.id
+					}
+				}
+			}
+		} as any)
+
+		expect(await Model.count()).toBe(1)
+		expect(data).toHaveProperty("data")
+		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
 })
 
