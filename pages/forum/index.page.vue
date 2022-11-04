@@ -16,6 +16,7 @@
 			v-model="chosenDepartment"
 			label="Department"
 			:options="departmentNames"/>
+		<SelectableExistence v-model="existence"/>
 		<Multiviewer
 			v-model="posts.data"
 			class="multiviewer"/>
@@ -69,15 +70,16 @@ import Fetcher from "$@/fetchers/post"
 import debounce from "$@/helpers/debounce"
 import makeSwitch from "$@/helpers/make_switch"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+
+import { post as permissionGroup } from "$/permissions/permission_list"
+import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/post_combinations"
 
 import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
-
-import { post as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/post_combinations"
+import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
 type RequiredExtraProps = "posts"|"departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -103,6 +105,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 	}))
 ])
 const chosenDepartment = ref(userProfile.data.department.data.id)
+const existence = ref<string>("exists")
 
 const {
 	"state": isCreateShown,
@@ -115,7 +118,7 @@ async function retrievePosts() {
 	await fetcher.list({
 		"filter": {
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
-			"existence": "exists"
+			"existence": existence.value
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
@@ -168,7 +171,7 @@ onMounted(async() => {
 	}
 
 	watch(
-		[ chosenDepartment ],
+		[ chosenDepartment, existence ],
 		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
 	)
 })
