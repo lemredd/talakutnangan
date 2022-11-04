@@ -1,22 +1,17 @@
 import type { FieldRules } from "!/types/validation"
-import type { AuthenticatedRequest, Response } from "!/types/dependent"
-import type { IDsFilter } from "$/types/query"
-import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { CommentResourceIdentifier } from "$/types/documents/comment"
+import type { Request, Response } from "!/types/dependent"
+import type { IDOnlyQueryParameters } from "$/types/query"
+import type { DepartmentResourceIdentifier } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Policy from "!/bases/policy"
-import Manager from "%/managers/comment"
-import deserialize from "$/object/deserialize"
 import ListResponse from "!/response_infos/list"
+import Manager from "%/managers/department"
 import QueryController from "!/controllers/query"
 
-import {
-	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
-} from "$/permissions/comment_combinations"
-import { comment as permissionGroup } from "$/permissions/permission_list"
+import { READ } from "$/permissions/department_combinations"
+import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
 import object from "!/validators/base/object"
@@ -32,12 +27,11 @@ export default class extends QueryController {
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			READ_ANYONE_ON_OWN_DEPARTMENT,
-			READ_ANYONE_ON_ALL_DEPARTMENTS
+			READ
 		])
 	}
 
-	makeQueryRuleGenerator(unusedRequest: AuthenticatedRequest): FieldRules {
+	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
 		return {
 			"filter": {
 				"constraints": {
@@ -72,13 +66,14 @@ export default class extends QueryController {
 		}
 	}
 
-	async handle(request: AuthenticatedRequest, unusedResponse: Response): Promise<ListResponse> {
-		const query = request.query as unknown as Pick<IDsFilter<number>, "filter">
-		const user = deserialize(request.user) as DeserializedUserDocument
-		const manager = new Manager(request)
-		const commentWithUserCount = await manager
-		.countVotes(Number(user.data.id), query.filter.IDs ?? []) as CommentResourceIdentifier<"read">
+	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
+		const query = request.query as unknown as IDOnlyQueryParameters<number>
 
-		return new ListResponse(commentWithUserCount)
+		const manager = new Manager(request)
+		const departmentWithUserCount = await manager
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		.countUsers(query.filter.IDs as number[]) as DepartmentResourceIdentifier<"read">
+
+		return new ListResponse(departmentWithUserCount)
 	}
 }
