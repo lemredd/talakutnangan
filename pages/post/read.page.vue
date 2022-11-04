@@ -12,7 +12,7 @@
 				class="field"
 				:post="post"
 				@create-comment="includeComment"/>
-			<Multiviewer v-model="comments"/>
+			<CommentMultiviewer v-model="comments.data"/>
 		</div>
 	</article>
 </template>
@@ -73,8 +73,8 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 )
 const isPostOwned = post.value.poster.data.id === userProfile.data.id
 
-const comments = ref<DeserializedCommentResource<"user">[]>(
-	pageProps.comments.data as DeserializedCommentResource<"user">[]
+const comments = ref<DeserializedCommentListDocument<"user">>(
+	pageProps.comments as DeserializedCommentListDocument<"user">
 )
 const commentCount = computed<number>(() => {
 	const castMeta = pageProps.comments.meta as ResourceCount
@@ -105,7 +105,16 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 function includeComment(newComment: DeserializedCommentResource<"user">): void {
-	comments.value.push(newComment)
+	comments.value = {
+		...comments.value,
+		"data": [
+			...comments.value.data,
+			newComment
+		],
+		"meta": {
+			"count": (comments.value.meta?.count || 0) + 1
+		}
+	}
 }
 const commentFetcher = new CommentFetcher()
 
