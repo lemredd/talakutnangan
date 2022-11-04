@@ -10,9 +10,12 @@ import ListResponse from "!/response_infos/list"
 import Manager from "%/managers/department"
 import QueryController from "!/controllers/query"
 
-import { READ } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { post as permissionGroup } from "$/permissions/permission_list"
+import {
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	READ_ANYONE_ON_OWN_DEPARTMENT
+} from "$/permissions/post_combinations"
 
 import object from "!/validators/base/object"
 import makeIDRules from "!/rule_sets/make_id"
@@ -27,7 +30,8 @@ export default class extends QueryController {
 
 	get policy(): Policy {
 		return new PermissionBasedPolicy(permissionGroup, [
-			READ
+			READ_ANYONE_ON_ALL_DEPARTMENTS,
+			READ_ANYONE_ON_OWN_DEPARTMENT
 		])
 	}
 
