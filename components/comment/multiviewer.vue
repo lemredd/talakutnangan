@@ -109,7 +109,10 @@ async function fetchComments() {
 				"offset": comments.value.data.length
 			},
 			"sort": [ "-createdAt" ]
-		})
+		}),
+		{
+			"mayContinue": () => Promise.resolve(false)
+		}
 	)
 }
 

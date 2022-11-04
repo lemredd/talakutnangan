@@ -45,10 +45,12 @@ export default async function loadRemainingResources<
 	queryMaker: () => QueryParameters<C>,
 	{
 		delayer = () => Promise.resolve(),
-		postOperations = () => Promise.resolve()
+		postOperations = () => Promise.resolve(),
+		mayContinue = () => Promise.resolve(true)
 	}: Partial<{
 		delayer: () => Promise<void>
 		postOperations: (newList: B) => Promise<void>
+		mayContinue: () => Promise<boolean>
 	}> = {}
 ): Promise<void> {
 	await delayer()
@@ -70,14 +72,16 @@ export default async function loadRemainingResources<
 		}
 
 		const castMeta = meta as ResourceCount
-		if (listDocument.value.data.length < castMeta.count) {
-			return postOperations(response.body)
-			.then(() => loadRemainingResources(listDocument, fetcher, queryMaker, {
-				delayer,
-				postOperations
-			}))
-		}
+		return mayContinue().then(mayContinueLooping => {
+			if (mayContinueLooping && listDocument.value.data.length < castMeta.count) {
+				return postOperations(response.body)
+				.then(() => loadRemainingResources(listDocument, fetcher, queryMaker, {
+					delayer,
+					postOperations
+				}))
+			}
 
-		return Promise.resolve()
+			return Promise.resolve()
+		})
 	})
 }
