@@ -63,8 +63,7 @@ const { userProfile } = pageProps
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const comments = ref<DeserializedCommentListDocument<"user">>(
-	pageProps.comments as DeserializedCommentListDocument<"user">
+const isPostOwned = post.value.poster.data.id === userProfile.data.id
 )
 
 const commentCount = computed<number>(() => {
