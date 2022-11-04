@@ -70,7 +70,12 @@ export default class extends PageMiddleware {
 					},
 					"sort": [ "fullName" ]
 				})
-				: [],
+				: {
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				},
 			posts
 		}
 
