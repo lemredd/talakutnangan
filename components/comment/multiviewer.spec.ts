@@ -47,7 +47,7 @@ describe("Component: comment/multiviewer", () => {
 				{
 					"id": commentID,
 					"meta": {},
-					"type": "comment_vote"
+					"type": "comment"
 				}
 			]
 		}), { "status": RequestEnvironment.status.OK })
@@ -137,7 +137,7 @@ describe("Component: comment/multiviewer", () => {
 				{
 					"id": commentID,
 					"meta": {},
-					"type": "comment_vote"
+					"type": "comment"
 				}
 			]
 		}), { "status": RequestEnvironment.status.OK })
@@ -155,9 +155,9 @@ describe("Component: comment/multiviewer", () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [
 				{
-					"id": commentID,
+					"id": archivedCommentID,
 					"meta": {},
-					"type": "comment_vote"
+					"type": "comment"
 				}
 			]
 		}), { "status": RequestEnvironment.status.OK })
@@ -203,6 +203,26 @@ describe("Component: comment/multiviewer", () => {
 		await flushPromises()
 		const selectableExistence = wrapper.findComponent({ "name": "SelectableExistenceFilter" })
 		await selectableExistence.vm.$emit("update:modelValue", "archived")
+		await wrapper.setProps({
+			"modelValue": {
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}
+		})
+		await wrapper.setProps({
+			"modelValue": {
+				"data": [
+					{
+						"id": archivedCommentID
+					}
+				],
+				"meta": {
+					"count": 1
+				}
+			}
+		})
 		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 		await flushPromises()
 		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
@@ -212,9 +232,10 @@ describe("Component: comment/multiviewer", () => {
 		/*
 		 * First update comes from counting initial votes.
 		 * Second update comes from asking for archived comments.
-		 * Third update comes from counting of votes for archived comments.
+		 * Third update comes from after asking for archived comments.
+		 * Fourth update comes from counting of votes for archived comments.
 		 */
-		expect(updates).toHaveLength(3)
+		expect(updates).toHaveLength(4)
 
 		const castFetch = fetch as jest.Mock<any, any>
 		expect(castFetch).toHaveBeenCalledTimes(3)
