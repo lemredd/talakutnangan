@@ -1,22 +1,23 @@
 <template>
-	<h1>
-		<slot name="header"></slot>
-	</h1>
-	<p>
-		<slot name="details"></slot>
-	</p>
+	<div class="description">
+		<div class="description-header">
+			<slot name="header"></slot>
+		</div>
+		<div class="description-details">
+			<slot name="details"></slot>
+		</div>
+	</div>
 </template>
 
 <style scoped>
-h1 {
-	padding: 1.25em;
-	font-size: 1.5em;
+
+.description-header {
+	@apply text-2xl;
+}
+.description-details {
+	@apply text-sm;
 }
 
-p {
-	padding: 0 1.25em;
-	font-size: .75em;
-}
 </style>
 
 <script setup lang="ts">
