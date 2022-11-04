@@ -1,40 +1,53 @@
 <template>
-	<Viewer
-		v-for="(comment, i) in comments"
-		:key="comment.id"
-		v-model="comments[i]"/>
+	<div class="multiviewer">
+		<SelectableCommentExistenceFilter
+			v-if="isPostOwned"
+			v-model="existence"/>
+		<Viewer
+			v-for="(comment, i) in comments.data"
+			:key="comment.id"
+			v-model="comments.data[i]"/>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue"
+import { computed, onMounted, Ref, ref, watch } from "vue"
 
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type { DeserializedCommentListDocument } from "$/types/documents/comment"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/comment"
 import isUndefined from "$/type_guards/is_undefined"
 
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+
 import Viewer from "@/comment/multiviewer/viewer.vue"
+import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
+
 
 const props = defineProps<{
-	modelValue: DeserializedCommentResource<"user">[]
+	isPostOwned: boolean
+	modelValue: DeserializedCommentListDocument<"user">
+	postId: string
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		comment: DeserializedCommentResource<"user">[]
+		comment: DeserializedCommentListDocument<"user">
 	): void
 }
 const emit = defineEmits<CustomEvents>()
 
 const fetcher = new Fetcher()
 
-const comments = computed<DeserializedCommentResource<"user">[]>({
-	get(): DeserializedCommentResource<"user">[] {
+const comments = computed<DeserializedCommentListDocument<"user">>({
+	get(): DeserializedCommentListDocument<"user"> {
 		return props.modelValue
 	},
-	set(newValue: DeserializedCommentResource<"user">[]): void {
-		if (newValue.some(comment => isUndefined(comment.meta))) {
+	set(newValue: DeserializedCommentListDocument<"user">): void {
+		if (newValue.data.some(comment => isUndefined(comment.meta))) {
 			// eslint-disable-next-line no-use-before-define
 			countVotesOfComments(extractCommentIDsWithNoVoteInfo(newValue))
 		} else {
@@ -43,9 +56,9 @@ const comments = computed<DeserializedCommentResource<"user">[]>({
 	}
 })
 
-function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentResource<"user">[])
+function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentListDocument<"user">)
 : string[] {
-	const commentsWithNoVoteInfo = currentComments.filter(comment => isUndefined(comment.meta))
+	const commentsWithNoVoteInfo = currentComments.data.filter(comment => isUndefined(comment.meta))
 	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
 	return commentIDs
 }
@@ -54,7 +67,7 @@ async function countVotesOfComments(commentIDs: string[]): Promise<void> {
 	await fetcher.countVotes(commentIDs)
 	.then(response => {
 		const deserializedData = response.body.data
-		const commentsWithVoteInfo = [ ...comments.value ]
+		const commentsWithVoteInfo = [ ...comments.value.data ]
 
 		for (const identifierData of deserializedData) {
 			const { meta, id } = identifierData
@@ -68,13 +81,39 @@ async function countVotesOfComments(commentIDs: string[]): Promise<void> {
 			}
 		}
 
-		comments.value = commentsWithVoteInfo
+		comments.value = {
+			...comments.value,
+			"data": commentsWithVoteInfo
+		}
 	})
 }
 
 async function countCommentVote(): Promise<number|void> {
 	await countVotesOfComments(extractCommentIDsWithNoVoteInfo(comments.value))
 }
+
+
+const existence = ref<"exists"|"archived"|"*">("exists")
+async function fetchComments() {
+	const { postId } = props
+	await loadRemainingResource(
+		comments as Ref<DeserializedCommentListDocument>,
+		fetcher,
+		() => ({
+			"filter": {
+				"existence": existence.value,
+				"postID": postId
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		})
+	)
+}
+
+watch(existence, () => fetchComments())
 
 onMounted(async() => await countCommentVote())
 </script>

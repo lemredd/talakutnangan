@@ -4,15 +4,15 @@
 			v-model="post"
 			:comment-count="commentCount"/>
 		<div class="comments">
-			<SelectableCommentExistenceFilter
-				v-if="isPostOwned"
-				v-model="commentExistence"/>
 			<CreateCommentField
 				v-if="mayCreateComment"
 				class="field"
 				:post="post"
 				@create-comment="includeComment"/>
-			<CommentMultiviewer v-model="comments.data"/>
+			<CommentMultiviewer
+				v-model="comments"
+				:post-id="post.id"
+				:is-post-owned="isPostOwned"/>
 		</div>
 	</article>
 </template>
@@ -33,7 +33,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, watch, computed, Ref } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
@@ -43,8 +43,6 @@ import type {
 	DeserializedCommentResource
 } from "$/types/documents/comment"
 
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
-
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
@@ -52,13 +50,9 @@ import {
 	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
-import CommentFetcher from "$@/fetchers/comment"
-import loadRemainingResource from "$@/helpers/load_remaining_resource"
-
 import Viewer from "@/post/multiviewer/viewer.vue"
 import CommentMultiviewer from "@/comment/multiviewer.vue"
 import CreateCommentField from "@/comment/create_field.vue"
-import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -116,26 +110,5 @@ function includeComment(newComment: DeserializedCommentResource<"user">): void {
 		}
 	}
 }
-const commentFetcher = new CommentFetcher()
 
-const commentExistence = ref<"exists"|"archived"|"*">("exists")
-async function fetchComments() {
-	await loadRemainingResource(
-		comments as Ref<DeserializedCommentListDocument>,
-		commentFetcher,
-		() => ({
-			"filter": {
-				"existence": commentExistence.value,
-				"postID": post.value.id
-			},
-			"page": {
-				"limit": DEFAULT_LIST_LIMIT,
-				"offset": 0
-			},
-			"sort": [ "-createdAt" ]
-		})
-	)
-}
-
-watch(commentExistence, () => fetchComments())
 </script>
