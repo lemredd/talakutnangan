@@ -10,6 +10,11 @@
 	</div>
 </template>
 
+<style scoped lang="scss">
+	.multiviewer {
+		@apply flex-1 flex flex-col flex-nowrap justify-start items-center;
+	}
+</style>
 <script setup lang="ts">
 import { computed, onMounted, Ref, ref, watch } from "vue"
 
