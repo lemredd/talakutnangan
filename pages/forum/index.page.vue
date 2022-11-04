@@ -17,7 +17,7 @@
 			label="Department"
 			:options="departmentNames"/>
 		<Multiviewer
-			v-model="posts"
+			v-model="posts.data"
 			class="multiviewer"/>
 	</div>
 </template>
@@ -56,12 +56,15 @@ import { ref, computed, inject, onMounted, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedPostResource } from "$/types/documents/post"
+import type { DeserializedPostListDocument } from "$/types/documents/post"
 import type {
 	DeserializedDepartmentListDocument,
 	DeserializedDepartmentResource
 } from "$/types/documents/department"
 
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
+import debounce from "$@/helpers/debounce"
 import makeSwitch from "$@/helpers/make_switch"
 import DepartmentFetcher from "$@/fetchers/department"
 
@@ -79,8 +82,8 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const posts = ref<DeserializedPostResource<"poster"|"posterRole"|"department">[]>(
-	pageProps.posts.data as DeserializedPostResource<"poster"|"posterRole"|"department">[]
+const posts = ref<DeserializedPostListDocument<"poster"|"posterRole"|"department">>(
+	pageProps.posts as DeserializedPostListDocument<"poster"|"posterRole"|"department">
 )
 
 const departments = ref<DeserializedDepartmentListDocument>(
@@ -104,6 +107,15 @@ const {
 	"off": hideCreateForm
 } = makeSwitch(false)
 
+function resetPostList() {
+	posts.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
+}
+
 const departmentFetcher = new DepartmentFetcher()
 onMounted(async() => {
 	const mayViewAllDepartments = permissionGroup.hasOneRoleAllowed(
@@ -126,5 +138,10 @@ onMounted(async() => {
 			}
 		}
 	}
+
+	watch(
+		[ chosenDepartment ],
+		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
+	)
 })
 </script>
