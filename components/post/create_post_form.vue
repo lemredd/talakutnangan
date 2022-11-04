@@ -198,7 +198,11 @@ function sendFile(form: HTMLFormElement) {
 	formData.set("data[attributes][fileType]", fileType.value)
 
 	postAttachmentFetcher.createWithFile(formData)
-	.then(() => {
+	.then(({ body }) => {
+		attachmentResources.value = [
+			...attachmentResources.value,
+			body.data
+		]
 		emitClose()
 	}).catch(({ body }) => {
 		if (body) {
