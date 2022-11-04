@@ -62,21 +62,17 @@ export async function joinAndPresentLocalTracks(
 }
 
 export function leaveAndRemoveLocalTracks() {
-	videoConferenceEngine = videoConferenceEngine as VideoConferenceEngine
-	videoConferenceManager = videoConferenceManager as VideoConferenceManager
-
 	localTracks.localAudioTrack?.close()
 	localTracks.localVideoTrack?.close()
 }
 
 export function mockJoining() {
-	videoConferenceManager = videoConferenceManager as VideoConferenceManager
 	localTracks.localAudioTrack = Stub.runConditionally(
-		videoConferenceManager.createMicrophoneAudioTrack,
+		manager().createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 	localTracks.localVideoTrack = Stub.runConditionally(
-		videoConferenceManager.createMicrophoneAudioTrack,
+		manager().createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 }
