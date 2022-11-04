@@ -38,7 +38,10 @@ import { inject, ref, watch, computed } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type {
+	DeserializedCommentListDocument,
+	DeserializedCommentResource
+} from "$/types/documents/comment"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -50,9 +53,10 @@ import {
 } from "$/permissions/comment_combinations"
 
 import CommentFetcher from "$@/fetchers/comment"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import Viewer from "@/post/multiviewer/viewer.vue"
-import Multiviewer from "@/comment/multiviewer.vue"
+import CommentMultiviewer from "@/comment/multiviewer.vue"
 import CreateCommentField from "@/comment/create_field.vue"
 import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
@@ -105,8 +109,9 @@ function includeComment(newComment: DeserializedCommentResource<"user">): void {
 }
 const commentFetcher = new CommentFetcher()
 
+const commentExistence = ref<"exists"|"archived"|"*">("exists")
 async function fetchComments() {
-	await commentFetcher.list({
+	await loadRemainingResource(comments, commentFetcher, () => ({
 		"filter": {
 			"existence": commentExistence.value,
 			"postID": post.value.id
@@ -116,16 +121,8 @@ async function fetchComments() {
 			"offset": 0
 		},
 		"sort": [ "-createdAt" ]
-	})
-	.then(({ body }) => {
-		const { data } = body
-
-		if (data.length === 0) return Promise.resolve()
-		comments.value = data as DeserializedCommentResource<"user">[]
-
-		return Promise.resolve()
-	})
+	}))
 }
-const commentExistence = ref<"exists"|"archived"|"*">("exists")
+
 watch(commentExistence, () => fetchComments())
 </script>
