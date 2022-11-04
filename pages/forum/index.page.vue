@@ -52,19 +52,27 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject } from "vue"
+import { ref, computed, inject, onMounted, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+import type {
+	DeserializedDepartmentListDocument,
+	DeserializedDepartmentResource
+} from "$/types/documents/department"
 
 import makeSwitch from "$@/helpers/make_switch"
+import DepartmentFetcher from "$@/fetchers/department"
 
 import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+
+import { post as permissionGroup } from "$/permissions/permission_list"
+import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/post_combinations"
 
 type RequiredExtraProps = "posts"|"departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -95,4 +103,28 @@ const {
 	"on": showCreateForm,
 	"off": hideCreateForm
 } = makeSwitch(false)
+
+const departmentFetcher = new DepartmentFetcher()
+onMounted(async() => {
+	const mayViewAllDepartments = permissionGroup.hasOneRoleAllowed(
+		userProfile.data.roles.data,
+		[ READ_ANYONE_ON_ALL_DEPARTMENTS ]
+	)
+
+	if (mayViewAllDepartments) {
+		await loadRemainingDepartments(departments, departmentFetcher)
+	} else {
+		departments.value = {
+			...departments.value,
+			"data": [
+				...departments.value.data,
+				userProfile.data.department.data as DeserializedDepartmentResource
+			],
+			"meta": {
+				...departments.value.meta,
+				"count": departments.value.meta?.count || 1
+			}
+		}
+	}
+})
 </script>
