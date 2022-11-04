@@ -47,7 +47,9 @@
 			<div v-if="hasExtracted" class="preview-file">
 				<div v-if="isFileTypeImage" class="preview-img-container">
 					<div class="removable-image relative">
-						<span class="material-icons" @click="removeFile">
+						<span
+							class="material-icons close"
+							@click="removeFile">
 							close
 						</span>
 						<img class="preview-img" :src="previewFile"/>
@@ -100,6 +102,10 @@
 	@apply py-5;
 	max-width:100%;
 	max-height:100%;
+}
+
+.close{
+	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
 }
 </style>
 

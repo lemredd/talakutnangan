@@ -16,15 +16,16 @@
 <style scoped lang="scss">
 .field{
 	@apply flex flex-row mt-1;
+
 	.post-message{
 		@apply p-4 rounded-1rem mb-5 border-1px border-solid;
-		max-width:250%;
-		height:150%;
+		width:250%;
 
 		@screen sm{
 			@apply flex flex-row;
-			width:200%;
+			max-width:100%;
 			height:100%;
+
 		}
 
 	}
