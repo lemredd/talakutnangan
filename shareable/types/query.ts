@@ -231,3 +231,7 @@ export type CommentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& PostFilter<T>
 	& IDsFilter<T>
+
+export type IDOnlyParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& IDsFilter<T>
