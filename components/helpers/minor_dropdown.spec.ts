@@ -28,7 +28,6 @@ describe("Component: helpers/minor_dropdown", () => {
 			}
 		})
 
-		console.log(wrapper.html(), "\n\n\n")
 		const overlay = wrapper.find(".overlay")
 		await overlay.trigger("click")
 		expect(wrapper.emitted()).toHaveProperty("update:modelValue.0.0", false)

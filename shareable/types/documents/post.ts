@@ -44,7 +44,10 @@ extends ResourceIdentifier<T> {
 	type: "post"
 }
 
-export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T>
+export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T> & {
+	"createdAt": T extends "serialized" ? string : Date,
+	"updatedAt": T extends "serialized" ? string : Date
+}
 
 interface PostRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
@@ -67,9 +70,9 @@ extends GeneralRelationshipData {
 		deserialized: DeserializedRoleDocument<"attached">
 	},
 	postAttachments: {
-		"serialized": T extends "read"
-			? PostAttachmentIdentifierListDocument
-			: undefined,
+		"serialized": T extends "create"|"update"
+			? PostAttachmentIdentifierListDocument|undefined
+			: PostAttachmentIdentifierListDocument,
 		"deserialized": DeserializedPostAttachmentListDocument
 	}
 }

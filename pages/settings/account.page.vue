@@ -1,40 +1,67 @@
 <template>
 	<SettingsHeader title="User Settings" :tab-infos="settingsTabInfos"/>
+	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+	<ReceivedSuccessMessages
+		v-if="successMessages.length"
+		:received-success-messages="successMessages"/>
 	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
 			v-model:status="emailFieldStatus"
+			class="submittable-field email-field"
 			label="E-mail"
-			type="email"
-			@save="updateEmail"/>
-		<UpdatePasswordField/>
+			type="email"/>
 
 		<NonSensitiveTextualField
 			v-if="isCurrentlyStudent"
 			v-model="studentNumber"
 			label="Student Number"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field student-number-field"/>
 		<NonSensitiveTextualField
-			v-model="groupName"
-			:label="groupKind"
+			v-model="department"
+			:label="departmentLabelKind"
 			type="text"
-			status="disabled"/>
+			status="disabled"
+			class="submittable-field department-field"/>
 		<div>
 			<h3 class="input-header">
 				Roles
 			</h3>
 			<span class="role bg-white text-black">{{ roles }}</span>
 		</div>
+
+		<div class="controls mt-8 flex justify-between">
+			<button
+				type="submit"
+				class="submit-btn btn btn-primary"
+				@click="updateUser">
+				submit
+			</button>
+			<button
+				type="reset"
+				class="reset-btn btn btn-secondary"
+				@click.prevent="revertToOldData">
+				cancel
+			</button>
+		</div>
 	</form>
+
+	<UpdatePasswordField class="update-password-field"/>
 </template>
 
 <style lang="scss">
 	@import "@styles/variables.scss";
+	@import "@styles/btn.scss";
+
+	form, .update-password-field {
+		@apply mt-8;
+
+		max-width: $mobileViewportMaximum;
+	}
 
 	form {
-		max-width: $mobileViewportMaximum;
-
 		.input-header {
 			font-size: 1.25em;
 		}
@@ -59,13 +86,22 @@ import settingsTabInfos from "@/settings/settings_tab_infos"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
+
+import { UnitError } from "$/types/server"
 
 const fetcher = new Fetcher()
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+
 const emailFieldStatus = ref<FieldStatus>("locked")
+const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
@@ -80,19 +116,24 @@ const studentNumber = computed<string>(() => {
 
 	return ""
 })
-
 const isCurrentlyUnreachableEmployee = computed<boolean>(
 	() => userProfile.data.kind === "unreachable_employee"
 )
-const groupKind = computed<string>(() => {
+const departmentLabelKind = computed<string>(() => {
 	if (isCurrentlyUnreachableEmployee.value) return "Department"
 	return "Institute"
 })
-const groupName = computed<string>(() => userProfile.data.department.data.acronym)
+const departmentFullName = userProfile.data.department.data.fullName
+const departmentAcronym = userProfile.data.department.data.acronym
+const department = ref(`${departmentFullName} (${departmentAcronym})`)
 
 const roles = computed<string>(() => userProfile.data.roles.data.map(role => role.name).join(", "))
 
-function updateEmail(): void {
+function revertToOldData() {
+	email.value = oldEmail
+}
+
+function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
 		"kind": userProfile.data.kind,
@@ -100,10 +141,21 @@ function updateEmail(): void {
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
-		//
+		if (receivedErrors.value.length) receivedErrors.value = []
+		successMessages.value.push("Email updated successfully.")
 	})
-	.catch(() => {
-		//
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 </script>

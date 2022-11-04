@@ -6,6 +6,7 @@
 			:class="inputClasses"
 			:type="type"
 			:required="required"
+			:placeholder="placeholder"
 			:disabled="isCurrentlyDisabled"
 			@keyup.enter.exact="saveImplicitly"/>
 		<IconButton
@@ -54,6 +55,7 @@ const props = defineProps<{
 	type: Textual
 	modelValue: string
 	required?: boolean
+	placeholder?: string
 	maySaveImplicitly?: boolean
 	status?: FieldStatus
 	inputClasses?: string

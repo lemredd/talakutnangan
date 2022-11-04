@@ -34,9 +34,10 @@
 <script setup lang = ts>
 import { computed } from "vue"
 
-const emit = defineEmits<{
+interface CustomEvents {
 	(e: "update:modelValue", slug: string): void
-}>()
+}
+const emit = defineEmits<CustomEvents>()
 
 const props = defineProps<{
 	modelValue: string

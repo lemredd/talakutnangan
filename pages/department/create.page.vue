@@ -10,7 +10,7 @@
 			Full name:
 			<input
 				id="full-name"
-				v-model="fullName"
+				v-model="titleDepartment"
 				class="border-solid"
 				type="text"/>
 		</label>
@@ -18,7 +18,7 @@
 			Acronym:
 			<input
 				id="acronym"
-				v-model="acronym"
+				v-model="capitalAcronym"
 				class="border-solid"
 				type="text"/>
 		</label>
@@ -37,10 +37,11 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
 
 import type { UnitError } from "$/types/server"
 
+import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
 
 import UserListRedirector from "@/resource_management/list_redirector.vue"
@@ -55,15 +56,29 @@ const fetcher = new DepartmentFetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
+const titleDepartment = computed<string>({
+	"get": () => fullName.value,
+	set(newValue: string): void {
+		fullName.value = convertToTitle(newValue)
+	}
+})
+
+const capitalAcronym = computed<string>({
+	"get": () => acronym.value,
+	set(newValue: string): void {
+		acronym.value = newValue.toUpperCase()
+	}
+})
+
 function createDepartment() {
 	fetcher.create({
 		"acronym": acronym.value,
 		"fullName": fullName.value,
 		"mayAdmit": mayAdmit.value
 	})
-	.then(({ body, status }) => {
+	.then(() => {
 		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been create successfully!")
+		successMessages.value.push("Department has been created successfully!")
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []

@@ -2,13 +2,13 @@
 	<MinorDropdown v-if="shouldHaveMenu" v-model="isDropdownShown">
 		<template #dropdown-contents>
 			<button v-if="mayUpdateComment" @click="updateComment">
-				Update
+				Update comment
 			</button>
 			<button v-if="mayArchiveComment" @click="archiveComment">
-				Archive
+				Archive comment
 			</button>
 			<button v-if="mayRestoreComment" @click="restoreComment">
-				Restore
+				Restore comment
 			</button>
 		</template>
 	</MinorDropdown>

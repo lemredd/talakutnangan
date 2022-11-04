@@ -1,23 +1,10 @@
 <template>
-	<div>
-		<div class="post-container flex justify-between w-[100%] pb-[5em]">
-			<div class="post-title">
-				<h2 class="font-bold">
-					Post
-				</h2>
-			</div>
-			<div class="">
-			</div>
-			<Menu
-				:post="post"
-				@update-post="openUpdateForm"
-				@archive-post="confirmArchive"
-				@restore-post="confirmRestore"/>
-		</div>
+	<article>
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
-			@submit="submitChangesSeparately"/>
+			@submit="submitChangesSeparately"
+			@close="closeUpdateForm"/>
 		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
 			<template #header>
 				<h1>Enter the post details</h1>
@@ -53,50 +40,69 @@
 				</button>
 			</template>
 		</Overlay>
-		<div class="post-container" :hidden="post.isPostShown">
-			<div class="left">
-				<div><img class="max-w-[100px]" src="@assets/emptyUser.png"/></div>
-				<h2 class="title">
+		<header>
+			<div class="post-details">
+				<ProfilePicture
+					class="profile-picture"
+					:user="post.poster"/>
+				<span>
 					{{ post.poster.data.name }}
-				</h2>
+				</span>
+				<span>
+					<small>
+						{{ postInfo }}
+					</small>
+				</span>
 			</div>
-			<div class="right">
-				<h2 class="title">
-					<!-- TODO: Put the total number of upvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to upvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of downvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to downvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of votes here -->
-				</h2>
-			</div>
-			<p>
-				{{ post.content }}
-			</p>
-		</div>
-	</div>
+			<Menu
+				:post="post"
+				@update-post="openUpdateForm"
+				@archive-post="confirmArchive"
+				@restore-post="confirmRestore"/>
+		</header>
+		<p>
+			{{ post.content }}
+		</p>
+		<a :href="readPostPath" class="comment-count">
+			<span class="material-icons icon">
+				comment
+			</span>
+			<span>
+				{{ friendlyCommentCount }}
+			</span>
+		</a>
+	</article>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "@styles/btn.scss";
 
-	post-container {
-		@apply flex flex-col flex-nowrap justify-center;
+	article {
+		@apply flex flex-col flex-nowrap justify-between;
+		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
 
-		> .field {
-			@apply flex-initial;
+		header {
+			@apply flex-1 flex flex-row justify-between;
+
+			.post-details {
+				@apply flex-1 flex flex-row flex-wrap;
+
+				.profile-picture {
+					@apply mb-5 mr-2 flex-initial w-auto h-6;
+
+					+ span {
+						@apply flex-1;
+					}
+				}
+			}
+		}
+
+		.comment-count {
+			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
 		}
 	}
 
+	.icon { @apply mr-2; }
 </style>
 
 <script setup lang="ts">
@@ -104,17 +110,23 @@ import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 
+import { READ_POST } from "$/constants/template_page_paths"
+
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
+import specializePath from "$/helpers/specialize_path"
 
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
+import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
 const fetcher = new Fetcher()
 
 const props = defineProps<{
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"department">
+	commentCount: number,
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
 }>()
 
 interface CustomEvents {
@@ -131,7 +143,8 @@ const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(p
 
 const {
 	"state": mustUpdate,
-	"on": openUpdateForm
+	"on": openUpdateForm,
+	"off": closeUpdateForm
 } = makeSwitch(false)
 
 const {
@@ -153,10 +166,43 @@ function closeArchiveOrRestore() {
 	closeRestore()
 }
 
+const postDepartment = computed<string>(() => {
+	const { department } = post.value
+
+	if (isUndefined(department)) {
+		return "Posted to all"
+	}
+
+	return `Posted on ${department.data.fullName} (${department.data.acronym})`
+})
+
+const friendlyCreatedDate = computed<string>(() => {
+	const { createdAt } = post.value
+
+	// TODO: Format like "one hour ago", or "one day ago"
+	return createdAt.toJSON()
+})
+
+const postInfo = computed<string>(() => `${postDepartment.value} ${friendlyCreatedDate.value}`)
+
+const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
+
+const readPostPath = computed<string>(() => {
+	const postID = post.value.id
+
+	const path = specializePath(READ_POST, {
+		"id": postID
+	})
+
+	return path
+})
+
 async function submitChangesSeparately(): Promise<void> {
 	await fetcher.update(post.value.id, {
 		"content": post.value.content,
-		"deletedAt": null
+		"createdAt": post.value.createdAt.toJSON(),
+		"deletedAt": null,
+		"updatedAt": post.value.updatedAt.toJSON()
 	}, {
 		"extraDataFields": {
 			"relationships": {

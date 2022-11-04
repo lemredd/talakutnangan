@@ -7,49 +7,80 @@
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
-				The list contains the overall consultation summary
+				The page contains the overall consultation summary
 				from {{ rangeBegin }} to {{ rangeEnd }}.
 			</p>
 			<div class="main">
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ convertToFullTimeString(totalNumberOfConsumedMilliseconds) }}
-							</div>
-							<small> Time consumed </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ totalNumberOfStudents }}
-							</div>
-							<small> Number of consulters interacted </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-								{{ totalNumberOfConsultations }}
-							</div>
-							<small> Number of consultations performed </small>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr class="row">
-						<td>
-							<div class="consolidated">
-							</div>
-							<small> add name here </small>
-						</td>
-					</tr>
-				</table>
+				<section>
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableTotalHours }}
+							</p>
+							<p>
+								{{ readableTotalMinutes }}
+							</p>
+							<p>
+								{{ readableTotalSeconds }}
+							</p>
+						</div>
+					</div>
+					<small>Time consumed</small>
+				</section>
+				<section>
+					<div>
+						<div class="text-8xl">
+							{{ totalNumberOfConsulters }}
+						</div>
+					</div>
+					<small> Number of consulters interacted </small>
+				</section>
+				<section>
+					<div>
+						<div>
+							{{ totalNumberOfConsultations }}
+						</div>
+					</div>
+					<small> Number of consultations performed </small>
+				</section>
+				<section>
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableWeeklyAverageHoursPerConsulter }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageMinutesPerConsulter }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageSecondsPerConsulter }}
+							</p>
+						</div>
+					</div>
+					<small>Weekly average per consulter</small>
+				</section>
+				<section>
+					<div
+						class="consolidated"
+						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
+						<div class="hours">
+							<p>
+								{{ readableWeeklyAverageHoursPerConsultation }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageMinutesPerConsultation }}
+							</p>
+							<p>
+								{{ readableWeeklyAverageSecondsPerConsultation }}
+							</p>
+						</div>
+					</div>
+					<small>Weekly average per consultation</small>
+				</section>
 			</div>
 		</Suspensible>
 	</article>
@@ -64,30 +95,40 @@
 </style>
 
 <style scoped lang="scss">
+	.details {
+		@apply mb-5;
+	}
 
-.main{
-	@apply flex justify-around <sm: flex-col place-content-around;
-}
-.details{
-	@apply mb-5;
-}
+	.main {
+		@apply flex flex-row flex-wrap justify-center place-content-around;
 
-table, td{
-	@apply border-2px border-solid p-8px text-center <sm: justify-center w-150 m-10px;
+		section {
+			@apply flex-initial flex flex-col justify-around items-center;
+			@apply border-2px border-solid p-8px text-center min-w-64 min-h-64 m-3;
 
-}
+			div {
+				@apply flex-1 text-center h-10 <sm:h-5 break-words m-auto;
+				@apply flex flex-col justify-center items-center;
 
-.consolidated{
-	@apply text-center h-10 <sm: h-5;
-}
+				div {
+					@apply flex-1 text-11xl;
+				}
+			}
 
+			small { @apply flex-initial; }
+
+			.hours {
+				@apply text-4xl;
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
 import { ref, computed, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { SummaryRange } from "$@/types/component"
+import type { SummaryRange, RawFullTimeString } from "$@/types/component"
 import type {
 	ConsolidatedSummedTimeDocument,
 	DateTimeRange
@@ -99,6 +140,7 @@ import makeUnique from "$/array/make_unique"
 import Fetcher from "$@/fetchers/consultation"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
+import convertToRawFullTime from "@/consultation/report/convert_to_raw_full_time"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
@@ -174,15 +216,85 @@ const weeklySummary = computed<WeeklySummary[]>(() => weeklyGroups.value.map(ran
 	return rawConsolidatedSums
 }))
 
+interface WeeklySubtotal extends DateTimeRange {
+	count: number
+	totalMillisecondsConsumed: number
+}
+
 const totalNumberOfConsumedMilliseconds = computed<number>(() => weeklySummary.value.reduce(
 	(totalMilliseconds, summary) => totalMilliseconds + summary.totalMillisecondsConsumed,
 	0
 ))
-const totalNumberOfStudents = computed<number>(
+const totalNumberOfConsulters = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.userIDs).flat()).length
 )
 const totalNumberOfConsultations = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.consultationIDs).flat()).length
+)
+
+const readableTotalTime = computed<RawFullTimeString>(
+	() => convertToRawFullTime(totalNumberOfConsumedMilliseconds.value)
+)
+const readableTotalHours = computed<string>(() => readableTotalTime.value.hourString)
+const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
+const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
+
+const weeklyAveragePerConsulters = computed<number>(() => {
+	const subtotals = weeklySummary.value.map(summary => ({
+		"count": summary.userIDs.length,
+		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
+	} as WeeklySubtotal))
+
+	const weightedData = subtotals.map(
+		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
+	)
+	const totalWeeklyCount = subtotals.reduce(
+		(previousTotal, subtotal) => previousTotal + subtotal.count,
+		0
+	)
+	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
+	return total / Math.max(totalWeeklyCount, 1)
+})
+const readableWeeklyAverageTimePerConsulter = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerConsulters.value)
+)
+const readableWeeklyAverageHoursPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.hourString
+)
+const readableWeeklyAverageMinutesPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.minuteString
+)
+const readableWeeklyAverageSecondsPerConsulter = computed<string>(
+	() => readableWeeklyAverageTimePerConsulter.value.secondString
+)
+
+const weeklyAveragePerConsultations = computed<number>(() => {
+	const subtotals = weeklySummary.value.map(summary => ({
+		"count": summary.consultationIDs.length,
+		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
+	} as WeeklySubtotal))
+
+	const weightedData = subtotals.map(
+		subtotal => subtotal.count * subtotal.totalMillisecondsConsumed
+	)
+	const totalWeeklyCount = subtotals.reduce(
+		(previousTotal, subtotal) => previousTotal + subtotal.count,
+		0
+	)
+	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
+	return total / Math.max(totalWeeklyCount, 1)
+})
+const readableWeeklyAverageTimePerConsultation = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerConsultations.value)
+)
+const readableWeeklyAverageHoursPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.hourString
+)
+const readableWeeklyAverageMinutesPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.minuteString
+)
+const readableWeeklyAverageSecondsPerConsultation = computed<string>(
+	() => readableWeeklyAverageTimePerConsultation.value.secondString
 )
 
 const fetcher = new Fetcher()

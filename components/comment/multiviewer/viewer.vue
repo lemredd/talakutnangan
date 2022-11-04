@@ -1,12 +1,17 @@
 <template>
-	<section v-if="mustDisplayOnly" class="flex flex-col flex-nowrap">
-		<header class="flex-1 flex flex-row flex-nowrap">
-			<ProfilePicture
-				class="flex-initial w-auto h-12"
-				:user="comment.user"/>
+	<section v-if="mustDisplayOnly">
+		<header>
 			<h3 class="flex-1 m-auto ml-2">
-				{{ comment.user.data.name }}
+				{{ comment.user.data.name }} {{ comment.createdAt }}
 			</h3>
+		</header>
+		<div class="main-content">
+			<ProfilePicture
+				class="profile-picture"
+				:user="comment.user"/>
+			<p>
+				{{ comment.content }}
+			</p>
 			<Menu
 				class="flex-none m-auto mx-1 h-12 w-12"
 				:comment="comment"
@@ -48,29 +53,43 @@
 					</button>
 				</template>
 			</Overlay>
-		</header>
-		<p class="flex-1 indent mt-4">
-			{{ comment.content }}
-		</p>
-		<div class="comment-container">
-			<div
-				v-if="mayVote"
-				class="right">
-				<SelectableVote
-					:model-value="vote"
-					:is-loaded="hasRenewedVote"
-					title=""
-					@update:model-value="switchVote"/>
-				<h2 class="title">
-					{{ voteCount }} votes
-				</h2>
-			</div>
 		</div>
+		<VoteView
+			v-if="mayVote"
+			:model-value="vote"
+			:is-loaded="hasRenewedVote"
+			:title="friendlyVoteCount"
+			@update:model-value="switchVote"/>
 	</section>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	section {
+		@apply flex flex-col flex-nowrap;
+
+		header {
+			@apply flex-1 flex flex-row flex-nowrap
+		}
+
+		.main-content {
+			@apply flex-1 flex flex-row flex-nowrap items-center;
+
+			@screen md {
+				@apply w-[90%];
+			}
+
+			> .profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
+
+			> p {
+				@apply flex-1;
+				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
@@ -86,7 +105,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
-import SelectableVote from "@/comment/multiviewer/viewer/selectable_checkbox.vue"
+import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
@@ -119,6 +138,8 @@ const voteCount = computed<number>(() => {
 	if (isUndefined(props.modelValue.meta)) return 0
 	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
 })
+
+const friendlyVoteCount = computed<string>(() => `${voteCount.value} votes`)
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 

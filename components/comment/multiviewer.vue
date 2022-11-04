@@ -1,16 +1,9 @@
 <template>
-	<div
+	<Viewer
 		v-for="(comment, i) in comments"
 		:key="comment.id"
-		class="comment">
-		<Viewer v-model="comments[i]"/>
-		<br/>
-	</div>
+		v-model="comments[i]"/>
 </template>
-
-<style scoped lang="scss">
-
-</style>
 
 <script setup lang="ts">
 import { computed, onMounted } from "vue"

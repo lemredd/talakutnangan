@@ -7,7 +7,7 @@
 			<div class="selected-consultation-remaining-time">
 				Time remaining:
 				<span>{{ remainingTime.minutes }}m</span>
-				<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
+				<span v-if="remainingTime.seconds > 0">{{ twoDigits(remainingTime.seconds) }}s</span>
 			</div>
 			<div class="selected-consultation-user-status">
 				<!-- TODO(lead): must base on user active status -->
@@ -105,6 +105,7 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import twoDigits from "$/time/two_digits"
 
 const {
 	"pageProps": {

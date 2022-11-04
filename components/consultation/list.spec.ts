@@ -26,6 +26,9 @@ describe("Component: consultation/list", () => {
 				}
 			},
 			"props": {
+				"chatMessageActivities": {
+					"data": []
+				},
 				"consultations": {
 					"data": [
 						{
@@ -37,9 +40,6 @@ describe("Component: consultation/list", () => {
 							"reason": "Reason B"
 						}
 					]
-				},
-				"chatMessageActivities": {
-					"data": []
 				},
 				"previewMessages": {
 					"data": []
@@ -69,6 +69,9 @@ describe("Component: consultation/list", () => {
 				}
 			},
 			"props": {
+				"chatMessageActivities": {
+					"data": []
+				},
 				"consultations": {
 					"data": [
 						{
@@ -80,9 +83,6 @@ describe("Component: consultation/list", () => {
 							"reason": "Reason B"
 						}
 					]
-				},
-				"chatMessageActivities": {
-					"data": []
 				},
 				"previewMessages": {
 					"data": []
@@ -241,6 +241,9 @@ describe("Component: consultation/list", () => {
 				}
 			},
 			"props": {
+				"chatMessageActivities": {
+					"data": []
+				},
 				"consultations": {
 					"data": [
 						{
@@ -252,9 +255,6 @@ describe("Component: consultation/list", () => {
 							"reason": "Reason B"
 						}
 					]
-				},
-				"chatMessageActivities": {
-					"data": []
 				},
 				"previewMessages": {
 					"data": []

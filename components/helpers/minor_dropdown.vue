@@ -2,7 +2,7 @@
 	<IconButton
 		class="container"
 		icon-name="more_vert"
-		@icon-click="open">
+		@icon-click="toggle">
 		<template #associated-pop-outs>
 			<div
 				v-if="modelValue"
@@ -68,8 +68,8 @@ const props = defineProps<{
 	modelValue: boolean
 }>()
 
-function open() {
-	emit("update:modelValue", true)
+function toggle() {
+	emit("update:modelValue", !props.modelValue)
 }
 
 function close() {

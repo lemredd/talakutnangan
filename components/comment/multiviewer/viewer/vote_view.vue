@@ -1,22 +1,47 @@
 <template>
-	<div class="selectable-checkbox">
-		<Suspensible :is-loaded="isLoaded">
-			{{ title }}
-			<label>
+	<Suspensible :is-loaded="isLoaded">
+		<div class="vote-view">
+			<label class="material-icons up-vote" :class="{ 'active-vote': hasUpvoted }">
+				north_east
 				<input
 					v-model="hasUpvoted"
+					class="hidden"
 					title="upvote"
 					type="checkbox"/>
 			</label>
-			<label>
+			<label class="material-icons down-vote" :class="{ 'active-vote': hasDownvoted }">
+				south_west
 				<input
 					v-model="hasDownvoted"
+					class="hidden"
 					title="downvote"
 					type="checkbox"/>
 			</label>
-		</Suspensible>
-	</div>
+			{{ title }}
+		</div>
+	</Suspensible>
 </template>
+
+<style scoped lang="scss">
+	.vote-view {
+		@apply flex items-center ml-2;
+	}
+
+
+	.up-vote {
+		@apply ml-10;
+
+		&.active-vote {
+			@apply text-blue-300 font-900;
+		}
+	}
+
+	.down-vote {
+		&.active-vote {
+			@apply text-red-300 font-900;
+		}
+	}
+</style>
 
 <script setup lang="ts">
 import { computed } from "vue"
