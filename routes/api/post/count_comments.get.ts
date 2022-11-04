@@ -74,10 +74,10 @@ export default class extends QueryController {
 		const query = request.query as unknown as IDOnlyQueryParameters<number>
 
 		const manager = new Manager(request)
-		const departmentWithUserCount = await manager.countComments(
+		const postWithCommentCount = await manager.countComments(
 			query.filter.IDs as number[]
 		) as PostResourceIdentifier<"read">
 
-		return new ListResponse(departmentWithUserCount)
+		return new ListResponse(postWithCommentCount)
 	}
 }
