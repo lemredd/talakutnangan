@@ -33,18 +33,19 @@
 					type="hidden"
 					name="data[type]"
 					value="post_attachment"/>
-				<label class="btn" for="choose-file-btn">
-					<input
-						id="choose-file-btn"
-						type="file"
-						name="meta[fileContents]"
-						:accept="accept"
-						@change="uploadPostAttachment"/>
-					CHOOSE FILE
+				<label class="btn btn-primary" for="choose-file-btn">
+					Choose file
 				</label>
+				<input
+					id="choose-file-btn"
+					type="file"
+					name="meta[fileContents]"
+					class="hidden"
+					:accept="accept"
+					@change="uploadPostAttachment"/>
 			</form>
 			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isAcceptingImage" class="preview-img-container">
+				<div v-if="isExtractedFileImage" class="preview-img-container">
 					<img class="preview-img" :src="previewFile"/>
 					<small class="preview-title">
 						{{ filename }}
@@ -163,7 +164,7 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const isAcceptingImage = props.accept.includes("image/")
+const isExtractedFileImage = props.accept.includes("image/")
 const isAcceptingFile = props.accept.includes("*/")
 
 const filename = ref<string|null>(null)
