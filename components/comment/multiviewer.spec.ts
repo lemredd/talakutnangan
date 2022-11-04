@@ -51,7 +51,7 @@ describe("Component: comment/multiviewer", () => {
 			]
 		}), { "status": RequestEnvironment.status.OK })
 
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -76,7 +76,7 @@ describe("Component: comment/multiviewer", () => {
 					}
 				},
 				"stubs": {
-					"Dropdown": false
+					"Suspensible": false
 				}
 			},
 			"props": {

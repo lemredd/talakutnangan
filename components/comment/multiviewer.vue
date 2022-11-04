@@ -3,10 +3,12 @@
 		<SelectableCommentExistenceFilter
 			v-if="isPostOwned"
 			v-model="existence"/>
-		<Viewer
-			v-for="(comment, i) in comments.data"
-			:key="comment.id"
-			v-model="comments.data[i]"/>
+		<Suspensible :is-loaded="isLoaded">
+			<Viewer
+				v-for="(comment, i) in comments.data"
+				:key="comment.id"
+				v-model="comments.data[i]"/>
+		</Suspensible>
 	</div>
 </template>
 
@@ -30,6 +32,7 @@ import debounce from "$@/helpers/debounce"
 import isUndefined from "$/type_guards/is_undefined"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
@@ -46,8 +49,6 @@ interface CustomEvents {
 	): void
 }
 const emit = defineEmits<CustomEvents>()
-
-const fetcher = new Fetcher()
 
 // eslint-disable-next-line no-use-before-define
 const debouncedVoteCounting = debounce(countVotesOfComments, DEBOUNCED_WAIT_DURATION)
@@ -72,6 +73,7 @@ function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentLis
 	return commentIDs
 }
 
+const fetcher = new Fetcher()
 async function countVotesOfComments(): Promise<void> {
 	const commentIDs = extractCommentIDsWithNoVoteInfo(comments.value)
 
@@ -102,7 +104,10 @@ async function countVotesOfComments(): Promise<void> {
 }
 
 const existence = ref<"exists"|"archived"|"*">("exists")
+const isLoaded = ref(false)
+
 async function fetchComments() {
+	isLoaded.value = false
 	const { id } = props.post
 	await loadRemainingResource(
 		comments as Ref<DeserializedCommentListDocument>,
@@ -119,7 +124,11 @@ async function fetchComments() {
 			"sort": [ "-createdAt" ]
 		}),
 		{
-			"mayContinue": () => Promise.resolve(false)
+			"mayContinue": () => Promise.resolve(false),
+			postOperations() {
+				isLoaded.value = true
+				return Promise.resolve()
+			}
 		}
 	)
 }
