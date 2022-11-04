@@ -2,24 +2,33 @@
 	<form @submit.prevent="submitPostDetails">
 		<!-- TODO(others): Merge the following classes into one -->
 		<slot></slot>
-		<div class="row flex flex-row">
-			<div class="label flex-1 mt-1">
-				<label for="content">Content</label>
-			</div>
-			<div class="field flex-3 mt-1">
-				<textarea
-					id="content"
+		<div class="row">
+			<div class="field">
+				<input
 					v-model="content"
-					class="height-[4em]"
-					placeholder="Write something..">
-				</textarea>
+					class="post-message"
+					placeholder="What's on your mind"/>
 			</div>
 		</div>
 	</form>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
+.field{
+	@apply flex flex-row mt-1;
+	.post-message{
+		@apply p-4 rounded-1rem mb-5 border-1px border-solid;
+		max-width:250%;
+		height:150%;
 
+		@screen sm{
+			@apply flex flex-row;
+			width:200%;
+			height:100%;
+		}
+
+	}
+}
 </style>
 
 <script setup lang="ts">
