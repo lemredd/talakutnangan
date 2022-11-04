@@ -108,4 +108,6 @@ export const READ_TIME_SUM_FOR_CONSOLIDATION
  * the chat message activity of the current user.
  */
 export const READ_GENERATED_RTC_TOKEN
-= `${CONSULTATION_LINK.bound}/:channelName/:uid`
+= `${CONSULTATION_LINK.unbound}/generate_token/:id/:channelName/:uid`
+
+export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments`

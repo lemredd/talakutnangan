@@ -18,6 +18,7 @@
 			<!-- TODO(lead/button): Apply functionality -->
 			<a
 				:href="`../call/${consultation.id}`"
+				target="_blank"
 				class="material-icons">
 				video_camera_back
 			</a>
