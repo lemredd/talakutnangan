@@ -112,6 +112,7 @@ describe("Component: comment/multiviewer", () => {
 		const userID = "1"
 		const commentID = "2"
 		const postID = "3"
+		const archivedCommentID = "4"
 		const modelValue = {
 			"data": [
 				{
@@ -143,12 +144,12 @@ describe("Component: comment/multiviewer", () => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [
 				{
-					"id": "4",
+					"id": archivedCommentID,
 					"type": "comment"
 				}
 			],
 			"meta": {
-				"count": 2
+				"count": 1
 			}
 		}), { "status": RequestEnvironment.status.OK })
 		fetchMock.mockResponseOnce(JSON.stringify({
@@ -208,11 +209,16 @@ describe("Component: comment/multiviewer", () => {
 		await flushPromises()
 
 		const updates = wrapper.emitted("update:modelValue")
-		expect(updates).toHaveLength(2)
+		/*
+		 * First update comes from counting initial votes.
+		 * Second update comes from asking for archived comments.
+		 * Third update comes from counting of votes for archived comments.
+		 */
+		expect(updates).toHaveLength(3)
 
 		const castFetch = fetch as jest.Mock<any, any>
 		expect(castFetch).toHaveBeenCalledTimes(3)
-		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(COUNT_COMMENT_VOTES, {
 			"query": stringifyQuery({
@@ -239,5 +245,15 @@ describe("Component: comment/multiviewer", () => {
 		}))
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(thirdRequest).toHaveProperty("method", "GET")
+		expect(thirdRequest).toHaveProperty("url", specializePath(COUNT_COMMENT_VOTES, {
+			"query": stringifyQuery({
+				"filter": {
+					"IDs": [ archivedCommentID ]
+				}
+			})
+		}))
+		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })
