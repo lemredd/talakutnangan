@@ -54,34 +54,37 @@ export default async function loadRemainingResources<
 	}> = {}
 ): Promise<void> {
 	await delayer()
-	await fetcher.list(queryMaker()).then(response => {
-		const { data, meta } = response.body
+	const response = await fetcher.list(queryMaker())
+	const { data, meta } = response.body
 
-		if (data.length === 0) return Promise.resolve()
+	if (data.length === 0) return Promise.resolve()
 
-		listDocument.value = {
-			...listDocument.value,
-			"data": [
-				...listDocument.value.data,
-				...data
-			],
-			"meta": {
-				...listDocument.value.meta,
-				...meta
-			}
+	listDocument.value = {
+		...listDocument.value,
+		"data": [
+			...listDocument.value.data,
+			...data
+		],
+		"meta": {
+			...listDocument.value.meta,
+			...meta
 		}
+	}
 
-		const castMeta = meta as ResourceCount
-		return mayContinue().then(mayContinueLooping => {
-			if (mayContinueLooping && listDocument.value.data.length < castMeta.count) {
-				return postOperations(response.body)
-				.then(() => loadRemainingResources(listDocument, fetcher, queryMaker, {
-					delayer,
-					postOperations
-				}))
-			}
+	const castMeta = meta as ResourceCount
 
-			return Promise.resolve()
-		})
-	})
+	if (listDocument.value.data.length < castMeta.count) {
+		await postOperations(response.body)
+		const mayContinueLooping = await mayContinue()
+
+		if (mayContinueLooping) {
+			return await loadRemainingResources(listDocument, fetcher, queryMaker, {
+				delayer,
+				mayContinue,
+				postOperations
+			})
+		}
+	}
+
+	return await Promise.resolve()
 }
