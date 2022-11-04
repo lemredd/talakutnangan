@@ -15,6 +15,7 @@ import Department from "%/models/department"
 import Transformer from "%/transformers/post"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
+import PostAttachment from "%/models/post_attachment"
 import AttachedRoleManager from "%/managers/attached_role"
 import includeDefaults from "%/queries/post/include_defaults"
 import siftByDepartment from "%/queries/post/sift_by_department"
@@ -66,7 +67,6 @@ export default class extends BaseManager<
 
 	async createUsingResource(
 		details: PostResource<"create">,
-		requesterID: number,
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {
@@ -82,6 +82,9 @@ export default class extends BaseManager<
 					"data": {
 						"id": roleID
 					}
+				},
+				"postAttachments": {
+					"data": attachments
 				},
 				"department": {
 					"data": {
@@ -114,6 +117,22 @@ export default class extends BaseManager<
 
 			model.posterInfo = attachedRole
 			model.department = await Department.findByPk(Number(departmentID)) as Department
+
+			if (attachments.length > 0) {
+				const IDMatcher = new Condition().isIncludedIn(
+					"id",
+					attachments.map(attachment => attachment.id)
+				).build()
+				await PostAttachment.update({
+					"postID": model.id
+				}, {
+					"where": IDMatcher
+				})
+
+				model.postAttachments = await PostAttachment.findAll({
+					"where": IDMatcher
+				})
+			}
 
 			Log.success("manager", "done creating a model")
 
