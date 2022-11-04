@@ -45,14 +45,19 @@
 					@change="uploadPostAttachment"/>
 			</form>
 			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isExtractedFileImage" class="preview-img-container">
-					<img class="preview-img" :src="previewFile"/>
+				<div v-if="isFileTypeImage" class="preview-img-container">
+					<div class="removable-image relative">
+						<span class="material-icons" @click="removeFile">
+							close
+						</span>
+						<img class="preview-img" :src="previewFile"/>
+					</div>
 					<small class="preview-title">
 						{{ filename }}
 					</small>
 				</div>
 				<div
-					v-if="isAcceptingFile"
+					v-else
 					class="preview-file-container">
 					<span class="material-icons mr-2">
 						attachment
@@ -88,8 +93,14 @@
 </template>
 
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@styles/btn.scss";
+
+.preview-img{
+	@apply py-5;
+	max-width:100%;
+	max-height:100%;
+}
 </style>
 
 <script setup lang="ts">
@@ -164,12 +175,11 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const isExtractedFileImage = props.accept.includes("image/")
-const isAcceptingFile = props.accept.includes("*/")
-
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
+const extractedFileType = ref("")
+const isFileTypeImage = computed(() => extractedFileType.value.includes("image"))
 const fileSize = ref<number|null>(null)
 const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
@@ -197,8 +207,8 @@ function uploadPostAttachment(event: Event): void {
 
 	fileSize.value = file?.size as number|null
 	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-
 	previewFile.value = file ? URL.createObjectURL(file) : ""
+	extractedFileType.value = file?.type as string
 	filename.value = rawFilename
 }
 
