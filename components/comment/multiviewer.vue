@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { computed, onMounted, Ref, ref, watch } from "vue"
 
+import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedCommentListDocument } from "$/types/documents/comment"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -35,7 +36,7 @@ import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existenc
 const props = defineProps<{
 	isPostOwned: boolean
 	modelValue: DeserializedCommentListDocument<"user">
-	postId: string
+	post: DeserializedPostResource
 }>()
 
 interface CustomEvents {
@@ -102,14 +103,14 @@ async function countVotesOfComments(): Promise<void> {
 
 const existence = ref<"exists"|"archived"|"*">("exists")
 async function fetchComments() {
-	const { postId } = props
+	const { id } = props.post
 	await loadRemainingResource(
 		comments as Ref<DeserializedCommentListDocument>,
 		fetcher,
 		() => ({
 			"filter": {
 				"existence": existence.value,
-				"postID": postId
+				"postID": id
 			},
 			"page": {
 				"limit": DEFAULT_LIST_LIMIT,

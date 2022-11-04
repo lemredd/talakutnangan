@@ -11,7 +11,7 @@
 				@create-comment="includeComment"/>
 			<CommentMultiviewer
 				v-model="comments"
-				:post-id="post.id"
+				:post="post"
 				:is-post-owned="isPostOwned"/>
 		</div>
 	</article>
