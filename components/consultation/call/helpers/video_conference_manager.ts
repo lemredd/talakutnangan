@@ -77,9 +77,15 @@ export function mockJoining() {
 	) as unknown as any
 }
 
-export function toggleVideoTrack(state: boolean) {
-	localTracks.localVideoTrack?.setMuted(state)
+export function muteVideoTrack() {
+	localTracks.localVideoTrack?.setMuted(true)
 }
-export function toggleAudioTrack(state: boolean) {
-	localTracks.localVideoTrack?.setMuted(state)
+export function unmuteVideoTrack() {
+	localTracks.localVideoTrack?.setMuted(false)
+}
+export function muteAudioTrack() {
+	localTracks.localAudioTrack?.setMuted(true)
+}
+export function unmuteAudioTrack() {
+	localTracks.localAudioTrack?.setMuted(false)
 }
