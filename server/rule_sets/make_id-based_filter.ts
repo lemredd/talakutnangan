@@ -13,10 +13,12 @@ export default function(
 	ClassName: BaseManagerClass,
 	{
 		maySkip = true,
-		mustCast = false
+		mustCast = false,
+		defaultValue = "*"
 	}: Partial<{
 		maySkip: boolean
 		mustCast: boolean
+		defaultValue: any
 	}> = {}
 ): FieldRules {
 	const fieldRequirement = maySkip
@@ -30,7 +32,7 @@ export default function(
 					"className": ClassName,
 					"columnName": "id"
 				},
-				"nullable": { "defaultValue": "*" }
+				"nullable": { defaultValue }
 			},
 			"pipes": [ ...fieldRequirement, string, integer, exists ]
 		}
