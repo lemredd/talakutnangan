@@ -45,6 +45,10 @@
 import { computed } from "vue"
 
 import CallControl from "@/consultation/call/call_controls/call_control.vue"
+import {
+	muteVideoTrack,
+	unmuteVideoTrack
+} from "@/consultation/call/helpers/video_conference_manager"
 
 type CustomEvents = {
 	(event: "toggleVideo"): void
@@ -67,10 +71,13 @@ const videoIcon = computed(() => {
 	return icon
 })
 function toggleVideo() {
-	mustShowVideo.value = !mustShowVideo.value
+	if (props.mustShowVideo) muteVideoTrack()
+	else unmuteVideoTrack()
+
+	emit("toggleVideo")
 }
 function toggleMic() {
-	mustTransmitAudio.value = !mustTransmitAudio.value
+	emit("toggleMic")
 }
 function joinCall() {
 	emit("joinCall")

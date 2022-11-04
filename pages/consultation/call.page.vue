@@ -33,8 +33,10 @@
 			custom-message="Please wait. we are still preparing you for call...">
 			<CallControls
 				v-model:is-joined="isJoined"
-				v-model:must-show-video="mustShowVideo"
-				v-model:must-transmit-audio="mustTransmitAudio"
+				:must-show-video="mustShowVideo"
+				:must-transmit-audio="mustTransmitAudio"
+				@toggle-video="toggleVideo"
+				@toggle-mic="toggleMic"
 				@join-call="join"
 				@leave-call="leave"/>
 		</Suspensible>
@@ -85,8 +87,6 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 
-import { CURRENT_USER_RTC_TOKEN } from "$@/constants/provided_keys"
-
 import isUndefined from "$/type_guards/is_undefined"
 
 import makeSwitch from "$@/helpers/make_switch"
@@ -98,10 +98,7 @@ import SelfParticipant from "@/consultation/call/self_participant.vue"
 import {
 	initiateVideoConferenceEngine,
 	joinAndPresentLocalTracks,
-	leaveAndRemoveLocalTracks,
-
-	toggleVideoTrack,
-	toggleAudioTrack
+	leaveAndRemoveLocalTracks
 } from "@/consultation/call/helpers/video_conference_manager"
 
 type AdditionalPageProps = "VIDEO_CONFERENCE_APP_ID"|"chatMessageActivities"|"consultation"
@@ -162,7 +159,7 @@ function fetchGeneratedToken() {
 const {
 	"toggle": toggleVideo,
 	"state": mustShowVideo
-} = makeSwitch(false)
+} = makeSwitch(true)
 const {
 	"toggle": toggleMic,
 	"state": mustTransmitAudio
@@ -174,8 +171,6 @@ const {
 } = makeSwitch(false)
 const selfParticipantID = `local-${chatMessageActivityID}`
 function join() {
-	toggleVideo()
-	toggleMic()
 	joinAndShowAdditionalButtons()
 	joinAndPresentLocalTracks(
 		VIDEO_CONFERENCE_APP_ID as string,
