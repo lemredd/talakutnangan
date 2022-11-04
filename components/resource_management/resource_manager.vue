@@ -50,7 +50,7 @@ import type { OptionInfo } from "$@/types/component"
 
 import isUndefined from "$/type_guards/is_undefined"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import SearchFilter from "@/helpers/search_bar.vue"
 import SelectableExistence from "@/fields/selectable_radio.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"

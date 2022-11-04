@@ -144,7 +144,7 @@ import convertToRawFullTime from "@/consultation/report/convert_to_raw_full_time
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<

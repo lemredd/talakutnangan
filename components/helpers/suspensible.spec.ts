@@ -11,8 +11,8 @@ import { READ_ANYONE_ON_OWN_DEPARTMENT } from "$/permissions/user_combinations"
 describe("UI Component: Suspensible", () => {
 	it("Should load asynchronous resource", async() => {
 		const sampleResource = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
-			.serializedOne()
+		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_OWN_DEPARTMENT))
+		.serializedOne()
 
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": sampleResource
