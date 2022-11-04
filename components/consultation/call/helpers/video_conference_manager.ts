@@ -76,3 +76,10 @@ export function mockJoining() {
 		(): any => "this runs on test"
 	) as unknown as any
 }
+
+export function toggleVideoTrack(state: boolean) {
+	localTracks.localVideoTrack?.setMuted(state)
+}
+export function toggleAudioTrack(state: boolean) {
+	localTracks.localVideoTrack?.setMuted(state)
+}
