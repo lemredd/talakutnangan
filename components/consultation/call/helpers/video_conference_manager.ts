@@ -1,8 +1,12 @@
 import type {
 	VideoConferenceManager,
 	VideoConferenceEngine,
+
 	LocalAudioTrack,
-	LocalVideoTrack
+	LocalVideoTrack,
+
+	RemoteAudioTrack,
+	RemoteVideoTrack
 } from "@/consultation/call/helpers/types/video_conference_manager"
 
 import Stub from "$/singletons/stub"
@@ -18,6 +22,24 @@ function engine(): VideoConferenceEngine {
 	return videoConferenceEngine as VideoConferenceEngine
 }
 
+type LocalTracks = {
+	"localAudioTrack": LocalAudioTrack|null
+	"localVideoTrack": LocalVideoTrack|null
+}
+export const localTracks: LocalTracks = {
+	"localAudioTrack": null,
+	"localVideoTrack": null
+}
+
+type RemoteTracks = {
+	chatMessageActivityID: string,
+	remoteAudioTrack: RemoteAudioTrack|null,
+    // A variable to hold a remote video track.
+    remoteVideoTrack: RemoteVideoTrack|null,
+}
+const remoteParticipants: RemoteTracks[] = []
+
+
 export async function initiateVideoConferenceEngine() {
 	if (!isUndefined(window)) {
 		// @ts-ignore
@@ -26,16 +48,15 @@ export async function initiateVideoConferenceEngine() {
 			"codec": "vp8",
 			"mode": "rtc"
 		})
-	}
-}
 
-type LocalTracks = {
-	"localAudioTrack": LocalAudioTrack|null
-	"localVideoTrack": LocalVideoTrack|null
-}
-export const localTracks: LocalTracks = {
-	"localAudioTrack": null,
-	"localVideoTrack": null
+		videoConferenceEngine.on("user-published", async(user, mediaType) => {
+			await engine().subscribe(user, mediaType)
+
+			if (mediaType === "video") {
+
+			}
+		})
+	}
 }
 
 export async function joinAndPresentLocalTracks(
