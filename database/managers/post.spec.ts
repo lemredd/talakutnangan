@@ -4,6 +4,7 @@ import UserFactory from "~/factories/user"
 import CommentFactory from "~/factories/comment"
 import DepartmentFactory from "~/factories/department"
 import AttachedRoleFactory from "~/factories/attached_role"
+import PostAttachmentFactory from "~/factories/post_attachment"
 
 import Manager from "./post"
 
@@ -37,6 +38,47 @@ describe("Database Manager: Post read operations", () => {
 	})
 })
 describe("Database Manager: Post create operations", () => {
+	it("can create post", async() => {
+		const department = await new DepartmentFactory().insertOne()
+		const attachment = await new PostAttachmentFactory().insertOne()
+		const model = await new Factory().makeOne()
+		const manager = new Manager()
+
+		const data = await manager.createUsingResource({
+			"attributes": {
+				"content": model.content
+			},
+			"relationships": {
+				"department": {
+					"data": {
+						"id": department.id
+					}
+				},
+				"postAttachments": {
+					"data": [
+						{
+							"id": attachment.id
+						}
+					]
+				},
+				"poster": {
+					"data": {
+						"id": model.poster?.id
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": model.posterRole?.id
+					}
+				}
+			}
+		} as any)
+
+		expect(await Model.count()).toBe(1)
+		expect(data).toHaveProperty("data")
+		expect(data).toHaveProperty("data.attributes.content", model.content)
+	})
+
 	it("can create post without attachment", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const model = await new Factory().makeOne()
