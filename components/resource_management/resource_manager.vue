@@ -18,9 +18,7 @@
 				:options="departmentNames"/>
 			<SelectableExistence
 				v-if="hasExistence"
-				v-model="existence"
-				title="Existence"
-				:options="existenceOptions"/>
+				v-model="existence"/>
 		</div>
 		<Suspensible :is-loaded="isLoaded">
 			<slot name="resources">
@@ -52,8 +50,8 @@ import isUndefined from "$/type_guards/is_undefined"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import SearchFilter from "@/helpers/search_bar.vue"
-import SelectableExistence from "@/fields/selectable_radio.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
 	isLoaded: boolean
@@ -103,17 +101,4 @@ const existence = computed<string>({
 		emit("update:existence", newValue)
 	}
 })
-
-const existenceOptions = [
-	{
-		"value": "exists"
-	},
-	{
-		"value": "archived"
-	},
-	{
-		"label": "all",
-		"value": "*"
-	}
-] as OptionInfo[]
 </script>
