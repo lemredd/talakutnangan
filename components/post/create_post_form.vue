@@ -28,16 +28,20 @@
 			<ReceivedErrors
 				v-if="receivedErrors.length"
 				:received-errors="receivedErrors"/>
-			<form ref="fileUploadForm" @submit.prevent>
+			<form @submit.prevent>
 				<input
 					type="hidden"
 					name="data[type]"
 					value="post_attachment"/>
+				<input
+					type="hidden"
+					name="data[attributes][fileType]"
+					:value="fileType"/>
 				<label class="btn" for="choose-file-btn">
 					<input
 						id="choose-file-btn"
 						type="file"
-						name="meta[fileContents]"
+						name="data[attributes][fileContents]"
 						:accept="accept"
 						@change="uploadPostAttachment"/>
 					CHOOSE FILE
@@ -174,7 +178,7 @@ const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
-const fileUploadForm = ref()
+const fileType = ref<string>("")
 const receivedErrors = ref<string[]>([])
 const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
@@ -189,28 +193,14 @@ function emitClose() {
 	emit("close")
 }
 
-function uploadPostAttachment(event: Event): void {
-	const target = event.target as HTMLInputElement
-	const file = target.files?.item(0)
-	const rawFilename = file?.name as ""
-
-	fileSize.value = file?.size as number|null
-	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-
-	previewFile.value = file ? URL.createObjectURL(file) : ""
-	filename.value = rawFilename
-}
-
-
-function sendFile() {
-	const formData = new FormData(fileUploadForm.value as HTMLFormElement)
+function sendFile(form: HTMLFormElement) {
+	const formData = new FormData(form)
+	formData.set("data[attributes][fileType]", fileType.value)
 
 	postAttachmentFetcher.createWithFile(formData)
 	.then(() => {
 		emitClose()
-	})
-
-	.catch(({ body }) => {
+	}).catch(({ body }) => {
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
@@ -222,6 +212,25 @@ function sendFile() {
 			receivedErrors.value = [ "an error occured" ]
 		}
 	})
+}
+
+function uploadPostAttachment(event: Event): void {
+	const target = event.target as HTMLInputElement
+	const files = target.files as FileList
+	const file = files.item(0) as File
+	const rawFilename = file.name as string
+
+	fileType.value = file.type
+
+	fileSize.value = file.size as number|null
+	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
+
+	previewFile.value = file ? URL.createObjectURL(file) : ""
+	filename.value = rawFilename
+
+	console.log(file.type)
+	const form = target.form as HTMLFormElement
+	sendFile(form)
 }
 
 function createPost(): void {
