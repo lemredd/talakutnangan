@@ -4,7 +4,9 @@
 			v-model="post"
 			:comment-count="commentCount"/>
 		<div class="comments">
-			<SelectableCommentExistenceFilter v-model="commentExistence"/>
+			<SelectableCommentExistenceFilter
+				v-if="isPostOwned"
+				v-model="commentExistence"/>
 			<CreateCommentField
 				v-if="mayCreateComment"
 				class="field"
@@ -31,12 +33,14 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed, ref } from "vue"
+import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -99,8 +103,29 @@ const mayCreateComment = computed<boolean>(() => {
 function includeComment(newComment: DeserializedCommentResource<"user">): void {
 	comments.value.push(newComment)
 }
-const commentExistence = ref("exists")
+const commentFetcher = new CommentFetcher()
+
 async function fetchComments() {
-	return ""
+	await commentFetcher.list({
+		"filter": {
+			"existence": commentExistence.value,
+			"postID": post.value.id
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": 0
+		},
+		"sort": [ "-createdAt" ]
+	})
+	.then(({ body }) => {
+		const { data } = body
+
+		if (data.length === 0) return Promise.resolve()
+		comments.value = data as DeserializedCommentResource<"user">[]
+
+		return Promise.resolve()
+	})
 }
+const commentExistence = ref<"exists"|"archived"|"*">("exists")
+watch(commentExistence, () => fetchComments())
 </script>
