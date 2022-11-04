@@ -16,17 +16,15 @@ import { computed, onMounted, Ref, ref, watch } from "vue"
 import type { DeserializedCommentListDocument } from "$/types/documents/comment"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/comment"
-import isUndefined from "$/type_guards/is_undefined"
-
 import debounce from "$@/helpers/debounce"
+import isUndefined from "$/type_guards/is_undefined"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
-import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
-
 
 const props = defineProps<{
 	isPostOwned: boolean
@@ -44,14 +42,16 @@ const emit = defineEmits<CustomEvents>()
 
 const fetcher = new Fetcher()
 
+// eslint-disable-next-line no-use-before-define
+const debouncedVoteCounting = debounce(countVotesOfComments, DEBOUNCED_WAIT_DURATION)
+
 const comments = computed<DeserializedCommentListDocument<"user">>({
 	get(): DeserializedCommentListDocument<"user"> {
 		return props.modelValue
 	},
 	set(newValue: DeserializedCommentListDocument<"user">): void {
 		if (newValue.data.some(comment => isUndefined(comment.meta))) {
-			// eslint-disable-next-line no-use-before-define
-			countVotesOfComments(extractCommentIDsWithNoVoteInfo(newValue))
+			debouncedVoteCounting()
 		} else {
 			emit("update:modelValue", newValue)
 		}
@@ -65,7 +65,11 @@ function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentLis
 	return commentIDs
 }
 
-async function countVotesOfComments(commentIDs: string[]): Promise<void> {
+async function countVotesOfComments(): Promise<void> {
+	const commentIDs = extractCommentIDsWithNoVoteInfo(comments.value)
+
+	if (commentIDs.length === 0) return
+
 	await fetcher.countVotes(commentIDs)
 	.then(response => {
 		const deserializedData = response.body.data
@@ -89,11 +93,6 @@ async function countVotesOfComments(commentIDs: string[]): Promise<void> {
 		}
 	})
 }
-
-async function countCommentVote(): Promise<number|void> {
-	await countVotesOfComments(extractCommentIDsWithNoVoteInfo(comments.value))
-}
-
 
 const existence = ref<"exists"|"archived"|"*">("exists")
 async function fetchComments() {
@@ -131,5 +130,5 @@ function resetCommentsList() {
 
 watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
 
-onMounted(async() => await countCommentVote())
+onMounted(async() => await countVotesOfComments())
 </script>
