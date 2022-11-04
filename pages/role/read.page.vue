@@ -8,10 +8,9 @@
 		<div class="role-name">
 			<RoleNameField
 				v-model="role.data.name"
+				v-model:status="nameFieldStatus"
 				label="Role Name"
-				type="text"
-				:status="nameFieldStatus"
-				@update:status="updateNameFieldStatus"/>
+				type="text"/>
 		</div>
 
 		<FlagSelector
@@ -126,7 +125,7 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "locked" : "disabled")
+const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const fetcher: Fetcher = new Fetcher()
@@ -150,11 +149,10 @@ async function updateRole() {
 			}
 		}
 	})
-	.then(({ body, status }) => {
+	.then(() => {
 		closeConfirmation()
 		password.value = ""
 		nameFieldStatus.value = "locked"
-		console.log(body, status)
 
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Role has been successfully!")
@@ -210,17 +208,5 @@ async function restoreRole() {
 			receivedErrors.value = [ "an error occured" ]
 		}
 	})
-}
-
-function updateNameFieldStatus(newStatus: FieldStatus) {
-	switch (newStatus) {
-		case "unlocked":
-			nameFieldStatus.value = newStatus
-			break
-		case "locked":
-			updateRole()
-			break
-		default: throw new Error("Developer error!")
-	}
 }
 </script>
