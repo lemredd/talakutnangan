@@ -46,8 +46,8 @@ import { computed, inject, onMounted, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -101,30 +101,30 @@ const determineTitle = computed(() => {
 })
 
 const list = ref<DeserializedUserResource[]>([])
-const roles = ref<DeserializedRoleResource[]>(
-	pageProps.roles.data as DeserializedRoleResource[]
+const roles = ref<DeserializedRoleListDocument>(
+	pageProps.roles as DeserializedRoleListDocument
 )
 const roleNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "All",
 		"value": "*"
 	},
-	...roles.value.map(data => ({
+	...roles.value.data.map(data => ({
 		"label": data.name,
 		"value": data.id
 	}))
 ])
 const chosenRole = ref("*")
 
-const departments = ref<DeserializedDepartmentResource[]>(
-	pageProps.departments.data as DeserializedDepartmentResource[]
+const departments = ref<DeserializedDepartmentListDocument>(
+	pageProps.departments as DeserializedDepartmentListDocument
 )
 const departmentNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "All",
 		"value": "*"
 	},
-	...departments.value.map(data => ({
+	...departments.value.data.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))
@@ -171,7 +171,7 @@ const mayCreateUser = computed<boolean>(() => {
 	return mayImportUsers
 })
 
-// TODO: Fina way to assess each user if they can be edited
+// TODO: Find way to assess each user if they can be edited
 const mayEditUser = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
 	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
