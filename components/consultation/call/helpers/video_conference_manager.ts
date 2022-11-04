@@ -40,13 +40,14 @@ export const localTracks: LocalTracks = {
 
 export async function joinAndPresentLocalTracks(
 	appId: string,
+	channelName: string,
 	chatMessageActivityID: string,
 	localParticipantID: string,
 	token: string
 ) {
 	await engine().join(
 		appId,
-		"call",
+		channelName,
 		token,
 		Number(chatMessageActivityID)
 	)

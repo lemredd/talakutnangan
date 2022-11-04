@@ -62,4 +62,4 @@ jobs:
       run: npm run build
     - run: ./execute.ps1 -test intg:front
       shell: pwsh
-      timeout-minutes: 5
+      timeout-minutes: 6
