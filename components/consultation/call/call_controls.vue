@@ -9,7 +9,7 @@
 			<CallControl
 				class="toggle-mic"
 				title="Toggle Audio"
-				material-icon="mic"
+				:material-icon="micIcon"
 				@click="toggleMic"/>
 			<CallControl
 				class="leave-call"
@@ -78,12 +78,22 @@ function toggleVideo() {
 
 	emit("toggleVideo")
 }
+
+const micIcon = computed(() => {
+	let icon = ""
+	if (props.isTransmittingAudio) icon = "mic"
+	else icon = "mic_off"
+
+	return icon
+})
 function toggleMic() {
 	if (props.isTransmittingAudio) muteAudioTrack()
 	else unmuteAudioTrack()
-	
+
 	emit("toggleMic")
 }
+
+
 function joinCall() {
 	emit("joinCall")
 }
