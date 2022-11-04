@@ -47,7 +47,9 @@ import { computed } from "vue"
 import CallControl from "@/consultation/call/call_controls/call_control.vue"
 import {
 	muteVideoTrack,
-	unmuteVideoTrack
+	unmuteVideoTrack,
+	muteAudioTrack,
+	unmuteAudioTrack
 } from "@/consultation/call/helpers/video_conference_manager"
 
 type CustomEvents = {
@@ -77,6 +79,9 @@ function toggleVideo() {
 	emit("toggleVideo")
 }
 function toggleMic() {
+	if (props.isTransmittingAudio) muteAudioTrack()
+	else unmuteAudioTrack()
+	
 	emit("toggleMic")
 }
 function joinCall() {
