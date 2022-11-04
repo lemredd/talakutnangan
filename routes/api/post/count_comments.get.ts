@@ -1,21 +1,21 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 import type { IDOnlyQueryParameters } from "$/types/query"
-import type { DepartmentResourceIdentifier } from "$/types/documents/department"
+import type { PostResourceIdentifier } from "$/types/documents/post"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/post"
 import ListResponse from "!/response_infos/list"
-import Manager from "%/managers/department"
 import QueryController from "!/controllers/query"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
-import { post as permissionGroup } from "$/permissions/permission_list"
+import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS,
 	READ_ANYONE_ON_OWN_DEPARTMENT
-} from "$/permissions/post_combinations"
+} from "$/permissions/comment_combinations"
 
 import object from "!/validators/base/object"
 import makeIDRules from "!/rule_sets/make_id"
@@ -74,9 +74,9 @@ export default class extends QueryController {
 		const query = request.query as unknown as IDOnlyQueryParameters<number>
 
 		const manager = new Manager(request)
-		const departmentWithUserCount = await manager
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		.countUsers(query.filter.IDs as number[]) as DepartmentResourceIdentifier<"read">
+		const departmentWithUserCount = await manager.countComments(
+			query.filter.IDs as number[]
+		) as PostResourceIdentifier<"read">
 
 		return new ListResponse(departmentWithUserCount)
 	}
