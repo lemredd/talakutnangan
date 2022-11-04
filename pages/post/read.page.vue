@@ -33,7 +33,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, watch, computed } from "vue"
+import { inject, ref, watch, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
@@ -120,17 +120,21 @@ const commentFetcher = new CommentFetcher()
 
 const commentExistence = ref<"exists"|"archived"|"*">("exists")
 async function fetchComments() {
-	await loadRemainingResource(comments, commentFetcher, () => ({
-		"filter": {
-			"existence": commentExistence.value,
-			"postID": post.value.id
-		},
-		"page": {
-			"limit": DEFAULT_LIST_LIMIT,
-			"offset": 0
-		},
-		"sort": [ "-createdAt" ]
-	}))
+	await loadRemainingResource(
+		comments as Ref<DeserializedCommentListDocument>,
+		commentFetcher,
+		() => ({
+			"filter": {
+				"existence": commentExistence.value,
+				"postID": post.value.id
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		})
+	)
 }
 
 watch(commentExistence, () => fetchComments())
