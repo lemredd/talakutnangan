@@ -106,7 +106,7 @@ async function fetchComments() {
 			},
 			"page": {
 				"limit": DEFAULT_LIST_LIMIT,
-				"offset": 0
+				"offset": comments.value.data.length
 			},
 			"sort": [ "-createdAt" ]
 		})
