@@ -20,10 +20,12 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import Fetcher from "$@/fetchers/comment"
 import isUndefined from "$/type_guards/is_undefined"
 
+import debounce from "$@/helpers/debounce"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 
 const props = defineProps<{
@@ -116,7 +118,18 @@ async function fetchComments() {
 	)
 }
 
-watch(existence, () => fetchComments())
+function resetCommentsList() {
+	comments.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
+
+	fetchComments()
+}
+
+watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => await countCommentVote())
 </script>
