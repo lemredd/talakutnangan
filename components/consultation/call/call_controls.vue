@@ -59,19 +59,19 @@ type CustomEvents = {
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	isJoined: boolean
-	mustShowVideo: boolean
-	mustTransmitAudio: boolean
+	isShowingVideo: boolean
+	isTransmittingAudio: boolean
 }>()
 
 const videoIcon = computed(() => {
 	let icon = ""
-	if (props.mustShowVideo) icon = "videocam"
+	if (props.isShowingVideo) icon = "videocam"
 	else icon = "videocam_off"
 
 	return icon
 })
 function toggleVideo() {
-	if (props.mustShowVideo) muteVideoTrack()
+	if (props.isShowingVideo) muteVideoTrack()
 	else unmuteVideoTrack()
 
 	emit("toggleVideo")

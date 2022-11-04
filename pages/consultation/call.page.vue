@@ -2,8 +2,8 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				v-model:must-show-video="mustShowVideo"
-				v-model:must-transmit-audio="mustTransmitAudio"
+				v-model:must-show-video="isShowingVideo"
+				v-model:must-transmit-audio="isTransmittingAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<div class="others">
@@ -33,8 +33,8 @@
 			custom-message="Please wait. we are still preparing you for call...">
 			<CallControls
 				v-model:is-joined="isJoined"
-				:must-show-video="mustShowVideo"
-				:must-transmit-audio="mustTransmitAudio"
+				:is-showing-video="isShowingVideo"
+				:is-transmitting-audio="isTransmittingAudio"
 				@toggle-video="toggleVideo"
 				@toggle-mic="toggleMic"
 				@join-call="join"
@@ -158,12 +158,12 @@ function fetchGeneratedToken() {
 
 const {
 	"toggle": toggleVideo,
-	"state": mustShowVideo
+	"state": isShowingVideo
 } = makeSwitch(true)
 const {
 	"toggle": toggleMic,
-	"state": mustTransmitAudio
-} = makeSwitch(false)
+	"state": isTransmittingAudio
+} = makeSwitch(true)
 const {
 	"off": leaveAndHideAdditionalButtons,
 	"on": joinAndShowAdditionalButtons,
