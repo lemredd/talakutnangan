@@ -80,15 +80,15 @@ const departments = ref<DeserializedDepartmentListDocument>(
 )
 const departmentNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "All",
-		"value": "*"
+		"label": "General",
+		"value": "~"
 	},
 	...departments.value.data.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))
 ])
-const chosenDepartment = ref("*")
+const chosenDepartment = ref(userProfile.data.department.data.id)
 
 const {
 	"state": isCreateShown,
