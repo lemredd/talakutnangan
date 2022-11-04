@@ -2,11 +2,13 @@ import type { Rules, FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
 import Manager from "%/managers/post"
+import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
 import JSONController from "!/controllers/json"
+import DepartmentManager from "%/managers/department"
 import CreatedResponseInfo from "!/response_infos/created"
+import PostAttachmentManager from "%/managers/post_attachment"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { post as permissionGroup } from "$/permissions/permission_list"
@@ -62,7 +64,6 @@ export default class extends JSONController {
 			}
 		}
 
-		// TODO: Validate for relationships to post attachments and department
 		const relationships: FieldRules = makeRelationshipRules([
 			{
 				"ClassName": UserManager,
@@ -76,6 +77,21 @@ export default class extends JSONController {
 				"isArray": false,
 				"relationshipName": "posterRole",
 				"typeName": "role",
+				"validator": exists
+			},
+			{
+				"ClassName": PostAttachmentManager,
+				"isArray": true,
+				"relationshipName": "postAttachments",
+				"typeName": "post_attachment",
+				"validator": exists
+			},
+			{
+				"ClassName": DepartmentManager,
+				"isArray": false,
+				"isOptional": true,
+				"relationshipName": "department",
+				"typeName": "department",
 				"validator": exists
 			}
 		])
