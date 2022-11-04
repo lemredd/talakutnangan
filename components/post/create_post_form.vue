@@ -82,8 +82,7 @@
 				:disabled="!hasExtracted || isFileSizeGreaterThanLimit"
 				:form="CREATE_POST_FORM_ID"
 				class="btn submit-btn btn-primary"
-				type="submit"
-				@click="sendFile">
+				type="submit">
 				Create post
 			</button>
 		</template>
@@ -191,31 +190,6 @@ function removeFile() {
 
 function emitClose() {
 	emit("close")
-}
-
-function sendFile(form: HTMLFormElement) {
-	const formData = new FormData(form)
-	formData.set("data[attributes][fileType]", fileType.value)
-
-	postAttachmentFetcher.createWithFile(formData)
-	.then(({ body }) => {
-		attachmentResources.value = [
-			...attachmentResources.value,
-			body.data
-		]
-		emitClose()
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
 }
 
 function uploadPostAttachment(event: Event): void {
