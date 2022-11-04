@@ -15,6 +15,7 @@
 		@apply flex-1 flex flex-col flex-nowrap justify-start items-center;
 	}
 </style>
+
 <script setup lang="ts">
 import { computed, onMounted, Ref, ref, watch } from "vue"
 
@@ -133,7 +134,9 @@ function resetCommentsList() {
 	fetchComments()
 }
 
-watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
+onMounted(async() => {
+	await countVotesOfComments()
 
-onMounted(async() => await countVotesOfComments())
+	watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
+})
 </script>
