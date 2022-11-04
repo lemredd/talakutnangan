@@ -62,8 +62,10 @@ import type {
 	DeserializedDepartmentResource
 } from "$/types/documents/department"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import Fetcher from "$@/fetchers/post"
 import debounce from "$@/helpers/debounce"
 import makeSwitch from "$@/helpers/make_switch"
 import DepartmentFetcher from "$@/fetchers/department"
@@ -89,10 +91,11 @@ const posts = ref<DeserializedPostListDocument<"poster"|"posterRole"|"department
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "General",
-		"value": "~"
+		"value": NULL_AS_STRING
 	},
 	...departments.value.data.map(data => ({
 		"label": data.fullName,
@@ -107,6 +110,30 @@ const {
 	"off": hideCreateForm
 } = makeSwitch(false)
 
+const fetcher = new Fetcher()
+async function retrievePosts() {
+	await fetcher.list({
+		"filter": {
+			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
+			"existence": "exists"
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": posts.value.data.length
+		},
+		"sort": [ "-createdAt" ]
+	}).then(({ body }) => {
+		const castBody = body as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		posts.value = {
+			...posts.value,
+			"data": [
+				...posts.value.data,
+				...castBody.data
+			]
+		}
+	})
+}
+
 function resetPostList() {
 	posts.value = {
 		"data": [],
@@ -114,6 +141,7 @@ function resetPostList() {
 			"count": 0
 		}
 	}
+	retrievePosts()
 }
 
 const departmentFetcher = new DepartmentFetcher()
