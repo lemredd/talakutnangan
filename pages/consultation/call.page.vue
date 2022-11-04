@@ -146,10 +146,10 @@ const fetcher = new Fetcher()
 const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
+const channelName = `call_${consultationID}`
 provide(CURRENT_USER_RTC_TOKEN, readonly(token))
 function fetchGeneratedToken() {
 	// TODO: make channel name unique based on consultation ID
-	const channelName = "call"
 	fetcher.generateToken(consultationID, channelName, chatMessageActivityID)
 	.then(({ body }) => {
 		const { meta } = body
@@ -178,6 +178,7 @@ function join() {
 	joinAndShowAdditionalButtons()
 	joinAndPresentLocalTracks(
 		VIDEO_CONFERENCE_APP_ID as string,
+		channelName,
 		chatMessageActivityID,
 		selfParticipantID,
 		token.value

@@ -81,7 +81,6 @@ export default class extends Controller {
 			"uid": userID
 		} = request.params
 
-		// TODO: find a way to make the general channel name unique
 		return Promise.resolve(new OkResponse({
 			"meta": {
 				"RTCToken": generateToken(specifiedChannelName, Number(userID))
