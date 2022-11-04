@@ -3,8 +3,9 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 import type { DeserializedCommentListDocument } from "$/types/documents/comment"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
-import { COUNT_COMMENT_VOTES } from "$/constants/template_links"
+import { COMMENT_LINK, COUNT_COMMENT_VOTES } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -51,7 +52,7 @@ describe("Component: comment/multiviewer", () => {
 			]
 		}), { "status": RequestEnvironment.status.OK })
 
-		const wrapper = shallowMount<any>(Component, {
+		const unusedWrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -104,5 +105,139 @@ describe("Component: comment/multiviewer", () => {
 		}))
 		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+	})
+
+	it("should load archived comments", async() => {
+		jest.useFakeTimers()
+		const userID = "1"
+		const commentID = "2"
+		const postID = "3"
+		const modelValue = {
+			"data": [
+				{
+					"content": "Hello world!",
+					"deletedAt": null,
+					"id": commentID,
+					"type": "comment",
+					"user": {
+						"data": {
+							"id": userID,
+							"type": "user"
+						}
+					}
+				}
+			],
+			"meta": {
+				"count": 1
+			}
+		} as DeserializedCommentListDocument<"user">
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [
+				{
+					"id": commentID,
+					"meta": {},
+					"type": "comment_vote"
+				}
+			]
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [
+				{
+					"id": "4",
+					"type": "comment"
+				}
+			],
+			"meta": {
+				"count": 2
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [
+				{
+					"id": commentID,
+					"meta": {},
+					"type": "comment_vote"
+				}
+			]
+		}), { "status": RequestEnvironment.status.OK })
+
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"id": userID,
+									"roles": {
+										"data": [
+											{
+												"id": "1",
+												"postFlags": permissionGroup.generateMask(
+													...UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+												)
+											}
+										]
+									},
+									"type": "user"
+								}
+							}
+						}
+					}
+				},
+				"stubs": {
+					"Suspensible": false
+				}
+			},
+			"props": {
+				"isPostOwned": true,
+				modelValue,
+				"post": {
+					"id": postID
+				}
+			}
+		})
+
+		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+		await flushPromises()
+		const selectableExistence = wrapper.findComponent({ "name": "SelectableExistenceFilter" })
+		await selectableExistence.vm.$emit("update:modelValue", "archived")
+		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+		await flushPromises()
+		jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+		await flushPromises()
+
+		const updates = wrapper.emitted("update:modelValue")
+		expect(updates).toHaveLength(2)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(3)
+		const [ [ firstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(firstRequest).toHaveProperty("method", "GET")
+		expect(firstRequest).toHaveProperty("url", specializePath(COUNT_COMMENT_VOTES, {
+			"query": stringifyQuery({
+				"filter": {
+					"IDs": [ commentID ]
+				}
+			})
+		}))
+		expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest).toHaveProperty("method", "GET")
+		expect(secondRequest).toHaveProperty("url", specializePath(COMMENT_LINK.query, {
+			"query": stringifyQuery({
+				"filter": {
+					"existence": "archived",
+					postID
+				},
+				"page": {
+					"limit": DEFAULT_LIST_LIMIT,
+					"offset": modelValue.data.length
+				},
+				"sort": "-createdAt"
+			})
+		}))
+		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
+		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })

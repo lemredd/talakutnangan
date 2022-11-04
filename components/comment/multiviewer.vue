@@ -1,6 +1,6 @@
 <template>
 	<div class="multiviewer">
-		<SelectableCommentExistenceFilter
+		<SelectableExistenceFilter
 			v-if="isPostOwned"
 			v-model="existence"/>
 		<Suspensible :is-loaded="isLoaded">
@@ -34,7 +34,7 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import Viewer from "@/comment/multiviewer/viewer.vue"
-import SelectableCommentExistenceFilter from "@/fields/selectable_radio/existence.vue"
+import SelectableExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
 	isPostOwned: boolean
