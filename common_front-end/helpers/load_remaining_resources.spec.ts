@@ -158,7 +158,6 @@ describe("Helper: Load remaining resource", () => {
 		} as DepartmentQueryParameters)
 		const mockOperation = jest.fn()
 		const postOperations = () => new Promise<void>(resolve => {
-			console.log("extra")
 			mockOperation()
 			resolve()
 		})
@@ -166,6 +165,53 @@ describe("Helper: Load remaining resource", () => {
 		await loadRemainingResource(listDocument, fetcher, queryMaker, { postOperations })
 
 		expect(fetch).toHaveBeenCalledTimes(2)
+		expect(mockOperation).toHaveBeenCalledTimes(1)
+	})
+
+	it("should stop manually", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [ {} ],
+			"meta": {
+				"count": 2
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}), { "status": RequestEnvironment.status.OK })
+
+		const listDocument = ref({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		})
+		const fetcher = new DepartmentFetcher()
+		const queryMaker = () => ({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": 0,
+				"offset": 0
+			},
+			"sort": []
+		} as DepartmentQueryParameters)
+		const mockOperation = jest.fn()
+		const postOperations = () => new Promise<void>(resolve => {
+			mockOperation()
+			resolve()
+		})
+
+		await loadRemainingResource(listDocument, fetcher, queryMaker, {
+			"mayContinue": () => Promise.resolve(false),
+			postOperations
+		})
+
+		expect(fetch).toHaveBeenCalledTimes(1)
 		expect(mockOperation).toHaveBeenCalledTimes(1)
 	})
 })
