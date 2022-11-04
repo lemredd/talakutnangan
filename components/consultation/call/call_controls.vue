@@ -42,24 +42,42 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from "vue"
+
 import CallControl from "@/consultation/call/call_controls/call_control.vue"
 
 type CustomEvents = {
-	(event: "toggleVideo"): void
-	(event: "toggleMic"): void
+	(event: "toggleVideo", newValue: boolean): void
+	(event: "toggleMic", newValue: boolean): void
 	(event: "joinCall"): void
 	(event: "leaveCall"): void
 }
 const emit = defineEmits<CustomEvents>()
-defineProps<{
+const props = defineProps<{
 	isJoined: boolean
+	mustShowVideo: boolean
+	mustTransmitAudio: boolean
 }>()
 
+const mustShowVideo = computed({
+	"get": () => props.mustShowVideo,
+	set(newValue: boolean): void {
+		emit("toggleVideo", newValue)
+	}
+})
+
+const mustTransmitAudio = computed({
+	"get": () => props.mustTransmitAudio,
+	set(newValue: boolean): void {
+		emit("toggleMic", newValue)
+	}
+})
+
 function toggleVideo() {
-	emit("toggleVideo")
+	mustShowVideo.value = !mustShowVideo.value
 }
 function toggleMic() {
-	emit("toggleMic")
+	mustTransmitAudio.value = !mustTransmitAudio.value
 }
 function joinCall() {
 	emit("joinCall")

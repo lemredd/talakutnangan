@@ -33,10 +33,10 @@
 			custom-message="Please wait. we are still preparing you for call...">
 			<CallControls
 				v-model:is-joined="isJoined"
+				v-model:must-show-video="mustShowVideo"
+				v-model:must-transmit-audio="mustTransmitAudio"
 				@join-call="join"
-				@leave-call="leave"
-				@toggle-video="toggleVideo"
-				@toggle-mic="toggleMic"/>
+				@leave-call="leave"/>
 		</Suspensible>
 	</div>
 </template>
@@ -76,8 +76,6 @@ import {
 	computed,
 	inject,
 	onMounted,
-	provide,
-	readonly,
 	ref
 } from "vue"
 
@@ -100,7 +98,10 @@ import SelfParticipant from "@/consultation/call/self_participant.vue"
 import {
 	initiateVideoConferenceEngine,
 	joinAndPresentLocalTracks,
-	leaveAndRemoveLocalTracks
+	leaveAndRemoveLocalTracks,
+
+	toggleVideoTrack,
+	toggleAudioTrack
 } from "@/consultation/call/helpers/video_conference_manager"
 
 type AdditionalPageProps = "VIDEO_CONFERENCE_APP_ID"|"chatMessageActivities"|"consultation"
@@ -147,7 +148,6 @@ const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 const channelName = `call_${consultationID}`
-provide(CURRENT_USER_RTC_TOKEN, readonly(token))
 function fetchGeneratedToken() {
 	// TODO: make channel name unique based on consultation ID
 	fetcher.generateToken(consultationID, channelName, chatMessageActivityID)
@@ -175,6 +175,7 @@ const {
 const selfParticipantID = `local-${chatMessageActivityID}`
 function join() {
 	toggleVideo()
+	toggleMic()
 	joinAndShowAdditionalButtons()
 	joinAndPresentLocalTracks(
 		VIDEO_CONFERENCE_APP_ID as string,
