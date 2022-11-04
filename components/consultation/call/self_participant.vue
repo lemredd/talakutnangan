@@ -6,7 +6,6 @@
 				:user="userProfile"/>
 		</div>
 		<div
-			v-else
 			:id="containerId"
 			class="track-container">
 		</div>
