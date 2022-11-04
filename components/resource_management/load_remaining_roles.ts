@@ -1,36 +1,25 @@
 import type { Ref } from "vue"
-import type { ResourceCount } from "$/types/documents/base"
-import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/role"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 export default async function loadRemainingRoles(
-	roles: Ref<DeserializedRoleResource[]>,
+	roles: Ref<DeserializedRoleListDocument>,
 	fetcher: Fetcher
 ): Promise<void> {
-	await fetcher.list({
+	await loadRemainingResource(roles, fetcher, () => ({
 		"filter": {
 			"department": "*",
 			"existence": "exists",
 			"slug": ""
 		},
 		"page": {
-			"limit": 10,
-			"offset": roles.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": roles.value.data.length
 		},
 		"sort": [ "name" ]
-	}).then(response => {
-		const { data, meta } = response.body
-
-		if (data.length === 0) return Promise.resolve()
-
-		roles.value = [ ...roles.value, ...data ]
-
-		const castMeta = meta as ResourceCount
-		if (roles.value.length < castMeta.count) {
-			return loadRemainingRoles(roles, fetcher)
-		}
-
-		return Promise.resolve()
-	})
+	}))
 }
