@@ -25,6 +25,10 @@ export default async function(
 			state.value = null
 		} else {
 			state.value = constraints.nullable.defaultValue
+
+			if (constraints.nullable?.mustSkipAfterSettingDefault) {
+				state.maySkip = true
+			}
 		}
 	}
 
