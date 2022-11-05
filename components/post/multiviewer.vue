@@ -57,6 +57,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import Viewer from "@/post/multiviewer/viewer.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
