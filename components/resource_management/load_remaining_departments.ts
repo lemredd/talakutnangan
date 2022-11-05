@@ -1,35 +1,24 @@
 import type { Ref } from "vue"
-import type { ResourceCount } from "$/types/documents/base"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/department"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 export default async function loadRemainingDepartments(
-	departments: Ref<DeserializedDepartmentResource[]>,
+	departments: Ref<DeserializedDepartmentListDocument>,
 	fetcher: Fetcher
 ): Promise<void> {
-	await fetcher.list({
+	await loadRemainingResource(departments, fetcher, () => ({
 		"filter": {
 			"existence": "exists",
 			"slug": ""
 		},
 		"page": {
-			"limit": 10,
-			"offset": departments.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": departments.value.data.length
 		},
 		"sort": [ "fullName" ]
-	}).then(response => {
-		const { data, meta } = response.body
-
-		if (data.length === 0) return Promise.resolve()
-
-		departments.value = [ ...departments.value, ...data ]
-
-		const castMeta = meta as ResourceCount
-		if (departments.value.length < castMeta.count) {
-			return loadRemainingDepartments(departments, fetcher)
-		}
-
-		return Promise.resolve()
-	})
+	}))
 }

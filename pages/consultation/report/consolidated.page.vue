@@ -8,7 +8,8 @@
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
 				The page contains the overall consultation summary
-				from {{ rangeBegin }} to {{ rangeEnd }}.
+				from {{ formatToCompleteFriendlyTime(rangeBegin) }}
+				to {{ formatToCompleteFriendlyTime(rangeEnd) }}.
 			</p>
 			<div class="main">
 				<section>
@@ -142,6 +143,7 @@ import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import convertToRawFullTime from "@/consultation/report/convert_to_raw_full_time"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
 import Suspensible from "@/suspensible.vue"

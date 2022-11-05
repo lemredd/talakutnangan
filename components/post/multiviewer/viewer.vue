@@ -50,7 +50,14 @@
 				</span>
 				<span>
 					<small>
-						{{ postInfo }}
+						<span>
+							{{ postDepartment }}
+						</span>
+						<span class="ml-2" :title="completeFriendlyPostTimestamp">
+							{{
+								friendlyPostTimestamp
+							}}
+						</span>
 					</small>
 				</span>
 			</div>
@@ -116,6 +123,8 @@ import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
+import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
@@ -176,14 +185,19 @@ const postDepartment = computed<string>(() => {
 	return `Posted on ${department.data.fullName} (${department.data.acronym})`
 })
 
-const friendlyCreatedDate = computed<string>(() => {
+const friendlyPostTimestamp = computed<string>(() => {
 	const { createdAt } = post.value
 
-	// TODO: Format like "one hour ago", or "one day ago"
-	return createdAt.toJSON()
+	return formatToFriendlyPastTime(createdAt)
 })
 
-const postInfo = computed<string>(() => `${postDepartment.value} ${friendlyCreatedDate.value}`)
+const completeFriendlyPostTimestamp = computed<string>(() => {
+	const { createdAt, updatedAt } = post.value
+	const friendlyCreationTime = formatToCompleteFriendlyTime(createdAt)
+	const friendlyModificationTime = formatToCompleteFriendlyTime(updatedAt)
+
+	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
+})
 
 const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
 
