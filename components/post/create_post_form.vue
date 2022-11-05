@@ -127,6 +127,8 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
+import { READ_POST } from "$/constants/template_page_paths"
 
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -286,7 +288,11 @@ function createPost(): void {
 		} as PostRelationships<"create">
 	}).then(({ body }) => {
 		const { data } = body
-		assignPath(`/post/read/${data.id}`)
+		assignPath(
+			specializePath(READ_POST, {
+				"id": data.id
+			})
+		)
 	}).catch(({ body }) => {
 		if (body) {
 			const { errors } = body
