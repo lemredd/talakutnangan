@@ -148,5 +148,7 @@ onMounted(async() => {
 	await countVotesOfComments()
 
 	watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
+
+	isLoaded.value = true
 })
 </script>
