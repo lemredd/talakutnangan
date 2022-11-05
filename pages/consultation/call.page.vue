@@ -6,25 +6,9 @@
 				v-model:must-transmit-audio="isTransmittingAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
-			<div class="others">
-				<!-- TODO: Use remote participant -->
-				<!-- <SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/> -->
-			</div>
+			<OtherParticipantsContainer
+				class="other-participants"
+				:other-participants="otherParticipants as RemoteTracks[]"/>
 		</div>
 
 		<Suspensible
@@ -46,25 +30,20 @@
 <style scoped lang="scss">
 	.participants{
 		@apply flex flex-col;
+		position: relative;
 
-		.others{
-			@apply flex flex-col;
-			@screen sm{
-				@apply flex-row;
-			}
-
-			.other-participant{
-				width:100%;
-			}
+		@screen sm {
+			@apply flex-row;
 		}
 
-		.local-participant{
+		.other-participants {
 			@apply flex-1;
 		}
 	}
 
 	.suspensive-call-controls {
-		@apply border-t py-4;
+		@apply border-t py-4 bg-white;
+		@apply dark:bg-dark-400;
 		position: fixed;
 		bottom: 0;
 		width: 100%;
@@ -78,10 +57,12 @@ import {
 	computed,
 	inject,
 	onMounted,
+	Ref,
 	ref
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { RemoteTracks } from "@/consultation/call/helpers/types/video_conference_manager"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
@@ -95,6 +76,7 @@ import Fetcher from "$@/fetchers/consultation"
 import Suspensible from "@/helpers/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+import OtherParticipantsContainer from "@/consultation/call/other_participants.vue"
 import {
 	initiateVideoConferenceEngine,
 	joinAndPresentLocalTracks,
@@ -185,10 +167,12 @@ function leave() {
 	leaveAndRemoveLocalTracks()
 }
 
+const otherParticipants = ref<RemoteTracks[]>([])
+
 const isReadyForCalling = ref(false)
 onMounted(() => {
 	fetchGeneratedToken()
-	initiateVideoConferenceEngine()
+	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
 	})

@@ -129,6 +129,6 @@ const {
 function toggleMobileMenu() {
 	if (RequestEnvironment.isOnTest) emit("toggle")
 	toggleVisibility()
-	bodyClasses.value.scroll(mustShowMobileMenu.value)
+	bodyClasses.value.scroll(!mustShowMobileMenu.value)
 }
 </script>

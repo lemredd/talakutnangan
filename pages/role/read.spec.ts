@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 import { mount, flushPromises } from "@vue/test-utils"
 
-import { JSON_API_MEDIA_TYPE } from "$/types/server"
-
 import RequestEnvironment from "$/singletons/request_environment"
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 
