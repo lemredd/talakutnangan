@@ -174,6 +174,7 @@ interface CustomEvents {
 		content: DeserializedPostResource<"poster"|"posterRole">
 	): void
 }
+const emit = defineEmits<CustomEvents>()
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
@@ -257,41 +258,6 @@ const content = computed<string>({
 
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
-function updatePost(): void {
-	const attachmentIDs = attachmentResources.value.map(resource => ({
-		"id": resource.id,
-		"type": "post_attachment"
-	}))
-	const postAttachmentIDs = attachmentIDs.length === 0
-		// eslint-disable-next-line no-undefined
-		? undefined
-		: {
-			"data": attachmentIDs
-		}
-	fetcher.update(postID.value, {
-		"content": content.value,
-		"createdAt": new Date().toJSON(),
-		"deletedAt": null,
-		"updatedAt": new Date().toJSON()
-	}, {
-	})
-	.then(() => {
-		close()
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
-}
-
-const emit = defineEmits<CustomEvents>()
 
 function isImage(type: string): boolean {
 	return type.includes("image")
@@ -363,6 +329,29 @@ function uploadPostAttachment(event: Event): void {
 	sendFile(form)
 }
 
+function updatePost(): void {
+	fetcher.update(postID.value, {
+		"content": content.value,
+		"createdAt": new Date().toJSON(),
+		"deletedAt": null,
+		"updatedAt": new Date().toJSON()
+	}, {
+	})
+	.then(() => {
+		close()
+	}).catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
+}
 
 watch(isShown, newValue => {
 	if (newValue && !hasLoadedCompletePosterInfo.value) {
