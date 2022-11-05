@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import { mount } from "@vue/test-utils"
+import { flushPromises, mount } from "@vue/test-utils"
 
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -31,14 +31,15 @@ describe("Page: settings/account", () => {
 			}
 		})
 
-		const inputs = wrapper.findAll("input")
+		const inputs = wrapper.findAll(".submittable-field input")
+		const inputElements = inputs.map(input => input.element as HTMLInputElement)
 
-		expect(inputs).toHaveLength(4)
-		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
-		expect(inputs[2].element.value).toBe(
+		expect(inputs).toHaveLength(3)
+		expect(inputElements[0].value).toBe(userProfileResource.data.email)
+		expect(inputElements[1].value).toBe(
 			userProfileResource.data.studentDetail.data.studentNumber
 		)
-		expect(inputs[3].element.value).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputElements[2].value).toContain(userProfileResource.data.department.data.acronym)
 	})
 
 	it("should show basic details for employees", async() => {
@@ -62,10 +63,10 @@ describe("Page: settings/account", () => {
 
 		expect(inputs).toHaveLength(3)
 		expect(inputs[0].element.value).toBe(userProfileResource.data.email)
-		expect(inputs[2].element.value).toBe(userProfileResource.data.department.data.acronym)
+		expect(inputs[1].element.value).toContain(userProfileResource.data.department.data.acronym)
 	})
 
-	it("should send updated email", async() => {
+	it("should send updated user", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const userProfile = await new Factory()
 		.beUnreachableEmployee()
@@ -89,6 +90,9 @@ describe("Page: settings/account", () => {
 		await emailField.setValue(fakeNewEmail)
 		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
 		await saveEmailFieldButton.trigger("click")
+		const submitBtn = wrapper.find(".submit-btn")
+		await submitBtn.trigger("click")
+		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ firstRequest ] ] = castFetch.mock.calls
@@ -98,5 +102,35 @@ describe("Page: settings/account", () => {
 		expect(firstRequestBody).toHaveProperty("data.attributes.email", fakeNewEmail)
 		expect(firstRequestBody).toHaveProperty("data.id", userProfile.data.id)
 		expect(firstRequestBody).toHaveProperty("data.type", "user")
+	})
+
+	it("should reset to old data", async() => {
+		const userProfile = await new Factory()
+		.beUnreachableEmployee()
+		.deserializedOne(true) as DeserializedUserProfile
+		const fakeNewEmail = faker.internet.exampleEmail()
+		const wrapper = mount(Page, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							userProfile
+						}
+					}
+				}
+			}
+		})
+
+		const editEmailFieldButton = wrapper.find("input[type=email] + .edit-button")
+		await editEmailFieldButton.trigger("click")
+		const emailField = wrapper.find("input[type=email]")
+		await emailField.setValue(fakeNewEmail)
+		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
+		await saveEmailFieldButton.trigger("click")
+		const resetBtn = wrapper.find(".reset-btn")
+		await resetBtn.trigger("click")
+
+		const emailInput = emailField.element as HTMLInputElement
+		expect(emailInput.value).not.toEqual(fakeNewEmail)
 	})
 })

@@ -1,3 +1,4 @@
+import type { VoteKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { TextContentLikeAttributes } from "$/types/documents/text_content-like"
 import type { PostIdentifierDocument, DeserializedPostDocument } from "$/types/documents/post"
@@ -22,7 +23,9 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
 export interface CommentResourceIdentifier<T extends Completeness = "read">
@@ -30,7 +33,10 @@ extends ResourceIdentifier<T> {
 	type: "comment"
 }
 
-export type CommentAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T>
+export type CommentAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T> & {
+	"createdAt": T extends "serialized" ? string : Date,
+	"updatedAt": T extends "serialized" ? string : Date
+}
 
 interface CommentRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
@@ -65,6 +71,15 @@ export type CommentResource<T extends Completeness = "read">
 		: Serializable
 )
 
+export type CompleteVoteKind = VoteKind|"abstain"
+
+type WithVoteInfo = MetaDocument<{
+	upvoteCount: number,
+	downvoteCount: number,
+	currentUserVoteStatus: CompleteVoteKind,
+	commentVoteID: string|null
+}>
+
 export type DeserializedCommentResource<
 	T extends CommentRelationshipNames|undefined = undefined
 > = DeserializedResource<
@@ -76,7 +91,7 @@ export type DeserializedCommentResource<
 	CommentRelationshipNames,
 	T extends CommentRelationshipNames ? true : false,
 	T extends CommentRelationshipNames ? T : CommentRelationshipNames
->
+> & Partial<WithVoteInfo>
 
 export type CommentDocument<T extends Completeness = "read"> = ResourceDocument<
 	T,
@@ -113,3 +128,6 @@ export type CommentIdentifierDocument
 
 export type CommentIdentifierListDocument
 = IdentifierListDocument<CommentResourceIdentifier<"read">>
+
+export type CommentIdentifierListDocumentWithVotes
+= IdentifierListDocument<CommentResourceIdentifier<"read"> & WithVoteInfo>

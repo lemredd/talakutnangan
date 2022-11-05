@@ -11,7 +11,7 @@
 			label="Full name"
 			type="text"/>
 		<NonSensitiveTextField
-			v-model="department.data.acronym"
+			v-model="capitalAcronym"
 			v-model:status="fieldStatus"
 			class="acronym border-solid"
 			label="Acronym"
@@ -84,9 +84,19 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", "depart
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
+
 const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
 )
+
+const capitalAcronym = computed({
+	"get": () => department.value.data.acronym,
+	set(newValue: string): void {
+		department.value.data.acronym = newValue.toUpperCase()
+	}
+})
+
+
 const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
 
 const mayUpdateDepartment = computed<boolean>(() => {

@@ -67,9 +67,12 @@
 </style>
 
 <script setup lang="ts">
-const { isShown } = defineProps<{ isShown: boolean }>()
+defineProps<{ isShown: boolean }>()
 
-const emit = defineEmits([ "close" ])
+interface CustomEvents {
+	(event: "close"): void
+}
+const emit = defineEmits<CustomEvents>()
 
 function emitClose() {
 	emit("close")

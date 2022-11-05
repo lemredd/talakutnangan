@@ -13,7 +13,7 @@
 				<Checkbox
 					v-model="rawFlags"
 					:disabled="disabled"
-					:label="convertForSentence(permissionName).toLowerCase()"
+					:label="convertToTitle(convertForSentence(permissionName))"
 					:value="permissionName"/>
 			</li>
 		</div>
@@ -58,9 +58,10 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 
 // Developer defined internals
 import makeUnique from "$/array/make_unique"
-import BasePermissionGroup from "$/permissions/base"
 import subtractArrays from "$/array/subtract"
+import BasePermissionGroup from "$/permissions/base"
 import sanitizeArray from "$@/helpers/sanitize_array"
+import convertToTitle from "$/string/convert_to_title"
 import convertForSentence from "$/string/convert_for_sentence"
 
 import Checkbox from "@/fields/checkbox.vue"

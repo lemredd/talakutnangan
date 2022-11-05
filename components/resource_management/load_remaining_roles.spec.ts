@@ -1,6 +1,6 @@
 import { ref } from "vue"
 
-import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -19,7 +19,12 @@ describe("Helper: Load remaining roles", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 		const fetcher = new Fetcher()
-		const roles = ref<DeserializedRoleResource[]>([])
+		const roles = ref<DeserializedRoleListDocument>({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		})
 
 		await loadRemainingRoles(roles, fetcher)
 

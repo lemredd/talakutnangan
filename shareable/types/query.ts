@@ -235,3 +235,6 @@ export type TimeSumQueryParameters<T extends number|string = string> =
 export type CommentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& PostFilter<T>
+	& IDsFilter<T>
+
+export type IDOnlyQueryParameters<T extends number|string = string> = IDsFilter<T>

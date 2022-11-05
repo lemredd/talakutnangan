@@ -1,9 +1,13 @@
-import { mount } from "@vue/test-utils"
-import SearchBar from "./search_bar.vue"
+import { shallowMount } from "@vue/test-utils"
+import Component from "./search_bar.vue"
 
 describe("Component: Search Bar", () => {
-	it("Should emit with a string value", async() => {
-		const wrapper = mount(SearchBar)
+	it("should emit with a string value", async() => {
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"modelValue": "foo"
+			}
+		})
 		const textField = wrapper.find(".search-filter")
 		const slug = "hello"
 

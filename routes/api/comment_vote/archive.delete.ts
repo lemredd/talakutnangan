@@ -1,9 +1,9 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
 
+import Manager from "%/managers/comment_vote"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import CommentVoteActivityManager from "%/managers/comment_vote"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { comment as permissionGroup } from "$/permissions/permission_list"
@@ -32,12 +32,12 @@ export default class extends JSONController {
 		return makeResourceIdentifierListDocumentRules(
 			"comment_vote",
 			exists,
-			CommentVoteActivityManager
+			Manager
 		)
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
-		const manager = new CommentVoteActivityManager(request)
+		const manager = new Manager(request)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)
 		await manager.archiveBatch(IDs)

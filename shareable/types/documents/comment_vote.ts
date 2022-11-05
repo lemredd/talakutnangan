@@ -1,9 +1,10 @@
+import type { VoteKind } from "$/types/database"
 import type { Serializable } from "$/types/general"
+import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/documents/user"
 import type {
 	CommentIdentifierDocument,
 	DeserializedCommentDocument
 } from "$/types/documents/comment"
-import type { UserIdentifierDocument, DeserializedUserDocument } from "$/types/documents/user"
 import type {
 	Completeness,
 	Format,
@@ -32,7 +33,9 @@ extends ResourceIdentifier<T> {
 	type: "comment_vote"
 }
 
-export type CommentVoteAttributes<T extends Format = "serialized"> = Attributes<T>
+export interface CommentVoteAttributes<T extends Format = "serialized"> extends Attributes<T> {
+	"kind": VoteKind
+}
 
 interface CommentVoteRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {

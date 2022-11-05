@@ -36,15 +36,21 @@ import type {
 	DeserializedResourceListDocument,
 
 	IdentifierDocument,
-	IdentifierListDocument
+	IdentifierListDocument,
+
+	MetaDocument
 } from "$/types/documents/base"
 
-export interface PostResourceIdentifier<T extends Completeness = "read">
-extends ResourceIdentifier<T> {
+export type PostResourceIdentifier<T extends Completeness = "read"> = ResourceIdentifier<T> & {
 	type: "post"
-}
+} & Partial<MetaDocument<{
+	"commentCount": number
+}>>
 
-export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T>
+export type PostAttributes<T extends Format = "serialized"> = TextContentLikeAttributes<T> & {
+	"createdAt": T extends "serialized" ? string : Date,
+	"updatedAt": T extends "serialized" ? string : Date
+}
 
 interface PostRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
@@ -67,9 +73,9 @@ extends GeneralRelationshipData {
 		deserialized: DeserializedRoleDocument<"attached">
 	},
 	postAttachments: {
-		"serialized": T extends "read"
-			? PostAttachmentIdentifierListDocument
-			: undefined,
+		"serialized": T extends "create"|"update"
+			? PostAttachmentIdentifierListDocument|undefined
+			: PostAttachmentIdentifierListDocument,
 		"deserialized": DeserializedPostAttachmentListDocument
 	}
 }

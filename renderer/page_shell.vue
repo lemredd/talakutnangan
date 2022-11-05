@@ -1,10 +1,10 @@
 <template>
 	<div ref="layout" class="layout">
-		<ShellNav v-if="!isLoggingIn && !isViewingConsultationForm"/>
-		<Content :class="{ 'login-content': isLoggingIn }">
+		<ShellNav v-if="!shouldHideNavbar"/>
+		<Content :class="{ 'demarginalized-top': shouldHideNavbar }">
 			<slot></slot>
 		</Content>
-		<Footer v-if="!isViewingConsultationForm"/>
+		<Footer v-if="!shouldHideFooter" class="page-shell-footer"/>
 	</div>
 </template>
 
@@ -36,7 +36,7 @@ a {
 	@apply flex flex-col;
 }
 
-.login-content {
+.demarginalized-top {
 	margin-top: 0;
 	padding: 0;
 }
@@ -57,8 +57,17 @@ import Content from "@/page_shell/content_container.vue"
 
 const pageContext = usePageContext()
 const path = pageContext.urlPathname as string
-const isLoggingIn = ref<boolean>(path === "/user/log_in")
-const isViewingConsultationForm = ref<boolean>(path.includes("/consultation/form"))
+const isLoggingIn = path === "/user/log_in"
+const isViewingConsultationForm = path.includes("/consultation/form")
+const shouldHideNavbar
+	= isLoggingIn
+	|| isViewingConsultationForm
+	|| path.includes("/consultation/call")
+const shouldHideFooter
+	= isViewingConsultationForm
+	|| path.includes("/consultation/call")
+	|| path.includes("/consultation/report")
+
 
 const layout = ref<HTMLElement | null>(null)
 const bodyClasses = ref<BodyCSSClasses | null>(null)

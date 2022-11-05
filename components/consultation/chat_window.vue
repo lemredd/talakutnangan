@@ -7,73 +7,13 @@
 			{{ `chevron_${isConsultationListShown ? "left" : "right"}` }}
 		</button>
 
-		<div class="selected-consultation-header">
-			<div class="text">
-				<div class="selected-consultation-title">
-					{{ consultation.reason }}
-				</div>
-				<div class="selected-consultation-remaining-time">
-					Time remaining:
-					<span>{{ remainingTime.minutes }}m</span>
-					<span v-if="remainingTime.seconds > 0">{{ remainingTime.seconds }}s</span>
-				</div>
-				<div class="selected-consultation-user-status">
-					<!-- TODO(lead): must base on user active status -->
-					User is online
-				</div>
-			</div>
-			<div class="controls">
-				<!-- TODO(lead/button): Apply functionality -->
-				<button class="material-icons">
-					video_camera_back
-				</button>
-				<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
-					storage
-				</button>
-
-				<FileOverlay
-					:general-files="generalFileChatMessages"
-					:image-files="imageFileChatMessages"
-					:is-file-repo-overlay-shown="isFileRepoOverlayShown"
-					:must-show-preview="mustShowPreview"
-					@hide-file-repo-overlay="hideFileRepoOverlay"
-					@switch-tab="switchTab"/>
-
-				<ExtraControls
-					:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
-					:is-current-user-consultant="isCurrentUserConsultant"
-					@show-action-taken-overlay="showActionTakenOverlay"
-					@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
-
-				<Overlay
-					:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
-					class="action-taken"
-					@close="hideActionTakenOverlay">
-					<template #header>
-						Mark this consultation as finished?
-					</template>
-
-					<template #default>
-						<p>If so, please provide the action taken to solve the consulter/s concern.</p>
-						<NonSensitiveTextField
-							v-model="actionTaken"
-							class="action-taken-field"
-							type="text"/>
-						<ReceivedErrors
-							v-if="receivedErrors.length"
-							:received-errors="receivedErrors"/>
-					</template>
-
-					<template #footer>
-						<button
-							class="finish-btn btn btn-primary"
-							@click="finishConsultation">
-							submit
-						</button>
-					</template>
-				</Overlay>
-			</div>
-		</div>
+		<ConsultationHeader
+			v-model="actionTaken"
+			:consultation="consultation"
+			:chat-messages="chatMessages"
+			:remaining-time="remainingTime"
+			:received-errors="receivedErrors"
+			@finish-consultation="finishConsultation"/>
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
 				<p class="consultation-details">
@@ -115,17 +55,6 @@
 	</section>
 </template>
 
-<style lang="scss">
-
-.additional-controls{
-	.dropdown-container{
-		inset: unset;
-		right: -80px;
-	}
-}
-
-</style>
-
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	@import "@styles/mixins.scss";
@@ -149,15 +78,6 @@
 			@apply flex flex-col;
 		}
 
-		.selected-consultation-header {
-			@apply flex py-4 px-2 dark:bg-true-gray-800;
-			.text {
-				@apply flex-1;
-				.selected-consultation-user-status { @apply row-start-2; }
-			}
-			.controls { @apply flex items-center; }
-		}
-
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
@@ -179,10 +99,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, inject } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { UnitError } from "$/types/server"
-import type { PageContext } from "$/types/renderer"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
@@ -190,20 +109,18 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
+import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
-import makeSwitch from "$@/helpers/make_switch"
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
-import Overlay from "@/helpers/overlay.vue"
-
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
-import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
+import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
 
 const fetcher = new ConsultationFetcher()
 
@@ -220,17 +137,6 @@ const props = defineProps<{
 	isConsultationListShown: boolean
 }>()
 
-const {
-	"pageProps": {
-		"userProfile": {
-			"data": {
-				kind
-			}
-		}
-	}
-} = inject("pageContext") as PageContext<"deserialized">
-const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
-
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
 	return [ ...rawData ].sort((left, right) => {
@@ -243,34 +149,20 @@ const sortedMessagesByTime = computed(() => {
 function loadPreviousMessages() {
 	emit("loadPreviousMessages")
 }
-const generalFileChatMessages = {
-	"data": props.chatMessages.data.filter(
-		chatMessage => chatMessage.data.subkind === "file"
-	)
-}
-const imageFileChatMessages = {
-	"data": props.chatMessages.data.filter(
-		chatMessage => chatMessage.data.subkind === "image"
-	)
-}
 
 const chatWindow = ref<HTMLElement|null>(null)
 function toggleConsultationList() {
 	emit("toggleConsultationList")
 }
 
-const {
-	"toggle": toggleHeaderControlDropdownShown,
-	"state": isHeaderControlDropdownShown
-} = makeSwitch(false)
-
-const remainingMilliseconds = ref<number>(0)
-const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
 const consultationID = computed<string>(() => consultation.value.id)
 const consultationStatus = computed<string>(() => consultation.value.status)
+
+const remainingMilliseconds = ref<number>(0)
+const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
 
 function restartRemainingTime(): void {
 	remainingMilliseconds.value = ConsultationTimerManager.MAX_EXPIRATION_TIME
@@ -283,30 +175,9 @@ function changeTime(
 	remainingMilliseconds.value = remainingMillisecondduration
 }
 
-const {
-	"on": showFileRepoOverlay,
-	"off": hideFileRepoOverlay,
-	"state": isFileRepoOverlayShown
-} = makeSwitch(false)
-
-const {
-	"on": showActionTakenOverlay,
-	"off": hideActionTakenOverlay,
-	"state": isActionTakenOverlayShown
-} = makeSwitch(false)
-const actionTaken = ref("")
-
-
-const fileRepoTab = ref("files")
 const receivedErrors = ref<string[]>([])
 
-const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
-function switchTab(event: Event) {
-	const button = event.target as HTMLButtonElement
-	const { innerText } = button
-
-	fileRepoTab.value = innerText.toLocaleLowerCase()
-}
+const actionTaken = ref("")
 
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
@@ -330,19 +201,6 @@ function finishConsultation(): void {
 			"scheduledStartAt": consultation.value.scheduledStartAt,
 			startedAt
 		}
-
-		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
-			"consultant"|"consultantRole"
-		> = {
-			...consultation.value,
-			...deserializedConsultationData
-		}
-
-		ConsultationTimerManager.unlistenConsultationTimeEvent(
-			expectedDeserializedConsultationResource,
-			"finish",
-			finishConsultation
-		)
 
 		fetcher.update(
 			consultationID.value,
@@ -382,7 +240,6 @@ function finishConsultation(): void {
 		})
 	}
 }
-
 
 function registerListeners(resource: DeserializedConsultationResource): void {
 	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
@@ -448,37 +305,12 @@ function startConsultation() {
 	})
 }
 
-
-const startWatcher = watch(consultation, (newConsultation, oldConsultation) => {
-	if (oldConsultation.startedAt === null && newConsultation.startedAt instanceof Date) {
-		registerListeners(newConsultation)
-
-		const finishWatcher = watch(consultation, (
-			newFinishedConsultation,
-			oldUnfinishedConsultation
-		) => {
-			if (
-				oldUnfinishedConsultation.finishedAt === null
-				&& newFinishedConsultation.finishedAt instanceof Date
-			) {
-				ConsultationTimerManager.forceFinish(newFinishedConsultation)
-				ConsultationTimerManager.unlistenConsultationTimeEvent(
-					newFinishedConsultation,
-					"finish",
-					finishConsultation
-				)
-				finishWatcher()
-			}
-		})
-
-		startWatcher()
-	}
-}, { "deep": true })
+watchConsultation(consultation, registerListeners)
 
 function saveAsPDF(): void {
-	fetcher.requestAsPDF(props.consultation.id).then(({ body }) => {
-		console.log(body)
-	})
+	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
+		"id": consultationID.value
+	}))
 }
 
 onMounted(() => {

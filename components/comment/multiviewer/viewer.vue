@@ -1,12 +1,22 @@
 <template>
-	<section v-if="mustDisplayOnly" class="flex flex-col flex-nowrap">
-		<header class="flex-1 flex flex-row flex-nowrap">
-			<ProfilePicture
-				class="flex-initial w-auto h-12"
-				:user="comment.user"/>
-			<h3 class="flex-1 m-auto ml-2">
-				{{ comment.user.data.name }}
+	<section v-if="mustDisplayOnly">
+		<header>
+			<h3>
+				<span>
+					{{ comment.user.data.name }}
+				</span>
+				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+					{{ friendlyCommentTimestamp }}
+				</span>
 			</h3>
+		</header>
+		<div class="main-content">
+			<ProfilePicture
+				class="profile-picture"
+				:user="comment.user"/>
+			<p>
+				{{ comment.content }}
+			</p>
 			<Menu
 				class="flex-none m-auto mx-1 h-12 w-12"
 				:comment="comment"
@@ -48,52 +58,83 @@
 					</button>
 				</template>
 			</Overlay>
-		</header>
-		<p class="flex-1 indent mt-4">
-			{{ comment.content }}
-		</p>
-		<div class="comment-container">
-			<div class="right">
-				<h2 class="title">
-					<!-- TODO: Put the total number of upvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to upvote -->
-					<span class="slider"></span>
-				</label>
-				<h2 class="title">
-					<!-- TODO: Put the total number of downvotes here -->
-				</h2>
-				<label class="switch">
-					<!-- TODO: Put a checkbox to downvote -->
-					<span class="slider"></span>
-				</label>
-
-				<h2 class="title">
-					<!-- TODO: Put the total number of votes here -->
-				</h2>
-			</div>
 		</div>
+		<VoteView
+			v-if="mayVote"
+			:model-value="vote"
+			:is-loaded="hasRenewedVote"
+			:title="friendlyVoteCount"
+			@update:model-value="switchVote"/>
 	</section>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	section {
+		@apply flex flex-col flex-nowrap;
+
+		header {
+			@apply flex-1 flex flex-row flex-nowrap;
+
+			h3 {
+				@apply flex-1 flex flex-row flex-nowrap justify-center items-center;
+				@apply m-auto ml-15;
+
+				/**
+				 * Reduce the left margin
+				 */
+				width: calc(100% - 3.75rem);
+
+				span:nth-child(1) {
+					@apply flex-1 truncate flex-shrink-[2];
+				}
+
+				span:nth-child(2) {
+					@apply flex-initial;
+				}
+			}
+		}
+
+		.main-content {
+			@apply flex-1 flex flex-row flex-nowrap items-center;
+
+			@screen md {
+				@apply w-[90%];
+			}
+
+			> .profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
+
+			> p {
+				@apply flex-1;
+				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, inject, nextTick } from "vue"
 
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
+import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import Overlay from "@/helpers/overlay.vue"
+import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
+import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 const fetcher = new Fetcher()
+const voteFetcher = new VoteFetcher()
 
 const props = defineProps<{
 	modelValue: DeserializedCommentResource<"user">
@@ -106,7 +147,135 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+
+const { userProfile } = pageProps
+
+const hasRenewedVote = ref<boolean>(true)
+const mayVote = computed<boolean>(() => {
+	const hasNotLoaded = isUndefined(props.modelValue.meta)
+
+	return !hasNotLoaded && hasRenewedVote.value
+})
+
+const voteCount = computed<number>(() => {
+	if (isUndefined(props.modelValue.meta)) return 0
+	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
+})
+
+const friendlyVoteCount = computed<string>(() => `${voteCount.value} votes`)
+
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
+
+const vote = computed<CompleteVoteKind>({
+	get(): CompleteVoteKind {
+		if (isUndefined(props.modelValue.meta)) {
+			return "abstain"
+		}
+
+		return props.modelValue.meta.currentUserVoteStatus
+	},
+	set(newValue: CompleteVoteKind): void {
+		if (!isUndefined(props.modelValue.meta)) {
+			const oldValue = props.modelValue.meta.currentUserVoteStatus
+			const commentWithVote = {
+				...props.modelValue,
+				"meta": {
+					...props.modelValue.meta
+				}
+			}
+
+			commentWithVote.meta.currentUserVoteStatus = newValue
+			if (oldValue === "upvote") commentWithVote.meta.upvoteCount--
+			else if (oldValue === "downvote") commentWithVote.meta.downvoteCount--
+
+			if (newValue === "upvote") commentWithVote.meta.upvoteCount++
+			else if (newValue === "downvote") commentWithVote.meta.downvoteCount++
+
+			emit("update:modelValue", commentWithVote)
+		}
+	}
+})
+
+const voteID = computed<string|null>({
+	get(): string|null {
+		return props.modelValue.meta?.commentVoteID ?? null
+	},
+	set(newValue: string|null): void {
+		if (!isUndefined(props.modelValue.meta)) {
+			const commentWithVote = {
+				...props.modelValue,
+				"meta": {
+					...props.modelValue.meta
+				}
+			}
+
+			commentWithVote.meta.commentVoteID = newValue
+			emit("update:modelValue", commentWithVote)
+		}
+	}
+})
+
+const friendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt } = comment.value
+
+	return formatToFriendlyPastTime(createdAt)
+})
+
+const completeFriendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt, updatedAt } = comment.value
+	const friendlyCreationTime = formatToCompleteFriendlyTime(createdAt)
+	const friendlyModificationTime = formatToCompleteFriendlyTime(updatedAt)
+
+	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
+})
+
+async function switchVote(newRawVote: string): Promise<void> {
+	const newVote = newRawVote as CompleteVoteKind
+	const currentVote = vote.value
+	hasRenewedVote.value = false
+
+	if (currentVote === "abstain" && newVote !== "abstain") {
+		await voteFetcher.create({
+			"kind": newVote
+		}, {
+			"extraDataFields": {
+				"relationships": {
+					"comment": {
+						"data": {
+							"id": comment.value.id,
+							"type": "comment"
+						}
+					},
+					"user": {
+						"data": {
+							"id": userProfile.data.id,
+							"type": "user"
+						}
+					}
+				}
+			}
+		}).then(({ body }) => {
+			voteID.value = body.data.id
+			return nextTick()
+		}).then(() => {
+			vote.value = newVote
+		})
+	} else if (newVote === "abstain") {
+		await voteFetcher.archive([ voteID.value as string ]).then(() => {
+			vote.value = newVote
+		})
+	} else {
+		await voteFetcher.update(voteID.value as string, {
+			"kind": newVote
+		}).then(() => {
+			vote.value = newVote
+		})
+	}
+
+	hasRenewedVote.value = true
+}
 
 const {
 	"state": mustUpdate,
@@ -131,15 +300,6 @@ const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRe
 function closeArchiveOrRestore() {
 	closeArchive()
 	closeRestore()
-}
-
-async function submitChangesSeparately(): Promise<void> {
-	await fetcher.update(comment.value.id, {
-		"content": comment.value.content,
-		"deletedAt": null
-	}).then(() => {
-		emit("update:modelValue", comment.value)
-	})
 }
 
 async function archivePost(): Promise<void> {

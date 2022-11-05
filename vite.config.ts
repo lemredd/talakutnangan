@@ -13,7 +13,7 @@ const configuration: UserConfig = {
 	"plugins": [
 		tsconfig(),
 		vue({
-			"reactivityTransform": true
+			"reactivityTransform": false
 		}),
 		ssr(),
 		windicss({

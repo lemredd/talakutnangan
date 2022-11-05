@@ -11,7 +11,7 @@ export const USER_LINK = makeTemplateLink(LINK_PREFIX, "user")
 
 export const COMMENT_LINK = makeTemplateLink(LINK_PREFIX, "comment")
 
-export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_votes")
+export const COMMENT_VOTE_LINK = makeTemplateLink(LINK_PREFIX, "comment_vote")
 
 export const TAG_LINK = makeTemplateLink(LINK_PREFIX, "tag")
 
@@ -77,7 +77,37 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
 
+export const COUNT_COMMENT_VOTES = `${COMMENT_LINK.unbound}/count_votes`
+
 /**
- * Requires the `id` of the consultation
+ * Link for generating RTC Token
  */
-export const GENERATE_CONSULTATION_AS_PDF_LINK = `${CONSULTATION_LINK.bound}/request/as_pdf`
+// eslint-disable-next-line max-len
+export const RTC_TOKEN_LINK = ":hostName/rtc/:channelName/1/uid/:uid/?expiry=300"
+
+/**
+ * Requires the time sum query parameters
+ */
+export const READ_TIME_SUM_PER_STUDENT
+= `${CONSULTATION_LINK.unbound}/read_time_sum_per_student?:query`
+
+/**
+ * Requires the time sum query parameters
+ */
+export const READ_TIME_SUM_PER_WEEK
+= `${CONSULTATION_LINK.unbound}/read_time_sum_per_week?:query`
+
+/**
+ * Requires the time sum query parameters
+ */
+export const READ_TIME_SUM_FOR_CONSOLIDATION
+= `${CONSULTATION_LINK.unbound}/read_time_sum_for_consolidation?:query`
+
+/**
+ * Requires the `id` of the consultation, `channelName` within the consultation, and `uid` which is
+ * the chat message activity of the current user.
+ */
+export const READ_GENERATED_RTC_TOKEN
+= `${CONSULTATION_LINK.unbound}/generate_token/:id/:channelName/:uid`
+
+export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments`

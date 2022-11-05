@@ -27,6 +27,34 @@ describe("Validator pipe: or", () => {
 		expect(sanitizeValue).toStrictEqual(3)
 	})
 
+	it("can pass friendly name", async() => {
+		const friendlyName = "foo"
+		const value = Promise.resolve(makeInitialState([ "invalid" ]))
+		const constraints = {
+			"field": "hello",
+			friendlyName,
+			"or": {
+				"rules": [
+					{
+						"pipes": [ string ]
+					},
+					{
+						"pipes": [ integer ]
+					}
+				]
+			},
+			"request": null,
+			"source": null
+		}
+
+		try {
+			await or(value, constraints)
+		} catch (errors) {
+			console.log(errors)
+			expect(errors).toHaveProperty("0.friendlyName", friendlyName)
+		}
+	})
+
 	it("cannot accept invalid input", async() => {
 		const value = Promise.resolve(makeInitialState([ "invalid" ]))
 		const constraints = {

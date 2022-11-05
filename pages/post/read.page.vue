@@ -1,25 +1,26 @@
 <template>
-	<section>
-		<Viewer v-model="post"/>
-		<CreateField
-			v-if="mayCreateComment"
-			class="field"
-			:post="post"
-			@create-comment="includeComment"/>
-		<Multiviewer v-model="comments" class="comments"/>
-	</section>
+	<article>
+		<Viewer
+			v-model="post"
+			:comment-count="commentCount"/>
+		<div class="comments">
+			<CreateField
+				v-if="mayCreateComment"
+				class="field"
+				:post="post"
+				@create-comment="includeComment"/>
+			<Multiviewer v-model="comments.data"/>
+		</div>
+	</article>
 </template>
 
 <style lang="scss">
-	section {
+	article {
 		@apply flex flex-col flex-nowrap justify-center;
 
-		> .field {
-			@apply flex-initial;
-		}
-
 		> .comments {
-			@apply flex-1;
+			@apply flex-1 flex-col flex-nowrap;
+			@apply p-5 bg-light-800 shadow-lg rounded-[1rem];
 		}
 
 		> * {
@@ -29,12 +30,17 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed, ref } from "vue"
+import { inject, computed, ref, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type { DeserializedCommentListDocument } from "$/types/documents/comment"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
+import Fetcher from "$@/fetchers/comment"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
@@ -57,9 +63,15 @@ const { userProfile } = pageProps
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const comments = ref<DeserializedCommentResource<"user">[]>(
-	pageProps.comments.data as DeserializedCommentResource<"user">[]
+const comments = ref<DeserializedCommentListDocument<"user">>(
+	pageProps.comments as DeserializedCommentListDocument<"user">
 )
+
+const commentCount = computed<number>(() => {
+	const castMeta = pageProps.comments.meta as ResourceCount
+
+	return castMeta.count
+})
 
 const mayCreateComment = computed<boolean>(() => {
 	const isPostPublic = !post.value.department
@@ -85,7 +97,32 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 
-function includeComment(newComment: DeserializedCommentResource<"user">): void {
-	comments.value.push(newComment)
+function includeComment(newComment: DeserializedCommentListDocument<"user">): void {
+	comments.value = {
+		...comments.value,
+		"data": [
+			...comments.value.data,
+			newComment
+		],
+		"meta": {
+			...comments.value.meta,
+			"count": comments.value.meta.count + 1
+		}
+	}
 }
+
+const fetcher = new Fetcher()
+onMounted(async() => {
+	await loadRemainingResource(comments, fetcher, () => ({
+		"filter": {
+			"existence": "exists",
+			"postID": post.value.id
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": comments.value.data.length
+		},
+		"sort": [ "-createdAt" ]
+	}))
+})
 </script>

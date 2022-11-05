@@ -1,29 +1,26 @@
 <template>
-	<div class="controls relative">
-		<Dropdown
-			:is-dropdown-shown="isDropdownShown"
-			class="postmenu absolute top-[2em] right-0 flex flex-col"
-			@toggle="toggleDropdown"
-			@resize="toggleDropdown">
-			<template #toggler>
-				<button class="material-icons">
-					more_vert
-				</button>
-			</template>
-			<template #dropdown-contents>
-				<button v-if="mayUpdatePost" @click="updatePost">
-					Edit
-				</button>
-				<button v-if="mayArchivePost" @click="archivePost">
-					Archive
-				</button>
-				<button v-if="mayRestorePost" @click="restorePost">
-					Restore
-				</button>
-			</template>
-		</Dropdown>
-	</div>
+	<MinorDropdown v-if="shouldHaveMenu" v-model="isDropdownShown">
+		<template #dropdown-contents>
+			<button v-if="mayUpdatePost" @click="updatePost">
+				Update post
+			</button>
+			<button v-if="mayArchivePost" @click="archivePost">
+				Archive post
+			</button>
+			<button v-if="mayRestorePost" @click="restorePost">
+				Restore post
+			</button>
+		</template>
+	</MinorDropdown>
 </template>
+
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+
+	button {
+		@apply flex-1 max-h-[4rem] py-4;
+	}
+</style>
 
 <script setup lang="ts">
 import { computed, inject } from "vue"
@@ -45,7 +42,7 @@ import {
 	ARCHIVE_AND_RESTORE_PUBLIC_POST_ON_ANY_DEPARTMENT
 } from "$/permissions/post_combinations"
 
-import Dropdown from "@/page_shell/dropdown.vue"
+import MinorDropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
 	post: DeserializedPostResource<"poster"|"department">
@@ -64,8 +61,7 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const {
-	"state": isDropdownShown,
-	"toggle": toggleDropdown
+	"state": isDropdownShown
 } = makeSwitch(false)
 
 const poster = computed<DeserializedUserResource>(
@@ -89,7 +85,6 @@ const mayUpdatePost = computed<boolean>(() => {
 			isOwned
 				|| !isUndefined(department.value)
 				&& department.value?.id === userProfile.data.department.data.id
-
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -136,6 +131,10 @@ const mayRestorePost = computed<boolean>(() => {
 	const isPermitted = mayArchiveOrRestorePost.value
 	return isPermitted && Boolean(props.post.deletedAt)
 })
+
+const shouldHaveMenu = computed<boolean>(
+	() => mayUpdatePost.value || mayArchivePost.value || mayRestorePost.value
+)
 
 function updatePost() {
 	emit("updatePost")

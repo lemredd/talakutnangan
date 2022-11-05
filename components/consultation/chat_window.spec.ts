@@ -122,9 +122,6 @@ describe("Component: consultation/chat_window", () => {
 				await userController.trigger("start-consultation")
 				await flushPromises()
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(1)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -205,9 +202,6 @@ describe("Component: consultation/chat_window", () => {
 				ConsultationTimerManager.forceFinish(updatedFakeConsultation)
 				await flushPromises()
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("0m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(2)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -244,110 +238,6 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
 				expect(secondRequestBody).toHaveProperty("data.id", "1")
 				expect(secondRequestBody).toHaveProperty("data.type", "consultation")
-			})
-
-
-			it("should continue to started consultation", async() => {
-				const dateNow = new Date("2022-10-20 10:00:00")
-				const scheduledStartAt
-				= new Date(dateNow.valueOf() - convertTimeToMilliseconds("00:00:02"))
-				const consultant = {
-					"data": {
-						"id": "10",
-						"kind": "reachable_employee",
-						"type": "user"
-					}
-				}
-				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-				const fakeConsultation = {
-					"actionTaken": null,
-					"finishedAt": null,
-					"id": "1",
-					"reason": "",
-					scheduledStartAt,
-					"startedAt": scheduledStartAt,
-					"type": "consultation"
-				} as DeserializedConsultationResource
-				const fakeChatMessage = {
-					"data": []
-				} as DeserializedChatMessageListDocument
-				const wrapper = shallowMount<any>(Component, {
-					"global": {
-						"provide": {
-							"pageContext": {
-								"pageProps": {
-									"userProfile": consultant
-								}
-							}
-						}
-					},
-					"props": {
-						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation,
-						"isConsultationListShown": false
-					}
-				})
-				await nextTick()
-
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
-				ConsultationTimerManager.clearAllListeners()
-			})
-
-			it("should start consultation on other source's update", async() => {
-				const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
-				const consultant = {
-					"data": {
-						"id": "10",
-						"kind": "reachable_employee",
-						"type": "user"
-					}
-				}
-				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-				const fakeConsultation = {
-					"actionTaken": null,
-					"finishedAt": null,
-					"id": "1",
-					"reason": "",
-					scheduledStartAt,
-					"startedAt": null,
-					"type": "consultation"
-				} as DeserializedConsultationResource
-				const fakeChatMessage = {
-					"data": []
-				} as DeserializedChatMessageListDocument
-				const wrapper = shallowMount<any>(Component, {
-					"global": {
-						"provide": {
-							"pageContext": {
-								"pageProps": {
-									"userProfile": consultant
-								}
-							}
-						}
-					},
-					"props": {
-						"chatMessages": fakeChatMessage,
-						"consultation": fakeConsultation,
-						"isConsultationListShown": false
-					}
-				})
-
-				await wrapper.setProps({
-					"consultation": {
-						...fakeConsultation,
-						"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:05:00"))
-					}
-				})
-				ConsultationTimerManager.nextInterval()
-				await nextTick()
-
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("4m")
-				expect(consultationHeader.html()).toContain("59s")
-				ConsultationTimerManager.clearAllListeners()
 			})
 
 			it("should restart the timer", async() => {
@@ -411,9 +301,6 @@ describe("Component: consultation/chat_window", () => {
 				expect(castedWrapper.remainingTime.minutes).toEqual(4)
 				expect(castedWrapper.remainingTime.seconds).toEqual(59)
 
-				const consultationHeader = wrapper.find(".selected-consultation-header")
-				expect(consultationHeader.exists()).toBeTruthy()
-				expect(consultationHeader.html()).toContain("5m")
 				const events = wrapper.emitted("updatedConsultationAttributes")
 				expect(events).toHaveLength(1)
 				const castFetch = fetch as jest.Mock<any, any>
@@ -486,6 +373,7 @@ describe("Component: consultation/chat_window", () => {
 				await flushPromises()
 				const firstUpdatedFakeConsultation = {
 					...fakeConsultation,
+					consultant,
 					"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 				} as DeserializedConsultationResource
 				await wrapper.setProps({
@@ -564,12 +452,6 @@ describe("Component: consultation/chat_window", () => {
 									"userProfile": consultant
 								}
 							}
-						},
-						"stubs": {
-							"Dropdown": false,
-							"ExtraControls": false,
-							"IconButton": false,
-							"Overlay": false
 						}
 					},
 					"props": {
@@ -592,24 +474,18 @@ describe("Component: consultation/chat_window", () => {
 				})
 				await flushPromises()
 
-				const additionalControls = wrapper.find(".additional-controls")
-				const additionalControlsBtn = wrapper.find(".icon-btn")
-				await additionalControlsBtn.trigger("click")
-				const viewOverlayBtn = additionalControls.find(".show-action-taken-overlay-btn")
-				await viewOverlayBtn.trigger("click")
-				const actionTakenOverlay = wrapper.find(".action-taken")
-				const actionTakenField = actionTakenOverlay.findComponent(".action-taken-field")
-				await actionTakenField.setValue("action taken")
+				const actionTakenFieldValue = "action taken"
+				const header = wrapper.findComponent({ "name": "ConsultationHeader" })
+				await header.vm.$emit("update:modelValue", "action taken")
 				const secondUpdatedFakeConsultation = {
 					...firstUpdatedFakeConsultation,
-					"actionTaken": actionTakenField.attributes("modelvalue")
+					"actionTaken": actionTakenFieldValue
 				}
 				await wrapper.setProps({
 					"chatMessages": fakeChatMessage,
 					"consultation": secondUpdatedFakeConsultation
 				})
-				const finishBtn = actionTakenOverlay.find(".finish-btn")
-				await finishBtn.trigger("click")
+				await header.vm.$emit("finishConsultation")
 				await flushPromises()
 
 				const events = wrapper.emitted("updatedConsultationAttributes")
@@ -625,7 +501,6 @@ describe("Component: consultation/chat_window", () => {
 				expect(firstRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 				expect(firstRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
-
 				expect(secondRequest).toHaveProperty("method", "PATCH")
 				expect(secondRequest).toHaveProperty(
 					"url",
@@ -635,7 +510,7 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 				const body = await secondRequest.json()
 				const { actionTaken } = body.data.attributes
-				expect(actionTaken).toEqual(actionTakenField.attributes("modelvalue"))
+				expect(actionTaken).toEqual(actionTakenFieldValue)
 				ConsultationTimerManager.clearAllListeners()
 			})
 		})

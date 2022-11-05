@@ -7,27 +7,44 @@
 			v-model="content"
 			v-model:status="fieldStatus"
 			class="field"
+			input-classes="raw-field"
 			type="text"
+			placeholder="Write to comment"
 			:may-save-implicitly="true"
 			@save-implicitly="submit"
 			@save="submit"/>
 	</form>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 	form {
 		@apply flex flex-row flex-nowrap justify-center;
+		@apply mb-5;
 
 		> .self {
-			@apply flex-initial w-auto h-12;
+			@apply flex-initial w-auto h-12 mr-2;
 		}
 
 		> .field {
-			@apply flex-1 ml-4 flex flex-row;
+			@apply flex-1 flex flex-row;
+			@apply rounded-1rem bg-gray-300 text-dark-500 min-w-55;
+
+			.raw-field:not(:disabled) {
+				@apply border-none p-4 rounded-1rem w-[100%];
+			}
 		}
 	}
 </style>
 
+<style lang="scss">
+	form {
+		> .field {
+			.raw-field:not(:disabled) {
+				@apply border-none p-4 rounded-1rem w-[100%];
+			}
+		}
+	}
+</style>
 <script setup lang="ts">
 import { computed } from "vue"
 
