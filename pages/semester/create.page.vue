@@ -9,25 +9,20 @@
 		<label class="block">
 			Semester name:
 			<input
-				id="name"
 				v-model="titleSemester"
-				class="border-solid"
+				class="name border-solid"
 				type="text"/>
-			<div id="start" class="start">
-				<Selectable
-					v-model="semesterOrder"
-					class="inline"
-					:options="semesterOption"/>
-			</div>
+			<Selectable
+				v-model="semesterOrder"
+				class="order"
+				:options="semesterOption"/>
 			<input
-				id="start-at"
 				v-model="startAt"
-				class="border-solid"
+				class="start-at"
 				type="date"/>
 			<input
-				id="end-at"
 				v-model="endAt"
-				class="border-solid"
+				class="end-at"
 				type="date"/>
 		</label>
 		<input type="submit" value="Create semester"/>
@@ -47,7 +42,7 @@ import type { Order } from "$/types/database"
 import type { UnitError } from "$/types/server"
 
 import SemesterFetcher from "$@/fetchers/semester"
-// import convertToTitle from "$/string/convert_to_title"
+import convertToTitle from "$/string/convert_to_title"
 
 import type { OptionInfo } from "$@/types/component"
 import Selectable from "@/fields/selectable_options.vue"
@@ -64,11 +59,6 @@ const startAt = ref<string>("")
 const semesterOrder = ref<Order>("first")
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 const fetcher = new SemesterFetcher()
-// const isEditing = ref(false)
-
-// function toggleEditing() {
-// 	isEditing.value = !isEditing.value
-// }
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
@@ -76,7 +66,7 @@ const successMessages = ref<string[]>([])
 const titleSemester = computed<string>({
 	"get": () => name.value,
 	set(newValue: string): void {
-		name.value = newValue
+		name.value = convertToTitle(newValue)
 	}
 })
 
