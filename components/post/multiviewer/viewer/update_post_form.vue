@@ -326,7 +326,8 @@ function emitClose() {
 function sendFile(form: HTMLFormElement) {
 	const formData = new FormData(form)
 	formData.set("data[attributes][fileType]", extractedFileType.value)
-	formData.set("data[relationship][post][data][id]", postID.value)
+	formData.set("data[relationships][post][data][id]", postID.value)
+	formData.set("data[relationships][post][data][type]", "post")
 	postAttachmentFetcher.createWithFile(formData)
 	.then(({ body }) => {
 		attachmentResources.value = [
