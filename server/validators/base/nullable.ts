@@ -24,7 +24,6 @@ export default async function(
 		|| state.value === null
 		|| constraints.nullable?.mayConsiderEmptyStringAsNull
 			&& state.value === ""
-
 	) {
 		if (isUndefined(constraints.nullable)) {
 			state.maySkip = true

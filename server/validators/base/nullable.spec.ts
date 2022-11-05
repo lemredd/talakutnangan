@@ -39,7 +39,7 @@ describe("Validator pipe: nullable", () => {
 			"source": null
 		}
 
-		const state = (await nullable(value, constraints))
+		const state = await nullable(value, constraints)
 
 		expect(state.value).toEqual("world")
 		expect(state.maySkip).toBeFalsy()
@@ -74,7 +74,7 @@ describe("Validator pipe: nullable", () => {
 			"source": null
 		}
 
-		const state = (await nullable(value, constraints))
+		const state = await nullable(value, constraints)
 
 		expect(state.value).toEqual("hello")
 		expect(state.maySkip).toBeTruthy()
