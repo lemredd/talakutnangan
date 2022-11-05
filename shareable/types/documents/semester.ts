@@ -1,3 +1,4 @@
+import type { Order } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RequirePassword } from "$/types/documents/security"
 import type {
@@ -20,6 +21,7 @@ import type {
 	IdentifierListDocument
 } from "$/types/documents/base"
 
+
 export type SemesterResourceIdentifier<T extends Completeness = "read">
 = ResourceIdentifier<CompletenessRegulator<T>> & PaginatedDocument<T> & {
 	type: "semester"
@@ -27,9 +29,9 @@ export type SemesterResourceIdentifier<T extends Completeness = "read">
 
 export interface SemesterAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	name: string,
-	semesterOrder: number,
-	startAt: Date,
-	endAt: Date,
+	semesterOrder: Order,
+	startAt: T extends "serialized" ? string : Date,
+	endAt: T extends "serialized" ? string : Date,
 	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 

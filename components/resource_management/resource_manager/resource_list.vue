@@ -111,8 +111,11 @@ const { filteredList } = defineProps<{
 const resourceType = computed(() => filteredList[0].type)
 const tableHeaders = computed(() => {
 	let headers: string[] = []
-	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
-	else headers = [ "Name", "no. of users", "" ]
+	if (resourceType.value === "user") {
+		headers = [
+			"Name", "E-mail", "Role", "Department", "Semester"
+		]
+	} else { headers = [ "Name", "no. of users", "" ] }
 
 
 	return headers

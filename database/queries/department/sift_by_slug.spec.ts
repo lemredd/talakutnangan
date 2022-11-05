@@ -1,51 +1,51 @@
-import Role from "%/models/department"
-import RoleFactory from "~/factories/department"
+import Department from "%/models/department"
+import DepartmentFactory from "~/factories/department"
 
 import siftBySlug from "./sift_by_slug"
 
 describe("Database Pipe: Sift by slug", () => {
 	it("can find all", async() => {
-		const department = await new RoleFactory().insertOne()
+		const department = await new DepartmentFactory().insertOne()
 		const slug = ""
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundRoles = await Role.findAll(options)
+		const foundDepartments = await Department.findAll(options)
 
 		expect(options).not.toHaveProperty("include")
-		expect(foundRoles).toHaveLength(1)
-		expect(foundRoles).toHaveProperty("0.id", department.id)
+		expect(foundDepartments).toHaveLength(1)
+		expect(foundDepartments).toHaveProperty("0.id", department.id)
 	})
 
 	it("can find on specific using fullName", async() => {
-		const department = await new RoleFactory()
+		const department = await new DepartmentFactory()
 		.fullName(() => "firstDepartment")
 		.insertOne()
-		await new RoleFactory()
+		await new DepartmentFactory()
 		.fullName(() => "secondDepartment")
 		.insertOne()
 		const slug = "fir"
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundRoles = await Role.findAll(options)
+		const foundDepartments = await Department.findAll(options)
 
 		expect(options).toHaveProperty("where")
-		expect(foundRoles).toHaveLength(1)
-		expect(foundRoles).toHaveProperty("0.id", department.id)
+		expect(foundDepartments).toHaveLength(1)
+		expect(foundDepartments).toHaveProperty("0.id", department.id)
 	})
 
 	it("cannot find on incorrect slug", async() => {
-		await new RoleFactory()
+		await new DepartmentFactory()
 		.fullName(() => "firstDepartment")
 		.insertOne()
-		await new RoleFactory()
+		await new DepartmentFactory()
 		.fullName(() => "secondDepartment")
 		.insertOne()
 		const slug = "xx"
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundRoles = await Role.findAll(options)
+		const foundDepartments = await Department.findAll(options)
 
 		expect(options).toHaveProperty("where")
-		expect(foundRoles).toHaveLength(0)
+		expect(foundDepartments).toHaveLength(0)
 	})
 })

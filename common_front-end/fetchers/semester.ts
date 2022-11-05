@@ -1,3 +1,4 @@
+import type { SemesterQueryParameters } from "$/types/query"
 import type {
 	SemesterResourceIdentifier,
 	SemesterAttributes,
@@ -22,7 +23,10 @@ export default class SemesterFetcher extends BaseFetcher<
 	SemesterDocument,
 	SemesterListDocument,
 	DeserializedSemesterDocument,
-	DeserializedSemesterListDocument
+	DeserializedSemesterListDocument,
+	{
+		"queryParameters": SemesterQueryParameters
+	}
 > {
 	constructor() {
 		super(SEMESTER_LINK)
