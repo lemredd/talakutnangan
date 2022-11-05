@@ -83,9 +83,7 @@ export default class extends BaseManager<
 						"id": roleID
 					}
 				},
-				"postAttachments": {
-					"data": attachments
-				},
+				"postAttachments": attachments,
 				department
 			} = relationships
 
@@ -118,10 +116,10 @@ export default class extends BaseManager<
 			model.posterInfo = attachedRole
 			model.department = await Department.findByPk(Number(departmentID)) as Department
 
-			if (attachments.length > 0) {
+			if (attachments && attachments.data.length > 0) {
 				const IDMatcher = new Condition().isIncludedIn(
 					"id",
-					attachments.map(attachment => attachment.id)
+					attachments.data.map(attachment => attachment.id)
 				).build()
 				await PostAttachment.update({
 					"postID": model.id
