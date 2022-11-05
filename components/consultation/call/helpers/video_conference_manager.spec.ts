@@ -1,3 +1,4 @@
+import { ref } from "vue"
 import {
 	localTracks,
 	videoConferenceEngine,
@@ -7,9 +8,16 @@ import {
 
 describe("Helper: video conference manager", () => {
 	it("can initiate the client engine", async() => {
-		await initiateVideoConferenceEngine()
+		await initiateVideoConferenceEngine(ref<any[]>([]))
 
 		expect(videoConferenceEngine).toBeTruthy()
+	})
+
+	it("can generate local tracks", () => {
+		mockJoining()
+
+		expect(localTracks.localAudioTrack).toBeTruthy()
+		expect(localTracks.localVideoTrack).toBeTruthy()
 	})
 
 	it("can generate local tracks", () => {
