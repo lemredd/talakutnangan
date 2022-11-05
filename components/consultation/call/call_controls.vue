@@ -4,12 +4,12 @@
 			<CallControl
 				class="toggle-video"
 				title="Toggle Video"
-				material-icon="videocam"
+				:material-icon="videoIcon"
 				@click="toggleVideo"/>
 			<CallControl
 				class="toggle-mic"
 				title="Toggle Audio"
-				material-icon="mic"
+				:material-icon="micIcon"
 				@click="toggleMic"/>
 			<CallControl
 				class="leave-call"
@@ -42,7 +42,15 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from "vue"
+
 import CallControl from "@/consultation/call/call_controls/call_control.vue"
+import {
+	muteVideoTrack,
+	unmuteVideoTrack,
+	muteAudioTrack,
+	unmuteAudioTrack
+} from "@/consultation/call/helpers/video_conference_manager"
 
 type CustomEvents = {
 	(event: "toggleVideo"): void
@@ -51,16 +59,41 @@ type CustomEvents = {
 	(event: "leaveCall"): void
 }
 const emit = defineEmits<CustomEvents>()
-defineProps<{
+const props = defineProps<{
 	isJoined: boolean
+	isShowingVideo: boolean
+	isTransmittingAudio: boolean
 }>()
 
+const videoIcon = computed(() => {
+	let icon = ""
+	if (props.isShowingVideo) icon = "videocam"
+	else icon = "videocam_off"
+
+	return icon
+})
 function toggleVideo() {
+	if (props.isShowingVideo) muteVideoTrack()
+	else unmuteVideoTrack()
+
 	emit("toggleVideo")
 }
+
+const micIcon = computed(() => {
+	let icon = ""
+	if (props.isTransmittingAudio) icon = "mic"
+	else icon = "mic_off"
+
+	return icon
+})
 function toggleMic() {
+	if (props.isTransmittingAudio) muteAudioTrack()
+	else unmuteAudioTrack()
+
 	emit("toggleMic")
 }
+
+
 function joinCall() {
 	emit("joinCall")
 }

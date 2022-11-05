@@ -49,7 +49,7 @@ describe("Validator pipe: Is greater than", () => {
 			"request": null,
 			"source": {
 				"user": {
-					"id": new Date(Date.now() - 1)
+					"id": new Date(Date.now() - 3)
 				}
 			}
 		}

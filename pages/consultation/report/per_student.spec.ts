@@ -48,7 +48,7 @@ describe("Page: consultation/report/per_student", () => {
 		expect(sumEntryOwner.text()).toEqual(
 			`${timeConsumedPerStudent.data[0].name} (${timeConsumedPerStudent.data[0].email})`
 		)
-		expect(milliseconds.text()).toEqual("0 hours 1 minutes 0 seconds")
+		expect(milliseconds.text()).toEqual("0 hours 1 minute 0 seconds")
 		consultations.forEach((consultation, index) => {
 			expect(consultation.text()).toEqual(
 				// eslint-disable-next-line max-len

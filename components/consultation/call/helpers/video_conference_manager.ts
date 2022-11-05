@@ -62,21 +62,99 @@ export async function joinAndPresentLocalTracks(
 }
 
 export function leaveAndRemoveLocalTracks() {
-	videoConferenceEngine = videoConferenceEngine as VideoConferenceEngine
-	videoConferenceManager = videoConferenceManager as VideoConferenceManager
-
 	localTracks.localAudioTrack?.close()
 	localTracks.localVideoTrack?.close()
 }
 
 export function mockJoining() {
-	videoConferenceManager = videoConferenceManager as VideoConferenceManager
 	localTracks.localAudioTrack = Stub.runConditionally(
-		videoConferenceManager.createMicrophoneAudioTrack,
+		manager().createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
 	localTracks.localVideoTrack = Stub.runConditionally(
-		videoConferenceManager.createMicrophoneAudioTrack,
+		manager().createMicrophoneAudioTrack,
 		(): any => "this runs on test"
 	) as unknown as any
+}
+
+export function muteVideoTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteVideoTrack"
+				}
+			]
+		}
+	)
+}
+export function unmuteVideoTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteVideoTrack"
+				}
+			]
+		}
+	)
+}
+
+export function muteAudioTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteAudioTrack"
+				}
+			]
+		}
+	)
+}
+export function unmuteAudioTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteAudioTrack"
+				}
+			]
+		}
+	)
 }

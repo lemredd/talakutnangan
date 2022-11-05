@@ -77,7 +77,7 @@ const mayUpdateComment = computed<boolean>(() => {
 			UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || user.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || user.value.department.data.id === userProfile.data.department.data.id
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
@@ -103,7 +103,7 @@ const mayArchiveOrRestoreComment = computed<boolean>(() => {
 			ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
 		])
 		&& (
-			isOwned || user.value.data.department?.data.id === userProfile.data.department.data.id
+			isOwned || user.value.department.data.id === userProfile.data.department.data.id
 		)
 
 	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
