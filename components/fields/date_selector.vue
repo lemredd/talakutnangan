@@ -1,8 +1,10 @@
 <template>
-	<input
-		v-model="rawDate"
-		class="date"
-		type="date"/>
+	<div class="date-selector">
+		<input
+			v-model="rawDate"
+			class="date"
+			type="date"/>
+	</div>
 </template>
 
 <style scoped lang = "scss">
