@@ -72,7 +72,7 @@
 		</p>
 		<a :href="readPostPath" class="comment-count">
 			<span class="material-icons icon">
-				comment
+				{{ commentLabel }}
 			</span>
 			<span>
 				{{ friendlyCommentCount }}
@@ -118,6 +118,7 @@ import { ref, computed } from "vue"
 import type { DeserializedPostResource } from "$/types/documents/post"
 
 import { READ_POST } from "$/constants/template_page_paths"
+import plur from "plur"
 
 import Fetcher from "$@/fetchers/post"
 import makeSwitch from "$@/helpers/make_switch"
@@ -137,6 +138,8 @@ const props = defineProps<{
 	commentCount: number,
 	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
 }>()
+
+const commentLabel = computed(() => plur("comment", props.commentCount))
 
 interface CustomEvents {
 	(

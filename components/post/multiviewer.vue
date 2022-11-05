@@ -5,7 +5,7 @@
 		<Viewer
 			v-model="posts[i]"
 			class="viewer"
-			:comment-count="0"/>
+			:comment-count="1"/>
 	</div>
 </template>
 
