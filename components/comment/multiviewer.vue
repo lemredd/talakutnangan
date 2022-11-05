@@ -14,7 +14,7 @@
 
 <style scoped lang="scss">
 	.multiviewer {
-		@apply flex-1 flex flex-col flex-nowrap justify-start items-center;
+		@apply flex-1 flex flex-col flex-nowrap justify-start items-stretch;
 	}
 </style>
 
