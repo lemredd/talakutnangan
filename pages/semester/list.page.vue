@@ -105,7 +105,13 @@ const mayEditSemester = computed<boolean>(() => {
 	return isPermitted
 })
 
-watch([ slug, existence ], debounce(fetchSemesterInfos, DEBOUNCED_WAIT_DURATION))
+async function refetchSemester() {
+	list.value = []
+	isLoaded.value = false
+	await fetchSemesterInfos()
+}
+
+watch([ slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
 
 onMounted(() => {
 	isLoaded.value = true
