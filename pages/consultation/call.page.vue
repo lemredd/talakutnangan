@@ -6,14 +6,7 @@
 				v-model:must-transmit-audio="mustTransmitAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
-			<div class="others">
-				<div
-					v-for="participant in otherParticipants"
-					:id="participant.remoteID"
-					:key="participant.remoteID"
-					class="other-participant">
-				</div>
-			</div>
+			<OtherParticipantsContainer :other-participants="otherParticipants as RemoteTracks[]"/>
 		</div>
 
 		<Suspensible
@@ -33,17 +26,7 @@
 <style scoped lang="scss">
 	.participants{
 		@apply flex flex-col;
-
-		.others{
-			@apply flex flex-col;
-			@screen sm{
-				@apply flex-row;
-			}
-
-			.other-participant{
-				width:100%;
-			}
-		}
+		position: relative;
 
 		.local-participant{
 			@apply flex-1;
@@ -89,6 +72,7 @@ import Fetcher from "$@/fetchers/consultation"
 import Suspensible from "@/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+import OtherParticipantsContainer from "@/consultation/call/other_participants.vue"
 import {
 	initiateVideoConferenceEngine,
 	joinAndPresentLocalTracks,
