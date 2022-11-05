@@ -5,22 +5,19 @@
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
 		<input
-			id="name"
 			v-model="semester.data.name"
-			class="border-solid"
+			class="name border-solid"
 			type="text"/>
-		<div id="start" class="start">
-			<Selectable
-				v-model="semester.data.semesterOrder"
-				class="inline"
-				:options="semesterOption"/>
-		</div>
+		<Selectable
+			v-model="semester.data.semesterOrder"
+			class="order"
+			:options="semesterOption"/>
 		<DateSelect
 			v-model="semester.data.startAt"
-			class="startAtConvert"/>
+			class="start-at border-solid"/>
 		<DateSelect
 			v-model="semester.data.endAt"
-			class="endAtConvert"/>
+			class="end-at border-solid"/>
 		<div class="controls">
 			<input
 				type="submit"
