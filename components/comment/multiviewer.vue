@@ -4,7 +4,9 @@
 			v-for="(comment, i) in comments"
 			:key="comment.id"
 			v-model="comments[i]"
-			class="viewer"/>
+			class="viewer"
+			@archive="removeComment"
+			@restore="removeComment"/>
 	</div>
 </template>
 
@@ -87,6 +89,10 @@ async function countVotesOfComments(commentIDs: string[]): Promise<void> {
 
 async function countCommentVote(): Promise<number|void> {
 	await countVotesOfComments(extractCommentIDsWithNoVoteInfo(comments.value))
+}
+
+function removeComment(commentToRemove: DeserializedCommentResource<"user">) {
+	comments.value = comments.value.filter(comment => comment.id !== commentToRemove.id)
 }
 
 onMounted(async() => await countCommentVote())

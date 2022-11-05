@@ -46,14 +46,14 @@
 						v-if="mustArchive"
 						class="btn submit-btn btn-primary"
 						type="button"
-						@click="archivePost">
+						@click="archiveComment">
 						Archive comment
 					</button>
 					<button
 						v-if="mustRestore"
 						class="btn submit-btn btn-primary"
 						type="button"
-						@click="restorePost">
+						@click="restoreComment">
 						Restore comment
 					</button>
 				</template>
@@ -302,13 +302,13 @@ function closeArchiveOrRestore() {
 	closeRestore()
 }
 
-async function archivePost(): Promise<void> {
+async function archiveComment(): Promise<void> {
 	await fetcher.archive([ comment.value.id ]).then(() => {
 		emit("archive", comment.value)
 	})
 }
 
-async function restorePost(): Promise<void> {
+async function restoreComment(): Promise<void> {
 	await fetcher.restore([ comment.value.id ]).then(() => {
 		emit("restore", comment.value)
 	})
