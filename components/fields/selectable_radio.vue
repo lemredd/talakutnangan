@@ -4,9 +4,9 @@
 		<label
 			v-for="option in options"
 			:key="option.value"
-			for="exists">
+			:for="`label_${option.label ?? option.value}`">
 			<input
-				:id="option.label"
+				:id="`label_${option.label ?? option.value}`"
 				v-model="value"
 				:value="option.value"
 				type="radio"/>

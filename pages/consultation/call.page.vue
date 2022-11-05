@@ -94,7 +94,7 @@ import isUndefined from "$/type_guards/is_undefined"
 import makeSwitch from "$@/helpers/make_switch"
 import Fetcher from "$@/fetchers/consultation"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
 import {
