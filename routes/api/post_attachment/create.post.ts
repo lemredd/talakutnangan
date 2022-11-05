@@ -100,7 +100,7 @@ export default class extends MultipartController {
 		const info = await manager.create({
 			"fileContents": fileContents.buffer,
 			fileType,
-			"postID": request.body.data.relationships?.post?.id || null
+			"postID": request.body.data.relationships?.post?.data?.id || null
 		})
 
 		Log.success("controller", "successfully uploaded the profile picture")
