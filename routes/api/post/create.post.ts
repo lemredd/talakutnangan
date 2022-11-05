@@ -110,8 +110,7 @@ export default class extends JSONController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const manager = new Manager(request)
-		// TODO: Make method to create using resource
-		const postInfo = await manager.create(request.body.data.attributes)
+		const postInfo = await manager.createUsingResource(request.body.data)
 
 		return new CreatedResponseInfo(postInfo)
 	}
