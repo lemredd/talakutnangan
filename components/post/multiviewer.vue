@@ -13,7 +13,11 @@
 				v-for="(post, i) in posts.data"
 				:key="post.id"
 				v-model="posts.data[i]"
-				:comment-count="posts.data[i].meta?.commentCount || 0"/>
+				:comment-count="posts.data[i].meta?.commentCount || 0"
+				class="viewer"/>
+			<p v-if="hasNoPosts">
+				There are no post found.
+			</p>
 		</Suspensible>
 	</div>
 </template>
@@ -93,6 +97,7 @@ const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"depar
 		emit("update:modelValue", newValue)
 	}
 })
+const hasNoPosts = computed<boolean>(() => posts.value.data.length === 0)
 
 const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
