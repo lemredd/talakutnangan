@@ -44,8 +44,8 @@
 					</td>
 					<td>
 						{{
-							resource.meta ? resource.meta.userCount : ""
-						}} users
+							pluralize("user", resource.meta ? resource.meta.userCount : 0)
+						}}
 					</td>
 					<td>
 						<a
@@ -100,6 +100,8 @@
 import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
+
+import pluralize from "$/string/pluralize"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"
 

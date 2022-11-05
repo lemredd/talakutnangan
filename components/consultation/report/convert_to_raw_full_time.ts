@@ -1,5 +1,6 @@
 import type { RawFullTimeString } from "$@/types/component"
 
+import pluralize from "$/string/pluralize"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 export default function(timeInMilliseconds: number): RawFullTimeString {
@@ -9,9 +10,9 @@ export default function(timeInMilliseconds: number): RawFullTimeString {
 		seconds
 	} = convertMStoTimeObject(timeInMilliseconds)
 
-	const hourString = `${Math.abs(Math.round(hours))} hours`
-	const minuteString = `${Math.abs(Math.round(minutes))} minutes`
-	const secondString = `${Math.abs(Math.round(seconds))} seconds`
+	const hourString = pluralize("hour", Math.abs(Math.round(hours)))
+	const minuteString = pluralize("minute", Math.abs(Math.round(minutes)))
+	const secondString = pluralize("second", Math.abs(Math.round(seconds)))
 
 	return {
 		hourString,

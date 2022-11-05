@@ -120,6 +120,7 @@ import type { DeserializedPostResource } from "$/types/documents/post"
 import { READ_POST } from "$/constants/template_page_paths"
 
 import Fetcher from "$@/fetchers/post"
+import pluralize from "$/string/pluralize"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
@@ -199,7 +200,7 @@ const completeFriendlyPostTimestamp = computed<string>(() => {
 	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
 })
 
-const friendlyCommentCount = computed<string>(() => `${props.commentCount} comments`)
+const friendlyCommentCount = computed<string>(() => pluralize("comment", props.commentCount))
 
 const readPostPath = computed<string>(() => {
 	const postID = post.value.id
