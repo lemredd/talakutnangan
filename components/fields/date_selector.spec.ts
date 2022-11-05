@@ -2,7 +2,7 @@ import { shallowMount } from "@vue/test-utils"
 import Component from "./date_selector.vue"
 
 describe("Component: fields/date_selector", () => {
-	it("can show valid date", () => {
+	it.only("can show valid date", () => {
 		const rawDate = new Date("2022-10-10")
 		const wrapper = shallowMount(Component, {
 			"props": {
