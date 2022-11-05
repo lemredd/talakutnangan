@@ -1,8 +1,8 @@
 import type { FieldRules, Rules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 
-import { fileType, fileTypeDescription } from "$!/constants/regex"
 import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
+import { fileType as fileTypeMatcher, fileTypeDescription } from "$!/constants/regex"
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
@@ -61,7 +61,7 @@ export default class extends MultipartController {
 					},
 					"regex": {
 						"friendlyDescription": fileTypeDescription,
-						"match": fileType
+						"match": fileTypeMatcher
 					}
 				},
 				"pipes": [ required, string, length, regex ]
