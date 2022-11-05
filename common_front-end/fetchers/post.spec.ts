@@ -1,12 +1,12 @@
-import { COUNT_COMMENT_VOTES } from "$/constants/template_links"
+import { COUNT_COMMENTS } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
-import Fetcher from "./comment"
+import Fetcher from "./post"
 
-describe("Fetcher: Comment", () => {
-	it("can get vote count", async() => {
+describe("Fetcher: Post", () => {
+	it("can get comment count", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({ "data": [] }),
 			{ "status": RequestEnvironment.status.OK }
@@ -14,12 +14,12 @@ describe("Fetcher: Comment", () => {
 		const commentIDs = [ "1" ]
 		const fetcher = new Fetcher()
 
-		const response = await fetcher.countVotes(commentIDs)
+		const response = await fetcher.countComments(commentIDs)
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "GET")
-		expect(request).toHaveProperty("url", specializePath(COUNT_COMMENT_VOTES, {
+		expect(request).toHaveProperty("url", specializePath(COUNT_COMMENTS, {
 			"query": stringifyQuery({
 				"filter": {
 					"IDs": commentIDs

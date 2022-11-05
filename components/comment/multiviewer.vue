@@ -26,7 +26,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref, watch, nextTick } from "vue"
+import { computed, onMounted, Ref, ref, watch } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
@@ -177,5 +177,7 @@ onMounted(async() => {
 	await countVotesOfComments()
 
 	watch(existence, debounce(resetCommentsList, DEBOUNCED_WAIT_DURATION))
+
+	isLoaded.value = true
 })
 </script>

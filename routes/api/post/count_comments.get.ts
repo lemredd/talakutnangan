@@ -19,7 +19,7 @@ import {
 
 import object from "!/validators/base/object"
 import makeIDRules from "!/rule_sets/make_id"
-import exists from "!/validators/manager/exists"
+import present from "!/validators/manager/present"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
 import length from "!/validators/comparison/length"
@@ -53,7 +53,7 @@ export default class extends QueryController {
 												"columnName": "id"
 											}
 										},
-										"pipes": [ exists ]
+										"pipes": [ present ]
 									}
 								}).id,
 								"length": {
