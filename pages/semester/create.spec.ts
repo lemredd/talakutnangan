@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 import RequestEnvironment from "$/singletons/request_environment"
 import convertToRawDate from "$@/helpers/convert_to_raw_date"
 
@@ -6,8 +6,19 @@ import Page from "./create.page.vue"
 
 describe("Page: /semester", () => {
 	it("can create semester", async() => {
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const wrapper = shallowMount(Page, {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": {
+				"type": "semester",
+				"attributes": {
+					"deletedAt": null,
+					"endAt": new Date("2022-10-30"),
+					"name": "Xmaple",
+					"semesterOrder": "second",
+					"startAt": new Date("2022-10-20")
+				}
+			}
+		}), { "status": RequestEnvironment.status.OK })
+		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
 					"pageContext": {}
@@ -16,6 +27,7 @@ describe("Page: /semester", () => {
 		})
 		const semester = {
 			"data": {
+				"deletedAt": null,
 				"endAt": new Date("2022-10-30"),
 				"name": "Xmaple",
 				"semesterOrder": "second",
@@ -25,13 +37,15 @@ describe("Page: /semester", () => {
 
 		const nameInput = wrapper.find("input.name")
 		const orderInput = wrapper.find(".order select")
-		const startAtInput = wrapper.find("input.startAt")
-		const endAtInput = wrapper.find(".input.endAt")
+		const startAtInput = wrapper.find("input.start-at")
+		const endAtInput = wrapper.find("input.end-at")
+		const submitBtn = wrapper.find("input[type=submit]")
 
 		await nameInput.setValue(semester.data.name)
 		await orderInput.setValue(semester.data.semesterOrder)
 		await startAtInput.setValue(convertToRawDate(semester.data.startAt))
 		await endAtInput.setValue(convertToRawDate(semester.data.endAt))
+		await submitBtn.trigger("submit")
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
@@ -41,10 +55,11 @@ describe("Page: /semester", () => {
 			"data": {
 				"type": "semester",
 				"attributes": {
-					"endAt": new Date("2022-10-30"),
+					"deletedAt": null,
+					"endAt": new Date("2022-10-30").toJSON(),
 					"name": "Xmaple",
 					"semesterOrder": "second",
-					"startAt": new Date("2022-10-20")
+					"startAt": new Date("2022-10-20").toJSON()
 				}
 			}
 		})
