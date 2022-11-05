@@ -172,7 +172,7 @@ const departmentID = ref<string>(userProfile.data.department.data.id)
 
 const content = ref<string>("")
 
-const props = defineProps<{
+defineProps<{
 	accept: "image/*" | "*/*"
 	isShown: boolean
 }>()
