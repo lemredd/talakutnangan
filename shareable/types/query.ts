@@ -227,6 +227,12 @@ export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& NullableDepartmentFilter<T>
 
+export type TagQueryParameters<T extends number|string = string> =
+	& CommonQueryParameters
+	& NullableDepartmentFilter<T>
+	& IDsFilter<T>
+	& SlugFilter
+
 export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DateTimeRangeFilter
