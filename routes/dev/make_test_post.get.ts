@@ -23,6 +23,7 @@ import {
 
 import Condition from "%/helpers/condition"
 import DevController from "!/controllers/dev"
+import AttachedRole from "%/models/attached_role"
 
 export default class extends DevController {
 	get filePath(): string { return __filename }
@@ -30,7 +31,7 @@ export default class extends DevController {
 	async handle(request: Request, response: Response): Promise<void> {
 		const testSecretaryEmail = "secretary@example.net"
 		const testSecretaryRoleName = "test_secretary"
-		const testDepartment = "Test Department"
+		const testDepartment = "Test Institute Department"
 
 		Log.success("controller", "searching for secretary role")
 		let testSecretaryRole = await Role.findOne({
@@ -40,6 +41,7 @@ export default class extends DevController {
 		Log.success("controller", "making for secretary role")
 
 		if (testSecretaryRole === null) {
+			// eslint-disable-next-line require-atomic-updates
 			testSecretaryRole = await new RoleFactory()
 			.name(() => testSecretaryRoleName)
 			.departmentFlags(department.generateMask(
@@ -116,11 +118,19 @@ export default class extends DevController {
 
 			Log.success("controller", "created test secretary user")
 
+			// eslint-disable-next-line require-atomic-updates
 			previousSecretaryUser = createdUser
 		}
 
 		const postFactory = new PostFactory()
-		const postModel = await postFactory.serializedOne(true)
+		const postModel = await postFactory
+		.posterInfo(() => AttachedRole.findOne({
+			"where": {
+				"roleID": testSecretaryRole?.id,
+				"userID": previousSecretaryUser?.id
+			}
+		}) as Promise<AttachedRole>)
+		.serializedOne(true)
 
 		response.status(this.status.OK).send({
 			"data": [

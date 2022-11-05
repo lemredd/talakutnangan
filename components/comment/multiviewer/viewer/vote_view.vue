@@ -48,7 +48,7 @@ import { computed } from "vue"
 
 import type { CompleteVoteKind } from "$/types/documents/comment"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 
 const props = defineProps<{
 	title: string,

@@ -50,6 +50,8 @@ import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	IMPORT_USERS,
@@ -58,7 +60,6 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
 } from "$/permissions/user_combinations"
-import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import Fetcher from "$@/fetchers/user"
