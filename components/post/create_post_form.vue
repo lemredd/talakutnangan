@@ -39,7 +39,7 @@
 				<input
 					id="choose-file-btn"
 					type="file"
-					name="meta[fileContents]"
+					name="data[attributes][fileContents]"
 					class="hidden"
 					:accept="accept"
 					@change="uploadPostAttachment"/>
@@ -214,7 +214,6 @@ function sendFile(form: HTMLFormElement) {
 			...attachmentResources.value,
 			body.data
 		]
-		emitClose()
 	}).catch(({ body }) => {
 		if (body) {
 			const { errors } = body
