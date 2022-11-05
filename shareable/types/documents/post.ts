@@ -56,7 +56,7 @@ interface PostRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
 	department: {
 		serialized: T extends "create"
-			? DepartmentIdentifierDocument|undefined
+			? DepartmentIdentifierDocument<"attached">|undefined
 			: T extends "update"
 				? undefined
 				: DepartmentIdentifierDocument<"attached">,
