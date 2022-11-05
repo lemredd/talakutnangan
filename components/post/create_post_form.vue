@@ -126,6 +126,7 @@ import Overlay from "@/helpers/overlay.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import assignPath from "$@/external/assign_path"
 
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -283,8 +284,9 @@ function createPost(): void {
 				}
 			}
 		} as PostRelationships<"create">
-	}).then(() => {
-		close()
+	}).then(({ body }) => {
+		const { data } = body
+		assignPath(`/post/read/${data.id}`)
 	}).catch(({ body }) => {
 		if (body) {
 			const { errors } = body
