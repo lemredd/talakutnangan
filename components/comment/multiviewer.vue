@@ -1,9 +1,22 @@
 <template>
-	<Viewer
-		v-for="(comment, i) in comments"
-		:key="comment.id"
-		v-model="comments[i]"/>
+	<div class="multiviewer">
+		<Viewer
+			v-for="(comment, i) in comments"
+			:key="comment.id"
+			v-model="comments[i]"
+			class="viewer"/>
+	</div>
 </template>
+
+<style lang="scss">
+	.multiviewer {
+		@apply flex flex-col flex-nowrap justify-start items-stretch;
+
+		.viewer {
+			@apply flex-1;
+		}
+	}
+</style>
 
 <script setup lang="ts">
 import { computed, onMounted } from "vue"
