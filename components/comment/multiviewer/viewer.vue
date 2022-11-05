@@ -72,13 +72,13 @@
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap;
+		@apply flex flex-col flex-nowrap mb-4;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
 			h3 {
-				@apply flex-1 flex flex-row flex-nowrap justify-center items-center;
+				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
 				@apply m-auto ml-15;
 
 				/**
