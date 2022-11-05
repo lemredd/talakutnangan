@@ -1,7 +1,7 @@
 import helper from "./pluralize"
 
 describe("String helper: Pluralize", () => {
-	it("should pluralize 0 quantity", async() => {
+	it("should pluralize 0 quantity", () => {
 		const noun = "comment"
 		const quantity = 0
 
@@ -10,7 +10,7 @@ describe("String helper: Pluralize", () => {
 		expect(result).toBe("0 comments")
 	})
 
-	it("should singularize 1 quantity", async() => {
+	it("should singularize 1 quantity", () => {
 		const noun = "comment"
 		const quantity = 1
 
@@ -19,7 +19,7 @@ describe("String helper: Pluralize", () => {
 		expect(result).toBe("1 comment")
 	})
 
-	it("should pluralize 2 quantity", async() => {
+	it("should pluralize 2 quantities", () => {
 		const noun = "comment"
 		const quantity = 2
 
