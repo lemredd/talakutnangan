@@ -37,7 +37,7 @@ export default class extends PageMiddleware {
 	getDocumentProps(): DocumentProps {
 		return {
 			"description": "Consultation chat platform for MCC",
-			"title": "Users | Talakutnangan"
+			"title": "Semester | Talakutnangan"
 		}
 	}
 
