@@ -1,23 +1,49 @@
+import { ref } from "vue"
+
 import {
-	localTracks,
 	videoConferenceEngine,
 	initiateVideoConferenceEngine,
-	mockJoining
+
+	localTracks,
+	joinAndPresentLocalTracks,
+	leaveAndRemoveLocalTracks,
 } from "./video_conference_manager"
 
 describe("Helper: video conference manager", () => {
-	it("can initiate the client engine", async() => {
-		await initiateVideoConferenceEngine()
+	describe("engine initiation", () => {
+		it("can initiate the client engine", async() => {
+			await initiateVideoConferenceEngine(ref<any[]>([]))
 
-		expect(videoConferenceEngine).toBeTruthy()
+			expect(videoConferenceEngine).toBeTruthy()
+		})
 	})
 
-	it("can generate local tracks", () => {
-		mockJoining()
+	describe("local track states", () => {
+		it("can generate local tracks", () => {
+			joinAndPresentLocalTracks(
+				"",
+				"",
+				"",
+				"",
+				""
+			)
 
-		expect(localTracks.localAudioTrack).toBeTruthy()
-		expect(localTracks.localVideoTrack).toBeTruthy()
+			expect(localTracks.localAudioTrack).toBeTruthy()
+			expect(localTracks.localVideoTrack).toBeTruthy()
+		})
+
+		it("can close local tracks", () => {
+			joinAndPresentLocalTracks(
+				"",
+				"",
+				"",
+				"",
+				""
+			)
+			leaveAndRemoveLocalTracks()
+
+			expect(localTracks.localAudioTrack).toBeFalsy()
+			expect(localTracks.localVideoTrack).toBeFalsy()
+		})
 	})
-
-	it.todo("can close local tracks")
 })

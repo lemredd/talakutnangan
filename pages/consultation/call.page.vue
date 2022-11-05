@@ -7,23 +7,12 @@
 				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<div class="others">
-				<!-- TODO: Use remote participant -->
-				<!-- <SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/> -->
+				<div
+					v-for="participant in otherParticipants"
+					:id="participant.remoteID"
+					:key="participant.remoteID"
+					class="other-participant">
+				</div>
 			</div>
 		</div>
 
@@ -78,14 +67,17 @@ import {
 	onMounted,
 	provide,
 	readonly,
+	Ref,
 	ref
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { RemoteTracks } from "@/consultation/call/helpers/types/video_conference_manager"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
+
 
 import { CURRENT_USER_RTC_TOKEN } from "$@/constants/provided_keys"
 
@@ -189,10 +181,12 @@ function leave() {
 	leaveAndRemoveLocalTracks()
 }
 
+const otherParticipants = ref<RemoteTracks[]>([])
+
 const isReadyForCalling = ref(false)
 onMounted(() => {
 	fetchGeneratedToken()
-	initiateVideoConferenceEngine()
+	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
 	})
