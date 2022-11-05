@@ -13,14 +13,22 @@
 	.other-participants{
 		@apply m-2;
 		@apply flex justify-center items-center;
-		@apply bg-blue-gray-400 bg-opacity-20;
 		position:relative;
+
+		@screen sm {
+			@apply my-2 flex-col;
+			overflow-y: scroll;
+			min-width: 40vh;
+		}
 
 		max-height:600px;
 		height: 100%;
-		min-height:300px;
+		min-height: 300px;
 
 		.track-container {
+			@apply m-1;
+			@apply bg-blue-gray-400 bg-opacity-20;
+
 			width: 100%;
 			height: 100%;
 			max-height:600px;

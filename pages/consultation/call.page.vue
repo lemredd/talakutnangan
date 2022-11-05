@@ -6,7 +6,9 @@
 				v-model:must-transmit-audio="mustTransmitAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
-			<OtherParticipantsContainer :other-participants="otherParticipants as RemoteTracks[]"/>
+			<OtherParticipantsContainer
+				class="other-participants"
+				:other-participants="otherParticipants as RemoteTracks[]"/>
 		</div>
 
 		<Suspensible
@@ -28,13 +30,18 @@
 		@apply flex flex-col;
 		position: relative;
 
-		.local-participant{
+		@screen sm {
+			@apply flex-row;
+		}
+
+		.other-participants {
 			@apply flex-1;
 		}
 	}
 
 	.suspensive-call-controls {
-		@apply border-t py-4;
+		@apply border-t py-4 bg-white;
+		@apply dark:bg-dark-400;
 		position: fixed;
 		bottom: 0;
 		width: 100%;

@@ -1,7 +1,7 @@
 <template>
 	<div ref="layout" class="layout">
 		<ShellNav v-if="!shouldHideNavbar"/>
-		<Content :class="{ 'demarginalized-top': shouldHideNavbar }">
+		<Content :class="contentClasses">
 			<slot></slot>
 		</Content>
 		<Footer v-if="!shouldHideFooter" class="page-shell-footer"/>
@@ -40,6 +40,9 @@ a {
 	margin-top: 0;
 	padding: 0;
 }
+.marginalized-bottom {
+	margin-bottom: 65.5px;
+}
 </style>
 
 <script lang="ts" setup>
@@ -59,14 +62,19 @@ const pageContext = usePageContext()
 const path = pageContext.urlPathname as string
 const isLoggingIn = path === "/user/log_in"
 const isViewingConsultationForm = path.includes("/consultation/form")
+const isOnCallPage = path.includes("/consultation/call")
 const shouldHideNavbar
 	= isLoggingIn
 	|| isViewingConsultationForm
-	|| path.includes("/consultation/call")
+	|| isOnCallPage
 const shouldHideFooter
 	= isViewingConsultationForm
-	|| path.includes("/consultation/call")
+	|| isOnCallPage
 	|| path.includes("/consultation/report")
+const contentClasses = {
+	"demarginalized-top": shouldHideNavbar,
+	"marginalized-bottom": isOnCallPage
+}
 
 
 const layout = ref<HTMLElement | null>(null)
