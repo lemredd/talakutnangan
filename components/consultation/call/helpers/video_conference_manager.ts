@@ -117,9 +117,44 @@ export function unmuteVideoTrack() {
 		}
 	)
 }
+
 export function muteAudioTrack() {
-	localTracks.localAudioTrack?.setMuted(true)
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteAudioTrack"
+				}
+			]
+		}
+	)
 }
 export function unmuteAudioTrack() {
-	localTracks.localAudioTrack?.setMuted(false)
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteAudioTrack"
+				}
+			]
+		}
+	)
 }
