@@ -88,7 +88,6 @@ const {
 	"off": hideCreateForm
 } = makeSwitch(false)
 
-
 const departmentFetcher = new DepartmentFetcher()
 onMounted(async() => {
 	const mayViewAllDepartments = permissionGroup.hasOneRoleAllowed(

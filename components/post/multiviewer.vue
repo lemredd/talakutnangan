@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="multiviewer">
 		<form>
 			<SelectableOptionsField
 				v-model="chosenDepartment"
@@ -8,12 +8,13 @@
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
 
-		<Viewer
-			v-for="(post, i) in posts.data"
-			:key="post.id"
-			v-model="posts.data[i]"
-			:comment-count="posts.data[i].meta?.commentCount || 0"
-			class="viewer"/>
+		<Suspensible class="viewer-group" :is-loaded="isLoaded">
+			<Viewer
+				v-for="(post, i) in posts.data"
+				:key="post.id"
+				v-model="posts.data[i]"
+				:comment-count="posts.data[i].meta?.commentCount || 0"/>
+		</Suspensible>
 	</div>
 </template>
 
@@ -29,8 +30,12 @@
 			}
 		}
 
-		.viewer {
-			@apply flex-1 mb-8;
+		.viewer-group {
+			@apply flex-1 flex flex-col;
+
+			.viewer {
+				@apply flex-1 mb-8;
+			}
 		}
 	}
 </style>
@@ -80,7 +85,7 @@ const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"depar
 		return props.modelValue
 	},
 	set(newValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">): void {
-		if (newValue.data.some(comment => isUndefined(comment.meta))) {
+		if (newValue.data.some(post => isUndefined(post.meta))) {
 			debouncedCommentCounting()
 		}
 
@@ -101,6 +106,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 const existence = ref<string>("exists")
+const isLoaded = ref(false)
 
 function extractPostIDsWithNoVoteInfo(
 	currentPosts: DeserializedPostListDocument<"poster"|"posterRole"|"department">
@@ -141,6 +147,7 @@ async function countCommentsOfPosts(): Promise<void> {
 }
 
 async function retrievePosts() {
+	isLoaded.value = false
 	await loadRemainingResource(posts as Ref<DeserializedPostListDocument>, fetcher, () => ({
 		"filter": {
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
@@ -151,7 +158,13 @@ async function retrievePosts() {
 			"offset": posts.value.data.length
 		},
 		"sort": [ "-createdAt" ]
-	}))
+	}), {
+		"mayContinue": () => Promise.resolve(false),
+		postOperations() {
+			isLoaded.value = true
+			return Promise.resolve()
+		}
+	})
 }
 
 function resetPostList() {
@@ -171,5 +184,7 @@ onMounted(async() => {
 		[ chosenDepartment, existence ],
 		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
 	)
+
+	isLoaded.value = true
 })
 </script>
