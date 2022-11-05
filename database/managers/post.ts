@@ -114,7 +114,9 @@ export default class extends BaseManager<
 			)
 
 			model.posterInfo = attachedRole
-			model.department = await Department.findByPk(Number(departmentID)) as Department
+			model.department = await Department.findByPk(Number(departmentID), {
+				...this.transaction.transactionObject
+			}) as Department
 
 			if (attachments && attachments.data.length > 0) {
 				const IDMatcher = new Condition().isIncludedIn(
@@ -124,11 +126,13 @@ export default class extends BaseManager<
 				await PostAttachment.update({
 					"postID": model.id
 				}, {
-					"where": IDMatcher
+					"where": IDMatcher,
+					...this.transaction.transactionObject
 				})
 
 				model.postAttachments = await PostAttachment.findAll({
-					"where": IDMatcher
+					"where": IDMatcher,
+					...this.transaction.transactionObject
 				})
 			}
 
