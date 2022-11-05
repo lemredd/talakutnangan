@@ -613,6 +613,5 @@
 ### ❤️  Contributors
 - Angelo Magtoto
 - Ardrin Gregorio
-- AteKitty07
 - Jarlem Red De Peralta
 - Kenneth Trecy Tobias
