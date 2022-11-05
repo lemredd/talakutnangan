@@ -6,7 +6,6 @@
 				:user="userProfile"/>
 		</div>
 		<div
-			v-else
 			:id="containerId"
 			class="track-container">
 		</div>
@@ -57,7 +56,7 @@ type DefinedProps = {
 	mustShowVideo: boolean
 	mustTransmitAudio: boolean
 }
-const props = defineProps<DefinedProps>()
+defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 </script>

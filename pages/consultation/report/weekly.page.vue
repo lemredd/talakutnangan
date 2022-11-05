@@ -107,7 +107,7 @@ import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<

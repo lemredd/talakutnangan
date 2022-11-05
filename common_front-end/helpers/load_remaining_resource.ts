@@ -45,39 +45,46 @@ export default async function loadRemainingResources<
 	queryMaker: () => QueryParameters<C>,
 	{
 		delayer = () => Promise.resolve(),
-		postOperations = () => Promise.resolve()
+		postOperations = () => Promise.resolve(),
+		mayContinue = () => Promise.resolve(true)
 	}: Partial<{
 		delayer: () => Promise<void>
 		postOperations: (newList: B) => Promise<void>
+		mayContinue: () => Promise<boolean>
 	}> = {}
 ): Promise<void> {
 	await delayer()
-	await fetcher.list(queryMaker()).then(response => {
-		const { data, meta } = response.body
+	const response = await fetcher.list(queryMaker())
+	const { data, meta } = response.body
 
-		if (data.length === 0) return Promise.resolve()
+	if (data.length === 0) return Promise.resolve()
 
-		listDocument.value = {
-			...listDocument.value,
-			"data": [
-				...listDocument.value.data,
-				...data
-			],
-			"meta": {
-				...listDocument.value.meta,
-				...meta
-			}
+	listDocument.value = {
+		...listDocument.value,
+		"data": [
+			...listDocument.value.data,
+			...data
+		],
+		"meta": {
+			...listDocument.value.meta,
+			...meta
 		}
+	}
 
-		const castMeta = meta as ResourceCount
-		if (listDocument.value.data.length < castMeta.count) {
-			return postOperations(response.body)
-			.then(() => loadRemainingResources(listDocument, fetcher, queryMaker, {
+	const castMeta = meta as ResourceCount
+
+	if (listDocument.value.data.length < castMeta.count) {
+		await postOperations(response.body)
+		const mayContinueLooping = await mayContinue()
+
+		if (mayContinueLooping) {
+			return await loadRemainingResources(listDocument, fetcher, queryMaker, {
 				delayer,
+				mayContinue,
 				postOperations
-			}))
+			})
 		}
+	}
 
-		return Promise.resolve()
-	})
+	return await Promise.resolve()
 }

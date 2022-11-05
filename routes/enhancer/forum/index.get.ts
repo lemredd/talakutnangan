@@ -44,7 +44,7 @@ export default class extends PageMiddleware {
 			roles,
 			[ READ_ANYONE_ON_ALL_DEPARTMENTS ]
 		)
-		const department = mayViewAllDepartments ? null : Number(userProfile.data.department.data.id)
+		const department = Number(userProfile.data.department.data.id)
 		const posts = await manager.list({
 			"filter": {
 				"departmentID": department,
@@ -70,7 +70,12 @@ export default class extends PageMiddleware {
 					},
 					"sort": [ "fullName" ]
 				})
-				: [],
+				: {
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				},
 			posts
 		}
 

@@ -11,8 +11,7 @@
 			type="text"
 			placeholder="Write to comment"
 			:may-save-implicitly="true"
-			@save-implicitly="submit"
-			@save="submit"/>
+			@save-implicitly="submit"/>
 	</form>
 </template>
 

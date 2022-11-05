@@ -1,9 +1,10 @@
 <template>
-	<Overlay :is-shown="isShown" @close="close">
+	<Overlay :is-shown="isShown" @close="emitClose">
 		<template #header>
 			<h1>Enter the post details</h1>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<DraftForm
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
@@ -15,7 +16,9 @@
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
-				<div v-if="maySelectOtherDepartments" class="row department-selector flex flex-row">
+				<div
+					v-if="maySelectOtherDepartments"
+					class="row department-selector flex flex-row">
 					<SelectableOptionsField
 						v-model="departmentID"
 						label="Department to post: "
@@ -23,36 +26,96 @@
 						:options="departmentNames"/>
 				</div>
 			</DraftForm>
-			<input type="file" @change="uploadPostAttachment"/>
+			<form @submit.prevent>
+				<input
+					type="hidden"
+					name="data[type]"
+					value="post_attachment"/>
+				<label class="btn btn-primary" for="choose-file-btn">
+					Choose file
+				</label>
+				<input
+					id="choose-file-btn"
+					type="file"
+					name="data[attributes][fileContents]"
+					class="hidden"
+					:accept="accept"
+					@change="uploadPostAttachment"/>
+			</form>
+			<div v-if="hasExtracted" class="preview-file">
+				<div v-if="isFileTypeImage" class="preview-img-container">
+					<div class="removable-image relative">
+						<span
+							class="material-icons close"
+							@click="removeFile">
+							close
+						</span>
+						<img class="preview-img" :src="previewFile"/>
+					</div>
+					<small class="preview-title">
+						{{ filename }}
+					</small>
+				</div>
+				<div
+					v-else
+					class="preview-file-container">
+					<span class="material-icons mr-2">
+						attachment
+					</span>
+					<small class="preview-file-title">
+						{{ filename }}
+					</small>
+					<span
+						class="remove-file-btn material-icons cursor-pointer"
+						@click="removeFile">
+						close
+					</span>
+				</div>
+			</div>
 		</template>
 		<template #footer>
 			<button
 				class="btn btn-back"
 				type="button"
-				@click="close">
+				@click="emitClose">
 				Back
 			</button>
 			<button
-				class="btn submit-btn btn-primary"
+				:disabled="isFileSizeGreaterThanLimit"
 				:form="CREATE_POST_FORM_ID"
+				class="btn submit-btn btn-primary"
 				type="submit">
 				Create post
 			</button>
 		</template>
-	</Overlay>
+	</overlay>
 </template>
 
-<style lang="scss">
+
+<style scoped lang="scss">
 @import "@styles/btn.scss";
+
+.preview-img{
+	@apply py-5;
+	max-width:100%;
+	max-height:100%;
+}
+
+.close{
+	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+}
 </style>
 
 <script setup lang="ts">
 import { ref, computed, inject } from "vue"
 
+import type { UnitError } from "$/types/server"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { PostRelationships } from "$/types/documents/post"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
+import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
@@ -60,6 +123,7 @@ import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
@@ -71,8 +135,6 @@ const { userProfile, departments } = pageProps
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
-
-defineProps<{ isShown: boolean }>()
 
 const hasMultipleRoles = userProfile.data.roles.data.length > 1
 const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
@@ -107,34 +169,91 @@ const departmentNames = computed<OptionInfo[]>(() => {
 const departmentID = ref<string>(userProfile.data.department.data.id)
 
 const content = ref<string>("")
-const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
+defineProps<{
+	accept: "image/*" | "*/*"
+	isShown: boolean
+}>()
 interface CustomEvents {
 	(event: "close"): void
 }
 const emit = defineEmits<CustomEvents>()
 
-function close() {
+const filename = ref<string|null>(null)
+const hasExtracted = computed<boolean>(() => filename.value !== null)
+const previewFile = ref<any>(null)
+const extractedFileType = ref("")
+const isFileTypeImage = computed(() => extractedFileType.value.includes("image"))
+const fileSize = ref<number|null>(null)
+const isFileSizeGreaterThanLimit = computed(() => {
+	const castedFileSize = fileSize.value as number
+	return castedFileSize > MAXIMUM_FILE_SIZE
+})
+const receivedErrors = ref<string[]>([])
+const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
+
+function removeFile() {
+	filename.value = null
+	previewFile.value = null
+	fileSize.value = null
+	receivedErrors.value = []
+}
+
+function emitClose() {
 	emit("close")
+}
+
+function sendFile(form: HTMLFormElement) {
+	const formData = new FormData(form)
+	formData.set("data[attributes][fileType]", extractedFileType.value)
+
+	postAttachmentFetcher.createWithFile(formData)
+	.then(({ body }) => {
+		attachmentResources.value = [
+			...attachmentResources.value,
+			body.data
+		]
+	}).catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 
 function uploadPostAttachment(event: Event): void {
 	const target = event.target as HTMLInputElement
-	const files = target.files as FileList
-	const fileCount = files.length
-	const latestSelectedFile = files.item(fileCount - 1) as File
-	const formData = new FormData()
-	formData.set("data[attributes][fileContent]", latestSelectedFile)
-	formData.set("data[attributes][fileType]", latestSelectedFile.type)
-	formData.set("data[type]", "post_attachment")
+	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
 
-	postAttachmentFetcher.createWithFile(formData).then(({ body }) => {
-		const { data } = body
-		attachmentResources.value.push(data)
-	})
+	fileSize.value = file?.size as number|null
+	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
+	previewFile.value = file ? URL.createObjectURL(file) : ""
+	extractedFileType.value = file?.type as string
+	filename.value = rawFilename
+
+	const form = target.form as HTMLFormElement
+	sendFile(form)
 }
 
 function createPost(): void {
+	const attachmentIDs = attachmentResources.value.map(resource => ({
+		"id": resource.id,
+		"type": "post_attachment"
+	}))
+	const postAttachments = attachmentIDs.length === 0
+		// eslint-disable-next-line no-undefined
+		? undefined
+		: {
+			"data": attachmentIDs
+		}
+
 	fetcher.create({
 		"content": content.value,
 		"createdAt": new Date().toJSON(),
@@ -149,12 +268,7 @@ function createPost(): void {
 						"type": "department"
 					}
 				},
-				"postAttachments": {
-					"data": attachmentResources.value.map(resource => ({
-						"id": resource.id,
-						"type": "post_attachment"
-					}))
-				},
+				postAttachments,
 				"poster": {
 					"data": {
 						"id": userProfile.data.id,
@@ -168,9 +282,20 @@ function createPost(): void {
 					}
 				}
 			}
-		}
+		} as PostRelationships<"create">
 	}).then(() => {
 		close()
-	}).catch(console.log)
+	}).catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 </script>

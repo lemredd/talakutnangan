@@ -1,9 +1,17 @@
 <template>
-	<div
-		v-for="(post, i) in posts"
-		:key="post.id">
+	<div>
+		<form>
+			<SelectableOptionsField
+				v-model="chosenDepartment"
+				label="Department"
+				:options="departmentNames"/>
+			<SelectableExistence v-model="existence" class="existence"/>
+		</form>
+
 		<Viewer
-			v-model="posts[i]"
+			v-for="(post, i) in posts.data"
+			:key="post.id"
+			v-model="posts.data[i]"
 			class="viewer"
 			:comment-count="1"/>
 	</div>
@@ -13,6 +21,14 @@
 	div {
 		@apply flex flex-col flex-nowrap;
 
+		form {
+			@apply flex-none flex flex-row mb-4 h-8;
+
+			.existence {
+				@apply flex flex-row ml-8;
+			}
+		}
+
 		.viewer {
 			@apply flex-1 mb-8;
 		}
@@ -20,30 +36,98 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, computed, watch, inject } from "vue"
 
-import type { DeserializedPostResource } from "$/types/documents/post"
+import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
+import type { DeserializedPostListDocument } from "$/types/documents/post"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
+import Fetcher from "$@/fetchers/post"
+import debounce from "$@/helpers/debounce"
 import Viewer from "@/post/multiviewer/viewer.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+import SelectableExistence from "@/fields/selectable_radio/existence.vue"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const props = defineProps<{
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">[]
+	departments: DeserializedDepartmentListDocument,
+	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		post: DeserializedPostResource<"poster"|"posterRole"|"department">[]
+		post: DeserializedPostListDocument<"poster"|"posterRole"|"department">
 	): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const posts = computed<DeserializedPostResource<"poster"|"posterRole"|"department">[]>({
-	get(): DeserializedPostResource<"poster"|"posterRole"|"department">[] {
+const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"department">>({
+	get(): DeserializedPostListDocument<"poster"|"posterRole"|"department"> {
 		return props.modelValue
 	},
-	set(newValue: DeserializedPostResource<"poster"|"posterRole"|"department">[]): void {
+	set(newValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">): void {
 		emit("update:modelValue", newValue)
 	}
 })
+
+const NULL_AS_STRING = "~"
+const departmentNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "General",
+		"value": NULL_AS_STRING
+	},
+	...props.departments.data.map(data => ({
+		"label": data.fullName,
+		"value": data.id
+	}))
+])
+const chosenDepartment = ref<string>(userProfile.data.department.data.id)
+const existence = ref<string>("exists")
+
+const fetcher = new Fetcher()
+async function retrievePosts() {
+	await fetcher.list({
+		"filter": {
+			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
+			"existence": existence.value as "exists"|"archived"|"*"
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": posts.value.data.length
+		},
+		"sort": [ "-createdAt" ]
+	}).then(({ body }) => {
+		const castBody = body as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		posts.value = {
+			...posts.value,
+			"data": [
+				...posts.value.data,
+				...castBody.data
+			]
+		}
+	})
+}
+
+function resetPostList() {
+	posts.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
+	retrievePosts()
+}
+
+watch(
+	[ chosenDepartment, existence ],
+	debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
+)
 </script>
