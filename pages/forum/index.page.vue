@@ -5,13 +5,16 @@
 				class="account-attachment"
 				:user="userProfile"/>
 			<span class="post-create">
-				What's on your mind?
+				Welcome To Forum
 			</span>
-			<span class="material-icons account-attachment">
-				attachment
+			<span class="create-post btn btn-primary">
+				add post
 			</span>
 		</div>
-		<CreatePostForm :is-shown="isCreateShown" @close="hideCreateForm"/>
+		<CreatePostForm
+			:is-shown="isCreateShown"
+			accept="*/*"
+			@close="hideCreateForm"/>
 		<Multiviewer
 			v-model="posts"
 			:departments="departments"
@@ -20,6 +23,8 @@
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 	.main {
 		@apply flex flex-col flex-nowrap justify-start items-stretch;
 
@@ -27,13 +32,16 @@
 			@apply flex-1 flex justify-between items-center;
 			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
 
-			.post-create {
-				@apply p-4 rounded-1rem bg-gray-300 text-gray-500;
-				width: 90%;
-			}
+			// .post-create {
+			// 	@apply p-4 rounded-1rem bg-gray-300 text-gray-500;
+			// 	width: 90%;
+			// }
 
 			.account-attachment {
 				@apply h-6 w-auto;
+			}
+			.create-post {
+				@apply w-auto rounded-[0.5rem];
 			}
 
 		}

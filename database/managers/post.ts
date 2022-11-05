@@ -15,6 +15,7 @@ import Department from "%/models/department"
 import Transformer from "%/transformers/post"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
+import PostAttachment from "%/models/post_attachment"
 import AttachedRoleManager from "%/managers/attached_role"
 import includeDefaults from "%/queries/post/include_defaults"
 import siftByDepartment from "%/queries/post/sift_by_department"
@@ -66,7 +67,6 @@ export default class extends BaseManager<
 
 	async createUsingResource(
 		details: PostResource<"create">,
-		requesterID: number,
 		transformerOptions: void = {} as unknown as void
 	): Promise<Serializable> {
 		try {
@@ -83,12 +83,13 @@ export default class extends BaseManager<
 						"id": roleID
 					}
 				},
-				"department": {
-					"data": {
-						"id": departmentID
-					}
-				}
+				"postAttachments": attachments,
+				department
 			} = relationships
+
+			const departmentID = department
+				? department.data.id
+				: null
 
 			const attachedRoleManager = new AttachedRoleManager({
 				"cache": this.cache,
@@ -113,7 +114,27 @@ export default class extends BaseManager<
 			)
 
 			model.posterInfo = attachedRole
-			model.department = await Department.findByPk(Number(departmentID)) as Department
+			model.department = await Department.findByPk(Number(departmentID), {
+				...this.transaction.transactionObject
+			}) as Department
+
+			if (attachments && attachments.data.length > 0) {
+				const IDMatcher = new Condition().isIncludedIn(
+					"id",
+					attachments.data.map(attachment => attachment.id)
+				).build()
+				await PostAttachment.update({
+					"postID": model.id
+				}, {
+					"where": IDMatcher,
+					...this.transaction.transactionObject
+				})
+
+				model.postAttachments = await PostAttachment.findAll({
+					"where": IDMatcher,
+					...this.transaction.transactionObject
+				})
+			}
 
 			Log.success("manager", "done creating a model")
 
