@@ -1,8 +1,13 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
-			<h3 class="flex-1 m-auto ml-2">
-				{{ comment.user.data.name }} {{ comment.createdAt }}
+			<h3>
+				<span>
+					{{ comment.user.data.name }}
+				</span>
+				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+					{{ friendlyCommentTimestamp }}
+				</span>
 			</h3>
 		</header>
 		<div class="main-content">
@@ -70,7 +75,25 @@
 		@apply flex flex-col flex-nowrap;
 
 		header {
-			@apply flex-1 flex flex-row flex-nowrap
+			@apply flex-1 flex flex-row flex-nowrap;
+
+			h3 {
+				@apply flex-1 flex flex-row flex-nowrap justify-center items-center;
+				@apply m-auto ml-15;
+
+				/**
+				 * Reduce the left margin
+				 */
+				width: calc(100% - 3.75rem);
+
+				span:nth-child(1) {
+					@apply flex-1 truncate flex-shrink-[2];
+				}
+
+				span:nth-child(2) {
+					@apply flex-initial;
+				}
+			}
 		}
 
 		.main-content {
@@ -101,6 +124,8 @@ import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/docu
 import Fetcher from "$@/fetchers/comment"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
+import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
@@ -192,6 +217,20 @@ const voteID = computed<string|null>({
 	}
 })
 
+const friendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt } = comment.value
+
+	return formatToFriendlyPastTime(createdAt)
+})
+
+const completeFriendlyCommentTimestamp = computed<string>(() => {
+	const { createdAt, updatedAt } = comment.value
+	const friendlyCreationTime = formatToCompleteFriendlyTime(createdAt)
+	const friendlyModificationTime = formatToCompleteFriendlyTime(updatedAt)
+
+	return `Created at: ${friendlyCreationTime}\nUpdated at: ${friendlyModificationTime}`
+})
+
 async function switchVote(newRawVote: string): Promise<void> {
 	const newVote = newRawVote as CompleteVoteKind
 	const currentVote = vote.value
@@ -261,15 +300,6 @@ const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRe
 function closeArchiveOrRestore() {
 	closeArchive()
 	closeRestore()
-}
-
-async function submitChangesSeparately(): Promise<void> {
-	await fetcher.update(comment.value.id, {
-		"content": comment.value.content,
-		"deletedAt": null
-	}).then(() => {
-		emit("update:modelValue", comment.value)
-	})
 }
 
 async function archivePost(): Promise<void> {

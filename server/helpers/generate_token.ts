@@ -10,13 +10,13 @@ export default function(channelName: string, uid: number) {
 	const currentTimeInMilliseconds = Date.now()
 	const defaultExpireDuration = convertTimeToMilliseconds("01:00:00")
 	const defaultExpiredTime
-		= (currentTimeInMilliseconds + defaultExpireDuration) / MILLISECOND_IN_A_SECOND
+		= Math.floor((currentTimeInMilliseconds + defaultExpireDuration) / MILLISECOND_IN_A_SECOND)
 
 	const token = RtcTokenBuilder.buildTokenWithUid(
 		appID,
 		appCertificate,
 		channelName,
-		uid,
+		Number(uid),
 		RtcRole.PUBLISHER,
 		defaultExpiredTime
 	)
