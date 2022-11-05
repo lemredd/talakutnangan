@@ -78,10 +78,44 @@ export function mockJoining() {
 }
 
 export function muteVideoTrack() {
-	localTracks.localVideoTrack?.setMuted(true)
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteVideoTrack"
+				}
+			]
+		}
+	)
 }
 export function unmuteVideoTrack() {
-	localTracks.localVideoTrack?.setMuted(false)
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteVideoTrack"
+				}
+			]
+		}
+	)
 }
 export function muteAudioTrack() {
 	localTracks.localAudioTrack?.setMuted(true)
