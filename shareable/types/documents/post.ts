@@ -56,10 +56,10 @@ interface PostRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
 	department: {
 		serialized: T extends "create"
-			? DepartmentIdentifierDocument<"attached">
+			? DepartmentIdentifierDocument|undefined
 			: T extends "update"
 				? undefined
-				: DepartmentIdentifierDocument,
+				: DepartmentIdentifierDocument<"attached">,
 		deserialized: DeserializedDepartmentDocument<"attached">
 	},
 	poster: {
