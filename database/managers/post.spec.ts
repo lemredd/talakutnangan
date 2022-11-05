@@ -114,6 +114,38 @@ describe("Database Manager: Post create operations", () => {
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
+
+	it("can create post without attachment and department", async() => {
+		const model = await new Factory().makeOne()
+		const manager = new Manager()
+
+		const data = await manager.createUsingResource({
+			"attributes": {
+				"content": model.content
+			},
+			"relationships": {
+				// eslint-disable-next-line no-undefined
+				"department": undefined,
+				"postAttachments": {
+					"data": []
+				},
+				"poster": {
+					"data": {
+						"id": model.poster?.id
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": model.posterRole?.id
+					}
+				}
+			}
+		} as any)
+
+		expect(await Model.count()).toBe(1)
+		expect(data).toHaveProperty("data")
+		expect(data).toHaveProperty("data.attributes.content", model.content)
+	})
 })
 
 describe("Database Manager: Miscellaneous post operations", () => {

@@ -86,12 +86,12 @@ export default class extends BaseManager<
 				"postAttachments": {
 					"data": attachments
 				},
-				"department": {
-					"data": {
-						"id": departmentID
-					}
-				}
+				department
 			} = relationships
+
+			const departmentID = department
+				? department.data.id
+				: null
 
 			const attachedRoleManager = new AttachedRoleManager({
 				"cache": this.cache,
