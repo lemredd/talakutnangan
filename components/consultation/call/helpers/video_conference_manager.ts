@@ -117,3 +117,85 @@ export function leaveAndRemoveLocalTracks() {
 		}
 	)
 }
+
+export function muteVideoTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteVideoTrack"
+				}
+			]
+		}
+	)
+}
+export function unmuteVideoTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localVideoTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localVideoTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteVideoTrack"
+				}
+			]
+		}
+	)
+}
+
+export function muteAudioTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(true)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": true
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "muteAudioTrack"
+				}
+			]
+		}
+	)
+}
+export function unmuteAudioTrack() {
+	Stub.runConditionally(
+		() => {
+			localTracks.localAudioTrack?.setMuted(false)
+		},
+		() => {
+			localTracks.localAudioTrack = {
+				"muted": false
+			} as any
+
+			return [
+				0 as unknown as undefined,
+				{
+					"arguments": [],
+					"functionName": "unmuteAudioTrack"
+				}
+			]
+		}
+	)
+}

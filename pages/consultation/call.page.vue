@@ -2,8 +2,8 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				v-model:must-show-video="mustShowVideo"
-				v-model:must-transmit-audio="mustTransmitAudio"
+				v-model:must-show-video="isShowingVideo"
+				v-model:must-transmit-audio="isTransmittingAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<OtherParticipantsContainer
@@ -17,10 +17,12 @@
 			custom-message="Please wait. we are still preparing you for call...">
 			<CallControls
 				v-model:is-joined="isJoined"
-				@join-call="join"
-				@leave-call="leave"
+				:is-showing-video="isShowingVideo"
+				:is-transmitting-audio="isTransmittingAudio"
 				@toggle-video="toggleVideo"
-				@toggle-mic="toggleMic"/>
+				@toggle-mic="toggleMic"
+				@join-call="join"
+				@leave-call="leave"/>
 		</Suspensible>
 	</div>
 </template>
@@ -55,8 +57,6 @@ import {
 	computed,
 	inject,
 	onMounted,
-	provide,
-	readonly,
 	Ref,
 	ref
 } from "vue"
@@ -68,15 +68,12 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 
-
-import { CURRENT_USER_RTC_TOKEN } from "$@/constants/provided_keys"
-
 import isUndefined from "$/type_guards/is_undefined"
 
 import makeSwitch from "$@/helpers/make_switch"
 import Fetcher from "$@/fetchers/consultation"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
 import OtherParticipantsContainer from "@/consultation/call/other_participants.vue"
@@ -130,7 +127,6 @@ const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 const channelName = `call_${consultationID}`
-provide(CURRENT_USER_RTC_TOKEN, readonly(token))
 function fetchGeneratedToken() {
 	// TODO: make channel name unique based on consultation ID
 	fetcher.generateToken(consultationID, channelName, chatMessageActivityID)
@@ -144,12 +140,12 @@ function fetchGeneratedToken() {
 
 const {
 	"toggle": toggleVideo,
-	"state": mustShowVideo
-} = makeSwitch(false)
+	"state": isShowingVideo
+} = makeSwitch(true)
 const {
 	"toggle": toggleMic,
-	"state": mustTransmitAudio
-} = makeSwitch(false)
+	"state": isTransmittingAudio
+} = makeSwitch(true)
 const {
 	"off": leaveAndHideAdditionalButtons,
 	"on": joinAndShowAdditionalButtons,
@@ -157,7 +153,6 @@ const {
 } = makeSwitch(false)
 const selfParticipantID = `local-${chatMessageActivityID}`
 function join() {
-	toggleVideo()
 	joinAndShowAdditionalButtons()
 	joinAndPresentLocalTracks(
 		VIDEO_CONFERENCE_APP_ID as string,

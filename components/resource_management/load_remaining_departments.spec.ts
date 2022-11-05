@@ -1,6 +1,6 @@
 import { ref } from "vue"
 
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/department"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -19,7 +19,12 @@ describe("Helper: Load remaining departments", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 		const fetcher = new Fetcher()
-		const departments = ref<DeserializedDepartmentResource[]>([])
+		const departments = ref<DeserializedDepartmentListDocument>({
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		})
 
 		await loadRemainingDepartments(departments, fetcher)
 

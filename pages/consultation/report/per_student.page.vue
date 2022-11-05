@@ -7,7 +7,9 @@
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
-				The table contains the students consulted from {{ rangeBegin }} to {{ rangeEnd }}.
+				The table contains the students consulted
+				from {{ formatToCompleteFriendlyTime(rangeBegin) }}
+				to {{ formatToCompleteFriendlyTime(rangeEnd) }}.
 			</p>
 			<table>
 				<thead>
@@ -74,22 +76,20 @@
 </style>
 
 <style scoped lang="scss">
-.details{
-	@apply mb-5;
-}
+	.details {
+		@apply mb-5;
+	}
 
-table, th, thead, tfoot, td{
-	border:2px solid;
-	padding: 8px;
-	text-align: center;
+	table, th, thead, tfoot, td {
+		border:2px solid;
+		padding: 8px;
+		text-align: center;
 
-}
+	}
 
-.consultations{
-	@apply flex flex-col;
-}
-
-
+	.consultations {
+		@apply flex flex-col;
+	}
 </style>
 
 <script setup lang="ts">
@@ -106,9 +106,10 @@ import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
-import Suspensible from "@/suspensible.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
 const pageContext = inject("pageContext") as PageContext<

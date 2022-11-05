@@ -5,21 +5,6 @@ import DepartmentFactory from "~/factories/department"
 import siftByDepartment from "./sift_by_department"
 
 describe("Database Pipe: Sift by department", () => {
-	it("can find all", async() => {
-		const model = await new Factory().insertOne()
-
-		const options = siftByDepartment({}, {
-			"filter": {
-				"departmentID": "*"
-			}
-		})
-		const foundModels = await Model.findAll(options)
-
-		expect(options).not.toHaveProperty("include")
-		expect(foundModels).toHaveLength(1)
-		expect(foundModels).toHaveProperty("0.id", model.id)
-	})
-
 	it("can find on specific department", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const model = await new Factory().department(() => Promise.resolve(department)).insertOne()

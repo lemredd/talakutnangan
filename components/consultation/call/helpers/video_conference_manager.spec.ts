@@ -3,10 +3,14 @@ import { ref } from "vue"
 import {
 	videoConferenceEngine,
 	initiateVideoConferenceEngine,
+	muteVideoTrack,
+	unmuteVideoTrack,
+	muteAudioTrack,
+	unmuteAudioTrack,
 
 	localTracks,
 	joinAndPresentLocalTracks,
-	leaveAndRemoveLocalTracks,
+	leaveAndRemoveLocalTracks
 } from "./video_conference_manager"
 
 describe("Helper: video conference manager", () => {
@@ -44,6 +48,28 @@ describe("Helper: video conference manager", () => {
 
 			expect(localTracks.localAudioTrack).toBeFalsy()
 			expect(localTracks.localVideoTrack).toBeFalsy()
+		})
+	})
+
+	describe("muting", () => {
+		it("can mute and unmute video track", () => {
+			muteVideoTrack()
+			const castedLocalVideoTrack = localTracks.localVideoTrack as any
+			expect(castedLocalVideoTrack.muted).toBeTruthy()
+
+			unmuteVideoTrack()
+			expect(localTracks.localVideoTrack?.muted).toBeFalsy()
+		})
+	})
+
+	describe("muting", () => {
+		it("can mute and unmute audio track", () => {
+			muteAudioTrack()
+			const castedLocalAudioTrack = localTracks.localAudioTrack as any
+			expect(castedLocalAudioTrack.muted).toBeTruthy()
+
+			unmuteAudioTrack()
+			expect(localTracks.localAudioTrack?.muted).toBeFalsy()
 		})
 	})
 })

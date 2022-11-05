@@ -1,35 +1,57 @@
 <template>
-<img src="@assets/logo_bg_transparent.svg" alt="logo" />
-<div class="teaser">
-	<Description>
-		<template #header>Chat header</template>
-		<template #details>The quick brown fox jumped over the lazy dog.</template>
-	</Description>
-	<div class="graphics">
-		<Person accessory="chat" variant="talking left"/>
-		<Person accessory="chat" variant="talking right"/>
+	<img src="@assets/logo_bg_transparent.svg" alt="logo"/>
+	<div class="teaser consultation">
+		<Description>
+			<template #header>
+				<h1>Consultation</h1>
+			</template>
+			<template #details>
+				<p>
+					Students can consult any available employees<br/>
+					with the help of Consultation Message.
+				</p>
+			</template>
+		</Description>
+		<div class="graphics">
+			<Person accessory="chat" variant="talking left"/>
+			<Person accessory="chat" variant="talking right"/>
+		</div>
 	</div>
-</div>
 
-<div class="teaser">
-	<Description>
-		<template #header>Forum Header</template>
-		<template #details>
-			Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim, alias?
-		</template>
-	</Description>
-	<div class="graphics graphics-left">
-		<Person accessory="campaign" variant="announce"/>
+	<div class="teaser forum">
+		<Description class="forum-description">
+			<template #header>
+				<h1>
+					Forum
+				</h1>
+			</template>
+			<template #details>
+				<p>
+					Students will know the updates of the employees<br/>
+					and students also can comment on the post of the employees.
+				</p>
+			</template>
+		</Description>
+		<div class="graphics graphics-left">
+			<Person accessory="campaign" variant="announce"/>
+		</div>
 	</div>
-</div>
 </template>
 <style scoped lang="scss">
 .teaser {
-	text-align: center;
+	@apply my-8;
+	@apply flex flex-col;
+	h1, p {
+		text-align: center;
+	}
+
+	p {
+		@apply mt-4 mb-8;
+	}
+
 }
 .graphics {
 	@apply flex justify-center;
-	margin-top:4em;
 }
 
 img {
@@ -37,9 +59,30 @@ img {
 	padding: 2em 0 4em;
 }
 
-@media screen and (min-width: 768px) {
+@screen md {
+	.teaser {
+		@apply flex-row justify-end;
+
+		h1, p{
+				text-align: right;
+			}
+	}
+	.forum {
+		@apply justify-start;
+		.forum-description{
+			@apply order-2;
+
+			h1, p{
+				text-align: left;
+			}
+		}
+		.graphics{
+			@apply mr-16 order-1;
+		}
+	}
+
 	.graphics {
-		@apply justify-end;
+		@apply flex-row justify-between;
 
 		&.graphics-left {
 			@apply justify-start;

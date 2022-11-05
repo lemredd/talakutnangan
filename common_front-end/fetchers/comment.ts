@@ -16,6 +16,7 @@ import type {
 import { COMMENT_LINK, COUNT_COMMENT_VOTES } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
+import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class CommentFetcher extends BaseFetcher<
@@ -47,11 +48,13 @@ export default class CommentFetcher extends BaseFetcher<
 	>> {
 		return this.handleResponse(
 			this.getJSON(
-				`${COUNT_COMMENT_VOTES}?${stringifyQuery({
-					"filter": {
-						"IDs": commentIDs
-					}
-				})}`
+				specializePath(COUNT_COMMENT_VOTES, {
+					"query": stringifyQuery({
+						"filter": {
+							"IDs": commentIDs
+						}
+					})
+				})
 			),
 			false
 		) as Promise<Response<
