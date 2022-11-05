@@ -4,9 +4,11 @@ import type {
 
 	LocalTracks,
 
+	RemoteUser,
 	RemoteAudioTrack,
 	RemoteVideoTrack,
-	RemoteTracks
+	RemoteTracks,
+	MediaType
 } from "@/consultation/call/helpers/types/video_conference_manager"
 
 import Stub from "$/singletons/stub"
@@ -28,6 +30,22 @@ export const localTracks: LocalTracks = {
 	"localVideoTrack": null
 }
 
+async function handleRemoteUserJoining(
+	user: RemoteUser,
+	mediaType: MediaType,
+	remoteParticipants: Ref<RemoteTracks[]>
+) {
+	await engine().subscribe(user, mediaType)
+	const remoteID = `user-${String(user.uid)}`
+	remoteParticipants.value.push({
+		"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
+		remoteID,
+		"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
+	})
+
+	if (mediaType === "video") user.videoTrack?.play(remoteID)
+	if (mediaType === "audio") user.audioTrack?.play()
+}
 export async function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
 	if (!isUndefined(window)) {
 		// @ts-ignore
@@ -37,18 +55,10 @@ export async function initiateVideoConferenceEngine(remoteParticipants: Ref<Remo
 			"mode": "rtc"
 		})
 
-		videoConferenceEngine.on("user-published", async(user, mediaType) => {
-			await engine().subscribe(user, mediaType)
-			const remoteID = `user-${String(user.uid)}`
-			remoteParticipants.value.push({
-				"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
-				remoteID,
-				"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
-			})
-
-			if (mediaType === "video") user.videoTrack?.play(remoteID)
-			if (mediaType === "audio") user.audioTrack?.play()
-		})
+		videoConferenceEngine.on(
+			"user-published",
+			(user, mediaType) => handleRemoteUserJoining(user, mediaType, remoteParticipants)
+		)
 	}
 }
 
