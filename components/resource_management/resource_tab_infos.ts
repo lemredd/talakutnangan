@@ -10,7 +10,10 @@ import {
 import { user, role, department, semester } from "$/permissions/permission_list"
 import { UPDATE as UPDATE_ROLES } from "$/permissions/role_combinations"
 import { UPDATE as UPDATE_DEPARTMENTS } from "$/permissions/department_combinations"
-import { UPDATE as UPDATE_SEMESTERS } from "$/permissions/semester_combinations"
+import {
+	UPDATE as UPDATE_SEMESTERS,
+	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_SEMESTERS
+} from "$/permissions/semester_combinations"
 import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
@@ -73,7 +76,10 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [ UPDATE_SEMESTERS ],
+		"permissionCombinations": [
+			UPDATE_SEMESTERS,
+			ARCHIVE_AND_RESTORE_SEMESTERS
+		],
 		"permissionGroup": semester
 	}
 ]
