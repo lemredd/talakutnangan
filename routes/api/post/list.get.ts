@@ -33,7 +33,9 @@ export default class extends QueryController {
 		return makeListRules(Manager, {
 			...makeIDBasedFilterRules("departmentID", DepartmentManager, {
 				"defaultValue": null,
-				"mustCast": true
+				"mayConsiderEmptyStringAsNull": true,
+				"mustCast": true,
+				"mustSkipAfterSettingDefault": true
 			})
 		})
 	}
