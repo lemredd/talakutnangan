@@ -10,6 +10,7 @@
 				:post="post"
 				@create-comment="includeComment"/>
 			<CommentMultiviewer
+				v-if="mayReadComment"
 				v-model="comments"
 				:post="post"
 				:is-post-owned="isPostOwned"/>
@@ -47,7 +48,9 @@ import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
-	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/comment_combinations"
 
 import Viewer from "@/post/multiviewer/viewer.vue"
@@ -97,6 +100,15 @@ const mayCreateComment = computed<boolean>(() => {
 	|| isLimitedUpToGlobalScope
 
 	return isPermitted && post.value.deletedAt === null
+})
+
+const mayReadComment = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		READ_ANYONE_ON_OWN_DEPARTMENT,
+		READ_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isPermitted
 })
 
 function includeComment(newComment: DeserializedCommentResource<"user">): void {
