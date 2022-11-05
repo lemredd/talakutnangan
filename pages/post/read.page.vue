@@ -30,12 +30,15 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed, ref, onMounted } from "vue"
+import { inject, computed, ref, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedCommentListDocument } from "$/types/documents/comment"
+import type {
+	DeserializedCommentListDocument,
+	DeserializedCommentResource
+} from "$/types/documents/comment"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -97,7 +100,7 @@ const mayCreateComment = computed<boolean>(() => {
 	return isPermitted && post.value.deletedAt === null
 })
 
-function includeComment(newComment: DeserializedCommentListDocument<"user">): void {
+function includeComment(newComment: DeserializedCommentResource<"user">): void {
 	comments.value = {
 		...comments.value,
 		"data": [
@@ -106,14 +109,14 @@ function includeComment(newComment: DeserializedCommentListDocument<"user">): vo
 		],
 		"meta": {
 			...comments.value.meta,
-			"count": comments.value.meta.count + 1
+			"count": (comments.value.meta?.count || 0) + 1
 		}
 	}
 }
 
 const fetcher = new Fetcher()
 onMounted(async() => {
-	await loadRemainingResource(comments, fetcher, () => ({
+	await loadRemainingResource(comments as Ref<DeserializedCommentListDocument>, fetcher, () => ({
 		"filter": {
 			"existence": "exists",
 			"postID": post.value.id
