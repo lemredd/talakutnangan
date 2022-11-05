@@ -4,10 +4,10 @@
 		<slot></slot>
 		<div class="row">
 			<div class="field">
-				<input
+				<textarea
 					v-model="content"
 					class="post-message"
-					placeholder="What's on your mind"/>
+					placeholder="What's on your mind"></textarea>
 			</div>
 		</div>
 	</form>

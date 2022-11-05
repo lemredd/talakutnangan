@@ -135,7 +135,7 @@ describe("Component: post/create_post_form", () => {
 		expect(departmentOptionsField.exists()).toBeTruthy()
 	})
 
-	it("may submit to any department but only one role", async() => {
+	it.only("may submit to any department but only one role", async() => {
 		fetchMock.mockResponseOnce(
 			"",
 			{ "status": RequestEnvironment.status.NO_CONTENT }
@@ -190,7 +190,7 @@ describe("Component: post/create_post_form", () => {
 		const departmentOptionsField = wrapper
 		.find(".department-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
-		const contentField = wrapper.find("textarea")
+		const contentField = wrapper.find(".post-message")
 		const exampleContent = faker.lorem.paragraphs(2)
 		await contentField.setValue(exampleContent)
 
@@ -210,7 +210,7 @@ describe("Component: post/create_post_form", () => {
 			"data.relationships.department.data.id",
 			departmentAResource.id
 		)
-		expect(firstRequestBody).toHaveProperty("data.relationships.postAttachments.data", [])
+		expect(firstRequestBody).not.toHaveProperty("data.relationships.postAttachments.data")
 		expect(firstRequestBody).toHaveProperty("data.relationships.poster.data.id", userID)
 		expect(firstRequestBody).toHaveProperty(
 			"data.relationships.posterRole.data.id",
