@@ -36,7 +36,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, inject } from "vue"
+import { ref, computed, watch, inject, Ref, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -48,6 +48,9 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/post"
 import debounce from "$@/helpers/debounce"
+import isUndefined from "$/type_guards/is_undefined"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+
 import Viewer from "@/post/multiviewer/viewer.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
@@ -69,11 +72,18 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+// eslint-disable-next-line no-use-before-define
+const debouncedCommentCounting = debounce(countCommentsOfPosts, DEBOUNCED_WAIT_DURATION)
+
 const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"department">>({
 	get(): DeserializedPostListDocument<"poster"|"posterRole"|"department"> {
 		return props.modelValue
 	},
 	set(newValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">): void {
+		if (newValue.data.some(comment => isUndefined(comment.meta))) {
+			debouncedCommentCounting()
+		}
+
 		emit("update:modelValue", newValue)
 	}
 })
@@ -92,9 +102,46 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 const existence = ref<string>("exists")
 
+function extractPostIDsWithNoVoteInfo(
+	currentPosts: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+): string[] {
+	const commentsWithNoVoteInfo = currentPosts.data.filter(comment => isUndefined(comment.meta))
+	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
+	return commentIDs
+}
+
 const fetcher = new Fetcher()
+async function countCommentsOfPosts(): Promise<void> {
+	const postIDs = extractPostIDsWithNoVoteInfo(posts.value)
+
+	if (postIDs.length === 0) return
+
+	await fetcher.countComments(postIDs)
+	.then(response => {
+		const deserializedData = response.body.data
+		const postsWithVoteInfo = [ ...posts.value.data ]
+
+		for (const identifierData of deserializedData) {
+			const { meta, id } = identifierData
+
+			const postWithVoteInfo = postsWithVoteInfo.find(post => post.id === id)
+
+			if (isUndefined(postWithVoteInfo)) {
+				throw new Error("Posh requested to load comment info is missing.")
+			} else {
+				postWithVoteInfo.meta = meta
+			}
+		}
+
+		posts.value = {
+			...posts.value,
+			"data": postsWithVoteInfo
+		}
+	})
+}
+
 async function retrievePosts() {
-	await fetcher.list({
+	await loadRemainingResource(posts as Ref<DeserializedPostListDocument>, fetcher, () => ({
 		"filter": {
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
 			"existence": existence.value as "exists"|"archived"|"*"
@@ -104,16 +151,7 @@ async function retrievePosts() {
 			"offset": posts.value.data.length
 		},
 		"sort": [ "-createdAt" ]
-	}).then(({ body }) => {
-		const castBody = body as DeserializedPostListDocument<"poster"|"posterRole"|"department">
-		posts.value = {
-			...posts.value,
-			"data": [
-				...posts.value.data,
-				...castBody.data
-			]
-		}
-	})
+	}))
 }
 
 function resetPostList() {
@@ -126,8 +164,12 @@ function resetPostList() {
 	retrievePosts()
 }
 
-watch(
-	[ chosenDepartment, existence ],
-	debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
-)
+onMounted(async() => {
+	await countCommentsOfPosts()
+
+	watch(
+		[ chosenDepartment, existence ],
+		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
+	)
+})
 </script>
