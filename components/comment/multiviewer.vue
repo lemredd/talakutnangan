@@ -7,14 +7,21 @@
 			<Viewer
 				v-for="(comment, i) in comments.data"
 				:key="comment.id"
-				v-model="comments.data[i]"/>
+				v-model="comments.data[i]"
+				class="viewer"
+				@archive="archiveComment"
+				@restore="restoreComment"/>
 		</Suspensible>
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 	.multiviewer {
-		@apply flex-1 flex flex-col flex-nowrap justify-start items-center;
+		@apply flex flex-col flex-nowrap justify-start items-stretch;
+
+		.viewer {
+			@apply flex-1;
+		}
 	}
 </style>
 
@@ -22,7 +29,10 @@
 import { computed, onMounted, Ref, ref, watch, nextTick } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedCommentListDocument } from "$/types/documents/comment"
+import type {
+	DeserializedCommentListDocument,
+	DeserializedCommentResource
+} from "$/types/documents/comment"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
@@ -131,6 +141,25 @@ async function fetchComments() {
 			}
 		}
 	)
+}
+
+function removeComment(commentToRemove: DeserializedCommentResource<"user">, increment: number) {
+	comments.value = {
+		...comments.value,
+		"data": comments.value.data.filter(comment => comment.id !== commentToRemove.id),
+		"meta": {
+			...comments.value.meta,
+			"count": Math.max((comments.value.meta?.count ?? 0) + increment, 0)
+		}
+	}
+}
+
+function archiveComment(commentToRemove: DeserializedCommentResource<"user">) {
+	removeComment(commentToRemove, -1)
+}
+
+function restoreComment(commentToRemove: DeserializedCommentResource<"user">) {
+	removeComment(commentToRemove, 1)
 }
 
 function resetCommentsList() {

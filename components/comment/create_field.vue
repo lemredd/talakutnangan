@@ -48,7 +48,9 @@ async function submit() {
 	await fetcher.create({
 		"approvedAt": null,
 		"content": content.value,
-		"deletedAt": null
+		"createdAt": new Date().toJSON(),
+		"deletedAt": null,
+		"updatedAt": new Date().toJSON()
 	}, {
 		"extraDataFields": {
 			"relationships": {
@@ -69,7 +71,6 @@ async function submit() {
 			}
 		}
 	}).then(({ body }) => {
-		commentStatus.value = "loaded"
 		content.value = ""
 		emit("createComment", {
 			...body.data,

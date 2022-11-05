@@ -33,7 +33,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, computed } from "vue"
+import { inject, computed, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
@@ -98,6 +98,7 @@ const mayCreateComment = computed<boolean>(() => {
 
 	return isPermitted && post.value.deletedAt === null
 })
+
 function includeComment(newComment: DeserializedCommentResource<"user">): void {
 	comments.value = {
 		...comments.value,
@@ -106,9 +107,9 @@ function includeComment(newComment: DeserializedCommentResource<"user">): void {
 			newComment
 		],
 		"meta": {
+			...comments.value.meta,
 			"count": (comments.value.meta?.count || 0) + 1
 		}
 	}
 }
-
 </script>
