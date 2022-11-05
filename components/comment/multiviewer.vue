@@ -144,7 +144,14 @@ async function fetchComments() {
 }
 
 function removeComment(commentToRemove: DeserializedCommentResource<"user">) {
-	comments.value = comments.value.data.filter(comment => comment.id !== commentToRemove.id)
+	comments.value = {
+		...comments.value,
+		"data": comments.value.data.filter(comment => comment.id !== commentToRemove.id),
+		"meta": {
+			...comments.value.meta,
+			"count": Math.max((comments.value.meta?.count ?? 0) - 1, 0)
+		}
+	}
 }
 
 function archiveComment(commentToRemove: DeserializedCommentResource<"user">) {
