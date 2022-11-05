@@ -4,12 +4,15 @@
 			v-model="post"
 			:comment-count="commentCount"/>
 		<div class="comments">
-			<CreateField
+			<CreateCommentField
 				v-if="mayCreateComment"
 				class="field"
 				:post="post"
 				@create-comment="includeComment"/>
-			<Multiviewer v-model="comments"/>
+			<CommentMultiviewer
+				v-model="comments"
+				:post="post"
+				:is-post-owned="isPostOwned"/>
 		</div>
 	</article>
 </template>
@@ -30,12 +33,15 @@
 </style>
 
 <script setup lang="ts">
-import { inject, computed, ref } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedPostResource } from "$/types/documents/post"
-import type { DeserializedCommentResource } from "$/types/documents/comment"
+import type {
+	DeserializedCommentListDocument,
+	DeserializedCommentResource
+} from "$/types/documents/comment"
 
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -44,9 +50,9 @@ import {
 	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
-import Multiviewer from "@/comment/multiviewer.vue"
 import Viewer from "@/post/multiviewer/viewer.vue"
-import CreateField from "@/comment/create_field.vue"
+import CommentMultiviewer from "@/comment/multiviewer.vue"
+import CreateCommentField from "@/comment/create_field.vue"
 
 type RequiredExtraProps =
 	| "userProfile"
@@ -54,21 +60,21 @@ type RequiredExtraProps =
 	| "comments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
-
 const { userProfile } = pageProps
+
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const comments = ref<DeserializedCommentResource<"user">[]>(
-	pageProps.comments.data as DeserializedCommentResource<"user">[]
-)
+const isPostOwned = post.value.poster.data.id === userProfile.data.id
 
+const comments = ref<DeserializedCommentListDocument<"user">>(
+	pageProps.comments as DeserializedCommentListDocument<"user">
+)
 const commentCount = computed<number>(() => {
 	const castMeta = pageProps.comments.meta as ResourceCount
 
 	return castMeta.count
 })
-
 const mayCreateComment = computed<boolean>(() => {
 	const isPostPublic = !post.value.department
 	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
@@ -92,8 +98,17 @@ const mayCreateComment = computed<boolean>(() => {
 
 	return isPermitted && post.value.deletedAt === null
 })
-
 function includeComment(newComment: DeserializedCommentResource<"user">): void {
-	comments.value.push(newComment)
+	comments.value = {
+		...comments.value,
+		"data": [
+			...comments.value.data,
+			newComment
+		],
+		"meta": {
+			"count": (comments.value.meta?.count || 0) + 1
+		}
+	}
 }
+
 </script>

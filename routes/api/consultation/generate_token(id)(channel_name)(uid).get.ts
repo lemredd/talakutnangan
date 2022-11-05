@@ -40,7 +40,7 @@ export default class extends Controller {
 				"channel_name": {
 					"constraints": {
 						"length": {
-							"maximum": 255,
+							"maximum": 64,
 							"minimum": 3
 						},
 						"regex": {
@@ -78,15 +78,12 @@ export default class extends Controller {
 	handle(request: Request): Promise<OkResponse> {
 		const {
 			"channel_name": specifiedChannelName,
-			"id": consultationID,
 			"uid": userID
 		} = request.params
 
-		const properName = `consultation_${consultationID}_${specifiedChannelName}`
-
 		return Promise.resolve(new OkResponse({
 			"meta": {
-				"RTCToken": generateToken(properName, Number(userID))
+				"RTCToken": generateToken(specifiedChannelName, Number(userID))
 			}
 		}))
 	}

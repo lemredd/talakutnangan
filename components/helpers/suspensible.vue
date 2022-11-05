@@ -4,9 +4,9 @@
 			<slot></slot>
 		</div>
 
-		<div v-else class="loading">
-			Loading...
-		</div>
+		<p v-else class="loading">
+			{{ customMessage ?? "Loading..." }}
+		</p>
 	</div>
 </template>
 
@@ -14,8 +14,8 @@
 </style>
 
 <script setup lang="ts">
-
-const { isLoaded } = defineProps<{
+defineProps<{
 	isLoaded: boolean
+	customMessage?: string
 }>()
 </script>

@@ -25,7 +25,7 @@ export interface DepartmentFilter<T extends number|string = string> extends Seri
 
 export interface NullableDepartmentFilter<T extends number|string = string> extends Serializable {
 	filter: {
-		departmentID: "*"|null|T
+		departmentID: null|T
 	}
 }
 
@@ -231,3 +231,5 @@ export type CommentQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& PostFilter<T>
 	& IDsFilter<T>
+
+export type IDOnlyQueryParameters<T extends number|string = string> = IDsFilter<T>

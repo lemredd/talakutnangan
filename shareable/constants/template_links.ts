@@ -77,7 +77,7 @@ export const UPDATE_PROFILE_PICTURE_OF_USER_LINK
 
 export const CREATE_CHAT_MESSAGE_WITH_FILE_LINK = `${CHAT_MESSAGE_LINK.unbound}/create_with_file`
 
-export const COUNT_COMMENT_VOTES = `${COMMENT_LINK.unbound}/count_votes`
+export const COUNT_COMMENT_VOTES = `${COMMENT_LINK.unbound}/count_votes?:query`
 
 /**
  * Link for generating RTC Token
@@ -108,4 +108,6 @@ export const READ_TIME_SUM_FOR_CONSOLIDATION
  * the chat message activity of the current user.
  */
 export const READ_GENERATED_RTC_TOKEN
-= `${CONSULTATION_LINK.bound}/:channelName/:uid`
+= `${CONSULTATION_LINK.unbound}/generate_token/:id/:channelName/:uid`
+
+export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments`

@@ -43,7 +43,7 @@ export default class Fetcher<
 	W extends Resource<"read", T, U>,
 	// Type of deserialized resource necessary to fill other generics
 	X extends DeserializedResource<T, V>,
-	// Type of resource document to be returned by the some possible readers.
+	// Type of resource document to be returned by the some possible readers
 	Y extends ResourceDocument<"read", T, U, W>,
 	// Type of resource list document to be returned by the some possible readers
 	Z extends ResourceListDocument<"read", T, U, W>,

@@ -298,8 +298,6 @@ describe("UI Page: Read resource by ID", () => {
 		.deserializedOne(true)
 		const newSampleModel = await new Factory().makeOne()
 
-		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })
-
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -325,39 +323,14 @@ describe("UI Page: Read resource by ID", () => {
 		})
 
 		const roleName = wrapper.find("input[type='text']")
-		const editButton = wrapper.find(".edit-button")
 		const submit = wrapper.find("[type='submit']")
 
-		await editButton.trigger("click")
 		await roleName.setValue(newSampleModel.name)
-		const saveButton = wrapper.find(".save-button")
-		await saveButton.trigger("click")
 		await submit.trigger("submit")
 		await flushPromises()
 
-		// TODO?: test update submission and expect new role name to successfully push in database
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", `/api/role/${sampleResource.data.id}`)
-		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		const requestBody = await request.json()
-		const { type, id, ...attributes } = sampleResource.data
-		expect(requestBody).toStrictEqual({
-			"data": {
-				"attributes": {
-					...attributes,
-					"deletedAt": null,
-					"name": newSampleModel.name
-				},
-				id,
-				type
-			},
-			"meta": {
-				"password": ""
-			}
-		})
+		expect(castFetch).not.toHaveBeenCalled()
 	})
 
 	it("should be archivable", async() => {

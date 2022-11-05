@@ -15,32 +15,21 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	switch (constraints.filter.departmentID) {
-		case "*":
-			// Do nothing
-			break
-		default: {
-			const condition = new Condition()
-			if (constraints.filter.departmentID === null) {
-				condition.is("departmentID", constraints.filter.departmentID)
-			} else {
-				condition.or(
-					new Condition().is("departmentID", null),
-					new Condition().equal("departmentID", constraints.filter.departmentID)
-				)
-			}
-
-			if (isUndefined(newState.where)) {
-				newState.where = {}
-			}
-
-			newState.where = new Condition().and(
-				new Condition(newState.where),
-				condition
-			).build()
-			break
-		}
+	const condition = new Condition()
+	if (constraints.filter.departmentID === null) {
+		condition.is("departmentID", constraints.filter.departmentID)
+	} else {
+		condition.equal("departmentID", constraints.filter.departmentID)
 	}
+
+	if (isUndefined(newState.where)) {
+		newState.where = {}
+	}
+
+	newState.where = new Condition().and(
+		new Condition(newState.where),
+		condition
+	).build()
 
 	Log.trace("pipeline", "sift by department")
 

@@ -34,7 +34,7 @@ import { inject, onMounted, ref, computed, watch } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
@@ -62,8 +62,8 @@ const departmentFetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)
 const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
-const departments = ref<DeserializedDepartmentResource[]>(
-	pageProps.departments.data as DeserializedDepartmentResource[]
+const departments = ref<DeserializedDepartmentListDocument>(
+	pageProps.departments as DeserializedDepartmentListDocument
 )
 const chosenDepartment = ref<string>("*")
 const departmentNames = computed<OptionInfo[]>(() => [
@@ -71,7 +71,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"label": "All",
 		"value": "*"
 	},
-	...departments.value.map(data => ({
+	...departments.value.data.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))

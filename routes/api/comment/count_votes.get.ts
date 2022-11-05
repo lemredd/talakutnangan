@@ -4,10 +4,12 @@ import type { IDsFilter } from "$/types/query"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { CommentResourceIdentifier } from "$/types/documents/comment"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import Policy from "!/bases/policy"
+import Manager from "%/managers/comment"
 import deserialize from "$/object/deserialize"
 import ListResponse from "!/response_infos/list"
-import CommentManager from "%/managers/comment"
 import QueryController from "!/controllers/query"
 
 import {
@@ -49,7 +51,7 @@ export default class extends QueryController {
 									"postRules": {
 										"constraints": {
 											"manager": {
-												"className": CommentManager,
+												"className": Manager,
 												"columnName": "id"
 											}
 										},
@@ -57,7 +59,7 @@ export default class extends QueryController {
 									}
 								}).id,
 								"length": {
-									"maximum": Number(process.env.DATABASE_MAX_SELECT || "10"),
+									"maximum": Number(process.env.DATABASE_MAX_SELECT || DEFAULT_LIST_LIMIT),
 									"minimum": 1
 								}
 							},
@@ -73,7 +75,7 @@ export default class extends QueryController {
 	async handle(request: AuthenticatedRequest, unusedResponse: Response): Promise<ListResponse> {
 		const query = request.query as unknown as Pick<IDsFilter<number>, "filter">
 		const user = deserialize(request.user) as DeserializedUserDocument
-		const manager = new CommentManager(request)
+		const manager = new Manager(request)
 		const commentWithUserCount = await manager
 		.countVotes(Number(user.data.id), query.filter.IDs ?? []) as CommentResourceIdentifier<"read">
 

@@ -3,9 +3,10 @@ import type { Request, Response } from "!/types/dependent"
 import type { PostQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/post"
 import ListResponse from "!/response_infos/list"
-import PostManager from "%/managers/post"
 import QueryController from "!/controllers/query"
+import DepartmentManager from "%/managers/department"
 
 import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS,
@@ -13,6 +14,7 @@ import {
 } from "$/permissions/post_combinations"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
+import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 import { post as permissionGroup } from "$/permissions/permission_list"
 
 import makeListRules from "!/rule_sets/make_list"
@@ -28,13 +30,20 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(PostManager, {})
+		return makeListRules(Manager, {
+			...makeIDBasedFilterRules("departmentID", DepartmentManager, {
+				"defaultValue": null,
+				"mayConsiderEmptyStringAsNull": true,
+				"mustCast": true,
+				"mustSkipAfterSettingDefault": true
+			})
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query } as PostQueryParameters<number>
 
-		const manager = new PostManager(request)
+		const manager = new Manager(request)
 
 		const post = await manager.list(constraints)
 
