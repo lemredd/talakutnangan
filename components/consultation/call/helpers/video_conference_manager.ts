@@ -30,21 +30,44 @@ export const localTracks: LocalTracks = {
 	"localVideoTrack": null
 }
 
-async function handleRemoteUserJoining(
+function handleRemoteUserJoining(
 	user: RemoteUser,
 	mediaType: MediaType,
 	remoteParticipants: Ref<RemoteTracks[]>
 ) {
-	await engine().subscribe(user, mediaType)
-	const remoteID = `user-${String(user.uid)}`
-	remoteParticipants.value.push({
-		"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
-		remoteID,
-		"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
-	})
+	Stub.runConditionally(
+		async() => {
+			await engine().subscribe(user, mediaType)
+			const remoteID = `user-${String(user.uid)}`
+			remoteParticipants.value.push({
+				"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
+				remoteID,
+				"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
+			})
 
-	if (mediaType === "video") user.videoTrack?.play(remoteID)
-	if (mediaType === "audio") user.audioTrack?.play()
+			if (mediaType === "video") user.videoTrack?.play(remoteID)
+			if (mediaType === "audio") user.audioTrack?.play()
+		},
+		() => {
+			remoteParticipants.value.push({
+				"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
+				"remoteID": "user-remote-id",
+				"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
+			})
+
+			return [
+				Promise.resolve(),
+				{
+					"arguments": [
+						user,
+						mediaType,
+						remoteParticipants
+					],
+					"functionName": "handleRemoteUserJoining"
+				}
+			]
+		}
+	)
 }
 export async function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
 	if (!isUndefined(window)) {
