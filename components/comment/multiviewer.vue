@@ -19,7 +19,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref, watch, nextTick } from "vue"
+import { computed, onMounted, Ref, ref, watch } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedCommentListDocument } from "$/types/documents/comment"
