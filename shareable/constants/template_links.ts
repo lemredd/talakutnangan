@@ -111,3 +111,5 @@ export const READ_GENERATED_RTC_TOKEN
 = `${CONSULTATION_LINK.unbound}/generate_token/:id/:channelName/:uid`
 
 export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments`
+
+export const COUNT_USERS_OF_DEPARTMENT = `${DEPARTMENT_LINK.unbound}/count_users?:query`
