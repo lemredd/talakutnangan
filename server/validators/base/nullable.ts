@@ -19,12 +19,21 @@ export default async function(
 
 	if (state.maySkip) return state
 
-	if (isUndefined(state.value) || state.value === null) {
+	if (
+		isUndefined(state.value)
+		|| state.value === null
+		|| constraints.nullable?.mayConsiderEmptyStringAsNull
+			&& state.value === ""
+	) {
 		if (isUndefined(constraints.nullable)) {
 			state.maySkip = true
 			state.value = null
 		} else {
 			state.value = constraints.nullable.defaultValue
+
+			if (constraints.nullable?.mustSkipAfterSettingDefault) {
+				state.maySkip = true
+			}
 		}
 	}
 
