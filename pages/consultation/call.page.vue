@@ -2,29 +2,13 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				v-model:must-show-video="mustShowVideo"
-				v-model:must-transmit-audio="mustTransmitAudio"
+				v-model:must-show-video="isShowingVideo"
+				v-model:must-transmit-audio="isTransmittingAudio"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
-			<div class="others">
-				<!-- TODO: Use remote participant -->
-				<!-- <SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/>
-				<SelfParticipant
-					v-model:must-show-video="mustShowVideo"
-					v-model:must-transmit-audio="mustTransmitAudio"
-					class="other-participant"/> -->
-			</div>
+			<OtherParticipantsContainer
+				class="other-participants"
+				:other-participants="otherParticipants as RemoteTracks[]"/>
 		</div>
 
 		<Suspensible
@@ -33,10 +17,12 @@
 			custom-message="Please wait. we are still preparing you for call...">
 			<CallControls
 				v-model:is-joined="isJoined"
-				@join-call="join"
-				@leave-call="leave"
+				:is-showing-video="isShowingVideo"
+				:is-transmitting-audio="isTransmittingAudio"
 				@toggle-video="toggleVideo"
-				@toggle-mic="toggleMic"/>
+				@toggle-mic="toggleMic"
+				@join-call="join"
+				@leave-call="leave"/>
 		</Suspensible>
 	</div>
 </template>
@@ -44,25 +30,20 @@
 <style scoped lang="scss">
 	.participants{
 		@apply flex flex-col;
+		position: relative;
 
-		.others{
-			@apply flex flex-col;
-			@screen sm{
-				@apply flex-row;
-			}
-
-			.other-participant{
-				width:100%;
-			}
+		@screen sm {
+			@apply flex-row;
 		}
 
-		.local-participant{
+		.other-participants {
 			@apply flex-1;
 		}
 	}
 
 	.suspensive-call-controls {
-		@apply border-t py-4;
+		@apply border-t py-4 bg-white;
+		@apply dark:bg-dark-400;
 		position: fixed;
 		bottom: 0;
 		width: 100%;
@@ -76,18 +57,16 @@ import {
 	computed,
 	inject,
 	onMounted,
-	provide,
-	readonly,
+	Ref,
 	ref
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { RemoteTracks } from "@/consultation/call/helpers/types/video_conference_manager"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
-
-import { CURRENT_USER_RTC_TOKEN } from "$@/constants/provided_keys"
 
 import isUndefined from "$/type_guards/is_undefined"
 
@@ -97,6 +76,7 @@ import Fetcher from "$@/fetchers/consultation"
 import Suspensible from "@/helpers/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
 import SelfParticipant from "@/consultation/call/self_participant.vue"
+import OtherParticipantsContainer from "@/consultation/call/other_participants.vue"
 import {
 	initiateVideoConferenceEngine,
 	joinAndPresentLocalTracks,
@@ -147,7 +127,6 @@ const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
 const channelName = `call_${consultationID}`
-provide(CURRENT_USER_RTC_TOKEN, readonly(token))
 function fetchGeneratedToken() {
 	// TODO: make channel name unique based on consultation ID
 	fetcher.generateToken(consultationID, channelName, chatMessageActivityID)
@@ -161,12 +140,12 @@ function fetchGeneratedToken() {
 
 const {
 	"toggle": toggleVideo,
-	"state": mustShowVideo
-} = makeSwitch(false)
+	"state": isShowingVideo
+} = makeSwitch(true)
 const {
 	"toggle": toggleMic,
-	"state": mustTransmitAudio
-} = makeSwitch(false)
+	"state": isTransmittingAudio
+} = makeSwitch(true)
 const {
 	"off": leaveAndHideAdditionalButtons,
 	"on": joinAndShowAdditionalButtons,
@@ -174,7 +153,6 @@ const {
 } = makeSwitch(false)
 const selfParticipantID = `local-${chatMessageActivityID}`
 function join() {
-	toggleVideo()
 	joinAndShowAdditionalButtons()
 	joinAndPresentLocalTracks(
 		VIDEO_CONFERENCE_APP_ID as string,
@@ -189,10 +167,12 @@ function leave() {
 	leaveAndRemoveLocalTracks()
 }
 
+const otherParticipants = ref<RemoteTracks[]>([])
+
 const isReadyForCalling = ref(false)
 onMounted(() => {
 	fetchGeneratedToken()
-	initiateVideoConferenceEngine()
+	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
 	})

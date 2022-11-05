@@ -6,7 +6,10 @@ import { OrderValues } from "$/types/database"
 import SemesterManager from "%/managers/semester"
 import JSONController from "!/controllers/json"
 import CreatedResponseInfo from "!/response_infos/created"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+
+import { CREATE } from "$/permissions/semester_combinations"
+import PermissionBasedPolicy from "!/policies/permission-based"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 
 import date from "!/validators/base/date"
 import string from "!/validators/base/string"
@@ -19,7 +22,9 @@ export default class extends JSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return CommonMiddlewareList.studentOnlyPolicy
+		return new PermissionBasedPolicy(permissionGroup, [
+			CREATE
+		])
 	}
 
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {

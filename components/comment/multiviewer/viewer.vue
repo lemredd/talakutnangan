@@ -46,14 +46,14 @@
 						v-if="mustArchive"
 						class="btn submit-btn btn-primary"
 						type="button"
-						@click="archivePost">
+						@click="archiveComment">
 						Archive comment
 					</button>
 					<button
 						v-if="mustRestore"
 						class="btn submit-btn btn-primary"
 						type="button"
-						@click="restorePost">
+						@click="restoreComment">
 						Restore comment
 					</button>
 				</template>
@@ -72,13 +72,13 @@
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap;
+		@apply flex flex-col flex-nowrap mb-4;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
 			h3 {
-				@apply flex-1 flex flex-row flex-nowrap justify-center items-center;
+				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
 				@apply m-auto ml-15;
 
 				/**
@@ -302,13 +302,13 @@ function closeArchiveOrRestore() {
 	closeRestore()
 }
 
-async function archivePost(): Promise<void> {
+async function archiveComment(): Promise<void> {
 	await fetcher.archive([ comment.value.id ]).then(() => {
 		emit("archive", comment.value)
 	})
 }
 
-async function restorePost(): Promise<void> {
+async function restoreComment(): Promise<void> {
 	await fetcher.restore([ comment.value.id ]).then(() => {
 		emit("restore", comment.value)
 	})

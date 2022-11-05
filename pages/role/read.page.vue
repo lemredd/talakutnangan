@@ -174,8 +174,8 @@ async function updateRole() {
 
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		successMessages.value.push("This role has been archived successfully")
 	})
 	.catch(({ body }) => {
 		if (body) {
@@ -193,8 +193,8 @@ async function archiveRole() {
 
 async function restoreRole() {
 	await fetcher.restore([ role.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		successMessages.value.push("This role has been restored successfully")
 	})
 	.catch(({ body }) => {
 		if (body) {

@@ -9,6 +9,7 @@ import type { Serializable } from "$/types/general"
 import type PermissionGroup from "$/permissions/base"
 import type { CommonQueryParameters } from "$/types/query"
 import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedSemesterResource } from "$/types/documents/semester"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 import type {
@@ -119,6 +120,7 @@ export type PossibleResources =
 	| DeserializedUserResource
 	| DeserializedDepartmentResource
 	| DeserializedRoleResource
+	| DeserializedSemesterResource
 
 export type Timer = ReturnType<typeof setInterval>
 

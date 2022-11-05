@@ -6,7 +6,6 @@
 				:user="userProfile"/>
 		</div>
 		<div
-			v-else
 			:id="containerId"
 			class="track-container">
 		</div>
@@ -14,13 +13,14 @@
 </template>
 
 <style scoped lang="scss">
+	$occupyHeight: calc(100vh - 80px);
 	.self-participant{
 		@apply m-2;
 		@apply flex justify-center items-center;
 		@apply bg-blue-gray-400 bg-opacity-20;
 		position:relative;
 
-		max-height:600px;
+		max-height: $occupyHeight;
 		height: 100%;
 		min-height:300px;
 
@@ -33,10 +33,16 @@
 		.track-container {
 			width: 100%;
 			height: 100%;
-			max-height:600px;
-			min-height:300px;
+			min-height: $occupyHeight;
 			position: absolute;
+		}
+	}
 
+	@screen sm {
+		.self-participant {
+			@apply mr-1;
+			min-height: $occupyHeight;
+			width: 60vw;
 		}
 	}
 </style>
@@ -57,7 +63,7 @@ type DefinedProps = {
 	mustShowVideo: boolean
 	mustTransmitAudio: boolean
 }
-const props = defineProps<DefinedProps>()
+defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 </script>

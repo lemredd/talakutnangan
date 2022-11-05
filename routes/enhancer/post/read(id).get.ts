@@ -59,7 +59,7 @@ export default class extends PageMiddleware {
 		const post = await manager.findWithID(Number(id), {
 			"constraints": {
 				"filter": {
-					"existence": "exists"
+					"existence": "*"
 				}
 			}
 		}) as PostDocument

@@ -6,7 +6,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Fetcher from "./comment"
 
 describe("Fetcher: Comment", () => {
-	it("can get chat message URL", async() => {
+	it("can get vote count", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({ "data": [] }),
 			{ "status": RequestEnvironment.status.OK }

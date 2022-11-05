@@ -44,8 +44,8 @@
 					</td>
 					<td>
 						{{
-							resource.meta ? resource.meta.userCount : ""
-						}} users
+							pluralize("user", resource.meta ? resource.meta.userCount : 0)
+						}}
 					</td>
 					<td>
 						<a
@@ -101,6 +101,8 @@ import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
 
+import pluralize from "$/string/pluralize"
+
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
@@ -111,8 +113,11 @@ const { filteredList } = defineProps<{
 const resourceType = computed(() => filteredList[0].type)
 const tableHeaders = computed(() => {
 	let headers: string[] = []
-	if (resourceType.value === "user") headers = [ "Name", "E-mail", "Role", "Department" ]
-	else headers = [ "Name", "no. of users", "" ]
+	if (resourceType.value === "user") {
+		headers = [
+			"Name", "E-mail", "Role", "Department", "Semester"
+		]
+	} else { headers = [ "Name", "no. of users", "" ] }
 
 
 	return headers

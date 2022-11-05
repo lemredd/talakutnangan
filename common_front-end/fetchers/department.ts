@@ -13,9 +13,10 @@ import type {
 	DepartmentIdentifierListDocument
 } from "$/types/documents/department"
 
-import { DEPARTMENT_LINK } from "$/constants/template_links"
+import { DEPARTMENT_LINK, COUNT_USERS_OF_DEPARTMENT } from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
+import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 
 export default class DepartmentFetcher extends BaseFetcher<
@@ -47,11 +48,13 @@ export default class DepartmentFetcher extends BaseFetcher<
 	>> {
 		return this.handleResponse(
 			this.getJSON(
-				`${this.links.unbound}/count_users?${stringifyQuery({
-					"filter": {
-						IDs
-					}
-				})}`
+				specializePath(COUNT_USERS_OF_DEPARTMENT, {
+					"query": stringifyQuery({
+						"filter": {
+							IDs
+						}
+					})
+				})
 			),
 			false
 		) as Promise<Response<
