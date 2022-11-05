@@ -4,6 +4,7 @@
 			<h1>Enter the post details</h1>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<DraftForm
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
@@ -25,9 +26,6 @@
 						:options="departmentNames"/>
 				</div>
 			</DraftForm>
-			<ReceivedErrors
-				v-if="receivedErrors.length"
-				:received-errors="receivedErrors"/>
 			<form @submit.prevent>
 				<input
 					type="hidden"
@@ -83,7 +81,7 @@
 				Back
 			</button>
 			<button
-				:disabled="!hasExtracted || isFileSizeGreaterThanLimit"
+				:disabled="isFileSizeGreaterThanLimit"
 				:form="CREATE_POST_FORM_ID"
 				class="btn submit-btn btn-primary"
 				type="submit">
@@ -111,9 +109,10 @@
 <script setup lang="ts">
 import { ref, computed, inject } from "vue"
 
-import type { PageContext } from "$/types/renderer"
 import type { UnitError } from "$/types/server"
+import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { PostRelationships } from "$/types/documents/post"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
@@ -244,6 +243,17 @@ function uploadPostAttachment(event: Event): void {
 }
 
 function createPost(): void {
+	const attachmentIDs = attachmentResources.value.map(resource => ({
+		"id": resource.id,
+		"type": "post_attachment"
+	}))
+	const postAttachments = attachmentIDs.length === 0
+		// eslint-disable-next-line no-undefined
+		? undefined
+		: {
+			"data": attachmentIDs
+		}
+
 	fetcher.create({
 		"content": content.value,
 		"createdAt": new Date().toJSON(),
@@ -258,12 +268,7 @@ function createPost(): void {
 						"type": "department"
 					}
 				},
-				"postAttachments": {
-					"data": attachmentResources.value.map(resource => ({
-						"id": resource.id,
-						"type": "post_attachment"
-					}))
-				},
+				postAttachments,
 				"poster": {
 					"data": {
 						"id": userProfile.data.id,
@@ -277,9 +282,20 @@ function createPost(): void {
 					}
 				}
 			}
-		}
+		} as PostRelationships<"create">
 	}).then(() => {
 		close()
-	}).catch(console.log)
+	}).catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 </script>
