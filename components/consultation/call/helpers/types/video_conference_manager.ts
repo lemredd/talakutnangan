@@ -5,6 +5,7 @@ import type {
 	ILocalAudioTrack,
 	ILocalVideoTrack,
 
+	IAgoraRTCRemoteUser,
 	IRemoteAudioTrack,
 	IRemoteVideoTrack
 } from "agora-rtc-sdk-ng"
@@ -23,8 +24,10 @@ export type LocalTracks = {
 	"localVideoTrack": LocalVideoTrack|null
 }
 
+export type RemoteUser = IAgoraRTCRemoteUser
 export type RemoteTracks = {
 	remoteID: string,
 	remoteAudioTrack: RemoteAudioTrack|null,
 	remoteVideoTrack: RemoteVideoTrack|null
 }
+export type MediaType = "audio"|"video"
