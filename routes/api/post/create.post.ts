@@ -82,6 +82,7 @@ export default class extends JSONController {
 			{
 				"ClassName": PostAttachmentManager,
 				"isArray": true,
+				"isOptional": true,
 				"relationshipName": "postAttachments",
 				"typeName": "post_attachment",
 				"validator": exists
