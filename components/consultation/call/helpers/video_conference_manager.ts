@@ -4,7 +4,9 @@ import type {
 	VideoConferenceEngine,
 
 	LocalTracks,
-	RemoteTracks
+	RemoteUser,
+	RemoteTracks,
+	MediaType
 } from "@/consultation/call/helpers/types/video_conference_manager"
 
 import Stub from "$/singletons/stub"
@@ -40,7 +42,9 @@ export async function initiateVideoConferenceEngine(remoteParticipants: Ref<Remo
 
 		videoConferenceEngine.on(
 			"user-published",
-			(user, mediaType) => handleRemoteUserJoining(engine, user, mediaType, remoteParticipants)
+			(user: RemoteUser, mediaType: MediaType) => {
+				handleRemoteUserJoining(engine, user, mediaType, remoteParticipants)
+			}
 		)
 	}
 }
