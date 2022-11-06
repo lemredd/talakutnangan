@@ -43,8 +43,8 @@
 							'Third'
 						}}
 					</td>
-					<td>{{ resource.startAt }}</td>
-					<td>{{ resource.endAt }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.startAt) }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.endAt) }}</td>
 					<td>
 						<a
 							v-if="mayEdit"
@@ -86,9 +86,9 @@
 					v-for="resource in filteredList"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ resource.userID }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.user.data.name) }}</td>
 					<td>{{ resource.actionName }}</td>
-					<td>{{ resource.extra }}</td>
+					<td>{{ resource.createdAt }}</td>
 				</tr>
 			</template>
 
@@ -162,6 +162,7 @@
 import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
@@ -186,7 +187,7 @@ const tableHeaders = computed(() => {
 		]
 	} else if (resourceType.value === "audit_trail") {
 		headers = [
-			"ID", "Actin name", "Extra"
+			"ID", "Action name", "Created at"
 		]
 	} else {
 		headers = [ "Name", "no. of users", "" ]
