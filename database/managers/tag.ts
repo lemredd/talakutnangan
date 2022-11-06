@@ -1,18 +1,28 @@
-import type { CommonQueryParameters } from "$/types/query"
-import type { ModelCtor } from "%/types/dependent"
+import type { Pipe } from "$/types/database"
+import type { TagQueryParameters } from "$/types/query"
 import type { TagAttributes } from "$/types/documents/tag"
+import type { FindAndCountOptions, ModelCtor } from "%/types/dependent"
 
+import Model from "%/models/tag"
 import BaseManager from "%/managers/base"
-import Tag from "%/models/tag"
-
-import TagTransformer from "%/transformers/tag"
+import Transformer from "%/transformers/tag"
+import includeDefaults from "%/queries/tag/include_defaults"
 
 export default class extends BaseManager<
-	Tag,
+	Model,
 	TagAttributes<"deserialized">,
-	CommonQueryParameters
+	TagQueryParameters
 > {
-	get model(): ModelCtor<Tag> { return Tag }
+	get model(): ModelCtor<Model> { return Model }
 
-	get transformer(): TagTransformer { return new TagTransformer() }
+	get transformer(): Transformer { return new Transformer() }
+
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, TagQueryParameters>[] {
+		return [
+			// siftBySlug,
+			// siftByDepartment,
+			includeDefaults,
+			...super.listPipeline
+		]
+	}
 }
