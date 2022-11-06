@@ -24,6 +24,7 @@ import type {
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
+import { DeserializedTagResource } from "$/types/documents/tag"
 /**
  * Shape of expected page context parameter of common front-end functions
  */
@@ -121,6 +122,7 @@ export type PossibleResources =
 	| DeserializedDepartmentResource
 	| DeserializedRoleResource
 	| DeserializedSemesterResource
+	| DeserializedTagResource
 
 export type Timer = ReturnType<typeof setInterval>
 
