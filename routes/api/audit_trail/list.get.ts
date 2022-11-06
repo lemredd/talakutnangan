@@ -39,7 +39,7 @@ export default class extends QueryController {
 		const constraints = { ...request.query }
 
 		const manager = new Manager(request)
-		const auditTrails = await manager.list(constraints as AuditTrailQueryParameters<number>)
+		const auditTrails = await manager.list(constraints as AuditTrailQueryParameters)
 
 		return new ListResponse(auditTrails)
 	}
