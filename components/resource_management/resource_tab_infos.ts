@@ -4,7 +4,8 @@ import {
 	DEPARTMENT_LIST,
 	USER_LIST,
 	ROLE_LIST,
-	SEMESTER_LIST
+	SEMESTER_LIST,
+	TAG_LIST
 } from "$/constants/template_page_paths"
 
 import { user, role, department, semester } from "$/permissions/permission_list"
@@ -72,6 +73,23 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				"icon": "",
 				"name": "Semesters",
 				"path": SEMESTER_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
+			UPDATE_SEMESTERS,
+			ARCHIVE_AND_RESTORE_SEMESTERS
+		],
+		"permissionGroup": semester
+	},
+	{
+		"kinds": [],
+		"links": [
+			{
+				"icon": "",
+				"name": "Tags",
+				"path": TAG_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
