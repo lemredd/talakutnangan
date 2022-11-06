@@ -30,6 +30,68 @@
 				</tr>
 			</template>
 
+			<template v-else-if="resourceType === 'semester'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.name }}</td>
+					<td>
+						{{
+							resource.semesterOrder === 'first' ? 'First' :
+							resource.semesterOrder === 'second' ? 'Second' :
+							'Third'
+						}}
+					</td>
+					<td>{{ resource.startAt }}</td>
+					<td>{{ resource.endAt }}</td>
+					<td>
+						<a
+							v-if="mayEdit"
+							:href="`read/${resource.id}`"
+							class="read-resource-btn btn"
+							type="button">
+							edit
+						</a>
+					</td>
+				</tr>
+			</template>
+
+			<template v-else-if="resourceType === 'department'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.fullName }}</td>
+					<td>{{ resource.acronym }}</td>
+					<td>
+						{{
+							resource.mayAdmit ? "Yes": "No"
+						}}
+					</td>
+					<td>
+						<a
+							v-if="mayEdit"
+							:href="`read/${resource.id}`"
+							class="read-resource-btn btn"
+							type="button">
+							edit
+						</a>
+					</td>
+				</tr>
+			</template>
+
+			<template v-else-if="resourceType === 'audit_trail'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.userID }}</td>
+					<td>{{ resource.actionName }}</td>
+					<td>{{ resource.extra }}</td>
+				</tr>
+			</template>
+
 			<template v-else #table-body>
 				<tr
 					v-for="resource in filteredList"
@@ -109,13 +171,26 @@ const { filteredList } = defineProps<{
 }>()
 
 const resourceType = computed(() => filteredList[0].type)
+
 const tableHeaders = computed(() => {
 	let headers: string[] = []
-	if (resourceType.value === "user") {
+	if (resourceType.value === "semester") {
+		headers = [ "Name", "Order", "Start at", "End at" ]
+	} else if (resourceType.value === "user") {
 		headers = [
-			"Name", "E-mail", "Role", "Department", "Semester"
+			"Name", "E-mail", "Role", "Department"
 		]
-	} else { headers = [ "Name", "no. of users", "" ] }
+	} else if (resourceType.value === "department") {
+		headers = [
+			"Name", "Acronym", "May admit"
+		]
+	} else if (resourceType.value === "audit_trail") {
+		headers = [
+			"ID", "Actin name", "Extra"
+		]
+	} else {
+		headers = [ "Name", "no. of users", "" ]
+	}
 
 
 	return headers
