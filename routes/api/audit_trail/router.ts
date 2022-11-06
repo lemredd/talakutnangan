@@ -1,3 +1,3 @@
-import GetList from "!%/api/department/list.get"
+import GetList from "!%/api/audit_trail/list.get"
 
 export const controllers = [ GetList ]
