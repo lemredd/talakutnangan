@@ -76,10 +76,13 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
 import type { SummaryRange, OptionInfo } from "$@/types/component"
-import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
+import type {
+	DeserializedSemesterResource,
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
 
 import DateSelector from "@/fields/date_selector.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -97,19 +100,26 @@ const emit = defineEmits<CustomEvents>()
 
 const rangeBegin = ref<Date>(props.initialRangeBegin)
 const rangeEnd = ref<Date>(props.initialRangeEnd)
-const CUSTOM_DATE = "custom"
-const chosenSemester = ref<string>(CUSTOM_DATE)
+const CUSTOM_RANGE = "custom"
+const chosenSemester = ref<string>(CUSTOM_RANGE)
 const selectableSemesters = computed<OptionInfo[]>(() => [
 	...props.semesters.data.map(semester => ({
 		"label": semester.name,
 		"value": semester.id
 	})),
 	{
-		"label": "Custom date",
-		"value": CUSTOM_DATE
+		"label": "Custom range",
+		"value": CUSTOM_RANGE
 	}
 ])
-const mustUseCustomRange = computed(() => chosenSemester.value === CUSTOM_DATE)
+const mustUseCustomRange = computed(() => chosenSemester.value === CUSTOM_RANGE)
+watch(chosenSemester, newValue => {
+	const resource = props.semesters.data
+	.find(semester => semester.id === newValue) as DeserializedSemesterResource
+
+	rangeBegin.value = resource.startAt
+	rangeEnd.value = resource.endAt
+})
 
 function renewSummary() {
 	emit("renewSummary", {
