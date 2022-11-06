@@ -149,7 +149,7 @@
 		"windicss": "^3.5.6"
 	},
 	"engines": {
-		"node": "16.x"
+		"node": "16.x.x"
 	},
 	"contributors": [
 		{
