@@ -2,9 +2,7 @@
 	<ResourceManager
 		v-model:slug="slug"
 		v-model:existence="existence"
-		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>

@@ -2,9 +2,7 @@
 	<ResourceManager
 		v-model:slug="slug"
 		v-model:existence="existence"
-		:is-loaded="isLoaded"
-		:department-names="[] as OptionInfo[]"
-		:tag-names="[] as OptionInfo[]">
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -29,7 +27,6 @@
 <script setup lang="ts">
 import { inject, ref, computed } from "vue"
 
-import { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedTagResource } from "$/types/documents/tag"
 
