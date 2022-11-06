@@ -144,6 +144,15 @@ export interface PreviewMessageOnlyFilter extends Serializable {
 	}
 }
 
+export interface PostRequirementFilter extends Serializable {
+	filter: {
+		/**
+		 * Require tags to have associated posts
+		 */
+		mustHavePost: boolean
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -229,8 +238,6 @@ export type PostQueryParameters<T extends number|string = string> =
 
 export type TagQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
-	& NullableDepartmentFilter<T>
-	& IDsFilter<T>
 	& SlugFilter
 
 export type TimeSumQueryParameters<T extends number|string = string> =
