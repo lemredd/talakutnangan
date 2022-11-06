@@ -4,7 +4,7 @@ import type { SemesterQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
-import SemesterManager from "%/managers/semester"
+import Manager from "%/managers/semester"
 import QueryController from "!/controllers/query"
 
 import string from "!/validators/base/string"
@@ -25,7 +25,7 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(SemesterManager, {
+		return makeListRules(Manager, {
 			"slug": {
 				"constraints": {
 					"nullable": { "defaultValue": "" }
@@ -38,9 +38,9 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new SemesterManager(request)
-		const departments = await manager.list(constraints as SemesterQueryParameters)
+		const manager = new Manager(request)
+		const semesters = await manager.list(constraints as SemesterQueryParameters<number>)
 
-		return new ListResponse(departments)
+		return new ListResponse(semesters)
 	}
 }

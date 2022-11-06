@@ -1,7 +1,11 @@
 import type { GeneralObject } from "$/types/general"
-import type { DeserializedUserResource } from "$/types/documents/user"
 import type {
-	Completeness,
+	AttachableCompleteness as Completeness,
+	CompletenessRegulator,
+	ReadableCompleteness,
+	PaginatedDocument
+} from "$/types/documents/irregularity"
+import type {
 	Format,
 	Resource,
 	Attributes,
@@ -13,38 +17,38 @@ import type {
 	DeserializedResourceListDocument
 } from "$/types/documents/base"
 
-export interface AuditTrailResourceIdentifier<T extends Completeness = "read">
-extends ResourceIdentifier<T> {
+export type AuditTrailResourceIdentifier<T extends Completeness = "read">
+= ResourceIdentifier<CompletenessRegulator<T>> & PaginatedDocument<T> & {
 	type: "audit_trail"
 }
 
 export interface AuditTrailAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	actionName: string,
-	extra: GeneralObject
+	extra: GeneralObject,
+	createdAt: T extends "serialized" ? string : Date
 }
 
 export type AuditTrailResource<T extends Completeness = "read"> = Resource<
-	T,
+	CompletenessRegulator<T>,
 	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes<"serialized">
 >
 
-export interface DeserializedAuditTrailResource extends DeserializedResource<
-	AuditTrailResourceIdentifier<"read">,
+export type DeserializedAuditTrailResource<T extends ReadableCompleteness = "read">
+= DeserializedResource<
+	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes<"deserialized">
-> {
-	user: DeserializedUserResource|null
-}
+>
 
 export type AuditTrailDocument<T extends Completeness = "read"> = ResourceDocument<
-	T,
+	CompletenessRegulator<T>,
 	AuditTrailResourceIdentifier<T>,
 	AuditTrailAttributes<"serialized">,
 	AuditTrailResource<T>
 >
 
 export type AuditTrailListDocument<T extends Completeness = "read"> = ResourceListDocument<
-T,
+CompletenessRegulator<T>,
 AuditTrailResourceIdentifier<T>,
 AuditTrailAttributes<"serialized">,
 AuditTrailResource<T>
