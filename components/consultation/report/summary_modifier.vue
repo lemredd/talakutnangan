@@ -50,7 +50,7 @@
 		@apply flex flex-row flex-wrap justify-start items-center;
 
 		label {
-			@apply flex-1 flex flex-row justify-start items-center;
+			@apply flex-1 flex flex-row justify-start items-center my-2;
 
 			span {
 				@apply flex-initial;
@@ -62,7 +62,7 @@
 		}
 
 		.date-range {
-			@apply flex-1 py-2 mr-5;
+			@apply flex-1 py-2 mr-2;
 		}
 
 		> div {
@@ -100,6 +100,10 @@ const rangeEnd = ref<Date>(props.initialRangeEnd)
 const CUSTOM_DATE = "custom"
 const chosenSemester = ref<string>(CUSTOM_DATE)
 const selectableSemesters = computed<OptionInfo[]>(() => [
+	...props.semesters.data.map(semester => ({
+		"label": semester.name,
+		"value": semester.id
+	})),
 	{
 		"label": "Custom date",
 		"value": CUSTOM_DATE
