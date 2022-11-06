@@ -6,36 +6,6 @@
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
 			</a>
 
-			<Dropdown
-				v-if="!isUserAGuest"
-				:is-dropdown-shown="mustShowNotifications"
-				class="notifications"
-				@toggle="toggleNotificationsDedicatedly"
-				@resize="toggleNotificationsDedicatedly">
-				<template #toggler>
-					<span class="material-icons">notifications</span>
-				</template>
-				<template #dropdown-contents>
-					<ul class="notification-items">
-						<a href="">
-							<li
-								v-for="notification in notifications"
-								:key="notification.id"
-								class="notification-item">
-								<div :class="`icon ${notification.type}`">
-									<span class="material-icons">{{ notification.icon }}</span>
-								</div>
-								<h3 class="title">{{ notification.description }}</h3>
-								<small class="date">{{ notification.dateOccured }}</small>
-							</li>
-						</a>
-
-						<li class="notification-footer">
-							<a href="/notifications">View All</a>
-						</li>
-					</ul>
-				</template>
-			</Dropdown>
 			<CommonNavigationLinks/>
 			<Dropdown
 				v-if="!isUserAGuest"
@@ -175,35 +145,15 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 
 const isUserAGuest = computed(() => userProfile === null)
 
-const {
-	"state": mustShowNotifications,
-	"toggle": toggleNotifications,
-	"off": closeNotifications
-} = makeSwitch(false)
 
 const {
 	"state": mustShowSettings,
-	"toggle": toggleSettings,
-	"off": closeSettings
+	"toggle": toggleSettings
 } = makeSwitch(false)
 
-function toggleNotificationsDedicatedly() {
-	closeSettings()
-	toggleNotifications()
-}
 
 function toggleSettingsDedicatedly() {
-	closeNotifications()
 	toggleSettings()
 }
 
-const notifications = [
-	{
-		"dateOccured": new Date(2022, 2, 3).toDateString(),
-		"description": "lorem ipsum",
-		"icon": "notifications",
-		"id": 0,
-		"type": "general"
-	}
-]
 </script>

@@ -33,12 +33,6 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"kinds": [],
 		"links": [
 			{
-				"icon": "notifications",
-				"name": "Notifications",
-				"path": "/notifications",
-				"viewportsAvailable": [ "mobile" ]
-			},
-			{
 				"icon": "account_circle",
 				"name": "User Settings",
 				"path": "/settings",
