@@ -6,6 +6,7 @@ import type { FindAndCountOptions, ModelCtor } from "%/types/dependent"
 import Model from "%/models/tag"
 import BaseManager from "%/managers/base"
 import Transformer from "%/transformers/tag"
+import siftBySlug from "%/queries/tag/sift_by_slug"
 import includeDefaults from "%/queries/tag/include_defaults"
 
 export default class extends BaseManager<
@@ -19,8 +20,7 @@ export default class extends BaseManager<
 
 	get listPipeline(): Pipe<FindAndCountOptions<Model>, TagQueryParameters>[] {
 		return [
-			// siftBySlug,
-			// siftByDepartment,
+			siftBySlug,
 			includeDefaults,
 			...super.listPipeline
 		]
