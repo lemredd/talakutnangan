@@ -21,7 +21,7 @@ describe("Database Pipe: Sift by slug", () => {
 		.name(() => "firstTag")
 		.insertOne()
 		await new Factory()
-		.name(() => "firstTag")
+		.name(() => "secondTag")
 		.insertOne()
 		const slug = "fir"
 
@@ -33,12 +33,13 @@ describe("Database Pipe: Sift by slug", () => {
 		expect(foundModels).toHaveProperty("0.id", model.id)
 	})
 
+
 	it("cannot find on incorrect slug", async() => {
 		await new Factory()
 		.name(() => "firstTag")
 		.insertOne()
 		await new Factory()
-		.name(() => "firstTag")
+		.name(() => "secondTag")
 		.insertOne()
 		const slug = "xx"
 
