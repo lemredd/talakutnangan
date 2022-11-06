@@ -18,6 +18,13 @@ export default class extends BaseManager<
 
 	get transformer(): Transformer { return new Transformer() }
 
+	get singleReadPipeline(): Pipe<FindAndCountOptions<Model>, TagQueryParameters>[] {
+		return [
+			includeDefaults,
+			...super.singleReadPipeline
+		]
+	}
+
 	get listPipeline(): Pipe<FindAndCountOptions<Model>, TagQueryParameters>[] {
 		return [
 			siftBySlug,
