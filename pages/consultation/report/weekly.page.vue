@@ -102,12 +102,17 @@ import type { WeeklySummedTimeDocument } from "$/types/documents/consolidated_ti
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
+import SemesterFetcher from "$@/fetchers/semester"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
+
+import { READ } from "$/permissions/semester_combinations"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
@@ -167,7 +172,25 @@ async function renewSummary(range: SummaryRange) {
 	})
 }
 
-onMounted(() => {
+onMounted(async() => {
+	const mayViewSemesters = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		READ
+	])
+
+	if (mayViewSemesters) {
+		await loadRemainingResource(semesters, new SemesterFetcher(), () => ({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": semesters.value.data.length
+			},
+			"sort": [ "startAt" ]
+		}))
+	}
+
 	isLoaded.value = true
 })
 </script>
