@@ -1,6 +1,11 @@
 <template>
 	<form @submit.prevent="renewSummary">
-		<label>
+		<SelectableOptionsField
+			v-model="chosenSemester"
+			class="date-range"
+			label="Date range:"
+			:options="selectableSemesters"/>
+		<label v-if="mustUseCustomRange">
 			<span>
 				Begin:
 			</span>
@@ -8,7 +13,7 @@
 				v-model="rangeBegin"
 				class="date"/>
 		</label>
-		<label>
+		<label v-if="mustUseCustomRange">
 			<span>
 				End:
 			</span>
@@ -52,8 +57,12 @@
 			}
 
 			.date {
-				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
+				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5 w-50;
 			}
+		}
+
+		.date-range {
+			@apply flex-1 py-2 mr-5;
 		}
 
 		> div {
@@ -67,11 +76,12 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
 
-import type { SummaryRange } from "$@/types/component"
+import type { SummaryRange, OptionInfo } from "$@/types/component"
 
 import DateSelector from "@/fields/date_selector.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
@@ -85,6 +95,15 @@ const emit = defineEmits<CustomEvents>()
 
 const rangeBegin = ref<Date>(props.initialRangeBegin)
 const rangeEnd = ref<Date>(props.initialRangeEnd)
+const CUSTOM_DATE = "custom"
+const chosenSemester = ref<string>(CUSTOM_DATE)
+const selectableSemesters = computed<OptionInfo[]>(() => [
+	{
+		"label": "Custom date",
+		"value": CUSTOM_DATE
+	}
+])
+const mustUseCustomRange = computed(() => chosenSemester.value === CUSTOM_DATE)
 
 function renewSummary() {
 	emit("renewSummary", {
