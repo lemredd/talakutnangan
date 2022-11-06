@@ -1,27 +1,33 @@
 <template>
 	<form @submit.prevent="renewSummary">
 		<label>
-			Begin:
+			<span>
+				Begin:
+			</span>
 			<DateSelector
 				v-model="rangeBegin"
 				class="date"/>
 		</label>
 		<label>
-			End:
+			<span>
+				End:
+			</span>
 			<DateSelector
 				v-model="rangeEnd"
 				class="date"/>
 		</label>
-		<input
-			type="submit"
-			value="Summarize"
-			class="summarize-print btn btn-primary"/>
-		<button
-			type="button"
-			class="summarize-print btn btn-primary"
-			@click="printPage">
-			Print
-		</button>
+		<div>
+			<input
+				type="submit"
+				value="Summarize"
+				class="summarize-print btn btn-primary"/>
+			<button
+				type="button"
+				class="summarize-print btn btn-primary"
+				@click="printPage">
+				Print
+			</button>
+		</div>
 	</form>
 </template>
 
@@ -35,8 +41,24 @@
 		}
 	}
 
-	.date{
-		@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
+	form {
+		@apply flex flex-row flex-wrap justify-start items-center;
+
+		label {
+			@apply flex-1 flex flex-row justify-start items-center;
+
+			span {
+				@apply flex-initial;
+			}
+
+			.date {
+				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
+			}
+		}
+
+		> div {
+			@apply flex-none;
+		}
 	}
 
 	.summarize-print{
