@@ -1,12 +1,14 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
-import type { CommonQueryParameters } from "$/types/query"
+import type { AuditTrailQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
-import AuditTrailManager from "%/managers/audit_trail"
+import Manager from "%/managers/audit_trail"
 import QueryController from "!/controllers/query"
 
+import string from "!/validators/base/string"
+import nullable from "!/validators/base/nullable"
 import { READ } from "$/permissions/audit_trail_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { auditTrail as permissionGroup } from "$/permissions/permission_list"
@@ -23,14 +25,21 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(AuditTrailManager, {})
+		return makeListRules(Manager, {
+			"slug": {
+				"constraints": {
+					"nullable": { "defaultValue": "" }
+				},
+				"pipes": [ nullable, string ]
+			}
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new AuditTrailManager(request)
-		const auditTrails = await manager.list(constraints as CommonQueryParameters)
+		const manager = new Manager(request)
+		const auditTrails = await manager.list(constraints as AuditTrailQueryParameters)
 
 		return new ListResponse(auditTrails)
 	}
