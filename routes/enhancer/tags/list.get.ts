@@ -1,11 +1,11 @@
 import type { Serializable } from "$/types/general"
 import type { DocumentProps } from "$/types/server"
+import type { TagListDocument } from "$/types/documents/tag"
 import type { AuthenticatedRequest } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/tag"
 import Validation from "!/bases/validation"
-import DepartmentManager from "%/managers/department"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -36,31 +36,21 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
-		const departmentManager = new DepartmentManager(request)
-		const pageProps = {
-			"departments": await departmentManager.list({
-				"filter": {
-					"existence": "exists",
-					"slug": ""
-				},
-				"page": {
-					"limit": Infinity,
-					"offset": 0
-				},
-				"sort": [ "fullName" ]
-			}),
-			"roles": await manager.list({
-				"filter": {
-					"existence": "exists"
-				},
-				"page": {
-					"limit": 10,
-					"offset": 0
-				},
-				"sort": [ "name" ]
-			})
-		}
+		const tags = await manager.list({
+			"filter": {
+				"existence": "exists",
+				"mustHavePost": false,
+				"slug": ""
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "createdAt" ]
+		}) as TagListDocument
 
-		return pageProps
+		return {
+			tags
+		}
 	}
 }
