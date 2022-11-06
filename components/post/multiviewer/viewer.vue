@@ -70,6 +70,31 @@
 		<p>
 			{{ post.content }}
 		</p>
+		<div v-if="hasExistingAttachments">
+			<div
+				v-for="attachment in postAttachments"
+				:key="attachment.id"
+				class="preview-file">
+				<div v-if="isImage(attachment.fileType)" class="preview-img-container">
+					<div class="removable-image relative">
+						<img class="preview-img" :src="attachment.fileContents"/>
+					</div>
+					<small class="preview-title">
+						Attachment {{ attachment.id }}
+					</small>
+				</div>
+				<div
+					v-else
+					class="preview-file-container">
+					<span class="material-icons mr-2">
+						attachment
+					</span>
+					<small class="preview-file-title">
+						Attachment {{ attachment.id }}
+					</small>
+				</div>
+			</div>
+		</div>
 		<a :href="readPostPath" class="comment-count">
 			<span class="material-icons icon">
 				comment
@@ -116,6 +141,10 @@
 import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
+import type {
+	DeserializedPostAttachmentResource,
+	DeserializedPostAttachmentListDocument
+} from "$/types/documents/post_attachment"
 
 import { READ_POST } from "$/constants/template_page_paths"
 
@@ -134,6 +163,10 @@ import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
 const fetcher = new Fetcher()
 
+function isImage(type: string): boolean {
+	return type.includes("image")
+}
+
 const props = defineProps<{
 	commentCount: number,
 	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
@@ -150,6 +183,22 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+
+const hasExistingAttachments = computed<boolean>(() => {
+	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
+
+	return hasAttachments
+})
+const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
+	if (hasExistingAttachments.value) {
+		const attachments = props.modelValue
+		.postAttachments as DeserializedPostAttachmentListDocument
+
+		return attachments.data
+	}
+
+	return []
+})
 
 const {
 	"state": mustUpdate,

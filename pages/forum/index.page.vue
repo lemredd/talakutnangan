@@ -32,10 +32,6 @@
 			@apply flex-1 flex justify-between items-center;
 			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
 
-			// .post-create {
-			// 	@apply p-4 rounded-1rem bg-gray-300 text-gray-500;
-			// 	width: 90%;
-			// }
 
 			.account-attachment {
 				@apply h-6 w-auto;
