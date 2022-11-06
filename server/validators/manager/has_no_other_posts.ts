@@ -19,7 +19,7 @@ export default async function(
 	const manager = new Manager(constraints.request)
 
 	const modelID = state.value
-	const hasPosts = await manager.findWithID(Number(modelID), {
+	const posts = await manager.findWithID(Number(modelID), {
 		"constraints": {
 			"filter": {
 				"existence": "exists",
@@ -28,7 +28,7 @@ export default async function(
 		}
 	})
 
-	if (hasPosts) return state
+	if (posts.data === null) return state
 
 	const error = {
 		"field": constraints.field,
