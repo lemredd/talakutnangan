@@ -4,13 +4,13 @@ import type { SemesterQueryParameters } from "$/types/query"
 
 import Policy from "!/bases/policy"
 import ListResponse from "!/response_infos/list"
-import SemesterManager from "%/managers/department"
+import Manager from "%/managers/semester"
 import QueryController from "!/controllers/query"
 
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
-import { READ } from "$/permissions/department_combinations"
-import { department as permissionGroup } from "$/permissions/permission_list"
+import { READ } from "$/permissions/semester_combinations"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
 
 import makeListRules from "!/rule_sets/make_list"
@@ -25,7 +25,7 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(SemesterManager, {
+		return makeListRules(Manager, {
 			"slug": {
 				"constraints": {
 					"nullable": { "defaultValue": "" }
@@ -38,9 +38,9 @@ export default class extends QueryController {
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
 		const constraints = { ...request.query }
 
-		const manager = new SemesterManager(request)
-		const departments = await manager.list(constraints as SemesterQueryParameters<number>)
+		const manager = new Manager(request)
+		const semesters = await manager.list(constraints as SemesterQueryParameters<number>)
 
-		return new ListResponse(departments)
+		return new ListResponse(semesters)
 	}
 }
