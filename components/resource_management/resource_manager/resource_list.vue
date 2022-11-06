@@ -105,12 +105,12 @@ import pluralize from "$/string/pluralize"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
-const { filteredList } = defineProps<{
+const props = defineProps<{
 	filteredList: PossibleResources[]
 	mayEdit: boolean
 }>()
 
-const resourceType = computed(() => filteredList[0].type)
+const resourceType = computed(() => props.filteredList[0].type)
 const tableHeaders = computed(() => {
 	let headers: string[] = []
 	if (resourceType.value === "user") {
