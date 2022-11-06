@@ -24,7 +24,8 @@ export type AuditTrailResourceIdentifier<T extends Completeness = "read">
 
 export interface AuditTrailAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	actionName: string,
-	extra: GeneralObject
+	extra: GeneralObject,
+	createdAt: T extends "serialized" ? string : Date
 }
 
 export type AuditTrailResource<T extends Completeness = "read"> = Resource<
