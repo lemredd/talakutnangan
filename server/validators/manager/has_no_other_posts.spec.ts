@@ -12,14 +12,8 @@ import validator from "./has_no_other_posts"
 
 describe("Validator: has no other posts", () => {
 	it("can accept valid input", async() => {
-		const postFactory = new PostFactory()
-		const postTagFactory = new PostTagFactory()
-		const post = await postFactory.insertOne()
+		await new PostFactory().insertOne()
 		const model = await new Factory().insertOne()
-		await postTagFactory
-		.post(() => Promise.resolve(post))
-		.tag(() => Promise.resolve(model))
-		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
 			"field": "hello",
@@ -33,8 +27,14 @@ describe("Validator: has no other posts", () => {
 	})
 
 	it("cannot accept invalid value", async() => {
-		await new PostFactory().insertOne()
+		const postFactory = new PostFactory()
+		const postTagFactory = new PostTagFactory()
+		const post = await postFactory.insertOne()
 		const model = await new Factory().insertOne()
+		await postTagFactory
+		.post(() => Promise.resolve(post))
+		.tag(() => Promise.resolve(model))
+		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
 			"field": "hello",
