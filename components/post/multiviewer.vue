@@ -4,6 +4,7 @@
 			<SelectableOptionsField
 				v-model="chosenDepartment"
 				label="Department"
+				class="filter"
 				:options="departmentNames"/>
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
@@ -27,7 +28,13 @@
 		@apply flex flex-col flex-nowrap;
 
 		form {
-			@apply flex-none flex flex-row mb-4 h-8;
+			@apply flex flex-row items-center;
+			@apply mb-4 h-8 p-10 rounded-[1rem] bg-gray-300;
+			max-width: 100%;
+
+		.filter{
+			max-width:100%;
+		}
 
 			.existence {
 				@apply flex flex-row ml-8;
