@@ -2,16 +2,14 @@
 	<form @submit.prevent="renewSummary">
 		<label>
 			Begin:
-			<input
+			<DateSelector
 				v-model="rangeBegin"
-				type="date"
 				class="date"/>
 		</label>
 		<label>
 			End:
-			<input
+			<DateSelector
 				v-model="rangeEnd"
-				type="date"
 				class="date"/>
 		</label>
 		<input
@@ -37,19 +35,21 @@
 		}
 	}
 
-.date{
-	@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
-}
+	.date{
+		@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
+	}
 
-.summarize-print{
-	@apply m-l-5 rounded-0.5rem;
-}
+	.summarize-print{
+		@apply m-l-5 rounded-0.5rem;
+	}
 </style>
 
 <script setup lang="ts">
 import { ref } from "vue"
 
 import type { SummaryRange } from "$@/types/component"
+
+import DateSelector from "$@/fields/date_selector.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
