@@ -1,7 +1,7 @@
 <template>
 	<div class="multiviewer">
 		<SelectableExistenceFilter
-			v-if="isPostOwned"
+			v-if="mayViewArchivedOrRestore"
 			v-model="existence"/>
 		<Suspensible :is-loaded="isLoaded">
 			<Viewer
@@ -47,7 +47,7 @@ import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
-	isPostOwned: boolean
+	mayViewArchivedOrRestore: boolean
 	modelValue: DeserializedCommentListDocument<"user">
 	post: DeserializedPostResource
 }>()

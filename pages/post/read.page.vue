@@ -13,7 +13,7 @@
 				v-if="mayReadComment"
 				v-model="comments"
 				:post="post"
-				:is-post-owned="isPostOwned"/>
+				:may-view-archived-or-restore="mayViewArchivedOrRestore"/>
 		</div>
 	</article>
 </template>
@@ -50,7 +50,10 @@ import {
 	CREATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
 	CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
 import Viewer from "@/post/multiviewer/viewer.vue"
@@ -68,7 +71,17 @@ const { userProfile } = pageProps
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
 	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
 )
-const isPostOwned = post.value.poster.data.id === userProfile.data.id
+const mayViewArchivedOrRestore = computed<boolean>(() => {
+	const isOwned = post.value.poster.data.id === userProfile.data.id
+
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+		ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+		ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+	])
+
+	return isOwned || isPermitted
+})
 
 const comments = ref<DeserializedCommentListDocument<"user">>(
 	pageProps.comments as DeserializedCommentListDocument<"user">
