@@ -21,6 +21,10 @@ import type {
 	DeserializedDepartmentListDocument
 } from "$/types/documents/department"
 import type {
+	DeserializedAuditTrailDocument,
+	DeserializedAuditTrailListDocument
+} from "$/types/documents/audit_trail"
+import type {
 	DeserializedSemesterDocument,
 	DeserializedSemesterListDocument
 } from "$/types/documents/semester"
@@ -103,6 +107,9 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	semesters: OptionalPageProps<T, DeserializedSemesterListDocument>
 	semester: OptionalPageProps<T, DeserializedSemesterDocument>
+
+	audit_trails: OptionalPageProps<T, DeserializedAuditTrailListDocument>
+	audit_tral: OptionalPageProps<T, DeserializedAuditTrailDocument>
 
 	consultations: OptionalPageProps<T, DeserializedConsultationListDocument>
 	consultation: OptionalPageProps<T, DeserializedConsultationDocument>
