@@ -1,7 +1,11 @@
 import type { Pipe } from "$/types/database"
-import type { TagQueryParameters } from "$/types/query"
 import type { TagAttributes } from "$/types/documents/tag"
 import type { FindAndCountOptions, ModelCtor } from "%/types/dependent"
+import type {
+	TagQueryParameters,
+	PostRequirementFilter,
+	CommonFilter
+} from "$/types/query"
 
 import Model from "%/models/tag"
 import BaseManager from "%/managers/base"
@@ -12,7 +16,10 @@ import includeDefaults from "%/queries/tag/include_defaults"
 export default class extends BaseManager<
 	Model,
 	TagAttributes<"deserialized">,
-	TagQueryParameters
+	TagQueryParameters,
+	void,
+	number,
+	PostRequirementFilter & CommonFilter
 > {
 	get model(): ModelCtor<Model> { return Model }
 
