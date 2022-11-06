@@ -11,7 +11,7 @@
 	"private": true,
 	"types": "module",
 	"scripts": {
-		"start": "npm run prod",
+		"start": "npm run server:prod",
 		"prod": "npm run build && npm run server:prod",
 		"build": "vite build && npm run migrate:up && npx sequelize-cli db:seed:all",
 		"server:prod": "cross-env NODE_ENV=production ts-node ./server",
