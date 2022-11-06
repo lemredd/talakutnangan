@@ -49,7 +49,7 @@ import { ref } from "vue"
 
 import type { SummaryRange } from "$@/types/component"
 
-import DateSelector from "$@/fields/date_selector.vue"
+import DateSelector from "@/fields/date_selector.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
