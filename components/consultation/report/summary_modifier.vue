@@ -79,13 +79,15 @@
 import { ref, computed } from "vue"
 
 import type { SummaryRange, OptionInfo } from "$@/types/component"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 
 import DateSelector from "@/fields/date_selector.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
-	initialRangeEnd: Date
+	initialRangeEnd: Date,
+	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {

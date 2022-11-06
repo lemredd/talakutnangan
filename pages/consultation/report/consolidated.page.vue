@@ -4,6 +4,7 @@
 		<SummaryModifier
 			:initial-range-begin="rangeBegin"
 			:initial-range-end="rangeEnd"
+			:semesters="semesters"
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
@@ -130,6 +131,7 @@ import { ref, computed, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { SummaryRange, RawFullTimeString } from "$@/types/component"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 import type {
 	ConsolidatedSummedTimeDocument,
 	DateTimeRange
@@ -149,12 +151,13 @@ import convertToFullTimeString from "@/consultation/report/convert_to_full_time_
 import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
-const pageContext = inject("pageContext") as PageContext<
-	"deserialized",
-	"timeConsumedforConsolidation"
->
+type RequiredExtraProps =
+	| "timeConsumedforConsolidation"
+	| "semesters"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+const semesters = ref<DeserializedSemesterListDocument>(pageProps.semesters)
 const timeConsumedforConsolidation = ref<ConsolidatedSummedTimeDocument>(
 	pageProps.timeConsumedforConsolidation as ConsolidatedSummedTimeDocument
 )
