@@ -8,6 +8,7 @@
 		"web",
 		"chat"
 	],
+	"main": "server/index.ts",
 	"private": true,
 	"types": "module",
 	"scripts": {
