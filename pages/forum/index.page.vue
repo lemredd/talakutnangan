@@ -13,7 +13,7 @@
 		</div>
 		<CreatePostForm
 			:is-shown="isCreateShown"
-			accept="*/*"
+			:departments="departments"
 			@close="hideCreateForm"/>
 		<Multiviewer
 			v-model="posts"
