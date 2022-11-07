@@ -4,6 +4,7 @@
 			<SelectableOptionsField
 				v-model="chosenDepartment"
 				label="Department"
+				class="filter"
 				:options="departmentNames"/>
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
@@ -21,7 +22,9 @@
 		</Suspensible>
 
 		<div v-if="hasRemainingPosts" class="load-others">
-			<button @click="retrievePosts">
+			<button
+				class="btn btn-primary"
+				@click="retrievePosts">
 				Load other posts
 			</button>
 		</div>
@@ -29,14 +32,22 @@
 </template>
 
 <style scoped lang="scss">
-	.multiviwer {
-		@apply flex flex-col flex-nowrap;
+@import "@styles/btn.scss";
+@import "@styles/variables.scss";
+	.multiviewer {
+		@apply flex flex-col;
 
 		form {
-			@apply flex-none flex flex-row mb-4 h-8;
+			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
+			@apply bg-gray-300 bg-opacity-20 p-4 m-4 shadow-inner;
+
+		.filter{
+			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap;
+			max-width:100%;
+		}
 
 			.existence {
-				@apply flex flex-row ml-8;
+				@apply flex flex-col flex-nowrap;
 			}
 		}
 
@@ -49,7 +60,6 @@
 		}
 		.load-others {
 			@apply flex-1;
-
 			button { @apply w-[100%]; }
 		}
 	}

@@ -5,6 +5,12 @@
 		</template>
 		<template #default>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<SelectableOptionsField
+				v-if="mayPostGenerally"
+				v-model="chosenDepartment"
+				label="Department"
+				class="filter"
+				:options="departmentName"/>
 			<DraftForm
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
@@ -39,7 +45,7 @@
 					type="file"
 					name="data[attributes][fileContents]"
 					class="hidden"
-					:accept="accept"
+					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
 			<div v-if="hasExtracted" class="preview-file">
@@ -114,30 +120,34 @@ import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { PostRelationships } from "$/types/documents/post"
 import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
+import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
 
+
 import Overlay from "@/helpers/overlay.vue"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import assignPath from "$@/external/assign_path"
-import specializePath from "$/helpers/specialize_path"
-import { READ_POST } from "$/constants/template_page_paths"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 type RequiredExtraProps = "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile, departments } = pageProps
 
+
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
+const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 
 const hasMultipleRoles = userProfile.data.roles.data.length > 1
 const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
@@ -154,6 +164,26 @@ const maySelectOtherDepartments = computed(() => {
 
 	return permissionGroup.mayAllow(chosenRole, ...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
 })
+
+const departmentID = ref<string>(userProfile.data.department.data.id)
+
+defineProps<{
+	isShown: boolean
+	departments: DeserializedDepartmentListDocument
+}>()
+
+const NULL_AS_STRING = "~"
+const departmentName = computed<OptionInfo[]>(() => [
+	{
+		"label": "General",
+		"value": NULL_AS_STRING
+	},
+	...departments.data.map(data => ({
+		"label": data.fullName,
+		"value": data.id
+	}))
+])
+
 const departmentNames = computed<OptionInfo[]>(() => {
 	const departmentNameOptions = maySelectOtherDepartments.value
 		? []
@@ -169,14 +199,16 @@ const departmentNames = computed<OptionInfo[]>(() => {
 		]
 	return departmentNameOptions
 })
-const departmentID = ref<string>(userProfile.data.department.data.id)
+
+const mayPostGenerally = computed<boolean>(() => {
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+	])
+	return isLimitedUpToGlobalScope
+})
 
 const content = ref<string>("")
 
-defineProps<{
-	accept: "image/*" | "*/*"
-	isShown: boolean
-}>()
 interface CustomEvents {
 	(event: "close"): void
 }
@@ -306,4 +338,5 @@ function createPost(): void {
 		}
 	})
 }
+
 </script>
