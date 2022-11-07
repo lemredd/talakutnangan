@@ -167,6 +167,7 @@ function importData(event: Event) {
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
+		if (createdUsers.value.length) createdUsers.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {
