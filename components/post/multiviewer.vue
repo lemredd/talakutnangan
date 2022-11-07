@@ -42,7 +42,7 @@
 			@apply bg-gray-300 bg-opacity-20 p-4 m-4 shadow-inner;
 
 		.filter{
-			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap;
+			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
 			max-width:100%;
 		}
 
