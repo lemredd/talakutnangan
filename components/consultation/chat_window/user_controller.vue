@@ -9,7 +9,7 @@
 				Start consultation
 			</button>
 			<span v-if="!willStart" class="will-not-start">
-				You can start the consultation once the consultant is available.
+				You can only start this consultation on its scheduled time.
 			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">

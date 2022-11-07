@@ -24,7 +24,7 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative py-3px px-10px h-full;
+	@apply relative px-10px h-full;
 }
 
 .invisible-closer {
