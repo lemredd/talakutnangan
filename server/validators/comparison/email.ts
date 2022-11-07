@@ -34,7 +34,7 @@ export default async function(
 			"friendlyName": constraints.friendlyName,
 			"messageMaker": (
 				field: string
-			) => `Field "${field}" should have 8 characters before "@" character.`
+			) => `Field "${field}" should have 8 or more characters before "@" character.`
 		}
 
 		throw error
