@@ -31,6 +31,7 @@
 				@switch-tab="switchTab"/>
 
 			<ExtraControls
+				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
 				@show-action-taken-overlay="showActionTakenOverlay"
