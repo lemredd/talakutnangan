@@ -1,19 +1,19 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
+			<ProfilePicture
+				class="profile-picture"
+				:user="comment.user"/>
 			<h3>
 				<span>
 					{{ comment.user.data.name }}
 				</span>
-				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+				<span class="timestamp" :title="completeFriendlyCommentTimestamp">
 					{{ friendlyCommentTimestamp }}
 				</span>
 			</h3>
 		</header>
 		<div class="main-content">
-			<ProfilePicture
-				class="profile-picture"
-				:user="comment.user"/>
 			<p>
 				{{ comment.content }}
 			</p>
@@ -76,28 +76,28 @@
 	@import "@styles/btn.scss";
 
 	section {
-		@apply mb-4 pb-4;
-		border-bottom: 1px solid black;
+		@apply mb-12 pb-4;
+		border-bottom: 1px solid rgba(0,0,0,0.3);
 		@apply flex flex-col flex-nowrap;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
+			.profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
+
 			h3 {
-				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
+				@apply flex-1 flex flex-col flex-nowrap;
 				@apply m-auto;
 
-				/**
-				 * Reduce the left margin
-				 */
-				width: calc(100% - 3.75rem);
-
 				span:nth-child(1) {
+					@apply text-sm;
 					@apply flex-1 truncate flex-shrink-[2];
 				}
 
-				span:nth-child(2) {
-					@apply flex-initial;
+				.timestamp {
+					@apply text-xs;
 				}
 			}
 		}
@@ -109,13 +109,12 @@
 				width: 100%;
 			}
 
-			> .profile-picture {
-				@apply flex-initial w-auto h-12 mr-2;
-			}
-
 			> p {
+				@apply overflow-ellipsis;
 				@apply flex-1;
 				@apply ml-auto p-5;
+
+				word-break: break-all;
 			}
 		}
 	}

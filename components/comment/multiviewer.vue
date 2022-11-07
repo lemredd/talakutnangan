@@ -2,7 +2,8 @@
 	<div class="multiviewer">
 		<SelectableExistenceFilter
 			v-if="mayViewArchivedOrRestore"
-			v-model="existence"/>
+			v-model="existence"
+			class="comment-existence-filter"/>
 		<Suspensible :is-loaded="isLoaded">
 			<Viewer
 				v-for="(comment, i) in comments.data"
@@ -26,6 +27,10 @@
 <style lang="scss">
 	.multiviewer {
 		@apply flex flex-col flex-nowrap justify-start items-stretch;
+
+		.comment-existence-filter {
+			@apply sm:mt-12 mb-4;
+		}
 
 		.viewer {
 			@apply flex-1;

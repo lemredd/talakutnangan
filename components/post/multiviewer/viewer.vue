@@ -111,7 +111,7 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md min-w-70;
 
 		header {
 			@apply flex-1 flex flex-row justify-between;
