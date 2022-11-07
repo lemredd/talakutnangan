@@ -86,9 +86,9 @@
 					v-for="resource in filteredList"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ formatToCompleteFriendlyTime(resource.user.data.name) }}</td>
+					<td>{{ resource.user.data.name }}</td>
 					<td>{{ resource.actionName }}</td>
-					<td>{{ resource.createdAt }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.createdAt) }}</td>
 				</tr>
 			</template>
 
