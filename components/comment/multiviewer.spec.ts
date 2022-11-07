@@ -192,6 +192,7 @@ describe("Component: comment/multiviewer", () => {
 			},
 			"props": {
 				"isPostOwned": true,
+				"mayViewArchivedOrRestore": true,
 				modelValue,
 				"post": {
 					"id": postID

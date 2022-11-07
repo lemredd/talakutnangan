@@ -119,6 +119,7 @@
 import { ref, computed, inject, nextTick } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
@@ -126,6 +127,13 @@ import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
+
+import { comment as permissionGroup } from "$/permissions/permission_list"
+import {
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+} from "$/permissions/comment_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
@@ -153,10 +161,34 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const hasRenewedVote = ref<boolean>(true)
+const mayVoteComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	return isPermitted && props.modelValue.value.deletedAt === null
+})
+
 const mayVote = computed<boolean>(() => {
 	const hasNotLoaded = isUndefined(props.modelValue.meta)
 
-	return !hasNotLoaded && hasRenewedVote.value
+	return !hasNotLoaded && mayVoteComment.value && hasRenewedVote.value
 })
 
 const voteCount = computed<number>(() => {
