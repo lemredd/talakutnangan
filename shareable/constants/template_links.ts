@@ -113,3 +113,5 @@ export const READ_GENERATED_RTC_TOKEN
 export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments?:query`
 
 export const COUNT_USERS_OF_DEPARTMENT = `${DEPARTMENT_LINK.unbound}/count_users?:query`
+
+export const RESET_PASSWORD_LINK = `${USER_LINK.unbound}/reset_password/:id`

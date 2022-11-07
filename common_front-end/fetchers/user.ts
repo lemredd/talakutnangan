@@ -20,7 +20,8 @@ import {
 	LOG_OUT_LINK,
 	IMPORT_USER_LINK,
 	UPDATE_DEPARTMENT_OF_USER_LINK,
-	UPDATE_ROLE_OF_USER_LINK
+	UPDATE_ROLE_OF_USER_LINK,
+	RESET_PASSWORD_LINK
 } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
@@ -135,6 +136,34 @@ export default class UserFetcher extends BaseFetcher<
 					currentPassword
 				}
 			})
+		) as Response<
+			UserResourceIdentifier,
+			UserAttributes<"serialized">,
+			UserAttributes<"deserialized">,
+			UserResource,
+			DeserializedUserResource,
+			null
+		>
+	}
+
+	async resetPassword(ID: string): Promise<Response<
+		UserResourceIdentifier,
+		UserAttributes<"serialized">,
+		UserAttributes<"deserialized">,
+		UserResource,
+		DeserializedUserResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON(RESET_PASSWORD_LINK, {
+				"id": ID
+			}, {
+				"data": {
+					"id": ID,
+					"type": "user"
+				}
+			}),
+			false
 		) as Response<
 			UserResourceIdentifier,
 			UserAttributes<"serialized">,

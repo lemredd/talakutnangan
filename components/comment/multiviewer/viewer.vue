@@ -1,19 +1,19 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
+			<ProfilePicture
+				class="profile-picture"
+				:user="comment.user"/>
 			<h3>
 				<span>
 					{{ comment.user.data.name }}
 				</span>
-				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+				<span class="timestamp" :title="completeFriendlyCommentTimestamp">
 					{{ friendlyCommentTimestamp }}
 				</span>
 			</h3>
 		</header>
 		<div class="main-content">
-			<ProfilePicture
-				class="profile-picture"
-				:user="comment.user"/>
 			<p>
 				{{ comment.content }}
 			</p>
@@ -66,32 +66,38 @@
 			:title="friendlyVoteCount"
 			@update:model-value="switchVote"/>
 	</section>
+	<UpdateCommentField
+		v-else
+		:model-value="comment"
+		@update:model-value="closeUpdateCommentField"/>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap mb-4;
+		@apply mb-12 pb-4;
+		border-bottom: 1px solid hsla(0,0%,60%,0.3);
+		@apply flex flex-col flex-nowrap;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
-			h3 {
-				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
-				@apply m-auto ml-15;
+			.profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
 
-				/**
-				 * Reduce the left margin
-				 */
-				width: calc(100% - 3.75rem);
+			h3 {
+				@apply flex-1 flex flex-col flex-nowrap;
+				@apply m-auto;
 
 				span:nth-child(1) {
+					@apply text-sm;
 					@apply flex-1 truncate flex-shrink-[2];
 				}
 
-				span:nth-child(2) {
-					@apply flex-initial;
+				.timestamp {
+					@apply text-xs;
 				}
 			}
 		}
@@ -100,16 +106,15 @@
 			@apply flex-1 flex flex-row flex-nowrap items-center;
 
 			@screen md {
-				@apply w-[90%];
-			}
-
-			> .profile-picture {
-				@apply flex-initial w-auto h-12 mr-2;
+				width: 100%;
 			}
 
 			> p {
+				@apply overflow-ellipsis;
 				@apply flex-1;
-				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
+				@apply ml-auto p-5;
+
+				word-break: break-all;
 			}
 		}
 	}
@@ -140,6 +145,7 @@ import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
 import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import UpdateCommentField from "@/comment/multiviewer/viewer/update_field.vue"
 
 const fetcher = new Fetcher()
 const voteFetcher = new VoteFetcher()
@@ -311,9 +317,16 @@ async function switchVote(newRawVote: string): Promise<void> {
 
 const {
 	"state": mustUpdate,
+	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
 const mustDisplayOnly = computed(() => !mustUpdate.value)
+function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">) {
+	emit("update:modelValue", newComment)
+	comment.value = newComment
+	closeUpdateField()
+}
+
 
 const {
 	"state": mustArchive,
