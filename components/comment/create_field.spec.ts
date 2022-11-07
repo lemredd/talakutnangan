@@ -12,6 +12,7 @@ describe("Component: comment/create_field", () => {
 		const postID = "1"
 		const userID = "2"
 		const content = "Hello world"
+
 		const commentIdentifier = {
 			"id": "1",
 			"type": "comment"
@@ -47,7 +48,7 @@ describe("Component: comment/create_field", () => {
 				}
 			},
 			"props": {
-				post
+				"postToInsertComment": post
 			}
 		})
 
