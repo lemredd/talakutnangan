@@ -6,7 +6,9 @@ describe("Component: call/call controls", () => {
 	it("must be able to join call", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"isJoined": false
+				"isJoined": false,
+				"isShowingVideo": true,
+				"isTransmittingAudio": true
 			}
 		})
 		const joinCallBtn = wrapper.find(".join-call-btn")
@@ -18,7 +20,9 @@ describe("Component: call/call controls", () => {
 	it("can emit custom events", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"isJoined": true
+				"isJoined": true,
+				"isShowingVideo": true,
+				"isTransmittingAudio": true
 			}
 		})
 		const toggleVideoBtn = wrapper.findComponent(".toggle-video")
