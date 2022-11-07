@@ -22,6 +22,7 @@ describe("Controller: PATCH /api/user/:id", () => {
 					"attributes": {
 						"email": newUser.email,
 						"name": newUser.name,
+
 						"prefersDark": newUser.prefersDark
 					},
 					"id": String(user.id),
