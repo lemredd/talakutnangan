@@ -22,20 +22,6 @@ describe("Controller: POST /api/comment/:id", () => {
 						"approvedAt": newComment.approvedAt,
 						"content": newComment.content
 					},
-					"relationships": {
-						"post": {
-							"data": {
-								"id": String(newComment.postID),
-								"type": "post"
-							}
-						},
-						"user": {
-							"data": {
-								"id": String(newComment.userID),
-								"type": "user"
-							}
-						}
-					},
 					"id": String(comment.id),
 					"type": "comment"
 				}
@@ -60,20 +46,6 @@ describe("Controller: POST /api/comment/:id", () => {
 						"approvedAt": 1,
 						"content": 1
 					},
-					"relationships": {
-						"post": {
-							"data": {
-								"id": 1,
-								"type": "post"
-							}
-						},
-						"user": {
-							"data": {
-								"id": 1,
-								"type": "user"
-							}
-						}
-					},
 					"id": String(comment.id),
 					"type": "comment"
 				}
@@ -84,10 +56,8 @@ describe("Controller: POST /api/comment/:id", () => {
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
 
-		expect(body).toHaveLength(4)
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.approvedAt")
 		expect(body).toHaveProperty("1.source.pointer", "data.attributes.content")
-		expect(body).toHaveProperty("2.source.pointer", "data.relationships.post.data.id")
-		expect(body).toHaveProperty("3.source.pointer", "data.relationships.user.data.id")
 	})
 })
