@@ -1,51 +1,51 @@
-import Semester from "%/models/audit_trail"
-import SemesterFactory from "~/factories/audit_trail"
+import AuditTrail from "%/models/audit_trail"
+import AuditTrailFactory from "~/factories/audit_trail"
 
 import siftBySlug from "./sift_by_slug"
 
 describe("Database Pipe: Sift by slug", () => {
 	it("can find all", async() => {
-		const auditTrail = await new SemesterFactory().insertOne()
+		const auditTrail = await new AuditTrailFactory().insertOne()
 		const slug = ""
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundSemesters = await Semester.findAll(options)
+		const foundAuditTrails = await AuditTrail.findAll(options)
 
 		expect(options).not.toHaveProperty("include")
-		expect(foundSemesters).toHaveLength(1)
-		expect(foundSemesters).toHaveProperty("0.id", auditTrail.id)
+		expect(foundAuditTrails).toHaveLength(1)
+		expect(foundAuditTrails).toHaveProperty("0.id", auditTrail.id)
 	})
 
 	it("can find on specific using name", async() => {
-		const auditTrail = await new SemesterFactory()
+		const auditTrail = await new AuditTrailFactory()
 		.actionName(() => "firstauditTrail")
 		.insertOne()
-		await new SemesterFactory()
+		await new AuditTrailFactory()
 		.actionName(() => "secondauditTrail")
 		.insertOne()
 		const slug = "fir"
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundSemesters = await Semester.findAll(options)
+		const foundAuditTrails = await AuditTrail.findAll(options)
 
 		expect(options).toHaveProperty("where")
-		expect(foundSemesters).toHaveLength(1)
-		expect(foundSemesters).toHaveProperty("0.id", auditTrail.id)
+		expect(foundAuditTrails).toHaveLength(1)
+		expect(foundAuditTrails).toHaveProperty("0.id", auditTrail.id)
 	})
 
 	it("cannot find on incorrect slug", async() => {
-		await new SemesterFactory()
+		await new AuditTrailFactory()
 		.actionName(() => "firstauditTrail")
 		.insertOne()
-		await new SemesterFactory()
+		await new AuditTrailFactory()
 		.actionName(() => "secondauditTrail")
 		.insertOne()
 		const slug = "xx"
 
 		const options = siftBySlug({}, { "filter": { slug } })
-		const foundSemesters = await Semester.findAll(options)
+		const foundAuditTrails = await AuditTrail.findAll(options)
 
 		expect(options).toHaveProperty("where")
-		expect(foundSemesters).toHaveLength(0)
+		expect(foundAuditTrails).toHaveLength(0)
 	})
 })
