@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="submit">
+	<form @submit.prevent>
 		<ProfilePicture
 			class="self"
 			:user="user"/>

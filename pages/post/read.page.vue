@@ -87,7 +87,7 @@ const comments = ref<DeserializedCommentListDocument<"user">>(
 	pageProps.comments as DeserializedCommentListDocument<"user">
 )
 const commentCount = computed<number>(() => {
-	const castMeta = pageProps.comments.meta as ResourceCount
+	const castMeta = comments.value.meta as ResourceCount
 
 	return castMeta.count
 })

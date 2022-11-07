@@ -182,7 +182,7 @@ const mayVoteComment = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	return isPermitted && props.modelValue.value.deletedAt === null
+	return isPermitted && props.modelValue.deletedAt === null
 })
 
 const mayVote = computed<boolean>(() => {
