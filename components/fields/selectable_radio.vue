@@ -17,6 +17,12 @@
 	</div>
 </template>
 
+<style scoped lang="scss">
+	label {
+		@apply mr-4;
+	}
+</style>
+
 <script setup lang="ts">
 import { computed } from "vue"
 
