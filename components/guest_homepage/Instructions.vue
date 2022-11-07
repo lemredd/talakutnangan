@@ -35,9 +35,9 @@
 
 				<span class="instruction-director">Start consulting <a href="/consultation">here</a></span>
 			</ul>
-			<div class="pt-2 order-2 md:order-1 flex self-center justify-between">
+			<div class="people consultation">
 				<Person
-					class="mr-5"
+					class="person-1"
 					variant="talking"
 					accessory="chat"/>
 				<Person
@@ -74,19 +74,18 @@
 					</p>
 				</li>
 			</ul>
-			<div class="left-auto w-min h-min flex self-center pt-2">
-				<div class="crowd flex flex-row items-stretch">
+			<div class="people">
+				<div class="crowd">
 					<Person variant="default" class="self-center"/>
-					<div class="self-center justify-center ml-[-0.25em]">
+					<div>
 						<Person variant="default"/>
 						<Person variant="default"/>
 					</div>
 				</div>
 				<Person
-					class="ml-[3em]"
+					class="announcer"
 					variant="announce"
-					accessory="campaign"
-					style="transform: scaleX(-1);"/>
+					accessory="campaign"/>
 			</div>
 		</div>
 	</div>
@@ -111,6 +110,46 @@
 		.instructions-list {
 			@apply md:order-2;
 			@apply right-auto;
+		}
+
+		.people {
+			@apply pt-2 order-2 md:order-1 flex self-center justify-between;
+
+			.person-1 {
+				@apply mr-5;
+				@screen md {
+					transform:
+					scale(1.35)
+					translateY(-60px);
+				}
+			}
+		}
+	}
+
+	&.forum {
+		.people {
+			@apply left-auto w-min h-min flex self-center pt-2;
+
+			.crowd {
+				@apply flex flex-row items-stretch;
+				@screen md {
+					transform:
+						scale(0.55)
+						translate(-40px, -50px);
+				}
+			}
+
+			.announcer {
+				@apply ml-8;
+				transform: scaleX(-1);
+
+				@screen md {
+					@apply m-0;
+					transform:
+						scale(-1.35, 1.35)
+						translate(20px, 30px);
+					}
+				}
 		}
 	}
 
