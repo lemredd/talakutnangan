@@ -179,7 +179,8 @@ describe("Server: Catching all errors", () => {
 			}
 		})
 		requester.customizeRequest({
-			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
+			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE),
+			"headerSent": false
 		})
 
 		await requester.runErrorHandler(catchAllErrors)
@@ -210,7 +211,8 @@ describe("Server: Catching all errors", () => {
 			}
 		})
 		requester.customizeRequest({
-			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
+			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE),
+			"headerSent": false
 		})
 		const error = new BaseError(
 			"0",
@@ -250,7 +252,8 @@ describe("Server: Catching all errors", () => {
 			}
 		})
 		requester.customizeRequest({
-			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE)
+			"accepts": jest.fn(mediaType => mediaType === JSON_API_MEDIA_TYPE),
+			"headerSent": false
 		})
 		const error = new ErrorBag([
 			new BaseError(
