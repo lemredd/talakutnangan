@@ -1,6 +1,8 @@
 <template>
 	<div class="selectable-radio">
-		{{ title }}
+		<h6 class="title">
+			{{ title }}
+		</h6>
 		<label
 			v-for="option in options"
 			:key="option.value"
