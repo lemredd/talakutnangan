@@ -1,3 +1,4 @@
+/* eslint-disable vue/sort-keys */
 // @ts-check
 
 /**
@@ -45,11 +46,11 @@ module.exports = {
 				const departmentID = await queryInterface.rawSelect(
 					"Departments",
 					{
+						transaction,
 						"where": {
 							// @ts-ignore
 							"acronym": department.acronym
-						},
-						transaction
+						}
 					},
 					"id"
 				)
@@ -71,11 +72,11 @@ module.exports = {
 				const userID = await queryInterface.rawSelect(
 					"Users",
 					{
+						transaction,
 						"where": {
 							// @ts-ignore
 							"email": user.email
-						},
-						transaction
+						}
 					},
 					"id"
 				)
@@ -83,10 +84,10 @@ module.exports = {
 				const roleID = await queryInterface.rawSelect(
 					"Roles",
 					{
+						transaction,
 						"where": {
 							"name": "Admin"
-						},
-						transaction
+						}
 					},
 					"id"
 				)
