@@ -118,7 +118,7 @@
 		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
 
 		header {
-			@apply flex-1 flex flex-row justify-between;
+			@apply flex flex-row justify-between;
 
 			.post-details {
 				@apply flex-1 flex flex-row justify-between;
@@ -146,6 +146,10 @@
 
 		.comment-count {
 			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
+		}
+
+		p {
+			word-break: break-all;
 		}
 	}
 

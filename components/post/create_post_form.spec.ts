@@ -29,12 +29,17 @@ describe("Component: post/create_post_form", () => {
 			"name": "B",
 			"postFlags": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		}
+		const departments = {
+			"data": [ departmentAResource ],
+			"meta": {
+				"count": 0
+			}
+		}
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"departments": [],
 							"userProfile": {
 								"data": {
 									"department": {
@@ -57,6 +62,7 @@ describe("Component: post/create_post_form", () => {
 				}
 			},
 			"props": {
+				departments,
 				"isShown": true
 			}
 		})
@@ -91,12 +97,17 @@ describe("Component: post/create_post_form", () => {
 			"name": "B",
 			"postFlags": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		}
+		const departments = {
+			"data": [ departmentAResource, departmentBResource ],
+			"meta": {
+				"count": 0
+			}
+		}
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"departments": [ departmentAResource, departmentBResource ],
 							"userProfile": {
 								"data": {
 									"department": {
@@ -119,9 +130,11 @@ describe("Component: post/create_post_form", () => {
 				}
 			},
 			"props": {
+				departments,
 				"isShown": true
 			}
 		})
+
 		const roleOptionsField = wrapper
 		.find(".role-selector")
 		.findComponent({ "name": "SelectableOptionsField" })
@@ -135,7 +148,7 @@ describe("Component: post/create_post_form", () => {
 		expect(departmentOptionsField.exists()).toBeTruthy()
 	})
 
-	it.only("may submit to any department but only one role", async() => {
+	it("may submit to any department but only one role", async() => {
 		fetchMock.mockResponseOnce(
 			"",
 			{ "status": RequestEnvironment.status.NO_CONTENT }
@@ -159,7 +172,6 @@ describe("Component: post/create_post_form", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							"departments": [ departmentAResource, departmentBResource ],
 							"userProfile": {
 								"data": {
 									"department": {
@@ -182,6 +194,12 @@ describe("Component: post/create_post_form", () => {
 				}
 			},
 			"props": {
+				"departments": {
+					"data": [ departmentAResource, departmentBResource ],
+					"meta": {
+						"count": 2
+					}
+				},
 				"isShown": true
 			}
 		})

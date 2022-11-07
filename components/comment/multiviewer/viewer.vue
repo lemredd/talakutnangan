@@ -135,6 +135,9 @@ import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly
 
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
+	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
 	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
@@ -188,7 +191,34 @@ const mayVoteComment = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	return isPermitted && props.modelValue.deletedAt === null
+	return isPermitted && !props.modelValue.value.deletedAt
+})
+const mayViewComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	const isDeleted = props.modelValue.value.deletedAt
+	const mayViewArchived = isPermitted && isDeleted
+	const mayViewPresent = !isDeleted
+
+	return mayViewArchived || mayViewPresent
 })
 
 const mayVote = computed<boolean>(() => {
@@ -320,7 +350,7 @@ const {
 	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
-const mustDisplayOnly = computed(() => !mustUpdate.value)
+const mustDisplayOnly = computed(() => !mustUpdate.value && !mayViewComment.value)
 function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">) {
 	emit("update:modelValue", newComment)
 	comment.value = newComment

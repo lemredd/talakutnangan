@@ -8,6 +8,8 @@ import Model from "%/models/audit_trail"
 import includeUser from "%/queries/audit_trail/include_user"
 import AuditTrailTransformer from "%/transformers/audit_trail"
 
+import siftBySlug from "%/queries/audit_trail/sift_by_slug"
+
 interface RawAuditTrailAttributes extends AuditTrailAttributes<"deserialized"> {
 	userID: number|null
 }
@@ -30,6 +32,7 @@ export default class extends BaseManager<
 
 	get listPipeline(): Pipe<FindAndCountOptions<Model>, AuditTrailQueryParameters>[] {
 		return [
+			siftBySlug,
 			includeUser,
 			...super.listPipeline
 		]

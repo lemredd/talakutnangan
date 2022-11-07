@@ -19,7 +19,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
-			<ResourceList :filtered-list="list" :may-edit="mayEditRole"/>
+			<ResourceList :filtered-list="list.data" :may-edit="mayEditRole"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -33,17 +33,20 @@ import { inject, onMounted, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
-import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
-import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -61,7 +64,7 @@ const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)
-const list = ref<DeserializedRoleResource[]>(pageProps.roles.data as DeserializedRoleResource[])
+const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
@@ -80,47 +83,44 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 
+async function countUsersPerRole(IDsToCount: string[]) {
+	await fetcher.countUsers(IDsToCount).then(response => {
+		const deserializedData = response.body.data
+		const originalData = [ ...list.value.data ]
+
+		for (const identifierData of deserializedData) {
+			const { id, meta } = identifierData
+
+			const index = originalData.findIndex(data => data.id === id)
+			originalData[index].meta = meta
+		}
+
+		list.value = {
+			...list.value,
+			"data": originalData,
+			"meta": list.value.meta
+		}
+	})
+}
+
 async function fetchRoleInfos(): Promise<number|void> {
-	await fetcher.list({
+	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"department": chosenDepartment.value,
 			"existence": existence.value,
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
-			"offset": list.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
 		},
 		"sort": [ "name" ]
-	}).then(response => {
-		isLoaded.value = true
-		const deserializedData = response.body.data as DeserializedRoleResource[]
-		const IDsToCount = deserializedData.map(data => data.id)
-
-		if (deserializedData.length === 0) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		// eslint-disable-next-line no-use-before-define
-		return countUsersPerRole(IDsToCount)
-	})
-}
-
-async function countUsersPerRole(IDsToCount: string[]) {
-	await fetcher.countUsers(IDsToCount).then(response => {
-		const deserializedData = response.body.data
-
-		for (const identifierData of deserializedData) {
-			const { id, meta } = identifierData
-
-			const index = list.value.findIndex(data => data.id === id)
-
-			if (index > -1) {
-				list.value[index].meta = meta
-			}
+	}), {
+		async postOperations(deserializedData) {
+			const IDsToCount = deserializedData.data.map(data => data.id)
+			return await countUsersPerRole(IDsToCount)
 		}
 	})
-	await fetchRoleInfos()
 }
 
 const { userProfile } = pageProps
@@ -147,7 +147,12 @@ const mayEditRole = computed<boolean>(() => {
 })
 
 async function refetchRoles() {
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	isLoaded.value = false
 	await fetchRoleInfos()
 }
@@ -155,7 +160,7 @@ async function refetchRoles() {
 watch([ chosenDepartment, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
-	await countUsersPerRole(list.value.map(item => item.id))
+	await countUsersPerRole(list.value.data.map(item => item.id))
 	await loadRemainingDepartments(departments, departmentFetcher)
 	isLoaded.value = true
 })

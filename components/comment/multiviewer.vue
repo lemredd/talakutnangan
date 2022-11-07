@@ -17,7 +17,9 @@
 			</p>
 		</Suspensible>
 		<div v-if="hasRemainingComments" class="load-others">
-			<button @click="fetchComments">
+			<button
+				class="load-btn btn btn-secondary"
+				@click="fetchComments">
 				Load other comments
 			</button>
 		</div>
@@ -25,6 +27,8 @@
 </template>
 
 <style lang="scss">
+	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col flex-nowrap justify-start items-stretch;
 
@@ -39,7 +43,9 @@
 		.load-others {
 			@apply flex-1;
 
-			button { @apply w-[100%]; }
+			button {
+				width: 100%;
+			}
 		}
 	}
 </style>

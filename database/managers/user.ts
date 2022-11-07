@@ -301,8 +301,10 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 			incompleteProfile: ProcessedDataForStudent
 		) => {
 			const { studentNumber, ...incompleteNormalizedProfile } = incompleteProfile
-			return { ...incompleteNormalizedProfile,
-				"studentDetail": { studentNumber } }
+			return {
+				...incompleteNormalizedProfile,
+				"studentDetail": { studentNumber }
+			}
 		})
 
 		Log.trace("manager", "specialized the data structure for student bulk creation")

@@ -27,7 +27,7 @@
 		</template>
 
 		<template #resources>
-			<ResourceList :filtered-list="list" :may-edit="mayEditUser"/>
+			<ResourceList :filtered-list="list.data" :may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -48,8 +48,9 @@ import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
-import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedUserListDocument, DeserializedUserProfile } from "$/types/documents/user"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -67,6 +68,7 @@ import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
@@ -76,6 +78,7 @@ import ResourceList from "@/resource_management/resource_manager/resource_list.v
 
 type RequiredExtraProps =
 	| "userProfile"
+	| "users"
 	| "roles"
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -101,7 +104,7 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
-const list = ref<DeserializedUserResource[]>([])
+const list = ref<DeserializedUserListDocument>(pageProps.users)
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
 )
@@ -135,8 +138,8 @@ const chosenDepartment = ref("*")
 const slug = ref("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 
-function fetchUserInfo() {
-	fetcher.list({
+async function fetchUserInfo() {
+	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
 				? chosenDepartment.value
@@ -147,20 +150,12 @@ function fetchUserInfo() {
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
-			"offset": list.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
 		},
 		"sort": [ "name" ]
-	}).then(({ "body": deserializedUserList }) => {
-		isLoaded.value = true
-		const deserializedData = deserializedUserList.data as DeserializedUserResource[]
-
-		if (!deserializedData.length) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		return Promise.resolve()
-	})
+	}))
+	isLoaded.value = true
 }
 
 const mayCreateUser = computed<boolean>(() => {
@@ -190,7 +185,12 @@ const mayEditUser = computed<boolean>(() => {
 
 async function resetUsersList() {
 	isLoaded.value = false
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	await fetchUserInfo()
 }
 
