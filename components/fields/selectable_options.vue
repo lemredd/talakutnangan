@@ -26,7 +26,7 @@
 
 <style scoped lang="scss">
 	.selectable {
-		@apply flex flex-row flex-nowrap;
+		@apply flex flex-row flex-nowrap max-w-full;
 
 		label {
 			@apply flex-none;

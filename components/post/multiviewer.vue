@@ -20,21 +20,32 @@
 				There are no post found.
 			</p>
 		</Suspensible>
+
+		<div v-if="hasRemainingPosts" class="load-others">
+			<button @click="retrievePosts">
+				Load other posts
+			</button>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	div {
+	.multiviwer {
 		@apply flex flex-col flex-nowrap;
 
 		form {
-			@apply flex flex-row flex-nowrap sm:flex flex-col items-stretch;
-			@apply bg-gray-300 bg-opacity-20 p-4 m-4 shadow-inner rounded-[1rem];
+			@apply flex flex-row items-center;
+			@apply mb-4 h-8 p-10 rounded-[1rem] bg-gray-300;
+			min-width: 80%;
 
 		.filter{
-			max-width: 100%;
+			@apply flex-wrap;
+			max-width:100%;
 		}
 
+			.existence {
+				@apply flex flex-row ml-8;
+			}
 		}
 
 		.viewer-group {
@@ -43,6 +54,11 @@
 			.viewer {
 				@apply flex-1 mb-8;
 			}
+		}
+		.load-others {
+			@apply flex-1;
+
+			button { @apply w-[100%]; }
 		}
 	}
 </style>
@@ -101,6 +117,9 @@ const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"depar
 	}
 })
 const hasNoPosts = computed<boolean>(() => posts.value.data.length === 0)
+const hasRemainingPosts = computed<boolean>(
+	() => posts.value.data.length < (posts.value.meta?.count || 0)
+)
 
 const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
