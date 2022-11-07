@@ -50,6 +50,7 @@ import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedUserListDocument, DeserializedUserProfile } from "$/types/documents/user"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -61,8 +62,6 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
 } from "$/permissions/user_combinations"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
-
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
@@ -79,6 +78,7 @@ import ResourceList from "@/resource_management/resource_manager/resource_list.v
 
 type RequiredExtraProps =
 	| "userProfile"
+	| "users"
 	| "roles"
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
@@ -104,12 +104,7 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
-const list = ref<DeserializedUserListDocument>({
-	"data": [],
-	"meta": {
-		"count": 0
-	}
-})
+const list = ref<DeserializedUserListDocument>(pageProps.users)
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
 )

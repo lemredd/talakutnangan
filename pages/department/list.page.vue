@@ -18,7 +18,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
-			<ResourceList :filtered-list="list" :may-edit="mayEditDepartment"/>
+			<ResourceList :filtered-list="list.data" :may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -31,14 +31,17 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/department"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -54,42 +57,37 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
-const list = ref<DeserializedDepartmentResource[]>(
-	pageProps.departments.data as DeserializedDepartmentResource[]
+const list = ref<DeserializedDepartmentListDocument>(
+	pageProps.departments as DeserializedDepartmentListDocument
 )
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 
 async function fetchDepartmentInfos(): Promise<number|void> {
-	await fetcher.list({
+	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"existence": existence.value,
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
-			"offset": list.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
 		},
 		"sort": [ "fullName" ]
-	}).then(response => {
-		isLoaded.value = true
-		const deserializedData = response.body.data as DeserializedDepartmentResource[]
-		const IDsToCount = deserializedData.map(data => data.id)
-
-		if (deserializedData.length === 0) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		// eslint-disable-next-line no-use-before-define
-		return countUsersPerDepartment(IDsToCount)
+	}), {
+		async postOperations(deserializedData) {
+			const IDsToCount = deserializedData.data.map(data => data.id)
+			// eslint-disable-next-line no-use-before-define
+			return await countUsersPerDepartment(IDsToCount)
+		}
 	})
 }
 
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
-		const originalData = [ ...list.value ]
+		const originalData = [ ...list.value.data ]
 
 		for (const identifierData of deserializedData) {
 			const { id, meta } = identifierData
@@ -98,7 +96,11 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 			originalData[index].meta = meta
 		}
 
-		list.value = originalData
+		list.value = {
+			...list.value,
+			"data": originalData,
+			"meta": list.value.meta
+		}
 	})
 
 	await fetchDepartmentInfos()
@@ -126,7 +128,12 @@ const mayEditDepartment = computed<boolean>(() => {
 })
 
 async function refetchRoles() {
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	isLoaded.value = false
 	await fetchDepartmentInfos()
 }
@@ -134,7 +141,7 @@ async function refetchRoles() {
 watch([ slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
-	await countUsersPerDepartment(list.value.map(item => item.id))
+	await countUsersPerDepartment(list.value.data.map(item => item.id))
 	isLoaded.value = true
 })
 </script>
