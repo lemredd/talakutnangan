@@ -1,6 +1,6 @@
 <template>
 	<div class="call-controls">
-		<div v-if="isJoined" class="user-joined-controls">
+		<div class="user-joined-controls">
 			<CallControl
 				class="toggle-video"
 				title="Toggle Video"
@@ -12,6 +12,7 @@
 				:material-icon="micIcon"
 				@click="toggleMic"/>
 			<CallControl
+				v-if="isJoined"
 				class="leave-call"
 				title="Leave Call"
 				material-icon="call_end"
@@ -19,7 +20,7 @@
 		</div>
 
 		<button
-			v-else
+			v-if="!isJoined"
 			class="join-call-btn btn btn-primary"
 			@click="joinCall">
 			join call
