@@ -30,9 +30,10 @@
 		form {
 			@apply flex flex-row items-center;
 			@apply mb-4 h-8 p-10 rounded-[1rem] bg-gray-300;
-			max-width: 100%;
+			min-width: 80%;
 
 		.filter{
+			@apply flex-wrap;
 			max-width:100%;
 		}
 
