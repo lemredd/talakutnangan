@@ -22,7 +22,9 @@
 		</Suspensible>
 
 		<div v-if="hasRemainingPosts" class="load-others">
-			<button @click="retrievePosts">
+			<button
+				class="btn btn-primary"
+				@click="retrievePosts">
 				Load other posts
 			</button>
 		</div>
@@ -30,6 +32,8 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
+@import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col;
 
