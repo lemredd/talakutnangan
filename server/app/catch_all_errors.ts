@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import type { Request, Response, NextFunction } from "!/types/dependent"
 import { UnitError, HTML_MEDIA_TYPE, JSON_API_MEDIA_TYPE } from "$/types/server"
 
@@ -95,21 +96,28 @@ export default async function(
 				status = 400
 			}
 
-			response.status(status)
-			response.type(JSON_API_MEDIA_TYPE)
+			if (!response.headersSent) {
+				response.status(status)
+				response.type(JSON_API_MEDIA_TYPE)
+			}
 			if (unitError instanceof Array) {
-				response.send({
-					"errors": unitError
-				})
+				if (!response.headersSent) {
+					response.send({
+						"errors": unitError
+					})
+				}
+
 				Log.errorMessage("middleware", `Error: Output multiple errors${
 					RequestEnvironment.isNotOnProduction
 						? ` (${error.name}'s stack: ${error.stack})`
 						: ""
 				}`)
 			} else {
-				response.send({
-					"errors": [ unitError ]
-				})
+				if (!response.headersSent) {
+					response.send({
+						"errors": [ unitError ]
+					})
+				}
 				Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}${
 					RequestEnvironment.isNotOnProduction
 						? ` (${error.name}'s stack: ${error.stack})`
