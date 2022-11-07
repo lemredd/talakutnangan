@@ -77,8 +77,6 @@ async function fetchAuditTrailInfos() {
 	})
 }
 
-const { userProfile } = pageProps
-
 async function refetchAuditTrail() {
 	list.value = []
 	isLoaded.value = false
