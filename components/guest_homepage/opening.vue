@@ -7,8 +7,11 @@
 			</template>
 			<template #details>
 				<p>
-					Students can consult any available employees<br/>
-					with the help of Consultation Message.
+					Have a question? have them answered through our consultation system.
+				</p>
+
+				<p class="opening-redirector">
+					<a href="/consultation">Start consulting.</a>
 				</p>
 			</template>
 		</Description>
@@ -27,8 +30,11 @@
 			</template>
 			<template #details>
 				<p>
-					Students will know the updates of the employees<br/>
-					and students also can comment on the post of the employees.
+					Interaction for everyone, made easy.
+				</p>
+
+				<p class="opening-redirector">
+					<a href="/consultation">Visit the forum.</a>
 				</p>
 			</template>
 		</Description>
@@ -46,9 +52,14 @@
 	}
 
 	p {
-		@apply mt-4 mb-8;
-	}
+		@apply my-4;
 
+		&.opening-redirector {
+			a {
+				text-decoration: underline;
+			}
+		}
+	}
 }
 .graphics {
 	@apply flex justify-center;

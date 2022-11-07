@@ -72,7 +72,13 @@
 
 @media screen and (min-width: $desktopViewportMinimum) {
 	.user-settings {
+		@apply pt-6px;
 		@apply self-center;
+
+		.settings-items {
+			@apply text-sm;
+			text-transform: uppercase;
+		}
 
 		&.parent-dropdown-container {
 			@apply flex items-center;
@@ -81,46 +87,6 @@
 				right: 0;
 				transform: none;
 				left: unset;
-			}
-		}
-	}
-
-	.notifications {
-		@apply self-center;
-
-		&.parent-dropdown-container {
-			@apply flex items-center;
-		}
-
-		.dropdown-container {
-			.notification-items {
-				@apply flex flex-col justify-between;
-
-				.notification-item {
-					@apply grid grid-cols-[repeat(2,max-content)] grid-rows-[repeat(2,max-content)];
-					padding: .5em 1em;
-
-					.icon {
-						@apply self-center row-span-full  dark:bg-light-800;
-						border-radius: 50%;
-						height: min-content;
-						background-color: gray;
-
-						span {
-							font-size: 32px;
-						}
-					}
-
-					.title {
-						@apply col-start-2 row-start-1;
-					}
-					.date {
-						@apply col-start-2 row-start-2;
-					}
-				}
-				.notification-footer {
-					text-align: center;
-				}
 			}
 		}
 	}

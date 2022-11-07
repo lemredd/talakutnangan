@@ -113,7 +113,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, computed } from "vue"
+import { inject, ref, computed, onMounted } from "vue"
 
 import type { UnitError } from "$/types/server"
 import { UserKindValues } from "$/types/database"
@@ -122,8 +122,10 @@ import type { PageContext, PageProps } from "$/types/renderer"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedUserResource, DeserializedStudentResource } from "$/types/documents/user"
 
-import UserFetcher from "$@/fetchers/user"
+import Fetcher from "$@/fetchers/user"
+import RoleFetcher from "$@/fetchers/role"
 import convertForSentence from "$/string/convert_for_sentence"
+import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -149,7 +151,7 @@ const kindNames = UserKindValues.map(kind => ({
 }))
 const chosenKind = ref<string>(kindNames[0].value)
 
-const fetcher = new UserFetcher()
+const fetcher = new Fetcher()
 const createdUsers = ref<DeserializedUserResource<"roles"|"department">[]>([])
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
@@ -184,4 +186,9 @@ function isStudentResource(resource: DeserializedUserResource)
 : resource is DeserializedStudentResource {
 	return resource.kind === "student"
 }
+
+const roleFetcher = new RoleFetcher()
+onMounted(async() => {
+	await loadRemainingRoles(roles, roleFetcher)
+})
 </script>
