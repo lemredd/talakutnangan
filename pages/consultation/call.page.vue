@@ -159,7 +159,11 @@ function join() {
 		channelName,
 		chatMessageActivityID,
 		selfParticipantID,
-		token.value
+		token.value,
+		{
+			"isShowingVideo": isShowingVideo.value,
+			"isTransmittingAudio": isTransmittingAudio.value
+		}
 	)
 }
 function leave() {

@@ -54,7 +54,11 @@ export function joinAndPresentLocalTracks(
 	channelName: string,
 	chatMessageActivityID: string,
 	localParticipantID: string,
-	token: string
+	token: string,
+	trackStates: {
+		isShowingVideo: boolean,
+		isTransmittingAudio: boolean
+	}
 ) {
 	Stub.runConditionally(
 		async() => {
@@ -64,14 +68,18 @@ export function joinAndPresentLocalTracks(
 				token,
 				Number(chatMessageActivityID)
 			)
-			localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
-			localTracks.localVideoTrack = await manager().createCameraVideoTrack()
+			const { isShowingVideo, isTransmittingAudio } = trackStates
 
-			await engine().publish([
-				localTracks.localAudioTrack,
-				localTracks.localVideoTrack
-			])
-			localTracks.localVideoTrack.play(localParticipantID)
+			if (isShowingVideo) {
+				localTracks.localVideoTrack = await manager().createCameraVideoTrack()
+				await engine().publish(localTracks.localVideoTrack)
+				localTracks.localVideoTrack.play(localParticipantID)
+			}
+
+			if (isTransmittingAudio) {
+				localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
+				await engine().publish(localTracks.localAudioTrack)
+			}
 		},
 		() => {
 			localTracks.localAudioTrack = "this runs on test" as any

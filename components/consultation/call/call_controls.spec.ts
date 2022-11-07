@@ -12,8 +12,8 @@ describe("Component: call/call controls", () => {
 			}
 		})
 		const joinCallBtn = wrapper.find(".join-call-btn")
-		await joinCallBtn.trigger("click")
 
+		await joinCallBtn.trigger("click")
 		expect(wrapper.emitted()).toHaveProperty("joinCall")
 	})
 

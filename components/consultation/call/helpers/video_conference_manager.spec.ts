@@ -29,7 +29,11 @@ describe("Helper: video conference manager", () => {
 				"",
 				"",
 				"",
-				""
+				"",
+				{
+					"isShowingVideo": true,
+					"isTransmittingAudio": true
+				}
 			)
 
 			expect(localTracks.localAudioTrack).toBeTruthy()
@@ -42,7 +46,11 @@ describe("Helper: video conference manager", () => {
 				"",
 				"",
 				"",
-				""
+				"",
+				{
+					"isShowingVideo": true,
+					"isTransmittingAudio": true
+				}
 			)
 			leaveAndRemoveLocalTracks()
 
