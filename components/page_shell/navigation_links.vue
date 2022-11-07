@@ -28,7 +28,8 @@
 		<Anchor
 			v-for="link in desktopRoleLinks"
 			:key="link.name"
-			:href="link.path">
+			:href="link.path"
+			:title="link.name">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>

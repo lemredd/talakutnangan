@@ -14,7 +14,7 @@
 				@toggle="toggleSettingsDedicatedly"
 				@resize="toggleSettingsDedicatedly">
 				<template #toggler>
-					<span class="material-icons">account_circle</span>
+					<span class="material-icons" title="Settings">account_circle</span>
 				</template>
 				<template #dropdown-contents>
 					<ul class="settings-items">
