@@ -9,6 +9,8 @@ export const USER_LIST = "/user/list"
 
 export const ROLE_LIST = "/role/list"
 
+export const AUDIT_TRAIL_LIST = "/audit_trail/list"
+
 /**
  * Requires `id` of the consultation
  */
