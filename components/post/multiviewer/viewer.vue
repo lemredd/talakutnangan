@@ -42,30 +42,34 @@
 		</Overlay>
 		<header>
 			<div class="post-details">
-				<ProfilePicture
-					class="profile-picture"
-					:user="post.poster"/>
-				<span>
-					{{ post.poster.data.name }}
-				</span>
-				<span>
-					<small>
+				<div class="poster">
+					<ProfilePicture
+						class="profile-picture"
+						:user="post.poster"/>
+					<div class="poster-details">
 						<span>
-							{{ postDepartment }}
+							{{ post.poster.data.name }}
 						</span>
-						<span class="ml-2" :title="completeFriendlyPostTimestamp">
-							{{
-								friendlyPostTimestamp
-							}}
+						<span>
+							<small class="department-and-timestamp">
+								<span>
+									{{ postDepartment }}
+								</span>
+								<span class="timestamp" :title="completeFriendlyPostTimestamp">
+									{{
+										friendlyPostTimestamp
+									}}
+								</span>
+							</small>
 						</span>
-					</small>
-				</span>
+					</div>
+				</div>
+				<Menu
+					:post="post"
+					@update-post="openUpdateForm"
+					@archive-post="confirmArchive"
+					@restore-post="confirmRestore"/>
 			</div>
-			<Menu
-				:post="post"
-				@update-post="openUpdateForm"
-				@archive-post="confirmArchive"
-				@restore-post="confirmRestore"/>
 		</header>
 		<p>
 			{{ post.content }}
@@ -111,19 +115,30 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
 
 		header {
 			@apply flex-1 flex flex-row justify-between;
 
 			.post-details {
-				@apply flex-1 flex flex-row flex-wrap;
+				@apply flex-1 flex flex-row justify-between;
 
-				.profile-picture {
-					@apply mb-5 mr-2 flex-initial w-auto h-6;
+				.poster {
+					@apply flex flex-row items-start;
+					.profile-picture {
+						@apply mr-2 flex-initial w-auto h-6;
+					}
 
-					+ span {
-						@apply flex-1;
+					.poster-details {
+						@apply flex flex-col;
+
+						.department-and-timestamp {
+							@apply flex flex-col sm:flex-row;
+
+							.timestamp {
+								@apply sm:ml-2;
+							}
+						}
 					}
 				}
 			}

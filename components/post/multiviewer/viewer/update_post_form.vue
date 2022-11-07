@@ -30,7 +30,7 @@
 					type="file"
 					name="data[attributes][fileContents]"
 					class="hidden"
-					:accept="accept"
+					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
 			<div v-if="hasExtracted" class="preview-file">
@@ -161,17 +161,16 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 const userFetcher = new UserFetcher()
 
 const props = defineProps<{
-	accept: "image/*" | "*/*"
 	isShown: boolean,
-	modelValue: DeserializedPostResource<"poster"|"posterRole">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
 }>()
 
 interface CustomEvents {
 	(event: "close"): void,
-	(event: "submit", postID: string): void,
+	(event: "submit"): void,
 	(
 		event: "update:modelValue",
-		content: DeserializedPostResource<"poster"|"posterRole">
+		content: DeserializedPostResource<"poster"|"posterRole"|"department">
 	): void
 }
 const emit = defineEmits<CustomEvents>()
