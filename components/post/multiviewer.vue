@@ -20,7 +20,7 @@
 			</p>
 		</Suspensible>
 
-		<div v-if="hasRemainingPosts" class="load-other-posts">
+		<div v-if="hasRemainingPosts" class="load-others">
 			<button @click="retrievePosts">
 				Load other posts
 			</button>
@@ -47,8 +47,7 @@
 				@apply flex-1 mb-8;
 			}
 		}
-
-		.load-other-posts {
+		.load-others {
 			@apply flex-1;
 
 			button { @apply w-[100%]; }
