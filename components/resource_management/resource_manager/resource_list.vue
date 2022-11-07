@@ -30,6 +30,68 @@
 				</tr>
 			</template>
 
+			<template v-else-if="resourceType === 'semester'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.name }}</td>
+					<td>
+						{{
+							resource.semesterOrder === 'first' ? 'First' :
+							resource.semesterOrder === 'second' ? 'Second' :
+							'Third'
+						}}
+					</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.startAt) }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.endAt) }}</td>
+					<td>
+						<a
+							v-if="mayEdit"
+							:href="`read/${resource.id}`"
+							class="read-resource-btn btn"
+							type="button">
+							edit
+						</a>
+					</td>
+				</tr>
+			</template>
+
+			<template v-else-if="resourceType === 'department'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ resource.fullName }}</td>
+					<td>{{ resource.acronym }}</td>
+					<td>
+						{{
+							resource.mayAdmit ? "Yes": "No"
+						}}
+					</td>
+					<td>
+						<a
+							v-if="mayEdit"
+							:href="`read/${resource.id}`"
+							class="read-resource-btn btn"
+							type="button">
+							edit
+						</a>
+					</td>
+				</tr>
+			</template>
+
+			<template v-else-if="resourceType === 'audit_trail'" #table-body>
+				<tr
+					v-for="resource in filteredList"
+					:key="resource.id"
+					class="resource-row">
+					<td>{{ formatToCompleteFriendlyTime(resource.user.data.name) }}</td>
+					<td>{{ resource.actionName }}</td>
+					<td>{{ resource.createdAt }}</td>
+				</tr>
+			</template>
+
 			<template v-else #table-body>
 				<tr
 					v-for="resource in filteredList"
@@ -100,6 +162,7 @@
 import { computed } from "vue"
 
 import type { PossibleResources } from "$@/types/independent"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import pluralize from "$/string/pluralize"
 
@@ -111,13 +174,26 @@ const { filteredList } = defineProps<{
 }>()
 
 const resourceType = computed(() => filteredList[0].type)
+
 const tableHeaders = computed(() => {
 	let headers: string[] = []
-	if (resourceType.value === "user") {
+	if (resourceType.value === "semester") {
+		headers = [ "Name", "Order", "Start at", "End at" ]
+	} else if (resourceType.value === "user") {
 		headers = [
-			"Name", "E-mail", "Role", "Department", "Semester"
+			"Name", "E-mail", "Role", "Department"
 		]
-	} else { headers = [ "Name", "no. of users", "" ] }
+	} else if (resourceType.value === "department") {
+		headers = [
+			"Name", "Acronym", "May admit"
+		]
+	} else if (resourceType.value === "audit_trail") {
+		headers = [
+			"ID", "Action name", "Created at"
+		]
+	} else {
+		headers = [ "Name", "no. of users", "" ]
+	}
 
 
 	return headers

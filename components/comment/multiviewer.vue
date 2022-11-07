@@ -1,7 +1,7 @@
 <template>
 	<div class="multiviewer">
 		<SelectableExistenceFilter
-			v-if="isPostOwned"
+			v-if="mayViewArchivedOrRestore"
 			v-model="existence"/>
 		<Suspensible :is-loaded="isLoaded">
 			<Viewer
@@ -12,6 +12,11 @@
 				@archive="archiveComment"
 				@restore="restoreComment"/>
 		</Suspensible>
+		<div v-if="hasRemainingComments" class="load-others">
+			<button @click="fetchComments">
+				Load other comments
+			</button>
+		</div>
 	</div>
 </template>
 
@@ -21,6 +26,12 @@
 
 		.viewer {
 			@apply flex-1;
+		}
+
+		.load-others {
+			@apply flex-1;
+
+			button { @apply w-[100%]; }
 		}
 	}
 </style>
@@ -47,7 +58,7 @@ import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
-	isPostOwned: boolean
+	mayViewArchivedOrRestore: boolean
 	modelValue: DeserializedCommentListDocument<"user">
 	post: DeserializedPostResource
 }>()
@@ -75,6 +86,9 @@ const comments = computed<DeserializedCommentListDocument<"user">>({
 		emit("update:modelValue", newValue)
 	}
 })
+const hasRemainingComments = computed<boolean>(
+	() => comments.value.data.length < (comments.value.meta?.count || 0)
+)
 
 function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentListDocument<"user">)
 : string[] {

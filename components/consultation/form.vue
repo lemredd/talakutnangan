@@ -38,7 +38,7 @@
 					placeholder="Choose your reason"
 					:options="reasonOptions"/>
 			</div>
-
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
@@ -196,6 +196,7 @@
 <script setup lang="ts">
 import { ref, computed, inject, watch } from "vue"
 
+import type { UnitError } from "$/types/server"
 import { Day, DayValues } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -217,7 +218,7 @@ import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
-
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
@@ -228,6 +229,7 @@ const { pageProps } = inject("pageContext") as PageContext<"deserialized", "cons
 const { "userProfile": { "data": userProfileData } } = pageProps
 
 const fetcher = new Fetcher()
+const receivedErrors = ref<string[]>([])
 
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
@@ -444,8 +446,17 @@ function addConsultation(): void {
 		}
 	})
 	.then(() => assignPath("/consultation"))
-	.catch(() => {
-		hasConflicts.value = true
+	.catch(({ body }) => {
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
 	})
 }
 

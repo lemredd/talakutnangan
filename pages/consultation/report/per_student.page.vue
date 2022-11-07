@@ -4,6 +4,7 @@
 		<SummaryModifier
 			:initial-range-begin="rangeBegin"
 			:initial-range-end="rangeEnd"
+			:semesters="semesters"
 			@renew-summary="renewSummary"/>
 		<Suspensible :is-loaded="isLoaded">
 			<p class="details">
@@ -97,27 +98,34 @@ import { inject, ref, computed, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { SummaryRange } from "$@/types/component"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 import type { DeserializedUserListWithTimeConsumedDocument } from "$/types/documents/user"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
+import SemesterFetcher from "$@/fetchers/semester"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import convertToFullTimeString from "@/consultation/report/convert_to_full_time_string"
 
+import { READ } from "$/permissions/semester_combinations"
+import { semester as permissionGroup } from "$/permissions/permission_list"
+
 import Suspensible from "@/helpers/suspensible.vue"
 import SummaryModifier from "@/consultation/report/summary_modifier.vue"
 
-const pageContext = inject("pageContext") as PageContext<
-	"deserialized",
-	"timeConsumedPerStudent"
->
+type RequiredExtraProps =
+	| "timeConsumedPerStudent"
+	| "semesters"
+const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+const semesters = ref<DeserializedSemesterListDocument>(pageProps.semesters)
 const timeConsumedPerStudent = ref<DeserializedUserListWithTimeConsumedDocument>(
 	pageProps.timeConsumedPerStudent
 )
@@ -165,7 +173,25 @@ async function renewSummary(range: SummaryRange) {
 	})
 }
 
-onMounted(() => {
+onMounted(async() => {
+	const mayViewSemesters = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		READ
+	])
+
+	if (mayViewSemesters) {
+		await loadRemainingResource(semesters, new SemesterFetcher(), () => ({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": semesters.value.data.length
+			},
+			"sort": [ "startAt" ]
+		}))
+	}
+
 	isLoaded.value = true
 })
 </script>

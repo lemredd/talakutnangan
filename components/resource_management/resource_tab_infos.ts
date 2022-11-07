@@ -8,15 +8,27 @@ import {
 } from "$/constants/template_page_paths"
 
 import { user, role, department, semester } from "$/permissions/permission_list"
-import { UPDATE as UPDATE_ROLES } from "$/permissions/role_combinations"
-import { UPDATE as UPDATE_DEPARTMENTS } from "$/permissions/department_combinations"
 import {
+	CREATE as CREATE_ROLES,
+	UPDATE as UPDATE_ROLES,
+	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_ROLES
+} from "$/permissions/role_combinations"
+import {
+	CREATE as CREATE_DEPARTMENTS,
+	UPDATE as UPDATE_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_DEPARMENTS
+} from "$/permissions/department_combinations"
+import {
+	CREATE as CREATE_SEMESTERS,
 	UPDATE as UPDATE_SEMESTERS,
 	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_SEMESTERS
 } from "$/permissions/semester_combinations"
 import {
+	IMPORT_USERS,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
 
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
@@ -32,8 +44,11 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		],
 		"mustBeGuest": false,
 		"permissionCombinations": [
+			IMPORT_USERS,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-			UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
+			ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 		],
 		"permissionGroup": user
 	},
@@ -48,7 +63,11 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [ UPDATE_ROLES ],
+		"permissionCombinations": [
+			CREATE_ROLES,
+			UPDATE_ROLES,
+			ARCHIVE_AND_RESTORE_ROLES
+		],
 		"permissionGroup": role
 	},
 	{
@@ -62,7 +81,11 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [ UPDATE_DEPARTMENTS ],
+		"permissionCombinations": [
+			CREATE_DEPARTMENTS,
+			UPDATE_DEPARTMENTS,
+			ARCHIVE_AND_RESTORE_DEPARMENTS
+		],
 		"permissionGroup": department
 	},
 	{
@@ -77,6 +100,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		],
 		"mustBeGuest": false,
 		"permissionCombinations": [
+			CREATE_SEMESTERS,
 			UPDATE_SEMESTERS,
 			ARCHIVE_AND_RESTORE_SEMESTERS
 		],

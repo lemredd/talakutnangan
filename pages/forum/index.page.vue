@@ -31,7 +31,7 @@
 		.created-post {
 			@apply flex-1 flex justify-between items-center;
 			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
-			max-width: 100%;
+
 
 			.account-attachment {
 				@apply h-6 w-auto;

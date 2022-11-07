@@ -13,9 +13,11 @@ export default class ActionAuditor extends RequestFilter {
 	private actionName: string
 	private extra: (request: Request) => GeneralObject
 
-	constructor(actionName: string, extra: (request: Request) => GeneralObject = () => ({
-		"isSensitive": false
-	})) {
+	constructor(
+		actionName: string,
+		extra: (request: Request) => GeneralObject = () => ({
+			"isSensitive": false
+		})) {
 		super()
 		this.actionName = actionName
 		this.extra = extra
@@ -31,6 +33,7 @@ export default class ActionAuditor extends RequestFilter {
 		await manager.create({
 			"actionName": this.actionName,
 			"extra": this.extra(request),
+			"createdAt": new Date(),
 			userID
 		})
 	}

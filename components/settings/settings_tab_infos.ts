@@ -8,17 +8,17 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 				"icon": "",
 				"name": "Account",
 				"path": "/settings/account",
-				"viewportsAvailable": ["mobile", "desktop"]
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			},
 			{
 				"icon": "",
 				"name": "Profile",
 				"path": "/settings/profile",
-				"viewportsAvailable": ["mobile", "desktop"]
+				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [],
+		"permissionCombinations": null,
 		"permissionGroup": null
 	}
 ]
