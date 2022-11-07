@@ -27,7 +27,7 @@
 		> .field {
 			@apply flex-1 flex flex-row;
 			@apply dark:text-white;
-			border-bottom: 1px solid rgba(0,0,0,0.3);
+			border-bottom: 1px solid hsla(0,0%,60%,0.3);
 
 			.raw-field:not(:disabled) {
 				@apply border-none p-4 rounded-1rem w-[100%];

@@ -77,7 +77,7 @@
 
 	section {
 		@apply mb-12 pb-4;
-		border-bottom: 1px solid rgba(0,0,0,0.3);
+		border-bottom: 1px solid hsla(0,0%,60%,0.3);
 		@apply flex flex-col flex-nowrap;
 
 		header {
