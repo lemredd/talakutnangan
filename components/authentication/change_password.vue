@@ -20,25 +20,36 @@
 			</form>
 		</template>
 		<template #footer>
-			<button type="button" @click="savePassword">
+			<button
+				class="btn btn-primary"
+				type="button"
+				@click="savePassword">
 				Save password
 			</button>
 		</template>
 	</Overlay>
 </template>
 
+<style lang="scss">
+	.overlay-footer {
+		@apply justify-end;
+	}
+</style>
+
 <style scoped lang="scss">
-.verification {
-	@apply flex flex-col text-black;
+	@import "@styles/btn.scss";
 
-	label {
-		padding: .5em 1em;
+	.verification {
+		@apply flex flex-col text-black;
 
-		input {
-			padding: .25em .5em;
+		label {
+			padding: .5em 1em;
+
+			input {
+				padding: .25em .5em;
+			}
 		}
 	}
-}
 </style>
 
 <script setup lang="ts">
