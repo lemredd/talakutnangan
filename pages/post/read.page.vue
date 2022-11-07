@@ -7,7 +7,7 @@
 			<CreateCommentField
 				v-if="mayCreateComment"
 				class="field"
-				:post="post"
+				:post-to-insert-comment="post"
 				@create-comment="includeComment"/>
 			<CommentMultiviewer
 				v-if="mayReadComment"
