@@ -2,7 +2,6 @@
 	<ResourceManager
 		v-if="true"
 		v-model:slug="slug"
-		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="[]"
 		:role-names="[]">
