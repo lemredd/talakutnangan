@@ -76,14 +76,16 @@
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap mb-4;
+		@apply mb-4 pb-4;
+		border-bottom: 1px solid black;
+		@apply flex flex-col flex-nowrap;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
 			h3 {
 				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
-				@apply m-auto ml-15;
+				@apply m-auto;
 
 				/**
 				 * Reduce the left margin
@@ -104,7 +106,7 @@
 			@apply flex-1 flex flex-row flex-nowrap items-center;
 
 			@screen md {
-				@apply w-[90%];
+				width: 100%;
 			}
 
 			> .profile-picture {
@@ -113,7 +115,7 @@
 
 			> p {
 				@apply flex-1;
-				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
+				@apply ml-auto p-5;
 			}
 		}
 	}
