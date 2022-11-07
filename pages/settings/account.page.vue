@@ -55,6 +55,10 @@
 	@import "@styles/variables.scss";
 	@import "@styles/btn.scss";
 
+	.wrapper {
+		margin-bottom: 50vh !important;
+	}
+
 	form, .update-password-field {
 		@apply mt-8;
 

@@ -61,12 +61,10 @@
 		<output v-if="createdUsers.length > 0">
 			<OutputTable>
 				<template #table-headers>
-					<tr>
-						<th v-if="isStudentResource(createdUsers[0])" class="">Student number</th>
-						<th>Name</th>
-						<th>E-mail</th>
-						<th>Department</th>
-					</tr>
+					<th v-if="isStudentResource(createdUsers[0])" class="">Student number</th>
+					<th>Name</th>
+					<th>E-mail</th>
+					<th>Department</th>
 				</template>
 				<template #table-body>
 					<tr
@@ -169,6 +167,7 @@ function importData(event: Event) {
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
+		if (createdUsers.value.length) createdUsers.value = []
 		if (body) {
 			const { errors } = body
 			receivedErrors.value = errors.map((error: UnitError) => {

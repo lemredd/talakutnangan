@@ -100,6 +100,12 @@
 	</div>
 </template>
 
+<style lang="scss">
+	.wrapper {
+		margin-bottom: 50vh !important;
+	}
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	form {

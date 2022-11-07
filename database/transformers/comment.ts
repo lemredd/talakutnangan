@@ -38,7 +38,8 @@ export default class CommentTransformer extends Transformer<Model, void> {
 			"id",
 			"content",
 			"createdAt",
-			"updatedAt"
+			"updatedAt",
+			"deletedAt"
 		])
 
 		return safeObject

@@ -48,6 +48,13 @@
 				@click="archiveUser">
 				Archive
 			</button>
+			<button
+				v-if="mayReset"
+				type="button"
+				class="btn btn-primary"
+				@click="resetUser">
+				Reset
+			</button>
 		</div>
 	</form>
 </template>
@@ -79,6 +86,7 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
+	RESET_PASSWORD,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
@@ -159,6 +167,16 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
 
+const mayResetPassword = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		RESET_PASSWORD
+	])
+
+	return isLimitedUpToDepartmentScope
+})
+const mayReset = computed<boolean>(() => mayResetPassword.value)
+
 const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
@@ -204,6 +222,13 @@ function updateAndReload() {
 		} else {
 			receivedErrors.value = [ "an error occured" ]
 		}
+	})
+}
+
+async function resetUser() {
+	await fetcher.resetPassword(user.value.data.id)
+	.then(({ body, status }) => {
+		console.log(body, status)
 	})
 }
 

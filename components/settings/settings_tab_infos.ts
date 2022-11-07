@@ -18,7 +18,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": null,
+		"permissionCombinations": [],
 		"permissionGroup": null
 	}
 ]

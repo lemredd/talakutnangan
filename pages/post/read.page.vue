@@ -7,7 +7,7 @@
 			<CreateCommentField
 				v-if="mayCreateComment"
 				class="field"
-				:post="post"
+				:post-to-insert-comment="post"
 				@create-comment="includeComment"/>
 			<CommentMultiviewer
 				v-if="mayReadComment"
@@ -22,9 +22,28 @@
 	article {
 		@apply flex flex-col flex-nowrap justify-center;
 
+
 		> .comments {
 			@apply flex-1 flex-col flex-nowrap;
-			@apply p-5 bg-light-800 shadow-lg rounded-[1rem];
+			@apply bg-gray-400 bg-opacity-10 shadow-md;
+
+			img.self, img.profile-picture {
+				max-width: 32px;
+				max-height: 32px;
+
+				@screen sm {
+					max-width: 48px;
+					max-height: 48px;
+				}
+			}
+
+			.field {
+				@apply mx-4 my-2;
+			}
+
+			.multiviewer {
+				@apply mx-4 my-2;
+			}
 		}
 
 		> * {
@@ -87,7 +106,7 @@ const comments = ref<DeserializedCommentListDocument<"user">>(
 	pageProps.comments as DeserializedCommentListDocument<"user">
 )
 const commentCount = computed<number>(() => {
-	const castMeta = pageProps.comments.meta as ResourceCount
+	const castMeta = comments.value.meta as ResourceCount
 
 	return castMeta.count
 })

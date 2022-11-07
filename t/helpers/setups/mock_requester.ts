@@ -112,7 +112,7 @@ export default class <T extends Request> extends RequestEnvironment {
 		return this.castNext.mock.calls[0][0]
 	}
 
-	expectResponse(properties: { [key:string]: (_: any) => void }): void {
+	expectResponse(properties: { [key:string]: ((_: any) => void)|boolean }): void {
 		for (const key in properties) {
 			if (Object.hasOwn(properties, key)) {
 				const check = properties[key]
