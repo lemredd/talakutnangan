@@ -63,27 +63,6 @@ const list = ref<DeserializedDepartmentListDocument>(
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-
-async function fetchDepartmentInfos(): Promise<number|void> {
-	await loadRemainingResource(list, fetcher, () => ({
-		"filter": {
-			"existence": existence.value,
-			"slug": slug.value
-		},
-		"page": {
-			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
-		},
-		"sort": [ "fullName" ]
-	}), {
-		async postOperations(deserializedData) {
-			const IDsToCount = deserializedData.data.map(data => data.id)
-			// eslint-disable-next-line no-use-before-define
-			return await countUsersPerDepartment(IDsToCount)
-		}
-	})
-}
-
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -102,8 +81,25 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 			"meta": list.value.meta
 		}
 	})
+}
 
-	await fetchDepartmentInfos()
+async function fetchDepartmentInfos(): Promise<number|void> {
+	await loadRemainingResource(list, fetcher, () => ({
+		"filter": {
+			"existence": existence.value,
+			"slug": slug.value
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
+		},
+		"sort": [ "fullName" ]
+	}), {
+		async postOperations(deserializedData) {
+			const IDsToCount = deserializedData.data.map(data => data.id)
+			return await countUsersPerDepartment(IDsToCount)
+		}
+	})
 }
 
 const { userProfile } = pageProps

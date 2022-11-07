@@ -83,27 +83,6 @@ const departmentNames = computed<OptionInfo[]>(() => [
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 
-async function fetchRoleInfos(): Promise<number|void> {
-	await loadRemainingResource(list, fetcher, () => ({
-		"filter": {
-			"department": chosenDepartment.value,
-			"existence": existence.value,
-			"slug": slug.value
-		},
-		"page": {
-			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
-		},
-		"sort": [ "name" ]
-	}), {
-		async postOperations(deserializedData) {
-			const IDsToCount = deserializedData.data.map(data => data.id)
-			// eslint-disable-next-line no-use-before-define
-			return await countUsersPerRole(IDsToCount)
-		}
-	})
-}
-
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -122,7 +101,26 @@ async function countUsersPerRole(IDsToCount: string[]) {
 			"meta": list.value.meta
 		}
 	})
-	await fetchRoleInfos()
+}
+
+async function fetchRoleInfos(): Promise<number|void> {
+	await loadRemainingResource(list, fetcher, () => ({
+		"filter": {
+			"department": chosenDepartment.value,
+			"existence": existence.value,
+			"slug": slug.value
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
+		},
+		"sort": [ "name" ]
+	}), {
+		async postOperations(deserializedData) {
+			const IDsToCount = deserializedData.data.map(data => data.id)
+			return await countUsersPerRole(IDsToCount)
+		}
+	})
 }
 
 const { userProfile } = pageProps
