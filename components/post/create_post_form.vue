@@ -9,7 +9,7 @@
 				v-if="mayPostGenerally"
 				v-model="chosenDepartment"
 				label="Department"
-				class="filter"
+				class="filter department-selector"
 				:options="departmentName"/>
 			<DraftForm
 				:id="CREATE_POST_FORM_ID"
@@ -127,17 +127,14 @@ import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
 
-
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
-type RequiredExtraProps = "departments"
-const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const { userProfile, departments } = pageProps
-
+const { userProfile } = pageProps
 
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
@@ -153,7 +150,7 @@ const roleID = ref<string>(userProfile.data.roles.data[0].id)
 
 const departmentID = ref<string>(userProfile.data.department.data.id)
 
-defineProps<{
+const props = defineProps<{
 	isShown: boolean
 	departments: DeserializedDepartmentListDocument
 }>()
@@ -164,18 +161,17 @@ const departmentName = computed<OptionInfo[]>(() => [
 		"label": "General",
 		"value": NULL_AS_STRING
 	},
-	...departments.data.map(data => ({
+	...props.departments.data.map(data => ({
 		"label": data.fullName,
 		"value": data.id
 	}))
 ])
 
-
 const mayPostGenerally = computed<boolean>(() => {
 	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
 	])
-	return isLimitedUpToGlobalScope
+	return isLimitedUpToGlobalScope && props.departments.data.length > 1
 })
 
 const content = ref<string>("")
