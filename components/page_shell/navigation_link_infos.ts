@@ -1,5 +1,7 @@
 import type { ConditionalLinkInfo } from "$@/types/independent"
 
+import { USER_LIST } from "$/constants/template_page_paths"
+
 import { user, post } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
@@ -40,7 +42,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [],
+		"permissionCombinations": null,
 		"permissionGroup": null
 	},
 	{
@@ -71,7 +73,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [],
+		"permissionCombinations": null,
 		"permissionGroup": null
 	},
 	{
@@ -80,7 +82,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "group",
 				"name": "Manage Users",
-				"path": "/manage",
+				"path": USER_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],

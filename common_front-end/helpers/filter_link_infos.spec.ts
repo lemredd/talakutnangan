@@ -460,6 +460,74 @@ describe("Helper: Filter Link Infos", () => {
 		expect(filteredLinkInfos).toHaveLength(0)
 	})
 
+	it("must hide kind link for one kind of users", () => {
+		const context: DeserializedPageContext = {
+			"pageProps": {
+				"userProfile": {
+					"data": {
+						"department": {
+							"data": {
+								"acronym": "A",
+								"fullName": "A",
+								"id": "1",
+								"mayAdmit": true,
+								"type": "department"
+							}
+						},
+						"email": "",
+						"id": "1",
+						"kind": "unreachable_employee",
+						"name": "",
+						"prefersDark": false,
+						"roles": {
+							"data": [
+								{
+									"auditTrailFlags": 0,
+									"commentFlags": 0,
+									"deletedAt": null,
+									"departmentFlags": 0,
+									"id": "2",
+									"name": "B",
+									"postFlags": 0,
+									"profanityFlags": 0,
+									"roleFlags": 0,
+									"semesterFlags": 0,
+									"tagFlags": 0,
+									"type": "role",
+									"userFlags": 0
+								}
+							]
+						},
+						"type": "user"
+					},
+					"meta": {
+						"hasDefaultPassword": false
+					}
+				}
+			}
+		}
+		const linkInfos: ConditionalLinkInfo<any, any>[] = [
+			{
+				"kinds": [ "student", "reachable_employee" ],
+				"links": [
+					{
+						"icon": "chat",
+						"name": "Consultations",
+						"path": "/consultation",
+						"viewportsAvailable": [ "mobile", "desktop" ]
+					}
+				],
+				"mustBeGuest": false,
+				"permissionCombinations": null,
+				"permissionGroup": null
+			}
+		]
+
+		const filteredLinkInfos = filterLinkInfos(context, linkInfos)
+
+		expect(filteredLinkInfos).toHaveLength(0)
+	})
+
 	it("must hide kind link for guest users", () => {
 		const context: DeserializedPageContext = {
 			"pageProps": {
