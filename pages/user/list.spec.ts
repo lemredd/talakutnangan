@@ -79,7 +79,15 @@ describe("Page: user/list", () => {
 							"pageProps": {
 								"departments": await departmentFactory.deserialize([ department ]),
 								"roles": await roleFactory.deserialize([ role ]),
-								userProfile
+								userProfile,
+								"users": {
+									"data": [
+										user.data
+									],
+									"meta": {
+										"count": 1
+									}
+								}
 							}
 						}
 					}
@@ -159,7 +167,15 @@ describe("Page: user/list", () => {
 							"pageProps": {
 								"departments": await departmentFactory.deserialize([ department ]),
 								"roles": await roleFactory.deserialize([ role ]),
-								userProfile
+								userProfile,
+								"users": {
+									"data": [
+										user.data
+									],
+									"meta": {
+										"count": 1
+									}
+								}
 							}
 						}
 					}
@@ -238,7 +254,15 @@ describe("Page: user/list", () => {
 							"pageProps": {
 								"departments": await departmentFactory.deserialize([ department ]),
 								"roles": await roleFactory.deserialize([ role ]),
-								userProfile
+								userProfile,
+								"users": {
+									"data": [
+										user.data
+									],
+									"meta": {
+										"count": 1
+									}
+								}
 							}
 						}
 					}
