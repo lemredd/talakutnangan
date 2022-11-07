@@ -31,13 +31,13 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
-	post: DeserializedPostResource
+	postToInsertComment: DeserializedPostResource
 }>()
 
 const { pageProps } = pageContext
 const { userProfile } = pageProps
-const post = computed<DeserializedPostResource>(
-	() => props.post as DeserializedPostResource
+const postToInsertComment = computed<DeserializedPostResource>(
+	() => props.postToInsertComment as DeserializedPostResource
 )
 
 const content = ref<string>("")
@@ -58,7 +58,7 @@ async function submit() {
 				"comments": undefined,
 				"post": {
 					"data": {
-						"id": post.value.id,
+						"id": postToInsertComment.value.id,
 						"type": "post"
 					}
 				},
@@ -75,7 +75,7 @@ async function submit() {
 		emit("createComment", {
 			...body.data,
 			"post": {
-				"data": post.value
+				"data": postToInsertComment.value
 			},
 			"user": userProfile as DeserializedUserDocument
 		} as DeserializedCommentResource<"user">)
