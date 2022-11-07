@@ -24,7 +24,7 @@
 
 		> .comments {
 			@apply flex-1 flex-row flex-wrap sm:flex-1 flex-row flex-wrap;
-			@apply p-5  bg-gray-300 bg-opacity-20 shadow-inner rounded-[1rem];
+			@apply p-5  bg-gray-300 bg-opacity-20 shadow-inner;
 			max-width: 100%;
 		}
 		.field {

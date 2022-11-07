@@ -30,14 +30,14 @@
 
 		.created-post {
 			@apply flex-1 flex justify-between items-center;
-			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
+			@apply mb-5 p-4 shadow-inner bg-light-800;
 
 
 			.account-attachment {
 				@apply h-6 w-auto;
 			}
 			.create-post {
-				@apply w-auto rounded-[0.5rem];
+				@apply w-auto;
 			}
 
 		}
