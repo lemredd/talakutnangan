@@ -22,7 +22,7 @@ import {
 
 import Page from "./list.page.vue"
 
-describe("Page: user/list", () => {
+describe.skip("Page: user/list", () => {
 	describe("Basic rendering", () => {
 		it("should display correct header for admin", async() => {
 			const departmentFactory = new DepartmentFactory()
