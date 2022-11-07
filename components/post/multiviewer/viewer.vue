@@ -111,11 +111,10 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply p-4 m-4 bg-gray-300 bg-opacity-20 shadow-inner rounded-[1rem] min-w-30;
 
 		header {
-			@apply flex-1 flex flex-row justify-between;
-
+			@apply flex flex-row justify-between;
 			.post-details {
 				@apply flex-1 flex flex-row flex-wrap;
 
@@ -132,6 +131,10 @@
 		.comment-count {
 			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
 		}
+
+		p{
+		word-break: break-all;
+			}
 	}
 
 	.icon { @apply mr-2; }

@@ -30,7 +30,7 @@
 
 		.created-post {
 			@apply flex-1 flex justify-between items-center;
-			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
+			@apply p-4 m-4 rounded-1rem shadow-inner bg-gray-300 bg-opacity-20;
 
 
 			.account-attachment {
@@ -41,13 +41,7 @@
 			}
 
 		}
-		.file-media{
-			@apply mr-2;
-		}
 
-		.multiviewer {
-			@apply flex-1 m-5;
-		}
 	}
 
 </style>
