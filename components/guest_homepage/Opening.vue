@@ -7,8 +7,7 @@
 			</template>
 			<template #details>
 				<p>
-					Students can consult any available employees<br/>
-					with the help of Consultation Message.
+					Have a question? have them answered through our consultation system.
 				</p>
 			</template>
 		</Description>
@@ -27,8 +26,7 @@
 			</template>
 			<template #details>
 				<p>
-					Students will know the updates of the employees<br/>
-					and students also can comment on the post of the employees.
+					Interaction for everyone, made easy.
 				</p>
 			</template>
 		</Description>
