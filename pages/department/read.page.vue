@@ -75,7 +75,7 @@ import { department as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import Checkbox from "@/fields/checkbox.vue"
-import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import NonSensitiveTextField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
