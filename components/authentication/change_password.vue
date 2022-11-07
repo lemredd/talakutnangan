@@ -18,16 +18,15 @@
 					v-model="confirmNewPassword"
 					label="Confirm new password"
 					placeholder="confirm your new password"/>
-
-				<button
-					class="btn btn-primary"
-					type="button"
-					@click="savePassword">
-					Save password
-				</button>
 			</form>
 		</template>
 		<template #footer>
+			<button
+				class="save-btn btn btn-primary"
+				type="button"
+				@click="savePassword">
+				Save password
+			</button>
 		</template>
 	</Overlay>
 </template>
@@ -55,20 +54,18 @@
 </style>
 
 <script setup lang="ts">
-import { Ref, ref, inject, onMounted } from "vue"
+import { ref, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
-import { BODY_CLASSES } from "$@/constants/provided_keys"
-
-import isUndefined from "$/type_guards/is_undefined"
-
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
-import BodyCSSClasses from "$@/external/body_css_classes"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
+
 import SensitiveTextField from "@/fields/sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -82,7 +79,6 @@ const {
 const currentPassword = ref<string>("")
 const newPassword = ref<string>("")
 const confirmNewPassword = ref<string>("")
-const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 
 const fetcher: Fetcher = new Fetcher()
 
@@ -100,7 +96,6 @@ const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 function cancel(): void {
 	if (receivedErrors.value.length) receivedErrors.value = []
-	bodyClasses.value.scroll(true)
 	clearPasswords()
 	closeDialog()
 }
@@ -113,29 +108,12 @@ function savePassword() {
 		confirmNewPassword.value
 	)
 	.then(cancel)
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 onMounted(() => {
 	if (userProfile.meta.hasDefaultPassword) {
-		const TIMEOUT = 3000
-
-		setTimeout(() => {
-			openDialog()
-			if (!isUndefined(window)) bodyClasses.value.scroll(false)
-		}, TIMEOUT)
+		openDialog()
 	}
 })
 </script>
