@@ -52,7 +52,7 @@ describe("Component: Log In Form", () => {
 		expect(error.html()).toContain(wrapper.props().receivedErrorFromPageContext.detail)
 	})
 
-	it.only("should not log in with non-existing credentials", async() => {
+	it("should not log in with non-existing credentials", async() => {
 		const errorDetail1
 		= "The sample@example.com in field \"email\" does not exists in the database\"."
 		const errorDetail2
@@ -83,8 +83,11 @@ describe("Component: Log In Form", () => {
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
 		const wrapper = shallowMount(Component)
-
+		const emailField = wrapper.findComponent({ "name": "TextualField" })
+		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find(".submit-btn")
+		await emailField.setValue("jaerfij@jrepfoirej.com")
+		await passwordField.setValue("password")
 		await submitBtn.trigger("click")
 		await flushPromises()
 
@@ -92,7 +95,6 @@ describe("Component: Log In Form", () => {
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/user/log_in")
-		await flushPromises()
 
 		const error = wrapper.find(".error")
 		expect(error.exists()).toBeTruthy()
