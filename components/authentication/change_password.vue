@@ -1,5 +1,5 @@
 <template>
-	<Overlay :is-shown="isOverlayShown">
+	<Overlay :is-shown="isOverlayShown" @close="closeDialog">
 		<template #header>
 			<h1>Update your password</h1>
 		</template>
