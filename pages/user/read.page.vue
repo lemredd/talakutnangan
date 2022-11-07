@@ -30,7 +30,7 @@
 				:options="selectableDepartments"/>
 		</div>
 
-		<div class="controls flex justify-between">
+		<div class="controls flex justify-between mt-3">
 			<button type="submit" class="btn btn-primary">
 				Submit
 			</button>
