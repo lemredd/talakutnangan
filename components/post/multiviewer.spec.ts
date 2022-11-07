@@ -29,13 +29,13 @@ describe("Component: post/multiviewer", () => {
 					"content": "Hello world!",
 					"deletedAt": null,
 					"id": postID,
-					"type": "post",
 					"poster": {
 						"data": {
 							"id": userID,
 							"type": "user"
 						}
-					}
+					},
+					"type": "post"
 				}
 			],
 			"meta": {
@@ -145,13 +145,13 @@ describe("Component: post/multiviewer", () => {
 					"content": "Foo bar",
 					"deletedAt": null,
 					"id": otherPostID,
-					"type": "post",
 					"poster": {
 						"data": {
 							"id": userID,
 							"type": "user"
 						}
-					}
+					},
+					"type": "post"
 				}
 			],
 			"meta": {
@@ -241,7 +241,7 @@ describe("Component: post/multiviewer", () => {
 				}
 			}
 		})
-		const loadOtherPostButton = wrapper.find(".load-other-posts button")
+		const loadOtherPostButton = wrapper.find(".load-others button")
 		await loadOtherPostButton.trigger("click")
 		await flushPromises()
 		await wrapper.setProps({
@@ -265,7 +265,9 @@ describe("Component: post/multiviewer", () => {
 
 		const updates = wrapper.emitted("update:modelValue")
 		/**
-		 * First update is about the count of votes
+		 * First update is about the count of votes.
+		 * Second update is about the asking for other remaining posts.
+		 * Third update is about the asking for comment count of other remaining posts.
 		 */
 		expect(updates).toHaveLength(3)
 
