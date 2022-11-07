@@ -7,13 +7,16 @@ import Validation from "!/bases/validation"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
-import Manager from "%/managers/role"
+import Manager from "%/managers/user"
+import RoleManager from "%/managers/role"
 import DepartmentManager from "%/managers/department"
 
 export default class extends PageMiddleware {
@@ -38,7 +41,8 @@ export default class extends PageMiddleware {
 	}
 
 	async getPageProps(request: Request): Promise<Serializable> {
-		const roleManager = new Manager(request)
+		const manager = new Manager(request)
+		const roleManager = new RoleManager(request)
 		const departmentManager = new DepartmentManager(request)
 		const pageProps = {
 			"departments": await departmentManager.list({
@@ -47,7 +51,7 @@ export default class extends PageMiddleware {
 					"slug": ""
 				},
 				"page": {
-					"limit": 10,
+					"limit": DEFAULT_LIST_LIMIT,
 					"offset": 0
 				},
 				"sort": [ "fullName" ]
@@ -59,7 +63,21 @@ export default class extends PageMiddleware {
 					"slug": ""
 				},
 				"page": {
-					"limit": 10,
+					"limit": DEFAULT_LIST_LIMIT,
+					"offset": 0
+				},
+				"sort": [ "name" ]
+			}),
+			"users": await manager.list({
+				"filter": {
+					"department": "*",
+					"existence": "exists",
+					"kind": "*",
+					"role": "*",
+					"slug": ""
+				},
+				"page": {
+					"limit": DEFAULT_LIST_LIMIT,
 					"offset": 0
 				},
 				"sort": [ "name" ]
