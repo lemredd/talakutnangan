@@ -4,6 +4,7 @@
 			<SelfParticipant
 				v-model:must-show-video="isShowingVideo"
 				v-model:must-transmit-audio="isTransmittingAudio"
+				:is-joined="isJoined"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<OtherParticipantsContainer
