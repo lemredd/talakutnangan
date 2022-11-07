@@ -15,7 +15,7 @@ describe("Controller: PATCH /api/user/:id", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const user = await new Factory().insertOne()
-		const newUser = await new Factory().makeOne()
+		const newUser = await new Factory().email(() => "admin.head@example.com").makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
