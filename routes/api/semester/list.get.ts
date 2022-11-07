@@ -10,8 +10,8 @@ import QueryController from "!/controllers/query"
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
 import { READ } from "$/permissions/semester_combinations"
-import { semester as permissionGroup } from "$/permissions/permission_list"
 import PermissionBasedPolicy from "!/policies/permission-based"
+import { semester as permissionGroup } from "$/permissions/permission_list"
 
 import makeListRules from "!/rule_sets/make_list"
 
@@ -39,7 +39,7 @@ export default class extends QueryController {
 		const constraints = { ...request.query }
 
 		const manager = new Manager(request)
-		const semesters = await manager.list(constraints as SemesterQueryParameters<number>)
+		const semesters = await manager.list(constraints as SemesterQueryParameters)
 
 		return new ListResponse(semesters)
 	}

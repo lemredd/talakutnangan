@@ -8,7 +8,7 @@
 </template>
 
 <style scoped lang = "scss">
-	.date{
+	.date {
 		@apply bg-transparent mr-2;
 	}
 </style>
