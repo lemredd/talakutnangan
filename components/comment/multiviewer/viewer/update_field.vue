@@ -15,8 +15,6 @@ import { ref, computed, inject } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedCommentResource } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
@@ -31,53 +29,31 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
-	post: DeserializedPostResource
+	modelValue: DeserializedCommentResource
 }>()
 
 const { pageProps } = pageContext
 const { userProfile } = pageProps
-const post = computed<DeserializedPostResource>(
-	() => props.post as DeserializedPostResource
+const comment = computed<DeserializedCommentResource>(
+	() => props.modelValue as DeserializedCommentResource
 )
 
-const content = ref<string>("")
+const content = ref<string>(props.modelValue.content)
 const commentStatus = ref<FieldStatus>("enabled")
 
 const fetcher = new Fetcher()
 async function submit() {
-	await fetcher.create({
+	await fetcher.update(comment.value.id, {
 		"approvedAt": null,
 		"content": content.value,
 		"createdAt": new Date().toJSON(),
 		"deletedAt": null,
 		"updatedAt": new Date().toJSON()
-	}, {
-		"extraDataFields": {
-			"relationships": {
-				// eslint-disable-next-line no-undefined
-				"comments": undefined,
-				"post": {
-					"data": {
-						"id": post.value.id,
-						"type": "post"
-					}
-				},
-				"user": {
-					"data": {
-						"id": userProfile.data.id,
-						"type": "user"
-					}
-				}
-			}
-		}
-	}).then(({ body }) => {
+	}).then(() => {
 		content.value = ""
-		emit("createComment", {
-			...body.data,
-			"post": {
-				"data": post.value
-			},
-			"user": userProfile as DeserializedUserDocument
+		emit("updateComment", {
+			...comment.value,
+			"content": content.value
 		} as DeserializedCommentResource<"user">)
 	})
 }
