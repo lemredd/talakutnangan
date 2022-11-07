@@ -1,9 +1,10 @@
 <template>
-	<Overlay :is-shown="isOverlayShown" @close="closeDialog">
+	<Overlay :is-shown="isOverlayShown" @close="cancel">
 		<template #header>
 			<h1>Update your password</h1>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form class="verification">
 				<SensitiveTextField
 					v-model="currentPassword"
@@ -56,12 +57,14 @@
 import { ref, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { UnitError } from "$/types/server"
 
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
 
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -88,18 +91,34 @@ function clearPasswords(): void {
 	})
 }
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function cancel(): void {
+	if (receivedErrors.value.length) receivedErrors.value = []
 	clearPasswords()
 	closeDialog()
 }
-
 function savePassword() {
 	fetcher.updatePassword(
 		userProfile.data.id,
 		currentPassword.value,
 		newPassword.value,
 		confirmNewPassword.value
-	).then(cancel)
+	)
+	.then(cancel)
+	.catch(({ body }) => {
+		if (successMessages.value.length) successMessages.value = []
+		if (body) {
+			const { errors } = body
+			receivedErrors.value = errors.map((error: UnitError) => {
+				const readableDetail = error.detail
+
+				return readableDetail
+			})
+		} else {
+			receivedErrors.value = [ "an error occured" ]
+		}
+	})
 }
 
 onMounted(() => {
