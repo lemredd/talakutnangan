@@ -8,14 +8,17 @@
 			<form class="verification">
 				<SensitiveTextField
 					v-model="currentPassword"
+					class="field"
 					label="Current password"
 					placeholder="enter your current password"/>
 				<SensitiveTextField
 					v-model="newPassword"
+					class="field"
 					label="New password"
 					placeholder="enter your new password"/>
 				<SensitiveTextField
 					v-model="confirmNewPassword"
+					class="field"
 					label="Confirm new password"
 					placeholder="confirm your new password"/>
 			</form>
@@ -49,6 +52,10 @@
 			input {
 				padding: .25em .5em;
 			}
+		}
+
+		.field {
+			@apply mb-8;
 		}
 	}
 </style>
