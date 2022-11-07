@@ -45,7 +45,7 @@ async function submit() {
 	await fetcher.update(comment.value.id, {
 		"approvedAt": null,
 		"content": content.value,
-		"createdAt": new Date().toJSON(),
+		"createdAt": props.modelValue.createdAt.toJSON(),
 		"deletedAt": null,
 		"updatedAt": new Date().toJSON()
 	}).then(() => {
