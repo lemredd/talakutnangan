@@ -39,7 +39,7 @@ export default class extends QueryController {
 		const constraints = { ...request.query }
 
 		const manager = new Manager(request)
-		const semesters = await manager.list(constraints as SemesterQueryParameters<number>)
+		const semesters = await manager.list(constraints as SemesterQueryParameters)
 
 		return new ListResponse(semesters)
 	}
