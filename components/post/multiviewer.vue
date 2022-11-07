@@ -30,21 +30,20 @@
 </template>
 
 <style scoped lang="scss">
-	.multiviwer {
-		@apply flex flex-col flex-nowrap;
+	.multiviewer {
+		@apply flex flex-col;
 
 		form {
-			@apply flex flex-row items-center;
-			@apply mb-4 h-8 p-10 rounded-[1rem] bg-gray-300;
-			min-width: 80%;
+			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
+			@apply bg-gray-300 bg-opacity-20 p-4 m-4 shadow-inner rounded-[1rem];
 
 		.filter{
-			@apply flex-wrap;
+			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap;
 			max-width:100%;
 		}
 
 			.existence {
-				@apply flex flex-row ml-8;
+				@apply flex flex-col flex-nowrap;
 			}
 		}
 
@@ -57,7 +56,6 @@
 		}
 		.load-others {
 			@apply flex-1;
-
 			button { @apply w-[100%]; }
 		}
 	}

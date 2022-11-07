@@ -23,8 +23,13 @@
 		@apply flex flex-col flex-nowrap justify-center;
 
 		> .comments {
-			@apply flex-1 flex-col flex-nowrap;
-			@apply p-5 bg-light-800 shadow-lg rounded-[1rem];
+			@apply flex-1 flex-row flex-wrap sm:flex-1 flex-row flex-wrap;
+			@apply p-5  bg-gray-300 bg-opacity-20 shadow-inner rounded-[1rem];
+			max-width: 100%;
+		}
+		.field {
+			@apply flex flex-row flex-wrap;
+			max-width:100%;
 		}
 
 		> * {
