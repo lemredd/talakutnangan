@@ -25,6 +25,7 @@ import {
 } from "$/permissions/semester_combinations"
 import {
 	IMPORT_USERS,
+	RESET_PASSWORD,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
@@ -45,6 +46,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"mustBeGuest": false,
 		"permissionCombinations": [
 			IMPORT_USERS,
+			RESET_PASSWORD,
 			UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 			UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
