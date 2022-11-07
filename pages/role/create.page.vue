@@ -48,7 +48,7 @@ import type { RoleAttributes } from "$/types/documents/role"
 import Fetcher from "$@/fetchers/role"
 
 import FlagSelector from "@/role/flag_selector.vue"
-import TextualField from "@/fields/non-sensitive_text.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"

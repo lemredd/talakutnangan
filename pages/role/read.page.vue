@@ -73,7 +73,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import FlagSelector from "@/role/flag_selector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import RoleNameField from "@/fields/non-sensitive_text.vue"
+import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
