@@ -1,6 +1,8 @@
 <template>
 	<div class="selectable-radio">
-		{{ title }}
+		<h6 class="title">
+			{{ title }}
+		</h6>
 		<label
 			v-for="option in options"
 			:key="option.value"
@@ -14,6 +16,12 @@
 		</label>
 	</div>
 </template>
+
+<style scoped lang="scss">
+	label {
+		@apply mr-4;
+	}
+</style>
 
 <script setup lang="ts">
 import { computed } from "vue"

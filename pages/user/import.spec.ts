@@ -1,4 +1,7 @@
-import { shallowMount, flushPromises } from "@vue/test-utils"
+import { nextTick } from "vue"
+import { mount, flushPromises } from "@vue/test-utils"
+
+import { DeserializedRoleListDocument } from "$/types/documents/role"
 
 import RoleFactory from "~/factories/role"
 import UserFactory from "~/factories/user"
@@ -26,18 +29,31 @@ describe("Page: user/import", () => {
 
 			return user
 		}))
-
 		const serializedUsers = await new UserFactory().serialize(users)
-		const deserializedRoles = deserialize(await new RoleFactory().serialize(rawRoles))
+		const deserializedRoles = deserialize(
+			await new RoleFactory().serialize(rawRoles)
+		) as DeserializedRoleListDocument
+		deserializedRoles.meta = {
+			"count": 0
+		}
 
-		fetchMock.mockResponse(
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
+		fetchMock.mockResponseOnce(
 			JSON.stringify(serializedUsers),
 			{ "status": RequestEnvironment.status.CREATED }
 		)
 
 		global.FormData = jest.fn()
 
-		const wrapper = shallowMount(Component, {
+		const wrapper = mount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -45,25 +61,21 @@ describe("Page: user/import", () => {
 							"roles": deserializedRoles
 						}
 					}
-				},
-				"stubs": {
-					"OutputTable": false
 				}
 			}
 		})
 
+		await flushPromises()
 		const submitButton = wrapper.find("input[type=submit]")
 		await submitButton.trigger("submit")
 		await flushPromises()
-		await flushPromises()
-		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/user/import")
+		expect(castFetch).toHaveBeenCalledTimes(2)
+		const [ [ unusedFirstRequest ], [ secondRequest ] ] = castFetch.mock.calls
+		expect(secondRequest).toHaveProperty("method", "POST")
+		expect(secondRequest).toHaveProperty("url", "/api/user/import")
 		const output = wrapper.find("output")
-		expect(output.exists()).toBeTruthy()
 		expect(output.findAll("th")).toHaveLength(NUMBER_OF_EXPECTED_COLUMNS)
 		expect(output.findAll("td")).toHaveLength(NUMBER_OF_EXPECTED_COLUMNS * NUMBER_OF_USERS)
 	})
@@ -88,7 +100,7 @@ describe("Page: user/import", () => {
 
 		global.FormData = jest.fn()
 
-		const wrapper = shallowMount(Component, {
+		const wrapper = mount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {

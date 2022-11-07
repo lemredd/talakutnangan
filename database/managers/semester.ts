@@ -12,13 +12,13 @@ import SemesterTransformer from "%/transformers/semester"
 export default class extends BaseManager<
 	Model,
 	SemesterAttributes<"deserialized">,
-	SemesterQueryParameters<number>
+	SemesterQueryParameters
 > {
 	get model(): ModelCtor<Model> { return Model }
 
 	get transformer(): SemesterTransformer { return new SemesterTransformer() }
 
-	get listPipeline(): Pipe<FindAndCountOptions<Model>, SemesterQueryParameters<number>>[] {
+	get listPipeline(): Pipe<FindAndCountOptions<Model>, SemesterQueryParameters>[] {
 		return [
 			siftBySlug,
 			...super.listPipeline

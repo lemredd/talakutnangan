@@ -16,14 +16,20 @@
 				:comment-count="posts.data[i].meta?.commentCount || 0"
 				class="viewer"/>
 			<p v-if="hasNoPosts">
-				There are no post found.
+				There are no posts found.
 			</p>
 		</Suspensible>
+
+		<div v-if="hasRemainingPosts" class="load-others">
+			<button @click="retrievePosts">
+				Load other posts
+			</button>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	div {
+	.multiviwer {
 		@apply flex flex-col flex-nowrap;
 
 		form {
@@ -40,6 +46,11 @@
 			.viewer {
 				@apply flex-1 mb-8;
 			}
+		}
+		.load-others {
+			@apply flex-1;
+
+			button { @apply w-[100%]; }
 		}
 	}
 </style>
@@ -98,6 +109,9 @@ const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"depar
 	}
 })
 const hasNoPosts = computed<boolean>(() => posts.value.data.length === 0)
+const hasRemainingPosts = computed<boolean>(
+	() => posts.value.data.length < (posts.value.meta?.count || 0)
+)
 
 const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
