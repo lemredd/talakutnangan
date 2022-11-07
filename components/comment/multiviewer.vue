@@ -175,7 +175,7 @@ function archiveComment(commentToRemove: DeserializedCommentResource<"user">) {
 }
 
 function restoreComment(commentToRemove: DeserializedCommentResource<"user">) {
-	removeComment(commentToRemove, 1)
+	removeComment(commentToRemove, -1)
 }
 
 function resetCommentsList() {
