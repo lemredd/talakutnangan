@@ -24,8 +24,7 @@ import Field from "@/comment/field.vue"
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 interface CustomEvents {
-	(event: "updateComment", data: DeserializedCommentResource<"user">): void
-	(event: "submitPost"): void
+	(event: "update:modelValue", data: DeserializedCommentResource<"user">): void
 }
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
@@ -51,7 +50,7 @@ async function submit() {
 		"updatedAt": new Date().toJSON()
 	}).then(() => {
 		content.value = ""
-		emit("updateComment", {
+		emit("update:modelValue", {
 			...comment.value,
 			"content": content.value
 		} as DeserializedCommentResource<"user">)

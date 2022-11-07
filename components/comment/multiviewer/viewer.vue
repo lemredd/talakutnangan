@@ -68,7 +68,8 @@
 	</section>
 	<UpdateCommentField
 		v-else
-		v-model="comment"/>
+		:model-value="comment"
+		@update:model-value="closeUpdateCommentField"/>
 </template>
 
 <style scoped lang="scss">
@@ -315,9 +316,15 @@ async function switchVote(newRawVote: string): Promise<void> {
 
 const {
 	"state": mustUpdate,
+	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
 const mustDisplayOnly = computed(() => !mustUpdate.value)
+function closeUpdateCommentField(newComment: DeserializedCommentResource) {
+	emit("update:modelValue", newComment as DeserializedCommentResource<"user">)
+	closeUpdateField()
+}
+
 
 const {
 	"state": mustArchive,
