@@ -9,7 +9,7 @@
 			:id="containerId"
 			class="track-container">
 			<video
-				v-if="!isJoinedReactive && mustShowVideo"
+				v-if="!isJoined && mustShowVideo"
 				ref="previewVideo"
 				class="preview-video">
 			</video>
@@ -79,7 +79,6 @@ const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 const previewVideo = ref<HTMLVideoElement|null>(null)
-const isJoinedReactive = computed(() => props.isJoined)
 const mustShowVideo = computed(() => props.mustShowVideo)
 function previewVideoTrack() {
 	if (navigator.mediaDevices) {
