@@ -30,6 +30,7 @@ export const localTracks: LocalTracks = {
 	"localAudioTrack": null,
 	"localVideoTrack": null
 }
+let localParticipantIDReference = ""
 
 export async function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
 	if (!isUndefined(window)) {
@@ -69,6 +70,8 @@ export function joinAndPresentLocalTracks(
 				Number(chatMessageActivityID)
 			)
 			const { isShowingVideo, isTransmittingAudio } = trackStates
+			localParticipantIDReference = localParticipantID
+
 
 			if (isShowingVideo) {
 				localTracks.localVideoTrack = await manager().createCameraVideoTrack()
@@ -150,7 +153,12 @@ export function muteVideoTrack() {
 }
 export function unmuteVideoTrack() {
 	Stub.runConditionally(
-		() => {
+		async() => {
+			if (!localTracks.localVideoTrack?.isPlaying) {
+				localTracks.localVideoTrack = await manager().createCameraVideoTrack()
+				await engine().publish(localTracks.localVideoTrack)
+				localTracks.localVideoTrack?.play(localParticipantIDReference)
+			}
 			localTracks.localVideoTrack?.setMuted(false)
 		},
 		() => {
@@ -159,7 +167,7 @@ export function unmuteVideoTrack() {
 			} as any
 
 			return [
-				0 as unknown as undefined,
+				Promise.resolve(),
 				{
 					"arguments": [],
 					"functionName": "unmuteVideoTrack"
