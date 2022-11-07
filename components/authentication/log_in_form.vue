@@ -35,18 +35,16 @@
 		</form>
 		<div class="controls">
 			<button
-				id="submit-btn"
+				id=""
 				:disabled="!email"
-				class="btn btn-primary"
+				class="submit-btn btn btn-primary"
 				@click="logIn">
 				Log in
 			</button>
-			<a
-				id="forgot-btn"
-				role="button"
-				href="">
+			<button
+				role="button">
 				Forgot Password?
-			</a>
+			</button>
 		</div>
 	</div>
 </template>
@@ -91,7 +89,7 @@ form {
 	@screen sm {
 		@apply flex-row items-center justify-between;
 
-		#submit-btn {
+		.submit-btn {
 			order: 2;
 		}
 	}

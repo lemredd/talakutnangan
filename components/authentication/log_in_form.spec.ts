@@ -20,10 +20,9 @@ describe("Component: Log In Form", () => {
 			{ "status": RequestEnvironment.status.OK })
 
 		const wrapper = shallowMount(Component)
-
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
-		const submitBtn = wrapper.find("#submit-btn")
+		const submitBtn = wrapper.find(".submit-btn")
 
 		await emailField.setValue("dean@example.net")
 		await passwordField.setValue("password")
@@ -84,15 +83,18 @@ describe("Component: Log In Form", () => {
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
 		const wrapper = shallowMount(Component)
-
-		const submitBtn = wrapper.find("#submit-btn")
+		const emailField = wrapper.findComponent({ "name": "TextualField" })
+		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
+		const submitBtn = wrapper.find(".submit-btn")
+		await emailField.setValue("jaerfij@jrepfoirej.com")
+		await passwordField.setValue("password")
 		await submitBtn.trigger("click")
+		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/user/log_in")
-		await flushPromises()
 
 		const error = wrapper.find(".error")
 		expect(error.exists()).toBeTruthy()
