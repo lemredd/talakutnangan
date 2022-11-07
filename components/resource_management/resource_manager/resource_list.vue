@@ -86,9 +86,9 @@
 					v-for="resource in filteredList"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ formatToCompleteFriendlyTime(resource.user.data.name) }}</td>
 					<td>{{ resource.actionName }}</td>
-					<td>{{ resource.createdAt }}</td>
+					<td>{{ resource.user.data.name }}</td>
+					<td>{{ formatToCompleteFriendlyTime(resource.createdAt) }}</td>
 				</tr>
 			</template>
 
@@ -189,7 +189,7 @@ const tableHeaders = computed(() => {
 		]
 	} else if (resourceType.value === "audit_trail") {
 		headers = [
-			"ID", "Action name", "Created at"
+			"Action name", "Caused by", "Done last"
 		]
 	} else {
 		headers = [ "Name", "no. of users", "" ]
