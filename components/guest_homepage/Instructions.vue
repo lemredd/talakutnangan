@@ -53,9 +53,6 @@
 					<p>In Consultations, the Student will create a consult and type the name of an employee.</p>
 				</li>
 				<li>
-					<p>Consultations will only last 15mins in every consultation that is created.</p>
-				</li>
-				<li>
 					<p>Students can specify the reasons.</p>
 				</li>
 				<li>
@@ -72,6 +69,11 @@
 				</li>
 				<li>
 					<p>Students and Employees can end their consultation if there are no more questions.</p>
+				</li>
+				<li>
+					<p>
+						Consultations will end automatically after 5 minutes of inactivity in every consultation that was started.
+					</p>
 				</li>
 			</ol>
 			<div class="pt-2 order-2 md:order-1 flex self-center justify-between">
