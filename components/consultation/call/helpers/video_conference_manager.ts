@@ -104,19 +104,21 @@ export function joinAndPresentLocalTracks(
 
 export function leaveAndRemoveLocalTracks() {
 	Stub.runConditionally(
-		() => {
+		async() => {
 			videoConferenceEngine = videoConferenceEngine as VideoConferenceEngine
 			videoConferenceManager = videoConferenceManager as VideoConferenceManager
 
 			localTracks.localAudioTrack?.close()
 			localTracks.localVideoTrack?.close()
+
+			await engine().leave()
 		},
 		() => {
 			localTracks.localAudioTrack = null
 			localTracks.localVideoTrack = null
 
 			return [
-				0 as unknown as undefined,
+				Promise.resolve(),
 				{
 					"arguments": [],
 					"functionName": "leaveAndRemoveLocalTracks"
