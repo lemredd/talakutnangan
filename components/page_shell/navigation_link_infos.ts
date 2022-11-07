@@ -1,8 +1,9 @@
 import type { ConditionalLinkInfo } from "$@/types/independent"
 
-import { USER_LIST } from "$/constants/template_page_paths"
+import { USER_LIST, AUDIT_TRAIL_LIST } from "$/constants/template_page_paths"
 
-import { user, post } from "$/permissions/permission_list"
+import { user, post, auditTrail } from "$/permissions/permission_list"
+import { READ } from "$/permissions/audit_trail_combinations"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
@@ -96,6 +97,22 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			RESET_PASSWORD
 		],
 		"permissionGroup": user
+	},
+	{
+		"kinds": null,
+		"links": [
+			{
+				"icon": "list_alt",
+				"name": "See audit trail",
+				"path": AUDIT_TRAIL_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
+			READ
+		],
+		"permissionGroup": auditTrail
 	}
 ]
 
