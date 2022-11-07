@@ -2,8 +2,8 @@ import type { ConditionalLinkInfo } from "$@/types/independent"
 
 import { USER_LIST, AUDIT_TRAIL_LIST } from "$/constants/template_page_paths"
 
-import { user, post, auditTrail } from "$/permissions/permission_list"
 import { READ } from "$/permissions/audit_trail_combinations"
+import { user, post, auditTrail } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS

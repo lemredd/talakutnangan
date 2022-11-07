@@ -4,10 +4,12 @@ import {
 	DEPARTMENT_LIST,
 	USER_LIST,
 	ROLE_LIST,
-	SEMESTER_LIST
+	SEMESTER_LIST,
+	AUDIT_TRAIL_LIST
 } from "$/constants/template_page_paths"
 
-import { user, role, department, semester } from "$/permissions/permission_list"
+import { READ as READ_AUDIT_TRAIL } from "$/permissions/audit_trail_combinations"
+import { user, role, department, semester, auditTrail } from "$/permissions/permission_list"
 import {
 	CREATE as CREATE_ROLES,
 	UPDATE as UPDATE_ROLES,
@@ -107,6 +109,22 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			ARCHIVE_AND_RESTORE_SEMESTERS
 		],
 		"permissionGroup": semester
+	},
+	{
+		"kinds": null,
+		"links": [
+			{
+				"icon": "list_alt",
+				"name": "Audit trails",
+				"path": AUDIT_TRAIL_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
+			READ_AUDIT_TRAIL
+		],
+		"permissionGroup": auditTrail
 	}
 ]
 
