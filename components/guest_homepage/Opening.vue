@@ -9,6 +9,10 @@
 				<p>
 					Have a question? have them answered through our consultation system.
 				</p>
+
+				<p class="opening-redirector">
+					<a href="/consultation">Start consulting.</a>
+				</p>
 			</template>
 		</Description>
 		<div class="graphics">
@@ -28,6 +32,10 @@
 				<p>
 					Interaction for everyone, made easy.
 				</p>
+
+				<p class="opening-redirector">
+					<a href="/consultation">Visit the forum.</a>
+				</p>
 			</template>
 		</Description>
 		<div class="graphics graphics-left">
@@ -44,9 +52,14 @@
 	}
 
 	p {
-		@apply mt-4 mb-8;
-	}
+		@apply my-4;
 
+		&.opening-redirector {
+			a {
+				text-decoration: underline;
+			}
+		}
+	}
 }
 .graphics {
 	@apply flex justify-center;
