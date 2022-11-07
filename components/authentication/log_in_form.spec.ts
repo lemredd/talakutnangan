@@ -20,10 +20,9 @@ describe("Component: Log In Form", () => {
 			{ "status": RequestEnvironment.status.OK })
 
 		const wrapper = shallowMount(Component)
-
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
-		const submitBtn = wrapper.find("#submit-btn")
+		const submitBtn = wrapper.find(".submit-btn")
 
 		await emailField.setValue("dean@example.net")
 		await passwordField.setValue("password")
@@ -53,7 +52,7 @@ describe("Component: Log In Form", () => {
 		expect(error.html()).toContain(wrapper.props().receivedErrorFromPageContext.detail)
 	})
 
-	it("should not log in with non-existing credentials", async() => {
+	it.only("should not log in with non-existing credentials", async() => {
 		const errorDetail1
 		= "The sample@example.com in field \"email\" does not exists in the database\"."
 		const errorDetail2
@@ -85,8 +84,9 @@ describe("Component: Log In Form", () => {
 
 		const wrapper = shallowMount(Component)
 
-		const submitBtn = wrapper.find("#submit-btn")
+		const submitBtn = wrapper.find(".submit-btn")
 		await submitBtn.trigger("click")
+		await flushPromises()
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
