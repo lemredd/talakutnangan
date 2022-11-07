@@ -72,6 +72,7 @@
 
 @media screen and (min-width: $desktopViewportMinimum) {
 	.user-settings {
+		@apply pt-6px;
 		@apply self-center;
 
 		&.parent-dropdown-container {
