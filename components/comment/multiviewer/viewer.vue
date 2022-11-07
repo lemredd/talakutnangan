@@ -66,6 +66,9 @@
 			:title="friendlyVoteCount"
 			@update:model-value="switchVote"/>
 	</section>
+	<UpdateCommentField
+		v-else
+		v-model="comment"/>
 </template>
 
 <style scoped lang="scss">
@@ -140,6 +143,7 @@ import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
 import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import UpdateCommentField from "@/comment/multiviewer/viewer/update_field.vue"
 
 const fetcher = new Fetcher()
 const voteFetcher = new VoteFetcher()
