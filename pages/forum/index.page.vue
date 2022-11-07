@@ -1,15 +1,15 @@
 <template>
 	<div class="main">
-		<div class="created-post" @click="showCreateForm">
+		<div class="created-post">
 			<ProfilePicture
 				class="account-attachment"
 				:user="userProfile"/>
 			<span class="post-create">
 				Welcome To Forum
 			</span>
-			<span class="create-post btn btn-primary">
+			<button class="create-post btn btn-primary" @click="showCreateForm">
 				add post
-			</span>
+			</button>
 		</div>
 		<CreatePostForm
 			:is-shown="isCreateShown"
@@ -26,12 +26,12 @@
 	@import "@styles/btn.scss";
 	@import "@styles/variables.scss";
 	.main {
-		@apply flex flex-col flex-nowrap justify-start items-stretch;
+		@apply flex flex-col flex-nowrap justify-center items-stretch min-w-70;
 
 		.created-post {
 			@apply flex-1 flex justify-between items-center;
 			@apply mb-5 p-4 rounded-1rem shadow-inner bg-light-800;
-
+			max-width: 100%;
 
 			.account-attachment {
 				@apply h-6 w-auto;
