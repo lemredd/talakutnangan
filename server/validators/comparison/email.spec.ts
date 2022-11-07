@@ -12,7 +12,7 @@ describe("Validator pipe: email", () => {
 
 		const sanitizeValue = (await email(value, constraints)).value
 
-		expect(sanitizeValue).toEqual("admin@example.com")
+		expect(sanitizeValue).toEqual("admin.head@example.com")
 	})
 
 	it("cannot accept short email username", async() => {
