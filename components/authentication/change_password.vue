@@ -32,7 +32,7 @@
 
 <style lang="scss">
 	.overlay-footer {
-		@apply justify-end;
+		@apply flex-row-reverse;
 	}
 </style>
 
