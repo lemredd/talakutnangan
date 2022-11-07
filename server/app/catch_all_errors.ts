@@ -101,12 +101,20 @@ export default async function(
 				response.send({
 					"errors": unitError
 				})
-				Log.errorMessage("middleware", "Error: Output multiple errors")
+				Log.errorMessage("middleware", `Error: Output multiple errors${
+					RequestEnvironment.isNotOnProduction
+						? ` (${error.name}'s stack: ${error.stack})`
+						: ""
+				}`)
 			} else {
 				response.send({
 					"errors": [ unitError ]
 				})
-				Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}`)
+				Log.errorMessage("middleware", `${unitError.title}: ${unitError.detail}${
+					RequestEnvironment.isNotOnProduction
+						? ` (${error.name}'s stack: ${error.stack})`
+						: ""
+				}`)
 			}
 		} else if (!response.headersSent) {
 			response.status(RequestEnvironment.status.NOT_ACCEPTABLE)
