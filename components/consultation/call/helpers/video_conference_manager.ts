@@ -199,7 +199,12 @@ export function muteAudioTrack() {
 }
 export function unmuteAudioTrack() {
 	Stub.runConditionally(
-		() => {
+		async() => {
+			if (!localTracks.localAudioTrack?.isPlaying) {
+				localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
+				await engine().publish(localTracks.localAudioTrack)
+				localTracks.localAudioTrack?.play()
+			}
 			localTracks.localAudioTrack?.setMuted(false)
 		},
 		() => {
@@ -208,7 +213,7 @@ export function unmuteAudioTrack() {
 			} as any
 
 			return [
-				0 as unknown as undefined,
+				Promise.resolve(),
 				{
 					"arguments": [],
 					"functionName": "unmuteAudioTrack"
