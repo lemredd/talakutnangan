@@ -131,8 +131,8 @@ const props = defineProps<{
 	receivedErrorFromPageContext?: UnitError & Serializable
 }>()
 
-const email = ref("sample@example.com")
-const password = ref("12345678")
+const email = ref("")
+const password = ref("")
 const receivedErrors = ref<string|string[]>(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail

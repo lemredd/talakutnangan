@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="submit">
+	<form @submit.prevent>
 		<ProfilePicture
 			class="self"
 			:user="user"/>
@@ -9,7 +9,7 @@
 			class="field"
 			input-classes="raw-field"
 			type="text"
-			placeholder="Write to comment"
+			placeholder="Write a comment..."
 			:may-save-implicitly="true"
 			@save-implicitly="submit"/>
 	</form>
@@ -17,7 +17,7 @@
 
 <style scoped lang="scss">
 	form {
-		@apply flex flex-row flex-nowrap justify-center;
+		@apply flex flex-row flex-nowrap justify-center items-center;
 		@apply mb-5;
 
 		> .self {
@@ -26,7 +26,8 @@
 
 		> .field {
 			@apply flex-1 flex flex-row;
-			@apply rounded-1rem bg-gray-300 text-dark-500 min-w-55;
+			@apply dark:text-white;
+			border-bottom: 1px solid hsla(0,0%,60%,0.3);
 
 			.raw-field:not(:disabled) {
 				@apply border-none p-4 rounded-1rem w-[100%];

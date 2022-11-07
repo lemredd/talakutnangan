@@ -17,7 +17,7 @@
 				:comment-count="posts.data[i].meta?.commentCount || 0"
 				class="viewer"/>
 			<p v-if="hasNoPosts">
-				There are no post found.
+				There are no posts found.
 			</p>
 		</Suspensible>
 

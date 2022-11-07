@@ -56,7 +56,7 @@ export default class extends JSONController {
 				"constraints": {
 					"length": {
 						"maximum": 1000,
-						"minimum": 5
+						"minimum": 1
 					}
 				},
 				"pipes": [ required, string, length ]

@@ -29,7 +29,6 @@
 
 
 	.up-vote {
-		@apply ml-10;
 
 		&.active-vote {
 			@apply text-blue-300 font-900;
