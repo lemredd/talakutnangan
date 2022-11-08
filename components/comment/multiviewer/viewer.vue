@@ -357,7 +357,6 @@ function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">
 	closeUpdateField()
 }
 
-
 const {
 	"state": mustArchive,
 	"on": confirmArchive,
