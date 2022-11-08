@@ -4,24 +4,28 @@
 			<h1>Update your password</h1>
 		</template>
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form class="verification">
 				<SensitiveTextField
 					v-model="currentPassword"
+					class="field"
 					label="Current password"
 					placeholder="enter your current password"/>
 				<SensitiveTextField
 					v-model="newPassword"
+					class="field"
 					label="New password"
 					placeholder="enter your new password"/>
 				<SensitiveTextField
 					v-model="confirmNewPassword"
+					class="field"
 					label="Confirm new password"
 					placeholder="confirm your new password"/>
 			</form>
 		</template>
 		<template #footer>
 			<button
-				class="btn btn-primary"
+				class="save-btn btn btn-primary"
 				type="button"
 				@click="savePassword">
 				Save password
@@ -49,6 +53,10 @@
 				padding: .25em .5em;
 			}
 		}
+
+		.field {
+			@apply mb-8;
+		}
 	}
 </style>
 
@@ -59,9 +67,12 @@ import type { PageContext } from "$/types/renderer"
 
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
+
 import SensitiveTextField from "@/fields/sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -88,7 +99,10 @@ function clearPasswords(): void {
 	})
 }
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function cancel(): void {
+	if (receivedErrors.value.length) receivedErrors.value = []
 	clearPasswords()
 	closeDialog()
 }
@@ -99,7 +113,9 @@ function savePassword() {
 		currentPassword.value,
 		newPassword.value,
 		confirmNewPassword.value
-	).then(cancel)
+	)
+	.then(cancel)
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 onMounted(() => {
