@@ -2,27 +2,23 @@
 	<div class="consultations-list left">
 		<!-- TODO(others): use grid if applicable -->
 		<div class="consultations-list-header">
-			<div v-if="!isSearching" class="no-search-bar">
-				<h2>
-					Consultations
-				</h2>
+			<h2>
+				Consultations
+			</h2>
 
-				<button
-					class="material-icons search-btn"
-					@click="toggleSearching">
-					search
-				</button>
-			</div>
-			<div
-				v-else
-				class="is-searching">
-				<!-- TODO(lead/button): search existing consultations -->
-
-				<SearchBar v-model="slug" class="list-search-bar"/>
-				<button class="close-search-btn material-icons text-xs" @click="toggleSearching">
-					close
-				</button>
-			</div>
+			<MinorDropdown v-if="isUserAReachableEmployee" v-model="isDropdownShown">
+				<template #dropdown-contents>
+					<a class="link-to-reports" :href="CONSULTATION_REPORT_PER_STUDENT">
+						View summary per student
+					</a>
+					<a class="link-to-reports" :href="CONSULTATION_WEEKLY_REPORT">
+						View summary per week
+					</a>
+					<a class="link-to-reports" :href="CONSOLIDATED_CONSULTATION_REPORT">
+						View overall summary
+					</a>
+				</template>
+			</MinorDropdown>
 		</div>
 
 		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
@@ -64,7 +60,8 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/mixins.scss";
+	@import "@styles/mixins.scss";
+
 
 	.left {
 		@apply dark:bg-dark-700 bg-white;
@@ -84,12 +81,12 @@
 		}
 
 		.consultations-list-header {
-			@apply p-3;
+			@apply p-3 flex flex-row flex-nowrap justify-center items-center;
 
-			.no-search-bar {
-				@apply flex flex-1;
+			h2 { @apply flex-1 uppercase; }
 
-				h2 { @apply flex-1 uppercase; }
+			.link-to-reports {
+				@apply flex-1 max-h-[4rem] p-4;
 			}
 
 			.is-searching {
@@ -147,27 +144,28 @@ import type {
 } from "$/types/documents/consultation"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+import {
+	CONSULTATION_REPORT_PER_STUDENT,
+	CONSULTATION_WEEKLY_REPORT,
+	CONSOLIDATED_CONSULTATION_REPORT
+} from "$/constants/template_page_paths"
 
 import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
+import makeUniqueBy from "$/helpers/make_unique_by"
 import specializePath from "$/helpers/specialize_path"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
+import ConsultationForm from "@/consultation/form.vue"
 import LastChat from "@/consultation/list/last_chat.vue"
+import MinorDropdown from "@/helpers/minor_dropdown.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
-import makeUniqueBy from "$/helpers/make_unique_by"
-
-import SearchBar from "@/helpers/search_bar.vue"
-import ConsultationForm from "@/consultation/form.vue"
-
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
-const slug = ref("")
 const {
-	"toggle": toggleSearching,
-	"state": isSearching
+	"state": isDropdownShown
 } = makeSwitch(false)
 
 const {
@@ -181,7 +179,8 @@ function toggleAddingSchedule() {
 }
 
 const { "pageProps": { userProfile } } = pageContext
-const isUserAStudent = computed(() => userProfile?.data?.kind === "student")
+const isUserAStudent = computed(() => userProfile.data.kind === "student")
+const isUserAReachableEmployee = computed(() => userProfile.data.kind === "reachable_employee")
 
 const {
 	consultations,
