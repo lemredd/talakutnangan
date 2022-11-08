@@ -44,6 +44,9 @@
 		<h6 id="reason" class="reason">
 			{{ reason }}
 		</h6>
+		<h6 id="actionTaken" class="actionTaken">
+			{{ actionTaken }}
+		</h6>
 
 		<div class="schedules">
 			<div class="col">
@@ -221,6 +224,13 @@ const finishedAt = computed<string>(() => {
 	return "Consultation has not yet finished."
 })
 const reason = computed<string>(() => consultation.value.data.reason)
+const actionTaken = computed<string>(() => {
+	if (consultation.value.data.actionTaken) {
+		return consultation.value.data.actionTaken
+	}
+
+	return "Please wait for the consultant to provide the action taken."
+})
 const consultant = computed<DeserializedUserDocument<"signature">>(() => {
 	const user = consultation.value.data.consultant
 	return user as DeserializedUserDocument<"signature">
