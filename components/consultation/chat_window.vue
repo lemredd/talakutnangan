@@ -120,7 +120,6 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 const fetcher = new ConsultationFetcher()
 
