@@ -3,7 +3,7 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="updateAndReload">
+	<form @submit.prevent="updateUser">
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
@@ -11,7 +11,12 @@
 				label="User Name"
 				type="text"/>
 		</div>
+		<button type="submit" class="update-user-btn btn btn-primary">
+			update user
+		</button>
+	</form>
 
+	<form @submit.prevent="updateRoles">
 		<div class="roles">
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
@@ -20,7 +25,12 @@
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
+		<button type="submit" class="update-roles-btn btn btn-primary">
+			update roles
+		</button>
+	</form>
 
+	<form @submit.prevent="updateDepartment">
 		<div class="department">
 			<SelectableOptionsField
 				v-model="userDepartment"
@@ -29,11 +39,12 @@
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
+		<button type="submit" class="update-department-btn btn btn-primary">
+			update department
+		</button>
+	</form>
 
 		<div class="controls flex justify-between mt-3">
-			<button type="submit" class="btn btn-primary">
-				Submit
-			</button>
 			<button
 				v-if="mayRestoreUser"
 				type="button"
@@ -56,7 +67,6 @@
 				Reset
 			</button>
 		</div>
-	</form>
 </template>
 
 <style scoped lang="scss">
