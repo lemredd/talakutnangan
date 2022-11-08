@@ -23,13 +23,15 @@
 			v-model="slug"
 			:label="textFieldLabel"
 			type="text"/>
-		<div
-			v-for="participant in otherParticipants"
-			:key="participant.id"
-			class="chip other-participants cursor-pointer hover:bg-gray-300"
-			@click="addParticipant">
-			{{ participant.name }}
-		</div>
+		<Suspensible :is-loaded="isLoaded">
+			<div
+				v-for="participant in otherParticipants"
+				:key="participant.id"
+				class="chip other-participants cursor-pointer hover:bg-gray-300"
+				@click="addParticipant">
+				{{ participant.name }}
+			</div>
+		</Suspensible>
 	</div>
 </template>
 
@@ -74,6 +76,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import RequestEnvironment from "$/singletons/request_environment"
 
@@ -117,7 +120,9 @@ function isChipForCurrentUser(participantId: string) {
 	return props.currentUserId === participantId
 }
 
+const isLoaded = ref(true)
 function findMatchedUsers() {
+	isLoaded.value = false
 	fetcher().list({
 		"filter": {
 			"department": "*",
@@ -140,6 +145,7 @@ function findMatchedUsers() {
 
 			return isNotSelected
 		})
+		isLoaded.value = true
 	})
 }
 
