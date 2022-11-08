@@ -350,7 +350,7 @@ const {
 	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
-const mustDisplayOnly = computed(() => !mustUpdate.value && !mayViewComment.value)
+const mustDisplayOnly = computed(() => !mustUpdate.value && mayViewComment.value)
 function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">) {
 	emit("update:modelValue", newComment)
 	comment.value = newComment
