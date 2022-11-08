@@ -152,6 +152,7 @@ import UserFetcher from "$@/fetchers/user"
 import isUndefined from "$/type_guards/is_undefined"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
@@ -299,18 +300,8 @@ function sendFile(form: HTMLFormElement) {
 			...attachmentResources.value,
 			body.data
 		]
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function uploadPostAttachment(event: Event): void {
@@ -338,18 +329,8 @@ function updatePost(): void {
 	})
 	.then(() => {
 		close()
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 watch(isShown, newValue => {

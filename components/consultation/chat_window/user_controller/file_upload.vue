@@ -117,11 +117,12 @@
 import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
-import type { UnitError } from "$/types/server"
 
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/chat_message"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 import Overlay from "@/helpers/overlay.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
@@ -173,18 +174,7 @@ function sendFile() {
 		emitClose()
 	})
 
-	.catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function extractFile(event: Event) {

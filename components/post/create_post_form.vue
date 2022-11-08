@@ -111,7 +111,6 @@
 <script setup lang="ts">
 import { ref, computed, inject } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { PostRelationships } from "$/types/documents/post"
@@ -130,6 +129,7 @@ import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combina
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -215,18 +215,8 @@ function sendFile(form: HTMLFormElement) {
 			...attachmentResources.value,
 			body.data
 		]
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function uploadPostAttachment(event: Event): void {
@@ -292,18 +282,8 @@ function createPost(): void {
 				"id": data.id
 			})
 		)
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 </script>

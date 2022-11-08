@@ -112,7 +112,7 @@ form {
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { Ref, ref } from "vue"
 
 import type { UnitError } from "$/types/server"
 import type { Serializable } from "$/types/general"
@@ -145,14 +145,7 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => error.detail)
-		} else {
-			receivedErrors.value = [ "Invalid e-mail or password" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors as Ref<string[]>))
 }
 
 const defaultProfessor = "default_professor"

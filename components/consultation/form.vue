@@ -213,15 +213,16 @@ import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
-import SearchableChip from "@/consultation/form/searchable_chip.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -446,18 +447,7 @@ function addConsultation(): void {
 		}
 	})
 	.then(() => assignPath("/consultation"))
-	.catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 watch(selectedConsultants, () => {
