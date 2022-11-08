@@ -117,9 +117,11 @@ import { Ref, ref } from "vue"
 import type { UnitError } from "$/types/server"
 import type { Serializable } from "$/types/general"
 
+import RequestEnvironment from "$/singletons/request_environment"
+
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
-import RequestEnvironment from "$/singletons/request_environment"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
