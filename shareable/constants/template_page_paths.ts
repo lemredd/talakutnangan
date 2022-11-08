@@ -11,6 +11,8 @@ export const ROLE_LIST = "/role/list"
 
 export const AUDIT_TRAIL_LIST = "/audit_trail/list"
 
+export const PROFILE_SETTINGS = "/settings/profile"
+
 /**
  * Requires `id` of the consultation
  */
