@@ -236,8 +236,9 @@ async function loadConsultations(): Promise<void> {
 			...consultations.value.data,
 			...castData
 		]
+		const consultationIDs = castData.map(resource => resource.id)
 
-		await loadPreviewMessages(castData.map(resource => resource.id))
+		if (consultationIDs.length) await loadPreviewMessages(consultationIDs)
 	}
 }
 
