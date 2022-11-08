@@ -1,4 +1,6 @@
 /* eslint-disable max-lines */
+import RequestEnvironment from "$/singletons/request_environment"
+
 import { mount } from "@vue/test-utils"
 
 import Page from "./form.page.vue"
@@ -31,6 +33,16 @@ describe("Page: Consultation/form", () => {
 				}
 			]
 		}
+
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const wrapper = mount(Page, {
 			"global": {
@@ -124,6 +136,17 @@ describe("Page: Consultation/form", () => {
 					}
 				]
 			}
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+
 			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
@@ -192,6 +215,17 @@ describe("Page: Consultation/form", () => {
 					}
 				]
 			}
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+
 			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
@@ -265,6 +299,17 @@ describe("Page: Consultation/form", () => {
 					}
 				]
 			}
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
+
 			const wrapper = mount(Page, {
 				"global": {
 					"provide": {
@@ -327,6 +372,16 @@ describe("Page: Consultation/form", () => {
 					}
 				]
 			}
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
 
 			const wrapper = mount(Page, {
 				"global": {
@@ -399,6 +454,16 @@ describe("Page: Consultation/form", () => {
 					}
 				]
 			}
+
+			fetchMock.mockResponseOnce(
+				JSON.stringify({
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}),
+				{ "status": RequestEnvironment.status.OK }
+			)
 
 			const wrapper = mount(Page, {
 				"global": {
