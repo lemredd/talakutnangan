@@ -189,12 +189,9 @@ async function retrievePosts() {
 		},
 		"sort": [ "-createdAt" ]
 	}), {
-		"mayContinue": () => Promise.resolve(false),
-		postOperations() {
-			isLoaded.value = true
-			return Promise.resolve()
-		}
+		"mayContinue": () => Promise.resolve(false)
 	})
+	isLoaded.value = true
 }
 
 function resetPostList() {

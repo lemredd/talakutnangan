@@ -103,7 +103,7 @@
 			<button
 				class="btn btn-back"
 				type="button"
-				@close="emitClose">
+				@click="emitClose">
 				Back
 			</button>
 			<button
@@ -156,7 +156,6 @@ import SelectableOptionsField from "@/fields/selectable_options.vue"
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-
 
 const userFetcher = new UserFetcher()
 
