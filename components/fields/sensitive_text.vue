@@ -30,10 +30,6 @@
 
 	label {
 		margin-bottom: .5em;
-
-		h2 {
-			font-size: 1.5em;
-		}
 	}
 
 	&.default {
