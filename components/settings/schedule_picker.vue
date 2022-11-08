@@ -223,6 +223,8 @@ function updateTime() {
 				}
 			}
 		}
+	}).then(() => {
+		stopEditing()
 	})
 }
 
