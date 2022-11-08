@@ -126,7 +126,7 @@
 				.poster {
 					@apply flex flex-row items-start;
 					.profile-picture {
-						@apply mr-2 flex-initial w-auto h-6;
+						@apply mr-2 flex-initial w-auto h-12;
 					}
 
 					.poster-details {
