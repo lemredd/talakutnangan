@@ -362,77 +362,79 @@ describe("Page: Consultation/form", () => {
 	})
 
 	describe("signatures", () => {
-		const consultant = {
-			"data": {
-				"id": 0,
-				"name": "Consultant Name",
-				"signature": {
-					"data": {
-						"fileContents": "/sample/url"
-					}
-				}
-			}
-		}
-		const consultantRole = {
-			"data": {
-				"name": "Consultant Role"
-			}
-		}
-		const chatMessageActivities = {
-			"data": [
-				{
-					"user": consultant
-				},
-				{
-					"user": {
+		it("can show signatures if finished", () => {
+			const consultant = {
+				"data": {
+					"id": 0,
+					"name": "Consultant Name",
+					"signature": {
 						"data": {
-							"id": 1,
-							"name": "Consulter Name",
-							"signature": {
-								"data": {
-									"fileContents": "/sample/url"
-								}
-							}
-						}
-					}
-				}
-			]
-		}
-
-		const wrapper = mount(Page, {
-			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							chatMessageActivities,
-							"chatMessages": {
-								"data": []
-							},
-							"consultation": {
-								"data": {
-									consultant,
-									consultantRole,
-									"finishedAt": new Date("2022-10-04 15:00"),
-									"reason": "Reason",
-									"scheduledStartAt": new Date("2022-10-04 10:00"),
-									"startedAt": new Date("2022-10-04 10:00")
-								}
-							}
+							"fileContents": "/sample/url"
 						}
 					}
 				}
 			}
-		})
-		const signatures = wrapper.find(".signatures")
-		const consultantSignature = signatures.find(".consultant-signature")
-		const consultantSignatureImg = consultantSignature.find("img")
-		const consulterSignature = signatures.find(".consulter-signature")
-		const consulterSignatureImg = consulterSignature.findAll("img")
+			const consultantRole = {
+				"data": {
+					"name": "Consultant Role"
+				}
+			}
+			const chatMessageActivities = {
+				"data": [
+					{
+						"user": consultant
+					},
+					{
+						"user": {
+							"data": {
+								"id": 1,
+								"name": "Consulter Name",
+								"signature": {
+									"data": {
+										"fileContents": "/sample/url"
+									}
+								}
+							}
+						}
+					}
+				]
+			}
 
-		expect(signatures.exists()).toBeTruthy()
-		expect(consultantSignature.exists()).toBeTruthy()
-		expect(consulterSignature.exists()).toBeTruthy()
-		expect(consultantSignatureImg.attributes("src")).toBeDefined()
-		consulterSignatureImg.forEach(img => expect(img.attributes("src")).toBeDefined())
+			const wrapper = mount(Page, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								chatMessageActivities,
+								"chatMessages": {
+									"data": []
+								},
+								"consultation": {
+									"data": {
+										consultant,
+										consultantRole,
+										"finishedAt": new Date("2022-10-04 15:00"),
+										"reason": "Reason",
+										"scheduledStartAt": new Date("2022-10-04 10:00"),
+										"startedAt": new Date("2022-10-04 10:00")
+									}
+								}
+							}
+						}
+					}
+				}
+			})
+			const signatures = wrapper.find(".signatures")
+			const consultantSignature = signatures.find(".consultant-signature")
+			const consultantSignatureImg = consultantSignature.find("img")
+			const consulterSignature = signatures.find(".consulter-signature")
+			const consulterSignatureImg = consulterSignature.findAll("img")
+
+			expect(signatures.exists()).toBeTruthy()
+			expect(consultantSignature.exists()).toBeTruthy()
+			expect(consulterSignature.exists()).toBeTruthy()
+			expect(consultantSignatureImg.attributes("src")).toBeDefined()
+			consulterSignatureImg.forEach(img => expect(img.attributes("src")).toBeDefined())
+		})
 	})
 })
