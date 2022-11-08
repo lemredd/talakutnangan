@@ -49,7 +49,6 @@ async function submit() {
 		"deletedAt": null,
 		"updatedAt": new Date().toJSON()
 	}).then(() => {
-		content.value = ""
 		emit("update:modelValue", {
 			...comment.value,
 			"content": content.value
