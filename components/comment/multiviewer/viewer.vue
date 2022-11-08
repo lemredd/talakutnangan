@@ -191,7 +191,7 @@ const mayVoteComment = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	return isPermitted && !props.modelValue.value.deletedAt
+	return isPermitted && !props.modelValue.deletedAt
 })
 const mayViewComment = computed<boolean>(() => {
 	const user = props.modelValue.user as DeserializedUserDocument<"department">
@@ -214,7 +214,7 @@ const mayViewComment = computed<boolean>(() => {
 	|| isLimitedUpToDepartmentScope
 	|| isLimitedUpToGlobalScope
 
-	const isDeleted = props.modelValue.value.deletedAt
+	const isDeleted = props.modelValue.deletedAt
 	const mayViewArchived = isPermitted && isDeleted
 	const mayViewPresent = !isDeleted
 
@@ -350,13 +350,12 @@ const {
 	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
-const mustDisplayOnly = computed(() => !mustUpdate.value && !mayViewComment.value)
+const mustDisplayOnly = computed(() => !mustUpdate.value && mayViewComment.value)
 function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">) {
 	emit("update:modelValue", newComment)
 	comment.value = newComment
 	closeUpdateField()
 }
-
 
 const {
 	"state": mustArchive,
