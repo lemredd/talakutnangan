@@ -9,13 +9,13 @@
 			<MinorDropdown v-model="isDropdownShown">
 				<template #dropdown-contents>
 					<a class="link-to-reports" :href="CONSULTATION_REPORT_PER_STUDENT">
-						View consultation summary per student
+						View summary per student
 					</a>
 					<a class="link-to-reports" :href="CONSULTATION_WEEKLY_REPORT">
-						View consultation summary per week
+						View summary per week
 					</a>
 					<a class="link-to-reports" :href="CONSOLIDATED_CONSULTATION_REPORT">
-						View overall consultation summary
+						View overall summary
 					</a>
 				</template>
 			</MinorDropdown>
@@ -81,12 +81,12 @@
 		}
 
 		.consultations-list-header {
-			@apply p-3;
+			@apply p-3 flex flex-row flex-nowrap justify-center items-center;
 
 			h2 { @apply flex-1 uppercase; }
 
 			.link-to-reports {
-				@apply flex-1 max-h-[4rem] py-4;
+				@apply flex-1 max-h-[4rem] p-4;
 			}
 
 			.is-searching {
