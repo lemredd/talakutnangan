@@ -255,6 +255,15 @@ function createPost(): void {
 		: {
 			"data": attachmentIDs
 		}
+	const department = departmentID.value === NULL_AS_STRING
+		// eslint-disable-next-line no-undefined
+		? undefined
+		: {
+			"data": {
+				"id": departmentID.value,
+				"type": "department"
+			}
+		}
 
 	fetcher.create({
 		"content": content.value,
@@ -264,12 +273,7 @@ function createPost(): void {
 	}, {
 		"extraDataFields": {
 			"relationships": {
-				"department": {
-					"data": {
-						"id": departmentID.value,
-						"type": "department"
-					}
-				},
+				department,
 				postAttachments,
 				"poster": {
 					"data": {
