@@ -11,6 +11,7 @@
 				:type="type"
 				:required="required"
 				:disabled="isCurrentlyDisabled"
+				@input="saveOnType"
 				@keyup.enter.exact="saveImplicitly"/>
 			<button
 				v-if="isLocked"
@@ -117,6 +118,11 @@ const isUnlocked = computed<boolean>(() => {
 	return unlockedStatuses.includes(status)
 })
 const editable = computed<boolean>(() => isLocked.value || isUnlocked.value)
+
+function saveOnType(event: Event) {
+	const input = event.target as HTMLInputElement
+	emit("update:modelValue", input.value)
+}
 
 function lock() {
 	switch (derivedStatus.value) {
