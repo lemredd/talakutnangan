@@ -34,6 +34,11 @@
 
 		select {
 			@apply flex-1 truncate ml-3;
+			@apply dark:bg-transparent;
+
+			option {
+				@apply dark:bg-dark-500;
+			}
 		}
 	}
 

@@ -61,13 +61,14 @@ import type { PageContext } from "$/types/renderer"
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 
+import isUndefined from "$/type_guards/is_undefined"
+
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
-import { isUndefined } from "lodash"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
