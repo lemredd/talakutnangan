@@ -10,11 +10,11 @@ type SpecificResponse = Response<any, any, any, any, any, any>
 export default function(
 	response: SpecificResponse,
 	receivedErrors: Ref<string[]>,
-	successMessages: Ref<string[]>
+	successMessages?: Ref<string[]>
 ) {
 	const { body } = response
 
-	if (successMessages.value.length) successMessages.value = []
+	if (successMessages?.value.length) successMessages.value = []
 	if (body) {
 		const { errors } = body
 		receivedErrors.value = errors.map((error: UnitError) => error.detail)

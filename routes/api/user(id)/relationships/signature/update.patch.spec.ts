@@ -45,7 +45,6 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 		requester.customizeRequest({
 			"body": {
 				"data": {
-					"type": "signature",
 					"attributes": {
 						"fileContents": {
 							"buffer": signature.fileContents,
@@ -53,7 +52,8 @@ describe("Controller: PATCH /api/user/:id/signature", () => {
 								"mimeType": "image/xxx"
 							}
 						}
-					}
+					},
+					"type": "signature"
 				}
 			}
 		})
