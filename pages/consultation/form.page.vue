@@ -51,7 +51,7 @@
 					Scheduled Start:
 				</h2>
 				<h6 id="scheduled-start" class="scheduled-start">
-					{{ formatToCompleteFriendlyTime(scheduledStartAt) }}
+					{{ scheduledStartAt }}
 				</h6>
 			</div>
 
@@ -60,7 +60,9 @@
 					Actual Start:
 				</h2>
 				<h6 id="actual-start" class="actual-start">
-					{{ formatToCompleteFriendlyTime(startedAt) }}
+					{{ startedAt }}
+				</h6>
+			</div>
 				</h6>
 			</div>
 		</div>
@@ -156,12 +158,12 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, onMounted } from "vue"
+import { inject, ref, onMounted, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedConsultationDocument } from "$/types/documents/consultation"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityResource
@@ -186,39 +188,45 @@ const {
 			"data": chatMessageActivitiesData
 		},
 		"chatMessages": rawChatMessages,
-		"consultation": {
-			"data": consultationData
-		}
+		"consultation": rawConsultation
 	}
 } = pageContext as PageContext<
 	"deserialized",
 	"consultation"|"chatMessageActivities"|"chatMessages"
 >
 
-const consultation = consultationData as DeserializedConsultationResource
-const {
-	consultant,
-	consultantRole,
-	reason,
-	scheduledStartAt,
-	startedAt
-} = consultation as unknown as {
-	"consultant": DeserializedUserResource
-	"consultantRole": DeserializedRoleDocument
-	"reason": string
-	"scheduledStartAt": Date
-	"startedAt": Date
-}
+const consultation = ref<DeserializedConsultationDocument>(rawConsultation)
+const scheduledStartAt = computed<string>(() => formatToCompleteFriendlyTime(
+	consultation.value.data.scheduledStartAt
+))
+const startedAt = computed<string>(() => {
+	if (consultation.value.data.startedAt) {
+		return formatToCompleteFriendlyTime(consultation.value.data.startedAt)
+	}
+
+	return "Consultation has not yet started."
+})
+const reason = computed<string>(() => consultation.value.data.reason)
+const consultant = computed<DeserializedUserDocument<"signature">>(() => {
+	const user = consultation.value.data.consultant
+	return user as DeserializedUserDocument<"signature">
+})
+const consultantRole = computed<DeserializedRoleDocument>(() => {
+	const role = consultation.value.data.consultantRole
+	return role as DeserializedRoleDocument
+})
 
 const consultationChatMessageActivities
 = chatMessageActivitiesData as DeserializedChatMessageActivityResource[]
 const consulters = consultationChatMessageActivities.filter(
 	(
 		activity: DeserializedChatMessageActivityResource
-	) => activity.user?.data.id !== consultant.data.id
+	) => activity.user?.data.id !== consultant.value.data.id
 )
 
-const chatMessages = ref<DeserializedChatMessageListDocument>(rawChatMessages)
+const chatMessages = ref<DeserializedChatMessageListDocument<"user">>(
+	rawChatMessages as DeserializedChatMessageListDocument<"user">
+)
 
 function printPage() {
 	if (!isUndefined(window)) {
@@ -228,18 +236,22 @@ function printPage() {
 
 const chatMessageFetcher = new ChatMessageFetcher()
 onMounted(async() => {
-	await loadRemainingResource(chatMessages, chatMessageFetcher, () => ({
-		"filter": {
-			"chatMessageKinds": "*",
-			"consultationIDs": [ Number(consultation.data.id) ],
-			"existence": "exists",
-			"previewMessageOnly": false
-		},
-		"page": {
-			"limit": DEFAULT_LIST_LIMIT,
-			"offset": chatMessages.value.data.length
-		},
-		"sort": [ "createdAt" ]
-	}))
+	await loadRemainingResource(
+		chatMessages as Ref<DeserializedChatMessageListDocument>,
+		chatMessageFetcher,
+		() => ({
+			"filter": {
+				"chatMessageKinds": "*",
+				"consultationIDs": [ Number(consultation.value.data.id) ],
+				"existence": "exists",
+				"previewMessageOnly": false
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": chatMessages.value.data.length
+			},
+			"sort": [ "createdAt" ]
+		})
+	)
 })
 </script>
