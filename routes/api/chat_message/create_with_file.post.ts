@@ -1,5 +1,6 @@
 import type { Request, Response } from "!/types/dependent"
 import type { FieldRules, Rules } from "!/types/validation"
+import type { OptionalMiddleware } from "!/types/independent"
 import type { AttachedFile } from "$/types/documents/file-like"
 import type { ChatMessageDocument } from "$/types/documents/chat_message"
 
@@ -10,6 +11,8 @@ import Log from "$!/singletons/log"
 import Manager from "%/managers/chat_message"
 import CreatedResponseInfo from "!/response_infos/created"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import Middleware from "!/bases/middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -54,7 +57,16 @@ export default class extends CreateRoute {
 		}
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	async handle(request: Request, unusedResponse: Response): Promise<CreatedResponseInfo> {
+		await request.transaction.initialize()
+
 		const manager = new Manager(request)
 		const { data, meta } = request.body as ChatMessageDocument<"create"> & AttachedFile<"raw">
 		const { attributes, relationships } = data
@@ -74,5 +86,11 @@ export default class extends CreateRoute {
 		Log.success("controller", "successfully created the chat message of the user with file")
 
 		return new CreatedResponseInfo(document)
+	}
+
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			new TransactionCommitter()
+		]
 	}
 }

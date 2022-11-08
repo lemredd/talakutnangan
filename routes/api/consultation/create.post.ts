@@ -200,7 +200,6 @@ export default class extends JSONController {
 		return new CreatedResponseInfo(consultationInfo)
 	}
 
-
 	get postJobs(): OptionalMiddleware[] {
 		return [
 			new TransactionCommitter()
