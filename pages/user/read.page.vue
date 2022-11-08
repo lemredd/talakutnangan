@@ -3,7 +3,12 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="updateUser">
+	<form
+		class="user-data-form"
+		@submit.prevent="updateUser">
+		<h1 class="user-data-form-header">
+			General User data
+		</h1>
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
@@ -16,7 +21,12 @@
 		</button>
 	</form>
 
-	<form @submit.prevent="updateRoles">
+	<form
+		class="user-data-form"
+		@submit.prevent="updateRoles">
+		<h1 class="user-data-form-header">
+			Attached Roles
+		</h1>
 		<div class="roles">
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
@@ -30,7 +40,12 @@
 		</button>
 	</form>
 
-	<form @submit.prevent="updateDepartment">
+	<form
+		class="user-data-form"
+		@submit.prevent="updateDepartment">
+		<h1 class="user-data-form-header">
+			Department
+		</h1>
 		<div class="department">
 			<SelectableOptionsField
 				v-model="userDepartment"
