@@ -124,6 +124,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 const props = defineProps<{
 	receivedErrorFromPageContext?: UnitError & Serializable
@@ -145,14 +146,7 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => error.detail)
-		} else {
-			receivedErrors.value = [ "Invalid e-mail or password" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 const defaultProfessor = "default_professor"

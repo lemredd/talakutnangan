@@ -114,6 +114,7 @@ import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
@@ -226,18 +227,8 @@ function finishConsultation(): void {
 		.then(() => {
 			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
-		}).catch(({ body }) => {
-			if (body) {
-				const { errors } = body
-				receivedErrors.value = errors.map((error: UnitError) => {
-					const readableDetail = error.detail
-
-					return readableDetail
-				})
-			} else {
-				receivedErrors.value = [ "an error occured" ]
-			}
 		})
+		.catch(response => extractAllErrorDetails(response, receivedErrors))
 	}
 }
 
