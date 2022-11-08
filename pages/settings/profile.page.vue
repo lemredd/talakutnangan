@@ -217,6 +217,10 @@ const nameFieldStatus = ref<FieldStatus>("locked")
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
+if (pageContext.pageProps.parsedUnitError) {
+	receivedErrors.value = [ pageContext.pageProps.parsedUnitError.detail ]
+}
+
 function showSuccessMessage(message: string) {
 	if (receivedErrors.value.length) receivedErrors.value = []
 	successMessages.value.push(message)
