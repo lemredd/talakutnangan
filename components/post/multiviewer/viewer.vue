@@ -148,8 +148,9 @@
 			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
 		}
 
-		p {
-			word-break: break-all;
+		> p {
+			word-break: normal;
+			word-wrap: normal;
 		}
 	}
 
