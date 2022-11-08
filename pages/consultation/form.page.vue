@@ -72,8 +72,7 @@
 			:key="chatMessage.id">
 			<span class="date-and-owner-details">
 				[
-				{{ chatMessage.createdAt.toDateString() }}
-				{{ chatMessage.createdAt.getHours() }}:{{ chatMessage.createdAt.getMinutes() }}:{{ chatMessage.createdAt.getSeconds() }}
+				{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
 				]
 				({{ chatMessage.user.data.name }})
 			</span>
@@ -168,12 +167,13 @@ import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import isUndefined from "$/type_guards/is_undefined"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import {
 	isMessageKindFile,
 	isMessageKindStatus,
 	isMessageKindText
 } from "@/consultation/helpers/chat_message_kinds"
-import isUndefined from "$/type_guards/is_undefined"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const {

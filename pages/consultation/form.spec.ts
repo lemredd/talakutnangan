@@ -343,7 +343,6 @@ describe("Page: Consultation/form", () => {
 										consultantRole,
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00"),
-										"startedAt": new Date("2022-10-04 10:00")
 									}
 								}
 							}
@@ -413,6 +412,7 @@ describe("Page: Consultation/form", () => {
 								"data": {
 									consultant,
 									consultantRole,
+									"finishedAt": new Date("2022-10-04 15:00"),
 									"reason": "Reason",
 									"scheduledStartAt": new Date("2022-10-04 10:00"),
 									"startedAt": new Date("2022-10-04 10:00")
