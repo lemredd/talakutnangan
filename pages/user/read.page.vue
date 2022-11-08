@@ -84,15 +84,26 @@
 	</div>
 </template>
 
+<style>
+	.wrapper {
+		margin-bottom: 10vh !important;
+	}
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
 	.user-data-form {
-		@apply mb-16;
+		@apply mb-16 pb-8;
+		border-bottom: 1px solid hsla(0,0%,60%,0.3);
 
 		.user-data-form-header {
 			@apply my-8;
 			@apply text-xl uppercase;
+		}
+
+		.btn {
+			@apply mt-8;
 		}
 	}
 </style>
