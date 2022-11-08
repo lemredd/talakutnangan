@@ -51,7 +51,7 @@
 					Scheduled Start:
 				</h2>
 				<h6 id="scheduled-start" class="scheduled-start">
-					{{ scheduledStartAt }}
+					{{ formatToCompleteFriendlyTime(scheduledStartAt) }}
 				</h6>
 			</div>
 
@@ -60,7 +60,7 @@
 					Actual Start:
 				</h2>
 				<h6 id="actual-start" class="actual-start">
-					{{ startedAt }}
+					{{ formatToCompleteFriendlyTime(startedAt) }}
 				</h6>
 			</div>
 		</div>
