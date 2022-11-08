@@ -62,13 +62,13 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import RequestEnvironment from "$/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
@@ -165,19 +165,7 @@ function updateDepartment() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Department has been read successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveDepartment() {
