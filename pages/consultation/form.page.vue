@@ -156,18 +156,22 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, ref, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
+import ChatMessageFetcher from "$@/fetchers/chat_message"
 import isUndefined from "$/type_guards/is_undefined"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import {
 	isMessageKindFile,
@@ -181,9 +185,7 @@ const {
 		"chatMessageActivities": {
 			"data": chatMessageActivitiesData
 		},
-		"chatMessages": {
-			"data": chatMessagesData
-		},
+		"chatMessages": rawChatMessages,
 		"consultation": {
 			"data": consultationData
 		}
@@ -216,11 +218,28 @@ const consulters = consultationChatMessageActivities.filter(
 	) => activity.user?.data.id !== consultant.data.id
 )
 
-const chatMessages = chatMessagesData as DeserializedChatMessageResource<"user">[]
+const chatMessages = ref<DeserializedChatMessageListDocument>(rawChatMessages)
 
 function printPage() {
 	if (!isUndefined(window)) {
 		window.print()
 	}
 }
+
+const chatMessageFetcher = new ChatMessageFetcher()
+onMounted(async() => {
+	await loadRemainingResource(chatMessages, chatMessageFetcher, () => ({
+		"filter": {
+			"chatMessageKinds": "*",
+			"consultationIDs": [ Number(consultation.data.id) ],
+			"existence": "exists",
+			"previewMessageOnly": false
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": chatMessages.value.data.length
+		},
+		"sort": [ "createdAt" ]
+	}))
+})
 </script>
