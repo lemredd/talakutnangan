@@ -85,7 +85,16 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
+
+	.user-data-form {
+		@apply mb-16;
+
+		.user-data-form-header {
+			@apply my-8;
+			@apply text-xl uppercase;
+		}
+	}
 </style>
 
 <script setup lang="ts">
