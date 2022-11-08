@@ -223,7 +223,7 @@ describe("Component: consultation/list", () => {
 		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
 	})
 
-	it("toggle search button", async() => {
+	it.skip("toggle search button", async() => {
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
