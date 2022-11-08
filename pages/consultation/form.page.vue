@@ -89,7 +89,9 @@
 		</li>
 	</ul>
 
-	<section class="signatures mt-15">
+	<section
+		v-if="consultationData.finishedAt"
+		class="signatures mt-15">
 		<h1>Signatures</h1>
 		<div class="consultant-signature">
 			<h2>Consultant</h2>
@@ -106,6 +108,10 @@
 				<small>{{ consulter.user?.data.name }}</small>
 			</div>
 		</div>
+	</section>
+
+	<section v-else class="signatures">
+		Signatures will show here once the consultation has been finished.
 	</section>
 </template>
 
