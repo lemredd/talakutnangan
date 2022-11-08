@@ -100,7 +100,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {

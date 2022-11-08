@@ -59,7 +59,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents/role"
@@ -72,6 +71,7 @@ import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
 import FlagSelector from "@/role/flag_selector.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -157,19 +157,7 @@ async function updateRole() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Role has been successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveRole() {
@@ -177,18 +165,7 @@ async function archiveRole() {
 	.then(() => {
 		successMessages.value.push("This role has been archived successfully")
 	})
-	.catch(({ body }) => {
-		if (body) {
-			const errors = body.errors as UnitError[]
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function restoreRole() {
@@ -196,17 +173,6 @@ async function restoreRole() {
 	.then(() => {
 		successMessages.value.push("This role has been restored successfully")
 	})
-	.catch(({ body }) => {
-		if (body) {
-			const errors = body.errors as UnitError[]
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 </script>

@@ -113,7 +113,6 @@
 <script setup lang="ts">
 import { inject, ref, computed, onMounted } from "vue"
 
-import type { UnitError } from "$/types/server"
 import { UserKindValues } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
 import type { PageContext, PageProps } from "$/types/renderer"
@@ -127,6 +126,7 @@ import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
@@ -165,20 +165,7 @@ function importData(event: Event) {
 		successMessages.value.push("Users have been imported successfully!")
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (createdUsers.value.length) createdUsers.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 function isStudentResource(resource: DeserializedUserResource)

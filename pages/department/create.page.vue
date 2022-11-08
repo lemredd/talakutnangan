@@ -39,14 +39,14 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 
-import type { UnitError } from "$/types/server"
-
 import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
 
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
+
 
 const fullName = ref("")
 const acronym = ref("")
@@ -80,18 +80,6 @@ function createDepartment() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Department has been created successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 </script>

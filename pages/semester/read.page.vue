@@ -58,7 +58,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 
@@ -72,6 +71,7 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
 import DateSelect from "@/fields/date_selector.vue"
 import Selectable from "@/fields/selectable_options.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -142,19 +142,7 @@ function updateSemester() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Semester has been read successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveSemester() {
