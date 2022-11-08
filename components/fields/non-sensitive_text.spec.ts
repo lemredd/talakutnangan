@@ -18,8 +18,11 @@ describe("Component: fields/non-sensitive_text", () => {
 		await field.setValue(exampleEmail)
 
 		const updates = wrapper.emitted("update:modelValue") as string[]
-		expect(updates).toHaveLength(1)
+		expect(updates).toHaveLength(2)
+		// First is input
 		expect(updates[0]).toEqual([ exampleEmail ])
+		// Second is implicit saved
+		expect(updates[1]).toEqual([ exampleEmail ])
 	})
 
 	it("should change upon prop update", async() => {
