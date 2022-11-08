@@ -68,7 +68,6 @@
 		position: fixed;
 		overflow-y: scroll;
 		left: 0; right: 0;
-		z-index: 500;
 
 		// TODO: find a way to make mixin `useContentBaseHeight` work
 		height: calc(100vh - 56px);
