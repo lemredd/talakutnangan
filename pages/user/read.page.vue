@@ -44,29 +44,29 @@
 		</button>
 	</form>
 
-		<div class="controls flex justify-between mt-3">
-			<button
-				v-if="mayRestoreUser"
-				type="button"
-				class="btn btn-primary"
-				@click="restoreUser">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveUser"
-				type="button"
-				class="btn btn-primary"
-				@click="archiveUser">
-				Archive
-			</button>
-			<button
-				v-if="mayReset"
-				type="button"
-				class="btn btn-primary"
-				@click="resetUser">
-				Reset
-			</button>
-		</div>
+	<div class="controls flex justify-between mt-3">
+		<button
+			v-if="mayRestoreUser"
+			type="button"
+			class="btn btn-primary"
+			@click="restoreUser">
+			Restore
+		</button>
+		<button
+			v-if="mayArchiveUser"
+			type="button"
+			class="btn btn-primary"
+			@click="archiveUser">
+			Archive
+		</button>
+		<button
+			v-if="mayReset"
+			type="button"
+			class="btn btn-primary"
+			@click="resetUser">
+			Reset
+		</button>
+	</div>
 </template>
 
 <style scoped lang="scss">
@@ -199,39 +199,17 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
 }
-
-function updateAndReload() {
-	updateUser()
-	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Users have been read successfully!")
-	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
+async function updateRoles() {
+	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
+}
+async function updateDepartment() {
+	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
+		user.value.data.department.data.id = userDepartment.value
 	})
 }
 
