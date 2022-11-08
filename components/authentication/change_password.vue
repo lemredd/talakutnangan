@@ -61,16 +61,21 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue"
+import { ref, inject, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
+
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
+import isUndefined from "$/type_guards/is_undefined"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
-import Overlay from "@/helpers/overlay.vue"
 
+import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
@@ -113,13 +118,18 @@ function savePassword() {
 		newPassword.value,
 		confirmNewPassword.value
 	)
+
 	.then(cancel)
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 onMounted(() => {
 	if (userProfile.meta.hasDefaultPassword) {
-		openDialog()
+		setTimeout(() => {
+			openDialog()
+			if (!isUndefined(window)) bodyClasses.value.scroll(false)
+		}, MILLISECOND_IN_A_SECOND)
 	}
 })
 </script>
