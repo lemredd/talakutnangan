@@ -210,6 +210,7 @@ import Fetcher from "$@/fetchers/consultation"
 import Overlay from "@/helpers/overlay.vue"
 import makeUnique from "$/array/make_unique"
 import assignPath from "$@/external/assign_path"
+import convertToTitle from "$/string/convert_to_title"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
@@ -323,7 +324,7 @@ const selectableDays = computed(() => {
 		previewDate.shift()
 
 		return {
-			"label": `${DayValues[date.getDay()]} (${previewDate.join(" ")})`,
+			"label": `${convertToTitle(DayValues[date.getDay()])} (${previewDate.join(" ")})`,
 			"value": date.toJSON()
 		}
 	})
