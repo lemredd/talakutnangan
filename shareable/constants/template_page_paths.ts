@@ -1,6 +1,5 @@
 export const HOME = "/home"
 
-
 export const SEMESTER_LIST = "/semester/list"
 
 export const DEPARTMENT_LIST = "/department/list"

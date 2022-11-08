@@ -3,6 +3,8 @@ import type { AuthenticationOptions } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { Request, AuthenticatedIDRequest } from "!/types/dependent"
 
+import { HOME } from "$/constants/template_page_paths"
+
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import URLMaker from "$!/singletons/url_maker"
@@ -51,7 +53,7 @@ export default class extends Policy {
 
 			if (hasDefaultPassword) {
 				const reason = "The user must have no default password."
-				const link = URLMaker.makeURLFromPath("/")
+				const link = URLMaker.makeURLFromPath(HOME)
 
 				return Promise.reject(new AuthorizationError(reason, link))
 			}
