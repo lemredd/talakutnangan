@@ -148,8 +148,6 @@ const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(d
 })))
 const roleID = ref<string>(userProfile.data.roles.data[0].id)
 
-const departmentID = ref<string>(userProfile.data.department.data.id)
-
 const props = defineProps<{
 	isShown: boolean
 	departments: DeserializedDepartmentListDocument
@@ -255,12 +253,12 @@ function createPost(): void {
 		: {
 			"data": attachmentIDs
 		}
-	const department = departmentID.value === NULL_AS_STRING
+	const department = chosenDepartment.value === NULL_AS_STRING
 		// eslint-disable-next-line no-undefined
 		? undefined
 		: {
 			"data": {
-				"id": departmentID.value,
+				"id": chosenDepartment.value,
 				"type": "department"
 			}
 		}
