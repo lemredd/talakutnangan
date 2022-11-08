@@ -234,7 +234,7 @@ function submitProfilePicture(formData: FormData) {
 			const message = "profile picture uploaded successfully. reload the page to see the changes"
 			showSuccessMessage(message)
 		})
-		.catch(response => extractAllErrorDetails(response, receivedErrors))
+		.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	} else {
 		profilePictureFetcher.createFile(
 			userProfileData.value.id,
@@ -244,7 +244,7 @@ function submitProfilePicture(formData: FormData) {
 			const message = "profile picture uploaded successfully. reload the page to see the changes"
 			showSuccessMessage(message)
 		})
-		.catch(response => extractAllErrorDetails(response, receivedErrors))
+		.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	}
 }
 function submitSignature(formData: FormData) {
@@ -258,7 +258,7 @@ function submitSignature(formData: FormData) {
 		const message = "Signature uploaded successfully. reload the page to see the changes"
 		showSuccessMessage(message)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors))
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 function updateUser() {
@@ -271,7 +271,7 @@ function updateUser() {
 		const SECONDS_BEFORE_PAGES_RELOAD = 3000
 		setTimeout(() => assignPath("/settings/profile"), SECONDS_BEFORE_PAGES_RELOAD)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors))
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 const emit = defineEmits([ "toggleDarkMode" ])
