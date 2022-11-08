@@ -57,7 +57,7 @@ export default class extends MultipartController {
 			"fileContents": {
 				"constraints": {
 					"buffer": {
-						"allowedMimeTypes": [ "image/png" ],
+						"allowedMimeTypes": [ "image/png", "image/jpeg" ],
 						"maximumSize": MAXIMUM_FILE_SIZE,
 						"minimumSize": MINIMUM_FILE_SIZE
 					}
