@@ -1,4 +1,5 @@
 import type { FieldRules } from "!/types/validation"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { EmployeeScheduleDocument } from "$/types/documents/employee_schedule"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
@@ -7,14 +8,13 @@ import { MINUTE_SCHEDULE_INTERVAL } from "$/constants/numerical"
 
 import Log from "$!/singletons/log"
 import UserManager from "%/managers/user"
+import deserialize from "$/object/deserialize"
 import Manager from "%/managers/employee_schedule"
-import Merger from "!/middlewares/miscellaneous/merger"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import DoubleBoundJSONController from "!/controllers/double_bound_json"
 
 import Policy from "!/bases/policy"
-import OverridableKindBasedPolicy from "!/policies/overridable_kind-based"
 import BelongsToCurrentUserPolicy from "!/policies/belongs_to_current_user"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -39,23 +39,16 @@ export default class extends DoubleBoundJSONController {
 	get filePath(): string { return __filename }
 
 	get policy(): Policy {
-		return new Merger([
-			new OverridableKindBasedPolicy(
-				[ "reachable_employee" ],
-				permissionGroup,
-				UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-				UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-			),
-			new BelongsToCurrentUserPolicy(this.manager, {
-				"bypassNecessarilyWith": {
-					"combinations": [
-						UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-						UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-					],
-					"group": permissionGroup
-				}
-			})
-		]) as unknown as Policy
+		// TODO: Ensure user is an employee if it is own kind
+		return new BelongsToCurrentUserPolicy(this.manager, {
+			"bypassNecessarilyWith": {
+				"combinations": [
+					UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+					UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+				],
+				"group": permissionGroup
+			}
+		})
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
