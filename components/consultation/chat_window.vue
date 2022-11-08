@@ -24,7 +24,6 @@
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 
-					<!-- TODO(lead/button): Apply functionality -->
 					<li>
 						<a
 							class="underline"
