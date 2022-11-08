@@ -4,6 +4,7 @@
 			<SelfParticipant
 				v-model:must-show-video="isShowingVideo"
 				v-model:must-transmit-audio="isTransmittingAudio"
+				:is-joined="isJoined"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
 			<OtherParticipantsContainer
@@ -159,7 +160,11 @@ function join() {
 		channelName,
 		chatMessageActivityID,
 		selfParticipantID,
-		token.value
+		token.value,
+		{
+			"isShowingVideo": isShowingVideo.value,
+			"isTransmittingAudio": isTransmittingAudio.value
+		}
 	)
 }
 function leave() {

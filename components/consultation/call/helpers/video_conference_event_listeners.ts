@@ -21,14 +21,17 @@ export function handleRemoteUserJoining(
 		async() => {
 			await engine().subscribe(user, mediaType)
 			const remoteID = `user-${String(user.uid)}`
+			const TIMEOUT = 3000
 			remoteParticipants.value.push({
 				"remoteAudioTrack": user.audioTrack as RemoteAudioTrack,
 				remoteID,
 				"remoteVideoTrack": user.videoTrack as RemoteVideoTrack
 			})
 
-			if (mediaType === "video") user.videoTrack?.play(remoteID)
-			if (mediaType === "audio") user.audioTrack?.play()
+			setTimeout(() => {
+				if (mediaType === "video") user.videoTrack?.play(remoteID)
+				if (mediaType === "audio") user.audioTrack?.play()
+			}, TIMEOUT)
 		},
 		() => {
 			remoteParticipants.value.push({

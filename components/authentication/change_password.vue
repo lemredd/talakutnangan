@@ -1,5 +1,5 @@
 <template>
-	<Overlay :is-shown="isOverlayShown" @close="closeDialog">
+	<Overlay :is-shown="isOverlayShown" @close="cancel">
 		<template #header>
 			<h1>Update your password</h1>
 		</template>
@@ -106,7 +106,6 @@ function cancel(): void {
 	clearPasswords()
 	closeDialog()
 }
-
 function savePassword() {
 	fetcher.updatePassword(
 		userProfile.data.id,
