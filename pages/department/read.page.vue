@@ -79,6 +79,7 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
@@ -136,9 +137,6 @@ const password = ref<string>(
 		: ""
 )
 
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
-
 const fetcher = new Fetcher()
 
 const {
@@ -147,6 +145,8 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function updateDepartment() {
 	fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,

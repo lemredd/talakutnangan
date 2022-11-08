@@ -7,7 +7,10 @@
 			<span class="post-create">
 				Welcome To Forum
 			</span>
-			<button class="create-post btn btn-primary" @click="showCreateForm">
+			<button
+				v-if="mayPost"
+				class="create-post btn btn-primary"
+				@click="showCreateForm">
 				add post
 			</button>
 		</div>
@@ -53,7 +56,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue"
+import { ref, inject, onMounted, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostListDocument } from "$/types/documents/post"
@@ -67,7 +70,12 @@ import DepartmentFetcher from "$@/fetchers/department"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import { post as permissionGroup } from "$/permissions/permission_list"
-import { READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/post_combinations"
+import {
+	READ_ANYONE_ON_ALL_DEPARTMENTS,
+	CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+	CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT
+} from "$/permissions/post_combinations"
 
 import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
@@ -114,5 +122,22 @@ onMounted(async() => {
 			}
 		}
 	}
+})
+
+const mayPost = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedToOwnDepartment = permissionGroup.hasOneRoleAllowed(users, [
+		CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT
+	])
+
+	const isLimitedoAnyDepartment = permissionGroup.hasOneRoleAllowed(users, [
+		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+	])
+
+	const isLimitedToSocialPost = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT
+	])
+
+	return isLimitedToOwnDepartment || isLimitedoAnyDepartment || isLimitedToSocialPost
 })
 </script>

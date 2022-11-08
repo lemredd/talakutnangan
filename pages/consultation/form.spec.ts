@@ -342,7 +342,7 @@ describe("Page: Consultation/form", () => {
 										consultant,
 										consultantRole,
 										"reason": "Reason",
-										"scheduledStartAt": new Date("2022-10-04 10:00"),
+										"scheduledStartAt": new Date("2022-10-04 10:00")
 									}
 								}
 							}

@@ -24,7 +24,6 @@
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 
-					<!-- TODO(lead/button): Apply functionality -->
 					<li>
 						<a
 							class="underline"
@@ -71,7 +70,7 @@
 		.toggle-list-btn {
 			@apply fixed opacity-15 hover:opacity-100;
 			@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
-			z-index: 1001;
+			z-index: 500;
 		}
 
 		.links{
@@ -101,7 +100,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
@@ -122,6 +120,7 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 const fetcher = new ConsultationFetcher()
 

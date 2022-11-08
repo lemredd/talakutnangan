@@ -34,7 +34,7 @@
 				</p>
 
 				<p class="opening-redirector">
-					<a href="/consultation">Visit the forum.</a>
+					<a href="/forum">Visit the forum.</a>
 				</p>
 			</template>
 		</Description>

@@ -8,6 +8,11 @@
 		<div
 			:id="containerId"
 			class="track-container">
+			<video
+				v-if="!isJoined && mustShowVideo"
+				ref="previewVideo"
+				class="preview-video">
+			</video>
 		</div>
 	</div>
 </template>
@@ -17,7 +22,7 @@
 	.self-participant{
 		@apply m-2;
 		@apply flex justify-center items-center;
-		@apply bg-blue-gray-400 bg-opacity-20;
+		@apply bg-black;
 		position:relative;
 
 		max-height: $occupyHeight;
@@ -28,6 +33,7 @@
 			position: absolute;
 			max-width:100px;
 			max-height:100px;
+			z-index: 999;
 		}
 
 		.track-container {
@@ -35,6 +41,11 @@
 			height: 100%;
 			min-height: $occupyHeight;
 			position: absolute;
+
+			.preview-video {
+				@apply object-cover;
+				height: 100%;
+			}
 		}
 	}
 
@@ -48,7 +59,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { computed, inject, onMounted, ref, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
@@ -60,10 +71,40 @@ const { userProfile } = pageProps
 
 type DefinedProps = {
 	containerId: string
+	isJoined: boolean
 	mustShowVideo: boolean
 	mustTransmitAudio: boolean
 }
-defineProps<DefinedProps>()
+const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
+const previewVideo = ref<HTMLVideoElement|null>(null)
+const mustShowVideo = computed(() => props.mustShowVideo)
+function previewVideoTrack() {
+	if (navigator.mediaDevices) {
+		navigator.mediaDevices.getUserMedia({ "video": true })
+		.then(stream => {
+			const videoElement = previewVideo.value as HTMLVideoElement
+			videoElement.srcObject = stream
+			videoElement.autoplay = true
+			videoElement.addEventListener("loadedmetadata", () => videoElement.play())
+		})
+	} else {
+		// @ts-ignore
+		navigator.getUserMedia({ "video": true })
+		.then((stream: MediaStream) => {
+			const videoElement = previewVideo.value as HTMLVideoElement
+			videoElement.srcObject = stream
+			videoElement.autoplay = true
+			videoElement.addEventListener("loadedmetadata", () => videoElement.play())
+		})
+	}
+}
+
+watch(mustShowVideo, () => {
+	if (mustShowVideo.value) previewVideoTrack()
+})
+onMounted(() => {
+	if (mustShowVideo.value) previewVideoTrack()
+})
 </script>

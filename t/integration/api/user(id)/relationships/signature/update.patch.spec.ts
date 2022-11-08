@@ -5,12 +5,12 @@ import RoleFactory from "~/factories/role"
 import URLMaker from "$!/singletons/url_maker"
 import StudentDetailFactory from "~/factories/student_detail"
 import RequestEnvironment from "$!/singletons/request_environment"
+import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Route from "!%/api/user(id)/relationships/signature/update.patch"
-import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 
 describe("PATCH /api/user/:id/relationships/signature", () => {
 	beforeAll(async() => {
