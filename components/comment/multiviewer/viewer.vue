@@ -330,10 +330,20 @@ async function switchVote(newRawVote: string): Promise<void> {
 		}).then(() => {
 			vote.value = newVote
 		})
-	} else if (newVote === "abstain") {
-		await voteFetcher.archive([ voteID.value as string ]).then(() => {
-			vote.value = newVote
-		})
+	} else if (newVote === "abstain" || currentVote === "abstain") {
+		if (newVote === "upvote" || currentVote === "abstain") {
+			await voteFetcher.update(voteID.value as string, {
+				"kind": "upvote"
+			}).then(() => {
+				vote.value = "upvote"
+			})
+		} else if (newVote === "downvote") {
+			await voteFetcher.update(voteID.value as string, {
+				"kind": "downvote"
+			}).then(() => {
+				vote.value = "downvote"
+			})
+		}
 	} else {
 		await voteFetcher.update(voteID.value as string, {
 			"kind": newVote
