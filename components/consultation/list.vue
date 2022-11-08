@@ -6,7 +6,7 @@
 				Consultations
 			</h2>
 
-			<MinorDropdown v-model="isDropdownShown">
+			<MinorDropdown v-if="isUserAReachableEmployee" v-model="isDropdownShown">
 				<template #dropdown-contents>
 					<a class="link-to-reports" :href="CONSULTATION_REPORT_PER_STUDENT">
 						View summary per student
@@ -156,7 +156,6 @@ import makeUniqueBy from "$/helpers/make_unique_by"
 import specializePath from "$/helpers/specialize_path"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
-import SearchBar from "@/helpers/search_bar.vue"
 import ConsultationForm from "@/consultation/form.vue"
 import LastChat from "@/consultation/list/last_chat.vue"
 import MinorDropdown from "@/helpers/minor_dropdown.vue"
@@ -167,12 +166,6 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const {
 	"state": isDropdownShown
-} = makeSwitch(false)
-
-const slug = ref("")
-const {
-	"toggle": toggleSearching,
-	"state": isSearching
 } = makeSwitch(false)
 
 const {
@@ -186,7 +179,8 @@ function toggleAddingSchedule() {
 }
 
 const { "pageProps": { userProfile } } = pageContext
-const isUserAStudent = computed(() => userProfile?.data?.kind === "student")
+const isUserAStudent = computed(() => userProfile.data.kind === "student")
+const isUserAReachableEmployee = computed(() => userProfile.data.kind === "reachable_employee")
 
 const {
 	consultations,
