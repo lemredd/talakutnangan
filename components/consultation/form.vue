@@ -196,7 +196,6 @@
 <script setup lang="ts">
 import { ref, computed, inject, watch } from "vue"
 
-import type { UnitError } from "$/types/server"
 import { Day, DayValues } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
