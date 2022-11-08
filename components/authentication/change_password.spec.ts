@@ -1,6 +1,7 @@
 import { nextTick } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
@@ -18,6 +19,7 @@ describe("Component: authentication/change_password", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
+					[BODY_CLASSES]: [],
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -41,7 +43,7 @@ describe("Component: authentication/change_password", () => {
 		const overlay = wrapper.find(".overlay")
 		const overlayInputs = overlay.findAllComponents({ "name": "SensitiveTextField" })
 		const [ currentInput, newInput, confirmationInput ] = overlayInputs
-		const saveButton = wrapper.find(".overlay-footer button:nth-of-type(1)")
+		const saveButton = wrapper.find(".save-btn")
 		await currentInput.setValue(CURRENT_PASSWORD)
 		await newInput.setValue(NEW_PASSWORD)
 		await confirmationInput.setValue(CONFIRM_NEW_PASSWORD)

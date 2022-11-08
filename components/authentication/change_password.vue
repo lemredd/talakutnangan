@@ -8,21 +8,24 @@
 			<form class="verification">
 				<SensitiveTextField
 					v-model="currentPassword"
+					class="field"
 					label="Current password"
 					placeholder="enter your current password"/>
 				<SensitiveTextField
 					v-model="newPassword"
+					class="field"
 					label="New password"
 					placeholder="enter your new password"/>
 				<SensitiveTextField
 					v-model="confirmNewPassword"
+					class="field"
 					label="Confirm new password"
 					placeholder="confirm your new password"/>
 			</form>
 		</template>
 		<template #footer>
 			<button
-				class="btn btn-primary"
+				class="save-btn btn btn-primary"
 				type="button"
 				@click="savePassword">
 				Save password
@@ -50,6 +53,10 @@
 				padding: .25em .5em;
 			}
 		}
+
+		.field {
+			@apply mb-8;
+		}
 	}
 </style>
 
@@ -57,12 +64,13 @@
 import { ref, inject, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { UnitError } from "$/types/server"
 
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
+
 import SensitiveTextField from "@/fields/sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
@@ -106,19 +114,7 @@ function savePassword() {
 		confirmNewPassword.value
 	)
 	.then(cancel)
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 onMounted(() => {

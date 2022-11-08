@@ -2,10 +2,13 @@ import flushPromises from "flush-promises"
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import RequestEnvironment from "$!/singletons/request_environment"
 
+import { USER_LINK } from "$/constants/template_links"
+
 import "~/setups/email.setup"
 import App from "~/setups/app"
 import UserFactory from "~/factories/user"
 import RoleFactory from "~/factories/role"
+import specializePath from "$/helpers/specialize_path"
 
 import User from "%/models/user"
 import Transport from "!/singletons/transport"
@@ -26,10 +29,12 @@ describe("PATCH /api/user/:id", () => {
 		.insertOne()
 
 		const { "user": student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		const newStudent = await new UserFactory().makeOne()
+		const newStudent = await new UserFactory().email(() => "example.1@example.com").makeOne()
 
 		const response = await App.request
-		.patch(`/api/user/${student.id}`)
+		.patch(specializePath(USER_LINK.bound, {
+			"id": student.id
+		}))
 		.set("Cookie", cookie)
 		.send({
 			"data": {
