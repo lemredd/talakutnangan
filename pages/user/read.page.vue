@@ -63,7 +63,7 @@
 			v-if="mayReset"
 			type="button"
 			class="btn btn-primary"
-			@click="resetUser">
+			@click="resetUserPassword">
 			Reset
 		</button>
 	</div>
@@ -81,7 +81,6 @@ import {
 	onMounted
 } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -102,6 +101,8 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
+
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -129,8 +130,7 @@ const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 		"value": role.id
 	})
 ))
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
+
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const departments = ref<DeserializedDepartmentResource[]>(
@@ -191,7 +191,8 @@ const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disab
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
 const fetcher = new Fetcher()
-
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
@@ -199,25 +200,28 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
-		user.value.data.department.data.id = userDepartment.value
-	})
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 async function updateRoles() {
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 async function updateDepartment() {
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
-async function resetUser() {
+async function resetUserPassword() {
 	await fetcher.resetPassword(user.value.data.id)
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveUser() {
@@ -225,6 +229,7 @@ async function archiveUser() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function restoreUser() {
@@ -232,6 +237,7 @@ async function restoreUser() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 const roleFetcher = new RoleFetcher()
