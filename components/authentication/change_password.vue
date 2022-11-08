@@ -45,6 +45,7 @@
 
 	.verification {
 		@apply flex flex-col text-black;
+		@apply dark:text-light-500;
 
 		label {
 			padding: .5em 1em;
