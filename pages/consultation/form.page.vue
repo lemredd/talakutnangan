@@ -63,6 +63,13 @@
 					{{ startedAt }}
 				</h6>
 			</div>
+
+			<div class="col">
+				<h2>
+					Actual finish:
+				</h2>
+				<h6 id="actual-finish" class="actual-finish">
+					{{ finishedAt }}
 				</h6>
 			</div>
 		</div>
@@ -70,7 +77,7 @@
 	<ul class="chat-messages mt-15">
 		<h1>Chat Messages</h1>
 		<li
-			v-for="chatMessage in chatMessages"
+			v-for="chatMessage in chatMessages.data"
 			:key="chatMessage.id">
 			<span class="date-and-owner-details">
 				[
@@ -91,7 +98,7 @@
 	</ul>
 
 	<section
-		v-if="consultationData.finishedAt"
+		v-if="consultation.data.finishedAt"
 		class="signatures mt-15">
 		<h1>Signatures</h1>
 		<div class="consultant-signature">
@@ -205,6 +212,13 @@ const startedAt = computed<string>(() => {
 	}
 
 	return "Consultation has not yet started."
+})
+const finishedAt = computed<string>(() => {
+	if (consultation.value.data.finishedAt) {
+		return formatToCompleteFriendlyTime(consultation.value.data.finishedAt)
+	}
+
+	return "Consultation has not yet finished."
 })
 const reason = computed<string>(() => consultation.value.data.reason)
 const consultant = computed<DeserializedUserDocument<"signature">>(() => {
