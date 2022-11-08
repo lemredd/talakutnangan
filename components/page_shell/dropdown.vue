@@ -28,7 +28,9 @@
 }
 
 .invisible-closer {
-	@apply fixed inset-[0] z-index-[1000];
+	position: fixed;
+	inset: 0;
+	z-index: 999;
 }
 
 .dropdown-container {
