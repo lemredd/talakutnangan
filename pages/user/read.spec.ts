@@ -102,7 +102,7 @@ describe("Page: user/read", () => {
 		expect(selectedDepartment.value).toEqual(userDepartment.data.id)
 	})
 
-	it("can update user information", async() => {
+	it.only("can update user information", async() => {
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [],
 			"meta": {
@@ -197,10 +197,14 @@ describe("Page: user/read", () => {
 		await flushPromises()
 		const userNameInput = wrapper.find(".user-name input")
 		const editBtn = wrapper.find(".user-name .edit-button")
+		const updateUserDataBtn = wrapper.find("update-user-btn")
+
 		const selectableRoles = wrapper.find(".selectable-roles select")
 		const addSelectedRoleBtn = wrapper.find(".add-btn")
+		const updateUserRolesBtn = wrapper.find("update-roles-btn")
+
 		const selectedDepartment = wrapper.find(".selectable-department select")
-		const submitBtn = wrapper.find("button[type=submit]")
+		const updateUserDepartmentBtn = wrapper.find("update-department-btn")
 
 		const updatedUser = {
 			"data": {
