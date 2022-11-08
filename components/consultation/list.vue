@@ -126,7 +126,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, Ref, ref } from "vue"
+import { computed, inject, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
