@@ -20,3 +20,9 @@ export const CONSULTATION_FORM_PRINT = "/consultation/form/:id"
  * Requires `id` of the post
  */
 export const READ_POST = "/post/read/:id"
+
+export const CONSULTATION_REPORT_PER_STUDENT = "/consultation/report/per_student"
+
+export const CONSULTATION_WEEKLY_REPORT = "/consultation/report/weekly"
+
+export const CONSOLIDATED_CONSULTATION_REPORT = "/consultation/report/consolidated"
