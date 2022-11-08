@@ -3,7 +3,6 @@ import { nextTick } from "vue"
 import { mount, flushPromises } from "@vue/test-utils"
 
 import { JSON_API_MEDIA_TYPE } from "$/types/server"
-import type { ChatMessageQueryParameters } from "$/types/query"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedConsultationDocument
@@ -29,7 +28,6 @@ import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 import Page from "./read.page.vue"
-
 
 describe("UI Page: Read consultation resource by ID", () => {
 	it("can toggle state of consultation list", async() => {
