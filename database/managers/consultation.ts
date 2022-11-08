@@ -226,7 +226,8 @@ export default class extends BaseManager<
 				"where": new Condition().and(
 					new Condition().not("startedAt", null),
 					new Condition().is("finishedAt", null)
-				).build()
+				).build(),
+				...this.transaction.transactionObject
 			})
 
 			let canStart = activeConsultations.length === 0
