@@ -3,7 +3,7 @@
 		v-model="mockPassword"
 		label="Password"
 		:editable="true"
-		@request-edit="openDialog">
+		@request-edit="open">
 		<template #hidden-dialog>
 			<Overlay :is-shown="isOverlayShown" @close="cancel">
 				<template #header>
@@ -41,6 +41,7 @@
 <style scoped lang="scss">
 .verification {
 	@apply flex flex-col text-black;
+	@apply dark:text-light-500;
 
 	label {
 		padding: .5em 1em;
@@ -53,15 +54,20 @@
 </style>
 
 <script setup lang="ts">
-import { ref, inject } from "vue"
+import { ref, inject, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
+
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
+import BodyCSSClasses from "$@/external/body_css_classes"
 
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
+import { isUndefined } from "lodash"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -88,6 +94,15 @@ function clearPasswords(): void {
 		password.value = ""
 	})
 }
+
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
+function open() {
+	setTimeout(() => {
+		openDialog()
+		if (!isUndefined(window)) bodyClasses.value.scroll(false)
+	}, MILLISECOND_IN_A_SECOND)
+}
+
 
 function cancel(): void {
 	clearPasswords()
