@@ -114,7 +114,8 @@
 				@apply flex-1;
 				@apply ml-auto p-5;
 
-				word-break: break-all;
+				word-break: normal;
+				word-wrap: normal;
 			}
 		}
 	}
