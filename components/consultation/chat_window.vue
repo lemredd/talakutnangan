@@ -70,7 +70,7 @@
 		.toggle-list-btn {
 			@apply fixed opacity-15 hover:opacity-100;
 			@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
-			z-index: 1001;
+			z-index: 500;
 		}
 
 		.links{
