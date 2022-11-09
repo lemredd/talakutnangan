@@ -134,7 +134,6 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
-import type { UnitError } from "$/types/server"
 
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
@@ -149,7 +148,10 @@ import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
 import UserFetcher from "$@/fetchers/user"
+import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
+import specializePath from "$/helpers/specialize_path"
+import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -327,7 +329,11 @@ function updatePost(): void {
 	}, {
 	})
 	.then(() => {
-		close()
+		assignPath(
+			specializePath(READ_POST, {
+				"id": Number(postID.value)
+			})
+		)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }

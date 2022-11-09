@@ -3,6 +3,11 @@
 
 <template>
 	<div class="schedule-picker">
+		<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+		<ReceivedSuccessMessages
+			v-if="successMessages.length"
+			:received-success-messages="successMessages"/>
+
 		<button
 			v-if="!isNew && !isEditing"
 			id="edit-btn"
@@ -106,7 +111,7 @@
 		@apply flex flex-col justify-between mb-5;
 
 		.start, .end {
-			@apply flex justify-between;
+			@apply flex;
 		}
 	}
 </style>
@@ -118,6 +123,8 @@ import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
+
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
@@ -127,14 +134,16 @@ import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import formatHourTo24Hours from "@/helpers/schedule_picker/format_to_24_hours"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 import Selectable from "@/fields/selectable_options.vue"
-
-const fetcher = new EmployeeScheduleFetcher()
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
@@ -207,6 +216,9 @@ const endTime24Hours = computed(() => {
 	return formattedTime
 })
 
+const fetcher = new EmployeeScheduleFetcher()
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function updateTime() {
 	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
@@ -223,9 +235,12 @@ function updateTime() {
 				}
 			}
 		}
-	}).then(() => {
+	})
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
 		stopEditing()
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function saveNewSchedule() {
@@ -245,11 +260,18 @@ function saveNewSchedule() {
 			}
 		}
 	})
-	.then(() => assignPath("/settings/profile"))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function deleteSchedule() {
 	fetcher.archive([ String(props.scheduleId) ])
-	.then(() => assignPath("/settings/profile"))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(() => assignPath("/settings/profile"), MILLISECOND_IN_A_SECOND)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
