@@ -15,7 +15,7 @@
 		</ul>
 		<h1>log in</h1>
 
-		<form>
+		<form @keyup.enter.exact="logIn">
 			<TextualField
 				v-model="email"
 				label="E-mail"
