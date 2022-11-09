@@ -109,10 +109,7 @@ import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type {
-	DeserializedPostAttachmentResource,
-	DeserializedPostAttachmentListDocument
-} from "$/types/documents/post_attachment"
+import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
@@ -134,7 +131,7 @@ const userFetcher = new UserFetcher()
 
 const props = defineProps<{
 	isShown: boolean,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"postAttachments">
 }>()
 
 interface CustomEvents {
@@ -152,16 +149,9 @@ const hasExistingAttachments = computed<boolean>(() => {
 
 	return hasAttachments
 })
-const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
-	if (hasExistingAttachments.value) {
-		const attachments = props.modelValue
-		.postAttachments as DeserializedPostAttachmentListDocument
-
-		return attachments.data
-	}
-
-	return []
-})
+const postAttachments = ref<DeserializedPostAttachmentResource[]>(
+	props.modelValue.postAttachments.data
+)
 
 const isShown = computed<boolean>(() => props.isShown)
 const hasLoadedCompletePosterInfo = computed<boolean>(() => {
@@ -235,17 +225,14 @@ function isImage(type: string): boolean {
 }
 
 const filename = ref<string|null>(null)
-const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
 const extractedFileType = ref("")
-const isFileTypeImage = computed(() => isImage(extractedFileType.value))
 const fileSize = ref<number|null>(null)
 const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
 const receivedErrors = ref<string[]>([])
-const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
 function removeFile() {
 	filename.value = null
@@ -267,12 +254,14 @@ function sendFile(form: HTMLFormElement) {
 	formData.set("data[relationships][post][data][type]", "post")
 	postAttachmentFetcher.createWithFile(formData)
 	.then(({ body }) => {
-		attachmentResources.value = [
-			...attachmentResources.value,
+		postAttachments.value = [
+			...postAttachments.value,
 			body.data
 		]
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors))
+	.catch(response => {
+		extractAllErrorDetails(response, receivedErrors)
+	})
 }
 
 function uploadPostAttachment(event: Event): void {
