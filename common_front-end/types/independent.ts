@@ -11,6 +11,7 @@ import type { CommonQueryParameters } from "$/types/query"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedSemesterResource } from "$/types/documents/semester"
 import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedAuditTrailResource } from "$/types/documents/audit_trail"
 import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 import type {
 	ResourceIdentifier,
@@ -123,6 +124,7 @@ export type PossibleResources =
 	| DeserializedRoleResource
 	| DeserializedSemesterResource
 	| DeserializedTagResource
+	| DeserializedAuditTrailResource
 
 export type Timer = ReturnType<typeof setInterval>
 

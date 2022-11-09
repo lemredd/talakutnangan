@@ -12,6 +12,7 @@ describe("Component: chat_window/extra_controls", () => {
 				}
 			},
 			"props": {
+				"consultationId": "1",
 				"isCurrentUserConsultant": true,
 				"isHeaderControlDropdownShown": true
 			}
@@ -23,5 +24,24 @@ describe("Component: chat_window/extra_controls", () => {
 
 		const emissions = wrapper.emitted()
 		expect(emissions).toHaveProperty("showActionTakenOverlay")
+	})
+
+	it("should lead to printable consultation form", () => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"Dropdown": false,
+					"IconButton": false
+				}
+			},
+			"props": {
+				"consultationId": id,
+				"isCurrentUserConsultant": true,
+				"isHeaderControlDropdownShown": true
+			}
+		})
+		const printableFormLink = wrapper.find(".view-printable-form-link")
+		expect(printableFormLink.attributes("href")).toEqual(`/consultation/form/${id}`)
 	})
 })

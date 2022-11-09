@@ -3,10 +3,9 @@ import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
+import Manager from "%/managers/signature"
 import OkResponseInfo from "!/response_infos/ok"
 import BoundController from "!/controllers/bound"
-import SignatureManager from "%/managers/signature"
 import sniffMediaType from "!/helpers/sniff_media_type"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -28,11 +27,11 @@ export default class extends BoundController {
 		])
 	}
 
-	get manager(): BaseManagerClass { return UserManager }
+	get manager(): BaseManagerClass { return Manager }
 
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<OkResponseInfo> {
-		const manager = new SignatureManager(request)
+		const manager = new Manager(request)
 		const { id } = request.params
 
 		const signatureDocument = await manager.findWithID(

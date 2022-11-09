@@ -1,8 +1,9 @@
 <template>
 	<div class="multiviewer">
 		<SelectableExistenceFilter
-			v-if="isPostOwned"
-			v-model="existence"/>
+			v-if="mayViewArchivedOrRestore"
+			v-model="existence"
+			class="comment-existence-filter"/>
 		<Suspensible :is-loaded="isLoaded">
 			<Viewer
 				v-for="(comment, i) in comments.data"
@@ -11,16 +12,40 @@
 				class="viewer"
 				@archive="archiveComment"
 				@restore="restoreComment"/>
+			<p v-if="hasNoComments">
+				There are no comments found.
+			</p>
 		</Suspensible>
+		<div v-if="hasRemainingComments" class="load-others">
+			<button
+				class="load-btn btn btn-secondary"
+				@click="fetchComments">
+				Load other comments
+			</button>
+		</div>
 	</div>
 </template>
 
 <style lang="scss">
+	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col flex-nowrap justify-start items-stretch;
 
+		.comment-existence-filter {
+			@apply sm:mt-12 mb-4;
+		}
+
 		.viewer {
 			@apply flex-1;
+		}
+
+		.load-others {
+			@apply flex-1;
+
+			button {
+				width: 100%;
+			}
 		}
 	}
 </style>
@@ -47,7 +72,7 @@ import Viewer from "@/comment/multiviewer/viewer.vue"
 import SelectableExistenceFilter from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
-	isPostOwned: boolean
+	mayViewArchivedOrRestore: boolean
 	modelValue: DeserializedCommentListDocument<"user">
 	post: DeserializedPostResource
 }>()
@@ -75,6 +100,9 @@ const comments = computed<DeserializedCommentListDocument<"user">>({
 		emit("update:modelValue", newValue)
 	}
 })
+const hasRemainingComments = computed<boolean>(
+	() => comments.value.data.length < (comments.value.meta?.count || 0)
+)
 
 function extractCommentIDsWithNoVoteInfo(currentComments: DeserializedCommentListDocument<"user">)
 : string[] {
@@ -115,6 +143,7 @@ async function countVotesOfComments(): Promise<void> {
 
 const existence = ref<"exists"|"archived"|"*">("exists")
 const isLoaded = ref(false)
+const hasNoComments = computed(() => comments.value.data.length === 0)
 
 async function fetchComments() {
 	isLoaded.value = false
@@ -134,13 +163,11 @@ async function fetchComments() {
 			"sort": [ "-createdAt" ]
 		}),
 		{
-			"mayContinue": () => Promise.resolve(false),
-			postOperations() {
-				isLoaded.value = true
-				return Promise.resolve()
-			}
+			"mayContinue": () => Promise.resolve(false)
 		}
 	)
+
+	isLoaded.value = true
 }
 
 function removeComment(commentToRemove: DeserializedCommentResource<"user">, increment: number) {
@@ -159,7 +186,7 @@ function archiveComment(commentToRemove: DeserializedCommentResource<"user">) {
 }
 
 function restoreComment(commentToRemove: DeserializedCommentResource<"user">) {
-	removeComment(commentToRemove, 1)
+	removeComment(commentToRemove, -1)
 }
 
 function resetCommentsList() {

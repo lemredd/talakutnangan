@@ -1,3 +1,3 @@
 <template>
-	<p>Congratulations, you email has been verified1</p>
+	<p>Congratulations, your email has been verified!</p>
 </template>

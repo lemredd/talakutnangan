@@ -28,7 +28,8 @@
 		<Anchor
 			v-for="link in desktopRoleLinks"
 			:key="link.name"
-			:href="link.path">
+			:href="link.path"
+			:title="link.name">
 			<span class="material-icons">
 				{{ link.icon }}
 			</span>
@@ -59,7 +60,7 @@ body.unscrollable {
 			position: absolute;
 			width: 100%;
 			height: 100vh;
-			z-index: -1;
+			z-index: 999;
 		}
 
 		.anchor {

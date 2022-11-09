@@ -6,36 +6,6 @@
 				<h1 class="ml-1">TALAKUTNANGAN</h1>
 			</a>
 
-			<Dropdown
-				v-if="!isUserAGuest"
-				:is-dropdown-shown="mustShowNotifications"
-				class="notifications"
-				@toggle="toggleNotificationsDedicatedly"
-				@resize="toggleNotificationsDedicatedly">
-				<template #toggler>
-					<span class="material-icons">notifications</span>
-				</template>
-				<template #dropdown-contents>
-					<ul class="notification-items">
-						<a href="">
-							<li
-								v-for="notification in notifications"
-								:key="notification.id"
-								class="notification-item">
-								<div :class="`icon ${notification.type}`">
-									<span class="material-icons">{{ notification.icon }}</span>
-								</div>
-								<h3 class="title">{{ notification.description }}</h3>
-								<small class="date">{{ notification.dateOccured }}</small>
-							</li>
-						</a>
-
-						<li class="notification-footer">
-							<a href="/notifications">View All</a>
-						</li>
-					</ul>
-				</template>
-			</Dropdown>
 			<CommonNavigationLinks/>
 			<Dropdown
 				v-if="!isUserAGuest"
@@ -44,7 +14,7 @@
 				@toggle="toggleSettingsDedicatedly"
 				@resize="toggleSettingsDedicatedly">
 				<template #toggler>
-					<span class="material-icons">account_circle</span>
+					<span class="material-icons" title="Settings">account_circle</span>
 				</template>
 				<template #dropdown-contents>
 					<ul class="settings-items">
@@ -71,7 +41,7 @@
 	@apply dark:bg-dark-700 flex justify-center;
 	position: fixed;
 	left: 0; right: 0;
-	z-index: 1;
+	z-index: 999;
 	background-color: white;
 
 	margin: 0 auto;
@@ -102,7 +72,13 @@
 
 @media screen and (min-width: $desktopViewportMinimum) {
 	.user-settings {
+		@apply pt-6px;
 		@apply self-center;
+
+		.settings-items {
+			@apply text-sm;
+			text-transform: uppercase;
+		}
 
 		&.parent-dropdown-container {
 			@apply flex items-center;
@@ -111,46 +87,6 @@
 				right: 0;
 				transform: none;
 				left: unset;
-			}
-		}
-	}
-
-	.notifications {
-		@apply self-center;
-
-		&.parent-dropdown-container {
-			@apply flex items-center;
-		}
-
-		.dropdown-container {
-			.notification-items {
-				@apply flex flex-col justify-between;
-
-				.notification-item {
-					@apply grid grid-cols-[repeat(2,max-content)] grid-rows-[repeat(2,max-content)];
-					padding: .5em 1em;
-
-					.icon {
-						@apply self-center row-span-full  dark:bg-light-800;
-						border-radius: 50%;
-						height: min-content;
-						background-color: gray;
-
-						span {
-							font-size: 32px;
-						}
-					}
-
-					.title {
-						@apply col-start-2 row-start-1;
-					}
-					.date {
-						@apply col-start-2 row-start-2;
-					}
-				}
-				.notification-footer {
-					text-align: center;
-				}
 			}
 		}
 	}
@@ -175,35 +111,15 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 
 const isUserAGuest = computed(() => userProfile === null)
 
-const {
-	"state": mustShowNotifications,
-	"toggle": toggleNotifications,
-	"off": closeNotifications
-} = makeSwitch(false)
 
 const {
 	"state": mustShowSettings,
-	"toggle": toggleSettings,
-	"off": closeSettings
+	"toggle": toggleSettings
 } = makeSwitch(false)
 
-function toggleNotificationsDedicatedly() {
-	closeSettings()
-	toggleNotifications()
-}
 
 function toggleSettingsDedicatedly() {
-	closeNotifications()
 	toggleSettings()
 }
 
-const notifications = [
-	{
-		"dateOccured": new Date(2022, 2, 3).toDateString(),
-		"description": "lorem ipsum",
-		"icon": "notifications",
-		"id": 0,
-		"type": "general"
-	}
-]
 </script>

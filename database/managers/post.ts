@@ -114,9 +114,12 @@ export default class extends BaseManager<
 			)
 
 			model.posterInfo = attachedRole
-			model.department = await Department.findByPk(Number(departmentID), {
-				...this.transaction.transactionObject
-			}) as Department
+
+			if (departmentID !== null) {
+				model.department = await Department.findByPk(Number(departmentID), {
+					...this.transaction.transactionObject
+				}) as Department
+			}
 
 			if (attachments && attachments.data.length > 0) {
 				const IDMatcher = new Condition().isIncludedIn(

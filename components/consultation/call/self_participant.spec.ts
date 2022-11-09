@@ -11,7 +11,6 @@ describe("Component: consultation/call/self participant", () => {
 		)
 	)
 
-
 	Object.defineProperty(global.navigator, "mediaDevices", {
 		"value": {
 			"getUserMedia": mockGetUserMedia
@@ -34,6 +33,8 @@ describe("Component: consultation/call/self participant", () => {
 				}
 			},
 			"props": {
+				"containerId": "something",
+				"isJoined": false,
 				"mustShowVideo": false,
 				"mustTransmitAudio": false
 			}

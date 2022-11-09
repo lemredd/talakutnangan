@@ -15,7 +15,7 @@
 		</ul>
 		<h1>log in</h1>
 
-		<form>
+		<form @keyup.enter.exact="logIn">
 			<TextualField
 				v-model="email"
 				label="E-mail"
@@ -35,18 +35,16 @@
 		</form>
 		<div class="controls">
 			<button
-				id="submit-btn"
+				id=""
 				:disabled="!email"
-				class="btn btn-primary"
+				class="submit-btn btn btn-primary"
 				@click="logIn">
 				Log in
 			</button>
-			<a
-				id="forgot-btn"
-				role="button"
-				href="">
+			<button
+				role="button">
 				Forgot Password?
-			</a>
+			</button>
 		</div>
 	</div>
 </template>
@@ -91,7 +89,7 @@ form {
 	@screen sm {
 		@apply flex-row items-center justify-between;
 
-		#submit-btn {
+		.submit-btn {
 			order: 2;
 		}
 	}
@@ -114,14 +112,16 @@ form {
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { Ref, ref } from "vue"
 
 import type { UnitError } from "$/types/server"
 import type { Serializable } from "$/types/general"
 
+import RequestEnvironment from "$/singletons/request_environment"
+
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
-import RequestEnvironment from "$/singletons/request_environment"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
@@ -131,8 +131,8 @@ const props = defineProps<{
 	receivedErrorFromPageContext?: UnitError & Serializable
 }>()
 
-const email = ref("sample@example.com")
-const password = ref("12345678")
+const email = ref("")
+const password = ref("")
 const receivedErrors = ref<string|string[]>(
 	props.receivedErrorFromPageContext
 		? props.receivedErrorFromPageContext.detail
@@ -147,12 +147,11 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => error.detail)
-		} else {
-			receivedErrors.value = [ "Invalid e-mail or password" ]
+	.catch(response => {
+		extractAllErrorDetails(response, receivedErrors as Ref<string[]>)
+
+		if (response.status === RequestEnvironment.status.UNAUTHORIZED) {
+			response.value = [ "Invalid e-mail or password" ]
 		}
 	})
 }

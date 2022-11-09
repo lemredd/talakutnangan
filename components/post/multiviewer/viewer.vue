@@ -42,34 +42,63 @@
 		</Overlay>
 		<header>
 			<div class="post-details">
-				<ProfilePicture
-					class="profile-picture"
-					:user="post.poster"/>
-				<span>
-					{{ post.poster.data.name }}
-				</span>
-				<span>
-					<small>
+				<div class="poster">
+					<ProfilePicture
+						class="profile-picture"
+						:user="post.poster"/>
+					<div class="poster-details">
 						<span>
-							{{ postDepartment }}
+							{{ post.poster.data.name }}
 						</span>
-						<span class="ml-2" :title="completeFriendlyPostTimestamp">
-							{{
-								friendlyPostTimestamp
-							}}
+						<span>
+							<small class="department-and-timestamp">
+								<span>
+									{{ postDepartment }}
+								</span>
+								<span class="timestamp" :title="completeFriendlyPostTimestamp">
+									{{
+										friendlyPostTimestamp
+									}}
+								</span>
+							</small>
 						</span>
-					</small>
-				</span>
+					</div>
+				</div>
+				<Menu
+					:post="post"
+					@update-post="openUpdateForm"
+					@archive-post="confirmArchive"
+					@restore-post="confirmRestore"/>
 			</div>
-			<Menu
-				:post="post"
-				@update-post="openUpdateForm"
-				@archive-post="confirmArchive"
-				@restore-post="confirmRestore"/>
 		</header>
 		<p>
 			{{ post.content }}
 		</p>
+		<div v-if="hasExistingAttachments">
+			<div
+				v-for="attachment in postAttachments"
+				:key="attachment.id"
+				class="preview-file">
+				<div v-if="isImage(attachment.fileType)" class="preview-img-container">
+					<div class="removable-image relative">
+						<img class="preview-img" :src="attachment.fileContents"/>
+					</div>
+					<small class="preview-title">
+						Attachment {{ attachment.id }}
+					</small>
+				</div>
+				<div
+					v-else
+					class="preview-file-container">
+					<span class="material-icons mr-2">
+						attachment
+					</span>
+					<small class="preview-file-title">
+						Attachment {{ attachment.id }}
+					</small>
+				</div>
+			</div>
+		</div>
 		<a :href="readPostPath" class="comment-count">
 			<span class="material-icons icon">
 				comment
@@ -86,19 +115,30 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-5 bg-light-800 shadow-lg rounded-[1rem] min-w-70;
+		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
 
 		header {
-			@apply flex-1 flex flex-row justify-between;
+			@apply flex flex-row justify-between;
 
 			.post-details {
-				@apply flex-1 flex flex-row flex-wrap;
+				@apply flex-1 flex flex-row justify-between;
 
-				.profile-picture {
-					@apply mb-5 mr-2 flex-initial w-auto h-6;
+				.poster {
+					@apply flex flex-row items-start;
+					.profile-picture {
+						@apply mr-2 flex-initial w-auto h-12;
+					}
 
-					+ span {
-						@apply flex-1;
+					.poster-details {
+						@apply flex flex-col;
+
+						.department-and-timestamp {
+							@apply flex flex-col sm:flex-row;
+
+							.timestamp {
+								@apply sm:ml-2;
+							}
+						}
 					}
 				}
 			}
@@ -106,6 +146,11 @@
 
 		.comment-count {
 			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
+		}
+
+		> p {
+			word-break: normal;
+			word-wrap: normal;
 		}
 	}
 
@@ -116,6 +161,10 @@
 import { ref, computed } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
+import type {
+	DeserializedPostAttachmentResource,
+	DeserializedPostAttachmentListDocument
+} from "$/types/documents/post_attachment"
 
 import { READ_POST } from "$/constants/template_page_paths"
 
@@ -134,6 +183,10 @@ import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
 
 const fetcher = new Fetcher()
 
+function isImage(type: string): boolean {
+	return type.includes("image")
+}
+
 const props = defineProps<{
 	commentCount: number,
 	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
@@ -150,6 +203,22 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+
+const hasExistingAttachments = computed<boolean>(() => {
+	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
+
+	return hasAttachments
+})
+const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
+	if (hasExistingAttachments.value) {
+		const attachments = props.modelValue
+		.postAttachments as DeserializedPostAttachmentListDocument
+
+		return attachments.data
+	}
+
+	return []
+})
 
 const {
 	"state": mustUpdate,

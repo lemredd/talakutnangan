@@ -2,26 +2,26 @@
 	<div class="consultations-list left">
 		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-		<button
-			v-if="isUserAStudent"
-			class="material-icons add-btn"
-			@click="toggleAddingSchedule">
-			add
-		</button>
 		<div class="no-consultations">
 			<img class="sad-icon" :src="SadIcon"/>
 			<h2>There are no consultations yet...</h2>
+			<button
+				v-if="isUserAStudent"
+				class="add-btn btn btn-primary"
+				@click="toggleAddingSchedule">
+				create a new consultation
+			</button>
 		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
 	.left {
 		@apply dark:bg-dark-700 bg-white;
 		position: fixed;
 		overflow-y: scroll;
 		left: 0; right: 0;
-		z-index: 1000;
 
 		// TODO: find a way to make mixin `useContentBaseHeight` work
 		height: calc(100vh - 56px);
@@ -58,9 +58,7 @@
 		}
 
 		.add-btn {
-			@apply absolute bottom-5 right-5;
-			@apply rounded-full border border-gray-600 p-3;
-			@apply text-lg;
+			@apply mt-4;
 		}
 	}
 </style>

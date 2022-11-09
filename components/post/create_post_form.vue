@@ -5,6 +5,12 @@
 		</template>
 		<template #default>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<SelectableOptionsField
+				v-if="mayPostGenerally"
+				v-model="chosenDepartment"
+				label="Department"
+				class="filter department-selector"
+				:options="departmentName"/>
 			<DraftForm
 				:id="CREATE_POST_FORM_ID"
 				v-model="content"
@@ -15,15 +21,6 @@
 						label="Post as: "
 						placeholder="Choose the role"
 						:options="roleNames"/>
-				</div>
-				<div
-					v-if="maySelectOtherDepartments"
-					class="row department-selector flex flex-row">
-					<SelectableOptionsField
-						v-model="departmentID"
-						label="Department to post: "
-						placeholder="Choose the department"
-						:options="departmentNames"/>
 				</div>
 			</DraftForm>
 			<form @submit.prevent>
@@ -39,7 +36,7 @@
 					type="file"
 					name="data[attributes][fileContents]"
 					class="hidden"
-					:accept="accept"
+					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
 			<div v-if="hasExtracted" class="preview-file">
@@ -104,40 +101,45 @@
 .close{
 	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
 }
+
+.filter{
+			@apply flex flex-col flex-wrap;
+			max-width:100%;
+		}
 </style>
 
 <script setup lang="ts">
 import { ref, computed, inject } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { PostRelationships } from "$/types/documents/post"
-import type { DeserializedRoleResource } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
+import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import DraftForm from "@/post/draft_form.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import assignPath from "$@/external/assign_path"
-import specializePath from "$/helpers/specialize_path"
-import { READ_POST } from "$/constants/template_page_paths"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
-type RequiredExtraProps = "departments"
-const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
+const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
-const { userProfile, departments } = pageProps
+const { userProfile } = pageProps
 
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
+const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 
 const hasMultipleRoles = userProfile.data.roles.data.length > 1
 const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(data => ({
@@ -146,37 +148,32 @@ const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(d
 })))
 const roleID = ref<string>(userProfile.data.roles.data[0].id)
 
-const maySelectOtherDepartments = computed(() => {
-	const targetRoleID = roleID.value
-	const chosenRole = userProfile.data.roles.data.find(
-		data => data.id === targetRoleID
-	) as DeserializedRoleResource
+const props = defineProps<{
+	isShown: boolean
+	departments: DeserializedDepartmentListDocument
+}>()
 
-	return permissionGroup.mayAllow(chosenRole, ...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+const NULL_AS_STRING = "~"
+const departmentName = computed<OptionInfo[]>(() => [
+	{
+		"label": "General",
+		"value": NULL_AS_STRING
+	},
+	...props.departments.data.map(data => ({
+		"label": data.fullName,
+		"value": data.id
+	}))
+])
+
+const mayPostGenerally = computed<boolean>(() => {
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+	])
+	return isLimitedUpToGlobalScope && props.departments.data.length > 1
 })
-const departmentNames = computed<OptionInfo[]>(() => {
-	const departmentNameOptions = maySelectOtherDepartments.value
-		? []
-		: [
-			{
-				"label": "All",
-				"value": "*"
-			},
-			...departments.data.map(department => ({
-				"label": department.fullName,
-				"value": department.id
-			}))
-		]
-	return departmentNameOptions
-})
-const departmentID = ref<string>(userProfile.data.department.data.id)
 
 const content = ref<string>("")
 
-defineProps<{
-	accept: "image/*" | "*/*"
-	isShown: boolean
-}>()
 interface CustomEvents {
 	(event: "close"): void
 }
@@ -216,18 +213,8 @@ function sendFile(form: HTMLFormElement) {
 			...attachmentResources.value,
 			body.data
 		]
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function uploadPostAttachment(event: Event): void {
@@ -256,6 +243,15 @@ function createPost(): void {
 		: {
 			"data": attachmentIDs
 		}
+	const department = chosenDepartment.value === NULL_AS_STRING
+		// eslint-disable-next-line no-undefined
+		? undefined
+		: {
+			"data": {
+				"id": chosenDepartment.value,
+				"type": "department"
+			}
+		}
 
 	fetcher.create({
 		"content": content.value,
@@ -265,12 +261,7 @@ function createPost(): void {
 	}, {
 		"extraDataFields": {
 			"relationships": {
-				"department": {
-					"data": {
-						"id": departmentID.value,
-						"type": "department"
-					}
-				},
+				department,
 				postAttachments,
 				"poster": {
 					"data": {
@@ -293,17 +284,8 @@ function createPost(): void {
 				"id": data.id
 			})
 		)
-	}).catch(({ body }) => {
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
+
 </script>

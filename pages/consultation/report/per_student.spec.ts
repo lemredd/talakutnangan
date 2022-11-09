@@ -2,9 +2,14 @@ import { nextTick } from "vue"
 import { mount } from "@vue/test-utils"
 
 import Page from "./per_student.page.vue"
+import RequestEnvironment from "$/singletons/request_environment"
 
 describe("Page: consultation/report/per_student", () => {
 	it("can display properly", async() => {
+		fetchMock.mockResponseOnce(JSON.stringify({
+			"data": [],
+			"meta": 0
+		}), { "status": RequestEnvironment.status.OK })
 		const consultationsRelatedToUser = {
 			"data": [
 				{
@@ -33,7 +38,17 @@ describe("Page: consultation/report/per_student", () => {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							timeConsumedPerStudent
+							"semesters": {
+								"data": []
+							},
+							timeConsumedPerStudent,
+							"userProfile": {
+								"data": {
+									"roles": {
+										"data": []
+									}
+								}
+							}
 						}
 					}
 				}

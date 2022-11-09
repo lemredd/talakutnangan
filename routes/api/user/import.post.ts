@@ -17,7 +17,6 @@ import {
 	studentNumberDescription
 } from "$!/constants/regex"
 
-import extractEmailUsername from "$!/helpers/extract_email_username"
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
@@ -27,8 +26,11 @@ import DepartmentManager from "%/managers/department"
 import CSVParser from "!/middlewares/body_parser/csv"
 import CreatedResponse from "!/response_infos/created"
 import MultipartController from "!/controllers/multipart"
+import extractEmailUsername from "$!/helpers/extract_email_username"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import BodyValidation from "!/validations/body"
 import { IMPORT_USERS } from "$/permissions/user_combinations"
@@ -219,12 +221,18 @@ export default class extends MultipartController {
 		}
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	async handle(
 		request: PreprocessedRequest<NewUserNotificationArguments>,
 		unusedResponse: Response
 	): Promise<CreatedResponse> {
 		Log.trace("controller", "entered POST /api/user/import")
-
 		const manager = new UserManager(request)
 		const importedBody = request.body as unknown as ImportUserDocument
 		const body: Partial<RawBulkData> = {}
@@ -274,6 +282,7 @@ export default class extends MultipartController {
 
 	get postJobs(): Middleware[] {
 		return [
+			new TransactionCommitter(),
 			CommonMiddlewareList.newUserNotification,
 			new ActionAuditor("user.import")
 		]

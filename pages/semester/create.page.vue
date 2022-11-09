@@ -39,7 +39,6 @@
 import { ref, computed } from "vue"
 
 import type { Order } from "$/types/database"
-import type { UnitError } from "$/types/server"
 
 import SemesterFetcher from "$@/fetchers/semester"
 import convertToTitle from "$/string/convert_to_title"
@@ -47,6 +46,7 @@ import convertToTitle from "$/string/convert_to_title"
 import type { OptionInfo } from "$@/types/component"
 import Selectable from "@/fields/selectable_options.vue"
 
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -82,18 +82,6 @@ function createSemester() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Semester has been created successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 </script>

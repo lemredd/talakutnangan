@@ -1,6 +1,9 @@
 import type { ConditionalLinkInfo } from "$@/types/independent"
 
-import { user, post } from "$/permissions/permission_list"
+import { USER_LIST, AUDIT_TRAIL_LIST } from "$/constants/template_page_paths"
+
+import { READ } from "$/permissions/audit_trail_combinations"
+import { user, post, auditTrail } from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
@@ -32,12 +35,6 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
 		"kinds": [],
 		"links": [
-			{
-				"icon": "notifications",
-				"name": "Notifications",
-				"path": "/notifications",
-				"viewportsAvailable": [ "mobile" ]
-			},
 			{
 				"icon": "account_circle",
 				"name": "User Settings",
@@ -77,7 +74,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			}
 		],
 		"mustBeGuest": false,
-		"permissionCombinations": [],
+		"permissionCombinations": null,
 		"permissionGroup": null
 	},
 	{
@@ -86,7 +83,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			{
 				"icon": "group",
 				"name": "Manage Users",
-				"path": "/manage",
+				"path": USER_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
 		],
@@ -100,6 +97,22 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			RESET_PASSWORD
 		],
 		"permissionGroup": user
+	},
+	{
+		"kinds": null,
+		"links": [
+			{
+				"icon": "list_alt",
+				"name": "See audit trail",
+				"path": AUDIT_TRAIL_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
+			READ
+		],
+		"permissionGroup": auditTrail
 	}
 ]
 

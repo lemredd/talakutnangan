@@ -1,19 +1,19 @@
 <template>
 	<section v-if="mustDisplayOnly">
 		<header>
+			<ProfilePicture
+				class="profile-picture"
+				:user="comment.user"/>
 			<h3>
 				<span>
 					{{ comment.user.data.name }}
 				</span>
-				<span class="ml-2" :title="completeFriendlyCommentTimestamp">
+				<span class="timestamp" :title="completeFriendlyCommentTimestamp">
 					{{ friendlyCommentTimestamp }}
 				</span>
 			</h3>
 		</header>
 		<div class="main-content">
-			<ProfilePicture
-				class="profile-picture"
-				:user="comment.user"/>
 			<p>
 				{{ comment.content }}
 			</p>
@@ -66,32 +66,38 @@
 			:title="friendlyVoteCount"
 			@update:model-value="switchVote"/>
 	</section>
+	<UpdateCommentField
+		v-else
+		:model-value="comment"
+		@update:model-value="closeUpdateCommentField"/>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
 	section {
-		@apply flex flex-col flex-nowrap mb-4;
+		@apply mb-12 pb-4;
+		border-bottom: 1px solid hsla(0,0%,60%,0.3);
+		@apply flex flex-col flex-nowrap;
 
 		header {
 			@apply flex-1 flex flex-row flex-nowrap;
 
-			h3 {
-				@apply flex-1 sm:flex md:block flex-row flex-nowrap justify-center items-center;
-				@apply m-auto ml-15;
+			.profile-picture {
+				@apply flex-initial w-auto h-12 mr-2;
+			}
 
-				/**
-				 * Reduce the left margin
-				 */
-				width: calc(100% - 3.75rem);
+			h3 {
+				@apply flex-1 flex flex-col flex-nowrap;
+				@apply m-auto;
 
 				span:nth-child(1) {
+					@apply text-sm;
 					@apply flex-1 truncate flex-shrink-[2];
 				}
 
-				span:nth-child(2) {
-					@apply flex-initial;
+				.timestamp {
+					@apply text-xs;
 				}
 			}
 		}
@@ -100,16 +106,16 @@
 			@apply flex-1 flex flex-row flex-nowrap items-center;
 
 			@screen md {
-				@apply w-[90%];
-			}
-
-			> .profile-picture {
-				@apply flex-initial w-auto h-12 mr-2;
+				width: 100%;
 			}
 
 			> p {
+				@apply overflow-ellipsis;
 				@apply flex-1;
-				@apply ml-auto p-5 bg-gray-300 shadow-lg rounded-[1rem]
+				@apply ml-auto p-5;
+
+				word-break: normal;
+				word-wrap: normal;
 			}
 		}
 	}
@@ -119,6 +125,7 @@
 import { ref, computed, inject, nextTick } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedCommentResource, CompleteVoteKind } from "$/types/documents/comment"
 
 import Fetcher from "$@/fetchers/comment"
@@ -127,11 +134,22 @@ import isUndefined from "$/type_guards/is_undefined"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
+import { comment as permissionGroup } from "$/permissions/permission_list"
+import {
+	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+} from "$/permissions/comment_combinations"
+
 import Overlay from "@/helpers/overlay.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
 import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import UpdateCommentField from "@/comment/multiviewer/viewer/update_field.vue"
 
 const fetcher = new Fetcher()
 const voteFetcher = new VoteFetcher()
@@ -153,10 +171,61 @@ const { pageProps } = pageContext
 const { userProfile } = pageProps
 
 const hasRenewedVote = ref<boolean>(true)
+const mayVoteComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	return isPermitted && !props.modelValue.deletedAt
+})
+const mayViewComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	const isDeleted = props.modelValue.deletedAt
+	const mayViewArchived = isPermitted && isDeleted
+	const mayViewPresent = !isDeleted
+
+	return mayViewArchived || mayViewPresent
+})
+
 const mayVote = computed<boolean>(() => {
 	const hasNotLoaded = isUndefined(props.modelValue.meta)
 
-	return !hasNotLoaded && hasRenewedVote.value
+	return !hasNotLoaded && mayVoteComment.value && hasRenewedVote.value
 })
 
 const voteCount = computed<number>(() => {
@@ -279,9 +348,15 @@ async function switchVote(newRawVote: string): Promise<void> {
 
 const {
 	"state": mustUpdate,
+	"off": closeUpdateField,
 	"on": openUpdateField
 } = makeSwitch(false)
-const mustDisplayOnly = computed(() => !mustUpdate.value)
+const mustDisplayOnly = computed(() => !mustUpdate.value && mayViewComment.value)
+function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">) {
+	emit("update:modelValue", newComment)
+	comment.value = newComment
+	closeUpdateField()
+}
 
 const {
 	"state": mustArchive,

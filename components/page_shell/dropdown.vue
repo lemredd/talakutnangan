@@ -24,15 +24,18 @@
 @import "@styles/variables.scss";
 
 .parent-dropdown-container {
-	@apply relative py-3px px-10px h-full;
+	@apply relative px-10px h-full;
 }
 
 .invisible-closer {
-	@apply fixed inset-[0] z-index-[1000];
+	position: fixed;
+	inset: 0;
+	z-index: 998;
 }
 
 .dropdown-container {
-	@apply dark:bg-dark-400 fixed bg-white h-full z-index-[1001];
+	@apply dark:bg-dark-400 fixed bg-white h-full;
+	z-index: 999;
 
 	border-top: 1px solid #888;
 	box-shadow: 0px 4px 10px rgba(0,0,0,0.5);

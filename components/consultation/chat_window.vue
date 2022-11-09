@@ -17,19 +17,17 @@
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
 				<p class="consultation-details">
-					<strong>This is a new consultation.</strong>
-					here are some additional details
+					<strong>This is a {{ age }} consultation.</strong>
+					Here are some additional details.
 				</p>
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 
-					<!-- TODO(lead/button): Apply functionality -->
 					<li>
 						<a
 							class="underline"
-							href="#"
-							@click.prevent="saveAsPDF">
+							:href="linkToPrintableForm">
 							View printable form (PDF)
 						</a>
 					</li>
@@ -71,7 +69,7 @@
 		.toggle-list-btn {
 			@apply fixed opacity-15 hover:opacity-100;
 			@apply bg-gray-500 text-light-300 dark:bg-light-300 dark:text-dark-300;
-			z-index: 1001;
+			z-index: 500;
 		}
 
 		.links{
@@ -81,11 +79,11 @@
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
-			.selected-consultation-new{
+			.selected-consultation-new {
 				@apply flex flex-col items-center justify-center;
 			}
 
-			.consultation-details{
+			.consultation-details {
 				@apply text-center;
 			}
 
@@ -101,7 +99,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
@@ -114,6 +111,7 @@ import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
@@ -177,6 +175,10 @@ function changeTime(
 
 const receivedErrors = ref<string[]>([])
 
+const age = computed<string>(() => {
+	if (consultation.value.finishedAt) return "old"
+	return "new"
+})
 const actionTaken = ref("")
 
 function finishConsultation(): void {
@@ -226,18 +228,8 @@ function finishConsultation(): void {
 		.then(() => {
 			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
-		}).catch(({ body }) => {
-			if (body) {
-				const { errors } = body
-				receivedErrors.value = errors.map((error: UnitError) => {
-					const readableDetail = error.detail
-
-					return readableDetail
-				})
-			} else {
-				receivedErrors.value = [ "an error occured" ]
-			}
 		})
+		.catch(response => extractAllErrorDetails(response, receivedErrors))
 	}
 }
 
@@ -307,10 +299,11 @@ function startConsultation() {
 
 watchConsultation(consultation, registerListeners)
 
+const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
+	"id": consultationID.value
+}))
 function saveAsPDF(): void {
-	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
-		"id": consultationID.value
-	}))
+	assignPath(linkToPrintableForm.value)
 }
 
 onMounted(() => {

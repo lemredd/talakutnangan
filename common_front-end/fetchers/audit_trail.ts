@@ -1,3 +1,4 @@
+import type { AuditTrailQueryParameters } from "$/types/query"
 import type {
 	AuditTrailResourceIdentifier,
 	AuditTrailAttributes,
@@ -22,7 +23,10 @@ export default class AuditTrailFetcher extends BaseFetcher<
 	AuditTrailDocument,
 	AuditTrailListDocument,
 	DeserializedAuditTrailDocument,
-	DeserializedAuditTrailListDocument
+	DeserializedAuditTrailListDocument,
+	{
+		"queryParameters": AuditTrailQueryParameters
+	}
 > {
 	constructor() {
 		super(AUDIT_TRAIL_LINK)

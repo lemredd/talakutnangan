@@ -1,29 +1,38 @@
 <template>
 	<form @submit.prevent="renewSummary">
-		<label>
-			Begin:
-			<input
+		<SelectableOptionsField
+			v-model="chosenSemester"
+			class="date-range"
+			label="Date range:"
+			:options="selectableSemesters"/>
+		<label v-if="mustUseCustomRange">
+			<span>
+				Begin:
+			</span>
+			<DateSelector
 				v-model="rangeBegin"
-				type="date"
 				class="date"/>
 		</label>
-		<label>
-			End:
-			<input
+		<label v-if="mustUseCustomRange">
+			<span>
+				End:
+			</span>
+			<DateSelector
 				v-model="rangeEnd"
-				type="date"
 				class="date"/>
 		</label>
-		<input
-			type="submit"
-			value="Summarize"
-			class="summarize-print btn btn-primary"/>
-		<button
-			type="button"
-			class="summarize-print btn btn-primary"
-			@click="printPage">
-			Print
-		</button>
+		<div>
+			<input
+				type="submit"
+				value="Summarize"
+				class="summarize-print btn btn-primary"/>
+			<button
+				type="button"
+				class="summarize-print btn btn-primary"
+				@click="printPage">
+				Print
+			</button>
+		</div>
 	</form>
 </template>
 
@@ -37,23 +46,51 @@
 		}
 	}
 
-.date{
-	@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem m-l-5 w-50;
-}
+	form {
+		@apply flex flex-row flex-wrap justify-start items-center;
 
-.summarize-print{
-	@apply m-l-5 rounded-0.5rem;
-}
+		label {
+			@apply flex-1 flex flex-row justify-start items-center my-2;
+
+			span {
+				@apply flex-initial;
+			}
+
+			.date {
+				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5 w-50;
+			}
+		}
+
+		.date-range {
+			@apply flex-1 py-2 mr-2;
+		}
+
+		> div {
+			@apply flex-none;
+		}
+	}
+
+	.summarize-print{
+		@apply m-l-5 rounded-0.5rem;
+	}
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed, watch } from "vue"
 
-import type { SummaryRange } from "$@/types/component"
+import type { SummaryRange, OptionInfo } from "$@/types/component"
+import type {
+	DeserializedSemesterResource,
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
+
+import DateSelector from "@/fields/date_selector.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
-	initialRangeEnd: Date
+	initialRangeEnd: Date,
+	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {
@@ -63,6 +100,26 @@ const emit = defineEmits<CustomEvents>()
 
 const rangeBegin = ref<Date>(props.initialRangeBegin)
 const rangeEnd = ref<Date>(props.initialRangeEnd)
+const CUSTOM_RANGE = "custom"
+const chosenSemester = ref<string>(CUSTOM_RANGE)
+const selectableSemesters = computed<OptionInfo[]>(() => [
+	...props.semesters.data.map(semester => ({
+		"label": semester.name,
+		"value": semester.id
+	})),
+	{
+		"label": "Custom range",
+		"value": CUSTOM_RANGE
+	}
+])
+const mustUseCustomRange = computed(() => chosenSemester.value === CUSTOM_RANGE)
+watch(chosenSemester, newValue => {
+	const resource = props.semesters.data
+	.find(semester => semester.id === newValue) as DeserializedSemesterResource
+
+	rangeBegin.value = resource.startAt
+	rangeEnd.value = resource.endAt
+})
 
 function renewSummary() {
 	emit("renewSummary", {

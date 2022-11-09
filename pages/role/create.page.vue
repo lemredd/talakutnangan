@@ -42,13 +42,13 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
 
 import FlagSelector from "@/role/flag_selector.vue"
-import TextualField from "@/fields/non-sensitive_text.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
@@ -81,18 +81,6 @@ function createRole() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Role has been created successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 </script>

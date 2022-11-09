@@ -5,8 +5,8 @@
 		<template #dropdown-contents>
 			<div class="buttons">
 				<a
-					href="#"
-					class="additional-control view-printable-form-btn">
+					:href="linkToPrintableForm"
+					class="additional-control view-printable-form-link">
 					View consultation form
 				</a>
 				<a
@@ -41,9 +41,14 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
+import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
+
+import specializePath from "$/helpers/specialize_path"
+
 import Dropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
+	consultationId: string,
 	isHeaderControlDropdownShown: boolean,
 	isCurrentUserConsultant: boolean
 }>()
@@ -71,4 +76,7 @@ function showActionTakenOverlay() {
 	emit("showActionTakenOverlay")
 }
 
+const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
+	"id": props.consultationId
+})
 </script>

@@ -9,10 +9,6 @@
 				<span>{{ remainingTime.minutes }}m</span>
 				<span v-if="remainingTime.seconds > 0">{{ twoDigits(remainingTime.seconds) }}s</span>
 			</div>
-			<div class="selected-consultation-user-status">
-				<!-- TODO(lead): must base on user active status -->
-				User is online
-			</div>
 		</div>
 		<div class="controls">
 			<!-- TODO(lead/button): Apply functionality -->
@@ -35,6 +31,7 @@
 				@switch-tab="switchTab"/>
 
 			<ExtraControls
+				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
 				@show-action-taken-overlay="showActionTakenOverlay"

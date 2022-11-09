@@ -1,6 +1,8 @@
 import type { FieldRules } from "!/types/validation"
 import type { BaseManagerClass } from "!/types/dependent"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import object from "!/validators/base/object"
 import string from "!/validators/base/string"
 import integer from "!/validators/base/integer"
@@ -30,7 +32,11 @@ export default function(
 					"limit": {
 						"constraints": {
 							"integer": { "mustCast": true },
-							"nullable": { "defaultValue": process.env.DATABASE_MAX_SELECT || 10 },
+							"nullable": {
+								"defaultValue": Number(
+									process.env.DATABASE_MAX_SELECT || DEFAULT_LIST_LIMIT
+								)
+							},
 							"range": { "minimum": 1 }
 						},
 						"pipes": [ nullable, integer, range ]

@@ -2,6 +2,8 @@
 
 .btn {
 	@apply bg-gray-300;
+	@apply dark:bg-dark-200;
+	@apply text-black dark:text-white;
 	padding: .5em 1em;
 	text-transform: uppercase;
 	font-size: small;
@@ -19,6 +21,5 @@
 
 	&.btn-back {
 		background-color: grey;
-		color: white;
 	}
 }

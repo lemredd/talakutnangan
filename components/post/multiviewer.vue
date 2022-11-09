@@ -4,6 +4,7 @@
 			<SelectableOptionsField
 				v-model="chosenDepartment"
 				label="Department"
+				class="filter"
 				:options="departmentNames"/>
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
@@ -16,21 +17,37 @@
 				:comment-count="posts.data[i].meta?.commentCount || 0"
 				class="viewer"/>
 			<p v-if="hasNoPosts">
-				There are no post found.
+				There are no posts found.
 			</p>
 		</Suspensible>
+
+		<div v-if="hasRemainingPosts" class="load-others">
+			<button
+				class="btn btn-primary"
+				@click="retrievePosts">
+				Load other posts
+			</button>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	div {
-		@apply flex flex-col flex-nowrap;
+@import "@styles/btn.scss";
+@import "@styles/variables.scss";
+	.multiviewer {
+		@apply flex flex-col;
 
 		form {
-			@apply flex-none flex flex-row mb-4 h-8;
+			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
+			@apply bg-gray-300 bg-opacity-20 p-4 m-4 shadow-inner;
+
+		.filter{
+			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
+			max-width:100%;
+		}
 
 			.existence {
-				@apply flex flex-row ml-8;
+				@apply flex flex-col flex-nowrap;
 			}
 		}
 
@@ -40,6 +57,10 @@
 			.viewer {
 				@apply flex-1 mb-8;
 			}
+		}
+		.load-others {
+			@apply flex-1;
+			button { @apply w-[100%]; }
 		}
 	}
 </style>
@@ -98,6 +119,9 @@ const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"depar
 	}
 })
 const hasNoPosts = computed<boolean>(() => posts.value.data.length === 0)
+const hasRemainingPosts = computed<boolean>(
+	() => posts.value.data.length < (posts.value.meta?.count || 0)
+)
 
 const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
@@ -165,12 +189,9 @@ async function retrievePosts() {
 		},
 		"sort": [ "-createdAt" ]
 	}), {
-		"mayContinue": () => Promise.resolve(false),
-		postOperations() {
-			isLoaded.value = true
-			return Promise.resolve()
-		}
+		"mayContinue": () => Promise.resolve(false)
 	})
+	isLoaded.value = true
 }
 
 function resetPostList() {

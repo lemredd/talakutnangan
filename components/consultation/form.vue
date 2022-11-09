@@ -38,7 +38,7 @@
 					placeholder="Choose your reason"
 					:options="reasonOptions"/>
 			</div>
-
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
@@ -49,7 +49,7 @@
 				v-if="selectedConsultants.length"
 				class="schedule-selector">
 				<div
-					v-if="consultantSchedules.length"
+					v-if="consultantSchedules.data.length"
 					class="consultant-has-schedules">
 					<p>Please select the day and time from the consultant's available schedules</p>
 					<div class="required">
@@ -200,27 +200,32 @@ import { Day, DayValues } from "$/types/database"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
-import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
+import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 
 import { reasons } from "$@/constants/options"
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
 import Overlay from "@/helpers/overlay.vue"
 import makeUnique from "$/array/make_unique"
 import assignPath from "$@/external/assign_path"
+import convertToTitle from "$/string/convert_to_title"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
-import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -228,6 +233,7 @@ const { pageProps } = inject("pageContext") as PageContext<"deserialized", "cons
 const { "userProfile": { "data": userProfileData } } = pageProps
 
 const fetcher = new Fetcher()
+const receivedErrors = ref<string[]>([])
 
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
@@ -266,9 +272,14 @@ const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
 ])
 
 const employeeScheduleFetcher = new EmployeeScheduleFetcher()
-const consultantSchedules = ref<DeserializedEmployeeScheduleResource[]>([])
-function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
-	employeeScheduleFetcher.list({
+const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
+	"data": [],
+	"meta": {
+		"count": 0
+	}
+})
+async function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
+	await loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
@@ -276,14 +287,11 @@ function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"
 			"user": selectedConsultant.id
 		},
 		"page": {
-			"limit": 20,
-			"offset": 0
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": consultantSchedules.value.data.length
 		},
 		"sort": [ "dayName" ]
-	}).then(({ body }) => {
-		const { "data": schedules } = body
-		consultantSchedules.value = schedules
-	})
+	}))
 }
 
 const dateToday = ref(new Date())
@@ -296,8 +304,10 @@ const customDate = ref("")
 const isCustomDate = computed(() => chosenDay.value === "custom")
 const selectableDays = computed(() => {
 	const dates: Date[] = []
-	if (consultantSchedules.value.length) {
-		const consultantDays = makeUnique(consultantSchedules.value.map(schedule => schedule.dayName))
+	if (consultantSchedules.value.data.length) {
+		const consultantDays = makeUnique(
+			consultantSchedules.value.data.map(schedule => schedule.dayName)
+		)
 
 		consultantDays.sort((element1, element2) => {
 			const element1Index = reorderedDays.indexOf(element1 as Day)
@@ -320,7 +330,7 @@ const selectableDays = computed(() => {
 		previewDate.shift()
 
 		return {
-			"label": `${DayValues[date.getDay()]} (${previewDate.join(" ")})`,
+			"label": `${convertToTitle(DayValues[date.getDay()])} (${previewDate.join(" ")})`,
 			"value": date.toJSON()
 		}
 	})
@@ -340,10 +350,10 @@ const selectableTimes = computed(() => {
 		? customDate.value
 		: chosenDay.value
 
-	if (consultantSchedules.value.length && dayToDerive) {
+	if (consultantSchedules.value.data.length && dayToDerive) {
 		const convertedDate = new Date(dayToDerive)
 		const day = DayValues[convertedDate.getDay()]
-		const schedulesByDay = consultantSchedules.value.filter(
+		const schedulesByDay = consultantSchedules.value.data.filter(
 			schedule => schedule.dayName === day
 		)
 		schedulesByDay.forEach(schedule => {
@@ -397,7 +407,7 @@ watch(scheduledStartAt, () => {
 const isRequiredInfoCompleted = computed(
 	() => Boolean(selectedConsultants.value.length)
 		&& Boolean(addressConsultantAs.value)
-		&& Boolean(consultantSchedules.value.length)
+		&& Boolean(consultantSchedules.value.data.length)
 		&& Boolean(reason.value)
 		&& Boolean(chosenTime.value)
 )
@@ -444,9 +454,7 @@ function addConsultation(): void {
 		}
 	})
 	.then(() => assignPath("/consultation"))
-	.catch(() => {
-		hasConflicts.value = true
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 watch(selectedConsultants, () => {
@@ -454,7 +462,12 @@ watch(selectedConsultants, () => {
 		const [ selectedConsultant ] = selectedConsultants.value
 		fetchConsultantSchedules(selectedConsultant)
 	} else {
-		consultantSchedules.value = []
+		consultantSchedules.value = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}
 	}
 })
 </script>

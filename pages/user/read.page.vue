@@ -3,7 +3,12 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="updateAndReload">
+	<form
+		class="user-data-form"
+		@submit.prevent="updateUser">
+		<h1 class="user-data-form-header">
+			General User data
+		</h1>
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
@@ -11,7 +16,17 @@
 				label="User Name"
 				type="text"/>
 		</div>
+		<button type="submit" class="update-user-btn btn btn-primary">
+			update user
+		</button>
+	</form>
 
+	<form
+		class="user-data-form"
+		@submit.prevent="updateRoles">
+		<h1 class="user-data-form-header">
+			Attached Roles
+		</h1>
 		<div class="roles">
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
@@ -20,7 +35,17 @@
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
+		<button type="submit" class="update-roles-btn btn btn-primary">
+			update roles
+		</button>
+	</form>
 
+	<form
+		class="user-data-form"
+		@submit.prevent="updateDepartment">
+		<h1 class="user-data-form-header">
+			Department
+		</h1>
 		<div class="department">
 			<SelectableOptionsField
 				v-model="userDepartment"
@@ -29,31 +54,58 @@
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
-
-		<div class="controls flex justify-between">
-			<button type="submit" class="btn btn-primary">
-				Submit
-			</button>
-			<button
-				v-if="mayRestoreUser"
-				type="button"
-				class="btn btn-primary"
-				@click="restoreUser">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveUser"
-				type="button"
-				class="btn btn-primary"
-				@click="archiveUser">
-				Archive
-			</button>
-		</div>
+		<button type="submit" class="update-department-btn btn btn-primary">
+			update department
+		</button>
 	</form>
+
+	<div class="controls flex justify-between mt-3">
+		<button
+			v-if="mayRestoreUser"
+			type="button"
+			class="btn btn-primary"
+			@click="restoreUser">
+			Restore
+		</button>
+		<button
+			v-if="mayArchiveUser"
+			type="button"
+			class="btn btn-primary"
+			@click="archiveUser">
+			Archive
+		</button>
+		<button
+			v-if="mayReset"
+			type="button"
+			class="btn btn-primary"
+			@click="resetUserPassword">
+			Reset
+		</button>
+	</div>
 </template>
 
+<style>
+	.wrapper {
+		margin-bottom: 10vh !important;
+	}
+</style>
+
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
+
+	.user-data-form {
+		@apply mb-16 pb-8;
+		border-bottom: 1px solid hsla(0,0%,60%,0.3);
+
+		.user-data-form-header {
+			@apply my-8;
+			@apply text-xl uppercase;
+		}
+
+		.btn {
+			@apply mt-8;
+		}
+	}
 </style>
 
 <script setup lang="ts">
@@ -64,7 +116,6 @@ import {
 	onMounted
 } from "vue"
 
-import type { UnitError } from "$/types/server"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -79,11 +130,14 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
+	RESET_PASSWORD,
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
+
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -111,8 +165,7 @@ const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 		"value": role.id
 	})
 ))
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
+
 const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
 
 const departments = ref<DeserializedDepartmentResource[]>(
@@ -159,11 +212,22 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
 
+const mayResetPassword = computed<boolean>(() => {
+	const users = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+		RESET_PASSWORD
+	])
+
+	return isLimitedUpToDepartmentScope
+})
+const mayReset = computed<boolean>(() => mayResetPassword.value)
+
 const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
 const fetcher = new Fetcher()
-
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
@@ -171,40 +235,28 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+}
+async function updateRoles() {
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+}
+async function updateDepartment() {
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
-	await new Promise(resolve => {
-		setTimeout(resolve, 1000)
-	})
+	.then()
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
-function updateAndReload() {
-	updateUser()
-	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Users have been read successfully!")
+async function resetUserPassword() {
+	await fetcher.resetPassword(user.value.data.id)
+	.then(({ body, status }) => {
+		console.log(body, status)
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveUser() {
@@ -212,6 +264,7 @@ async function archiveUser() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function restoreUser() {
@@ -219,6 +272,7 @@ async function restoreUser() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 const roleFetcher = new RoleFetcher()
