@@ -8,7 +8,7 @@
 <p class ="content">Please click the button below to verify:</p>
 <div class="line">
     <div class="buttons">
-        <button type="button" href="{{ emailVerificationURL }}">Verify e-mail</button>
+        <a class="button" href="{{ emailVerificationURL }}">Verify e-mail</a>
     </div>
 </div>
 <p class="note">Note</p>

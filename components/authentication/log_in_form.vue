@@ -15,7 +15,7 @@
 		</ul>
 		<h1>log in</h1>
 
-		<form>
+		<form @keyup.enter.exact="logIn">
 			<TextualField
 				v-model="email"
 				label="E-mail"
@@ -147,7 +147,13 @@ function logIn() {
 
 	new UserFetcher().logIn(details)
 	.then(() => assignPath("/"))
-	.catch(response => extractAllErrorDetails(response, receivedErrors as Ref<string[]>))
+	.catch(response => {
+		extractAllErrorDetails(response, receivedErrors as Ref<string[]>)
+
+		if (response.status === RequestEnvironment.status.UNAUTHORIZED) {
+			response.value = [ "Invalid e-mail or password" ]
+		}
+	})
 }
 
 const defaultProfessor = "default_professor"

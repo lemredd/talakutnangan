@@ -12,7 +12,7 @@ export default class LocalLogIn extends Middleware {
 		const authenticate = async(resolver: (error?: Error) => void) => {
 			LocalLogIn.authenticate(request, response, resolver)
 			// Error since resolve was not called
-			await request.transaction.destroyIneffectually()
+			await request.transaction?.destroyIneffectually()
 			/*
 			 * TODO: Investigate why going to next error handler does not work
 			 * reject(new Error())

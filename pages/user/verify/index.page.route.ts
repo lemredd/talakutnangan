@@ -1,1 +1,1 @@
-export default "/user/verify/:data"
+export default "/user/verify/@data"

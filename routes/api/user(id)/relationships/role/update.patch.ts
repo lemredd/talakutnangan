@@ -1,4 +1,5 @@
 import type { FieldRules } from "!/types/validation"
+import type { OptionalMiddleware } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { RoleIdentifierListDocument } from "$/types/documents/role"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
@@ -11,6 +12,8 @@ import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -49,6 +52,13 @@ export default class extends BoundJSONController {
 
 	get manager(): BaseManagerClass { return UserManager }
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	async handle(request: AuthenticatedIDRequest, unusedResponse: Response)
 	: Promise<NoContentResponseInfo> {
 		const manager = new Manager(request)
@@ -60,5 +70,11 @@ export default class extends BoundJSONController {
 		Log.success("controller", "successfully updated the roles of the user")
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			new TransactionCommitter()
+		]
 	}
 }

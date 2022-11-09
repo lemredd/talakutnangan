@@ -41,6 +41,10 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
+import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
+
+import specializePath from "$/helpers/specialize_path"
+
 import Dropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
@@ -72,5 +76,7 @@ function showActionTakenOverlay() {
 	emit("showActionTakenOverlay")
 }
 
-const linkToPrintableForm = `/consultation/form/${props.consultationId}`
+const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
+	"id": props.consultationId
+})
 </script>

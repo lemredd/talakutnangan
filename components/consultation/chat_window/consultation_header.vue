@@ -93,6 +93,7 @@ import type {
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
+import twoDigits from "$/time/two_digits"
 import makeSwitch from "$@/helpers/make_switch"
 import makeUniqueBy from "$/helpers/make_unique_by"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
@@ -102,7 +103,6 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import twoDigits from "$/time/two_digits"
 
 const {
 	"pageProps": {
@@ -250,6 +250,7 @@ const actionTaken = computed<string>({
 })
 
 function finishConsultation(): void {
+	hideActionTakenOverlay()
 	emit("finishConsultation")
 }
 

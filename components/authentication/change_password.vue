@@ -1,9 +1,12 @@
 <template>
 	<Overlay :is-shown="isOverlayShown" @close="cancel">
 		<template #header>
-			<h1>Update your password</h1>
+			<h1>Change your password</h1>
 		</template>
 		<template #default>
+			<p class="status-messages warning">
+				* You can fully access the website once you have change your password.
+			</p>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form class="verification">
 				<SensitiveTextField
@@ -35,6 +38,7 @@
 </template>
 
 <style lang="scss">
+	@import "@styles/status_messages.scss";
 	.overlay-footer {
 		@apply flex-row-reverse;
 	}
