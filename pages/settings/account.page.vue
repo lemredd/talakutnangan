@@ -4,7 +4,7 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form class="text-dark-200 dark:text-light-100 flex flex-col" @submit.prevent>
+	<form class="account-settings" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
 			v-model:status="emailFieldStatus"
@@ -75,6 +75,14 @@
 			border-radius: 2em;
 			padding: .5em 1em;
 			width: max-content;
+		}
+	}
+</style>
+
+<style scoped lang="scss">
+	.account-settings {
+		> *:not(:first-of-type) {
+			@apply my-12;
 		}
 	}
 </style>
