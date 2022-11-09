@@ -5,6 +5,9 @@
 		</template>
 
 		<template #default>
+			<p class="status-messages warning">
+				* Names are case-sensitive.
+			</p>
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant required"
@@ -129,6 +132,7 @@
 
 <style lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/status_messages.scss";
 
 .btn{
   border: none;
