@@ -19,6 +19,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list.data" :may-edit="mayEditRole"/>
 		</template>
 	</ResourceManager>
@@ -51,6 +52,8 @@ import loadRemainingDepartments from "@/resource_management/load_remaining_depar
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -82,7 +85,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-
+const receivedErrors = ref<string[]>([])
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -121,6 +124,7 @@ async function fetchRoleInfos(): Promise<number|void> {
 			return await countUsersPerRole(IDsToCount)
 		}
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
 }

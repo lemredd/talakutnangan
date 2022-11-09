@@ -18,6 +18,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list" :may-edit="mayEditSemester"/>
 		</template>
 	</ResourceManager>
@@ -40,9 +41,11 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/semester_comb
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -59,7 +62,7 @@ const list = ref<DeserializedSemesterResource[]>(
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-
+const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await fetcher.list({
 		"filter": {
@@ -72,8 +75,8 @@ async function fetchSemesterInfos() {
 		},
 		"sort": [ "name" ]
 	// eslint-disable-next-line consistent-return
-	}).then(response => {
-		isLoaded.value = true
+	})
+	.then(response => {
 		const deserializedData = response.body.data as DeserializedSemesterResource[]
 
 		if (!deserializedData.length) return Promise.resolve()
@@ -82,6 +85,7 @@ async function fetchSemesterInfos() {
 
 		return Promise.resolve()
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
 }
