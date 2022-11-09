@@ -27,8 +27,7 @@
 					<li>
 						<a
 							class="underline"
-							href="#"
-							@click.prevent="saveAsPDF">
+							:href="linkToPrintableForm">
 							View printable form (PDF)
 						</a>
 					</li>
@@ -300,10 +299,11 @@ function startConsultation() {
 
 watchConsultation(consultation, registerListeners)
 
+const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
+	"id": consultationID.value
+}))
 function saveAsPDF(): void {
-	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
-		"id": consultationID.value
-	}))
+	assignPath(linkToPrintableForm.value)
 }
 
 onMounted(() => {
