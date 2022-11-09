@@ -31,6 +31,8 @@ import { computed } from "vue"
 
 import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
 
+import twoDigits from "$/time/two_digits"
+
 import {
 	isMessageKindFile,
 	isMessageKindStatus,
@@ -44,7 +46,11 @@ const {
 }>()
 
 const time = computed(
-	() => `${lastChat.createdAt.getHours() % 12}:${lastChat.createdAt.getMinutes()}`
+	() => `${
+		twoDigits(lastChat.createdAt.getHours() % 12)
+	}:${
+		twoDigits(lastChat.createdAt.getMinutes())
+	}`
 )
 const midDay = computed(() => {
 	const hour = lastChat.createdAt.getHours()

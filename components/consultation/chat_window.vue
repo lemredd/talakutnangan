@@ -112,6 +112,7 @@ import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
@@ -119,7 +120,6 @@ import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 const fetcher = new ConsultationFetcher()
 
