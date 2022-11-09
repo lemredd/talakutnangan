@@ -23,7 +23,9 @@ export default async function(
 	response: Response,
 	next: NextFunction
 ) {
-	await request.transaction.destroyIneffectually()
+	if (request.transaction) {
+		await request.transaction.destroyIneffectually()
+	}
 
 	if (request.asynchronousOperation) {
 		let unitError: BaseError|ErrorBag = new DeveloperError(
@@ -37,7 +39,7 @@ export default async function(
 			let detail = error.message
 
 			if (RequestEnvironment.isNotOnProduction) {
-				detail += `(Stack trace pf ${error.name}: ${error.stack})`
+				detail += `(Stack trace of ${error.name}: ${error.stack})`
 			}
 
 			unitError = new DeveloperError(detail, `Found error named "${error.name}"`)
