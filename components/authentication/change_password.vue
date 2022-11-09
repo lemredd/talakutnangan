@@ -38,7 +38,7 @@
 </template>
 
 <style lang="scss">
-	@import "@styles/status_messages.scss";
+
 	.overlay-footer {
 		@apply flex-row-reverse;
 	}
@@ -46,6 +46,7 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+	@import "@styles/status_messages.scss";
 
 	.verification {
 		@apply flex flex-col text-black;

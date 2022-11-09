@@ -13,6 +13,7 @@
 		<div class="controls">
 			<!-- TODO(lead/button): Apply functionality -->
 			<a
+				v-if="isAllowedToCall"
 				:href="`../call/${consultation.id}`"
 				target="_blank"
 				class="material-icons">
@@ -118,6 +119,8 @@ const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 interface CustomEvents {
 	(eventName: "update:modelValue", newValue: string): void
 	(eventName: "finishConsultation"): void
+	(eventName: "showActionTakenOverlay"): void
+	(eventName: "hideActionTakenOverlay"): void
 }
 
 const emit = defineEmits<CustomEvents>()
@@ -125,6 +128,7 @@ const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	modelValue: string,
+	isActionTakenOverlayShown: boolean,
 	receivedErrors: string[],
 	remainingTime: FullTime
 }>()
@@ -220,12 +224,6 @@ const {
 	"state": isFileRepoOverlayShown
 } = makeSwitch(false)
 
-const {
-	"on": showActionTakenOverlay,
-	"off": hideActionTakenOverlay,
-	"state": isActionTakenOverlayShown
-} = makeSwitch(false)
-
 const fileRepoTab = ref("files")
 
 const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
@@ -240,6 +238,11 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
+const isAllowedToCall = computed(
+	() => consultation.value.finishedAt
+	&& consultation.value.startedAt
+)
+
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue
@@ -249,8 +252,13 @@ const actionTaken = computed<string>({
 	}
 })
 
+function showActionTakenOverlay(): void {
+	emit("showActionTakenOverlay")
+}
+function hideActionTakenOverlay(): void {
+	emit("hideActionTakenOverlay")
+}
 function finishConsultation(): void {
-	hideActionTakenOverlay()
 	emit("finishConsultation")
 }
 
