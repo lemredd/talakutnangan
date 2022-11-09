@@ -16,7 +16,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 jest.useFakeTimers()
 
-describe("Component: consultation/form", () => {
+describe.skip("Component: consultation/form", () => {
 	describe("Fields population", () => {
 		it("can search students", async() => {
 			const students = {
