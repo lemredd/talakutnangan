@@ -233,8 +233,6 @@ export default class extends MultipartController {
 		unusedResponse: Response
 	): Promise<CreatedResponse> {
 		Log.trace("controller", "entered POST /api/user/import")
-
-		await request.transaction.initialize()
 		const manager = new UserManager(request)
 		const importedBody = request.body as unknown as ImportUserDocument
 		const body: Partial<RawBulkData> = {}
