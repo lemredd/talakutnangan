@@ -9,6 +9,11 @@ export default function(
 ) {
 	if (receivedErrors.value.length) receivedErrors.value = []
 
-	if (newMessage) successMessages.value.push(newMessage)
-	else successMessages.value.push(GENERAL_SUCCESS_MESSAGE)
+	if (newMessage) {
+		if (successMessages.value[0] === GENERAL_SUCCESS_MESSAGE) successMessages.value = []
+		successMessages.value.push(newMessage)
+	} else {
+		successMessages.value = []
+		successMessages.value.push(GENERAL_SUCCESS_MESSAGE)
+	}
 }
