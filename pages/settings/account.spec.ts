@@ -84,12 +84,8 @@ describe("Page: settings/account", () => {
 			}
 		})
 
-		const editEmailFieldButton = wrapper.find("input[type=email] + .edit-button")
-		await editEmailFieldButton.trigger("click")
 		const emailField = wrapper.find("input[type=email]")
 		await emailField.setValue(fakeNewEmail)
-		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
-		await saveEmailFieldButton.trigger("click")
 		const submitBtn = wrapper.find(".submit-btn")
 		await submitBtn.trigger("click")
 		await flushPromises()
@@ -102,35 +98,5 @@ describe("Page: settings/account", () => {
 		expect(firstRequestBody).toHaveProperty("data.attributes.email", fakeNewEmail)
 		expect(firstRequestBody).toHaveProperty("data.id", userProfile.data.id)
 		expect(firstRequestBody).toHaveProperty("data.type", "user")
-	})
-
-	it("should reset to old data", async() => {
-		const userProfile = await new Factory()
-		.beUnreachableEmployee()
-		.deserializedOne(true) as DeserializedUserProfile
-		const fakeNewEmail = faker.internet.exampleEmail()
-		const wrapper = mount(Page, {
-			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							userProfile
-						}
-					}
-				}
-			}
-		})
-
-		const editEmailFieldButton = wrapper.find("input[type=email] + .edit-button")
-		await editEmailFieldButton.trigger("click")
-		const emailField = wrapper.find("input[type=email]")
-		await emailField.setValue(fakeNewEmail)
-		const saveEmailFieldButton = wrapper.find("input[type=email] + .save-button")
-		await saveEmailFieldButton.trigger("click")
-		const resetBtn = wrapper.find(".reset-btn")
-		await resetBtn.trigger("click")
-
-		const emailInput = emailField.element as HTMLInputElement
-		expect(emailInput.value).not.toEqual(fakeNewEmail)
 	})
 })
