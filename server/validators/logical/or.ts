@@ -64,5 +64,5 @@ export default async function(
 		return state
 	}
 
-	throw lastError
+	throw lastError[0]
 }

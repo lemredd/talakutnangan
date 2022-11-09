@@ -222,7 +222,7 @@ export default class extends BaseManager<
 
 			if (!canStart) {
 				canStart = activeConsultations.length === 1
-					&& activeConsultations[0].id === consultationID
+					&& Number(activeConsultations[0].id) === consultationID
 			}
 
 			return canStart
