@@ -27,6 +27,7 @@
 		</template>
 
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list.data" :may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
@@ -69,11 +70,13 @@ import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -137,7 +140,7 @@ const chosenDepartment = ref("*")
 
 const slug = ref("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-
+const receivedErrors = ref<string[]>([])
 async function fetchUserInfo() {
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
@@ -155,6 +158,8 @@ async function fetchUserInfo() {
 		},
 		"sort": [ "name" ]
 	}))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 	isLoaded.value = true
 }
 

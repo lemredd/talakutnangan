@@ -12,6 +12,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list" :may-edit="false"/>
 		</template>
 	</ResourceManager>
@@ -32,9 +33,11 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/audit_trail"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -51,7 +54,7 @@ const list = ref<DeserializedAuditTrailResource[]>(
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-
+const receivedErrors = ref<string[]>([])
 async function fetchAuditTrailInfos() {
 	await fetcher.list({
 		"filter": {
@@ -64,8 +67,8 @@ async function fetchAuditTrailInfos() {
 		},
 		"sort": [ "id" ]
 	// eslint-disable-next-line consistent-return
-	}).then(response => {
-		isLoaded.value = true
+	})
+	.then(response => {
 		const deserializedData = response.body.data as DeserializedAuditTrailResource[]
 
 		if (!deserializedData.length) return Promise.resolve()
@@ -74,6 +77,9 @@ async function fetchAuditTrailInfos() {
 
 		return Promise.resolve()
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	isLoaded.value = true
 }
 
 async function refetchAuditTrail() {

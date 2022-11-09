@@ -18,6 +18,7 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list.data" :may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
@@ -43,9 +44,11 @@ import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -63,6 +66,7 @@ const list = ref<DeserializedDepartmentListDocument>(
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+const receivedErrors = ref<string[]>([])
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -100,6 +104,9 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 			return await countUsersPerDepartment(IDsToCount)
 		}
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	isLoaded.value = true
 }
 
 const { userProfile } = pageProps
