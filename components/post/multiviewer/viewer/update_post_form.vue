@@ -238,6 +238,11 @@ function removeFile(id: string) {
 	postAttachmentFetcher.archive(
 		[ id ]
 	)
+	.then(() => {
+		postAttachments.value = postAttachments.value.filter(
+			postAttachment => postAttachment.id !== id
+		)
+	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 function emitClose() {
