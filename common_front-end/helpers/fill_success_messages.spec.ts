@@ -1,46 +1,35 @@
 import { ref } from "vue"
 
-import { GENERAL_ERROR_MESSAGE } from "$@/constants/messages"
+import { GENERAL_SUCCESS_MESSAGE } from "$@/constants/messages"
 
-import helper from "./extract_all_error_details"
+import helper from "./fill_success_messages"
 
-describe("Helper: handle_errors", () => {
-	it("can get all error details", () => {
+describe("Helper: fill success messages", () => {
+	it("can produce success message", () => {
 		const receivedErrors = ref<string[]>([])
 		const successMessages = ref<string[]>([])
-		const errors = [
-			{
-				"detail": "sample error 1"
-			},
-			{
-				"detail": "sample error 2"
-			},
-			{
-				"detail": "sample error 3"
-			}
-		]
-		const response = {
-			"body": {
-				errors
-			}
-		} as any
+		const message1 = "message 1"
+		const message2 = "message 2"
+		const message3 = "message 3"
 
-		helper(response, receivedErrors, successMessages)
 
-		expect(receivedErrors.value).toContainEqual(errors[0].detail)
-		expect(receivedErrors.value).toContainEqual(errors[1].detail)
-		expect(receivedErrors.value).toContainEqual(errors[2].detail)
-		expect(successMessages.value).toHaveLength(0)
+		helper(receivedErrors, successMessages, message1)
+		expect(successMessages.value).toContainEqual(message1)
+		helper(receivedErrors, successMessages, message2)
+		expect(successMessages.value).toContainEqual(message2)
+		helper(receivedErrors, successMessages, message3)
+		expect(successMessages.value).toContainEqual(message3)
+		expect(successMessages.value).toHaveLength(3)
+		expect(receivedErrors.value).toHaveLength(0)
 	})
 
-	it("should use general error message", () => {
+	it("should use general message", () => {
 		const receivedErrors = ref<string[]>([])
 		const successMessages = ref<string[]>([])
-		const response = {} as any
 
-		helper(response, receivedErrors, successMessages)
+		helper(receivedErrors, successMessages)
 
-		expect(receivedErrors.value).toContainEqual(GENERAL_ERROR_MESSAGE)
-		expect(successMessages.value).toHaveLength(0)
+		expect(successMessages.value).toContainEqual(GENERAL_SUCCESS_MESSAGE)
+		expect(receivedErrors.value).toHaveLength(0)
 	})
 })

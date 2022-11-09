@@ -1,24 +1,14 @@
 import { Ref } from "vue"
 
-import { GENERAL_ERROR_MESSAGE } from "$@/constants/messages"
-
-import type { UnitError } from "$/types/server"
-import type { Response } from "$@/types/independent"
-
-type SpecificResponse = Response<any, any, any, any, any, any>
+import { GENERAL_SUCCESS_MESSAGE } from "$@/constants/messages"
 
 export default function(
-	response: SpecificResponse,
 	receivedErrors: Ref<string[]>,
-	successMessages?: Ref<string[]>
+	successMessages: Ref<string[]>,
+	newMessage?: string
 ) {
-	const { body } = response
+	if (receivedErrors.value.length) receivedErrors.value = []
 
-	if (successMessages?.value.length) successMessages.value = []
-	if (body) {
-		const { errors } = body
-		receivedErrors.value = errors.map((error: UnitError) => error.detail)
-	} else {
-		receivedErrors.value = [ GENERAL_ERROR_MESSAGE ]
-	}
+	if (newMessage) successMessages.value.push(newMessage)
+	else successMessages.value.push(GENERAL_SUCCESS_MESSAGE)
 }
