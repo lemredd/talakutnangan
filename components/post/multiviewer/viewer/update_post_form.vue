@@ -42,7 +42,7 @@
 						<div class="removable-image relative">
 							<span
 								class="material-icons close"
-								@click="removeFile">
+								@click="removeFile(attachment.id)">
 								close
 							</span>
 							<img class="preview-img" :src="attachment.fileContents"/>
@@ -234,15 +234,11 @@ const isFileSizeGreaterThanLimit = computed(() => {
 })
 const receivedErrors = ref<string[]>([])
 
-function removeFile() {
-	filename.value = null
-	previewFile.value = null
-	fileSize.value = null
-	receivedErrors.value = []
-
+function removeFile(id: string) {
 	postAttachmentFetcher.archive(
-		[ postAttachments.value[0].id ]
+		[ id ]
 	)
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 function emitClose() {
 	emit("close")
@@ -259,9 +255,7 @@ function sendFile(form: HTMLFormElement) {
 			body.data
 		]
 	})
-	.catch(response => {
-		extractAllErrorDetails(response, receivedErrors)
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function uploadPostAttachment(event: Event): void {
