@@ -281,10 +281,13 @@ function uploadPostAttachment(event: Event): void {
 	const rawFilename = file?.name as ""
 
 	fileSize.value = file?.size as number|null
-	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-	previewFile.value = file ? URL.createObjectURL(file) : ""
-	extractedFileType.value = file?.type as string
-	filename.value = rawFilename
+	if (isFileSizeGreaterThanLimit.value) {
+		receivedErrors.value.push("Maximum file size is 20mb")
+	} else {
+		previewFile.value = file ? URL.createObjectURL(file) : ""
+		extractedFileType.value = file?.type as string
+		filename.value = rawFilename
+	}
 
 	const form = target.form as HTMLFormElement
 	sendFile(form)
