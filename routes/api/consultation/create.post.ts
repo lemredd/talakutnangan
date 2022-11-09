@@ -1,4 +1,5 @@
 import type { Rules, FieldRules } from "!/types/validation"
+import type { OptionalMiddleware } from "!/types/independent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { ConsultationResource } from "$/types/documents/consultation"
@@ -14,6 +15,8 @@ import JSONController from "!/controllers/json"
 import ValidationError from "$!/errors/validation"
 import ConsultationManager from "%/managers/consultation"
 import CreatedResponseInfo from "!/response_infos/created"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
 
 import KindBasedPolicy from "!/policies/kind-based"
@@ -160,6 +163,13 @@ export default class extends JSONController {
 		)
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
 		const resource = request.body.data as ConsultationResource<"create">
@@ -186,5 +196,11 @@ export default class extends JSONController {
 		}
 
 		return new CreatedResponseInfo(consultationInfo)
+	}
+
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			new TransactionCommitter()
+		]
 	}
 }

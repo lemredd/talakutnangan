@@ -17,8 +17,8 @@
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
 				<p class="consultation-details">
-					<strong>This is a new consultation.</strong>
-					here are some additional details
+					<strong>This is a {{ age }} consultation.</strong>
+					Here are some additional details.
 				</p>
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
@@ -27,8 +27,7 @@
 					<li>
 						<a
 							class="underline"
-							href="#"
-							@click.prevent="saveAsPDF">
+							:href="linkToPrintableForm">
 							View printable form (PDF)
 						</a>
 					</li>
@@ -80,11 +79,11 @@
 		.selected-consultation-chats {
 			@apply px-3 py-5 flex-1 overflow-y-scroll;
 
-			.selected-consultation-new{
+			.selected-consultation-new {
 				@apply flex flex-col items-center justify-center;
 			}
 
-			.consultation-details{
+			.consultation-details {
 				@apply text-center;
 			}
 
@@ -176,6 +175,10 @@ function changeTime(
 
 const receivedErrors = ref<string[]>([])
 
+const age = computed<string>(() => {
+	if (consultation.value.finishedAt) return "old"
+	return "new"
+})
 const actionTaken = ref("")
 
 function finishConsultation(): void {
@@ -296,10 +299,11 @@ function startConsultation() {
 
 watchConsultation(consultation, registerListeners)
 
+const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
+	"id": consultationID.value
+}))
 function saveAsPDF(): void {
-	assignPath(specializePath(CONSULTATION_FORM_PRINT, {
-		"id": consultationID.value
-	}))
+	assignPath(linkToPrintableForm.value)
 }
 
 onMounted(() => {

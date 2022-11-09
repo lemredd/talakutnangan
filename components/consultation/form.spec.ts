@@ -129,7 +129,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 			fetchMock.mockResponseOnce(
 				JSON.stringify(employees),
@@ -274,7 +277,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 
 			const wrapper = shallowMount<any>(Component, {
@@ -380,7 +386,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 
 			const wrapper = shallowMount<any>(Component, {
@@ -480,7 +489,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 			fetchMock.mockResponseOnce(
 				JSON.stringify(employees),
@@ -585,7 +597,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 			const students = {
 				"data": [
@@ -725,7 +740,10 @@ describe.skip("Component: consultation/form", () => {
 						"id": "1",
 						"type": "employee_schedule"
 					}
-				]
+				],
+				"meta": {
+					"count": 1
+				}
 			}
 			fetchMock.mockResponseOnce(
 				JSON.stringify(employees),
