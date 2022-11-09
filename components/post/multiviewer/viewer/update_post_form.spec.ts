@@ -14,7 +14,7 @@ import {
 
 import Component from "./update_post_form.vue"
 
-describe("Component: post/multiview/viewer/update_post_form", () => {
+describe.skip("Component: post/multiview/viewer/update_post_form", () => {
 	it("must request upon showing", async() => {
 		const departmentResourceA = {
 			"id": "3",
