@@ -5,7 +5,7 @@
 		</template>
 		<template #default>
 			<p class="status-messages warning">
-				* You can fully access the website once you have change your password.
+				* You can fully access the website once you change your password.
 			</p>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<form class="verification">
