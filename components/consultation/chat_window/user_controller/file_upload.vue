@@ -43,25 +43,32 @@
 
 			<div v-if="hasExtracted" class="preview-file">
 				<div v-if="isAcceptingImage" class="preview-img-container">
-					<img class="preview-img" :src="previewFile"/>
-					<small class="preview-title">
-						{{ filename }}
-					</small>
-				</div>
-				<div
-					v-if="isAcceptingFile"
-					class="preview-file-container">
-					<span class="material-icons mr-2">
-						attachment
-					</span>
-					<small class="preview-file-title">
-						{{ filename }}
-					</small>
-					<span
-						class="remove-file-btn material-icons cursor-pointer"
-						@click="removeFile">
-						close
-					</span>
+					<div class="removable-image relative">
+						<span
+							class="material-icons close"
+							@click="removeFile">
+							close
+						</span>
+						<img class="preview-img" :src="previewFile"/>
+						<small class="preview-title">
+							{{ filename }}
+						</small>
+					</div>
+					<div
+						v-if="isAcceptingFile"
+						class="preview-file-container">
+						<span class="material-icons mr-2">
+							attachment
+						</span>
+						<small class="preview-file-title">
+							{{ filename }}
+						</small>
+						<span
+							class="remove-file-btn material-icons cursor-pointer"
+							@click="removeFile">
+							close
+						</span>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -96,7 +103,9 @@
 }
 
 .preview-img{
-	@apply max-w-3;
+	@apply py-5 max-w-3;
+	max-width:100%;
+	max-height:100%;
 }
 
 .preview-title{
@@ -109,6 +118,10 @@
 
 .preview-file-title{
 	@apply flex-1 text-xs;
+}
+
+.close{
+	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
 }
 
 </style>
@@ -178,6 +191,7 @@ function sendFile() {
 }
 
 function extractFile(event: Event) {
+	receivedErrors.value = []
 	const target = event.target as HTMLInputElement
 	const file = target.files?.item(0)
 	const rawFilename = file?.name as ""
