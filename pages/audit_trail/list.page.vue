@@ -74,6 +74,8 @@ async function fetchAuditTrailInfos() {
 
 		return Promise.resolve()
 	})
+
+	isLoaded.value = true
 }
 
 async function refetchAuditTrail() {

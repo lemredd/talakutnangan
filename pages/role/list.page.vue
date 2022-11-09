@@ -121,6 +121,8 @@ async function fetchRoleInfos(): Promise<number|void> {
 			return await countUsersPerRole(IDsToCount)
 		}
 	})
+
+	isLoaded.value = true
 }
 
 const { userProfile } = pageProps

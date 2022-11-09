@@ -100,6 +100,8 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 			return await countUsersPerDepartment(IDsToCount)
 		}
 	})
+
+	isLoaded.value = true
 }
 
 const { userProfile } = pageProps

@@ -82,6 +82,8 @@ async function fetchSemesterInfos() {
 
 		return Promise.resolve()
 	})
+
+	isLoaded.value = true
 }
 
 const { userProfile } = pageProps
