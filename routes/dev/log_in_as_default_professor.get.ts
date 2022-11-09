@@ -89,10 +89,9 @@ export default class extends DevController {
 				.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 				.userFlags(user.generateMask(
 					"view",
-					"create",
 					"update",
 					"readDepartmentScope",
-					"writeDepartmentScope"
+					"writeOwnScope"
 				))
 				.auditTrailFlags(0)
 				.insertOne()
