@@ -13,6 +13,7 @@
 		<div class="controls">
 			<!-- TODO(lead/button): Apply functionality -->
 			<a
+				v-if="isAllowedToCall"
 				:href="`../call/${consultation.id}`"
 				target="_blank"
 				class="material-icons">
@@ -235,6 +236,11 @@ function switchTab(event: Event) {
 
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
+)
+
+const isAllowedToCall = computed(
+	() => consultation.value.finishedAt
+	&& consultation.value.startedAt
 )
 
 const actionTaken = computed<string>({
