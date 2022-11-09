@@ -44,6 +44,9 @@
 		<h6 id="reason" class="reason">
 			{{ reason }}
 		</h6>
+		<h6 id="actionTaken" class="actionTaken">
+			{{ actionTaken }}
+		</h6>
 
 		<div class="schedules">
 			<div class="col">
@@ -63,12 +66,21 @@
 					{{ startedAt }}
 				</h6>
 			</div>
+
+			<div class="col">
+				<h2>
+					Actual finish:
+				</h2>
+				<h6 id="actual-finish" class="actual-finish">
+					{{ finishedAt }}
+				</h6>
+			</div>
 		</div>
 	</section>
 	<ul class="chat-messages mt-15">
 		<h1>Chat Messages</h1>
 		<li
-			v-for="chatMessage in chatMessages"
+			v-for="chatMessage in chatMessages.data"
 			:key="chatMessage.id">
 			<span class="date-and-owner-details">
 				[
@@ -89,7 +101,7 @@
 	</ul>
 
 	<section
-		v-if="consultationData.finishedAt"
+		v-if="consultation.data.finishedAt"
 		class="signatures mt-15">
 		<h1>Signatures</h1>
 		<div class="consultant-signature">
@@ -156,18 +168,22 @@
 </style>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, ref, onMounted, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserResource } from "$/types/documents/user"
+import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedRoleDocument } from "$/types/documents/role"
-import type { DeserializedChatMessageResource } from "$/types/documents/chat_message"
-import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedConsultationDocument } from "$/types/documents/consultation"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
+import ChatMessageFetcher from "$@/fetchers/chat_message"
 import isUndefined from "$/type_guards/is_undefined"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import {
 	isMessageKindFile,
@@ -181,46 +197,85 @@ const {
 		"chatMessageActivities": {
 			"data": chatMessageActivitiesData
 		},
-		"chatMessages": {
-			"data": chatMessagesData
-		},
-		"consultation": {
-			"data": consultationData
-		}
+		"chatMessages": rawChatMessages,
+		"consultation": rawConsultation
 	}
 } = pageContext as PageContext<
 	"deserialized",
 	"consultation"|"chatMessageActivities"|"chatMessages"
 >
 
-const consultation = consultationData as DeserializedConsultationResource
-const {
-	consultant,
-	consultantRole,
-	reason,
-	scheduledStartAt,
-	startedAt
-} = consultation as unknown as {
-	"consultant": DeserializedUserResource
-	"consultantRole": DeserializedRoleDocument
-	"reason": string
-	"scheduledStartAt": Date
-	"startedAt": Date
-}
+const consultation = ref<DeserializedConsultationDocument>(rawConsultation)
+const scheduledStartAt = computed<string>(() => formatToCompleteFriendlyTime(
+	consultation.value.data.scheduledStartAt
+))
+const startedAt = computed<string>(() => {
+	if (consultation.value.data.startedAt) {
+		return formatToCompleteFriendlyTime(consultation.value.data.startedAt)
+	}
+
+	return "Consultation has not yet started."
+})
+const finishedAt = computed<string>(() => {
+	if (consultation.value.data.finishedAt) {
+		return formatToCompleteFriendlyTime(consultation.value.data.finishedAt)
+	}
+
+	return "Consultation has not yet finished."
+})
+const reason = computed<string>(() => consultation.value.data.reason)
+const actionTaken = computed<string>(() => {
+	if (consultation.value.data.actionTaken) {
+		return consultation.value.data.actionTaken
+	}
+
+	return "Please wait for the consultant to provide the action taken."
+})
+const consultant = computed<DeserializedUserDocument<"signature">>(() => {
+	const user = consultation.value.data.consultant
+	return user as DeserializedUserDocument<"signature">
+})
+const consultantRole = computed<DeserializedRoleDocument>(() => {
+	const role = consultation.value.data.consultantRole
+	return role as DeserializedRoleDocument
+})
 
 const consultationChatMessageActivities
 = chatMessageActivitiesData as DeserializedChatMessageActivityResource[]
 const consulters = consultationChatMessageActivities.filter(
 	(
 		activity: DeserializedChatMessageActivityResource
-	) => activity.user?.data.id !== consultant.data.id
+	) => activity.user?.data.id !== consultant.value.data.id
 )
 
-const chatMessages = chatMessagesData as DeserializedChatMessageResource<"user">[]
+const chatMessages = ref<DeserializedChatMessageListDocument<"user">>(
+	rawChatMessages as DeserializedChatMessageListDocument<"user">
+)
 
 function printPage() {
 	if (!isUndefined(window)) {
 		window.print()
 	}
 }
+
+const chatMessageFetcher = new ChatMessageFetcher()
+onMounted(async() => {
+	await loadRemainingResource(
+		chatMessages as Ref<DeserializedChatMessageListDocument>,
+		chatMessageFetcher,
+		() => ({
+			"filter": {
+				"chatMessageKinds": "*",
+				"consultationIDs": [ Number(consultation.value.data.id) ],
+				"existence": "exists",
+				"previewMessageOnly": false
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": chatMessages.value.data.length
+			},
+			"sort": [ "createdAt" ]
+		})
+	)
+})
 </script>
