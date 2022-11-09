@@ -23,9 +23,7 @@ export default async function(
 	response: Response,
 	next: NextFunction
 ) {
-	if (request.transaction) {
-		await request.transaction.destroyIneffectually()
-	}
+	await request.transaction?.destroyIneffectually()
 
 	if (request.asynchronousOperation) {
 		let unitError: BaseError|ErrorBag = new DeveloperError(
