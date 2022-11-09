@@ -1,12 +1,9 @@
 <template>
 	<div class="main">
-		<div class="created-post">
-			<ProfilePicture
-				class="account-attachment"
-				:user="userProfile"/>
-			<span class="post-create">
-				Welcome To Forum
-			</span>
+		<div class="forum-header">
+			<h1>
+				Welcome to the Forum
+			</h1>
 			<button
 				v-if="mayPost"
 				class="create-post btn btn-primary"
@@ -29,13 +26,13 @@
 	@import "@styles/btn.scss";
 	@import "@styles/variables.scss";
 	.main {
-		@apply flex flex-col flex-nowrap justify-center items-stretch min-w-70;
+		@apply flex flex-col flex-nowrap justify-center items-stretch;
 
-		.created-post {
-			@apply flex-1 flex justify-between items-center;
-			@apply mb-5 p-4 shadow-inner bg-light-800;
-
-
+		.forum-header {
+			h1 {
+				@apply p-2 bg-gray-400 bg-opacity-10;
+				@apply text-xl;
+			}
 			.account-attachment {
 				@apply h-6 w-auto;
 			}
