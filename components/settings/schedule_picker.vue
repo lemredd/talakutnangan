@@ -22,7 +22,7 @@
 			<button
 				id="discard-btn"
 				class="btn ml-5"
-				@click="toggleEditing">
+				@click="discard">
 				Discard
 			</button>
 			<button
@@ -123,6 +123,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import makeUnique from "$/array/make_unique"
+import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
@@ -146,14 +147,19 @@ const props = defineProps<{
 	scheduleEnd: number
 }>()
 
-const isEditing = ref(false)
-const isAdding = ref(false)
-function toggleEditing() {
-	isEditing.value = !isEditing.value
-}
+const {
+	"state": isEditing,
+	"toggle": toggleEditing,
+	"off": stopEditing
+} = makeSwitch(false)
+const {
+	"state": isAdding,
+	"toggle": rawToggleAdding
+} = makeSwitch(false)
+
 function toggleAdding() {
 	toggleEditing()
-	isAdding.value = !isAdding.value
+	rawToggleAdding()
 }
 
 const availableTimeObjects = generateTimeRange().map(
@@ -173,6 +179,15 @@ const endTime = ref(convertToTimeString(
 ))
 const startMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleStart, "midday") as "AM"|"PM")
 const endMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleEnd, "midday") as "AM"|"PM")
+
+function discard() {
+	// Restore the previous values
+	startTime.value = convertToTimeString(convertMinutesToTimeObject(props.scheduleStart))
+	endTime.value = convertToTimeString(convertMinutesToTimeObject(props.scheduleEnd))
+	startMidDay.value = getTimePart(props.scheduleStart, "midday") as "AM"|"PM"
+	endMidDay.value = getTimePart(props.scheduleEnd, "midday") as "AM"|"PM"
+	stopEditing()
+}
 
 function formatTo24Hours(time: string, midday: "AM" | "PM") {
 	// eslint-disable-next-line prefer-const
@@ -208,6 +223,8 @@ function updateTime() {
 				}
 			}
 		}
+	}).then(() => {
+		stopEditing()
 	})
 }
 

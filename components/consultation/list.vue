@@ -5,6 +5,14 @@
 			<h2>
 				Consultations
 			</h2>
+			<button
+				v-if="isUserAStudent"
+				class="add-btn btn btn-primary"
+				@click="toggleAddingSchedule">
+				<span class="material-icons">
+					create
+				</span>
+			</button>
 
 			<MinorDropdown v-if="isUserAReachableEmployee" v-model="isDropdownShown">
 				<template #dropdown-contents>
@@ -22,13 +30,6 @@
 		</div>
 
 		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
-
-		<button
-			v-if="isUserAStudent"
-			class="material-icons add-btn"
-			@click="toggleAddingSchedule">
-			add
-		</button>
 
 		<div
 			v-for="consultation in consultations.data"
@@ -61,6 +62,7 @@
 
 <style scoped lang="scss">
 	@import "@styles/mixins.scss";
+	@import "@styles/btn.scss";
 
 
 	.left {
@@ -81,7 +83,7 @@
 		}
 
 		.consultations-list-header {
-			@apply p-3 flex flex-row flex-nowrap justify-center items-center;
+			@apply p-3 flex flex-row justify-center items-center;
 
 			h2 { @apply flex-1 uppercase; }
 
@@ -97,9 +99,8 @@
 		}
 
 		.add-btn {
-			@apply absolute bottom-5 right-5;
-			@apply rounded-full border border-gray-600 p-3;
-			@apply text-lg;
+			@apply p-2;
+			@apply flex items-center;
 		}
 	}
 

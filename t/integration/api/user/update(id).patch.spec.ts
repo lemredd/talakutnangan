@@ -93,10 +93,15 @@ describe("PATCH /api/user/:id", () => {
 		.insertOne()
 
 		const { "user": student, cookie } = await App.makeAuthenticatedCookie(studentRole)
-		const newStudent = await new UserFactory().prefersDark(() => true).makeOne()
+		const newStudent = await new UserFactory()
+		.email(() => "example.2@example.com")
+		.prefersDark(() => true)
+		.makeOne()
 
 		const response = await App.request
-		.patch(`/api/user/${student.id}`)
+		.patch(specializePath(USER_LINK.bound, {
+			"id": student.id
+		}))
 		.set("Cookie", cookie)
 		.send({
 			"data": {

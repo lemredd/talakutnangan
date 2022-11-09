@@ -72,8 +72,7 @@
 			:key="chatMessage.id">
 			<span class="date-and-owner-details">
 				[
-				{{ chatMessage.createdAt.toDateString() }}
-				{{ chatMessage.createdAt.getHours() }}:{{ chatMessage.createdAt.getMinutes() }}:{{ chatMessage.createdAt.getSeconds() }}
+				{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
 				]
 				({{ chatMessage.user.data.name }})
 			</span>
@@ -89,7 +88,9 @@
 		</li>
 	</ul>
 
-	<section class="signatures mt-15">
+	<section
+		v-if="consultationData.finishedAt"
+		class="signatures mt-15">
 		<h1>Signatures</h1>
 		<div class="consultant-signature">
 			<h2>Consultant</h2>
@@ -106,6 +107,10 @@
 				<small>{{ consulter.user?.data.name }}</small>
 			</div>
 		</div>
+	</section>
+
+	<section v-else class="signatures">
+		Signatures will show here once the consultation has been finished.
 	</section>
 </template>
 
@@ -162,12 +167,13 @@ import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
+import isUndefined from "$/type_guards/is_undefined"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 import {
 	isMessageKindFile,
 	isMessageKindStatus,
 	isMessageKindText
 } from "@/consultation/helpers/chat_message_kinds"
-import isUndefined from "$/type_guards/is_undefined"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const {
