@@ -20,7 +20,9 @@
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
 				<p class="consultation-details">
-					<strong>This is a {{ age }} consultation.</strong>
+					<strong>
+						This is {{ age }} consultation.
+					</strong>
 					Here are some additional details.
 				</p>
 				<ul class="selected-consultation-additional-details">
@@ -91,8 +93,7 @@
 			}
 
 			ul.selected-consultation-additional-details {
-				@apply bg-true-gray-600 border border-true-gray-600 rounded-md p-5;
-				@apply dark:bg-transparent;
+				@apply bg-gray-400 bg-opacity-10 border border-gray-400 rounded-md p-5;
 				@apply my-5 w-max mx-auto;
 			}
 		}
@@ -180,8 +181,8 @@ function changeTime(
 const receivedErrors = ref<string[]>([])
 
 const age = computed<string>(() => {
-	if (consultation.value.finishedAt) return "old"
-	return "new"
+	if (consultation.value.finishedAt) return "an old"
+	return "a new"
 })
 const actionTaken = ref("")
 
