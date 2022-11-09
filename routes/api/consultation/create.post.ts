@@ -172,8 +172,6 @@ export default class extends JSONController {
 
 	async handle(request: AuthenticatedRequest, unusedResponse: Response)
 	: Promise<CreatedResponseInfo> {
-		await request.transaction.initialize()
-
 		const resource = request.body.data as ConsultationResource<"create">
 		if (resource.relationships.participants.data.findIndex(
 			identifier => Number(identifier.id) === Number(resource.relationships.consultant.data.id)
