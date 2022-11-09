@@ -5,24 +5,16 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="createDepartment">
-		<label class="block">
-			Tag name:
-			<input
-				id="full-name"
-				v-model="tagName"
+	<form @submit.prevent="createTag">
+		<Suspensible :is-loaded="isCurrentlyNotSubmitting">
+			<NonSensitiveText
+				v-model="name"
+				label="Tag name:"
+				status="enabled"
 				class="border-solid"
 				type="text"/>
-		</label>
-
-		<label class="block">
-			May admit students:
-			<input
-				id="may-admit"
-				v-model="mayAdmit"
-				type="checkbox"/>
-		</label>
-		<input type="submit" value="Create department"/>
+		</Suspensible>
+		<input type="submit" value="Create tag"/>
 	</form>
 </template>
 
@@ -30,48 +22,34 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref } from "vue"
 
 import type { UnitError } from "$/types/server"
 
-import convertToTitle from "$/string/convert_to_title"
-import DepartmentFetcher from "$@/fetchers/department"
+import Fetcher from "$@/fetchers/tag"
 
+import Suspensible from "@/helpers/suspensible.vue"
+import NonSensitiveText from "@/fields/non-sensitive_text.vue"
 import ListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
-const fullName = ref("")
-const acronym = ref("")
-const mayAdmit = ref(false)
-
-const fetcher = new DepartmentFetcher()
+const name = ref("")
+const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
+const isCurrentlyNotSubmitting = ref<boolean>(true)
 
-const tagName = computed<string>({
-	"get": () => fullName.value,
-	set(newValue: string): void {
-		fullName.value = convertToTitle(newValue)
-	}
-})
-
-const capitalAcronym = computed<string>({
-	"get": () => acronym.value,
-	set(newValue: string): void {
-		acronym.value = newValue.toUpperCase()
-	}
-})
-
-function createDepartment() {
-	fetcher.create({
-		"acronym": acronym.value,
-		"fullName": fullName.value,
-		"mayAdmit": mayAdmit.value
+async function createTag() {
+	isCurrentlyNotSubmitting.value = false
+	await fetcher.create({
+		"deletedAt": null,
+		"name": name.value
 	})
 	.then(() => {
+		name.value = ""
 		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been created successfully!")
+		successMessages.value.push("Tag has been created successfully!")
 	})
 	.catch(({ body }) => {
 		if (successMessages.value.length) successMessages.value = []
@@ -86,5 +64,6 @@ function createDepartment() {
 			receivedErrors.value = [ "an error occured" ]
 		}
 	})
+	isCurrentlyNotSubmitting.value = true
 }
 </script>
