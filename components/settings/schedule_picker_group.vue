@@ -1,12 +1,7 @@
-<!--
-	TODO(lead): Use `employee_schedule` fetcher to modify data
-
- -->
-
 <template>
 	<div class="schedule-picker-group">
 		<div class="schedule-picker-header">
-			<h3 class="day mb-2">
+			<h3 class="day">
 				{{ convertForSentence(dayName) }}
 			</h3>
 		</div>
@@ -30,8 +25,12 @@
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	.schedule-picker-group {
-		border-bottom: 1px solid black;
-		margin-bottom: 1em;
+		@apply mt-4 mb-12;
+		@apply border-b border-b-gray-500;
+
+		.day {
+			@apply text-lg;
+		}
 	}
 
 	.schedule-picker-header {

@@ -1,5 +1,7 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
+
 import Stub from "$/singletons/stub"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -155,10 +157,6 @@ describe("Component: Schedule Picker", () => {
 
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/employee_schedule")
-
-		const previousCalls = Stub.consumePreviousCalls()
-		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
-		expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")
 	})
 
 	it("should delete existing schedule", async() => {
@@ -190,6 +188,7 @@ describe("Component: Schedule Picker", () => {
 			JSON.stringify({ "data": {} }),
 			{ "status": RequestEnvironment.status.NO_CONTENT }
 		)
+		jest.useFakeTimers()
 		const deleteBtn = wrapper.find("#delete-btn")
 		await deleteBtn.trigger("click")
 		await flushPromises()
@@ -200,6 +199,7 @@ describe("Component: Schedule Picker", () => {
 		expect(request).toHaveProperty("method", "DELETE")
 		expect(request).toHaveProperty("url", "/api/employee_schedule")
 
+		jest.advanceTimersByTime(MILLISECOND_IN_A_SECOND)
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 		expect(previousCalls).toHaveProperty("0.arguments.0", "/settings/profile")

@@ -5,15 +5,17 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<div class="profile-account">
-		<h1 class="text-xl mb-8">General Profile Info</h1>
-		<div>
-			<TextualField
-				v-model="userProfileData.name"
-				v-model:status="nameFieldStatus"
-				label="Display Name"
-				class="display-name-field"
-				type="text"/>
+	<div class="profile-settings">
+		<div class="general-profile-info">
+			<h3>General Profile Info</h3>
+			<div>
+				<TextualField
+					v-model="userProfileData.name"
+					v-model:status="nameFieldStatus"
+					label="Display Name"
+					class="display-name-field"
+					type="text"/>
+			</div>
 		</div>
 
 		<div class="pictures">
@@ -22,7 +24,7 @@
 				@submit-file="submitProfilePicture">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="profile">
+						<h3>
 							Profile Picture
 						</h3>
 					</div>
@@ -46,7 +48,7 @@
 				@submit-file="submitSignature">
 				<div class="content">
 					<div class="picture-picker-header">
-						<h3 class="signature">
+						<h3>
 							Signature
 						</h3>
 					</div>
@@ -66,7 +68,7 @@
 		</div>
 
 		<div class="dark-mode-toggle">
-			<h3 class="display-name">
+			<h3>
 				Dark Mode
 			</h3>
 			<p class="name">
@@ -87,8 +89,9 @@
 				submit
 			</button>
 		</div>
+
 		<div v-if="isReachableEmployee" class="consultation-schedules">
-			<h3 class="display-name">
+			<h3>
 				Consultation Schedules
 			</h3>
 			<SchedulePickerGroup
@@ -102,7 +105,7 @@
 
 <style lang="scss">
 	.wrapper {
-		margin-bottom: 50vh !important;
+		margin-bottom: 15vh !important;
 	}
 </style>
 
@@ -116,12 +119,28 @@
 		}
 	}
 
-	.profile-account{
+	.profile-settings{
 		@apply flex flex-col;
+
+		.general-profile-info {
+			@apply mb-8;
+
+			h3 {
+				@apply mb-8;
+			}
+		}
+
+		.consultation-schedules {
+			@apply mt-16;
+		}
 	}
 
 	.content{
 		@apply flex flex-col sm:flex-row sm:justify-between my-7;
+	}
+
+	h3 {
+		@apply text-xl;
 	}
 
 	.input-profile-picture,.input-signature{
@@ -134,10 +153,6 @@
 		&.signatures{
 			@apply underline;
 		}
-	}
-
-	.profile, .signature{
-		font-size: 1.5em;
 	}
 
 	.profile-picker-sm, .signature-picker-sm{
