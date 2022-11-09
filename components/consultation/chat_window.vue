@@ -13,6 +13,9 @@
 			:chat-messages="chatMessages"
 			:remaining-time="remainingTime"
 			:received-errors="receivedErrors"
+			:is-action-taken-overlay-shown="isActionTakenOverlayShown"
+			@show-action-taken-overlay="showActionTakenOverlay"
+			@hide-action-taken-overlay="hideActionTakenOverlay"
 			@finish-consultation="finishConsultation"/>
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
@@ -108,6 +111,7 @@ import type {
 
 import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
+import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -181,6 +185,11 @@ const age = computed<string>(() => {
 })
 const actionTaken = ref("")
 
+const {
+	"on": showActionTakenOverlay,
+	"off": hideActionTakenOverlay,
+	"state": isActionTakenOverlayShown
+} = makeSwitch(false)
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
@@ -228,6 +237,7 @@ function finishConsultation(): void {
 		.then(() => {
 			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
+			hideActionTakenOverlay()
 		})
 		.catch(response => extractAllErrorDetails(response, receivedErrors))
 	}
