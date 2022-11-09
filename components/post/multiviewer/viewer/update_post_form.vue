@@ -33,36 +33,6 @@
 					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
-			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isFileTypeImage" class="preview-img-container">
-					<div class="removable-image relative">
-						<span
-							class="material-icons close"
-							@click="removeFile">
-							close
-						</span>
-						<img class="preview-img" :src="previewFile"/>
-					</div>
-					<small class="preview-title">
-						{{ filename }}
-					</small>
-				</div>
-				<div
-					v-else
-					class="preview-file-container">
-					<span class="material-icons mr-2">
-						attachment
-					</span>
-					<small class="preview-file-title">
-						{{ filename }}
-					</small>
-					<span
-						class="remove-file-btn material-icons cursor-pointer"
-						@click="removeFile">
-						close
-					</span>
-				</div>
-			</div>
 			<div v-if="hasExistingAttachments">
 				<div
 					v-for="attachment in postAttachments"
