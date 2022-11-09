@@ -3,6 +3,8 @@
 
 <template>
 	<div class="schedule-picker">
+		<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+
 		<button
 			v-if="!isNew && !isEditing"
 			id="edit-btn"
@@ -106,7 +108,7 @@
 		@apply flex flex-col justify-between mb-5;
 
 		.start, .end {
-			@apply flex justify-between;
+			@apply flex;
 		}
 	}
 </style>
@@ -133,8 +135,8 @@ import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
 
 import Selectable from "@/fields/selectable_options.vue"
-
-const fetcher = new EmployeeScheduleFetcher()
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
@@ -207,6 +209,8 @@ const endTime24Hours = computed(() => {
 	return formattedTime
 })
 
+const fetcher = new EmployeeScheduleFetcher()
+const receivedErrors = ref<string[]>([])
 function updateTime() {
 	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
@@ -223,9 +227,9 @@ function updateTime() {
 				}
 			}
 		}
-	}).then(() => {
-		stopEditing()
 	})
+	.then(stopEditing)
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function saveNewSchedule() {
@@ -246,10 +250,14 @@ function saveNewSchedule() {
 		}
 	})
 	.then(() => assignPath("/settings/profile"))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 }
 
 function deleteSchedule() {
 	fetcher.archive([ String(props.scheduleId) ])
 	.then(() => assignPath("/settings/profile"))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 }
 </script>
