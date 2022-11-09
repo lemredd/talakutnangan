@@ -196,12 +196,6 @@ export default class extends BaseManager<
 			const model = await this.model.findByPk(consultationID, {
 				"include": [
 					{
-						"include": [
-							{
-								"model": User,
-								"required": true
-							}
-						],
 						"model": AttachedRole,
 						"required": true
 					}
@@ -212,21 +206,16 @@ export default class extends BaseManager<
 			const activeConsultations = await this.model.findAll({
 				"include": [
 					{
-						"include": [
-							{
-								"model": User,
-								"required": true,
-								"where": new Condition().equal("id", model?.consultant?.id).build()
-							}
-						],
 						"model": AttachedRole,
-						"required": true
+						"required": true,
+						"where": new Condition().equal("userID", model?.consultantInfo?.userID).build()
 					}
 				],
 				"where": new Condition().and(
 					new Condition().not("startedAt", null),
 					new Condition().is("finishedAt", null)
-				).build()
+				).build(),
+				...this.transaction.transactionObject
 			})
 
 			let canStart = activeConsultations.length === 0

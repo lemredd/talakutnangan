@@ -5,15 +5,19 @@
 		</div>
 
 		<p v-else class="loading">
-			{{ customMessage ?? "Loading..." }}
+			<progressBar>
+				{{ customMessage ?? "Loading..." }}
+			</progressBar>
 		</p>
 	</div>
 </template>
 
-<style>
+<style scoped>
 </style>
 
 <script setup lang="ts">
+import progressBar from "@/helpers/progress_bar.vue"
+
 defineProps<{
 	isLoaded: boolean
 	customMessage?: string

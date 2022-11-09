@@ -7,18 +7,22 @@ import type {
 	ConsultationListDocument
 } from "$/types/documents/consultation"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
+import makeUnique from "$/array/make_unique"
+import deserialize from "$/object/deserialize"
+import URLMaker from "$!/singletons/url_maker"
+
+import Manager from "%/managers/consultation"
+import ChatMessageManager from "%/managers/chat_message"
+import ChatMessageActivityManager from "%/managers/chat_message_activity"
+
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import Middleware from "!/bases/middleware"
-import makeUnique from "$/array/make_unique"
-import Manager from "%/managers/consultation"
-import URLMaker from "$!/singletons/url_maker"
-import deserialize from "$/object/deserialize"
 import Merger from "!/middlewares/miscellaneous/merger"
-import ChatMessageManager from "%/managers/chat_message"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
-import ChatMessageActivityManager from "%/managers/chat_message_activity"
 import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -126,7 +130,7 @@ export default class extends PageMiddleware {
 				"previewMessageOnly": false
 			},
 			"page": {
-				"limit": Infinity,
+				"limit": DEFAULT_LIST_LIMIT,
 				"offset": 0
 			},
 			"sort": [ "createdAt" ]
