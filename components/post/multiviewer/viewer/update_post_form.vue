@@ -33,36 +33,6 @@
 					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
-			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isFileTypeImage" class="preview-img-container">
-					<div class="removable-image relative">
-						<span
-							class="material-icons close"
-							@click="removeFile">
-							close
-						</span>
-						<img class="preview-img" :src="previewFile"/>
-					</div>
-					<small class="preview-title">
-						{{ filename }}
-					</small>
-				</div>
-				<div
-					v-else
-					class="preview-file-container">
-					<span class="material-icons mr-2">
-						attachment
-					</span>
-					<small class="preview-file-title">
-						{{ filename }}
-					</small>
-					<span
-						class="remove-file-btn material-icons cursor-pointer"
-						@click="removeFile">
-						close
-					</span>
-				</div>
-			</div>
 			<div v-if="hasExistingAttachments">
 				<div
 					v-for="attachment in postAttachments"
@@ -72,7 +42,7 @@
 						<div class="removable-image relative">
 							<span
 								class="material-icons close"
-								@click="removeFile">
+								@click="removeFile(attachment.id)">
 								close
 							</span>
 							<img class="preview-img" :src="attachment.fileContents"/>
@@ -139,10 +109,7 @@ import type { OptionInfo } from "$@/types/component"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type {
-	DeserializedPostAttachmentResource,
-	DeserializedPostAttachmentListDocument
-} from "$/types/documents/post_attachment"
+import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
@@ -164,7 +131,7 @@ const userFetcher = new UserFetcher()
 
 const props = defineProps<{
 	isShown: boolean,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"postAttachments">
 }>()
 
 interface CustomEvents {
@@ -182,16 +149,9 @@ const hasExistingAttachments = computed<boolean>(() => {
 
 	return hasAttachments
 })
-const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
-	if (hasExistingAttachments.value) {
-		const attachments = props.modelValue
-		.postAttachments as DeserializedPostAttachmentListDocument
-
-		return attachments.data
-	}
-
-	return []
-})
+const postAttachments = ref<DeserializedPostAttachmentResource[]>(
+	props.modelValue.postAttachments.data
+)
 
 const isShown = computed<boolean>(() => props.isShown)
 const hasLoadedCompletePosterInfo = computed<boolean>(() => {
@@ -265,27 +225,25 @@ function isImage(type: string): boolean {
 }
 
 const filename = ref<string|null>(null)
-const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
 const extractedFileType = ref("")
-const isFileTypeImage = computed(() => isImage(extractedFileType.value))
 const fileSize = ref<number|null>(null)
 const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
 const receivedErrors = ref<string[]>([])
-const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
 
-function removeFile() {
-	filename.value = null
-	previewFile.value = null
-	fileSize.value = null
-	receivedErrors.value = []
-
+function removeFile(id: string) {
 	postAttachmentFetcher.archive(
-		[ postAttachments.value[0].id ]
+		[ id ]
 	)
+	.then(() => {
+		postAttachments.value = postAttachments.value.filter(
+			postAttachment => postAttachment.id !== id
+		)
+	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 function emitClose() {
 	emit("close")
@@ -297,8 +255,8 @@ function sendFile(form: HTMLFormElement) {
 	formData.set("data[relationships][post][data][type]", "post")
 	postAttachmentFetcher.createWithFile(formData)
 	.then(({ body }) => {
-		attachmentResources.value = [
-			...attachmentResources.value,
+		postAttachments.value = [
+			...postAttachments.value,
 			body.data
 		]
 	})
@@ -311,10 +269,13 @@ function uploadPostAttachment(event: Event): void {
 	const rawFilename = file?.name as ""
 
 	fileSize.value = file?.size as number|null
-	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-	previewFile.value = file ? URL.createObjectURL(file) : ""
-	extractedFileType.value = file?.type as string
-	filename.value = rawFilename
+	if (isFileSizeGreaterThanLimit.value) {
+		receivedErrors.value.push("Maximum file size is 20mb")
+	} else {
+		previewFile.value = file ? URL.createObjectURL(file) : ""
+		extractedFileType.value = file?.type as string
+		filename.value = rawFilename
+	}
 
 	const form = target.form as HTMLFormElement
 	sendFile(form)

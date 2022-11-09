@@ -39,19 +39,19 @@
 					accept="*/*"
 					@change="uploadPostAttachment"/>
 			</form>
-			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isFileTypeImage" class="preview-img-container">
+			<div
+				v-for="attachment in postAttachments"
+				:key="attachment.id"
+				class="preview-file">
+				<div v-if="isImage(attachment.fileType)" class="preview-img-container">
 					<div class="removable-image relative">
 						<span
 							class="material-icons close"
-							@click="removeFile">
+							@click="removeFile(attachment.id)">
 							close
 						</span>
-						<img class="preview-img" :src="previewFile"/>
+						<img class="preview-img" :src="attachment.fileContents"/>
 					</div>
-					<small class="preview-title">
-						{{ filename }}
-					</small>
 				</div>
 				<div
 					v-else
@@ -64,7 +64,7 @@
 					</small>
 					<span
 						class="remove-file-btn material-icons cursor-pointer"
-						@click="removeFile">
+						@click="removeFile(attachment.id)">
 						close
 					</span>
 				</div>
@@ -180,25 +180,29 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const filename = ref<string|null>(null)
-const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
 const extractedFileType = ref("")
-const isFileTypeImage = computed(() => extractedFileType.value.includes("image"))
+function isImage(type: string): boolean {
+	return type.includes("image")
+}
+
 const fileSize = ref<number|null>(null)
 const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
 const receivedErrors = ref<string[]>([])
-const attachmentResources = ref<DeserializedPostAttachmentResource[]>([])
+const postAttachments = ref<DeserializedPostAttachmentResource[]>([])
 
-function removeFile() {
-	filename.value = null
-	previewFile.value = null
-	fileSize.value = null
-	receivedErrors.value = []
+function removeFile(id: string) {
+	postAttachmentFetcher.archive([ id ])
+	.then(() => {
+		postAttachments.value = postAttachments.value.filter(
+			postAttachment => postAttachment.id !== id
+		)
+	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
-
 function emitClose() {
 	emit("close")
 }
@@ -209,8 +213,8 @@ function sendFile(form: HTMLFormElement) {
 
 	postAttachmentFetcher.createWithFile(formData)
 	.then(({ body }) => {
-		attachmentResources.value = [
-			...attachmentResources.value,
+		postAttachments.value = [
+			...postAttachments.value,
 			body.data
 		]
 	})
@@ -223,21 +227,25 @@ function uploadPostAttachment(event: Event): void {
 	const rawFilename = file?.name as ""
 
 	fileSize.value = file?.size as number|null
-	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-	previewFile.value = file ? URL.createObjectURL(file) : ""
-	extractedFileType.value = file?.type as string
-	filename.value = rawFilename
+	if (isFileSizeGreaterThanLimit.value) {
+		receivedErrors.value.push("Maximum file size is 20mb")
+	} else {
+		previewFile.value = file ? URL.createObjectURL(file) : ""
+		extractedFileType.value = file?.type as string
+		filename.value = rawFilename
+	}
+
 
 	const form = target.form as HTMLFormElement
 	sendFile(form)
 }
 
 function createPost(): void {
-	const attachmentIDs = attachmentResources.value.map(resource => ({
+	const attachmentIDs = postAttachments.value.map(resource => ({
 		"id": resource.id,
 		"type": "post_attachment"
 	}))
-	const postAttachments = attachmentIDs.length === 0
+	const postAttachmentList = attachmentIDs.length === 0
 		// eslint-disable-next-line no-undefined
 		? undefined
 		: {
@@ -262,7 +270,7 @@ function createPost(): void {
 		"extraDataFields": {
 			"relationships": {
 				department,
-				postAttachments,
+				"postAttachments": postAttachmentList,
 				"poster": {
 					"data": {
 						"id": userProfile.data.id,
