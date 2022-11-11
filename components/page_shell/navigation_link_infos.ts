@@ -103,7 +103,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"links": [
 			{
 				"icon": "list_alt",
-				"name": "See audit trail",
+				"name": "See Audit Trail",
 				"path": AUDIT_TRAIL_LIST,
 				"viewportsAvailable": [ "mobile", "desktop" ]
 			}
