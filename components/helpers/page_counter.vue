@@ -14,4 +14,8 @@
 </style>
 
 <script setup lang="ts">
+type DefinedProps = {
+	maxCount: number
+}
+defineProps<DefinedProps>()
 </script>
