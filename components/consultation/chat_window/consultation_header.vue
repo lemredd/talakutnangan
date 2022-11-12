@@ -47,7 +47,7 @@
 				</template>
 
 				<template #default>
-					<p>If so, please provide the action taken to solve the consulter/s concern.</p>
+					<p>If so, please provide the {{ actionTakenDescription }}</p>
 					<NonSensitiveTextField
 						v-model="actionTaken"
 						class="action-taken-field"
@@ -120,6 +120,9 @@ const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 const actionTakenHeader = isCurrentUserConsultant.value
 	? "Mark this consultation as finished?"
 	: "Cancel this consultation?"
+const actionTakenDescription = isCurrentUserConsultant.value
+	? "action taken to solve the consulter(s) concern."
+	: "reason for cancellation."
 
 interface CustomEvents {
 	(eventName: "update:modelValue", newValue: string): void
