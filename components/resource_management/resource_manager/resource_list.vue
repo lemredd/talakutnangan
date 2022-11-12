@@ -159,20 +159,24 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
-
-import type { PossibleResources } from "$@/types/independent"
+import type { TableData } from "$@/types/component"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import pluralize from "$/string/pluralize"
+import specializePath from "$/helpers/specialize_path"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
-const { filteredList } = defineProps<{
-	filteredList: PossibleResources[]
-	mayEdit: boolean,
+const props = defineProps<{
+	templatePath: string
+	list: TableData[]
+	mayEdit: boolean
 	headers: string[]
 }>()
 
-const resourceType = computed(() => filteredList[0].type)
+function makePath(id: string): string {
+	return specializePath(props.templatePath, {
+		id
+	})
+}
 </script>
