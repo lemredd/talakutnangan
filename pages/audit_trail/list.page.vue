@@ -14,6 +14,9 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list.data" :may-edit="false"/>
+			<PageCounter
+				v-model:offset="offset"
+				:max-count="resourceCount"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -23,7 +26,7 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch, computed } from "vue"
+import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
@@ -36,6 +39,7 @@ import Fetcher from "$@/fetchers/audit_trail"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -45,7 +49,6 @@ type RequiredExtraProps =
 	| "auditTrails"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
-
 
 const isLoaded = ref<boolean>(true)
 const list = ref(
@@ -58,7 +61,7 @@ const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 const castedResourceListMeta = list.value.meta as ResourceCount
 const resourceCount = computed(() => castedResourceListMeta.count)
-
+const offset = ref(0)
 async function fetchAuditTrailInfos() {
 	await fetcher.list({
 		"filter": {
