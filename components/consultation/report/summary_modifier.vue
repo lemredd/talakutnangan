@@ -20,15 +20,6 @@
 	</form>
 </template>
 
-<style lang="scss">
-	@media print {
-		.summarize-print {
-			display: none;
-		}
-	}
-
-</style>
-
 <style scoped lang="scss">
 	@import "@styles/variables.scss";
 	@import "@styles/btn.scss";
@@ -45,8 +36,14 @@
 		}
 	}
 
-	.summarize-print{
+	.summarize-print {
 		@apply m-l-5 rounded-0.5rem;
+	}
+
+	@media print {
+		form {
+			display: none;
+		}
 	}
 </style>
 
