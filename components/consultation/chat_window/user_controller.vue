@@ -45,9 +45,6 @@
 		</div>
 		<div v-if="isOngoing" class="right-controls">
 			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
-				sentiment_satisfied
-			</button>
 			<button class="send-btn material-icons" @click="send">
 				send
 			</button>
