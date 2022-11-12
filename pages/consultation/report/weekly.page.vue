@@ -16,26 +16,41 @@
 			<table>
 				<thead>
 					<tr>
-						<td>Week #</td>
-						<td>Begin Date</td>
-						<td>End Date</td>
-						<td>Consultations</td>
-						<td>Total time consumed</td>
+						<th scope="col">
+							Week #
+						</th>
+						<th scope="col">
+							Begin Date
+						</th>
+						<th scope="col">
+							End Date
+						</th>
+						<th scope="col">
+							Consultations
+						</th>
+						<th scope="col">
+							Total time consumed
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr
 						v-for="(sumEntry, i) in timeConsumedPerWeek.meta.weeklyTimeSums"
 						:key="sumEntry.beginAt.toJSON()">
-						<td>{{ i+1 }}</td>
-						<td>{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}</td>
-						<td>{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}</td>
+						<th scope="row">
+							{{ i+1 }}
+						</th>
+						<td>
+							{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}
+						</td>
+						<td>
+							{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}
+						</td>
 
-						<ul class="consultations">
-							<td
+						<td class="consultation">
+							<p
 								v-for="consultation in sumEntry.consultations.data"
-								:key="consultation.id"
-								class="consultation">
+								:key="consultation.id">
 								#{{ consultation.id }}
 								{{ consultation.reason }}
 								{{
@@ -46,8 +61,8 @@
 										)
 									)
 								}}
-							</td>
-						</ul>
+							</p>
+						</td>
 
 						<td>
 							{{ convertToFullTimeString(sumEntry.totalMillisecondsConsumed) }}
