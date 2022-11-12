@@ -16,7 +16,10 @@
 				label="User Name"
 				type="text"/>
 		</div>
-		<button type="submit" class="update-user-btn btn btn-primary">
+		<button
+			type="submit"
+			class="update-user-btn btn btn-primary"
+			@click="updateUser">
 			update user
 		</button>
 	</form>
@@ -35,7 +38,10 @@
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
-		<button type="submit" class="update-roles-btn btn btn-primary">
+		<button
+			type="submit"
+			class="update-roles-btn btn btn-primary"
+			@click="updateRoles">
 			update roles
 		</button>
 	</form>
@@ -54,7 +60,10 @@
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
-		<button type="submit" class="update-department-btn btn btn-primary">
+		<button
+			type="submit"
+			class="update-department-btn btn btn-primary"
+			@click="updateDepartment">
 			update department
 		</button>
 	</form>
@@ -137,12 +146,13 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
 
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
@@ -235,20 +245,29 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		successMessages.value.push("User Name updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 async function updateRoles() {
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		successMessages.value.push("Role updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 async function updateDepartment() {
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		successMessages.value.push("Department updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function resetUserPassword() {
@@ -256,15 +275,17 @@ async function resetUserPassword() {
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		successMessages.value.push("Reset password successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function archiveUser() {
 	await fetcher.archive([ user.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreUser() {
