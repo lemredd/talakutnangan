@@ -15,9 +15,8 @@
 					<td v-for="(data, i) in resource.data" :key="i">
 						{{ data }}
 					</td>
-					<td>
+					<td v-if="mayEdit">
 						<a
-							v-if="mayEdit"
 							:href="makePath(resource.id)"
 							class="read-resource-btn btn"
 							type="button">
