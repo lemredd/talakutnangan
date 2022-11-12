@@ -16,13 +16,19 @@
 			<ResourceList :filtered-list="list.data" :may-edit="false"/>
 			<PageCounter
 				v-model="offset"
-				:max-count="resourceCount"/>
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
