@@ -129,8 +129,12 @@
 </template>
 
 <style>
-	body {
-		@apply pt-8 px-8;
+	body, #app {
+		min-height: 100vh;
+	}
+
+	#app {
+		@apply py-8 px-8
 	}
 </style>
 

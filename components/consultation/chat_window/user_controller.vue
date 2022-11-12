@@ -13,11 +13,9 @@
 			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">
-			<!-- TODO(lead/button): Apply functionality -->
 			<button class="material-icons" @click="saveAsPDF">
 				more_horiz
 			</button>
-			<!-- TODO(lead/button): Apply functionality -->
 			<button class="material-icons add-file-btn" @click="showFileUpload">
 				attach_file
 			</button>
@@ -44,10 +42,6 @@
 				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
-			<!-- TODO(lead/button): Apply functionality -->
-			<button class="material-icons">
-				sentiment_satisfied
-			</button>
 			<button class="send-btn material-icons" @click="send">
 				send
 			</button>
@@ -152,6 +146,8 @@ const fetcher: Fetcher = new Fetcher()
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 function send(): void {
+	if (textInput.value === "") return
+
 	fetcher.create({
 		"data": {
 			"value": textInput.value
