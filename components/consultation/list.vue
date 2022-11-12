@@ -31,32 +31,12 @@
 
 		<ConsultationForm :is-shown="isAddingSchedule" @close="toggleAddingSchedule"/>
 
-		<div
+		<Item
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
-			class="consultation"
-			:class="getActivenessClass(consultation)"
-			@click="pickConsultation(consultation.id)">
-			<h3 class="consultation-title font-bold mb-3;">
-				<span class="number-symbol">#{{ consultation.id }}</span>
-				{{ consultation.reason }}
-			</h3>
-			<!-- TODO(others): style arrangement of pictures -->
-			<div class="profile-pictures">
-				<span class="participant-label">participants:</span>
-				<ProfilePictureItem
-					v-for="activity in getProfilePictures(consultation)"
-					:key="activity.id"
-					:user="activity.user"
-					:title="activity.user.data.name"
-					class="profile-picture-item"/>
-			</div>
-
-			<LastChat
-				v-if="hasPreviewMessage(consultation)"
-				:last-chat="getPreviewMessage(consultation)"/>
-			<EmptyLastChat v-else/>
-		</div>
+			:consultation="consultation"
+			:chat-message-activities="chatMessageActivities"
+			:preview-messages="previewMessages"/>
 	</div>
 </template>
 
@@ -103,44 +83,18 @@
 			@apply flex items-center;
 		}
 	}
-
-	.consultation {
-		@apply p-3;
-
-		&.active {
-			background-color: hsla(0, 0%, 50%, 0.1)
-		}
-
-			.number-symbol { @apply opacity-45; }
-		}
-
-		.profile-pictures {
-			@apply flex;
-
-			.participant-label { @apply mr-3; }
-			.profile-picture-item {
-				@apply rounded-full;
-				width: 20px;
-				height: 20px;
-			}
-		}
 </style>
 
 <script setup lang="ts">
 import { computed, inject, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type {
-	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 import type {
-	DeserializedChatMessageResource,
-	DeserializedChatMessageListDocument
-} from "$/types/documents/chat_message"
-import type {
 	ConsultationRelationshipNames,
-	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
@@ -152,16 +106,11 @@ import {
 } from "$/constants/template_page_paths"
 
 import makeSwitch from "$@/helpers/make_switch"
-import assignPath from "$@/external/assign_path"
-import makeUniqueBy from "$/helpers/make_unique_by"
-import specializePath from "$/helpers/specialize_path"
 import BodyCSSClasses from "$@/external/body_css_classes"
 
+import Item from "@/consultation/list/item.vue"
 import ConsultationForm from "@/consultation/form.vue"
-import LastChat from "@/consultation/list/last_chat.vue"
 import MinorDropdown from "@/helpers/minor_dropdown.vue"
-import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
-import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
@@ -183,61 +132,9 @@ const { "pageProps": { userProfile } } = pageContext
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 const isUserAReachableEmployee = computed(() => userProfile.data.kind === "reachable_employee")
 
-const {
-	consultations,
-	chatMessageActivities,
-	previewMessages
-} = defineProps<{
-		chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
-		consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
-			previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
-	}>()
-
-function getActivenessClass(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-) {
-	return { "active": pageContext.urlPathname === `/consultation/${consultation.id}` }
-}
-function getChatMessageActivities(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-): DeserializedChatMessageActivityResource<"user">[] {
-	return chatMessageActivities.data.filter(
-		activity => activity.consultation.data.id === consultation.id
-	)
-}
-function getProfilePictures(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-) {
-	return makeUniqueBy(getChatMessageActivities(consultation), "user.data.id")
-}
-
-function findPreviewMessageIndex(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-): number {
-	return previewMessages.data.findIndex(
-		message => message.consultation.data.id === consultation.id
-	)
-}
-
-function hasPreviewMessage(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-): boolean {
-	const index = findPreviewMessageIndex(consultation)
-
-	return index > -1
-}
-
-function getPreviewMessage(
-	consultation: DeserializedConsultationResource<ConsultationRelationshipNames>
-): DeserializedChatMessageResource<"user"> {
-	const index = findPreviewMessageIndex(consultation)
-
-	return previewMessages.data[index]
-}
-
-function pickConsultation(consultationID: string) {
-	assignPath(specializePath("/consultation/read/:id", {
-		"id": consultationID
-	}))
-}
+defineProps<{
+	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
+	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
+	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
+}>()
 </script>
