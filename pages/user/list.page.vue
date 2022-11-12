@@ -94,7 +94,7 @@ const departmentFetcher = new DepartmentFetcher()
 
 const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
-const isLoaded = ref(false)
+const isLoaded = ref(true)
 
 const determineTitle = computed(() => {
 	if (currentResourceManager.isInstituteLimited()) {

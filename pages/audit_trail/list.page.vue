@@ -13,84 +13,95 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list" :may-edit="false"/>
+			<ResourceList :filtered-list="list.data" :may-edit="false"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch } from "vue"
+import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedAuditTrailResource } from "$/types/documents/audit_trail"
+import type { ResourceCount } from "$/types/documents/base"
+import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/audit_trail"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
-	| "audit_trails"
+	| "auditTrails"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
-
-const isLoaded = ref<boolean>(false)
-const list = ref<DeserializedAuditTrailResource[]>(
-	pageProps.audit_trails.data as DeserializedAuditTrailResource[]
+const list = ref(
+	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
-
+const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+const offset = ref(0)
 async function fetchAuditTrailInfos() {
-	await fetcher.list({
-		"filter": {
-			"existence": existence.value,
-			"slug": slug.value
-		},
-		"page": {
-			"limit": 10,
-			"offset": list.value.length
-		},
-		"sort": [ "id" ]
-	// eslint-disable-next-line consistent-return
-	})
-	.then(response => {
-		const deserializedData = response.body.data as DeserializedAuditTrailResource[]
-
-		if (!deserializedData.length) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		return Promise.resolve()
-	})
+	await loadRemainingResource(
+		list,
+		fetcher,
+		() => ({
+			"filter": {
+				"existence": existence.value,
+				"slug": slug.value
+			},
+			"page": {
+				"limit": 10,
+				"offset": offset.value
+			},
+			"sort": [ "-createdAt" ]
+		}),
+		{
+			"mayContinue": () => Promise.resolve(false)
+		}
+	)
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
-
 	isLoaded.value = true
 }
 
 async function refetchAuditTrail() {
-	list.value = []
 	isLoaded.value = false
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	await fetchAuditTrailInfos()
 }
 
-watch([ slug, existence ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
-
-onMounted(() => {
-	isLoaded.value = true
-})
+watch([ slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
 </script>

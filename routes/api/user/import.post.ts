@@ -9,6 +9,7 @@ import type {
 	RawBulkDataForEmployee
 } from "%/types/independent"
 
+import { MINIMUM_PASSWORD_LENGTH } from "$/constants/numerical"
 import { MAXIMUM_FILE_SIZE, MINIMUM_FILE_SIZE } from "$/constants/measurement"
 import {
 	personName,
@@ -197,7 +198,12 @@ export default class extends MultipartController {
 															return Promise.resolve(currentKind === "student")
 														},
 														"rules": {
-															"pipes": [ required ]
+															"constraints": {
+																"length": {
+																	"minimum": MINIMUM_PASSWORD_LENGTH
+																}
+															},
+															"pipes": [ required, length ]
 														}
 													}
 												},

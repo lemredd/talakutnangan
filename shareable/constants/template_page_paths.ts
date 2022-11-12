@@ -18,6 +18,11 @@ export const PROFILE_SETTINGS = "/settings/profile"
 export const CONSULTATION_FORM_PRINT = "/consultation/form/:id"
 
 /**
+ * Requires `id` of the consultation
+ */
+export const READ_CONSULTATION = "/consultation/read/:id"
+
+/**
  * Requires `id` of the post
  */
 export const READ_POST = "/post/read/:id"
