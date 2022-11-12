@@ -309,20 +309,31 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 		Log.trace("manager", "specialized the data structure for student bulk creation")
 
+		const batchedNormalizedProfiles = []
+		const MAXIMUM_BATCH_SIZE = Number(process.env.DATABASE_MAX_BATCH_SIZE || "10")
+		while (normalizedProfiles.length > 0) {
+			const batchProfile = normalizedProfiles.splice(0, MAXIMUM_BATCH_SIZE)
+			batchedNormalizedProfiles.push(batchProfile)
+		}
+
 		// Create the students in bulk
-		const users = await this.model.bulkCreate(normalizedProfiles, {
-			"include": [
-				{
-					"as": "attachedRoles",
-					"model": AttachedRole
-				},
-				{
-					"as": "studentDetail",
-					"model": StudentDetail
-				}
-			],
-			...this.transaction.transactionObject
-		})
+		const rawUsers: Promise<Model[]>[] = []
+		for (const batch of batchedNormalizedProfiles) {
+			rawUsers.push(this.model.bulkCreate(batch, {
+				"include": [
+					{
+						"as": "attachedRoles",
+						"model": AttachedRole
+					},
+					{
+						"as": "studentDetail",
+						"model": StudentDetail
+					}
+				],
+				...this.transaction.transactionObject
+			}))
+		}
+		const users = (await Promise.all(rawUsers)).flat()
 
 		Log.success("manager", "created students in bulk")
 
