@@ -80,6 +80,6 @@ function createDepartment() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Department has been created successfully!")
 	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
-.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 </script>
