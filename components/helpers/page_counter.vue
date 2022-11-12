@@ -1,21 +1,33 @@
 <template>
-	<button>
-		<span class="material-icons">chevron_left</span>
-		Previous
-	</button>
-	<button
-		v-for="pageCount in pageLength"
-		:key="pageCount"
-		class="page-count-btn">
-		{{ pageCount }}
-	</button>
-	<button>
-		<span class="material-icons">chevron_right</span>
-		Previous
-	</button>
+	<div class="page-counter">
+		<button class="movement-btn previous-btn">
+			<span class="material-icons">chevron_left</span>
+			<span class="text">Previous</span>
+		</button>
+		<button
+			v-for="pageCount in pageLength"
+			:key="pageCount"
+			class="page-count-btn"
+		</button>
+		<button class="movement-btn next-btn">
+			<span class="text">Next</span>
+			<span class="material-icons">chevron_right</span>
+		</button>
+	</div>
 </template>
 
-<style>
+<style scoped lang="scss">
+	.page-counter {
+		@apply flex;
+
+		.movement-btn {
+			@apply flex items-center;
+		}
+
+		.page-count-btn {
+			@apply px-4;
+		}
+	}
 </style>
 
 <script setup lang="ts">
