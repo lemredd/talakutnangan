@@ -93,7 +93,7 @@ extends ResourceIdentifier<T> {
 interface GeneralUserAttributes<T extends Format = "serialized"> extends Attributes<T> {
 	name: string,
 	email: string,
-	emailVerifiedAt: Date|null,
+	emailVerifiedAt: (T extends "serialized" ? string : Date)|null,
 	prefersDark: boolean
 }
 
