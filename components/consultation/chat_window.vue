@@ -120,6 +120,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
+import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
@@ -161,8 +162,24 @@ function toggleConsultationList() {
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
+const {
+	willSoonStart,
+	willStart,
+	isOngoing,
+	isAutoTerminated,
+	isCanceled,
+	isDone
+} = makeConsultationStates(props)
 const consultationID = computed<string>(() => consultation.value.id)
-const consultationStatus = computed<string>(() => consultation.value.status)
+const consultationStatus = computed<string>(() => {
+	if (willSoonStart.value) return "Will soon start"
+	if (willStart.value) return "Will start in a few minutes"
+	if (isOngoing.value) return "Ongoing"
+	if (isAutoTerminated.value) return "Auto-terminated"
+	if (isCanceled.value) return "Canceled"
+	if (isDone.value) return "Done"
+	return "Error"
+})
 
 const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
