@@ -98,6 +98,7 @@ import twoDigits from "$/time/two_digits"
 import makeSwitch from "$@/helpers/make_switch"
 import makeUniqueBy from "$/helpers/make_unique_by"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
+import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import Overlay from "@/helpers/overlay.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
@@ -238,10 +239,8 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
-const isAllowedToCall = computed(
-	() => consultation.value.finishedAt
-	&& consultation.value.startedAt
-)
+const { isOngoing } = makeConsultationStates(props)
+const isAllowedToCall = computed(() => isOngoing.value)
 
 const actionTaken = computed<string>({
 	get(): string {
