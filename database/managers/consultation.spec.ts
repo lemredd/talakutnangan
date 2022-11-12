@@ -156,7 +156,9 @@ describe("Database Manager: Consultation read operations", () => {
 			"data": [
 				{
 					"attributes": {
+						"deletedAt": null,
 						"email": consulter.email,
+						"emailVerifiedAt": consulter.emailVerifiedAt,
 						"kind": "student",
 						"name": consulter.name
 					},
@@ -228,7 +230,9 @@ describe("Database Manager: Consultation read operations", () => {
 			"data": [
 				{
 					"attributes": {
+						"deletedAt": null,
 						"email": consulter.email,
+						"emailVerifiedAt": consulter.emailVerifiedAt,
 						"kind": "student",
 						"name": consulter.name
 					},
