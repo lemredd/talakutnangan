@@ -28,6 +28,10 @@
 					<h1>Enter the comment details</h1>
 				</template>
 				<template #default>
+					<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+					<ReceivedSuccessMessages
+						v-if="successMessages.length"
+						:received-success-messages="successMessages"/>
 					<p v-if="mustArchive">
 						Do you really want to archive?
 					</p>
@@ -144,7 +148,11 @@ import {
 	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import Overlay from "@/helpers/overlay.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
 import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
@@ -366,22 +374,38 @@ const {
 	"off": closeRestore
 } = makeSwitch(false)
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRestore.value)
 
+
 function closeArchiveOrRestore() {
+	receivedErrors.value = []
+	successMessages.value = []
 	closeArchive()
 	closeRestore()
 }
 
-async function archiveComment(): Promise<void> {
-	await fetcher.archive([ comment.value.id ]).then(() => {
-		emit("archive", comment.value)
-	})
+function closeDialog() {
+	emit("archive", comment.value)
 }
 
-async function restoreComment(): Promise<void> {
-	await fetcher.restore([ comment.value.id ]).then(() => {
-		emit("restore", comment.value)
+async function archiveComment(): Promise<void> {
+	await fetcher.archive([ comment.value.id ])
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, 3000)
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+}
+
+
+async function restoreComment(): Promise<void> {
+	await fetcher.restore([ comment.value.id ])
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, 3000)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
