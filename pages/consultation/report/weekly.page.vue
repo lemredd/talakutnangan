@@ -16,41 +16,26 @@
 			<table>
 				<thead>
 					<tr>
-						<th scope="col">
-							Week #
-						</th>
-						<th scope="col">
-							Begin Date
-						</th>
-						<th scope="col">
-							End Date
-						</th>
-						<th scope="col">
-							Consultations
-						</th>
-						<th scope="col">
-							Total time consumed
-						</th>
+						<td>Week #</td>
+						<td>Begin Date</td>
+						<td>End Date</td>
+						<td>Consultations</td>
+						<td>Total time consumed</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr
 						v-for="(sumEntry, i) in timeConsumedPerWeek.meta.weeklyTimeSums"
 						:key="sumEntry.beginAt.toJSON()">
-						<th scope="row">
-							{{ i+1 }}
-						</th>
-						<td>
-							{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}
-						</td>
-						<td>
-							{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}
-						</td>
+						<td>{{ i+1 }}</td>
+						<td>{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}</td>
+						<td>{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}</td>
 
-						<td class="consultations">
-							<p
+						<div class="consultations">
+							<td
 								v-for="consultation in sumEntry.consultations.data"
-								:key="consultation.id">
+								:key="consultation.id"
+								class="consultation">
 								#{{ consultation.id }}
 								{{ consultation.reason }}
 								{{
@@ -61,8 +46,8 @@
 										)
 									)
 								}}
-							</p>
-						</td>
+							</td>
+						</div>
 
 						<td>
 							{{ convertToFullTimeString(sumEntry.totalMillisecondsConsumed) }}
@@ -95,10 +80,23 @@
 		@apply mb-5;
 	}
 
-	table, thead, tfoot, td, th {
-		@apply p-4;
+	table, th, thead, tfoot, td {
 		border: 2px solid;
+		padding: 8px;
 		text-align: center;
+	}
+
+	.consultations {
+		@apply flex flex-col;
+
+		> td {
+			border-left: 0px;
+			border-right: 0px;
+
+			+ td {
+				border-top: 0px;
+			}
+		}
 	}
 </style>
 
