@@ -16,7 +16,11 @@
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
-			<ResourceList :filtered-list="list" :may-edit="mayEditTag"/>
+			<ResourceList
+				template-path=""
+				:headers="headers"
+				:list="tableData"
+				:may-edit="mayEditTag"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -25,14 +29,20 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, computed } from "vue"
+import { inject, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedTagResource } from "$/types/documents/tag"
+import type { TableData } from "$@/types/component"
+import type { DeserializedTagListDocument } from "$/types/documents/tag"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+
+import debounce from "$@/helpers/debounce"
 import { tag as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
 
 import Fetcher from "$@/fetchers/tag"
 
@@ -63,41 +73,50 @@ const mayEditTag = computed<boolean>(() => {
 	return isPermitted
 })
 
+const headers = [ "Name" ]
 const fetcher = new Fetcher()
-const isLoaded = ref<boolean>(true)
-const list = ref<DeserializedTagResource[]>(pageProps.tags.data as DeserializedTagResource[])
+const list = ref<DeserializedTagListDocument>(pageProps.tags as DeserializedTagListDocument)
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.data.map(resource => ({
+		"data": [
+			resource.name
+		],
+		"id": resource.id
+	}))
 
+	return data
+})
+
+const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 
 async function fetchTagInfos(): Promise<number|void> {
-	await fetcher.list({
+	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"existence": existence.value,
 			"mustHavePost": false,
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
-			"offset": list.value.length
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": list.value.data.length
 		},
 		"sort": [ "name" ]
-	}).then(({ body }) => {
-		const { data } = body
-		isLoaded.value = true
-		const deserializedData = data as DeserializedTagResource[]
-
-		if (deserializedData.length === 0) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		return Promise.resolve()
-	})
+	}))
+	isLoaded.value = true
 }
 
 async function refetchTags() {
 	isLoaded.value = false
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	await fetchTagInfos()
 }
+
+watch([ slug, existence ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
 </script>
