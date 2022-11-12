@@ -25,6 +25,7 @@ describe("Helper: Chat message kinds", () => {
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
+					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",
@@ -58,6 +59,7 @@ describe("Helper: Chat message kinds", () => {
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
+					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",
@@ -91,6 +93,7 @@ describe("Helper: Chat message kinds", () => {
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
+					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",
