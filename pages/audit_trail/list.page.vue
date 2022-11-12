@@ -47,7 +47,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 
-const isLoaded = ref<boolean>(false)
+const isLoaded = ref<boolean>(true)
 const list = ref(
 	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
@@ -107,9 +107,4 @@ async function refetchAuditTrail() {
 }
 
 watch([ slug, existence ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
-
-onMounted(() => {
-	isLoaded.value = true
-})
-
 </script>
