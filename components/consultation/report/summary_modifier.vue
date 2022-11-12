@@ -1,26 +1,10 @@
 <template>
 	<form @submit.prevent="renewSummary">
-		<SelectableOptionsField
-			v-model="chosenSemester"
-			class="date-range"
-			label="Date range:"
-			:options="selectableSemesters"/>
-		<label v-if="mustUseCustomRange">
-			<span>
-				Begin:
-			</span>
-			<DateSelector
-				v-model="rangeBegin"
-				class="date"/>
-		</label>
-		<label v-if="mustUseCustomRange">
-			<span>
-				End:
-			</span>
-			<DateSelector
-				v-model="rangeEnd"
-				class="date"/>
-		</label>
+		<DateRangePicker
+			v-model:range-begin="rangeBegin"
+			v-model:range-end="rangeEnd"
+			:semesters="semesters"
+			class="picker"/>
 		<div>
 			<input
 				type="submit"
@@ -52,20 +36,8 @@
 	form {
 		@apply flex flex-row flex-wrap justify-start items-center;
 
-		label {
-			@apply flex-1 flex flex-row justify-start items-center my-2;
-
-			span {
-				@apply flex-initial;
-			}
-
-			.date {
-				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5 w-50;
-			}
-		}
-
-		.date-range {
-			@apply flex-1 py-2 mr-2;
+		> .picker {
+			@apply flex-1;
 		}
 
 		> div {
@@ -79,16 +51,14 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref } from "vue"
 
-import type { SummaryRange, OptionInfo } from "$@/types/component"
+import type { SummaryRange } from "$@/types/component"
 import type {
-	DeserializedSemesterResource,
 	DeserializedSemesterListDocument
 } from "$/types/documents/semester"
 
-import DateSelector from "@/fields/date_selector.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
+import DateRangePicker from "@/helpers/filters/date_range_picker.vue"
 
 const props = defineProps<{
 	initialRangeBegin: Date,
@@ -103,26 +73,6 @@ const emit = defineEmits<CustomEvents>()
 
 const rangeBegin = ref<Date>(props.initialRangeBegin)
 const rangeEnd = ref<Date>(props.initialRangeEnd)
-const CUSTOM_RANGE = "custom"
-const chosenSemester = ref<string>(CUSTOM_RANGE)
-const selectableSemesters = computed<OptionInfo[]>(() => [
-	...props.semesters.data.map(semester => ({
-		"label": semester.name,
-		"value": semester.id
-	})),
-	{
-		"label": "Custom range",
-		"value": CUSTOM_RANGE
-	}
-])
-const mustUseCustomRange = computed(() => chosenSemester.value === CUSTOM_RANGE)
-watch(chosenSemester, newValue => {
-	const resource = props.semesters.data
-	.find(semester => semester.id === newValue) as DeserializedSemesterResource
-
-	rangeBegin.value = resource.startAt
-	rangeEnd.value = resource.endAt
-})
 
 function renewSummary() {
 	emit("renewSummary", {
