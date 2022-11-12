@@ -36,15 +36,18 @@
 	</form>
 </template>
 
+<style lang="scss">
+	@media print {
+		.summarize-print {
+			display: none;
+		}
+	}
+
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/variables.scss";
 	@import "@styles/btn.scss";
-
-	@media print {
-		form {
-			@apply hidden;
-		}
-	}
 
 	form {
 		@apply flex flex-row flex-wrap justify-start items-center;

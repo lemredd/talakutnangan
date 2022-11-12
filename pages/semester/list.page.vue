@@ -55,7 +55,7 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 
-const isLoaded = ref<boolean>(false)
+const isLoaded = ref<boolean>(true)
 const list = ref<DeserializedSemesterResource[]>(
 	pageProps.semesters.data as DeserializedSemesterResource[]
 )

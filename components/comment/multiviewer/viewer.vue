@@ -172,25 +172,11 @@ const { userProfile } = pageProps
 
 const hasRenewedVote = ref<boolean>(true)
 const mayVoteComment = computed<boolean>(() => {
-	const user = props.modelValue.user as DeserializedUserDocument<"department">
-	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
-	]) && user.data.id === userProfile.data.id
-
-	const departmentID = user.data.department.data.id
-	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
-		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-			VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
-		]) && user.data.department.data.id === departmentID
-
-	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
-		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-			VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
-		])
-
-	const isPermitted = isLimitedPersonalScope
-	|| isLimitedUpToDepartmentScope
-	|| isLimitedUpToGlobalScope
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+		VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
+		VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+	])
 
 	return isPermitted && !props.modelValue.deletedAt
 })
@@ -331,10 +317,20 @@ async function switchVote(newRawVote: string): Promise<void> {
 		}).then(() => {
 			vote.value = newVote
 		})
-	} else if (newVote === "abstain") {
-		await voteFetcher.archive([ voteID.value as string ]).then(() => {
-			vote.value = newVote
-		})
+	} else if (newVote === "abstain" || currentVote === "abstain") {
+		if (newVote === "upvote" || currentVote === "abstain") {
+			await voteFetcher.update(voteID.value as string, {
+				"kind": "upvote"
+			}).then(() => {
+				vote.value = "upvote"
+			})
+		} else if (newVote === "downvote") {
+			await voteFetcher.update(voteID.value as string, {
+				"kind": "downvote"
+			}).then(() => {
+				vote.value = "downvote"
+			})
+		}
 	} else {
 		await voteFetcher.update(voteID.value as string, {
 			"kind": newVote

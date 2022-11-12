@@ -3,12 +3,17 @@
 	border-radius: 3px;
 	padding: .25em 1em;
 
-	color: white;
 	font-size: smaller;
 	width: fit-content;
 
 	&.error {
 		@apply bg-red-500;
+	}
+
+	&.warning {
+		$width: 5px;
+		@apply border border-yellow-300 border-width-$width;
+
 	}
 
 	&.success {

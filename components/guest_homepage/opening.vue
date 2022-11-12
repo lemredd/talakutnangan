@@ -7,7 +7,7 @@
 			</template>
 			<template #details>
 				<p>
-					Have a question? have them answered through our consultation system.
+					Have any questions? Get them answered through our consultation system.
 				</p>
 
 				<p class="opening-redirector">
@@ -30,7 +30,7 @@
 			</template>
 			<template #details>
 				<p>
-					Interaction for everyone, made easy.
+					Interaction for everyone is made easy.
 				</p>
 
 				<p class="opening-redirector">

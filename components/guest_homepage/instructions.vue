@@ -7,7 +7,7 @@
 		<div class="instructions-container">
 			<ul class="instructions-list">
 				<li class="instruction-item">
-					<p>In Consultations, the Student will create a consult and type the name of an employee.</p>
+					<p>In Consultations, the Student will create a consultation and type an employee's name.</p>
 				</li>
 				<li class="instruction-item">
 					<p>Students can specify the reasons.</p>
@@ -19,7 +19,7 @@
 					<p>Students and Employees can interact on chat in consultations.</p>
 				</li>
 				<li class="instruction-item">
-					<p>Students and Employees can send documents, videos, and pictures during their consultation.</p>
+					<p>Students and Employees can send documents, videos, and pictures during consultation.</p>
 				</li>
 				<li class="instruction-item">
 					<p>Students and Employees also can use Video-Calling.</p>
@@ -29,7 +29,7 @@
 				</li>
 				<li class="instruction-item">
 					<p>
-						Consultations will end automatically after 5 minutes of inactivity in every consultation that was started.
+						Consultations will end automatically after 5 minutes of inactivity in every talk that was started.
 					</p>
 				</li>
 
@@ -49,7 +49,7 @@
 	</div>
 	<div class="instruction forum">
 		<h1 class="instruction-header">
-			What are the features in forum?
+			What are the features of the forum?
 		</h1>
 		<div class="instructions-container">
 			<ul class="instructions-list">

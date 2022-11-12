@@ -5,6 +5,9 @@
 		</template>
 
 		<template #default>
+			<p class="status-messages warning">
+				* Names are case-sensitive.
+			</p>
 			<SearchableChip
 				v-model="selectedConsultants"
 				class="consultant required"
@@ -100,7 +103,8 @@
 						v-model="forceCreate"
 						type="checkbox"
 						class="warning-message"/>
-					Force create?
+					I understand that this consultation may not
+					start right away on the specified schedule above.
 				</label>
 			</div>
 			<p v-if="hasConflicts">
@@ -129,6 +133,7 @@
 
 <style lang="scss">
 @import "@styles/btn.scss";
+@import "@styles/status_messages.scss";
 
 .btn{
   border: none;

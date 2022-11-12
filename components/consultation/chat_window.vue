@@ -13,11 +13,16 @@
 			:chat-messages="chatMessages"
 			:remaining-time="remainingTime"
 			:received-errors="receivedErrors"
+			:is-action-taken-overlay-shown="isActionTakenOverlayShown"
+			@show-action-taken-overlay="showActionTakenOverlay"
+			@hide-action-taken-overlay="hideActionTakenOverlay"
 			@finish-consultation="finishConsultation"/>
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
 				<p class="consultation-details">
-					<strong>This is a {{ age }} consultation.</strong>
+					<strong>
+						This is {{ age }} consultation.
+					</strong>
 					Here are some additional details.
 				</p>
 				<ul class="selected-consultation-additional-details">
@@ -88,8 +93,7 @@
 			}
 
 			ul.selected-consultation-additional-details {
-				@apply bg-true-gray-600 border border-true-gray-600 rounded-md p-5;
-				@apply dark:bg-transparent;
+				@apply bg-gray-400 bg-opacity-10 border border-gray-400 rounded-md p-5;
 				@apply my-5 w-max mx-auto;
 			}
 		}
@@ -108,12 +112,14 @@ import type {
 
 import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
+import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
 import UserController from "@/consultation/chat_window/user_controller.vue"
@@ -156,8 +162,24 @@ function toggleConsultationList() {
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
+const {
+	willSoonStart,
+	willStart,
+	isOngoing,
+	isAutoTerminated,
+	isCanceled,
+	isDone
+} = makeConsultationStates(props)
 const consultationID = computed<string>(() => consultation.value.id)
-const consultationStatus = computed<string>(() => consultation.value.status)
+const consultationStatus = computed<string>(() => {
+	if (willSoonStart.value) return "Will soon start"
+	if (willStart.value) return "Will start in a few minutes"
+	if (isOngoing.value) return "Ongoing"
+	if (isAutoTerminated.value) return "Auto-terminated"
+	if (isCanceled.value) return "Canceled"
+	if (isDone.value) return "Done"
+	return "Error"
+})
 
 const remainingMilliseconds = ref<number>(0)
 const remainingTime = computed<FullTime>(() => convertMStoTimeObject(remainingMilliseconds.value))
@@ -176,11 +198,16 @@ function changeTime(
 const receivedErrors = ref<string[]>([])
 
 const age = computed<string>(() => {
-	if (consultation.value.finishedAt) return "old"
-	return "new"
+	if (consultation.value.finishedAt) return "an old"
+	return "a new"
 })
 const actionTaken = ref("")
 
+const {
+	"on": showActionTakenOverlay,
+	"off": hideActionTakenOverlay,
+	"state": isActionTakenOverlayShown
+} = makeSwitch(false)
 function finishConsultation(): void {
 	const { startedAt } = consultation.value
 
@@ -228,19 +255,20 @@ function finishConsultation(): void {
 		.then(() => {
 			remainingMilliseconds.value = 0
 			emit("updatedConsultationAttributes", deserializedConsultationData)
+			hideActionTakenOverlay()
 		})
 		.catch(response => extractAllErrorDetails(response, receivedErrors))
 	}
 }
 
 function registerListeners(resource: DeserializedConsultationResource): void {
-	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
 	ConsultationTimerManager.listenConsultationTimeEvent(
 		resource,
 		"restartTime",
 		restartRemainingTime
 	)
-	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
 }
 
 function startConsultation() {

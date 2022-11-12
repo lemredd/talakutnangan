@@ -171,6 +171,8 @@ describe("Helper: Timer manager", () => {
 			"finish",
 			mockFinish
 		)
+		// Trigger next interval twice as listening of new consultation buffers at least 2 seconds.
+		ConsultationTimerManager.nextInterval()
 		ConsultationTimerManager.nextInterval()
 		ConsultationTimerManager.travelTimeTo(
 			consultationResource,
@@ -178,6 +180,6 @@ describe("Helper: Timer manager", () => {
 		)
 
 		expect(mockFinish).toHaveBeenCalled()
-		expect(mockConsumedTime).not.toHaveBeenCalled()
+		expect(mockConsumedTime).toHaveBeenCalledTimes(1)
 	})
 })

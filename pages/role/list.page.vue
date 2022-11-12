@@ -66,7 +66,7 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 
-const isLoaded = ref<boolean>(false)
+const isLoaded = ref<boolean>(true)
 const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument

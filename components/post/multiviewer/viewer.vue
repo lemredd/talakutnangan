@@ -71,7 +71,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p>
+		<p class="post-content">
 			{{ post.content }}
 		</p>
 		<div v-if="hasExistingAttachments">
@@ -112,6 +112,10 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.post-content {
+		word-break: normal;
+	}
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;

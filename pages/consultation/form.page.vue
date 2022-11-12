@@ -60,7 +60,7 @@
 
 			<div class="col">
 				<h2>
-					Actual Start:
+					Started At:
 				</h2>
 				<h6 id="actual-start" class="actual-start">
 					{{ startedAt }}
@@ -69,7 +69,7 @@
 
 			<div class="col">
 				<h2>
-					Actual finish:
+					Finished At:
 				</h2>
 				<h6 id="actual-finish" class="actual-finish">
 					{{ finishedAt }}
@@ -121,12 +121,26 @@
 		</div>
 	</section>
 
-	<section v-else class="signatures">
-		Signatures will show here once the consultation has been finished.
+	<section v-else class="signatures not-finished">
+		<span class="status-messages warning">
+			Signatures will show here once the consultation has been finished.
+		</span>
 	</section>
 </template>
 
+<style>
+	body, #app {
+		min-height: 100vh;
+	}
+
+	#app {
+		@apply py-8 px-8
+	}
+</style>
+
 <style scoped lang="scss">
+	@import "@styles/status_messages.scss";
+
 	@page {
 		margin: 0;
 	}
@@ -142,8 +156,11 @@
 	h6 {
 		@apply border-b mb-5;
 	}
-	.signatures img { max-width: 120px; }
+	.signatures {
+		@apply mt-12;
 
+		img { max-width: 120px; }
+	}
 	.schedules{
 		@apply flex justify-between max-w-900px;
 	}

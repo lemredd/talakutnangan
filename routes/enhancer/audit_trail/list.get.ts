@@ -29,20 +29,20 @@ export default class extends PageMiddleware {
 	async getPageProps(request: AuthenticatedRequest): Promise<Serializable> {
 		const manager = new Manager(request)
 
-		const pageProps = {
-			"audit_trails": await manager.list({
-				"filter": {
-					"existence": "exists",
-					"slug": ""
-				},
-				"page": {
-					"limit": 10,
-					"offset": 0
-				},
-				"sort": [ "createdAt" ]
-			})
-		}
+		const auditTrails = await manager.list({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": 10,
+				"offset": 0
+			},
+			"sort": [ "-createdAt" ]
+		})
 
-		return pageProps
+		return {
+			auditTrails
+		}
 	}
 }

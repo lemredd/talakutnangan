@@ -107,10 +107,8 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		// There are two errors for finished at due to `or` validator
-		expect(body).toHaveLength(3)
+		expect(body).toHaveLength(2)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.finishedAt")
-		expect(body).toHaveProperty("1.source.pointer", "data.attributes.finishedAt")
-		expect(body).toHaveProperty("2.source.pointer", "data.attributes.scheduledStartAt")
+		expect(body).toHaveProperty("1.source.pointer", "data.attributes.scheduledStartAt")
 	})
 })

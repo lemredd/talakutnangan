@@ -42,7 +42,7 @@
 
 	@screen md {
 		.container {
-			.overlay { display: none }
+			.overlay { @apply bg-transparent; }
 
 			.dropdown-container {
 				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max py-1 px-2;

@@ -15,6 +15,7 @@ import {
 } from "jsonapi-fractal"
 import {
 	Attributes as BaseAttributes,
+	CreateOptions as BaseCreateOptions,
 	UpdateOptions as BaseUpdateOptions,
 	DestroyOptions as BaseDestroyOptions,
 	RestoreOptions as BaseRestoreOptions,
@@ -29,6 +30,7 @@ export type Model = BaseModel
 export type IncludeOptions = BaseIncludeOptions
 export type FindOptions<T> = BaseFindOptions<T>
 export type WhereOptions<T> = BaseWhereOptions<T>
+export type CreateOptions<T> = BaseCreateOptions<T>
 export type UpdateOptions<T> = BaseUpdateOptions<T>
 export type DestroyOptions<T> = BaseDestroyOptions<T>
 export type RestoreOptions<T> = BaseRestoreOptions<T>

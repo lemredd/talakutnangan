@@ -40,7 +40,7 @@
 					<span class="material-icons">
 						location_pin
 					</span>
-					Rizal St., Barangay Doroles, Mabalacat City, Pampanga
+					Rizal St., Barangay Dolores, Mabalacat City, Pampanga
 				</li>
 				<li>
 					<span class="material-icons">
