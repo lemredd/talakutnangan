@@ -29,8 +29,9 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				:template-path="READ_USER"
 				:headers="headers"
-				:filtered-list="list.data"
+				:list="tableData"
 				:may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
@@ -46,16 +47,17 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref, watch } from "vue"
+import { computed, inject, onMounted, ref, watch, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { OptionInfo } from "$@/types/component"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedUserListDocument, DeserializedUserProfile } from "$/types/documents/user"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { READ_USER } from "$/constants/template_page_paths"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -111,7 +113,22 @@ const determineTitle = computed(() => {
 })
 
 const headers = [ "Name", "E-mail", "Role", "Department" ]
-const list = ref<DeserializedUserListDocument>(pageProps.users)
+const list = ref<DeserializedUserListDocument<"roles"|"department">>(
+	pageProps.users as DeserializedUserListDocument<"roles"|"department">
+)
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.data.map(resource => ({
+		"data": [
+			resource.name,
+			resource.email,
+			resource.roles.data[0].name,
+			resource.department.data.acronym
+		],
+		"id": resource.id
+	}))
+
+	return data
+})
 
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
@@ -147,7 +164,7 @@ const slug = ref("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 async function fetchUserInfo() {
-	await loadRemainingResource(list, fetcher, () => ({
+	await loadRemainingResource(list as Ref<DeserializedUserListDocument>, fetcher, () => ({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
 				? chosenDepartment.value

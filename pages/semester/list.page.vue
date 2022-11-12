@@ -20,8 +20,9 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				:template-path="READ_SEMESTER"
 				:headers="headers"
-				:filtered-list="list"
+				:list="tableData"
 				:may-edit="mayEditSemester"/>
 		</template>
 	</ResourceManager>
@@ -35,9 +36,11 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TableData } from "$@/types/component"
 import type { DeserializedSemesterResource } from "$/types/documents/semester"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
@@ -45,6 +48,7 @@ import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -63,6 +67,19 @@ const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterResource[]>(
 	pageProps.semesters.data as DeserializedSemesterResource[]
 )
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.map(resource => ({
+		"data": [
+			resource.name,
+			resource.semesterOrder,
+			formatToCompleteFriendlyTime(resource.startAt),
+			formatToCompleteFriendlyTime(resource.endAt)
+		],
+		"id": resource.id
+	}))
+
+	return data
+})
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")

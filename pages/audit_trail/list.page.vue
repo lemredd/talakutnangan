@@ -15,7 +15,7 @@
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
 				:headers="headers"
-				:filtered-list="list"
+				:list="tableData"
 				:may-edit="false"/>
 		</template>
 	</ResourceManager>
@@ -26,9 +26,10 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch } from "vue"
+import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TableData } from "$@/types/component"
 import type { DeserializedAuditTrailResource } from "$/types/documents/audit_trail"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
@@ -37,6 +38,7 @@ import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/audit_trail"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -55,6 +57,18 @@ const headers = [ "Action name", "Caused by", "Done last" ]
 const list = ref<DeserializedAuditTrailResource[]>(
 	pageProps.audit_trails.data as DeserializedAuditTrailResource[]
 )
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.map(resource => ({
+		"data": [
+			resource.actionName,
+			resource.user.data.name,
+			formatToCompleteFriendlyTime(resource.createdAt)
+		],
+		"id": resource.id
+	}))
+
+	return data
+})
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")

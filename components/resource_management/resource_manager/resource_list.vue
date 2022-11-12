@@ -1,118 +1,25 @@
 <template>
 	<div class="resource-list">
-		<ResourceTable v-if="filteredList.length">
+		<ResourceTable v-if="list.length">
 			<template #table-headers>
 				<th v-for="header in headers" :key="header">
 					{{ header }}
 				</th>
 			</template>
 
-			<template v-if="resourceType === 'user'" #table-body>
+			<template #table-body>
 				<tr
-					v-for="resource in filteredList"
+					v-for="resource in list"
 					:key="resource.id"
 					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>{{ resource.email }}</td>
-					<td>{{ resource.roles.data[0].name }}</td>
-					<td :title="resource.department.data.fullName">
-						{{ resource.department.data.acronym }}
+					<td v-for="(data, i) in resource.data" :key="i">
+						{{ data }}
 					</td>
 					<td>
 						<a
 							v-if="mayEdit"
-							:href="`read/${resource.id}`"
+							:href="makePath(resource.id)"
 							class="read-resource-btn btn"
-							type="button">
-							edit
-						</a>
-					</td>
-				</tr>
-			</template>
-
-			<template v-else-if="resourceType === 'semester'" #table-body>
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.name }}</td>
-					<td>
-						{{
-							resource.semesterOrder === 'first' ? 'First' :
-							resource.semesterOrder === 'second' ? 'Second' :
-							'Third'
-						}}
-					</td>
-					<td>{{ formatToCompleteFriendlyTime(resource.startAt) }}</td>
-					<td>{{ formatToCompleteFriendlyTime(resource.endAt) }}</td>
-					<td>
-						<a
-							v-if="mayEdit"
-							:href="`read/${resource.id}`"
-							class="read-resource-btn btn"
-							type="button">
-							edit
-						</a>
-					</td>
-				</tr>
-			</template>
-
-			<template v-else-if="resourceType === 'department'" #table-body>
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.fullName }}</td>
-					<td>{{ resource.acronym }}</td>
-					<td>
-						{{
-							resource.mayAdmit ? "Yes": "No"
-						}}
-					</td>
-					<td>
-						<a
-							v-if="mayEdit"
-							:href="`read/${resource.id}`"
-							class="read-resource-btn btn"
-							type="button">
-							edit
-						</a>
-					</td>
-				</tr>
-			</template>
-
-			<template v-else-if="resourceType === 'audit_trail'" #table-body>
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>{{ resource.actionName }}</td>
-					<td>{{ resource.user.data.name }}</td>
-					<td>{{ formatToCompleteFriendlyTime(resource.createdAt) }}</td>
-				</tr>
-			</template>
-
-			<template v-else #table-body>
-				<tr
-					v-for="resource in filteredList"
-					:key="resource.id"
-					class="resource-row">
-					<td>
-						{{
-							resourceType === "role"
-								? resource.name
-								: `${resource.fullName} (${resource.acronym})`
-						}}
-					</td>
-					<td>
-						{{
-							pluralize("user", resource.meta ? resource.meta.userCount : 0)
-						}}
-					</td>
-					<td>
-						<a
-							:href="`read/${resource.id}`"
-							class="btn"
 							type="button">
 							edit
 						</a>
@@ -160,9 +67,7 @@
 
 <script setup lang="ts">
 import type { TableData } from "$@/types/component"
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
-import pluralize from "$/string/pluralize"
 import specializePath from "$/helpers/specialize_path"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"

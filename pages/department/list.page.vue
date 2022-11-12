@@ -20,8 +20,9 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				:template-path="READ_DEPARTMENT"
 				:headers="headers"
-				:filtered-list="list.data"
+				:list="tableData"
 				:may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
@@ -35,15 +36,18 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TableData } from "$@/types/component"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import { READ_DEPARTMENT } from "$/constants/template_page_paths"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
+import pluralize from "$/string/pluralize"
 import Fetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
@@ -63,10 +67,23 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
-const headers = [ "Name", "Acronym", "May admit" ]
+const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.data.map(resource => ({
+		"data": [
+			resource.fullName,
+			resource.acronym,
+			resource.mayAdmit ? "Yes" : "No",
+			pluralize("user", resource.meta ? resource.meta.userCount : 0)
+		],
+		"id": resource.id
+	}))
+
+	return data
+})
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
