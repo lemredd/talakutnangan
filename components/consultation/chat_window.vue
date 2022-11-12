@@ -245,13 +245,13 @@ function finishConsultation(): void {
 }
 
 function registerListeners(resource: DeserializedConsultationResource): void {
-	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
 	ConsultationTimerManager.listenConsultationTimeEvent(
 		resource,
 		"restartTime",
 		restartRemainingTime
 	)
-	ConsultationTimerManager.listenConsultationTimeEvent(resource, "consumedTime", changeTime)
+	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
 }
 
 function startConsultation() {
