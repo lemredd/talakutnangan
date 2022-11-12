@@ -39,7 +39,7 @@ export default class ConsultationTimerManager extends RequestEnvironment {
 			let differenceFromNow = calculateMillisecondDifference(new Date(), resource.startedAt)
 			const extraMilliseconds = differenceFromNow % convertTimeToMilliseconds("00:00:01")
 			differenceFromNow -= extraMilliseconds
-			differenceFromNow = Math.max(0, differenceFromNow)
+			differenceFromNow = Math.max(convertTimeToMilliseconds("00:00:01"), differenceFromNow)
 			ConsultationTimerManager.listeners.push({
 				"consultation": resource,
 				"consultationListeners": {
