@@ -10,10 +10,11 @@
 					View consultation form
 				</a>
 				<a
-					v-if="isCurrentUserConsultant"
 					href="#"
 					class="additional-control show-action-taken-overlay-btn"
-					@click="showActionTakenOverlay">Finish consultation</a>
+					@click="showActionTakenOverlay">
+					{{ finishOrCancel }} consultation
+				</a>
 			</div>
 		</template>
 	</Dropdown>
@@ -76,6 +77,8 @@ function showActionTakenOverlay() {
 	emit("showActionTakenOverlay")
 }
 
+const { isCurrentUserConsultant } = props
+const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
 const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
 	"id": props.consultationId
 })
