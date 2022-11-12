@@ -47,7 +47,7 @@
 							{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}
 						</td>
 
-						<td class="consultation">
+						<td class="consultations">
 							<p
 								v-for="consultation in sumEntry.consultations.data"
 								:key="consultation.id">
@@ -95,14 +95,10 @@
 		@apply mb-5;
 	}
 
-	table, th, thead, tfoot, td {
-		border:2px solid;
-		padding: 8px;
+	table, thead, tfoot, td, th {
+		@apply p-4;
+		border: 2px solid;
 		text-align: center;
-
-	}
-	.consultations {
-		@apply flex flex-col;
 	}
 </style>
 
