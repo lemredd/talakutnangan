@@ -13,7 +13,7 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list" :may-edit="false"/>
+			<ResourceList :filtered-list="list.data" :may-edit="false"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -23,10 +23,11 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch } from "vue"
+import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedAuditTrailResource } from "$/types/documents/audit_trail"
+import type { ResourceCount } from "$/types/documents/base"
+import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
@@ -41,20 +42,23 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
-	| "audit_trails"
+	| "auditTrails"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
-const list = ref<DeserializedAuditTrailResource[]>(
-	pageProps.audit_trails.data as DeserializedAuditTrailResource[]
+const list = ref(
+	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
 
+const fetcher = new Fetcher()
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+
 async function fetchAuditTrailInfos() {
 	await fetcher.list({
 		"filter": {
@@ -63,17 +67,26 @@ async function fetchAuditTrailInfos() {
 		},
 		"page": {
 			"limit": 10,
-			"offset": list.value.length
+			"offset": list.value.data.length
 		},
-		"sort": [ "id" ]
+		"sort": [ "-createdAt" ]
 	// eslint-disable-next-line consistent-return
 	})
-	.then(response => {
-		const deserializedData = response.body.data as DeserializedAuditTrailResource[]
+	.then(({ body }) => {
+		const {
+			"data": deserializedData,
+			meta
+		} = body
 
+		const castedMeta = meta as ResourceCount
 		if (!deserializedData.length) return Promise.resolve()
 
-		list.value = [ ...list.value, ...deserializedData ]
+		list.value = {
+			"data": [ ...list.value.data, ...deserializedData ],
+			"meta": {
+				"count": castedMeta.count
+			}
+		}
 
 		return Promise.resolve()
 	})
@@ -83,8 +96,13 @@ async function fetchAuditTrailInfos() {
 }
 
 async function refetchAuditTrail() {
-	list.value = []
 	isLoaded.value = false
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	await fetchAuditTrailInfos()
 }
 
@@ -93,4 +111,5 @@ watch([ slug, existence ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
 onMounted(() => {
 	isLoaded.value = true
 })
+
 </script>
