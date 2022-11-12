@@ -6,15 +6,15 @@
  */
 export const personName = /^([A-Z\u{C0}-\u{D6}\u{D8}-\u{DE}][a-zA-Z\-'\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{FF}]+ )+[A-Z\u{C0}-\u{D6}\u{D8}-\u{DE}][a-zA-Z\-'\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{FF}]+$/u
 export const personNameDescription
-= "be properly-cased name with Latin characters, dash, or apostrophe"
+= "be properly-cased complete name with Latin characters, dash, or apostrophe"
 
 export const chatMessageKind = /^[a-z_]+$/u
 export const chatMessageKindDescription
 = "have one or more, lowercase characters or underscore only"
 
-export const departmentFullName = /([A-Z][a-zA-Z]+ )+[A-Z][a-zA-Z]+$/u
+export const departmentFullName = /^[A-Z][a-zA-Z]{2,} ([a-zA-Z]{2,} )*[A-Z][a-zA-Z]{2,}$/u
 export const departmentFullNameDescription
-= "be a properly-cased alphabetic name with one or more spaces"
+= "be an alphabetic name with one or more spaces. First and last words should be in title case."
 
 export const departmentAcronym = /([A-Z][a-z]*)+/u
 export const departmentAcronymDescription = "be an uppercased alphetic name with one or more spaces"
