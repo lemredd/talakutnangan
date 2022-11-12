@@ -3,7 +3,7 @@
 		:key="consultation.id"
 		class="consultation"
 		:class="{ 'active': mustBeActive }"
-		@click="pickConsultation(consultation.id)">
+		@click="pickConsultation">
 		<h3 class="consultation-title font-bold mb-3;">
 			<span class="number-symbol">#{{ consultation.id }}</span>
 			{{ consultation.reason }}
@@ -81,6 +81,11 @@ const props = defineProps<{
 	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
 }>()
 
+const consultationID = computed<string>(() => props.consultation.id)
+
+const readURL = computed<string>(() => specializePath("/consultation/read/:id", {
+	"id": consultationID.value
+}))
 const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
 	const activities = props.chatMessageActivities.data.filter(
 		activity => activity.consultation.data.id === props.consultation.id
@@ -96,7 +101,7 @@ const profilePictures = computed<DeserializedChatMessageActivityResource<"user">
 })
 
 const mustBeActive = computed<boolean>(
-	() => pageContext.urlPathname === `/consultation/${props.consultation.id}`
+	() => pageContext.urlPathname === readURL.value
 )
 
 const previewMessageIndex = computed<number>(() => props.previewMessages.data.findIndex(
@@ -107,9 +112,7 @@ const previewMessagge = computed<DeserializedChatMessageResource<"user">>(
 	() => props.previewMessages.data[previewMessageIndex.value]
 )
 
-function pickConsultation(consultationID: string) {
-	assignPath(specializePath("/consultation/read/:id", {
-		"id": consultationID
-	}))
+function pickConsultation() {
+	assignPath(readURL.value)
 }
 </script>
