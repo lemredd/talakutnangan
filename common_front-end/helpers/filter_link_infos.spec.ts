@@ -58,6 +58,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -166,6 +167,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -234,6 +236,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -336,6 +339,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -410,6 +414,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -478,6 +483,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -598,6 +604,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -673,6 +680,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -771,6 +779,7 @@ describe("Helper: Filter Link Infos", () => {
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
+						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
