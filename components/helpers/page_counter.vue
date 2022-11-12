@@ -8,6 +8,8 @@
 			v-for="pageCount in pageLength"
 			:key="pageCount"
 			class="page-count-btn"
+			@click="updateOffset(pageCount)">
+			{{ pageCount }}
 		</button>
 		<button class="movement-btn next-btn">
 			<span class="text">Next</span>
@@ -35,12 +37,26 @@ import { computed } from "vue"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
+type CustomEvents = {
+	(eventName: "update:modelValue", newValue: number): void
+}
+const emit = defineEmits<CustomEvents>()
+
 type DefinedProps = {
 	maxCount: number
+	offset: number
 }
 const props = defineProps<DefinedProps>()
 
 const pageLength = computed(
 	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
 )
+
+const offset = computed({
+	get() { return props.offset },
+	set(newValue: number) { emit("update:modelValue", newValue) }
+})
+function updateOffset(selectedOffset: number) {
+	offset.value = selectedOffset * DEFAULT_LIST_LIMIT - DEFAULT_LIST_LIMIT
+}
 </script>
