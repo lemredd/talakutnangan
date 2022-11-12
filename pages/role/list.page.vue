@@ -20,7 +20,10 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list.data" :may-edit="mayEditRole"/>
+			<ResourceList
+				:headers="headers"
+				:filtered-list="list.data"
+				:may-edit="mayEditRole"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -67,6 +70,7 @@ const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 
 const isLoaded = ref<boolean>(false)
+const headers = [ "Name", "no. of users", "" ]
 const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument

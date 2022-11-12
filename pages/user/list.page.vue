@@ -28,7 +28,10 @@
 
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list.data" :may-edit="mayEditUser"/>
+			<ResourceList
+				:headers="headers"
+				:filtered-list="list.data"
+				:may-edit="mayEditUser"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -107,7 +110,9 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
+const headers = [ "Name", "E-mail", "Role", "Department" ]
 const list = ref<DeserializedUserListDocument>(pageProps.users)
+
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
 )

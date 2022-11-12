@@ -19,7 +19,10 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list" :may-edit="mayEditSemester"/>
+			<ResourceList
+				:headers="headers"
+				:filtered-list="list"
+				:may-edit="mayEditSemester"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -56,6 +59,7 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
+const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterResource[]>(
 	pageProps.semesters.data as DeserializedSemesterResource[]
 )

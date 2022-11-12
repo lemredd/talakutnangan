@@ -13,7 +13,10 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list" :may-edit="false"/>
+			<ResourceList
+				:headers="headers"
+				:filtered-list="list"
+				:may-edit="false"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -48,6 +51,7 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
+const headers = [ "Action name", "Caused by", "Done last" ]
 const list = ref<DeserializedAuditTrailResource[]>(
 	pageProps.audit_trails.data as DeserializedAuditTrailResource[]
 )

@@ -19,7 +19,10 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list.data" :may-edit="mayEditDepartment"/>
+			<ResourceList
+				:headers="headers"
+				:filtered-list="list.data"
+				:may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -60,6 +63,7 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const isLoaded = ref<boolean>(false)
+const headers = [ "Name", "Acronym", "May admit" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )

@@ -2,7 +2,7 @@
 	<div class="resource-list">
 		<ResourceTable v-if="filteredList.length">
 			<template #table-headers>
-				<th v-for="header in tableHeaders" :key="header">
+				<th v-for="header in headers" :key="header">
 					{{ header }}
 				</th>
 			</template>
@@ -175,28 +175,4 @@ const { filteredList } = defineProps<{
 }>()
 
 const resourceType = computed(() => filteredList[0].type)
-
-const tableHeaders = computed(() => {
-	let headers: string[] = []
-	if (resourceType.value === "semester") {
-		headers = [ "Name", "Order", "Start at", "End at" ]
-	} else if (resourceType.value === "user") {
-		headers = [
-			"Name", "E-mail", "Role", "Department"
-		]
-	} else if (resourceType.value === "department") {
-		headers = [
-			"Name", "Acronym", "May admit"
-		]
-	} else if (resourceType.value === "audit_trail") {
-		headers = [
-			"Action name", "Caused by", "Done last"
-		]
-	} else {
-		headers = [ "Name", "no. of users", "" ]
-	}
-
-
-	return headers
-})
 </script>
