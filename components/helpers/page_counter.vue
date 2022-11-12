@@ -7,7 +7,8 @@
 		<button
 			v-for="pageCount in pageLength"
 			:key="pageCount"
-			class="page-count-btn"
+			class="page-count-btn btn"
+			:class="determineActiveness(pageCount)"
 			@click="updateOffset(pageCount)">
 			{{ pageCount }}
 		</button>
@@ -19,15 +20,22 @@
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
 	.page-counter {
 		@apply flex;
 
 		.movement-btn {
 			@apply flex items-center;
+
+			&.previous-btn { @apply mr-2; }
+			&.next-btn { @apply ml-3; }
 		}
 
 		.page-count-btn {
-			@apply px-4;
+			@apply mx-1;
+			&.btn-inactive {
+				@apply bg-transparent;
+			}
 		}
 	}
 </style>
@@ -53,10 +61,21 @@ const pageLength = computed(
 )
 
 const offset = computed({
-	get() { return props.offset },
+	get() { return props.modelValue },
 	set(newValue: number) { emit("update:modelValue", newValue) }
 })
 function updateOffset(selectedOffset: number) {
 	offset.value = (selectedOffset - 1) * DEFAULT_LIST_LIMIT
+}
+
+function determineActiveness(pageCountOfButton: number) {
+	const classes = []
+	const pageCountOfOffset = props.modelValue / DEFAULT_LIST_LIMIT + 1
+	const isActive = pageCountOfButton === pageCountOfOffset
+
+	if (isActive) classes.push("btn-primary")
+	else classes.push("btn-inactive")
+
+	return classes.join(" ")
 }
 </script>
