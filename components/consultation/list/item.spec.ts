@@ -1,6 +1,7 @@
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+import { READ_CONSULTATION } from "$/constants/template_page_paths"
 
 import Stub from "$/singletons/stub"
 import specializePath from "$/helpers/specialize_path"
@@ -49,7 +50,7 @@ describe("Component: consultation/list/item", () => {
 		const previousCalls = Stub.consumePreviousCalls()
 		expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 		expect(previousCalls).toHaveProperty("0.arguments", [
-			specializePath("/consultation/read/:id", {
+			specializePath(READ_CONSULTATION, {
 				id
 			})
 		])

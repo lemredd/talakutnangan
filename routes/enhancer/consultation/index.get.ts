@@ -3,6 +3,8 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { ConsultationListDocument } from "$/types/documents/consultation"
 
+import { READ_CONSULTATION } from "$/constants/template_page_paths"
+
 import Policy from "!/bases/policy"
 import Middleware from "!/bases/middleware"
 import Manager from "%/managers/consultation"
@@ -50,7 +52,7 @@ export default class extends PageMiddleware {
 				}
 
 				return {
-					"location": URLMaker.makeURLFromPath("/consultation/read/:id", {
+					"location": URLMaker.makeURLFromPath(READ_CONSULTATION, {
 						"id": consultations.data[0].id
 					})
 				}

@@ -65,6 +65,8 @@ import type {
 	DeserializedConsultationResource
 } from "$/types/documents/consultation"
 
+import { READ_CONSULTATION } from "$/constants/template_page_paths"
+
 import assignPath from "$@/external/assign_path"
 import makeUniqueBy from "$/helpers/make_unique_by"
 import specializePath from "$/helpers/specialize_path"
@@ -83,7 +85,7 @@ const props = defineProps<{
 
 const consultationID = computed<string>(() => props.consultation.id)
 
-const readURL = computed<string>(() => specializePath("/consultation/read/:id", {
+const readURL = computed<string>(() => specializePath(READ_CONSULTATION, {
 	"id": consultationID.value
 }))
 const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
