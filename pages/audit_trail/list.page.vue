@@ -38,7 +38,8 @@
 import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData, ResourceCount } from "$/types/documents/base"
+import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"

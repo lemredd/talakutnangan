@@ -25,7 +25,7 @@ export const READ_CONSULTATION = "/consultation/read/:id"
 /**
  * Requires `id` of the post
  */
- export const READ_POST = "/post/read/:id"
+export const READ_POST = "/post/read/:id"
 
 /**
  * Requires `id` of the user
