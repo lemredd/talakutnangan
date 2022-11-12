@@ -103,7 +103,8 @@
 						v-model="forceCreate"
 						type="checkbox"
 						class="warning-message"/>
-					Force create?
+					I understand that this consultation may not
+					start right away on the specified schedule above.
 				</label>
 			</div>
 			<p v-if="hasConflicts">
