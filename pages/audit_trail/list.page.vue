@@ -36,8 +36,10 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/audit_trail"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -50,12 +52,11 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
-const isLoaded = ref<boolean>(true)
+const fetcher = new Fetcher()
 const list = ref(
 	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
-
-const fetcher = new Fetcher()
+const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
@@ -63,38 +64,25 @@ const castedResourceListMeta = list.value.meta as ResourceCount
 const resourceCount = computed(() => castedResourceListMeta.count)
 const offset = ref(0)
 async function fetchAuditTrailInfos() {
-	await fetcher.list({
-		"filter": {
-			"existence": existence.value,
-			"slug": slug.value
-		},
-		"page": {
-			"limit": 10,
-			"offset": offset.value
-		},
-		"sort": [ "-createdAt" ]
-	// eslint-disable-next-line consistent-return
-	})
-	.then(({ body }) => {
-		const {
-			"data": deserializedData,
-			meta
-		} = body
-
-		const castedMeta = meta as ResourceCount
-		if (!deserializedData.length) return Promise.resolve()
-
-		list.value = {
-			"data": [ ...list.value.data, ...deserializedData ],
-			"meta": {
-				"count": castedMeta.count
-			}
+	await loadRemainingResource(
+		list,
+		fetcher,
+		() => ({
+			"filter": {
+				"existence": existence.value,
+				"slug": slug.value
+			},
+			"page": {
+				"limit": 10,
+				"offset": offset.value
+			},
+			"sort": [ "-createdAt" ]
+		}),
+		{
+			"mayContinue": () => Promise.resolve(false)
 		}
-
-		return Promise.resolve()
-	})
+	)
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
-
 	isLoaded.value = true
 }
 
