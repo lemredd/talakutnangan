@@ -168,15 +168,19 @@ import specializePath from "$/helpers/specialize_path"
 import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const props = defineProps<{
-	templatePath: string
-	list: TableData[]
+	templatePath?: string
 	mayEdit: boolean
+	list: TableData[]
 	headers: string[]
 }>()
 
 function makePath(id: string): string {
-	return specializePath(props.templatePath, {
-		id
-	})
+	if (props.templatePath) {
+		return specializePath(props.templatePath, {
+			id
+		})
+	}
+
+	throw new Error("Intended to make path but does not have template path")
 }
 </script>
