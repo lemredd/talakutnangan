@@ -57,6 +57,6 @@ const offset = computed({
 	set(newValue: number) { emit("update:modelValue", newValue) }
 })
 function updateOffset(selectedOffset: number) {
-	offset.value = selectedOffset * DEFAULT_LIST_LIMIT - DEFAULT_LIST_LIMIT
+	offset.value = (selectedOffset - 1) * DEFAULT_LIST_LIMIT
 }
 </script>
