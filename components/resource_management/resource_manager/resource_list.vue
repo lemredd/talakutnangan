@@ -128,34 +128,34 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-.resource-list {
-	margin-top: 1em;
+	@import "@styles/btn.scss";
+	.resource-list {
+		margin-top: 1em;
 
-	.resource-row {
-		@apply dark:text-light-100;
-		margin: .5rem;
-		border-bottom-width: 1px;
-		padding-bottom: .5rem;
+		.resource-row {
+			@apply dark:text-light-100;
+			margin: .5rem;
+			border-bottom-width: 1px;
+			padding-bottom: .5rem;
 
-		.btn1 {
-			@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+			.btn1 {
+				@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+			}
+		}
+
+		.no-results {
+			text-align: center;
+		}
+		.btn{
+			border: none;
+			border-radius: 5px;
+			padding: 8px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 12px;
 		}
 	}
-
-	.no-results {
-		text-align: center;
-	}
-	.btn{
-		border: none;
-		border-radius: 5px;
-		padding: 8px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 12px;
-	}
-}
 </style>
 
 <script setup lang="ts">
@@ -170,7 +170,8 @@ import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const { filteredList } = defineProps<{
 	filteredList: PossibleResources[]
-	mayEdit: boolean
+	mayEdit: boolean,
+	headers: string[]
 }>()
 
 const resourceType = computed(() => filteredList[0].type)
