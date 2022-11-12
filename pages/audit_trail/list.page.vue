@@ -15,7 +15,7 @@
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList :filtered-list="list.data" :may-edit="false"/>
 			<PageCounter
-				v-model:offset="offset"
+				v-model="offset"
 				:max-count="resourceCount"/>
 		</template>
 	</ResourceManager>
@@ -70,7 +70,7 @@ async function fetchAuditTrailInfos() {
 		},
 		"page": {
 			"limit": 10,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
 		"sort": [ "-createdAt" ]
 	// eslint-disable-next-line consistent-return
@@ -109,5 +109,5 @@ async function refetchAuditTrail() {
 	await fetchAuditTrailInfos()
 }
 
-watch([ slug, existence ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
+watch([ slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
 </script>

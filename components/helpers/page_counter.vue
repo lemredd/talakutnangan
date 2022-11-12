@@ -44,7 +44,7 @@ const emit = defineEmits<CustomEvents>()
 
 type DefinedProps = {
 	maxCount: number
-	offset: number
+	modelValue: number
 }
 const props = defineProps<DefinedProps>()
 

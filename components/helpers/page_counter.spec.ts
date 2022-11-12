@@ -8,7 +8,7 @@ describe("Component: page counter", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"maxCount": 50,
-				"offset": 0
+				"modelValue": 0
 			}
 		})
 
@@ -21,7 +21,7 @@ describe("Component: page counter", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"maxCount": 48,
-				"offset": 0
+				"modelValue": 0
 			}
 		})
 
@@ -34,7 +34,7 @@ describe("Component: page counter", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"maxCount": 50,
-				"offset": 0
+				"modelValue": 0
 			}
 		})
 
