@@ -27,6 +27,26 @@ export const READ_CONSULTATION = "/consultation/read/:id"
  */
 export const READ_POST = "/post/read/:id"
 
+/**
+ * Requires `id` of the user
+ */
+export const READ_USER = "/user/read/:id"
+
+/**
+ * Requires `id` of the role
+ */
+export const READ_ROLE = "/role/read/:id"
+
+/**
+ * Requires `id` of the department
+ */
+export const READ_DEPARTMENT = "/department/read/:id"
+
+/**
+ * Requires `id` of the semester
+ */
+export const READ_SEMESTER = "/semester/read/:id"
+
 export const CONSULTATION_REPORT_PER_STUDENT = "/consultation/report/per_student"
 
 export const CONSULTATION_WEEKLY_REPORT = "/consultation/report/weekly"

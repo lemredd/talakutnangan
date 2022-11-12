@@ -13,7 +13,10 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list.data" :may-edit="false"/>
+			<ResourceList
+				:headers="headers"
+				:list="tableData"
+				:may-edit="false"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -35,6 +38,7 @@
 import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TableData } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
@@ -45,6 +49,7 @@ import Fetcher from "$@/fetchers/audit_trail"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 
 import PageCounter from "@/helpers/page_counter.vue"
@@ -59,9 +64,24 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
-const list = ref(
+
+const headers = [ "Action name", "Caused by", "Done last" ]
+const list = ref<DeserializedAuditTrailListDocument>(
 	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.data.map(resource => ({
+		"data": [
+			resource.actionName,
+			resource.user.data.name,
+			formatToCompleteFriendlyTime(resource.createdAt)
+		],
+		"id": resource.id
+	}))
+
+	return data
+})
+
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")

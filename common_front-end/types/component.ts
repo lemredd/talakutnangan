@@ -33,3 +33,8 @@ export interface RawFullTimeString {
 	minuteString: string,
 	secondString: string
 }
+
+export interface TableData {
+	id: string,
+	data: string[]
+}
