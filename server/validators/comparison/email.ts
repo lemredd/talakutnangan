@@ -5,6 +5,7 @@ import type {
 	ValidationConstraints
 } from "!/types/validation"
 
+import { MINIMUM_PASSWORD_LENGTH } from "$/constants/numerical"
 import extractEmailUsername from "$!/helpers/extract_email_username"
 
 /**
@@ -28,7 +29,7 @@ export default async function(
 		throw error
 	}
 
-	if (extractEmailUsername(state.value.trim()).length < 8) {
+	if (extractEmailUsername(state.value.trim()).length < MINIMUM_PASSWORD_LENGTH) {
 		const error = {
 			"field": constraints.field,
 			"friendlyName": constraints.friendlyName,

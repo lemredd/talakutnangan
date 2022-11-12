@@ -7,6 +7,8 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 import type {
 	Model as BaseModel,
 	ModelCtor,
+	CreationAttributes,
+	CreateOptions,
 	FindAndCountOptions,
 	FindOptions
 } from "%/types/dependent"
@@ -310,7 +312,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		Log.trace("manager", "specialized the data structure for student bulk creation")
 
 		// Create the students in bulk
-		const users = await this.model.bulkCreate(normalizedProfiles, {
+		const users = await this.batchBulkCreate(normalizedProfiles, {
 			"include": [
 				{
 					"as": "attachedRoles",
@@ -366,7 +368,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 		Log.trace("manager", "specialized the data structure for reachable employee bulk creation")
 
 		// Create the reachable employees in bulk
-		const users = await this.model.bulkCreate(normalizedProfiles, {
+		const users = await this.batchBulkCreate(normalizedProfiles, {
 			"include": [
 				{
 					"as": "attachedRoles",
@@ -410,7 +412,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 			"specialized the data structure for unreachable employee bulk creation")
 
 		// Create the reachable employees in bulk
-		const users = await this.model.bulkCreate(normalizedProfiles, {
+		const users = await this.batchBulkCreate(normalizedProfiles, {
 			"include": [
 				{
 					"as": "attachedRoles",
@@ -434,5 +436,26 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 
 		return await this.serialize(completeUserInfo)
+	}
+
+	private async batchBulkCreate(
+		normalizedProfiles: CreationAttributes<Model>[],
+		options: CreateOptions<Model>
+	): Promise<Model[]> {
+		const batchedNormalizedProfiles = []
+		const MAXIMUM_BATCH_SIZE = Number(process.env.DATABASE_MAX_BATCH_SIZE || "10")
+		while (normalizedProfiles.length > 0) {
+			const batchProfile = normalizedProfiles.splice(0, MAXIMUM_BATCH_SIZE)
+			batchedNormalizedProfiles.push(batchProfile)
+		}
+
+		// Create the users in bulk but by batch
+		const rawUsers: Promise<Model[]>[] = []
+		for (const batch of batchedNormalizedProfiles) {
+			rawUsers.push(this.model.bulkCreate(batch, options))
+		}
+		const users = await Promise.all(rawUsers)
+
+		return users.flat()
 	}
 }

@@ -15,7 +15,7 @@
 			<table>
 				<thead>
 					<tr>
-						<td>Student ID</td>
+						<td>User ID</td>
 						<td>Student</td>
 						<td>Consultations</td>
 						<td>Total time consumed</td>

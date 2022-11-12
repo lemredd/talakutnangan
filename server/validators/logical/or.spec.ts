@@ -50,8 +50,7 @@ describe("Validator pipe: or", () => {
 		try {
 			await or(value, constraints)
 		} catch (errors) {
-			console.log(errors)
-			expect(errors).toHaveProperty("0.friendlyName", friendlyName)
+			expect(errors).toHaveProperty("friendlyName", friendlyName)
 		}
 	})
 
@@ -76,7 +75,7 @@ describe("Validator pipe: or", () => {
 		try {
 			await or(value, constraints)
 		} catch (errors) {
-			expect(errors).toHaveProperty("0.field", "hello")
+			expect(errors).toHaveProperty("field", "hello")
 		}
 	})
 })

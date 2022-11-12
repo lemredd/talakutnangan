@@ -152,6 +152,8 @@ const fetcher: Fetcher = new Fetcher()
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
 function send(): void {
+	if (textInput.value === "") return
+
 	fetcher.create({
 		"data": {
 			"value": textInput.value

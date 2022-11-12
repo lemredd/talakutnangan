@@ -32,7 +32,7 @@ export default function(
 	})
 	const isDone = computed<boolean>(() => {
 		const isInProgress = isAfterScheduledStart.value && hasStarted.value
-		return isInProgress && hasFinished.value && hasDeleted.value
+		return isInProgress && hasFinished.value
 	})
 	const isCanceled = computed<boolean>(
 		() => !isAfterScheduledStart.value && hasDeleted.value
