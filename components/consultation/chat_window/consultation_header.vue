@@ -43,7 +43,7 @@
 				class="action-taken"
 				@close="hideActionTakenOverlay">
 				<template #header>
-					Mark this consultation as finished?
+					{{ actionTakenHeader }}
 				</template>
 
 				<template #default>
@@ -115,7 +115,11 @@ const {
 		}
 	}
 } = inject("pageContext") as PageContext<"deserialized">
+
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+const actionTakenHeader = isCurrentUserConsultant.value
+	? "Mark this consultation as finished?"
+	: "Cancel this consultation?"
 
 interface CustomEvents {
 	(eventName: "update:modelValue", newValue: string): void
