@@ -1,6 +1,8 @@
 import type { FieldRules, Rules } from "!/types/validation"
 import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import { MINIMUM_PASSWORD_LENGTH } from "$/constants/numerical"
+
 import Policy from "!/bases/policy"
 import Manager from "%/managers/user"
 import Middleware from "!/bases/middleware"
@@ -77,7 +79,7 @@ export default class extends DoubleBoundJSONController {
 						"constraints": {
 							"length": {
 								"maximum": 255,
-								"minimum": 8
+								"minimum": MINIMUM_PASSWORD_LENGTH
 							}
 						},
 						"pipes": [ required, string, length, matchesPassword ]

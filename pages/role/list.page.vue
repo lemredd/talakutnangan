@@ -72,7 +72,6 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 
-const isLoaded = ref<boolean>(false)
 const headers = [ "Name", "no. of users" ]
 const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const tableData = computed<TableData[]>(() => {
@@ -87,6 +86,7 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const isLoaded = ref<boolean>(true)
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )

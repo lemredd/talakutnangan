@@ -62,7 +62,6 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 
-const isLoaded = ref<boolean>(false)
 const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterResource[]>(
 	pageProps.semesters.data as DeserializedSemesterResource[]
@@ -81,6 +80,7 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
