@@ -35,11 +35,12 @@
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
+				:is-consultation-finished-or-cancelled=""
 				@show-action-taken-overlay="showActionTakenOverlay"
 				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
 
 			<Overlay
-				:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
+				:is-shown="isActionTakenOverlayShown"
 				class="action-taken"
 				@close="hideActionTakenOverlay">
 				<template #header>
