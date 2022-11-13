@@ -11,8 +11,13 @@
 				</a>
 				<a
 					v-if="!isConsultationFinishedOrCancelled"
-					href="#"
 					class="additional-control show-action-taken-overlay-btn"
+					@click="showActionTakenOverlay">
+					{{ finishOrCancel }} consultation
+				</a>
+				<a
+					v-if="!isCurrentUserConsultant"
+					class="additional-control show-rescheduling-overlay-btn"
 					@click="showActionTakenOverlay">
 					{{ finishOrCancel }} consultation
 				</a>
@@ -71,17 +76,18 @@ const modelValue = computed({
 	}
 })
 
+const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
+	"id": props.consultationId
+})
+
 function toggleHeaderControlDropdownShown() {
 	emit("toggleHeaderControlDropdownShown")
-}
-function showActionTakenOverlay() {
-	toggleHeaderControlDropdownShown()
-	emit("showActionTakenOverlay")
 }
 
 const { isCurrentUserConsultant } = props
 const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
-const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
-	"id": props.consultationId
-})
+function showActionTakenOverlay() {
+	toggleHeaderControlDropdownShown()
+	emit("showActionTakenOverlay")
+}
 </script>
