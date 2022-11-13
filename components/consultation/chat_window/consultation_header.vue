@@ -35,7 +35,7 @@
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
-				:is-consultation-finished-or-cancelled=""
+				:is-consultation-finished-or-cancelled="isConsultationFinishedOrCancelled"
 				@show-action-taken-overlay="showActionTakenOverlay"
 				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
 
@@ -247,8 +247,13 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
-const { isOngoing } = makeConsultationStates(props)
+const {
+	hasFinished,
+	isCanceled,
+	isOngoing
+} = makeConsultationStates(props)
 const isAllowedToCall = computed(() => isOngoing.value)
+const isConsultationFinishedOrCancelled = hasFinished || isCanceled
 
 const actionTaken = computed<string>({
 	get(): string {
