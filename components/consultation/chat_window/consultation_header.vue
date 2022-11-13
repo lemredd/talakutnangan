@@ -61,7 +61,7 @@
 				<template #footer>
 					<button
 						class="finish-btn btn btn-primary"
-						@click="finishConsultation">
+						@click="finishOrCancelConsultation">
 						submit
 					</button>
 				</template>
@@ -117,17 +117,10 @@ const {
 	}
 } = inject("pageContext") as PageContext<"deserialized">
 
-const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
-const actionTakenHeader = isCurrentUserConsultant.value
-	? "Mark this consultation as finished?"
-	: "Cancel this consultation?"
-const actionTakenDescription = isCurrentUserConsultant.value
-	? "action taken to solve the consulter(s) concern."
-	: "reason for cancellation."
-
 interface CustomEvents {
 	(eventName: "update:modelValue", newValue: string): void
 	(eventName: "finishConsultation"): void
+	(eventName: "cancelConsultation"): void
 	(eventName: "showActionTakenOverlay"): void
 	(eventName: "hideActionTakenOverlay"): void
 }
@@ -232,9 +225,7 @@ const {
 	"off": hideFileRepoOverlay,
 	"state": isFileRepoOverlayShown
 } = makeSwitch(false)
-
 const fileRepoTab = ref("files")
-
 const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
 function switchTab(event: Event) {
 	const button = event.target as HTMLButtonElement
@@ -247,14 +238,19 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
+const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+const actionTakenHeader = isCurrentUserConsultant.value
+	? "Mark this consultation as finished?"
+	: "Cancel this consultation?"
+const actionTakenDescription = isCurrentUserConsultant.value
+	? "action taken to solve the consulter(s) concern."
+	: "reason for cancellation."
 const {
 	hasFinished,
 	isCanceled,
 	isOngoing
 } = makeConsultationStates(props)
-const isAllowedToCall = computed(() => isOngoing.value)
 const isConsultationFinishedOrCancelled = hasFinished || isCanceled
-
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue
@@ -263,16 +259,18 @@ const actionTaken = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
-
 function showActionTakenOverlay(): void {
 	emit("showActionTakenOverlay")
 }
 function hideActionTakenOverlay(): void {
 	emit("hideActionTakenOverlay")
 }
-function finishConsultation(): void {
-	emit("finishConsultation")
+function finishOrCancelConsultation() {
+	if (isCurrentUserConsultant.value) emit("finishConsultation")
+	else emit("cancelConsultation")
 }
+
+const isAllowedToCall = computed(() => isOngoing.value)
 
 onMounted(async() => {
 	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
