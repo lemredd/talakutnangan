@@ -92,25 +92,26 @@
 				</div>
 			</div>
 
-			<div class="signature-message">
-				By submitting, your signatures will be applied on the printable consultation form.
-			</div>
-
-			<div>
+			<div class="may-not-start-right-away-msg">
 				<label>
 					<input
 						id="checkbox"
 						v-model="forceCreate"
-						type="checkbox"
-						class="warning-message"/>
-					I understand that this consultation may not
-					start right away on the specified schedule above.
+						type="checkbox"/>
+					<span>
+						I understand that this consultation may not
+						start right away on the specified schedule above.
+					</span>
 				</label>
 			</div>
 			<p v-if="hasConflicts">
 				Other students have schedule with consultant on the same day and same time. Please
 				change the time.
 			</p>
+
+			<div class="signature-message">
+				By submitting, your signatures will be applied on the printable consultation form.
+			</div>
 		</template>
 
 		<template #footer>
@@ -132,70 +133,71 @@
 </template>
 
 <style lang="scss">
-@import "@styles/btn.scss";
-@import "@styles/status_messages.scss";
+	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
+	@import "@styles/status_messages.scss";
 
-.btn{
-  border: none;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
+	.btn{
+	border: none;
+	color: white;
+	padding: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	}
 
-.selectable {
-	@apply flex justify-between;
+	.selectable {
+		@apply flex justify-between;
 
-	select {
-		@apply dark:bg-transparent dark:text-white;
+		select {
+			@apply dark:bg-transparent dark:text-white;
 
-		option {
-			@apply dark:bg-dark-200 dark:text-white;
+			option {
+				@apply dark:bg-dark-200 dark:text-white;
+			}
+		}
+
+		max-width: initial !important;
+	}
+
+	.consultation-no-schedules{
+		@apply text-red-500;
+	}
+
+	.signature-message {
+		@apply text-xs;
+	}
+
+	.may-not-start-right-away-msg {
+		@apply my-8 text-sm;
+	}
+
+	.required{
+		&::before {
+			@apply text-xs;
+
+			display:block;
+			color: $color-primary;
+			content:"* required";
+
 		}
 	}
 
-	max-width: initial !important;
-}
-
-.consultation-no-schedules{
-	@apply text-red-500;
-}
-
-.signature-message, .warning-message{
-		@apply text-xs mt-5;
+	.consultant-roles {
+		@apply mb-5;
 	}
-</style>
 
-<style scoped lang="scss">
-@import "@styles/variables.scss";
-
-.required{
-	&::before {
-		@apply text-xs;
-
-		display:block;
-		color: $color-primary;
-		content:"* required";
-
+	.schedule-selector {
+		@apply mt-5;
+		.selectable-day, .selectable-time {
+			margin: 1em 0 1em;
+		}
 	}
-}
 
-.consultant-roles {
-	@apply mb-5;
-}
-
-.schedule-selector {
-	@apply mt-5;
-	.selectable-day, .selectable-time {
-		margin: 1em 0 1em;
+	.selected-day-is-past{
+		@apply text-red-500;
 	}
-}
-
- .selected-day-is-past{
-	@apply text-red-500;
- }
 </style>
 
 <script setup lang="ts">
