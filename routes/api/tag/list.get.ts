@@ -1,5 +1,5 @@
 import type { FieldRules } from "!/types/validation"
-import type { RoleQueryParameters } from "$/types/query"
+import type { TagQueryParameters } from "$/types/query"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -27,7 +27,7 @@ export default class extends QueryController {
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const constraints = { ...request.query } as RoleQueryParameters<number>
+		const constraints = { ...request.query } as TagQueryParameters<number>
 
 		const manager = new Manager(request)
 		const tags = await manager.list(constraints)
