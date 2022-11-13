@@ -20,6 +20,8 @@ describe("Component: consultation/chat_window", () => {
 	describe("consultation states", () => {
 		describe("before", () => {
 			it("can toggle consultation list state", async() => {
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -28,7 +30,6 @@ describe("Component: consultation/chat_window", () => {
 						"type": "user"
 					}
 				}
-				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
