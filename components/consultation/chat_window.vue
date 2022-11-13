@@ -16,6 +16,7 @@
 			:is-action-taken-overlay-shown="isActionTakenOverlayShown"
 			@show-action-taken-overlay="showActionTakenOverlay"
 			@hide-action-taken-overlay="hideActionTakenOverlay"
+			@cancel-consultation="cancelConsultation"
 			@finish-consultation="finishConsultation"/>
 		<div class="selected-consultation-chats">
 			<div class="selected-consultation-new">
@@ -259,6 +260,10 @@ function finishConsultation(): void {
 		})
 		.catch(response => extractAllErrorDetails(response, receivedErrors))
 	}
+}
+function cancelConsultation(): void {
+	fetcher.archive([ consultationID.value ])
+	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
 function registerListeners(resource: DeserializedConsultationResource): void {
