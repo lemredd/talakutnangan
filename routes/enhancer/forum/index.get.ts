@@ -4,9 +4,12 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { DeserializedPostListDocument } from "$/types/documents/post"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import Policy from "!/bases/policy"
 import Manager from "%/managers/post"
 import deserialize from "$/object/deserialize"
+import SemesterManager from "%/managers/semester"
 import DepartmentManager from "%/managers/department"
 import resetToMidnight from "$/time/reset_to_midnight"
 import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
@@ -15,6 +18,7 @@ import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { post as permissionGroup } from "$/permissions/permission_list"
+import { READ as READ_SEMESTERS } from "$/permissions/semester_combinations"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
@@ -62,11 +66,37 @@ export default class extends PageMiddleware {
 				"existence": "exists"
 			},
 			"page": {
-				"limit": 10,
+				"limit": DEFAULT_LIST_LIMIT,
 				"offset": 0
 			},
 			"sort": [ "-createdAt" ]
 		}) as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+
+		let semesters: Serializable = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}
+
+		const mayViewSemesters = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			READ_SEMESTERS
+		])
+		if (mayViewSemesters) {
+			const semesterManager = new SemesterManager(request)
+
+			semesters = await semesterManager.list({
+				"filter": {
+					"existence": "exists",
+					"slug": ""
+				},
+				"page": {
+					"limit": DEFAULT_LIST_LIMIT,
+					"offset": 0
+				},
+				"sort": [ "name" ]
+			})
+		}
 
 		const pageProps = {
 			"departments": mayViewAllDepartments
@@ -76,7 +106,7 @@ export default class extends PageMiddleware {
 						"slug": ""
 					},
 					"page": {
-						"limit": 10,
+						"limit": DEFAULT_LIST_LIMIT,
 						"offset": 0
 					},
 					"sort": [ "fullName" ]
@@ -87,7 +117,8 @@ export default class extends PageMiddleware {
 						"count": 0
 					}
 				},
-			posts
+			posts,
+			semesters
 		}
 
 		return pageProps
