@@ -17,8 +17,11 @@ import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
-import { post as permissionGroup } from "$/permissions/permission_list"
 import { READ as READ_SEMESTERS } from "$/permissions/semester_combinations"
+import {
+	post as permissionGroup,
+	semester as semesterPermissionGroup
+} from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_OWN_DEPARTMENT,
 	READ_ANYONE_ON_ALL_DEPARTMENTS
@@ -79,9 +82,11 @@ export default class extends PageMiddleware {
 			}
 		}
 
-		const mayViewSemesters = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-			READ_SEMESTERS
-		])
+		const mayViewSemesters = semesterPermissionGroup.hasOneRoleAllowed(
+			userProfile.data.roles.data, [
+				READ_SEMESTERS
+			]
+		)
 		if (mayViewSemesters) {
 			const semesterManager = new SemesterManager(request)
 
