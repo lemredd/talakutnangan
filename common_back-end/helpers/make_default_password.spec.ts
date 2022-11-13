@@ -6,6 +6,7 @@ describe("Helpers: Make default password", () => {
 		const userProfile: DeserializedUserProfile<"studentDetail"> = {
 			"data": {
 				"email": "",
+				"emailVerifiedAt": null,
 				"id": "1",
 				"kind": "student",
 				"name": "",
@@ -33,6 +34,7 @@ describe("Helpers: Make default password", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
 				"email": "hello.world@example.com",
+				"emailVerifiedAt": null,
 				"id": "1",
 				"kind": "reachable_employee",
 				"name": "",
@@ -53,6 +55,7 @@ describe("Helpers: Make default password", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
 				"email": "foo.bar@example.com",
+				"emailVerifiedAt": null,
 				"id": "1",
 				"kind": "unreachable_employee",
 				"name": "",

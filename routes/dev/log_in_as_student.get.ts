@@ -109,6 +109,7 @@ export default class extends DevController {
 				.email(() => testStudentEmail)
 				.beStudent()
 				.in(testInstituteDepartment)
+				.notVerified()
 				.insertOne()
 
 				Log.success("controller", "created test student")
