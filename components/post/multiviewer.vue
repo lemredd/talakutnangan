@@ -6,6 +6,11 @@
 				label="Department"
 				class="filter"
 				:options="departmentNames"/>
+			<DateRangePicker
+				v-model:range-begin="rangeBegin"
+				v-model:range-end="rangeEnd"
+				:semesters="semesters"
+				class="picker"/>
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
 
@@ -71,6 +76,9 @@ import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedPostListDocument } from "$/types/documents/post"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+import type {
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
@@ -86,6 +94,7 @@ import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next
 import Viewer from "@/post/multiviewer/viewer.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import DateRangePicker from "@/helpers/filters/date_range_picker.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -94,7 +103,8 @@ const { userProfile } = pageProps
 
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
-	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">,
+	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {
@@ -187,8 +197,8 @@ async function retrievePosts() {
 	await loadRemainingResource(posts as Ref<DeserializedPostListDocument>, fetcher, () => ({
 		"filter": {
 			"dateTimeRange": {
-				"begin": rangeBegin,
-				"end": rangeEnd
+				"begin": rangeBegin.value,
+				"end": rangeEnd.value
 			},
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
 			"existence": existence.value as "exists"|"archived"|"*"
