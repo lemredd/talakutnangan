@@ -8,7 +8,10 @@ import Policy from "!/bases/policy"
 import Manager from "%/managers/post"
 import deserialize from "$/object/deserialize"
 import DepartmentManager from "%/managers/department"
+import resetToMidnight from "$/time/reset_to_midnight"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { post as permissionGroup } from "$/permissions/permission_list"
@@ -39,6 +42,10 @@ export default class extends PageMiddleware {
 		const departmentManager = new DepartmentManager(request)
 		const userProfile = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
 
+		const currentDate = new Date()
+		const rangeBegin = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
+		const rangeEnd = adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1))
+
 		const roles = userProfile.data.roles.data
 		const mayViewAllDepartments = permissionGroup.hasOneRoleAllowed(
 			roles,
@@ -47,6 +54,10 @@ export default class extends PageMiddleware {
 		const department = Number(userProfile.data.department.data.id)
 		const posts = await manager.list({
 			"filter": {
+				"dateTimeRange": {
+					"begin": rangeBegin,
+					"end": rangeEnd
+				},
 				"departmentID": department,
 				"existence": "exists"
 			},

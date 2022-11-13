@@ -76,7 +76,6 @@ import {
 
 import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
-import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 
 type RequiredExtraProps = "posts"|"departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
