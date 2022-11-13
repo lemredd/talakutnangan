@@ -57,16 +57,25 @@ import { ref, inject, onMounted, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedPostListDocument } from "$/types/documents/post"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 import type {
 	DeserializedDepartmentListDocument,
 	DeserializedDepartmentResource
 } from "$/types/documents/department"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import makeSwitch from "$@/helpers/make_switch"
+import SemesterFetcher from "$@/fetchers/semester"
 import DepartmentFetcher from "$@/fetchers/department"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
-import { post as permissionGroup } from "$/permissions/permission_list"
+import { READ as READ_SEMESTERS } from "$/permissions/semester_combinations"
+import {
+	post as permissionGroup,
+	semester as semesterPermissionGroup
+} from "$/permissions/permission_list"
 import {
 	READ_ANYONE_ON_ALL_DEPARTMENTS,
 	CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
@@ -77,7 +86,7 @@ import {
 import Multiviewer from "@/post/multiviewer.vue"
 import CreatePostForm from "@/post/create_post_form.vue"
 
-type RequiredExtraProps = "posts"|"departments"
+type RequiredExtraProps = "posts"|"departments"|"semesters"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile } = pageProps
@@ -88,6 +97,10 @@ const posts = ref<DeserializedPostListDocument<"poster"|"posterRole"|"department
 
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
+)
+
+const semesters = ref<DeserializedSemesterListDocument>(
+	pageProps.semesters as DeserializedSemesterListDocument
 )
 
 const {
@@ -117,6 +130,24 @@ onMounted(async() => {
 				"count": departments.value.meta?.count || 1
 			}
 		}
+	}
+
+	const mayViewSemesters = semesterPermissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		READ_SEMESTERS
+	])
+
+	if (mayViewSemesters) {
+		await loadRemainingResource(semesters, new SemesterFetcher(), () => ({
+			"filter": {
+				"existence": "exists",
+				"slug": ""
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": semesters.value.data.length
+			},
+			"sort": [ "startAt" ]
+		}))
 	}
 })
 
