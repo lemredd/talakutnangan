@@ -47,6 +47,7 @@ export default function(
 	}, convertTimeToMilliseconds("00:00:01"))
 
 	return {
+		hasFinished,
 		isAutoTerminated,
 		isCanceled,
 		isDone,
