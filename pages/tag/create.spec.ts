@@ -28,7 +28,7 @@ describe("Page: /tag", () => {
 			}
 		}
 
-		const nameInput = wrapper.find("input.name")
+		const nameInput = wrapper.find(".name input")
 		const submitBtn = wrapper.find("input[type=submit]")
 
 		await nameInput.setValue(tag.data.name)
