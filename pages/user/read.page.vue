@@ -180,7 +180,12 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 const user = ref<DeserializedUserDocument<"roles"|"department">>(
-	pageProps.user as DeserializedUserDocument<"roles"|"department">
+	{
+		...pageProps.user,
+		"data": {
+			...pageProps.user.data
+		}
+	} as DeserializedUserDocument<"roles"|"department">
 )
 
 const roles = ref<DeserializedRoleResource[]>(
@@ -271,7 +276,7 @@ const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disa
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 const emailVerified = computed<string>(() => {
 	let verifyEmail = ""
-	const verification = user.value.data.emailVerifiedAt !== null
+	const verification = user.value.data.emailVerifiedAt
 	if (verification) {
 		verifyEmail = "E-mail: Verified ✓"
 	} else {
@@ -307,6 +312,7 @@ async function updateUser() {
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
 	.then(() => {
+		console.log("changed email", user.value.data.emailVerifiedAt, pageProps.user.data.email, user.value.data.email)
 		if (user.value.data.emailVerifiedAt) {
 			const oldEmail = pageProps.user.data.email
 			const newEmail = user.value.data.email
