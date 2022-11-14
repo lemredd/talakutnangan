@@ -19,10 +19,11 @@
 			v-model="semester.data.endAt"
 			class="end-at border-solid"/>
 		<div class="controls">
-			<input
-				type="submit"
-				value="Save changes"
-				class="btn btn-primary"/>
+			<Suspensible :is-loaded="hasSubmittedSemester">
+				<button type="submit" class="update-user-btn btn btn-primary">
+					update semester
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreSemester"
 				type="button"
@@ -122,7 +123,10 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const hasSubmittedSemester = ref<boolean>(true)
+
 function updateSemester() {
+	hasSubmittedSemester.value = false
 	fetcher.update(semester.value.data.id, {
 		"deletedAt": null,
 		"endAt": semester.value.data.endAt.toJSON(),

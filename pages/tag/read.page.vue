@@ -9,10 +9,11 @@
 			class="name border-solid"
 			type="text"/>
 		<div class="controls">
-			<input
-				type="submit"
-				value="Save changes"
-				class="btn btn-primary"/>
+			<Suspensible :is-loaded="hasSubmittedTag">
+				<button type="submit" class="update-user-btn btn btn-primary">
+					update tag
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreTag"
 				type="button"
@@ -105,7 +106,10 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const hasSubmittedTag = ref<boolean>(true)
+
 function updateTag() {
+	hasSubmittedTag.value = false
 	fetcher.update(tag.value.data.id, {
 		"deletedAt": null,
 		"name": tag.value.data.name
