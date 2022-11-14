@@ -132,8 +132,9 @@ function savePassword() {
 	)
 
 	.then(() => {
+		const TIMEOUT = 3000
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(cancel, 3000)
+		setTimeout(closeDialog, TIMEOUT)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }

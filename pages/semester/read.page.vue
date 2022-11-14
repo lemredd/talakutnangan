@@ -140,10 +140,10 @@ function updateSemester() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Semester has been read successfully!")
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function archiveSemester() {

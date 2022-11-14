@@ -246,16 +246,20 @@ async function updateUser() {
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
-		successMessages.value.push("User Name updated successfully.")
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"User Name updated successfully.")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 async function updateRoles() {
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
-		successMessages.value.push("Role updated successfully.")
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Role updated successfully.")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
@@ -264,8 +268,10 @@ async function updateDepartment() {
 		user.value.data.department.data.id = userDepartment.value
 	})
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
-		successMessages.value.push("Department updated successfully.")
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Department updated successfully.")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
@@ -276,8 +282,10 @@ async function resetUserPassword() {
 		console.log(body, status)
 	})
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
-		successMessages.value.push("Reset password successfully.")
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Reset password successfully.")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
@@ -292,6 +300,7 @@ async function restoreUser() {
 	await fetcher.restore([ user.value.data.id ])
 	.then(({ body, status }) => {
 		console.log(body, status)
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }

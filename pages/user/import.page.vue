@@ -124,9 +124,11 @@ import RoleFetcher from "$@/fetchers/role"
 import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 import OutputTable from "@/helpers/overflowing_table.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
@@ -160,12 +162,15 @@ function importData(event: Event) {
 	fetcher.import(formData)
 	.then(({ body }) => {
 		const { data } = body
-
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Users have been imported successfully!")
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Users have been imported successfully!"
+		)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function isStudentResource(resource: DeserializedUserResource)

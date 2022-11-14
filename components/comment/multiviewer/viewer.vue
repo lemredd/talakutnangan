@@ -388,13 +388,15 @@ function closeArchiveOrRestore() {
 
 function closeDialog() {
 	emit("archive", comment.value)
+	emit("restore", comment.value)
 }
 
 async function archiveComment(): Promise<void> {
 	await fetcher.archive([ comment.value.id ])
 	.then(() => {
+		const TIMEOUT = 3000
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, 3000)
+		setTimeout(closeDialog, TIMEOUT)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
@@ -403,8 +405,9 @@ async function archiveComment(): Promise<void> {
 async function restoreComment(): Promise<void> {
 	await fetcher.restore([ comment.value.id ])
 	.then(() => {
+		const TIMEOUT = 3000
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, 3000)
+		setTimeout(closeDialog, TIMEOUT)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
