@@ -1,5 +1,6 @@
-import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import { shallowMount } from "@vue/test-utils"
+
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Component from "./scheduler.vue"
 
@@ -53,6 +54,7 @@ describe.skip("Component: consultation/helpers/scheduler", () => {
 		await selectableDayField.setValue(chosenDay)
 		await wrapper.setProps({ chosenDay })
 		console.log(wrapper.html(), "\n\n\n")
+		console.log(chosenDay, "\n\n\n")
 		const selectableTime = wrapper.find(".selectable-time")
 		expect(selectableTime.exists()).toBeTruthy()
 		// const timeOptions = selectableTime.findAll("option")

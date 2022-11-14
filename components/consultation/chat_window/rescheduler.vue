@@ -17,7 +17,7 @@
 
 		<template #footer>
 			<button
-				class="finish-btn btn btn-primary"
+				class="reschedule-btn btn btn-primary"
 				@click="rescheduleConsultation">
 				submit
 			</button>
@@ -29,7 +29,7 @@
 </style>
 
 <script setup lang="ts">
-import { inject, onMounted, ref } from "vue"
+import { computed, inject, onMounted, ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserDocument } from "$/types/documents/user"
@@ -39,6 +39,7 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
 import Overlay from "@/helpers/overlay.vue"
 import Scheduler from "@/consultation/helpers/scheduler.vue"
@@ -89,8 +90,30 @@ function fetchConsultantSchedules() {
 	})
 }
 
+const scheduledStartAt = computed(() => {
+	const chosenDate = new Date(chosenDay.value)
+
+	if (chosenTime.value) {
+		const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+		chosenDate.setHours(timeObject.hours)
+		chosenDate.setMinutes(timeObject.minutes)
+		chosenDate.setSeconds(0)
+		chosenDate.setMilliseconds(0)
+	}
+
+	console.log("from component", chosenDate.toJSON())
+	return chosenDate.toJSON()
+})
+const fetcher = new Fetcher()
 function rescheduleConsultation() {
-	emit("rescheduleConsultation")
+	fetcher.update(consultation.data.id, {
+		"actionTaken": null,
+		"deletedAt": null,
+		"finishedAt": null,
+		"reason": consultation.data.reason,
+		"scheduledStartAt": scheduledStartAt.value,
+		"startedAt": null
+	})
 }
 
 onMounted(() => {
