@@ -101,6 +101,7 @@
 			<SchedulePickerGroup
 				v-for="day in DayValues"
 				:key="day"
+				:disabled="mayEditProfile"
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
@@ -198,11 +199,14 @@ import { ref, Ref, inject, computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 import settingsTabInfos from "@/settings/settings_tab_infos"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_OWN_DATA
+} from "$/permissions/user_combinations"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
@@ -226,7 +230,8 @@ import { DayValues } from "$/types/database"
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
-const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
@@ -286,7 +291,8 @@ function submitSignature(formData: FormData) {
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
-		...userProfileData.value
+		...userProfileData.value,
+		"emailVerifiedAt": null
 	})
 	.then(() => {
 		// eslint-disable-next-line max-len
@@ -314,6 +320,14 @@ function toggleDarkMode() {
 
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 }
+
+const mayEditProfile = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA
+	])
+
+	return isPermitted
+})
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
 </script>
