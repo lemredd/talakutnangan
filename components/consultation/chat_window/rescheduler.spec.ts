@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { flushPromises, shallowMount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
@@ -149,6 +150,7 @@ describe("Component: consultation rescheduler", () => {
 		const newTime = convertTimeToMinutes("08:00")
 		await scheduler.vm.$emit("update:chosenDay", newDate)
 		await scheduler.vm.$emit("update:chosenTime", newTime)
+		await nextTick()
 
 		// Submit changes
 		const rescheduleBtn = wrapper.find(".reschedule-btn")
