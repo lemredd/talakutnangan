@@ -30,6 +30,13 @@
 				label="Kind"
 				type="text"/>
 		</div>
+		<div v-if="isCurrentlyStudent" class="field student-number">
+			<NonSensitiveTextField
+				:model-value="studentNumber"
+				status="disabled"
+				label="Kind"
+				type="text"/>
+		</div>
 		<button type="submit" class="update-user-btn btn btn-primary">
 			update user
 		</button>
