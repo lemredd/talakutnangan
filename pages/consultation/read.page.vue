@@ -185,7 +185,10 @@ async function loadPreviousChatMessages(): Promise<void> {
 				"offset": chatMessages.value.data.length
 			},
 			"sort": [ "-createdAt" ]
-		})
+		}),
+		{
+			"mayContinue": () => Promise.resolve(false)
+		}
 	)
 	hasLoadedChatMessages.value = true
 }
@@ -255,7 +258,6 @@ onMounted(async() => {
 	registerChatActivityListeners(consultation, chatMessageActivities)
 
 	await loadConsultations()
-	await loadPreviousChatMessages()
 })
 
 setInterval(() => {
