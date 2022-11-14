@@ -22,7 +22,7 @@
 	</form>
 
 	<form
-		v-if="mayUpdateAnyone"
+		v-if="mayUpdateAttachedRoles"
 		class="user-data-form"
 		@submit.prevent="updateRoles">
 		<h1 class="user-data-form-header">
@@ -221,6 +221,11 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 })
 const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
+
+const mayUpdateAttachedRoles = computed<boolean>(() => {
+	const doesViewOwn = user.value.data.id === userProfile.data.id
+	return !doesViewOwn && mayUpdateAnyone.value
+})
 
 const mayResetPassword = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
