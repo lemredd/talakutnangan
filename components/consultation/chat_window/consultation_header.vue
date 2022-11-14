@@ -37,7 +37,8 @@
 				:is-current-user-consultant="isCurrentUserConsultant"
 				:is-consultation-finished-or-cancelled="isConsultationFinishedOrCancelled"
 				@show-action-taken-overlay="showActionTakenOverlay"
-				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
+				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"
+				@show-rescheduler-overlay="showReschedulerOverlay"/>
 
 			<Overlay
 				:is-shown="isActionTakenOverlayShown"
@@ -66,6 +67,10 @@
 					</button>
 				</template>
 			</Overlay>
+
+			<Rescheduler
+				:is-shown="isReschedulerShown"
+				@hide="hideReschedulerOverlay"/>
 		</div>
 	</div>
 </template>
@@ -102,6 +107,7 @@ import ChatMessageFetcher from "$@/fetchers/chat_message"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import Overlay from "@/helpers/overlay.vue"
+import Rescheduler from "./rescheduler.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
@@ -271,6 +277,12 @@ function finishOrCancelConsultation() {
 }
 
 const isAllowedToCall = computed(() => isOngoing.value)
+
+const {
+	"on": showReschedulerOverlay,
+	"off": hideReschedulerOverlay,
+	"state": isReschedulerShown
+} = makeSwitch(false)
 
 onMounted(async() => {
 	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
