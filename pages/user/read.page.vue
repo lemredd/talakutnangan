@@ -38,7 +38,10 @@
 				type="text"/>
 		</div>
 		<Suspensible :is-loaded="hasSubmittedUser">
-			<button type="submit" class="update-user-btn btn btn-primary">
+			<button
+				type="submit"
+				class="update-user-btn btn btn-primary"
+				@click="updateUser">
 				update user
 			</button>
 		</Suspensible>
@@ -60,7 +63,10 @@
 				:options="selectableRoles"/>
 		</div>
 		<Suspensible :is-loaded="hasSubmittedRole">
-			<button type="submit" class="update-roles-btn btn btn-primary">
+			<button
+				type="submit"
+				class="update-roles-btn btn btn-primary"
+				@click="updateRoles">
 				update roles
 			</button>
 		</Suspensible>
@@ -82,7 +88,10 @@
 				:options="selectableDepartments"/>
 		</div>
 		<Suspensible :is-loaded="hasSubmittedDepartment">
-			<button type="submit" class="update-department-btn btn btn-primary">
+			<button
+				type="submit"
+				class="update-department-btn btn btn-primary"
+				@click="updateRoles">
 				update department
 			</button>
 		</Suspensible>
@@ -162,6 +171,7 @@ import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 import convertForSentence from "$/string/convert_for_sentence"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
@@ -178,8 +188,8 @@ import {
 import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
@@ -329,6 +339,12 @@ async function updateUser() {
 				}
 			}
 		}
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"User Name updated successfully."
+		)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasSubmittedUser.value = true
@@ -338,8 +354,14 @@ const hasSubmittedRole = ref<boolean>(true)
 async function updateRoles() {
 	hasSubmittedRole.value = false
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Role updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 	hasSubmittedRole.value = true
 }
 
@@ -349,8 +371,14 @@ async function updateDepartment() {
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Department updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 	hasSubmittedDepartment.value = true
 }
 
@@ -367,6 +395,12 @@ async function resetUserPassword() {
 			`${command} ${note}`
 		]
 	})
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Reset password successfully.")
+	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasPerformedWholeChange.value = true
 }
@@ -382,6 +416,8 @@ async function archiveUser() {
 				"deletedAt": new Date()
 			}
 		}
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasPerformedWholeChange.value = true
@@ -398,6 +434,8 @@ async function restoreUser() {
 				"deletedAt": null
 			}
 		}
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasPerformedWholeChange.value = true

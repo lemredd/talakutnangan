@@ -41,6 +41,7 @@ import { ref, computed } from "vue"
 
 import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
 import ListRedirector from "@/resource_management/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -77,9 +78,8 @@ function createDepartment() {
 		"mayAdmit": mayAdmit.value
 	})
 	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been created successfully!")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

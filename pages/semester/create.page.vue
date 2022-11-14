@@ -46,7 +46,9 @@ import convertToTitle from "$/string/convert_to_title"
 import type { OptionInfo } from "$@/types/component"
 import Selectable from "@/fields/selectable_options.vue"
 
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -79,9 +81,8 @@ function createSemester() {
 		"startAt": new Date(startAt.value).toJSON()
 	})
 	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Semester has been created successfully!")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

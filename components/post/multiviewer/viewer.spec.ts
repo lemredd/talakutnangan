@@ -19,6 +19,7 @@ import {
 
 import Component from "./viewer.vue"
 
+jest.useFakeTimers()
 describe("Component: post/viewer", () => {
 	it("should submit post errors", async() => {
 		const userID = "1"
@@ -209,8 +210,9 @@ describe("Component: post/viewer", () => {
 				}
 			]
 		}
+		const TIMEOUT = 3000
+		jest.advanceTimersByTime(TIMEOUT)
 		expect(await request.json()).toStrictEqual(expectedBody)
-
 		const archiveEvent = wrapper.emitted("archive")
 		expect(archiveEvent).toHaveProperty("0.0", modelValue)
 	})

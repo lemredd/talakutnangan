@@ -10,6 +10,10 @@
 					<h1>Update your password</h1>
 				</template>
 				<template #default>
+					<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+					<ReceivedSuccessMessages
+						v-if="successMessages.length"
+						:received-success-messages="successMessages"/>
 					<form class="verification">
 						<SensitiveTextField
 							v-model="currentPassword"
@@ -66,9 +70,13 @@ import isUndefined from "$/type_guards/is_undefined"
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
 import BodyCSSClasses from "$@/external/body_css_classes"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -104,6 +112,8 @@ function open() {
 	}, MILLISECOND_IN_A_SECOND)
 }
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 function cancel(): void {
 	clearPasswords()
@@ -116,6 +126,11 @@ function savePassword() {
 		currentPassword.value,
 		newPassword.value,
 		confirmNewPassword.value
-	).then(cancel)
+	).then(() => {
+		const TIMEOUT = 3000
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
