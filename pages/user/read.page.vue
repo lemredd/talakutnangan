@@ -88,29 +88,31 @@
 		</Suspensible>
 	</form>
 
-	<div class="controls flex justify-between mt-3">
-		<button
-			v-if="mayRestoreUser"
-			type="button"
-			class="btn btn-primary"
-			@click="restoreUser">
-			Restore
-		</button>
-		<button
-			v-if="mayArchiveUser"
-			type="button"
-			class="btn btn-primary"
-			@click="archiveUser">
-			Archive
-		</button>
-		<button
-			v-if="mayResetPassword"
-			type="button"
-			class="btn btn-primary"
-			@click="resetUserPassword">
-			Reset
-		</button>
-	</div>
+	<Suspensible :is-loaded="hasPerformedWholeChange">
+		<div class="controls flex justify-between mt-3">
+			<button
+				v-if="mayRestoreUser"
+				type="button"
+				class="btn btn-primary"
+				@click="restoreUser">
+				Restore
+			</button>
+			<button
+				v-if="mayArchiveUser"
+				type="button"
+				class="btn btn-primary"
+				@click="archiveUser">
+				Archive
+			</button>
+			<button
+				v-if="mayResetPassword"
+				type="button"
+				class="btn btn-primary"
+				@click="resetUserPassword">
+				Reset
+			</button>
+		</div>
+	</Suspensible>
 </template>
 
 <style>
@@ -355,28 +357,47 @@ async function updateDepartment() {
 	hasSubmittedDepartment.value = true
 }
 
+const hasPerformedWholeChange = ref<boolean>(true)
 async function resetUserPassword() {
+	hasPerformedWholeChange.value = false
 	await fetcher.resetPassword(user.value.data.id)
 	.then(({ body, status }) => {
 		console.log(body, status)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 async function archiveUser() {
+	hasPerformedWholeChange.value = false
 	await fetcher.archive([ user.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		user.value = {
+			...user.value,
+			"data": {
+				...user.value.data,
+				"deletedAt": new Date()
+			}
+		}
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 async function restoreUser() {
+	hasPerformedWholeChange.value = false
 	await fetcher.restore([ user.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		user.value = {
+			...user.value,
+			"data": {
+				...user.value.data,
+				"deletedAt": null
+			}
+		}
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 const roleFetcher = new RoleFetcher()
