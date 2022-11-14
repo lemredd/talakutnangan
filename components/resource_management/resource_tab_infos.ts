@@ -5,6 +5,7 @@ import {
 	USER_LIST,
 	ROLE_LIST,
 	SEMESTER_LIST,
+	TAG_LIST,
 	AUDIT_TRAIL_LIST
 } from "$/constants/template_page_paths"
 
@@ -25,6 +26,11 @@ import {
 	UPDATE as UPDATE_SEMESTERS,
 	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_SEMESTERS
 } from "$/permissions/semester_combinations"
+import {
+	CREATE as CREATE_TAGS,
+	UPDATE as UPDATE_TAGS,
+	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_TAGS
+} from "$/permissions/tag_combinations"
 import {
 	IMPORT_USERS,
 	RESET_PASSWORD,
@@ -107,6 +113,24 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			CREATE_SEMESTERS,
 			UPDATE_SEMESTERS,
 			ARCHIVE_AND_RESTORE_SEMESTERS
+		],
+		"permissionGroup": semester
+	},
+	{
+		"kinds": [],
+		"links": [
+			{
+				"icon": "",
+				"name": "Tags",
+				"path": TAG_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
+			CREATE_TAGS,
+			UPDATE_TAGS,
+			ARCHIVE_AND_RESTORE_TAGS
 		],
 		"permissionGroup": semester
 	},
