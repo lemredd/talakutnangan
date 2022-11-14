@@ -57,8 +57,9 @@ describe("Component: consultation rescheduler", () => {
 
 		// Change day
 		const scheduler = wrapper.findComponent({ "name": "Scheduler" })
-		const newDate = new Date("2022-10-10 08:00").toJSON()
+		const newDate = new Date("2022-10-10T08:00:00.000Z").toJSON()
 		await scheduler.vm.$emit("update:chosenDay", newDate)
+		await nextTick()
 
 		// Submit changes
 		const rescheduleBtn = wrapper.find(".reschedule-btn")
@@ -127,7 +128,7 @@ describe("Component: consultation rescheduler", () => {
 						"pageProps": {
 							"consultation": {
 								"data": {
-									"scheduledStartAt": new Date("2022-10-09 07:00")
+									"scheduledStartAt": new Date("2022-10-09T07:00.00.000Z")
 								}
 							}
 						}
@@ -146,10 +147,14 @@ describe("Component: consultation rescheduler", () => {
 
 		// Change day
 		const scheduler = wrapper.findComponent({ "name": "Scheduler" })
-		const newDate = new Date("2022-10-10").toJSON()
+		const newDate = new Date("2022-10-10T00:00:00.000Z").toJSON()
 		const newTime = convertTimeToMinutes("08:00")
 		await scheduler.vm.$emit("update:chosenDay", newDate)
 		await scheduler.vm.$emit("update:chosenTime", newTime)
+		await wrapper.setProps({
+			"chosenDate": newDate,
+			"chosenTime": newTime
+		})
 		await nextTick()
 
 		// Submit changes
