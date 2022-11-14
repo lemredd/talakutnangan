@@ -18,6 +18,7 @@
 		<Multiviewer
 			v-model="posts"
 			:departments="departments"
+			:semesters="semesters"
 			class="multiviewer"/>
 	</div>
 </template>
