@@ -125,6 +125,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
