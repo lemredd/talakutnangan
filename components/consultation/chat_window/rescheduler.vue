@@ -8,6 +8,10 @@
 		</template>
 
 		<template #default>
+			<ReceivedErrors v-if="ReceivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedSuccessMessages
+				v-if="successMessages.length"
+				:received-success-messages="successMessages"/>
 			<Scheduler
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
@@ -37,12 +41,16 @@ import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
 import Overlay from "@/helpers/overlay.vue"
 import Scheduler from "@/consultation/helpers/scheduler.vue"
-import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
 const { pageProps } = pageContext
@@ -64,6 +72,19 @@ const { consultation } = pageProps
 const employeeScheduleFetcher = new EmployeeScheduleFetcher()
 const chosenDay = ref("")
 const chosenTime = ref("")
+const scheduledStartAt = computed(() => {
+	const chosenDate = new Date(chosenDay.value)
+
+	if (chosenTime.value) {
+		const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+		chosenDate.setHours(timeObject.hours)
+		chosenDate.setMinutes(timeObject.minutes)
+		chosenDate.setSeconds(0)
+		chosenDate.setMilliseconds(0)
+	}
+
+	return chosenDate.toJSON()
+})
 const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 	"data": [],
 	"meta": {
@@ -89,20 +110,9 @@ function fetchConsultantSchedules() {
 	})
 }
 
-const scheduledStartAt = computed(() => {
-	const chosenDate = new Date(chosenDay.value)
-
-	if (chosenTime.value) {
-		const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
-		chosenDate.setHours(timeObject.hours)
-		chosenDate.setMinutes(timeObject.minutes)
-		chosenDate.setSeconds(0)
-		chosenDate.setMilliseconds(0)
-	}
-
-	return chosenDate.toJSON()
-})
 const fetcher = new Fetcher()
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 function rescheduleConsultation() {
 	fetcher.update(consultation.data.id, {
 		"actionTaken": null,
@@ -131,6 +141,14 @@ function rescheduleConsultation() {
 			}
 		}
 	})
+	.then(() => fillSuccessMessages(
+		receivedErrors,
+		successMessages,
+		"Your consultation has been successfully rescheduled."
+	))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors, receivedErrors, successMessages
+	))
 }
 
 onMounted(() => {
