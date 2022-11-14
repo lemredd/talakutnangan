@@ -155,15 +155,17 @@ import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
-import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
 import convertForSentence from "$/string/convert_for_sentence"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -194,24 +196,22 @@ const user = ref<DeserializedUserDocument<"roles"|"department">>(
 	} as DeserializedUserDocument<"roles"|"department">
 )
 
-const roles = ref<DeserializedRoleResource[]>(
-	pageProps.roles.data as DeserializedRoleResource[]
-)
+const roles = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const userRoleIDs = ref(
 	user.value.data.roles.data.map(role => role.id) as string[]
 )
-const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
-	(role: DeserializedRoleResource) => ({
+const selectableRoles = computed<OptionInfo[]>(() => roles.value.data.map(
+	role => ({
 		"label": role.name,
 		"value": role.id
 	})
 ))
 
-const departments = ref<DeserializedDepartmentResource[]>(
-	pageProps.departments.data as DeserializedDepartmentResource[]
+const departments = ref<DeserializedDepartmentListDocument>(
+	pageProps.departments as DeserializedDepartmentListDocument
 )
 const userDepartment = ref(user.value.data.department.data.id as string)
-const selectableDepartments = computed(() => departments.value.map(
+const selectableDepartments = computed(() => departments.value.data.map(
 	department => ({
 		"label": department.fullName,
 		"value": department.id
@@ -399,63 +399,10 @@ async function restoreUser() {
 }
 
 const roleFetcher = new RoleFetcher()
-async function fetchRolesIncrementally(): Promise<void> {
-	await roleFetcher.list({
-		"filter": {
-			"department": "*",
-			"existence": "exists",
-			"slug": ""
-		},
-		"page": {
-			"limit": 10,
-			"offset": roles.value.length
-		},
-		"sort": [ "name" ]
-	}).then(({ body }) => {
-		roles.value = [
-			...roles.value,
-			...body.data
-		]
-
-		const meta = body.meta as ResourceCount
-		if (roles.value.length < meta.count) {
-			return fetchRolesIncrementally()
-		}
-
-		return Promise.resolve()
-	})
-}
-
 const departmentFetcher = new DepartmentFetcher()
-async function fetchDepartmentsIncrementally(): Promise<void> {
-	await departmentFetcher.list({
-		"filter": {
-			"existence": "exists",
-			"slug": ""
-		},
-		"page": {
-			"limit": 10,
-			"offset": departments.value.length
-		},
-		"sort": [ "fullName" ]
-	}).then(({ body }) => {
-		departments.value = [
-			...departments.value,
-			...body.data
-		]
-
-		const meta = body.meta as ResourceCount
-		if (departments.value.length < meta.count) {
-			console.log("requests department\n\n\n")
-			return fetchDepartmentsIncrementally()
-		}
-
-		return Promise.resolve()
-	})
-}
 
 onMounted(async() => {
-	await fetchDepartmentsIncrementally()
-	await fetchRolesIncrementally()
+	await loadRemainingDepartments(departments, departmentFetcher)
+	await loadRemainingRoles(roles, roleFetcher)
 })
 </script>
