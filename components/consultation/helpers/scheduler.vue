@@ -130,7 +130,7 @@ const selectableDays = computed(() => {
 })
 
 const chosenTime = computed({
-	get() { return props.chosenDay },
+	get() { return props.chosenTime },
 	set(newValue: string) { emit("update:chosenTime", newValue) }
 })
 const selectableTimes = computed(() => {
