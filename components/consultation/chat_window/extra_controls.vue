@@ -10,10 +10,12 @@
 					View consultation form
 				</a>
 				<a
-					v-if="isCurrentUserConsultant"
+					v-if="!isConsultationFinishedOrCancelled"
 					href="#"
 					class="additional-control show-action-taken-overlay-btn"
-					@click="showActionTakenOverlay">Finish consultation</a>
+					@click="showActionTakenOverlay">
+					{{ finishOrCancel }} consultation
+				</a>
 			</div>
 		</template>
 	</Dropdown>
@@ -50,7 +52,8 @@ import Dropdown from "@/helpers/minor_dropdown.vue"
 const props = defineProps<{
 	consultationId: string,
 	isHeaderControlDropdownShown: boolean,
-	isCurrentUserConsultant: boolean
+	isCurrentUserConsultant: boolean,
+	isConsultationFinishedOrCancelled: boolean
 }>()
 
 interface CustomEvents {
@@ -76,6 +79,8 @@ function showActionTakenOverlay() {
 	emit("showActionTakenOverlay")
 }
 
+const { isCurrentUserConsultant } = props
+const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
 const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
 	"id": props.consultationId
 })

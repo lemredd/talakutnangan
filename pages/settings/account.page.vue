@@ -8,8 +8,9 @@
 		<NonSensitiveTextualField
 			v-model="email"
 			v-model:status="emailFieldStatus"
+			:disabled="mayEditEmail"
 			class="submittable-field email-field"
-			label="E-mail"
+			:label="emailVerified"
 			type="email"/>
 
 		<NonSensitiveTextualField
@@ -99,6 +100,10 @@ import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import settingsTabInfos from "@/settings/settings_tab_infos"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_OWN_DATA
+} from "$/permissions/user_combinations"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
@@ -117,6 +122,26 @@ const successMessages = ref<string[]>([])
 const emailFieldStatus = ref<FieldStatus>("enabled")
 const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
+
+const mayEditEmail = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA
+	])
+
+	return isPermitted
+})
+
+const emailVerified = computed<string>(() => {
+	let verifyEmail = ""
+	const verification = userProfile.data.emailVerifiedAt !== null
+	if (verification) {
+		verifyEmail = "E-mail: Verified ✓"
+	} else {
+		verifyEmail = "E-mail: Unverified ✘"
+	}
+
+	return String(verifyEmail)
+})
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
@@ -152,6 +177,7 @@ function updateUser(): void {
 		"email": email.value,
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
+		"emailVerifiedAt": userProfile.data.emailVerifiedAt,
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {

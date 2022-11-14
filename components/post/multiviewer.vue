@@ -15,7 +15,9 @@
 				:key="post.id"
 				v-model="posts.data[i]"
 				:comment-count="posts.data[i].meta?.commentCount || 0"
-				class="viewer"/>
+				class="viewer"
+				@archive="archivePost"
+				@restore="restorePost"/>
 			<p v-if="hasNoPosts">
 				There are no posts found.
 			</p>
@@ -69,7 +71,10 @@ import { ref, computed, watch, inject, Ref, onMounted } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { DeserializedPostListDocument } from "$/types/documents/post"
+import type {
+	DeserializedPostListDocument,
+	DeserializedPostResource
+} from "$/types/documents/post"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -201,6 +206,26 @@ function resetPostList() {
 		}
 	}
 	retrievePosts()
+}
+
+function removePost(
+	postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">, increment: number) {
+	posts.value = {
+		...posts.value,
+		"data": posts.value.data.filter(post => post.id !== postToRemove.id),
+		"meta": {
+			...posts.value.meta,
+			"count": Math.max((posts.value.meta?.count ?? 0) + increment, 0)
+		}
+	}
+}
+
+function archivePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+	removePost(postToRemove, -1)
+}
+
+function restorePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+	removePost(postToRemove, -1)
 }
 
 onMounted(async() => {

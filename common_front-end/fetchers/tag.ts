@@ -1,3 +1,4 @@
+import type { TagQueryParameters } from "$/types/query"
 import type {
 	TagResourceIdentifier,
 	TagAttributes,
@@ -22,7 +23,10 @@ export default class TagFetcher extends BaseFetcher<
 	TagDocument,
 	TagListDocument,
 	DeserializedTagDocument,
-	DeserializedTagListDocument
+	DeserializedTagListDocument,
+	{
+		"queryParameters": TagQueryParameters
+	}
 > {
 	constructor() {
 		super(TAG_LINK)

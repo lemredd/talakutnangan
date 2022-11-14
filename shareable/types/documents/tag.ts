@@ -1,6 +1,10 @@
 import type { Serializable } from "$/types/general"
 import type { RequirePassword } from "$/types/documents/security"
 import type {
+	PostIdentifierDocument,
+	DeserializedPostDocument
+} from "$/types/documents/post"
+import type {
 	AttachableCompleteness as Completeness,
 	CompletenessRegulator,
 	ReadableCompleteness,
@@ -8,14 +12,23 @@ import type {
 } from "$/types/documents/irregularity"
 import type {
 	Format,
-	Resource,
 	Attributes,
+
+	Resource,
 	ResourceIdentifier,
 	DeserializedResource,
+
+	DeriveRelationships,
+	DeriveRelationshipNames,
+	GeneralRelationshipData,
+	DeriveDeserializedRelationships,
+	PartialOrPickDeserializedRelationship,
+
 	ResourceDocument,
 	ResourceListDocument,
 	DeserializedResourceDocument,
 	DeserializedResourceListDocument,
+
 	IdentifierDocument,
 	IdentifierListDocument
 } from "$/types/documents/base"
@@ -36,13 +49,41 @@ export type TagResource<T extends Completeness = "read"> = Resource<
 	TagAttributes<"serialized">
 >
 
-export type DeserializedTagResource<T extends ReadableCompleteness = "read">
+interface TagRelationshipData<unusedT extends Completeness = "read">
+extends GeneralRelationshipData {
+	post: {
+		serialized: PostIdentifierDocument,
+		deserialized: DeserializedPostDocument
+	}
+}
+
+export type TagRelationshipNames = DeriveRelationshipNames<TagRelationshipData>
+
+export type TagRelationships<T extends Completeness = "read">
+= DeriveRelationships<TagRelationshipData<T>>
+
+export type DeserializedTagRelationships<T extends Completeness = "read">
+= DeriveDeserializedRelationships<TagRelationshipData<T>>
+
+export type DeserializedTagResource<
+	T extends ReadableCompleteness = "read",
+	U extends TagRelationshipNames|undefined = undefined
+>
 = DeserializedResource<
 	TagResourceIdentifier<T>,
 	TagAttributes<"deserialized">
+> & PartialOrPickDeserializedRelationship<
+	TagRelationshipData<"read">,
+	DeserializedTagRelationships<"read">,
+	TagRelationshipNames,
+	U extends TagRelationshipNames ? true : false,
+	U extends TagRelationshipNames ? U : TagRelationshipNames
 >
 
-export type TagDocument<T extends Completeness = "read"> = ResourceDocument<
+
+export type TagDocument<
+	T extends Completeness = "read",
+> = ResourceDocument<
 	CompletenessRegulator<T>,
 	TagResourceIdentifier<T>,
 	TagAttributes<"serialized">,
@@ -58,18 +99,25 @@ export type TagListDocument<T extends Completeness = "read"> = ResourceListDocum
 	TagResource<T>
 >
 
-export type DeserializedTagDocument<T extends ReadableCompleteness = "read">
+export type DeserializedTagDocument<
+	T extends ReadableCompleteness = "read",
+	U extends TagRelationshipNames|undefined = undefined
+
+>
 = DeserializedResourceDocument<
 	TagResourceIdentifier<T>,
 	TagAttributes<"deserialized">,
-	DeserializedTagResource<T>
+	DeserializedTagResource<T, U>
 >
 
-export type DeserializedTagListDocument<T extends ReadableCompleteness = "read">
+export type DeserializedTagListDocument<
+	T extends ReadableCompleteness = "read",
+	U extends TagRelationshipNames|undefined = undefined
+>
 = DeserializedResourceListDocument<
 	TagResourceIdentifier<T>,
 	TagAttributes<"deserialized">,
-	DeserializedTagResource<T>
+	DeserializedTagResource<T, U>
 >
 
 export type TagIdentifierDocument<T extends ReadableCompleteness = "read">

@@ -20,6 +20,8 @@ describe("Component: consultation/chat_window", () => {
 	describe("consultation states", () => {
 		describe("before", () => {
 			it("can toggle consultation list state", async() => {
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -28,7 +30,6 @@ describe("Component: consultation/chat_window", () => {
 						"type": "user"
 					}
 				}
-				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
@@ -73,6 +74,8 @@ describe("Component: consultation/chat_window", () => {
 			})
 
 			it("should request to start consultation", async() => {
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+
 				const scheduledStartAt = new Date()
 				const consultant = {
 					"data": {
@@ -81,7 +84,6 @@ describe("Component: consultation/chat_window", () => {
 						"type": "user"
 					}
 				}
-				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
@@ -142,6 +144,65 @@ describe("Component: consultation/chat_window", () => {
 				expect(firstRequestBody).not.toHaveProperty("data.attributes.startedAt", null)
 				expect(firstRequestBody).toHaveProperty("data.id", "1")
 				expect(firstRequestBody).toHaveProperty("data.type", "consultation")
+			})
+
+			it("can be cancelled by students", async() => {
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+
+				const scheduledStartAt = new Date()
+				const userProfile = {
+					"data": {
+						"id": "10",
+						"kind": "student",
+						"type": "user"
+					}
+				}
+				const id = "1"
+				const fakeConsultation = {
+					"actionTaken": null,
+					"consultant": {
+						"data": {
+							"id": "1",
+							"type": "user"
+						}
+					},
+					"finishedAt": null,
+					id,
+					"reason": "",
+					scheduledStartAt,
+					"startedAt": null,
+					"type": "consultation"
+				} as DeserializedConsultationResource
+				const fakeChatMessage = {
+					"data": []
+				} as DeserializedChatMessageListDocument
+				const wrapper = shallowMount<any>(Component, {
+					"global": {
+						"provide": {
+							"pageContext": {
+								"pageProps": {
+									userProfile
+								}
+							}
+						}
+					},
+					"props": {
+						"chatMessages": fakeChatMessage,
+						"consultation": fakeConsultation,
+						"isConsultationListShown": false
+					}
+				})
+
+				const consultationHeader = wrapper.findComponent({ "name": "ConsultationHeader" })
+				await consultationHeader.vm.$emit("cancelConsultation")
+
+				const mockedFetch = fetch as jest.Mock<any, any>
+				const [ [ request ] ] = mockedFetch.mock.calls
+				expect(request).toHaveProperty("method", "DELETE")
+				expect(request).toHaveProperty(
+					"url",
+					specializePath(CONSULTATION_LINK.unbound, { })
+				)
 			})
 		})
 

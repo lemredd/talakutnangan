@@ -71,7 +71,7 @@
 			@update:model-value="switchVote"/>
 	</section>
 	<UpdateCommentField
-		v-else
+		v-if="mayUpdateComment"
 		:model-value="comment"
 		@update:model-value="closeUpdateCommentField"/>
 </template>
@@ -143,6 +143,9 @@ import {
 	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
@@ -361,6 +364,33 @@ function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">
 	comment.value = newComment
 	closeUpdateField()
 }
+
+const mayUpdateComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	const isDeleted = props.modelValue.deletedAt
+	const mayViewPresent = !isDeleted
+
+	return mustUpdate.value && isPermitted && mayViewPresent
+})
 
 const {
 	"state": mustArchive,
