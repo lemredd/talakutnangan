@@ -88,6 +88,9 @@ describe("Component: consultation rescheduler", () => {
 					}
 				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 	})
@@ -176,6 +179,9 @@ describe("Component: consultation rescheduler", () => {
 					}
 				},
 				"type": "consultation"
+			},
+			"meta": {
+				"doesAllowConflicts": true
 			}
 		})
 	})
