@@ -16,6 +16,10 @@ describe("Controller: GET /api/post", () => {
 		requester.customizeRequest({
 			"query": {
 				"filter": {
+					"dateTimeRange": {
+						"begin": new Date(),
+						"end": new Date(Date.now() + 2)
+					},
 					"existence": "*"
 				}
 			}
@@ -42,7 +46,8 @@ describe("Controller: GET /api/post", () => {
 		await requester.runMiddleware(queryValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(1)
-		expect(body).toHaveProperty("0.source.parameter", "filter.existence")
+		expect(body).toHaveLength(2)
+		expect(body).toHaveProperty("0.source.parameter", "filter.dateTimeRange")
+		expect(body).toHaveProperty("1.source.parameter", "filter.existence")
 	})
 })

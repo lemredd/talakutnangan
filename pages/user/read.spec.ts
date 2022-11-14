@@ -46,17 +46,19 @@ describe("Page: user/read", () => {
 		const user = {
 			"data": {
 				"department": userDepartment,
+				"kind": "reachable_employee",
 				"name": "Sample User",
 				"roles": userRoles
 			}
 		}
 		const userProfile = {
 			"data": {
+				"department": userDepartment,
 				"roles": {
 					"data": [
 						{
 							"name": "A",
-							"userFlags": 0
+							"userFlags": permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 						}
 					]
 				}

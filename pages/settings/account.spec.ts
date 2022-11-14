@@ -7,6 +7,9 @@ import Factory from "~/factories/user"
 import StudentDetailFactory from "~/factories/student_detail"
 import RequestEnvironment from "$/singletons/request_environment"
 
+import { UPDATE_OWN_DATA } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
+
 import Page from "./account.page.vue"
 
 describe("Page: settings/account", () => {
@@ -70,7 +73,26 @@ describe("Page: settings/account", () => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 		const userProfile = await new Factory()
 		.beUnreachableEmployee()
-		.deserializedOne(true) as DeserializedUserProfile
+		.deserializedOne(true) as DeserializedUserProfile<"roles">
+		userProfile.data.roles = {
+			"data": [
+				{
+					"auditTrailFlags": 0,
+					"commentFlags": 0,
+					"deletedAt": null,
+					"departmentFlags": 0,
+					"id": "1",
+					"name": "A",
+					"postFlags": 0,
+					"profanityFlags": 0,
+					"roleFlags": 0,
+					"semesterFlags": 0,
+					"tagFlags": 0,
+					"type": "role",
+					"userFlags": permissionGroup.generateMask(...UPDATE_OWN_DATA)
+				}
+			]
+		}
 		const fakeNewEmail = faker.internet.exampleEmail()
 		const wrapper = mount(Page, {
 			"global": {
