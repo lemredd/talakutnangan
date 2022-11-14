@@ -76,17 +76,20 @@ type CustomEvents = {
 const props = defineProps<DefinedProps>()
 const emit = defineEmits<CustomEvents>()
 
-const dateToday = ref(new Date())
-const dateInNextMonth = jumpNextMonth(dateToday.value)
-const dayIndex = dateToday.value.getDay()
-const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayIndex) ]
+const CUSTOM_DAY = "custom"
+const dateToday = ref<Date>(new Date())
+const dateInNextMonth = computed<Date>(() => jumpNextMonth(dateToday.value))
+const dayIndex = computed<number>(() => dateToday.value.getDay())
+const reorderedDays = computed<Day[]>(
+	() => [ ...DayValues.slice(dayIndex.value), ...DayValues.slice(0, dayIndex.value) ]
+)
 
 const chosenDay = computed({
 	get() { return props.chosenDay },
 	set(newValue: string) { emit("update:chosenDay", newValue) }
 })
 const customDate = ref("")
-const isCustomDate = computed(() => chosenDay.value === "custom")
+const isCustomDate = computed(() => chosenDay.value === CUSTOM_DAY)
 const selectableDays = computed(() => {
 	const { consultantSchedules } = props
 	const dates: Date[] = []
@@ -96,15 +99,15 @@ const selectableDays = computed(() => {
 		)
 
 		consultantDays.sort((element1, element2) => {
-			const element1Index = reorderedDays.indexOf(element1 as Day)
-			const element2Index = reorderedDays.indexOf(element2 as Day)
+			const element1Index = reorderedDays.value.indexOf(element1 as Day)
+			const element2Index = reorderedDays.value.indexOf(element2 as Day)
 
 			return Math.sign(element1Index - element2Index)
 		})
 
 		for (const day of consultantDays) {
 			const dateCounter = new Date()
-			const reorderedDayIndex = reorderedDays.indexOf(day)
+			const reorderedDayIndex = reorderedDays.value.indexOf(day)
 			dateCounter.setDate(dateCounter.getDate() + reorderedDayIndex)
 
 			dates.push(dateCounter)
@@ -122,7 +125,7 @@ const selectableDays = computed(() => {
 	})
 	actualSelectableDays.push({
 		"label": "Custom...",
-		"value": "custom"
+		"value": CUSTOM_DAY
 	})
 
 
