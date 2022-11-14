@@ -48,10 +48,15 @@
 						:user="post.poster"/>
 					<div class="poster-details">
 						<span>
-							{{ post.poster.data.name }}
+							<span>
+								{{ post.poster.data.name }}
+							</span>
+							<small>
+								as {{ post.posterRole.data.name }}
+							</small>
 						</span>
-						<span>
-							<small class="department-and-timestamp">
+						<span class="department-and-timestamp">
+							<small>
 								<span>
 									{{ postDepartment }}
 								</span>
