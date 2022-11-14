@@ -22,6 +22,7 @@
 	</form>
 
 	<form
+		v-if="mayUpdateAnyone"
 		class="user-data-form"
 		@submit.prevent="updateRoles">
 		<h1 class="user-data-form-header">
@@ -75,7 +76,7 @@
 			Archive
 		</button>
 		<button
-			v-if="mayReset"
+			v-if="mayResetPassword"
 			type="button"
 			class="btn btn-primary"
 			@click="resetUserPassword">
@@ -184,22 +185,31 @@ const isOnSameDepartment = computed<boolean>(() => {
 	const ownDepartment = userProfile.data.department.data.id
 	return ownDepartment === user.value.data.department.data.id
 })
+
+const mayUpdateAnyone = computed<boolean>(() => {
+	const userRoles = userProfile.data.roles.data
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userRoles, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isLimitedUpToGlobalScope
+})
+
 const mayUpdateUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+	const userRoles = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
 		UPDATE_ANYONE_ON_OWN_DEPARTMENT
 	]) && isOnSameDepartment.value
 
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-	])
+	const isLimitedUpToGlobalScope = mayUpdateAnyone.value
 
 	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
 
 const mayArchiveOrRestoreUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+	const userRoles = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
 		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 	]) && isOnSameDepartment.value
 
@@ -220,7 +230,6 @@ const mayResetPassword = computed<boolean>(() => {
 
 	return isLimitedUpToDepartmentScope
 })
-const mayReset = computed<boolean>(() => mayResetPassword.value)
 
 const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
@@ -231,6 +240,7 @@ const successMessages = ref<string[]>([])
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
+		"emailVerifiedAt": null,
 		"kind": user.value.data.kind,
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
