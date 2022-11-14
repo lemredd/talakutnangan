@@ -1,20 +1,25 @@
+import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
+
+import { DayValues } from "$/types/database"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Component from "./scheduler.vue"
 
-describe.skip("Component: consultation/helpers/scheduler", () => {
+describe("Component: consultation/helpers/scheduler", () => {
 	it("can select within employee's schedules", async() => {
+		const currentTime = new Date()
+		const currentHour = 8
+		currentTime.setHours(currentHour)
+
 		const schedules = {
 			"data": [
 				{
-					"attributes": {
-						"dayName": "monday",
-						"scheduleEnd": convertTimeToMinutes("09:00"),
-						"scheduleStart": convertTimeToMinutes("08:00")
-					},
+					"dayName": DayValues[currentTime.getDay()],
 					"id": "1",
+					"scheduleEnd": convertTimeToMinutes("09:00"),
+					"scheduleStart": convertTimeToMinutes("08:00"),
 					"type": "employee_schedule"
 				}
 			],
@@ -24,11 +29,6 @@ describe.skip("Component: consultation/helpers/scheduler", () => {
 		} as any
 
 		const wrapper = shallowMount(Component, {
-			"global": {
-				"stubs": {
-					"SelectableOptionsField": false
-				}
-			},
 			"props": {
 				"chosenDay": "",
 				"chosenTime": "",
@@ -37,33 +37,25 @@ describe.skip("Component: consultation/helpers/scheduler", () => {
 		})
 
 		// Load selectable days and its options
-		const currentHour = 8
 		const castedWrapper = wrapper.vm as any
-		castedWrapper.dateToday = new Date()
-		castedWrapper.dateToday.setHours(currentHour)
-		console.log(castedWrapper.dateToday)
-		const selectableDay = wrapper.find(".selectable-day")
-		expect(selectableDay.exists()).toBeTruthy()
-		const dayOptions = selectableDay.findAll("option")
-		expect(dayOptions).toHaveLength(3)
+		castedWrapper.dateToday = currentTime
 
-		// Load selectable times and its options
-		const chosenDay = dayOptions[1].attributes("value")
-		const selectableDayField = selectableDay.find("select")
-		console.log(selectableDayField.html(), "\n\n\n")
-		await selectableDayField.setValue(chosenDay)
-		await wrapper.setProps({ chosenDay })
-		console.log(wrapper.html(), "\n\n\n")
-		console.log(chosenDay, "\n\n\n")
-		const selectableTime = wrapper.find(".selectable-time")
-		expect(selectableTime.exists()).toBeTruthy()
-		// const timeOptions = selectableTime.findAll("option")
-		// expect(selectableTime.exists()).toBeTruthy()
-		// expect(timeOptions.length).toBeGreaterThan(0)
+		const selectableDay = wrapper
+		.find(".selectable-day")
+		.findComponent({ "name": "SelectableOptionsField" })
+		await selectableDay.vm.$emit("update:modelValue", currentTime.toJSON())
+		await wrapper.setProps({
+			"chosenDay": currentTime.toJSON()
+		})
+		const selectableTime = wrapper
+		.find(".selectable-time")
+		.findComponent({ "name": "SelectableOptionsField" })
+		const chosenTime = convertTimeToMinutes("08:30")
+		await selectableTime.vm.$emit("update:modelValue", chosenTime)
 
 		// Customizable date
-		// await selectableDayField.setValue(dayOptions[2].attributes("value"))
-		// expect(selectableTime.exists()).toBeTruthy()
-		// expect(timeOptions.length).toBeGreaterThan(0)
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("update:chosenDay.0.0", currentTime.toJSON())
+		expect(emitted).toHaveProperty("update:chosenTime.0.0", chosenTime)
 	})
 })
