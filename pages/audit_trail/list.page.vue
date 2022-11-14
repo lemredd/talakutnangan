@@ -1,6 +1,5 @@
 <template>
 	<ResourceManager
-		v-if="true"
 		v-model:slug="slug"
 		:is-loaded="isLoaded"
 		:department-names="[]"
