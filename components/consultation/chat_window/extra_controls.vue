@@ -18,8 +18,8 @@
 				<a
 					v-if="!isCurrentUserConsultant"
 					class="additional-control show-rescheduling-overlay-btn"
-					@click="showActionTakenOverlay">
-					{{ finishOrCancel }} consultation
+					@click="showReschedulerOverlay">
+					Reschedule consultation
 				</a>
 			</div>
 		</template>
@@ -64,6 +64,7 @@ const props = defineProps<{
 interface CustomEvents {
 	(eventName: "toggleHeaderControlDropdownShown"): void
 	(eventName: "showActionTakenOverlay"): void
+	(eventName: "showReschedulerOverlay"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -89,5 +90,10 @@ const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
 function showActionTakenOverlay() {
 	toggleHeaderControlDropdownShown()
 	emit("showActionTakenOverlay")
+}
+
+function showReschedulerOverlay() {
+	toggleHeaderControlDropdownShown()
+	emit("showReschedulerOverlay")
 }
 </script>
