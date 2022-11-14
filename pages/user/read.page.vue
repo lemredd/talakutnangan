@@ -20,7 +20,7 @@
 			<NonSensitiveTextField
 				v-model="user.data.email"
 				v-model:status="textFieldStatus"
-				label="Email"
+				:label="emailVerified"
 				type="text"/>
 		</div>
 		<button type="submit" class="update-user-btn btn btn-primary">
@@ -248,6 +248,17 @@ const mayResetPassword = computed<boolean>(() => {
 
 const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
+const emailVerified = computed<string>(() => {
+	let verifyEmail = ""
+	const verification = userProfile.data.emailVerifiedAt !== null
+	if (verification) {
+		verifyEmail = "E-mail: Verified ✓"
+	} else {
+		verifyEmail = "E-mail: Unverified ✘"
+	}
+
+	return String(verifyEmail)
+})
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
