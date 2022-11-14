@@ -18,7 +18,8 @@
 	@apply flex flex-row mt-1;
 
 	.post-message{
-		@apply p-4 rounded-1rem mb-5 border-1px border-solid;
+		@apply p-4 rounded-1rem mb-5 border-1px border-soli
+		@apply dark:bg-dark-100;
 		width:250%;
 
 		@screen sm{
