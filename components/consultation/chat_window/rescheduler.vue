@@ -113,6 +113,25 @@ function rescheduleConsultation() {
 		"reason": consultation.data.reason,
 		"scheduledStartAt": scheduledStartAt.value,
 		"startedAt": null
+	}, {
+		"extraDataFields": {
+			"relationships": {
+				"consultant": {
+					"data": consultation.data.consultant?.data
+				},
+				"consultantRole": {
+					"data": {
+						"id": consultation.data.consultant?.data.id as string,
+						"type": "role"
+					}
+				}
+			}
+		},
+		"extraUpdateDocumentProps": {
+			"meta": {
+				"doesAllowConflicts": true
+			}
+		}
 	})
 }
 
