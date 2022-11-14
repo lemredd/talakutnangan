@@ -72,10 +72,10 @@ import ConsultationFetcher from "$@/fetchers/consultation"
 
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
-import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"

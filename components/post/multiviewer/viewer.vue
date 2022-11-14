@@ -167,7 +167,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import { Converter } from "showdown"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
@@ -182,6 +181,7 @@ import pluralize from "$/string/pluralize"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
+import convertMarkdownToHTML from "$/string/convert_markdown_to_html"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
@@ -212,13 +212,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
-const formattedContent = computed<string>(() => {
-	const converter = new Converter({
-		"backslashEscapesHTMLTags": true
-	})
-	converter.setFlavor("github")
-	return converter.makeHtml(post.value.content)
-})
+const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
