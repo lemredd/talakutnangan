@@ -9,21 +9,21 @@
 		<h1 class="user-data-form-header">
 			General User data
 		</h1>
-		<div class="user-name">
+		<div class="field user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
 				v-model:status="textFieldStatus"
 				label="User Name"
 				type="text"/>
 		</div>
-		<div class="email">
+		<div class="field email">
 			<NonSensitiveTextField
 				v-model="user.data.email"
 				v-model:status="textFieldStatus"
 				:label="emailVerified"
 				type="text"/>
 		</div>
-		<div class="kind">
+		<div class="field kind">
 			<NonSensitiveTextField
 				:model-value="friendlyKind"
 				status="disabled"
@@ -116,6 +116,10 @@
 		.user-data-form-header {
 			@apply my-8;
 			@apply text-xl uppercase;
+		}
+
+		.field {
+			@apply mb-4;
 		}
 
 		.btn {
@@ -253,7 +257,7 @@ const mayResetPassword = computed<boolean>(() => {
 	return isLimitedUpToDepartmentScope
 })
 
-const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
+const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 const emailVerified = computed<string>(() => {
 	let verifyEmail = ""
