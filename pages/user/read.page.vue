@@ -39,10 +39,9 @@
 		</div>
 		<Suspensible :is-loaded="hasSubmittedUser">
 			<button type="submit" class="update-user-btn btn btn-primary">
+				update user
 			</button>
 		</Suspensible>
-		update user
-		</button>
 	</form>
 
 	<form
@@ -156,13 +155,10 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
-import assignPath from "$@/external/assign_path"
-import specializePath from "$/helpers/specialize_path"
 import DepartmentFetcher from "$@/fetchers/department"
 import convertForSentence from "$/string/convert_for_sentence"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
-import { READ_USER } from "$/constants/template_page_paths"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	RESET_PASSWORD,
@@ -275,7 +271,7 @@ const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disa
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 const emailVerified = computed<string>(() => {
 	let verifyEmail = ""
-	const verification = userProfile.data.emailVerifiedAt !== null
+	const verification = user.value.data.emailVerifiedAt !== null
 	if (verification) {
 		verifyEmail = "E-mail: Verified ✓"
 	} else {
@@ -310,9 +306,22 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then(() => assignPath(specializePath(READ_USER, {
-		"id": user.value.data.id
-	})))
+	.then(() => {
+		if (user.value.data.emailVerifiedAt) {
+			const oldEmail = pageProps.user.data.email
+			const newEmail = user.value.data.email
+
+			if (oldEmail !== newEmail) {
+				user.value = {
+					...user.value,
+					"data": {
+						...user.value.data,
+						"emailVerifiedAt": null
+					}
+				}
+			}
+		}
+	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasSubmittedUser.value = true
 }
