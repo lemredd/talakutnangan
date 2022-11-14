@@ -4,19 +4,23 @@ import type { PostQueryParameters } from "$/types/query"
 import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { PostAttributes, PostResource, PostResourceIdentifier } from "$/types/documents/post"
 
+import Log from "$!/singletons/log"
+import trimRight from "$/string/trim_right"
+import DatabaseError from "$!/errors/database"
+
 import User from "%/models/user"
 import Model from "%/models/post"
-import Log from "$!/singletons/log"
 import Comment from "%/models/comment"
-import Condition from "%/helpers/condition"
-import BaseManager from "%/managers/base"
-import trimRight from "$/string/trim_right"
 import Department from "%/models/department"
-import Transformer from "%/transformers/post"
-import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import PostAttachment from "%/models/post_attachment"
+
+import BaseManager from "%/managers/base"
+import Condition from "%/helpers/condition"
+import Transformer from "%/transformers/post"
 import AttachedRoleManager from "%/managers/attached_role"
+
+import siftByRange from "%/queries/post/sift_by_range"
 import includeDefaults from "%/queries/post/include_defaults"
 import siftByDepartment from "%/queries/post/sift_by_department"
 
@@ -52,6 +56,7 @@ export default class extends BaseManager<
 		PostQueryParameters<number>
 	>[] {
 		return [
+			siftByRange,
 			siftByDepartment,
 			includeDefaults,
 			...super.listPipeline

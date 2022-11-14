@@ -7,7 +7,7 @@ import Condition from "%/helpers/condition"
 import isUndefined from "$/type_guards/is_undefined"
 
 /**
- * Sift user model which matches a certain column.
+ * Sifts tag model which matches a certain name.
  */
 export default function<T>(
 	currentState: FindOptions<T>,

@@ -1,9 +1,12 @@
 import { FieldRules } from "!/types/validation"
-import { Request, Response } from "!/types/dependent"
+import { AuthenticatedIDRequest, Response } from "!/types/dependent"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import UserManager from "%/managers/user"
+import deserialize from "$/object/deserialize"
 import JSONController from "!/controllers/json"
+import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
 
@@ -25,14 +28,31 @@ export default class extends JSONController {
 		return new PermissionBasedPolicy(permissionGroup, [
 			ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
 			ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
-		])
+		], {
+			"checkOthers": (request: AuthenticatedIDRequest): Promise<void> => {
+				const userData = deserialize(request.user) as DeserializedUserProfile
+				const userID = Number(userData.data.id)
+				const targetUserID = Number(request.params.id)
+
+				if (userID === targetUserID) {
+					return Promise.reject(
+						new AuthorizationError("Users cannot archive themselves.")
+					)
+				}
+
+				return Promise.resolve()
+			}
+		})
 	}
 
-	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
+	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		return makeResourceIdentifierListDocumentRules("user", exists, UserManager)
 	}
 
-	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
+	async handle(
+		request: AuthenticatedIDRequest,
+		unusedResponse: Response
+	): Promise<NoContentResponseInfo> {
 		const manager = new UserManager(request)
 
 		const IDs = request.body.data.map((identifier: { id: number }) => identifier.id)

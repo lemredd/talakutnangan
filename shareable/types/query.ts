@@ -107,7 +107,7 @@ export interface ConsultationRangeFilter extends Serializable {
 export interface DateTimeRangeFilter extends Serializable {
 	filter: {
 		/**
-		 * The time range where consultation schedules are available.
+		 * The time range where consultation schedules or posts are available.
 		 */
 		dateTimeRange: {
 			end: Date,
@@ -141,6 +141,15 @@ export interface PreviewMessageOnlyFilter extends Serializable {
 		 * consultation specified on other filters.
 		 */
 		previewMessageOnly: boolean
+	}
+}
+
+export interface PostRequirementFilter extends Serializable {
+	filter: {
+		/**
+		 * Require tags to have associated posts
+		 */
+		mustHavePost: boolean
 	}
 }
 
@@ -201,10 +210,6 @@ export type SemesterQueryParameters =
 	& CommonQueryParameters
 	& SlugFilter
 
-export type TagQueryParameters =
-	& CommonQueryParameters
-	& SlugFilter
-
 export type AuditTrailQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& IDsFilter<T>
@@ -233,7 +238,13 @@ export type ChatMessageQueryParameters<T extends number|string = string> =
 
 export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
+	& DateTimeRangeFilter
 	& NullableDepartmentFilter<T>
+
+export type TagQueryParameters =
+	& CommonQueryParameters
+	& SlugFilter
+	& PostRequirementFilter
 
 export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters

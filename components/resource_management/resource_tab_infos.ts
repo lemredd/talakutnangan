@@ -10,7 +10,7 @@ import {
 } from "$/constants/template_page_paths"
 
 import { READ as READ_AUDIT_TRAIL } from "$/permissions/audit_trail_combinations"
-import { user, role, department, semester, auditTrail } from "$/permissions/permission_list"
+import { user, role, department, semester, tag, auditTrail } from "$/permissions/permission_list"
 import {
 	CREATE as CREATE_ROLES,
 	UPDATE as UPDATE_ROLES,
@@ -132,7 +132,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 			UPDATE_TAGS,
 			ARCHIVE_AND_RESTORE_TAGS
 		],
-		"permissionGroup": semester
+		"permissionGroup": tag
 	},
 	{
 		"kinds": null,

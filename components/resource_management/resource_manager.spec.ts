@@ -18,11 +18,11 @@ describe("UI Component: resource_management/resource_manager", () => {
 						"value": departmentID
 					}
 				],
-				"isLoaded": true,
-				"roleNames": []
+				"isLoaded": true
 			}
 		})
 
+		console.log(wrapper.html(), "\n\n\n")
 		const departmentOptions = wrapper.findComponent({ "name": "SelectableOptionsField" })
 		await departmentOptions.setValue(departmentID)
 
@@ -35,7 +35,6 @@ describe("UI Component: resource_management/resource_manager", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
 				"chosenRole": "",
-				"departmentNames": [],
 				"isLoaded": true,
 				"roleNames": [
 					{
@@ -61,9 +60,7 @@ describe("UI Component: resource_management/resource_manager", () => {
 		const newSlug = "Hello"
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"departmentNames": [],
 				"isLoaded": true,
-				"roleNames": [],
 				"slug": "World"
 			}
 		})

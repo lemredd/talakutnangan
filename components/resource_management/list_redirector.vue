@@ -21,6 +21,11 @@
 import convertForSentence from "$/string/convert_for_sentence"
 
 defineProps<{
-	resourceType: "user"|"role"|"department"|"semester"|"tag"
+	resourceType:
+		|"user"
+		|"role"
+		|"department"
+		|"semester"
+		|"tag"
 }>()
 </script>

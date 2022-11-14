@@ -6,6 +6,11 @@
 				label="Department"
 				class="filter"
 				:options="departmentNames"/>
+			<DateRangePicker
+				v-model:range-begin="rangeBegin"
+				v-model:range-end="rangeEnd"
+				:semesters="semesters"
+				class="picker"/>
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
 
@@ -76,6 +81,9 @@ import type {
 	DeserializedPostResource
 } from "$/types/documents/post"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+import type {
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
@@ -83,11 +91,15 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import Fetcher from "$@/fetchers/post"
 import debounce from "$@/helpers/debounce"
 import isUndefined from "$/type_guards/is_undefined"
+import resetToMidnight from "$/time/reset_to_midnight"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import Viewer from "@/post/multiviewer/viewer.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import DateRangePicker from "@/helpers/filters/date_range_picker.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
@@ -96,7 +108,8 @@ const { userProfile } = pageProps
 
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
-	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">,
+	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {
@@ -106,6 +119,10 @@ interface CustomEvents {
 	): void
 }
 const emit = defineEmits<CustomEvents>()
+
+const currentDate = new Date()
+const rangeBegin = ref<Date>(resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1)))
+const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1)))
 
 // eslint-disable-next-line no-use-before-define
 const debouncedCommentCounting = debounce(countCommentsOfPosts, DEBOUNCED_WAIT_DURATION)
@@ -184,6 +201,10 @@ async function retrievePosts() {
 	isLoaded.value = false
 	await loadRemainingResource(posts as Ref<DeserializedPostListDocument>, fetcher, () => ({
 		"filter": {
+			"dateTimeRange": {
+				"begin": rangeBegin.value,
+				"end": rangeEnd.value
+			},
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
 			"existence": existence.value as "exists"|"archived"|"*"
 		},

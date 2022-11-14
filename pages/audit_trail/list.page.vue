@@ -41,6 +41,7 @@ import type { TableData } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import debounce from "$@/helpers/debounce"
@@ -49,7 +50,6 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
-
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -98,7 +98,7 @@ async function fetchAuditTrailInfos() {
 				"slug": slug.value
 			},
 			"page": {
-				"limit": 10,
+				"limit": DEFAULT_LIST_LIMIT,
 				"offset": offset.value
 			},
 			"sort": [ "-createdAt" ]

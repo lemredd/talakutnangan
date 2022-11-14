@@ -7,8 +7,7 @@
 	<form class="account-settings" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
-			v-model:status="emailFieldStatus"
-			:disabled="mayEditEmail"
+			:status="emailFieldStatus"
 			class="submittable-field email-field"
 			:label="emailVerified"
 			type="email"/>
@@ -99,7 +98,9 @@ import Fetcher from "$@/fetchers/user"
 import settingsTabInfos from "@/settings/settings_tab_infos"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	UPDATE_OWN_DATA
+	UPDATE_OWN_DATA,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
@@ -118,17 +119,19 @@ const { userProfile } = pageProps
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
-const emailFieldStatus = ref<FieldStatus>("enabled")
 const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
 
 const mayEditEmail = computed<boolean>(() => {
 	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_OWN_DATA
+		UPDATE_OWN_DATA,
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 	])
 
 	return isPermitted
 })
+const emailFieldStatus = ref<FieldStatus>(mayEditEmail.value ? "enabled" : "disabled")
 
 const emailVerified = computed<string>(() => {
 	let verifyEmail = ""
@@ -174,7 +177,7 @@ function revertToOldData() {
 function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
-		"emailVerifiedAt": String(userProfile.data.emailVerifiedAt),
+		"emailVerifiedAt": userProfile.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
 		"prefersDark": userProfile.data.prefersDark

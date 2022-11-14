@@ -10,6 +10,8 @@ export const USER_LIST = "/user/list"
 
 export const ROLE_LIST = "/role/list"
 
+export const TAG_LIST = "/tag/list"
+
 export const AUDIT_TRAIL_LIST = "/audit_trail/list"
 
 export const PROFILE_SETTINGS = "/settings/profile"
