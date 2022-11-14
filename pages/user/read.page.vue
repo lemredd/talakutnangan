@@ -1,4 +1,5 @@
 <template>
+	<ListRedirector resource-type="user"/>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -138,7 +139,7 @@ import {
 } from "$/permissions/user_combinations"
 
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-
+import ListRedirector from "@/helpers/list_redirector.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"

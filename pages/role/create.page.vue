@@ -52,7 +52,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
-import UserListRedirector from "@/resource_management/list_redirector.vue"
+import UserListRedirector from "@/helpers/list_redirector.vue"
 
 const role = ref<RoleAttributes<"deserialized">>({
 	"auditTrailFlags": 0,
