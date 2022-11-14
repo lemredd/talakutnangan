@@ -35,3 +35,6 @@ export const fileTypeDescription = "be a valid MIME type"
 
 export const channelName = /^\w+$/u
 export const channelNameDescription = "have alphanumeric or underscore characters only"
+
+export const postContent = /^.+<(script).+?>.+<\/\1{1}>.+$/u
+export const postContentDescription = "have no banned tags"
