@@ -9,27 +9,27 @@
 			<SelectableExistence v-model="existence" class="existence"/>
 		</form>
 
+		<Viewer
+			v-for="(post, i) in posts.data"
+			:key="post.id"
+			v-model="posts.data[i]"
+			:comment-count="posts.data[i].meta?.commentCount || 0"
+			class="viewer"
+			@archive="archivePost"
+			@restore="restorePost"/>
 		<Suspensible class="viewer-group" :is-loaded="isLoaded">
-			<Viewer
-				v-for="(post, i) in posts.data"
-				:key="post.id"
-				v-model="posts.data[i]"
-				:comment-count="posts.data[i].meta?.commentCount || 0"
-				class="viewer"
-				@archive="archivePost"
-				@restore="restorePost"/>
 			<p v-if="hasNoPosts">
 				There are no posts found.
 			</p>
-		</Suspensible>
 
-		<div v-if="hasRemainingPosts" class="load-others">
-			<button
-				class="btn btn-primary"
-				@click="retrievePosts">
-				Load other posts
-			</button>
-		</div>
+			<div v-if="hasRemainingPosts" class="load-others">
+				<button
+					class="btn btn-primary"
+					@click="retrievePosts">
+					Load other posts
+				</button>
+			</div>
+		</Suspensible>
 	</div>
 </template>
 
