@@ -246,11 +246,11 @@ const actionTakenDescription = isCurrentUserConsultant.value
 	? "action taken to solve the consulter(s) concern."
 	: "reason for cancellation."
 const {
-	hasFinished,
 	isCanceled,
+	isDone,
 	isOngoing
 } = makeConsultationStates(props)
-const isConsultationFinishedOrCancelled = hasFinished || isCanceled
+const isConsultationFinishedOrCancelled = isDone || isCanceled
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue
