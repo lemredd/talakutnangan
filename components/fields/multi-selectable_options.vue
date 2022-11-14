@@ -55,11 +55,11 @@
 		text-align: center;
 	}
 }
-@media (min-width: 640px) {
-	.multi-select .select, .selected-options{
+@screen md {
+	.multi-select .select, .selected-options {
 		max-width: 70%;
 	}
-	.multi-select .select{
+	.multi-select .select {
 		@apply flex-row flex justify-between;
 	}
 }
