@@ -76,8 +76,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p class="post-content">
-			{{ post.content }}
+		<p v-html="formattedContent" class="post-content">
 		</p>
 		<div v-if="hasExistingAttachments">
 			<div
@@ -212,6 +211,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+const formattedContent = computed<string>(() => post.value.content.replace(/\r?\n/gu, "<br>"))
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
