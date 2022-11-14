@@ -100,7 +100,6 @@ const scheduledStartAt = computed(() => {
 		chosenDate.setMilliseconds(0)
 	}
 
-	console.log("from component", chosenDate.toJSON())
 	return chosenDate.toJSON()
 })
 const fetcher = new Fetcher()
