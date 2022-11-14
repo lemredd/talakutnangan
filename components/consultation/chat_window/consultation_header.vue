@@ -35,19 +35,20 @@
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
+				:is-consultation-finished-or-cancelled="isConsultationFinishedOrCancelled"
 				@show-action-taken-overlay="showActionTakenOverlay"
 				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"/>
 
 			<Overlay
-				:is-shown="isActionTakenOverlayShown && isCurrentUserConsultant"
+				:is-shown="isActionTakenOverlayShown"
 				class="action-taken"
 				@close="hideActionTakenOverlay">
 				<template #header>
-					Mark this consultation as finished?
+					{{ actionTakenHeader }}
 				</template>
 
 				<template #default>
-					<p>If so, please provide the action taken to solve the consulter/s concern.</p>
+					<p>If so, please provide the {{ actionTakenDescription }}</p>
 					<NonSensitiveTextField
 						v-model="actionTaken"
 						class="action-taken-field"
@@ -60,7 +61,7 @@
 				<template #footer>
 					<button
 						class="finish-btn btn btn-primary"
-						@click="finishConsultation">
+						@click="finishOrCancelConsultation">
 						submit
 					</button>
 				</template>
@@ -115,11 +116,11 @@ const {
 		}
 	}
 } = inject("pageContext") as PageContext<"deserialized">
-const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 
 interface CustomEvents {
 	(eventName: "update:modelValue", newValue: string): void
 	(eventName: "finishConsultation"): void
+	(eventName: "cancelConsultation"): void
 	(eventName: "showActionTakenOverlay"): void
 	(eventName: "hideActionTakenOverlay"): void
 }
@@ -224,9 +225,7 @@ const {
 	"off": hideFileRepoOverlay,
 	"state": isFileRepoOverlayShown
 } = makeSwitch(false)
-
 const fileRepoTab = ref("files")
-
 const mustShowPreview = computed(() => fileRepoTab.value === "pictures")
 function switchTab(event: Event) {
 	const button = event.target as HTMLButtonElement
@@ -239,9 +238,19 @@ const consultation = computed<DeserializedConsultationResource<"consultant"|"con
 	() => props.consultation
 )
 
-const { isOngoing } = makeConsultationStates(props)
-const isAllowedToCall = computed(() => isOngoing.value)
-
+const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
+const actionTakenHeader = isCurrentUserConsultant.value
+	? "Mark this consultation as finished?"
+	: "Cancel this consultation?"
+const actionTakenDescription = isCurrentUserConsultant.value
+	? "action taken to solve the consulter(s) concern."
+	: "reason for cancellation."
+const {
+	isCanceled,
+	isDone,
+	isOngoing
+} = makeConsultationStates(props)
+const isConsultationFinishedOrCancelled = isDone || isCanceled
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue
@@ -250,16 +259,18 @@ const actionTaken = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
-
 function showActionTakenOverlay(): void {
 	emit("showActionTakenOverlay")
 }
 function hideActionTakenOverlay(): void {
 	emit("hideActionTakenOverlay")
 }
-function finishConsultation(): void {
-	emit("finishConsultation")
+function finishOrCancelConsultation() {
+	if (isCurrentUserConsultant.value) emit("finishConsultation")
+	else emit("cancelConsultation")
 }
+
+const isAllowedToCall = computed(() => isOngoing.value)
 
 onMounted(async() => {
 	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)

@@ -1,6 +1,6 @@
 import { flushPromises, shallowMount } from "@vue/test-utils"
 
-import type { DeserializedChatMessageListDocument, DeserializedChatMessageResource } from "$/types/documents/chat_message"
+import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
@@ -57,6 +57,7 @@ describe("Component: chat window/consultation header", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"isActionTakenOverlayShown": false,
 					"modelValue": "",
 					"receivedErrors": [],
 					remainingTime
@@ -114,6 +115,7 @@ describe("Component: chat window/consultation header", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"isActionTakenOverlayShown": false,
 					"modelValue": "",
 					"receivedErrors": [],
 					remainingTime
@@ -161,7 +163,7 @@ describe("Component: chat window/consultation header", () => {
 							"kind": "1",
 							"type": "chat_message",
 							"updatedAt": new Date()
-						},
+						}
 					],
 					"meta": {
 						"count": 2
@@ -206,6 +208,7 @@ describe("Component: chat window/consultation header", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"isActionTakenOverlayShown": false,
 					"modelValue": "",
 					"receivedErrors": [],
 					remainingTime
