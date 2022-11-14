@@ -26,6 +26,7 @@
 					option.label || option.value
 				}}
 				<button
+					v-if="!disabled"
 					type="button"
 					class="close material-icons-outlined"
 					@click="removeOption(option.value)">
