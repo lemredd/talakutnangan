@@ -12,6 +12,7 @@
 				<TextualField
 					v-model="userProfileData.name"
 					v-model:status="nameFieldStatus"
+					:disabled="mayEditProfile"
 					label="Display Name"
 					class="display-name-field"
 					type="text"/>
@@ -21,6 +22,7 @@
 		<div class="pictures">
 			<PicturePicker
 				resource-type="profile_picture"
+				:disabled="mayEditProfile"
 				@submit-file="submitProfilePicture">
 				<div class="content">
 					<div class="picture-picker-header">
@@ -45,6 +47,7 @@
 			<PicturePicker
 				v-if="!isUnReachableEmployee"
 				resource-type="signature"
+				:disabled="mayEditProfile"
 				@submit-file="submitSignature">
 				<div class="content">
 					<div class="picture-picker-header">
@@ -81,12 +84,13 @@
 				<input
 					id="dark-mode-toggle"
 					v-model="prefersDark"
+					:disabled="mayEditProfile"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
 			</label>
 			<button class="submit-btn btn btn-primary mt-4 mb-8" @click="updateUser">
-				submit
+				Save changes
 			</button>
 		</div>
 
