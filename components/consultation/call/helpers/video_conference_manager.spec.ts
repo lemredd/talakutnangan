@@ -16,7 +16,7 @@ import {
 describe("Helper: video conference manager", () => {
 	describe("engine initiation", () => {
 		it("can initiate the client engine", async() => {
-			await initiateVideoConferenceEngine(ref<any[]>([]))
+			initiateVideoConferenceEngine(ref<any[]>([]))
 
 			expect(videoConferenceEngine).toBeTruthy()
 		})
