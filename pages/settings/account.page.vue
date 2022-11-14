@@ -174,9 +174,9 @@ function revertToOldData() {
 function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
+		"emailVerifiedAt": userProfile.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
-		"emailVerifiedAt": userProfile.data.emailVerifiedAt,
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {

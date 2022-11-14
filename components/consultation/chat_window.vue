@@ -40,11 +40,13 @@
 				</ul>
 			</div>
 
-			<button
-				class="load-previous-messages-btn btn btn-secondary"
-				@click="loadPreviousMessages">
-				Load Previous messages
-			</button>
+			<Suspensible :is-loaded="hasLoadedChatMessages">
+				<button
+					class="load-previous-messages-btn btn btn-secondary"
+					@click="loadPreviousMessages">
+					Load Previous messages
+				</button>
+			</Suspensible>
 			<div
 				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
@@ -139,6 +141,7 @@ const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	hasLoadedChatMessages: boolean,
 	isConsultationListShown: boolean
 }>()
 

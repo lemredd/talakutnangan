@@ -11,6 +11,7 @@
 			<ChatWindow
 				:consultation="consultation"
 				:chat-messages="chatMessages"
+				:has-loaded-chat-messages="hasLoadedChatMessages"
 				:is-consultation-list-shown="isConsultationListShown"
 				@updated-consultation-attributes="updateConsultationAttributes"
 				@toggle-consultation-list="toggleConsultationList"
@@ -41,7 +42,7 @@ footer:not(.overlay-footer) {
 </style>
 
 <script setup lang="ts">
-import { provide, inject, ref, readonly, computed, onMounted } from "vue"
+import { provide, inject, ref, readonly, computed, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
@@ -63,6 +64,8 @@ import {
 	CHAT_MESSAGE_ACTIVITIES_IN_CONSULTATION
 } from "$@/constants/provided_keys"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import Socket from "$@/external/socket"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -72,12 +75,12 @@ import isUndefined from "$/type_guards/is_undefined"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 
 import ConsultationList from "@/consultation/list.vue"
 import ChatWindow from "@/consultation/chat_window.vue"
 import ConsultationShell from "@/consultation/page_shell.vue"
 import registerChatListeners from "@/consultation/listeners/register_chat"
-import mergeDeserializedMessages from "@/consultation/helpers/merge_deserialized_messages"
 import registerConsultationListeners from "@/consultation/listeners/register_consultation"
 import registerChatActivityListeners from "@/consultation/listeners/register_chat_activity"
 
@@ -164,28 +167,27 @@ function updateConsultationAttributes(updatedAttributes: ConsultationAttributes<
 }
 
 const chatMessageFetcher = new ChatMessageFetcher()
+const hasLoadedChatMessages = ref<boolean>(true)
 async function loadPreviousChatMessages(): Promise<void> {
-	const { body } = await chatMessageFetcher.list({
-		"filter": {
-			"chatMessageKinds": [ "text", "status" ],
-			"consultationIDs": [ consultation.value.id ],
-			"existence": "exists",
-			"previewMessageOnly": false
-		},
-		"page": {
-			"limit": 10,
-			"offset": chatMessages.value.data.length
-		},
-		"sort": [ "-createdAt" ]
-	})
-
-	const { data, meta } = body
-
-	if (meta?.count ?? data.length > 0) {
-		const castData = data as DeserializedChatMessageResource<"user">[]
-
-		mergeDeserializedMessages(chatMessages, castData)
-	}
+	hasLoadedChatMessages.value = false
+	await loadRemainingResource(
+		chatMessages as Ref<DeserializedChatMessageListDocument>,
+		chatMessageFetcher,
+		() => ({
+			"filter": {
+				"chatMessageKinds": [ "text", "status" ],
+				"consultationIDs": [ consultation.value.id ],
+				"existence": "exists",
+				"previewMessageOnly": false
+			},
+			"page": {
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": chatMessages.value.data.length
+			},
+			"sort": [ "-createdAt" ]
+		})
+	)
+	hasLoadedChatMessages.value = true
 }
 
 async function loadPreviewMessages(consultationIDs: string[]): Promise<void> {
@@ -197,7 +199,7 @@ async function loadPreviewMessages(consultationIDs: string[]): Promise<void> {
 			"previewMessageOnly": true
 		},
 		"page": {
-			"limit": 10,
+			"limit": DEFAULT_LIST_LIMIT,
 			"offset": 0
 		},
 		"sort": [ "-createdAt" ]
@@ -221,7 +223,7 @@ async function loadConsultations(): Promise<void> {
 			"user": userProfile.data.id
 		},
 		"page": {
-			"limit": 10,
+			"limit": DEFAULT_LIST_LIMIT,
 			"offset": consultations.value.data.length
 		},
 		"sort": [ "-updatedAt" ]

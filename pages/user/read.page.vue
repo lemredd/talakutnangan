@@ -231,6 +231,7 @@ const successMessages = ref<string[]>([])
 async function updateUser() {
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
+		"emailVerifiedAt": user.value.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": user.value.data.kind,
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
