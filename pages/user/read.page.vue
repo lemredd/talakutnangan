@@ -23,6 +23,13 @@
 				:label="emailVerified"
 				type="text"/>
 		</div>
+		<div class="kind">
+			<NonSensitiveTextField
+				:model-value="friendlyKind"
+				status="disabled"
+				label="Kind"
+				type="text"/>
+		</div>
 		<button type="submit" class="update-user-btn btn btn-primary">
 			update user
 		</button>
@@ -136,6 +143,8 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import convertForSentence from "$/string/convert_for_sentence"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -145,8 +154,6 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
-
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
@@ -259,6 +266,7 @@ const emailVerified = computed<string>(() => {
 
 	return String(verifyEmail)
 })
+const friendlyKind = computed<string>(() => convertForSentence(user.value.data.kind))
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
