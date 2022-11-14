@@ -37,8 +37,10 @@ import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
-import type { DeserializedSemesterResource } from "$/types/documents/semester"
-
+import type {
+	DeserializedSemesterResource,
+	DeserializedSemesterListDocument
+} from "$/types/documents/semester"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
@@ -46,6 +48,7 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/semester_comb
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
@@ -66,6 +69,9 @@ const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterResource[]>(
 	pageProps.semesters.data as DeserializedSemesterResource[]
 )
+const listDocument = ref<DeserializedSemesterListDocument>(
+	pageProps.semesters as DeserializedSemesterListDocument
+)
 const tableData = computed<TableData[]>(() => {
 	const data = list.value.map(resource => ({
 		"data": [
@@ -85,27 +91,24 @@ const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
-	await fetcher.list({
-		"filter": {
-			"existence": existence.value,
-			"slug": slug.value
-		},
-		"page": {
-			"limit": 10,
-			"offset": list.value.length
-		},
-		"sort": [ "name" ]
-	// eslint-disable-next-line consistent-return
-	})
-	.then(response => {
-		const deserializedData = response.body.data as DeserializedSemesterResource[]
-
-		if (!deserializedData.length) return Promise.resolve()
-
-		list.value = [ ...list.value, ...deserializedData ]
-
-		return Promise.resolve()
-	})
+	await loadRemainingResource(
+		listDocument,
+		fetcher,
+		() => ({
+			"filter": {
+				"existence": existence.value,
+				"slug": slug.value
+			},
+			"page": {
+				"limit": 10,
+				"offset": list.value.length
+			},
+			"sort": [ "name" ]
+		}),
+		{
+			"mayContinue": () => Promise.resolve(false)
+		}
+	)
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
