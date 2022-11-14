@@ -81,9 +81,11 @@
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
-		<button type="submit" class="update-department-btn btn btn-primary">
-			update department
-		</button>
+		<Suspensible :is-loaded="hasSubmittedDepartment">
+			<button type="submit" class="update-department-btn btn btn-primary">
+				update department
+			</button>
+		</Suspensible>
 	</form>
 
 	<div class="controls flex justify-between mt-3">
@@ -342,12 +344,15 @@ async function updateRoles() {
 	hasSubmittedRole.value = true
 }
 
+const hasSubmittedDepartment = ref<boolean>(true)
 async function updateDepartment() {
+	hasSubmittedDepartment.value = false
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
 	.then()
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedDepartment.value = true
 }
 
 async function resetUserPassword() {
