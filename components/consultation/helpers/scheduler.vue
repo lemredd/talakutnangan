@@ -83,10 +83,7 @@ const reorderedDays = [ ...DayValues.slice(dayIndex), ...DayValues.slice(0, dayI
 
 const chosenDay = computed({
 	get() { return props.chosenDay },
-	set(newValue: string) {
-		console.log("set new value", newValue)
-		emit("update:chosenDay", newValue)
-	}
+	set(newValue: string) { emit("update:chosenDay", newValue) }
 })
 const customDate = ref("")
 const isCustomDate = computed(() => chosenDay.value === "custom")
