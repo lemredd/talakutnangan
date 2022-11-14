@@ -12,8 +12,15 @@
 		<div class="user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
-				v-model:status="nameFieldStatus"
+				v-model:status="textFieldStatus"
 				label="User Name"
+				type="text"/>
+		</div>
+		<div class="email">
+			<NonSensitiveTextField
+				v-model="user.data.email"
+				v-model:status="textFieldStatus"
+				label="Email"
 				type="text"/>
 		</div>
 		<button type="submit" class="update-user-btn btn btn-primary">
@@ -239,7 +246,7 @@ const mayResetPassword = computed<boolean>(() => {
 	return isLimitedUpToDepartmentScope
 })
 
-const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
+const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
 const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 
 const fetcher = new Fetcher()
