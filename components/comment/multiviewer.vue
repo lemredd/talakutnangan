@@ -11,10 +11,10 @@
 			class="viewer"
 			@archive="archiveComment"
 			@restore="restoreComment"/>
-		<p v-if="hasNoComments">
-			There are no comments found.
-		</p>
 		<Suspensible :is-loaded="isLoaded">
+			<p v-if="hasNoComments">
+				There are no comments found.
+			</p>
 			<div v-if="hasRemainingComments" class="load-others">
 				<button
 					class="load-btn btn btn-secondary"
