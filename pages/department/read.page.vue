@@ -23,10 +23,11 @@
 			label="May admit students"
 			:disabled="mayNotChangeAdmission"/>
 		<div class="controls">
-			<input
-				type="submit"
-				value="Save changes"
-				class="btn btn-primary"/>
+			<Suspensible :is-loaded="hasSubmittedDepartment">
+				<button type="submit" class="update-department-btn btn btn-primary">
+					update department
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreDepartment"
 				type="button"
@@ -144,9 +145,12 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const hasSubmittedDepartment = ref<boolean>(true)
+
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 function updateDepartment() {
+	hasSubmittedDepartment.value = false
 	fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
 		"fullName": department.value.data.fullName,
