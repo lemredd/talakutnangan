@@ -154,7 +154,6 @@ import {
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
@@ -359,8 +358,14 @@ const hasPerformedWholeChange = ref<boolean>(true)
 async function resetUserPassword() {
 	hasPerformedWholeChange.value = false
 	await fetcher.resetPassword(user.value.data.id)
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		const command = "Please check the inbox of the registered email for the password."
+		const note = "Email may not be sent if the email is not verified."
+
+		successMessages.value = [
+			...successMessages.value,
+			`${command} ${note}`
+		]
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasPerformedWholeChange.value = true
