@@ -29,23 +29,71 @@
 </style>
 
 <script setup lang="ts">
-import Overlay from "@/helpers/overlay.vue"
+import { inject, onMounted, ref } from "vue"
 
+import type { PageContext } from "$/types/renderer"
+import type { DeserializedUserDocument } from "$/types/documents/user"
+import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
+
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
+import Fetcher from "$@/fetchers/consultation"
+import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
+
+import Overlay from "@/helpers/overlay.vue"
+import Scheduler from "@/consultation/helpers/scheduler.vue"
+import loadRemainingResource from "$@/helpers/load_remaining_resource"
+
+const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
+const { pageProps } = pageContext
 type DefinedProps = {
 	isShown: boolean
 }
 type CustomEvents = {
-	(event: "hideReschedulingOverlay"): void
+	(event: "hide"): void
 	(event: "rescheduleConsultation"): void
 }
-const props = defineProps<DefinedProps>()
+defineProps<DefinedProps>()
 const emit = defineEmits<CustomEvents>()
 
 function hideOverlay() {
-	emit("hideReschedulingOverlay")
+	emit("hide")
+}
+
+const { consultation } = pageProps
+const employeeScheduleFetcher = new EmployeeScheduleFetcher()
+const chosenDay = ref("")
+const chosenTime = ref("")
+const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
+	"data": [],
+	"meta": {
+		"count": 0
+	}
+})
+function fetchConsultantSchedules() {
+	const consultant = consultation.data.consultant as DeserializedUserDocument
+	loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
+		"filter": {
+			"day": "*",
+			"employeeScheduleRange": "*",
+			"existence": "exists",
+			"user": consultant?.data.id
+		},
+		"page": {
+			"limit": DEFAULT_LIST_LIMIT,
+			"offset": 0
+		},
+		"sort": [ "dayName" ]
+	}), {
+		"mayContinue": () => Promise.resolve(false)
+	})
 }
 
 function rescheduleConsultation() {
 	emit("rescheduleConsultation")
 }
+
+onMounted(() => {
+	fetchConsultantSchedules()
+})
 </script>
