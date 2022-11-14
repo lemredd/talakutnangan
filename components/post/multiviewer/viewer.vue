@@ -336,12 +336,12 @@ function closeDialog() {
 	emit("restore", post.value)
 }
 
-
+const TIMEOUT = 3000
 async function archivePost(): Promise<void> {
 	await fetcher.archive([ post.value.id ])
 	.then(() => {
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, 5000)
+		setTimeout(closeDialog, TIMEOUT)
 		assignPath("/forum")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
@@ -351,7 +351,7 @@ async function restorePost(): Promise<void> {
 	await fetcher.restore([ post.value.id ])
 	.then(() => {
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, 5000)
+		setTimeout(closeDialog, TIMEOUT)
 		assignPath("/forum")
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
