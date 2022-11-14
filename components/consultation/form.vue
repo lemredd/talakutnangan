@@ -5,6 +5,10 @@
 		</template>
 
 		<template #default>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedSuccessMessages
+				v-if="successMessages.length"
+				:received-success-messages="successMessages"/>
 			<p class="status-messages warning">
 				* Names are case-sensitive.
 			</p>
@@ -179,6 +183,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import Overlay from "@/helpers/overlay.vue"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
@@ -188,6 +193,7 @@ import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const { isShown } = defineProps<{ isShown: boolean }>()
 
@@ -196,6 +202,7 @@ const { "userProfile": { "data": userProfileData } } = pageProps
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
@@ -204,6 +211,7 @@ const emit = defineEmits([ "close" ])
 function emitClose() {
 	emit("close")
 }
+
 const otherReason = ref<string>("")
 const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
@@ -329,8 +337,11 @@ function addConsultation(): void {
 			}
 		}
 	})
-	.then(() => assignPath("/consultation"))
-	.catch(response => extractAllErrorDetails(response, receivedErrors))
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		assignPath("/consultation")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 watch(selectedConsultants, () => {
