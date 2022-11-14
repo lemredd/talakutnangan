@@ -167,6 +167,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import { Converter } from "showdown"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
@@ -211,7 +212,13 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
-const formattedContent = computed<string>(() => post.value.content.replace(/\r?\n/gu, "<br>"))
+const formattedContent = computed<string>(() => {
+	const converter = new Converter({
+		"backslashEscapesHTMLTags": true
+	})
+	converter.setFlavor("github")
+	return converter.makeHtml(post.value.content)
+})
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
