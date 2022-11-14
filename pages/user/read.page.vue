@@ -187,6 +187,7 @@ const isOnSameDepartment = computed<boolean>(() => {
 	return ownDepartment === user.value.data.department.data.id
 })
 
+const doesViewOwn = computed<boolean>(() => user.value.data.id === userProfile.data.id)
 const mayUpdateAnyone = computed<boolean>(() => {
 	const userRoles = userProfile.data.roles.data
 
@@ -220,13 +221,14 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 
 	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
-const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
+const mayArchiveUser = computed<boolean>(() => {
+	const isPermitted = !isDeleted.value && mayArchiveOrRestoreUser.value
+
+	return !doesViewOwn.value && isPermitted
+})
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
 
-const mayUpdateAttachedRoles = computed<boolean>(() => {
-	const doesViewOwn = user.value.data.id === userProfile.data.id
-	return !doesViewOwn && mayUpdateAnyone.value
-})
+const mayUpdateAttachedRoles = computed<boolean>(() => !doesViewOwn.value && mayUpdateAnyone.value)
 
 const mayResetPassword = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
