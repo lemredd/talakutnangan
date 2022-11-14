@@ -1,5 +1,5 @@
 import type { FieldRules } from "!/types/validation"
-import type { RoleQueryParameters } from "$/types/query"
+import type { TagQueryParameters } from "$/types/query"
 import type { Request, Response } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
@@ -11,6 +11,9 @@ import { READ } from "$/permissions/tag_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { tag as permissionGroup } from "$/permissions/permission_list"
 
+import string from "!/validators/base/string"
+import boolean from "!/validators/base/boolean"
+import nullable from "!/validators/base/nullable"
 import makeListRules from "!/rule_sets/make_list"
 
 export default class extends QueryController {
@@ -23,11 +26,27 @@ export default class extends QueryController {
 	}
 
 	makeQueryRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeListRules(Manager, {})
+		return makeListRules(Manager, {
+			"mustHavePost": {
+				"constraints": {
+					"boolean": {
+						"loose": true
+					},
+					"nullable": { "defaultValue": "false" }
+				},
+				"pipes": [ nullable, boolean ]
+			},
+			"slug": {
+				"constraints": {
+					"nullable": { "defaultValue": "" }
+				},
+				"pipes": [ nullable, string ]
+			}
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<ListResponse> {
-		const constraints = { ...request.query } as RoleQueryParameters<number>
+		const constraints = { ...request.query } as TagQueryParameters
 
 		const manager = new Manager(request)
 		const tags = await manager.list(constraints)

@@ -1,5 +1,5 @@
-import Model from "%/models/department"
-import Factory from "~/factories/department"
+import Model from "%/models/tag"
+import Factory from "~/factories/tag"
 
 import siftBySlug from "./sift_by_slug"
 
@@ -16,12 +16,12 @@ describe("Database Pipe: Sift by slug", () => {
 		expect(foundModels).toHaveProperty("0.id", model.id)
 	})
 
-	it("can find on specific using fullName", async() => {
+	it("can find on specific using name", async() => {
 		const model = await new Factory()
-		.fullName(() => "firstDepartment")
+		.name(() => "firstTag")
 		.insertOne()
 		await new Factory()
-		.fullName(() => "secondDepartment")
+		.name(() => "secondTag")
 		.insertOne()
 		const slug = "fir"
 
@@ -33,12 +33,13 @@ describe("Database Pipe: Sift by slug", () => {
 		expect(foundModels).toHaveProperty("0.id", model.id)
 	})
 
+
 	it("cannot find on incorrect slug", async() => {
 		await new Factory()
-		.fullName(() => "firstDepartment")
+		.name(() => "firstTag")
 		.insertOne()
 		await new Factory()
-		.fullName(() => "secondDepartment")
+		.name(() => "secondTag")
 		.insertOne()
 		const slug = "xx"
 

@@ -144,6 +144,15 @@ export interface PreviewMessageOnlyFilter extends Serializable {
 	}
 }
 
+export interface PostRequirementFilter extends Serializable {
+	filter: {
+		/**
+		 * Require tags to have associated posts
+		 */
+		mustHavePost: boolean
+	}
+}
+
 /**
  * Shape of expected common filter options
  */
@@ -230,6 +239,11 @@ export type ChatMessageQueryParameters<T extends number|string = string> =
 export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& NullableDepartmentFilter<T>
+
+export type TagQueryParameters =
+	& CommonQueryParameters
+	& SlugFilter
+	& PostRequirementFilter
 
 export type TimeSumQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
