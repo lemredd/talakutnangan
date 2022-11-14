@@ -38,7 +38,7 @@
 				type="submit"
 				class="submit-btn btn btn-primary"
 				@click="updateUser">
-				submit
+				Save Changes
 			</button>
 			<button
 				type="reset"
@@ -174,9 +174,9 @@ function revertToOldData() {
 function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
+		"emailVerifiedAt": String(userProfile.data.emailVerifiedAt),
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
-		"emailVerifiedAt": userProfile.data.emailVerifiedAt,
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
