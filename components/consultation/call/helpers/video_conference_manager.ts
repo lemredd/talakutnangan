@@ -32,8 +32,8 @@ export const localTracks: LocalTracks = {
 }
 let localParticipantIDReference = ""
 
-export function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
-	Stub.runConditionally(
+export async function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
+	await Stub.runConditionally(
 		async() => {
 			if (!isUndefined(window)) {
 				// @ts-ignore
