@@ -153,10 +153,13 @@ import type { DeserializedDepartmentResource } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
+import assignPath from "$@/external/assign_path"
+import specializePath from "$/helpers/specialize_path"
 import DepartmentFetcher from "$@/fetchers/department"
 import convertForSentence from "$/string/convert_for_sentence"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import { READ_USER } from "$/constants/template_page_paths"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	RESET_PASSWORD,
@@ -278,6 +281,17 @@ const emailVerified = computed<string>(() => {
 	return String(verifyEmail)
 })
 const friendlyKind = computed<string>(() => convertForSentence(user.value.data.kind))
+const isCurrentlyStudent = computed<boolean>(() => user.value.data.kind === "student")
+const studentNumber = computed<string>(() => {
+	if (isCurrentlyStudent.value) {
+		const castNormalUser = user.value as DeserializedUserDocument
+		const castUser = castNormalUser as DeserializedUserDocument<"studentDetail">
+
+		return castUser.data.studentDetail.data.studentNumber
+	}
+
+	return ""
+})
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
@@ -290,7 +304,9 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then()
+	.then(() => assignPath(specializePath(READ_USER, {
+		"id": user.value.data.id
+	})))
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 async function updateRoles() {
