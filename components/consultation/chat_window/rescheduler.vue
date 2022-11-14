@@ -8,7 +8,6 @@
 		</template>
 
 		<template #default>
-			<p>Select the date and time to reschedule this consultation</p>
 			<Scheduler
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
