@@ -37,8 +37,11 @@
 				label="Kind"
 				type="text"/>
 		</div>
-		<button type="submit" class="update-user-btn btn btn-primary">
-			update user
+		<Suspensible :is-loaded="hasSubmittedUser">
+			<button type="submit" class="update-user-btn btn btn-primary">
+			</button>
+		</Suspensible>
+		update user
 		</button>
 	</form>
 
@@ -169,6 +172,7 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -292,11 +296,13 @@ const studentNumber = computed<string>(() => {
 
 	return ""
 })
+const hasSubmittedUser = ref<boolean>(true)
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 async function updateUser() {
+	hasSubmittedUser.value = false
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
 		"emailVerifiedAt": null,
@@ -308,6 +314,7 @@ async function updateUser() {
 		"id": user.value.data.id
 	})))
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedUser.value = true
 }
 async function updateRoles() {
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
