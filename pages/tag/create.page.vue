@@ -11,7 +11,7 @@
 				v-model="name"
 				label="Tag name:"
 				status="enabled"
-				class="border-solid"
+				class="name border-solid"
 				type="text"/>
 		</Suspensible>
 		<input type="submit" value="Create tag"/>
