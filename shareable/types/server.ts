@@ -5,7 +5,6 @@
  */
 
 import type { Serializable } from "$/types/general"
-import type { DeserializedTagListDocument } from "$/types/documents/tag"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
 import type { DeserializedRoleDocument, DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedPostDocument, DeserializedPostListDocument } from "$/types/documents/post"
@@ -136,8 +135,6 @@ interface RawPageProps<T extends Format = "serialized"> extends Serializable {
 
 	comments: OptionalPageProps<T, DeserializedCommentListDocument>
 	comment: OptionalPageProps<T, DeserializedCommentDocument>
-
-	tags: OptionalPageProps<T, DeserializedTagListDocument>
 }
 
 export type AdditionalPropNames<T extends Format = "serialized"> = keyof RawPageProps<T>
