@@ -2,6 +2,8 @@ import type { Rules, FieldRules } from "!/types/validation"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { AuthenticatedRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import { postContent, postContentDescription } from "$!/constants/regex"
+
 import Policy from "!/bases/policy"
 import Manager from "%/managers/post"
 import deserialize from "$/object/deserialize"
@@ -22,6 +24,7 @@ import string from "!/validators/base/string"
 import same from "!/validators/comparison/same"
 import required from "!/validators/base/required"
 import nullable from "!/validators/base/nullable"
+import regex from "!/validators/comparison/regex"
 import length from "!/validators/comparison/length"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
@@ -60,16 +63,21 @@ export default class extends DoubleBoundJSONController {
 			"pipes": [ nullable, same ]
 		}
 
-		const attributes = {
+		const attributes: FieldRules = {
 			"approvedAt": pureNull,
 			"content": {
 				"constraints": {
 					"length": {
 						"maximum": 1000,
 						"minimum": 5
+					},
+					"regex": {
+						"friendlyDescription": postContentDescription,
+						"match": postContent
 					}
 				},
-				"pipes": [ required, string, length ]
+				"friendlyName": "content",
+				"pipes": [ required, string, length, regex ]
 			}
 		}
 
