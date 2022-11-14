@@ -55,7 +55,7 @@
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
 				class="selectable-roles"
-				:disabled="mayNotSelect"
+				:disabled="isDeleted"
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
@@ -77,7 +77,7 @@
 			<SelectableOptionsField
 				v-model="userDepartment"
 				class="selectable-department"
-				:disabled="mayNotSelect"
+				:disabled="isDeleted"
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
@@ -109,7 +109,7 @@
 				type="button"
 				class="btn btn-primary"
 				@click="resetUserPassword">
-				Reset
+				Reset Password
 			</button>
 		</div>
 	</Suspensible>
@@ -207,8 +207,6 @@ const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
 	})
 ))
 
-const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
-
 const departments = ref<DeserializedDepartmentResource[]>(
 	pageProps.departments.data as DeserializedDepartmentResource[]
 )
@@ -226,6 +224,7 @@ const isOnSameDepartment = computed<boolean>(() => {
 	return ownDepartment === user.value.data.department.data.id
 })
 
+const isDeleted = computed<boolean>(() => Boolean(user.value.data.deletedAt))
 const doesViewOwn = computed<boolean>(() => user.value.data.id === userProfile.data.id)
 const mayUpdateAnyone = computed<boolean>(() => {
 	const userRoles = userProfile.data.roles.data
@@ -275,11 +274,10 @@ const mayResetPassword = computed<boolean>(() => {
 		RESET_PASSWORD
 	])
 
-	return isLimitedUpToDepartmentScope
+	return isLimitedUpToDepartmentScope && !isDeleted.value
 })
 
 const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disabled")
-const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
 const emailVerified = computed<string>(() => {
 	let verifyEmail = ""
 	const verification = user.value.data.emailVerifiedAt
