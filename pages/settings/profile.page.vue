@@ -284,7 +284,11 @@ function submitSignature(formData: FormData) {
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
-		...userProfileData.value
+		"email": userProfileData.value.email,
+		"emailVerifiedAt": null,
+		"kind": userProfileData.value.kind,
+		"name": userProfileData.value.name,
+		"prefersDark": userProfileData.value.prefersDark ? userProfileData.value.prefersDark : false
 	})
 	.then(() => {
 		fillSuccessMessages(receivedErrors, successMessages)
