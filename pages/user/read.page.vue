@@ -59,9 +59,11 @@
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
-		<button type="submit" class="update-roles-btn btn btn-primary">
-			update roles
-		</button>
+		<Suspensible :is-loaded="hasSubmittedRole">
+			<button type="submit" class="update-roles-btn btn btn-primary">
+				update roles
+			</button>
+		</Suspensible>
 	</form>
 
 	<form
@@ -312,7 +314,6 @@ async function updateUser() {
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
 	.then(() => {
-		console.log("changed email", user.value.data.emailVerifiedAt, pageProps.user.data.email, user.value.data.email)
 		if (user.value.data.emailVerifiedAt) {
 			const oldEmail = pageProps.user.data.email
 			const newEmail = user.value.data.email
@@ -331,11 +332,16 @@ async function updateUser() {
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasSubmittedUser.value = true
 }
+
+const hasSubmittedRole = ref<boolean>(true)
 async function updateRoles() {
+	hasSubmittedRole.value = false
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
 	.then()
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedRole.value = true
 }
+
 async function updateDepartment() {
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
