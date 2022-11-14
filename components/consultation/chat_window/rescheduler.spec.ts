@@ -79,6 +79,14 @@ describe("Component: consultation rescheduler", () => {
 					"scheduledStartAt": newDate,
 					"startedAt": null
 				},
+				"relationships": {
+					"consultant": {},
+					"consultantRole": {
+						"data": {
+							"type": "role"
+						}
+					}
+				},
 				"type": "consultation"
 			}
 		})
@@ -158,6 +166,14 @@ describe("Component: consultation rescheduler", () => {
 					"finishedAt": null,
 					"scheduledStartAt": newDate,
 					"startedAt": null
+				},
+				"relationships": {
+					"consultant": {},
+					"consultantRole": {
+						"data": {
+							"type": "role"
+						}
+					}
 				},
 				"type": "consultation"
 			}
