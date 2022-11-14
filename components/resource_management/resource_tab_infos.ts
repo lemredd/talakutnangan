@@ -5,6 +5,7 @@ import {
 	USER_LIST,
 	ROLE_LIST,
 	SEMESTER_LIST,
+	TAG_LIST,
 	AUDIT_TRAIL_LIST
 } from "$/constants/template_page_paths"
 
@@ -105,6 +106,23 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"mustBeGuest": false,
 		"permissionCombinations": [
 			CREATE_SEMESTERS,
+			UPDATE_SEMESTERS,
+			ARCHIVE_AND_RESTORE_SEMESTERS
+		],
+		"permissionGroup": semester
+	},
+	{
+		"kinds": [],
+		"links": [
+			{
+				"icon": "",
+				"name": "Tags",
+				"path": TAG_LIST,
+				"viewportsAvailable": [ "mobile", "desktop" ]
+			}
+		],
+		"mustBeGuest": false,
+		"permissionCombinations": [
 			UPDATE_SEMESTERS,
 			ARCHIVE_AND_RESTORE_SEMESTERS
 		],

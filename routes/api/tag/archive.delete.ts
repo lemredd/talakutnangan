@@ -13,8 +13,10 @@ import {
 } from "$/permissions/tag_combinations"
 
 import exists from "!/validators/manager/exists"
+import hasNoOtherPosts from "!/validators/manager/has_no_other_posts"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
+
 
 export default class extends JSONController {
 	get filePath(): string { return __filename }
@@ -29,7 +31,10 @@ export default class extends JSONController {
 		return makeResourceIdentifierListDocumentRules(
 			"tag",
 			exists,
-			Manager
+			Manager,
+			{
+				"postIDRules": { "pipes": [ hasNoOtherPosts ] }
+			}
 		)
 	}
 

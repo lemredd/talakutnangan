@@ -10,12 +10,12 @@
 				v-if="hasRoleNames"
 				v-model="role"
 				label="Role"
-				:options="roleNames"/>
+				:options="roleNames!"/>
 			<SelectableOptionsField
 				v-if="hasDepartmentNames"
 				v-model="department"
 				label="Department"
-				:options="departmentNames"/>
+				:options="departmentNames!"/>
 			<SelectableExistence
 				v-if="hasExistence"
 				v-model="existence"/>
@@ -60,8 +60,8 @@ const props = defineProps<{
 	existence?: string,
 	slug?: string,
 
-	roleNames: OptionInfo[],
-	departmentNames: OptionInfo[]
+	roleNames?: OptionInfo[],
+	departmentNames?: OptionInfo[]
 }>()
 
 interface CustomEvents {
@@ -72,14 +72,14 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const hasRoleNames = computed<boolean>(() => props.roleNames.length > 0)
+const hasRoleNames = computed(() => Boolean(props.roleNames))
 const role = computed<string>({
 	get(): string { return props.chosenRole as string },
 	set(newValue: string): void {
 		emit("update:chosenRole", newValue)
 	}
 })
-const hasDepartmentNames = computed<boolean>(() => props.departmentNames.length > 0)
+const hasDepartmentNames = computed(() => Boolean(props.departmentNames))
 const department = computed<string>({
 	get(): string { return props.chosenDepartment as string },
 	set(newValue: string): void {

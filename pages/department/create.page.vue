@@ -1,5 +1,5 @@
 <template>
-	<UserListRedirector resource-type="department"/>
+	<ListRedirector resource-type="department"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
@@ -42,8 +42,8 @@ import { ref, computed } from "vue"
 import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
 
+import ListRedirector from "@/resource_management/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 

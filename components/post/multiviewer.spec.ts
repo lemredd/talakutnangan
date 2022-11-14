@@ -8,8 +8,11 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { POST_LINK, COUNT_COMMENTS } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
+import resetToMidnight from "$/time/reset_to_midnight"
 import stringifyQuery from "$@/fetchers/stringify_query"
+import adjustUntilChosenDay from "$/time/adjust_until_chosen_day"
 import RequestEnvironment from "$/singletons/request_environment"
+import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next_day"
 
 import { post as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -49,6 +52,12 @@ describe("Component: post/multiviewer", () => {
 					"type": "department"
 				}
 			]
+		}
+		const semesters = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
 		}
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [
@@ -93,7 +102,8 @@ describe("Component: post/multiviewer", () => {
 			},
 			"props": {
 				departments,
-				modelValue
+				modelValue,
+				semesters
 			}
 		})
 
@@ -166,6 +176,12 @@ describe("Component: post/multiviewer", () => {
 				}
 			]
 		}
+		const semesters = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}
 		fetchMock.mockResponseOnce(JSON.stringify({
 			"data": [
 				{
@@ -188,6 +204,10 @@ describe("Component: post/multiviewer", () => {
 				}
 			]
 		}), { "status": RequestEnvironment.status.OK })
+
+		const currentDate = new Date()
+		const rangeBegin = resetToMidnight(adjustUntilChosenDay(currentDate, 0, -1))
+		const rangeEnd = adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(currentDate, 6, 1))
 
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
@@ -222,7 +242,8 @@ describe("Component: post/multiviewer", () => {
 			},
 			"props": {
 				departments,
-				modelValue
+				modelValue,
+				semesters
 			}
 		})
 
@@ -288,6 +309,10 @@ describe("Component: post/multiviewer", () => {
 		expect(secondRequest).toHaveProperty("url", specializePath(POST_LINK.query, {
 			"query": stringifyQuery({
 				"filter": {
+					"dateTimeRange": {
+						"begin": rangeBegin,
+						"end": rangeEnd
+					},
 					"departmentID": departments.data[0].id,
 					"existence": "exists"
 				},
