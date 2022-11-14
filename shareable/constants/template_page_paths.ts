@@ -2,6 +2,8 @@ export const HOME = "/home"
 
 export const SEMESTER_LIST = "/semester/list"
 
+export const TAG_LIST = "/tag/list"
+
 export const DEPARTMENT_LIST = "/department/list"
 
 export const USER_LIST = "/user/list"
@@ -46,6 +48,8 @@ export const READ_DEPARTMENT = "/department/read/:id"
  * Requires `id` of the semester
  */
 export const READ_SEMESTER = "/semester/read/:id"
+
+export const READ_TAG = "/tag/read/:id"
 
 export const CONSULTATION_REPORT_PER_STUDENT = "/consultation/report/per_student"
 
