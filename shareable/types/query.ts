@@ -201,6 +201,10 @@ export type SemesterQueryParameters =
 	& CommonQueryParameters
 	& SlugFilter
 
+export type TagQueryParameters =
+	& CommonQueryParameters
+	& SlugFilter
+
 export type AuditTrailQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& IDsFilter<T>
