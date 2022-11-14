@@ -25,9 +25,11 @@
 			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
 		<div class="controls flex justify-between">
-			<button type="submit" class="btn btn-primary">
-				Submit
-			</button>
+			<Suspensible :is-loaded="hasSubmittedRole">
+				<button type="submit" class="update-user-btn btn btn-primary">
+					submit
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreRole"
 				type="button"
@@ -128,8 +130,11 @@ const {
 const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
+const hasSubmittedRole = ref<boolean>(true)
+
 const fetcher: Fetcher = new Fetcher()
 async function updateRole() {
+	hasSubmittedRole.value = false
 	await fetcher.update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
 		"commentFlags": role.value.data.commentFlags,
