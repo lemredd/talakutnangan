@@ -170,6 +170,7 @@ function updateDepartment() {
 		successMessages.value.push("Department has been read successfully!")
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedDepartment.value = true
 }
 
 async function archiveDepartment() {
