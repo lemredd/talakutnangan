@@ -37,6 +37,10 @@
 			@apply flex-row;
 		}
 
+		.local-participant {
+			overflow: hidden;
+		}
+
 		.other-participants {
 			@apply flex-1;
 		}
