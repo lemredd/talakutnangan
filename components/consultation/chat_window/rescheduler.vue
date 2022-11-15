@@ -72,10 +72,10 @@ const { consultation } = pageProps
 const employeeScheduleFetcher = new EmployeeScheduleFetcher()
 const chosenDay = ref<string>("")
 const chosenTime = ref<string>("")
-const scheduledStartAt = computed(() => {
+const scheduledStartAt = computed<string>(() => {
 	const chosenDate = new Date(chosenDay.value)
 
-	if (chosenTime.value) {
+	if (chosenTime.value !== "") {
 		const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 		chosenDate.setHours(timeObject.hours)
 		chosenDate.setMinutes(timeObject.minutes)
