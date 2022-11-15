@@ -1,7 +1,10 @@
 import { mount } from "@vue/test-utils"
 
-import { UPDATE } from "$/permissions/tag_combinations"
+import { TAG_LINK } from "$/constants/template_links"
+import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
+
+import { UPDATE } from "$/permissions/tag_combinations"
 import { tag as permissionGroup } from "$/permissions/permission_list"
 
 import Page from "./read.page.vue"
@@ -81,7 +84,7 @@ describe("Page: tag/read", () => {
 		})
 
 		const nameInput = wrapper.find("input.name")
-		const submitBtn = wrapper.find("input[type=submit]")
+		const submitBtn = wrapper.find("button[type=submit]")
 
 		await nameInput.setValue(updatedTag.data.name)
 		await submitBtn.trigger("submit")
@@ -91,7 +94,9 @@ describe("Page: tag/read", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", `/api/tag/${tag.data.id}`)
+		expect(request).toHaveProperty("url", specializePath(TAG_LINK.bound, {
+			"id": tag.data.id
+		}))
 
 		const body = await request.json()
 		expect(body).toHaveProperty("data.attributes.name", updatedTag.data.name)
