@@ -73,6 +73,7 @@ import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
 import FlagSelector from "@/role/flag_selector.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
@@ -159,25 +160,24 @@ async function updateRole() {
 		password.value = ""
 		nameFieldStatus.value = "locked"
 
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Role has been successfully!")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])
 	.then(() => {
-		successMessages.value.push("This role has been archived successfully")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreRole() {
 	await fetcher.restore([ role.value.data.id ])
 	.then(() => {
-		successMessages.value.push("This role has been restored successfully")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

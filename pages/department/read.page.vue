@@ -69,6 +69,7 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import RequestEnvironment from "$/singletons/request_environment"
@@ -173,15 +174,13 @@ function updateDepartment() {
 
 async function archiveDepartment() {
 	await fetcher.archive([ department.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreDepartment() {
 	await fetcher.restore([ department.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
