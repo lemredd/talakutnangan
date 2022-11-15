@@ -20,6 +20,7 @@
 
 		<template #footer>
 			<button
+				:disabled="!hasPopulatedRequiredFields"
 				class="reschedule-btn btn btn-primary"
 				@click="rescheduleConsultation">
 				submit
@@ -112,6 +113,10 @@ function fetchConsultantSchedules() {
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
+const hasPopulatedRequiredFields = computed(() => (
+	Boolean(chosenDay.value)
+	&& Boolean(chosenTime.value)
+))
 function rescheduleConsultation() {
 	fetcher.update(consultation.data.id, {
 		"actionTaken": null,
