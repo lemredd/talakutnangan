@@ -78,6 +78,12 @@ const props = defineProps<{
 	headers: string[]
 }>()
 
+interface CustomEvents {
+	(event: "archive", id: string): void,
+	(event: "restore", id: string): void,
+}
+const emit = defineEmits<CustomEvents>()
+
 function makePath(id: string): string {
 	if (props.templatePath) {
 		return specializePath(props.templatePath, {
