@@ -1,6 +1,9 @@
 <template>
 	<div class="page-counter">
-		<button class="movement-btn previous-btn">
+		<button
+			class="movement-btn previous-btn"
+			:class="movementBtnClasses"
+			@click="goToPreviousPage">
 			<span class="material-icons">chevron_left</span>
 			<span class="text">Previous</span>
 		</button>
@@ -12,7 +15,7 @@
 			@click="updateOffset(pageCount)">
 			{{ pageCount }}
 		</button>
-		<button class="movement-btn next-btn">
+		<button class="movement-btn next-btn" @click="goToNextPage">
 			<span class="text">Next</span>
 			<span class="material-icons">chevron_right</span>
 		</button>
@@ -77,5 +80,20 @@ function determineActiveness(pageCountOfButton: number) {
 	else classes.push("btn-inactive")
 
 	return classes.join(" ")
+}
+
+const isAtFirstPage = computed(() => props.modelValue === 0)
+const isAtLastPage = computed(() => {
+	const flooredMaxCount = Math.floor(props.maxCount / DEFAULT_LIST_LIMIT) * DEFAULT_LIST_LIMIT
+	return flooredMaxCount === props.modelValue
+})
+const movementBtnClasses = {
+	"disabled-previous-btn": {}
+}
+function goToPreviousPage() {
+	if (!isAtFirstPage.value) emit("update:modelValue", props.modelValue - DEFAULT_LIST_LIMIT)
+}
+function goToNextPage() {
+	if (!isAtLastPage.value) emit("update:modelValue", props.modelValue + DEFAULT_LIST_LIMIT)
 }
 </script>
