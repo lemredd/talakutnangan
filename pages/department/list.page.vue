@@ -2,9 +2,7 @@
 	<ResourceManager
 		v-model:slug="slug"
 		v-model:existence="existence"
-		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -19,7 +17,11 @@
 		</template>
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
-			<ResourceList :filtered-list="list.data" :may-edit="mayEditDepartment"/>
+			<ResourceList
+				:template-path="READ_DEPARTMENT"
+				:headers="headers"
+				:list="tableData"
+				:may-edit="mayEditDepartment"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -32,15 +34,18 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TableData } from "$@/types/component"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import { READ_DEPARTMENT } from "$/constants/template_page_paths"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
+import pluralize from "$/string/pluralize"
 import Fetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
@@ -59,11 +64,25 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 
-const isLoaded = ref<boolean>(true)
+const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+const tableData = computed<TableData[]>(() => {
+	const data = list.value.data.map(resource => ({
+		"data": [
+			resource.fullName,
+			resource.acronym,
+			resource.mayAdmit ? "Yes" : "No",
+			pluralize("user", resource.meta ? resource.meta.userCount : 0)
+		],
+		"id": resource.id
+	}))
 
+	return data
+})
+
+const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])

@@ -7,9 +7,9 @@
 	<form class="account-settings" @submit.prevent>
 		<NonSensitiveTextualField
 			v-model="email"
-			v-model:status="emailFieldStatus"
+			:status="emailFieldStatus"
 			class="submittable-field email-field"
-			label="E-mail"
+			:label="emailVerified"
 			type="email"/>
 
 		<NonSensitiveTextualField
@@ -95,12 +95,19 @@ import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
-import settingsTabInfos from "@/settings/settings_tab_infos"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import settingsTabInfos from "@/settings/settings_tab_infos"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_OWN_DATA,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
@@ -113,9 +120,31 @@ const { userProfile } = pageProps
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
-const emailFieldStatus = ref<FieldStatus>("enabled")
 const oldEmail = userProfile.data.email
 const email = ref<string>(userProfile.data.email)
+
+const mayEditEmail = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA,
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isPermitted
+})
+const emailFieldStatus = ref<FieldStatus>(mayEditEmail.value ? "enabled" : "disabled")
+
+const emailVerified = computed<string>(() => {
+	let verifyEmail = ""
+	const verification = userProfile.data.emailVerifiedAt !== null
+	if (verification) {
+		verifyEmail = "E-mail: Verified ✓"
+	} else {
+		verifyEmail = "E-mail: Unverified ✘"
+	}
+
+	return String(verifyEmail)
+})
 
 const isCurrentlyStudent = computed<boolean>(() => userProfile.data.kind === "student")
 const studentNumber = computed<string>(() => {
@@ -149,14 +178,15 @@ function revertToOldData() {
 function updateUser(): void {
 	fetcher.update(userProfile.data.id, {
 		"email": email.value,
+		"emailVerifiedAt": userProfile.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": userProfile.data.kind,
 		"name": userProfile.data.name,
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
+		fillSuccessMessages(receivedErrors, successMessages)
 		successMessages.value.push("Email updated successfully.")
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

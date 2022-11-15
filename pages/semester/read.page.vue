@@ -71,6 +71,7 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
 import DateSelect from "@/fields/date_selector.vue"
 import Selectable from "@/fields/selectable_options.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -139,23 +140,21 @@ function updateSemester() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Semester has been read successfully!")
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function archiveSemester() {
 	await fetcher.archive([ semester.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreSemester() {
 	await fetcher.restore([ semester.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

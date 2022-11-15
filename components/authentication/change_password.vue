@@ -8,6 +8,9 @@
 				* You can fully access the website once you change your password.
 			</p>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedSuccessMessages
+				v-if="successMessages.length"
+				:received-success-messages="successMessages"/>
 			<form class="verification">
 				<SensitiveTextField
 					v-model="currentPassword"
@@ -76,6 +79,7 @@ import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import isUndefined from "$/type_guards/is_undefined"
 import BodyCSSClasses from "$@/external/body_css_classes"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -84,6 +88,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
@@ -113,7 +118,8 @@ function clearPasswords(): void {
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 function cancel(): void {
-	if (receivedErrors.value.length) receivedErrors.value = []
+	receivedErrors.value = []
+	successMessages.value = []
 	clearPasswords()
 	closeDialog()
 }
@@ -125,8 +131,12 @@ function savePassword() {
 		confirmNewPassword.value
 	)
 
-	.then(cancel)
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		const TIMEOUT = 3000
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>

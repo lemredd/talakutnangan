@@ -28,6 +28,10 @@
 					<h1>Enter the comment details</h1>
 				</template>
 				<template #default>
+					<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+					<ReceivedSuccessMessages
+						v-if="successMessages.length"
+						:received-success-messages="successMessages"/>
 					<p v-if="mustArchive">
 						Do you really want to archive?
 					</p>
@@ -67,7 +71,7 @@
 			@update:model-value="switchVote"/>
 	</section>
 	<UpdateCommentField
-		v-else
+		v-if="mayUpdateComment"
 		:model-value="comment"
 		@update:model-value="closeUpdateCommentField"/>
 </template>
@@ -139,12 +143,19 @@ import {
 	ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
+	UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT,
+	UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
 	VOTE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import Overlay from "@/helpers/overlay.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import VoteFetcher from "$@/fetchers/comment_vote"
 import Menu from "@/comment/multiviewer/viewer/menu.vue"
 import VoteView from "@/comment/multiviewer/viewer/vote_view.vue"
@@ -354,6 +365,33 @@ function closeUpdateCommentField(newComment: DeserializedCommentResource<"user">
 	closeUpdateField()
 }
 
+const mayUpdateComment = computed<boolean>(() => {
+	const user = props.modelValue.user as DeserializedUserDocument<"department">
+	const isLimitedPersonalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
+	]) && user.data.id === userProfile.data.id
+
+	const departmentID = user.data.department.data.id
+	const isLimitedUpToDepartmentScope = !isLimitedPersonalScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT
+		]) && user.data.department.data.id === departmentID
+
+	const isLimitedUpToGlobalScope = !isLimitedUpToDepartmentScope
+		&& permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+			UPDATE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
+		])
+
+	const isPermitted = isLimitedPersonalScope
+	|| isLimitedUpToDepartmentScope
+	|| isLimitedUpToGlobalScope
+
+	const isDeleted = props.modelValue.deletedAt
+	const mayViewPresent = !isDeleted
+
+	return mustUpdate.value && isPermitted && mayViewPresent
+})
+
 const {
 	"state": mustArchive,
 	"on": confirmArchive,
@@ -366,22 +404,41 @@ const {
 	"off": closeRestore
 } = makeSwitch(false)
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRestore.value)
 
+
 function closeArchiveOrRestore() {
+	receivedErrors.value = []
+	successMessages.value = []
 	closeArchive()
 	closeRestore()
 }
 
-async function archiveComment(): Promise<void> {
-	await fetcher.archive([ comment.value.id ]).then(() => {
-		emit("archive", comment.value)
-	})
+function closeDialog() {
+	emit("archive", comment.value)
+	emit("restore", comment.value)
 }
 
-async function restoreComment(): Promise<void> {
-	await fetcher.restore([ comment.value.id ]).then(() => {
-		emit("restore", comment.value)
+async function archiveComment(): Promise<void> {
+	await fetcher.archive([ comment.value.id ])
+	.then(() => {
+		const TIMEOUT = 3000
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+}
+
+
+async function restoreComment(): Promise<void> {
+	await fetcher.restore([ comment.value.id ])
+	.then(() => {
+		const TIMEOUT = 3000
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

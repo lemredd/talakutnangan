@@ -23,6 +23,7 @@ export default class extends UserTransformer {
 			"name",
 			"email",
 			"kind",
+			"emailVerifiedAt",
 			"prefersDark"
 		])
 

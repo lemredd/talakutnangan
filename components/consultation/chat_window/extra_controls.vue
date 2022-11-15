@@ -10,10 +10,17 @@
 					View consultation form
 				</a>
 				<a
-					v-if="isCurrentUserConsultant"
-					href="#"
+					v-if="!isConsultationFinishedOrCancelled"
 					class="additional-control show-action-taken-overlay-btn"
-					@click="showActionTakenOverlay">Finish consultation</a>
+					@click="showActionTakenOverlay">
+					{{ finishOrCancel }} consultation
+				</a>
+				<a
+					v-if="!isCurrentUserConsultant"
+					class="additional-control show-rescheduling-overlay-btn"
+					@click="showReschedulerOverlay">
+					Reschedule consultation
+				</a>
 			</div>
 		</template>
 	</Dropdown>
@@ -50,12 +57,14 @@ import Dropdown from "@/helpers/minor_dropdown.vue"
 const props = defineProps<{
 	consultationId: string,
 	isHeaderControlDropdownShown: boolean,
-	isCurrentUserConsultant: boolean
+	isCurrentUserConsultant: boolean,
+	isConsultationFinishedOrCancelled: boolean
 }>()
 
 interface CustomEvents {
 	(eventName: "toggleHeaderControlDropdownShown"): void
 	(eventName: "showActionTakenOverlay"): void
+	(eventName: "showReschedulerOverlay"): void
 }
 const emit = defineEmits<CustomEvents>()
 
@@ -68,15 +77,23 @@ const modelValue = computed({
 	}
 })
 
+const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
+	"id": props.consultationId
+})
+
 function toggleHeaderControlDropdownShown() {
 	emit("toggleHeaderControlDropdownShown")
 }
+
+const { isCurrentUserConsultant } = props
+const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
 function showActionTakenOverlay() {
 	toggleHeaderControlDropdownShown()
 	emit("showActionTakenOverlay")
 }
 
-const linkToPrintableForm = specializePath(CONSULTATION_FORM_PRINT, {
-	"id": props.consultationId
-})
+function showReschedulerOverlay() {
+	toggleHeaderControlDropdownShown()
+	emit("showReschedulerOverlay")
+}
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<UserListRedirector resource-type="user"/>
+	<ListRedirector resource-type="user"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
@@ -124,10 +124,12 @@ import RoleFetcher from "$@/fetchers/role"
 import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 
-import OutputTable from "@/helpers/overflowing_table.vue"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import UserListRedirector from "@/helpers/list_redirector.vue"
+
+import OutputTable from "@/helpers/overflowing_table.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -160,12 +162,15 @@ function importData(event: Event) {
 	fetcher.import(formData)
 	.then(({ body }) => {
 		const { data } = body
-
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Users have been imported successfully!")
 		createdUsers.value = data as DeserializedUserResource<"roles"|"department">[]
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Users have been imported successfully!"
+		)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function isStudentResource(resource: DeserializedUserResource)
