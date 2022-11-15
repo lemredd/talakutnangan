@@ -67,16 +67,17 @@ import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents
 
 import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-import fillSuccessMessages from "$@/helpers/fill_success_messages"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
