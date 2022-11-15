@@ -10,7 +10,7 @@
 
 		<div v-if="pageLength < CONDENSE_LIMIT" class="limited-page-btn">
 			<button
-				v-for="pageCount in CONDENSE_LIMIT"
+				v-for="pageCount in pageLength"
 				:key="pageCount"
 				class="page-count-btn btn"
 				:class="determineActiveness(pageCount)"
