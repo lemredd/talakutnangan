@@ -71,11 +71,12 @@ describe("Component: consultation rescheduler", () => {
 		await rescheduleBtn.trigger("click")
 		await flushPromises()
 
-		const mockedFetch = fetch as jest.Mock<any, any>
+		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(2)
 		const [
 			[ unusedRequestForFetchingConsultantSchedule ],
 			[ requestForUpdatingConsultationSchedule ]
-		] = mockedFetch.mock.calls
+		] = castFetch.mock.calls
 		expect(requestForUpdatingConsultationSchedule).toHaveProperty("method", "PATCH")
 		expect(await requestForUpdatingConsultationSchedule.json()).toStrictEqual({
 			"data": {
