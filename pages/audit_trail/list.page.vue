@@ -1,9 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -37,7 +37,7 @@
 import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
@@ -80,6 +80,18 @@ const tableData = computed<TableData[]>(() => {
 
 	return data
 })
+
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Created at",
+		"value": "-createdAt"
+	},
+	{
+		"label": "Action name",
+		"value": "actionName"
+	}
+])
+const chosenSort = ref("-createdAt")
 
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
