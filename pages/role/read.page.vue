@@ -163,6 +163,7 @@ async function updateRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	hasSubmittedRole.value = true
 }
 
 async function archiveRole() {
