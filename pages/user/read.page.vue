@@ -1,4 +1,5 @@
 <template>
+	<ListRedirector resource-type="user"/>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -186,10 +187,11 @@ import {
 } from "$/permissions/user_combinations"
 
 import Suspensible from "@/helpers/suspensible.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"

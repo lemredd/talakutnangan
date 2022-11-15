@@ -43,7 +43,7 @@ import convertToTitle from "$/string/convert_to_title"
 import DepartmentFetcher from "$@/fetchers/department"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
-import ListRedirector from "@/resource_management/list_redirector.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"

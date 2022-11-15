@@ -1,5 +1,11 @@
 <template>
 	<article>
+		<Redirector href="/forum">
+			<span class="material-icons">
+				arrow_circle_left
+			</span>
+			Back to Forum
+		</Redirector>
 		<Viewer
 			v-model="post"
 			:comment-count="commentCount"/>
@@ -18,7 +24,8 @@
 	</article>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
+@import "@styles/btn.scss";
 	article {
 		@apply flex flex-col flex-nowrap justify-center;
 
@@ -49,6 +56,12 @@
 		> * {
 			@apply mb-4;
 		}
+
+		@media screen and (min-width:640px) {
+			.mobile {
+				display: none;
+			}
+		}
 	}
 </style>
 
@@ -63,6 +76,7 @@ import type {
 	DeserializedCommentResource
 } from "$/types/documents/comment"
 
+import assignPath from "$@/external/assign_path"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
@@ -75,6 +89,7 @@ import {
 	ARCHIVE_AND_RESTORE_PUBLIC_COMMENT_ON_ANY_DEPARTMENT
 } from "$/permissions/comment_combinations"
 
+import Redirector from "@/helpers/anchor.vue"
 import Viewer from "@/post/multiviewer/viewer.vue"
 import CommentMultiviewer from "@/comment/multiviewer.vue"
 import CreateCommentField from "@/comment/create_field.vue"
@@ -155,5 +170,9 @@ function includeComment(newComment: DeserializedCommentResource<"user">): void {
 			"count": (comments.value.meta?.count || 0) + 1
 		}
 	}
+}
+
+function back() {
+	assignPath("/consultation")
 }
 </script>

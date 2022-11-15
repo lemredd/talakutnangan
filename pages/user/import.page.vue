@@ -1,5 +1,5 @@
 <template>
-	<UserListRedirector resource-type="user"/>
+	<ListRedirector resource-type="user"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
@@ -128,8 +128,8 @@ import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import OutputTable from "@/helpers/overflowing_table.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import UserListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
