@@ -10,14 +10,15 @@
 						v-if="mayCreateTag"
 						href="/tag/create"
 						class="add-tag-btn btn btn-primary">
-						Add tag
+						Add Tag
 					</a>
 				</template>
 			</TabbedPageHeader>
 		</template>
 		<template #resources>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
-				template-path=""
+				:template-path="READ_TAG"
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditTag"/>
@@ -35,16 +36,18 @@ import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
 import type { DeserializedTagListDocument } from "$/types/documents/tag"
 
+import { READ_TAG } from "$/constants/template_page_paths"
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import Fetcher from "$@/fetchers/tag"
 import debounce from "$@/helpers/debounce"
-import { tag as permissionGroup } from "$/permissions/permission_list"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
-import Fetcher from "$@/fetchers/tag"
+import { tag as permissionGroup } from "$/permissions/permission_list"
+import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -90,6 +93,7 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+const receivedErrors = ref<string[]>([])
 
 async function fetchTagInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
@@ -104,6 +108,8 @@ async function fetchTagInfos(): Promise<number|void> {
 		},
 		"sort": [ "name" ]
 	}))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
 	isLoaded.value = true
 }
 

@@ -23,10 +23,11 @@
 			label="May admit students"
 			:disabled="mayNotChangeAdmission"/>
 		<div class="controls">
-			<input
-				type="submit"
-				value="Save changes"
-				class="btn btn-primary"/>
+			<Suspensible :is-loaded="hasSubmittedDepartment">
+				<button type="submit" class="update-department-btn btn btn-primary">
+					update department
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreDepartment"
 				type="button"
@@ -68,13 +69,15 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
+import RequestEnvironment from "$/singletons/request_environment"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
-import RequestEnvironment from "$/singletons/request_environment"
 import { department as permissionGroup } from "$/permissions/permission_list"
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import Checkbox from "@/fields/checkbox.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -83,7 +86,6 @@ import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success
 const pageContext = inject("pageContext") as PageContext<"deserialized", "department">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
-
 
 const department = ref<DeserializedDepartmentDocument<"read">>(
 	pageProps.department as DeserializedDepartmentDocument<"read">
@@ -144,10 +146,13 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
+const hasSubmittedDepartment = ref<boolean>(true)
+
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
-function updateDepartment() {
-	fetcher.update(department.value.data.id, {
+async function updateDepartment() {
+	hasSubmittedDepartment.value = false
+	await fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
 		"fullName": department.value.data.fullName,
 		"mayAdmit": department.value.data.mayAdmit
@@ -165,19 +170,18 @@ function updateDepartment() {
 		successMessages.value.push("Department has been read successfully!")
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedDepartment.value = true
 }
 
 async function archiveDepartment() {
 	await fetcher.archive([ department.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreDepartment() {
 	await fetcher.restore([ department.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

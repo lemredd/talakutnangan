@@ -154,7 +154,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"value": "*"
 	},
 	...departments.value.data.map(data => ({
-		"label": data.fullName,
+		"label": data.acronym,
 		"value": data.id
 	}))
 ])

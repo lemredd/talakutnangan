@@ -4,25 +4,25 @@
 			v-if="mayViewArchivedOrRestore"
 			v-model="existence"
 			class="comment-existence-filter"/>
+		<Viewer
+			v-for="(comment, i) in comments.data"
+			:key="comment.id"
+			v-model="comments.data[i]"
+			class="viewer"
+			@archive="archiveComment"
+			@restore="restoreComment"/>
 		<Suspensible :is-loaded="isLoaded">
-			<Viewer
-				v-for="(comment, i) in comments.data"
-				:key="comment.id"
-				v-model="comments.data[i]"
-				class="viewer"
-				@archive="archiveComment"
-				@restore="restoreComment"/>
 			<p v-if="hasNoComments">
 				There are no comments found.
 			</p>
+			<div v-if="hasRemainingComments" class="load-others">
+				<button
+					class="load-btn btn btn-secondary"
+					@click="fetchComments">
+					Load other comments
+				</button>
+			</div>
 		</Suspensible>
-		<div v-if="hasRemainingComments" class="load-others">
-			<button
-				class="load-btn btn btn-secondary"
-				@click="fetchComments">
-				Load other comments
-			</button>
-		</div>
 	</div>
 </template>
 

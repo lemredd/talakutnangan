@@ -33,7 +33,6 @@ describe("UI Page: Read consultation resource by ID", () => {
 	it("can toggle state of consultation list", async() => {
 		const OTHER_CONSULTATION_COUNT = 3
 		const INITIAL_MESSAGE_COUNT = 5
-
 		const userFactory = new UserFactory()
 		const userModel = await userFactory.insertOne()
 		const factory = new Factory()
@@ -74,6 +73,15 @@ describe("UI Page: Read consultation resource by ID", () => {
 		)
 		const chatMessageResources = await chatMessageFactory.deserialize(chatMessageModels)
 
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
 				"data": [],
@@ -201,6 +209,15 @@ describe("UI Page: Read consultation resource by ID", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const wrapper = mount(Page, {
 			"global": {
@@ -244,7 +261,12 @@ describe("UI Page: Read consultation resource by ID", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
+		expect(castFetch).toHaveBeenCalledTimes(3)
+		const [
+			[ firstRequest ],
+			[ secondRequest ],
+			[ unusedThirdRequest ]
+		] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
 			"query": stringifyQuery({
@@ -281,25 +303,6 @@ describe("UI Page: Read consultation resource by ID", () => {
 		}))
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-
-		expect(thirdRequest).toHaveProperty("method", "GET")
-		expect(thirdRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
-			"query": stringifyQuery({
-				"filter": {
-					"chatMessageKinds": [ "text", "status" ],
-					"consultationIDs": [ resource.data.id ],
-					"existence": "exists",
-					"previewMessageOnly": false
-				},
-				"page": {
-					"limit": DEFAULT_LIST_LIMIT,
-					"offset": INITIAL_MESSAGE_COUNT
-				},
-				"sort": "-createdAt"
-			})
-		}))
-		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })
 
@@ -382,6 +385,15 @@ describe("UI Page: Communicate with consultation resource", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": [],
+				"meta": {
+					"count": 0
+				}
+			}),
+			{ "status": RequestEnvironment.status.OK }
+		)
 
 		const wrapper = mount(Page, {
 			"global": {
@@ -425,7 +437,12 @@ describe("UI Page: Communicate with consultation resource", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
-		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
+		expect(castFetch).toHaveBeenCalledTimes(3)
+		const [
+			[ firstRequest ],
+			[ secondRequest ],
+			[ unusedThirdRequest ]
+		] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
 			"query": stringifyQuery({
@@ -462,25 +479,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 		}))
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-
-		expect(thirdRequest).toHaveProperty("method", "GET")
-		expect(thirdRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
-			"query": stringifyQuery({
-				"filter": {
-					"chatMessageKinds": [ "text", "status" ],
-					"consultationIDs": [ resource.data.id ],
-					"existence": "exists",
-					"previewMessageOnly": false
-				},
-				"page": {
-					"limit": DEFAULT_LIST_LIMIT,
-					"offset": INITIAL_MESSAGE_COUNT
-				},
-				"sort": "-createdAt"
-			})
-		}))
-		expect(thirdRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(thirdRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
 		// End the pending finished listener
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })

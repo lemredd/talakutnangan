@@ -37,7 +37,7 @@
 				type="submit"
 				class="submit-btn btn btn-primary"
 				@click="updateUser">
-				submit
+				Save Changes
 			</button>
 			<button
 				type="reset"
@@ -95,6 +95,9 @@ import type { PageContext } from "$/types/renderer"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Fetcher from "$@/fetchers/user"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 import settingsTabInfos from "@/settings/settings_tab_infos"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -102,11 +105,9 @@ import {
 	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
 	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
-
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
 import UpdatePasswordField from "@/settings/update_password_field.vue"
 import NonSensitiveTextualField from "@/fields/non-sensitive_text.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
@@ -183,9 +184,9 @@ function updateUser(): void {
 		"prefersDark": userProfile.data.prefersDark
 	})
 	.then(() => {
-		if (receivedErrors.value.length) receivedErrors.value = []
+		fillSuccessMessages(receivedErrors, successMessages)
 		successMessages.value.push("Email updated successfully.")
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

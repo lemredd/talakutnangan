@@ -10,6 +10,10 @@
 				<h1>Enter the post details</h1>
 			</template>
 			<template #default>
+				<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+				<ReceivedSuccessMessages
+					v-if="successMessages.length"
+					:received-success-messages="successMessages"/>
 				<p v-if="mustArchive">
 					Do you really want to archive?
 				</p>
@@ -48,10 +52,15 @@
 						:user="post.poster"/>
 					<div class="poster-details">
 						<span>
-							{{ post.poster.data.name }}
+							<span>
+								{{ post.poster.data.name }}
+							</span>
+							<small>
+								as {{ post.posterRole.data.name }}
+							</small>
 						</span>
-						<span>
-							<small class="department-and-timestamp">
+						<span class="department-and-timestamp">
+							<small>
 								<span>
 									{{ postDepartment }}
 								</span>
@@ -71,8 +80,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p class="post-content">
-			{{ post.content }}
+		<p v-html="formattedContent" class="post-content">
 		</p>
 		<div v-if="hasExistingAttachments">
 			<div
@@ -177,13 +185,20 @@ import pluralize from "$/string/pluralize"
 import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import convertMarkdownToHTML from "$/string/convert_markdown_to_html"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
+
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
+import assignPath from "$@/external/assign_path"
 
 const fetcher = new Fetcher()
 
@@ -207,6 +222,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
@@ -242,9 +258,13 @@ const {
 	"off": closeRestore
 } = makeSwitch(false)
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 const mustArchiveOrRestore = computed<boolean>(() => mustArchive.value || mustRestore.value)
 
 function closeArchiveOrRestore() {
+	receivedErrors.value = []
+	successMessages.value = []
 	closeArchive()
 	closeRestore()
 }
@@ -317,15 +337,29 @@ async function submitChangesSeparately(): Promise<void> {
 	})
 }
 
+function closeDialog() {
+	emit("archive", post.value)
+	emit("restore", post.value)
+}
+
+const TIMEOUT = 3000
 async function archivePost(): Promise<void> {
-	await fetcher.archive([ post.value.id ]).then(() => {
-		emit("archive", post.value)
+	await fetcher.archive([ post.value.id ])
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
+		assignPath("/forum")
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restorePost(): Promise<void> {
-	await fetcher.restore([ post.value.id ]).then(() => {
-		emit("restore", post.value)
+	await fetcher.restore([ post.value.id ])
+	.then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
+		setTimeout(closeDialog, TIMEOUT)
+		assignPath("/forum")
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

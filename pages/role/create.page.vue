@@ -1,5 +1,5 @@
 <template>
-	<UserListRedirector resource-type="role"/>
+	<ListRedirector resource-type="role"/>
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -47,12 +47,13 @@ import type { RoleAttributes } from "$/types/documents/role"
 import Fetcher from "$@/fetchers/role"
 
 import FlagSelector from "@/role/flag_selector.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import TextualField from "@/fields/non-sensitive_text_capital.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
-import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
-import UserListRedirector from "@/resource_management/list_redirector.vue"
 
 const role = ref<RoleAttributes<"deserialized">>({
 	"auditTrailFlags": 0,
@@ -77,10 +78,9 @@ function createRole() {
 	roleFetcher.create({
 		...role.value,
 		"deletedAt": null
-	}).then(({ unusedBody, unusedStatus }) => {
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Role has been created successfully!")
+	}).then(() => {
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>

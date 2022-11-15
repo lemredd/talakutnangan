@@ -29,6 +29,7 @@
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
+					<li>Scheduled at: {{ readableScheduledAt }}</li>
 
 					<li>
 						<a
@@ -40,11 +41,13 @@
 				</ul>
 			</div>
 
-			<button
-				class="load-previous-messages-btn btn btn-secondary"
-				@click="loadPreviousMessages">
-				Load Previous messages
-			</button>
+			<Suspensible :is-loaded="hasLoadedChatMessages">
+				<button
+					class="load-previous-messages-btn btn btn-secondary"
+					@click="loadPreviousMessages">
+					Load Previous messages
+				</button>
+			</Suspensible>
 			<div
 				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
@@ -114,6 +117,7 @@ import type {
 import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
 import makeSwitch from "$@/helpers/make_switch"
+import formatToReadableTime from "$@/helpers/format_to_complete_friendly_time"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -123,6 +127,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
@@ -139,6 +144,7 @@ const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	hasLoadedChatMessages: boolean,
 	isConsultationListShown: boolean
 }>()
 
@@ -331,6 +337,8 @@ function startConsultation() {
 }
 
 watchConsultation(consultation, registerListeners)
+
+const readableScheduledAt = formatToReadableTime(consultation.value.scheduledStartAt)
 
 const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
 	"id": consultationID.value

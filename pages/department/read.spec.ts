@@ -93,7 +93,7 @@ describe("Page: department/read", () => {
 		const fullNameInput = wrapper.find(".full-name input")
 		const acronymInput = wrapper.find(".acronym input")
 		const mayAdmitInput = wrapper.find(".may-admit input")
-		const submitBtn = wrapper.find("input[type=submit]")
+		const submitBtn = wrapper.find("button[type=submit]")
 
 		await fullNameInput.setValue(updatedDepartment.data.fullName)
 		await acronymInput.setValue(updatedDepartment.data.acronym)

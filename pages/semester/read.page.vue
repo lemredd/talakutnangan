@@ -19,10 +19,11 @@
 			v-model="semester.data.endAt"
 			class="end-at border-solid"/>
 		<div class="controls">
-			<input
-				type="submit"
-				value="Save changes"
-				class="btn btn-primary"/>
+			<Suspensible :is-loaded="hasSubmittedSemester">
+				<button type="submit" class="update-user-btn btn btn-primary">
+					update semester
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreSemester"
 				type="button"
@@ -64,14 +65,16 @@ import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 import Fetcher from "$@/fetchers/semester"
 import makeSwitch from "$@/helpers/make_switch"
 import type { OptionInfo } from "$@/types/component"
-
 import RequestEnvironment from "$/singletons/request_environment"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+
 import { semester as permissionGroup } from "$/permissions/permission_list"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
 import DateSelect from "@/fields/date_selector.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import Selectable from "@/fields/selectable_options.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -122,8 +125,11 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-function updateSemester() {
-	fetcher.update(semester.value.data.id, {
+const hasSubmittedSemester = ref<boolean>(true)
+
+async function updateSemester() {
+	hasSubmittedSemester.value = false
+	await fetcher.update(semester.value.data.id, {
 		"deletedAt": null,
 		"endAt": semester.value.data.endAt.toJSON(),
 		"name": semester.value.data.name,
@@ -139,23 +145,22 @@ function updateSemester() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Semester has been read successfully!")
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	hasSubmittedSemester.value = true
 }
 
 async function archiveSemester() {
 	await fetcher.archive([ semester.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreSemester() {
 	await fetcher.restore([ semester.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
-	})
+	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
