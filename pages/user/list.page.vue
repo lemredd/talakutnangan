@@ -1,11 +1,13 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
+		:sort-names="sortNames"
 		:role-names="roleNames">
 		<template #header>
 			<TabbedPageHeader
@@ -130,9 +132,22 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Name",
+		"value": "name"
+	},
+	{
+		"label": "E-mail",
+		"value": "email"
+	}
+])
+const chosenSort = ref("name")
+
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
 )
+
 const roleNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "All",
@@ -178,7 +193,7 @@ async function fetchUserInfo() {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": list.value.data.length
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}))
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
