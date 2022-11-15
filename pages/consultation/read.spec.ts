@@ -261,11 +261,11 @@ describe("UI Page: Read consultation resource by ID", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(3)
 		const [
 			[ firstRequest ],
 			[ secondRequest ],
-			[ unusedThirdRequest ],
-			[ fourthRequest ]
+			[ unusedThirdRequest ]
 		] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
@@ -303,25 +303,6 @@ describe("UI Page: Read consultation resource by ID", () => {
 		}))
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-
-		expect(fourthRequest).toHaveProperty("method", "GET")
-		expect(fourthRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
-			"query": stringifyQuery({
-				"filter": {
-					"chatMessageKinds": [ "text", "status" ],
-					"consultationIDs": [ resource.data.id ],
-					"existence": "exists",
-					"previewMessageOnly": false
-				},
-				"page": {
-					"limit": DEFAULT_LIST_LIMIT,
-					"offset": INITIAL_MESSAGE_COUNT
-				},
-				"sort": "-createdAt"
-			})
-		}))
-		expect(fourthRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(fourthRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 	})
 })
 
@@ -456,11 +437,11 @@ describe("UI Page: Communicate with consultation resource", () => {
 		expect(previousCalls).toHaveProperty("3.arguments.1.update")
 
 		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(3)
 		const [
 			[ firstRequest ],
 			[ secondRequest ],
-			[ unusedThirdRequest ],
-			[ fourthRequest ]
+			[ unusedThirdRequest ]
 		] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
@@ -498,25 +479,6 @@ describe("UI Page: Communicate with consultation resource", () => {
 		}))
 		expect(secondRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
 		expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-
-		expect(fourthRequest).toHaveProperty("method", "GET")
-		expect(fourthRequest).toHaveProperty("url", specializePath(CHAT_MESSAGE_LINK.query, {
-			"query": stringifyQuery({
-				"filter": {
-					"chatMessageKinds": [ "text", "status" ],
-					"consultationIDs": [ resource.data.id ],
-					"existence": "exists",
-					"previewMessageOnly": false
-				},
-				"page": {
-					"limit": DEFAULT_LIST_LIMIT,
-					"offset": INITIAL_MESSAGE_COUNT
-				},
-				"sort": "-createdAt"
-			})
-		}))
-		expect(fourthRequest.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(fourthRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
 		// End the pending finished listener
 		fetchMock.mockResponseOnce("{}", { "status": RequestEnvironment.status.NO_CONTENT })

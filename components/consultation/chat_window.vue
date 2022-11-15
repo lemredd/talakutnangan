@@ -41,11 +41,13 @@
 				</ul>
 			</div>
 
-			<button
-				class="load-previous-messages-btn btn btn-secondary"
-				@click="loadPreviousMessages">
-				Load Previous messages
-			</button>
+			<Suspensible :is-loaded="hasLoadedChatMessages">
+				<button
+					class="load-previous-messages-btn btn btn-secondary"
+					@click="loadPreviousMessages">
+					Load Previous messages
+				</button>
+			</Suspensible>
 			<div
 				v-for="(message, i) in sortedMessagesByTime"
 				:key="message.id"
@@ -125,6 +127,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import UserController from "@/consultation/chat_window/user_controller.vue"
 import ChatMessageItem from "@/consultation/chat_window/chat_message_item.vue"
 import ConsultationHeader from "@/consultation/chat_window/consultation_header.vue"
@@ -141,6 +144,7 @@ const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
+	hasLoadedChatMessages: boolean,
 	isConsultationListShown: boolean
 }>()
 

@@ -52,10 +52,15 @@
 						:user="post.poster"/>
 					<div class="poster-details">
 						<span>
-							{{ post.poster.data.name }}
+							<span>
+								{{ post.poster.data.name }}
+							</span>
+							<small>
+								as {{ post.posterRole.data.name }}
+							</small>
 						</span>
-						<span>
-							<small class="department-and-timestamp">
+						<span class="department-and-timestamp">
+							<small>
 								<span>
 									{{ postDepartment }}
 								</span>
@@ -75,8 +80,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p class="post-content">
-			{{ post.content }}
+		<p v-html="formattedContent" class="post-content">
 		</p>
 		<div v-if="hasExistingAttachments">
 			<div
@@ -182,6 +186,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import convertMarkdownToHTML from "$/string/convert_markdown_to_html"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 
@@ -217,6 +222,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
