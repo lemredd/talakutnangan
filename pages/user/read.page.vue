@@ -9,19 +9,46 @@
 		<h1 class="user-data-form-header">
 			General User data
 		</h1>
-		<div class="user-name">
+		<div class="field user-name">
 			<NonSensitiveTextField
 				v-model="user.data.name"
-				v-model:status="nameFieldStatus"
+				v-model:status="textFieldStatus"
 				label="User Name"
 				type="text"/>
 		</div>
-		<button type="submit" class="update-user-btn btn btn-primary">
-			update user
-		</button>
+		<div class="field email">
+			<NonSensitiveTextField
+				v-model="user.data.email"
+				v-model:status="textFieldStatus"
+				:label="emailVerified"
+				type="text"/>
+		</div>
+		<div class="field kind">
+			<NonSensitiveTextField
+				:model-value="friendlyKind"
+				status="disabled"
+				label="Kind"
+				type="text"/>
+		</div>
+		<div v-if="isCurrentlyStudent" class="field student-number">
+			<NonSensitiveTextField
+				:model-value="studentNumber"
+				status="disabled"
+				label="Kind"
+				type="text"/>
+		</div>
+		<Suspensible :is-loaded="hasSubmittedUser">
+			<button
+				type="submit"
+				class="update-user-btn btn btn-primary"
+				@click="updateUser">
+				update user
+			</button>
+		</Suspensible>
 	</form>
 
 	<form
+		v-if="mayUpdateAttachedRoles"
 		class="user-data-form"
 		@submit.prevent="updateRoles">
 		<h1 class="user-data-form-header">
@@ -31,16 +58,22 @@
 			<MultiSelectableOptionsField
 				v-model="userRoleIDs"
 				class="selectable-roles"
-				:disabled="mayNotSelect"
+				:disabled="isDeleted"
 				label="Roles"
 				:options="selectableRoles"/>
 		</div>
-		<button type="submit" class="update-roles-btn btn btn-primary">
-			update roles
-		</button>
+		<Suspensible :is-loaded="hasSubmittedRole">
+			<button
+				type="submit"
+				class="update-roles-btn btn btn-primary"
+				@click="updateRoles">
+				update roles
+			</button>
+		</Suspensible>
 	</form>
 
 	<form
+		v-if="mayUpdateUser"
 		class="user-data-form"
 		@submit.prevent="updateDepartment">
 		<h1 class="user-data-form-header">
@@ -50,38 +83,45 @@
 			<SelectableOptionsField
 				v-model="userDepartment"
 				class="selectable-department"
-				:disabled="mayNotSelect"
+				:disabled="isDeleted"
 				label="Department"
 				:options="selectableDepartments"/>
 		</div>
-		<button type="submit" class="update-department-btn btn btn-primary">
-			update department
-		</button>
+		<Suspensible :is-loaded="hasSubmittedDepartment">
+			<button
+				type="submit"
+				class="update-department-btn btn btn-primary"
+				@click="updateRoles">
+				update department
+			</button>
+		</Suspensible>
 	</form>
 
-	<div class="controls flex justify-between mt-3">
-		<button
-			v-if="mayRestoreUser"
-			type="button"
-			class="btn btn-primary"
-			@click="restoreUser">
-			Restore
-		</button>
-		<button
-			v-if="mayArchiveUser"
-			type="button"
-			class="btn btn-primary"
-			@click="archiveUser">
-			Archive
-		</button>
-		<button
-			v-if="mayReset"
-			type="button"
-			class="btn btn-primary"
-			@click="resetUserPassword">
-			Reset
-		</button>
-	</div>
+	<Suspensible :is-loaded="hasPerformedWholeChange">
+		<div class="controls flex justify-between mt-3">
+			<button
+				v-if="mayRestoreUser"
+				type="button"
+				class="btn btn-primary"
+				@click="restoreUser">
+				Restore
+			</button>
+			<button
+				v-if="mayArchiveUser"
+				type="button"
+				class="btn btn-primary"
+				@click="archiveUser">
+				Archive
+			</button>
+			<button
+				v-if="mayResetPassword"
+				type="button"
+				class="btn btn-primary"
+				@click="resetUserPassword">
+				Reset Password
+			</button>
+		</div>
+	</Suspensible>
 </template>
 
 <style>
@@ -102,6 +142,10 @@
 			@apply text-xl uppercase;
 		}
 
+		.field {
+			@apply mb-4;
+		}
+
 		.btn {
 			@apply mt-8;
 		}
@@ -119,14 +163,18 @@ import {
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
-import type { ResourceCount } from "$/types/documents/base"
-import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedUserDocument } from "$/types/documents/user"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
+import type { DeserializedRoleListDocument } from "$/types/documents/role"
+import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import convertForSentence from "$/string/convert_for_sentence"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -137,12 +185,11 @@ import {
 	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 } from "$/permissions/user_combinations"
 
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-
+import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 type RequiredExtraProps = "user" | "roles" | "departments"
@@ -150,29 +197,30 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 const user = ref<DeserializedUserDocument<"roles"|"department">>(
-	pageProps.user as DeserializedUserDocument<"roles"|"department">
+	{
+		...pageProps.user,
+		"data": {
+			...pageProps.user.data
+		}
+	} as DeserializedUserDocument<"roles"|"department">
 )
 
-const roles = ref<DeserializedRoleResource[]>(
-	pageProps.roles.data as DeserializedRoleResource[]
-)
+const roles = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
 const userRoleIDs = ref(
 	user.value.data.roles.data.map(role => role.id) as string[]
 )
-const selectableRoles = computed<OptionInfo[]>(() => roles.value.map(
-	(role: DeserializedRoleResource) => ({
+const selectableRoles = computed<OptionInfo[]>(() => roles.value.data.map(
+	role => ({
 		"label": role.name,
 		"value": role.id
 	})
 ))
 
-const isDeleted = computed<boolean>(() => Boolean(user.value.deletedAt))
-
-const departments = ref<DeserializedDepartmentResource[]>(
-	pageProps.departments.data as DeserializedDepartmentResource[]
+const departments = ref<DeserializedDepartmentListDocument>(
+	pageProps.departments as DeserializedDepartmentListDocument
 )
 const userDepartment = ref(user.value.data.department.data.id as string)
-const selectableDepartments = computed(() => departments.value.map(
+const selectableDepartments = computed(() => departments.value.data.map(
 	department => ({
 		"label": department.fullName,
 		"value": department.id
@@ -184,22 +232,33 @@ const isOnSameDepartment = computed<boolean>(() => {
 	const ownDepartment = userProfile.data.department.data.id
 	return ownDepartment === user.value.data.department.data.id
 })
+
+const isDeleted = computed<boolean>(() => Boolean(user.value.data.deletedAt))
+const doesViewOwn = computed<boolean>(() => user.value.data.id === userProfile.data.id)
+const mayUpdateAnyone = computed<boolean>(() => {
+	const userRoles = userProfile.data.roles.data
+
+	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userRoles, [
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isLimitedUpToGlobalScope
+})
+
 const mayUpdateUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+	const userRoles = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
 		UPDATE_ANYONE_ON_OWN_DEPARTMENT
 	]) && isOnSameDepartment.value
 
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-	])
+	const isLimitedUpToGlobalScope = mayUpdateAnyone.value
 
 	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
 
 const mayArchiveOrRestoreUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
+	const userRoles = userProfile.data.roles.data
+	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
 		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
 	]) && isOnSameDepartment.value
 
@@ -209,8 +268,14 @@ const mayArchiveOrRestoreUser = computed<boolean>(() => {
 
 	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
-const mayArchiveUser = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreUser.value)
+const mayArchiveUser = computed<boolean>(() => {
+	const isPermitted = !isDeleted.value && mayArchiveOrRestoreUser.value
+
+	return !doesViewOwn.value && isPermitted
+})
 const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
+
+const mayUpdateAttachedRoles = computed<boolean>(() => !doesViewOwn.value && mayUpdateAnyone.value)
 
 const mayResetPassword = computed<boolean>(() => {
 	const users = userProfile.data.roles.data
@@ -218,17 +283,40 @@ const mayResetPassword = computed<boolean>(() => {
 		RESET_PASSWORD
 	])
 
-	return isLimitedUpToDepartmentScope
+	return isLimitedUpToDepartmentScope && !isDeleted.value
 })
-const mayReset = computed<boolean>(() => mayResetPassword.value)
 
-const nameFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "locked" : "disabled")
-const mayNotSelect = computed<boolean>(() => !mayUpdateUser.value)
+const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disabled")
+const emailVerified = computed<string>(() => {
+	let verifyEmail = ""
+	const verification = user.value.data.emailVerifiedAt
+	if (verification) {
+		verifyEmail = "E-mail: Verified ✓"
+	} else {
+		verifyEmail = "E-mail: Unverified ✘"
+	}
+
+	return String(verifyEmail)
+})
+const friendlyKind = computed<string>(() => convertForSentence(user.value.data.kind))
+const isCurrentlyStudent = computed<boolean>(() => user.value.data.kind === "student")
+const studentNumber = computed<string>(() => {
+	if (isCurrentlyStudent.value) {
+		const castNormalUser = user.value as DeserializedUserDocument
+		const castUser = castNormalUser as DeserializedUserDocument<"studentDetail">
+
+		return castUser.data.studentDetail.data.studentNumber
+	}
+
+	return ""
+})
+const hasSubmittedUser = ref<boolean>(true)
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 async function updateUser() {
+	hasSubmittedUser.value = false
 	await fetcher.update(user.value.data.id, {
 		"email": user.value.data.email,
 		"emailVerifiedAt": user.value.data.emailVerifiedAt?.toJSON() ?? null,
@@ -236,104 +324,128 @@ async function updateUser() {
 		"name": user.value.data.name,
 		"prefersDark": user.value.data.prefersDark ? user.value.data.prefersDark : false
 	})
-	.then()
+	.then(() => {
+		if (user.value.data.emailVerifiedAt) {
+			const oldEmail = pageProps.user.data.email
+			const newEmail = user.value.data.email
+
+			if (oldEmail !== newEmail) {
+				user.value = {
+					...user.value,
+					"data": {
+						...user.value.data,
+						"emailVerifiedAt": null
+					}
+				}
+			}
+		}
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"User Name updated successfully."
+		)
+	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasSubmittedUser.value = true
 }
+
+const hasSubmittedRole = ref<boolean>(true)
 async function updateRoles() {
+	hasSubmittedRole.value = false
 	await fetcher.updateAttachedRole(user.value.data.id, userRoleIDs.value)
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Role updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedRole.value = true
 }
+
+const hasSubmittedDepartment = ref<boolean>(true)
 async function updateDepartment() {
+	hasSubmittedDepartment.value = false
 	await fetcher.updateDepartment(user.value.data.id, userDepartment.value).then(() => {
 		user.value.data.department.data.id = userDepartment.value
 	})
-	.then()
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Department updated successfully.")
+	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedDepartment.value = true
 }
 
+const hasPerformedWholeChange = ref<boolean>(true)
 async function resetUserPassword() {
+	hasPerformedWholeChange.value = false
 	await fetcher.resetPassword(user.value.data.id)
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		const command = "Please check the inbox of the registered email for the password."
+		const note = "Email may not be sent if the email is not verified."
+
+		successMessages.value = [
+			...successMessages.value,
+			`${command} ${note}`
+		]
+	})
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Reset password successfully.")
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 async function archiveUser() {
+	hasPerformedWholeChange.value = false
 	await fetcher.archive([ user.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		user.value = {
+			...user.value,
+			"data": {
+				...user.value.data,
+				"deletedAt": new Date()
+			}
+		}
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 async function restoreUser() {
+	hasPerformedWholeChange.value = false
 	await fetcher.restore([ user.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		user.value = {
+			...user.value,
+			"data": {
+				...user.value.data,
+				"deletedAt": null
+			}
+		}
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	hasPerformedWholeChange.value = true
 }
 
 const roleFetcher = new RoleFetcher()
-async function fetchRolesIncrementally(): Promise<void> {
-	await roleFetcher.list({
-		"filter": {
-			"department": "*",
-			"existence": "exists",
-			"slug": ""
-		},
-		"page": {
-			"limit": 10,
-			"offset": roles.value.length
-		},
-		"sort": [ "name" ]
-	}).then(({ body }) => {
-		roles.value = [
-			...roles.value,
-			...body.data
-		]
-
-		const meta = body.meta as ResourceCount
-		if (roles.value.length < meta.count) {
-			return fetchRolesIncrementally()
-		}
-
-		return Promise.resolve()
-	})
-}
-
 const departmentFetcher = new DepartmentFetcher()
-async function fetchDepartmentsIncrementally(): Promise<void> {
-	await departmentFetcher.list({
-		"filter": {
-			"existence": "exists",
-			"slug": ""
-		},
-		"page": {
-			"limit": 10,
-			"offset": departments.value.length
-		},
-		"sort": [ "fullName" ]
-	}).then(({ body }) => {
-		departments.value = [
-			...departments.value,
-			...body.data
-		]
-
-		const meta = body.meta as ResourceCount
-		if (departments.value.length < meta.count) {
-			console.log("requests department\n\n\n")
-			return fetchDepartmentsIncrementally()
-		}
-
-		return Promise.resolve()
-	})
-}
 
 onMounted(async() => {
-	await fetchDepartmentsIncrementally()
-	await fetchRolesIncrementally()
+	await loadRemainingDepartments(departments, departmentFetcher)
+	await loadRemainingRoles(roles, roleFetcher)
 })
 </script>

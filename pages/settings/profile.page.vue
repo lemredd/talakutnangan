@@ -212,6 +212,7 @@ import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -236,10 +237,6 @@ if (pageContext.pageProps.parsedUnitError) {
 	receivedErrors.value = [ pageContext.pageProps.parsedUnitError.detail ]
 }
 
-function showSuccessMessage(message: string) {
-	if (receivedErrors.value.length) receivedErrors.value = []
-	successMessages.value.push(message)
-}
 
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
@@ -250,20 +247,22 @@ function submitProfilePicture(formData: FormData) {
 			formData
 		)
 		.then(() => {
-			const message = "profile picture uploaded successfully. reload the page to see the changes"
-			showSuccessMessage(message)
+			fillSuccessMessages(
+				receivedErrors,
+				successMessages,
+				"Profile picture uploaded successfully."
+			)
 		})
-		.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 	} else {
 		profilePictureFetcher.createFile(
 			userProfileData.value.id,
 			formData
 		)
 		.then(() => {
-			const message = "profile picture uploaded successfully. reload the page to see the changes"
-			showSuccessMessage(message)
+			fillSuccessMessages(receivedErrors, successMessages)
 		})
-		.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 	}
 }
 function submitSignature(formData: FormData) {
@@ -274,23 +273,29 @@ function submitSignature(formData: FormData) {
 		formData
 	)
 	.then(() => {
-		const message = "Signature uploaded successfully. reload the page to see the changes"
-		showSuccessMessage(message)
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Signature uploaded successfully."
+		)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
-		...userProfileData.value
+		"email": userProfileData.value.email,
+		"emailVerifiedAt": null,
+		"kind": userProfileData.value.kind,
+		"name": userProfileData.value.name,
+		"prefersDark": userProfileData.value.prefersDark ? userProfileData.value.prefersDark : false
 	})
 	.then(() => {
-		// eslint-disable-next-line max-len
-		showSuccessMessage("Your profile has been updated successfully. Please wait until the page reloads.")
+		fillSuccessMessages(receivedErrors, successMessages)
 		const SECONDS_BEFORE_PAGES_RELOAD = 3000
 		setTimeout(() => assignPath("/settings/profile"), SECONDS_BEFORE_PAGES_RELOAD)
 	})
-	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 const emit = defineEmits([ "toggleDarkMode" ])

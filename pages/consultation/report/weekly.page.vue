@@ -31,7 +31,7 @@
 						<td>{{ formatToCompleteFriendlyTime(sumEntry.beginAt) }}</td>
 						<td>{{ formatToCompleteFriendlyTime(sumEntry.endAt) }}</td>
 
-						<ul class="consultations">
+						<div class="consultations">
 							<td
 								v-for="consultation in sumEntry.consultations.data"
 								:key="consultation.id"
@@ -47,7 +47,7 @@
 									)
 								}}
 							</td>
-						</ul>
+						</div>
 
 						<td>
 							{{ convertToFullTimeString(sumEntry.totalMillisecondsConsumed) }}
@@ -81,13 +81,22 @@
 	}
 
 	table, th, thead, tfoot, td {
-		border:2px solid;
+		border: 2px solid;
 		padding: 8px;
 		text-align: center;
-
 	}
+
 	.consultations {
 		@apply flex flex-col;
+
+		> td {
+			border-left: 0px;
+			border-right: 0px;
+
+			+ td {
+				border-top: 0px;
+			}
+		}
 	}
 </style>
 

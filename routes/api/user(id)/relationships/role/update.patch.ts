@@ -6,8 +6,8 @@ import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types
 
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
-import UserManager from "%/managers/user"
 import Manager from "%/managers/role"
+import UserManager from "%/managers/user"
 import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import BoundJSONController from "!/controllers/bound_json"
