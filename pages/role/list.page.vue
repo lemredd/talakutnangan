@@ -1,10 +1,12 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
+		:sort-names="sortNames"
 		:role-names="[]">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
@@ -87,6 +89,14 @@ const tableData = computed<TableData[]>(() => {
 })
 
 const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Name",
+		"value": "name"
+	}
+])
+const chosenSort = ref("name")
+
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
@@ -136,7 +146,7 @@ async function fetchRoleInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": list.value.data.length
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
