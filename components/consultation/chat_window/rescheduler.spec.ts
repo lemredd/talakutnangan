@@ -3,6 +3,7 @@ import { flushPromises, shallowMount } from "@vue/test-utils"
 
 import RequestEnvironment from "$/singletons/request_environment"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object"
 
 import Component from "./rescheduler.vue"
 
@@ -56,12 +57,19 @@ describe("Component: consultation rescheduler", () => {
 		await flushPromises()
 
 		// Change day
-		const castedWrapper = wrapper.vm as any
 		const scheduler = wrapper.findComponent({ "name": "Scheduler" })
-		const newDate = new Date("2022-10-10T00:00:00.000Z").toJSON()
-		const newTime = String(convertTimeToMinutes("08:00"))
-		await scheduler.vm.$emit("update:chosenDay", newDate)
-		await scheduler.vm.$emit("update:chosenTime", newTime)
+		const newDate = new Date("2022-10-10T00:00:00.000Z")
+		await scheduler.vm.$emit("update:chosenDay", newDate.toJSON())
+
+		// Change time
+		const newTime = convertTimeToMinutes("08:00")
+		// Mock computed property
+		const newTimeObject = convertMinutesToTimeObject(newTime)
+		newDate.setHours(newTimeObject.hours)
+		newDate.setMinutes(newTimeObject.minutes)
+		newDate.setSeconds(0)
+		newDate.setMilliseconds(0)
+		await scheduler.vm.$emit("update:chosenTime", String(newTime))
 		await nextTick()
 		await wrapper.setProps({
 			"chosenDate": newDate,
@@ -86,7 +94,7 @@ describe("Component: consultation rescheduler", () => {
 					"actionTaken": null,
 					"deletedAt": null,
 					"finishedAt": null,
-					"scheduledStartAt": castedWrapper.scheduledStartAt,
+					"scheduledStartAt": newDate.toJSON(),
 					"startedAt": null
 				},
 				"relationships": {
