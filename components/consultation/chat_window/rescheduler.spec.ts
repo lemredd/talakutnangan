@@ -150,6 +150,7 @@ describe("Component: consultation rescheduler", () => {
 		const newDate = new Date("2022-10-10T00:00:00.000Z").toJSON()
 		const newTime = String(convertTimeToMinutes("08:00"))
 		await scheduler.vm.$emit("update:chosenDay", newDate)
+		await nextTick()
 		await scheduler.vm.$emit("update:chosenTime", newTime)
 		await nextTick()
 
